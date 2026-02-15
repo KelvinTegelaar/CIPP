@@ -103,7 +103,7 @@ const Page = () => {
     if (becPollingCall.data.NewRules && becPollingCall.data.NewRules.length > 0) {
       // Example condition to check for potential breach
       const hasPotentialBreach = becPollingCall.data.NewRules.some((rule) =>
-        rule.MoveToFolder?.includes("RSS")
+        rule.MoveToFolder?.includes("RSS"),
       );
       if (hasPotentialBreach) {
         return "Potential Breach found. The rules for this user contain classic signs of a breach.";
@@ -126,7 +126,7 @@ const Page = () => {
     if (becPollingCall.data.AddedApps && becPollingCall.data.AddedApps.length > 0) {
       // Example condition to check for potential breach
       const hasPotentialBreach = becPollingCall.data.AddedApps.some(
-        (app) => /* your condition here */ false
+        (app) => /* your condition here */ false,
       );
       if (hasPotentialBreach) {
         return "Potential Breach found.";
@@ -568,9 +568,9 @@ const Page = () => {
                   }
                 >
                   <Typography variant="body2" gutterBottom>
-                    Generate a comprehensive PDF report for documentation, compliance, or end-user review. 
-                    The report includes detailed explanations suitable for non-technical users, managers, and 
-                    compliance requirements (ISO/CMMC/SOC).
+                    Generate a comprehensive PDF report for documentation, compliance, or end-user
+                    review. The report includes detailed explanations suitable for non-technical
+                    users, managers, and compliance requirements (ISO/CMMC/SOC).
                   </Typography>
                   {/* Implement download functionality */}
                   {becPollingCall.data && (

@@ -454,7 +454,7 @@ const BECRemediationReportDocument = ({
 
     // Check for suspicious rules (RSS folder moves)
     const hasSuspiciousRules = becData?.NewRules?.some((rule) =>
-      rule.MoveToFolder?.includes("RSS")
+      rule.MoveToFolder?.includes("RSS"),
     );
     if (hasSuspiciousRules) threatScore += 5;
 
@@ -534,8 +534,8 @@ const BECRemediationReportDocument = ({
             Business Email Compromise is a sophisticated scam targeting organizations that regularly
             perform wire transfers or have established relationships with foreign suppliers.
             Attackers compromise legitimate email accounts through social engineering or computer
-            intrusion techniques to conduct unauthorized fund transfers, steal sensitive information,
-            or impersonate executives.
+            intrusion techniques to conduct unauthorized fund transfers, steal sensitive
+            information, or impersonate executives.
           </Text>
         </View>
 
@@ -641,7 +641,8 @@ const BECRemediationReportDocument = ({
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
                 <Text style={{ fontWeight: "bold" }}>Manipulate transactions:</Text> Intercept
-                legitimate invoices and alter payment information to redirect funds to attacker-controlled accounts.
+                legitimate invoices and alter payment information to redirect funds to
+                attacker-controlled accounts.
               </Text>
             </View>
             <View style={styles.bulletItem}>
@@ -695,11 +696,11 @@ const BECRemediationReportDocument = ({
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Why This Investigation Was Performed</Text>
           <Text style={styles.bodyText}>
-            This analysis was initiated because suspicious activity was detected or reported for this
-            user account. The investigation examines multiple indicators that might suggest account
-            compromise, including unusual mailbox rules, unexpected permission changes, new
-            application authorizations, and abnormal sign-in patterns. Early detection is critical to
-            minimize potential damage and prevent financial loss or data theft.
+            This analysis was initiated because suspicious activity was detected or reported for
+            this user account. The investigation examines multiple indicators that might suggest
+            account compromise, including unusual mailbox rules, unexpected permission changes, new
+            application authorizations, and abnormal sign-in patterns. Early detection is critical
+            to minimize potential damage and prevent financial loss or data theft.
           </Text>
         </View>
 
@@ -733,9 +734,9 @@ const BECRemediationReportDocument = ({
             <Text style={styles.infoTitle}>Why We Check This</Text>
             <Text style={styles.infoText}>
               Attackers often create email rules to automatically forward, delete, or hide messages.
-              This prevents victims from seeing evidence of fraudulent activity. Suspicious rules may
-              move emails to obscure folders like "RSS Subscriptions" or forward them to external
-              addresses.
+              This prevents victims from seeing evidence of fraudulent activity. Suspicious rules
+              may move emails to obscure folders like "RSS Subscriptions" or forward them to
+              external addresses.
             </Text>
           </View>
 
@@ -770,7 +771,9 @@ const BECRemediationReportDocument = ({
             </>
           ) : (
             <View style={[styles.infoBox, { backgroundColor: "#F0FDF4" }]}>
-              <Text style={[styles.infoTitle, { color: "#22543D" }]}>✓ No Suspicious Rules Found</Text>
+              <Text style={[styles.infoTitle, { color: "#22543D" }]}>
+                ✓ No Suspicious Rules Found
+              </Text>
               <Text style={styles.infoText}>
                 No mailbox rules were detected that match suspicious patterns. This is a positive
                 indicator.
@@ -807,8 +810,8 @@ const BECRemediationReportDocument = ({
           <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>Why We Check This</Text>
             <Text style={styles.infoText}>
-              Attackers sometimes create new user accounts to maintain persistent access or to use as
-              staging accounts for fraudulent activities. Reviewing recently created users helps
+              Attackers sometimes create new user accounts to maintain persistent access or to use
+              as staging accounts for fraudulent activities. Reviewing recently created users helps
               identify unauthorized account creation.
             </Text>
           </View>
@@ -855,9 +858,9 @@ const BECRemediationReportDocument = ({
           <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>Why We Check This</Text>
             <Text style={styles.infoText}>
-              Attackers may authorize malicious or suspicious third-party applications to access your
-              email and data. These applications can read emails, send messages, and access files
-              without the user's explicit knowledge.
+              Attackers may authorize malicious or suspicious third-party applications to access
+              your email and data. These applications can read emails, send messages, and access
+              files without the user's explicit knowledge.
             </Text>
           </View>
 
@@ -873,7 +876,9 @@ const BECRemediationReportDocument = ({
 
               {becData.AddedApps.slice(0, 6).map((app, index) => (
                 <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>{app.displayName || app.appDisplayName || "Unknown"}</Text>
+                  <Text style={styles.infoTitle}>
+                    {app.displayName || app.appDisplayName || "Unknown"}
+                  </Text>
                   <Text style={styles.infoText}>
                     Publisher: {app.publisher || "Unknown"}
                     {"\n"}
@@ -891,7 +896,9 @@ const BECRemediationReportDocument = ({
             </>
           ) : (
             <View style={[styles.infoBox, { backgroundColor: "#F0FDF4" }]}>
-              <Text style={[styles.infoTitle, { color: "#22543D" }]}>✓ No New Applications Found</Text>
+              <Text style={[styles.infoTitle, { color: "#22543D" }]}>
+                ✓ No New Applications Found
+              </Text>
               <Text style={styles.infoText}>
                 No new applications were authorized during the analysis period.
               </Text>
@@ -915,7 +922,9 @@ const BECRemediationReportDocument = ({
         <View style={styles.pageHeader}>
           <View style={styles.pageHeaderContent}>
             <Text style={styles.pageTitle}>Additional Security Checks</Text>
-            <Text style={styles.pageSubtitle}>Permissions, authentication, and access patterns</Text>
+            <Text style={styles.pageSubtitle}>
+              Permissions, authentication, and access patterns
+            </Text>
           </View>
           {brandingSettings?.logo && (
             <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
@@ -941,16 +950,14 @@ const BECRemediationReportDocument = ({
                   ⚠ {stats.permissionChanges} Permission Change(s) Found
                 </Text>
                 <Text style={styles.alertText}>
-                  Mailbox permission changes were detected. Verify that each change was authorized and
-                  necessary for legitimate business purposes.
+                  Mailbox permission changes were detected. Verify that each change was authorized
+                  and necessary for legitimate business purposes.
                 </Text>
               </View>
 
               {becData.MailboxPermissionChanges.slice(0, 5).map((change, index) => (
                 <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>
-                    {change.Operation || "Permission Change"}
-                  </Text>
+                  <Text style={styles.infoTitle}>{change.Operation || "Permission Change"}</Text>
                   <Text style={styles.infoText}>
                     User: {change.UserKey || "Unknown"}
                     {"\n"}
@@ -993,13 +1000,16 @@ const BECRemediationReportDocument = ({
           {stats.mfaDevices > 0 ? (
             <>
               <Text style={[styles.bodyText, { marginLeft: 12, marginTop: 8 }]}>
-                ℹ {stats.mfaDevices} MFA device(s) registered. Verify each device belongs to the user.
+                ℹ {stats.mfaDevices} MFA device(s) registered. Verify each device belongs to the
+                user.
               </Text>
 
               {becData.MFADevices.slice(0, 5).map((device, index) => (
                 <View key={index} style={styles.infoBox}>
                   <Text style={styles.infoTitle}>
-                    {device["@odata.type"]?.replace("#microsoft.graph.", "").replace("AuthenticationMethod", "") || "Unknown"}
+                    {device["@odata.type"]
+                      ?.replace("#microsoft.graph.", "")
+                      .replace("AuthenticationMethod", "") || "Unknown"}
                   </Text>
                   <Text style={styles.infoText}>
                     Display Name: {device.displayName || "N/A"}
@@ -1011,9 +1021,7 @@ const BECRemediationReportDocument = ({
             </>
           ) : (
             <View style={[styles.infoBox, { backgroundColor: "#FEF5E7" }]}>
-              <Text style={[styles.infoTitle, { color: "#744210" }]}>
-                ⚠ No MFA Devices Found
-              </Text>
+              <Text style={[styles.infoTitle, { color: "#744210" }]}>⚠ No MFA Devices Found</Text>
               <Text style={styles.infoText}>
                 No multi-factor authentication devices are registered. MFA is highly recommended to
                 prevent unauthorized access.
@@ -1028,9 +1036,9 @@ const BECRemediationReportDocument = ({
           <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>Why We Check This</Text>
             <Text style={styles.infoText}>
-              Attackers often change passwords to lock out legitimate users. Reviewing recent password
-              changes in the tenant helps identify if the compromised account's password was changed
-              or if other accounts were affected.
+              Attackers often change passwords to lock out legitimate users. Reviewing recent
+              password changes in the tenant helps identify if the compromised account's password
+              was changed or if other accounts were affected.
             </Text>
           </View>
 
@@ -1075,9 +1083,7 @@ const BECRemediationReportDocument = ({
         <View style={styles.pageHeader}>
           <View style={styles.pageHeaderContent}>
             <Text style={styles.pageTitle}>Recommendations</Text>
-            <Text style={styles.pageSubtitle}>
-              Actions to take and prevention best practices
-            </Text>
+            <Text style={styles.pageSubtitle}>Actions to take and prevention best practices</Text>
           </View>
           {brandingSettings?.logo && (
             <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
@@ -1109,15 +1115,15 @@ const BECRemediationReportDocument = ({
               <Text style={styles.bulletPoint}>3.</Text>
               <Text style={styles.bulletText}>
                 <Text style={{ fontWeight: "bold" }}>Remove Suspicious Rules:</Text> Delete any
-                mailbox rules that forward, redirect, or hide emails, especially those moving messages
-                to unusual folders.
+                mailbox rules that forward, redirect, or hide emails, especially those moving
+                messages to unusual folders.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>4.</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Review MFA Devices:</Text> Remove any MFA devices
-                that the user doesn't recognize and re-register legitimate devices.
+                <Text style={{ fontWeight: "bold" }}>Review MFA Devices:</Text> Remove any MFA
+                devices that the user doesn't recognize and re-register legitimate devices.
               </Text>
             </View>
             <View style={styles.bulletItem}>
@@ -1148,7 +1154,9 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Enforce Multi-Factor Authentication (MFA):</Text>{" "}
+                <Text style={{ fontWeight: "bold" }}>
+                  Enforce Multi-Factor Authentication (MFA):
+                </Text>{" "}
                 Require MFA for all users, especially those with administrative privileges or access
                 to financial systems.
               </Text>
@@ -1181,8 +1189,8 @@ const BECRemediationReportDocument = ({
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
                 <Text style={{ fontWeight: "bold" }}>Monitor Audit Logs:</Text> Regularly review
-                audit logs for suspicious activities such as unusual sign-in patterns, rule creation,
-                or permission changes.
+                audit logs for suspicious activities such as unusual sign-in patterns, rule
+                creation, or permission changes.
               </Text>
             </View>
             <View style={styles.bulletItem}>
@@ -1206,15 +1214,15 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                Never click on links or open attachments in unexpected emails, even if they appear to
-                come from known contacts.
+                Never click on links or open attachments in unexpected emails, even if they appear
+                to come from known contacts.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                Always verify unusual requests for money transfers or sensitive information through a
-                separate communication channel (phone call, in person).
+                Always verify unusual requests for money transfers or sensitive information through
+                a separate communication channel (phone call, in person).
               </Text>
             </View>
             <View style={styles.bulletItem}>
@@ -1370,7 +1378,9 @@ const BECRemediationReportDocument = ({
           <View style={styles.bulletList}>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>FBI IC3: Internet Crime Complaint Center (ic3.gov)</Text>
+              <Text style={styles.bulletText}>
+                FBI IC3: Internet Crime Complaint Center (ic3.gov)
+              </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
