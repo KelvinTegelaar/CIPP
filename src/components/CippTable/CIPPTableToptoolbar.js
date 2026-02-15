@@ -660,8 +660,8 @@ export const CIPPTableToptoolbar = ({
               getRequestData?.isFetchNextPageError
                 ? "Could not retrieve all data. Click to try again."
                 : getRequestData?.isFetching
-                ? "Retrieving more data..."
-                : "Refresh data"
+                  ? "Retrieving more data..."
+                  : "Refresh data"
             }
           >
             <RefreshButton
@@ -1266,7 +1266,7 @@ export const CIPPTableToptoolbar = ({
 
                 if (action?.noConfirm && action.customFunction) {
                   selectedRows.map((row) =>
-                    action.customFunction(row.original.original, action, {})
+                    action.customFunction(row.original.original, action, {}),
                   );
                 } else {
                   createDialog.handleOpen();
@@ -1329,9 +1329,7 @@ export const CIPPTableToptoolbar = ({
           endpointFilter={api?.data?.Endpoint}
           relatedQueryKeys={[queryKey, currentEffectiveQueryKey].filter(Boolean)}
           selectedPreset={
-            activeFilterName
-              ? filterList.find((f) => f.filterName === activeFilterName)
-              : null
+            activeFilterName ? filterList.find((f) => f.filterName === activeFilterName) : null
           }
           onPresetSelect={(preset) => {
             if (preset?.value && preset?.type === "graph") {
