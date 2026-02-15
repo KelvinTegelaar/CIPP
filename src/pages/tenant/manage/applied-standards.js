@@ -296,18 +296,43 @@ const Page = () => {
                     const standardObject = currentTenantObj?.[standardId];
                     const directStandardValue = standardObject?.Value;
 
-                    // Determine compliance status
+                    // Determine compliance status - match main logic
                     let isCompliant = false;
 
-                    // For IntuneTemplate, the value is true if compliant, or an object with comparison data if not compliant
-                    if (directStandardValue === true) {
-                      isCompliant = true;
-                    } else if (
-                      directStandardValue !== undefined &&
-                      typeof directStandardValue !== "object"
+                    // FIRST: Check if CurrentValue and ExpectedValue exist and match
+                    if (
+                      standardObject?.CurrentValue !== undefined &&
+                      standardObject?.ExpectedValue !== undefined
                     ) {
+                      const sortedCurrent =
+                        typeof standardObject.CurrentValue === "object" &&
+                        standardObject.CurrentValue !== null
+                          ? Object.keys(standardObject.CurrentValue)
+                              .sort()
+                              .reduce((obj, key) => {
+                                obj[key] = standardObject.CurrentValue[key];
+                                return obj;
+                              }, {})
+                          : standardObject.CurrentValue;
+                      const sortedExpected =
+                        typeof standardObject.ExpectedValue === "object" &&
+                        standardObject.ExpectedValue !== null
+                          ? Object.keys(standardObject.ExpectedValue)
+                              .sort()
+                              .reduce((obj, key) => {
+                                obj[key] = standardObject.ExpectedValue[key];
+                                return obj;
+                              }, {})
+                          : standardObject.ExpectedValue;
+                      isCompliant =
+                        JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+                    }
+                    // SECOND: Check if Value is explicitly true
+                    else if (directStandardValue === true) {
                       isCompliant = true;
-                    } else if (currentTenantStandard) {
+                    }
+                    // THIRD: Fall back to currentTenantStandard
+                    else if (currentTenantStandard) {
                       isCompliant = currentTenantStandard.value === true;
                     }
 
@@ -533,11 +558,41 @@ const Page = () => {
                       : null;
                     let isCompliant = false;
 
-                    // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
-                    if (directStandardValue === true) {
+                    // FIRST: Check if CurrentValue and ExpectedValue exist and match
+                    if (
+                      standardObject?.CurrentValue !== undefined &&
+                      standardObject?.ExpectedValue !== undefined
+                    ) {
+                      const sortedCurrent =
+                        typeof standardObject.CurrentValue === "object" &&
+                        standardObject.CurrentValue !== null
+                          ? Object.keys(standardObject.CurrentValue)
+                              .sort()
+                              .reduce((obj, key) => {
+                                obj[key] = standardObject.CurrentValue[key];
+                                return obj;
+                              }, {})
+                          : standardObject.CurrentValue;
+                      const sortedExpected =
+                        typeof standardObject.ExpectedValue === "object" &&
+                        standardObject.ExpectedValue !== null
+                          ? Object.keys(standardObject.ExpectedValue)
+                              .sort()
+                              .reduce((obj, key) => {
+                                obj[key] = standardObject.ExpectedValue[key];
+                                return obj;
+                              }, {})
+                          : standardObject.ExpectedValue;
+                      isCompliant =
+                        JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+                    }
+                    // SECOND: Check if Value is explicitly true
+                    else if (directStandardValue === true) {
                       isCompliant = true;
-                    } else {
-                      isCompliant = false;
+                    }
+                    // THIRD: Fall back to currentTenantStandard
+                    else if (currentTenantStandard) {
+                      isCompliant = currentTenantStandard.value === true;
                     }
 
                     // Create a standardValue object that contains the template settings
@@ -620,8 +675,36 @@ const Page = () => {
                 : null;
               let isCompliant = false;
 
-              // For GroupTemplate, the value is true if compliant
-              if (directStandardValue === true) {
+              // FIRST: Check if CurrentValue and ExpectedValue exist and match
+              if (
+                standardObject?.CurrentValue !== undefined &&
+                standardObject?.ExpectedValue !== undefined
+              ) {
+                const sortedCurrent =
+                  typeof standardObject.CurrentValue === "object" &&
+                  standardObject.CurrentValue !== null
+                    ? Object.keys(standardObject.CurrentValue)
+                        .sort()
+                        .reduce((obj, key) => {
+                          obj[key] = standardObject.CurrentValue[key];
+                          return obj;
+                        }, {})
+                    : standardObject.CurrentValue;
+                const sortedExpected =
+                  typeof standardObject.ExpectedValue === "object" &&
+                  standardObject.ExpectedValue !== null
+                    ? Object.keys(standardObject.ExpectedValue)
+                        .sort()
+                        .reduce((obj, key) => {
+                          obj[key] = standardObject.ExpectedValue[key];
+                          return obj;
+                        }, {})
+                    : standardObject.ExpectedValue;
+                isCompliant =
+                  JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+              }
+              // SECOND: Check if Value is explicitly true
+              else if (directStandardValue === true) {
                 isCompliant = true;
               } else if (currentTenantStandard?.value) {
                 isCompliant = currentTenantStandard.value === true;
