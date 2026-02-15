@@ -27,6 +27,7 @@ import {
   Recycling,
   ManageAccounts,
   Fingerprint,
+  Group,
 } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
@@ -36,13 +37,14 @@ import { Grid } from "@mui/system";
 import { SvgIcon, Typography, Card, CardHeader, Divider } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { PropertyList } from "../../../../../components/property-list";
 import { PropertyListItem } from "../../../../../components/property-list-item";
 import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
 import { CippHead } from "../../../../../components/CippComponents/CippHead";
 import { Button } from "@mui/material";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -70,33 +72,53 @@ const Page = () => {
     urlFromData: true,
   });
 
+  // Handle response structure - ListGraphRequest may wrap single items in Results array
+  // Try Results array first, then Results as object, then data directly
+  let deviceData = null;
+  if (deviceRequest.isSuccess && deviceRequest.data) {
+    if (Array.isArray(deviceRequest.data.Results)) {
+      deviceData = deviceRequest.data.Results[0];
+    } else if (deviceRequest.data.Results) {
+      deviceData = deviceRequest.data.Results;
+    } else {
+      deviceData = deviceRequest.data;
+    }
+  }
+
   function refreshFunction() {
     if (!deviceId) return;
+    const requests = [
+      {
+        id: "deviceCompliance",
+        url: `/deviceManagement/managedDevices/${deviceId}/deviceCompliancePolicyStates`,
+        method: "GET",
+      },
+      {
+        id: "deviceConfiguration",
+        url: `/deviceManagement/managedDevices/${deviceId}/deviceConfigurationStates`,
+        method: "GET",
+      },
+      {
+        id: "detectedApps",
+        url: `/deviceManagement/managedDevices/${deviceId}/detectedApps`,
+        method: "GET",
+      },
+      {
+        id: "users",
+        url: `/deviceManagement/managedDevices/${deviceId}/users`,
+        method: "GET",
+      },
+      {
+        id: "deviceMemberOf",
+        url: `/devices/${deviceId}/transitiveMemberOf/microsoft.graph.group`,
+        method: "GET",
+      },
+    ];
+
     deviceBulkRequest.mutate({
       url: "/api/ListGraphBulkRequest",
       data: {
-        Requests: [
-          {
-            id: "deviceCompliance",
-            url: `/deviceManagement/managedDevices/${deviceId}/deviceCompliancePolicyStates`,
-            method: "GET",
-          },
-          {
-            id: "deviceConfiguration",
-            url: `/deviceManagement/managedDevices/${deviceId}/deviceConfigurationStates`,
-            method: "GET",
-          },
-          {
-            id: "detectedApps",
-            url: `/deviceManagement/managedDevices/${deviceId}/detectedApps`,
-            method: "GET",
-          },
-          {
-            id: "users",
-            url: `/deviceManagement/managedDevices/${deviceId}/users`,
-            method: "GET",
-          },
-        ],
+        Requests: requests,
         tenantFilter: userSettingsDefaults.currentTenant,
       },
     });
@@ -113,24 +135,13 @@ const Page = () => {
   const deviceConfigurationData = bulkData?.find((item) => item.id === "deviceConfiguration");
   const detectedAppsData = bulkData?.find((item) => item.id === "detectedApps");
   const usersData = bulkData?.find((item) => item.id === "users");
+  const deviceMemberOfData = bulkData?.find((item) => item.id === "deviceMemberOf");
 
   const deviceCompliance = deviceComplianceData?.body?.value || [];
   const deviceConfiguration = deviceConfigurationData?.body?.value || [];
   const detectedApps = detectedAppsData?.body?.value || [];
   const users = usersData?.body?.value || [];
-
-  // Handle response structure - ListGraphRequest may wrap single items in Results array
-  // Try Results array first, then Results as object, then data directly
-  let deviceData = null;
-  if (deviceRequest.isSuccess && deviceRequest.data) {
-    if (Array.isArray(deviceRequest.data.Results)) {
-      deviceData = deviceRequest.data.Results[0];
-    } else if (deviceRequest.data.Results) {
-      deviceData = deviceRequest.data.Results;
-    } else {
-      deviceData = deviceRequest.data;
-    }
-  }
+  const deviceMemberOf = deviceMemberOfData?.body?.value || [];
 
   // Helper function to format bytes to GB (matching getCippFormatting pattern)
   const formatBytesToGB = (bytes) => {
@@ -730,6 +741,63 @@ const Page = () => {
     ];
   }
 
+  // Prepare group membership items
+  const groupMembershipItems = deviceMemberOf.length > 0
+    ? [
+        {
+          id: 1,
+          cardLabelBox: {
+            cardLabelBoxHeader: <Group />,
+          },
+          text: "Groups",
+          subtext: "List of groups the device is a member of",
+          statusText: ` ${
+            deviceMemberOf?.filter((item) => item?.["@odata.type"] === "#microsoft.graph.group")
+              .length
+          } Group(s)`,
+          statusColor: "info.main",
+          table: {
+            title: "Group Memberships",
+            hideTitle: true,
+            actions: [
+              {
+                icon: <PencilIcon />,
+                label: "Edit Group",
+                link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
+              },
+            ],
+            data: deviceMemberOf?.filter(
+              (item) => item?.["@odata.type"] === "#microsoft.graph.group",
+            ),
+            refreshFunction: refreshFunction,
+            simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
+          },
+        },
+      ]
+    : deviceMemberOfData?.status !== 200
+    ? [
+        {
+          id: 1,
+          cardLabelBox: "!",
+          text: "Error loading device group memberships",
+          subtext: deviceMemberOfData?.error?.message || "Unknown error",
+          statusColor: "error.main",
+          statusText: "Error",
+          propertyItems: [],
+        },
+      ]
+    : [
+        {
+          id: 1,
+          cardLabelBox: "-",
+          text: "No group memberships",
+          subtext: "This device is not a member of any groups.",
+          statusColor: "warning.main",
+          statusText: "No Groups",
+          propertyItems: [],
+        },
+      ];
+
   return (
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
@@ -917,6 +985,12 @@ const Page = () => {
                 <CippBannerListCard
                   isFetching={deviceBulkRequest.isPending}
                   items={usersItems}
+                  isCollapsible={true}
+                />
+                <Typography variant="h6">Memberships</Typography>
+                <CippBannerListCard
+                  isFetching={deviceBulkRequest.isPending}
+                  items={groupMembershipItems}
                   isCollapsible={true}
                 />
               </Stack>
