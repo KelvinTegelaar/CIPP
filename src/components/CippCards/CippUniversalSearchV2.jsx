@@ -42,7 +42,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
       const newValue = event.target.value;
       setSearchValue(newValue);
       onChange(newValue);
-      
+
       if (newValue.length === 0) {
         setShowDropdown(false);
       }
@@ -71,7 +71,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
       const userData = match.Data || {};
       const tenantDomain = match.Tenant || "";
       router.push(
-        `/identity/administration/users/user?tenantFilter=${tenantDomain}&userId=${userData.id}`
+        `/identity/administration/users/user?tenantFilter=${tenantDomain}&userId=${userData.id}`,
       );
       setShowDropdown(false);
     };
@@ -82,7 +82,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
         if (
           containerRef.current &&
           !containerRef.current.contains(event.target) &&
-          !event.target.closest('[data-dropdown-portal]')
+          !event.target.closest("[data-dropdown-portal]")
         ) {
           setShowDropdown(false);
         }
@@ -128,14 +128,14 @@ export const CippUniversalSearchV2 = React.forwardRef(
             }}
             fullWidth
             type="text"
-            label="Search users by UPN or Display Name..."
+            label="Search users by UPN or Display Name"
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             value={searchValue}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon color="action" />
+                <InputAdornment position="start" sx={{ display: 'flex', alignItems: 'center', mb: 0, mt: '12px' }}>
+                  <SearchIcon color="action" sx={{ fontSize: 20 }} />
                 </InputAdornment>
               ),
               endAdornment: search.isFetching ? (
@@ -143,6 +143,12 @@ export const CippUniversalSearchV2 = React.forwardRef(
                   <CircularProgress size={20} />
                 </InputAdornment>
               ) : null,
+              sx: {
+                '& .MuiInputAdornment-root': {
+                  marginTop: '0 !important',
+                  alignSelf: 'center'
+                }
+              }
             }}
           />
         </Box>
@@ -171,7 +177,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
                   <Skeleton height={60} />
                 </Box>
               ) : hasResults ? (
-                <Results items={search.data} searchValue={searchValue} onResultClick={handleResultClick} />
+                <Results
+                  items={search.data}
+                  searchValue={searchValue}
+                  onResultClick={handleResultClick}
+                />
               ) : (
                 <Box sx={{ p: 3, textAlign: "center" }}>
                   <Typography variant="body2" color="text.secondary">
@@ -184,7 +194,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
         )}
       </>
     );
-  }
+  },
 );
 
 CippUniversalSearchV2.displayName = "CippUniversalSearchV2";
@@ -201,7 +211,7 @@ const Results = ({ items = [], searchValue, onResultClick }) => {
         </Box>
       ) : (
         part
-      )
+      ),
     );
   };
 
@@ -236,7 +246,11 @@ const Results = ({ items = [], searchValue, onResultClick }) => {
                   <Typography variant="body2" color="text.secondary">
                     {highlightMatch(userData.userPrincipalName || "")}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ display: "block", mt: 0.5 }}
+                  >
                     Tenant: {tenantDomain}
                   </Typography>
                 </Box>
