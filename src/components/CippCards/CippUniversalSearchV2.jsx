@@ -15,10 +15,12 @@ import { Search as SearchIcon } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { useRouter } from "next/router";
+import { BulkActionsMenu } from "../bulk-actions-menu";
 
 export const CippUniversalSearchV2 = React.forwardRef(
   ({ onConfirm = () => {}, onChange = () => {}, maxResults = 10, value = "" }, ref) => {
     const [searchValue, setSearchValue] = useState(value);
+    const [searchType, setSearchType] = useState("Users");
     const [showDropdown, setShowDropdown] = useState(false);
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
     const containerRef = useRef(null);
@@ -30,11 +32,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const search = ApiGetCall({
       url: `/api/ExecUniversalSearchV2`,
       data: {
-        tenantFilter: currentTenant,
         searchTerms: searchValue,
         limit: maxResults,
+        type: searchType,
       },
-      queryKey: `searchV2-${currentTenant}-${searchValue}`,
+      queryKey: `searchV2-${searchType}-${searchValue}`,
       waiting: false,
     });
 
@@ -68,13 +70,37 @@ export const CippUniversalSearchV2 = React.forwardRef(
     };
 
     const handleResultClick = (match) => {
-      const userData = match.Data || {};
+      const itemData = match.Data || {};
       const tenantDomain = match.Tenant || "";
-      router.push(
-        `/identity/administration/users/user?tenantFilter=${tenantDomain}&userId=${userData.id}`,
-      );
+      if (searchType === "Users") {
+        router.push(
+          `/identity/administration/users/user?tenantFilter=${tenantDomain}&userId=${itemData.id}`,
+        );
+      } else if (searchType === "Groups") {
+        router.push(
+          `/identity/administration/groups/edit?tenantFilter=${tenantDomain}&groupId=${itemData.id}`,
+        );
+      }
       setShowDropdown(false);
     };
+
+    const handleTypeChange = (type) => {
+      setSearchType(type);
+      setShowDropdown(false);
+    };
+
+    const typeMenuActions = [
+      {
+        label: "Users",
+        icon: "UsersIcon",
+        onClick: () => handleTypeChange("Users"),
+      },
+      {
+        label: "Groups",
+        icon: "Group",
+        onClick: () => handleTypeChange("Groups"),
+      },
+    ];
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -114,9 +140,22 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const hasResults = Array.isArray(search?.data) && search.data.length > 0;
     const shouldShowDropdown = showDropdown && searchValue.length > 0;
 
+    const getLabel = () => {
+      if (searchType === "Users") {
+        return "Search users by UPN or Display Name";
+      } else if (searchType === "Groups") {
+        return "Search groups by Display Name";
+      }
+      return "Search";
+    };
+
     return (
       <>
-        <Box ref={containerRef} sx={{ width: "100%" }}>
+        <Box ref={containerRef} sx={{ width: "100%", display: "flex", gap: 1 }}>
+          <BulkActionsMenu
+            buttonName={searchType}
+            actions={typeMenuActions}
+          />
           <TextField
             ref={(node) => {
               textFieldRef.current = node;
@@ -128,7 +167,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
             }}
             fullWidth
             type="text"
-            label="Search users by UPN or Display Name"
+            label={getLabel()}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             value={searchValue}
@@ -184,6 +223,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
                   items={search.data}
                   searchValue={searchValue}
                   onResultClick={handleResultClick}
+                  searchType={searchType}
                 />
               ) : (
                 <Box sx={{ p: 3, textAlign: "center" }}>
@@ -202,7 +242,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
 
 CippUniversalSearchV2.displayName = "CippUniversalSearchV2";
 
-const Results = ({ items = [], searchValue, onResultClick }) => {
+const Results = ({ items = [], searchValue, onResultClick, searchType = "Users" }) => {
   const highlightMatch = (text) => {
     if (!text || !searchValue) return text;
     const escapedSearch = searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -221,7 +261,7 @@ const Results = ({ items = [], searchValue, onResultClick }) => {
   return (
     <>
       {items.map((match, index) => {
-        const userData = match.Data || {};
+        const itemData = match.Data || {};
         const tenantDomain = match.Tenant || "";
 
         return (
@@ -241,14 +281,30 @@ const Results = ({ items = [], searchValue, onResultClick }) => {
             <ListItemText
               primary={
                 <Typography variant="body1" fontWeight="medium">
-                  {highlightMatch(userData.displayName || "")}
+                  {highlightMatch(itemData.displayName || "")}
                 </Typography>
               }
               secondary={
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    {highlightMatch(userData.userPrincipalName || "")}
-                  </Typography>
+                  {searchType === "Users" && (
+                    <Typography variant="body2" color="text.secondary">
+                      {highlightMatch(itemData.userPrincipalName || "")}
+                    </Typography>
+                  )}
+                  {searchType === "Groups" && (
+                    <>
+                      {itemData.mail && (
+                        <Typography variant="body2" color="text.secondary">
+                          {highlightMatch(itemData.mail || "")}
+                        </Typography>
+                      )}
+                      {itemData.description && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          {highlightMatch(itemData.description || "")}
+                        </Typography>
+                      )}
+                    </>
+                  )}
                   <Typography
                     variant="caption"
                     color="text.secondary"
