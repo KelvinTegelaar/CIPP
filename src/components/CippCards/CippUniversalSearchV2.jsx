@@ -78,7 +78,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
         );
       } else if (searchType === "Groups") {
         router.push(
-          `/identity/administration/groups/edit?tenantFilter=${tenantDomain}&groupId=${itemData.id}`,
+          `/identity/administration/groups/group?groupId=${itemData.id}&tenantFilter=${tenantDomain}`,
         );
       }
       setShowDropdown(false);
