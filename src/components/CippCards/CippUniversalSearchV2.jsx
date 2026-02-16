@@ -16,6 +16,7 @@ import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { useRouter } from "next/router";
 import { BulkActionsMenu } from "../bulk-actions-menu";
+import { Button } from "@mui/material";
 
 export const CippUniversalSearchV2 = React.forwardRef(
   ({ onConfirm = () => {}, onChange = () => {}, maxResults = 10, value = "" }, ref) => {
@@ -63,6 +64,12 @@ export const CippUniversalSearchV2 = React.forwardRef(
 
     const handleKeyDown = (event) => {
       if (event.key === "Enter" && searchValue.length > 0) {
+        handleSearch();
+      }
+    };
+
+    const handleSearch = () => {
+      if (searchValue.length > 0) {
         updateDropdownPosition();
         search.refetch();
         setShowDropdown(true);
@@ -193,6 +200,15 @@ export const CippUniversalSearchV2 = React.forwardRef(
               },
             }}
           />
+          <Button
+            variant="contained"
+            onClick={handleSearch}
+            disabled={searchValue.length === 0 || search.isFetching}
+            startIcon={<SearchIcon />}
+            sx={{ flexShrink: 0 }}
+          >
+            Search
+          </Button>
         </Box>
 
         {shouldShowDropdown && (
