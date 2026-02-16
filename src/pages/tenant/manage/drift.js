@@ -74,7 +74,7 @@ const ManageDriftPage = () => {
   const driftApi = ApiGetCall({
     url: "/api/listTenantDrift",
     data: {
-      TenantFilter: tenantFilter,
+      tenantFilter: tenantFilter,
     },
     queryKey: `TenantDrift-${tenantFilter}`,
   });
@@ -99,7 +99,7 @@ const ManageDriftPage = () => {
     url: "/api/ListStandardsCompare",
     data: {
       TemplateId: templateId,
-      TenantFilter: tenantFilter,
+      tenantFilter: tenantFilter,
       CompareToStandard: true,
     },
     queryKey: `StandardsCompare-${templateId}-${tenantFilter}`,
@@ -1109,7 +1109,7 @@ const ManageDriftPage = () => {
             receivedValue: deviation.receivedValue,
           },
         ],
-        TenantFilter: tenantFilter,
+        tenantFilter: tenantFilter,
       },
       action: {
         text: actionText,
@@ -1162,7 +1162,7 @@ const ManageDriftPage = () => {
             receivedValue: deviation.receivedValue,
           },
         ],
-        TenantFilter: tenantFilter,
+        tenantFilter: tenantFilter,
       },
       action: {
         text: actionText,
@@ -1239,7 +1239,7 @@ const ManageDriftPage = () => {
     setActionData({
       data: {
         deviations: deviations,
-        TenantFilter: tenantFilter,
+        tenantFilter: tenantFilter,
         receivedValues: deviations.map((d) => d.receivedValue),
       },
       action: {
@@ -1259,7 +1259,7 @@ const ManageDriftPage = () => {
     setActionData({
       data: {
         RemoveDriftCustomization: true,
-        TenantFilter: tenantFilter,
+        tenantFilter: tenantFilter,
       },
       action: {
         text: "remove all drift customizations",
