@@ -11,6 +11,7 @@ import CippCacheSettings from "../../../components/CippSettings/CippCacheSetting
 import CippBackupSettings from "../../../components/CippSettings/CippBackupSettings";
 import CippBrandingSettings from "../../../components/CippSettings/CippBrandingSettings";
 import CippBackupRetentionSettings from "../../../components/CippSettings/CippBackupRetentionSettings";
+import CippLogRetentionSettings from "../../../components/CippSettings/CippLogRetentionSettings";
 import CippJitAdminSettings from "../../../components/CippSettings/CippJitAdminSettings";
 const Page = () => {
   return (
@@ -33,6 +34,9 @@ const Page = () => {
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippBackupRetentionSettings />
+        </Grid>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+          <CippLogRetentionSettings />
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippBrandingSettings />
