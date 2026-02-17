@@ -29,7 +29,7 @@ export const CippAddTenantTypeSelection = (props) => {
   const handleOptionClick = (value) => {
     setSelectedOption(value);
     formControl.setValue("tenantType", value);
-    
+
     // Clear validation fields from other paths when changing selection
     // This ensures going back and choosing a different option doesn't keep old validations
     if (value === "GDAP") {
@@ -42,7 +42,7 @@ export const CippAddTenantTypeSelection = (props) => {
       formControl.unregister("GDAPRelationshipId");
       formControl.unregister("GDAPOnboardingComplete");
     }
-    
+
     // Trigger validation only for the tenantType field
     formControl.trigger("tenantType");
   };
