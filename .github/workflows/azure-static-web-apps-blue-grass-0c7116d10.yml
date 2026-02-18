@@ -2,8 +2,6 @@ name: Azure Static Web Apps CI/CD
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   build_and_deploy_job:
@@ -40,4 +38,5 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BLUE_GRASS_0C7116D10 }}
           action: "close"
+
 
