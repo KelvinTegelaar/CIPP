@@ -34,7 +34,7 @@
     "@mui/lab": "7.0.0-beta.17",
     "@mui/material": "7.3.7",
     "@mui/system": "7.3.2",
-    "@mui/x-date-pickers": "^8.25.0",
+    "@mui/x-date-pickers": "^8.27.0",
     "@musement/iso-duration": "^1.0.0",
     "@nivo/core": "^0.99.0",
     "@nivo/sankey": "^0.99.0",
