@@ -7253,10 +7253,10 @@ simplebar-react@3.3.2:
   dependencies:
     simplebar-core "^1.3.2"
 
-simplebar@6.3.2:
-  version "6.3.2"
-  resolved "https://registry.yarnpkg.com/simplebar/-/simplebar-6.3.2.tgz#df27f47836c126736b38f9703fdcaa50ab0ae077"
-  integrity sha512-l4P1Oma0nply0g+pkrkwfC1SF5WDnIHrgiQDXSDzIdjngUDLkPgZcPGKrOvuFeXoSensfKijjIjDlUJSEp+mLQ==
+simplebar@6.3.3:
+  version "6.3.3"
+  resolved "https://registry.yarnpkg.com/simplebar/-/simplebar-6.3.3.tgz#08b4763e2a8e2b121f444fba613797a82ac33481"
+  integrity sha512-ni9cIiA8GRitiaenV7A/gh8nTStiVqO3gLxrfCMmq6CSy/pB+fz+QxqvJLo142QHb2Tvgvr8ILwZxf3qzAq7pg==
   dependencies:
     simplebar-core "^1.3.2"
 
