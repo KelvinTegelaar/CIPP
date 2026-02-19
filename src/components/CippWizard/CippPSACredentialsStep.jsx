@@ -14,6 +14,27 @@ import { LoadingButton } from "@mui/lab";
 import { Quiz } from "@mui/icons-material";
 import { ApiPostCall } from "../../api/ApiCall";
 import { Box } from "@mui/system";
+
+const buildHaloEndpoints = (haloUrl) => {
+  if (!haloUrl || typeof haloUrl !== "string") {
+    return {};
+  }
+
+  const baseUrl = haloUrl
+    .trim()
+    .replace(/\/+$/, "")
+    .replace(/\/(api|auth|auth\/token)$/i, "");
+
+  if (!baseUrl) {
+    return {};
+  }
+
+  return {
+    ResourceURL: `${baseUrl}/api`,
+    AuthURL: `${baseUrl}/auth`,
+  };
+};
+
 export const CippPSACredentialsStep = (props) => {
   const { values: initialValues, onPreviousStep, onNextStep } = props;
   const [values, setValues] = useState(initialValues);
@@ -50,6 +71,19 @@ export const CippPSACredentialsStep = (props) => {
     AT: "/api/test-at",
     Halo: "/api/test-halo",
   };
+
+  const getSubmissionValues = (formValues) => {
+    if (formValues.SyncTool !== "Halo") {
+      return formValues;
+    }
+
+    return {
+      ...formValues,
+      tenant: typeof formValues.tenant === "string" ? formValues.tenant.trim() : formValues.tenant,
+      ...buildHaloEndpoints(formValues.haloUrl),
+    };
+  };
+
   const PSATest = ApiPostCall({ urlFromData: true });
   const handleChange = useCallback((event) => {
     setValues((prevState) => ({
@@ -65,11 +99,12 @@ export const CippPSACredentialsStep = (props) => {
         setError("You must perform a successful test before proceeding.");
         return;
       }
+      const submissionValues = getSubmissionValues(values);
 
       onNextStep?.({
         syncAllClients: true,
         ...PSATest.data?.data,
-        ...values,
+        ...submissionValues,
       });
     },
     [PSATest.data, onNextStep, values]
@@ -154,22 +189,28 @@ export const CippPSACredentialsStep = (props) => {
             <>
               <TextField
                 fullWidth
-                label="HaloPSA URL"
+                label="Halo URL"
                 name="haloUrl"
                 onChange={handleChange}
                 placeholder="https://"
               />
-              <TextField fullWidth label="HaloPSA Tenant" name="tenant" onChange={handleChange} />
               <TextField
                 fullWidth
-                label="HaloPSA Client ID"
+                label="Halo Tenant"
+                name="tenant"
+                onChange={handleChange}
+                placeholder="Leave blank if not required"
+              />
+              <TextField
+                fullWidth
+                label="Halo Client ID"
                 name="ClientId"
                 onChange={handleChange}
               />
               <TextField
                 type="password"
                 fullWidth
-                label="HaloPSA Secret"
+                label="Halo Secret"
                 name="Secret"
                 onChange={handleChange}
               />
@@ -194,7 +235,10 @@ export const CippPSACredentialsStep = (props) => {
                 <LoadingButton
                   loading={PSATest.isFetching || PSATest.isPending}
                   onClick={() =>
-                    PSATest.mutate({ ...values, url: potentialUrlTest[values.SyncTool] })
+                    PSATest.mutate({
+                      ...getSubmissionValues(values),
+                      url: potentialUrlTest[values.SyncTool],
+                    })
                   }
                   size="small"
                   startIcon={
