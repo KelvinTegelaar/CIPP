@@ -1,6 +1,7 @@
 import { Button, Typography, TextField, Box } from "@mui/material";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useState, useEffect } from "react";
 
 const CippLogRetentionSettings = () => {
@@ -99,6 +100,7 @@ const CippLogRetentionSettings = () => {
         Configure how long to keep CIPP log entries. Logs will be automatically deleted after this
         period. Minimum retention is 7 days, maximum is 365 days, default is 90 days.
       </Typography>
+      <CippApiResults apiObject={retentionChange} />
     </CippButtonCard>
   );
 };
