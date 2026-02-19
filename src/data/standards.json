@@ -2256,11 +2256,23 @@
     "name": "standards.SendFromAlias",
     "cat": "Exchange Standards",
     "tag": [],
-    "helpText": "Enables the ability for users to send from their alias addresses.",
+    "helpText": "Enables or disables the ability for users to send from their alias addresses.",
     "docsDescription": "Allows users to change the 'from' address to any set in their Azure AD Profile.",
     "executiveText": "Allows employees to send emails from their alternative email addresses (aliases) rather than just their primary address. This is useful for employees who manage multiple roles or departments, enabling them to send emails from the most appropriate address for the context.",
-    "addedComponent": [],
-    "label": "Allow users to send from their alias addresses",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.SendFromAlias.state",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false }
+        ]
+      }
+    ],
+    "label": "Set Send from alias state",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2022-05-25",
