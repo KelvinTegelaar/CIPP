@@ -125,7 +125,7 @@ const CippAppPermissionBuilder = ({
         return prevPermissions;
       });
     },
-    [selectedApp, newPermissions, removePermissionConfirm, removePermissionDialog]
+    [selectedApp, newPermissions, removePermissionConfirm, removePermissionDialog],
   );
 
   const createServicePrincipal = ApiPostCall({
@@ -165,7 +165,7 @@ const CippAppPermissionBuilder = ({
   const savePermissionChanges = (
     servicePrincipal,
     applicationPermissions,
-    delegatedPermissions
+    delegatedPermissions,
   ) => {
     setNewPermissions((prevPermissions) => {
       const updatedPermissions = {
@@ -208,6 +208,14 @@ const CippAppPermissionBuilder = ({
         },
         requiredResourceAccess: [],
       };
+
+      if (appDisplayName === "CIPP-SAM") {
+        // add servicePrincipalLockConfiguration to SAM manifest
+        manifest.servicePrincipalLockConfiguration = {
+          isEnabled: true,
+          allProperties: true,
+        };
+      }
 
       var newAdditionalPermissions = [];
 
@@ -366,7 +374,7 @@ const CippAppPermissionBuilder = ({
 
       if (selectedApp.length === 0 && initialAppIds.length === 0) {
         var microsoftGraph = servicePrincipals?.Results?.find(
-          (sp) => sp?.appId === "00000003-0000-0000-c000-000000000000"
+          (sp) => sp?.appId === "00000003-0000-0000-c000-000000000000",
         );
         if (microsoftGraph) {
           setSelectedApp([microsoftGraph]); // Ensure this does not trigger a loop
@@ -387,7 +395,7 @@ const CippAppPermissionBuilder = ({
         setPermissionsImported(false);
       } else if (initialAppIds.length > 0 && !permissionsImported) {
         const newApps = servicePrincipals?.Results?.filter((sp) =>
-          initialAppIds.includes(sp.appId)
+          initialAppIds.includes(sp.appId),
         )?.sort((a, b) => a.displayName.localeCompare(b.displayName));
 
         if (!_.isEqual(selectedApp, newApps)) {
@@ -460,7 +468,7 @@ const CippAppPermissionBuilder = ({
                 value: perm.value,
                 description: spInfo?.Results?.appRoles.find((role) => role.id === perm.id)
                   ?.description,
-              }))
+              })),
           );
         }
         if (delegatedTable !== undefined && delegatedTable.length === 0) {
@@ -473,7 +481,7 @@ const CippAppPermissionBuilder = ({
                 description:
                   spInfo?.Results?.publishedPermissionScopes.find((scope) => scope.id === perm.id)
                     ?.userConsentDescription ?? "Manually added",
-              }))
+              })),
           );
         }
         setSpInitialized(true);
@@ -514,7 +522,7 @@ const CippAppPermissionBuilder = ({
           id: permission.value,
           value: permission.label,
           description: spInfo?.Results?.publishedPermissionScopes.find(
-            (scope) => scope.id === permission.value
+            (scope) => scope.id === permission.value,
           )?.userConsentDescription,
         };
         setDelegatedTable([...(delegatedTable ?? []), newDelegatedPermission]);
@@ -528,7 +536,7 @@ const CippAppPermissionBuilder = ({
           setAppTable((prevAppTable) => prevAppTable.filter((perm) => perm.id !== permission.id));
         } else {
           setDelegatedTable((prevDelegatedTable) =>
-            prevDelegatedTable.filter((perm) => perm.id !== permission.id)
+            prevDelegatedTable.filter((perm) => perm.id !== permission.id),
           );
         }
       }
@@ -538,7 +546,7 @@ const CippAppPermissionBuilder = ({
       savePermissionChanges(
         servicePrincipal.appId,
         appTable?.map((perm) => ({ id: perm.id, value: perm.value })) ?? [],
-        delegatedTable?.map((perm) => ({ id: perm.id, value: perm.value })) ?? []
+        delegatedTable?.map((perm) => ({ id: perm.id, value: perm.value })) ?? [],
       );
     };
 
@@ -761,7 +769,7 @@ const CippAppPermissionBuilder = ({
                             setSelectedApp([
                               ...selectedApp,
                               servicePrincipals?.Results?.find(
-                                (sp) => sp.appId === currentSelectedSp.value
+                                (sp) => sp.appId === currentSelectedSp.value,
                               ),
                             ]);
                             formControl.setValue("servicePrincipal", null);
@@ -943,7 +951,7 @@ const CippAppPermissionBuilder = ({
                                       newPermissions?.MissingPermissions[perm][type].map((p) => {
                                         updatedPermissions.Permissions[perm][type].push(p);
                                       });
-                                    }
+                                    },
                                   );
                                 });
                                 updatedPermissions.MissingPermissions = {};

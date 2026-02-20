@@ -161,7 +161,7 @@ const CippStandardsSideBar = ({
 
       // Filter for drift templates only and group by standardId
       const driftTemplates = existingTemplates.filter(
-        (template) => template.standardType === "drift"
+        (template) => template.standardType === "drift",
       );
       const uniqueTemplates = {};
 
@@ -200,8 +200,8 @@ const CippStandardsSideBar = ({
       if (conflicts.length > 0) {
         setDriftError(
           `This template has tenants that are assigned to another Drift Template. You can only assign one Drift Template to each tenant. Please check the ${conflicts.join(
-            ", "
-          )} template.`
+            ", ",
+          )} template.`,
         );
         onDriftConflictChange?.(true);
       } else {
@@ -240,7 +240,7 @@ const CippStandardsSideBar = ({
           const hasRequiredComponents =
             standard?.addedComponent &&
             standard.addedComponent.some(
-              (comp) => comp.type !== "switch" && comp.required !== false
+              (comp) => comp.type !== "switch" && comp.required !== false,
             );
           const actionRequired = standard?.disabledFeatures !== undefined || hasRequiredComponents;
           // Always require an action value which should be an array with at least one element
@@ -379,7 +379,7 @@ const CippStandardsSideBar = ({
           {isDriftMode && driftError && <Alert severity="error">{driftError}</Alert>}
 
           {(watchForm.tenantFilter?.some(
-            (tenant) => tenant.value === "AllTenants" || tenant.type === "Group"
+            (tenant) => tenant.value === "AllTenants" || tenant.type === "Group",
           ) ||
             (watchForm.excludedTenants && watchForm.excludedTenants.length > 0)) && (
             <>
@@ -518,8 +518,8 @@ const CippStandardsSideBar = ({
           confirmText: isDriftMode
             ? "This template will automatically every 12 hours to detect drift. Are you sure you want to apply this Drift Template?"
             : watchForm.runManually
-            ? "Are you sure you want to apply this standard? This template has been set to never run on a schedule. After saving the template you will have to run it manually."
-            : "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",
+              ? "Are you sure you want to apply this standard? This template has been set to never run on a schedule. After saving the template you will have to run it manually."
+              : "Are you sure you want to apply this standard? This will apply the template and run every 4 hours.",
           url: "/api/AddStandardsTemplate",
           type: "POST",
           replacementBehaviour: "removeNulls",
@@ -566,7 +566,7 @@ CippStandardsSideBar.propTypes = {
       label: PropTypes.string.isRequired,
       handler: PropTypes.func.isRequired,
       icon: PropTypes.element.isRequired,
-    })
+    }),
   ).isRequired,
   updatedAt: PropTypes.string,
   formControl: PropTypes.object.isRequired,
