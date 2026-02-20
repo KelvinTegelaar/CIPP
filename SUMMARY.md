@@ -186,7 +186,7 @@
         * [Add Store App](user-documentation/endpoint/applications/list/add-application/add-winget-app.md)
         * [Add Choco App](user-documentation/endpoint/applications/list/add-application/add-choco-app.md)
         * [Add Office App](user-documentation/endpoint/applications/list/add-application/add-office-app.md)
-        * [Add Custom Application](user-documentation/endpoint/applications/list/add-application/add-custom-application.md)
+        * [Add Custom App](user-documentation/endpoint/applications/list/add-application/add-custom-app.md)
     * [Application Queue](user-documentation/endpoint/applications/queue.md)
   * [Autopilot](user-documentation/endpoint/autopilot/README.md)
     * [Autopilot Devices](user-documentation/endpoint/autopilot/list-devices.md)

@@ -6,7 +6,7 @@ This page will allow you to deploy one of the following types of applications to
 * [add-winget-app.md](add-winget-app.md "mention")
 * [add-choco-app.md](add-choco-app.md "mention")
 * [add-office-app.md](add-office-app.md "mention")
-* [add-custom-application.md](add-custom-application.md "mention")
+* [add-custom-app.md](add-custom-app.md "mention")
 
 ***
 
