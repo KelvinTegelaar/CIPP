@@ -14,6 +14,8 @@ import {
   Stack,
   Skeleton,
   Chip,
+  CircularProgress,
+  Drawer,
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import {
@@ -28,6 +30,8 @@ import {
   Delete,
   Sync,
   CloudDownload,
+  Visibility,
+  Close,
 } from "@mui/icons-material";
 import { useSettings } from "../../../hooks/use-settings";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
@@ -37,6 +41,7 @@ import { CippRestoreBackupDrawer } from "../../../components/CippComponents/Cipp
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { CippTimeAgo } from "../../../components/CippComponents/CippTimeAgo";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
+import CippJsonView from "../../../components/CippFormPages/CippJSONView";
 import { useDialog } from "../../../hooks/use-dialog";
 import ReactTimeAgo from "react-time-ago";
 import tabOptions from "./tabOptions.json";
@@ -56,6 +61,12 @@ const Page = () => {
   const downloadAction = ApiPostCall({
     urlFromData: true,
   });
+
+  // State to track drawer and backup preview data
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedBackup, setSelectedBackup] = useState(null);
+  const [backupContent, setBackupContent] = useState(null);
+  const [isLoadingBackup, setIsLoadingBackup] = useState(false);
 
   // API call to get backup files
   const backupList = ApiGetCall({
@@ -119,6 +130,46 @@ const Page = () => {
         },
       },
     );
+  };
+
+  const handleOpenBackupPreview = (backup) => {
+    setSelectedBackup(backup);
+    setDrawerOpen(true);
+    setIsLoadingBackup(true);
+    setBackupContent(null);
+
+    // Load backup data
+    downloadAction.mutate(
+      {
+        url: `/api/ExecListBackup?BackupName=${backup.name}&Type=Scheduled`,
+        data: {
+          tenantFilter: backup.tenantSource,
+        },
+      },
+      {
+        onSuccess: (data) => {
+          const jsonString = data?.data?.[0]?.Backup;
+          if (jsonString) {
+            try {
+              const parsedData = JSON.parse(jsonString);
+              setBackupContent(parsedData);
+            } catch (error) {
+              console.error("Failed to parse backup data:", error);
+            }
+          }
+          setIsLoadingBackup(false);
+        },
+        onError: () => {
+          setIsLoadingBackup(false);
+        },
+      },
+    );
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+    setSelectedBackup(null);
+    setBackupContent(null);
   };
 
   // Filter backup data by selected tenant if in AllTenants view
@@ -436,6 +487,14 @@ const Page = () => {
                                     <Button
                                       size="small"
                                       variant="outlined"
+                                      startIcon={<Visibility />}
+                                      onClick={() => handleOpenBackupPreview(backup)}
+                                    >
+                                      Preview
+                                    </Button>
+                                    <Button
+                                      size="small"
+                                      variant="outlined"
                                       startIcon={<CloudDownload />}
                                       onClick={() => handleDownloadBackup(backup)}
                                     >
@@ -464,6 +523,51 @@ const Page = () => {
           </Grid>
         </Grid>
       </Box>
+
+      {/* Backup Preview Drawer */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+        PaperProps={{
+          sx: {
+            width: { xs: "100%", sm: "80%", md: "60%" },
+          },
+        }}
+      >
+        <Box sx={{ p: 3 }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+            <Typography variant="h5">
+              Backup Preview
+              {selectedBackup && (
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                  {(() => {
+                    const match = selectedBackup.name.match(
+                      /.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/,
+                    );
+                    return match ? `${match[1]} @ ${match[2]}:${match[3]}` : selectedBackup.name;
+                  })()}
+                </Typography>
+              )}
+            </Typography>
+            <IconButton onClick={handleCloseDrawer}>
+              <Close />
+            </IconButton>
+          </Stack>
+          {isLoadingBackup ? (
+            <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
+              <CircularProgress />
+            </Box>
+          ) : backupContent ? (
+            <CippJsonView object={backupContent} title="Backup Contents" defaultOpen={true} />
+          ) : (
+            <Alert severity="error">
+              <AlertTitle>Failed to Load Backup</AlertTitle>
+              Unable to load backup contents. Please try again.
+            </Alert>
+          )}
+        </Box>
+      </Drawer>
 
       {/* Remove Backup Schedule Dialog */}
       <CippApiDialog
