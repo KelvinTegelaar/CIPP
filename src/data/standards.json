@@ -262,8 +262,8 @@
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
     "tag": ["CIS M365 5.0 (1.3.6)", "CustomerLockBoxEnabled"],
-    "helpText": "Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
-    "docsDescription": "Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
+    "helpText": "**Requires Entra ID P2.** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
+    "docsDescription": "**Requires Entra ID P2.** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
     "executiveText": "Requires explicit organizational approval before Microsoft support staff can access company data for service operations. This provides an additional layer of data protection and ensures the organization maintains control over who can access sensitive business information, even during technical support scenarios.",
     "addedComponent": [],
     "label": "Enable Customer Lockbox",
@@ -1026,7 +1026,7 @@
     "name": "standards.DisableSelfServiceLicenses",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "helpText": "Note: requires 'Billing Administrator' GDAP role. This standard disables all self service licenses and enables all exclusions",
+    "helpText": "**Requires 'Billing Administrator' GDAP role.** This standard disables all self service licenses and enables all exclusions",
     "executiveText": "Prevents employees from purchasing Microsoft 365 licenses independently, ensuring all software acquisitions go through proper procurement channels. This maintains budget control, prevents unauthorized spending, and ensures compliance with corporate licensing agreements.",
     "addedComponent": [
       {
@@ -1564,7 +1564,8 @@
         "type": "textField",
         "name": "standards.EnableLitigationHold.days",
         "required": false,
-        "label": "Days to apply for litigation hold"
+        "label": "Days to apply for litigation hold",
+        "helperText": "Number of days to apply litigation hold for. If left blank or set to Unlimited, litigation hold will be applied indefinitely."
       }
     ],
     "label": "Enable Litigation Hold for all users",
@@ -2256,11 +2257,23 @@
     "name": "standards.SendFromAlias",
     "cat": "Exchange Standards",
     "tag": [],
-    "helpText": "Enables the ability for users to send from their alias addresses.",
+    "helpText": "Enables or disables the ability for users to send from their alias addresses.",
     "docsDescription": "Allows users to change the 'from' address to any set in their Azure AD Profile.",
     "executiveText": "Allows employees to send emails from their alternative email addresses (aliases) rather than just their primary address. This is useful for employees who manage multiple roles or departments, enabling them to send emails from the most appropriate address for the context.",
-    "addedComponent": [],
-    "label": "Allow users to send from their alias addresses",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.SendFromAlias.state",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false }
+        ]
+      }
+    ],
+    "label": "Set Send from alias state",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2022-05-25",
@@ -4551,7 +4564,7 @@
       "CIS M365 5.0 (8.5.5)",
       "CIS M365 5.0 (8.5.6)"
     ],
-    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl",
+    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl, AllowParticipantGiveRequestControl",
     "executiveText": "Establishes security-focused default settings for Teams meetings, controlling who can join meetings, present content, and participate in chats. These policies balance collaboration needs with security requirements, ensuring meetings remain productive while protecting against unauthorized access and disruption.",
     "addedComponent": [
       {
@@ -4632,6 +4645,11 @@
       },
       {
         "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowParticipantGiveRequestControl",
+        "label": "Participants can give or request control"
+      },
+      {
+        "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowExternalParticipantGiveRequestControl",
         "label": "External participants can give or request control"
       }
@@ -4640,7 +4658,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers $AutoAdmittedUsers -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers $AutoAdmittedUsers -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false -AllowParticipantGiveRequestControl $false",
     "recommendedBy": ["CIS"]
   },
   {
@@ -5340,6 +5358,46 @@
     ]
   },
   {
+    "name": "standards.ReusableSettingsTemplate",
+    "cat": "Templates",
+    "label": "Reusable Settings Template",
+    "multiple": true,
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "impact": "High Impact",
+    "impactColour": "info",
+    "addedDate": "2026-01-02",
+    "helpText": "Deploy and maintain Intune reusable settings templates that can be referenced by multiple policies.",
+    "executiveText": "Creates and keeps reusable Intune settings templates consistent so common firewall and configuration blocks can be reused across many policies.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "required": true,
+        "name": "TemplateList",
+        "label": "Select Reusable Settings Template",
+        "api": {
+          "queryKey": "ListIntuneReusableSettingTemplates",
+          "url": "/api/ListIntuneReusableSettingTemplates",
+          "labelField": "displayName",
+          "valueField": "GUID",
+          "showRefresh": true,
+          "templateView": {
+            "title": "Reusable Settings",
+            "property": "RawJSON",
+            "type": "intune"
+          }
+        }
+      }
+    ],
+    "powershellEquivalent": "",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.TransportRuleTemplate",
     "label": "Transport Rule Template",
     "cat": "Templates",
@@ -5597,7 +5655,7 @@
   },
   {
     "name": "standards.LegacyEmailReportAddins",
-    "deprecated": true,
+    "deprecated": false,
     "cat": "Exchange Standards",
     "tag": [],
     "helpText": "Removes legacy Report Phishing and Report Message Outlook add-ins.",

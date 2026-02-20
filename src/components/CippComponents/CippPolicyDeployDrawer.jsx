@@ -12,6 +12,11 @@ import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 
+const assignmentFilterTypeOptions = [
+  { label: "Include - Apply policy to devices matching filter", value: "include" },
+  { label: "Exclude - Apply policy to devices NOT matching filter", value: "exclude" },
+];
+
 export const CippPolicyDeployDrawer = ({
   buttonText = "Deploy Policy",
   requiredPermissions = [],
@@ -59,6 +64,10 @@ export const CippPolicyDeployDrawer = ({
     }
 
     const formData = formControl.getValues();
+    const assignmentFilterName = formData?.assignmentFilter?.value || null;
+    const assignmentFilterType = assignmentFilterName
+      ? formData?.assignmentFilterType || "include"
+      : null;
     console.log("Submitting form data:", formData);
     deployPolicy.mutate({
       url: "/api/AddPolicy",
@@ -68,7 +77,11 @@ export const CippPolicyDeployDrawer = ({
         "Compliance Policies",
         "Protection Policies",
       ],
-      data: { ...formData },
+      data: {
+        ...formData,
+        AssignmentFilterName: assignmentFilterName,
+        AssignmentFilterType: assignmentFilterType,
+      },
     });
   };
 
@@ -174,6 +187,40 @@ export const CippPolicyDeployDrawer = ({
                 name="customGroup"
                 formControl={formControl}
                 validators={{ required: "Please specify custom group names" }}
+              />
+            </Grid>
+          </CippFormCondition>
+          <CippFormCondition
+            formControl={formControl}
+            field="AssignTo"
+            compareType="isOneOf"
+            compareValue={["allLicensedUsers", "AllDevices", "AllDevicesAndUsers", "customGroup"]}
+          >
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                name="assignmentFilter"
+                label="Assignment Filter (Optional)"
+                multiple={false}
+                creatable={false}
+                formControl={formControl}
+                api={{
+                  url: "/api/ListAssignmentFilters",
+                  queryKey: `ListAssignmentFilters-${tenantFilter}`,
+                  labelField: (filter) => filter.displayName,
+                  valueField: "displayName",
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="radio"
+                name="assignmentFilterType"
+                label="Assignment Filter Mode"
+                options={assignmentFilterTypeOptions}
+                defaultValue="include"
+                helperText="Choose whether to include or exclude devices matching the filter."
+                formControl={formControl}
               />
             </Grid>
           </CippFormCondition>

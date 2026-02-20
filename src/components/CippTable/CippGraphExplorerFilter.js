@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Button, Link, Typography } from "@mui/material";
+import { Box, Button, Link, Typography } from "@mui/material";
 import {
   Save as SaveIcon,
   Delete,
@@ -29,6 +29,9 @@ const CippGraphExplorerFilter = ({
   onPresetChange,
   component = "accordion",
   relatedQueryKeys = [],
+  selectedPreset = null,
+  onPresetSelect,
+  hideButtons = false,
 }) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
   const [cardExpanded, setCardExpanded] = useState(true);
@@ -123,7 +126,7 @@ const CippGraphExplorerFilter = ({
       .filter(
         (item) =>
           !endpointFilter ||
-          normalizeEndpoint(item.params.endpoint) === normalizeEndpoint(endpointFilter)
+          normalizeEndpoint(item.params.endpoint) === normalizeEndpoint(endpointFilter),
       )
       .forEach((item) => {
         presetOptionList.push({
@@ -153,7 +156,7 @@ const CippGraphExplorerFilter = ({
         propertyList.refetch();
       }
     }, 1000),
-    [currentEndpoint] // Dependencies that the debounce function depends on
+    [currentEndpoint], // Dependencies that the debounce function depends on
   );
 
   useEffect(() => {
@@ -180,14 +183,29 @@ const CippGraphExplorerFilter = ({
     });
   };
 
+  const deletePreset = (id) => {
+    savePresetApi.mutate({
+      url: "/api/ExecGraphExplorerPreset",
+      data: { action: "Delete", preset: { id: selectedPresetState } },
+    });
+  };
+
   const selectedPresets = useWatch({ control: presetControl.control, name: "reportTemplate" });
+
+  // Sync with parent component's selected preset
+  useEffect(() => {
+    if (selectedPreset && selectedPreset.value !== selectedPresets?.value) {
+      presetControl.setValue("reportTemplate", selectedPreset);
+    }
+  }, [selectedPreset?.value]);
+
   useEffect(() => {
     if (selectedPresets?.addedFields?.params) {
       setPresetOwner(selectedPresets?.addedFields?.IsMyPreset ?? false);
       Object.keys(selectedPresets.addedFields.params).forEach(
         (key) =>
           selectedPresets.addedFields.params[key] == null &&
-          delete selectedPresets.addedFields.params[key]
+          delete selectedPresets.addedFields.params[key],
       );
       //if $select is a blank array, set it to a string.
       if (
@@ -233,6 +251,11 @@ const CippGraphExplorerFilter = ({
       // save last preset title
       setLastPresetTitle(selectedPresets.label);
       formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
+
+      // Notify parent when preset changes in this component
+      if (onPresetSelect) {
+        onPresetSelect(selectedPresets);
+      }
     }
   }, [selectedPresets]);
 
@@ -375,7 +398,7 @@ const CippGraphExplorerFilter = ({
           Schedule Graph Explorer Report
         </Typography>
         <CippSchedulerForm fullWidth formControl={schedulerForm} />
-      </>
+      </>,
     );
     setOffCanvasOpen(true);
   };
@@ -488,17 +511,10 @@ const CippGraphExplorerFilter = ({
   };
 
   //console.log(cardExpanded);
-  const deletePreset = (id) => {
-    savePresetApi.mutate({
-      url: "/api/ExecGraphExplorerPreset",
-      data: { action: "Delete", preset: { id: selectedPresetState } },
-    });
-  };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <CippButtonCard
-        title="Graph Filter"
+        title={component === "card" ? "" : "Graph Filter"}
         component={component}
         accordionExpanded={cardExpanded}
         onAccordionChange={(expanded) => setCardExpanded(expanded)}
@@ -507,76 +523,8 @@ const CippGraphExplorerFilter = ({
           height: "100%",
           mb: 2,
         }}
-        CardButton={
-          <>
-            <Stack spacing={2} width={"100%"}>
-              <Stack
-                spacing={1.5}
-                direction={component === "accordion" ? "row" : "column"}
-                sx={{ display: "flex", alignItems: "center" }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  startIcon={<PlayCircle />}
-                  fullWidth
-                >
-                  Apply Filter
-                </Button>
-
-                <Button
-                  startIcon={<CalendarMonthTwoTone />}
-                  variant="outlined"
-                  onClick={handleScheduleReport}
-                  fullWidth
-                >
-                  Schedule Report
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  onClick={handleSavePreset}
-                  startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
-                  fullWidth
-                >
-                  {presetOwner ? "Save" : "Copy"} Preset
-                </Button>
-
-                {selectedPresetState && (
-                  <Button
-                    startIcon={<Delete />}
-                    variant="outlined"
-                    onClick={() => deletePreset(selectedPresetState)}
-                    disabled={!presetOwner}
-                    fullWidth
-                  >
-                    Delete Preset
-                  </Button>
-                )}
-
-                <Button
-                  onClick={handleImport}
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<ImportExport />}
-                  fullWidth
-                >
-                  Import/Export
-                </Button>
-                <CippFormComponent
-                  name="IsShared"
-                  type="switch"
-                  formControl={formControl}
-                  label="Share Preset"
-                  fullWidth
-                />
-              </Stack>
-            </Stack>
-          </>
-        }
       >
-        <Grid container size={12} spacing={2} sx={{ mb: 2 }}>
+        <Grid container size={12} spacing={2}>
           <Grid size={gridItemSize}>
             <CippFormComponent
               type="autoComplete"
@@ -749,7 +697,7 @@ const CippGraphExplorerFilter = ({
             />
           </Grid>
         </Grid>
-        <Grid container spacing={2}>
+        <Grid container spacing={1} sx={{ mt: 2 }}>
           {/* Reverse Tenant Lookup Switch */}
           <Grid size={{ xs: 6, sm: gridSwitchSize }}>
             <CippFormComponent
@@ -804,8 +752,148 @@ const CippGraphExplorerFilter = ({
             />
           </Grid>
         </Grid>
+
+        {/* Footer-style action section */}
+        {!hideButtons && (
+          <Box
+            sx={{
+              borderTop: 1,
+              borderColor: "divider",
+              pt: 2,
+              mt: 2,
+            }}
+          >
+            <Stack spacing={2}>
+              <CippApiResults apiObject={savePresetApi} />
+              {component === "accordion" ? (
+                <Stack spacing={1.5} direction="row" sx={{ display: "flex", alignItems: "center" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    startIcon={<PlayCircle />}
+                    fullWidth
+                  >
+                    Apply Filter
+                  </Button>
+
+                  <Button
+                    startIcon={<CalendarMonthTwoTone />}
+                    variant="outlined"
+                    onClick={handleScheduleReport}
+                    fullWidth
+                  >
+                    Schedule Report
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    onClick={handleSavePreset}
+                    startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
+                    fullWidth
+                  >
+                    {presetOwner || !selectedPreset ? "Save" : "Copy"} Preset
+                  </Button>
+
+                  <Button
+                    startIcon={<Delete />}
+                    variant="outlined"
+                    onClick={() => deletePreset(selectedPresetState)}
+                    disabled={!presetOwner}
+                    fullWidth
+                  >
+                    Delete Preset
+                  </Button>
+
+                  <Button
+                    onClick={handleImport}
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<ImportExport />}
+                    fullWidth
+                  >
+                    Import/Export
+                  </Button>
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <CippFormComponent
+                      name="IsShared"
+                      type="switch"
+                      formControl={formControl}
+                      label="Share Preset"
+                    />
+                  </Box>
+                </Stack>
+              ) : (
+                <Grid container spacing={1.5}>
+                  <Grid size={6}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      startIcon={<PlayCircle />}
+                      fullWidth
+                    >
+                      Apply Filter
+                    </Button>
+                  </Grid>
+                  <Grid size={6}>
+                    <Button
+                      startIcon={<CalendarMonthTwoTone />}
+                      variant="outlined"
+                      onClick={handleScheduleReport}
+                      fullWidth
+                    >
+                      Schedule Report
+                    </Button>
+                  </Grid>
+                  <Grid size={6}>
+                    <Button
+                      variant="outlined"
+                      onClick={handleSavePreset}
+                      startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
+                      fullWidth
+                    >
+                      {presetOwner || !selectedPreset ? "Save" : "Copy"} Preset
+                    </Button>
+                  </Grid>
+
+                  <Grid size={6}>
+                    <Button
+                      startIcon={<Delete />}
+                      variant="outlined"
+                      onClick={() => deletePreset(selectedPresetState)}
+                      disabled={!presetOwner}
+                      fullWidth
+                    >
+                      Delete Preset
+                    </Button>
+                  </Grid>
+
+                  <Grid size={6}>
+                    <Button
+                      onClick={handleImport}
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<ImportExport />}
+                      fullWidth
+                    >
+                      Import/Export
+                    </Button>
+                  </Grid>
+                  <Grid size={6} sx={{ display: "flex", justifyContent: "center" }}>
+                    <CippFormComponent
+                      name="IsShared"
+                      type="switch"
+                      formControl={formControl}
+                      label="Share Preset"
+                    />
+                  </Grid>
+                </Grid>
+              )}
+            </Stack>
+          </Box>
+        )}
       </CippButtonCard>
-      <CippApiResults apiObject={savePresetApi} />
       <CippOffCanvas
         visible={offCanvasOpen}
         size="md"

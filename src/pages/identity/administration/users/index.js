@@ -4,6 +4,7 @@ import { useSettings } from "../../../../hooks/use-settings.js";
 import { PermissionButton } from "../../../../utils/permissions";
 import { useCippUserActions } from "../../../../components/CippComponents/CippUserActions.jsx";
 import { CippInviteGuestDrawer } from "../../../../components/CippComponents/CippInviteGuestDrawer.jsx";
+import { CippBulkInviteGuestDrawer } from "../../../../components/CippComponents/CippBulkInviteGuestDrawer.jsx";
 import { CippBulkUserDrawer } from "../../../../components/CippComponents/CippBulkUserDrawer.jsx";
 import { CippAddUserDrawer } from "../../../../components/CippComponents/CippAddUserDrawer.jsx";
 import { CippApiLogsDrawer } from "../../../../components/CippComponents/CippApiLogsDrawer.jsx";
@@ -70,6 +71,10 @@ const Page = () => {
             PermissionButton={PermissionButton}
           />
           <CippInviteGuestDrawer
+            requiredPermissions={cardButtonPermissions}
+            PermissionButton={PermissionButton}
+          />
+          <CippBulkInviteGuestDrawer
             requiredPermissions={cardButtonPermissions}
             PermissionButton={PermissionButton}
           />

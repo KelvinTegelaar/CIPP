@@ -8,8 +8,8 @@ import { useEffect, useState, useCallback, useMemo, useRef, lazy, Suspense } fro
 import standards from "../../../../data/standards";
 import CippStandardAccordion from "../../../../components/CippStandards/CippStandardAccordion";
 // Lazy load the dialog to improve initial page load performance
-const CippStandardDialog = lazy(() =>
-  import("../../../../components/CippStandards/CippStandardDialog")
+const CippStandardDialog = lazy(
+  () => import("../../../../components/CippStandards/CippStandardDialog"),
 );
 import CippStandardsSideBar from "../../../../components/CippStandards/CippStandardsSideBar";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
@@ -62,7 +62,7 @@ const Page = () => {
   useEffect(() => {
     const stepsStatus = {
       step1: !!_.get(watchForm, "templateName"),
-      step2: isDriftMode || _.get(watchForm, "tenantFilter", []).length > 0, // Skip tenant requirement for drift mode
+      step2: _.get(watchForm, "tenantFilter", []).length > 0,
       step3: Object.keys(selectedStandards).length > 0,
       step4:
         _.get(watchForm, "standards") &&
@@ -84,7 +84,7 @@ const Page = () => {
     (url) => {
       if (hasUnsavedChanges) {
         const confirmLeave = window.confirm(
-          "You have unsaved changes. Are you sure you want to leave this page?"
+          "You have unsaved changes. Are you sure you want to leave this page?",
         );
         if (!confirmLeave) {
           router.events.emit("routeChangeError");
@@ -92,7 +92,7 @@ const Page = () => {
         }
       }
     },
-    [hasUnsavedChanges, router]
+    [hasUnsavedChanges, router],
   );
 
   // Handle browser back/forward navigation or tab close
@@ -144,7 +144,7 @@ const Page = () => {
       Object.keys(apiData.standards).forEach((key) => {
         if (Array.isArray(apiData.standards[key])) {
           apiData.standards[key] = apiData.standards[key].filter(
-            (value) => value !== null && value !== undefined
+            (value) => value !== null && value !== undefined,
           );
         }
       });
@@ -207,7 +207,7 @@ const Page = () => {
         standard.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
         standard.helpText.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (standard.tag &&
-          standard.tag.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+          standard.tag.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))),
     );
 
   const handleToggleStandard = (standardName) => {
@@ -269,10 +269,13 @@ const Page = () => {
 
   // Determine if save button should be disabled based on configuration
   const isSaveDisabled = isDriftMode
-    ? currentStep < 3 || hasDriftConflict // For drift mode, only require steps 1, 3, and 4 (skip tenant requirement) and no drift conflicts
+    ? !_.get(watchForm, "tenantFilter") ||
+      !_.get(watchForm, "tenantFilter").length ||
+      currentStep < 4 ||
+      hasDriftConflict // For drift mode, require all steps and no drift conflicts
     : !_.get(watchForm, "tenantFilter") ||
       !_.get(watchForm, "tenantFilter").length ||
-      currentStep < 3;
+      currentStep < 4;
 
   // Create drift management actions (excluding refresh)
   const driftActions = useMemo(() => {
@@ -300,7 +303,7 @@ const Page = () => {
   const handleSafeNavigation = (url) => {
     if (hasUnsavedChanges) {
       const confirmLeave = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave this page?"
+        "You have unsaved changes. Are you sure you want to leave this page?",
       );
       if (confirmLeave) {
         router.push(url);
@@ -319,8 +322,8 @@ const Page = () => {
               ? "Edit Drift Template"
               : "Edit Standards Template"
             : isDriftMode
-            ? "Add Drift Template"
-            : "Add Standards Template"
+              ? "Add Drift Template"
+              : "Add Standards Template"
         }
       />
 
@@ -338,8 +341,8 @@ const Page = () => {
                 ? "Edit Drift Template"
                 : "Edit Standards Template"
               : isDriftMode
-              ? "Add Drift Template"
-              : "Add Standards Template"}
+                ? "Add Drift Template"
+                : "Add Standards Template"}
           </Typography>
           <Stack direction="row" spacing={2}>
             <Button

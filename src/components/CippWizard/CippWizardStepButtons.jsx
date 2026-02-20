@@ -13,6 +13,7 @@ export const CippWizardStepButtons = (props) => {
     formControl,
     noNextButton = false,
     noSubmitButton = false,
+    nextButtonDisabled = false,
     replacementBehaviour,
     queryKeys,
     ...other
@@ -50,7 +51,7 @@ export const CippWizardStepButtons = (props) => {
         {!noNextButton && currentStep !== lastStep && (
           <Button
             size="large"
-            disabled={!isValid}
+            disabled={!isValid || nextButtonDisabled}
             onClick={onNextStep}
             type="submit"
             variant="contained"

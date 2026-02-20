@@ -23,6 +23,8 @@ export const CippOffCanvas = (props) => {
     onNavigateDown,
     canNavigateUp = false,
     canNavigateDown = false,
+    contentPadding = 2,
+    keepMounted = false,
   } = props;
 
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -80,7 +82,7 @@ export const CippOffCanvas = (props) => {
           sx: { width: drawerWidth },
         }}
         ModalProps={{
-          keepMounted: false,
+          keepMounted: keepMounted,
         }}
         anchor={"right"}
         open={visible}
@@ -152,7 +154,13 @@ export const CippOffCanvas = (props) => {
                 sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
               >
                 <Box
-                  sx={{ display: "flex", flexDirection: "column", flexGrow: 1, minHeight: 0, p: 2 }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: 1,
+                    minHeight: 0,
+                    p: contentPadding,
+                  }}
                 >
                   {/* Render children if provided, otherwise render default content */}
                   {typeof children === "function" ? children(extendedData) : children}

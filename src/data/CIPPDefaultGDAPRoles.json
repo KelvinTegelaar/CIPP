@@ -8,6 +8,10 @@
     "value": "0526716b-113d-4c15-b2c8-68e3c22b9f80"
   },
   {
+    "label": "Billing Administrator",
+    "value": "b0f54661-2d74-4c50-afa3-1ec803f12efe"
+  },
+  {
     "label": "Cloud App Security Administrator",
     "value": "892c5842-a9a6-463a-8041-72aa08ca3cf6"
   },
@@ -16,8 +20,16 @@
     "value": "7698a772-787b-4ac8-901f-60d6b08affd2"
   },
   {
+    "label": "Domain Name Administrator",
+    "value": "8329153b-31d0-4727-b945-745eb3bc5f31"
+  },
+  {
     "label": "Exchange Administrator",
     "value": "29232cdf-9323-42fd-ade2-1d097af3e4de"
+  },
+  {
+    "label": "Global Reader",
+    "value": "f2ef992c-3afb-46b9-b7cf-a126ee74c451"
   },
   {
     "label": "Intune Administrator",

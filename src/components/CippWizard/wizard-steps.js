@@ -9,6 +9,7 @@ import {
   Stepper,
   SvgIcon,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ClearIcon } from "@mui/x-date-pickers";
@@ -30,8 +31,28 @@ const WizardStepConnector = styled(StepConnector)(({ theme }) => ({
 }));
 
 const WizardStepIcon = (props) => {
-  const { active, completed, error } = props;
+  const { active, completed, error, loading } = props;
 
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          alignItems: "center",
+          borderColor: "primary.main",
+          borderRadius: "50%",
+          borderStyle: "solid",
+          borderWidth: 2,
+          color: "primary.main",
+          display: "flex",
+          height: 36,
+          justifyContent: "center",
+          width: 36,
+        }}
+      >
+        <CircularProgress size={20} />
+      </Box>
+    );
+  }
   if (error) {
     return (
       <Box
@@ -126,7 +147,11 @@ export const WizardSteps = (props) => {
       >
         {steps.map((step) => (
           <Step key={step.title}>
-            <StepLabel error={step.error ?? false} slots={{ stepIcon: WizardStepIcon }}>
+            <StepLabel
+              error={step.error ?? false}
+              slots={{ stepIcon: WizardStepIcon }}
+              slotProps={{ stepIcon: { loading: step.loading ?? false } }}
+            >
               <Typography variant="subtitle2">
                 {`Step ${steps.indexOf(step) ? steps.indexOf(step) + 1 : 1}`}
               </Typography>

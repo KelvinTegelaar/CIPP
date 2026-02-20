@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { EyeIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import {
   Archive,
@@ -25,6 +26,154 @@ import { usePermissions } from "../../hooks/use-permissions";
 import { Tooltip, Box } from "@mui/material";
 import CippFormComponent from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
+
+// Separate component for Manage Licenses form to avoid hook issues
+const ManageLicensesForm = ({ formControl, tenant }) => {
+  const licenseOperation = useWatch({
+    control: formControl.control,
+    name: "LicenseOperation",
+  });
+
+  const removeAllLicenses = useWatch({
+    control: formControl.control,
+    name: "RemoveAllLicenses",
+  });
+
+  const replaceAllLicenses = useWatch({
+    control: formControl.control,
+    name: "ReplaceAllLicenses",
+  });
+
+  // Handle both string values and object values with .value property
+  const licenseOpValue = licenseOperation?.value || licenseOperation;
+  
+  const isRemoveOperation = licenseOpValue === "Remove";
+  const isReplaceOperation = licenseOpValue === "Replace";
+  const showLicensesToRemove = isRemoveOperation && !removeAllLicenses;
+  const showLicensesToReplace = isReplaceOperation && !replaceAllLicenses;
+
+  // Clear fields when operation changes to prevent stale data submission
+  useEffect(() => {
+    if (licenseOpValue) {
+      // Clear all license-related fields when switching operations
+      if (licenseOpValue === "Add") {
+        // Clear Remove/Replace specific fields
+        formControl.setValue("RemoveAllLicenses", false);
+        formControl.setValue("ReplaceAllLicenses", false);
+        formControl.setValue("LicensesToRemove", []);
+        formControl.setValue("LicensesToReplace", []);
+      } else if (licenseOpValue === "Remove") {
+        // Clear Add/Replace specific fields
+        formControl.setValue("ReplaceAllLicenses", false);
+        formControl.setValue("LicensesToReplace", []);
+        formControl.setValue("Licenses", []);
+      } else if (licenseOpValue === "Replace") {
+        // Clear Remove specific fields
+        formControl.setValue("RemoveAllLicenses", false);
+        formControl.setValue("LicensesToRemove", []);
+      }
+    }
+  }, [licenseOpValue, formControl]);
+
+  // Clear LicensesToReplace when ReplaceAllLicenses is toggled
+  useEffect(() => {
+    if (isReplaceOperation && replaceAllLicenses) {
+      formControl.setValue("LicensesToReplace", []);
+    }
+  }, [replaceAllLicenses, isReplaceOperation, formControl]);
+
+  return (
+    <>
+      <CippFormComponent
+        type="radio"
+        name="LicenseOperation"
+        label="License Operation"
+        formControl={formControl}
+        options={[
+          { label: "Add Licenses", value: "Add" },
+          { label: "Remove Licenses", value: "Remove" },
+          { label: "Replace Licenses", value: "Replace" },
+        ]}
+        validators={{ required: "Please select a license operation" }}
+      />
+
+      {isRemoveOperation && (
+        <CippFormComponent
+          type="switch"
+          name="RemoveAllLicenses"
+          label="Remove All Existing Licenses"
+          formControl={formControl}
+        />
+      )}
+
+      {isReplaceOperation && (
+        <CippFormComponent
+          type="switch"
+          name="ReplaceAllLicenses"
+          label="Replace All Existing Licenses"
+          formControl={formControl}
+        />
+      )}
+
+      {showLicensesToRemove && (
+        <CippFormComponent
+          type="autoComplete"
+          name="LicensesToRemove"
+          label="Select Licenses to Remove"
+          multiple={true}
+          creatable={false}
+          formControl={formControl}
+          validators={{ required: "Please select at least one license to remove" }}
+          api={{
+            url: "/api/ListLicenses",
+            labelField: (option) => option.displayName || option.skuPartNumber,
+            valueField: "skuId",
+            queryKey: `ListLicenses-${tenant}`,
+          }}
+        />
+      )}
+
+      {showLicensesToReplace && (
+        <CippFormComponent
+          type="autoComplete"
+          name="LicensesToReplace"
+          label="Select Licenses to Replace"
+          multiple={true}
+          creatable={false}
+          formControl={formControl}
+          validators={{ required: "Please select at least one license to replace" }}
+          api={{
+            url: "/api/ListLicenses",
+            labelField: (option) => option.displayName || option.skuPartNumber,
+            valueField: "skuId",
+            queryKey: `ListLicenses-${tenant}`,
+          }}
+        />
+      )}
+
+      {(licenseOpValue === "Add" || isReplaceOperation) && (
+        <CippFormComponent
+          type="autoComplete"
+          name="Licenses"
+          label={isReplaceOperation ? "Select New Licenses" : "Select Licenses"}
+          multiple={true}
+          creatable={false}
+          formControl={formControl}
+          validators={{ required: "Please select at least one license" }}
+          api={{
+            url: "/api/ListLicenses",
+            labelField: (option) =>
+              `${option.displayName || option.skuPartNumber} (${
+                option.availableUnits || 0
+              } available)`,
+            valueField: "skuId",
+            queryKey: `ListLicenses-Available-${tenant}`,
+          }}
+        />
+      )}
+    </>
+  );
+};
 
 // Separate component for Out of Office form to avoid hook issues
 const OutOfOfficeForm = ({ formControl }) => {
@@ -356,40 +505,11 @@ export const useCippUserActions = () => {
       icon: <CloudDone />,
       data: { userIds: "id" },
       multiPost: true,
-      fields: [
-        {
-          type: "radio",
-          name: "LicenseOperation",
-          label: "License Operation",
-          options: [
-            { label: "Add Licenses", value: "Add" },
-            { label: "Remove Licenses", value: "Remove" },
-            { label: "Replace Licenses", value: "Replace" },
-          ],
-          validators: { required: "Please select a license operation" },
-        },
-        {
-          type: "switch",
-          name: "RemoveAllLicenses",
-          label: "Remove All Existing Licenses",
-        },
-        {
-          type: "autoComplete",
-          name: "Licenses",
-          label: "Select Licenses",
-          multiple: true,
-          creatable: false,
-          api: {
-            url: "/api/ListLicenses",
-            labelField: (option) =>
-              `${getCippLicenseTranslation([option])} (${option?.availableUnits} available)`,
-            valueField: "skuId",
-            queryKey: `licenses-${tenant}`,
-          },
-        },
-      ],
+      allowResubmit: true,
+      children: ({ formHook: formControl }) => (
+        <ManageLicensesForm formControl={formControl} tenant={tenant} />
+      ),
       confirmText: "Are you sure you want to manage licenses for the selected users?",
-      multiPost: true,
       condition: () => canWriteUser,
     },
     {

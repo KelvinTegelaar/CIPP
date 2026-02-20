@@ -1,0 +1,332 @@
+[
+  {
+    "type": "Users",
+    "friendlyName": "Users",
+    "description": "All Azure AD users with sign-in activity"
+  },
+  {
+    "type": "Groups",
+    "friendlyName": "Groups",
+    "description": "All Azure AD groups with members"
+  },
+  {
+    "type": "Guests",
+    "friendlyName": "Guest Users",
+    "description": "All guest users in the tenant"
+  },
+  {
+    "type": "ServicePrincipals",
+    "friendlyName": "Service Principals",
+    "description": "All service principals (applications)"
+  },
+  {
+    "type": "Apps",
+    "friendlyName": "Application Registrations",
+    "description": "All application registrations with owners"
+  },
+  {
+    "type": "Devices",
+    "friendlyName": "Azure AD Devices",
+    "description": "All Azure AD registered devices"
+  },
+  {
+    "type": "Organization",
+    "friendlyName": "Organization",
+    "description": "Tenant organization information"
+  },
+  {
+    "type": "Roles",
+    "friendlyName": "Directory Roles",
+    "description": "All Azure AD directory roles with members"
+  },
+  {
+    "type": "AdminConsentRequestPolicy",
+    "friendlyName": "Admin Consent Request Policy",
+    "description": "Admin consent request policy settings"
+  },
+  {
+    "type": "AuthorizationPolicy",
+    "friendlyName": "Authorization Policy",
+    "description": "Tenant authorization policy"
+  },
+  {
+    "type": "AuthenticationMethodsPolicy",
+    "friendlyName": "Authentication Methods Policy",
+    "description": "Authentication methods policy configuration"
+  },
+  {
+    "type": "DeviceSettings",
+    "friendlyName": "Device Settings",
+    "description": "Device management settings"
+  },
+  {
+    "type": "DirectoryRecommendations",
+    "friendlyName": "Directory Recommendations",
+    "description": "Azure AD directory recommendations"
+  },
+  {
+    "type": "CrossTenantAccessPolicy",
+    "friendlyName": "Cross-Tenant Access Policy",
+    "description": "Cross-tenant access policy configuration"
+  },
+  {
+    "type": "DefaultAppManagementPolicy",
+    "friendlyName": "Default App Management Policy",
+    "description": "Default application management policy"
+  },
+  {
+    "type": "Settings",
+    "friendlyName": "Directory Settings",
+    "description": "Directory settings configuration"
+  },
+  {
+    "type": "SecureScore",
+    "friendlyName": "Secure Score",
+    "description": "Microsoft Secure Score and control profiles"
+  },
+  {
+    "type": "PIMSettings",
+    "friendlyName": "PIM Settings",
+    "description": "Privileged Identity Management settings and assignments"
+  },
+  {
+    "type": "Domains",
+    "friendlyName": "Domains",
+    "description": "All verified and unverified domains"
+  },
+  {
+    "type": "RoleEligibilitySchedules",
+    "friendlyName": "Role Eligibility Schedules",
+    "description": "PIM role eligibility schedules"
+  },
+  {
+    "type": "RoleManagementPolicies",
+    "friendlyName": "Role Management Policies",
+    "description": "Role management policies"
+  },
+  {
+    "type": "RoleAssignmentScheduleInstances",
+    "friendlyName": "Role Assignment Schedule Instances",
+    "description": "Active role assignment instances"
+  },
+  {
+    "type": "B2BManagementPolicy",
+    "friendlyName": "B2B Management Policy",
+    "description": "B2B collaboration policy settings"
+  },
+  {
+    "type": "AuthenticationFlowsPolicy",
+    "friendlyName": "Authentication Flows Policy",
+    "description": "Authentication flows policy configuration"
+  },
+  {
+    "type": "DeviceRegistrationPolicy",
+    "friendlyName": "Device Registration Policy",
+    "description": "Device registration policy settings"
+  },
+  {
+    "type": "CredentialUserRegistrationDetails",
+    "friendlyName": "Credential User Registration Details",
+    "description": "User credential registration details"
+  },
+  {
+    "type": "UserRegistrationDetails",
+    "friendlyName": "User Registration Details",
+    "description": "MFA registration details for users"
+  },
+  {
+    "type": "OAuth2PermissionGrants",
+    "friendlyName": "OAuth2 Permission Grants",
+    "description": "OAuth2 permission grants"
+  },
+  {
+    "type": "AppRoleAssignments",
+    "friendlyName": "App Role Assignments",
+    "description": "Application role assignments"
+  },
+  {
+    "type": "LicenseOverview",
+    "friendlyName": "License Overview",
+    "description": "License usage overview"
+  },
+  {
+    "type": "MFAState",
+    "friendlyName": "MFA State",
+    "description": "Multi-factor authentication state"
+  },
+  {
+    "type": "ExoAntiPhishPolicies",
+    "friendlyName": "Exchange Anti-Phish Policies",
+    "description": "Exchange Online anti-phishing policies"
+  },
+  {
+    "type": "ExoMalwareFilterPolicies",
+    "friendlyName": "Exchange Malware Filter Policies",
+    "description": "Exchange Online malware filter policies"
+  },
+  {
+    "type": "ExoSafeLinksPolicies",
+    "friendlyName": "Exchange Safe Links Policies",
+    "description": "Exchange Online Safe Links policies"
+  },
+  {
+    "type": "ExoSafeAttachmentPolicies",
+    "friendlyName": "Exchange Safe Attachment Policies",
+    "description": "Exchange Online Safe Attachment policies"
+  },
+  {
+    "type": "ExoTransportRules",
+    "friendlyName": "Exchange Transport Rules",
+    "description": "Exchange Online transport rules"
+  },
+  {
+    "type": "ExoDkimSigningConfig",
+    "friendlyName": "Exchange DKIM Signing Config",
+    "description": "Exchange Online DKIM signing configuration"
+  },
+  {
+    "type": "ExoOrganizationConfig",
+    "friendlyName": "Exchange Organization Config",
+    "description": "Exchange Online organization configuration"
+  },
+  {
+    "type": "ExoAcceptedDomains",
+    "friendlyName": "Exchange Accepted Domains",
+    "description": "Exchange Online accepted domains"
+  },
+  {
+    "type": "ExoHostedContentFilterPolicy",
+    "friendlyName": "Exchange Hosted Content Filter Policy",
+    "description": "Exchange Online hosted content filter policy"
+  },
+  {
+    "type": "ExoHostedOutboundSpamFilterPolicy",
+    "friendlyName": "Exchange Hosted Outbound Spam Filter Policy",
+    "description": "Exchange Online hosted outbound spam filter policy"
+  },
+  {
+    "type": "ExoAntiPhishPolicy",
+    "friendlyName": "Exchange Anti-Phish Policy",
+    "description": "Exchange Online anti-phishing policy"
+  },
+  {
+    "type": "ExoSafeLinksPolicy",
+    "friendlyName": "Exchange Safe Links Policy",
+    "description": "Exchange Online Safe Links policy"
+  },
+  {
+    "type": "ExoSafeAttachmentPolicy",
+    "friendlyName": "Exchange Safe Attachment Policy",
+    "description": "Exchange Online Safe Attachment policy"
+  },
+  {
+    "type": "ExoMalwareFilterPolicy",
+    "friendlyName": "Exchange Malware Filter Policy",
+    "description": "Exchange Online malware filter policy"
+  },
+  {
+    "type": "ExoAtpPolicyForO365",
+    "friendlyName": "Exchange ATP Policy for O365",
+    "description": "Exchange Online Advanced Threat Protection policy"
+  },
+  {
+    "type": "ExoQuarantinePolicy",
+    "friendlyName": "Exchange Quarantine Policy",
+    "description": "Exchange Online quarantine policy"
+  },
+  {
+    "type": "ExoRemoteDomain",
+    "friendlyName": "Exchange Remote Domain",
+    "description": "Exchange Online remote domain configuration"
+  },
+  {
+    "type": "ExoSharingPolicy",
+    "friendlyName": "Exchange Sharing Policy",
+    "description": "Exchange Online sharing policies"
+  },
+  {
+    "type": "ExoAdminAuditLogConfig",
+    "friendlyName": "Exchange Admin Audit Log Config",
+    "description": "Exchange Online admin audit log configuration"
+  },
+  {
+    "type": "ExoPresetSecurityPolicy",
+    "friendlyName": "Exchange Preset Security Policy",
+    "description": "Exchange Online preset security policy"
+  },
+  {
+    "type": "ExoTenantAllowBlockList",
+    "friendlyName": "Exchange Tenant Allow/Block List",
+    "description": "Exchange Online tenant allow/block list"
+  },
+  {
+    "type": "Mailboxes",
+    "friendlyName": "Mailboxes",
+    "description": "All Exchange Online mailboxes"
+  },
+  {
+    "type": "CASMailboxes",
+    "friendlyName": "CAS Mailboxes",
+    "description": "Client Access Server mailbox settings"
+  },
+  {
+    "type": "MailboxUsage",
+    "friendlyName": "Mailbox Usage",
+    "description": "Exchange Online mailbox usage statistics"
+  },
+  {
+    "type": "OneDriveUsage",
+    "friendlyName": "OneDrive Usage",
+    "description": "OneDrive usage statistics"
+  },
+  {
+    "type": "ConditionalAccessPolicies",
+    "friendlyName": "Conditional Access Policies",
+    "description": "Azure AD Conditional Access policies"
+  },
+  {
+    "type": "RiskyUsers",
+    "friendlyName": "Risky Users",
+    "description": "Users flagged as risky by Identity Protection"
+  },
+  {
+    "type": "RiskyServicePrincipals",
+    "friendlyName": "Risky Service Principals",
+    "description": "Service principals flagged as risky by Identity Protection"
+  },
+  {
+    "type": "ServicePrincipalRiskDetections",
+    "friendlyName": "Service Principal Risk Detections",
+    "description": "Risk detections for service principals"
+  },
+  {
+    "type": "RiskDetections",
+    "friendlyName": "Risk Detections",
+    "description": "Identity Protection risk detections"
+  },
+  {
+    "type": "ManagedDevices",
+    "friendlyName": "Managed Devices",
+    "description": "Intune managed devices"
+  },
+  {
+    "type": "IntunePolicies",
+    "friendlyName": "Intune Policies",
+    "description": "All Intune policies including compliance, configuration, and app protection"
+  },
+  {
+    "type": "ManagedDeviceEncryptionStates",
+    "friendlyName": "Managed Device Encryption States",
+    "description": "BitLocker encryption states for managed devices"
+  },
+  {
+    "type": "IntuneAppProtectionPolicies",
+    "friendlyName": "Intune App Protection Policies",
+    "description": "Intune app protection policies for iOS and Android"
+  },
+  {
+    "type": "DetectedApps",
+    "friendlyName": "Detected Apps",
+    "description": "All detected applications with devices where each app is installed"
+  }
+]

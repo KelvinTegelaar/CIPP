@@ -7,7 +7,8 @@ import { Stack } from "@mui/system";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { CippQueueTracker } from "../../../../components/CippTable/CippQueueTracker";
 
 const Page = () => {
   const pageTitle = "MFA Report";
@@ -15,6 +16,7 @@ const Page = () => {
   const currentTenant = useSettings().currentTenant;
   const syncDialog = useDialog();
   const router = useRouter();
+  const [syncQueueId, setSyncQueueId] = useState(null);
 
   const isAllTenants = currentTenant === "AllTenants";
 
@@ -34,6 +36,7 @@ const Page = () => {
         "MFAMethods",
         "CAPolicies",
         "IsAdmin",
+        "UserType",
         "CacheTimestamp",
       ]
     : [
@@ -47,6 +50,7 @@ const Page = () => {
         "MFAMethods",
         "CAPolicies",
         "IsAdmin",
+        "UserType",
         "CacheTimestamp",
       ];
   const filters = [
@@ -125,6 +129,11 @@ const Page = () => {
 
   const pageActions = [
     <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
+      <CippQueueTracker
+        queueId={syncQueueId}
+        queryKey={`ListMFAUsers-${currentTenant}`}
+        title="MFA Report Sync"
+      />
       <Tooltip title="This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.">
         <IconButton size="small">
           <Info fontSize="small" />
@@ -150,6 +159,7 @@ const Page = () => {
         title={pageTitle}
         apiUrl={apiUrl}
         apiData={apiData}
+        queryKey={`ListMFAUsers-${currentTenant}`}
         simpleColumns={simpleColumns}
         filters={filters}
         actions={actions}
@@ -164,9 +174,14 @@ const Page = () => {
           type: "GET",
           url: "/api/ExecCIPPDBCache",
           confirmText: `Run MFA state cache sync for ${currentTenant}? This will update MFA data immediately.`,
-          relatedQueryKeys: ["ListMFAUsers"],
+          relatedQueryKeys: [`ListMFAUsers-${currentTenant}`],
           data: {
             Name: "MFAState",
+          },
+          onSuccess: (result) => {
+            if (result?.Metadata?.QueueId) {
+              setSyncQueueId(result?.Metadata?.QueueId);
+            }
           },
         }}
       />
