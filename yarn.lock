@@ -6897,10 +6897,10 @@ react-virtualized-auto-sizer@^1.0.26:
   resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.26.tgz#e9470ef6a778dc4f1d5fd76305fa2d8b610c357a"
   integrity sha512-CblNyiNVw2o+hsa5/49NH2ogGxZ+t+3aweRvNSq7TVjDIlwk7ir4lencEg5HxHeSzwNarSkNkiu0qJSOXtxm5A==
 
-react-virtuoso@^4.12.8:
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.17.0.tgz#e81f2da99792cfd9317e910b243d847ebeb09248"
-  integrity sha512-od3pi2v13v31uzn5zPXC2u3ouISFCVhjFVFch2VvS2Cx7pWA2F1aJa3XhNTN2F07M3lhfnMnsmGeH+7wZICr7w==
+react-virtuoso@^4.18.1:
+  version "4.18.1"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.18.1.tgz#3eb7078f2739a31b96c723374019e587deeb6ebc"
+  integrity sha512-KF474cDwaSb9+SJ380xruBB4P+yGWcVkcu26HtMqYNMTYlYbrNy8vqMkE+GpAApPPufJqgOLMoWMFG/3pJMXUA==
 
 react-window@^2.2.5:
   version "2.2.5"
