@@ -13,6 +13,7 @@ import {
   Info,
   FactCheck,
   Search,
+  Edit,
 } from "@mui/icons-material";
 import {
   Box,
@@ -1720,6 +1721,15 @@ const ManageDriftPage = () => {
                         );
                       }}
                       placeholder="Select a drift template..."
+                      disableClearable={true}
+                      customAction={{
+                        icon: <Edit fontSize="small" />,
+                        link: selectedTemplateOption?.value
+                          ? `/tenant/standards/templates/template?id=${selectedTemplateOption.value}&type=drift`
+                          : undefined,
+                        tooltip: "Edit Template",
+                        position: "inside",
+                      }}
                     />
 
                     <TextField

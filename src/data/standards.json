@@ -1564,7 +1564,8 @@
         "type": "textField",
         "name": "standards.EnableLitigationHold.days",
         "required": false,
-        "label": "Days to apply for litigation hold"
+        "label": "Days to apply for litigation hold",
+        "helperText": "Number of days to apply litigation hold for. If left blank or set to Unlimited, litigation hold will be applied indefinitely."
       }
     ],
     "label": "Enable Litigation Hold for all users",
