@@ -9,6 +9,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippError } from "../../utils/get-cipp-error";
@@ -80,6 +81,7 @@ export const CippAutoComplete = (props) => {
     preselectedValue,
     groupBy,
     renderGroup,
+    customAction,
     ...other
   } = props;
 
@@ -183,10 +185,10 @@ export const CippAutoComplete = (props) => {
               typeof api?.labelField === "function"
                 ? api.labelField(option)
                 : option[api?.labelField]
-                ? option[api?.labelField]
-                : option[api?.altLabelField] ||
-                  option[api?.valueField] ||
-                  "No label found - Are you missing a labelField?",
+                  ? option[api?.labelField]
+                  : option[api?.altLabelField] ||
+                    option[api?.valueField] ||
+                    "No label found - Are you missing a labelField?",
             value:
               typeof api?.valueField === "function"
                 ? api.valueField(option)
@@ -195,8 +197,8 @@ export const CippAutoComplete = (props) => {
               typeof api?.descriptionField === "function"
                 ? api.descriptionField(option)
                 : api?.descriptionField
-                ? option[api?.descriptionField]
-                : undefined,
+                  ? option[api?.descriptionField]
+                  : undefined,
             addedFields,
             rawData: option, // Store the full original object
           };
@@ -299,7 +301,7 @@ export const CippAutoComplete = (props) => {
       const foundOption = memoizedOptions.find((option) => option.value === value);
       return foundOption || { label: value, value: value };
     },
-    [memoizedOptions]
+    [memoizedOptions],
   );
 
   return (
@@ -336,7 +338,7 @@ export const CippAutoComplete = (props) => {
           const isExisting =
             options?.length > 0 &&
             options.some(
-              (option) => params.inputValue === option.value || params.inputValue === option.label
+              (option) => params.inputValue === option.value || params.inputValue === option.label,
             );
           if (params.inputValue !== "" && creatable && !isExisting) {
             const newOption = {
@@ -355,13 +357,13 @@ export const CippAutoComplete = (props) => {
         defaultValue={
           Array.isArray(defaultValue)
             ? defaultValue.map((item) =>
-                typeof item === "string" ? lookupOptionByValue(item) : item
+                typeof item === "string" ? lookupOptionByValue(item) : item,
               )
             : typeof defaultValue === "object" && multiple
-            ? [defaultValue]
-            : typeof defaultValue === "string"
-            ? lookupOptionByValue(defaultValue)
-            : defaultValue
+              ? [defaultValue]
+              : typeof defaultValue === "string"
+                ? lookupOptionByValue(defaultValue)
+                : defaultValue
         }
         name={name}
         onChange={(event, newValue) => {
@@ -381,7 +383,7 @@ export const CippAutoComplete = (props) => {
             });
             newValue = newValue.filter(
               (item) =>
-                item.value && item.value !== "" && item.value !== "error" && item.value !== -1
+                item.value && item.value !== "" && item.value !== "error" && item.value !== -1,
             );
           } else {
             if (newValue?.manual || !newValue?.label) {
@@ -433,7 +435,7 @@ export const CippAutoComplete = (props) => {
             // Fallback for any edge cases
             return option.label || option.value || "";
           },
-          [api]
+          [api],
         )}
         onKeyDown={(event) => {
           // Handle Tab key to select highlighted option
@@ -461,96 +463,166 @@ export const CippAutoComplete = (props) => {
           }
         }}
         sx={sx}
-        renderInput={(params) => (
-          <Stack direction="row" spacing={1}>
-            <MemoTextField
-              params={params}
-              label={label}
-              placeholder={placeholder}
-              required={required}
-              {...other}
-            />
-            {api?.url && api?.showRefresh && (
-              <Tooltip title="Refresh">
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    actionGetRequest.refetch();
-                  }}
-                >
-                  <Sync />
-                </IconButton>
-              </Tooltip>
-            )}
-            {api?.templateView && (
-              <Tooltip title={`View ${api?.templateView.title}` || "View details"}>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    // Use internalValue if value prop is not available
-                    const currentValue = value || internalValue;
-
-                    // Get the full object from the selected value
-                    if (multiple) {
-                      // For multiple selection, get all full objects
-                      const fullObjects = currentValue
-                        .map((v) => {
-                          const valueToFind = v?.value || v;
-                          const found = usedOptions.find((opt) => opt.value === valueToFind);
-                          let rawData = found?.rawData;
-
-                          // If property is specified, extract and parse JSON from that property
-                          if (rawData && api?.templateView?.property) {
-                            try {
-                              const propertyValue = rawData[api.templateView.property];
-                              if (typeof propertyValue === "string") {
-                                rawData = JSON.parse(propertyValue);
-                              } else {
-                                rawData = propertyValue;
-                              }
-                            } catch (e) {
-                              console.error("Failed to parse JSON from property:", e);
-                              // Keep original rawData if parsing fails
+        renderInput={(params) => {
+          // Handle custom action button inside the TextField
+          const { InputProps, ...otherParams } = params;
+          const modifiedInputProps =
+            customAction && customAction.position === "inside"
+              ? {
+                  ...InputProps,
+                  endAdornment: (
+                    <>
+                      {customAction && (
+                        <Tooltip title={customAction.tooltip || ""} placement="bottom" arrow>
+                          <IconButton
+                            component={customAction.link ? Link : "button"}
+                            href={customAction.link || undefined}
+                            size="small"
+                            onClick={
+                              customAction.onClick && !customAction.link
+                                ? (e) => {
+                                    e.stopPropagation();
+                                    customAction.onClick(value || internalValue);
+                                  }
+                                : (e) => e.stopPropagation()
                             }
-                          }
+                            sx={{
+                              opacity: 0,
+                              transition: "all 0.2s",
+                              p: "4px",
+                              mr: "-4px",
+                              mt: -1,
+                              cursor: "pointer",
+                              color: "inherit",
+                              textDecoration: "none",
+                              "&:hover": {
+                                opacity: 1,
+                                backgroundColor: "action.hover",
+                              },
+                              ".MuiAutocomplete-root:hover &": {
+                                opacity: 0.6,
+                              },
+                              ".MuiAutocomplete-root:hover &:hover": {
+                                opacity: 1,
+                                backgroundColor: "action.hover",
+                              },
+                            }}
+                          >
+                            {customAction.icon}
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {InputProps?.endAdornment}
+                    </>
+                  ),
+                }
+              : InputProps;
 
-                          return rawData;
-                        })
-                        .filter(Boolean);
-                      setFullObject(fullObjects);
-                    } else {
-                      // For single selection, get the full object
-                      const valueToFind = currentValue?.value || currentValue;
-                      const selectedOption = usedOptions.find((opt) => opt.value === valueToFind);
-                      let rawData = selectedOption?.rawData || null;
+          return (
+            <Stack direction="row" spacing={1}>
+              <MemoTextField
+                params={{ ...otherParams, InputProps: modifiedInputProps }}
+                label={label}
+                placeholder={placeholder}
+                required={required}
+                {...other}
+              />
+              {api?.url && api?.showRefresh && (
+                <Tooltip title="Refresh">
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      actionGetRequest.refetch();
+                    }}
+                  >
+                    <Sync />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {api?.templateView && (
+                <Tooltip title={`View ${api?.templateView.title}` || "View details"}>
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      // Use internalValue if value prop is not available
+                      const currentValue = value || internalValue;
 
-                      // If property is specified, extract and parse JSON from that property
-                      if (rawData && api?.templateView?.property) {
-                        try {
-                          const propertyValue = rawData[api.templateView.property];
-                          if (typeof propertyValue === "string") {
-                            rawData = JSON.parse(propertyValue);
-                          } else {
-                            rawData = propertyValue;
+                      // Get the full object from the selected value
+                      if (multiple) {
+                        // For multiple selection, get all full objects
+                        const fullObjects = currentValue
+                          .map((v) => {
+                            const valueToFind = v?.value || v;
+                            const found = usedOptions.find((opt) => opt.value === valueToFind);
+                            let rawData = found?.rawData;
+
+                            // If property is specified, extract and parse JSON from that property
+                            if (rawData && api?.templateView?.property) {
+                              try {
+                                const propertyValue = rawData[api.templateView.property];
+                                if (typeof propertyValue === "string") {
+                                  rawData = JSON.parse(propertyValue);
+                                } else {
+                                  rawData = propertyValue;
+                                }
+                              } catch (e) {
+                                console.error("Failed to parse JSON from property:", e);
+                                // Keep original rawData if parsing fails
+                              }
+                            }
+
+                            return rawData;
+                          })
+                          .filter(Boolean);
+                        setFullObject(fullObjects);
+                      } else {
+                        // For single selection, get the full object
+                        const valueToFind = currentValue?.value || currentValue;
+                        const selectedOption = usedOptions.find((opt) => opt.value === valueToFind);
+                        let rawData = selectedOption?.rawData || null;
+
+                        // If property is specified, extract and parse JSON from that property
+                        if (rawData && api?.templateView?.property) {
+                          try {
+                            const propertyValue = rawData[api.templateView.property];
+                            if (typeof propertyValue === "string") {
+                              rawData = JSON.parse(propertyValue);
+                            } else {
+                              rawData = propertyValue;
+                            }
+                          } catch (e) {
+                            console.error("Failed to parse JSON from property:", e);
+                            // Keep original rawData if parsing fails
                           }
-                        } catch (e) {
-                          console.error("Failed to parse JSON from property:", e);
-                          // Keep original rawData if parsing fails
                         }
-                      }
 
-                      setFullObject(rawData);
+                        setFullObject(rawData);
+                      }
+                      setOffCanvasVisible(true);
+                    }}
+                    title={api?.templateView.title || "View details"}
+                  >
+                    <Visibility />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {customAction && customAction.position === "outside" && (
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (customAction.onClick) {
+                      customAction.onClick(value || internalValue);
                     }
-                    setOffCanvasVisible(true);
                   }}
-                  title={api?.templateView.title || "View details"}
+                  title={customAction.tooltip || ""}
                 >
-                  <Visibility />
+                  {customAction.icon}
                 </IconButton>
-              </Tooltip>
-            )}
-          </Stack>
-        )}
+              )}
+            </Stack>
+          );
+        }}
         groupBy={groupBy}
         renderGroup={renderGroup}
         renderOption={(props, option) => {

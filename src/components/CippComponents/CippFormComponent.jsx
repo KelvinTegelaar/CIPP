@@ -300,7 +300,7 @@ export const CippFormComponent = (props) => {
                     checked={Boolean(field.value)}
                     {...other}
                     {...formControl.register(convertedName, { ...validators })}
-                  />
+                  />,
                 )
               }
             />
@@ -355,6 +355,7 @@ export const CippFormComponent = (props) => {
               render={({ field }) => {
                 return (
                   <RadioGroup
+                    row={row}
                     value={field.value || ""}
                     onChange={(e) => field.onChange(e.target.value)}
                     {...other}
@@ -535,7 +536,7 @@ export const CippFormComponent = (props) => {
               acc[csvHeader] = internalKey;
               return acc;
             },
-            {}
+            {},
           );
 
           return data.map((row) => {

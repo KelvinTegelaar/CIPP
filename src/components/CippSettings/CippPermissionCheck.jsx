@@ -139,6 +139,11 @@ const CippPermissionCheck = (props) => {
         }}
         CardButton={<CheckButton />}
       >
+        {executeCheck.isError && !importReport && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            Failed to load {type} check. Please try refreshing the page.
+          </Alert>
+        )}
         {(executeCheck.isSuccess || executeCheck.isLoading) && (
           <>
             {executeCheck.data?.Metadata?.AlertMessage && (

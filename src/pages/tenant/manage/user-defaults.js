@@ -169,12 +169,11 @@ const Page = () => {
             api: {
               url: "/api/ListLicenses",
               labelField: (option) =>
-                `${option.displayName || option.SkuPartNumber} (${
+                `${option.License || option.skuPartNumber} (${
                   option.AvailableUnits || 0
                 } available)`,
               valueField: "skuId",
               queryKey: "ListLicenses",
-              dataKey: "SkuList",
             },
             multiple: true,
             creatable: false,

@@ -8,6 +8,10 @@ import { CippTenantModeDeploy } from "../components/CippWizard/CippTenantModeDep
 import { CippBaselinesStep } from "../components/CippWizard/CippBaselinesStep.jsx";
 import { CippNotificationsStep } from "../components/CippWizard/CippNotificationsStep.jsx";
 import { CippAlertsStep } from "../components/CippWizard/CippAlertsStep.jsx";
+import { CippAddTenantTypeSelection } from "../components/CippWizard/CippAddTenantTypeSelection.jsx";
+import { CippDirectTenantDeploy } from "../components/CippWizard/CippDirectTenantDeploy.jsx";
+import { CippGDAPTenantSetup } from "../components/CippWizard/CippGDAPTenantSetup.jsx";
+import { CippGDAPTenantOnboarding } from "../components/CippWizard/CippGDAPTenantOnboarding.jsx";
 import { BuildingOfficeIcon, CloudIcon, CpuChipIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
@@ -67,9 +71,32 @@ const Page = () => {
       description: "Tenants",
       component: CippTenantModeDeploy,
       showStepWhen: (values) =>
-        values?.selectedOption === "CreateApp" ||
-        values?.selectedOption === "FirstSetup" ||
-        values?.selectedOption === "AddTenant",
+        values?.selectedOption === "CreateApp" || values?.selectedOption === "FirstSetup",
+    },
+    {
+      description: "Tenant Type",
+      component: CippAddTenantTypeSelection,
+      showStepWhen: (values) => values?.selectedOption === "AddTenant",
+    },
+    {
+      description: "Direct Tenant",
+      component: CippDirectTenantDeploy,
+      showStepWhen: (values) =>
+        values?.selectedOption === "AddTenant" && values?.tenantType === "Direct",
+    },
+    {
+      description: "GDAP Setup",
+      component: CippGDAPTenantSetup,
+      showStepWhen: (values) =>
+        values?.selectedOption === "AddTenant" && values?.tenantType === "GDAP",
+    },
+    {
+      description: "GDAP Onboarding",
+      component: CippGDAPTenantOnboarding,
+      showStepWhen: (values) =>
+        values?.selectedOption === "AddTenant" &&
+        values?.tenantType === "GDAP" &&
+        values?.GDAPInviteAccepted === true,
     },
     {
       description: "Baselines",
