@@ -81,8 +81,8 @@ const Page = () => {
     if (addInvites?.data?.length > 0) {
       setInviteData((prevData) => {
         const newData = addInvites.data.map((invite) => ({
-          ...invite.data.Invite,
-          Message: invite.data.Message,
+          ...invite.Invite,
+          Message: invite.Message,
         }));
         const mergedData = [...prevData, ...newData];
         const deduplicatedData = mergedData.filter(

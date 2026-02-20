@@ -35,7 +35,7 @@ const Page = () => {
       url: "/api/AddEditTransportRule",
       data: {
         Enabled: "!Enabled",
-        Identity: "Guid",
+        ruleId: "Guid",
         Name: "Name",
       },
       condition: (row) => row.State === "Disabled",
@@ -44,7 +44,7 @@ const Page = () => {
     },
     {
       label: "Edit Rule",
-      customComponent: (row, {drawerVisible, setDrawerVisible}) => (
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
         <CippTransportRuleDrawer
           isEditMode={true}
           ruleId={row.Guid}
@@ -63,7 +63,7 @@ const Page = () => {
       url: "/api/AddEditTransportRule",
       data: {
         Enabled: "!Disabled",
-        Identity: "Guid",
+        ruleId: "Guid",
         Name: "Name",
       },
       condition: (row) => row.State === "Enabled",
@@ -125,7 +125,7 @@ const Page = () => {
       title={pageTitle}
       apiUrl="/api/ListTransportRules"
       apiDataKey="Results"
-      queryKey= {`Transport Rules - ${currentTenant}`}
+      queryKey={`Transport Rules - ${currentTenant}`}
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
