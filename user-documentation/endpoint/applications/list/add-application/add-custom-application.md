@@ -18,6 +18,7 @@ You can add custom (win32) applications via this option.
 | Run as 32-bit on 64-bit system          | When enabled, forces the PowerShell scripts to run in 32-bit mode on 64-bit systems. Leave off unless the app specifically requires 32-bit execution.                                                                                                                           |
 | Enforce signature check                 | When enabled, Intune verifies that the PowerShell scripts are digitally signed before running them. Off by default.                                                                                                                                                             |
 | Mark for Uninstallation                 | Toggle for marking the app for uninstallation rather than installation. When on, the assignment intent becomes Uninstall instead of Required.                                                                                                                                   |
+| Assign To                               | Controls which devices/users get the app: Do not assign, Aassign to all users, Assign to all devices, Assign to all users and devices, or assign to custom group.                                                                                                               |
 
 ***
 
