@@ -7,8 +7,8 @@ import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormDomainSelector } from "./CippFormDomainSelector";
 import { CippApiResults } from "./CippApiResults";
-import { useSettings } from "/src/hooks/use-settings";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { useSettings } from "../../hooks/use-settings";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const CippTransportRuleDrawer = ({

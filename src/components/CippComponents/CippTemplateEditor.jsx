@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { getCippTranslation } from "/src/utils/get-cipp-translation";
+import CippFormPage from "../CippFormPages/CippFormPage";
+import CippFormComponent from "./CippFormComponent";
+import CippFormSkeleton from "../CippFormPages/CippFormSkeleton";
+import { ApiGetCall } from "../../api/ApiCall";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
 
 const CippTemplateEditor = ({
   templateId,

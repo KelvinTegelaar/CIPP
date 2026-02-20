@@ -11,7 +11,7 @@ import {
   FormControl,
   FormLabel,
 } from "@mui/material";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";

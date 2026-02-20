@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { Box, Container, Typography, Button, IconButton, Stack, SvgIcon } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useEffect, useState } from "react";

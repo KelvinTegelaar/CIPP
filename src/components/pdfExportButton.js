@@ -5,6 +5,22 @@ import autoTable from "jspdf-autotable";
 import { getCippFormatting } from "../utils/get-cipp-formatting";
 import { useSettings } from "../hooks/use-settings";
 
+// Flatten nested objects so deeply nested properties export properly.
+// This function only restructures data without formatting - formatting happens later in one pass.
+const flattenObject = (obj, parentKey = "") => {
+  const flattened = {};
+  Object.keys(obj).forEach((key) => {
+    const fullKey = parentKey ? `${parentKey}.${key}` : key;
+    if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+      Object.assign(flattened, flattenObject(obj[key], fullKey));
+    } else {
+      // Store the raw value - formatting will happen in a single pass later
+      flattened[fullKey] = obj[key];
+    }
+  });
+  return flattened;
+};
+
 // Shared helper so the toolbar buttons and bulk export path share the same PDF logic.
 export const exportRowsToPdf = ({
   rows = [],
@@ -21,7 +37,7 @@ export const exportRowsToPdf = ({
   const size = "A3";
   const orientation = "landscape";
   const doc = new jsPDF(orientation, unit, size);
-  const tableData = rows.map((row) => row.original ?? row);
+  const tableData = rows.map((row) => flattenObject(row.original ?? row));
 
   const exportColumns = columns
     .filter((c) => columnVisibility[c.id])
@@ -30,8 +46,11 @@ export const exportRowsToPdf = ({
   // Use the existing formatting helper so PDF output mirrors table formatting.
   const formattedData = tableData.map((row) => {
     const formattedRow = {};
-    Object.keys(row).forEach((key) => {
-      formattedRow[key] = getCippFormatting(row[key], key, "text", false);
+    exportColumns.forEach((col) => {
+      const key = col.dataKey;
+      if (key in row) {
+        formattedRow[key] = getCippFormatting(row[key], key, "text", false);
+      }
     });
     return formattedRow;
   });
@@ -58,7 +77,7 @@ export const exportRowsToPdf = ({
   const columnWidths = exportColumns.map((col) => {
     const headerLength = col.header.length;
     const maxContentLength = Math.max(
-      ...formattedData.map((row) => String(row[col.dataKey] || "").length)
+      ...formattedData.map((row) => String(row[col.dataKey] || "").length),
     );
     const estimatedWidth = Math.max(headerLength, maxContentLength) * 6;
     return Math.min(estimatedWidth, (availableWidth / columnCount) * 1.5);
@@ -66,7 +85,7 @@ export const exportRowsToPdf = ({
 
   const totalEstimatedWidth = columnWidths.reduce((sum, width) => sum + width, 0);
   const normalizedWidths = columnWidths.map(
-    (width) => (width / totalEstimatedWidth) * availableWidth
+    (width) => (width / totalEstimatedWidth) * availableWidth,
   );
 
   // Honor tenant branding colors when present so exports stay on-brand.

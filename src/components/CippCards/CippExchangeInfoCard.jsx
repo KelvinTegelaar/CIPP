@@ -10,8 +10,8 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-import { PropertyList } from "/src/components/property-list";
-import { PropertyListItem } from "/src/components/property-list-item";
+import { PropertyList } from "../property-list";
+import { PropertyListItem } from "../property-list-item";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { Check as CheckIcon, Close as CloseIcon, Sync } from "@mui/icons-material";
 import { LinearProgressWithLabel } from "../linearProgressWithLabel";

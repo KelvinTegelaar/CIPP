@@ -1,8 +1,8 @@
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { getCippValidator } from "/src/utils/get-cipp-validator";
-import countryList from "/src/data/countryList.json";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { getCippValidator } from "../../utils/get-cipp-validator";
+import countryList from "../../data/countryList.json";
 
 const countryOptions = countryList.map(({ Code, Name }) => ({
   label: Name,

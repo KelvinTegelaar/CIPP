@@ -9,7 +9,7 @@ import { CippApiResults } from "./CippApiResults";
 import { CippFormUserSelector } from "./CippFormUserSelector";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 import { ApiPostCall, ApiGetCallWithPagination } from "../../api/ApiCall";
-import CippJsonView from "/src/components/CippFormPages/CippJSONView";
+import CippJsonView from "../CippFormPages/CippJSONView";
 
 export const CippAddVacationModeDrawer = ({
   buttonText = "Add Vacation Schedule",

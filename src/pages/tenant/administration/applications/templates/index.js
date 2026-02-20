@@ -1,10 +1,10 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import CippPermissionPreview from "/src/components/CippComponents/CippPermissionPreview.jsx";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
+import CippPermissionPreview from "../../../../../components/CippComponents/CippPermissionPreview.jsx";
 import { Edit, Delete, ContentCopy, Add, GitHub, RocketLaunch } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../../api/ApiCall";
 import { Button } from "@mui/material";
 import { Stack } from "@mui/system";
 import Link from "next/link";

@@ -1,16 +1,17 @@
 import { useEffect } from "react";
-import { Divider, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
+import { Sync } from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
+import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
-import countryList from "/src/data/countryList.json";
-import timezoneList from "/src/data/timezoneList.json";
+import { ApiGetCall } from "../../../../../api/ApiCall";
+import countryList from "../../../../../data/countryList.json";
+import timezoneList from "../../../../../data/timezoneList.json";
 
 // Work days options
 const workDaysOptions = [
@@ -90,6 +91,9 @@ const EditRoomMailbox = () => {
         ForwardRequestsToDelegates: room.ForwardRequestsToDelegates,
         ScheduleOnlyDuringWorkHours: room.ScheduleOnlyDuringWorkHours,
         AutomateProcessing: room.AutomateProcessing,
+        AddOrganizerToSubject: room.AddOrganizerToSubject,
+        DeleteSubject: room.DeleteSubject,
+        RemoveCanceledMeetings: room.RemoveCanceledMeetings,
 
         // Calendar Configuration
         WorkDays:
@@ -166,6 +170,9 @@ const EditRoomMailbox = () => {
         ForwardRequestsToDelegates: values.ForwardRequestsToDelegates,
         ScheduleOnlyDuringWorkHours: values.ScheduleOnlyDuringWorkHours,
         AutomateProcessing: values.AutomateProcessing?.value || values.AutomateProcessing,
+        AddOrganizerToSubject: values.AddOrganizerToSubject,
+        DeleteSubject: values.DeleteSubject,
+        RemoveCanceledMeetings: values.RemoveCanceledMeetings,
 
         // Calendar Configuration
         WorkDays: values.WorkDays?.map((day) => day.value).join(","),
@@ -174,16 +181,21 @@ const EditRoomMailbox = () => {
         WorkingHoursTimeZone: values.WorkingHoursTimeZone?.value || values.WorkingHoursTimeZone,
       })}
     >
-      {roomInfo.isLoading && (
+      {roomInfo.isFetching && (
         <CippFormSkeleton layout={[2, 3, 1, 2, 3, 2, 1, 2, 3, 1, 3, 1, 3, 1]} />
       )}
-      {roomInfo.isSuccess && (
+      {roomInfo.isSuccess && !roomInfo.isFetching && (
         <Grid container spacing={2}>
           {/* Basic Information */}
           <Grid size={{ xs: 12 }}>
-            <Typography variant="subtitle1" sx={{ mb: 2 }}>
-              Basic Information
-            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+              <Typography variant="subtitle1">Basic Information</Typography>
+              <Tooltip title="Refresh">
+                <IconButton size="small" onClick={() => roomInfo.refetch()}>
+                  <Sync fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Grid>
 
           <Grid size={{ md: 6, xs: 12 }}>
@@ -302,6 +314,30 @@ const EditRoomMailbox = () => {
               type="switch"
               label="Forward to Delegates"
               name="ForwardRequestsToDelegates"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Add Organizer to Subject"
+              name="AddOrganizerToSubject"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Delete Subject"
+              name="DeleteSubject"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Remove Canceled Meetings"
+              name="RemoveCanceledMeetings"
               formControl={formControl}
             />
           </Grid>

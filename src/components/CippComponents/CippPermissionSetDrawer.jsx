@@ -6,7 +6,7 @@ import { Edit, Add } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import CippAppPermissionBuilder from "./CippAppPermissionBuilder";
 
 export const CippPermissionSetDrawer = ({

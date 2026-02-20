@@ -1,7 +1,7 @@
 import { Button, SvgIcon, Typography } from "@mui/material";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { ApiPostCall } from "/src/api/ApiCall";
-import { useDialog } from "/src/hooks/use-dialog";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import { ApiPostCall } from "../../api/ApiCall";
+import { useDialog } from "../../hooks/use-dialog";
 import { SettingsBackupRestore } from "@mui/icons-material";
 import Link from "next/link";
 
