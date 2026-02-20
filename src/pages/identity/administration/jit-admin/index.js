@@ -39,7 +39,7 @@ const Page = () => {
           </Button>
         </>
       }
-      title="JIT Admin Table"
+      title="JIT Admins"
       apiUrl="/api/ListJITAdmin"
       apiDataKey="Results"
       simpleColumns={simpleColumns}

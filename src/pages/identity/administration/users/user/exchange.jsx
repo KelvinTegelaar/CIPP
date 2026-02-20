@@ -164,6 +164,7 @@ const Page = () => {
         (group.displayName && group.displayName === userIdentifier) ||
         // Partial match - permission identifier starts with group display name (handles timestamps)
         (group.displayName &&
+          typeof group.displayName === "string" &&
           typeof userIdentifier === "string" &&
           userIdentifier.startsWith(group.displayName))
       );
