@@ -2,14 +2,14 @@
 
 An alternative way to display the [.](./ "mention") page.
 
-### Information Box
+## Information Box
 
 * Current Score
 * Compared Score (All Tenants)
 * Compared Score (Similar Tenants)
 * Score in Points
 
-### Table Details
+## Table Details
 
 The properties returned are for the Graph resource type `secureScoreControlProfile`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/securescorecontrolprofile?view=graph-rest-1.0#properties).
 

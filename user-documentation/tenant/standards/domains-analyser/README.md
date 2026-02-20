@@ -15,19 +15,19 @@ It analyses the DNS records that are available and assesses the following areas:
 
 Please note - clicking **More** at the end of each row provides detailed information on identified problems.
 
-### Getting Started
+## Getting Started
 
 If this is your first ever run you may see an error initially because there is no data, please wait for the analyser to run or use the refresh button.
 
-### Refreshing / Generating the Data
+## Refreshing / Generating the Data
 
 At the top of the page there is button called `Run Analysis Now`. You should only use this once.
 
-### Interpreting Results
+## Interpreting Results
 
 The reporting here follows a standard colour theme. Red is bad and not something that should be happening on your tenant. Orange is either a warning or subjective. It doesn't necessarily indicate something is wrong. Green means there are no issues or the setting's configured in a manner that's meets the best practice.
 
-#### Security Score
+### Security Score
 
 A measure of the overall security of the domain calculated by taking the following into account:
 
@@ -53,48 +53,52 @@ There's a detailed breakdown of each check and the score points available for it
 | DKIM Active and Working   | DKIM is active and working.             |    20   |
 | **Total Possible Points** |                                         | **160** |
 
-#### Sender Policy Framework Pass Test
+### Sender Policy Framework Pass Test
 
 A check that your domains meet the following conditions:
 
 * Using the recommended SPF record that your mail provider suggests.
 * SPF set to hard fail as opposed to soft fail.
 
-#### Mail Exchanger Pass Test
+### Mail Exchanger Pass Test
 
 A check that your MX records are present and set correctly based on what your mail provider recommends. Where this is failing you likely have a domain in your 365 tenant that's using e-mail elsewhere, or has a mis-configured MX record.
 
-#### Domain-based Message Authentication, Reporting & Conformance Present
+### Domain-based Message Authentication, Reporting & Conformance Present
 
 A check that you have a DMARC record. Your domains absolutely should have a correctly configured DMARC or you are putting this domain at risk of spoofing.
 
-#### Domain-based Message Authentication, Reporting & Conformance Action Policy
+### Domain-based Message Authentication, Reporting & Conformance Action Policy
 
 Your DMARC record is only as good as the action set on it.
 
 If you're just starting out with DMARC, start by creating a record in reporting only mode, and utilising a DMARC aggregation / reporting service to assess reports. The ideal setting for your DMARC policy is reject.
 
-#### Domain-based Message Authentication, Reporting & Conformance % Pass
+### Domain-based Message Authentication, Reporting & Conformance % Pass
 
 It's possible to configure your DMARC to subject less than 100% of your mail to filtering. This test makes sure you have your DMARC record configured to filter 100% of e-mails.
 
-#### Domain Name System Security Extensions
+### Domain Name System Security Extensions
 
 A check that you have configured DNSSEC for the domain.
 
 Domain Name System Security Extensions (DNSSEC) is a feature of DNS that authenticates responses to domain name look-ups, preventing attackers from manipulating or poisoning the responses to DNS requests.
 
-#### DomainKeys Identified Mail Enabled
+### DomainKeys Identified Mail Enabled
 
 A check that you have configured DKIM for the domain.
 
 DKIM (DomainKeys Identified Mail) is an e-mail security standard designed to make sure messages aren't altered in transit between the sending and recipient servers. It uses public-key cryptography to sign e-mail with a private key as it leaves a sending server.
 
-### Common Problems
+### Add/Modify DKIM Selectors
+
+You are also able to update the DKIM selectors for the domains. Enter selector1, selector2, etc. into the box and click submit. This will update Microsoft 365's records allowing them to propagate.
+
+## Common Problems
 
 This feature requires that your Secure Application Model (SAM) app has the delegated permission `Domain.Read.All`.
 
-You must give adequate time for the best practice Analyser to run. In an environment with 100 tenants this takes on average 2 minutes.
+You must give adequate time for the Best Practice Analyser to run. In an environment with 100 tenants this takes on average 2 minutes.
 
 Check that your permissions are correct by navigating to **CIPP Settings > Configuration Settings > Run Permission Check**.
 
@@ -102,6 +106,4 @@ Make sure both CIPP-API and CIPP are fully up-to-date. There is extensive loggin
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}

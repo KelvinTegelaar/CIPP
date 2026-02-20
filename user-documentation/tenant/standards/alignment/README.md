@@ -8,7 +8,7 @@ This page is a reference to the features of the Standards Templates page in CIPP
 
 This page will allow you to get a snapshot overview of your tenants and their alignment with your various Standards & Drift Management [templates](templates/ "mention").
 
-### Table Details
+## Table Details
 
 | Column                     | Description                                                                                                                                                                                                                       |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -20,11 +20,11 @@ This page will allow you to get a snapshot overview of your tenants and their al
 | Combined Alignment Score   | This reweights alignment to account for the number of standards in the template that the tenant is not licensed for. If the tenant is not licensed for any of the features, they will not count against alignment in this column. |
 | Latest Data Collection     | Relative time since the last standards run to gather information needed to calculate the alignment report.                                                                                                                        |
 
-### Table Actions
+## Table Actions
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Tenant Report</td><td>Opens <a data-mention href="../../manage/applied-standards.md">applied-standards.md</a> for the selected standards template.</td><td>false</td></tr><tr><td>Manage Drift</td><td>Opens the <a data-mention href="../../manage/drift.md">drift.md</a> page to the selected drift standard.</td><td>false</td></tr><tr><td>Remove Drift Customization</td><td>Removes all global and client level overrides from the standard and resets it to the template settings</td><td>true</td></tr></tbody></table>
 
-### Known Issues
+## Known Issues
 
 * There is currently a limitation with Conditional Access classic standards due to the complexity of the comparison the standard settings and the Conditional Access response object. We hope to resolve this in a future update.
 * There is currently a limitation with standards applied to tenant groups that will not display in the chart. We hope to resolve this in a future update.

@@ -1,30 +1,36 @@
 # Edit Group
 
-### Page Buttons
+## Page Actions
 
-* View Members/Edit Membership - This will toggle the page to display a table of the current group membership or show the edit membership and properties view.
+<details>
 
-### Edit Membership & Properties
+<summary>View Members/Edit Membership</summary>
 
-#### Group Properties
+This will toggle the page to display a table of the current group membership or show the edit membership and properties view.
+
+</details>
+
+## Edit Membership & Properties
+
+### Group Properties
 
 * Display Name
 * Description
 * Mail Nickname
 
-#### Add Members
+### Add Members
 
 * Add Members
 * Add Owners
 * Add Contacts
 
-#### Remove Members
+### Remove Members
 
 * Remove Members
 * Remove Owners
 * Remove Contacts
 
-#### Group Settings
+### Group Settings
 
 * Set group visibility to Public or Private
 * Let people outside the organization email the group - If selected, it allows external senders to send emails to the group.

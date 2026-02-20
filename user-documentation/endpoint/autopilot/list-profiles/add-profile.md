@@ -4,13 +4,9 @@ description: Manage Autopilot profiles across your Microsoft 365 tenants.
 
 # Add Profile
 
-The following two pages in CIPP give you the ability to manage Autopilot Profiles:
+This page provides the ability for you to add Autopilot profiles; Autopilot deployment profiles are groups of settings you can deploy to devices. You can create various profile types with this Wizard.
 
-### Add Profile
-
-This page provides the ability for you to add Autopilot profiles, Autopilot deployment profiles are groups of settings you can deploy to devices. You can create various profile types with this Wizard.
-
-#### Details <a href="#addprofile-details" id="addprofile-details"></a>
+## Details <a href="#addprofile-details" id="addprofile-details"></a>
 
 * Display Name
 * Description
@@ -27,6 +23,4 @@ This page provides the ability for you to add Autopilot profiles, Autopilot depl
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}

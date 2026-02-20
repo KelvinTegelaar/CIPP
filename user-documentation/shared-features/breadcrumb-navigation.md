@@ -4,11 +4,11 @@ No, this isn't the breadcrumbs from one of the CyberDrain CTFs. Sorry for anyone
 
 Breadcrumb navigation appears the top of CIPP just under the top menu bar. This will show you path information to how you arrived at a particular page. There are two different display modes for the breadcrumbs:
 
-#### Hierarchy Mode
+## Hierarchy Mode
 
 This mode will show you the menu hierarchy that allows you to arrive at the current page the same as if you had drilled down the left side menu.
 
-#### History Mode
+## History Mode
 
 This mode will show you the previous pages you clicked to get to your current page.&#x20;
 

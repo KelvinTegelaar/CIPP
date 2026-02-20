@@ -2,7 +2,7 @@
 
 Ensure temporary admin accounts aren't left active. CIPP lets you create accounts with specific roles as needed and easily removes them automatically when no longer required. JIT Admin accounts will be displayed in the table.
 
-### Column Details
+## Column Details
 
 | Column                   | Description                                             |
 | ------------------------ | ------------------------------------------------------- |
@@ -21,6 +21,4 @@ This table doesn't utilize a per-row Actions column like many of the other table
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}

@@ -4,7 +4,7 @@
 With the launch of CIPP v7, there are now new, more powerful tables at your disposal.
 {% endhint %}
 
-### Top Row Features
+## Top Row Features
 
 | Feature              | Description                                                                                                                                                                                                                                                                 |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -15,7 +15,7 @@ With the launch of CIPP v7, there are now new, more powerful tables at your disp
 | Export               | This will present you with different options on how to export the table data: CSV, PDF, API response (JSON). If you have selected any check boxes in the table, you will also be presented with the option to just export the selected rows to CSV or PDF.                  |
 | 📈 Queue Status      | When present, this button will show you the status of the background tasks for longer-running queries. When complete, the queue tracking will refresh the results table.                                                                                                    |
 
-### Column Features
+## Column Features
 
 | Feature                           | Description                                                                                 |
 | --------------------------------- | ------------------------------------------------------------------------------------------- |
@@ -30,7 +30,7 @@ With the launch of CIPP v7, there are now new, more powerful tables at your disp
 | Hide \<column name> column        |                                                                                             |
 | Show all columns                  |                                                                                             |
 
-### Column Filtering Options
+## Column Filtering Options
 
 | Filter                   | Description                                                                                                                                            |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -52,7 +52,7 @@ With the launch of CIPP v7, there are now new, more powerful tables at your disp
 | Regex                    | Will return all results that match the Regex search pattern                                                                                            |
 | Boolean (not in list)    | Boolean columns will have a special drop down shown in the filters text entry area that will allow you to filter on `Yes` for true and `No` for false. |
 
-### Value Display
+## Value Display
 
 Some values have special display settings for ease of reading.
 
@@ -61,7 +61,7 @@ Some values have special display settings for ease of reading.
 | Boolean    | Columns that display information in a Boolean will utilize a graphical representation instead of `true` and `false`. The value for `true` will display as a check mark. The value for `false` will display as a circle with an X in it. |
 | Table      | Columns that return data in a complex list will an orange button with the number of items in the list. Clicking the button will open a modal that will display a second table with the contents of that list.                           |
 
-### Actions
+## Actions
 
 Most tables also include an "Actions" column that will be visible to the right of the table. Clicking the ellipses will open the menu for available per-row actions that can be taken for this table. In many tables, selecting multiple check boxes next to rows will enable a `Bulk Actions` button for you to take the same action on every row selected.
 

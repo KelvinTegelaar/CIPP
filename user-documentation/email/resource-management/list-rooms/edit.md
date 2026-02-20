@@ -6,14 +6,14 @@ Opened from the per-row actions on the List Rooms page, this page will allow you
 There is a refresh button in the top right corner that will allow you to update the page with the most up to date settings from Exchange.
 {% endhint %}
 
-### Basic Information
+## Basic Information
 
 | Field                     | Description                                                                         |
 | ------------------------- | ----------------------------------------------------------------------------------- |
 | Display Name              | Edit the display name of the field as desired                                       |
 | Hidden from Address Lists | Toggle this setting to set the Boolean value for the room's address list visibility |
 
-### Booking Settings
+## Booking Settings
 
 | Field                              | Description                                                                                                                                                                                                                                                  |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -30,7 +30,7 @@ There is a refresh button in the top right corner that will allow you to update 
 | Delete Subject                     | A Boolean that will remove the meeting subject from the room mailbox calendar                                                                                                                                                                                |
 | Remove Canceled Meetings           | A Boolean that will determine if the room mailbox removes canceled meetings from its calendar                                                                                                                                                                |
 
-### Working Hours
+## Working Hours
 
 | Field                           | Description                                                                                              |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -38,7 +38,7 @@ There is a refresh button in the top right corner that will allow you to update 
 | Working Days                    | A multi-select drop down that will let you determine which days are included in the room's working hours |
 | Timezone                        | Select the dropdown for the time zone the room is located in                                             |
 
-### Room Facilities & Equipment
+## Room Facilities & Equipment
 
 | Field                 | Description                                                                                                                                                                                     |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -49,7 +49,7 @@ There is a refresh button in the top right corner that will allow you to update 
 | Display Device        | A text field to describe the display device(s) available in the room                                                                                                                            |
 | Tags                  | A multi-select field to add or remove tags from the room. Tags are used to identify features of the room. To add a tag, type the text of the tag in the box and click "Add option: \<tag text>" |
 
-### Location Information
+## Location Information
 
 | Field          | Description                                                                            |
 | -------------- | -------------------------------------------------------------------------------------- |

@@ -2,7 +2,11 @@
 
 This page will allow you to create a group template for ease of deployment to your clients' tenants. Enter the group's "Display Name", "Description", and "Username" before selecting the radial for the group type you'd like to set.
 
-### Additional Group Type Settings
+{% hint style="warning" %}
+Username equals the Microsoft 365 mailNickname/alias. It must be unique per tenant. Because of this it must be overwritten after cloning an existing group.&#x20;
+{% endhint %}
+
+## Additional Group Type Settings
 
 | Group Type                  | Additional Settings                                                                                                                       |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -14,7 +18,9 @@ This page will allow you to create a group template for ease of deployment to yo
 | Distribution List           | Let people outside the organization email the group - Allows the group to receive messages from both inside and outside the organization. |
 | Mail Enabled Security Group | None                                                                                                                                      |
 
-**Dynamic Group Parameters:** For Dynamic Groups, a text box for entering the dynamic group parameters syntax becomes available e.g.: `(user.userPrincipalName -notContains "#EXT#@") -and (user.userType -ne "Guest")`.
+### **Dynamic Group Parameters**
+
+For Dynamic Groups, a text box for entering the dynamic group parameters syntax becomes available e.g.: `(user.userPrincipalName -notContains "#EXT#@") -and (user.userType -ne "Guest")`.
 
 ***
 

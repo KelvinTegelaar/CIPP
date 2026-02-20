@@ -11,7 +11,7 @@ CIPP provides alert notifications for Tenants and CIPP actions, sent as one comb
 * [alert-configuration](../../tenant/administration/alert-configuration/ "mention") creates notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
 * CIPP Alerts relate to changes initiated via the CIPP platform.
 
-### Available CIPP Alerts
+## Available CIPP Alerts
 
 Under the "Choose which logs you would like to receive alerts from" you will be able to select what you would like to receive alerts from CIPP actions. A sample of the alerts is listed below:
 
@@ -23,9 +23,9 @@ Under the "Choose which logs you would like to receive alerts from" you will be 
 * Removed Standards via CIPP
 * Token Refresh Events
 
-### Sending Methods
+## Sending Methods
 
-#### E-mail
+### E-mail
 
 Enter as many email addresses as you need, separated by a comma.
 
@@ -41,29 +41,47 @@ If you have already completed the Setup Wizard prior to converting the service a
 Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder.
 {% endhint %}
 
-#### Webhook
+### Webhook
 
 Enter a webhook URL. Data is formatted based on the receiving server:
 
-| Service              | Format                                                |
-| -------------------- | ----------------------------------------------------- |
-| _webhook.office.com_ | A basic HTML formatted table.                         |
-| _slack.com_          | A separate markdown-formatted message for each alert. |
-| _discord.com_        | A basic HTML formatted table.                         |
-| All other services   | JSON array of data values. Method is `POST`           |
+| Service                                     | Format                                                |
+| ------------------------------------------- | ----------------------------------------------------- |
+| _webhook.office.com_ (see deprecation note) | A basic HTML formatted table.                         |
+| _slack.com_                                 | A separate markdown-formatted message for each alert. |
+| _discord.com_                               | A basic HTML formatted table.                         |
+| All other services                          | JSON array of data values. Method is `POST`           |
 
-{% hint style="info" %}
-Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API](https://github.com/KelvinTegelaar/CIPP-API/tree/dev).
+{% hint style="warning" %}
+Office 365 connector webhooks in Teams are currently on a deprecation path. We've seen reports that newly created webhooks are not functioning as expected even though deprecation isn't until [March 31, 2026](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/).
 {% endhint %}
 
-### Notification Setting Options
+{% hint style="info" %}
+Custom Webhook Formatting: Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API](https://github.com/KelvinTegelaar/CIPP-API/tree/dev).
+{% endhint %}
 
-| Setting                                         | Description                                                                         |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Receive one email per tenant                    | Toggling on this option will separate emailed alerts by tenant                      |
-| Send notifications to configured integration(s) | This will enable notifications to be sent to the integration(s) you have configured |
+## Log and Severity Settings
 
-### Send Test Alert
+### Log Alerts
+
+Selecting one or more of these log alert types will send an alert to your configured methods if that event occurs in the [logs](../logs/ "mention").
+
+### Alert Severity
+
+Selecting these severities will send any [logs](../logs/ "mention") entry that matches the severity level to your configured methods. See the [#logbook-severity](../logs/#logbook-severity "mention") chart on the Logbook docs page on the different severities and what they cover.
+
+{% hint style="info" %}
+"Alert" is selected by default. Without this selected any alerts you set up via [alert-configuration](../../tenant/administration/alert-configuration/ "mention") will not be sent.
+{% endhint %}
+
+## Notification Setting Options
+
+| Setting                                         | Description                                                                                                                      |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Receive one email per tenant                    | Toggling on this option will separate emailed alerts by tenant as opposed to sending all matching log entries as a single alert. |
+| Send notifications to configured integration(s) | This will enable notifications to be sent to the integration(s) you have configured.                                             |
+
+## Send Test Alert
 
 You are able to select to send a test alert. Select which options you want to include in your test before clicking `Confirm`.
 

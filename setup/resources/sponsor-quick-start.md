@@ -27,7 +27,7 @@ If you've started the sponsorship process and are ready to enhance your manageme
 
 ## **Managing Client Relationships**
 
-7. **Onboard Existing Relationships:** If your GDAP relationships with clients are already configured and you do not need to create new invites, proceed to [adding-tenants-and-consenting-the-cipp-sam-application.md](../installation/adding-tenants-and-consenting-the-cipp-sam-application.md "mention") to start managing your clients immediately.
+7. **Onboard Existing Relationships:** If your GDAP relationships with clients are already configured and you do not need to create new invites, proceed to [Broken link](/broken/pages/wtvYmON8aeaJ6wObqF2T "mention") to start managing your clients immediately.
 8. **Establish New Relationships:** If you need to establish new GDAP relationships for new clients, use the [gdap-invite-wizard.md](../installation/gdap-invite-wizard.md "mention") wizard to generate invites and complete the necessary actions to onboard the client to CIPP.
 
 {% hint style="info" %}

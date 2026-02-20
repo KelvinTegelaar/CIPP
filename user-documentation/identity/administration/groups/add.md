@@ -2,6 +2,8 @@
 
 On this page you will enter all of the necessary information to create a group.
 
+## Basic Group Info
+
 | Field               | Description                                                                                       |
 | ------------------- | ------------------------------------------------------------------------------------------------- |
 | Display Name        | Set the display name that you want visible for this group                                         |
@@ -11,7 +13,7 @@ On this page you will enter all of the necessary information to create a group.
 | Owners              | Select one or more owners of the group from the dropdown                                          |
 | Members             | Select one or more members of the group from the dropdown                                         |
 
-### Group Types
+## Group Types
 
 | Type                        | Additional Settings                                                                                                                       |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -23,7 +25,9 @@ On this page you will enter all of the necessary information to create a group.
 | Distribution List           | Let people outside the organization email the group - Allows the group to receive messages from both inside and outside the organization. |
 | Mail Enabled Security Group | None                                                                                                                                      |
 
-**Dynamic Group Parameters:** For Dynamic Groups, a text box for entering the dynamic group parameters syntax becomes available e.g.: `(user.userPrincipalName -notContains "#EXT#@") -and (user.userType -ne "Guest")`.
+### Dynamic Group Parameters
+
+For Dynamic Groups, a text box for entering the dynamic group parameters syntax becomes available e.g.: `(user.userPrincipalName -notContains "#EXT#@") -and (user.userType -ne "Guest")`.
 
 ***
 

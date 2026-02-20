@@ -11,6 +11,8 @@ description: >-
 This page works off of conditional access policies that would be applied to the user. Be sure to deploy your test policy in "Report Only" mode to ensure that you can test without breaking the user's login experience.
 {% endhint %}
 
+## How to Test
+
 {% stepper %}
 {% step %}
 ### Select the Application to Test
@@ -37,7 +39,7 @@ See the [#test-results](conditional-access.md#test-results "mention") table belo
 {% endstep %}
 {% endstepper %}
 
-### Optional Parameters
+## Optional Parameters
 
 | Parameter          | Description                                                                              |
 | ------------------ | ---------------------------------------------------------------------------------------- |
@@ -48,7 +50,7 @@ See the [#test-results](conditional-access.md#test-results "mention") table belo
 | Sign-In Risk Level | Select the sign-in risk level of the user signing in you want to test.                   |
 | User Risk Level    | Select the user risk level of the user signing in you want to test.                      |
 
-### Test Results
+## Test Results
 
 This table will outline the following information about the conditional access policies configured for the tenant and the results of the test.
 

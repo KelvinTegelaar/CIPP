@@ -2,7 +2,7 @@
 
 This page will display the results for a specific [searches.md](searches.md "mention").
 
-### Table Details
+## Table Details
 
 | Column                | Description                                          |
 | --------------------- | ---------------------------------------------------- |
@@ -13,7 +13,7 @@ This page will display the results for a specific [searches.md](searches.md "men
 | Audit Log Record Type |                                                      |
 | Client IP             |                                                      |
 
-### Table Actions
+## Table Actions
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>More Info</td><td>Displays Extended Info flyout</td><td>false</td></tr></tbody></table>
 

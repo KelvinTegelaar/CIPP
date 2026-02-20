@@ -1,19 +1,23 @@
 # GDAP Management
 
-### Features
+## Features
 
-#### Overview
+### Overview
 
 A chart showing a high-level view of your GDAP statistics including number of relationships, number of mapped admin roles, number of role templates, and pending invites.
 
-#### Add a Tenant Button
+### Add a Tenant Button
 
 Will launch the [gdap-invite-wizard.md](../../../setup/installation/gdap-invite-wizard.md "mention") wizard.
 
-#### GDAP Setup
+### GDAP Setup
 
 A guided process to ensure that you have set up GDAP according to best practices to include mapping admin roles, creating role templates, creating invites, and setup completed.
 
-#### GDAP Check
+### GDAP Check
 
 A tool to be used in troubleshooting for any failed issues with onboarding relationships, etc.
+
+***
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

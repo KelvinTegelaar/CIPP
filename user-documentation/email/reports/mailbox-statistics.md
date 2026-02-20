@@ -2,7 +2,7 @@
 
 This report lists all mailboxes and pulls activity date, total space used, number of items in the mailbox and, the status of archiving.
 
-### Table Details
+## Table Details
 
 The information displayed comes from the prebuilt Graph report `getMailboxUsageDetail`. For additional details please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/reportroot-getmailboxusagedetail?view=graph-rest-1.0\&tabs=http).
 

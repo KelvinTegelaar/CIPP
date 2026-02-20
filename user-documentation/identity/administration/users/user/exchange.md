@@ -4,7 +4,7 @@ description: This page displays information about the user's Exchange settings.
 
 # Exchange Settings
 
-### Actions Drop Down
+## Actions Drop Down
 
 | Action                                    | Description                                                                                                                                                                        |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -27,7 +27,7 @@ description: This page displays information about the user's Exchange settings.
 | Set Quota Warning Level                   | Sets the warning level for the quota (in MB, GB, or TB)                                                                                                                            |
 | Set Calendar Processing                   | Allows you to configure calendar processing settings such as "Automatically Accept Meeting Requests", "Allow Conflits", etc.                                                       |
 
-### Exchange Details
+## Exchange Details
 
 | Detail                    | Description                                                                                      |
 | ------------------------- | ------------------------------------------------------------------------------------------------ |
@@ -45,7 +45,7 @@ description: This page displays information about the user's Exchange settings.
 | Blocked For Spam          | A Boolean value indicating if this account has been blocked by Microsoft due to spam activity.   |
 | Current Mailbox Rules     | Displays any currently configured mailbox rules.                                                 |
 
-### Expandable Actions in Info Area
+## Expandable Actions in Info Area
 
 | Action                              | Description                                                                                                                                                 |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |

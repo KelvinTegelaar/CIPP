@@ -31,3 +31,7 @@
 ### Dashboard v2
 
 {% @storylane/embed subdomain="app" linkValue="zt4porabti6d" url="https://app.storylane.io/share/zt4porabti6d" %}
+
+### Graph Explorer
+
+{% @storylane/embed subdomain="app" linkValue="p0ljufhpgkmb" url="https://app.storylane.io/share/p0ljufhpgkmb" %}

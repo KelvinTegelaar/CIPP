@@ -4,23 +4,27 @@ description: Interact with Microsoft 365 groups.
 
 # Groups
 
-### Overview
-
 The Groups page is equivalent to [Microsoft 365 admin center > Active teams and groups](https://admin.microsoft.com/#/groups). It offers an overview of all groups within the organization and allows users to manage group details and memberships.
 
-### Action Buttons
+## Action Buttons
 
-Show/Hide Members - This will toggle if the page displays a column to show the membership of the group. You may need to select the column to show from the table's column selector also.
+<details>
+
+<summary>Show/Hide Members </summary>
+
+This will toggle if the page displays a column to show the membership of the group. You may need to select the column to show from the table's column selector also.
+
+</details>
 
 {% content-ref url="add.md" %}
 [add.md](add.md)
 {% endcontent-ref %}
 
-### Column Details
+## Column Details
 
 The properties returned are for the Graph resource type `group`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties).
 
-### **Table Actions**
+## **Table Actions**
 
 These actions and information are available in the flyout menu when you click the ellipsis button in the "Actions" column:
 
@@ -28,6 +32,4 @@ These actions and information are available in the flyout menu when you click th
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}

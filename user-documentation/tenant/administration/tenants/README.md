@@ -12,7 +12,7 @@ The Tenant page provides the ability for you to jump to the specific tenant admi
 
 Tenants are cached for 24 hours. By using the Clear Tenant Cache button in [settings](../../../cipp/settings/ "mention"), you are able to reload the tenants from the partner center immediately. Remember to also clear your browser cache.
 
-### Table Details
+## Table Details
 
 | Fields         | Description                  |
 | -------------- | ---------------------------- |
@@ -21,13 +21,11 @@ Tenants are cached for 24 hours. By using the Clear Tenant Cache button in [sett
 
 The page also features several columns which contain links to the different Microsoft 365 administration centers for the tenant.
 
-### Table Actions
+## Table Actions
 
 <table><thead><tr><th></th><th></th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Tenant</td><td>Opens a page to edit the tenant alias and manage tenant group membership.</td><td>false</td></tr></tbody></table>
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}
 

@@ -8,7 +8,7 @@ You can add an application deployment utilising [Chocolatey](https://chocolatey.
 
 If you have a personal repository you can enter the address for this repository too to deploy packages from your own trusted sources.
 
-### Details
+## Details
 
 The status of the deployment can is traceable through the logs page, or the "Applications queue" page.
 
@@ -20,6 +20,4 @@ It's strongly recommended that you download, test, and view the contents of the 
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../../.gitbook/includes/feature-request.md" %}

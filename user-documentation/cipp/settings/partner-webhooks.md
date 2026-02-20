@@ -1,6 +1,6 @@
-# Partner Webhooks
+# Automated Onboarding
 
-### Easy Mode to Setup
+## Easy Mode to Setup
 
 {% stepper %}
 {% step %}
@@ -18,7 +18,7 @@ CIPP will automatically configure the required Event Types.
 {% endstep %}
 {% endstepper %}
 
-### Option
+## Option
 
 You can also optionally toggle the "Exclude onboarded tenants from top-level standards". This will exclude all newly onboarded tenants from all Standards templates that apply to AllTenants.
 

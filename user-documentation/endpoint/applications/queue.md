@@ -6,7 +6,7 @@ description: Show applications queued for deployment to your tenants.
 
 You can view a list of all applications queued for deployment to your tenants, any application listed here is going to be deployed to your tenants. The application will be removed from this list after deployment, unless it is deployed to "All Tenants"
 
-### Details
+## Table Details
 
 | Fields             | Description                                |
 | ------------------ | ------------------------------------------ |
@@ -17,6 +17,4 @@ You can view a list of all applications queued for deployment to your tenants, a
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../.gitbook/includes/feature-request.md" %}

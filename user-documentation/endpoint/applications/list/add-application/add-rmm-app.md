@@ -6,9 +6,7 @@ description: Deploy MSP RMM applications.
 
 You can add MSP RMM applications to deploy through Microsoft Endpoint Manager. Below you will find the settings required for each RMM:
 
-## Details
-
-### ConnectWise Automate
+## ConnectWise Automate
 
 | Field                             | Description                                |
 | --------------------------------- | ------------------------------------------ |
@@ -19,14 +17,14 @@ You can add MSP RMM applications to deploy through Microsoft Endpoint Manager. B
 
 Generating an installer token: See this [community script](https://forums.mspgeek.org/files/file/50-generate-agent-installertoken/) for how to create a token to use in installation.
 
-### ConnectWise RMM (formerly Command/Continuum)
+## ConnectWise RMM (formerly Command/Continuum)
 
 | Field                           | Description                                     |
 | ------------------------------- | ----------------------------------------------- |
 | Intune Application Display Name | Name the application will appear as in MEM      |
 | Client URL                      | Full URL path to download of installer for site |
 
-### Datto RMM
+## Datto RMM
 
 | Field                           | Description                                |
 | ------------------------------- | ------------------------------------------ |
@@ -69,6 +67,4 @@ ImmyBot was removed from our list of deployable applications. Please see [ImmyBo
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../../.gitbook/includes/feature-request.md" %}

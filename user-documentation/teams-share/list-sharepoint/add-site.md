@@ -2,7 +2,7 @@
 
 Adding a new SharePoint site.
 
-### Options
+## Options
 
 | Field                | Description                                                    |
 | -------------------- | -------------------------------------------------------------- |

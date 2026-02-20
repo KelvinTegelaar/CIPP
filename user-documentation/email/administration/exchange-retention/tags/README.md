@@ -1,10 +1,10 @@
 # Tags
 
-### Page Actions
+## Page Actions
 
 [Add Tag](tag.md)
 
-### Table Details
+## Table Details
 
 The properties returned are for the Exchange PowerShell command `Get-RetentionPolicyTag`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-retentionpolicytag?view=exchange-ps).&#x20;
 
@@ -17,7 +17,7 @@ The properties returned are for the Exchange PowerShell command `Get-RetentionPo
 | Retention Enabled       | A Boolean field indicating if retention is enabled                                                                                                                                                                                                      |
 | Comment                 | Any comments entered on the tag                                                                                                                                                                                                                         |
 
-### Table Actions
+## Table Actions
 
 <table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Edit Tag</td><td></td><td>true</td></tr><tr><td>Delete Tag</td><td></td><td>true</td></tr></tbody></table>
 

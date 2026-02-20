@@ -1,10 +1,6 @@
 # MFA Report
 
-{% hint style="info" %}
-This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.
-{% endhint %}
-
-### Introduction
+{% include "../../../.gitbook/includes/cached-data-report.md" %}
 
 This report provides an overview of the Multi-Factor Authentication (MFA) status for all users within the tenant. It's a combination of the built in Entra MFA report and getting the Per User MFA state and combining them for a complete picture.
 
@@ -12,7 +8,7 @@ This report provides an overview of the Multi-Factor Authentication (MFA) status
 **Note**: To utilize the Entra MFA report part of this report, the tenant must be licensed for Entra P1 or higher. Per-User MFA status will still function even if the tenant isn't licensed.
 {% endhint %}
 
-### MFA Protection Criteria
+## MFA Protection Criteria
 
 A user must have at least one checkmark in any of the following categories to be protected by MFA:
 
@@ -20,7 +16,7 @@ A user must have at least one checkmark in any of the following categories to be
 * **Covered by Security Defaults (SD)**: This indicates that the user is protected by default security settings, automatically enabling and enforcing usage of MFA, when Microsoft deems a sign-in as risky.
 * **Covered by Conditional Access (CA)**: In this case, MFA is enabled through Conditional Access policies which might require MFA based on conditions like user location, device compliance, etc.
 
-### Detailed User MFA Status
+## Detailed User MFA Status
 
 The report lists every user in the tenant and provides detailed information about their MFA status, including:
 
@@ -36,6 +32,4 @@ This table doesn't utilize a per-row Actions column like many of the other table
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../.gitbook/includes/feature-request.md" %}

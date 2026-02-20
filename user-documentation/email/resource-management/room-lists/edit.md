@@ -2,7 +2,7 @@
 
 Opened from the per-row actions on the List Room Lists page, this page will allow you to edit the details of the selected room.
 
-### Basic Information
+## Basic Information
 
 | Field         | Description                                   |
 | ------------- | --------------------------------------------- |
@@ -10,21 +10,21 @@ Opened from the per-row actions on the List Room Lists page, this page will allo
 | Description   | Set the description for the room list         |
 | Mail Nickname | Edit the mail nickname of the room list       |
 
-### Add Members
+## Add Members
 
 | Field            | Description                                 |
 | ---------------- | ------------------------------------------- |
 | Add Room Members | A drop down to add rooms to the room list   |
 | Add Owners       | A drop down to add owners to the room list  |
 
-### Remove Members
+## Remove Members
 
 | Field                 | Description                                    |
 | --------------------- | ---------------------------------------------- |
 | Remove Room Mailboxes | A drop down to remove rooms from the room list |
 | Remove Owners         | A drop down to remove rooms as owners          |
 
-### Room List Settings
+## Room List Settings
 
 |                                                         |                                                                           |
 | ------------------------------------------------------- | ------------------------------------------------------------------------- |

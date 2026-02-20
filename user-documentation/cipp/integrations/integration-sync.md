@@ -2,7 +2,7 @@
 
 This page will display a table of the scheduled integration syncs for the integrations you have configured.
 
-### Details
+## Details
 
 | Column         | Details                                                                                |
 | -------------- | -------------------------------------------------------------------------------------- |
@@ -19,6 +19,4 @@ Scheduled tasks run on the quarter hour (:00, :15, :30, :45). Tasks that are due
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../.gitbook/includes/feature-request.md" %}

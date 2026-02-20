@@ -2,7 +2,7 @@
 
 The User Preferences page provides a tailored interface for users to manage and configure their individual settings related to general preferences, appearance, and offboarding defaults. This document outlines the functionalities available on the User Settings page.
 
-### General Settings
+## General Settings
 
 In this section, users can manage general settings related to their account and workspace:
 
@@ -11,24 +11,24 @@ In this section, users can manage general settings related to their account and 
 * **Default Page Size**: Set the default page size for tables across CIPP.
 * **Menu Favourites**: Set pages that will display in your favourites section.
 
-### Offboarding Defaults
+## Offboarding Defaults
 
 This section provides you the ability to set offboarding defaults, this allows you to easily preselect your predefined offboarding preferences.
 
-### CIPP Roles
+## CIPP Roles
 
 This will display the active roles for the logged in user.
 
-### Actions
+## Actions
 
 * **Save Settings**: Save the modified settings for the individual user.
 * **Save for All Users**: If the user has admin privileges, they have the option to save the modified settings for all users within the tenant, this will overwrite all personal settings and be force on each full refresh of a page.
 
-### Developer Options
+## Developer Options
 
 * Enable TanStack Query Tools
 
-### Portal Links Configuration
+## Portal Links Configuration
 
 This will allow you to toggle on and off the various portal links displayed in the [tenant-select.md](tenant-select.md "mention") or on the Portals dropdown on the [dashboard](../../dashboard/ "mention").
 

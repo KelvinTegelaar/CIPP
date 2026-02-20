@@ -1,24 +1,22 @@
 # View Individual User
 
-## View User
-
 The View User page provides a comprehensive overview of user details and settings. It serves as the main landing page when viewing a user, with additional tabs available for more specific operations, such as Edit User, Compromise Remediation, etc.
 
-### Overview
+## Overview
 
 * Primary display of user information including a quick link to view the user in Entra
 * Additional tabs at top for extended functionality (Edit, Compromise Remediation, etc.)
 * Inherits Actions dropdown from list users page
 
-### Actions
+## Actions
 
 The actions dropdown carries forward the same [#table-actions](../#table-actions "mention") from the main Users page.
 
 ***
 
-### User Information Fields
+## User Information Fields
 
-#### Profile & Identity
+### Profile & Identity
 
 | Field                        | Description                                                                                                                                     |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -28,7 +26,7 @@ The actions dropdown carries forward the same [#table-actions](../#table-actions
 | Account Enabled              | Boolean indicator showing if user can sign in (✓/✗)                                                                                             |
 | Synced from Active Directory | Boolean indicator showing if account is AD-synced (✓/✗)                                                                                         |
 
-#### Licensing & Contact
+### Licensing & Contact
 
 | Field          | Description                                    |
 | -------------- | ---------------------------------------------- |
@@ -37,7 +35,7 @@ The actions dropdown carries forward the same [#table-actions](../#table-actions
 | Business Phone | Primary business contact number                |
 | Mobile Phone   | User's mobile contact number                   |
 
-#### Professional Information
+### Professional Information
 
 | Field           | Description                  |
 | --------------- | ---------------------------- |
@@ -45,7 +43,7 @@ The actions dropdown carries forward the same [#table-actions](../#table-actions
 | Department      | Organizational department    |
 | Office Location | Physical office location     |
 
-#### Address Information
+### Address Information
 
 | Field       | Description             |
 | ----------- | ----------------------- |
@@ -54,7 +52,7 @@ The actions dropdown carries forward the same [#table-actions](../#table-actions
 | Country     | The country of the user |
 | City        | The city of the user    |
 
-#### Security & Access
+### Security & Access
 
 | Field                               | Description                                                                                 |
 | ----------------------------------- | ------------------------------------------------------------------------------------------- |
@@ -62,14 +60,18 @@ The actions dropdown carries forward the same [#table-actions](../#table-actions
 | Applied Conditional Access Policies | <p>Active security policies<br>• Expandable for policy details (click arrow)</p>            |
 | Multi-Factor Authentication Devices | <p>Registered MFA devices<br>• Expandable for device details (click arrow)</p>              |
 
-#### Group & Role Memberships
+### Group & Role Memberships
 
 | Field             | Description                                                                                                                                                                                          |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Group Memberships | <p>Table of all group associations<br>• Includes per-row actions<br>• Direct link to <a data-mention href="../../groups/edit.md">edit.md</a> page for the associated group to manage membership.</p> |
 | Admin Roles       | Table of assigned administrative roles                                                                                                                                                               |
 
-### Notes
+### Managed Devices
+
+This card will display the devices the user is associated with.
+
+## Notes
 
 * Information is read-only in this view
 * Use Edit tab to modify information

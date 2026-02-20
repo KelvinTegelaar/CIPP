@@ -12,14 +12,25 @@ Scheduled tasks can be used to run tasks at 15 minute intervals. The system does
 
 A recurring task will return to a planned state directly after execution. The latest results of a task can be viewed via the eye icon in the history table.
 
-### Action Buttons
+## Action Buttons
 
-| Action                | Description                                                                                       |
-| --------------------- | ------------------------------------------------------------------------------------------------- |
-| Show/Hide System Jobs | Depending on which is displayed, this will either show or hide the system jobs in the table below |
-| Add Job               | Opens the [job.md](job.md "mention") page                                                         |
+<details>
 
-### Table Details
+<summary>Show/Hide System Jobs</summary>
+
+Depending on which is displayed, this will either show or hide the system jobs in the table below
+
+</details>
+
+<details>
+
+<summary>Add Job</summary>
+
+Opens the [job.md](job.md "mention") page
+
+</details>
+
+## Table Details
 
 | Column         | Description                                                                     |
 | -------------- | ------------------------------------------------------------------------------- |
@@ -33,33 +44,44 @@ A recurring task will return to a planned state directly after execution. The la
 | Recurrence     | The recurrence selected for the task                                            |
 | Results        | The results of the most recently run execution of the task                      |
 
-### Table Actions
+## Table Actions
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Task Details</td><td>Will open a view only page with the full details of the job</td><td>false</td></tr><tr><td>Run Now</td><td>Will run the task at the next quarter hour</td><td>true</td></tr><tr><td>Edit Job</td><td>Will display the job in a state where you can edit the details</td><td>false</td></tr><tr><td>Clone and Edit Job</td><td>Creates a copy of the selected job and opens the edit window to make any necessary changes</td><td>false</td></tr><tr><td>Delete Job</td><td>Deletes the job from the schedule</td><td>true</td></tr><tr><td>More Info</td><td>Opens a flyout with the task details. See <a data-mention href="./#task-details">#task-details</a> below for more informaition.</td><td>false</td></tr></tbody></table>
 
-### Task Details
+## Task Details
 
 This flyout displays more details on the scheduled task.
 
-#### Action Buttons
+### Action Buttons
 
-* **View Logs**: This will open a separate flyout that will show the logbook entry for the scheduled task.
-* **Actions**: Select to "Run Now", "Edit Job", "Clone Job", or "Delete Job"
+<details>
 
-#### Details
+<summary>View Logs</summary>
+
+This will open a separate flyout that will show the logbook entry for the scheduled task.
+
+</details>
+
+<details>
+
+<summary>Actions</summary>
+
+Select to "Run Now", "Edit Job", "Clone Job", or "Delete Job"
+
+</details>
+
+### Details
 
 This will include the top-level information on the task, such as status, the command being run, etc.
 
-#### Task Parameters
+### Task Parameters
 
 Expand this section to view the parameters used for this task's command.
 
-#### Execution Results
+### Execution Results
 
 This table will display the history of the task's execution.
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../.gitbook/includes/feature-request.md" %}

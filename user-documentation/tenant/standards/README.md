@@ -41,11 +41,19 @@ Setting this same standard to "Remediate" changes the client's configuration, an
 
 Standards are merged based on their specificity and creation date:
 
-* **Specificity:** Standards applied via a more specific targeting method will always override more general standards (like those set for 'All Tenants'). For instance, if an 'All Tenants' standard enables TOTP but you need it disabled for one tenant, creating and applying a tenant-specific standard will disable TOTP for that tenant. The priority order is:
-  * Individual tenant, which overrides tenant group and All Tenants
-  * Tenant group, which overrides All Tenants
-  * All Tenants, which is the lowest priority
-* **Creation Date:** When two standards conflict at the same specificity level (e.g., both tenant-specific), the standard created most recently takes precedence. For example, if you create a tenant-specific standard enabling TOTP and later create another tenant-specific standard disabling TOTP, the more recently created standard (disabling TOTP) will be applied.
+#### Specificity
+
+Standards applied via a more specific targeting method will always override more general standards (like those set for 'All Tenants'). For instance, if an 'All Tenants' standard enables external warnings but you need it disabled for one tenant, creating and applying a tenant-specific standard will disable external warnings for that tenant. The priority order is:
+
+* Individual tenant, which overrides tenant group and All Tenants
+* Tenant group, which overrides All Tenants
+* All Tenants, which is the lowest priority
+
+<table><thead><tr><th>Tenant</th><th data-type="checkbox">Tenant Group Membership</th><th>Standard Setting</th><th>Resultant Policy</th></tr></thead><tbody><tr><td>A</td><td>false</td><td>Disable external warnings applied to All Tenants</td><td>External warnings disabled</td></tr><tr><td>B</td><td>true</td><td>Enable external warnings applied to tenant group</td><td>External warnings enabled</td></tr></tbody></table>
+
+#### Creation Date
+
+When two standards conflict at the same specificity level (e.g., both tenant-specific), the standard created most recently takes precedence. For example, if you create a tenant-specific standard enabling external warnings and later create another tenant-specific standard disabling external warnings, the more recently created standard (disabling TOTP) will be applied.
 
 {% hint style="warning" %}
 **Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects.
@@ -88,7 +96,7 @@ Each standard is labeled based on the level of change it introduces and its impa
 * **Companion Policies:** Some standards rely on additional policies in tools like **Microsoft Intune** to be fully effective. Ensure all required companion policies are configured to achieve the desired results.
 * **Deselecting Standards:** Deselecting a standard prevents it from being enforced in future cycles, but it does not undo its current configuration.
   * **Example:** If you deselect `"Enable FIDO2 capabilities`," the standard will stop enforcing this policy. However, if FIDO2 was already enabled, it will remain enabled.
-* **Application Cadence:** Standards reapply **every three hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle. Drift Management are evaluated every 12 hours.
+* **Application Cadence:** Standards reapply **every four hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle. Drift Management are evaluated every 12 hours.
 {% endhint %}
 
 {% hint style="info" %}

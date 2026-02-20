@@ -35,14 +35,10 @@ Clearing this cache can severely impact performance of your CIPP instance and wi
 
 <details>
 
-<summary>Branding Settings</summary>
+<summary>Log Retention</summary>
 
-Customize your organization's branding for reports and documents. Changes will be applied to all generated reports.
-
-Set your preferred:
-
-* **Logo:** Recommended format is PNG. Max file size is 2MB. Optimal size is 200x100px.
-* **Brand Color:** This color will be used for accents and highlights in reports
+Configure how long to keep CIPP log entries. Logs will be automatically deleted after this\
+period. Minimum retention is 7 days, maximum is 365 days, default is 90 days.
 
 </details>
 
@@ -67,9 +63,14 @@ Click `Manage Backups` to launch the [backup.md](backup.md "mention") settings p
 
 <details>
 
-<summary>JIT Admin Settings</summary>
+<summary>Branding Settings</summary>
 
-This allows you to set the maximum duration allowed for a JIT admin created through CIPP. Any attempt to create a JIT admin longer than the allowed time will return an error.
+Customize your organization's branding for reports and documents. Changes will be applied to all generated reports.
+
+Set your preferred:
+
+* **Logo:** Recommended format is PNG. Max file size is 2MB. Optimal size is 200x100px.
+* **Brand Color:** This color will be used for accents and highlights in reports
 
 </details>
 
@@ -86,6 +87,14 @@ You can switch providers to either Google or Cloudflare for your domain analyzer
 <summary>Backup Retention</summary>
 
 Configure how long to keep backup files. Both CIPP system backups and tenant backups will be automatically deleted after this period. Minimum retention is 7 days; default is 30 days. Cleanup runs daily at 2:00 AM.
+
+</details>
+
+<details>
+
+<summary>JIT Admin Settings</summary>
+
+This allows you to set the maximum duration allowed for a JIT admin created through CIPP. Any attempt to create a JIT admin longer than the allowed time will return an error.
 
 </details>
 

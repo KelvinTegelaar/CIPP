@@ -6,18 +6,29 @@
 
 To ensure we can assist you with any CIPP issue, complete details are essential. This includes all three mandatory screenshots: Permissions Check, GDAP Check, and Tenant Access Check. Without these, we cannot offer support, as they are the foundation for understanding and resolving your issue.
 
-## **1. Perform Permissions Check**
+{% stepper %}
+{% step %}
+### **Perform Permissions & GDAP Check**
 
-* **How to**: Navigate to CIPP -> Application Settings, and select "Permissions".
-* Click on "Refesh"&#x20;
-* **What to Share**: A screenshot of the page, and an Export of the report by pressing the Export button.
+* Navigate to CIPP -> Application Settings -> Permissions tab
+* CIPP will run both checks automatically.
+* **What to Share**: A screenshot of the page including both boxes, and an Export of the report by pressing the Export button. You can redact any sensitive info as long as it's still clearly usable to verify the checks (e.g. redact domain but leave username visible on UPN)
 
-## **2. Conduct GDAP Check**
+{% hint style="info" %}
+The output of these checks includes information that may be possible for you to solve the issue on your own at this point. Review any warnings or errors to determine what needs to be corrected. If you're still stuck, please ask away in Discord or reach out to the helpdesk if you are a sponsor.
+{% endhint %}
+{% endstep %}
 
-* **After successfully completing Permissions Check**, also refresh the GDAP check
-* **What to Share**: A screenshot of the GDAP information.
+{% step %}
+### Perform Tenant Access Check
 
+If the issue relates to a specific tenant, locate the tenant in the table on the Permissions tab. Screenshot the tenant's entry being sure to include the Last Run, Graph Status, Exchange Status, and Missing Roles columns.
 
+{% hint style="info" %}
+The output of these checks includes information that may be possible for you to solve the issue on your own at this point. Review any warnings or errors to determine what needs to be corrected. If you're still stuck, please ask away in Discord or reach out to the helpdesk if you are a sponsor.
+{% endhint %}
+{% endstep %}
+{% endstepper %}
 
 ***
 
@@ -26,9 +37,13 @@ To ensure we can assist you with any CIPP issue, complete details are essential.
 * **Capture Additional Screenshots**: If checks complete but you're still facing issues, please include a screenshot of the entire page where the error occurs.
 * **Error Details**: If an error pop-up appears, include its screenshot or text. This helps us diagnose the problem more accurately.
 
+{% hint style="info" %}
 **Important**: Even if the error appears on only one page, all checks (Permissions, GDAP, and Tenant Access) are always required for us to provide support.
+{% endhint %}
 
-**Privacy Note**: Anonymize any sensitive data in your screenshots before sharing them on our discord community if you are planning to do so.
+{% hint style="warning" %}
+**Privacy Note**: Anonymize any sensitive data in your screenshots before sharing them on our Discord community if you are planning to do so.
+{% endhint %}
 
 ***
 
@@ -54,7 +69,7 @@ To ensure we can assist you with any CIPP issue, complete details are essential.
 
 #### Administration Requirements
 
-1. **Must be a Global Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
+1. **Must be at least Application Administration and User Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
 2. **Must be added to the AdminAgents group.** This group is required for connection to the Microsoft Partner API.
 
 #### GDAP Group Requirements
@@ -68,6 +83,6 @@ To ensure we can assist you with any CIPP issue, complete details are essential.
 
 1. **MFA Setup:** This account must have **Microsoft** MFA enforced for each logon.
    1. Use [Conditional Access](../../setup/installation/conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when not available.
-2. **Microsoft MFA is mandatory.** Do not use alternative providers like Duo, and ensure it's setup **before any login attempts.**
+2. **Microsoft MFA is mandatory.** Do not use alternative providers like Duo and ensure its setup **before any login attempts.**
    1. Reference [this article on Supported MFA options](https://learn.microsoft.com/en-us/partner-center/security/partner-security-requirements-mandating-mfa#supported-mfa-options) from Microsoft for more details.
 {% endhint %}

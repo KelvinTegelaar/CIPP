@@ -4,8 +4,6 @@
 New to Sherweb? Visit [SherWeb Cloud Services for MSPs](https://www.sherweb.com/partners/)
 {% endhint %}
 
-## **Overview**
-
 The Sherweb integration enables you to manage your Microsoft 365 licenses and subscriptions directly within CIPP. This means you can handle all your licensing needs from one place, making it easier to manage users and their licenses across your organization.
 
 ## Key Features

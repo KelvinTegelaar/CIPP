@@ -10,7 +10,7 @@ Tenant custom variables can be set in the [#custom-variables](../../manage/edit.
 Given the differences in how various systems treat the variable name, we recommend using all lowercase when naming variables, e.g. variablename.
 {% endhint %}
 
-### Automatically Replaced Variables
+## Automatically Replaced Variables
 
 The following variables will be automatically replaced by CIPP:
 
@@ -19,7 +19,7 @@ The following variables will be automatically replaced by CIPP:
 * `%tenantid%`
 * `%tenantname%`
 
-### Reserved Variables
+## Reserved Variables
 
 The following variables are reserved and will not be used:
 

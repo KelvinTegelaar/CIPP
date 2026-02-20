@@ -10,7 +10,7 @@ Upon page load, CIPP will run an analysis on the user to identify common Indicat
 Note: This page is intended to surface information about potential information that should be reviewed when a compromise is suspected. The existence of information in one of the indicators should not be interpreted as an absolute sign of compromise but rather as a useful tool to help quickly surface the basic information that should be reviewed during your investigation.
 {% endhint %}
 
-### Indicators of Compromise Checks
+## Indicators of Compromise Checks
 
 | Check                      | Description                                                                                                               | Where to Dig Deeper?                                                                                                            |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -21,13 +21,14 @@ Note: This page is intended to surface information about potential information t
 | MFA Devices                | This will identify any MFA devices for review, including when the type of device and the datetime when it was registered. |                                                                                                                                 |
 | Password Changes           | This will display any recent password changes for the tenant.                                                             |                                                                                                                                 |
 
-### Actions
+## Actions
 
-| Action          | Description                                                                                                                                                                     |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Refresh Data    | This will refresh the analysis for the user and update the Indicators of Compromise checks.                                                                                     |
-| Remediate User  | This action will block user sign-in, reset the user's password, disconnect all current sessions, remove all MFA methods for the user, and disable all inbox rules for the user. |
-| Download Report | This will download a JSON file for the checks completed in the analysis.                                                                                                        |
+| Action             | Description                                                                                                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Refresh Data       | This will refresh the analysis for the user and update the Indicators of Compromise checks.                                                                                     |
+| Remediate User     | This action will block user sign-in, reset the user's password, disconnect all current sessions, remove all MFA methods for the user, and disable all inbox rules for the user. |
+| GeneratePDF Report |  Generates a PDF of the report data, including helpful data points on user education                                                                                            |
+| Download JSON      | This will download a JSON file for the checks completed in the analysis.                                                                                                        |
 
 ***
 

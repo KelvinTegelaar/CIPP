@@ -1,10 +1,8 @@
 # Add Status Page
 
-### Add Status Page
-
 This page provides the ability for you to edit/override the default Enrollment Status Page. This page applies to all tenants, all users and devices.
 
-#### Details <a href="#addstatuspage-details" id="addstatuspage-details"></a>
+## Details <a href="#addstatuspage-details" id="addstatuspage-details"></a>
 
 * Timeout in minutes
 * Custom error message
@@ -18,6 +16,4 @@ This page provides the ability for you to edit/override the default Enrollment S
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../.gitbook/includes/feature-request.md" %}

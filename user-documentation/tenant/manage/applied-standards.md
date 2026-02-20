@@ -12,22 +12,30 @@ For standards templates that include a lot of configured standards, you can use 
 Standards must have "Report" or "Remediate" enabled for the report to function. If you do not have "Report" enabled, you should see an error `Reporting is disabled for this standard in the template configuration.` display in the information box.
 {% endhint %}
 
-### Page Actions
+## Page Actions
 
-#### Logs
+<details>
+
+<summary>Logs</summary>
 
 Click this button next to the template dropdown to open a flyout to show you the logbook entries for the standard template.
 
-#### Actions Dropdown
+</details>
 
-|                                            |                                                                                                                            |
+<details>
+
+<summary>Actions Dropdown</summary>
+
+| Action                                     | Description                                                                                                                |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | Refresh Data                               | Refreshes the reported data for the selected standard                                                                      |
 | Edit Template                              | Opens the selected template in [edit.md](../conditional/list-template/edit.md "mention")                                   |
 | Run Standard Now (Selected Tenant)         | This will run the standard template against the selected tenant if the tenant is included in the template's configuration. |
 | Run Standard Now (All Tenants in Template) | This will run the standard template against all tenants included in the template's configuration.                          |
 
-### Known Issues
+</details>
+
+## Known Issues
 
 * There is currently a limitation with Conditional Access standards due to the complexity of the comparison the standard settings and the Conditional Access response object. We hope to resolve this in a future update.
 

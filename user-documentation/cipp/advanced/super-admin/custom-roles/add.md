@@ -38,7 +38,7 @@ Note that when creating a custom role to layer with the base role, any permissio
 {% endstep %}
 {% endstepper %}
 
-### Additional Information Regarding API Permissions
+## Additional Information Regarding API Permissions
 
 The `i` icon next to each API permissions category will open a flyout listing the CIPP API endpoints included in each category. This flyout will now also contain the `i` icon next to API endpoints where developers can add details regarding the function of the API. This will help clarify the endpoint's purpose if the name of the API endpoint is not clear.
 

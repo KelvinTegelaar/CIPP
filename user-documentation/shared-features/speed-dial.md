@@ -4,7 +4,7 @@ The CIPP speed dial contains easy access to quick links for help with CIPP. The 
 
 <figure><img src="../../.gitbook/assets/cipp_speed_dial.png" alt=""><figcaption></figcaption></figure>
 
-### Options
+## Options
 
 | Option                  | Description                                                                                           |
 | ----------------------- | ----------------------------------------------------------------------------------------------------- |

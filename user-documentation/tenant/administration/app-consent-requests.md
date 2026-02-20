@@ -7,15 +7,15 @@ This page shows all the app consent requests that have been made in the tenant.
 To not miss any requests, it is recommended to set up the Scripted CIPP Alert `Alert on new apps in the application approval list`.
 {% endhint %}
 
-### App Consent Request Table Filters
+## App Consent Request Table Filters
 
 This will allow you to modify the Request Status types displayed in the table below. Options are `All`, `Pending`, `Expired`, and `Completed`.
 
-### Table Details
+## Table Details
 
 The properties returned are for the Graph resource type `appConsentRequest`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/appconsentrequest?view=graph-rest-1.0#properties).
 
-### Table Actions
+## Table Actions
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Review in Entra</td><td>Opens Entra ID to the request for you to review further</td><td>false</td></tr><tr><td>Approve in Entra</td><td>Opens Entra ID to approve the request</td><td>false</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 

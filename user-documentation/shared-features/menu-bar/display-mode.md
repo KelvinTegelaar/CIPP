@@ -2,7 +2,7 @@
 
 Clicking this toggle will switch the display mode for CIPP.
 
-### Available Display Modes
+## Available Display Modes
 
 * Light mode
 * Dark mode

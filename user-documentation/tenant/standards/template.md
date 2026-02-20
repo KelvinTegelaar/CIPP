@@ -4,17 +4,17 @@ When creating a standard, it is recommend to think about how you want your stand
 
 For optimal performance and reliability, we recommend to not have more than 40 standards per template.
 
-### Creating a Standards Template
+## Creating a Standards Template
 
 {% stepper %}
 {% step %}
-### Set a Name for the Template
+#### Set a Name for the Template
 
 In the "Template Name" field, enter the name for this template
 {% endstep %}
 
 {% step %}
-### Assign Template to Tenants
+#### Assign Template to Tenants
 
 In the "Included Tenants" dropdown, select the tenant or tenants that you want this template to apply to. You can optionally select a tenant group to include. Including a tenant group will allow you to select tenant(s) or tenant group(s) to exclude.
 
@@ -28,7 +28,7 @@ Just under the tenant assignment dropdown(s), you will see a toggle called "Do n
 {% endstep %}
 
 {% step %}
-### Add Standards to Template
+#### Add Standards to Template
 
 Click the "+ Add Standards to this template" button in the upper right of the page. This will display a modal that has a complete list of all CIPP standards that can be configured. For more information on each standard, see the standards category pages.
 
@@ -40,7 +40,7 @@ Toggle on the "Add this standard to the template" for each desired template. Onc
 {% endstep %}
 
 {% step %}
-### Configure All Standards
+#### Configure All Standards
 
 For each standard:
 
@@ -50,15 +50,15 @@ For each standard:
 {% endstep %}
 
 {% step %}
-### Save Template
+#### Save Template
 
 Once all other steps are completed and all tenants show configured, click the "Save Template" button at the bottom of the left column that should now be enabled.
 {% endstep %}
 {% endstepper %}
 
-### Creating a Drift Manaagement Template
+## Creating a Drift Management Template
 
-#### About Drift Management Templates
+### About Drift Management Templates
 
 Drift Management templates provide continuous monitoring of tenant configurations to detect unauthorized changes. Each tenant can only have one drift template applied at a time.
 
@@ -68,7 +68,7 @@ Drift Management Timing & Alerts
 Once activated, Drift Management is evaluated **every twelve hours**. You will receive alerts via your configured [notifications.md](../../cipp/settings/notifications.md "mention") settings.
 {% endhint %}
 
-#### Remediation Options
+### Remediation Options
 
 {% hint style="info" %}
 Report & Alert
@@ -79,7 +79,7 @@ For Drift Management templates, report and alert are automatically enabled from 
 * **Automatic Remediation:** Immediately reverts unauthorized changes back to the template configuration
 * **Manual Remediation:** Sends email notifications for review, allowing you to accept or deny detected changes
 
-#### Key Features
+### Key Features
 
 * Monitors all security standards, Conditional Access policies, and Intune policies
 * Detects changes made outside of CIPP
@@ -94,13 +94,13 @@ Each tenant can only have a single Drift Management template applied to it. If y
 
 {% stepper %}
 {% step %}
-### Set a Name for the Template
+#### Set a Name for the Template
 
 In the "Template Name" field, enter the name for this template
 {% endstep %}
 
 {% step %}
-### Assign Template to Tenants
+#### Assign Template to Tenants
 
 In the "Included Tenants" dropdown, select the tenant or tenants that you want this template to apply to. You can optionally select a tenant group to include. Including a tenant group will allow you to select tenant(s) or tenant group(s) to exclude.
 
@@ -110,7 +110,7 @@ If you select "AllTenants", you will be shown an additional dropdown for "Exclud
 {% endstep %}
 
 {% step %}
-### Optionally Set Notification Settings
+#### Optionally Set Notification Settings
 
 You will be able to set a custom webhook and/or email address to receive notifications on drift. If nothing is set, this will use the default webhook and/or email address from [notifications.md](../../cipp/settings/notifications.md "mention").
 
@@ -118,7 +118,7 @@ You can also disable all notifications for the Drift Management template if you 
 {% endstep %}
 
 {% step %}
-### Add Standards to Template
+#### Add Standards to Template
 
 Click the "+ Add Standards to this template" button in the upper right of the page. This will display a modal that has a complete list of all CIPP standards that can be configured. For more information on each standard, see the standards category pages.
 
@@ -130,7 +130,7 @@ Toggle on the "Add this standard to the template" for each desired template. Onc
 {% endstep %}
 
 {% step %}
-### Configure All Standards
+#### Configure All Standards
 
 For each standard:
 
@@ -140,7 +140,7 @@ For each standard:
 {% endstep %}
 
 {% step %}
-### Save Template
+#### Save Template
 
 Once all other steps are completed and all tenants show configured, click the "Save Template" button at the bottom of the left column that should now be enabled to run every three hours.
 {% endstep %}
@@ -150,13 +150,13 @@ Once all other steps are completed and all tenants show configured, click the "S
 
 {% @storylane/embed subdomain="app" linkValue="gykd6vk1y7kr" url="https://app.storylane.io/share/gykd6vk1y7kr" %}
 
-### Standards Filtering
+## Standards Filtering
 
 On both the add and edit standards template page, you will see options for how to filter the standards list added to the template. This is helpful for those templates that contain a lot of standards.
 
 * Search: A search box at the top will allow you to do keyword searches for standards
 
-#### View, Sort, and Filter Options
+### View, Sort, and Filter Options
 
 | Option          | Description                                                                                                                               |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |

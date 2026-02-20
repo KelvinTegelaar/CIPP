@@ -1,6 +1,6 @@
 # New Invite
 
-### Generating Invites
+## Generating Invites
 
 {% hint style="info" %}
 This will ensure that the correct roles are mapped to the GDAP relationship, and test that the CIPP-SAM application is correctly pushed to the tenant.\
@@ -22,6 +22,4 @@ All mapped GDAP [roles](../roles/ "mention") can be selected from the list. To u
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}
