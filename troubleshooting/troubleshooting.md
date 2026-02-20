@@ -157,6 +157,10 @@ This issue can occur when you restart the app during an important task. It's nev
 
 This procedure can also be used to safely restart the function app when required.
 
+### AADSTS50011
+
+When you receive this error, it means that you have added a custom domain to CIPP but have not updated the authentication settings in your CIPP-SAM app in your Azure tenant. Add the complete URL you see in the error as an accepted Redirect URI. For more, see [Microsoft's documentation](https://learn.microsoft.com/en-us/entra/identity-platform/how-to-add-redirect-uri).
+
 #### Credits
 
 This troubleshooting document was created with the help of [Ashley Cooper](https://www.linkedin.com/in/adelnet/)
