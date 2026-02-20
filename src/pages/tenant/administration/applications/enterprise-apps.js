@@ -49,6 +49,13 @@ const Page = () => {
         DisplayName: "displayName",
         Type: "servicePrincipal",
       },
+      fields: [
+        {
+          type: "switch",
+          name: "Overwrite",
+          label: "Overwrite Existing Template",
+        },
+      ],
       confirmText:
         "Create a deployment template from '[displayName]'? This will copy all permissions and create a reusable template.",
       condition: (row) => canWriteApplication && row?.signInAudience === "AzureADMultipleOrgs",
@@ -78,7 +85,7 @@ const Page = () => {
             options={
               row?.passwordCredentials?.map((cred) => ({
                 label: `${cred.displayName || "Unnamed"} (Expiration: ${new Date(
-                  cred.endDateTime
+                  cred.endDateTime,
                 ).toLocaleDateString()})`,
                 value: cred.keyId,
               })) || []

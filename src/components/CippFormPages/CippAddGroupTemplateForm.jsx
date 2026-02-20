@@ -41,7 +41,6 @@ const CippAddGroupTemplateForm = (props) => {
         <CippFormComponent
           type="textField"
           label="Username"
-          helperText="If this is a mail enabled group, CIPP variable replacement are supported for the domain (e.g mygroup@%tenantfilter%)"
           name="username"
           required
           formControl={formControl}

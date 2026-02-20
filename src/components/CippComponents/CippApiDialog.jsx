@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import {
   Box,
   Button,
@@ -11,7 +10,8 @@ import {
 import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/router";
 import { useForm, useFormState } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
@@ -31,6 +31,7 @@ export const CippApiDialog = (props) => {
     ...other
   } = props;
   const router = useRouter();
+  const linkOpenedRef = useRef(false);
   const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -242,8 +243,8 @@ export const CippApiDialog = (props) => {
               el?.label && el?.value
                 ? el
                 : typeof el === "string" || typeof el === "number"
-                ? { label: el, value: el }
-                : null
+                  ? { label: el, value: el }
+                  : null,
             )
             .filter(Boolean);
           formHook.setValue(field.name, values);
@@ -253,38 +254,57 @@ export const CippApiDialog = (props) => {
             typeof val === "string"
               ? { label: val, value: val }
               : val.label && val.value
-              ? val
-              : undefined
+                ? val
+                : undefined,
           );
         }
       });
     }
   }, [createDialog.open, api?.setDefaultValues]);
 
-  const getNestedValue = (obj, path) =>
-    path
+  const escapeHtml = (text) => {
+    if (typeof text !== "string") return text;
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  };
+
+  const getNestedValue = (obj, path) => {
+    const value = path
       .split(".")
       .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+    return typeof value === "string" ? escapeHtml(value) : value;
+  };
 
-  const [linkClicked, setLinkClicked] = useState(false);
-  useEffect(() => setLinkClicked(false), [api.link]);
-
+  // Handle link actions - opens the link when dialog opens, using ref to prevent duplicates
   useEffect(() => {
-    if (api.link && !linkClicked && row && Object.keys(row).length > 0) {
-      const timeoutId = setTimeout(() => {
-        const linkWithData = api.link.replace(
-          /\[([^\]]+)\]/g,
-          (_, key) => getNestedValue(row, key) || `[${key}]`
-        );
-        setLinkClicked(true);
-        if (linkWithData.startsWith("/") && !api?.external)
-          router.push(linkWithData, undefined, { shallow: true });
-        else window.open(linkWithData, api.target || "_blank");
-      }, 0);
-
-      return () => clearTimeout(timeoutId);
+    if (
+      api.link &&
+      createDialog.open &&
+      row &&
+      Object.keys(row).length > 0 &&
+      !linkOpenedRef.current
+    ) {
+      linkOpenedRef.current = true;
+      const linkWithData = api.link.replace(
+        /\[([^\]]+)\]/g,
+        (_, key) => getNestedValue(row, key) || `[${key}]`,
+      );
+      if (linkWithData.startsWith("/") && !api?.external) {
+        router.push(linkWithData, undefined, { shallow: true });
+      } else {
+        window.open(linkWithData, api.target || "_blank");
+      }
+      createDialog.handleClose();
     }
-  }, [api.link, linkClicked, row, router]);
+  }, [api.link, createDialog.open, row, router]);
+
+  // Reset the ref when dialog closes so the same link can be opened again
+  useEffect(() => {
+    if (!createDialog.open) {
+      linkOpenedRef.current = false;
+    }
+  }, [createDialog.open]);
 
   useEffect(() => {
     if (api.noConfirm && !api.link) {
@@ -303,14 +323,14 @@ export const CippApiDialog = (props) => {
     if (!Array.isArray(row)) {
       confirmText = api.confirmText.replace(
         /\[([^\]]+)\]/g,
-        (_, key) => getNestedValue(row, key) || `[${key}]`
+        (_, key) => getNestedValue(row, key) || `[${key}]`,
       );
     } else if (row.length > 1) {
       confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, "the selected rows");
     } else if (row.length === 1) {
       confirmText = api.confirmText.replace(
         /\[([^\]]+)\]/g,
-        (_, key) => getNestedValue(row[0], key) || `[${key}]`
+        (_, key) => getNestedValue(row[0], key) || `[${key}]`,
       );
     }
   } else {
@@ -322,7 +342,7 @@ export const CippApiDialog = (props) => {
             ? element.replace(/\[([^\]]+)\]/g, "the selected rows")
             : element.replace(
                 /\[([^\]]+)\]/g,
-                (_, key) => getNestedValue(row[0], key) || `[${key}]`
+                (_, key) => getNestedValue(row[0], key) || `[${key}]`,
               );
         }
         return element.replace(/\[([^\]]+)\]/g, (_, key) => getNestedValue(row, key) || `[${key}]`);

@@ -47,6 +47,13 @@ const Page = () => {
         DisplayName: "displayName",
         Type: "application",
       },
+      fields: [
+        {
+          type: "switch",
+          name: "Overwrite",
+          label: "Overwrite Existing Template",
+        },
+      ],
       confirmText:
         "Create a deployment template from '[displayName]'? This will copy all permissions and create a reusable template. If you run this from a customer tenant, the App Registration will first be copied to the partner tenant as a multi-tenant app.",
       condition: (row) => canWriteApplication && !row?.applicationTemplateId,
@@ -130,7 +137,7 @@ const Page = () => {
             options={
               row?.passwordCredentials?.map((cred) => ({
                 label: `${cred.displayName || "Unnamed"} (Expiration: ${new Date(
-                  cred.endDateTime
+                  cred.endDateTime,
                 ).toLocaleDateString()})`,
                 value: cred.keyId,
               })) || []

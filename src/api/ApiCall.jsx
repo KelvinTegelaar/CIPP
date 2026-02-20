@@ -176,7 +176,7 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
           const response = await axios.post(url, element, {
             headers: await buildVersionedHeaders(),
           });
-          results.push(response);
+          results.push(response.data);
           if (onResult) {
             onResult(response.data); // Emit each result as it arrives
           }

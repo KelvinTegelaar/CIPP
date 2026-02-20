@@ -1,6 +1,7 @@
 import { Button, ButtonGroup, SvgIcon, Typography, TextField, Box } from "@mui/material";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 import { History } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 
@@ -94,6 +95,7 @@ const CippBackupRetentionSettings = () => {
         automatically deleted after this period. Minimum retention is 7 days, default is 30 days.
         Cleanup runs daily at 2:00 AM.
       </Typography>
+      <CippApiResults apiObject={retentionChange} />
     </CippButtonCard>
   );
 };

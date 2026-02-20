@@ -148,29 +148,29 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
         title={
           (persistentQueueData || queueData)?.Status === "Completed"
             ? `Queue Complete - ${(persistentQueueData || queueData)?.PercentComplete?.toFixed(
-                1
+                1,
               )}% (${(persistentQueueData || queueData)?.CompletedTasks}/${
                 (persistentQueueData || queueData)?.TotalTasks
               } tasks)`
             : (persistentQueueData || queueData)?.Status === "Completed (with errors)"
-            ? `Queue Completed with Errors - ${(
-                persistentQueueData || queueData
-              )?.PercentFailed?.toFixed(1)}% failed (${
-                (persistentQueueData || queueData)?.FailedTasks
-              }/${(persistentQueueData || queueData)?.TotalTasks} tasks)`
-            : (persistentQueueData || queueData)?.Status === "Failed"
-            ? `Queue Failed - ${(persistentQueueData || queueData)?.PercentFailed?.toFixed(
-                1
-              )}% failed (${(persistentQueueData || queueData)?.FailedTasks}/${
-                (persistentQueueData || queueData)?.TotalTasks
-              } tasks)`
-            : (persistentQueueData || queueData)?.Status
-            ? `Queue ${(persistentQueueData || queueData).Status} - ${(
-                persistentQueueData || queueData
-              )?.PercentComplete?.toFixed(1)}% complete (${
-                (persistentQueueData || queueData)?.CompletedTasks
-              }/${(persistentQueueData || queueData)?.TotalTasks} tasks)`
-            : "View Queue Status"
+              ? `Queue Completed with Errors - ${(
+                  persistentQueueData || queueData
+                )?.PercentFailed?.toFixed(1)}% failed (${
+                  (persistentQueueData || queueData)?.FailedTasks
+                }/${(persistentQueueData || queueData)?.TotalTasks} tasks)`
+              : (persistentQueueData || queueData)?.Status === "Failed"
+                ? `Queue Failed - ${(persistentQueueData || queueData)?.PercentFailed?.toFixed(
+                    1,
+                  )}% failed (${(persistentQueueData || queueData)?.FailedTasks}/${
+                    (persistentQueueData || queueData)?.TotalTasks
+                  } tasks)`
+                : (persistentQueueData || queueData)?.Status
+                  ? `Queue ${(persistentQueueData || queueData).Status} - ${(
+                      persistentQueueData || queueData
+                    )?.PercentComplete?.toFixed(1)}% complete (${
+                      (persistentQueueData || queueData)?.CompletedTasks
+                    }/${(persistentQueueData || queueData)?.TotalTasks} tasks)`
+                  : "View Queue Status"
         }
       >
         <Badge
@@ -220,12 +220,12 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                 (persistentQueueData || queueData)?.Status === "Completed"
                   ? "success.main"
                   : (persistentQueueData || queueData)?.Status === "Completed (with errors)"
-                  ? "warning.main"
-                  : (persistentQueueData || queueData)?.Status === "Failed"
-                  ? "error.main"
-                  : (persistentQueueData || queueData)?.RunningTasks > 0
-                  ? "warning.main"
-                  : "primary.main",
+                    ? "warning.main"
+                    : (persistentQueueData || queueData)?.Status === "Failed"
+                      ? "error.main"
+                      : (persistentQueueData || queueData)?.RunningTasks > 0
+                        ? "warning.main"
+                        : "primary.main",
             }}
           >
             <Timeline />
@@ -339,16 +339,16 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                                     ? "rgba(102, 187, 106, 0.15)"
                                     : "success.light"
                                   : task.Status === "Failed"
-                                  ? theme.palette.mode === "dark"
-                                    ? "rgba(244, 67, 54, 0.15)"
-                                    : "error.light"
-                                  : task.Status === "Running"
-                                  ? theme.palette.mode === "dark"
-                                    ? "rgba(255, 152, 0, 0.15)"
-                                    : "warning.light"
-                                  : theme.palette.mode === "dark"
-                                  ? "rgba(255,255,255,0.05)"
-                                  : "grey.100",
+                                    ? theme.palette.mode === "dark"
+                                      ? "rgba(244, 67, 54, 0.15)"
+                                      : "error.light"
+                                    : task.Status === "Running"
+                                      ? theme.palette.mode === "dark"
+                                        ? "rgba(255, 152, 0, 0.15)"
+                                        : "warning.light"
+                                      : theme.palette.mode === "dark"
+                                        ? "rgba(255,255,255,0.05)"
+                                        : "grey.100",
                               transition: "all 0.2s ease-in-out",
                               "&:hover": {
                                 transform: "translateY(-1px)",
@@ -389,10 +389,10 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                                     task.Status === "Completed"
                                       ? "success.main"
                                       : task.Status === "Failed"
-                                      ? "error.main"
-                                      : task.Status === "Running"
-                                      ? "warning.main"
-                                      : "text.secondary",
+                                        ? "error.main"
+                                        : task.Status === "Running"
+                                          ? "warning.main"
+                                          : "text.secondary",
                                 })}
                               >
                                 {task.Status}

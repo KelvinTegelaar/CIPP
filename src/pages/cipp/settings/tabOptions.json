@@ -26,5 +26,9 @@
   {
     "label": "Licenses",
     "path": "/cipp/settings/licenses"
+  },
+  {
+    "label": "Features",
+    "path": "/cipp/settings/features"
   }
 ]

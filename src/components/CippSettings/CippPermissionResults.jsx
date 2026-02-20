@@ -1,4 +1,4 @@
-import { Button, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
+import { Alert, Button, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { Cancel, CheckCircle } from "@mui/icons-material";
 import { CippPropertyList } from "../CippComponents/CippPropertyList";
 import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -91,18 +91,23 @@ export const CippPermissionResults = (props) => {
     <>
       {propertyItems.length > 0 && (
         <CippPropertyList
-          isFetching={!importReport && executeCheck.isFetching}
+          isFetching={!importReport && executeCheck?.isFetching}
           propertyItems={propertyItems}
           layout="double"
           showDivider={false}
         />
       )}
-      {!importReport && executeCheck.isFetching ? (
+      {!importReport && executeCheck?.isFetching ? (
         <Skeleton variant="rectangular" height={100} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
+      ) : !importReport && executeCheck?.isError ? (
+        <Alert severity="error" sx={{ ml: 3, mr: 1 }}>
+          Failed to load permission check results. Please try refreshing or contact support if the
+          issue persists.
+        </Alert>
       ) : (
         <>
           <List>
-            {results?.Results?.Messages.map((message, index) => (
+            {results?.Results?.Messages?.map((message, index) => (
               <ListItem key={index} sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
@@ -112,7 +117,7 @@ export const CippPermissionResults = (props) => {
                 </Typography>
               </ListItem>
             ))}
-            {results?.Results?.ErrorMessages.map((error, index) => (
+            {results?.Results?.ErrorMessages?.map((error, index) => (
               <ListItem key={index} sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
@@ -122,7 +127,7 @@ export const CippPermissionResults = (props) => {
                 </Typography>
               </ListItem>
             ))}
-            {results?.Results?.MissingPermissions.length > 0 && (
+            {results?.Results?.MissingPermissions?.length > 0 && (
               <ListItem sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
@@ -143,12 +148,12 @@ export const CippPermissionResults = (props) => {
             }}
             extendedInfo={[]}
           >
-            {results?.Results?.Links.length > 0 && (
+            {results?.Results?.Links?.length > 0 && (
               <CippPropertyListCard
                 title="Documentation"
                 showDivider={false}
                 cardSx={{ p: 0, m: 0 }}
-                propertyItems={results?.Results?.Links.map((link) => {
+                propertyItems={results?.Results?.Links?.map((link) => {
                   return {
                     value: (
                       <Link href={link.Href} target="_blank">
@@ -161,11 +166,11 @@ export const CippPermissionResults = (props) => {
               />
             )}
             <CippApiResults apiObject={addMissingPermissions} />
-            {results?.Results?.MissingPermissions.length > 0 && (
+            {results?.Results?.MissingPermissions?.length > 0 && (
               <>
                 <CippDataTable
                   title="Missing Permissions"
-                  isFetching={!importReport && executeCheck.isFetching}
+                  isFetching={!importReport && executeCheck?.isFetching}
                   refreshFunction={executeCheck}
                   cardButton={
                     <Button
@@ -206,7 +211,7 @@ export const CippPermissionResults = (props) => {
                     Refresh CPV
                   </Button>
                 }
-                isFetching={!importReport && executeCheck.isFetching}
+                isFetching={!importReport && executeCheck?.isFetching}
                 refreshFunction={executeCheck}
                 data={results?.Results?.CPVRefreshList}
                 simpleColumns={["DisplayName", "DefaultDomainName", "LastRefresh"]}
@@ -217,9 +222,9 @@ export const CippPermissionResults = (props) => {
               <>
                 <CippDataTable
                   title="Current Delegated Scopes"
-                  isFetching={!importReport && executeCheck.isFetching}
+                  isFetching={!importReport && executeCheck?.isFetching}
                   refreshFunction={executeCheck}
-                  data={results?.Results?.AccessTokenDetails?.Scope.map((scope) => {
+                  data={results?.Results?.AccessTokenDetails?.Scope?.map((scope) => {
                     return {
                       Scope: scope,
                     };
@@ -232,9 +237,9 @@ export const CippPermissionResults = (props) => {
               <>
                 <CippDataTable
                   title="Current Application Roles"
-                  isFetching={!importReport && executeCheck.isFetching}
+                  isFetching={!importReport && executeCheck?.isFetching}
                   refreshFunction={executeCheck}
-                  data={results?.Results?.ApplicationTokenDetails?.Roles.map((role) => {
+                  data={results?.Results?.ApplicationTokenDetails?.Roles?.map((role) => {
                     return {
                       Role: role,
                     };

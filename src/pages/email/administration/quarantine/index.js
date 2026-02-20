@@ -154,16 +154,19 @@ const Page = () => {
       filterName: "Not Released",
       value: [{ id: "ReleaseStatus", value: "NOTRELEASED" }],
       type: "column",
+      filterType: "equal",
     },
     {
       filterName: "Released",
       value: [{ id: "ReleaseStatus", value: "RELEASED" }],
       type: "column",
+      filterType: "equal",
     },
     {
       filterName: "Requested",
       value: [{ id: "ReleaseStatus", value: "REQUESTED" }],
       type: "column",
+      filterType: "equal",
     },
   ];
 
