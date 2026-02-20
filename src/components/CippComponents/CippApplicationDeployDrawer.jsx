@@ -96,6 +96,7 @@ export const CippApplicationDeployDrawer = ({
   const handleSubmit = () => {
     const formData = formControl.getValues();
     const formattedData = { ...formData };
+    formattedData.tenantFilter = "allTenants"; //added to prevent issues with location check. temp fix
     formattedData.selectedTenants = selectedTenants.map((tenant) => ({
       defaultDomainName: tenant.value,
       customerId: tenant.addedFields.customerId,
