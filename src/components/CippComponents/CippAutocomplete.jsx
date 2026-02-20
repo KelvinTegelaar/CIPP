@@ -9,6 +9,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippError } from "../../utils/get-cipp-error";
@@ -474,13 +475,17 @@ export const CippAutoComplete = (props) => {
                       {customAction && (
                         <Tooltip title={customAction.tooltip || ""} placement="bottom" arrow>
                           <IconButton
+                            component={customAction.link ? Link : "button"}
+                            href={customAction.link || undefined}
                             size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (customAction.onClick) {
-                                customAction.onClick(value || internalValue);
-                              }
-                            }}
+                            onClick={
+                              customAction.onClick && !customAction.link
+                                ? (e) => {
+                                    e.stopPropagation();
+                                    customAction.onClick(value || internalValue);
+                                  }
+                                : (e) => e.stopPropagation()
+                            }
                             sx={{
                               opacity: 0,
                               transition: "all 0.2s",
@@ -488,6 +493,8 @@ export const CippAutoComplete = (props) => {
                               mr: "-4px",
                               mt: -1,
                               cursor: "pointer",
+                              color: "inherit",
+                              textDecoration: "none",
                               "&:hover": {
                                 opacity: 1,
                                 backgroundColor: "action.hover",

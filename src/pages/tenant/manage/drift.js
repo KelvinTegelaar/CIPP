@@ -1723,15 +1723,10 @@ const ManageDriftPage = () => {
                       placeholder="Select a drift template..."
                       disableClearable={true}
                       customAction={{
-                        icon: <SvgIcon fontSize="small"><Edit /></SvgIcon>,
-                        onClick: (currentValue) => {
-                          if (currentValue?.value) {
-                            // Navigate to edit page for the selected template
-                            router.push(
-                              `/tenant/standards/templates/template?id=${currentValue.value}&type=drift`,
-                            );
-                          }
-                        },
+                        icon: <Edit fontSize="small" />,
+                        link: selectedTemplateOption?.value
+                          ? `/tenant/standards/templates/template?id=${selectedTemplateOption.value}&type=drift`
+                          : undefined,
                         tooltip: "Edit Template",
                         position: "inside",
                       }}
