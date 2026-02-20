@@ -296,18 +296,43 @@ const Page = () => {
                     const standardObject = currentTenantObj?.[standardId];
                     const directStandardValue = standardObject?.Value;
 
-                    // Determine compliance status
+                    // Determine compliance status - match main logic
                     let isCompliant = false;
 
-                    // For IntuneTemplate, the value is true if compliant, or an object with comparison data if not compliant
-                    if (directStandardValue === true) {
-                      isCompliant = true;
-                    } else if (
-                      directStandardValue !== undefined &&
-                      typeof directStandardValue !== "object"
+                    // FIRST: Check if CurrentValue and ExpectedValue exist and match
+                    if (
+                      standardObject?.CurrentValue !== undefined &&
+                      standardObject?.ExpectedValue !== undefined
                     ) {
+                      const sortedCurrent =
+                        typeof standardObject.CurrentValue === "object" &&
+                        standardObject.CurrentValue !== null
+                          ? Object.keys(standardObject.CurrentValue)
+                              .sort()
+                              .reduce((obj, key) => {
+                                obj[key] = standardObject.CurrentValue[key];
+                                return obj;
+                              }, {})
+                          : standardObject.CurrentValue;
+                      const sortedExpected =
+                        typeof standardObject.ExpectedValue === "object" &&
+                        standardObject.ExpectedValue !== null
+                          ? Object.keys(standardObject.ExpectedValue)
+                              .sort()
+                              .reduce((obj, key) => {
+                                obj[key] = standardObject.ExpectedValue[key];
+                                return obj;
+                              }, {})
+                          : standardObject.ExpectedValue;
+                      isCompliant =
+                        JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+                    }
+                    // SECOND: Check if Value is explicitly true
+                    else if (directStandardValue === true) {
                       isCompliant = true;
-                    } else if (currentTenantStandard) {
+                    }
+                    // THIRD: Fall back to currentTenantStandard
+                    else if (currentTenantStandard) {
                       isCompliant = currentTenantStandard.value === true;
                     }
 
@@ -533,11 +558,41 @@ const Page = () => {
                       : null;
                     let isCompliant = false;
 
-                    // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
-                    if (directStandardValue === true) {
+                    // FIRST: Check if CurrentValue and ExpectedValue exist and match
+                    if (
+                      standardObject?.CurrentValue !== undefined &&
+                      standardObject?.ExpectedValue !== undefined
+                    ) {
+                      const sortedCurrent =
+                        typeof standardObject.CurrentValue === "object" &&
+                        standardObject.CurrentValue !== null
+                          ? Object.keys(standardObject.CurrentValue)
+                              .sort()
+                              .reduce((obj, key) => {
+                                obj[key] = standardObject.CurrentValue[key];
+                                return obj;
+                              }, {})
+                          : standardObject.CurrentValue;
+                      const sortedExpected =
+                        typeof standardObject.ExpectedValue === "object" &&
+                        standardObject.ExpectedValue !== null
+                          ? Object.keys(standardObject.ExpectedValue)
+                              .sort()
+                              .reduce((obj, key) => {
+                                obj[key] = standardObject.ExpectedValue[key];
+                                return obj;
+                              }, {})
+                          : standardObject.ExpectedValue;
+                      isCompliant =
+                        JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+                    }
+                    // SECOND: Check if Value is explicitly true
+                    else if (directStandardValue === true) {
                       isCompliant = true;
-                    } else {
-                      isCompliant = false;
+                    }
+                    // THIRD: Fall back to currentTenantStandard
+                    else if (currentTenantStandard) {
+                      isCompliant = currentTenantStandard.value === true;
                     }
 
                     // Create a standardValue object that contains the template settings
@@ -620,8 +675,35 @@ const Page = () => {
                 : null;
               let isCompliant = false;
 
-              // For GroupTemplate, the value is true if compliant
-              if (directStandardValue === true) {
+              // FIRST: Check if CurrentValue and ExpectedValue exist and match
+              if (
+                standardObject?.CurrentValue !== undefined &&
+                standardObject?.ExpectedValue !== undefined
+              ) {
+                const sortedCurrent =
+                  typeof standardObject.CurrentValue === "object" &&
+                  standardObject.CurrentValue !== null
+                    ? Object.keys(standardObject.CurrentValue)
+                        .sort()
+                        .reduce((obj, key) => {
+                          obj[key] = standardObject.CurrentValue[key];
+                          return obj;
+                        }, {})
+                    : standardObject.CurrentValue;
+                const sortedExpected =
+                  typeof standardObject.ExpectedValue === "object" &&
+                  standardObject.ExpectedValue !== null
+                    ? Object.keys(standardObject.ExpectedValue)
+                        .sort()
+                        .reduce((obj, key) => {
+                          obj[key] = standardObject.ExpectedValue[key];
+                          return obj;
+                        }, {})
+                    : standardObject.ExpectedValue;
+                isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+              }
+              // SECOND: Check if Value is explicitly true
+              else if (directStandardValue === true) {
                 isCompliant = true;
               } else if (currentTenantStandard?.value) {
                 isCompliant = currentTenantStandard.value === true;
@@ -1988,43 +2070,105 @@ const Page = () => {
                                               </Typography>
                                               {Object.entries(
                                                 standard.currentTenantValue.CurrentValue,
-                                              ).map(([key, val]) => (
-                                                <Box key={key}>
-                                                  <Typography
-                                                    variant="subtitle2"
-                                                    sx={{
-                                                      fontWeight: 600,
-                                                      mb: 1,
-                                                      color: "warning.main",
-                                                    }}
-                                                  >
-                                                    {key}
-                                                  </Typography>
-                                                  <Box
-                                                    sx={{
-                                                      p: 1.5,
-                                                      bgcolor: "action.hover",
-                                                      borderRadius: 1,
-                                                      border: "1px solid",
-                                                      borderColor: "divider",
-                                                    }}
-                                                  >
+                                              ).map(([key, val]) => {
+                                                // Compare with expected value for this property
+                                                const expectedVal =
+                                                  standard.currentTenantValue?.ExpectedValue?.[key];
+                                                const isMatch = (() => {
+                                                  if (expectedVal === undefined) return false;
+                                                  // Deep comparison handling nested objects and case-insensitive strings
+                                                  const compareDeep = (v1, v2) => {
+                                                    if (
+                                                      typeof v1 === "string" &&
+                                                      typeof v2 === "string"
+                                                    ) {
+                                                      return v1.toLowerCase() === v2.toLowerCase();
+                                                    }
+                                                    if (
+                                                      typeof v1 === "object" &&
+                                                      v1 !== null &&
+                                                      typeof v2 === "object" &&
+                                                      v2 !== null
+                                                    ) {
+                                                      return (
+                                                        JSON.stringify(v1) === JSON.stringify(v2)
+                                                      );
+                                                    }
+                                                    return (
+                                                      JSON.stringify(v1) === JSON.stringify(v2)
+                                                    );
+                                                  };
+                                                  return compareDeep(val, expectedVal);
+                                                })();
+
+                                                return (
+                                                  <Box key={key}>
                                                     <Typography
-                                                      variant="body2"
+                                                      variant="subtitle2"
                                                       sx={{
-                                                        fontFamily: "monospace",
-                                                        fontSize: "0.8125rem",
-                                                        whiteSpace: "pre-wrap",
-                                                        wordBreak: "break-word",
+                                                        fontWeight: 600,
+                                                        mb: 1,
+                                                        color: isMatch
+                                                          ? "success.main"
+                                                          : "warning.main",
                                                       }}
                                                     >
-                                                      {val !== undefined
-                                                        ? JSON.stringify(val, null, 2)
-                                                        : "Not set"}
+                                                      {key}
                                                     </Typography>
+                                                    <Box
+                                                      sx={{
+                                                        p: 1.5,
+                                                        bgcolor: isMatch
+                                                          ? "success.lighter"
+                                                          : "action.hover",
+                                                        borderRadius: isMatch ? "12px" : 1,
+                                                        border: isMatch ? "2px solid" : "1px solid",
+                                                        borderColor: isMatch
+                                                          ? "success.main"
+                                                          : "divider",
+                                                        position: "relative",
+                                                      }}
+                                                    >
+                                                      {isMatch && (
+                                                        <Box
+                                                          sx={{
+                                                            position: "absolute",
+                                                            top: -8,
+                                                            right: -8,
+                                                            width: 24,
+                                                            height: 24,
+                                                            borderRadius: "50%",
+                                                            bgcolor: "success.main",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                          }}
+                                                        >
+                                                          <Check
+                                                            sx={{ color: "white", fontSize: 16 }}
+                                                          />
+                                                        </Box>
+                                                      )}
+                                                      <Typography
+                                                        variant="body2"
+                                                        sx={{
+                                                          fontFamily: "monospace",
+                                                          fontSize: "0.8125rem",
+                                                          whiteSpace: "pre-wrap",
+                                                          wordBreak: "break-word",
+                                                          color: isMatch
+                                                            ? "success.dark"
+                                                            : "inherit",
+                                                        }}
+                                                      >
+                                                        {val !== undefined
+                                                          ? JSON.stringify(val, null, 2)
+                                                          : "Not set"}
+                                                      </Typography>
+                                                    </Box>
                                                   </Box>
-                                                </Box>
-                                              ))}
+                                                );
+                                              })}
                                             </Stack>
                                           ) : (
                                             <Box
@@ -2359,43 +2503,99 @@ const Page = () => {
                                           </Typography>
                                           {Object.entries(
                                             standard.currentTenantValue.CurrentValue,
-                                          ).map(([key, val]) => (
-                                            <Box key={key}>
-                                              <Typography
-                                                variant="subtitle2"
-                                                sx={{
-                                                  fontWeight: 600,
-                                                  mb: 1,
-                                                  color: "warning.main",
-                                                }}
-                                              >
-                                                {key}
-                                              </Typography>
-                                              <Box
-                                                sx={{
-                                                  p: 1.5,
-                                                  bgcolor: "action.hover",
-                                                  borderRadius: 1,
-                                                  border: "1px solid",
-                                                  borderColor: "divider",
-                                                }}
-                                              >
+                                          ).map(([key, val]) => {
+                                            // Compare with expected value for this property
+                                            const expectedVal =
+                                              standard.currentTenantValue?.ExpectedValue?.[key];
+                                            const isMatch = (() => {
+                                              if (expectedVal === undefined) return false;
+                                              // Deep comparison handling nested objects and case-insensitive strings
+                                              const compareDeep = (v1, v2) => {
+                                                if (
+                                                  typeof v1 === "string" &&
+                                                  typeof v2 === "string"
+                                                ) {
+                                                  return v1.toLowerCase() === v2.toLowerCase();
+                                                }
+                                                if (
+                                                  typeof v1 === "object" &&
+                                                  v1 !== null &&
+                                                  typeof v2 === "object" &&
+                                                  v2 !== null
+                                                ) {
+                                                  return JSON.stringify(v1) === JSON.stringify(v2);
+                                                }
+                                                return JSON.stringify(v1) === JSON.stringify(v2);
+                                              };
+                                              return compareDeep(val, expectedVal);
+                                            })();
+
+                                            return (
+                                              <Box key={key}>
                                                 <Typography
-                                                  variant="body2"
+                                                  variant="subtitle2"
                                                   sx={{
-                                                    fontFamily: "monospace",
-                                                    fontSize: "0.8125rem",
-                                                    whiteSpace: "pre-wrap",
-                                                    wordBreak: "break-word",
+                                                    fontWeight: 600,
+                                                    mb: 1,
+                                                    color: isMatch
+                                                      ? "success.main"
+                                                      : "warning.main",
                                                   }}
                                                 >
-                                                  {val !== undefined
-                                                    ? JSON.stringify(val, null, 2)
-                                                    : "Not set"}
+                                                  {key}
                                                 </Typography>
+                                                <Box
+                                                  sx={{
+                                                    p: 1.5,
+                                                    bgcolor: isMatch
+                                                      ? "success.lighter"
+                                                      : "action.hover",
+                                                    borderRadius: isMatch ? "12px" : 1,
+                                                    border: isMatch ? "2px solid" : "1px solid",
+                                                    borderColor: isMatch
+                                                      ? "success.main"
+                                                      : "divider",
+                                                    position: "relative",
+                                                  }}
+                                                >
+                                                  {isMatch && (
+                                                    <Box
+                                                      sx={{
+                                                        position: "absolute",
+                                                        top: -8,
+                                                        right: -8,
+                                                        width: 24,
+                                                        height: 24,
+                                                        borderRadius: "50%",
+                                                        bgcolor: "success.main",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                      }}
+                                                    >
+                                                      <Check
+                                                        sx={{ color: "white", fontSize: 16 }}
+                                                      />
+                                                    </Box>
+                                                  )}
+                                                  <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                      fontFamily: "monospace",
+                                                      fontSize: "0.8125rem",
+                                                      whiteSpace: "pre-wrap",
+                                                      wordBreak: "break-word",
+                                                      color: isMatch ? "success.dark" : "inherit",
+                                                    }}
+                                                  >
+                                                    {val !== undefined
+                                                      ? JSON.stringify(val, null, 2)
+                                                      : "Not set"}
+                                                  </Typography>
+                                                </Box>
                                               </Box>
-                                            </Box>
-                                          ))}
+                                            );
+                                          })}
                                         </Stack>
                                       ) : (
                                         <Box

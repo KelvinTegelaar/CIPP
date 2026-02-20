@@ -1,10 +1,10 @@
 ---
-name: 'CodeQL'
+name: "CodeQL"
 on:
   pull_request:
     branches: [master, main, dev, react]
   schedule:
-    - cron: '26 17 * * 0'
+    - cron: "26 17 * * 0"
 jobs:
   analyze:
     if: github.repository_owner == 'KelvinTegelaar'
@@ -17,15 +17,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['javascript']
+        language: ["javascript"]
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
+        uses: github/codeql-action/autobuild@v4
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v4
