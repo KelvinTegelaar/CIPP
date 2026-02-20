@@ -206,7 +206,7 @@ const Page = () => {
       <Box sx={{ width: "100%", mx: "auto" }}>
         {/* Universal Search */}
         <Card sx={{ mb: 3 }}>
-          <CardContent sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}>
+          <CardContent sx={{ px: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
             <CippUniversalSearchV2 />
           </CardContent>
         </Card>
