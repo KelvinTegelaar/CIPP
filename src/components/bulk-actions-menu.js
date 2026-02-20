@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { Button, Link, ListItemText, Menu, MenuItem, SvgIcon } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
-import { FilePresent, Laptop, Mail, Share, Shield, ShieldMoon, PrecisionManufacturing, BarChart } from "@mui/icons-material";
+import { FilePresent, Laptop, Mail, Share, Shield, ShieldMoon, PrecisionManufacturing, BarChart, Group } from "@mui/icons-material";
 import { GlobeAltIcon, UsersIcon, ServerIcon } from "@heroicons/react/24/outline";
 
 function getIconByName(iconName) {
@@ -29,6 +29,8 @@ function getIconByName(iconName) {
       return <PrecisionManufacturing />;
     case "BarChart":
       return <BarChart />;
+    case "Group":
+      return <Group />;
     default:
       return null;
   }
@@ -92,7 +94,15 @@ export const BulkActionsMenu = (props) => {
             );
           } else {
             return (
-              <MenuItem key={index} onClick={action.onClick}>
+              <MenuItem
+                key={index}
+                onClick={() => {
+                  if (action.onClick) {
+                    action.onClick();
+                  }
+                  popover.handleClose();
+                }}
+              >
                 <SvgIcon sx={{ mr: 1 }}>{getIconByName(action.icon)}</SvgIcon>
                 <ListItemText primary={action.label} />
               </MenuItem>

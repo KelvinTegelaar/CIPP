@@ -42,8 +42,12 @@ export default function CippButtonCard({
     <Card variant={variant} sx={cardSx}>
       {component === "card" && (
         <>
-          <CardHeader action={cardActions} title={title} />
-          <Divider />
+          {title && (
+            <>
+              <CardHeader action={cardActions} title={title} />
+              <Divider />
+            </>
+          )}
           <CardContent style={{ marginBottom: "auto" }}>
             {isFetching ? <Skeleton /> : children}
           </CardContent>
