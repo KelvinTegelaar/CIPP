@@ -66,11 +66,13 @@ export const CippTenantModeDeploy = (props) => {
           </Tooltip>
         </Stack>
         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
-          Using GDAP is recommended for CIPP, however you can also authenticate to individual
-          tenants. It is required to connect to your partner tenant first, even if you are not a
-          Microsoft CSP. This is where the multi-tenant App Registration (CIPP-SAM) is installed. It
-          also allows CIPP to send notifications, perform permission checks, and update permissions
-          when required.
+          CIPP uses the partner center to automatically retrieve your tenants, however you can also
+          authenticate to individual tenants.
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
+          Please logon to your partner tenant. Not a Microsoft Partner? No problem, simply enter
+          your primary tenant information. Once that's done you can add more tenants using the
+          button below.
         </Typography>
         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
           Please remember to log onto a service account dedicated for CIPP. More info? Check out the{" "}
@@ -223,12 +225,16 @@ export const CippTenantModeDeploy = (props) => {
       {/* Per-Tenant */}
       <Box>
         <Typography variant="h6" gutterBottom>
-          Per-Tenant Authentication
+          Direct Tenant Authentication
         </Typography>
         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
-          Click the button below to connect to individual tenants. You can authenticate to multiple
-          tenants by repeating this step for each tenant you want to add. Accidentally added the
-          wrong tenant? Use the table below to remove it.
+          Click the button below to connect to individual tenants that are not in your partner
+          center, or any <strong>extra</strong> tenants you want to add if you're not a Microsoft
+          Partner.
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
+          You can authenticate to multiple tenants by repeating this step for each tenant you want
+          to add.
         </Typography>
 
         {!partnerTenantInfo?.data?.orgName && (
@@ -278,18 +284,6 @@ export const CippTenantModeDeploy = (props) => {
         </Box>
 
         <CippApiResults apiObject={addTenant} />
-
-        <Box sx={{ mx: -4 }}>
-          <CippTenantTable
-            title="Authenticated Tenants"
-            tenantInTitle={false}
-            customColumns={["displayName", "defaultDomainName", "delegatedPrivilegeStatus"]}
-            showExcludeButtons={false}
-            showCardButton={false}
-            showTenantSelector={false}
-            showAllTenantsSelector={false}
-          />
-        </Box>
       </Box>
 
       <CippWizardStepButtons

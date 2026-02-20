@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Typography, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "./CippFormComponent";
@@ -10,6 +10,15 @@ const CippTemplateFieldRenderer = ({
   formControl,
   templateType = "conditionalAccess",
 }) => {
+  const intuneDefinitionMap = useMemo(() => {
+    const map = new Map();
+    (intuneCollection || []).forEach((def) => {
+      if (def?.id) {
+        map.set(def.id, def);
+      }
+    });
+    return map;
+  }, []);
   // Default blacklisted fields with wildcard support
   const defaultBlacklistedFields = [
     "id",
@@ -253,6 +262,86 @@ const CippTemplateFieldRenderer = ({
       return null;
     }
 
+    // Render Intune group setting collections with child-friendly fields instead of raw [object Object]
+    if (
+      templateType === "intune" &&
+      key.toLowerCase() === "groupsettingcollectionvalue" &&
+      Array.isArray(value)
+    ) {
+      return (
+        <Grid size={{ xs: 12 }} key={fieldPath}>
+          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+            {getCippTranslation(key)}
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Grid container spacing={2}>
+            {value.map((groupEntry, groupIndex) => (
+              <Grid size={{ xs: 12 }} key={`${fieldPath}.${groupIndex}`}>
+                <Typography variant="subtitle1" sx={{ mt: 1, mb: 1 }}>
+                  {`Entry ${groupIndex + 1}`}
+                </Typography>
+                <Grid container spacing={2}>
+                  {(groupEntry?.children || []).map((child, childIndex) => {
+                    const childPath = `${fieldPath}.${groupIndex}.children.${childIndex}`;
+                    const intuneDefinition = intuneDefinitionMap.get(child?.settingDefinitionId);
+                    const childLabel =
+                      intuneDefinition?.displayName || child?.settingDefinitionId || `Child ${
+                        childIndex + 1
+                      }`;
+
+                    if (child?.simpleSettingValue) {
+                      return (
+                        <Grid size={{ xs: 12, md: 6 }} key={childPath}>
+                          <CippFormComponent
+                            type="textField"
+                            label={childLabel}
+                            name={`${childPath}.simpleSettingValue.value`}
+                            formControl={formControl}
+                            includeSystemVariables={true}
+                            helperText={child?.settingDefinitionId}
+                          />
+                        </Grid>
+                      );
+                    }
+
+                    if (child?.choiceSettingValue) {
+                      const options =
+                        intuneDefinition?.options?.map((option) => ({
+                          label: option.displayName || option.id,
+                          value: option.id,
+                        })) || [];
+
+                      return (
+                        <Grid size={{ xs: 12, md: 6 }} key={childPath}>
+                          <CippFormComponent
+                            type="autoComplete"
+                            label={childLabel}
+                            name={`${childPath}.choiceSettingValue.value`}
+                            formControl={formControl}
+                            options={options}
+                            multiple={false}
+                            helperText={child?.settingDefinitionId}
+                          />
+                        </Grid>
+                      );
+                    }
+
+                    return (
+                      <Grid size={{ xs: 12, md: 6 }} key={childPath}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+                          Unsupported group entry type — edit in JSON if needed.
+                        </Typography>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      );
+    }
+
     // Check for custom schema handling
     const schemaField = schemaFields[key.toLowerCase()];
     if (schemaField) {
@@ -299,9 +388,7 @@ const CippTemplateFieldRenderer = ({
                 // Handle different setting types
                 if (settingInstance.choiceSettingValue) {
                   // Find the setting definition in the intune collection
-                  const intuneObj = intuneCollection.find(
-                    (item) => item.id === settingInstance.settingDefinitionId
-                  );
+                  const intuneObj = intuneDefinitionMap.get(settingInstance.settingDefinitionId);
 
                   const label = intuneObj?.displayName || `Setting ${index + 1}`;
                   const options =
@@ -327,9 +414,7 @@ const CippTemplateFieldRenderer = ({
 
                 if (settingInstance.simpleSettingValue) {
                   // Find the setting definition in the intune collection
-                  const intuneObj = intuneCollection.find(
-                    (item) => item.id === settingInstance.settingDefinitionId
-                  );
+                  const intuneObj = intuneDefinitionMap.get(settingInstance.settingDefinitionId);
 
                   const label = intuneObj?.displayName || `Setting ${index + 1}`;
 

@@ -1,8 +1,9 @@
 import { Button, SvgIcon } from "@mui/material";
 import { CippTablePage } from "../CippComponents/CippTablePage.jsx";
-import { Sync, Block, PlayArrow, RestartAlt, Delete, Add } from "@mui/icons-material";
+import { Sync, Block, PlayArrow, RestartAlt, Delete, Add, Refresh } from "@mui/icons-material";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
+import cacheTypes from "../../data/CIPPDBCacheTypes.json";
 
 export const CippTenantTable = ({
   title = "Tenants",
@@ -69,6 +70,41 @@ export const CippTenantTable = ({
         "Are you sure you want to remove [displayName]? If this is a Direct Tenant, this will no longer be accessible until you add it via the Setup Wizard.",
       multiPost: false,
       condition: (row) => row.displayName !== "*Partner Tenant",
+    },
+    {
+      label: "Refresh CIPPDB Cache",
+      type: "GET",
+      url: `/api/ExecCIPPDBCache`,
+      icon: <Refresh />,
+      data: { Name: "Name", TenantFilter: "customerId" },
+      confirmText: "Select the cache type to refresh for [displayName]:",
+      multiPost: false,
+      hideBulk: true,
+      fields: [
+        {
+          type: "autoComplete",
+          name: "Name",
+          label: "Cache Type",
+          placeholder: "Select a cache type",
+          options: cacheTypes.map((cacheType) => ({
+            label: cacheType.friendlyName,
+            value: cacheType.type,
+            description: cacheType.description,
+          })),
+          multiple: false,
+          creatable: false,
+          required: true,
+        },
+      ],
+      customDataformatter: (rowData, actionData, formData) => {
+        const tenantFilter = rowData?.customerId || rowData?.defaultDomainName || "";
+        // Extract value from autoComplete object (which returns { label, value } or just value)
+        const cacheTypeName = formData.Name?.value || formData.Name || "";
+        return {
+          Name: cacheTypeName,
+          TenantFilter: tenantFilter,
+        };
+      },
     },
   ];
 
