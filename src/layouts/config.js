@@ -915,6 +915,12 @@ export const nativeMenuItems = [
         permissions: ["CIPP.AppSettings.*"],
       },
       {
+        title: "Custom Scripts",
+        path: "/cipp/custom-scripts",
+        roles: ["admin", "superadmin"],
+        permissions: ["CIPP.Alert.*"],
+      },
+      {
         title: "Advanced",
         roles: ["superadmin"],
         permissions: ["CIPP.SuperAdmin.*"],
