@@ -637,12 +637,14 @@ export const CippAutoComplete = (props) => {
         }}
         groupBy={groupBy}
         renderGroup={renderGroup}
-        ListboxProps={{
-          ref: listboxRef,
-          onScroll: (e) => {
-            if (listboxRef.current) {
-              scrollPositionRef.current = e.target.scrollTop;
-            }
+        slotProps={{
+          listbox: {
+            ref: listboxRef,
+            onScroll: (e) => {
+              if (listboxRef.current) {
+                scrollPositionRef.current = e.target.scrollTop;
+              }
+            },
           },
         }}
         renderOption={(props, option) => {
