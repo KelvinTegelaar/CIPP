@@ -24,9 +24,6 @@ import { CippApiDialog } from "../../components/CippComponents/CippApiDialog";
 import { CippAddTestReportDrawer } from "../../components/CippComponents/CippAddTestReportDrawer";
 import CippFormComponent from "../../components/CippComponents/CippFormComponent";
 import {
-  Devices as DevicesIcon,
-  CheckCircle as CheckCircleIcon,
-  Work as BriefcaseIcon,
   Assessment as AssessmentIcon,
   Refresh as RefreshIcon,
 } from "@mui/icons-material";
@@ -115,6 +112,8 @@ const Page = () => {
             IdentityTotal: testsApi.data.TestCounts?.Identity?.Total || 0,
             DevicesPassed: testsApi.data.TestCounts?.Devices?.Passed || 0,
             DevicesTotal: testsApi.data.TestCounts?.Devices?.Total || 0,
+            CustomPassed: testsApi.data.TestCounts?.Custom?.Passed || 0,
+            CustomTotal: testsApi.data.TestCounts?.Custom?.Total || 0,
             DataPassed: 0,
             DataTotal: 0,
           },

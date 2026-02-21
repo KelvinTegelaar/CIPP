@@ -32,6 +32,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
       description: "",
       IdentityTests: [],
       DevicesTests: [],
+      CustomTests: [],
     },
   });
 
@@ -40,6 +41,8 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
     useWatch({ control: formControl.control, name: "IdentityTests" }) || [];
   const selectedDeviceTests =
     useWatch({ control: formControl.control, name: "DevicesTests" }) || [];
+  const selectedCustomTests =
+    useWatch({ control: formControl.control, name: "CustomTests" }) || [];
 
   const createReport = ApiPostCall({
     urlFromData: true,
@@ -52,7 +55,11 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
     queryKey: "ListAvailableTests",
   });
 
-  const availableTests = availableTestsApi.data || { IdentityTests: [], DevicesTests: [] };
+  const availableTests = availableTestsApi.data || {
+    IdentityTests: [],
+    DevicesTests: [],
+    CustomTests: [],
+  };
 
   // Reset form fields on successful creation
   useEffect(() => {
@@ -62,6 +69,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
         description: "",
         IdentityTests: [],
         DevicesTests: [],
+        CustomTests: [],
       });
     }
   }, [createReport.isSuccess, formControl]);
@@ -94,11 +102,17 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
       description: "",
       IdentityTests: [],
       DevicesTests: [],
+      CustomTests: [],
     });
   };
 
   const toggleTest = (testId, testType) => {
-    const fieldName = testType === "Identity" ? "IdentityTests" : "DevicesTests";
+    const fieldMap = {
+      Identity: "IdentityTests",
+      Devices: "DevicesTests",
+      Custom: "CustomTests",
+    };
+    const fieldName = fieldMap[testType] || "IdentityTests";
     const currentTests = formControl.getValues(fieldName) || [];
 
     if (currentTests.includes(testId)) {
@@ -113,9 +127,13 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
   };
 
   const isTestSelected = (testId, testType) => {
-    return testType === "Identity"
-      ? selectedIdentityTests.includes(testId)
-      : selectedDeviceTests.includes(testId);
+    if (testType === "Identity") {
+      return selectedIdentityTests.includes(testId);
+    }
+    if (testType === "Devices") {
+      return selectedDeviceTests.includes(testId);
+    }
+    return selectedCustomTests.includes(testId);
   };
 
   const filterTests = (tests) => {
@@ -130,9 +148,11 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
   const currentTests =
     activeTab === 0
       ? filterTests(availableTests.IdentityTests || [])
-      : filterTests(availableTests.DevicesTests || []);
+      : activeTab === 1
+      ? filterTests(availableTests.DevicesTests || [])
+      : filterTests(availableTests.CustomTests || []);
 
-  const currentTestType = activeTab === 0 ? "Identity" : "Devices";
+  const currentTestType = activeTab === 0 ? "Identity" : activeTab === 1 ? "Devices" : "Custom";
 
   return (
     <>
@@ -230,9 +250,15 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                   size="small"
                   variant="outlined"
                 />
+                <Chip
+                  label={`${selectedCustomTests.length} Custom`}
+                  color="info"
+                  size="small"
+                  variant="outlined"
+                />
                 <Box sx={{ flex: 1 }} />
                 <Typography variant="caption" color="text.secondary">
-                  Total: {selectedIdentityTests.length + selectedDeviceTests.length} tests
+                  Total: {selectedIdentityTests.length + selectedDeviceTests.length + selectedCustomTests.length} tests
                 </Typography>
               </Stack>
             </Paper>
@@ -266,6 +292,16 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                         <span>Device Tests</span>
                         {selectedDeviceTests.length > 0 && (
                           <Chip size="small" label={selectedDeviceTests.length} color="secondary" />
+                        )}
+                      </Box>
+                    }
+                  />
+                  <Tab
+                    label={
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <span>Custom Tests</span>
+                        {selectedCustomTests.length > 0 && (
+                          <Chip size="small" label={selectedCustomTests.length} color="info" />
                         )}
                       </Box>
                     }
