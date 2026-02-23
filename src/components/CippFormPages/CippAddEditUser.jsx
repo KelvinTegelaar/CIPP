@@ -1,5 +1,6 @@
 import { Alert, Divider, InputAdornment, Typography } from "@mui/material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
+import { getCippValidator } from "../../utils/get-cipp-validator";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
@@ -76,7 +77,7 @@ const CippAddEditUser = (props) => {
       const tenantGroupsList = tenantGroups?.data || [];
 
       return tenantGroupsList.filter(
-        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id)
+        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id),
       );
     }
     return [];
@@ -139,7 +140,7 @@ const CippAddEditUser = (props) => {
           const generatedUsername = generateUsername(
             formatString,
             watcher.givenName,
-            watcher.surname
+            watcher.surname,
           );
           if (generatedUsername) {
             formControl.setValue("username", generatedUsername);
@@ -153,7 +154,7 @@ const CippAddEditUser = (props) => {
   useEffect(() => {
     if (formType === "add" && userTemplates.isSuccess && !watcher.userTemplate) {
       const defaultTemplate = userTemplates.data?.find(
-        (template) => template.defaultForTenant === true
+        (template) => template.defaultForTenant === true,
       );
       if (defaultTemplate) {
         formControl.setValue("userTemplate", {
@@ -286,6 +287,9 @@ const CippAddEditUser = (props) => {
           label="First Name"
           name="givenName"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 64, message: "First Name cannot exceed 64 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -295,6 +299,9 @@ const CippAddEditUser = (props) => {
           label="Last Name"
           name="surname"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 64, message: "Last Name cannot exceed 64 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -304,6 +311,10 @@ const CippAddEditUser = (props) => {
           label="Display Name"
           name="displayName"
           formControl={formControl}
+          validators={{
+            required: "Display Name is required",
+            maxLength: { value: 256, message: "Display Name cannot exceed 256 characters" },
+          }}
           onChange={(e) => {
             setDisplayNameManuallySet(true);
           }}
@@ -319,6 +330,14 @@ const CippAddEditUser = (props) => {
           }}
           name="username"
           formControl={formControl}
+          validators={{
+            required: "Username is required",
+            maxLength: { value: 64, message: "Username cannot exceed 64 characters" },
+            pattern: {
+              value: /^[A-Za-z0-9'.\-_!#^~]+$/,
+              message: "Username can only contain letters, numbers, and ' . - _ ! # ^ ~ characters",
+            },
+          }}
           onChange={(e) => {
             setUsernameManuallySet(true);
           }}
@@ -329,6 +348,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
           name="primDomain"
           label="Primary Domain name"
+          validators={{ required: "Primary Domain is required" }}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -460,6 +480,9 @@ const CippAddEditUser = (props) => {
           label="Job Title"
           name="jobTitle"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 128, message: "Job Title cannot exceed 128 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -469,6 +492,9 @@ const CippAddEditUser = (props) => {
           label="Street"
           name="streetAddress"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 1024, message: "Street Address cannot exceed 1024 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -478,6 +504,7 @@ const CippAddEditUser = (props) => {
           label="City"
           name="city"
           formControl={formControl}
+          validators={{ maxLength: { value: 128, message: "City cannot exceed 128 characters" } }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -487,6 +514,9 @@ const CippAddEditUser = (props) => {
           label="State/Province"
           name="state"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 128, message: "State/Province cannot exceed 128 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -496,6 +526,9 @@ const CippAddEditUser = (props) => {
           label="Postal Code"
           name="postalCode"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 40, message: "Postal Code cannot exceed 40 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -514,6 +547,9 @@ const CippAddEditUser = (props) => {
           label="Company Name"
           name="companyName"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 64, message: "Company Name cannot exceed 64 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -523,6 +559,9 @@ const CippAddEditUser = (props) => {
           label="Department"
           name="department"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 64, message: "Department cannot exceed 64 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -532,6 +571,7 @@ const CippAddEditUser = (props) => {
           label="Mobile #"
           name="mobilePhone"
           formControl={formControl}
+          validators={{ maxLength: { value: 64, message: "Mobile # cannot exceed 64 characters" } }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -550,6 +590,7 @@ const CippAddEditUser = (props) => {
           label="Alternate Email Address"
           name="otherMails"
           formControl={formControl}
+          validators={{ validate: (value) => !value || getCippValidator(value, "email") }}
         />
       </Grid>
       {userSettingsDefaults?.userAttributes
