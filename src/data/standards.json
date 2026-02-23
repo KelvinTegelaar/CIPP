@@ -2268,8 +2268,8 @@
         "label": "Select value",
         "name": "standards.SendFromAlias.state",
         "options": [
-          { "label": "Enabled", "value": true },
-          { "label": "Disabled", "value": false }
+          { "label": "Enabled", "value": "true" },
+          { "label": "Disabled", "value": "false" }
         ]
       }
     ],
