@@ -67,7 +67,7 @@ export const CippAddTenantAllowBlockListDrawer = ({
       formControl.setValue(
         "listMethod",
         { label: "Block", value: "Block" },
-        { shouldValidate: true }
+        { shouldValidate: true },
       );
     }
 
@@ -263,12 +263,12 @@ export const CippAddTenantAllowBlockListDrawer = ({
                 listType?.value === "FileHash"
                   ? "Enter SHA256 hash values separated by commas or semicolons (e.g., 768a813668695ef2483b2bde7cf5d1b2db0423a0d3e63e498f3ab6f2eb13ea3e)"
                   : listType?.value === "Url"
-                  ? "Enter URLs, IPv4, or IPv6 addresses with optional wildcards separated by commas or semicolons"
-                  : listType?.value === "Sender"
-                  ? "Enter domains or email addresses separated by commas or semicolons (e.g., contoso.com,user@example.com)"
-                  : listType?.value === "IP"
-                  ? "Enter IPv6 addresses only in colon-hexadecimal format or CIDR notation"
-                  : ""
+                    ? "Enter URLs, IPv4, or IPv6 addresses with optional wildcards separated by commas or semicolons"
+                    : listType?.value === "Sender"
+                      ? "Enter domains or email addresses separated by commas or semicolons (e.g., contoso.com,user@example.com)"
+                      : listType?.value === "IP"
+                        ? "Enter IPv6 addresses only in colon-hexadecimal format or CIDR notation"
+                        : ""
               }
             />
           </Grid>
