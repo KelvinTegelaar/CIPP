@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState, useWatch } from "react-hook-form";
@@ -85,16 +85,6 @@ export const CippAddTenantAllowBlockListDrawer = ({
     listMethod,
     formControl,
   ]);
-
-  useEffect(() => {
-    if (addEntry.isSuccess) {
-      const currentTenants = formControl.getValues("tenantID");
-      formControl.reset({
-        ...defaultValues,
-        tenantID: currentTenants,
-      });
-    }
-  }, [addEntry.isSuccess, formControl]);
 
   const validateEntries = (value) => {
     if (!value) return true;
