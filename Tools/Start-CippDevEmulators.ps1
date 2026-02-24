@@ -8,6 +8,9 @@ Get-Process node -ErrorAction SilentlyContinue | Stop-Process -ErrorAction Silen
 
 # Get paths
 $Path = (Get-Item $PSScriptRoot).Parent.Parent.FullName
+
+# Run installation script to ensure dependencies are installed and updated before starting emulators
+pwsh -File (Join-Path $PSScriptRoot 'Start-CippDevInstallation.ps1')
 $ApiPath = Join-Path -Path $Path -ChildPath 'CIPP-API'
 $FrontendPath = Join-Path -Path $Path -ChildPath 'CIPP'
 
