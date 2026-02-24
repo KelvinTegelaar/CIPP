@@ -218,7 +218,7 @@ export const CippPermissionResults = (props) => {
               />
             )}
 
-            {results?.Results?.AccessTokenDetails?.Scope.length > 0 && (
+            {results?.Results?.AccessTokenDetails?.Scope?.length > 0 && (
               <>
                 <CippDataTable
                   title="Current Delegated Scopes"
@@ -233,7 +233,7 @@ export const CippPermissionResults = (props) => {
                 />
               </>
             )}
-            {results?.Results?.ApplicationTokenDetails?.Roles.length > 0 && (
+            {results?.Results?.ApplicationTokenDetails?.Roles?.length > 0 && (
               <>
                 <CippDataTable
                   title="Current Application Roles"
