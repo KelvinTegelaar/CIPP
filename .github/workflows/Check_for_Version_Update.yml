@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - name: Check for Changed Files
-        uses: brettcannon/check-for-changed-files@v1.1.0
+        uses: brettcannon/check-for-changed-files@v1.2.1
         with:
           file-pattern: public/version.json
           failure-message: "You have not updated version.json. This is a required file to update at each PR. Please sync your latest changes and update the version number."

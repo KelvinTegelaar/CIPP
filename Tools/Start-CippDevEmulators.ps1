@@ -1,18 +1,26 @@
+Write-Host 'Starting CIPP Dev Emulators' -ForegroundColor Cyan
+
+# Verify Windows Terminal is available
 Get-Command wt -ErrorAction Stop | Out-Null
+
+# Stop any existing node processes
 Get-Process node -ErrorAction SilentlyContinue | Stop-Process -ErrorAction SilentlyContinue
+
+# Get paths
 $Path = (Get-Item $PSScriptRoot).Parent.Parent.FullName
-Write-Host "CIPP Dev Emulators starting in $Path" -ForegroundColor Green
 
-pwsh -file (Join-Path $PSScriptRoot 'Start-CippDevInstallation.ps1')
+# Run installation script to ensure dependencies are installed and updated before starting emulators
+pwsh -File (Join-Path $PSScriptRoot 'Start-CippDevInstallation.ps1')
+$ApiPath = Join-Path -Path $Path -ChildPath 'CIPP-API'
+$FrontendPath = Join-Path -Path $Path -ChildPath 'CIPP'
 
-Write-Host 'Starting CIPP Dev Emulators'
+Write-Host 'Starting emulators...' -ForegroundColor Cyan
 
-if (Test-Path (Join-Path $Path 'CIPP-API-Processor')) {
-  $Process = Read-Host -Prompt 'Start Process Function (y/N)?'
-}
+# Build commands with error handling
+$azuriteCommand = 'try { azurite } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
+$apiCommand = 'try { func start } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
+$frontendCommand = 'try { npm run dev } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
+$swaCommand = 'try { npm run start-swa } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
 
-if ($Process -eq 'y') {
-  wt --title CIPP`; new-tab --title 'Azurite' -d $Path pwsh -c azurite`; new-tab --title 'FunctionApp' -d $Path\CIPP-API pwsh -c func start`; new-tab --title 'CIPP Frontend' -d $Path\CIPP pwsh -c npm run dev`; new-tab --title 'SWA' -d $Path\CIPP pwsh -c npm run start-swa`; new-tab --title 'CIPP-API-Processor' -d $Path\CIPP-API-Processor pwsh -c func start --port 7072
-} else {
-  wt --title CIPP`; new-tab --title 'Azurite' -d $Path pwsh -c azurite`; new-tab --title 'FunctionApp' -d $Path\CIPP-API pwsh -c func start`; new-tab --title 'CIPP Frontend' -d $Path\CIPP pwsh -c npm run dev`; new-tab --title 'SWA' -d $Path\CIPP pwsh -c npm run start-swa
-}
+# Start Windows Terminal with all tabs
+wt --title CIPP`; new-tab --title 'Azurite' -d $Path pwsh -c $azuriteCommand`; new-tab --title 'FunctionApp' -d $ApiPath pwsh -c $apiCommand`; new-tab --title 'CIPP Frontend' -d $FrontendPath pwsh -c $frontendCommand`; new-tab --title 'SWA' -d $FrontendPath pwsh -c $swaCommand

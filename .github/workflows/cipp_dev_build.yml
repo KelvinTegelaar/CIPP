@@ -15,7 +15,7 @@ jobs:
     steps:
       # Checkout the repository
       - name: Checkout Code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
 
       # Set up Node.js
       - name: Get Node version
@@ -26,7 +26,7 @@ jobs:
           echo "node_version=$node_sanitized_version" >> $GITHUB_OUTPUT
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: ${{ steps.get_node_version.outputs.node_version }}
 
