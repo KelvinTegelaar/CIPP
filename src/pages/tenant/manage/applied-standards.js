@@ -1779,8 +1779,7 @@ const Page = () => {
                               </Box>
                             ) : (
                               <Alert severity="info">
-                                This data has not yet been collected. Collect the data by pressing
-                                the report button on the top of the page.
+                                This data has not yet been collected. Collect the data by selecting Refresh Data from the Actions dropdown on the top of the page.
                               </Alert>
                             )}
 
