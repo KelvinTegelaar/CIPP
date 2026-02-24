@@ -29,4 +29,5 @@ if (-not(yarn global list | Select-String -Pattern 'next')) {
   yarn global add 'next'
 }
 
-yarn install --cwd (Join-Path $Path "CIPP") --network-timeout 500000
+Write-Host 'Running yarn install for CIPP frontend...' -ForegroundColor Cyan
+yarn install --cwd (Join-Path $Path 'CIPP') --network-timeout 500000

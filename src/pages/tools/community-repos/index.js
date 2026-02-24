@@ -140,7 +140,7 @@ const Page = () => {
   const watchIncludeForks = searchForm.watch("includeforks");
 
   const handleSearch = () => {
-    const searchTerms = watchSearchTerm.map((t) => t.value) ?? [];
+    const searchTerms = watchSearchTerm?.map((t) => t.value) ?? [];
     searchMutation.mutate({
       url: "/api/ExecGitHubAction",
       data: {
