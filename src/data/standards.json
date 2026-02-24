@@ -2268,8 +2268,8 @@
         "label": "Select value",
         "name": "standards.SendFromAlias.state",
         "options": [
-          { "label": "Enabled", "value": true },
-          { "label": "Disabled", "value": false }
+          { "label": "Enabled", "value": "true" },
+          { "label": "Disabled", "value": "false" }
         ]
       }
     ],
@@ -3985,6 +3985,34 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2023-03-27",
+    "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.intuneDeviceRegLocalAdmins",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Controls whether users who register Microsoft Entra joined devices are granted local administrator rights on those devices and if Global Administrators are added as local admins.",
+    "docsDescription": "Configures the Device Registration Policy local administrator behavior for registering users. When enabled, users who register devices are not granted local administrator rights, you can also configure if Global Administrators are added as local admins.",
+    "executiveText": "Controls whether employees who enroll devices automatically receive local administrator access. Disabling registering-user admin rights follows least-privilege principles and reduces security risk from over-privileged endpoints.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.intuneDeviceRegLocalAdmins.disableRegisteringUsers",
+        "label": "Disable registering users as local administrators",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.intuneDeviceRegLocalAdmins.enableGlobalAdmins",
+        "label": "Allow Global Administrators to be local administrators",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure local administrator rights for users joining devices",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-02-23",
     "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
     "recommendedBy": []
   },

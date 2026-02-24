@@ -89,6 +89,8 @@ export const CippAutoComplete = (props) => {
   const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
   const hasPreselectedRef = useRef(false);
   const autocompleteRef = useRef(null); // Ref for focusing input after selection
+  const listboxRef = useRef(null); // Ref for the listbox to preserve scroll position
+  const scrollPositionRef = useRef(0); // Store scroll position
   const filter = createFilterOptions({
     stringify: (option) => JSON.stringify(option),
   });
@@ -367,6 +369,11 @@ export const CippAutoComplete = (props) => {
         }
         name={name}
         onChange={(event, newValue) => {
+          // Store scroll position before processing the change
+          if (multiple && listboxRef.current) {
+            scrollPositionRef.current = listboxRef.current.scrollTop;
+          }
+
           if (Array.isArray(newValue)) {
             newValue = newValue.map((item) => {
               // If user typed a new item or missing label
@@ -407,13 +414,18 @@ export const CippAutoComplete = (props) => {
             onChange(newValue, newValue?.addedFields);
           }
 
-          // In multiple mode, refocus the input after selection to allow continuous adding
+          // In multiple mode, refocus the input and restore scroll position
           if (multiple && newValue && autocompleteRef.current) {
             // Use setTimeout to ensure the selection is processed first
             setTimeout(() => {
               const input = autocompleteRef.current?.querySelector("input");
               if (input) {
                 input.focus();
+              }
+              
+              // Restore the scroll position
+              if (listboxRef.current && scrollPositionRef.current > 0) {
+                listboxRef.current.scrollTop = scrollPositionRef.current;
               }
             }, 0);
           }
@@ -625,6 +637,16 @@ export const CippAutoComplete = (props) => {
         }}
         groupBy={groupBy}
         renderGroup={renderGroup}
+        slotProps={{
+          listbox: {
+            ref: listboxRef,
+            onScroll: (e) => {
+              if (listboxRef.current) {
+                scrollPositionRef.current = e.target.scrollTop;
+              }
+            },
+          },
+        }}
         renderOption={(props, option) => {
           const { key, ...optionProps } = props;
           return (
