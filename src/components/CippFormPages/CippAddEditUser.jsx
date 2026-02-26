@@ -76,7 +76,7 @@ const CippAddEditUser = (props) => {
       const tenantGroupsList = tenantGroups?.data || [];
 
       return tenantGroupsList.filter(
-        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id)
+        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id),
       );
     }
     return [];
@@ -139,7 +139,7 @@ const CippAddEditUser = (props) => {
           const generatedUsername = generateUsername(
             formatString,
             watcher.givenName,
-            watcher.surname
+            watcher.surname,
           );
           if (generatedUsername) {
             formControl.setValue("username", generatedUsername);
@@ -153,7 +153,7 @@ const CippAddEditUser = (props) => {
   useEffect(() => {
     if (formType === "add" && userTemplates.isSuccess && !watcher.userTemplate) {
       const defaultTemplate = userTemplates.data?.find(
-        (template) => template.defaultForTenant === true
+        (template) => template.defaultForTenant === true,
       );
       if (defaultTemplate) {
         formControl.setValue("userTemplate", {
@@ -307,6 +307,7 @@ const CippAddEditUser = (props) => {
           onChange={(e) => {
             setDisplayNameManuallySet(true);
           }}
+          required={true}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -322,6 +323,7 @@ const CippAddEditUser = (props) => {
           onChange={(e) => {
             setUsernameManuallySet(true);
           }}
+          required={true}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
