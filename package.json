@@ -51,7 +51,7 @@
     "@tiptap/extension-table": "^3.19.0",
     "@tiptap/pm": "^3.4.1",
     "@tiptap/react": "^3.4.1",
-    "@tiptap/starter-kit": "^3.19.0",
+    "@tiptap/starter-kit": "^3.20.0",
     "@uiw/react-json-view": "^2.0.0-alpha.41",
     "@vvo/tzdb": "^6.198.0",
     "apexcharts": "5.3.5",
