@@ -28,7 +28,7 @@ const Page = () => {
       url: "/api/AddIntuneTemplate",
       data: {
         ID: "id",
-        URLName: "URLName",
+        URLName: "managedAppPolicies",
       },
       confirmText: "Are you sure you want to create a template based on this policy?",
       icon: <Book />,
