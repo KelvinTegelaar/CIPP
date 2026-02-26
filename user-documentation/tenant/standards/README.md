@@ -12,9 +12,9 @@ This page serves as an overview of CIPP Standards.  For the technical components
 
 ## **Standards Overview**
 
-Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **four hours** or evaluating drift **every twelve hours**. This automatic enforcement and drift detection prevents unauthorized changes and helps maintain security. There are two kinds of standards:
+Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings **every twelve hours** or evaluating drift **every twelve hours**. This automatic enforcement and drift detection prevents unauthorized changes and helps maintain security. There are two kinds of standards:
 
-* Standards: These are the traditional standards that you've known and loved in CIPP for quite a while now. These standards are automatically enforced every four hours. Options for these standards are Report, Alert, and Remediate from [#actions](./#actions "mention").
+* Standards: These are the traditional standards that you've known and loved in CIPP for quite a while now. These standards are automatically enforced every twelve hours. Options for these standards are Report, Alert, and Remediate from [#actions](./#actions "mention").
 * Drift Management: New in v 8.3, Drift Management allows for you to manage client environments with a much finer touch. These templates evaluate every twelve hours and allow for granular handling of anything that is out of alignment with the template. As such, Drift Management settings are automatically set to Report and Alert from the [#actions](./#actions "mention") below. To learn more about what you can do with Drift Management, see [drift.md](../manage/drift.md "mention").
 
 {% hint style="info" %}
@@ -96,7 +96,7 @@ Each standard is labeled based on the level of change it introduces and its impa
 * **Companion Policies:** Some standards rely on additional policies in tools like **Microsoft Intune** to be fully effective. Ensure all required companion policies are configured to achieve the desired results.
 * **Deselecting Standards:** Deselecting a standard prevents it from being enforced in future cycles, but it does not undo its current configuration.
   * **Example:** If you deselect `"Enable FIDO2 capabilities`," the standard will stop enforcing this policy. However, if FIDO2 was already enabled, it will remain enabled.
-* **Application Cadence:** Standards reapply **every four hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle. Drift Management are evaluated every 12 hours.
+* **Application Cadence:** Standards reapply **every twelve hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle. Drift Management are evaluated **every twelve hours**.
 {% endhint %}
 
 {% hint style="info" %}

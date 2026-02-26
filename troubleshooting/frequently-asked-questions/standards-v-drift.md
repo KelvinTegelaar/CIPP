@@ -6,7 +6,7 @@ This question has become a regular one since the introduction of Drift Managemen
 
 #### What Does Standards Do?
 
-Standards are the Ron Popeil Showtime Rotisserie method: "set it and forget it!". Anything that you configure with a standard will be reinforced every four hours. You can have multiple templates that can apply to any given tenant and settings priority follow the precedence set out on the main [standards](../../user-documentation/tenant/standards/ "mention") page.
+Standards are the Ron Popeil Showtime Rotisserie method: "set it and forget it!". Anything that you configure with a standard will be reinforced every twelve hours. You can have multiple templates that can apply to any given tenant and settings priority follow the precedence set out on the main [standards](../../user-documentation/tenant/standards/ "mention") page.
 
 #### What Visibility Does Standards Provide?
 
