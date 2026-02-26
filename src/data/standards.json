@@ -4995,7 +4995,15 @@
         "type": "textField",
         "name": "standards.TeamsFederationConfiguration.DomainList",
         "label": "Domains, Comma separated",
-        "required": false
+        "required": false,
+        "condition": {
+          "field": "standards.TeamsFederationConfiguration.DomainControl.value",
+          "compareType": "isOneOf",
+          "compareValue": [
+            "AllowSpecificExternal",
+            "BlockSpecificExternal"
+          ]
+        }
       }
     ],
     "label": "Federation Configuration for Microsoft Teams",
