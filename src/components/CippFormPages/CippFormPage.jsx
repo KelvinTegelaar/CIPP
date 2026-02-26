@@ -117,7 +117,9 @@ const CippFormPage = (props) => {
             <Card>
               <CardContent>
                 {children}
-                <CippApiResults apiObject={postCall} />
+                <Box sx={{ mt: postCall.isIdle ? 0 : 2 }}>
+                  <CippApiResults apiObject={postCall} />
+                </Box>
               </CardContent>
               {!hideSubmit && (
                 <CardActions sx={{ justifyContent: "flex-end" }}>
