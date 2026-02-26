@@ -308,6 +308,7 @@ const CippAddEditUser = (props) => {
             setDisplayNameManuallySet(true);
           }}
           required={true}
+          validators={{ required: "Display Name is required" }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -324,6 +325,7 @@ const CippAddEditUser = (props) => {
             setUsernameManuallySet(true);
           }}
           required={true}
+          validators={{ required: "Username is required" }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
