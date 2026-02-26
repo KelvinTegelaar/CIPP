@@ -803,22 +803,22 @@ const ExecutiveReportDocument = ({
         // Collect deviations with pretty names
         if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
           acc.currentDeviations.push(
-            ...processDeviations(item.currentDeviations.filter((dev) => dev !== null))
+            ...processDeviations(item.currentDeviations.filter((dev) => dev !== null)),
           );
         }
         if (item.acceptedDeviations && Array.isArray(item.acceptedDeviations)) {
           acc.acceptedDeviations.push(
-            ...processDeviations(item.acceptedDeviations.filter((dev) => dev !== null))
+            ...processDeviations(item.acceptedDeviations.filter((dev) => dev !== null)),
           );
         }
         if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
           acc.customerSpecificDeviations.push(
-            ...processDeviations(item.customerSpecificDeviations.filter((dev) => dev !== null))
+            ...processDeviations(item.customerSpecificDeviations.filter((dev) => dev !== null)),
           );
         }
         if (item.deniedDeviations && Array.isArray(item.deniedDeviations)) {
           acc.deniedDeviations.push(
-            ...processDeviations(item.deniedDeviations.filter((dev) => dev !== null))
+            ...processDeviations(item.deniedDeviations.filter((dev) => dev !== null)),
           );
         }
 
@@ -835,7 +835,7 @@ const ExecutiveReportDocument = ({
         customerSpecificDeviations: [],
         deniedDeviations: [],
         appliedStandards: [],
-      }
+      },
     );
 
     // Get complete list of applied standards from standards comparison data (like policies-deployed)
@@ -1434,7 +1434,7 @@ const ExecutiveReportDocument = ({
                       } catch (error) {}
 
                       const standardDef = standardsData?.find(
-                        (std) => std.name === deviation.standardName
+                        (std) => std.name === deviation.standardName,
                       );
                       const description =
                         standardDef?.executiveText ||
@@ -1466,7 +1466,7 @@ const ExecutiveReportDocument = ({
                       } catch (error) {}
 
                       const standardDef = standardsData?.find(
-                        (std) => std.name === deviation.standardName
+                        (std) => std.name === deviation.standardName,
                       );
                       const description =
                         standardDef?.executiveText ||
@@ -1502,7 +1502,7 @@ const ExecutiveReportDocument = ({
                         } catch (error) {}
 
                         const standardDef = standardsData?.find(
-                          (std) => std.name === deviation.standardName
+                          (std) => std.name === deviation.standardName,
                         );
                         const description =
                           standardDef?.executiveText ||
@@ -1536,7 +1536,7 @@ const ExecutiveReportDocument = ({
                       } catch (error) {}
 
                       const standardDef = standardsData?.find(
-                        (std) => std.name === deviation.standardName
+                        (std) => std.name === deviation.standardName,
                       );
                       const description =
                         standardDef?.executiveText ||
@@ -1603,7 +1603,7 @@ const ExecutiveReportDocument = ({
                       acc[category].push(standard);
                       return acc;
                     },
-                    {}
+                    {},
                   );
 
                   return Object.entries(groupedStandards).map(([category, standards]) => (
@@ -1998,7 +1998,7 @@ const ExecutiveReportDocument = ({
                               "DEBUG: license.CountUsed is an object:",
                               countUsed,
                               "full license:",
-                              license
+                              license,
                             );
                           }
                           return countUsed;
@@ -2138,8 +2138,11 @@ const ExecutiveReportDocument = ({
                       {
                         deviceData.filter(
                           (device) =>
-                            device.complianceState === "compliant" ||
-                            device.ComplianceState === "compliant"
+                            (
+                              device.complianceState ||
+                              device.ComplianceState ||
+                              ""
+                            ).toLowerCase() === "compliant",
                         ).length
                       }
                     </Text>
@@ -2150,8 +2153,11 @@ const ExecutiveReportDocument = ({
                       {
                         deviceData.filter(
                           (device) =>
-                            device.complianceState !== "compliant" &&
-                            device.ComplianceState !== "compliant"
+                            (
+                              device.complianceState ||
+                              device.ComplianceState ||
+                              ""
+                            ).toLowerCase() !== "compliant",
                         ).length
                       }
                     </Text>
@@ -2162,11 +2168,14 @@ const ExecutiveReportDocument = ({
                       {Math.round(
                         (deviceData.filter(
                           (device) =>
-                            device.complianceState === "Compliant" ||
-                            device.ComplianceState === "Compliant"
+                            (
+                              device.complianceState ||
+                              device.ComplianceState ||
+                              ""
+                            ).toLowerCase() === "compliant",
                         ).length /
                           deviceData.length) *
-                          100
+                          100,
                       )}
                       %
                     </Text>
@@ -2212,13 +2221,18 @@ const ExecutiveReportDocument = ({
                           <Text
                             style={[
                               styles.statusText,
-                              device.complianceState === "compliant"
+                              (
+                                device.complianceState ||
+                                device.ComplianceState ||
+                                ""
+                              ).toLowerCase() === "compliant"
                                 ? styles.statusCompliant
                                 : styles.statusReview,
                             ]}
                           >
                             {(() => {
-                              const complianceState = device.complianceState || "Unknown";
+                              const complianceState =
+                                device.complianceState || device.ComplianceState || "Unknown";
                               if (typeof complianceState === "object") {
                               }
                               return complianceState;
@@ -2440,7 +2454,7 @@ const ExecutiveReportDocument = ({
                     <Text style={styles.statNumber}>
                       {
                         conditionalAccessData.filter(
-                          (policy) => policy.state === "enabledForReportingButNotEnforced"
+                          (policy) => policy.state === "enabledForReportingButNotEnforced",
                         ).length
                       }
                     </Text>
@@ -2451,7 +2465,7 @@ const ExecutiveReportDocument = ({
                       {
                         conditionalAccessData.filter(
                           (policy) =>
-                            policy.builtInControls && policy.builtInControls.includes("mfa")
+                            policy.builtInControls && policy.builtInControls.includes("mfa"),
                         ).length
                       }
                     </Text>
@@ -2485,7 +2499,7 @@ const ExecutiveReportDocument = ({
                       <Text style={styles.recommendationLabel}>Testing Phase:</Text>{" "}
                       {
                         conditionalAccessData.filter(
-                          (policy) => policy.state === "enabledForReportingButNotEnforced"
+                          (policy) => policy.state === "enabledForReportingButNotEnforced",
                         ).length
                       }{" "}
                       policies in report-only mode
@@ -2505,11 +2519,11 @@ const ExecutiveReportDocument = ({
                 <Text style={styles.infoTitle}>Access Control Recommendations</Text>
                 <Text style={styles.infoText}>
                   {conditionalAccessData.filter(
-                    (policy) => policy.state === "enabledForReportingButNotEnforced"
+                    (policy) => policy.state === "enabledForReportingButNotEnforced",
                   ).length > 0
                     ? `Consider activating ${
                         conditionalAccessData.filter(
-                          (policy) => policy.state === "enabledForReportingButNotEnforced"
+                          (policy) => policy.state === "enabledForReportingButNotEnforced",
                         ).length
                       } policies currently in testing mode after ensuring they don't disrupt business operations. `
                     : "Your access controls are properly configured. "}
