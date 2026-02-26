@@ -124,7 +124,7 @@ const CippAddEditUser = (props) => {
           displayName += selectedTemplate.displayName;
         }
 
-        formControl.setValue("displayName", displayName);
+        formControl.setValue("displayName", displayName, { shouldDirty: true });
       }
 
       // Auto-generate username if template has usernameFormat
@@ -142,7 +142,7 @@ const CippAddEditUser = (props) => {
             watcher.surname,
           );
           if (generatedUsername) {
-            formControl.setValue("username", generatedUsername);
+            formControl.setValue("username", generatedUsername, { shouldDirty: true });
           }
         }
       }
