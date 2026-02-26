@@ -149,6 +149,18 @@ const CippAddEditUser = (props) => {
     }
   }, [watcher.givenName, watcher.surname, selectedTemplate]);
 
+  // Reset manual flags and selected template when form is reset (fields become empty)
+  useEffect(() => {
+    if (formType === "add" && !watcher.givenName && !watcher.surname && !watcher.userTemplate) {
+      setDisplayNameManuallySet(false);
+      setUsernameManuallySet(false);
+      // Only clear selected template if it's not the default template
+      if (selectedTemplate && !selectedTemplate.defaultForTenant) {
+        setSelectedTemplate(null);
+      }
+    }
+  }, [watcher.givenName, watcher.surname, watcher.userTemplate, formType, selectedTemplate]);
+
   // Auto-select default template for tenant
   useEffect(() => {
     if (formType === "add" && userTemplates.isSuccess && !watcher.userTemplate) {
