@@ -126,6 +126,7 @@ const MailboxRestoreForm = () => {
               valueField: "UPN",
               addedField: { displayName: "displayName", ExchangeGuid: "ExchangeGuid" },
               url: "/api/ListMailboxes",
+              data: { UseReportDB: true },
             }}
             validators={{ validate: (value) => (value ? true : "Please select a target mailbox.") }}
           />
