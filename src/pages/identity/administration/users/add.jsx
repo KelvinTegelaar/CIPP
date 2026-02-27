@@ -37,6 +37,12 @@ const Page = () => {
       }
       newFields.tenantFilter = userSettingsDefaults.currentTenant;
 
+      // Preserve the currently selected template when copying properties
+      const currentTemplate = formControl.getValues("userTemplate");
+      if (currentTemplate) {
+        newFields.userTemplate = currentTemplate;
+      }
+
       formControl.reset(newFields);
     }
   }, [formValues]);
