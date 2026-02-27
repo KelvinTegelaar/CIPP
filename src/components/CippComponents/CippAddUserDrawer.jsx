@@ -18,7 +18,7 @@ export const CippAddUserDrawer = ({
   const userSettingsDefaults = useSettings();
 
   const formControl = useForm({
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
       usageLocation: userSettingsDefaults.usageLocation,
@@ -79,9 +79,9 @@ export const CippAddUserDrawer = ({
     }
   }, [createUser.isSuccess]);
 
-  const handleSubmit = () => {
-    formControl.trigger();
-    if (!isValid) {
+  const handleSubmit = async () => {
+    const isFormValid = await formControl.trigger();
+    if (!isFormValid) {
       return;
     }
     const values = formControl.getValues();
@@ -112,11 +112,26 @@ export const CippAddUserDrawer = ({
     formControl.reset(resetValues);
   };
 
+  const handleOpenDrawer = () => {
+    const resetValues = {
+      tenantFilter: userSettingsDefaults.currentTenant,
+      usageLocation: userSettingsDefaults.usageLocation,
+    };
+
+    const currentTemplate = formControl.getValues("userTemplate");
+    if (currentTemplate?.addedFields?.defaultForTenant) {
+      resetValues.userTemplate = currentTemplate;
+    }
+
+    formControl.reset(resetValues);
+    setDrawerVisible(true);
+  };
+
   return (
     <>
       <PermissionButton
         requiredPermissions={requiredPermissions}
-        onClick={() => setDrawerVisible(true)}
+        onClick={handleOpenDrawer}
         startIcon={<PersonAdd />}
       >
         {buttonText}
