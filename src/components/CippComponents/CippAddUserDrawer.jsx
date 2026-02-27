@@ -112,11 +112,26 @@ export const CippAddUserDrawer = ({
     formControl.reset(resetValues);
   };
 
+  const handleOpenDrawer = () => {
+    const resetValues = {
+      tenantFilter: userSettingsDefaults.currentTenant,
+      usageLocation: userSettingsDefaults.usageLocation,
+    };
+
+    const currentTemplate = formControl.getValues("userTemplate");
+    if (currentTemplate?.addedFields?.defaultForTenant) {
+      resetValues.userTemplate = currentTemplate;
+    }
+
+    formControl.reset(resetValues);
+    setDrawerVisible(true);
+  };
+
   return (
     <>
       <PermissionButton
         requiredPermissions={requiredPermissions}
-        onClick={() => setDrawerVisible(true)}
+        onClick={handleOpenDrawer}
         startIcon={<PersonAdd />}
       >
         {buttonText}
