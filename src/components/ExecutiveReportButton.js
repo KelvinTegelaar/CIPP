@@ -691,7 +691,7 @@ const ExecutiveReportDocument = ({
     // Build a lookup map from template configurations
     // Format: { "GUID": "Display Name" }
     const templateDisplayNameMap = {};
-    
+
     if (standardTemplates && Array.isArray(standardTemplates)) {
       standardTemplates.forEach((template) => {
         if (template.standards) {
@@ -699,15 +699,20 @@ const ExecutiveReportDocument = ({
           if (Array.isArray(template.standards.IntuneTemplate)) {
             template.standards.IntuneTemplate.forEach((templateItem) => {
               if (templateItem?.TemplateList?.value && templateItem?.TemplateList?.label) {
-                templateDisplayNameMap[templateItem.TemplateList.value.toLowerCase()] = templateItem.TemplateList.label;
+                templateDisplayNameMap[templateItem.TemplateList.value.toLowerCase()] =
+                  templateItem.TemplateList.label;
               }
               // Handle TemplateList-Tags expansion
-              const tagTemplates = templateItem?.["TemplateList-Tags"]?.addedFields?.templates ||
-                                  templateItem?.["TemplateList-Tags"]?.rawData?.templates;
+              const tagTemplates =
+                templateItem?.["TemplateList-Tags"]?.addedFields?.templates ||
+                templateItem?.["TemplateList-Tags"]?.rawData?.templates;
               if (tagTemplates && Array.isArray(tagTemplates)) {
                 tagTemplates.forEach((expandedTemplate) => {
-                  if (expandedTemplate?.GUID && (expandedTemplate?.displayName || expandedTemplate?.name)) {
-                    templateDisplayNameMap[expandedTemplate.GUID.toLowerCase()] = 
+                  if (
+                    expandedTemplate?.GUID &&
+                    (expandedTemplate?.displayName || expandedTemplate?.name)
+                  ) {
+                    templateDisplayNameMap[expandedTemplate.GUID.toLowerCase()] =
                       expandedTemplate.displayName || expandedTemplate.name;
                   }
                 });
@@ -718,15 +723,20 @@ const ExecutiveReportDocument = ({
           if (Array.isArray(template.standards.ConditionalAccessTemplate)) {
             template.standards.ConditionalAccessTemplate.forEach((templateItem) => {
               if (templateItem?.TemplateList?.value && templateItem?.TemplateList?.label) {
-                templateDisplayNameMap[templateItem.TemplateList.value.toLowerCase()] = templateItem.TemplateList.label;
+                templateDisplayNameMap[templateItem.TemplateList.value.toLowerCase()] =
+                  templateItem.TemplateList.label;
               }
               // Handle TemplateList-Tags expansion
-              const tagTemplates = templateItem?.["TemplateList-Tags"]?.addedFields?.templates ||
-                                  templateItem?.["TemplateList-Tags"]?.rawData?.templates;
+              const tagTemplates =
+                templateItem?.["TemplateList-Tags"]?.addedFields?.templates ||
+                templateItem?.["TemplateList-Tags"]?.rawData?.templates;
               if (tagTemplates && Array.isArray(tagTemplates)) {
                 tagTemplates.forEach((expandedTemplate) => {
-                  if (expandedTemplate?.GUID && (expandedTemplate?.displayName || expandedTemplate?.name)) {
-                    templateDisplayNameMap[expandedTemplate.GUID.toLowerCase()] = 
+                  if (
+                    expandedTemplate?.GUID &&
+                    (expandedTemplate?.displayName || expandedTemplate?.name)
+                  ) {
+                    templateDisplayNameMap[expandedTemplate.GUID.toLowerCase()] =
                       expandedTemplate.displayName || expandedTemplate.name;
                   }
                 });
@@ -1003,10 +1013,7 @@ const ExecutiveReportDocument = ({
     return aggregatedData;
   };
 
-  let securityControls = processStandardsData(
-    standardsCompareData,
-    standardTemplatesData,
-  );
+  let securityControls = processStandardsData(standardsCompareData, standardTemplatesData);
   let driftComplianceInfo = processDriftComplianceData(driftComplianceData, standardsCompareData);
 
   const getBadgeStyle = (status) => {
@@ -2771,7 +2778,7 @@ export const ExecutiveReportButton = (props) => {
   // Load all standard templates to resolve template display names
   const standardTemplatesData = ApiGetCall({
     url: `/api/listStandardTemplates`,
-    data: {},  // No templateId filter - get all templates
+    data: {}, // No templateId filter - get all templates
     queryKey: `standard-templates-report-all`,
     waiting: previewOpen,
   });
@@ -2857,7 +2864,9 @@ export const ExecutiveReportButton = (props) => {
           }
           standardsCompareData={standardsCompareData.isSuccess ? standardsCompareData?.data : null}
           driftComplianceData={driftComplianceData.isSuccess ? driftComplianceData?.data : null}
-          standardTemplatesData={standardTemplatesData.isSuccess ? standardTemplatesData?.data : null}
+          standardTemplatesData={
+            standardTemplatesData.isSuccess ? standardTemplatesData?.data : null
+          }
           sectionConfig={sectionConfig}
         />
       );
