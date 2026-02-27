@@ -44,8 +44,7 @@ const ExecutiveReportDocument = ({
   conditionalAccessData,
   standardsCompareData,
   driftComplianceData,
-  intuneTemplatesData,
-  caTemplatesData,
+  standardTemplatesData,
   sectionConfig = {
     executiveSummary: true,
     securityStandards: true,
@@ -678,7 +677,7 @@ const ExecutiveReportDocument = ({
   });
 
   // PROCESS REAL STANDARDS DATA
-  const processStandardsData = (apiData, intuneTemplates, caTemplates) => {
+  const processStandardsData = (apiData, standardTemplates) => {
     // Try to fetch standards data dynamically
     let standardsData = null;
     try {
@@ -687,6 +686,55 @@ const ExecutiveReportDocument = ({
 
     if (!apiData || !Array.isArray(apiData) || apiData.length === 0) {
       return [];
+    }
+
+    // Build a lookup map from template configurations
+    // Format: { "GUID": "Display Name" }
+    const templateDisplayNameMap = {};
+    
+    if (standardTemplates && Array.isArray(standardTemplates)) {
+      standardTemplates.forEach((template) => {
+        if (template.standards) {
+          // Process IntuneTemplate arrays
+          if (Array.isArray(template.standards.IntuneTemplate)) {
+            template.standards.IntuneTemplate.forEach((templateItem) => {
+              if (templateItem?.TemplateList?.value && templateItem?.TemplateList?.label) {
+                templateDisplayNameMap[templateItem.TemplateList.value.toLowerCase()] = templateItem.TemplateList.label;
+              }
+              // Handle TemplateList-Tags expansion
+              const tagTemplates = templateItem?.["TemplateList-Tags"]?.addedFields?.templates ||
+                                  templateItem?.["TemplateList-Tags"]?.rawData?.templates;
+              if (tagTemplates && Array.isArray(tagTemplates)) {
+                tagTemplates.forEach((expandedTemplate) => {
+                  if (expandedTemplate?.GUID && (expandedTemplate?.displayName || expandedTemplate?.name)) {
+                    templateDisplayNameMap[expandedTemplate.GUID.toLowerCase()] = 
+                      expandedTemplate.displayName || expandedTemplate.name;
+                  }
+                });
+              }
+            });
+          }
+          // Process ConditionalAccessTemplate arrays
+          if (Array.isArray(template.standards.ConditionalAccessTemplate)) {
+            template.standards.ConditionalAccessTemplate.forEach((templateItem) => {
+              if (templateItem?.TemplateList?.value && templateItem?.TemplateList?.label) {
+                templateDisplayNameMap[templateItem.TemplateList.value.toLowerCase()] = templateItem.TemplateList.label;
+              }
+              // Handle TemplateList-Tags expansion
+              const tagTemplates = templateItem?.["TemplateList-Tags"]?.addedFields?.templates ||
+                                  templateItem?.["TemplateList-Tags"]?.rawData?.templates;
+              if (tagTemplates && Array.isArray(tagTemplates)) {
+                tagTemplates.forEach((expandedTemplate) => {
+                  if (expandedTemplate?.GUID && (expandedTemplate?.displayName || expandedTemplate?.name)) {
+                    templateDisplayNameMap[expandedTemplate.GUID.toLowerCase()] = 
+                      expandedTemplate.displayName || expandedTemplate.name;
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
     }
 
     const processedStandards = [];
@@ -710,8 +758,7 @@ const ExecutiveReportDocument = ({
             standardValue?.ExpectedValue !== undefined
           ) {
             const sortedCurrent =
-              typeof standardValue.CurrentValue === "object" &&
-              standardValue.CurrentValue !== null
+              typeof standardValue.CurrentValue === "object" && standardValue.CurrentValue !== null
                 ? Object.keys(standardValue.CurrentValue)
                     .sort()
                     .reduce((obj, key) => {
@@ -729,8 +776,7 @@ const ExecutiveReportDocument = ({
                       return obj;
                     }, {})
                 : standardValue.ExpectedValue;
-            isCompliant =
-              JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+            isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
           }
           // SECOND: Check if Value is explicitly true
           else if (standardValue?.Value === true) {
@@ -762,8 +808,7 @@ const ExecutiveReportDocument = ({
             standardValue?.ExpectedValue !== undefined
           ) {
             const sortedCurrent =
-              typeof standardValue.CurrentValue === "object" &&
-              standardValue.CurrentValue !== null
+              typeof standardValue.CurrentValue === "object" && standardValue.CurrentValue !== null
                 ? Object.keys(standardValue.CurrentValue)
                     .sort()
                     .reduce((obj, key) => {
@@ -781,8 +826,7 @@ const ExecutiveReportDocument = ({
                       return obj;
                     }, {})
                 : standardValue.ExpectedValue;
-            isCompliant =
-              JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+            isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
           }
           // SECOND: Check if Value is explicitly true
           else if (standardValue?.Value === true) {
@@ -793,52 +837,25 @@ const ExecutiveReportDocument = ({
 
           // Create a proper name from the key - handle template types specially
           let displayName = "";
-          
+
           // Check if this is an IntuneTemplate or ConditionalAccessTemplate
-          const intuneTemplateMatch = standardKey.match(/^standards\.IntuneTemplate\.([0-9a-f-]+)/i);
-          const caTemplateMatch = standardKey.match(/^standards\.ConditionalAccessTemplate\.([0-9a-f-]+)/i);
-          
+          const intuneTemplateMatch = standardKey.match(
+            /^standards\.IntuneTemplate\.([0-9a-f-]+)/i,
+          );
+          const caTemplateMatch = standardKey.match(
+            /^standards\.ConditionalAccessTemplate\.([0-9a-f-]+)/i,
+          );
+
           if (intuneTemplateMatch) {
-            // IntuneTemplate - look up display name from templates data
+            // IntuneTemplate - look up display name from template configurations
             const guid = intuneTemplateMatch[1];
-            if (intuneTemplates && Array.isArray(intuneTemplates) && intuneTemplates.length > 0) {
-              const template = intuneTemplates.find(t => 
-                t.GUID && typeof t.GUID === 'string' && guid &&
-                t.GUID.toLowerCase() === guid.toLowerCase()
-              );
-              if (template) {
-                displayName = template.Displayname || template.displayName || template.name || template.DisplayName || `Intune Template - ${guid.substring(0, 8)}`;
-              } else {
-                displayName = `Intune Template - ${guid.substring(0, 8)}`;
-              }
-            } else {
-              displayName = standardValue?.DisplayName || 
-                           standardValue?.displayName || 
-                           standardValue?.Displayname ||
-                           standardValue?.name ||
-                           `Intune Template - ${guid.substring(0, 8)}`;
-            }
+            const lookupName = templateDisplayNameMap[guid.toLowerCase()];
+            displayName = lookupName || `Intune Template - ${guid.substring(0, 8)}`;
           } else if (caTemplateMatch) {
-            // ConditionalAccessTemplate - look up display name from templates data
+            // ConditionalAccessTemplate - look up display name from template configurations
             const guid = caTemplateMatch[1];
-            // First try to get from caTemplates API with case-insensitive GUID comparison
-            if (caTemplates && Array.isArray(caTemplates) && caTemplates.length > 0) {
-              const template = caTemplates.find(t => 
-                t.GUID && typeof t.GUID === 'string' && guid && 
-                t.GUID.toLowerCase() === guid.toLowerCase()
-              );
-              if (template) {
-                displayName = template.displayName || template.Displayname || template.name || template.DisplayName || `CA Template - ${guid.substring(0, 8)}`;
-              }
-            }
-            // If not found, try to extract from standardValue
-            if (!displayName) {
-              displayName = standardValue?.DisplayName || 
-                           standardValue?.displayName || 
-                           standardValue?.Displayname ||
-                           standardValue?.name ||
-                           `CA Template - ${guid.substring(0, 8)}`;
-            }
+            const lookupName = templateDisplayNameMap[guid.toLowerCase()];
+            displayName = lookupName || `CA Template - ${guid.substring(0, 8)}`;
           } else {
             // Regular standard - use basic name formatting
             displayName = standardKey
@@ -988,8 +1005,7 @@ const ExecutiveReportDocument = ({
 
   let securityControls = processStandardsData(
     standardsCompareData,
-    intuneTemplatesData,
-    caTemplatesData
+    standardTemplatesData,
   );
   let driftComplianceInfo = processDriftComplianceData(driftComplianceData, standardsCompareData);
 
@@ -2752,17 +2768,11 @@ export const ExecutiveReportButton = (props) => {
     waiting: previewOpen,
   });
 
-  // Get Intune templates for display name lookup - only when preview is open
-  const intuneTemplatesData = ApiGetCall({
-    url: "/api/ListIntuneTemplates",
-    queryKey: `intune-templates-report`,
-    waiting: previewOpen,
-  });
-
-  // Get CA templates for display name lookup - only when preview is open
-  const caTemplatesData = ApiGetCall({
-    url: "/api/ListCATemplates",
-    queryKey: `ca-templates-report`,
+  // Load all standard templates to resolve template display names
+  const standardTemplatesData = ApiGetCall({
+    url: `/api/listStandardTemplates`,
+    data: {},  // No templateId filter - get all templates
+    queryKey: `standard-templates-report-all`,
     waiting: previewOpen,
   });
 
@@ -2777,8 +2787,7 @@ export const ExecutiveReportButton = (props) => {
       conditionalAccessData.isFetching ||
       standardsCompareData.isFetching ||
       driftComplianceData.isFetching ||
-      intuneTemplatesData.isFetching ||
-      caTemplatesData.isFetching);
+      standardTemplatesData.isFetching);
 
   const hasAllDataFinished =
     !previewOpen ||
@@ -2790,8 +2799,7 @@ export const ExecutiveReportButton = (props) => {
       (conditionalAccessData.isSuccess || conditionalAccessData.isError) &&
       (standardsCompareData.isSuccess || standardsCompareData.isError) &&
       (driftComplianceData.isSuccess || driftComplianceData.isError) &&
-      (intuneTemplatesData.isSuccess || intuneTemplatesData.isError) &&
-      (caTemplatesData.isSuccess || caTemplatesData.isError));
+      (standardTemplatesData.isSuccess || standardTemplatesData.isError));
 
   // Button is always available now since we don't need to wait for data
   const shouldShowButton = true;
@@ -2849,8 +2857,7 @@ export const ExecutiveReportButton = (props) => {
           }
           standardsCompareData={standardsCompareData.isSuccess ? standardsCompareData?.data : null}
           driftComplianceData={driftComplianceData.isSuccess ? driftComplianceData?.data : null}
-          intuneTemplatesData={intuneTemplatesData.isSuccess ? intuneTemplatesData?.data : null}
-          caTemplatesData={caTemplatesData.isSuccess ? caTemplatesData?.data : null}
+          standardTemplatesData={standardTemplatesData.isSuccess ? standardTemplatesData?.data : null}
           sectionConfig={sectionConfig}
         />
       );
