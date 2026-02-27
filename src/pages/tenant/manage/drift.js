@@ -1316,6 +1316,11 @@ const ManageDriftPage = () => {
     }
   }, [templateId]);
 
+  // Effect to clear selected items when tenant changes
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [tenantFilter]);
+
   // Add action buttons to each deviation item
   const deviationItemsWithActions = actualDeviationItems.map((item) => {
     return {
@@ -1959,6 +1964,10 @@ const ManageDriftPage = () => {
                     ? "for this tenant"
                     : "this deviation"
             }?`,
+            onSuccess: () => {
+              // Clear selected items after successful action
+              setSelectedItems([]);
+            },
           }}
           row={actionData.data}
           relatedQueryKeys={[`TenantDrift-${tenantFilter}`]}
