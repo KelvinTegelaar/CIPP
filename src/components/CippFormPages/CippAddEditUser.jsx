@@ -589,6 +589,9 @@ const CippAddEditUser = (props) => {
           name="setManager"
           label="Set Manager"
           valueField="userPrincipalName"
+          select={
+            "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+          }
           multiple={false}
         />
       </Grid>
@@ -599,6 +602,9 @@ const CippAddEditUser = (props) => {
             name="setSponsor"
             label="Set Sponsor"
             valueField="userPrincipalName"
+            select={
+              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+            }
             multiple={false}
           />
         </Grid>
@@ -608,6 +614,9 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
           name="copyFrom"
           label="Copy groups from user"
+          select={
+            "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+          }
           multiple={false}
         />
       </Grid>
