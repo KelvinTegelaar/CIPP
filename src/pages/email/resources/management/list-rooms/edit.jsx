@@ -115,6 +115,7 @@ const EditRoomMailbox = () => {
             }
           : null,
       });
+      void formControl.trigger();
     }
   }, [roomInfo.isSuccess, roomInfo.data]);
 

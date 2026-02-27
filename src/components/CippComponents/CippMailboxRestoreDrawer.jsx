@@ -275,6 +275,7 @@ export const CippMailboxRestoreDrawer = ({
                       ItemCount: "ItemCount",
                     },
                     url: "/api/ListMailboxes",
+                    data: { UseReportDB: true },
                     showRefresh: true,
                   }}
                   validators={{
