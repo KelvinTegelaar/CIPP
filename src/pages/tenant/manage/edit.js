@@ -136,6 +136,15 @@ const Page = () => {
     };
 
     offboardingFormControl.reset({ offboardingDefaults: defaultOffboardingValues });
+
+    updateOffboardingDefaults.mutate({
+      url: "/api/EditTenantOffboardingDefaults",
+      data: {
+        customerId: tenantDetails.data?.id || currentTenant,
+        defaultDomainName: tenantDetails.data?.defaultDomainName || currentTenant,
+        offboardingDefaults: null,
+      },
+    });
   };
 
   const title = "Manage Tenant";
@@ -275,7 +284,8 @@ const Page = () => {
                   onClick={offboardingFormControl.handleSubmit((values) => {
                     const offboardingSettings = values.offboardingDefaults || values;
                     const formattedValues = {
-                      customerId: currentTenant,
+                      customerId: tenantDetails.data?.id || currentTenant,
+                      defaultDomainName: tenantDetails.data?.defaultDomainName || currentTenant,
                       offboardingDefaults: offboardingSettings,
                     };
                     updateOffboardingDefaults.mutate({
@@ -309,6 +319,7 @@ const Page = () => {
                   <Button
                     variant="outlined"
                     onClick={handleResetOffboardingDefaults}
+                    disabled={updateOffboardingDefaults.isPending || tenantDetails.isFetching}
                     sx={{ mr: 2 }}
                   >
                     Reset All to Off
