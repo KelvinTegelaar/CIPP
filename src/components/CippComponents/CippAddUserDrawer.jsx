@@ -18,7 +18,7 @@ export const CippAddUserDrawer = ({
   const userSettingsDefaults = useSettings();
 
   const formControl = useForm({
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
       usageLocation: userSettingsDefaults.usageLocation,
@@ -79,9 +79,9 @@ export const CippAddUserDrawer = ({
     }
   }, [createUser.isSuccess]);
 
-  const handleSubmit = () => {
-    formControl.trigger();
-    if (!isValid) {
+  const handleSubmit = async () => {
+    const isFormValid = await formControl.trigger();
+    if (!isFormValid) {
       return;
     }
     const values = formControl.getValues();
