@@ -25,6 +25,7 @@ import { getCippError } from "../../utils/get-cipp-error";
 import { Box } from "@mui/system";
 import { useSettings } from "../../hooks/use-settings";
 import { isEqual } from "lodash"; // Import lodash for deep comparison
+import { useLicenseBackfill } from "../../hooks/use-license-backfill";
 
 // Resolve dot-delimited property paths against arbitrary data objects.
 const getNestedValue = (source, path) => {
@@ -146,6 +147,9 @@ export const CippDataTable = (props) => {
   const waitingBool = api?.url ? true : false;
 
   const settings = useSettings();
+  
+  // Hook to trigger re-render when license backfill completes
+  const { updateTrigger } = useLicenseBackfill();
 
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
@@ -311,8 +315,9 @@ export const CippDataTable = (props) => {
     ),
   );
   //create memoized version of usedColumns, and usedData
+  // Include updateTrigger in data to force re-render when license backfill completes
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
-  const memoizedData = useMemo(() => usedData, [usedData]);
+  const memoizedData = useMemo(() => usedData, [usedData, updateTrigger]);
 
   const handleActionDisabled = (row, action) => {
     if (action?.condition) {
