@@ -3529,6 +3529,34 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.WindowsBackupRestore",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Configures the Windows Backup and Restore enrollment setting in Intune. When enabled, users see a restore page during Windows Autopilot/OOBE that allows them to restore their apps and settings from a previous device backup. **Before you can restore a backup, a policy to enable it on devices must be set up in Settings Catalog.**",
+    "docsDescription": "Configures the Windows Backup and Restore (WBfO) device enrollment setting in Intune. This feature allows users to restore apps and settings from a previous device backup during Windows setup. Enabling this shows a restore page during enrollment (OOBE) so users can migrate their workspace configuration to a new device. More information can be found in [Microsoft's documentation.](https://learn.microsoft.com/en-us/intune/intune-service/enrollment/windows-backup-restore)",
+    "executiveText": "Controls the Windows Backup and Restore for Organizations feature in Intune. When enabled, employees setting up new devices can restore their apps and settings from a previous backup during Windows enrollment. This streamlines device provisioning, reduces setup time for new or replacement devices, and improves the employee experience during device transitions.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.WindowsBackupRestore.state",
+        "options": [
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
+      }
+    ],
+    "label": "Set Windows Backup and Restore state",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-02-26",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": [],
@@ -4967,7 +4995,15 @@
         "type": "textField",
         "name": "standards.TeamsFederationConfiguration.DomainList",
         "label": "Domains, Comma separated",
-        "required": false
+        "required": false,
+        "condition": {
+          "field": "standards.TeamsFederationConfiguration.DomainControl.value",
+          "compareType": "isOneOf",
+          "compareValue": [
+            "AllowSpecificExternal",
+            "BlockSpecificExternal"
+          ]
+        }
       }
     ],
     "label": "Federation Configuration for Microsoft Teams",

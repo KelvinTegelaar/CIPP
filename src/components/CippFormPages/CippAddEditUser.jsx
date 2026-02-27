@@ -76,7 +76,7 @@ const CippAddEditUser = (props) => {
       const tenantGroupsList = tenantGroups?.data || [];
 
       return tenantGroupsList.filter(
-        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id)
+        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id),
       );
     }
     return [];
@@ -124,7 +124,7 @@ const CippAddEditUser = (props) => {
           displayName += selectedTemplate.displayName;
         }
 
-        formControl.setValue("displayName", displayName);
+        formControl.setValue("displayName", displayName, { shouldDirty: true });
       }
 
       // Auto-generate username if template has usernameFormat
@@ -139,21 +139,33 @@ const CippAddEditUser = (props) => {
           const generatedUsername = generateUsername(
             formatString,
             watcher.givenName,
-            watcher.surname
+            watcher.surname,
           );
           if (generatedUsername) {
-            formControl.setValue("username", generatedUsername);
+            formControl.setValue("username", generatedUsername, { shouldDirty: true });
           }
         }
       }
     }
   }, [watcher.givenName, watcher.surname, selectedTemplate]);
 
+  // Reset manual flags and selected template when form is reset (fields become empty)
+  useEffect(() => {
+    if (formType === "add" && !watcher.givenName && !watcher.surname && !watcher.userTemplate) {
+      setDisplayNameManuallySet(false);
+      setUsernameManuallySet(false);
+      // Only clear selected template if it's not the default template
+      if (selectedTemplate && !selectedTemplate.defaultForTenant) {
+        setSelectedTemplate(null);
+      }
+    }
+  }, [watcher.givenName, watcher.surname, watcher.userTemplate, formType, selectedTemplate]);
+
   // Auto-select default template for tenant
   useEffect(() => {
     if (formType === "add" && userTemplates.isSuccess && !watcher.userTemplate) {
       const defaultTemplate = userTemplates.data?.find(
-        (template) => template.defaultForTenant === true
+        (template) => template.defaultForTenant === true,
       );
       if (defaultTemplate) {
         formControl.setValue("userTemplate", {
@@ -307,6 +319,8 @@ const CippAddEditUser = (props) => {
           onChange={(e) => {
             setDisplayNameManuallySet(true);
           }}
+          required={true}
+          validators={{ required: "Display Name is required" }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -322,6 +336,8 @@ const CippAddEditUser = (props) => {
           onChange={(e) => {
             setUsernameManuallySet(true);
           }}
+          required={true}
+          validators={{ required: "Username is required" }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -573,6 +589,9 @@ const CippAddEditUser = (props) => {
           name="setManager"
           label="Set Manager"
           valueField="userPrincipalName"
+          select={
+            "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+          }
           multiple={false}
         />
       </Grid>
@@ -583,6 +602,9 @@ const CippAddEditUser = (props) => {
             name="setSponsor"
             label="Set Sponsor"
             valueField="userPrincipalName"
+            select={
+              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+            }
             multiple={false}
           />
         </Grid>
@@ -592,6 +614,9 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
           name="copyFrom"
           label="Copy groups from user"
+          select={
+            "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+          }
           multiple={false}
         />
       </Grid>
