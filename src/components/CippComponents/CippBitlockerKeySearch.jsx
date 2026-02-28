@@ -10,13 +10,15 @@ import {
   Chip,
   Alert,
   ButtonGroup,
+  CircularProgress,
 } from "@mui/material";
-import { Search, VpnKey, Computer, CheckCircle, Cancel, Info } from "@mui/icons-material";
+import { Search, VpnKey, Computer, CheckCircle, Cancel, Info, Key } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../CippCards/CippButtonCard";
-import { ApiGetCall } from "../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import CippFormComponent from "./CippFormComponent";
+import { useSettings } from "../../hooks/use-settings";
 
 const getVolumeTypeLabel = (volumeType) => {
   const types = {
@@ -37,6 +39,36 @@ export const CippBitlockerKeySearch = () => {
   });
   const searchTerm = useWatch({ control: formControl.control, name: "searchTerm" });
   const searchType = useWatch({ control: formControl.control, name: "searchType" }) || "keyId";
+
+  // State to store retrieved recovery keys by keyId
+  const [recoveryKeys, setRecoveryKeys] = useState({});
+  const [loadingKeys, setLoadingKeys] = useState({});
+
+  const retrieveKeyMutation = ApiPostCall({});
+
+  const handleRetrieveKey = async (keyId, deviceId, tenant) => {
+    setLoadingKeys((prev) => ({ ...prev, [keyId]: true }));
+
+    try {
+      const response = await retrieveKeyMutation.mutateAsync({
+        url: "/api/ExecGetRecoveryKey",
+        data: {
+          GUID: deviceId,
+          RecoveryKeyType: "BitLocker",
+          tenantFilter: tenant,
+        },
+      });
+
+      // Extract the key from the response
+      if (response?.data?.Results?.copyField) {
+        setRecoveryKeys((prev) => ({ ...prev, [keyId]: response.data.Results.copyField }));
+      }
+    } catch (error) {
+      console.error("Failed to retrieve key:", error);
+    } finally {
+      setLoadingKeys((prev) => ({ ...prev, [keyId]: false }));
+    }
+  };
 
   const getBitlockerKeys = ApiGetCall({
     url: "/api/ExecBitlockerSearch",
@@ -175,7 +207,6 @@ export const CippBitlockerKeySearch = () => {
                           >
                             {result.keyId || "N/A"}
                           </Typography>
-                          {result.keyId && <CippCopyToClipBoard text={result.keyId} />}
                         </Box>
                       </Grid>
 
@@ -208,6 +239,41 @@ export const CippBitlockerKeySearch = () => {
                         <Typography variant="body2">{result.tenant || "N/A"}</Typography>
                       </Grid>
 
+                      <Grid size={{ xs: 12, sm: 6, md: 8 }}>
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          Recovery Key
+                        </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          {recoveryKeys[result.keyId] ? (
+                            <>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontFamily: "monospace", fontSize: "0.875rem" }}
+                              >
+                                {recoveryKeys[result.keyId]}
+                              </Typography>
+                              <CippCopyToClipBoard text={recoveryKeys[result.keyId]} />
+                            </>
+                          ) : (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              startIcon={
+                                loadingKeys[result.keyId] ? <CircularProgress size={16} /> : <Key />
+                              }
+                              onClick={() =>
+                                handleRetrieveKey(result.keyId, result.deviceId, result.tenant)
+                              }
+                              disabled={
+                                loadingKeys[result.keyId] || !result.keyId || !result.deviceId
+                              }
+                            >
+                              Retrieve Key
+                            </Button>
+                          )}
+                        </Box>
+                      </Grid>
+
                       {/* Device Information */}
                       {result.deviceFound && (
                         <>
@@ -237,7 +303,6 @@ export const CippBitlockerKeySearch = () => {
                               >
                                 {result.deviceId || "N/A"}
                               </Typography>
-                              {result.deviceId && <CippCopyToClipBoard text={result.deviceId} />}
                             </Box>
                           </Grid>
 
