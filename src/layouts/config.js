@@ -801,7 +801,6 @@ export const nativeMenuItems = [
             path: "/tenant/tools/tenantlookup",
             permissions: ["Tenant.Administration.*"],
           },
-
           {
             title: "IP Database",
             path: "/tenant/tools/geoiplookup",
@@ -812,6 +811,11 @@ export const nativeMenuItems = [
             title: "Individual Domain Check",
             path: "/tenant/tools/individual-domains",
             permissions: ["Tenant.DomainAnalyser.*"],
+          },
+          {
+            title: "BitLocker Key Search",
+            path: "/tenant/tools/bitlocker-search",
+            permissions: ["Endpoint.Device.Read"],
           },
         ],
       },
