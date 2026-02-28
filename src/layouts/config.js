@@ -79,6 +79,11 @@ export const nativeMenuItems = [
             permissions: ["Identity.Role.*"],
           },
           {
+            title: "Vacation Mode",
+            path: "/identity/administration/vacation-mode",
+            permissions: ["Identity.User.*"],
+          },
+          {
             title: "Offboarding Wizard",
             path: "/identity/administration/offboarding-wizard",
             permissions: ["Identity.User.*"],
