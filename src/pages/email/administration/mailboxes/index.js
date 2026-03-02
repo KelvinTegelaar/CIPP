@@ -125,6 +125,7 @@ const Page = () => {
           relatedQueryKeys: [`ListMailboxes-${currentTenant}`],
           data: {
             Name: "Mailboxes",
+            Types: "None",
           },
           onSuccess: (response) => {
             if (response?.Metadata?.QueueId) {
