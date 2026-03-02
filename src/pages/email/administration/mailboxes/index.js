@@ -127,8 +127,8 @@ const Page = () => {
             Name: "Mailboxes",
           },
           onSuccess: (response) => {
-            if (response?.QueueId) {
-              setSyncQueueId(response.QueueId);
+            if (response?.Metadata?.QueueId) {
+              setSyncQueueId(response.Metadata.QueueId);
             }
           },
         }}
