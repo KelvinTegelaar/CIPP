@@ -1,3 +1,8 @@
+---
+hidden: true
+noIndex: true
+---
+
 # Endpoints
 
 We have divided the API documentation up into sections that match the menu layout in CIPP. Please select from a category below to explore the available endpoints for each section.

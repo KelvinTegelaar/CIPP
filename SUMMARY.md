@@ -377,14 +377,15 @@
 ## API Documentation
 
 * [Setup & Authentication](api-documentation/setup-and-authentication.md)
-* [Endpoints](api-documentation/endpoints/README.md)
-  * [Identity Management](api-documentation/endpoints/identity-management.md)
-  * [Tenant Administration](api-documentation/endpoints/tenant-administration.md)
-  * [Security & Compliance](api-documentation/endpoints/security-and-compliance.md)
-  * [Intune](api-documentation/endpoints/intune.md)
-  * [Teams & SharePoint](api-documentation/endpoints/teams-and-sharepoint.md)
-  * [Tools](api-documentation/endpoints/tools.md)
-  * [CIPP](api-documentation/endpoints/cipp.md)
+* [Endpoints](https://cipp-ashe.github.io/cipp-oas-generator/)
+* [Endpoints](api-documentation/endpoints-legacy/README.md)
+  * [Identity Management](api-documentation/endpoints-legacy/identity-management.md)
+  * [Tenant Administration](api-documentation/endpoints-legacy/tenant-administration.md)
+  * [Security & Compliance](api-documentation/endpoints-legacy/security-and-compliance.md)
+  * [Intune](api-documentation/endpoints-legacy/intune.md)
+  * [Teams & SharePoint](api-documentation/endpoints-legacy/teams-and-sharepoint.md)
+  * [Tools](api-documentation/endpoints-legacy/tools.md)
+  * [CIPP](api-documentation/endpoints-legacy/cipp.md)
 
 ## MSP Adoption Toolkit
 

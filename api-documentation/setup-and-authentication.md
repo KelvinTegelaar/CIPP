@@ -47,8 +47,8 @@ The API actions have a maximum timeout of 10 minutes. There are no active rate l
 
 ## Endpoint documentation
 
-{% content-ref url="endpoints/" %}
-[endpoints](endpoints/)
+{% content-ref url="endpoints-legacy/" %}
+[endpoints-legacy](endpoints-legacy/)
 {% endcontent-ref %}
 
 ## CIPP API Powershell Module
