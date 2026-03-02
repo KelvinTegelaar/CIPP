@@ -779,6 +779,16 @@
           "compareValue": true,
           "action": "disable"
         }
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.CFEnabled",
+        "label": "Connect to PWPush through CloudFlare Tunnel with the Service Account credentials.",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "mappingRequired": false
