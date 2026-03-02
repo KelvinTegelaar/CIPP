@@ -1,0 +1,44 @@
+name: CIPP Development Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+  build_and_deploy_job:
+    # Entfernt: github.event.repository.fork == false
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - uses: actions/checkout@v4 # v6 ist aktuell noch nicht stabil/offiziell, v4 ist empfohlen
+        with:
+          submodules: true
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_MOSS_0A047A40F }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          app_location: '/' 
+          api_location: '' # Falls Sie die API im gleichen Workflow haben, hier 'api' eintragen
+          output_location: 'out' # CIPP nutzt oft 'out' oder 'dist', prüfen Sie Ihr lokales Build-Verzeichnis
+
+  close_pull_request_job:
+    # Entfernt: github.event.repository.fork == false
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_MOSS_0A047A40F }}
+          action: 'close'
