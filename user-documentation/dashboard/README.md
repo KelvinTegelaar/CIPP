@@ -78,6 +78,10 @@ This card displays basic information about the tenant's name, ID, and primary do
 
 This section displays basic counts about the tenant including users, groups, etc.
 
+{% hint style="info" %}
+These sections are clickable and will take you to the respecitve area in CIPP to do a deeper dive on the respective information behind the metric.
+{% endhint %}
+
 </details>
 
 <details>
