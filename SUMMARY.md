@@ -377,7 +377,7 @@
 ## API Documentation
 
 * [Setup & Authentication](api-documentation/setup-and-authentication.md)
-* [Endpoints](https://cipp-ashe.github.io/cipp-oas-generator/)
+* [Endpoints](api-documentation/endpoints.md)
 * [Endpoints](api-documentation/endpoints-legacy/README.md)
   * [Identity Management](api-documentation/endpoints-legacy/identity-management.md)
   * [Tenant Administration](api-documentation/endpoints-legacy/tenant-administration.md)
