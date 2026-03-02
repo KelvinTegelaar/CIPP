@@ -47,7 +47,9 @@ The API actions have a maximum timeout of 10 minutes. There are no active rate l
 
 ## Endpoint documentation
 
-<a href="https://cipp-ashe.github.io/cipp-oas-generator/" class="button primary">Endpoint Documentation</a>
+{% content-ref url="endpoints.md" %}
+[endpoints.md](endpoints.md)
+{% endcontent-ref %}
 
 ## CIPP API Powershell Module
 
