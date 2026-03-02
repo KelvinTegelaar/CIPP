@@ -141,13 +141,13 @@ The CIPP alert "Alert on admins without any form of MFA" is based on checking a 
 
 Typically, this error means you're using tokens that don't have a "strong auth claim" or similar. This could be because you're using non-Azure AD MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
 
-Check the [#multi-factor-authentication-troubleshooting](../troubleshooting.md#multi-factor-authentication-troubleshooting "mention") details in the [broken-reference](broken-reference/ "mention")section for more information.
+Check the [#multi-factor-authentication-troubleshooting](../troubleshooting.md#multi-factor-authentication-troubleshooting "mention") details in the Troubleshooting section for more information.
 
 </details>
 
 <details>
 
-<summary><strong>What if I get errors during management my tenants in CIPP?</strong></summary>
+<summary>What if I get errors during management my tenants in CIPP?</summary>
 
 1. **Perform a CPV Permissions Refresh:**
    1. Navigate to Settings -> CIPP -> Application Settings

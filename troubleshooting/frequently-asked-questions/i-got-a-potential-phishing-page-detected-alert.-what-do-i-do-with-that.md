@@ -1,4 +1,4 @@
-# I got a "Potential Phishing page detected" alert. What do I do with that?
+# I Got a "Potential Phishing page detected" Alert. What Do I Do With That?
 
 Introduced in v5.0.0, CIPP has a Standard that can be enabled called "Enable Phishing Protection system via branding CSS". This standard is what generated that alert.
 
@@ -20,7 +20,7 @@ When a user encounters an Adversary in the Middle (AitM) login page, a common pr
 
 When that single pixel image gets loaded, it detects the site's referrer. If that referrer is not a legitimate Microsoft login page, it triggers the alert and causes the tenant branding to reveal a different image to warn off the end user from continuing the login process:
 
-<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption><p>Warning Image Added When AitM Site Detected</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Phishing CSS.png" alt=""><figcaption><p>Warning Image Added When AitM Site Detected</p></figcaption></figure>
 
 In most cases, this should be enough to stop the AitM attack. as the text "DO NOT ENTER YOUR PASSWORD" will be placed directly over the password form field.
 
