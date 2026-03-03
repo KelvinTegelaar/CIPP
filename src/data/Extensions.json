@@ -761,7 +761,7 @@
       {
         "type": "switch",
         "name": "PWPush.RetrievalStep",
-        "label": "Click to retrieve password (recommended)",
+        "label": "Click to retrieve password (recommended if passphrase is not set)",
         "condition": {
           "field": "PWPush.Enabled",
           "compareType": "is",
