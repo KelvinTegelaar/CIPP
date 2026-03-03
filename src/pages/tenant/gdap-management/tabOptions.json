@@ -1,0 +1,30 @@
+[
+  {
+    "label": "Overview",
+    "path": "/tenant/gdap-management"
+  },
+  {
+    "label": "Relationships",
+    "path": "/tenant/gdap-management/relationships"
+  },
+  {
+    "label": "Role Mappings",
+    "path": "/tenant/gdap-management/roles"
+  },
+  {
+    "label": "Role Templates",
+    "path": "/tenant/gdap-management/role-templates"
+  },
+  {
+    "label": "Invites",
+    "path": "/tenant/gdap-management/invites"
+  },
+  {
+    "label": "Onboarding",
+    "path": "/tenant/gdap-management/onboarding"
+  },
+  {
+    "label": "Offboarding",
+    "path": "/tenant/gdap-management/offboarding"
+  }
+]

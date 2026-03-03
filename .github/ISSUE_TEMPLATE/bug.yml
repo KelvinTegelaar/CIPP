@@ -1,37 +1,92 @@
-name: 🐞 Bug report 
-description: Report errors or unexpected behaviors for CIPP and CIPP-API
-labels: [unconfirmed-by-user , bug]
+name: "🐞 Bug report"
+description: "Report errors or unexpected behaviors for CIPP and CIPP-API"
+title: "[Bug]: " 
+labels:
+  - "unconfirmed-by-user"
+  - "bug"
 
 body:
-- type: markdown
-  attributes:
-    value: >
-      Thanks for reporting.
+  - type: markdown
+    attributes:
+      value: |
+        **Thank you for taking the time to report a potential bug for CIPP and CIPP-API!**
 
-      - Make sure you are able to reproduce this issue on the latest released version of CIPP & CIPP-API. 
-      
-      - Please search the existing issues to see if there has been a similar issue filed
-      
-      - This is not the location for support. Issues that request support or are not a bug will be closed.
-- type: textarea
-  attributes:
-    label: Description
-    description: >
-      Please describe the issue and expected result. You can include a screenshot by pasting it. Issues with a description that is too short or does not explain each step in detail will be closed.
-      
-      Example:
-      
-      1.) go to Settings
-      2.) Click on a tenant in access check
-      3.) Click on the green pixel in the bottom right corner
-      4.) A bug appears.
-  validations:
-    required: true
-- type: textarea
-  attributes:
-    label: Environment data
-    description: >
-      Please let us know your environment information - e.g. hosted version, Azure, local Dev version.
-    render: PowerShell
-  validations:
-    required: true
+        Please follow the instructions below and provide as much detail as possible to help us understand and reproduce the issue.
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: "Required confirmations before submitting"
+      description: "Please check all boxes that apply."
+      options:
+        - label: "**I can reproduce this issue on the latest released versions** of both CIPP and CIPP-API."
+          required: true
+        - label: "**I have searched existing issues** (both open and closed) to avoid duplicates."
+          required: true
+        - label: "I am **not** requesting general support; this is an actual bug report."
+          required: true
+
+  # 3) Description / Steps to reproduce
+  - type: textarea
+    id: description
+    attributes:
+      label: "Issue Description"
+      description: |
+        **Describe the issue clearly and provide step-by-step instructions to reproduce it.**  
+        Screenshots can be attached by pasting them here.
+
+        Example steps to reproduce:
+        1. Go to **Settings**  
+        2. Click on a tenant in **Access Check**  
+        3. Click on the green pixel in the bottom-right corner  
+        4. Observe the unexpected behavior
+    validations:
+      required: true
+
+  # 4) Environment type (Sponsored vs. Non-sponsored)
+  - type: dropdown
+    id: environment_type
+    attributes:
+      label: "Environment Type"
+      description: "Select whether you are using currently a paying user of the product, or if you are utilizing the free version"
+      options:
+        - "Sponsored (paying) user"
+        - "Non-sponsored user"
+    validations:
+      required: true
+
+  # 5) Front End / Back End versions
+  - type: input
+    id: front_end_version
+    attributes:
+      label: "Front End Version"
+      description: "Please specify the front end version number (e.g., v1.2.3)."
+    validations:
+      required: true
+
+  - type: input
+    id: back_end_version
+    attributes:
+      label: "Back End Version"
+      description: "Please specify the back end version number (e.g., v1.2.3)."
+    validations:
+      required: true
+
+  # 7) Additional logs or trace (optional)
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Relevant Logs / Stack Trace"
+      description: |
+        If available, please share any relevant logs or stack trace data.
+        Remove or redact any sensitive info before posting.
+      render: plaintext
+    validations:
+      required: false
+
+  # 8) Closing note
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your submission! A maintainer will review your report.  
+        Please watch the issue for follow-up questions or status updates.

@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Overview",
+    "path": "/dashboardv2"
+  },
+  {
+    "label": "Identity",
+    "path": "/dashboardv2/identity"
+  },
+  {
+    "label": "Devices",
+    "path": "/dashboardv2/devices"
+  },
+  {
+    "label": "Previous Dashboard Experience",
+    "path": "/dashboardv1"
+  }
+]

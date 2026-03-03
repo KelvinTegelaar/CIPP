@@ -1,6 +1,6 @@
 ---
 name: NodeJS Project Check
-on: # yamllint disable-line rule:truthy
+on:
   pull_request:
     branches:
       - main
@@ -10,16 +10,17 @@ concurrency:
   cancel-in-progress: false
 jobs:
   install-build:
+    if: github.repository_owner == 'KelvinTegelaar'
     name: NPM Install and Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: ["22.13.0"]
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install and Build Test

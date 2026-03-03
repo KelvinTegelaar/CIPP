@@ -1,0 +1,551 @@
+[
+  {
+    "name": "MFAAlertUsers",
+    "label": "Alert on users without any form of MFA",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "MFAAdmins",
+    "label": "Alert on admins without any form of MFA",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "NewMFADevice",
+    "label": "Alert when users register new MFA devices",
+    "recommendedRunInterval": "1h"
+  },
+  {
+    "name": "LicenseAssignmentErrors",
+    "label": "Alert on license assignment errors",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "SmtpAuthSuccess",
+    "label": "Alert on SMTP AUTH usage with success, helps to phase out SMTP AUTH (Entra P1 Required)",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "NoCAConfig",
+    "label": "Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available.",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "AdminPassword",
+    "label": "Alert on changed admin Passwords",
+    "recommendedRunInterval": "30m"
+  },
+  {
+    "name": "InactiveLicensedUsers",
+    "label": "Alert on licensed users that have not logged in for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last login (default: 90)",
+        "inputName": "DaysSinceLastLogin"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled users?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
+  {
+    "name": "InactiveGuestUsers",
+    "label": "Alert on guest users that have not logged in for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last login (default: 90)",
+        "inputName": "DaysSinceLastLogin"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled guest users?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
+  {
+    "name": "InactiveUsers",
+    "label": "Alert on users that have not logged in for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last login (default: 90)",
+        "inputName": "DaysSinceLastLogin"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled users?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
+  {
+    "name": "EntraConnectSyncStatus",
+    "label": "Alert if Entra Connect sync is enabled and has not run in the last X hours",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Hours(Default:72)",
+    "inputName": "EntraConnectSyncStatusHours",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "QuotaUsed",
+    "label": "Alert on % mailbox quota used",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Enter quota percentage",
+    "inputName": "QuotaUsedQuota",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "SharePointQuota",
+    "label": "Alert on % SharePoint quota used",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Enter quota percentage",
+    "inputName": "SharePointQuota",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "OneDriveQuota",
+    "label": "Alert on % OneDrive quota used",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Enter quota percentage (default: 90)",
+    "inputName": "OneDriveQuota",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "ExpiringLicenses",
+    "label": "Alert on licenses expiring in X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days until expiration (default: 30)",
+        "inputName": "ExpiringLicensesDays"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert only on unassigned licenses",
+        "inputName": "ExpiringLicensesUnassignedOnly"
+      }
+    ]
+  },
+  {
+    "name": "NewAppApproval",
+    "label": "Alert on new apps in the application approval list",
+    "recommendedRunInterval": "30m"
+  },
+  {
+    "name": "SecDefaultsUpsell",
+    "label": "Alert on Security Defaults automatic enablement",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "SecDefaultsDisabled",
+    "label": "Alert when Security Defaults is disabled with no Conditional Access policies",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "DefenderStatus",
+    "label": "Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "DefenderMalware",
+    "label": "Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "DefenderIncidents",
+    "label": "Alert on new Defender Incidents found",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Incident severities to include",
+        "inputName": "IncidentSeverities",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "All Severities", "value": "All" },
+          { "label": "High", "value": "high" },
+          { "label": "Medium", "value": "medium" },
+          { "label": "Low", "value": "low" },
+          { "label": "Informational", "value": "informational" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "DefenderAlerts",
+    "label": "Alert on new Defender Alerts found",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Alert severities to include",
+        "inputName": "AlertSeverities",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "All Severities", "value": "All" },
+          { "label": "High", "value": "high" },
+          { "label": "Medium", "value": "medium" },
+          { "label": "Low", "value": "low" },
+          { "label": "Informational", "value": "informational" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Vulnerabilities",
+    "label": "Alert on software vulnerabilities",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Minimum age in hours (default: 0)",
+        "inputName": "VulnerabilityAgeHours"
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Minimum CVSS severity",
+        "inputName": "CVSSSeverity",
+        "creatable": false,
+        "multiple": false,
+        "options": [
+          {
+            "label": "Low (0.0+)",
+            "value": "low"
+          },
+          {
+            "label": "Medium (4.0+)",
+            "value": "medium"
+          },
+          {
+            "label": "High (7.0+)",
+            "value": "high"
+          },
+          {
+            "label": "Critical (9.0+)",
+            "value": "critical"
+          }
+        ]
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Exploitability levels to include",
+        "inputName": "ExploitabilityLevels",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          {
+            "label": "All Levels",
+            "value": "All"
+          },
+          {
+            "label": "No Known Exploit",
+            "value": "NoExploit"
+          },
+          {
+            "label": "Public Exploit Available",
+            "value": "ExploitIsPublic"
+          },
+          {
+            "label": "Exploit Verified",
+            "value": "ExploitIsVerified"
+          },
+          {
+            "label": "Exploit In Kit",
+            "value": "ExploitIsInKit"
+          }
+        ]
+      }
+    ],
+    "recommendedRunInterval": "4h",
+    "description": "Monitors for software vulnerabilities based on age, CVSS severity, and exploitability level. Filter by minimum CVSS score (low=0+, medium=4+, high=7+, critical=9+) and select which exploitability levels to include. Requires Defender for Endpoint/Business."
+  },
+  {
+    "name": "UnusedLicenses",
+    "label": "Alert on unused licenses",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "OverusedLicenses",
+    "label": "Alert on overused licenses",
+    "recommendedRunInterval": "7d"
+  },
+  {
+    "name": "EntraLicenseUtilization",
+    "label": "Alert on Entra ID P1/P2 license over-utilization",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Alert when utilization exceeds % (default: 110)",
+    "inputName": "EntraLicenseUtilizationThreshold"
+  },
+  {
+    "name": "AppSecretExpiry",
+    "label": "Alert on expiring application secrets",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "AppleTerms",
+    "label": "Alert on new Apple Business Manager terms",
+    "recommendedRunInterval": "30d"
+  },
+  {
+    "name": "AppCertificateExpiry",
+    "label": "Alert on expiring application certificates",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "ApnCertExpiry",
+    "label": "Alert on expiring APN certificates",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "VppTokenExpiry",
+    "label": "Alert on expiring VPP tokens",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "DepTokenExpiry",
+    "label": "Alert on expiring DEP tokens",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "SoftDeletedMailboxes",
+    "label": "Alert on soft deleted mailboxes",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "DeviceCompliance",
+    "label": "Alert on device compliance issues",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "IntunePolicyConflicts",
+    "label": "Alert on Intune policy or app conflicts/errors",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert per issue (off = aggregated)",
+        "inputName": "AlertEachIssue"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include policy status issues",
+        "inputName": "IncludePolicies"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include app install issues",
+        "inputName": "IncludeApplications"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert on conflicts",
+        "inputName": "AlertConflicts"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert on errors/failures",
+        "inputName": "AlertErrors"
+      }
+    ],
+    "description": "Monitors Intune policy assignment states and app install statuses for conflicts or errors. Defaults to aggregated alerts with all mechanisms enabled and both conflicts and errors included."
+  },
+  {
+    "name": "BreachAlert",
+    "label": "Alert on (new) potentially breached passwords. Generates an alert if a password is found to be breached.",
+    "recommendedRunInterval": "7d"
+  },
+  {
+    "name": "LicensedUsersWithRoles",
+    "label": "Alert on licensed users with any administrator roles",
+    "recommendedRunInterval": "7d"
+  },
+  {
+    "name": "HuntressRogueApps",
+    "label": "Alert on Huntress Rogue Apps detected",
+    "recommendedRunInterval": "4h",
+    "description": "Huntress has provided a repository of known rogue apps that are commonly used in BEC, data exfiltration and other Microsoft 365 attacks. This alert will notify you if any of these apps are detected in the selected tenant(s). For more information, see <a href='https://huntresslabs.github.io/rogueapps/' target='_blank'>https://huntresslabs.github.io/rogueapps/</a>.",
+    "requiresInput": true,
+    "inputType": "switch",
+    "inputLabel": "Ignore Disabled Apps?",
+    "inputName": "IgnoreDisabledApps"
+  },
+  {
+    "name": "TERRL",
+    "label": "Alert when Tenant External Recipient Rate Limit exceeds X %",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert % (default: 80)",
+    "inputName": "TERRLThreshold",
+    "recommendedRunInterval": "1h",
+    "description": "Monitors tenant outbound email volume against Microsoft's TERRL limits. Tenant data is updated every hour."
+  },
+  {
+    "name": "LowDomainScore",
+    "label": "Alert on domains with low security score",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert when score is below % (default: 70)",
+    "inputName": "InputValue",
+    "recommendedRunInterval": "7d",
+    "description": "Monitors domain security scores from the DomainAnalyser and alerts when scores fall below the specified threshold."
+  },
+  {
+    "name": "MXRecordChanged",
+    "label": "Alert on MX record changes",
+    "recommendedRunInterval": "1d",
+    "description": "Monitors MX records for all domains and alerts when changes are detected. This helps identify potential mail routing changes that could indicate security issues or unauthorized modifications."
+  },
+  {
+    "name": "GlobalAdminNoAltEmail",
+    "label": "Alert on Global Admin accounts without alternate email address",
+    "recommendedRunInterval": "7d",
+    "description": "Monitors Global Admin accounts and alerts when they don't have an alternate email address set, which is important for password recovery of key accounts."
+  },
+  {
+    "name": "GlobalAdminAllowList",
+    "label": "Alert on Global Admins outside approved list",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Approved Global Admin UPN prefixes (comma separated)",
+        "inputName": "ApprovedGlobalAdmins"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert per non-compliant admin? (off = single aggregated alert)",
+        "inputName": "AlertEachAdmin"
+      }
+    ],
+    "description": "Alerts when Global Administrator accounts are present whose UPN prefix (before @domain) is not in your approved comma-separated allow list. Toggle per-admin alerts to get one alert per user or a single aggregated alert."
+  },
+  {
+    "name": "NewRiskyUsers",
+    "label": "Alert on new risky users (P2 License Required)",
+    "recommendedRunInterval": "30m",
+    "description": "Monitors for new risky users in the tenant. Risky users are defined as users who have performed actions that are considered risky, such as password resets, MFA failures, or suspicious activity."
+  },
+  {
+    "name": "GroupMembershipChange",
+    "label": "Alert on group membership changes for monitored groups",
+    "recommendedRunInterval": "1h",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Group display names to monitor (comma separated, wildcards supported)",
+    "inputName": "InputValue",
+    "description": "Monitors audit logs for membership changes (add/remove) in specified groups. Supports wildcards like 'CA*' or '*Exclusion*'. Particularly useful for tracking changes to groups used in Conditional Access exclusions or other security-critical groups."
+  },
+  {
+    "name": "LowTenantAlignment",
+    "label": "Alert on low tenant alignment percentage",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert when alignment is below % (default: 99)",
+    "inputName": "InputValue",
+    "recommendedRunInterval": "1d",
+    "description": "Monitors tenant alignment scores against standards templates and alerts when the alignment percentage falls below the specified threshold. This helps ensure compliance across all managed tenants."
+  },
+  {
+    "name": "RestrictedUsers",
+    "label": "Alert on users restricted from sending email",
+    "recommendedRunInterval": "30m",
+    "description": "Monitors for users who have been restricted from sending email due to exceeding outbound spam limits. These users typically indicate a compromised account that needs immediate attention."
+  },
+  {
+    "name": "ReportOnlyCA",
+    "label": "Alert on tenants with Conditional Access policies in report-only mode",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "QuarantineReleaseRequests",
+    "label": "Alert on quarantine release requests",
+    "recommendedRunInterval": "1h",
+    "description": "Monitors for user requests to release quarantined messages and provides a CIPP-native alternative to the external email forwarding method. This helps MSPs maintain secure configurations while getting timely notifications about quarantine activity. Links to the tenant's quarantine page are provided in alerts."
+  },
+  {
+    "name": "StaleEntraDevices",
+    "label": "Alert on stale Entra devices that have not been active for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceLastActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled devices?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
+  {
+    "name": "SecureScore",
+    "label": "Alert on a low Secure Score",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Threshold type absolute number or percent",
+        "inputName": "ThresholdType",
+        "creatable": false,
+        "multiple": false,
+        "options": [
+          {
+            "label": "Percent",
+            "value": "percent"
+          },
+          {
+            "label": "Absolute",
+            "value": "absolute"
+          }
+        ],
+        "required": true
+      },
+      {
+        "inputType": "number",
+        "inputLabel": "Threshold Value (below this will trigger the alert)",
+        "inputName": "InputValue",
+        "required": true
+      }
+    ],
+    "description": "Monitors Secure Score and alerts when it falls below the specified threshold (absolute or percent value). Helps identify security gaps and areas for improvement."
+  }
+]

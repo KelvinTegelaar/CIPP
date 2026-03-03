@@ -1,0 +1,17 @@
+{
+  "0": "Success",
+  "50126": "Invalid username or password",
+  "70044": "The session has expired or is invalid due to sign-in frequency checks by conditional access",
+  "50089": "Flow token expired",
+  "53003": "Access has been blocked by Conditional Access policies",
+  "50140": "This error occurred due to 'Keep me signed in' interrupt when the user was signing-in",
+  "50097": "Device authentication required",
+  "65001": "Application X doesn't have permission to access application Y or the permission has been revoked",
+  "50053": "Account is locked because user tried to sign in too many times with an incorrect user ID or password",
+  "50020": "The user is unauthorized",
+  "50125": "Sign-in was interrupted due to a password reset or password registration entry",
+  "50074": "User did not pass the MFA challenge",
+  "50133": "Session is invalid due to expiration or recent password change",
+  "530002": "Your device is required to be compliant to access this resource",
+  "9001011": "Device policy contains unsupported required device state"
+}

@@ -1,0 +1,83 @@
+name: "Handle Comment Commands"
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  handle_comment:
+    runs-on: ubuntu-slim
+    # We need permissions to modify issue comments.
+    # 'issues: write' is required for deleting comments.
+    permissions:
+      issues: write
+
+    steps:
+      # 1) If the comment includes '!notasponsor', delete it using GitHub Script
+      - name: Delete !notasponsor comment
+        if: contains(github.event.comment.body, '!notasponsor')
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.deleteComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id
+            });
+
+      # 2) Post a sponsor-specific reply
+      - name: Reply to !notasponsor
+        if: contains(github.event.comment.body, '!notasponsor')
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello,
+
+            Thank you for your interest in improving CIPP! 
+            To keep our development process focused and manageable, **feature requests are limited to paying users**. This policy helps us prioritize improvements that directly benefit those actively supporting CIPP and ensures we can sustain our development and support.
+
+            When a sponsor makes a feature request, their support covers training, development, documentation, and security checks. Allowing non-sponsor requests could lead to a backlog that slows down updates and stretches resources thin, ultimately affecting the quality and sustainability of CIPP.
+
+            While we’ve closed this request, we appreciate your input. You’re always welcome to participate in ongoing discussions or contribute to open issues. If you are a developer, feel free to open a PR that includes your feature request or comment "**I’d like to work on this!**" to assign the issue to yourself.
+
+            **Did you get this notification in error?** Reply with a screenshot of your sponsorship payment and we’ll reopen the issue.
+
+            _Thank you for understanding,_  
+            **The CIPP Team**
+
+      # 3) If the comment includes '!support', classify as a support request
+      - name: Reply to !support
+        if: contains(github.event.comment.body, '!support')
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello,
+
+            Thank you for reaching out! This report has been classified as a **support request** rather than a bug or feature request. To keep our development process focused, support requests are limited to paying users. This policy allows us to prioritize resources for those actively supporting CIPP, helping us maintain high-quality development and support.
+
+            Sponsors can contact our helpdesk directly via email for assistance with any issues or questions. For non-sponsor support, please refer to our documentation and community discussions—many questions have been answered there.
+
+            **Did you get this notification in error?** Reply with a screenshot of your sponsorship payment, and we’ll gladly reopen the request.
+
+            _Thank you for your understanding,_  
+            **The CIPP Team**
+
+      # 4) If the comment includes '!incomplete', note the bug or feature request is incomplete
+      - name: Reply to !incomplete
+        if: contains(github.event.comment.body, '!incomplete')
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello,
+
+            Thank you for your submission! It appears this **bug report or feature request is incomplete**. We need a clear description, steps to reproduce (for bugs), or a comprehensive overview of the requested feature.
+
+            Please submit a new request with all the necessary details. Without sufficient information, it’s difficult for contributors to triage or implement solutions.
+
+            _Thank you!_  
+            **The CIPP Team**

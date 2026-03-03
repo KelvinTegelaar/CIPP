@@ -1,0 +1,62 @@
+name: PR Branch Check
+
+on:
+  # Using pull_request_target instead of pull_request for secure handling of fork PRs
+  pull_request_target:
+    # Only run on these PR events
+    types: [opened, synchronize, reopened]
+    # Only check PRs targeting these branches
+    branches:
+      - main
+      - master
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-slim
+    steps:
+      - name: Check and Comment on PR
+        # Only process fork PRs with specific branch conditions
+        # Must be a fork AND (source is main/master OR target is main/master)
+        if: |
+          github.event.pull_request.head.repo.fork == true && 
+          ((github.event.pull_request.head.ref == 'main' || github.event.pull_request.head.ref == 'master') ||
+          (github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'master'))
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let message = '';
+
+            message += '🔄 If you are attempting to update your CIPP repo please follow the instructions at: https://docs.cipp.app/setup/self-hosting-guide/updating. Are you a sponsor? Contact the helpdesk for direct assistance with updating to the latest version.';
+            message += '\n\n';
+
+            // Check if PR is targeting main/master
+            if (context.payload.pull_request.base.ref === 'main' || context.payload.pull_request.base.ref === 'master') {
+              message += '⚠️ PRs cannot target the main branch directly. If you are attempting to contribute code please PR to the dev branch.\n\n';
+            }
+
+            // Check if PR is from a fork's main/master branch
+            if (context.payload.pull_request.head.repo.fork && 
+                (context.payload.pull_request.head.ref === 'main' || context.payload.pull_request.head.ref === 'master')) {
+              message += '⚠️ This PR cannot be merged because it originates from your fork\'s main/master branch. If you are attempting to contribute code please PR from your dev branch or another non-main/master branch.\n\n';
+            }
+
+            message += '🔒 This PR will now be automatically closed due to the above rules.';
+
+            // Post the comment
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: message
+            });
+
+            // Close the PR
+            await github.rest.pulls.update({
+              ...context.repo,
+              pull_number: context.issue.number,
+              state: 'closed'
+            });

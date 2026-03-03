@@ -1,0 +1,111 @@
+{
+  "Mailboxes": {
+    "description": "List of user mailboxes mapped to their corresponding user via id. Properties can be mapped individually.",
+    "type": "object",
+    "targetObject": "user",
+    "sourceMatchProperty": "ExternalDirectoryObjectId",
+    "destinationMatchProperty": "id",
+    "storeAs": "value",
+    "properties": [
+      { "name": "Id", "dataType": "string" },
+      { "name": "ExchangeGuid", "dataType": "string" },
+      { "name": "ArchiveGuid", "dataType": "string" },
+      { "name": "WhenSoftDeleted", "dataType": "datetime" },
+      { "name": "ProhibitSendQuota", "dataType": "string" },
+      { "name": "ProhibitSendReceiveQuota", "dataType": "string" },
+      { "name": "LitigationHoldEnabled", "dataType": "boolean" },
+      { "name": "InPlaceHolds", "dataType": "array" },
+      { "name": "HiddenFromAddressListsEnabled", "dataType": "boolean" },
+      { "name": "UPN", "dataType": "string" },
+      { "name": "displayName", "dataType": "string" },
+      { "name": "primarySmtpAddress", "dataType": "string" },
+      { "name": "recipientType", "dataType": "string" },
+      { "name": "recipientTypeDetails", "dataType": "string" },
+      { "name": "AdditionalEmailAddresses", "dataType": "string" },
+      { "name": "ForwardingSmtpAddress", "dataType": "string" },
+      { "name": "InternalForwardingAddress", "dataType": "string" },
+      { "name": "DeliverToMailboxAndForward", "dataType": "boolean" },
+      { "name": "ExternalDirectoryObjectId", "dataType": "string" },
+      { "name": "MessageCopyForSendOnBehalfEnabled", "dataType": "boolean" },
+      { "name": "MessageCopyForSentAsEnabled", "dataType": "boolean" }
+    ]
+  },
+  "MailboxPermissions": {
+    "description": "List of mailbox permissions mapped to their corresponding user via id. Permissions are stored as JSON in a multi-value property for each entry.",
+    "type": "array",
+    "targetObject": "user",
+    "sourceMatchProperty": "Identity",
+    "destinationMatchProperty": ["id", "mailNickname"],
+    "storeAs": "json",
+    "select": "User,AccessRights"
+  },
+  "CASMailbox": {
+    "description": "List of CAS mailboxes mapped to their corresponding user via id. Properties can be mapped individually.",
+    "type": "object",
+    "targetObject": "user",
+    "sourceMatchProperty": "ExternalDirectoryObjectId",
+    "destinationMatchProperty": "id",
+    "storeAs": "value",
+    "properties": [
+      { "name": "ObjectKey", "dataType": "string" },
+      { "name": "ExternalDirectoryObjectId", "dataType": "string" },
+      { "name": "Identity", "dataType": "string" },
+      { "name": "PrimarySmtpAddress", "dataType": "string" },
+      { "name": "DisplayName", "dataType": "string" },
+      { "name": "Name", "dataType": "string" },
+      { "name": "Guid", "dataType": "string" },
+      { "name": "ServerLegacyDN", "dataType": "string" },
+      { "name": "ExchangeVersion", "dataType": "string" },
+      { "name": "ECPEnabled", "dataType": "boolean" },
+      { "name": "EmailAddresses", "dataType": "array" },
+      { "name": "OWAEnabled", "dataType": "boolean" },
+      { "name": "OrganizationId", "dataType": "string" },
+      { "name": "ImapEnabled", "dataType": "boolean" },
+      { "name": "PopEnabled", "dataType": "boolean" },
+      { "name": "MAPIEnabled", "dataType": "boolean" },
+      { "name": "EwsEnabled", "dataType": "boolean" },
+      { "name": "ActiveSyncEnabled", "dataType": "boolean" }
+    ]
+  },
+  "MailboxUsage": {
+    "description": "Mailbox usage mapped to their corresponding user via userPrincipalName. Properties can be mapped individually.",
+    "type": "object",
+    "targetObject": "user",
+    "sourceMatchProperty": "userPrincipalName",
+    "destinationMatchProperty": "userPrincipalName",
+    "storeAs": "value",
+    "properties": [
+      { "name": "reportPeriod", "dataType": "string" },
+      { "name": "totalItemSize", "dataType": "string" },
+      { "name": "deletedItemSize", "dataType": "string" },
+      { "name": "itemCount", "dataType": "integer" },
+      { "name": "deletedItemCount", "dataType": "integer" },
+      { "name": "storageLimitStatus", "dataType": "string" },
+      { "name": "issueWarningQuota", "dataType": "string" },
+      { "name": "prohibitSendQuota", "dataType": "string" },
+      { "name": "prohibitSendReceiveQuota", "dataType": "string" }
+    ]
+  },
+  "OneDriveUsage": {
+    "description": "OneDrive usage mapped to their corresponding user via ownerPrincipalName. Properties can be mapped individually.",
+    "type": "object",
+    "targetObject": "user",
+    "sourceMatchProperty": "ownerPrincipalName",
+    "destinationMatchProperty": "userPrincipalName",
+    "storeAs": "value",
+    "properties": [
+      { "name": "reportRefreshDate", "dataType": "datetime" },
+      { "name": "siteId", "dataType": "string" },
+      { "name": "siteUrl", "dataType": "string" },
+      { "name": "ownerDisplayName", "dataType": "string" },
+      { "name": "ownerPrincipalName", "dataType": "string" },
+      { "name": "isDeleted", "dataType": "boolean" },
+      { "name": "lastActivityDate", "dataType": "datetime" },
+      { "name": "fileCount", "dataType": "integer" },
+      { "name": "activeFileCount", "dataType": "integer" },
+      { "name": "storageUsedInBytes", "dataType": "integer" },
+      { "name": "storageAllocatedInBytes", "dataType": "integer" },
+      { "name": "reportPeriod", "dataType": "string" }
+    ]
+  }
+}

@@ -6,7 +6,7 @@
       "defaultValue": "CIPP",
       "type": "string",
       "metadata": {
-        "description": "Name use as base-template to named the resources deployed in Azure."
+        "description": "Name used as base-template to name the resources deployed in Azure."
       }
     },
     "GithubRepository": {
@@ -20,14 +20,7 @@
       "defaultValue": "GeneratedPassword",
       "type": "string",
       "metadata": {
-        "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token"
-      }
-    },
-    "GithubAPIRepository": {
-      "defaultValue": "https://github.com/KelvinTegelaar/CIPP-API",
-      "type": "string",
-      "metadata": {
-        "description": "URL to your Github backend fork."
+        "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token)"
       }
     }
   },
@@ -36,7 +29,6 @@
     "funcAppName": "[toLower(concat(parameters('baseName'), variables('suffix')))]",
     "funcStorageName": "[tolower(concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),16)), 'stg', variables('suffix')))]",
     "serverFarmName": "[concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),14)), '-srv-', variables('suffix'))]",
-    "repoURL": "https://github.com/KelvinTegelaar/AzValidate.git",
     "uniqueResourceNameBase": "[toLower(concat(parameters('baseName'), variables('suffix')))]",
     "swaName": "[toLower(concat(parameters('baseName'), '-swa-', variables('suffix')))]"
   },
@@ -58,7 +50,7 @@
             "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
             "permissions": {
               "keys": [],
-              "secrets": ["all"],
+              "secrets": [ "all" ],
               "certificates": []
             }
           }
@@ -115,21 +107,9 @@
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
           ]
-        },
-        {
-          "type": "secrets",
-          "name": "exchangerefreshtoken",
-          "apiVersion": "2015-06-01",
-          "properties": {
-            "contentType": "text/plain",
-            "value": "ExchangeRefreshToken"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
-          ]
         }
       ],
-      "dependsOn": ["[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"]
+      "dependsOn": [ "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]" ]
     },
     {
       "apiVersion": "2015-08-01",
@@ -148,7 +128,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
         "siteConfig": {
           "Use32BitWorkerProcess": false,
-          "powerShellVersion": "7.2",
+          "powerShellVersion": "7.4",
           "appSettings": [
             {
               "name": "AzureWebJobsStorage",
@@ -167,24 +147,8 @@
               "value": "~4"
             },
             {
-              "name": "ApplicationID",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ApplicationId)')]"
-            },
-            {
-              "name": "ApplicationSecret",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ApplicationSecret)')]"
-            },
-            {
-              "name": "RefreshToken",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/RefreshToken)')]"
-            },
-            {
-              "name": "ExchangeRefreshtoken",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ExchangeRefreshToken)')]"
-            },
-            {
-              "name": "TenantID",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/tenantid)')]"
+              "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "1"
             },
             {
               "name": "FUNCTIONS_WORKER_RUNTIME",
@@ -192,21 +156,19 @@
             }
           ]
         }
-      },
-      "resources": [
-        {
-          "apiVersion": "2015-08-01",
-          "name": "web",
-          "type": "sourcecontrols",
-          "dependsOn": ["[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"],
-          "properties": {
-            "RepoUrl": "[parameters('GithubAPIRepository')]",
-            "branch": "master",
-            "publishRunbook": true,
-            "IsManualIntegration": true
-          }
-        }
-      ]
+      }
+    },
+    {
+      "name": "[concat(variables('funcAppName'), '/ZipDeploy')]",
+      "type": "Microsoft.Web/sites/extensions",
+      "apiVersion": "2021-02-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"
+      ],
+      "properties": {
+        "packageUri": "https://cippreleases.blob.core.windows.net/cipp-api/latest.zip"
+      }
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
@@ -214,7 +176,7 @@
       "name": "[variables('funcStorageName')]",
       "location": "[resourceGroup().location]",
       "tags": {
-        "displayName": "funStorageName"
+        "displayName": "funcStorageName"
       },
       "sku": {
         "name": "Standard_LRS"
@@ -258,7 +220,7 @@
         "buildProperties": {
           "appLocation": "/",
           "apiLocation": "",
-          "appArtifactLocation": ""
+          "outputLocation": "/out"
         }
       },
       "sku": {
@@ -278,6 +240,19 @@
       "properties": {
         "functionAppResourceId": "[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]",
         "functionAppRegion": "[resourceGroup().location]"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, variables('funcAppName'), 'Contributor')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
+        "scope": "[resourceGroup().id]"
       }
     }
   ],
