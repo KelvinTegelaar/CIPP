@@ -1,6 +1,6 @@
 # Tenant Onboarding
 
-You'll continue to use the Setup Wizard to onboard your client tenants. You can either
+You'll continue to use the Setup Wizard to onboard your client tenants. You can either add a GDAP tenant or a direct tenant if no GDAP relationship exists.
 
 ***
 

@@ -217,7 +217,7 @@ Occasionally this can happen if there is not a new application secret available 
    * The refresh token matches key vault. This may take a little while to update after first changing the account due to caching.
    * The user should be a service account.
    * The user needs to be a member of the AdminAgents group.
-   * The application has all the required permissions. If you have an error here, review [#im-getting-missing-permissions-errors-when-performing-the-permissions-check-on-my-cipp-sam-applicati](./#im-getting-missing-permissions-errors-when-performing-the-permissions-check-on-my-cipp-sam-applicati "mention")
+   * The application has all the required permissions. If you have an error here, click the "Details" button and use the built-in permissions repair tool.
 
 </details>
 

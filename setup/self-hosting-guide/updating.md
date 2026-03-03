@@ -6,8 +6,6 @@ description: >-
 
 # Updating Versions
 
-
-
 {% hint style="warning" %}
 **Note (Hosted / Sponsored Clients)**\
 If you’re using a CyberDrain-hosted instance of CIPP, updates happen automatically—generally within **48 hours** of a new release. You can safely skip the rest of this page; however, it is important to perform a permissions check via CIPP > Application Settings > Permissions to ensure any newly added permissions are accounted for via an automated Permissions Repair in v7+.
@@ -63,8 +61,6 @@ For **typical** updates (e.g., moving from any v7+ patch releases):
 **Permissions Check**
 
 * Updates to CIPP can often include additional permissions required as new features are added or existing features get updated for new requirements from Microsoft. Go into CIPP > Application Settings > Permissions and perform a Permissions Check. If any roles are missing, you'll be presented with the option to Repair Permissions in v7+.
-
-
 {% endstep %}
 {% endstepper %}
 
@@ -75,10 +71,8 @@ For **typical** updates (e.g., moving from any v7+ patch releases):
 The v7 front-end introduced a **Next.js** + **Material-UI** stack, so older forks might need an extra step:
 
 {% hint style="info" %}
-If your "Sync fork" options button presents you with an error that there are conflicts that must be resolved, skip to [#id-3.-updating-from-v6-or-older-to-v7-merge-conflicts](updating.md#id-3.-updating-from-v6-or-older-to-v7-merge-conflicts "mention").
+If your "Sync fork" options button presents you with an error that there are conflicts that must be resolved, skip to [#3-updating-from-v6-or-older-to-v7-merge-conflicts](updating.md#3-updating-from-v6-or-older-to-v7-merge-conflicts "mention").
 {% endhint %}
-
-
 
 {% stepper %}
 {% step %}
@@ -89,7 +83,7 @@ If your "Sync fork" options button presents you with an error that there are con
     ```
     .github/workflows
     ```
-* Look for filenames starting with **azure-static-web-apps** (e.g., `azure-static-web-apps-main.yml`).&#x20;
+* Look for filenames starting with **azure-static-web-apps** (e.g., `azure-static-web-apps-main.yml`).
 * **Important**: If you discarded commits previously, you might not see such a file at all—or it might be renamed.
 {% endstep %}
 
@@ -171,7 +165,7 @@ In many cases, there are so many changes to the repo that GitHub doesn't know ho
 {% endstep %}
 
 {% step %}
-### Resume with Step 2 from [#id-2.-updating-from-v6-or-older-to-v7](updating.md#id-2.-updating-from-v6-or-older-to-v7 "mention")
+### Resume with Step 2 from [#2-updating-from-v6-or-older-to-v7](updating.md#2-updating-from-v6-or-older-to-v7 "mention")
 {% endstep %}
 {% endstepper %}
 
@@ -190,8 +184,6 @@ If you accidentally chose **Discard (X) Commits** while syncing your fork, you m
 {% hint style="info" %}
 If you're comfortable with GitHub, the easiest way to ensure you have the appropriate values for your token is to review your Actions tab on your CIPP repo for the most recent successfully run update. The contents of your old workflow file will be found by clicking "Workflow file" in the left side column of the Build and Deploy task. You'll still need to ensure the `/out` changes have been made to the file.
 {% endhint %}
-
-
 
 {% stepper %}
 {% step %}
@@ -249,4 +241,3 @@ At this point, your **CIPP** front-end and API should be updated to the latest r
 3. **Hard-refresh** or wait for CDN caches to clear for a truly up-to-date view
 
 Congratulations! You’re now up-to-date and ready to use the newest features.
-
