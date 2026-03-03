@@ -710,8 +710,8 @@
         "placeholder": "Enter your email address for PWPush. (Email & API Key auth)",
         "condition": {
           "field": "PWPush.UseBearerAuth",
-          "compareType": "is",
-          "compareValue": false
+          "compareType": "isNot",
+          "compareValue": true
         }
       },
       {
