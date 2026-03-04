@@ -154,28 +154,6 @@ const Page = () => {
 
                     {/* Optional Parameters */}
                     <Typography variant="subtitle1">Optional Parameters:</Typography>
-
-                    {/* Test from this country */}
-                    <CippFormComponent
-                      type="autoComplete"
-                      label="Test from this country"
-                      name="country"
-                      options={countryList.map(({ Code, Name }) => ({
-                        value: Code,
-                        label: Name,
-                      }))}
-                      formControl={formControl}
-                    />
-
-                    {/* Test from this IP */}
-                    <CippFormComponent
-                      type="textField"
-                      label="Test from this IP"
-                      name="IpAddress"
-                      placeholder="8.8.8.8"
-                      formControl={formControl}
-                    />
-
                     {/* Device Platform */}
                     <CippFormComponent
                       type="autoComplete"
@@ -207,6 +185,40 @@ const Page = () => {
                         { value: "easSupported", label: "EAS supported" },
                         { value: "other", label: "Other clients" },
                       ]}
+                      formControl={formControl}
+                    />
+
+                    {/* Authentication Flow */}
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Select the authentication flow"
+                      name="authenticationFlow"
+                      options={[
+                        { value: "none", label: "None" },
+                        { value: "deviceCodeFlow", label: "Device code flow" },
+                        { value: "authenticationTransfer", label: "Authentication transfer" },
+                      ]}
+                      formControl={formControl}
+                    />
+
+                    {/* Test from this IP */}
+                    <CippFormComponent
+                      type="textField"
+                      label="Test from this IP"
+                      name="IpAddress"
+                      placeholder="8.8.8.8"
+                      formControl={formControl}
+                    />
+
+                    {/* Test from this country */}
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Test from this country"
+                      name="country"
+                      options={countryList.map(({ Code, Name }) => ({
+                        value: Code,
+                        label: Name,
+                      }))}
                       formControl={formControl}
                     />
 
