@@ -133,6 +133,7 @@ const Page = () => {
                       label="Select the application to test"
                       name="includeApplications"
                       multiple={false}
+                      creatable={false}
                       api={{
                         tenantFilter: tenant,
                         url: "/api/ListGraphRequest",
@@ -149,6 +150,7 @@ const Page = () => {
                           $top: 999,
                         },
                       }}
+                      validators={{ required: "Application is required" }}
                       formControl={formControl}
                     />
 
@@ -159,6 +161,8 @@ const Page = () => {
                       type="autoComplete"
                       label="Select the device platform to test"
                       name="devicePlatform"
+                      multiple={false}
+                      creatable={false}
                       options={[
                         { value: "Windows", label: "Windows" },
                         { value: "iOS", label: "iOS" },
@@ -174,6 +178,8 @@ const Page = () => {
                       type="autoComplete"
                       label="Select the client application type to test"
                       name="clientAppType"
+                      multiple={false}
+                      creatable={false}
                       options={[
                         { value: "all", label: "All" },
                         { value: "Browser", label: "Browser" },
@@ -193,6 +199,8 @@ const Page = () => {
                       type="autoComplete"
                       label="Select the authentication flow"
                       name="authenticationFlow"
+                      multiple={false}
+                      creatable={false}
                       options={[
                         { value: "none", label: "None" },
                         { value: "deviceCodeFlow", label: "Device code flow" },
@@ -215,6 +223,8 @@ const Page = () => {
                       type="autoComplete"
                       label="Test from this country"
                       name="country"
+                      multiple={false}
+                      creatable={false}
                       options={countryList.map(({ Code, Name }) => ({
                         value: Code,
                         label: Name,
@@ -227,6 +237,8 @@ const Page = () => {
                       type="autoComplete"
                       label="Select the sign-in risk level of the user signing in"
                       name="SignInRiskLevel"
+                      multiple={false}
+                      creatable={false}
                       options={[
                         { value: "low", label: "Low" },
                         { value: "medium", label: "Medium" },
@@ -241,6 +253,8 @@ const Page = () => {
                       type="autoComplete"
                       label="Select the user risk level of the user signing in"
                       name="userRiskLevel"
+                      multiple={false}
+                      creatable={false}
                       options={[
                         { value: "low", label: "Low" },
                         { value: "medium", label: "Medium" },
