@@ -246,9 +246,9 @@ const Page = () => {
               <CippDataTable
                 queryKey={`ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`}
                 title={"CA Test Results"}
-                simple={true}
-                simpleColumns={["displayName", "state", "policyApplies", "reasons"]}
+                simpleColumns={["displayName", "state", "policyApplies", "analysisReasons"]}
                 data={postRequest.data?.data?.Results?.value || []}
+                isFetching={postRequest.isPending}
               />
             </Grid>
           </Grid>
