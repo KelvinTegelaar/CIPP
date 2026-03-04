@@ -65,6 +65,9 @@ export const CippSettingsSideBar = (props) => {
       // Table Filter Preferences
       persistFilters: formValues.persistFilters,
 
+      // Bookmark Display Mode
+      bookmarkMode: formValues.bookmarkMode,
+
       // Portal Links Configuration
       portalLinks: {
         M365_Portal: formValues.portalLinks?.M365_Portal,
