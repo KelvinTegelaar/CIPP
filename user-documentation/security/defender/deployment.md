@@ -63,7 +63,7 @@ The Defender Deployment page allows you to set up default defender policies for 
   * **Block abuse of exploited vulnerable signed drivers (Device)**: Prevents abuse of vulnerable signed drivers.
   * **Assign to Group**: Options to assign ASR rules to specific groups (e.g., all users, all devices).
 
-For more details on each setting, refer to the [Microsoft Defender for Endpoint documentation](https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-endpoint?view=o365-worldwide).
+For more details on each setting, refer to the [Microsoft Defender for Endpoint documentation](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-endpoint?view=o365-worldwide).
 
 ***
 

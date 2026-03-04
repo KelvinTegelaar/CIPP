@@ -136,8 +136,8 @@ To build on your onboarding success:
 
 ### **Helpful Resources**
 
-* [**GDAP Roles: Recommended Setup**](https://docs.cipp.app/setup/gdap/recommended-roles)
-* [**GDAP Invite Wizard Guide**](https://docs.cipp.app/setup/gdap/gdap-invite-wizard)
+* [**GDAP Roles: Recommended Setup**](https://docs.cipp.app/setup/installation/recommended-roles)
+* [**GDAP Invite Wizard Guide**](https://docs.cipp.app/setup/installation/gdap-invite-wizard)
 * [**CIPP Standards Implementation**](https://docs.cipp.app/setup/implementation-guide/standards-setup)
 * [**Microsoft GDAP Permissions**](https://learn.microsoft.com/en-us/partner-center/customers/gdap-least-privileged-roles-by-task)
 

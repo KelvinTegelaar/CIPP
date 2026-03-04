@@ -45,7 +45,7 @@ Huntress documentation on specifics of how to name organization keys can be foun
 ### ImmyBot
 
 {% hint style="warning" %}
-ImmyBot was removed from our list of deployable applications. Please see [ImmyBot documentation](https://docs.immy.bot/) for supported deployment methods.
+ImmyBot was removed from our list of deployable applications. Please see [ImmyBot documentation](https://www.immy.bot/documentation/) for supported deployment methods.
 {% endhint %}
 
 ### Syncro RMM

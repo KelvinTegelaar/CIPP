@@ -2,7 +2,7 @@
 description: Custom domain
 ---
 
-# Adding a custom domain name
+# Adding a Custom Domain Name
 
 ### Hosted Clients
 
@@ -24,4 +24,4 @@ At the moment of deployment, the application uses a generated domain name. To ch
 * Click on 'Static Web app - Role Management'
 * Select Custom Domains. You can add your own domain name here.
 
-For more information see Microsoft's documentation at [Microsoft Docs - Set up a custom domain with free certificate in Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/custom-domain?tabs=azure-dns)
+For more information see Microsoft's documentation at [Microsoft Docs - Set up a custom domain with free certificate in Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/custom-domain?tabs=azure-dns)

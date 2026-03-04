@@ -24,7 +24,7 @@ Takes you to the password / token storage, if you want to change your keys manua
 
 ### Function application
 
-The overview page is where you can stop the API, or restart it. The configuration page is where you can change settings. If you want to set the time zone, check out [this Microsoft FAQ](https://docs.microsoft.com/en-us/azure/app-service/faq-configuration-and-management#how-do-i-set-the-server-time-zone-for-my-web-app-). The deployment center is where you can sync the API to the latest version from your GitHub fork.
+The overview page is where you can stop the API, or restart it. The configuration page is where you can change settings. If you want to set the time zone, check out [this Microsoft FAQ](https://learn.microsoft.com/en-us/azure/app-service/configure-common?tabs=portal#configure-general-settings). The deployment center is where you can sync the API to the latest version from your GitHub fork.
 
 ### Static Web App
 

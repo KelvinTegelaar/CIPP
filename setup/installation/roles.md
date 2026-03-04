@@ -33,7 +33,7 @@ Once you have your initial `superadmin` user added, you are now ready to finish 
 
 ### Built-In Roles
 
-CIPP features a role management system which utilizes the [Roles feature of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#roles). The roles available in CIPP are as follows:
+CIPP features a role management system which utilizes the [Roles feature of Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#roles). The roles available in CIPP are as follows:
 
 | Role Name  | Description                                                                                                                                                           |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
