@@ -82,6 +82,7 @@ export const CippAutoComplete = (props) => {
     groupBy,
     renderGroup,
     customAction,
+    handleHomeEndKeys = false,
     ...other
   } = props;
 
@@ -311,6 +312,7 @@ export const CippAutoComplete = (props) => {
       <Autocomplete
         ref={autocompleteRef}
         key={stableKey}
+        handleHomeEndKeys={handleHomeEndKeys}
         open={open}
         onOpen={() => setOpen(true)}
         onClose={(event, reason) => {
@@ -422,7 +424,7 @@ export const CippAutoComplete = (props) => {
               if (input) {
                 input.focus();
               }
-              
+
               // Restore the scroll position
               if (listboxRef.current && scrollPositionRef.current > 0) {
                 listboxRef.current.scrollTop = scrollPositionRef.current;
