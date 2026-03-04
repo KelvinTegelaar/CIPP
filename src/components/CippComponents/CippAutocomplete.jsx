@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef, useImperativeHandle } from "react";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippError } from "../../utils/get-cipp-error";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
@@ -57,7 +57,7 @@ const MemoTextField = React.memo(function MemoTextField({
   );
 });
 
-export const CippAutoComplete = (props) => {
+export const CippAutoComplete = React.forwardRef((props, ref) => {
   const {
     size,
     api,
@@ -90,6 +90,14 @@ export const CippAutoComplete = (props) => {
   const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
   const hasPreselectedRef = useRef(false);
   const autocompleteRef = useRef(null); // Ref for focusing input after selection
+
+  useImperativeHandle(ref, () => ({
+    focus() {
+      const input = autocompleteRef.current?.querySelector("input");
+      input?.focus();
+      input?.select();
+    },
+  }), []);
   const listboxRef = useRef(null); // Ref for the listbox to preserve scroll position
   const scrollPositionRef = useRef(0); // Store scroll position
   const filter = createFilterOptions({
@@ -682,4 +690,5 @@ export const CippAutoComplete = (props) => {
       )}
     </>
   );
-};
+});
+CippAutoComplete.displayName = "CippAutoComplete";

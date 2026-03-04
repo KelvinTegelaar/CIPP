@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
@@ -37,6 +37,7 @@ const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
   const searchDialog = useDialog();
+  const tenantSelectorRef = useRef(null);
   const { onNavOpen } = props;
   const settings = useSettings();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -96,9 +97,16 @@ export const TopNav = (props) => {
     settings.handleUpdate({ bookmarks: updatedBookmarks });
   };
 
+  const openSearch = useCallback(() => {
+    searchDialog.handleOpen();
+  }, [searchDialog.handleOpen]);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      if ((event.metaKey || event.ctrlKey) && event.altKey && event.key === "k") {
+        event.preventDefault();
+        tenantSelectorRef.current?.focus();
+      } else if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
         openSearch();
       }
@@ -107,17 +115,13 @@ export const TopNav = (props) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [openSearch]);
 
   useEffect(() => {
     if (settings.sortOrder) {
       setSortOrder(settings.sortOrder);
     }
   }, [settings.sortOrder]);
-
-  const openSearch = () => {
-    searchDialog.handleOpen();
-  };
 
   // Use the sorted bookmarks if sorting is applied, otherwise use the bookmarks in their current order
   const displayBookmarks = settings.bookmarks || [];
@@ -169,7 +173,7 @@ export const TopNav = (props) => {
           >
             <Logo />
           </Box>
-          {!mdDown && <CippTenantSelector refreshButton={true} tenantButton={true} />}
+          {!mdDown && <CippTenantSelector ref={tenantSelectorRef} refreshButton={true} tenantButton={true} />}
           {mdDown && (
             <IconButton color="inherit" onClick={onNavOpen}>
               <SvgIcon color="action" fontSize="small">
