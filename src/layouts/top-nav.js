@@ -5,8 +5,10 @@ import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
 import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import CloseIcon from "@mui/icons-material/Close";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import {
   Box,
   Divider,
@@ -29,6 +31,7 @@ import { NotificationsPopover } from "./notifications-popover";
 import { useDialog } from "../hooks/use-dialog";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CippCentralSearch } from "../components/CippComponents/CippCentralSearch";
+import { applySort } from "../utils/apply-sort";
 
 const TOP_NAV_HEIGHT = 64;
 
@@ -37,7 +40,6 @@ export const TopNav = (props) => {
   const { onNavOpen } = props;
   const settings = useSettings();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
-  const bookmarkMode = settings.bookmarkMode?.value || "both";
   const handleThemeSwitch = useCallback(() => {
     const themeName = settings.currentTheme?.value === "light" ? "dark" : "light";
     settings.handleUpdate({
@@ -47,8 +49,7 @@ export const TopNav = (props) => {
   }, [settings]);
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [dragIndex, setDragIndex] = useState(null);
-  const [dragOverIndex, setDragOverIndex] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const handleBookmarkClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -58,44 +59,42 @@ export const TopNav = (props) => {
     setAnchorEl(null);
   };
 
-  const handleDragStart = (index) => {
-    setDragIndex(index);
+  const handleSortToggle = () => {
+    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newSortOrder);
+
+    // Save the new sort order and re-order bookmarks
+    const sortedBookmarks = applySort(settings.bookmarks || [], "label", newSortOrder);
+    settings.handleUpdate({
+      bookmarks: sortedBookmarks,
+      sortOrder: newSortOrder,
+    });
   };
 
-  const handleDragOver = (e, index) => {
-    e.preventDefault();
-    setDragOverIndex(index);
-  };
+  // Move a bookmark up in the list
+  const moveBookmarkUp = (index) => {
+    if (index <= 0) return;
 
-  const handleDrop = (e, dropIndex) => {
-    e.preventDefault();
-    if (dragIndex === null || dragIndex === dropIndex) {
-      setDragIndex(null);
-      setDragOverIndex(null);
-      return;
-    }
-    const items = [...(settings.bookmarks || [])];
-    const [reordered] = items.splice(dragIndex, 1);
-    items.splice(dropIndex, 0, reordered);
-    settings.handleUpdate({ bookmarks: items });
-    setDragIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDragIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const removeBookmark = (index) => {
     const updatedBookmarks = [...(settings.bookmarks || [])];
-    updatedBookmarks.splice(index, 1);
+    const temp = updatedBookmarks[index];
+    updatedBookmarks[index] = updatedBookmarks[index - 1];
+    updatedBookmarks[index - 1] = temp;
+
     settings.handleUpdate({ bookmarks: updatedBookmarks });
   };
 
-  const displayBookmarks = settings.bookmarks || [];
-  const popoverOpen = Boolean(anchorEl);
-  const popoverId = popoverOpen ? "bookmark-popover" : undefined;
+  // Move a bookmark down in the list
+  const moveBookmarkDown = (index) => {
+    const bookmarks = settings.bookmarks || [];
+    if (index >= bookmarks.length - 1) return;
+
+    const updatedBookmarks = [...bookmarks];
+    const temp = updatedBookmarks[index];
+    updatedBookmarks[index] = updatedBookmarks[index + 1];
+    updatedBookmarks[index + 1] = temp;
+
+    settings.handleUpdate({ bookmarks: updatedBookmarks });
+  };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -110,9 +109,21 @@ export const TopNav = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (settings.sortOrder) {
+      setSortOrder(settings.sortOrder);
+    }
+  }, [settings.sortOrder]);
+
   const openSearch = () => {
     searchDialog.handleOpen();
   };
+
+  // Use the sorted bookmarks if sorting is applied, otherwise use the bookmarks in their current order
+  const displayBookmarks = settings.bookmarks || [];
+
+  const open = Boolean(anchorEl);
+  const id = open ? "bookmark-popover" : undefined;
 
   return (
     <Box
@@ -180,97 +191,90 @@ export const TopNav = (props) => {
               <MagnifyingGlassIcon />
             </SvgIcon>
           </IconButton>
-          {(bookmarkMode === "popover" || bookmarkMode === "both") && (
-            <>
-              <IconButton color="inherit" onClick={handleBookmarkClick}>
-                <SvgIcon color="action" fontSize="small">
-                  <BookmarkIcon />
-                </SvgIcon>
-              </IconButton>
-              <Popover
-                id={popoverId}
-                open={popoverOpen}
-                anchorEl={anchorEl}
-                onClose={handleBookmarkClose}
-                disableScrollLock
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "center",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "center",
-                }}
-              >
-                <List sx={{ minWidth: "220px" }}>
-                  {displayBookmarks.length === 0 ? (
-                    <ListItem>
-                      <ListItemText
-                        primary={<Typography variant="body2">No bookmarks added yet</Typography>}
-                      />
-                    </ListItem>
-                  ) : (
-                    displayBookmarks.map((bookmark, idx) => (
-                      <ListItem
-                        key={bookmark.path}
-                        draggable
-                        onDragStart={() => handleDragStart(idx)}
-                        onDragOver={(e) => handleDragOver(e, idx)}
-                        onDrop={(e) => handleDrop(e, idx)}
-                        onDragEnd={handleDragEnd}
-                        sx={{
-                          color: "inherit",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          cursor: "grab",
-                          ...(dragIndex === idx && {
-                            opacity: 0.4,
-                          }),
-                          ...(dragOverIndex === idx && dragIndex !== idx && {
-                            borderTop: "2px solid",
-                            borderColor: "primary.main",
-                          }),
+          <IconButton color="inherit" onClick={handleBookmarkClick}>
+            <SvgIcon color="action" fontSize="small">
+              <BookmarkIcon />
+            </SvgIcon>
+          </IconButton>
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleBookmarkClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <List sx={{ minWidth: "220px" }}>
+              <ListItem>
+                <IconButton onClick={handleSortToggle}>
+                  <SvgIcon fontSize="small">
+                    {sortOrder === "asc" ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                  </SvgIcon>
+                </IconButton>
+                <Typography variant="body2">Sort Alphabetically</Typography>
+              </ListItem>
+              {displayBookmarks.length === 0 ? (
+                <ListItem>
+                  <ListItemText
+                    primary={<Typography variant="body2">No bookmarks added yet</Typography>}
+                  />
+                </ListItem>
+              ) : (
+                displayBookmarks.map((bookmark, idx) => (
+                  <ListItem
+                    key={idx}
+                    sx={{
+                      color: "inherit",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box
+                      component={NextLink}
+                      href={bookmark.path}
+                      onClick={() => handleBookmarkClose()}
+                      sx={{
+                        textDecoration: "none",
+                        color: "inherit",
+                        flexGrow: 1,
+                        marginRight: 2,
+                      }}
+                    >
+                      <Typography variant="body2">{bookmark.label}</Typography>
+                    </Box>
+                    <Stack direction="row" spacing={1}>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          moveBookmarkUp(idx);
                         }}
+                        disabled={idx === 0}
                       >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            color: "neutral.500",
-                            mr: 1,
-                          }}
-                        >
-                          <DragIndicatorIcon fontSize="small" />
-                        </Box>
-                        <Box
-                          component={NextLink}
-                          href={bookmark.path}
-                          onClick={() => handleBookmarkClose()}
-                          sx={{
-                            textDecoration: "none",
-                            color: "inherit",
-                            flexGrow: 1,
-                            marginRight: 2,
-                          }}
-                        >
-                          <Typography variant="body2">{bookmark.label}</Typography>
-                        </Box>
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            removeBookmark(idx);
-                          }}
-                        >
-                          <CloseIcon fontSize="small" />
-                        </IconButton>
-                      </ListItem>
-                    ))
-                  )}
-                </List>
-              </Popover>
-            </>
-          )}
+                        <KeyboardArrowUpIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          moveBookmarkDown(idx);
+                        }}
+                        disabled={idx === displayBookmarks.length - 1}
+                      >
+                        <KeyboardArrowDownIcon fontSize="small" />
+                      </IconButton>
+                    </Stack>
+                  </ListItem>
+                ))
+              )}
+            </List>
+          </Popover>
           <CippCentralSearch open={searchDialog.open} handleClose={searchDialog.handleClose} />
           <NotificationsPopover />
           <AccountPopover

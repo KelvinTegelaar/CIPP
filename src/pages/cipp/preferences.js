@@ -309,24 +309,6 @@ const Page = () => {
                             />
                           ),
                         },
-                        {
-                          label: "Bookmark Display Mode",
-                          value: (
-                            <CippFormComponent
-                              type="autoComplete"
-                              disableClearable={true}
-                              name="bookmarkMode"
-                              formControl={formcontrol}
-                              multiple={false}
-                              defaultValue={{ value: "both", label: "Both" }}
-                              options={[
-                                { value: "sidebar", label: "Sidebar" },
-                                { value: "popover", label: "Top Bar Popover" },
-                                { value: "both", label: "Both" },
-                              ]}
-                            />
-                          ),
-                        },
                       ]}
                     />
                     <CippOffboardingDefaultSettings formControl={formcontrol} />
