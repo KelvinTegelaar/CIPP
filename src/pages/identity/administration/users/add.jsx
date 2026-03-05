@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
-import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
+import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useEffect } from "react";
 
@@ -37,6 +37,12 @@ const Page = () => {
       }
       newFields.tenantFilter = userSettingsDefaults.currentTenant;
 
+      // Preserve the currently selected template when copying properties
+      const currentTemplate = formControl.getValues("userTemplate");
+      if (currentTemplate) {
+        newFields.userTemplate = currentTemplate;
+      }
+
       formControl.reset(newFields);
     }
   }, [formValues]);
@@ -49,35 +55,6 @@ const Page = () => {
         backButtonTitle="User Overview"
         postUrl="/api/AddUser"
       >
-        <Box sx={{ my: 2 }}>
-          <CippFormUserSelector
-            formControl={formControl}
-            name="userProperties"
-            label="Copy properties from another user"
-            multiple={false}
-            select={
-              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
-            }
-            addedField={{
-              groupType: "calculatedGroupType",
-              displayName: "displayName",
-              userPrincipalName: "userPrincipalName",
-              id: "id",
-              givenName: "givenName",
-              surname: "surname",
-              mailNickname: "mailNickname",
-              jobTitle: "jobTitle",
-              department: "department",
-              streetAddress: "streetAddress",
-              postalCode: "postalCode",
-              companyName: "companyName",
-              mobilePhone: "mobilePhone",
-              businessPhones: "businessPhones",
-              usageLocation: "usageLocation",
-              office: "office",
-            }}
-          />
-        </Box>
         <Box sx={{ my: 2 }}>
           <CippAddEditUser formControl={formControl} userSettingsDefaults={userSettingsDefaults} />
         </Box>

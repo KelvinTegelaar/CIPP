@@ -1,18 +1,18 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
-import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardConfirmation";
-import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
-import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
-import { CippWizardCSVImport } from "/src/components/CippWizard/CippWizardCSVImport";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { useSettings } from "../../../hooks/use-settings";
+import { CippWizardConfirmation } from "../../../components/CippWizard/CippWizardConfirmation";
+import CippWizardPage from "../../../components/CippWizard/CippWizardPage.jsx";
+import { CippTenantStep } from "../../../components/CippWizard/CippTenantStep.jsx";
+import { CippWizardCSVImport } from "../../../components/CippWizard/CippWizardCSVImport";
 
 const BulkAddSiteForm = () => {
   const tenantFilter = useSettings().currentTenant;
 
   const fields = [
-    "SiteName",
+    "siteName",
     "siteDescription",
     "siteOwner",
-    "TemplateName",
+    "templateName",
     "siteDesign",
     "sensitivityLabel",
   ];

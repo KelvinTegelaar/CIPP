@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Typography, List, ListItem, SvgIcon } from "@mui/material";
 import CippButtonCard from "./CippButtonCard"; // Adjust the import path as needed
 import { CippApiDialog } from "../CippComponents/CippApiDialog";

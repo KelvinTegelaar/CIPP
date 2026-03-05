@@ -1,37 +1,23 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Book } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { PermissionButton } from "../../../../utils/permissions.js";
+import { CippPolicyDeployDrawer } from "../../../../components/CippComponents/CippPolicyDeployDrawer.jsx";
+import { useSettings } from "../../../../hooks/use-settings.js";
+import { useCippIntunePolicyActions } from "../../../../components/CippComponents/CippIntunePolicyActions.jsx";
 
 const Page = () => {
   const pageTitle = "App Protection & Configuration Policies";
+  const cardButtonPermissions = ["Endpoint.MEM.ReadWrite"];
+  const tenant = useSettings().currentTenant;
 
-  const actions = [
-    {
-      label: "Create template based on policy",
-      type: "POST",
-      url: "/api/AddIntuneTemplate",
-      data: {
-        ID: "id",
-        URLName: "managedAppPolicies",
-      },
-      confirmText: "Are you sure you want to create a template based on this policy?",
-      icon: <Book />,
-      color: "info",
+  const actions = useCippIntunePolicyActions(tenant, "URLName", {
+    templateData: {
+      ID: "id",
+      URLName: "managedAppPolicies",
     },
-    {
-      label: "Delete Policy",
-      type: "POST",
-      url: "/api/RemovePolicy",
-      data: {
-        ID: "id",
-        URLName: "managedAppPolicies",
-      },
-      confirmText: "Are you sure you want to delete this policy?",
-      icon: <TrashIcon />,
-      color: "danger",
-    },
-  ];
+    platformType: "deviceAppManagement",
+    deleteUrlName: "URLName",
+  });
 
   const offCanvas = {
     extendedInfoFields: [
@@ -39,25 +25,33 @@ const Page = () => {
       "displayName",
       "lastModifiedDateTime",
       "PolicyTypeName",
+      "PolicySource",
     ],
     actions: actions,
   };
 
-  const simpleColumns = ["displayName", "isAssigned", "lastModifiedDateTime"];
+  const simpleColumns = [
+    "displayName",
+    "PolicyTypeName",
+    "PolicyAssignment",
+    "PolicyExclude",
+    "lastModifiedDateTime",
+  ];
 
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListGraphRequest"
-      apiData={{
-        Endpoint: "deviceAppManagement/managedAppPolicies",
-        $orderby: "displayName",
-        manualPagination: true,
-      }}
-      apiDataKey="Results"
+      apiUrl="/api/ListAppProtectionPolicies"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      cardButton={
+        <CippPolicyDeployDrawer
+          buttonText="Deploy Policy"
+          requiredPermissions={cardButtonPermissions}
+          PermissionButton={PermissionButton}
+        />
+      }
     />
   );
 };

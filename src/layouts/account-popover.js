@@ -16,7 +16,6 @@ import {
   ListItemIcon,
   ListItemText,
   Popover,
-  Skeleton,
   Stack,
   SvgIcon,
   Typography,
@@ -25,7 +24,9 @@ import {
 import { usePopover } from "../hooks/use-popover";
 import { paths } from "../paths";
 import { ApiGetCall } from "../api/ApiCall";
-import { CogIcon } from "@heroicons/react/24/outline";
+import { CogIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
+import { useReleaseNotes } from "../contexts/release-notes-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const AccountPopover = (props) => {
   const {
@@ -38,19 +39,36 @@ export const AccountPopover = (props) => {
   const router = useRouter();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const popover = usePopover();
-
+  const queryClient = useQueryClient();
+  const { openReleaseNotes } = useReleaseNotes();
   const orgData = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
   });
 
+  const userDetails = orgData.data?.clientPrincipal?.userDetails;
+
+  // Cache user photo with user-specific key
+  const userPhoto = ApiGetCall({
+    url: "/api/ListUserPhoto",
+    data: { UserID: userDetails },
+    queryKey: `userPhoto-${userDetails}`,
+    waiting: !!userDetails,
+    staleTime: Infinity,
+    responseType: "blob",
+    convertToDataUrl: true,
+  });
+
   const handleLogout = useCallback(async () => {
     try {
       popover.handleClose();
+      // delete query cache and persisted data
+      queryClient.clear();
 
       router.push("/.auth/logout?post_logout_redirect_uri=" + encodeURIComponent(paths.index));
     } catch (err) {
       console.error(err);
+      console.log(orgData);
       toast.error("Something went wrong");
     }
   }, [router, popover]);
@@ -60,15 +78,12 @@ export const AccountPopover = (props) => {
       sx={{
         height: 40,
         width: 40,
+        fontSize: 20,
       }}
       variant="rounded"
-      src={
-        orgData.data?.clientPrincipal?.userDetails
-          ? `/api/ListUserPhoto?UserID=${orgData.data?.clientPrincipal?.userDetails}`
-          : ""
-      }
+      src={userPhoto.data && !userPhoto.isError ? userPhoto.data : undefined}
     >
-      {orgData.data?.userDetails?.[0] || ""}
+      {userDetails?.[0]?.toUpperCase() || ""}
     </Avatar>
   );
 
@@ -148,6 +163,19 @@ export const AccountPopover = (props) => {
                 </SvgIcon>
               </ListItemIcon>
               <ListItemText primary="Preferences" />
+            </ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                popover.handleClose();
+                openReleaseNotes();
+              }}
+            >
+              <ListItemIcon>
+                <SvgIcon fontSize="small">
+                  <DocumentTextIcon />
+                </SvgIcon>
+              </ListItemIcon>
+              <ListItemText primary="View release notes" />
             </ListItemButton>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon>

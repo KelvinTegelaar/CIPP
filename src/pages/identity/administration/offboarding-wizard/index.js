@@ -1,7 +1,7 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardConfirmation";
-import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
-import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippWizardConfirmation } from "../../../../components/CippWizard/CippWizardConfirmation";
+import CippWizardPage from "../../../../components/CippWizard/CippWizardPage.jsx";
+import { CippTenantStep } from "../../../../components/CippWizard/CippTenantStep.jsx";
 import { CippWizardAutoComplete } from "../../../../components/CippWizard/CippWizardAutoComplete";
 import { CippWizardOffboarding } from "../../../../components/CippWizard/CippWizardOffboarding";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -16,6 +16,7 @@ const Page = () => {
       componentProps: {
         allTenants: false,
         type: "single",
+        includeOffboardingDefaults: true,
       },
     },
     {
@@ -30,6 +31,7 @@ const Page = () => {
         api: {
           url: "/api/ListGraphRequest",
           dataKey: "Results",
+          queryKey: "Users - {tenant}",
           data: {
             Endpoint: "users",
             manualPagination: true,
@@ -52,6 +54,10 @@ const Page = () => {
       title: "Step 4",
       description: "Confirmation",
       component: CippWizardConfirmation,
+      maxWidth: "lg",
+      componentProps: {
+        columns: 3,
+      },
     },
   ];
 

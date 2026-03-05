@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
+import { ApiGetCall } from "../../../../../api/ApiCall";
+import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { Check, Mail, Fingerprint } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
@@ -343,10 +343,10 @@ const Page = () => {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item size={4}>
+            <Grid size={4}>
               <CippUserInfoCard user={data} isFetching={userRequest.isLoading} />
             </Grid>
-            <Grid item size={8}>
+            <Grid size={8}>
               <Stack spacing={3}>
                 <Typography variant="h6">Latest Logon</Typography>
                 <CippBannerListCard

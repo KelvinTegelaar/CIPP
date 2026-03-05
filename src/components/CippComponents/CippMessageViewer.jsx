@@ -43,7 +43,7 @@ import { CippTimeAgo } from "./CippTimeAgo";
 import { CippCodeBlock } from "./CippCodeBlock";
 import DOMPurify from "dompurify";
 import ReactHtmlParser from "react-html-parser";
-import { FileDropzone } from "/src/components/file-dropzone.js";
+import { FileDropzone } from "../file-dropzone.js";
 import CippPageCard from "../CippCards/CippPageCard";
 import {
   MoonIcon,
@@ -51,7 +51,7 @@ import {
   ShieldExclamationIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../hooks/use-settings";
 import CippForefrontHeaderDialog from "./CippForefrontHeaderDialog";
 
 export const CippMessageViewer = ({ emailSource }) => {
@@ -333,7 +333,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                   justifyContent: "space-between",
                 }}
               >
-                <Grid item size={{ xs: 12, md: 9 }}>
+                <Grid size={{ xs: 12, md: 9 }}>
                   <Box display="flex" alignItems="center">
                     <AccountCircle fontSize="large" sx={{ mr: 1 }} />
                     <Stack direction="row" spacing={0.5} alignItems="center" display="flex">
@@ -417,7 +417,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                     </div>
                   )}
                 </Grid>
-                <Grid item size={{ xs: 12, md: 3 }}>
+                <Grid size={{ xs: 12, md: 3 }}>
                   <Stack direction="row" spacing={0.5} justifyContent="flex-end">
                     <Typography variant="subtitle2">
                       {emlContent.date && isValidDate(emlContent.date)
@@ -436,7 +436,7 @@ export const CippMessageViewer = ({ emailSource }) => {
 
               {emlContent.attachments && emlContent.attachments.length > 0 && (
                 <Grid container spacing={2} sx={{ mb: 2 }}>
-                  <Grid item size={12}>
+                  <Grid size={12}>
                     <Stack spacing={1} direction="row">
                       {emlContent?.attachments?.map((attachment, index) => (
                         <React.Fragment key={index}>
@@ -484,7 +484,7 @@ export const CippMessageViewer = ({ emailSource }) => {
 
               {(emlContent?.text || emlContent?.html) && (
                 <Grid container spacing={2}>
-                  <Grid item size={12}>
+                  <Grid size={12}>
                     {messageHtml ? (
                       <ThemeProvider theme={theme}>
                         {emailStyle}

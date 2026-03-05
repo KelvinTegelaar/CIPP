@@ -1,5 +1,6 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import {
+  Alert,
   Button,
   Container,
   Stack,
@@ -11,18 +12,19 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiPostCall } from "/src/api/ApiCall";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
+import { ApiPostCall } from "../../../api/ApiCall";
+import CippButtonCard from "../../../components/CippCards/CippButtonCard";
+import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { useState, useEffect } from "react";
 import { Search, Close } from "@mui/icons-material";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const simpleColumns = ["Cmdlet"];
 const roleColumns = ["Error", "Name", "Description"];
 const apiUrl = "/api/ListExoRequest";
-const pageTitle = "Available Exchange Cmdlets";
+const pageTitle = "Exchange Cmdlets";
 
 const Page = () => {
   const formControl = useForm({
@@ -95,15 +97,22 @@ const Page = () => {
 
   return (
     <Container>
-      <Stack spacing={2} sx={{ p: 3, mt: 1 }}>
+      <CippHead title={pageTitle} />
+      <Stack spacing={2} sx={{ mt: 1 }}>
+        <Alert severity="info">
+          This tool allows you to search for Exchange cmdlets available in your environment based on
+          tenant, compliance, and application context. You can also check which management roles are
+          permitted to use specific cmdlets. Cmdlet availability may vary depending on the tenant
+          licensing and configuration.
+        </Alert>
         <CippButtonCard component="accordion" title="Cmdlet Search" accordionExpanded={true}>
           <Grid container spacing={2}>
             {/* Tenant Filter */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormTenantSelector formControl={formControl} name="tenant" multiple={false} />
             </Grid>
             {/* Compliance Filter */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 name="compliance"
@@ -112,7 +121,7 @@ const Page = () => {
               />
             </Grid>
             {/* AsApp Filter */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 name="asApp"
@@ -121,7 +130,7 @@ const Page = () => {
               />
             </Grid>
             {/* Submit Button */}
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
                 Search
               </Button>

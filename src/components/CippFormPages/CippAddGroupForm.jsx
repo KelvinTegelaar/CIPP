@@ -1,17 +1,31 @@
-import React from "react";
 import { InputAdornment } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
+
+const DynamicMembershipRules = ({ formControl }) => (
+  <Grid size={{ xs: 12 }}>
+    <CippFormComponent
+      type="textField"
+      label="Dynamic Group Parameters"
+      name="membershipRules"
+      formControl={formControl}
+      placeholder="Enter dynamic group parameters syntax"
+      multiline
+      rows={4}
+      fullWidth
+    />
+  </Grid>
+);
 
 const CippAddGroupForm = (props) => {
   const { formControl } = props;
 
   return (
     <Grid container spacing={2}>
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Display Name"
@@ -20,7 +34,7 @@ const CippAddGroupForm = (props) => {
           fullWidth
         />
       </Grid>
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Description"
@@ -29,7 +43,7 @@ const CippAddGroupForm = (props) => {
           fullWidth
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Username"
@@ -41,7 +55,7 @@ const CippAddGroupForm = (props) => {
           }}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormDomainSelector
           formControl={formControl}
           name="primDomain"
@@ -49,7 +63,7 @@ const CippAddGroupForm = (props) => {
         />
       </Grid>
 
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormUserSelector
           sx={{ mb: "1rem" }}
           formControl={formControl}
@@ -60,7 +74,7 @@ const CippAddGroupForm = (props) => {
         />
       </Grid>
 
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormUserSelector
           sx={{ mb: "1rem" }}
           formControl={formControl}
@@ -70,7 +84,7 @@ const CippAddGroupForm = (props) => {
           select={"id,userPrincipalName,displayName"}
         />
       </Grid>
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="radio"
           name="groupType"
@@ -80,7 +94,7 @@ const CippAddGroupForm = (props) => {
             { label: "Security Group", value: "generic" },
             { label: "Microsoft 365 Group", value: "m365" },
             { label: "Dynamic Group", value: "dynamic" },
-            { label: "Dynamic Distribution Group", value: "dynamicDistribution" },
+            { label: "Dynamic Distribution Group", value: "dynamicdistribution" },
             { label: "Distribution List", value: "distribution" },
             { label: "Mail Enabled Security Group", value: "security" },
           ]}
@@ -89,10 +103,10 @@ const CippAddGroupForm = (props) => {
       <CippFormCondition
         formControl={formControl}
         field="groupType"
-        compareType="is"
-        compareValue="distribution"
+        compareType="isOneOf"
+        compareValue={["distribution", "dynamicdistribution"]}
       >
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Let people outside the organization email the group"
@@ -104,10 +118,25 @@ const CippAddGroupForm = (props) => {
       <CippFormCondition
         formControl={formControl}
         field="groupType"
+        compareType="is"
+        compareValue="m365"
+      >
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            label="Subscribe members to receive group emails"
+            name="subscribeMembers"
+            formControl={formControl}
+          />
+        </Grid>
+      </CippFormCondition>
+      <CippFormCondition
+        formControl={formControl}
+        field="groupType"
         compareType="contains"
         compareValue="dynamic"
       >
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Dynamic Group Parameters"

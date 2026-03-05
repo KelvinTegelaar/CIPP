@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import { Box, Divider, Drawer, Stack, Typography } from "@mui/material";
+import { Box, Drawer, Stack } from "@mui/material";
 import { Scrollbar } from "../components/scrollbar";
 import { SideNavItem } from "./side-nav-item";
-import { useSettings } from "../hooks/use-settings";
 import { ApiGetCall } from "../api/ApiCall.jsx";
+import { CippSponsor } from "../components/CippComponents/CippSponsor";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_COLLAPSED_WIDTH = 73; // icon size + padding + border right
@@ -15,7 +15,8 @@ const markOpenItems = (items, pathname) => {
   return items.map((item) => {
     const checkPath = !!(item.path && pathname);
     const exactMatch = checkPath ? pathname === item.path : false;
-    const partialMatch = checkPath ? pathname.startsWith(item.path) : false;
+    // Special handling for root path "/" to avoid matching all paths
+    const partialMatch = checkPath && item.path !== "/" ? pathname.startsWith(item.path) : false;
 
     let openImmediately = exactMatch;
     let newItems = item.items || [];
@@ -42,7 +43,8 @@ const renderItems = ({ collapse = false, depth = 0, items, pathname }) =>
 const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
   const checkPath = !!(item.path && pathname);
   const exactMatch = checkPath && pathname === item.path;
-  const partialMatch = checkPath && pathname.startsWith(item.path);
+  // Special handling for root path "/" to avoid matching all paths
+  const partialMatch = checkPath && item.path !== "/" ? pathname.startsWith(item.path) : false;
 
   const hasChildren = item.items && item.items.length > 0;
   const isActive = exactMatch || (partialMatch && !hasChildren);
@@ -106,53 +108,6 @@ export const SideNav = (props) => {
 
   // Preprocess items to mark which should be open
   const processedItems = markOpenItems(items, pathname);
-  //select a random sponsor image based on priority, priority 1 should be higher than priority 2 or higher
-  const currentSettings = useSettings();
-  const theme = currentSettings?.currentTheme?.value;
-  const sponsorimages = [
-    {
-      link: "https://rewst.io",
-      imagesrc: theme === "light" ? "/sponsors/rewst.png" : "/sponsors/rewst_dark.png",
-      priority: 1,
-    },
-    {
-      link: "https://rightofboom.com",
-      imagesrc: theme === "light" ? "/sponsors/RoB-light.svg" : "/sponsors/RoB.png",
-      priority: 1,
-    },
-    {
-      link: "https://ninjaone.com",
-      imagesrc: theme === "light" ? "/sponsors/ninjaone.png" : "/sponsors/ninjaone_white.png",
-      priority: 1,
-    },
-    {
-      link: "https://augmentt.com",
-      imagesrc: theme === "light" ? "/sponsors/augmentt-light.png" : "/sponsors/augmentt-dark.png",
-      priority: 1,
-    },
-    {
-      link: "https://huntress.com",
-      imagesrc: "/sponsors/huntress_teal.png",
-      priority: 1,
-    },
-  ];
-
-  const randomSponsorImage = () => {
-    let totalPriority = 0;
-    for (let i = 0; i < sponsorimages.length; i++) {
-      totalPriority += sponsorimages[i].priority;
-    }
-    let random = Math.floor(Math.random() * totalPriority);
-    let runningTotal = 0;
-    for (let i = 0; i < sponsorimages.length; i++) {
-      runningTotal += sponsorimages[i].priority;
-      if (random < runningTotal) {
-        return sponsorimages[i];
-      }
-    }
-  };
-
-  const randomimg = randomSponsorImage();
   return (
     <>
       {profile?.clientPrincipal && profile?.clientPrincipal?.userRoles?.length > 2 && (
@@ -212,32 +167,7 @@ export const SideNav = (props) => {
                 })}
               </Box>{" "}
               {/* Add this closing tag */}
-              {profile?.clientPrincipal && (
-                <>
-                  <Divider />
-                  <Typography
-                    color="text.secondary"
-                    variant="caption"
-                    sx={{ lineHeight: 4, textAlign: "center" }}
-                  >
-                    This application is sponsored by
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <img
-                      src={randomimg.imagesrc}
-                      alt="sponsor"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => window.open(randomimg.link)}
-                      width={"100px"}
-                    />
-                  </Box>
-                </>
-              )}
+              {profile?.clientPrincipal && <CippSponsor />}
             </Box>{" "}
             {/* Closing tag for the parent Box */}
           </Scrollbar>

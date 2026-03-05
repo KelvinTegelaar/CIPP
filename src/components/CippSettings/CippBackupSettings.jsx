@@ -1,7 +1,7 @@
 import { Button, SvgIcon, Typography } from "@mui/material";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { ApiPostCall } from "/src/api/ApiCall";
-import { useDialog } from "/src/hooks/use-dialog";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import { ApiPostCall } from "../../api/ApiCall";
+import { useDialog } from "../../hooks/use-dialog";
 import { SettingsBackupRestore } from "@mui/icons-material";
 import Link from "next/link";
 
@@ -32,7 +32,7 @@ const CippBackupSettings = () => {
 
   return (
     <>
-      <CippButtonCard title="Backup" cardSx={{ height: "100%" }} CardButton={<BackupButtons />}>
+      <CippButtonCard title="Backup" cardSx={{ display: "flex", flexDirection: "column", height: "100%" }} CardButton={<BackupButtons />}>
         <Typography variant="body2">
           Manage the system configuration backups for CIPP. This will not include authentication
           information or extension configuration. You can also set an automated daily backup

@@ -1,76 +1,22 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Book, LaptopChromebook } from "@mui/icons-material";
-import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { PermissionButton } from "../../../../utils/permissions.js";
+import { CippPolicyDeployDrawer } from "../../../../components/CippComponents/CippPolicyDeployDrawer.jsx";
+import { useSettings } from "../../../../hooks/use-settings.js";
+import { useCippIntunePolicyActions } from "../../../../components/CippComponents/CippIntunePolicyActions.jsx";
 
 const Page = () => {
   const pageTitle = "Intune Compliance Policies";
+  const cardButtonPermissions = ["Endpoint.MEM.ReadWrite"];
+  const tenant = useSettings().currentTenant;
 
-  const actions = [
-    {
-      label: "Create template based on policy",
-      type: "POST",
-      url: "/api/AddIntuneTemplate",
-      data: {
-        ID: "id",
-        ODataType: "@odata.type",
-      },
-      confirmText: "Are you sure you want to create a template based on this policy?",
-      icon: <Book />,
-      color: "info",
+  const actions = useCippIntunePolicyActions(tenant, "deviceCompliancePolicies", {
+    templateData: {
+      ID: "id",
+      ODataType: "@odata.type",
     },
-    {
-      label: "Assign to All Users",
-      type: "POST",
-      url: "/api/ExecAssignPolicy",
-      data: {
-        AssignTo: "allLicensedUsers",
-        ID: "id",
-        type: "deviceCompliancePolicies",
-      },
-      confirmText: "Are you sure you want to assign this policy to all users?",
-      icon: <UserIcon />,
-      color: "info",
-    },
-    {
-      label: "Assign to All Devices",
-      type: "POST",
-      url: "/api/ExecAssignPolicy",
-      data: {
-        AssignTo: "AllDevices",
-        ID: "id",
-        type: "deviceCompliancePolicies",
-      },
-      confirmText: "Are you sure you want to assign this policy to all devices?",
-      icon: <LaptopChromebook />,
-      color: "info",
-    },
-    {
-      label: "Assign Globally (All Users / All Devices)",
-      type: "POST",
-      url: "/api/ExecAssignPolicy",
-      data: {
-        AssignTo: "AllDevicesAndUsers",
-        ID: "id",
-        type: "deviceCompliancePolicies",
-      },
-      confirmText: "Are you sure you want to assign this policy to all users and devices?",
-      icon: <GlobeAltIcon />,
-      color: "info",
-    },
-    {
-      label: "Delete Policy",
-      type: "POST",
-      url: "/api/RemovePolicy",
-      data: {
-        ID: "id",
-        URLName: "deviceCompliancePolicies",
-      },
-      confirmText: "Are you sure you want to delete this policy?",
-      icon: <TrashIcon />,
-      color: "danger",
-    },
-  ];
+    deleteUrlName: "deviceCompliancePolicies",
+  });
 
   const offCanvas = {
     extendedInfoFields: [
@@ -82,23 +28,29 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = ["displayName", "description", "lastModifiedDateTime"];
+  const simpleColumns = [
+    "displayName",
+    "PolicyTypeName",
+    "PolicyAssignment",
+    "PolicyExclude",
+    "description",
+    "lastModifiedDateTime",
+  ];
 
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListGraphRequest"
-      apiDataKey="Results"
-      apiData={{
-        Endpoint: "deviceManagement/deviceCompliancePolicies",
-        $orderby: "displayName",
-        $count: true,
-        $expand: "assignments",
-        manualPagination: true,
-      }}
+      apiUrl="/api/ListCompliancePolicies"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      cardButton={
+        <CippPolicyDeployDrawer
+          buttonText="Deploy Policy"
+          requiredPermissions={cardButtonPermissions}
+          PermissionButton={PermissionButton}
+        />
+      }
     />
   );
 };

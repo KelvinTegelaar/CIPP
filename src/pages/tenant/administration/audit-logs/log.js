@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { ApiGetCall } from "../../../../api/ApiCall";
 import {
   Box,
   Typography,
@@ -13,14 +13,14 @@ import {
   Divider,
   SvgIcon,
 } from "@mui/material";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
+import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
+import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 import { Grid } from "@mui/system";
 import { OpenInNew } from "@mui/icons-material";
-import auditLogTranslation from "/src/data/audit-log-translations.json";
+import auditLogTranslation from "../../../../data/audit-log-translations.json";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 
 const Page = () => {
@@ -88,7 +88,12 @@ const Page = () => {
       { label: "Tenant", value: data.Tenant },
       {
         label: "User",
-        value: data?.Data?.RawData?.UserKey ?? data?.Data?.RawData?.AuditRecord?.userId ?? "N/A",
+        value:
+          data?.Data?.RawData?.CIPPUserKey ??
+          data?.Data?.RawData?.AuditRecord?.CIPPuserId ??
+          data?.Data?.RawData?.AuditRecord?.UserKey ??
+          data?.Data?.RawData?.userId ??
+          "N/A",
       },
       { label: "IP Address", value: data?.Data?.IP },
       {
@@ -152,7 +157,7 @@ const Page = () => {
             {logData.Title}
           </Typography>
           <Grid container spacing={2}>
-            <Grid item size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CippPropertyListCard
                 title="Log Information"
                 propertyItems={propertyItems}
@@ -176,7 +181,7 @@ const Page = () => {
             </Grid>
 
             {lookupIp && (
-              <Grid item size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Card variant="outlined">
                   <CardHeader title={`Location Information for ${lookupIp}`} />
                   <Divider />
@@ -186,7 +191,7 @@ const Page = () => {
                 </Card>
               </Grid>
             )}
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippPropertyListCard
                 title="Audit Data"
                 propertyItems={rawDataItems}

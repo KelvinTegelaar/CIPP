@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import { Alert, Divider, Typography } from "@mui/material";
@@ -91,7 +91,7 @@ const MailboxRestoreForm = () => {
         <Grid size={12}>
           <Typography variant="h6">Restore Settings</Typography>
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             name="SourceMailbox"
             label="Source Mailbox"
@@ -111,7 +111,7 @@ const MailboxRestoreForm = () => {
           />
         </Grid>
         {/* Target Mailbox */}
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             name="TargetMailbox"
             label="Restore Target"
@@ -126,11 +126,12 @@ const MailboxRestoreForm = () => {
               valueField: "UPN",
               addedField: { displayName: "displayName", ExchangeGuid: "ExchangeGuid" },
               url: "/api/ListMailboxes",
+              data: { UseReportDB: true },
             }}
             validators={{ validate: (value) => (value ? true : "Please select a target mailbox.") }}
           />
         </Grid>
-        <Grid item size={12}>
+        <Grid size={12}>
           <CippFormComponent
             type="textField"
             label="Restore Request Name"
@@ -146,7 +147,7 @@ const MailboxRestoreForm = () => {
         <Grid size={12}>
           <Typography variant="h6">Optional Settings</Typography>
         </Grid>
-        <Grid item size={{ xs: 6, md: 2 }}>
+        <Grid size={{ xs: 6, md: 2 }}>
           <CippFormComponent
             type="number"
             label="Bad Item Limit"
@@ -154,7 +155,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ xs: 6, md: 2 }}>
+        <Grid size={{ xs: 6, md: 2 }}>
           <CippFormComponent
             type="number"
             label="Large Item Limit"
@@ -162,7 +163,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ xs: 6, md: 2 }}>
+        <Grid size={{ xs: 6, md: 2 }}>
           <CippFormComponent
             type="number"
             label="Completed Request Age Limit"
@@ -170,7 +171,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="autoComplete"
             label="Associated Messages Copy Option"
@@ -183,7 +184,7 @@ const MailboxRestoreForm = () => {
             ]}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="autoComplete"
             label="Exclude Folders"
@@ -194,7 +195,7 @@ const MailboxRestoreForm = () => {
             options={wellKnownFolders}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="autoComplete"
             label="Include Folders"
@@ -205,7 +206,7 @@ const MailboxRestoreForm = () => {
             options={wellKnownFolders}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             label="Batch Name"
@@ -214,7 +215,7 @@ const MailboxRestoreForm = () => {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="autoComplete"
             label="Conflict Resolution Option"
@@ -231,7 +232,7 @@ const MailboxRestoreForm = () => {
             ]}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             label="Source Root Folder"
@@ -239,7 +240,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             label="Target Root Folder"
@@ -247,7 +248,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="autoComplete"
             label="Target Type"
@@ -261,7 +262,7 @@ const MailboxRestoreForm = () => {
             ]}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="switch"
             label="Exclude Dumpster"
@@ -269,7 +270,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="switch"
             label="Source Is Archive"
@@ -277,7 +278,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="switch"
             label="Target Is Archive"

@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
-import { CardContent, CardHeader } from "@mui/material";
+import { CardContent } from "@mui/material";
 
 const Page = () => {
   const router = useRouter();

@@ -3,7 +3,7 @@ import { Grid } from "@mui/system";
 import Head from "next/head";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
 import { ApiGetCall } from "../api/ApiCall";
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 
 const Page = () => {
   const orgData = ApiGetCall({
@@ -19,16 +19,13 @@ const Page = () => {
   });
 
   const blockedRoles = ["anonymous", "authenticated"];
-  const [userRoles, setUserRoles] = useState([]);
-
-  useEffect(() => {
-    if (orgData.isSuccess) {
-      const roles = orgData.data?.clientPrincipal?.userRoles.filter(
-        (role) => !blockedRoles.includes(role)
-      );
-      setUserRoles(roles ?? []);
+  // Use useMemo to derive userRoles directly
+  const userRoles = useMemo(() => {
+    if (orgData.isSuccess && orgData.data?.clientPrincipal?.userRoles) {
+      return orgData.data.clientPrincipal.userRoles.filter((role) => !blockedRoles.includes(role));
     }
-  }, [orgData, blockedRoles]);
+    return [];
+  }, [orgData.isSuccess, orgData.data?.clientPrincipal?.userRoles]);
   return (
     <>
       <Head>
@@ -50,12 +47,15 @@ const Page = () => {
               alignItems="center" // Center vertically
               sx={{ height: "100%" }} // Ensure the container takes full height
             >
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 {(orgData.isSuccess || swaStatus.isSuccess) && Array.isArray(userRoles) && (
                   <CippImageCard
                     isFetching={false}
                     imageUrl="/assets/illustrations/undraw_online_test_re_kyfx.svg"
-                    text="You're not allowed to be here, or are logged in under the wrong account."
+                    text={
+                      orgData?.data?.message ||
+                      "You're not allowed to be here, or are logged in under the wrong account."
+                    }
                     title="Access Denied"
                     linkText={
                       swaStatus?.data?.clientPrincipal !== null && userRoles.length > 0

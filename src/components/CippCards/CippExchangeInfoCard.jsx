@@ -8,13 +8,14 @@ import {
   IconButton,
   Typography,
   CircularProgress,
+  Alert,
 } from "@mui/material";
-import { PropertyList } from "/src/components/property-list";
-import { PropertyListItem } from "/src/components/property-list-item";
+import { PropertyList } from "../property-list";
+import { PropertyListItem } from "../property-list-item";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { Check as CheckIcon, Close as CloseIcon, Sync } from "@mui/icons-material";
 import { LinearProgressWithLabel } from "../linearProgressWithLabel";
-import { Stack } from "@mui/system";
+import { Stack, Grid } from "@mui/system";
 
 export const CippExchangeInfoCard = (props) => {
   const { exchangeData, isLoading = false, isFetching = false, handleRefresh, ...other } = props;
@@ -59,16 +60,56 @@ export const CippExchangeInfoCard = (props) => {
           </Stack>
         }
       />
+      {exchangeData?.BlockedForSpam === true ? (
+        <Alert severity="warning" sx={{ mx: 2, mt: 2, mb: 2 }}>
+          This mailbox is currently blocked for spam.
+        </Alert>
+      ) : null}
       <Divider />
       <PropertyList>
         <PropertyListItem
           divider
-          label="Mailbox Type"
           value={
             isLoading ? (
-              <Skeleton variant="text" width={120} />
+              <Skeleton variant="text" width={200} />
             ) : (
-              exchangeData?.RecipientTypeDetails || "N/A"
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                    Mailbox Type:
+                  </Typography>
+                  <Typography variant="inherit">
+                    {exchangeData?.RecipientTypeDetails || "N/A"}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                    Hidden from GAL:
+                  </Typography>
+                  <Typography variant="inherit">
+                    {getCippFormatting(
+                      exchangeData?.HiddenFromAddressLists,
+                      "HiddenFromAddressLists",
+                    )}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                    Blocked For Spam:
+                  </Typography>
+                  <Typography variant="inherit">
+                    {getCippFormatting(exchangeData?.BlockedForSpam, "BlockedForSpam")}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12, md: 12 }}>
+                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                    Retention Policy:
+                  </Typography>
+                  <Typography variant="inherit">
+                    {getCippFormatting(exchangeData?.RetentionPolicy, "RetentionPolicy")}
+                  </Typography>
+                </Grid>
+              </Grid>
             )
           }
         />
@@ -83,13 +124,13 @@ export const CippExchangeInfoCard = (props) => {
                 sx={{ width: "100%" }}
                 variant="determinate"
                 addedLabel={`(${Math.round(exchangeData.TotalItemSize)} GB of ${Math.round(
-                  exchangeData?.ProhibitSendReceiveQuota
+                  exchangeData?.ProhibitSendReceiveQuota,
                 )}GB)`}
                 value={
                   Math.round(
                     (exchangeData?.TotalItemSize / exchangeData?.ProhibitSendReceiveQuota) *
                       100 *
-                      100
+                      100,
                   ) / 100
                 }
               />
@@ -100,82 +141,148 @@ export const CippExchangeInfoCard = (props) => {
         />
         <PropertyListItem
           divider
-          label="Hidden From Address Lists"
           value={
             isLoading ? (
-              <Skeleton variant="text" width={60} />
+              <Skeleton variant="text" width={200} />
             ) : (
-              getCippFormatting(exchangeData?.HiddenFromAddressLists, "HiddenFromAddressLists")
+              (() => {
+                const forwardingAddress = exchangeData?.ForwardingAddress;
+                const forwardAndDeliver = exchangeData?.ForwardAndDeliver;
+
+                // Determine forwarding type and clean address
+                let forwardingType = "None";
+                let cleanAddress = "";
+
+                if (forwardingAddress) {
+                  // Handle array of forwarding addresses
+                  if (Array.isArray(forwardingAddress)) {
+                    cleanAddress = forwardingAddress
+                      .map((addr) =>
+                        typeof addr === "string" ? addr.replace(/^smtp:/i, "") : String(addr),
+                      )
+                      .join(", ");
+                    // Check if any address has smtp: prefix (external) or contains @ (external email)
+                    forwardingType = forwardingAddress.some(
+                      (addr) =>
+                        (typeof addr === "string" && addr.toLowerCase().startsWith("smtp:")) ||
+                        (typeof addr === "string" && addr.includes("@")),
+                    )
+                      ? "External"
+                      : "Internal";
+                  }
+                  // Handle single string address
+                  else if (typeof forwardingAddress === "string") {
+                    if (forwardingAddress.startsWith("smtp:")) {
+                      forwardingType = "External";
+                      cleanAddress = forwardingAddress.replace(/^smtp:/i, "");
+                    } else if (forwardingAddress.includes("@")) {
+                      forwardingType = "External";
+                      cleanAddress = forwardingAddress;
+                    } else {
+                      forwardingType = "Internal";
+                      cleanAddress = forwardingAddress;
+                    }
+                  }
+                  // Fallback for other types
+                  else {
+                    forwardingType = "Internal";
+                    cleanAddress = String(forwardingAddress);
+                  }
+                }
+
+                return (
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                        Forwarding Status:
+                      </Typography>
+                      <Typography variant="inherit">
+                        {forwardingType === "None"
+                          ? getCippFormatting(false, "ForwardingStatus")
+                          : `${forwardingType} Forwarding`}
+                      </Typography>
+                    </Grid>
+                    {forwardingType !== "None" && (
+                      <>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <Typography variant="inherit" color="text.primary" gutterBottom>
+                            Keep Copy in Mailbox:
+                          </Typography>
+                          <Typography variant="inherit">
+                            {getCippFormatting(forwardAndDeliver, "ForwardAndDeliver")}
+                          </Typography>
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 12 }}>
+                          <Typography variant="inherit" color="text.primary" gutterBottom>
+                            Forwarding Address:
+                          </Typography>
+                          <Typography variant="inherit">{cleanAddress}</Typography>
+                        </Grid>
+                      </>
+                    )}
+                  </Grid>
+                );
+              })()
             )
           }
         />
-        <PropertyListItem
-          label="Forward and Deliver"
-          value={
-            isLoading ? (
-              <Skeleton variant="text" width={60} />
-            ) : (
-              getCippFormatting(exchangeData?.ForwardAndDeliver, "ForwardAndDeliver")
-            )
-          }
-        />
+
+        {/* Archive section - always show status */}
         <PropertyListItem
           divider
-          label="Forwarding Address"
           value={
             isLoading ? (
-              <Skeleton variant="text" width={180} />
+              <Skeleton variant="text" width={200} />
             ) : (
-              exchangeData?.ForwardingAddress || "N/A"
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                    Archive Mailbox Enabled:
+                  </Typography>
+                  <Typography variant="inherit">
+                    {getCippFormatting(exchangeData?.ArchiveMailBox, "ArchiveMailBox")}
+                  </Typography>
+                </Grid>
+                {exchangeData?.ArchiveMailBox && (
+                  <>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                        Auto Expanding Archive:
+                      </Typography>
+                      <Typography variant="inherit">
+                        {getCippFormatting(
+                          exchangeData?.AutoExpandingArchive,
+                          "AutoExpandingArchive",
+                        )}
+                      </Typography>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                        Total Archive Item Size:
+                      </Typography>
+                      <Typography variant="inherit">
+                        {exchangeData?.TotalArchiveItemSize != null
+                          ? `${exchangeData.TotalArchiveItemSize} GB`
+                          : "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                        Total Archive Item Count:
+                      </Typography>
+                      <Typography variant="inherit">
+                        {exchangeData?.TotalArchiveItemCount != null
+                          ? exchangeData.TotalArchiveItemCount
+                          : "N/A"}
+                      </Typography>
+                    </Grid>
+                  </>
+                )}
+              </Grid>
             )
           }
         />
-        <PropertyListItem
-          label="Archive Mailbox Enabled"
-          value={
-            isLoading ? (
-              <Skeleton variant="text" width={60} />
-            ) : (
-              getCippFormatting(exchangeData?.ArchiveMailBox, "ArchiveMailBox")
-            )
-          }
-        />
-        <PropertyListItem
-          label="Auto Expanding Archive"
-          value={
-            isLoading ? (
-              <Skeleton variant="text" width={80} />
-            ) : (
-              getCippFormatting(exchangeData?.AutoExpandingArchive, "AutoExpandingArchive")
-            )
-          }
-        />
-        <PropertyListItem
-          label="Total Archive Item Size"
-          value={
-            isLoading ? (
-              <Skeleton variant="text" width={80} />
-            ) : exchangeData?.TotalArchiveItemSize != null ? (
-              `${exchangeData.TotalArchiveItemSize} GB`
-            ) : (
-              "N/A"
-            )
-          }
-        />
-        <PropertyListItem
-          divider
-          label="Total Archive Item Count"
-          value={
-            isLoading ? (
-              <Skeleton variant="text" width={80} />
-            ) : exchangeData?.TotalArchiveItemCount != null ? (
-              exchangeData.TotalArchiveItemCount
-            ) : (
-              "N/A"
-            )
-          }
-        />
-        {/* Combine all mailbox hold types into a single PropertyListItem */}
+
         <PropertyListItem
           divider
           label="Mailbox Holds"
@@ -199,7 +306,6 @@ export const CippExchangeInfoCard = (props) => {
             )
           }
         />
-        {/* Combine protocols into a single PropertyListItem */}
         <PropertyListItem
           divider
           label="Mailbox Protocols"
@@ -220,17 +326,6 @@ export const CippExchangeInfoCard = (props) => {
                   />
                 ))}
               </div>
-            )
-          }
-        />
-        <PropertyListItem
-          divider
-          label="Blocked For Spam"
-          value={
-            isLoading ? (
-              <Skeleton variant="text" width={60} />
-            ) : (
-              getCippFormatting(exchangeData?.BlockedForSpam, "BlockedForSpam")
             )
           }
         />

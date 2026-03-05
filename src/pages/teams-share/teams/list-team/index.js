@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import { Delete, GroupAdd } from "@mui/icons-material";
 import Link from "next/link";
@@ -11,7 +11,7 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Group",
-      link: "/identity/administration/groups/edit?groupId=[id]",
+      link: "/identity/administration/groups/edit?groupId=[id]&groupType=Microsoft 365",
       multiPost: false,
       color: "warning",
       icon: <Edit />,

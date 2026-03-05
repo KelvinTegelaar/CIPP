@@ -1,12 +1,12 @@
 import "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 const CippInviteUser = (props) => {
   const { formControl, userSettingsDefaults } = props;
 
   return (
     <Grid container spacing={2}>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -15,7 +15,7 @@ const CippInviteUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -24,7 +24,7 @@ const CippInviteUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -34,7 +34,7 @@ const CippInviteUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="switch"
           fullWidth

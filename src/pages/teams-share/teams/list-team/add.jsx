@@ -2,10 +2,10 @@ import React from "react";
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 import { useSettings } from "../../../../hooks/use-settings";
 
 const TeamsAddTeamForm = () => {
@@ -42,7 +42,7 @@ const TeamsAddTeamForm = () => {
     >
       <Grid container spacing={2}>
         {/* Display Name */}
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -53,7 +53,7 @@ const TeamsAddTeamForm = () => {
         </Grid>
 
         {/* Description */}
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Description"
@@ -63,7 +63,7 @@ const TeamsAddTeamForm = () => {
         </Grid>
 
         <Divider sx={{ my: 2, width: "100%" }} />
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormUserSelector
             formControl={formControl}
             name="owner"
@@ -76,7 +76,7 @@ const TeamsAddTeamForm = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Visibility */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="radio"
             name="visibility"

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
-import { Box, Card, CardContent, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
+import { Grid } from "@mui/system";
 import { alpha, useTheme } from '@mui/material/styles';
 import { Chart } from '../../../components/chart';
 

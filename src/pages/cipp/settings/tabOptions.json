@@ -20,7 +20,7 @@
     "path": "/cipp/settings/notifications"
   },
   {
-    "label": "Partner Webhooks",
+    "label": "Automated Onboarding",
     "path": "/cipp/settings/partner-webhooks"
   },
   {
@@ -28,7 +28,7 @@
     "path": "/cipp/settings/licenses"
   },
   {
-    "label": "Global Variables",
-    "path": "/cipp/settings/global-variables"
+    "label": "Features",
+    "path": "/cipp/settings/features"
   }
 ]

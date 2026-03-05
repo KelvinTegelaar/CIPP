@@ -53,7 +53,6 @@ export const utilTableMode = (
       enableStickyHeader: true,
       selectAllMode: "all",
       enableColumnPinning: true,
-      enableStickyHeader: true,
       muiPaginationProps: {
         rowsPerPageOptions: [25, 50, 100, 250, 500],
       },

@@ -1,21 +1,20 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import {
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
-  Container,
   Stack,
   Typography,
   CircularProgress,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiPostCall } from "/src/api/ApiCall";
-import { useSettings } from "/src/hooks/use-settings";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { ApiPostCall } from "../../../../api/ApiCall";
+import { useSettings } from "../../../../hooks/use-settings";
+import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
+import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { useState } from "react";
 import { Search, Close, ClearAll } from "@mui/icons-material";
 import { Grid } from "@mui/system";
@@ -149,14 +148,14 @@ const Page = () => {
 
   return (
     <>
-      <Stack spacing={2} sx={{ p: 3, mt: 1 }}>
+      <Stack spacing={2} sx={{ px: 3 }}>
         <CippButtonCard
           component="accordion"
           title="Message Trace Options"
           accordionExpanded={true}
         >
           <Grid container spacing={2}>
-            <Grid item size={12}>
+            <Grid size={12}>
               <CippFormComponent
                 type="radio"
                 row
@@ -171,7 +170,7 @@ const Page = () => {
               />
             </Grid>
             {formControl.watch("dateFilter") === "relative" && (
-              <Grid item size={12}>
+              <Grid size={12}>
                 <CippFormComponent
                   type="number"
                   name="days"
@@ -183,7 +182,7 @@ const Page = () => {
             )}
             {formControl.watch("dateFilter") === "startEnd" && (
               <>
-                <Grid item size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <CippFormComponent
                     type="datePicker"
                     name="startDate"
@@ -193,7 +192,7 @@ const Page = () => {
                     disabled={isMessageIdSet}
                   />
                 </Grid>
-                <Grid item size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <CippFormComponent
                     type="datePicker"
                     name="endDate"
@@ -229,7 +228,7 @@ const Page = () => {
                 disabled={isMessageIdSet}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="messageId"
@@ -237,7 +236,7 @@ const Page = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="autoComplete"
                 name="status"
@@ -257,7 +256,7 @@ const Page = () => {
                 disabled={isMessageIdSet}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="fromIP"
@@ -267,7 +266,7 @@ const Page = () => {
                 disabled={isMessageIdSet}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="toIP"
@@ -279,7 +278,7 @@ const Page = () => {
             </Grid>
 
             {/* Submit and Clear Buttons */}
-            <Grid item size={12} sx={{ display: "flex", gap: 1 }}>
+            <Grid size={12} sx={{ display: "flex", gap: 1 }}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
                 Search
               </Button>

@@ -1,9 +1,11 @@
-import { Drawer, Box, IconButton } from "@mui/material";
+import { Drawer, Box, IconButton, Typography, Divider } from "@mui/material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { useMediaQuery, Grid } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 export const CippOffCanvas = (props) => {
   const {
@@ -16,6 +18,13 @@ export const CippOffCanvas = (props) => {
     isFetching,
     children,
     size = "sm",
+    footer,
+    onNavigateUp,
+    onNavigateDown,
+    canNavigateUp = false,
+    canNavigateDown = false,
+    contentPadding = 2,
+    keepMounted = false,
   } = props;
 
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -73,47 +82,107 @@ export const CippOffCanvas = (props) => {
           sx: { width: drawerWidth },
         }}
         ModalProps={{
-          keepMounted: false,
+          keepMounted: keepMounted,
         }}
         anchor={"right"}
         open={visible}
         onClose={onClose}
       >
-        <IconButton
-          onClick={onClose}
+        <Box
+          sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 1.5 }}
+        >
+          <Typography variant="h5">{title}</Typography>
+          <Box sx={{ display: "flex", gap: 0.5 }}>
+            {(canNavigateUp || canNavigateDown) && (
+              <>
+                <IconButton
+                  onClick={onNavigateUp}
+                  disabled={!canNavigateUp}
+                  size="small"
+                  title="Previous row"
+                >
+                  <KeyboardArrowUpIcon />
+                </IconButton>
+                <IconButton
+                  onClick={onNavigateDown}
+                  disabled={!canNavigateDown}
+                  size="small"
+                  title="Next row"
+                >
+                  <KeyboardArrowDownIcon />
+                </IconButton>
+              </>
+            )}
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </Box>
+        <Divider />
+        <Box
           sx={{
-            position: "absolute",
-            top: 16,
-            right: 8,
-            zIndex: 1,
+            display: "flex",
+            flexDirection: "column",
+            height: "calc(100vh - 73px)", // Account for header + divider
+            minHeight: 0,
           }}
         >
-          <CloseIcon />
-        </IconButton>
-        {/* Force vertical stacking in a column layout */}
-        <Box
-          sx={{ overflowY: "auto", maxHeight: "100%", display: "flex", flexDirection: "column" }}
-        >
-          <Grid container spacing={1}>
-            <Grid item size={{ xs: 12 }}>
+          <Box
+            sx={{
+              overflowY: "auto",
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              minHeight: 0,
+            }}
+          >
+            <Grid container spacing={1} sx={{ flexGrow: 1 }}>
               {extendedInfo.length > 0 && (
-                <CippPropertyListCard
-                  isFetching={isFetching}
-                  align="vertical"
-                  title={title}
-                  propertyItems={extendedInfo}
-                  copyItems={true}
-                  actionItems={actions}
-                  data={extendedData}
-                />
+                <Grid size={{ xs: 12 }}>
+                  <CippPropertyListCard
+                    isFetching={isFetching}
+                    align="vertical"
+                    propertyItems={extendedInfo}
+                    copyItems={true}
+                    actionItems={actions}
+                    data={extendedData}
+                  />
+                </Grid>
               )}
+              <Grid
+                size={{ xs: 12 }}
+                sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: 1,
+                    minHeight: 0,
+                    p: contentPadding,
+                  }}
+                >
+                  {/* Render children if provided, otherwise render default content */}
+                  {typeof children === "function" ? children(extendedData) : children}
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item size={{ xs: 12 }}>
-              <Box sx={{ m: 2 }}>
-                {typeof children === "function" ? children(extendedData) : children}
-              </Box>
-            </Grid>
-          </Grid>
+          </Box>
+
+          {/* Footer section */}
+          {footer && (
+            <Box
+              sx={{
+                borderTop: 1,
+                borderColor: "divider",
+                p: 2,
+                flexShrink: 0,
+                mt: "auto",
+              }}
+            >
+              {footer}
+            </Box>
+          )}
         </Box>
       </Drawer>
     </>

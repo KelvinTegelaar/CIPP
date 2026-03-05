@@ -1,10 +1,9 @@
 import { Button } from "@mui/material";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { AddBox, RocketLaunch, Delete, GitHub, Edit } from "@mui/icons-material";
 import Link from "next/link";
-import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
@@ -110,7 +109,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListGroupTemplates"
-      queryKey="GroupTemplatesList"
+      queryKey="ListGroupTemplates"
       tenantInTitle={false}
       actions={actions}
       cardButton={

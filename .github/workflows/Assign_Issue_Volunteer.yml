@@ -1,10 +1,10 @@
 ---
-name: 'Assign Issue to Volunteer'
-on: [issue_comment]  # yamllint disable-line rule:truthy
+name: "Assign Issue to Volunteer"
+on: [issue_comment] # yamllint disable-line rule:truthy
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-      - uses: bhermann/issue-volunteer@v0.1.12
+      - uses: bhermann/issue-volunteer@v0.1.20
         with:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

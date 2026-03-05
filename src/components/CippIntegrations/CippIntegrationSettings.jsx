@@ -1,12 +1,12 @@
-import { Box } from "@mui/material";
+import { Box, CardContent } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormSection from "/src/components/CippFormPages/CippFormSection";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormSection from "../CippFormPages/CippFormSection";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm } from "react-hook-form";
-import { useSettings } from "/src/hooks/use-settings";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { useSettings } from "../../hooks/use-settings";
+import { ApiGetCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
-import extensions from "/src/data/Extensions.json";
+import extensions from "../../data/Extensions.json";
 import React, { useEffect } from "react";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
@@ -62,7 +62,7 @@ const CippIntegrationSettings = ({ children }) => {
               <React.Fragment key={index}>
                 {setting?.condition ? (
                   <CippFormCondition {...setting.condition} formControl={formControl} disabled={extension.SettingOptions.find(s => s.name === `${extension.id}.Enabled`) && !enabled}>
-                    <Grid item size={{ xs: 12, md: setting.type === "switch" ? 12 : 6 }}>
+                    <Grid size={{ xs: 12, md: setting.type === "switch" ? 12 : 6 }}>
                       <Box sx={{ p: 1 }}>
                         <CippFormComponent
                           name={setting.name}
@@ -78,7 +78,7 @@ const CippIntegrationSettings = ({ children }) => {
                     </Grid>
                   </CippFormCondition>
                 ) : (
-                  <Grid item size={{ xs: 12, md: setting.type === "switch" ? 12 : 6 }}>
+                  <Grid size={{ xs: 12, md: setting.type === "switch" ? 12 : 6 }}>
                     <Box sx={{ p: 1 }}>
                       <CippFormComponent
                         name={setting.name}
@@ -102,7 +102,7 @@ const CippIntegrationSettings = ({ children }) => {
           {integrations.isLoading && <Box>Loading...</Box>}
           {integrations.isSuccess && !extension && (
             <Grid container spacing={3}>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Box sx={{ p: 3 }}>
                   <Box sx={{ textAlign: "center" }}>Extension not found</Box>
                 </Box>

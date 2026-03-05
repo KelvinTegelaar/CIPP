@@ -22,29 +22,70 @@ export const CippWizardOffboarding = (props) => {
     }
   }, [selectedUsers]);
 
+  // Set initial defaults source on component mount if not already set
   useEffect(() => {
-    if (userSettingsDefaults?.offboardingDefaults) {
-      userSettingsDefaults.offboardingDefaults.forEach((setting) => {
-        formControl.setValue(setting.name, setting.value);
-      });
+    const currentDefaultsSource = formControl.getValues("HIDDEN_defaultsSource");
+    if (!currentDefaultsSource) {
+      // Default to user defaults since form starts with user defaults from initialState within the wizard component
+      formControl.setValue("HIDDEN_defaultsSource", "user");
     }
-  }, [userSettingsDefaults]);
+  }, [formControl]);
+
+  // Apply defaults only once per tenant or when tenant changes
+  useEffect(() => {
+    const currentTenantId = currentTenant?.value;
+    const appliedDefaultsForTenant = formControl.getValues("HIDDEN_appliedDefaultsForTenant");
+
+    // Only apply defaults if we haven't applied them for this tenant yet
+    if (currentTenantId && appliedDefaultsForTenant !== currentTenantId) {
+      const tenantDefaults = currentTenant?.addedFields?.offboardingDefaults;
+
+      if (tenantDefaults) {
+        // Apply tenant defaults
+        Object.entries(tenantDefaults).forEach(([key, value]) => {
+          formControl.setValue(key, value);
+        });
+        // Set the source indicator
+        formControl.setValue("HIDDEN_defaultsSource", "tenant");
+      } else if (userSettingsDefaults?.offboardingDefaults) {
+        // Apply user defaults if no tenant defaults
+        userSettingsDefaults.offboardingDefaults.forEach((setting) => {
+          formControl.setValue(setting.name, setting.value);
+        });
+        // Set the source indicator
+        formControl.setValue("HIDDEN_defaultsSource", "user");
+      }
+
+      // Mark that we've applied defaults for this tenant
+      formControl.setValue("HIDDEN_appliedDefaultsForTenant", currentTenantId);
+    }
+  }, [currentTenant?.value, userSettingsDefaults, formControl]);
 
   useEffect(() => {
     if (disableForwarding) {
       formControl.setValue("forward", null);
-      formControl.setValue("keepCopy", false);
+      formControl.setValue("KeepCopy", false);
     }
   }, [disableForwarding, formControl]);
+
+  const getDefaultsSource = () => {
+    return formControl.getValues("HIDDEN_defaultsSource") || "user";
+  };
 
   return (
     <Stack spacing={4}>
       <Grid container spacing={4}>
-        <Grid item size={6}>
+        <Grid size={6}>
           <Card variant="outlined">
             <CardHeader title="Offboarding Settings" />
             <Divider />
             <CardContent>
+              <Typography variant="body2" sx={{ mb: 2, color:
+                getDefaultsSource() === "tenant" ? "primary.main" : "warning.main",
+                fontStyle: "italic"
+              }}>
+                {getDefaultsSource() === "tenant" ? "Using Tenant Defaults" : "Using User Defaults"}
+              </Typography>
               <CippFormComponent
                 name="ConvertToShared"
                 label="Convert to Shared Mailbox"
@@ -65,7 +106,13 @@ export const CippWizardOffboarding = (props) => {
               />
               <CippFormComponent
                 name="removePermissions"
-                label="Remove users mailbox permissions"
+                label="Remove user's mailbox permissions"
+                type="switch"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                name="removeCalendarPermissions"
+                label="Remove user's calendar permissions"
                 type="switch"
                 formControl={formControl}
               />
@@ -124,6 +171,12 @@ export const CippWizardOffboarding = (props) => {
                 formControl={formControl}
               />
               <CippFormComponent
+                name="RemoveTeamsPhoneDID"
+                label="Remove Teams Phone DID"
+                type="switch"
+                formControl={formControl}
+              />
+              <CippFormComponent
                 name="DeleteUser"
                 label="Delete user"
                 type="switch"
@@ -133,7 +186,7 @@ export const CippWizardOffboarding = (props) => {
           </Card>
         </Grid>
 
-        <Grid item size={6}>
+        <Grid size={6}>
           <Card variant="outlined">
             <CardHeader title="Permissions and forwarding" />
             <Divider />
@@ -155,6 +208,7 @@ export const CippWizardOffboarding = (props) => {
                   dataKey: "Results",
                   labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
                   valueField: "id",
+                  queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : "default"}`,
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -179,6 +233,7 @@ export const CippWizardOffboarding = (props) => {
                   url: "/api/ListGraphRequest",
                   dataKey: "Results",
                   tenantFilter: currentTenant ? currentTenant.value : undefined,
+                  queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : "default"}`,
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -203,6 +258,7 @@ export const CippWizardOffboarding = (props) => {
                   valueField: "id",
                   url: "/api/ListGraphRequest",
                   dataKey: "Results",
+                  queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : "default"}`,
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -244,6 +300,7 @@ export const CippWizardOffboarding = (props) => {
                     valueField: "id",
                     url: "/api/ListGraphRequest",
                     dataKey: "Results",
+                    queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : "default"}`,
                     data: {
                       Endpoint: "users",
                       manualPagination: true,
@@ -256,7 +313,7 @@ export const CippWizardOffboarding = (props) => {
                 />
 
                 <CippFormComponent
-                  name="keepCopy"
+                  name="KeepCopy"
                   label="Keep a copy of forwarded mail"
                   type="switch"
                   formControl={formControl}
@@ -286,7 +343,7 @@ export const CippWizardOffboarding = (props) => {
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 name="Scheduled.enabled"
                 label="Schedule this offboarding"
@@ -301,7 +358,7 @@ export const CippWizardOffboarding = (props) => {
               compareType="is"
               compareValue={true}
             >
-              <Grid item size={{ sm: 6, xs: 12 }}>
+              <Grid size={{ sm: 6, xs: 12 }}>
                 <Typography variant="subtitle2">Scheduled Offboarding Date</Typography>
                 <CippFormComponent
                   name="Scheduled.date"
@@ -311,7 +368,7 @@ export const CippWizardOffboarding = (props) => {
                 />
               </Grid>
 
-              <Grid item size={{ sm: 6, xs: 12 }}>
+              <Grid size={{ sm: 6, xs: 12 }}>
                 <Typography variant="subtitle2">Send results to:</Typography>
                 <CippFormComponent
                   name="postExecution.webhook"
@@ -329,6 +386,17 @@ export const CippWizardOffboarding = (props) => {
                   name="postExecution.psa"
                   label="PSA"
                   type="switch"
+                  formControl={formControl}
+                />
+              </Grid>
+
+              <Grid size={{ sm: 12, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  fullWidth
+                  label="Reference"
+                  name="reference"
+                  placeholder="Enter a reference that will be added to the notification title and scheduled task"
                   formControl={formControl}
                 />
               </Grid>

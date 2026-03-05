@@ -26,7 +26,7 @@ const Page = () => (
               alignItems="center" // Center vertically
               sx={{ height: "100%" }} // Ensure the container takes full height
             >
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippImageCard
                   isFetching={false}
                   imageUrl="/assets/illustrations/undraw_lost_re_xqjt.svg"

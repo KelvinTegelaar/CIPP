@@ -8,13 +8,13 @@ import {
   Button,
   Alert,
 } from "@mui/material";
-import CippFormSection from "/src/components/CippFormPages/CippFormSection";
+import CippFormSection from "../CippFormPages/CippFormSection";
 import { useForm } from "react-hook-form";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
-import extensions from "/src/data/Extensions.json";
+import extensions from "../../data/Extensions.json";
 import React, { useEffect, useState } from "react";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { Sync } from "@mui/icons-material";
 import { Stack, Grid } from "@mui/system";
 
@@ -115,7 +115,7 @@ const CippIntegrationFieldMapping = () => {
                   {fieldMapping?.data?.CIPPFields?.filter(
                     (field) => field.FieldType === header.FieldType
                   ).map((field, fieldIndex) => (
-                    <Grid item size={{ xs: 12, md: 6 }} key={`field-${headerIndex}-${fieldIndex}`}>
+                    <Grid size={{ xs: 12, md: 6 }} key={`field-${headerIndex}-${fieldIndex}`}>
                       <CippFormComponent
                         name={field.FieldName}
                         type="autoComplete"
@@ -155,12 +155,12 @@ const CippIntegrationFieldMapping = () => {
           {fieldMapping.isLoading && (
             <Box>
               <Grid container spacing={3}>
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <Box>
                     <Skeleton variant="rectangular" height={60} />
                   </Box>
                 </Grid>
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <Box>
                     <Skeleton variant="rectangular" height={60} />
                   </Box>
@@ -170,7 +170,7 @@ const CippIntegrationFieldMapping = () => {
           )}
           {fieldMapping.isSuccess && !extension && (
             <Grid container spacing={3}>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Box sx={{ p: 3 }}>
                   <Box sx={{ textAlign: "center" }}>Extension not found</Box>
                 </Box>

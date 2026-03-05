@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from "react";
-import PropTypes from "prop-types";
 import { Card, CardContent, Container, Stack } from "@mui/material";
 import { WizardBusinessStep } from "../../../../components/CippWizard/CippWizardOptionsList";
 import { WizardConfirmationStep } from "../../../../components/CippWizard/CippWizardConfirmation";

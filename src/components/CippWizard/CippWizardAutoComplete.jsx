@@ -29,7 +29,7 @@ export const CippWizardAutoComplete = (props) => {
         api={{
           ...api,
           tenantFilter: currentTenant ? currentTenant.value : undefined,
-          queryKey: `${api.url}-${currentTenant ? currentTenant.value : "default"}`,
+          queryKey: api.queryKey ? api.queryKey.replace('{tenant}', currentTenant ? currentTenant.value : "default") : `${api.url}-${currentTenant ? currentTenant.value : "default"}`,
         }}
         multiple={type === "single" ? false : true}
         disableClearable={true}

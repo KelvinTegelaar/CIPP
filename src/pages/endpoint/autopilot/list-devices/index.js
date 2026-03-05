@@ -1,11 +1,10 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
 import { Button } from "@mui/material";
 import { PersonAdd, Delete, Sync, Add, Edit, Sell } from "@mui/icons-material";
 import { useDialog } from "../../../../hooks/use-dialog";
 import Link from "next/link";
-import { useState } from "react";
 
 const Page = () => {
   const pageTitle = "Autopilot Devices";
