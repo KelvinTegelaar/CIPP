@@ -36,4 +36,4 @@ At CyberDrain, security is our top priority. To strengthen this commitment, weâ€
 * **Holistic Security**: Covering people, processes, and technology, ISO/IEC 27001 enables us to manage sensitive information and mitigate risks across all areas of our operations.
 * **Client-Centered Focus**: With a strong emphasis on risk management and data protection, ISO/IEC 27001 aligns closely with our commitment to safeguarding client information.
 
-Weâ€™ll share updates on our progress toward ISO/IEC 27001 certification as we reach key milestones. This step reinforces our ongoing commitment to protecting your data and maintaining your trust.
+For the latest on our ISO/IEC 27001 certification please see the [CyberDrain Trust Center](https://trust.cyberdrain.com/) where you can subscribe to updates.
