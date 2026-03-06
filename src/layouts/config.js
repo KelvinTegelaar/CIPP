@@ -812,11 +812,6 @@ export const nativeMenuItems = [
             path: "/tenant/tools/individual-domains",
             permissions: ["Tenant.DomainAnalyser.*"],
           },
-          {
-            title: "BitLocker Key Search",
-            path: "/tenant/tools/bitlocker-search",
-            permissions: ["Endpoint.Device.Read"],
-          },
         ],
       },
       {
