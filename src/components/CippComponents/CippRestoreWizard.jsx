@@ -480,11 +480,25 @@ export const CippRestoreWizard = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth size="lg" fullScreen={mdDown}>
-      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1, p: 2 }}>
         <SettingsBackupRestore />
         Restore Backup
       </DialogTitle>
-      <DialogContent dividers>
+      {!isLoading && (
+        <>
+          <Divider sx={{ mb: 2 }} />
+          <Box sx={{ px: 3, pb: 2 }}>
+            <Stepper activeStep={step} alternativeLabel>
+              {WIZARD_STEPS.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
+        </>
+      )}
+      <DialogContent dividers={true} sx={{ overflowY: "auto", flex: 1, px: 3, pt: 2 }}>
         {isLoading ? (
           <Box
             sx={{
@@ -502,20 +516,10 @@ export const CippRestoreWizard = ({
             </Typography>
           </Box>
         ) : (
-          <Stack spacing={3}>
-            <Stepper activeStep={step} alternativeLabel>
-              {WIZARD_STEPS.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-            <Divider />
-            <CurrentStep />
-          </Stack>
+          <CurrentStep />
         )}
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ p: 2 }}>
         <Button color="inherit" onClick={onClose}>
           {restoreAction.isSuccess ? "Close" : "Cancel"}
         </Button>
