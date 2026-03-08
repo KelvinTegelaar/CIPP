@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import { Box, Drawer, Stack } from "@mui/material";
+import { Box, Divider, Drawer, Stack } from "@mui/material";
 import { Scrollbar } from "../components/scrollbar";
 import { SideNavItem } from "./side-nav-item";
+import { SideNavBookmarks } from "./side-nav-bookmarks";
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import { CippSponsor } from "../components/CippComponents/CippSponsor";
+import { useSettings } from "../hooks/use-settings";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_COLLAPSED_WIDTH = 73; // icon size + padding + border right
@@ -105,6 +107,8 @@ export const SideNav = (props) => {
   const [hovered, setHovered] = useState(false);
   const collapse = !(pinned || hovered);
   const { data: profile } = ApiGetCall({ url: "/api/me", queryKey: "authmecipp" });
+  const settings = useSettings();
+  const showSidebarBookmarks = settings.bookmarkSidebar !== false;
 
   // Preprocess items to mark which should be open
   const processedItems = markOpenItems(items, pathname);
@@ -159,6 +163,14 @@ export const SideNav = (props) => {
                   p: 0,
                 }}
               >
+                {/* Bookmarks section above Dashboard */}
+                {showSidebarBookmarks && (
+                  <>
+                    <SideNavBookmarks collapse={collapse} />
+                    <Divider sx={{ my: 1 }} />
+                  </>
+                )}
+                {/* Render all menu items */}
                 {renderItems({
                   collapse,
                   depth: 0,
