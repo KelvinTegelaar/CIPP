@@ -210,7 +210,12 @@ const Page = () => {
         title="CIPP Backup"
         backButtonTitle="Settings"
         infoBar={
-          <Stack>
+          <Stack spacing={2}>
+            <Alert severity="info" sx={{ mt: 2 }}>
+              Backups are stored in the storage account associated with your CIPP instance. You can
+              download or restore specific points in time from the list below. Enable automatic
+              backups to have CIPP create daily backups using the scheduler.
+            </Alert>
             <CippInfoBar
               isFetching={backupList.isFetching}
               data={[
@@ -243,11 +248,6 @@ const Page = () => {
                 },
               ]}
             />
-            <Alert severity="info" sx={{ mt: 2 }}>
-              Backups are stored in the storage account associated with your CIPP instance. You can
-              download or restore specific points in time from the list below. Enable automatic
-              backups to have CIPP create daily backups using the scheduler.
-            </Alert>
           </Stack>
         }
       >
