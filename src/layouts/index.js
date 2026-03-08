@@ -64,6 +64,8 @@ const LayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
   flex: "1 1 auto",
   maxWidth: "100%",
+  height: "100vh",
+  overflow: "hidden",
   paddingTop: TOP_NAV_HEIGHT,
   [theme.breakpoints.up("lg")]: {
     paddingLeft: SIDE_NAV_WIDTH,
@@ -75,6 +77,8 @@ const LayoutContainer = styled("div")({
   flex: "1 1 auto",
   flexDirection: "column",
   width: "100%",
+  overflowY: "auto",
+  overscrollBehavior: "contain",
 });
 
 export const Layout = (props) => {
