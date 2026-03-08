@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   CardContent,
@@ -26,7 +27,7 @@ import {
 } from "@mui/icons-material";
 import ReactTimeAgo from "react-time-ago";
 import { CippDataTable } from "../../../components/CippTable/CippDataTable";
-import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
+import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { CippRestoreWizard } from "../../../components/CippComponents/CippRestoreWizard";
 import { BackupValidator } from "../../../utils/backupValidation";
 import { useState } from "react";
@@ -35,6 +36,9 @@ import { useDialog } from "../../../hooks/use-dialog";
 const Page = () => {
   const [validationResult, setValidationResult] = useState(null);
   const wizardDialog = useDialog();
+  const runBackupDialog = useDialog();
+  const enableBackupDialog = useDialog();
+  const disableBackupDialog = useDialog();
   const [selectedBackupFile, setSelectedBackupFile] = useState(null);
   const [selectedBackupData, setSelectedBackupData] = useState(null);
   const [selectedBackupName, setSelectedBackupName] = useState(null);
@@ -56,26 +60,12 @@ const Page = () => {
     queryKey: "ScheduledBackup",
   });
 
-  const backupAction = ApiPostCall({
-    urlFromData: true,
-  });
-
   const downloadAction = ApiPostCall({
     urlFromData: true,
   });
 
   const fetchForRestore = ApiPostCall({
     urlFromData: true,
-  });
-
-  const runBackup = ApiPostCall({
-    urlFromData: true,
-    relatedQueryKeys: ["BackupList", "ScheduledBackup"],
-  });
-
-  const enableBackupSchedule = ApiPostCall({
-    urlFromData: true,
-    relatedQueryKeys: ["ScheduledBackup"],
   });
 
   const NextBackupRun = (props) => {
@@ -85,22 +75,6 @@ const Page = () => {
     } else {
       return <ReactTimeAgo date={date} />;
     }
-  };
-
-  const handleCreateBackup = () => {
-    runBackup.mutate({
-      url: "/api/ExecRunBackup",
-      data: {},
-    });
-  };
-
-  const handleEnableScheduledBackup = () => {
-    enableBackupSchedule.mutate({
-      url: "/api/ExecSetCIPPAutoBackup",
-      data: {
-        Enabled: true,
-      },
-    });
   };
 
   const openWizardWithData = ({ file, validation, data, backupName = null }) => {
@@ -236,52 +210,50 @@ const Page = () => {
         title="CIPP Backup"
         backButtonTitle="Settings"
         infoBar={
-          <CippInfoBar
-            isFetching={backupList.isFetching}
-            data={[
-              {
-                icon: <Storage />,
-                name: "Backup Count",
-                data: backupList.data?.length,
-              },
-              {
-                icon: <History />,
-                name: "Last Backup",
-                data: backupList.data?.[0]?.Timestamp ? (
-                  <ReactTimeAgo date={backupList.data?.[0]?.Timestamp} />
-                ) : (
-                  "No Backups"
-                ),
-              },
-              {
-                icon: <EventRepeat />,
-                name: "Automatic Backups",
-                data:
-                  scheduledBackup.data?.[0]?.Name === "Automated CIPP Backup"
-                    ? "Enabled"
-                    : "Disabled",
-              },
-              {
-                icon: <NextPlan />,
-                name: "Next Backup",
-                data: <NextBackupRun date={scheduledBackup.data?.[0]?.ScheduledTime} />,
-              },
-            ]}
-          />
+          <Stack>
+            <CippInfoBar
+              isFetching={backupList.isFetching}
+              data={[
+                {
+                  icon: <Storage />,
+                  name: "Backup Count",
+                  data: backupList.data?.length,
+                },
+                {
+                  icon: <History />,
+                  name: "Last Backup",
+                  data: backupList.data?.[0]?.Timestamp ? (
+                    <ReactTimeAgo date={backupList.data?.[0]?.Timestamp} />
+                  ) : (
+                    "No Backups"
+                  ),
+                },
+                {
+                  icon: <EventRepeat />,
+                  name: "Automatic Backups",
+                  data:
+                    scheduledBackup.data?.[0]?.Name === "Automated CIPP Backup"
+                      ? "Enabled"
+                      : "Disabled",
+                },
+                {
+                  icon: <NextPlan />,
+                  name: "Next Backup",
+                  data: <NextBackupRun date={scheduledBackup.data?.[0]?.ScheduledTime} />,
+                },
+              ]}
+            />
+            <Alert severity="info" sx={{ mt: 2 }}>
+              Backups are stored in the storage account associated with your CIPP instance. You can
+              download or restore specific points in time from the list below. Enable automatic
+              backups to have CIPP create daily backups using the scheduler.
+            </Alert>
+          </Stack>
         }
       >
-        <CardContent>
-          <Typography variant="body2" sx={{ mt: 3, px: 3 }}>
-            Backups are stored in the storage account associated with your CIPP instance. You can
-            download or restore specific points in time from the list below. Enable automatic
-            backups to have CIPP create daily backups using the scheduler.
-          </Typography>
+        <CardContent sx={{ p: 0 }}>
           {backupList.isSuccess ? (
-            <Box sx={{ mt: 3 }}>
-              <CippApiResults apiObject={runBackup} />
-              <CippApiResults apiObject={enableBackupSchedule} />
-              <CippApiResults apiObject={backupAction} />
-
+            <Box>
               <CippDataTable
                 title="Backup List"
                 data={backupList.data}
@@ -296,7 +268,7 @@ const Page = () => {
                         variant="contained"
                         color="primary"
                         startIcon={<ArrowCircleRight />}
-                        onClick={handleCreateBackup}
+                        onClick={runBackupDialog.handleOpen}
                       >
                         Run Backup
                       </Button>
@@ -317,16 +289,25 @@ const Page = () => {
                       </Button>
                       {scheduledBackup.isSuccess &&
                         scheduledBackup.data?.[0]?.Name !== "Automated CIPP Backup" && (
-                          <>
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              startIcon={<ManageHistory />}
-                              onClick={handleEnableScheduledBackup}
-                            >
-                              Schedule Backups
-                            </Button>
-                          </>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<ManageHistory />}
+                            onClick={enableBackupDialog.handleOpen}
+                          >
+                            Schedule Backups
+                          </Button>
+                        )}
+                      {scheduledBackup.isSuccess &&
+                        scheduledBackup.data?.[0]?.Name === "Automated CIPP Backup" && (
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            startIcon={<ManageHistory />}
+                            onClick={disableBackupDialog.handleOpen}
+                          >
+                            Remove Schedule
+                          </Button>
                         )}
                     </Stack>
                   </>
@@ -343,6 +324,42 @@ const Page = () => {
           )}
         </CardContent>
       </CippPageCard>
+
+      <CippApiDialog
+        createDialog={runBackupDialog}
+        title="Run Backup"
+        api={{
+          url: "/api/ExecRunBackup",
+          type: "POST",
+          data: {},
+          confirmText: "Are you sure you want to run a backup now?",
+          relatedQueryKeys: ["BackupList", "ScheduledBackup"],
+        }}
+      />
+
+      <CippApiDialog
+        createDialog={enableBackupDialog}
+        title="Schedule Backups"
+        api={{
+          url: "/api/ExecSetCIPPAutoBackup",
+          type: "POST",
+          data: { Enabled: true },
+          confirmText: "Are you sure you want to enable automatic backups?",
+          relatedQueryKeys: ["ScheduledBackup"],
+        }}
+      />
+
+      <CippApiDialog
+        createDialog={disableBackupDialog}
+        title="Remove Backup Schedule"
+        api={{
+          url: "/api/ExecSetCIPPAutoBackup",
+          type: "POST",
+          data: { Enabled: false },
+          confirmText: "Are you sure you want to remove the automatic backup schedule?",
+          relatedQueryKeys: ["ScheduledBackup"],
+        }}
+      />
 
       <CippRestoreWizard
         open={wizardDialog.open}
