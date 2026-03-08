@@ -265,19 +265,13 @@ const Page = () => {
                   <>
                     <Stack spacing={2} direction="row">
                       <Button
-                        variant="contained"
                         color="primary"
                         startIcon={<ArrowCircleRight />}
                         onClick={runBackupDialog.handleOpen}
                       >
                         Run Backup
                       </Button>
-                      <Button
-                        component="label"
-                        variant="contained"
-                        color="primary"
-                        startIcon={<CloudUpload />}
-                      >
+                      <Button component="label" color="primary" startIcon={<CloudUpload />}>
                         Restore From File
                         <input
                           hidden
@@ -290,7 +284,6 @@ const Page = () => {
                       {scheduledBackup.isSuccess &&
                         scheduledBackup.data?.[0]?.Name !== "Automated CIPP Backup" && (
                           <Button
-                            variant="contained"
                             color="primary"
                             startIcon={<ManageHistory />}
                             onClick={enableBackupDialog.handleOpen}
@@ -301,7 +294,6 @@ const Page = () => {
                       {scheduledBackup.isSuccess &&
                         scheduledBackup.data?.[0]?.Name === "Automated CIPP Backup" && (
                           <Button
-                            variant="outlined"
                             color="error"
                             startIcon={<ManageHistory />}
                             onClick={disableBackupDialog.handleOpen}
