@@ -31,6 +31,7 @@ export const CippCodeBlock = (props) => {
     wrapLongLines = true,
     type = "syntax",
     editorHeight = "500px",
+    readOnly = false,
     ...other
   } = props;
   const [codeCopied, setCodeCopied] = useState(false);
@@ -55,7 +56,7 @@ export const CippCodeBlock = (props) => {
             wordWrap: true,
             lineNumbers: showLineNumbers ? "on" : "off",
             minimap: { enabled: showLineNumbers },
-            readOnly: true,
+            readOnly: readOnly,
           }}
           {...other}
         />

@@ -27,11 +27,14 @@ export const CippReusableSettingsDeployDrawer = ({
 
   const templates = ApiGetCall({ url: "/api/ListIntuneReusableSettingTemplates", queryKey: "ListIntuneReusableSettingTemplates" });
 
+  const getRawJson = (source) => source?.RawJSON ?? source?.RAWJson ?? source?.rawJSON ?? "";
+
   useEffect(() => {
     if (templates.isSuccess && selectedTemplate?.value) {
       const match = templates.data?.find((t) => t.GUID === selectedTemplate.value);
       if (match) {
-        formControl.setValue("rawJSON", match.RawJSON || "");
+        const rawJsonValue = getRawJson(match);
+        formControl.setValue("rawJSON", rawJsonValue);
         formControl.setValue("TemplateId", match.GUID);
       }
     }

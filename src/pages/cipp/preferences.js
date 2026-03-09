@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Box, Container, Stack } from "@mui/material";
+import { Alert, Box, Container, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "../../layouts/index.js";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
@@ -98,6 +98,27 @@ const Page = () => {
     control: formcontrol.control,
     name: "user",
   });
+
+  // Watch navigation settings and apply immediately (device-local, no server save needed)
+  const watchedBookmarkSidebar = useWatch({ control: formcontrol.control, name: "bookmarkSidebar" });
+  const watchedBookmarkPopover = useWatch({ control: formcontrol.control, name: "bookmarkPopover" });
+  const watchedBookmarkReorderMode = useWatch({ control: formcontrol.control, name: "bookmarkReorderMode" });
+
+  useEffect(() => {
+    const updates = {};
+    if (watchedBookmarkSidebar !== undefined && watchedBookmarkSidebar !== settings.bookmarkSidebar) {
+      updates.bookmarkSidebar = watchedBookmarkSidebar;
+    }
+    if (watchedBookmarkPopover !== undefined && watchedBookmarkPopover !== settings.bookmarkPopover) {
+      updates.bookmarkPopover = watchedBookmarkPopover;
+    }
+    if (watchedBookmarkReorderMode !== undefined && watchedBookmarkReorderMode !== settings.bookmarkReorderMode) {
+      updates.bookmarkReorderMode = watchedBookmarkReorderMode;
+    }
+    if (Object.keys(updates).length > 0) {
+      settings.handleUpdate(updates);
+    }
+  }, [watchedBookmarkSidebar, watchedBookmarkPopover, watchedBookmarkReorderMode]);
 
   // Update form when initial user type is determined
   useEffect(() => {
@@ -306,6 +327,48 @@ const Page = () => {
                               type="switch"
                               name="persistFilters"
                               formControl={formcontrol}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                    <CippPropertyListCard
+                      layout="two"
+                      showDivider={false}
+                      title="Navigation Settings - Per Device (Local Storage)"
+                      propertyItems={[
+                        {
+                          label: "Show Sidebar Bookmarks",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="bookmarkSidebar"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Show Popover Bookmarks",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="bookmarkPopover"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Bookmark Reorder Mode",
+                          value: (
+                            <CippFormComponent
+                              type="radio"
+                              name="bookmarkReorderMode"
+                              formControl={formcontrol}
+                              row={true}
+                              options={[
+                                { value: "arrows", label: "Arrow Buttons" },
+                                { value: "drag", label: "Drag and Drop" },
+                              ]}
                             />
                           ),
                         },

@@ -994,6 +994,87 @@ const Page = () => {
           });
         }
 
+        // Fallback: scan compare data for IntuneTemplate entries belonging to this template
+        // that weren't captured from tagTemplates (e.g., templates added to a package tag
+        // after the standard template was last saved).
+        if (currentTenantObj) {
+          Object.keys(currentTenantObj).forEach((key) => {
+            if (
+              key.startsWith("standards.IntuneTemplate.") &&
+              !allStandards.some((s) => s.standardId === key)
+            ) {
+              const standardObject = currentTenantObj[key];
+              if (standardObject?.TemplateId !== templateId) return;
+
+              const itemTemplateId = key.replace("standards.IntuneTemplate.", "");
+              const standardInfo = standards.find((s) => s.name === "standards.IntuneTemplate");
+              const directStandardValue = standardObject?.Value;
+
+              let isCompliant = false;
+              if (
+                standardObject?.CurrentValue !== undefined &&
+                standardObject?.ExpectedValue !== undefined
+              ) {
+                const sortedCurrent =
+                  typeof standardObject.CurrentValue === "object" &&
+                  standardObject.CurrentValue !== null
+                    ? Object.keys(standardObject.CurrentValue)
+                        .sort()
+                        .reduce((obj, k) => {
+                          obj[k] = standardObject.CurrentValue[k];
+                          return obj;
+                        }, {})
+                    : standardObject.CurrentValue;
+                const sortedExpected =
+                  typeof standardObject.ExpectedValue === "object" &&
+                  standardObject.ExpectedValue !== null
+                    ? Object.keys(standardObject.ExpectedValue)
+                        .sort()
+                        .reduce((obj, k) => {
+                          obj[k] = standardObject.ExpectedValue[k];
+                          return obj;
+                        }, {})
+                    : standardObject.ExpectedValue;
+                isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+              } else if (directStandardValue === true) {
+                isCompliant = true;
+              }
+
+              const templateDisplayName =
+                standardObject?.CurrentValue?.displayName ||
+                standardObject?.ExpectedValue?.displayName ||
+                itemTemplateId;
+
+              allStandards.push({
+                standardId: key,
+                standardName: `Intune Template: ${templateDisplayName}`,
+                currentTenantValue: {
+                  Value: directStandardValue,
+                  LastRefresh: standardObject?.LastRefresh,
+                  TemplateId: standardObject?.TemplateId,
+                  CurrentValue: standardObject?.CurrentValue,
+                  ExpectedValue: standardObject?.ExpectedValue,
+                },
+                standardValue: {
+                  templateId: itemTemplateId,
+                  Template: templateDisplayName,
+                },
+                complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                isOverridden: false,
+                overridingTemplateId: null,
+                overridingTemplateName: null,
+                complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
+                standardDescription: standardInfo?.helpText || "",
+                standardImpact: standardInfo?.impact || "Medium Impact",
+                standardImpactColour: standardInfo?.impactColour || "warning",
+                templateName: selectedTemplate?.templateName || "Standard Template",
+                templateActions: [],
+                autoRemediate: false,
+              });
+            }
+          });
+        }
+
         setComparisonData(allStandards);
       } else {
         setComparisonData([]);
@@ -2480,10 +2561,7 @@ const Page = () => {
                                       typeof standard.currentTenantValue.CurrentValue ===
                                         "object" &&
                                       standard.currentTenantValue.CurrentValue !== null ? (
-                                        <Stack
-                                          spacing={2}
-                                          
-                                        >
+                                        <Stack spacing={2}>
                                           <Typography
                                             variant="caption"
                                             sx={{

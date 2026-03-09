@@ -117,7 +117,7 @@ const EditReusableSettingsTemplate = () => {
     return {
       ...templateData,
       // Normalize all known casing variants to the canonical RawJSON property
-      RawJSON: templateData.RawJSON ?? templateData.RAWJson ?? templateData.RAWJSON,
+      RawJSON: templateData.RawJSON ?? templateData.RAWJson ?? templateData.rawJSON,
     };
   }, [templateData]);
 

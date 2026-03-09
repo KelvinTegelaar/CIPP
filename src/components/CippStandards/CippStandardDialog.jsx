@@ -646,6 +646,7 @@ const CippStandardDialog = ({
   const [selectedRecommendedBy, setSelectedRecommendedBy] = useState([]);
   const [selectedTagFrameworks, setSelectedTagFrameworks] = useState([]);
   const [showOnlyNew, setShowOnlyNew] = useState(false); // Show only standards added in last 30 days
+  const [statusFilter, setStatusFilter] = useState("all"); // "all" | "enabled" | "disabled"
   const [filtersExpanded, setFiltersExpanded] = useState(false); // Control filter section collapse/expand
 
   // Auto-adjust sort order when sort type changes
@@ -823,13 +824,21 @@ const CippStandardDialog = ({
         };
         const matchesNewFilter = !showOnlyNew || isNewStandard(standard.addedDate);
 
+        // Status filter: enabled = already in selectedStandards, disabled = not yet added
+        const isEnabled = !!selectedStandards[standard.name];
+        const matchesStatusFilter =
+          statusFilter === "all" ||
+          (statusFilter === "enabled" && isEnabled) ||
+          (statusFilter === "disabled" && !isEnabled);
+
         return (
           matchesSearch &&
           matchesCategory &&
           matchesImpact &&
           matchesRecommendedBy &&
           matchesTagFramework &&
-          matchesNewFilter
+          matchesNewFilter &&
+          matchesStatusFilter
         );
       });
     },
@@ -840,6 +849,8 @@ const CippStandardDialog = ({
       selectedRecommendedBy,
       selectedTagFrameworks,
       showOnlyNew,
+      statusFilter,
+      selectedStandards,
     ]
   );
 
@@ -935,6 +946,7 @@ const CippStandardDialog = ({
     setSelectedRecommendedBy([]);
     setSelectedTagFrameworks([]);
     setShowOnlyNew(false);
+    setStatusFilter("all");
     setSortBy("addedDate");
     setSortOrder("desc");
     setViewMode("card"); // Reset to card view
@@ -949,6 +961,7 @@ const CippStandardDialog = ({
     setSelectedRecommendedBy([]);
     setSelectedTagFrameworks([]);
     setShowOnlyNew(false);
+    setStatusFilter("all");
     setViewMode("card"); // Reset to card view
     handleSearchQueryChange(""); // Clear parent search state
     handleCloseDialog();
@@ -1024,7 +1037,8 @@ const CippStandardDialog = ({
     selectedImpacts.length +
     selectedRecommendedBy.length +
     selectedTagFrameworks.length +
-    (showOnlyNew ? 1 : 0);
+    (showOnlyNew ? 1 : 0) +
+    (statusFilter !== "all" ? 1 : 0);
 
   // Don't render dialog contents until it's actually open (improves performance)
   return (
@@ -1271,6 +1285,21 @@ const CippStandardDialog = ({
                   sx={{ ml: 1 }}
                 />
 
+                {/* Status Filter */}
+                <ToggleButtonGroup
+                  value={statusFilter}
+                  exclusive
+                  onChange={(e, newValue) => {
+                    if (newValue !== null) setStatusFilter(newValue);
+                  }}
+                  size="small"
+                  sx={{ height: 45 }}
+                >
+                  <ToggleButton value="all">All</ToggleButton>
+                  <ToggleButton value="enabled">Enabled</ToggleButton>
+                  <ToggleButton value="disabled">Disabled</ToggleButton>
+                </ToggleButtonGroup>
+
                 {/* Clear Button */}
                 {activeFiltersCount > 0 && (
                   <Button
@@ -1342,6 +1371,15 @@ const CippStandardDialog = ({
                     size="small"
                     onDelete={() => setShowOnlyNew(false)}
                     color="info"
+                    variant="outlined"
+                  />
+                )}
+                {statusFilter !== "all" && (
+                  <Chip
+                    label={statusFilter === "enabled" ? "Enabled Only" : "Disabled Only"}
+                    size="small"
+                    onDelete={() => setStatusFilter("all")}
+                    color="default"
                     variant="outlined"
                   />
                 )}

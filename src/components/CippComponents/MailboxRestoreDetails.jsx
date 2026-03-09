@@ -91,6 +91,7 @@ const MailboxRestoreDetails = ({ data }) => {
             open={dialogOpen}
             onClose={() => setDialogOpen(false)}
             code={restoreStatistics?.data?.[0]?.Report}
+            readOnly={true}
           />
         </DialogContent>
       </Dialog>

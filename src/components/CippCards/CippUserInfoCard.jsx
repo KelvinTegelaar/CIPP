@@ -18,6 +18,7 @@ import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { Stack, Grid, Box } from "@mui/system";
 import { useState, useRef, useCallback } from "react";
 import { ApiPostCall } from "../../api/ApiCall";
+import { useLicenseBackfill } from "../../hooks/use-license-backfill";
 
 export const CippUserInfoCard = (props) => {
   const { user, tenant, isFetching = false, ...other } = props;
@@ -25,6 +26,9 @@ export const CippUserInfoCard = (props) => {
   const [uploadError, setUploadError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const fileInputRef = useRef(null);
+  
+  // Hook to trigger re-render when license backfill completes
+  const { updateTrigger } = useLicenseBackfill();
 
   // API mutations
   const setPhotoMutation = ApiPostCall({ urlFromData: true });
@@ -280,6 +284,7 @@ export const CippUserInfoCard = (props) => {
         <PropertyListItem
           divider
           label="Licenses"
+          key={`licenses-${updateTrigger}`}
           value={
             isFetching ? (
               <Skeleton variant="text" width={180} />

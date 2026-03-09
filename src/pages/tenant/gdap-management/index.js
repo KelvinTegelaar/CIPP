@@ -167,7 +167,7 @@ const Page = () => {
         <Grid size={12}>
           <Button
             LinkComponent={Link}
-            href="/tenant/gdap-management/invites/add"
+            href="/onboardingv2"
             startIcon={<Add />}
             variant="contained"
           >

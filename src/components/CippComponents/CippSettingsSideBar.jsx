@@ -137,6 +137,9 @@ export const CippSettingsSideBar = (props) => {
               Settings on this page can be saved for the current user, or all users. Select the
               desired option below.
             </Typography>
+            <Alert severity="info" variant="outlined" icon={false} sx={{ py: 0.5, px: 2 }}>
+              Navigation settings are per-device and stored locally, regardless of the user selector.
+            </Alert>
             <CippFormComponent
               type="autoComplete"
               disableClearable={true}

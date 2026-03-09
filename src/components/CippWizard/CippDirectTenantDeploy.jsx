@@ -35,7 +35,7 @@ export const CippDirectTenantDeploy = (props) => {
           You can authenticate to multiple tenants by repeating this step for each tenant you want
           to add. More information about per-tenant authentication can be found in the{" "}
           <Link
-            href="https://docs.cipp.app/setup/authentication"
+            href="https://docs.cipp.app/setup/installation/gdap-invite-wizard#wizard-steps-for-direct-tenants"
             target="_blank"
             rel="noopener noreferrer"
           >

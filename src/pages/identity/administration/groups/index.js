@@ -5,13 +5,13 @@ import Link from "next/link";
 import { TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import {
   Visibility,
-  VisibilityOff,
   GroupAdd,
   Edit,
   LockOpen,
   Lock,
   GroupSharp,
   CloudSync,
+  RocketLaunch,
 } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { useState } from "react";
@@ -312,6 +312,13 @@ const Page = () => {
           </Button>
           <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
             Add Group
+          </Button>
+          <Button
+            component={Link}
+            href="/identity/administration/group-templates/deploy"
+            startIcon={<RocketLaunch />}
+          >
+            Deploy Group Template
           </Button>
         </Stack>
       }

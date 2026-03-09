@@ -4045,6 +4045,28 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.intuneRestrictUserDeviceRegistration",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Controls whether users can register devices with Entra.",
+    "docsDescription": "Configures whether users can register devices with Entra. When disabled, users are unable to register devices with Entra.",
+    "executiveText": "Controls whether employees can register their devices for corporate access. Disabling user device registration prevents unauthorized or unmanaged devices from connecting to company resources, enhancing overall security posture.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.intuneRestrictUserDeviceRegistration.disableUserDeviceRegistration",
+        "label": "Disable users from registering devices",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure user restriction for Entra device registration",
+    "impact": "High Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-02-23",
+    "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneRequireMFA",
     "cat": "Intune Standards",
     "tag": ["ZTNA21782", "ZTNA21796", "ZTNA21872"],
@@ -5387,6 +5409,11 @@
         "required": false,
         "name": "customGroup",
         "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
+      },
+      {
+        "type": "switch",
+        "name": "verifyAssignments",
+        "label": "Verify policy assignments"
       },
       {
         "name": "excludeGroup",

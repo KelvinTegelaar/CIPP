@@ -37,7 +37,7 @@ export const SideNavItem = (props) => {
       handleUpdate({
         bookmarks: isBookmarked
           ? bookmarks.filter((bookmark) => bookmark.path !== path)
-          : [...bookmarks, { label: title, path }],
+          : bookmarks.length >= 50 ? bookmarks : [...bookmarks, { label: title, path }],
       });
     },
     [isBookmarked, bookmarks, handleUpdate, path, title]
