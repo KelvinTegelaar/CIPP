@@ -1,5 +1,9 @@
 # Hudu
 
+{% hint style="danger" %}
+If you have Hudu behind Cloudflare Zero Trust Tunnel, please also set up the [cloudflare.md](cloudflare.md "mention") integration and enable the `Connect to HUDU through CloudFlare Tunnel with the Service Account credentials.` toggle.
+{% endhint %}
+
 The Hudu integration provides several different options to give you control over what is synchronised from CIPP to Hudu.
 
 Data is synchronized automatically once every 24 hours from Microsoft 365 / CIPP to Hudu. This is scheduled once you save the extension and map your tenants.

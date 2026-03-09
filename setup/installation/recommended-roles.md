@@ -6,7 +6,7 @@ As CIPP is an application that touches many parts of M365 selecting the roles mi
 Please note that any relationship that contains the `Global Administrator`/`Company Administrator` role will NOT be eligible for auto extend.
 {% endhint %}
 
-The table below outlines the recommended roles for use in CIPP, describing what each role enables. Click on the Role Name to navigate to Microsoft's [Azure AD built-in roles](https://learn.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#cloud-app-security-administrator) page for detailed information about each specific role.
+The table below outlines the recommended roles for use in CIPP, describing what each role enables. Click on the Role Name to navigate to Microsoft's [Entra ID built-in roles](https://learn.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#cloud-app-security-administrator) page for detailed information about each specific role.
 
 ## Roles
 

@@ -47,7 +47,7 @@ This page displays options for editing the user's properties, license assignment
 ## **Custom Attributes**
 
 * Custom attributes can be configured in **Preferences > General Settings**
-* These include specific Azure AD attributes that will be available when creating new users:
+* These include specific Entra ID attributes that will be available when creating new users:
 * **Available Attributes:** `consentProvidedForMinor`, `employeeId`, `employeeHireDate`, `employeeLeaveDateTime`, `employeeType`, `faxNumber`,`legalAgeGroupClassification`, `officeLocation`, `otherMails`, `showInAddressList`, `state`
 * **Configuration:**
   * Go to **Preferences** page under your user profile.

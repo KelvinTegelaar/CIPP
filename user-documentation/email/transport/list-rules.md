@@ -14,7 +14,7 @@ This wizard allows you to deploy a transport rule to the selected tenant(s) or A
 
 <summary>New Transport Rule</summary>
 
-This wizard allows you to create a new template rule.&#x20;
+This wizard allows you to create a new template rule. Review each option and set as desired. Many settings have additional options to configure that will display once a selection is made.
 
 </details>
 

@@ -4,7 +4,7 @@ Below are error codes that can occur in CIPP. Use this page to troubleshoot your
 
 ### Multi-Factor Authentication Troubleshooting
 
-1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
+1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Entra ID) MFA enabled, it can't use third-party MFA.
 2. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/MultifactorAuthenticationConfig.ReactView) in the partner tenant.
 3. Check our section on [conditionalaccess.md](../setup/installation/conditionalaccess.md "mention") on how to handle Conditional Access issues.
 
@@ -53,7 +53,7 @@ Multiple Potential Causes:
 **These errors may also present themselves something like the below. The steps above are still accurate in these cases:**
 
 * The user you have used for your Secure Application Model is a guest in this tenant, or you are using GDAP and have not added the user to the correct group. Please delete the guest user to gain access to this tenant.
-* User account from identity provider does not exist in tenant and cannot access the application in that tenant. The account needs to be added as an external user in the tenant first. Sign out and sign in again with a different Azure Active Directory user account.
+* User account from identity provider does not exist in tenant and cannot access the application in that tenant. The account needs to be added as an external user in the tenant first. Sign out and sign in again with a different Entra ID user account.
 {% endhint %}
 
 ### _"Request invalid or malformed" or "Request is malformed or invalid"_

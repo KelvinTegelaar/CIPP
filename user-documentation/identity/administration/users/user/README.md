@@ -77,7 +77,7 @@ This card will display the devices the user is associated with.
 * Use Edit tab to modify information
 * Expandable sections (▼) provide additional details
 * Direct links to related management pages
-* Real-time data from Entra ID/Azure AD
+* Real-time data from Entra ID
 
 This view serves as the central hub for user information, providing quick access to both basic details and advanced management options through the tabbed interface.
 

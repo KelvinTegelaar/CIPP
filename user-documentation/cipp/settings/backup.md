@@ -20,17 +20,17 @@ Triggers a backup to run
 
 <details>
 
-<summary>Enable Backup Schedule</summary>
+<summary>Restore From File</summary>
 
-Enables automatic backups. This button only appears if you have not enabled automatic backups
+Allows you to upload a previous CIPP backup to restore those settings
 
 </details>
 
 <details>
 
-<summary>Restore From File</summary>
+<summary>Enable Backup Schedule/Remove Schedule</summary>
 
-Allows you to upload a previous CIPP backup to restore those settings
+Enables automatic backups or removes the scheduled backup. The option on this button will vary based on if a schedule is already present or not.
 
 </details>
 

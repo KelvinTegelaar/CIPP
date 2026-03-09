@@ -6,10 +6,17 @@ The User Preferences page provides a tailored interface for users to manage and 
 
 In this section, users can manage general settings related to their account and workspace:
 
-* **Added Attributes when creating a new user:** Users can select additional user object attributes that are available when creating a new user.
 * **Default new user usage location**: This setting allows users to specify the default user location when creating or editing a user.
 * **Default Page Size**: Set the default page size for tables across CIPP.
-* **Menu Favourites**: Set pages that will display in your favourites section.
+* **Added Attributes when creating a new user:** Users can select additional user object attributes that are available when creating a new user.
+
+## Navigation Settings
+
+This section will allow you to alter the display format for bookmarks.
+
+* **Show Sidebar Bookmarks:** This will enable bookmarks in the sidebar
+* **Show Popover Bookmarks:** This will enable bookmarks in the menu bar
+* **Bookmark Reorder Mode:** "Arrow Buttons" will make it so you click arrows to sort bookmarks while "Drag and Drop" is as labeled.
 
 ## Offboarding Defaults
 

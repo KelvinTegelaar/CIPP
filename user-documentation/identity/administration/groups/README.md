@@ -20,6 +20,10 @@ This will toggle if the page displays a column to show the membership of the gro
 [add.md](add.md)
 {% endcontent-ref %}
 
+{% content-ref url="../group-templates/deploy.md" %}
+[deploy.md](../group-templates/deploy.md)
+{% endcontent-ref %}
+
 ## Column Details
 
 The properties returned are for the Graph resource type `group`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties).

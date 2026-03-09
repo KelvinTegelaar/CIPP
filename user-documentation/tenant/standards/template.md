@@ -33,7 +33,17 @@ Just under the tenant assignment dropdown(s), you will see a toggle called "Do n
 Click the "+ Add Standards to this template" button in the upper right of the page. This will display a modal that has a complete list of all CIPP standards that can be configured. For more information on each standard, see the standards category pages.
 
 {% hint style="info" %}
-This page has a "Filter Standards" box that will return standards that match for the name or description.
+This page has a "Search Standards" box that will return standards that match for the name or description. You can also expand "View, Sort & Filter Options" to adjust the following:
+
+* View: Card or List
+* Sort By: Name or Date Added
+* Order: Ascending or Descending
+* Categories: Select the category or categories you want returned
+* Impact: Select the impact to the end user you want to view
+* Recommended By: Select who has recommended a particular standard
+* Compliance Tags: Select the compliance framework to view related standards
+* New (31 days): On restricts the page to only those standards added in the last 30 days
+* All/Enabled/Disabled: Will optionally restrict the displayed standards to those that have already been enabled or have not been enabled
 {% endhint %}
 
 Toggle on the "Add this standard to the template" for each desired template. Once completed, click the "Close" button on the modal.

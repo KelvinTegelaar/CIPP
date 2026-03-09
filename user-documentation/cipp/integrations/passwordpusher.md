@@ -1,5 +1,9 @@
 # Password Pusher
 
+{% hint style="info" %}
+If you have PWPush behind Cloudflare Zero Trust Tunnel, please also set up the [cloudflare.md](cloudflare.md "mention") integration and enable the `Behind a CF-ZTNA Tunnel` toggle.
+{% endhint %}
+
 This integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords. If you are a Hosted PWPush Pro customer you can also select an account for branding if you enable Bearer Authentication. Self-Hosted must use the Email Address and API Key method for authenticated pushes.
 
 {% hint style="danger" %}

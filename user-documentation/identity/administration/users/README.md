@@ -44,8 +44,8 @@ When the [sherweb.md](../../../cipp/integrations/sherweb.md "mention")integratio
 3. **Management:** `Set Manager` (select from existing users), `Copy groups from another user`
 4. **Custom Attributes**
    * Custom attributes can be configured in **Preferences > General Settings**
-   * These include specific Azure AD attributes that will be available when creating new users:
-   * **Available Attributes:** `consentProvidedForMinor`, `employeeId`, `employeeHireDate`, `employeeLeaveDateTime`, `employeeType`, `faxNumber`,`legalAgeGroupClassification`, `officeLocation`, `otherMails`, `showInAddressList`, `state`
+   * These include specific Entra ID attributes that will be available when creating new users:
+   * **Available Attributes:** `consentProvidedForMinor`, `employeeId`, `employeeHireDate`, `employeeLeaveDateTime`, `employeeType`, `faxNumber`,`legalAgeGroupClassification`, `officeLocation`, `otherMails`, `showInAddressList`, `state`. You are also able to add any valid Graph user object attribute by manually adding it to the pre-selected list.
    * **Configuration:**
      * Go to **Preferences** page under your user profile.
      * Under **General Settings**
@@ -58,10 +58,10 @@ When the [sherweb.md](../../../cipp/integrations/sherweb.md "mention")integratio
 
 * Attributes selected will appear as additional fields on the Add User form
 * Each attribute has its own text field
-* Values are saved with the user's profile in Azure AD
+* Values are saved with the user's profile in Entra ID
 * Must be configured before they appear on the form.&#x20;
-* Attributes are standard Azure AD attributes
-* Values persist in Azure AD and can be queried/updated later
+* Attributes are standard Entra ID attributes
+* Values persist in Entra ID and can be queried/updated later
 * Not all attributes may be relevant for every user
 * Changes to Preferences affect all new user creation forms
 {% endhint %}
@@ -107,6 +107,14 @@ This wizard will allow you to bulk create new guest users.&#x20;
 
 </details>
 
+<details>
+
+<summary>View Logs</summary>
+
+Will open a flyout with the logbook entries for user actions.
+
+</details>
+
 ## Table Columns
 
 The properties returned are for the Graph resource type `user`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties).
@@ -147,10 +155,10 @@ Note that clicking one of these actions will present a confirmation modal dialog
 
 ### More Information on "Create Temporary Access Password"
 
-Create a temporary access password for a user to enroll in [passwordless for Azure Active Directory](https://learn.microsoft.com/en-us/azure/active-directory/authentication/concept-authentication-passwordless).
+Create a temporary access password for a user to enroll in [passwordless for Entra ID](https://learn.microsoft.com/en-us/azure/active-directory/authentication/concept-authentication-passwordless).
 
 {% hint style="info" %}
-Both passwordless authentication and the temporary access password function must be enabled on the tenant. See [AzureAD: Configure Temporary Access Pass in Azure AD to register Passwordless authentication methods](https://learn.microsoft.com/en-us/azure/active-directory/authentication/howto-authentication-temporary-access-pass)
+Both passwordless authentication and the temporary access password function must be enabled on the tenant. See [Configure Temporary Access Pass to register passwordless authentication methods](https://learn.microsoft.com/en-us/azure/active-directory/authentication/howto-authentication-temporary-access-pass)
 {% endhint %}
 
 ## Add User Query String Support

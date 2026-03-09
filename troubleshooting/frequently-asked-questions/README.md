@@ -139,7 +139,7 @@ The CIPP alert "Alert on admins without any form of MFA" is based on checking a 
 
 <summary>I'm getting an error that "you must use multi-factor authentication to access" what's going on?</summary>
 
-Typically, this error means you're using tokens that don't have a "strong auth claim" or similar. This could be because you're using non-Azure AD MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
+Typically, this error means you're using tokens that don't have a "strong auth claim" or similar. This could be because you're using non-Entra ID MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
 
 Check the [#multi-factor-authentication-troubleshooting](../troubleshooting.md#multi-factor-authentication-troubleshooting "mention") details in the Troubleshooting section for more information.
 
