@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import { Box, Drawer, Stack } from "@mui/material";
-import { Scrollbar } from "../components/scrollbar";
+import { Box, Divider, Drawer, Stack } from "@mui/material";
 import { SideNavItem } from "./side-nav-item";
+import { SideNavBookmarks } from "./side-nav-bookmarks";
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import { CippSponsor } from "../components/CippComponents/CippSponsor";
+import { useSettings } from "../hooks/use-settings";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_COLLAPSED_WIDTH = 73; // icon size + padding + border right
@@ -105,6 +106,45 @@ export const SideNav = (props) => {
   const [hovered, setHovered] = useState(false);
   const collapse = !(pinned || hovered);
   const { data: profile } = ApiGetCall({ url: "/api/me", queryKey: "authmecipp" });
+  const settings = useSettings();
+  const showSidebarBookmarks = settings.bookmarkSidebar !== false;
+  const paperRef = useRef(null);
+
+  // Intercept wheel events on the side nav to fully isolate scroll.
+  // preventDefault stops wheel events from reaching the main content,
+  // and manual scrollTop has no momentum so it stops instantly when the cursor leaves.
+  // Uses RAF-based easing to smooth out discrete mouse wheel jumps.
+  useEffect(() => {
+    const el = paperRef.current;
+    if (!el) return;
+
+    let targetScrollTop = el.scrollTop;
+    let animating = false;
+
+    const animate = () => {
+      const diff = targetScrollTop - el.scrollTop;
+      if (Math.abs(diff) < 0.5) {
+        el.scrollTop = targetScrollTop;
+        animating = false;
+        return;
+      }
+      el.scrollTop += diff * 0.25;
+      requestAnimationFrame(animate);
+    };
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      targetScrollTop = Math.max(0, Math.min(maxScroll, targetScrollTop + e.deltaY));
+      if (!animating) {
+        animating = true;
+        requestAnimationFrame(animate);
+      }
+    };
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, []);
 
   // Preprocess items to mark which should be open
   const processedItems = markOpenItems(items, pathname);
@@ -115,16 +155,15 @@ export const SideNav = (props) => {
           open
           variant="permanent"
           PaperProps={{
-            onMouseEnter: () => {
-              setHovered(true);
-            },
-            onMouseLeave: () => {
-              setHovered(false);
-            },
+            ref: paperRef,
+            onMouseEnter: () => setHovered(true),
+            onMouseLeave: () => setHovered(false),
             sx: {
               backgroundColor: "background.default",
               height: `calc(100% - ${TOP_NAV_HEIGHT}px)`,
               overflowX: "hidden",
+              overflowY: "auto",
+              scrollbarGutter: "stable",
               top: TOP_NAV_HEIGHT,
               transition: "width 250ms ease-in-out",
               width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
@@ -132,15 +171,6 @@ export const SideNav = (props) => {
             },
           }}
         >
-          <Scrollbar
-            sx={{
-              height: "100%",
-              overflowX: "hidden",
-              "& .simplebar-content": {
-                height: "100%",
-              },
-            }}
-          >
             <Box
               component="nav"
               sx={{
@@ -159,6 +189,14 @@ export const SideNav = (props) => {
                   p: 0,
                 }}
               >
+                {/* Bookmarks section above Dashboard */}
+                {showSidebarBookmarks && (
+                  <>
+                    <SideNavBookmarks collapse={collapse} />
+                    <Divider sx={{ my: 1 }} />
+                  </>
+                )}
+                {/* Render all menu items */}
                 {renderItems({
                   collapse,
                   depth: 0,
@@ -170,7 +208,6 @@ export const SideNav = (props) => {
               {profile?.clientPrincipal && <CippSponsor />}
             </Box>{" "}
             {/* Closing tag for the parent Box */}
-          </Scrollbar>
         </Drawer>
       )}
     </>

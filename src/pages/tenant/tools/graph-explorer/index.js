@@ -75,6 +75,7 @@ const Page = () => {
                   code={JSON.stringify(jsonData, null, 2)}
                   editorHeight="calc(100vh - 260px)"
                   showLineNumbers={true}
+                  readOnly={true}
                 />
               </Card>
             </Stack>
