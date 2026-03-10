@@ -112,6 +112,21 @@ const CippAddEditUser = (props) => {
     return username.toLowerCase();
   };
 
+  const validateOtherMails = (value) => {
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      return true;
+    }
+
+    const emailList = (Array.isArray(value) ? value.join(",") : value)
+      .split(",")
+      .map((email) => email.trim())
+      .filter(Boolean);
+
+    const invalidEmail = emailList.find((email) => getCippValidator(email, "email") !== true);
+
+    return !invalidEmail || `This is not a valid email: ${invalidEmail}`;
+  };
+
   useEffect(() => {
     //if watch.firstname changes, and watch.lastname changes, set displayname to firstname + lastname
     if (watcher.givenName && watcher.surname && formType === "add") {
@@ -331,7 +346,6 @@ const CippAddEditUser = (props) => {
             setDisplayNameManuallySet(true);
           }}
           required={true}
-          validators={{ required: "Display Name is required" }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -356,7 +370,6 @@ const CippAddEditUser = (props) => {
             setUsernameManuallySet(true);
           }}
           required={true}
-          validators={{ required: "Username is required" }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -603,10 +616,10 @@ const CippAddEditUser = (props) => {
         <CippFormComponent
           type="textField"
           fullWidth
-          label="Alternate Email Address"
+          label="Alternate Email Addresses (comma separated)"
           name="otherMails"
           formControl={formControl}
-          validators={{ validate: (value) => !value || getCippValidator(value, "email") }}
+          validators={{ validate: validateOtherMails }}
         />
       </Grid>
       {userSettingsDefaults?.userAttributes
