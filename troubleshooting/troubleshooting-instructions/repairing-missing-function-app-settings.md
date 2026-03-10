@@ -110,7 +110,7 @@ Function app → **Overview** — Status should show **Running**.
 {% endstep %}
 
 {% step %}
-Function app → **Functions** — the function list should populate (20+ functions visible).
+Function app → **Functions** — the function list should populate (5 functions visible).
 {% endstep %}
 
 {% step %}
