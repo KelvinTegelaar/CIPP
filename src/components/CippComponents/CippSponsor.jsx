@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Box, Divider, Tooltip, Typography } from "@mui/material";
 import { useSettings } from "../../hooks/use-settings";
 import sponsorsData from "../../data/sponsors.json";
@@ -38,11 +39,16 @@ const selectRandomSponsor = (sponsors) => {
 };
 
 const activeSponsors = getActiveSponsors();
-const selectedSponsor = selectRandomSponsor(activeSponsors);
 
 export const CippSponsor = () => {
+  const pathname = usePathname();
+  const [selectedSponsor, setSelectedSponsor] = useState(() => selectRandomSponsor(activeSponsors));
   const currentSettings = useSettings();
   const theme = currentSettings?.currentTheme?.value;
+
+  useEffect(() => {
+    setSelectedSponsor(selectRandomSponsor(activeSponsors));
+  }, [pathname]);
 
   // Get the appropriate image based on current theme
   const randomimg = useMemo(() => {
@@ -53,7 +59,7 @@ export const CippSponsor = () => {
       altText: selectedSponsor.altText,
       tooltip: selectedSponsor.tooltip,
     };
-  }, [theme]);
+  }, [selectedSponsor, theme]);
 
   // Don't render if no sponsors are available
   if (!randomimg) {

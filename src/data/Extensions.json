@@ -710,8 +710,8 @@
         "placeholder": "Enter your email address for PWPush. (Email & API Key auth)",
         "condition": {
           "field": "PWPush.UseBearerAuth",
-          "compareType": "is",
-          "compareValue": false
+          "compareType": "isNot",
+          "compareValue": true
         }
       },
       {
@@ -759,9 +759,21 @@
         }
       },
       {
+        "type": "password",
+        "name": "PWPush.DefaultPassphrase",
+        "label": "Default Passphrase",
+        "placeholder": "Enter a default passphrase required to view pushed passwords. (optional)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
         "type": "switch",
         "name": "PWPush.RetrievalStep",
-        "label": "Click to retrieve password (recommended)",
+        "label": "Click to retrieve password (recommended if passphrase is not set)",
         "condition": {
           "field": "PWPush.Enabled",
           "compareType": "is",
@@ -778,6 +790,16 @@
           "compareType": "is",
           "compareValue": true,
           "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.CFEnabled",
+        "label": "Behind a CF-ZTNA Tunnel",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
         }
       }
     ],

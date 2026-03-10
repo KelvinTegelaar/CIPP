@@ -7,7 +7,11 @@
   {
     "name": "MFAAdmins",
     "label": "Alert on admins without any form of MFA",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "switch",
+    "inputLabel": "Include disabled admin accounts?",
+    "inputName": "IncludeDisabled"
   },
   {
     "name": "NewMFADevice",
