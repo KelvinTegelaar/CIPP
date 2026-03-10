@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Box } from "@mui/material";
 import { useForm, useFormState } from "react-hook-form";
 import { GroupAdd } from "@mui/icons-material";
@@ -6,7 +6,6 @@ import { CippOffCanvas } from "./CippOffCanvas";
 import { CippApiResults } from "./CippApiResults";
 import { ApiPostCall } from "../../api/ApiCall";
 import CippAddEditTenantGroups from "./CippAddEditTenantGroups";
-import { getCippValidator } from "../../utils/get-cipp-validator";
 
 export const CippAddTenantGroupDrawer = ({
   buttonText = "Add Tenant Group",
