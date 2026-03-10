@@ -1,15 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { useState } from "react";
-import {
-  Button,
-  FormControlLabel,
-  Switch,
-  Alert,
-  SvgIcon,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
+import { Button, Alert, SvgIcon, IconButton, Tooltip } from "@mui/material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Stack } from "@mui/system";
 import { Sync, Info } from "@mui/icons-material";
@@ -18,7 +10,6 @@ import { CippApiDialog } from "../../../../components/CippComponents/CippApiDial
 import { CippQueueTracker } from "../../../../components/CippTable/CippQueueTracker";
 
 const Page = () => {
-  const [forwardingOnly, setForwardingOnly] = useState(true);
   const currentTenant = useSettings().currentTenant;
   const syncDialog = useDialog();
   const [syncQueueId, setSyncQueueId] = useState(null);
@@ -38,7 +29,6 @@ const Page = () => {
 
   const apiData = {
     UseReportDB: true,
-    ForwardingOnly: forwardingOnly,
   };
 
   const filters = [
@@ -63,7 +53,7 @@ const Page = () => {
     <Stack direction="row" spacing={2} alignItems="center" key="actions-stack">
       <CippQueueTracker
         queueId={syncQueueId}
-        queryKey={`mailbox-forwarding-${currentTenant}-${forwardingOnly}`}
+        queryKey={`mailbox-forwarding-${currentTenant}`}
         title="Mailbox Forwarding Sync"
       />
       <Tooltip title="This report displays cached mailbox data from the CIPP reporting database. Cache timestamps are shown in the table. Click the Sync button to update the mailbox cache for the current tenant.">
@@ -83,18 +73,6 @@ const Page = () => {
       >
         Sync
       </Button>
-      <FormControlLabel
-        key="forwardingOnly"
-        control={
-          <Switch
-            checked={forwardingOnly}
-            onChange={(e) => setForwardingOnly(e.target.checked)}
-            color="primary"
-          />
-        }
-        label="Forwarding Only"
-        labelPlacement="start"
-      />
     </Stack>,
   ];
 
@@ -102,10 +80,9 @@ const Page = () => {
     <>
       {currentTenant && currentTenant !== "" ? (
         <CippTablePage
-          key={`mailbox-forwarding-${forwardingOnly}`}
           title="Mailbox Forwarding Report"
           apiUrl="/api/ListMailboxForwarding"
-          queryKey={`mailbox-forwarding-${currentTenant}-${forwardingOnly}`}
+          queryKey={`mailbox-forwarding-${currentTenant}`}
           apiData={apiData}
           simpleColumns={columns}
           filters={filters}
@@ -123,7 +100,7 @@ const Page = () => {
           type: "GET",
           url: "/api/ExecCIPPDBCache",
           confirmText: `Run mailbox cache sync for ${currentTenant}? This will update mailbox data including forwarding settings.`,
-          relatedQueryKeys: [`mailbox-forwarding-${currentTenant}-${forwardingOnly}`],
+          relatedQueryKeys: [`mailbox-forwarding-${currentTenant}`],
           data: {
             Name: "Mailboxes",
             Types: "",
