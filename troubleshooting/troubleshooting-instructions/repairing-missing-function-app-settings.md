@@ -4,13 +4,13 @@ description: >-
   variables and you need to restore them manually without scripted access.
 ---
 
-# Reparing Missing Function App Settings
+# Repairing Missing Function App Settings
 
 ## Prerequisites
 
 * Access to the Azure Portal ([portal.azure.com](https://portal.azure.com/))
 * **Contributor** (or higher) role on the resource group containing the function app
-* The storage account connection string for the CIPP resource group (see [Retrieve Storage Connection String](reparing-missing-function-app-settings.md#retrieve-storage-connection-string) below)
+* The storage account connection string for the CIPP resource group (see [Retrieve Storage Connection String](repairing-missing-function-app-settings.md#retrieve-storage-connection-string) below)
 
 ## Identify Affected Function Apps
 
