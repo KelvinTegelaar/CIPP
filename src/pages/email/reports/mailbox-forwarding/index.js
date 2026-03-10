@@ -37,6 +37,7 @@ const Page = () => {
   ];
 
   const apiData = {
+    UseReportDB: true,
     ForwardingOnly: forwardingOnly,
   };
 
