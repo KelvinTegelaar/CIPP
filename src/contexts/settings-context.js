@@ -81,6 +81,8 @@ const initialSettings = {
   persistFilters: false,
   lastUsedFilters: {},
   breadcrumbMode: "hierarchical",
+  bookmarkSidebar: true,
+  bookmarkPopover: false,
 };
 
 const initialState = {
