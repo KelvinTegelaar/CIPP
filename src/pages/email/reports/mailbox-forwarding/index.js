@@ -41,6 +41,24 @@ const Page = () => {
     ForwardingOnly: forwardingOnly,
   };
 
+  const filters = [
+    {
+      filterName: "External Forwarding",
+      value: [{ id: "ForwardingType", value: "External" }],
+      type: "column",
+    },
+    {
+      filterName: "Internal Forwarding",
+      value: [{ id: "ForwardingType", value: "Internal" }],
+      type: "column",
+    },
+    {
+      filterName: "Both (External & Internal)",
+      value: [{ id: "ForwardingType", value: "Both" }],
+      type: "column",
+    },
+  ];
+
   const pageActions = [
     <Stack direction="row" spacing={2} alignItems="center" key="actions-stack">
       <CippQueueTracker
@@ -90,6 +108,7 @@ const Page = () => {
           queryKey={`mailbox-forwarding-${currentTenant}-${forwardingOnly}`}
           apiData={apiData}
           simpleColumns={columns}
+          filters={filters}
           cardButton={pageActions}
           offCanvas={null}
         />
