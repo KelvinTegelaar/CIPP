@@ -49,7 +49,7 @@
     "@tiptap/extension-heading": "^3.4.1",
     "@tiptap/extension-image": "^3.4.1",
     "@tiptap/extension-table": "^3.19.0",
-    "@tiptap/pm": "^3.4.1",
+    "@tiptap/pm": "^3.20.1",
     "@tiptap/react": "^3.4.1",
     "@tiptap/starter-kit": "^3.20.0",
     "@uiw/react-json-view": "^2.0.0-alpha.41",
