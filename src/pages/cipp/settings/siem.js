@@ -57,7 +57,9 @@ const Page = () => {
                   <strong>Always include a PartitionKey filter</strong> in your queries. Azure Table
                   Storage performs a full table scan without one, which is slow and expensive on
                   large tables. Use <code>eq</code> for a single day or <code>ge</code> /{" "}
-                  <code>le</code> for a date range.
+                  <code>le</code> for a date range.{" "}
+                  <strong>The date partition is in UTC time</strong>, so you may need to use a date
+                  range to account for timezone differences.
                 </Typography>
               </Alert>
 
