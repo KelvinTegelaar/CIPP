@@ -257,7 +257,7 @@ const CippStandardAccordion = ({
           initialConfigured[standardName] = isStandardConfigured(
             standardName,
             standard,
-            currentValues
+            currentValues,
           );
         }
       });
@@ -629,8 +629,8 @@ const CippStandardAccordion = ({
             const accordionTitle = templateDisplayName
               ? `${standard.label} - ${templateDisplayName}`
               : selectedTemplateName && _.get(selectedTemplateName, "label")
-              ? `${standard.label} - ${_.get(selectedTemplateName, "label")}`
-              : standard.label;
+                ? `${standard.label} - ${_.get(selectedTemplateName, "label")}`
+                : standard.label;
 
             // Get current values and check if they differ from saved values
             const current = _.get(watchedValues, standardName);
@@ -640,7 +640,7 @@ const CippStandardAccordion = ({
 
             // Check if all required fields are filled
             const requiredFieldsFilled = current
-              ? standard.addedComponent?.every((component) => {
+              ? (standard.addedComponent?.every((component) => {
                   // Always skip switches regardless of their required property
                   if (component.type === "switch") return true;
 
@@ -672,7 +672,7 @@ const CippStandardAccordion = ({
                       switch (compareType) {
                         case "valueEq":
                           conditionMet = conditionValue.some(
-                            (item) => item?.[propertyName] === compareValue
+                            (item) => item?.[propertyName] === compareValue,
                           );
                           break;
                         default:
@@ -700,7 +700,7 @@ const CippStandardAccordion = ({
 
                   // For other field types
                   return !!fieldValue;
-                }) ?? true
+                }) ?? true)
               : false;
 
             // ALWAYS require an action for all standards
@@ -710,7 +710,7 @@ const CippStandardAccordion = ({
             const hasRequiredComponents =
               standard.addedComponent &&
               standard.addedComponent.some(
-                (comp) => comp.type !== "switch" && comp.required !== false
+                (comp) => comp.type !== "switch" && comp.required !== false,
               );
 
             // Action is always required and must be an array with at least one element
@@ -946,7 +946,7 @@ const CippStandardAccordion = ({
                                   component={component}
                                   formControl={formControl}
                                 />
-                              )
+                              ),
                             )}
                           </>
                         )}
@@ -1004,7 +1004,7 @@ const CippStandardAccordion = ({
                                     component={component}
                                     formControl={formControl}
                                   />
-                                )
+                                ),
                               )}
                             </Grid>
                           </Grid>
