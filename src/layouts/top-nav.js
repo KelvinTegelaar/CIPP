@@ -64,6 +64,7 @@ export const TopNav = (props) => {
   const [flashLock, setFlashLock] = useState(false);
   const itemRefs = useRef({});
   const touchDragRef = useRef({ startIdx: null, overIdx: null });
+  const tenantSelectorRef = useRef(null);
 
   const handleBookmarkClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -148,7 +149,10 @@ export const TopNav = (props) => {
     if (index <= 0 || animatingPair) return;
     const el1 = itemRefs.current[index];
     const el2 = itemRefs.current[index - 1];
-    if (!el1 || !el2) { moveBookmarkUp(index); return; }
+    if (!el1 || !el2) {
+      moveBookmarkUp(index);
+      return;
+    }
     const distance = el1.getBoundingClientRect().top - el2.getBoundingClientRect().top;
     setAnimatingPair({ idx1: index, idx2: index - 1, offset1: -distance, offset2: distance });
     setTimeout(() => {
@@ -162,7 +166,10 @@ export const TopNav = (props) => {
     if (index >= bookmarks.length - 1 || animatingPair) return;
     const el1 = itemRefs.current[index];
     const el2 = itemRefs.current[index + 1];
-    if (!el1 || !el2) { moveBookmarkDown(index); return; }
+    if (!el1 || !el2) {
+      moveBookmarkDown(index);
+      return;
+    }
     const distance = el2.getBoundingClientRect().top - el1.getBoundingClientRect().top;
     setAnimatingPair({ idx1: index, idx2: index + 1, offset1: distance, offset2: -distance });
     setTimeout(() => {
@@ -188,9 +195,16 @@ export const TopNav = (props) => {
   const popoverOpen = Boolean(anchorEl);
   const popoverId = popoverOpen ? "bookmark-popover" : undefined;
 
+  const openSearch = useCallback(() => {
+    searchDialog.handleOpen();
+  }, [searchDialog.handleOpen]);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      if ((event.metaKey || event.ctrlKey) && event.altKey && event.key === "k") {
+        event.preventDefault();
+        tenantSelectorRef.current?.focus();
+      } else if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
         openSearch();
       }
@@ -199,11 +213,7 @@ export const TopNav = (props) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
-
-  const openSearch = () => {
-    searchDialog.handleOpen();
-  };
+  }, [openSearch]);
 
   return (
     <Box
@@ -249,7 +259,9 @@ export const TopNav = (props) => {
           >
             <Logo />
           </Box>
-          {!mdDown && <CippTenantSelector refreshButton={true} tenantButton={true} />}
+          {!mdDown && (
+            <CippTenantSelector ref={tenantSelectorRef} refreshButton={true} tenantButton={true} />
+          )}
           {mdDown && (
             <IconButton color="inherit" onClick={onNavOpen}>
               <SvgIcon color="action" fontSize="small">
@@ -331,7 +343,13 @@ export const TopNav = (props) => {
                           },
                         }),
                       }}
-                      title={sortOrder === "custom" ? "Custom order" : sortOrder === "asc" ? "A > Z" : "Z > A"}
+                      title={
+                        sortOrder === "custom"
+                          ? "Custom order"
+                          : sortOrder === "asc"
+                            ? "A > Z"
+                            : "Z > A"
+                      }
                     >
                       {sortOrder === "custom" && <SwapVertIcon fontSize="small" />}
                       {sortOrder === "asc" && <ArrowUpwardIcon fontSize="small" />}
@@ -341,7 +359,11 @@ export const TopNav = (props) => {
                       variant="body2"
                       sx={{ ml: 0.5, color: "text.secondary", fontSize: 12 }}
                     >
-                      {sortOrder === "custom" ? "Custom order" : sortOrder === "asc" ? "A > Z" : "Z > A"}
+                      {sortOrder === "custom"
+                        ? "Custom order"
+                        : sortOrder === "asc"
+                          ? "A > Z"
+                          : "Z > A"}
                     </Typography>
                   </ListItem>
                   <Divider />
@@ -355,21 +377,35 @@ export const TopNav = (props) => {
                     displayBookmarks.map((bookmark, idx) => (
                       <ListItem
                         key={bookmark.path}
-                        ref={(el) => { itemRefs.current[idx] = el; }}
+                        ref={(el) => {
+                          itemRefs.current[idx] = el;
+                        }}
                         data-bookmark-index={idx}
                         draggable={reorderMode === "drag" && sortOrder === "custom" && !locked}
-                        {...(reorderMode === "drag" ? {
-                          onDragStart: (e) => {
-                            if (locked) { e.preventDefault(); triggerLockFlash(); return; }
-                            if (sortOrder !== "custom") { e.preventDefault(); triggerSortFlash(); return; }
-                            handleDragStart(idx);
-                          },
-                          onDragEnd: handleDragEnd,
-                          ...(sortOrder === "custom" && !locked ? {
-                            onDragOver: (e) => handleDragOver(e, idx),
-                            onDrop: (e) => handleDrop(e, idx),
-                          } : {}),
-                        } : {})}
+                        {...(reorderMode === "drag"
+                          ? {
+                              onDragStart: (e) => {
+                                if (locked) {
+                                  e.preventDefault();
+                                  triggerLockFlash();
+                                  return;
+                                }
+                                if (sortOrder !== "custom") {
+                                  e.preventDefault();
+                                  triggerSortFlash();
+                                  return;
+                                }
+                                handleDragStart(idx);
+                              },
+                              onDragEnd: handleDragEnd,
+                              ...(sortOrder === "custom" && !locked
+                                ? {
+                                    onDragOver: (e) => handleDragOver(e, idx),
+                                    onDrop: (e) => handleDrop(e, idx),
+                                  }
+                                : {}),
+                            }
+                          : {})}
                         sx={{
                           color: "inherit",
                           display: "flex",
@@ -377,25 +413,34 @@ export const TopNav = (props) => {
                           "&:hover .bookmark-controls": {
                             opacity: 1,
                           },
-                          ...(sortOrder === "custom" && reorderMode === "drag" && dragIndex === idx && {
-                            opacity: 0.4,
-                          }),
-                          ...(sortOrder === "custom" && reorderMode === "drag" && dragOverIndex === idx && dragIndex !== idx && {
-                            borderTop: "2px solid",
-                            borderColor: "primary.main",
-                          }),
-                          ...(animatingPair && (animatingPair.idx1 === idx || animatingPair.idx2 === idx) && {
-                            transform: `translateY(${animatingPair.idx1 === idx ? animatingPair.offset1 : animatingPair.offset2}px)`,
-                            transition: 'transform 250ms ease-in-out',
-                            position: 'relative',
-                            zIndex: animatingPair.idx1 === idx ? 1 : 0,
-                          }),
+                          ...(sortOrder === "custom" &&
+                            reorderMode === "drag" &&
+                            dragIndex === idx && {
+                              opacity: 0.4,
+                            }),
+                          ...(sortOrder === "custom" &&
+                            reorderMode === "drag" &&
+                            dragOverIndex === idx &&
+                            dragIndex !== idx && {
+                              borderTop: "2px solid",
+                              borderColor: "primary.main",
+                            }),
+                          ...(animatingPair &&
+                            (animatingPair.idx1 === idx || animatingPair.idx2 === idx) && {
+                              transform: `translateY(${animatingPair.idx1 === idx ? animatingPair.offset1 : animatingPair.offset2}px)`,
+                              transition: "transform 250ms ease-in-out",
+                              position: "relative",
+                              zIndex: animatingPair.idx1 === idx ? 1 : 0,
+                            }),
                         }}
                       >
                         {reorderMode === "drag" && !locked && (
                           <Box
                             onTouchStart={() => {
-                              if (sortOrder !== "custom") { triggerSortFlash(); return; }
+                              if (sortOrder !== "custom") {
+                                triggerSortFlash();
+                                return;
+                              }
                               touchDragRef.current.startIdx = idx;
                               setDragIndex(idx);
                             }}
@@ -409,7 +454,11 @@ export const TopNav = (props) => {
                               const li = el?.closest("[data-bookmark-index]");
                               if (li) {
                                 const overIdx = parseInt(li.dataset.bookmarkIndex, 10);
-                                if (!isNaN(overIdx) && overIdx >= 0 && overIdx < (settings.bookmarks || []).length) {
+                                if (
+                                  !isNaN(overIdx) &&
+                                  overIdx >= 0 &&
+                                  overIdx < (settings.bookmarks || []).length
+                                ) {
                                   touchDragRef.current.overIdx = overIdx;
                                   setDragOverIndex(overIdx);
                                 }
@@ -470,7 +519,10 @@ export const TopNav = (props) => {
                                 size="small"
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  if (locked) { triggerLockFlash(); return; }
+                                  if (locked) {
+                                    triggerLockFlash();
+                                    return;
+                                  }
                                   sortOrder === "custom" ? animatedMoveUp(idx) : triggerSortFlash();
                                 }}
                                 disabled={sortOrder === "custom" && idx === 0}
@@ -482,10 +534,17 @@ export const TopNav = (props) => {
                                 size="small"
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  if (locked) { triggerLockFlash(); return; }
-                                  sortOrder === "custom" ? animatedMoveDown(idx) : triggerSortFlash();
+                                  if (locked) {
+                                    triggerLockFlash();
+                                    return;
+                                  }
+                                  sortOrder === "custom"
+                                    ? animatedMoveDown(idx)
+                                    : triggerSortFlash();
                                 }}
-                                disabled={sortOrder === "custom" && idx === displayBookmarks.length - 1}
+                                disabled={
+                                  sortOrder === "custom" && idx === displayBookmarks.length - 1
+                                }
                                 sx={{ opacity: sortOrder !== "custom" || locked ? 0.4 : 1 }}
                               >
                                 <KeyboardArrowDownIcon fontSize="small" />
@@ -497,7 +556,10 @@ export const TopNav = (props) => {
                               size="small"
                               onClick={(e) => {
                                 e.preventDefault();
-                                if (locked) { triggerLockFlash(); return; }
+                                if (locked) {
+                                  triggerLockFlash();
+                                  return;
+                                }
                                 removeBookmark(bookmark.path);
                               }}
                               sx={{ ...(locked && { opacity: 0.4 }) }}

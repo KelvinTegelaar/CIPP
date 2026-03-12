@@ -100,25 +100,52 @@ const Page = () => {
   });
 
   // Watch navigation settings and apply immediately (device-local, no server save needed)
-  const watchedBookmarkSidebar = useWatch({ control: formcontrol.control, name: "bookmarkSidebar" });
-  const watchedBookmarkPopover = useWatch({ control: formcontrol.control, name: "bookmarkPopover" });
-  const watchedBookmarkReorderMode = useWatch({ control: formcontrol.control, name: "bookmarkReorderMode" });
+  const watchedBookmarkSidebar = useWatch({
+    control: formcontrol.control,
+    name: "bookmarkSidebar",
+  });
+  const watchedBookmarkPopover = useWatch({
+    control: formcontrol.control,
+    name: "bookmarkPopover",
+  });
+  const watchedBookmarkReorderMode = useWatch({
+    control: formcontrol.control,
+    name: "bookmarkReorderMode",
+  });
+  const watchedCompactNav = useWatch({ control: formcontrol.control, name: "compactNav" });
 
   useEffect(() => {
     const updates = {};
-    if (watchedBookmarkSidebar !== undefined && watchedBookmarkSidebar !== settings.bookmarkSidebar) {
+    if (
+      watchedBookmarkSidebar !== undefined &&
+      watchedBookmarkSidebar !== settings.bookmarkSidebar
+    ) {
       updates.bookmarkSidebar = watchedBookmarkSidebar;
     }
-    if (watchedBookmarkPopover !== undefined && watchedBookmarkPopover !== settings.bookmarkPopover) {
+    if (
+      watchedBookmarkPopover !== undefined &&
+      watchedBookmarkPopover !== settings.bookmarkPopover
+    ) {
       updates.bookmarkPopover = watchedBookmarkPopover;
     }
-    if (watchedBookmarkReorderMode !== undefined && watchedBookmarkReorderMode !== settings.bookmarkReorderMode) {
+    if (
+      watchedBookmarkReorderMode !== undefined &&
+      watchedBookmarkReorderMode !== settings.bookmarkReorderMode
+    ) {
       updates.bookmarkReorderMode = watchedBookmarkReorderMode;
+    }
+    if (watchedCompactNav !== undefined && watchedCompactNav !== settings.compactNav) {
+      updates.compactNav = watchedCompactNav;
     }
     if (Object.keys(updates).length > 0) {
       settings.handleUpdate(updates);
     }
-  }, [watchedBookmarkSidebar, watchedBookmarkPopover, watchedBookmarkReorderMode]);
+  }, [
+    watchedBookmarkSidebar,
+    watchedBookmarkPopover,
+    watchedBookmarkReorderMode,
+    watchedCompactNav,
+  ]);
 
   // Update form when initial user type is determined
   useEffect(() => {
@@ -369,6 +396,16 @@ const Page = () => {
                                 { value: "arrows", label: "Arrow Buttons" },
                                 { value: "drag", label: "Drag and Drop" },
                               ]}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Compact Navigation",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="compactNav"
+                              formControl={formcontrol}
                             />
                           ),
                         },

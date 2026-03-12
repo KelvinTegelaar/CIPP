@@ -1,14 +1,6 @@
 import { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import NextLink from "next/link";
-import {
-  Box,
-  ButtonBase,
-  Collapse,
-  IconButton,
-  Stack,
-  SvgIcon,
-  Typography,
-} from "@mui/material";
+import { Box, ButtonBase, Collapse, IconButton, Stack, SvgIcon, Typography } from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -25,6 +17,8 @@ import { useSettings } from "../hooks/use-settings";
 
 export const SideNavBookmarks = ({ collapse = false }) => {
   const settings = useSettings();
+  const compactNav = settings.compactNav ?? false;
+  const navItemPy = compactNav ? "6px" : "12px";
   const [open, setOpen] = useState(settings.bookmarksOpen ?? false);
   const reorderMode = settings.bookmarkReorderMode || "arrows";
   const locked = settings.bookmarkLocked ?? false;
@@ -54,7 +48,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
       updatedBookmarks[index - 1] = temp;
       settings.handleUpdate({ bookmarks: updatedBookmarks });
     },
-    [settings]
+    [settings],
   );
 
   const moveBookmarkDown = useCallback(
@@ -67,7 +61,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
       updatedBookmarks[index + 1] = temp;
       settings.handleUpdate({ bookmarks: updatedBookmarks });
     },
-    [settings]
+    [settings],
   );
 
   const removeBookmark = useCallback(
@@ -79,7 +73,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
         settings.handleUpdate({ bookmarks: updatedBookmarks });
       }
     },
-    [settings]
+    [settings],
   );
 
   const animatedMoveUp = useCallback(
@@ -87,7 +81,10 @@ export const SideNavBookmarks = ({ collapse = false }) => {
       if (index <= 0 || animatingPair) return;
       const el1 = itemRefs.current[index];
       const el2 = itemRefs.current[index - 1];
-      if (!el1 || !el2) { moveBookmarkUp(index); return; }
+      if (!el1 || !el2) {
+        moveBookmarkUp(index);
+        return;
+      }
       const distance = el1.getBoundingClientRect().top - el2.getBoundingClientRect().top;
       setAnimatingPair({ idx1: index, idx2: index - 1, offset1: -distance, offset2: distance });
       setTimeout(() => {
@@ -95,7 +92,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
         setAnimatingPair(null);
       }, 250);
     },
-    [animatingPair, moveBookmarkUp]
+    [animatingPair, moveBookmarkUp],
   );
 
   const animatedMoveDown = useCallback(
@@ -104,7 +101,10 @@ export const SideNavBookmarks = ({ collapse = false }) => {
       if (index >= bookmarks.length - 1 || animatingPair) return;
       const el1 = itemRefs.current[index];
       const el2 = itemRefs.current[index + 1];
-      if (!el1 || !el2) { moveBookmarkDown(index); return; }
+      if (!el1 || !el2) {
+        moveBookmarkDown(index);
+        return;
+      }
       const distance = el2.getBoundingClientRect().top - el1.getBoundingClientRect().top;
       setAnimatingPair({ idx1: index, idx2: index + 1, offset1: distance, offset2: -distance });
       setTimeout(() => {
@@ -112,7 +112,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
         setAnimatingPair(null);
       }, 250);
     },
-    [animatingPair, settings.bookmarks, moveBookmarkDown]
+    [animatingPair, settings.bookmarks, moveBookmarkDown],
   );
 
   const triggerSortFlash = useCallback(() => {
@@ -149,11 +149,12 @@ export const SideNavBookmarks = ({ collapse = false }) => {
       const items = [...(settings.bookmarks || [])];
       const [reordered] = items.splice(dragIndex, 1);
       items.splice(dropIndex, 0, reordered);
-      settings.handleUpdate({ bookmarks: items });
+      settings.handleUpdate({ bookmarks: items, bookmarkSortOrder: "custom" });
+      setSortOrder("custom");
       setDragIndex(null);
       setDragOverIndex(null);
     },
-    [dragIndex, settings]
+    [dragIndex, settings],
   );
 
   const handleDragEnd = useCallback(() => {
@@ -235,7 +236,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
               size="small"
               onClick={handleToggleLock}
               sx={{
-                color: locked ? "warning.main" : "neutral.500",
+                color: locked ? "neutral.500" : "warning.main",
                 p: "2px",
                 transition: "opacity 250ms ease-in-out",
                 ...(flashLock && {
@@ -271,7 +272,9 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                   },
                 }),
               }}
-              title={sortOrder === "custom" ? "Custom order" : sortOrder === "asc" ? "A > Z" : "Z > A"}
+              title={
+                sortOrder === "custom" ? "Custom order" : sortOrder === "asc" ? "A > Z" : "Z > A"
+              }
             >
               {sortOrder === "custom" && <SwapVertIcon sx={{ fontSize: 16 }} />}
               {sortOrder === "asc" && <ArrowUpwardIcon sx={{ fontSize: 16 }} />}
@@ -300,7 +303,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
         </Box>
       </Stack>
       <Collapse in={!collapse && open} unmountOnExit>
-        <Stack component="ul" spacing={0.5} sx={{ listStyle: "none", m: 0, p: 0 }}>
+        <Stack component="ul" spacing={0} sx={{ listStyle: "none", m: 0, p: 0 }}>
           {displayBookmarks.length === 0 ? (
             <li>
               <Typography
@@ -320,28 +323,39 @@ export const SideNavBookmarks = ({ collapse = false }) => {
             displayBookmarks.map((bookmark, idx) => (
               <li
                 key={bookmark.path}
-                ref={(el) => { itemRefs.current[idx] = el; }}
+                ref={(el) => {
+                  itemRefs.current[idx] = el;
+                }}
                 data-bookmark-index={idx}
-                draggable={reorderMode === "drag" && sortOrder === "custom" && !locked}
-                {...(reorderMode === "drag" ? {
-                  onDragStart: (e) => {
-                    if (locked) { e.preventDefault(); triggerLockFlash(); return; }
-                    if (sortOrder !== "custom") { e.preventDefault(); triggerSortFlash(); return; }
-                    handleDragStart(idx);
-                  },
-                  onDragEnd: handleDragEnd,
-                  ...(sortOrder === "custom" && !locked ? {
-                    onDragOver: (e) => handleDragOver(e, idx),
-                    onDrop: (e) => handleDrop(e, idx),
-                  } : {}),
-                } : {})}
+                draggable={reorderMode === "drag" && !locked}
+                {...(reorderMode === "drag"
+                  ? {
+                      onDragStart: (e) => {
+                        if (locked) {
+                          e.preventDefault();
+                          triggerLockFlash();
+                          return;
+                        }
+                        handleDragStart(idx);
+                      },
+                      onDragEnd: handleDragEnd,
+                      ...(!locked
+                        ? {
+                            onDragOver: (e) => handleDragOver(e, idx),
+                            onDrop: (e) => handleDrop(e, idx),
+                          }
+                        : {}),
+                    }
+                  : {})}
                 style={{
-                  ...(animatingPair && (animatingPair.idx1 === idx || animatingPair.idx2 === idx) ? {
-                    transform: `translateY(${animatingPair.idx1 === idx ? animatingPair.offset1 : animatingPair.offset2}px)`,
-                    transition: 'transform 250ms ease-in-out',
-                    position: 'relative',
-                    zIndex: animatingPair.idx1 === idx ? 1 : 0,
-                  } : {}),
+                  ...(animatingPair && (animatingPair.idx1 === idx || animatingPair.idx2 === idx)
+                    ? {
+                        transform: `translateY(${animatingPair.idx1 === idx ? animatingPair.offset1 : animatingPair.offset2}px)`,
+                        transition: "transform 250ms ease-in-out",
+                        position: "relative",
+                        zIndex: animatingPair.idx1 === idx ? 1 : 0,
+                      }
+                    : {}),
                 }}
               >
                 <Stack
@@ -349,25 +363,31 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                   alignItems="center"
                   sx={{
                     position: "relative",
-                    pl: "42px",
+                    pl: "6px",
                     pr: "8px",
-                    py: "2px",
                     "&:hover .bookmark-controls": {
                       opacity: 1,
                     },
-                    ...(sortOrder === "custom" && reorderMode === "drag" && dragIndex === idx && {
-                      opacity: 0.4,
-                    }),
-                    ...(sortOrder === "custom" && reorderMode === "drag" && dragOverIndex === idx && dragIndex !== idx && {
-                      borderTop: "2px solid",
-                      borderColor: "primary.main",
-                    }),
+                    ...(reorderMode === "drag" &&
+                      dragIndex === idx && {
+                        opacity: 0.4,
+                      }),
+                    ...(reorderMode === "drag" &&
+                      dragOverIndex === idx &&
+                      dragIndex !== idx && {
+                        borderTop: "2px solid",
+                        borderColor: "primary.main",
+                      }),
                   }}
                 >
                   {reorderMode === "drag" && !locked && (
                     <Box
+                      onClick={(e) => e.preventDefault()}
                       onTouchStart={() => {
-                        if (sortOrder !== "custom") { triggerSortFlash(); return; }
+                        if (locked) {
+                          triggerLockFlash();
+                          return;
+                        }
                         touchDragRef.current.startIdx = idx;
                         setDragIndex(idx);
                       }}
@@ -381,7 +401,11 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                         const li = el?.closest("[data-bookmark-index]");
                         if (li) {
                           const overIdx = parseInt(li.dataset.bookmarkIndex, 10);
-                          if (!isNaN(overIdx) && overIdx >= 0 && overIdx < (settings.bookmarks || []).length) {
+                          if (
+                            !isNaN(overIdx) &&
+                            overIdx >= 0 &&
+                            overIdx < (settings.bookmarks || []).length
+                          ) {
                             touchDragRef.current.overIdx = overIdx;
                             setDragOverIndex(overIdx);
                           }
@@ -393,7 +417,8 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                           const items = [...(settings.bookmarks || [])];
                           const [reordered] = items.splice(startIdx, 1);
                           items.splice(overIdx, 0, reordered);
-                          settings.handleUpdate({ bookmarks: items });
+                          settings.handleUpdate({ bookmarks: items, bookmarkSortOrder: "custom" });
+                          setSortOrder("custom");
                         }
                         touchDragRef.current = { startIdx: null, overIdx: null };
                         setDragIndex(null);
@@ -401,11 +426,14 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                       }}
                       sx={{
                         touchAction: "none",
+                        position: "absolute",
+                        left: "6px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
                         display: "flex",
                         alignItems: "center",
                         color: "neutral.500",
-                        cursor: sortOrder === "custom" ? "grab" : "default",
-                        mr: 0.5,
+                        cursor: "grab",
                       }}
                     >
                       <DragIndicatorIcon sx={{ fontSize: 16 }} />
@@ -422,7 +450,8 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                       fontSize: 13,
                       fontWeight: 500,
                       justifyContent: "flex-start",
-                      py: "6px",
+                      pl: "36px",
+                      py: navItemPy,
                       textAlign: "left",
                       whiteSpace: "nowrap",
                       flexGrow: 1,
@@ -435,6 +464,9 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                         color: "text.secondary",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        minHeight: "24px",
+                        display: "flex",
+                        alignItems: "center",
                       }}
                     >
                       {bookmark.label}
@@ -456,13 +488,16 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                       },
                     }}
                   >
-                    {reorderMode === "arrows" && (
+                    {reorderMode === "arrows" && !locked && (
                       <>
                         <IconButton
                           size="small"
                           onClick={(e) => {
                             e.preventDefault();
-                            if (locked) { triggerLockFlash(); return; }
+                            if (locked) {
+                              triggerLockFlash();
+                              return;
+                            }
                             sortOrder === "custom" ? animatedMoveUp(idx) : triggerSortFlash();
                           }}
                           disabled={sortOrder === "custom" && idx === 0}
@@ -474,7 +509,10 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                           size="small"
                           onClick={(e) => {
                             e.preventDefault();
-                            if (locked) { triggerLockFlash(); return; }
+                            if (locked) {
+                              triggerLockFlash();
+                              return;
+                            }
                             sortOrder === "custom" ? animatedMoveDown(idx) : triggerSortFlash();
                           }}
                           disabled={sortOrder === "custom" && idx === displayBookmarks.length - 1}
@@ -484,19 +522,16 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                         </IconButton>
                       </>
                     )}
-                    {!(reorderMode === "drag" && locked) && (
-                      <IconButton
-                        size="small"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (locked) { triggerLockFlash(); return; }
-                          removeBookmark(bookmark.path);
-                        }}
-                        sx={{ p: "2px", ...(locked && { opacity: 0.4 }) }}
-                      >
-                        <CloseIcon sx={{ fontSize: 16 }} />
-                      </IconButton>
-                    )}
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        removeBookmark(bookmark.path);
+                      }}
+                      sx={{ p: "2px" }}
+                    >
+                      <CloseIcon sx={{ fontSize: 16 }} />
+                    </IconButton>
                   </Stack>
                 </Stack>
               </li>

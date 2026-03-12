@@ -236,6 +236,7 @@ export const Layout = (props) => {
         var bookmarkLocked = settings.bookmarkLocked;
         var bookmarkSortOrder = settings.bookmarkSortOrder;
         var bookmarksOpen = settings.bookmarksOpen;
+        var compactNav = settings.compactNav;
 
         settings.handleUpdate({
           ...userSettingsAPI.data,
@@ -246,6 +247,7 @@ export const Layout = (props) => {
           bookmarkLocked,
           bookmarkSortOrder,
           bookmarksOpen,
+          compactNav,
           showDevtools,
         });
 
