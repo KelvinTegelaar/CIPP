@@ -41,7 +41,7 @@ jobs:
       # Update version.json with commit hash
       - name: Update version.json
         run: |
-          VERSION=$(jq -r '.version' public/version.json')
+          VERSION=$(jq -r '.version' public/version.json)
           SHORT_SHA="${GITHUB_SHA::7}"
           echo "{\"version\": \"${VERSION}\", \"commit\": \"${SHORT_SHA}\"}" > out/version.json
 
