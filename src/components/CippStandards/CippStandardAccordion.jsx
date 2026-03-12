@@ -271,6 +271,48 @@ const CippStandardAccordion = ({
     }
   }, [watchedValues, selectedStandards, editMode]);
 
+  // Sync internal state when selectedStandards keys change (e.g., after re-indexing on removal)
+  useEffect(() => {
+    const currentKeys = Object.keys(selectedStandards);
+    const stateKeys = Object.keys(savedValues);
+    if (stateKeys.length === 0) return;
+
+    const currentSet = new Set(currentKeys);
+    const stateSet = new Set(stateKeys);
+
+    const removedKeys = stateKeys.filter((k) => !currentSet.has(k));
+    const addedKeys = currentKeys.filter((k) => !stateSet.has(k));
+
+    if (removedKeys.length > 0 || addedKeys.length > 0) {
+      setSavedValues((prev) => {
+        const updated = { ...prev };
+        removedKeys.forEach((k) => delete updated[k]);
+        addedKeys.forEach((k) => {
+          const currentValues = _.get(watchedValues, k);
+          if (currentValues) {
+            updated[k] = _.cloneDeep(currentValues);
+          }
+        });
+        return updated;
+      });
+
+      setConfiguredState((prev) => {
+        const updated = { ...prev };
+        removedKeys.forEach((k) => delete updated[k]);
+        addedKeys.forEach((k) => {
+          const baseStandardName = k.split("[")[0];
+          const standard = providedStandards.find((s) => s.name === baseStandardName);
+          const currentValues = _.get(watchedValues, k);
+          if (standard && currentValues) {
+            updated[k] = isStandardConfigured(k, standard, currentValues);
+          }
+        });
+        return updated;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStandards]);
+
   // Save changes for a standard
   const handleSave = (standardName, standard, current) => {
     // Clone the current values to avoid reference issues
