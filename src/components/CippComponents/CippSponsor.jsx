@@ -82,7 +82,7 @@ export const CippSponsor = () => {
           justifyContent: "center",
           alignItems: "center",
           height: "55px",
-          mb: 3,
+          mb: 1,
         }}
       >
         <Tooltip title={randomimg.tooltip} arrow>
@@ -93,7 +93,7 @@ export const CippSponsor = () => {
               cursor: "pointer",
               maxHeight: "50px",
               width: "auto",
-              maxWidth: "100px",
+              maxWidth: "150px",
             }}
             onClick={() => window.open(randomimg.link)}
           />
