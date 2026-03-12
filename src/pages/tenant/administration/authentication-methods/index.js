@@ -82,7 +82,7 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["id", "state", "includeTargets", "excludeTargets"],
+    extendedInfoFields: ["id", "displayName", "state", "includeTargets", "excludeTargets"],
     actions: actions,
   };
 
