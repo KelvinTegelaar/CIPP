@@ -72,7 +72,7 @@ export const CippSponsor = () => {
       <Typography
         color="text.secondary"
         variant="caption"
-        sx={{ lineHeight: 4, textAlign: "center" }}
+        sx={{ lineHeight: 2, textAlign: "center", display: "block", mt: 2 }}
       >
         This application is sponsored by
       </Typography>
@@ -82,6 +82,7 @@ export const CippSponsor = () => {
           justifyContent: "center",
           alignItems: "center",
           height: "55px",
+          mb: 1,
         }}
       >
         <Tooltip title={randomimg.tooltip} arrow>
@@ -92,7 +93,7 @@ export const CippSponsor = () => {
               cursor: "pointer",
               maxHeight: "50px",
               width: "auto",
-              maxWidth: "100px",
+              maxWidth: "150px",
             }}
             onClick={() => window.open(randomimg.link)}
           />
