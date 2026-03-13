@@ -24,7 +24,7 @@ export const SideNavItem = (props) => {
 
   const [open, setOpen] = useState(openImmediately);
   const [hovered, setHovered] = useState(false);
-  const { handleUpdate, bookmarks = [] } = useSettings();
+  const { handleUpdate, bookmarks = [], compactNav = false } = useSettings();
   const isBookmarked = bookmarks.some((bookmark) => bookmark.path === path);
 
   const handleToggle = useCallback(() => {
@@ -46,6 +46,7 @@ export const SideNavItem = (props) => {
   // Dynamic spacing and font sizing based on depth
   const indent = depth > 0 ? depth * 1.5 : 1; // adjust multiplication factor as needed
   const fontSize = depth === 0 ? 14 : 13; // top-level 14, nested 13
+  const navItemPy = compactNav ? "6px" : "12px";
 
   if (children) {
     return (
@@ -67,7 +68,7 @@ export const SideNavItem = (props) => {
               fontWeight: 500,
               justifyContent: "flex-start",
               px: `${indent * 6}px`,
-              py: "12px",
+              py: navItemPy,
               textAlign: "left",
               whiteSpace: "nowrap",
               width: "100%",
@@ -166,9 +167,10 @@ export const SideNavItem = (props) => {
             textAlign: "left",
             whiteSpace: "nowrap",
             width: "calc(100% - 20px)", // Adjust the width to leave space for the bookmark icon
-            py: "12px",
+            py: navItemPy,
           }}
           {...linkProps}
+          onClick={(e) => e.currentTarget.blur()}
         >
           <Box
             component="span"
