@@ -110,6 +110,13 @@ Wait for the restore to complete—CIPP will import your original configuration 
 
 ***
 
+### 6. (Optional) Function Offloading
+
+If you previously had offloading enabled in your Self-Hosted environment, you likely copied this setting over to hosted during the restore step. If this has occurred, you will notice that certain background tasks will not run until you take action.  You have a couple options for how to handle this:
+
+* **(Recommended)** Submit a ticket to request offloading in your new hosted environment. This is the best option for performance.
+* Disable offloading in CIPP > Advanced > Super Admin > Function Offloading
+
 ### That’s It!
 
 Your instance and settings now live in the fully managed, **CyberDrain-hosted** version of CIPP.
