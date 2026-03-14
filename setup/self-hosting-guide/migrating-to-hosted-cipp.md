@@ -117,6 +117,8 @@ If you previously had offloading enabled in your Self-Hosted environment, you li
 * **(Recommended)** Submit a ticket to request offloading in your new hosted environment. This is the best option for performance.
 * Disable offloading in CIPP > Advanced > Super Admin > Function Offloading
 
+***
+
 ### That’s It!
 
 Your instance and settings now live in the fully managed, **CyberDrain-hosted** version of CIPP.
