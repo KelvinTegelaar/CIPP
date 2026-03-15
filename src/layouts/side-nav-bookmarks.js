@@ -20,6 +20,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
   const settings = useSettings();
   const compactNav = settings.compactNav ?? false;
   const navItemPy = compactNav ? "6px" : "12px";
+  const emptyStatePy = compactNav ? "4px" : "8px";
   const { bookmarks, setBookmarks } = useUserBookmarks();
   const [open, setOpen] = useState(settings.bookmarksOpen ?? false);
   const reorderMode = settings.bookmarkReorderMode || "arrows";
@@ -189,7 +190,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
             fontWeight: 500,
             justifyContent: "flex-start",
             px: "6px",
-            py: "12px",
+            py: navItemPy,
             textAlign: "left",
             whiteSpace: "nowrap",
             width: "100%",
@@ -309,7 +310,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                 sx={{
                   pl: "42px",
                   pr: "8px",
-                  py: "8px",
+                  py: emptyStatePy,
                   color: "text.secondary",
                   fontSize: 13,
                 }}
