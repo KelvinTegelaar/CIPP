@@ -14,11 +14,13 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import ChevronRightIcon from "@heroicons/react/24/outline/ChevronRightIcon";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { useSettings } from "../hooks/use-settings";
+import { useUserBookmarks } from "../hooks/use-user-bookmarks";
 
 export const SideNavBookmarks = ({ collapse = false }) => {
   const settings = useSettings();
   const compactNav = settings.compactNav ?? false;
   const navItemPy = compactNav ? "6px" : "12px";
+  const { bookmarks, setBookmarks } = useUserBookmarks();
   const [open, setOpen] = useState(settings.bookmarksOpen ?? false);
   const reorderMode = settings.bookmarkReorderMode || "arrows";
   const locked = settings.bookmarkLocked ?? false;
@@ -42,38 +44,37 @@ export const SideNavBookmarks = ({ collapse = false }) => {
   const moveBookmarkUp = useCallback(
     (index) => {
       if (index <= 0) return;
-      const updatedBookmarks = [...(settings.bookmarks || [])];
+      const updatedBookmarks = [...bookmarks];
       const temp = updatedBookmarks[index];
       updatedBookmarks[index] = updatedBookmarks[index - 1];
       updatedBookmarks[index - 1] = temp;
-      settings.handleUpdate({ bookmarks: updatedBookmarks });
+      setBookmarks(updatedBookmarks);
     },
-    [settings],
+    [bookmarks, setBookmarks]
   );
 
   const moveBookmarkDown = useCallback(
     (index) => {
-      const bookmarks = settings.bookmarks || [];
       if (index >= bookmarks.length - 1) return;
       const updatedBookmarks = [...bookmarks];
       const temp = updatedBookmarks[index];
       updatedBookmarks[index] = updatedBookmarks[index + 1];
       updatedBookmarks[index + 1] = temp;
-      settings.handleUpdate({ bookmarks: updatedBookmarks });
+      setBookmarks(updatedBookmarks);
     },
-    [settings],
+    [bookmarks, setBookmarks]
   );
 
   const removeBookmark = useCallback(
     (path) => {
-      const updatedBookmarks = [...(settings.bookmarks || [])];
+      const updatedBookmarks = [...bookmarks];
       const origIdx = updatedBookmarks.findIndex((b) => b.path === path);
       if (origIdx !== -1) {
         updatedBookmarks.splice(origIdx, 1);
-        settings.handleUpdate({ bookmarks: updatedBookmarks });
+        setBookmarks(updatedBookmarks);
       }
     },
-    [settings],
+    [bookmarks, setBookmarks]
   );
 
   const animatedMoveUp = useCallback(
@@ -97,7 +98,6 @@ export const SideNavBookmarks = ({ collapse = false }) => {
 
   const animatedMoveDown = useCallback(
     (index) => {
-      const bookmarks = settings.bookmarks || [];
       if (index >= bookmarks.length - 1 || animatingPair) return;
       const el1 = itemRefs.current[index];
       const el2 = itemRefs.current[index + 1];
@@ -112,7 +112,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
         setAnimatingPair(null);
       }, 250);
     },
-    [animatingPair, settings.bookmarks, moveBookmarkDown],
+    [animatingPair, bookmarks, moveBookmarkDown]
   );
 
   const triggerSortFlash = useCallback(() => {
@@ -146,15 +146,14 @@ export const SideNavBookmarks = ({ collapse = false }) => {
         setDragOverIndex(null);
         return;
       }
-      const items = [...(settings.bookmarks || [])];
+      const items = [...bookmarks];
       const [reordered] = items.splice(dragIndex, 1);
       items.splice(dropIndex, 0, reordered);
-      settings.handleUpdate({ bookmarks: items, bookmarkSortOrder: "custom" });
-      setSortOrder("custom");
+      setBookmarks(items);
       setDragIndex(null);
       setDragOverIndex(null);
     },
-    [dragIndex, settings],
+    [dragIndex, bookmarks, setBookmarks]
   );
 
   const handleDragEnd = useCallback(() => {
@@ -169,13 +168,12 @@ export const SideNavBookmarks = ({ collapse = false }) => {
   }, [sortOrder, settings]);
 
   const displayBookmarks = useMemo(() => {
-    const bookmarks = settings.bookmarks || [];
     if (sortOrder === "custom") return bookmarks;
     return [...bookmarks].sort((a, b) => {
       const cmp = (a.label || "").localeCompare(b.label || "");
       return sortOrder === "asc" ? cmp : -cmp;
     });
-  }, [settings.bookmarks, sortOrder]);
+  }, [bookmarks, sortOrder]);
 
   return (
     <li>
@@ -401,11 +399,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                         const li = el?.closest("[data-bookmark-index]");
                         if (li) {
                           const overIdx = parseInt(li.dataset.bookmarkIndex, 10);
-                          if (
-                            !isNaN(overIdx) &&
-                            overIdx >= 0 &&
-                            overIdx < (settings.bookmarks || []).length
-                          ) {
+                          if (!isNaN(overIdx) && overIdx >= 0 && overIdx < bookmarks.length) {
                             touchDragRef.current.overIdx = overIdx;
                             setDragOverIndex(overIdx);
                           }
@@ -414,11 +408,10 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                       onTouchEnd={() => {
                         const { startIdx, overIdx } = touchDragRef.current;
                         if (startIdx !== null && overIdx !== null && startIdx !== overIdx) {
-                          const items = [...(settings.bookmarks || [])];
+                          const items = [...bookmarks];
                           const [reordered] = items.splice(startIdx, 1);
                           items.splice(overIdx, 0, reordered);
-                          settings.handleUpdate({ bookmarks: items, bookmarkSortOrder: "custom" });
-                          setSortOrder("custom");
+                          setBookmarks(items);
                         }
                         touchDragRef.current = { startIdx: null, overIdx: null };
                         setDragIndex(null);
