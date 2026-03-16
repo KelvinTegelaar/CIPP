@@ -46,10 +46,12 @@ period. Minimum retention is 7 days, maximum is 365 days, default is 90 days.
 
 <summary>Password Style</summary>
 
-Choose the default password style you would like to use for new user creation and password resets.
+Configure password generation settings including type, length, character sets, and passphrase options.
 
 * **Classic:** This is the usual combination of letters and symbols to meet outdated complexity requirements
 * **Correct-Battery-Horse:** This sets a passphrase of four random words connected by hyphens. These can often be easier to remember and type for users.
+
+Click `Configure` to go to the  page to change to your desired settings.
 
 </details>
 

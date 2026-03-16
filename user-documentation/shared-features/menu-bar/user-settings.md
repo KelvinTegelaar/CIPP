@@ -17,6 +17,7 @@ This section will allow you to alter the display format for bookmarks.
 * **Show Sidebar Bookmarks:** This will enable bookmarks in the sidebar
 * **Show Popover Bookmarks:** This will enable bookmarks in the menu bar
 * **Bookmark Reorder Mode:** "Arrow Buttons" will make it so you click arrows to sort bookmarks while "Drag and Drop" is as labeled.
+* **Compact Navigation:** This will change the left-hand menu into a denser display.&#x20;
 
 ## Offboarding Defaults
 

@@ -311,6 +311,8 @@
     * [Licenses](user-documentation/cipp/settings/licenses.md)
     * [CIPP Backup](user-documentation/cipp/settings/backup.md)
     * [Features](user-documentation/cipp/settings/features.md)
+    * [SIEM](user-documentation/cipp/settings/siem.md)
+    * [Password Configuration](user-documentation/cipp/settings/password-config.md)
   * [Logbook](user-documentation/cipp/logs/README.md)
     * [View Log Entry](user-documentation/cipp/logs/logentry.md)
   * [Setup Wizard](user-documentation/cipp/sam-setup-wizard.md)
