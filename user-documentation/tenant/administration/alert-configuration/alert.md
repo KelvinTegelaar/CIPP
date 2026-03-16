@@ -43,6 +43,12 @@ Within CIPP, there are two types of alerts:
 
 {% @storylane/embed subdomain="app" linkValue="d8riyacsbdog" url="https://app.storylane.io/share/d8riyacsbdog" %}
 
+## Available Alerts
+
+You can review the available alerts embedded below or navigate to [https://resources.cipp.app/?tab=alerts](https://resources.cipp.app/?tab=alerts).
+
+{% @cipp-external-webpage-block/cyberdrain url="https://resources.cipp.app/?tab=alerts" %}
+
 ***
 
 {% include "../../../../.gitbook/includes/feature-request.md" %}
