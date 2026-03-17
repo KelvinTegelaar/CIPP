@@ -25,7 +25,9 @@ const Page = () => {
     openCloneDrawer: (row) => setCloneTaskId(row.RowKey),
   };
 
-  const actions = CippScheduledTaskActions(drawerHandlers);
+  const actions = CippScheduledTaskActions(drawerHandlers, {
+    hideActions: ["Edit Job", "Clone Job"],
+  });
 
   const steps = [
     {
