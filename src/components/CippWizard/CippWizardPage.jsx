@@ -58,8 +58,14 @@ const CippWizardPage = (props) => {
         onClose={onClose}
         fullWidth
         maxWidth="xl"
-        fullScreen={other?.fullScreen || mdDown}
-        PaperProps={{ sx: { display: "flex", flexDirection: "column" } }}
+        fullScreen={mdDown}
+        PaperProps={{
+          sx: {
+            display: "flex",
+            flexDirection: "column",
+            ...(!mdDown && { height: "90vh" }),
+          },
+        }}
       >
         <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1, p: 2 }}>
           {dialogIcon}
