@@ -643,6 +643,23 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
+  // Handle businessPhones
+  if (cellName === "businessPhones") {
+    if (!Array.isArray(data)) {
+      data = [data];
+    }
+
+    if (data.length === 0) {
+      return isText ? (
+        "No data"
+      ) : (
+        <Chip variant="outlined" label="No data" size="small" color="info" />
+      );
+    }
+
+    return isText ? data.join(", ") : renderChipList(data);
+  }
+
   //handle assignedUsers
   if (cellName === "AssignedUsers" || cellName === "assignedUsers") {
     //show the display name in text. otherwise, just return the obj.
