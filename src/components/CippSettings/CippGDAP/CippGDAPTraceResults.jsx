@@ -28,6 +28,7 @@ import {
 } from "@mui/icons-material";
 import { CippCodeBlock } from "../../CippComponents/CippCodeBlock";
 import { CippPathVisualization } from "./CippPathVisualization";
+import { getCippRoleTranslation } from "../../../utils/get-cipp-role-translation";
 
 export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
   const [expandedRoles, setExpandedRoles] = useState({});
@@ -437,7 +438,14 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                             const groupRole = roles?.find((r) =>
                               r.relationshipsWithRole?.some((rel) => rel.groupId === group.groupId)
                             );
-                            const roleName = groupRole?.roleName || (group.roles?.[0]?.displayName || "Role");
+                            const firstRoleDef = group.roles?.[0];
+                            const roleName =
+                              groupRole?.roleName ||
+                              firstRoleDef?.displayName ||
+                              (firstRoleDef?.roleDefinitionId
+                                ? getCippRoleTranslation(firstRoleDef.roleDefinitionId)
+                                : null) ||
+                              "Role";
 
                             return (
                               <Box key={groupIndex} sx={{ mb: 3 }}>
@@ -464,7 +472,13 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                                       {group.roles.slice(1).map((role, roleIndex) => (
                                         <Chip
                                           key={roleIndex}
-                                          label={role.displayName || role.roleDefinitionId}
+                                          label={
+                                            role.displayName ||
+                                            (role.roleDefinitionId
+                                              ? getCippRoleTranslation(role.roleDefinitionId)
+                                              : null) ||
+                                            role.roleDefinitionId
+                                          }
                                           size="small"
                                           variant="outlined"
                                         />
