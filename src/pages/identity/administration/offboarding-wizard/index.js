@@ -169,7 +169,6 @@ const Page = () => {
         steps={steps}
         postUrl="/api/ExecOffboardUser"
         wizardTitle="User Offboarding Wizard"
-        fullScreen
       />
     </>
   );
