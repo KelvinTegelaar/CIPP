@@ -70,11 +70,23 @@ export const CippInviteGuestDrawer = ({
     });
   };
 
+  const handleOpenDrawer = () => {
+    formControl.reset({
+      tenantFilter: userSettingsDefaults.currentTenant,
+      displayName: "",
+      mail: "",
+      redirectUri: "",
+      message: "",
+      sendInvite: true,
+    });
+    setDrawerVisible(true);
+  };
+
   return (
     <>
       <PermissionButton
         requiredPermissions={requiredPermissions}
-        onClick={() => setDrawerVisible(true)}
+        onClick={handleOpenDrawer}
         startIcon={<Send />}
       >
         {buttonText}

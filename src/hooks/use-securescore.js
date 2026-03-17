@@ -5,15 +5,7 @@ import standards from "../data/standards.json";
 
 export function useSecureScore({ waiting = true } = {}) {
   const currentTenant = useSettings().currentTenant;
-  if (currentTenant === "AllTenants") {
-    return {
-      controlScore: { isFetching: false, isSuccess: false, data: { Results: [] } },
-      secureScore: { isFetching: false, isSuccess: false, data: { Results: [] } },
-      translatedData: [],
-      isFetching: true,
-      isSuccess: false,
-    };
-  }
+  const isAllTenants = currentTenant === 'AllTenants';
 
   const [translatedData, setTranslatedData] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -27,7 +19,7 @@ export function useSecureScore({ waiting = true } = {}) {
       $top: 999,
     },
     queryKey: `controlScore-${currentTenant}`,
-    waiting: waiting,
+    waiting: waiting || isAllTenants,
   });
 
   const secureScore = ApiGetCall({
@@ -40,18 +32,25 @@ export function useSecureScore({ waiting = true } = {}) {
       $top: 7,
     },
     queryKey: `secureScore-${currentTenant}`,
-    waiting: waiting,
+    waiting: waiting || isAllTenants,
   });
 
   useEffect(() => {
+    if (isAllTenants) {
+      setIsFetching(false);
+      setIsSuccess(false);
+      setTranslatedData([]);
+      return;
+    }
     if (controlScore.isFetching || secureScore.isFetching) {
       setIsFetching(true);
     } else {
-      setIsFetching(false);
+      setIsSuccess(false);
     }
-  }, [controlScore.isFetching, secureScore.isFetching]);
+  }, [controlScore.isFetching, secureScore.isFetching, isAllTenants]);
 
   useEffect(() => {
+    if (isAllTenants) return;
     if (controlScore.isSuccess && secureScore.isSuccess) {
       const secureScoreData = secureScore.data.Results[0];
       const updatedControlScores = secureScoreData.controlScores.map((control) => {
@@ -100,7 +99,7 @@ export function useSecureScore({ waiting = true } = {}) {
       });
       setIsSuccess(true);
     }
-  }, [controlScore.isSuccess, secureScore.isSuccess, controlScore.data, secureScore.data]);
+  }, [controlScore.isSuccess, secureScore.isSuccess, controlScore.data, secureScore.data, isAllTenants]);
 
   return {
     controlScore,

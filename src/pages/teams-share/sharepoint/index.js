@@ -199,11 +199,9 @@ const Page = () => {
         title="Site Members"
         queryKey={`site-members-${row.siteId}`}
         api={{
-          url: "/api/ListGraphRequest",
+          url: "/api/ListSiteMembers",
           data: {
-            Endpoint: `/sites/${row.siteId}/lists/User%20Information%20List/items`,
-            AsApp: "true",
-            expand: "fields",
+            SiteId: row.siteId,
             tenantFilter: tenantFilter,
           },
           dataKey: "Results",

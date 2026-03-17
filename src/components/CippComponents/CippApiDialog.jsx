@@ -52,7 +52,7 @@ export const CippApiDialog = (props) => {
   useEffect(() => {
     if (createDialog.open) {
       setIsFormSubmitted(false);
-      formHook.reset(defaultvalues || {});
+      formHook.reset(typeof defaultvalues === "function" ? defaultvalues(row) : defaultvalues || {});
     }
   }, [createDialog.open, defaultvalues]);
 

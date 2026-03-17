@@ -5,8 +5,12 @@ import { EyeIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";
 import Link from "next/link";
 import { EventAvailable } from "@mui/icons-material";
+import { useSettings } from "../../../../hooks/use-settings.js";
 
 const Page = () => {
+  const initialState = useSettings();
+  const currentTenant = initialState.currentTenant;
+
   const actions = [
     {
       label: "View Task Details",
@@ -76,17 +80,9 @@ const Page = () => {
       }
       title="Vacation Mode"
       apiUrl="/api/ListScheduledItems?SearchTitle=*Vacation*"
-      queryKey="VacationMode"
-      tenantInTitle={false}
+      queryKey={`VacationMode-${currentTenant}`}
       actions={actions}
-      simpleColumns={[
-        "Tenant",
-        "Name",
-        "Reference",
-        "TaskState",
-        "ScheduledTime",
-        "ExecutedTime",
-      ]}
+      simpleColumns={["Tenant", "Name", "Reference", "TaskState", "ScheduledTime", "ExecutedTime"]}
       filters={filterList}
       offCanvas={{
         extendedInfoFields: [

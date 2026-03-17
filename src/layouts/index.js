@@ -86,7 +86,6 @@ export const Layout = (props) => {
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const settings = useSettings();
   const mobileNav = useMobileNav();
-  const [userSettingsComplete, setUserSettingsComplete] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState([]);
   const [menuItems, setMenuItems] = useState(nativeMenuItems);
   const lastUserSettingsUpdate = useRef(null);
@@ -216,44 +215,27 @@ export const Layout = (props) => {
       // Only update if the data has actually changed (using dataUpdatedAt as a proxy)
       const dataUpdatedAt = userSettingsAPI.dataUpdatedAt;
       if (dataUpdatedAt && dataUpdatedAt !== lastUserSettingsUpdate.current) {
+        const { bookmarks: _bookmarks, ...serverSettings } = userSettingsAPI.data || {};
         //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
-        if (userSettingsAPI.data.offboardingDefaults?.user) {
-          delete userSettingsAPI.data.offboardingDefaults.user;
+        if (serverSettings.offboardingDefaults?.user) {
+          delete serverSettings.offboardingDefaults.user;
         }
-        if (userSettingsAPI.data.offboardingDefaults?.keepCopy) {
-          delete userSettingsAPI.data.offboardingDefaults.keepCopy;
+        if (serverSettings.offboardingDefaults?.keepCopy) {
+          delete serverSettings.offboardingDefaults.keepCopy;
         }
-        if (userSettingsAPI?.data?.currentTheme) {
-          delete userSettingsAPI.data.currentTheme;
+        if (serverSettings?.currentTheme) {
+          delete serverSettings.currentTheme;
         }
-        // get current devtools settings
+        // get current devtools settings (device-local only)
         var showDevtools = settings.showDevtools;
-        // get current bookmarks and navigation settings (device-local only)
-        var bookmarks = settings.bookmarks;
-        var bookmarkSidebar = settings.bookmarkSidebar;
-        var bookmarkPopover = settings.bookmarkPopover;
-        var bookmarkReorderMode = settings.bookmarkReorderMode;
-        var bookmarkLocked = settings.bookmarkLocked;
-        var bookmarkSortOrder = settings.bookmarkSortOrder;
-        var bookmarksOpen = settings.bookmarksOpen;
-        var compactNav = settings.compactNav;
 
         settings.handleUpdate({
-          ...userSettingsAPI.data,
-          bookmarks,
-          bookmarkSidebar,
-          bookmarkPopover,
-          bookmarkReorderMode,
-          bookmarkLocked,
-          bookmarkSortOrder,
-          bookmarksOpen,
-          compactNav,
+          ...serverSettings,
           showDevtools,
         });
 
         // Track this update and set completion status
         lastUserSettingsUpdate.current = dataUpdatedAt;
-        setUserSettingsComplete(true);
       }
     }
   }, [

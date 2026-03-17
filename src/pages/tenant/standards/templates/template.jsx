@@ -398,7 +398,7 @@ const Page = () => {
           </Stack>
         </Stack>
 
-        <Box sx={{ flexGrow: 1, height: "calc(100vh - 270px)", overflow: "hidden" }}>
+        <Box sx={{ flexGrow: 1, height: "calc(100vh - 240px)", overflow: "hidden" }}>
           <Grid container spacing={3} sx={{ height: "100%" }}>
             {/* Left Column for Accordions */}
             <Grid size={{ xs: 12, lg: 4 }} sx={{ height: "100%", overflow: "auto", pr: 1 }}>
