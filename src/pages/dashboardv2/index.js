@@ -100,8 +100,12 @@ const Page = () => {
   });
 
   const currentTenantInfo = ApiGetCall({
-    url: "/api/ListTenants",
-    queryKey: `ListTenants`,
+    url: "/api/listTenants",
+    data: { AllTenantSelector: true },
+    queryKey: "TenantSelector",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
 
   const reportData =

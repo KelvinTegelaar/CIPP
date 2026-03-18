@@ -4,11 +4,12 @@ import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { Grid } from "@mui/system";
 import { useWatch } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export const CippWizardGroupTemplates = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
+  const lastAppliedTemplate = useRef(null);
   const groupOptions = [
     { label: "Dynamic Group", value: "dynamic" },
     { label: "Dynamic Distribution Group", value: "dynamicDistribution" },
@@ -18,19 +19,28 @@ export const CippWizardGroupTemplates = (props) => {
     { label: "Mail Enabled Security Group", value: "security" },
   ];
   useEffect(() => {
-    if (watcher?.value) {
+    if (watcher?.value && watcher.value !== lastAppliedTemplate.current) {
+      lastAppliedTemplate.current = watcher.value;
       console.log("Loading template:", watcher);
 
       // Set groupType first to ensure conditional fields are visible
-      formControl.setValue("groupType", watcher.addedFields.groupType);
+      formControl.setValue("groupType", watcher.addedFields.groupType, { shouldValidate: true });
 
       // Use setTimeout to ensure the DOM updates with the groupType before setting other fields
       setTimeout(() => {
-        formControl.setValue("displayName", watcher.addedFields.displayName);
-        formControl.setValue("description", watcher.addedFields.description);
-        formControl.setValue("username", watcher.addedFields.username);
-        formControl.setValue("allowExternal", watcher.addedFields.allowExternal);
-        formControl.setValue("membershipRules", watcher.addedFields.membershipRules);
+        formControl.setValue("displayName", watcher.addedFields.displayName, {
+          shouldValidate: true,
+        });
+        formControl.setValue("description", watcher.addedFields.description, {
+          shouldValidate: true,
+        });
+        formControl.setValue("username", watcher.addedFields.username, { shouldValidate: true });
+        formControl.setValue("allowExternal", watcher.addedFields.allowExternal, {
+          shouldValidate: true,
+        });
+        formControl.setValue("membershipRules", watcher.addedFields.membershipRules, {
+          shouldValidate: true,
+        });
 
         console.log("Set membershipRules to:", watcher.addedFields.membershipRules);
       }, 100);

@@ -83,7 +83,7 @@ const StandardCard = memo(
             observer.disconnect();
           }
         },
-        { threshold: 0.1 }
+        { threshold: 0.1 },
       );
 
       const currentRef = document.getElementById(`standard-card-${standard.name}`);
@@ -233,8 +233,8 @@ const StandardCard = memo(
                   standard.impact === "High Impact"
                     ? "error"
                     : standard.impact === "Medium Impact"
-                    ? "warning"
-                    : "info"
+                      ? "warning"
+                      : "info"
                 }
               />
               {expanded && standard.recommendedBy?.length > 0 && (
@@ -334,7 +334,7 @@ const StandardCard = memo(
 
     // If we get here, nothing important changed, skip re-render
     return true;
-  }
+  },
 );
 
 StandardCard.displayName = "StandardCard";
@@ -342,7 +342,7 @@ StandardCard.displayName = "StandardCard";
 // Virtualized grid to handle large numbers of standards efficiently
 const VirtualizedStandardGrid = memo(({ items, renderItem }) => {
   const [itemsPerRow, setItemsPerRow] = useState(() =>
-    window.innerWidth > 960 ? 4 : window.innerWidth > 600 ? 2 : 1
+    window.innerWidth > 960 ? 4 : window.innerWidth > 600 ? 2 : 1,
   );
 
   // Handle window resize for responsive grid
@@ -470,8 +470,8 @@ const CompactStandardList = memo(
                         standard.impact === "High Impact"
                           ? "error"
                           : standard.impact === "Medium Impact"
-                          ? "warning"
-                          : "info"
+                            ? "warning"
+                            : "info"
                       }
                     />
                   </Box>
@@ -618,7 +618,7 @@ const CompactStandardList = memo(
         })}
       </List>
     );
-  }
+  },
 );
 
 CompactStandardList.displayName = "CompactStandardList";
@@ -851,7 +851,7 @@ const CippStandardDialog = ({
       showOnlyNew,
       statusFilter,
       selectedStandards,
-    ]
+    ],
   );
 
   // Enhanced sort function
@@ -899,7 +899,7 @@ const CippStandardDialog = ({
         return 0;
       });
     },
-    [sortBy, sortOrder]
+    [sortBy, sortOrder],
   );
 
   // Optimize handleAddClick to be more performant
@@ -914,7 +914,7 @@ const CippStandardDialog = ({
         }, 100);
       });
     },
-    [handleAddMultipleStandard]
+    [handleAddMultipleStandard],
   );
 
   // Optimize search debounce with a higher timeout for better performance
@@ -922,7 +922,7 @@ const CippStandardDialog = ({
     debounce((query) => {
       setSearchQuery(query.trim());
     }, 350), // Increased debounce time for better performance
-    [setSearchQuery]
+    [setSearchQuery],
   );
 
   // Only process visible categories on demand to improve performance
@@ -935,7 +935,7 @@ const CippStandardDialog = ({
       setLocalSearchQuery(value);
       handleSearchQueryChange(value);
     },
-    [handleSearchQueryChange]
+    [handleSearchQueryChange],
   );
 
   // Clear all filters
@@ -992,7 +992,7 @@ const CippStandardDialog = ({
           (standard) => {
             const item = allItems.find((item) => item.standard.name === standard.name);
             return item;
-          }
+          },
         );
 
         setProcessedItems(sortedAllItems);
@@ -1028,7 +1028,7 @@ const CippStandardDialog = ({
         isButtonDisabled={isButtonDisabled}
       />
     ),
-    [selectedStandards, handleToggleSingleStandard, handleAddClick, isButtonDisabled]
+    [selectedStandards, handleToggleSingleStandard, handleAddClick, isButtonDisabled],
   );
 
   // Count active filters
@@ -1047,6 +1047,7 @@ const CippStandardDialog = ({
       onClose={handleClose}
       maxWidth="xxl"
       fullWidth
+      fullScreen
       keepMounted={false}
       TransitionProps={{
         onExited: () => {
@@ -1056,15 +1057,12 @@ const CippStandardDialog = ({
       }}
       PaperProps={{
         sx: {
-          minWidth: "720px",
-          maxHeight: "90vh",
-          height: "90vh",
           display: "flex",
           flexDirection: "column",
         },
       }}
     >
-      <DialogTitle>Select a Standard to Add</DialogTitle>
+      <DialogTitle sx={{ p: 2 }}>Select a Standard to Add</DialogTitle>
       <DialogContent
         sx={{
           backgroundColor: "background.default",
