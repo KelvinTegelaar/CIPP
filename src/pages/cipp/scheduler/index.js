@@ -6,10 +6,12 @@ import { useState } from "react";
 import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 import { CippScheduledTaskActions } from "../../../components/CippComponents/CippScheduledTaskActions";
 import { CippSchedulerDrawer } from "../../../components/CippComponents/CippSchedulerDrawer";
+import { useSettings } from "../../../hooks/use-settings";
 
 const Page = () => {
   const [editTaskId, setEditTaskId] = useState(null);
   const [cloneTaskId, setCloneTaskId] = useState(null);
+  const currentTenant = useSettings().currentTenant;
 
   const drawerHandlers = {
     openEditDrawer: (row) => {
@@ -67,9 +69,13 @@ const Page = () => {
         tenantInTitle={false}
         title="Scheduled Tasks"
         apiUrl={
-          showHiddenJobs ? "/api/ListScheduledItems?ShowHidden=true" : "/api/ListScheduledItems"
+          showHiddenJobs ? `/api/ListScheduledItems?ShowHidden=true` : `/api/ListScheduledItems`
         }
-        queryKey={showHiddenJobs ? `ListScheduledItems-hidden` : `ListScheduledItems`}
+        queryKey={
+          showHiddenJobs
+            ? `ListScheduledItems-hidden-${currentTenant}`
+            : `ListScheduledItems-${currentTenant}`
+        }
         simpleColumns={[
           "ExecutedTime",
           "TaskState",
