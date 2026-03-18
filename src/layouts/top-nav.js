@@ -29,6 +29,7 @@ import {
 } from "@mui/material";
 import { Logo } from "../components/logo";
 import { useSettings } from "../hooks/use-settings";
+import { useUserBookmarks } from "../hooks/use-user-bookmarks";
 import { paths } from "../paths";
 import { AccountPopover } from "./account-popover";
 import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
@@ -43,6 +44,7 @@ export const TopNav = (props) => {
   const searchDialog = useDialog();
   const { onNavOpen } = props;
   const settings = useSettings();
+  const { bookmarks, setBookmarks } = useUserBookmarks();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const showPopoverBookmarks = settings.bookmarkPopover === true;
   const reorderMode = settings.bookmarkReorderMode || "arrows";
@@ -90,10 +92,10 @@ export const TopNav = (props) => {
       setDragOverIndex(null);
       return;
     }
-    const items = [...(settings.bookmarks || [])];
+    const items = [...bookmarks];
     const [reordered] = items.splice(dragIndex, 1);
     items.splice(dropIndex, 0, reordered);
-    settings.handleUpdate({ bookmarks: items });
+    setBookmarks(items);
     setDragIndex(null);
     setDragOverIndex(null);
   };
@@ -105,29 +107,28 @@ export const TopNav = (props) => {
 
   const moveBookmarkUp = (index) => {
     if (index <= 0) return;
-    const updatedBookmarks = [...(settings.bookmarks || [])];
+    const updatedBookmarks = [...bookmarks];
     const temp = updatedBookmarks[index];
     updatedBookmarks[index] = updatedBookmarks[index - 1];
     updatedBookmarks[index - 1] = temp;
-    settings.handleUpdate({ bookmarks: updatedBookmarks });
+    setBookmarks(updatedBookmarks);
   };
 
   const moveBookmarkDown = (index) => {
-    const bookmarks = settings.bookmarks || [];
     if (index >= bookmarks.length - 1) return;
     const updatedBookmarks = [...bookmarks];
     const temp = updatedBookmarks[index];
     updatedBookmarks[index] = updatedBookmarks[index + 1];
     updatedBookmarks[index + 1] = temp;
-    settings.handleUpdate({ bookmarks: updatedBookmarks });
+    setBookmarks(updatedBookmarks);
   };
 
   const removeBookmark = (path) => {
-    const updatedBookmarks = [...(settings.bookmarks || [])];
+    const updatedBookmarks = [...bookmarks];
     const origIdx = updatedBookmarks.findIndex((b) => b.path === path);
     if (origIdx !== -1) {
       updatedBookmarks.splice(origIdx, 1);
-      settings.handleUpdate({ bookmarks: updatedBookmarks });
+      setBookmarks(updatedBookmarks);
     }
   };
 
@@ -162,7 +163,6 @@ export const TopNav = (props) => {
   };
 
   const animatedMoveDown = (index) => {
-    const bookmarks = settings.bookmarks || [];
     if (index >= bookmarks.length - 1 || animatingPair) return;
     const el1 = itemRefs.current[index];
     const el2 = itemRefs.current[index + 1];
@@ -185,13 +185,12 @@ export const TopNav = (props) => {
   };
 
   const displayBookmarks = useMemo(() => {
-    const bookmarks = settings.bookmarks || [];
     if (sortOrder === "custom") return bookmarks;
     return [...bookmarks].sort((a, b) => {
       const cmp = (a.label || "").localeCompare(b.label || "");
       return sortOrder === "asc" ? cmp : -cmp;
     });
-  }, [settings.bookmarks, sortOrder]);
+  }, [bookmarks, sortOrder]);
   const popoverOpen = Boolean(anchorEl);
   const popoverId = popoverOpen ? "bookmark-popover" : undefined;
 
@@ -454,11 +453,7 @@ export const TopNav = (props) => {
                               const li = el?.closest("[data-bookmark-index]");
                               if (li) {
                                 const overIdx = parseInt(li.dataset.bookmarkIndex, 10);
-                                if (
-                                  !isNaN(overIdx) &&
-                                  overIdx >= 0 &&
-                                  overIdx < (settings.bookmarks || []).length
-                                ) {
+                                if (!isNaN(overIdx) && overIdx >= 0 && overIdx < bookmarks.length) {
                                   touchDragRef.current.overIdx = overIdx;
                                   setDragOverIndex(overIdx);
                                 }
@@ -467,10 +462,10 @@ export const TopNav = (props) => {
                             onTouchEnd={() => {
                               const { startIdx, overIdx } = touchDragRef.current;
                               if (startIdx !== null && overIdx !== null && startIdx !== overIdx) {
-                                const items = [...(settings.bookmarks || [])];
+                                const items = [...bookmarks];
                                 const [reordered] = items.splice(startIdx, 1);
                                 items.splice(overIdx, 0, reordered);
-                                settings.handleUpdate({ bookmarks: items });
+                                setBookmarks(items);
                               }
                               touchDragRef.current = { startIdx: null, overIdx: null };
                               setDragIndex(null);
