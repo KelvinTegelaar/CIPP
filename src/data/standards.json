@@ -4741,6 +4741,11 @@
         "label": "Allow anonymous users to join meeting"
       },
       {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToStartMeeting",
+        "label": "Allow anonymous users to start meeting"
+      },
+      {
         "type": "autoComplete",
         "required": false,
         "multiple": false,
@@ -4758,10 +4763,23 @@
             "value": "EveryoneInCompanyExcludingGuests"
           },
           {
+            "label": "People in same or federated organizations",
+            "value": "EveryoneInSameAndFederatedCompany"
+          },
+          {
             "label": "People who were invited",
             "value": "InvitedUsers"
+          },
+          {
+            "label": "Everyone",
+            "value": "Everyone"
           }
         ]
+      },
+            {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowPSTNUsersToBypassLobby",
+        "label": "Allow dial-in users to bypass lobby"
       },
       {
         "type": "autoComplete",
