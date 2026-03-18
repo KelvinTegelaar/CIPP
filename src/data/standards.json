@@ -1357,7 +1357,7 @@
         "creatable": false,
         "required": false,
         "name": "standards.AppManagementPolicy.passwordCredentialsPasswordAddition",
-        "label": "Password Addition",
+        "label": "Disable Password Addition",
         "options": [
           {
             "label": "Enabled",
@@ -1375,7 +1375,7 @@
         "creatable": false,
         "required": false,
         "name": "standards.AppManagementPolicy.passwordCredentialsCustomPasswordAddition",
-        "label": "Custom Password",
+        "label": "Disable Custom Password",
         "options": [
           {
             "label": "Enabled",
