@@ -31,6 +31,10 @@ const simpleColumns = [
   "LogData",
 ];
 
+const offcanvas = {
+  extendedInfoFields: ["DateTime", "API", "Severity", "Message", "User", "AppId", "IP", "LogData"],
+};
+
 const apiUrl = "/api/Listlogs";
 const pageTitle = "Logbook Results";
 
@@ -314,6 +318,7 @@ const Page = () => {
         Filter: filterEnabled, // Pass filter toggle state
       }}
       actions={actions}
+      offCanvas={offcanvas}
     />
   );
 };

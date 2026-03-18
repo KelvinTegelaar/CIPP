@@ -47,12 +47,11 @@ const CippFormPage = (props) => {
   const { isValid, isDirty } = useFormState({ control: formControl.control });
 
   useEffect(() => {
-    delete router.query.tenantFilter;
-
     if (router.query) {
+      const { tenantFilter: _tenantFilter, ...queryWithoutTenant } = router.query;
       const resetValues = {
         ...formControl.getValues(),
-        ...router.query,
+        ...queryWithoutTenant,
       };
       formControl.reset(resetValues);
     }
