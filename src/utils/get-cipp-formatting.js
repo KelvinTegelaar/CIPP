@@ -106,11 +106,19 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     if (Array.isArray(data)) {
       return isText ? data.join(", ") : renderChipList(data);
     } else {
-      return isText ? (
-        data
-      ) : (
-        <Chip variant="outlined" label={data.label ?? data} size="small" color="info" />
-      );
+      if (isText) return data.label ?? data;
+      const label = data.label ?? data;
+      const severityColor = {
+        info: "info",
+        warn: "warning",
+        warning: "warning",
+        error: "error",
+        critical: "error",
+        alert: "warning",
+        debug: "default",
+      };
+      const color = severityColor[String(label).toLowerCase()] ?? "info";
+      return <Chip variant="outlined" label={label} size="small" color={color} />;
     }
   }
 
@@ -422,7 +430,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
-  if (cellName === "ClientId" || cellName === "role" || cellName === "appId") {
+  if (cellName === "ClientId" || cellName === "role" || cellName === "appId" || cellName === "SID") {
     return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
   }
 
@@ -633,6 +641,23 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         })}
       />
     );
+  }
+
+  // Handle businessPhones
+  if (cellName === "businessPhones") {
+    if (!Array.isArray(data)) {
+      data = [data];
+    }
+
+    if (data.length === 0) {
+      return isText ? (
+        "No data"
+      ) : (
+        <Chip variant="outlined" label="No data" size="small" color="info" />
+      );
+    }
+
+    return isText ? data.join(", ") : renderChipList(data);
   }
 
   //handle assignedUsers

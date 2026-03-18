@@ -1344,6 +1344,70 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.AppManagementPolicy",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Configures the default app management policy to control application and service principal credential restrictions such as password and key credential lifetimes.",
+    "docsDescription": "Configures the default app management policy to control application and service principal credential restrictions. This includes password addition restrictions, custom password addition, symmetric key addition, and credential lifetime limits for both applications and service principals.",
+    "executiveText": "Enforces credential restrictions on application registrations and service principals to limit how secrets and certificates are created and how long they remain valid. This reduces the risk of long-lived or unmanaged credentials being used to access your tenant.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "name": "standards.AppManagementPolicy.passwordCredentialsPasswordAddition",
+        "label": "Password Addition",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "name": "standards.AppManagementPolicy.passwordCredentialsCustomPasswordAddition",
+        "label": "Custom Password",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "required": false,
+        "name": "standards.AppManagementPolicy.passwordCredentialsMaxLifetime",
+        "label": "Password Credentials Max Lifetime (Days)"
+      },
+      {
+        "type": "number",
+        "required": false,
+        "name": "standards.AppManagementPolicy.keyCredentialsMaxLifetime",
+        "label": "Key Credentials Max Lifetime (Days)"
+      }
+    ],
+    "label": "Set Default App Management Policy",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-03-13",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
     "tag": ["CIS M365 5.0 (2.1.6)"],
@@ -3529,6 +3593,34 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.WindowsBackupRestore",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Configures the Windows Backup and Restore enrollment setting in Intune. When enabled, users see a restore page during Windows Autopilot/OOBE that allows them to restore their apps and settings from a previous device backup. **Before you can restore a backup, a policy to enable it on devices must be set up in Settings Catalog.**",
+    "docsDescription": "Configures the Windows Backup and Restore (WBfO) device enrollment setting in Intune. This feature allows users to restore apps and settings from a previous device backup during Windows setup. Enabling this shows a restore page during enrollment (OOBE) so users can migrate their workspace configuration to a new device. More information can be found in [Microsoft's documentation.](https://learn.microsoft.com/en-us/intune/intune-service/enrollment/windows-backup-restore)",
+    "executiveText": "Controls the Windows Backup and Restore for Organizations feature in Intune. When enabled, employees setting up new devices can restore their apps and settings from a previous backup during Windows enrollment. This streamlines device provisioning, reduces setup time for new or replacement devices, and improves the employee experience during device transitions.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.WindowsBackupRestore.state",
+        "options": [
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
+      }
+    ],
+    "label": "Set Windows Backup and Restore state",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-02-26",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": [],
@@ -4011,6 +4103,28 @@
     ],
     "label": "Configure local administrator rights for users joining devices",
     "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-02-23",
+    "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.intuneRestrictUserDeviceRegistration",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Controls whether users can register devices with Entra.",
+    "docsDescription": "Configures whether users can register devices with Entra. When disabled, users are unable to register devices with Entra.",
+    "executiveText": "Controls whether employees can register their devices for corporate access. Disabling user device registration prevents unauthorized or unmanaged devices from connecting to company resources, enhancing overall security posture.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.intuneRestrictUserDeviceRegistration.disableUserDeviceRegistration",
+        "label": "Disable users from registering devices",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure user restriction for Entra device registration",
+    "impact": "High Impact",
     "impactColour": "warning",
     "addedDate": "2026-02-23",
     "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
@@ -4967,7 +5081,15 @@
         "type": "textField",
         "name": "standards.TeamsFederationConfiguration.DomainList",
         "label": "Domains, Comma separated",
-        "required": false
+        "required": false,
+        "condition": {
+          "field": "standards.TeamsFederationConfiguration.DomainControl.value",
+          "compareType": "isOneOf",
+          "compareValue": [
+            "AllowSpecificExternal",
+            "BlockSpecificExternal"
+          ]
+        }
       }
     ],
     "label": "Federation Configuration for Microsoft Teams",
@@ -5351,6 +5473,11 @@
         "required": false,
         "name": "customGroup",
         "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
+      },
+      {
+        "type": "switch",
+        "name": "verifyAssignments",
+        "label": "Verify policy assignments"
       },
       {
         "name": "excludeGroup",

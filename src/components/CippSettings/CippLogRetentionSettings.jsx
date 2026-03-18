@@ -61,40 +61,36 @@ const CippLogRetentionSettings = () => {
     }
   };
 
-  const RetentionControls = () => {
-    return (
-      <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
-        <TextField
-          size="small"
-          type="number"
-          value={retentionDays}
-          onChange={handleInputChange}
-          disabled={retentionChange.isPending || retentionSetting.isLoading}
-          inputProps={{ min: 7, max: 365 }}
-          error={!!error}
-          helperText={error}
-          sx={{ width: "120px" }}
-          label="Days"
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          disabled={retentionChange.isPending || retentionSetting.isLoading || !!error}
-          onClick={handleRetentionChange}
-          sx={{ mt: 0.5 }}
-        >
-          Save
-        </Button>
-      </Box>
-    );
-  };
-
   return (
     <CippButtonCard
       title="Log Retention"
       cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
-      CardButton={<RetentionControls />}
+      CardButton={
+        <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
+          <TextField
+            size="small"
+            type="number"
+            value={retentionDays}
+            onChange={handleInputChange}
+            disabled={retentionChange.isPending || retentionSetting.isLoading}
+            inputProps={{ min: 7, max: 365 }}
+            error={!!error}
+            helperText={error}
+            sx={{ width: "120px" }}
+            label="Days"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            disabled={retentionChange.isPending || retentionSetting.isLoading || !!error}
+            onClick={handleRetentionChange}
+            sx={{ mt: 0.5 }}
+          >
+            Save
+          </Button>
+        </Box>
+      }
     >
       <Typography variant="body2">
         Configure how long to keep CIPP log entries. Logs will be automatically deleted after this
