@@ -10,9 +10,15 @@ The Offboarding Wizard is an interactive guide that streamlines the process of o
 
 {% stepper %}
 {% step %}
-**Tenant Selection**
+**Start Offboarding**
 
-Select the tenant from which you want to offboard a user. Only one tenant can be selected at a time.
+Click the Start Offboarding button at the top of the page.
+{% endstep %}
+
+{% step %}
+### **Tenant Selection**
+
+Select the tenant from which you want to offboard a user. Only one tenant can be selected at a time. This will default to the current tenant from the menu bar tenant selector.
 {% endstep %}
 
 {% step %}
@@ -76,6 +82,24 @@ The Offboarding Wizard offers a range of settings that can be performed during t
 | Webhook                    | Enable this to send a notification to your configured webhook in CIPP notifications settings        |
 | E-mail                     | Enable this to send a notification to your configured e-mail address in CIPP notifications settings |
 | PSA                        | Enable this to send a notification to your configured PSA in CIPP notifications settings            |
+
+## Previously Submitted Offboardings
+
+CIPP also includes a table of previously submitted offboardings so you can review progress after submissions.
+
+### Offboarding Table Details
+
+| Column                | Description                                                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Tenant                | The tenant where the user object resides.                                                                             |
+| Parameters - Username | The username of the user submitted for offboarding.                                                                   |
+| Task State            | What the status of the task is. This will be one of `Planned`, `Completed`, `Running`, or `Failed`.                   |
+| Scheduled Time        | The relative time until/since the offboarding task was scheduled to run.                                              |
+| Executed Time         | The relative time since the offboarding task was scheduled to run. `No Data` will return for tasks not yet completed. |
+
+### Offboarding Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Task Details</td><td>Opens the <a data-mention href="../../tools/scheduler/task.md">task.md</a>page for the selected task.</td><td>false</td></tr><tr><td>Run Now</td><td>Runs the selected offboarding task(s) now.</td><td>true</td></tr><tr><td>Delete Job</td><td>Deletes the task for the selected offboarding(s).</td><td>true</td></tr><tr><td>More Info</td><td>Opens the extended info window for the current task.</td><td>false</td></tr></tbody></table>
 
 ***
 

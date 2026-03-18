@@ -18,6 +18,14 @@ This flyout will allow you to create a new tenant group. Set the Group Name, Gro
 
 <details>
 
+<summary>Show Usage/Hide Usage</summary>
+
+This will toggle the Usage column in the table. See below for Usage column details.
+
+</details>
+
+<details>
+
 <summary>Create Default Groups</summary>
 
 This will allow you to create a predefined set of tenant groups provided by CIPP. The default groups created are:
@@ -43,12 +51,13 @@ This will open a flyout with a table of information on CIPP's processing of your
 
 ## Table Details
 
-| Column      | Description                                         |
-| ----------- | --------------------------------------------------- |
-| Name        | Name of the group                                   |
-| Description | Description set for the group                       |
-| Group Type  | `dynamic` or `static`                               |
-| Members     |  Click to view a table of the tenants in this group |
+| Column      | Description                                                       |
+| ----------- | ----------------------------------------------------------------- |
+| Name        | Name of the group                                                 |
+| Description | Description set for the group                                     |
+| Group Type  | `dynamic` or `static`                                             |
+| Members     | Click to view a table of the tenants in this group                |
+| Usage       | Shows you where the tenant group is used, i.e. Standards Template |
 
 ## Table Actions
 
