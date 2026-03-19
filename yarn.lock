@@ -2178,6 +2178,11 @@
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.90.12.tgz#e1f5f47e72ef7d0fc794325936921c700352515e"
   integrity sha512-T1/8t5DhV/SisWjDnaiU2drl6ySvsHj1bHBCWNXd+/T+Hh1cf6JodyEYMd5sgwm+b/mETT4EV3H+zCVczCU5hg==
 
+"@tanstack/query-core@5.91.0":
+  version "5.91.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.91.0.tgz#3645fc1d9515b02a74afb1681911804b561fd401"
+  integrity sha512-FYXN8Kk9Q5VKuV6AIVaNwMThSi0nvAtR4X7HQoigf6ePOtFcavJYVIzgFhOVdtbBQtCJE3KimDIMMJM2DR1hjw==
+
 "@tanstack/query-devtools@5.91.1":
   version "5.91.1"
   resolved "https://registry.yarnpkg.com/@tanstack/query-devtools/-/query-devtools-5.91.1.tgz#0b0e3b94861f3a584560af3047a536bf7fea06f1"
@@ -2190,13 +2195,20 @@
   dependencies:
     "@tanstack/query-core" "5.90.12"
 
-"@tanstack/query-sync-storage-persister@^5.76.0":
-  version "5.90.14"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-5.90.14.tgz#b68c7f982d7f41af77df009bdf0a064e94448f78"
-  integrity sha512-gqQy7VFNUcFnD61mr1sqvMLdL3MXrTzMmjuQqRVyItb9FgEKzMSyBfo8cLZPiWWrz29eAVlQs1rEYUNLZRRMqg==
+"@tanstack/query-persist-client-core@5.92.2":
+  version "5.92.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-5.92.2.tgz#164204d910643f3521e2a392c92fd83205d4dd66"
+  integrity sha512-id+pZeO+NidGU1OC6Hr7Prfrx4uMZfBxAcynwBbCFKsqINCGvpzMokiZ2LRRkXV8qKgFWm6Xg5k7t7YnIkHynQ==
   dependencies:
-    "@tanstack/query-core" "5.90.12"
-    "@tanstack/query-persist-client-core" "5.91.11"
+    "@tanstack/query-core" "5.91.0"
+
+"@tanstack/query-sync-storage-persister@^5.90.25":
+  version "5.90.25"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-5.90.25.tgz#43f79055b512f9d65fb71333ea56bdad94ca3169"
+  integrity sha512-Lnu+FBnBeTkPrP0zVTeaeTrC0IOxNnchulW3Pe3l/ML0LSuO5rn42B+oANReYCeJxphET5X8AkXJHFGnM50w1g==
+  dependencies:
+    "@tanstack/query-core" "5.91.0"
+    "@tanstack/query-persist-client-core" "5.92.2"
 
 "@tanstack/react-query-devtools@^5.51.11":
   version "5.91.1"
