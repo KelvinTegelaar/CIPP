@@ -1357,7 +1357,7 @@
         "creatable": false,
         "required": false,
         "name": "standards.AppManagementPolicy.passwordCredentialsPasswordAddition",
-        "label": "Password Addition",
+        "label": "Disable Password Addition",
         "options": [
           {
             "label": "Enabled",
@@ -1375,7 +1375,7 @@
         "creatable": false,
         "required": false,
         "name": "standards.AppManagementPolicy.passwordCredentialsCustomPasswordAddition",
-        "label": "Custom Password",
+        "label": "Disable Custom Password",
         "options": [
           {
             "label": "Enabled",
@@ -1780,8 +1780,8 @@
     "name": "standards.AddDMARCToMOERA",
     "cat": "Global Standards",
     "tag": ["CIS M365 5.0 (2.1.10)", "Security", "PhishingProtection"],
-    "helpText": "Note: requires 'Domain Name Administrator' GDAP role. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default value is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
-    "docsDescription": "Note: requires 'Domain Name Administrator' GDAP role. Adds a DMARC record to MOERA (onmicrosoft.com) domains. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default record is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
+    "helpText": "** Remediation is not available ** Note: requires 'Domain Name Administrator' GDAP role. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default value is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
+    "docsDescription": "** Remediation is not available ** Note: requires 'Domain Name Administrator' GDAP role. Adds a DMARC record to MOERA (onmicrosoft.com) domains. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default record is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
     "executiveText": "Implements advanced email security for Microsoft's default domain names (onmicrosoft.com) to prevent criminals from impersonating your organization. This blocks fraudulent emails that could damage your company's reputation and protects partners and customers from phishing attacks using your domain names.",
     "addedComponent": [
       {
@@ -1805,7 +1805,10 @@
     "impactColour": "info",
     "addedDate": "2025-06-16",
     "powershellEquivalent": "Portal only",
-    "recommendedBy": ["CIS", "Microsoft"]
+    "recommendedBy": ["CIS", "Microsoft"],
+    "disabledFeatures": {
+      "remediate": true
+    }
   },
   {
     "name": "standards.EnableMailboxAuditing",
@@ -4741,6 +4744,11 @@
         "label": "Allow anonymous users to join meeting"
       },
       {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToStartMeeting",
+        "label": "Allow anonymous users to start meeting"
+      },
+      {
         "type": "autoComplete",
         "required": false,
         "multiple": false,
@@ -4758,10 +4766,23 @@
             "value": "EveryoneInCompanyExcludingGuests"
           },
           {
+            "label": "People in same or federated organizations",
+            "value": "EveryoneInSameAndFederatedCompany"
+          },
+          {
             "label": "People who were invited",
             "value": "InvitedUsers"
+          },
+          {
+            "label": "Everyone",
+            "value": "Everyone"
           }
         ]
+      },
+            {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowPSTNUsersToBypassLobby",
+        "label": "Allow dial-in users to bypass lobby"
       },
       {
         "type": "autoComplete",
