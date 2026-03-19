@@ -2019,33 +2019,6 @@
   resolved "https://registry.yarnpkg.com/@standard-schema/utils/-/utils-0.3.0.tgz#3d5e608f16c2390c10528e98e59aef6bf73cae7b"
   integrity sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==
 
-"@svgdotjs/svg.draggable.js@^3.0.4":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@svgdotjs/svg.draggable.js/-/svg.draggable.js-3.0.6.tgz#bca1065ec27b1dbae5a92a0558777ed964a395cb"
-  integrity sha512-7iJFm9lL3C40HQcqzEfezK2l+dW2CpoVY3b77KQGqc8GXWa6LhhmX5Ckv7alQfUXBuZbjpICZ+Dvq1czlGx7gA==
-
-"@svgdotjs/svg.filter.js@^3.0.8":
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/@svgdotjs/svg.filter.js/-/svg.filter.js-3.0.9.tgz#758e336b79e73a6797358d655b60842131a9a52b"
-  integrity sha512-/69XMRCDoam2HgC4ldHIaDgeQf1ViHIsa0Ld4uWgiXtZ+E24DWHe/9Ib6kbNiZ7WRIdlVokUDR1Fg0kjIpkfbw==
-  dependencies:
-    "@svgdotjs/svg.js" "^3.2.4"
-
-"@svgdotjs/svg.js@^3.2.4":
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/@svgdotjs/svg.js/-/svg.js-3.2.5.tgz#fbbc56728b2b565f3ae3e3713301ff82abbb45bd"
-  integrity sha512-/VNHWYhNu+BS7ktbYoVGrCmsXDh+chFMaONMwGNdIBcFHrWqk2jY8fNyr3DLdtQUIalvkPfM554ZSFa3dm3nxQ==
-
-"@svgdotjs/svg.resize.js@^2.0.2":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@svgdotjs/svg.resize.js/-/svg.resize.js-2.0.5.tgz#732e4cae15d09ad3021adeac63bc9fad0dc7255a"
-  integrity sha512-4heRW4B1QrJeENfi7326lUPYBCevj78FJs8kfeDxn5st0IYPIRXoTtOSYvTzFWgaWWXd3YCDE6ao4fmv91RthA==
-
-"@svgdotjs/svg.select.js@^4.0.1":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@svgdotjs/svg.select.js/-/svg.select.js-4.0.3.tgz#6af12755fd71caf703825d4f490fdf02a001cbfc"
-  integrity sha512-qkMgso1sd2hXKd1FZ1weO7ANq12sNmQJeGDjs46QwDVsxSRcHmvWKL2NDF7Yimpwf3sl5esOLkPqtV2bQ3v/Jg==
-
 "@svgr/babel-plugin-add-jsx-attribute@8.0.0":
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-8.0.0.tgz#4001f5d5dd87fa13303e36ee106e3ff3a7eb8b22"
@@ -2928,11 +2901,6 @@
   resolved "https://registry.yarnpkg.com/@vvo/tzdb/-/tzdb-6.198.0.tgz#bcb33c581aec4f1258ad96c963ac96327ce960e3"
   integrity sha512-bNRWBhWYl0edVgyX6AYbhoCM2tk2lXJjGCyO2VDc2xn6Dw8dLd7WGj2DDXkVOkmOIQTNjEAcxrEpIzz5pWVwFg==
 
-"@yr/monotone-cubic-spline@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@yr/monotone-cubic-spline/-/monotone-cubic-spline-1.0.3.tgz#7272d89f8e4f6fb7a1600c28c378cc18d3b577b9"
-  integrity sha512-FQXkOta0XBSUPHndIKON2Y9JeQz5ZeMqLYZVVK93FliNBFm7LNMIZmY6FrMEB9XPcDbE2bekMbZD6kzDkxwYjA==
-
 abs-svg-path@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/abs-svg-path/-/abs-svg-path-0.1.1.tgz#df601c8e8d2ba10d4a76d625e236a9a39c2723bf"
@@ -2965,17 +2933,10 @@ ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-apexcharts@5.3.5:
-  version "5.3.5"
-  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-5.3.5.tgz#5297861fdc8585c26bec3605b2d62638cc226b8d"
-  integrity sha512-I04DY/WBZbJgJD2uixeV5EzyiL+J5LgKQXEu8rctqAwyRmKv44aDVeofJoLdTJe3ao4r2KEQfCgtVzXn6pqirg==
-  dependencies:
-    "@svgdotjs/svg.draggable.js" "^3.0.4"
-    "@svgdotjs/svg.filter.js" "^3.0.8"
-    "@svgdotjs/svg.js" "^3.2.4"
-    "@svgdotjs/svg.resize.js" "^2.0.2"
-    "@svgdotjs/svg.select.js" "^4.0.1"
-    "@yr/monotone-cubic-spline" "^1.0.3"
+apexcharts@5.10.4:
+  version "5.10.4"
+  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-5.10.4.tgz#79c9a05ab40b069f33873a1859de6cb0882ccf0e"
+  integrity sha512-gt0VUqZ2+mr25ScbUcKZgJr96jKYm4vjOcxEWCEh/E5F4dWqhyo3dBhPRvNNnkKiWxkMd2cBwj3ZYH3rK39fkA==
 
 argparse@^1.0.7:
   version "1.0.10"
