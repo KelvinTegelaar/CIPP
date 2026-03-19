@@ -63,7 +63,8 @@ const DeployDefenderForm = () => {
 
           <Grid size={{ xs: 12 }}>
             <Grid container spacing={2}>
-              <Grid size={{ md: 6, xs: 12 }}>
+              {/* Global options */}
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Allow Microsoft Defender for Endpoint to enforce Endpoint Security Configurations (Compliance)"
@@ -72,52 +73,146 @@ const DeployDefenderForm = () => {
                 />
                 <CippFormComponent
                   type="switch"
-                  label="Connect iOS/iPadOS devices version 13.0 and above to Microsoft Defender for Endpoint (Compliance)"
-                  name="Compliance.ConnectIosCompliance"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="Connect Android devices version 6.0.0 and above to Microsoft Defender for Endpoint (Compliance)"
-                  name="Compliance.ConnectAndroidCompliance"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="Connect Windows devices version 10.0.15063 and above to Microsoft Defender for Endpoint (Compliance)"
-                  name="Compliance.ConnectWindows"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="EDR: Connect Defender Configuration Package automatically from Connector"
-                  name="EDR.Config"
-                  formControl={formControl}
-                />
-              </Grid>
-              <Grid size={{ md: 6, xs: 12 }}>
-                <CippFormComponent
-                  type="switch"
-                  label="Enable App Sync (sending application inventory) for iOS/iPadOS devices"
-                  name="Compliance.AppSync"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
                   label="Block unsupported OS versions"
                   name="Compliance.BlockunsupportedOS"
                   formControl={formControl}
                 />
+              </Grid>
+
+              {/* Android */}
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Connect Android devices to Microsoft Defender for Endpoint"
                   name="Compliance.ConnectAndroid"
                   formControl={formControl}
                 />
+                <CippFormCondition
+                  formControl={formControl}
+                  field="Compliance.ConnectAndroid"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <CippFormComponent
+                    type="switch"
+                    label="Connect Android devices version 6.0.0 and above to Microsoft Defender for Endpoint (MAM)"
+                    name="Compliance.ConnectAndroidCompliance"
+                    formControl={formControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    label="Block Android device access when Microsoft Defender for Endpoint is unavailable"
+                    name="Compliance.androidDeviceBlockedOnMissingPartnerData"
+                    formControl={formControl}
+                  />
+                </CippFormCondition>
+              </Grid>
+
+              {/* iOS */}
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Connect iOS/iPadOS devices to Microsoft Defender for Endpoint"
                   name="Compliance.ConnectIos"
+                  formControl={formControl}
+                />
+                <CippFormCondition
+                  formControl={formControl}
+                  field="Compliance.ConnectIos"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <CippFormComponent
+                    type="switch"
+                    label="Connect iOS/iPadOS devices version 13.0 and above to Microsoft Defender for Endpoint (Compliance)"
+                    name="Compliance.ConnectIosCompliance"
+                    formControl={formControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    label="Enable App Sync (sending application inventory) for iOS/iPadOS devices"
+                    name="Compliance.AppSync"
+                    formControl={formControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    label="Block iOS device access when Microsoft Defender for Endpoint is unavailable"
+                    name="Compliance.iosDeviceBlockedOnMissingPartnerData"
+                    formControl={formControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    label="Allow partner to collect iOS certificate metadata"
+                    name="Compliance.allowPartnerToCollectIosCertificateMetadata"
+                    formControl={formControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    label="Allow partner to collect iOS personal certificate metadata"
+                    name="Compliance.allowPartnerToCollectIosPersonalCertificateMetadata"
+                    formControl={formControl}
+                  />
+                </CippFormCondition>
+              </Grid>
+
+              {/* Windows */}
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="switch"
+                  label="Connect Windows devices version 10.0.15063 and above to Microsoft Defender for Endpoint (Compliance)"
+                  name="Compliance.ConnectWindows"
+                  formControl={formControl}
+                />
+                <CippFormCondition
+                  formControl={formControl}
+                  field="Compliance.ConnectWindows"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <CippFormComponent
+                    type="switch"
+                    label="Connect Windows devices to Microsoft Defender for Endpoint (MAM)"
+                    name="Compliance.windowsMobileApplicationManagementEnabled"
+                    formControl={formControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    label="Block Windows device access when Microsoft Defender for Endpoint is unavailable"
+                    name="Compliance.windowsDeviceBlockedOnMissingPartnerData"
+                    formControl={formControl}
+                  />
+                </CippFormCondition>
+              </Grid>
+
+              {/* Mac */}
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="switch"
+                  label="Connect Mac devices to Microsoft Defender for Endpoint"
+                  name="Compliance.ConnectMac"
+                  formControl={formControl}
+                />
+                <CippFormCondition
+                  formControl={formControl}
+                  field="Compliance.ConnectMac"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <CippFormComponent
+                    type="switch"
+                    label="Block Mac device access when Microsoft Defender for Endpoint is unavailable"
+                    name="Compliance.macDeviceBlockedOnMissingPartnerData"
+                    formControl={formControl}
+                  />
+                </CippFormCondition>
+              </Grid>
+
+              {/* EDR */}
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="switch"
+                  label="EDR: Connect Defender Configuration Package automatically from Connector"
+                  name="EDR.Config"
                   formControl={formControl}
                 />
                 <CippFormComponent
