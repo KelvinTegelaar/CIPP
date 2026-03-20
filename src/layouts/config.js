@@ -903,7 +903,6 @@ export const nativeMenuItems = [
         path: "/cipp/scheduler",
         roles: ["editor", "admin", "superadmin"],
         permissions: ["CIPP.Scheduler.*"],
-        scope: "global",
       },
     ],
   },
