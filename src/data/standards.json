@@ -5533,7 +5533,12 @@
         "required": false,
         "name": "levenshteinDistance",
         "label": "Fuzzy Match Distance (0 = exact name match only, higher values allow replacing policies with similar names based on Levenshtein distance)",
-        "defaultValue": 0
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" }
+        },
+        "warningThreshold": 5,
+        "warningMessage": "Warning: values above 5 can match unrelated policies. Use with caution."
       }
     ]
   },
