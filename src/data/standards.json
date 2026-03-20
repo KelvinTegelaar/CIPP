@@ -4779,7 +4779,7 @@
           }
         ]
       },
-            {
+      {
         "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowPSTNUsersToBypassLobby",
         "label": "Allow dial-in users to bypass lobby"
@@ -5106,10 +5106,7 @@
         "condition": {
           "field": "standards.TeamsFederationConfiguration.DomainControl.value",
           "compareType": "isOneOf",
-          "compareValue": [
-            "AllowSpecificExternal",
-            "BlockSpecificExternal"
-          ]
+          "compareValue": ["AllowSpecificExternal", "BlockSpecificExternal"]
         }
       }
     ],
@@ -5530,6 +5527,13 @@
             "value": "exclude"
           }
         ]
+      },
+      {
+        "type": "number",
+        "required": false,
+        "name": "levenshteinDistance",
+        "label": "Fuzzy Match Distance (0 = exact name match only, higher values allow replacing policies with similar names based on Levenshtein distance)",
+        "defaultValue": 0
       }
     ]
   },
