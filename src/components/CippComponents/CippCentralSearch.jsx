@@ -252,8 +252,9 @@ export const CippCentralSearch = ({ handleClose, open }) => {
     const inBreadcrumbs = leaf.breadcrumbs?.some((crumb) =>
       crumb?.toLowerCase().includes(normalizedSearch),
     );
+    const inScope = (leaf.scope === "global" ? "global" : "tenant").includes(normalizedSearch);
     // If there's no search value, show no results (you could change this logic)
-    return normalizedSearch ? inTitle || inPath || inBreadcrumbs : false;
+    return normalizedSearch ? inTitle || inPath || inBreadcrumbs || inScope : false;
   });
 
   // Helper to bold‐highlight the matched text
@@ -310,7 +311,9 @@ export const CippCentralSearch = ({ handleClose, open }) => {
           {searchValue.trim().length > 0 ? (
             filteredItems.length > 0 ? (
               <Grid container spacing={2} mt={2}>
-                {filteredItems.map((item, index) => (
+                {filteredItems.map((item, index) => {
+                  const isGlobal = item.scope === "global";
+                  return (
                   <Grid size={{ md: 12, sm: 12, xs: 12 }} key={index}>
                     <Card variant="outlined" sx={{ height: "100%" }}>
                       <CardActionArea
@@ -333,6 +336,19 @@ export const CippCentralSearch = ({ handleClose, open }) => {
                             >
                               {getItemTypeLabel(item)}
                             </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                px: 1,
+                                py: 0.25,
+                                borderRadius: 1,
+                                backgroundColor: isGlobal ? "info.main" : "success.main",
+                                color: "white",
+                                fontSize: "0.7rem",
+                              }}
+                            >
+                              {isGlobal ? "Global" : "Tenant"}
+                            </Typography>
                           </Box>
                           {item.breadcrumbs && item.breadcrumbs.length > 0 && (
                             <Typography variant="body2" color="textSecondary" sx={{ mb: 0.5 }}>
@@ -353,7 +369,8 @@ export const CippCentralSearch = ({ handleClose, open }) => {
                       </CardActionArea>
                     </Card>
                   </Grid>
-                ))}
+                  );
+                })}
               </Grid>
             ) : (
               <Box mt={2}>No results found.</Box>

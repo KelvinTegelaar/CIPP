@@ -39,7 +39,12 @@ const CippSpeedDial = ({
     return acc;
   }, {});
 
-  const handleSpeedDialClose = () => {
+  const handleSpeedDialClose = (event, reason) => {
+    if (reason === "toggle") {
+      setSpeedDialOpen(false);
+      setIsHovering(false);
+      return;
+    }
     if (!isHovering) {
       setTimeout(() => {
         setSpeedDialOpen(false);

@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { EyeIcon } from "@heroicons/react/24/outline";
+import { useSettings } from "../../../hooks/use-settings.js";
 
 const simpleColumns = [
   "DateTime",
@@ -30,6 +31,10 @@ const simpleColumns = [
   "IP",
   "LogData",
 ];
+
+const offcanvas = {
+  extendedInfoFields: ["DateTime", "API", "Severity", "Message", "User", "AppId", "IP", "LogData"],
+};
 
 const apiUrl = "/api/Listlogs";
 const pageTitle = "Logbook Results";
@@ -59,6 +64,8 @@ const Page = () => {
   const [endDate, setEndDate] = useState(null); // State for end date filter
   const [username, setUsername] = useState(null); // State for username filter
   const [severity, setSeverity] = useState(null); // State for severity filter
+  const settings = useSettings(); // Hook to access settings
+  const currentTenant = settings?.currentTenant;
 
   // Watch date fields to show warning for large date ranges
   const watchStartDate = formControl.watch("startDate");
@@ -304,16 +311,18 @@ const Page = () => {
       title={pageTitle}
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
-      queryKey={`Listlogs-${startDate}-${endDate}-${username}-${severity}-${filterEnabled}`}
-      tenantInTitle={false}
+      queryKey={`Listlogs-${startDate}-${endDate}-${username}-${severity}-${filterEnabled}-${currentTenant}`}
+      tenantInTitle={true}
       apiData={{
         StartDate: startDate, // Pass start date filter from state
         EndDate: endDate, // Pass end date filter from state
         User: username, // Pass username filter from state
         Severity: severity, // Pass severity filter from state
         Filter: filterEnabled, // Pass filter toggle state
+        Tenant: currentTenant, // Pass current tenant from settings
       }}
       actions={actions}
+      offCanvas={offcanvas}
     />
   );
 };

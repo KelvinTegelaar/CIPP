@@ -61,7 +61,6 @@ const Page = () => {
         "recipientTypeDetails", // Recipient Type Details
         "UPN", // User Principal Name
         "primarySmtpAddress", // Primary Email Address
-        "recipientType", // Recipient Type
         "AdditionalEmailAddresses", // Additional Email Addresses
         "CacheTimestamp", // Cache Timestamp
       ]
@@ -70,7 +69,6 @@ const Page = () => {
         "recipientTypeDetails", // Recipient Type Details
         "UPN", // User Principal Name
         "primarySmtpAddress", // Primary Email Address
-        "recipientType", // Recipient Type
         "AdditionalEmailAddresses", // Additional Email Addresses
         "CacheTimestamp", // Cache Timestamp
       ];
