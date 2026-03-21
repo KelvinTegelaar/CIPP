@@ -807,9 +807,22 @@ export const nativeMenuItems = [
       "Tenant.Application.*",
       "Tenant.DomainAnalyser.*",
       "Exchange.Mailbox.*",
+      "Endpoint.MEM.*",
       "CIPP.Scheduler.*",
     ],
     items: [
+      {
+        title: "Intune Tools",
+        permissions: ["Endpoint.MEM.*"],
+        items: [
+          {
+            title: "Compare Policies",
+            path: "/endpoint/MEM/compare-policies",
+            permissions: ["Endpoint.MEM.*"],
+            scope: "global",
+          },
+        ],
+      },
       {
         title: "Tenant Tools",
         permissions: ["Tenant.Administration.*"],
