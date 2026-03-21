@@ -6028,5 +6028,49 @@
     "impactColour": "info",
     "addedDate": "2025-11-19",
     "powershellEquivalent": "New-GraphPostRequest to /beta/security/secureScoreControlProfiles/{id}"
-  }
+  },
+    {
+  "name": "standards.EDRPolicy",
+  "cat": "Device Management Standards",
+  "tag": [],
+  "helpText": "Deploys a Microsoft Defender for Endpoint (EDR) configuration policy via Intune using the Endpoint Detection and Response template. Configures sample sharing and auto-onboarding via the MDE connector.",
+  "docsDescription": "This standard deploys a Microsoft Defender EDR (Endpoint Detection and Response) configuration policy to Windows 10/11 devices via Intune. It uses the MDE onboarding template (0385b795) with auto-configuration from the MDE connector. Sample sharing is configurable. The policy is assigned based on your selection.",
+  "addedComponent": [
+    {
+      "type": "textField",
+      "name": "standards.EDRPolicy.DisplayName",
+      "label": "Policy Display Name",
+      "defaultValue": "Default EDR Policy"
+    },
+    {
+      "type": "autoComplete",
+      "multiple": false,
+      "creatable": false,
+      "label": "Sample Sharing",
+      "name": "standards.EDRPolicy.SampleSharing",
+      "options": [
+        { "label": "None", "value": "0" },
+        { "label": "All samples", "value": "1" }
+      ]
+    },
+    {
+      "type": "autoComplete",
+      "multiple": false,
+      "creatable": false,
+      "label": "Assign To",
+      "name": "standards.EDRPolicy.AssignTo",
+      "options": [
+        { "label": "All Devices", "value": "AllDevices" },
+        { "label": "All Users", "value": "AllUsers" },
+        { "label": "All Devices and Users", "value": "AllDevicesAndUsers" }
+      ]
+    }
+  ],
+  "label": "Deploy Microsoft Defender EDR Policy",
+  "impact": "Low Impact",
+  "impactColour": "info",
+  "addedDate": "2026-03-21",
+  "powershellEquivalent": "Graph API",
+  "recommendedBy": []
+}
 ]
