@@ -67,7 +67,140 @@ After the API settings are set you can now map Hudu Assets to Microsoft 365 / CI
 In some cases the information provided in the M365 Rich Text Field is cut off or formatted incorrectly, use this custom CSS code in your Hudu settings to help format it:
 
 ```
-.card__item table{
+.card__item table {
+  border-collapse: collapse;
+  margin: 5px 0;
+  font-size: 0.8em;
+  font-family: sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.card__item h2,
+.card__item p {
+  font-size: 0.8em;
+  font-family: sans-serif;
+}
+.card__item th,
+.card__item td {
+  padding: 5px 5px;
+  width: auto;
+}
+.card__item thead tr {
+  text-align: left;
+}
+.card__item tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.custom-fast-fact.custom-fast-fact--warning { background: #f5c086; }
+.custom-fast-fact.custom-fast-fact--datto-low { background: #2c81c8; }
+.custom-fast-fact.custom-fast-fact--datto-moderate { background: #f7c210; }
+.custom-fast-fact.custom-fast-fact--datto-high { background: #f68218; }
+.custom-fast-fact.custom-fast-fact--datto-critical { background: #ec422e; }
+
+.nasa__block {
+  height: auto;
+}
+.nasa__block td {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.mce-content-body {
+  max-height: none !important;
+  overflow: visible !important;
+}
+.writer-wrap {
+  max-height: none;
+  overflow-y: auto;
+}
+
+/* === License & Management Link Card Grids === */
+
+/* Suppress generated <br> tags between sections */
+.rich_text_content .o365 + br {
+  display: none;
+}
+
+/* Flex for management button rows */
+.o365 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+  align-items: stretch;
+}
+
+/* Grid for license tile rows — equal-width columns */
+.o365:has(.o365__app) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+}
+
+.o365__app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  min-width: 130px;
+  border-radius: 6px;
+  border: 1px solid rgba(200, 200, 200, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  font-family: sans-serif;
+  font-size: 0.8em;
+  text-align: center;
+}
+.o365__app strong {
+  font-size: 1em;
+  line-height: 1.2;
+  display: block;
+}
+.o365__app font {
+  font-size: 0.72rem !important;
+  opacity: 0.65;
+  display: block;
+  line-height: 1.2;
+}
+
+.o365 .button {
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.85em;
+  font-family: sans-serif;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+  margin: 0;
+  cursor: pointer;
+}
+.o365 .button:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+.o365 .button a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.section-label {
+  font-family: sans-serif;
+  font-size: 0.7em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--primaryl1);
+  margin-top: 16px;
+  margin-bottom: 6px;
+  padding-bottom: 5px;
+  padding-left: 2px;
+  border-bottom: 1px solid rgba(21, 112, 239, 0.3);
+}.card__item table{
 	border-collapse: collapse;
 	margin: 5px 0;
 	font-size: 0.8em;
