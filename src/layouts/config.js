@@ -410,6 +410,11 @@ export const nativeMenuItems = [
             path: "/endpoint/applications/queue",
             permissions: ["Endpoint.Application.*"],
           },
+          {
+            title: "Application Templates",
+            path: "/endpoint/applications/templates",
+            permissions: ["Endpoint.Application.*"],
+          },
         ],
       },
       {
