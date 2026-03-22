@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import { styled } from "@mui/system"; // Correct import from @mui/system
 import { Editor } from "@monaco-editor/react";
