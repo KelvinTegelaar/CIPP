@@ -104,6 +104,22 @@ const Page = () => {
       creatable: false,
     },
     {
+      label: "Add to Groups",
+      name: "groupMemberships",
+      type: "autoComplete",
+      api: {
+        url: "/api/ListGroups",
+        labelField: "displayName",
+        valueField: "id",
+        queryKey: "ListGroups",
+        addedField: {
+          groupType: "calculatedGroupType",
+        },
+      },
+      multiple: true,
+      creatable: false
+    },
+    {
       label: "Job Title",
       name: "jobTitle",
       type: "textField",
@@ -187,6 +203,7 @@ const Page = () => {
       "primDomain",
       "usageLocation",
       "licenses",
+      "groupMemberships",
       "jobTitle",
       "streetAddress",
       "city",
