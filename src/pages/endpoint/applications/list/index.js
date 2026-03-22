@@ -62,47 +62,59 @@ const Page = () => {
     },
   ];
 
+  // Builds a customDataformatter that handles both single-row and bulk (array) inputs.
+  const makeAssignFormatter = (getRowData) => (row, action, formData) => {
+    const formatRow = (singleRow) => {
+      const tenantFilterValue =
+        tenant === "AllTenants" && singleRow?.Tenant ? singleRow.Tenant : tenant;
+      return {
+        tenantFilter: tenantFilterValue,
+        ID: singleRow?.id,
+        AppType: getAppAssignmentSettingsType(singleRow?.["@odata.type"]),
+        AssignmentFilterName: formData?.assignmentFilter?.value || null,
+        AssignmentFilterType: formData?.assignmentFilter?.value
+          ? formData?.assignmentFilterType || "include"
+          : null,
+        ...getRowData(singleRow, formData),
+      };
+    };
+    return Array.isArray(row) ? row.map(formatRow) : formatRow(row);
+  };
+
+  const assignmentFields = [
+    {
+      type: "radio",
+      name: "Intent",
+      label: "Assignment intent",
+      options: assignmentIntentOptions,
+      defaultValue: "Required",
+      validators: { required: "Select an assignment intent" },
+      helperText:
+        "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
+    },
+    {
+      type: "radio",
+      name: "assignmentMode",
+      label: "Assignment mode",
+      options: assignmentModeOptions,
+      defaultValue: "replace",
+      helperText:
+        "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
+    },
+    ...getAssignmentFilterFields(),
+  ];
+
   const actions = [
     {
       label: "Assign to All Users",
       type: "POST",
       url: "/api/ExecAssignApp",
-      fields: [
-        {
-          type: "radio",
-          name: "Intent",
-          label: "Assignment intent",
-          options: assignmentIntentOptions,
-          defaultValue: "Required",
-          validators: { required: "Select an assignment intent" },
-          helperText:
-            "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
-        },
-        {
-          type: "radio",
-          name: "assignmentMode",
-          label: "Assignment mode",
-          options: assignmentModeOptions,
-          defaultValue: "replace",
-          helperText:
-            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
-        },
-        ...getAssignmentFilterFields(),
-      ],
-      customDataformatter: (row, action, formData) => {
-        const tenantFilterValue = tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant;
-        return {
-          tenantFilter: tenantFilterValue,
-          ID: row?.id,
-          AssignTo: "AllUsers",
-          Intent: formData?.Intent || "Required",
-          assignmentMode: formData?.assignmentMode || "replace",
-          AssignmentFilterName: formData?.assignmentFilter?.value || null,
-          AssignmentFilterType: formData?.assignmentFilter?.value
-            ? formData?.assignmentFilterType || "include"
-            : null,
-        };
-      },
+      fields: assignmentFields,
+      customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
+        AssignTo: "AllUsers",
+        Intent: formData?.Intent || "Required",
+        assignmentMode: formData?.assignmentMode || "replace",
+      })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       icon: <UserIcon />,
       color: "info",
@@ -111,42 +123,12 @@ const Page = () => {
       label: "Assign to All Devices",
       type: "POST",
       url: "/api/ExecAssignApp",
-      fields: [
-        {
-          type: "radio",
-          name: "Intent",
-          label: "Assignment intent",
-          options: assignmentIntentOptions,
-          defaultValue: "Required",
-          validators: { required: "Select an assignment intent" },
-          helperText:
-            "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
-        },
-        {
-          type: "radio",
-          name: "assignmentMode",
-          label: "Assignment mode",
-          options: assignmentModeOptions,
-          defaultValue: "replace",
-          helperText:
-            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
-        },
-        ...getAssignmentFilterFields(),
-      ],
-      customDataformatter: (row, action, formData) => {
-        const tenantFilterValue = tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant;
-        return {
-          tenantFilter: tenantFilterValue,
-          ID: row?.id,
-          AssignTo: "AllDevices",
-          Intent: formData?.Intent || "Required",
-          assignmentMode: formData?.assignmentMode || "replace",
-          AssignmentFilterName: formData?.assignmentFilter?.value || null,
-          AssignmentFilterType: formData?.assignmentFilter?.value
-            ? formData?.assignmentFilterType || "include"
-            : null,
-        };
-      },
+      fields: assignmentFields,
+      customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
+        AssignTo: "AllDevices",
+        Intent: formData?.Intent || "Required",
+        assignmentMode: formData?.assignmentMode || "replace",
+      })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       icon: <LaptopMac />,
       color: "info",
@@ -155,42 +137,12 @@ const Page = () => {
       label: "Assign Globally (All Users / All Devices)",
       type: "POST",
       url: "/api/ExecAssignApp",
-      fields: [
-        {
-          type: "radio",
-          name: "Intent",
-          label: "Assignment intent",
-          options: assignmentIntentOptions,
-          defaultValue: "Required",
-          validators: { required: "Select an assignment intent" },
-          helperText:
-            "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
-        },
-        {
-          type: "radio",
-          name: "assignmentMode",
-          label: "Assignment mode",
-          options: assignmentModeOptions,
-          defaultValue: "replace",
-          helperText:
-            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
-        },
-        ...getAssignmentFilterFields(),
-      ],
-      customDataformatter: (row, action, formData) => {
-        const tenantFilterValue = tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant;
-        return {
-          tenantFilter: tenantFilterValue,
-          ID: row?.id,
-          AssignTo: "AllDevicesAndUsers",
-          Intent: formData?.Intent || "Required",
-          assignmentMode: formData?.assignmentMode || "replace",
-          AssignmentFilterName: formData?.assignmentFilter?.value || null,
-          AssignmentFilterType: formData?.assignmentFilter?.value
-            ? formData?.assignmentFilterType || "include"
-            : null,
-        };
-      },
+      fields: assignmentFields,
+      customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
+        AssignTo: "AllDevicesAndUsers",
+        Intent: formData?.Intent || "Required",
+        assignmentMode: formData?.assignmentMode || "replace",
+      })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
       icon: <GlobeAltIcon />,
       color: "info",
@@ -252,23 +204,15 @@ const Page = () => {
         },
         ...getAssignmentFilterFields(),
       ],
-      customDataformatter: (row, action, formData) => {
+      customDataformatter: makeAssignFormatter((_singleRow, formData) => {
         const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : [];
-        const tenantFilterValue = tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant;
         return {
-          tenantFilter: tenantFilterValue,
-          ID: row?.id,
           GroupIds: selectedGroups.map((group) => group.value).filter(Boolean),
           GroupNames: selectedGroups.map((group) => group.label).filter(Boolean),
           Intent: formData?.assignmentIntent || "Required",
           AssignmentMode: formData?.assignmentMode || "replace",
-          AppType: getAppAssignmentSettingsType(row?.["@odata.type"]),
-          AssignmentFilterName: formData?.assignmentFilter?.value || null,
-          AssignmentFilterType: formData?.assignmentFilter?.value
-            ? formData?.assignmentFilterType || "include"
-            : null,
         };
-      },
+      }),
     },
     {
       label: "Delete Application",
