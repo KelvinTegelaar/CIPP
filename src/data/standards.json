@@ -6028,5 +6028,134 @@
     "impactColour": "info",
     "addedDate": "2025-11-19",
     "powershellEquivalent": "New-GraphPostRequest to /beta/security/secureScoreControlProfiles/{id}"
+  },
+  {
+    "name": "standards.MDEConnector",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Configures the Microsoft Defender for Endpoint (MDE) connector in Intune. Enables platform connectors for Android, iOS/iPadOS and Windows, app and certificate sync, blocks unsupported OS versions, and sets partner responsiveness days. Also supports App Protection Policy (MAM) connectors and the Endpoint Security Profile enforcement setting.",
+    "docsDescription": "This standard configures the Microsoft Defender for Endpoint mobile threat defense (MTD) connector in Intune (connector ID: fc780465-2017-40d4-a0c5-307022471b92). It controls which platforms connect to MDE for compliance evaluation, enables app inventory sync and certificate sync for iOS/iPadOS, blocks non-compliant OS versions, sets the number of days before the partner is considered unresponsive, and optionally enables App Protection Policy (MAM) connectors for Android and iOS/iPadOS. The Endpoint Security Profile setting allows MDE to enforce security configurations.",
+    "executiveText": "Activates and configures the Microsoft Defender for Endpoint integration within Intune across all selected tenants. This ensures that Android, iOS/iPadOS, and Windows devices can be evaluated for threat-based compliance, app inventories are synced for risk assessment, and unsupported OS versions are blocked from accessing corporate resources. Partner responsiveness monitoring ensures alerts are raised if MDE stops reporting, maintaining continuous endpoint security posture.",
+    "addedComponent": [
+      {
+        "type": "heading",
+        "name": "standards.MDEConnector._heading_esp",
+        "label": "Endpoint Security Profile Settings",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.microsoftDefenderForEndpointAttachEnabled",
+        "label": "Allow Microsoft Defender for Endpoint to enforce Endpoint Security Configurations",
+        "default": true
+      },
+      {
+        "type": "heading",
+        "name": "standards.MDEConnector._heading_compliance",
+        "label": "Compliance policy evaluation",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.androidEnabled",
+        "label": "Connect Android devices version 6.0+ to Microsoft Defender for Endpoint",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.iosEnabled",
+        "label": "Connect iOS/iPadOS devices version 13.0+ to Microsoft Defender for Endpoint",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.windowsEnabled",
+        "label": "Connect Windows devices version 10.0.15063+ to Microsoft Defender for Endpoint",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.macEnabled",
+        "label": "Connect macOS devices to Microsoft Defender for Endpoint",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.allowPartnerToCollectIOSApplicationMetadata",
+        "label": "Enable App Sync (send application inventory) for iOS/iPadOS devices",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.allowPartnerToCollectIOSPersonalApplicationMetadata",
+        "label": "Send full application inventory data on personally owned iOS/iPadOS devices",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.allowPartnerToCollectIosCertificateMetadata",
+        "label": "Enable Certificate Sync for iOS/iPadOS devices",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.allowPartnerToCollectIosPersonalCertificateMetadata",
+        "label": "Send full certificate inventory data on personally owned iOS/iPadOS devices",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.partnerUnsupportedOsVersionBlocked",
+        "label": "Block unsupported OS versions",
+        "default": true
+      },
+      {
+        "type": "heading",
+        "name": "standards.MDEConnector._heading_mam",
+        "label": "App protection policy evaluation",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.androidMobileApplicationManagementEnabled",
+        "label": "Connect Android devices to Microsoft Defender for Endpoint (App Protection Policy)",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.MDEConnector.iosMobileApplicationManagementEnabled",
+        "label": "Connect iOS/iPadOS devices to Microsoft Defender for Endpoint (App Protection Policy)",
+        "default": false
+      },
+      {
+        "type": "heading",
+        "name": "standards.MDEConnector._heading_shared",
+        "label": "Shared settings",
+        "required": false
+      },
+      {
+        "type": "number",
+        "name": "standards.MDEConnector.partnerUnresponsivenessThresholdInDays",
+        "label": "Number of days until partner is unresponsive (1-90)",
+        "defaultValue": 7,
+        "required": false,
+        "validators": {
+          "min": {
+            "value": 1,
+            "message": "Minimum value is 1"
+          },
+          "max": {
+            "value": 90,
+            "message": "Maximum value is 90"
+          }
+        }
+      }
+    ],
+    "label": "Configure Microsoft Defender for Endpoint Connector",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-03-22",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": [""]
   }
 ]
