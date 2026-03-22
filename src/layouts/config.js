@@ -347,12 +347,17 @@ export const nativeMenuItems = [
       },
       {
         title: "Reports",
-        permissions: ["Tenant.DeviceCompliance.*"],
+        permissions: ["Tenant.DeviceCompliance.*", "Security.Defender.*"],
         items: [
           {
             title: "Device Compliance",
             path: "/security/reports/list-device-compliance",
             permissions: ["Tenant.DeviceCompliance.*"],
+          },
+          {
+            title: "MDE Onboarding",
+            path: "/security/reports/mde-onboarding",
+            permissions: ["Security.Defender.*"],
           },
         ],
       },
