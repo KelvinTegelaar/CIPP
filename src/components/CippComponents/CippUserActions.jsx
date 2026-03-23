@@ -23,8 +23,9 @@ import {
 import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
 import { useSettings } from "../../hooks/use-settings.js";
 import { usePermissions } from "../../hooks/use-permissions";
-import { Tooltip, Box } from "@mui/material";
+import { Tooltip, Box, Divider, Typography } from "@mui/material";
 import CippFormComponent from "./CippFormComponent";
+import { CippFormCondition } from "./CippFormCondition";
 import { useWatch } from "react-hook-form";
 
 // Separate component for Manage Licenses form to avoid hook issues
@@ -257,6 +258,62 @@ const OutOfOfficeForm = ({ formControl }) => {
         multiline
         rows={4}
       />
+
+      {!areDateFieldsDisabled && (
+        <>
+          <Divider sx={{ my: 1 }} />
+          <Typography variant="subtitle2">Calendar Options</Typography>
+
+          <CippFormComponent
+            type="switch"
+            name="CreateOOFEvent"
+            label="Block my calendar for this period"
+            formControl={formControl}
+          />
+          <CippFormCondition
+            formControl={formControl}
+            field="CreateOOFEvent"
+            compareType="is"
+            compareValue={true}
+          >
+            <CippFormComponent
+              type="textField"
+              name="OOFEventSubject"
+              label="Calendar Event Subject"
+              formControl={formControl}
+            />
+          </CippFormCondition>
+
+          <CippFormComponent
+            type="switch"
+            name="AutoDeclineFutureRequestsWhenOOF"
+            label="Automatically decline new invitations during this period"
+            formControl={formControl}
+          />
+
+          <CippFormComponent
+            type="switch"
+            name="DeclineEventsForScheduledOOF"
+            label="Decline and cancel my meetings during this period"
+            formControl={formControl}
+          />
+          <CippFormCondition
+            formControl={formControl}
+            field="DeclineEventsForScheduledOOF"
+            compareType="is"
+            compareValue={true}
+          >
+            <CippFormComponent
+              type="richText"
+              name="DeclineMeetingMessage"
+              label="Decline Message"
+              formControl={formControl}
+              multiline
+              rows={3}
+            />
+          </CippFormCondition>
+        </>
+      )}
     </>
   );
 };
