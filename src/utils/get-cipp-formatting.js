@@ -10,7 +10,7 @@ import {
   PrecisionManufacturing,
   BarChart,
 } from "@mui/icons-material";
-import { Chip, Link, SvgIcon } from "@mui/material";
+import { Chip, Link, SvgIcon, Tooltip } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
@@ -220,7 +220,11 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     (hardwareHashFields.includes(cellName) || cellNameLower.includes("hardware"))
   ) {
     if (data.length > 15) {
-      return isText ? data : `${data.substring(0, 15)}...`;
+      return isText ? data : (
+        <Tooltip title={data} placement="top" arrow>
+          <span>{data.substring(0, 15)}...</span>
+        </Tooltip>
+      );
     }
     return isText ? data : data;
   }
@@ -229,7 +233,11 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   const messageFields = ["Message"];
   if (messageFields.includes(cellName)) {
     if (typeof data === "string" && data.length > 120) {
-      return isText ? data : `${data.substring(0, 120)}...`;
+      return isText ? data : (
+        <Tooltip title={data} placement="top" arrow>
+          <span>{data.substring(0, 120)}...</span>
+        </Tooltip>
+      );
     }
     return isText ? data : data;
   }
