@@ -10,6 +10,10 @@ List Alerts shows summary of the number of alerts across your managed Microsoft 
 
 The properties returned are for the Graph resource type `incident`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/security-incident?view=graph-rest-1.0#properties).
 
+## Table Filtering
+
+The top section will allow you to filter for specific dates that you want to review. Select the start date and end date for the results you would like to receive. Leave a date blank to receive all results before/after that date, respectively.
+
 ## Table Actions
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Assign to self</td><td>Assigns the incident in Entra to yourself</td><td>true</td></tr><tr><td>Set status to active</td><td>Sets the status to active from the current status</td><td>true</td></tr><tr><td>Set status to in progress</td><td>Sets the status to in progress from the current status</td><td>true</td></tr><tr><td>Set status to resolved</td><td>Set the status to resolved from the current status</td><td>true</td></tr><tr><td>More info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>

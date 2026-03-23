@@ -18,7 +18,7 @@ Your existing templates will be displayed in this table along with the attribute
 
 ## Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Delete Template</td><td>Opens a modal to confirm deletion of the selected template(s)</td><td>true</td></tr><tr><td>More Info</td><td></td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Template</td><td>Opens the selected template to allow you to change the attributes that were previously set.</td><td>false</td></tr><tr><td>Delete Template</td><td>Opens a modal to confirm deletion of the selected template(s)</td><td>true</td></tr><tr><td>More Info</td><td></td><td>false</td></tr></tbody></table>
 
 ***
 

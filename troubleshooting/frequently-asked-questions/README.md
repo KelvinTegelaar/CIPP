@@ -10,10 +10,11 @@ SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instr
 
 CIPP-HOSTED NOTE: Updates can take several hours to roll out to all instances depending on how well GitHub and Azure are communicating at the time the release is pushed. If it's been more than 48 hours, follow these instructions and then reach out to CIPP's helpdesk if still not resolved.
 
-CIPP v7+ heavily relies on caching. Because of this it is necessary to clear your browser's cookies and cache to pull in the most up to date version of CIPP's frontend.
+CIPP heavily relies on caching. Because of this it is necessary to clear your browser's cookies and cache to pull in the most up to date version of CIPP's frontend.
 
 * Chrome/Edge - Open DevTools (F12), right click on the refresh button, select "Empty cache and hard reset"
 * Firefox - Click the padlock in the URL bar and select "Clear cookies and site data..."
+* Alternatively, you can use the [speed-dial.md](../../user-documentation/shared-features/speed-dial.md "mention")option to "Clear Cache and Reload"
 
 </details>
 

@@ -57,6 +57,7 @@
   * [Variable Auto Complete](user-documentation/shared-features/variable-auto-complete.md)
   * [Release Notes Notification](user-documentation/shared-features/release-notes-notification.md)
   * [Breadcrumb Navigation](user-documentation/shared-features/breadcrumb-navigation.md)
+  * [Global Page Icon](user-documentation/shared-features/global-page-icon.md)
 * [CIPP Dashboard](user-documentation/dashboard/README.md)
   * [Legacy CIPP Dashboard](user-documentation/dashboard/dashboard.md)
 * [Identity Management](user-documentation/identity/README.md)
