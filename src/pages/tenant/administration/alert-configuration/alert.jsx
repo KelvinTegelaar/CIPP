@@ -184,6 +184,7 @@ const AlertWizard = () => {
           recurrence: recurrenceOption,
           postExecution: postExecutionValue,
           startDateTime: startDateTimeForForm,
+          CustomSubject: alert.RawAlert.CustomSubject || "",
           AlertComment: alert.RawAlert.AlertComment || "",
         };
         if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
@@ -256,6 +257,7 @@ const AlertWizard = () => {
           Actions: alert.RawAlert.Actions,
           logbook: foundLogbook,
           AlertComment: alert.RawAlert.AlertComment || "",
+          CustomSubject: alert.RawAlert.CustomSubject || "",
           conditions: [], // Include empty array to register field structure
         };
         // Reset first without spawning rows to avoid rendering empty operator fields
@@ -477,7 +479,9 @@ const AlertWizard = () => {
       RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
       tenantFilter: values.tenantFilter,
       excludedTenants: values.excludedTenants,
-      Name: `${values.tenantFilter?.label || values.tenantFilter?.value}: ${values.command.label}`,
+      Name: values.CustomSubject
+        ? `${values.tenantFilter?.label || values.tenantFilter?.value}: ${values.CustomSubject}`
+        : `${values.tenantFilter?.label || values.tenantFilter?.value}: ${values.command.label}`,
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
       Parameters: getInputParams(),
       ScheduledTime: Math.floor(new Date().getTime() / 1000) + 60,
@@ -485,6 +489,7 @@ const AlertWizard = () => {
       Recurrence: values.recurrence,
       PostExecution: values.postExecution,
       AlertComment: values.AlertComment,
+      CustomSubject: values.CustomSubject,
     };
     apiRequest.mutate(
       { url: "/api/AddScheduledItem?hidden=true", data: postObject },
@@ -600,19 +605,7 @@ const AlertWizard = () => {
                       </Grid>
 
                       <Grid size={12}>
-                        <CippButtonCard
-                          title="Alert Criteria"
-                          CardButton={
-                            <Button
-                              disabled={isValid ? false : true}
-                              type="submit"
-                              startIcon={<Save />}
-                            >
-                              Save Alert
-                            </Button>
-                          }
-                          sx={{ mb: 3 }}
-                        >
+                        <CippButtonCard title="Alert Criteria" sx={{ mb: 3 }}>
                           <Grid container spacing={3} sx={{ mb: 2 }}>
                             <Grid size={12}>
                               <CippFormComponent
@@ -813,7 +806,23 @@ const AlertWizard = () => {
                               </Grid>
                             </Grid>
                           ))}
+                        </CippButtonCard>
+                      </Grid>
 
+                      <Grid size={12}>
+                        <CippButtonCard
+                          title="Notification Settings"
+                          sx={{ mb: 3 }}
+                          CardButton={
+                            <Button
+                              disabled={isValid ? false : true}
+                              type="submit"
+                              startIcon={<Save />}
+                            >
+                              Save Alert
+                            </Button>
+                          }
+                        >
                           <Grid size={12} sx={{ mt: 2 }}>
                             <CippFormComponent
                               type="autoComplete"
@@ -828,6 +837,15 @@ const AlertWizard = () => {
                               options={actionsToTake}
                             />
                           </Grid>
+                          <Grid size={12}>
+                            <CippFormComponent
+                              type="textField"
+                              name="CustomSubject"
+                              label="Custom Subject"
+                              formControl={formControl}
+                              helperText="This text will be prefixed with the Tenant default domain name for easier filtering (e.g. $TenantDomain - $CustomSubject). Leave blank to use default subject format."
+                            />
+                          </Grid>
                           <Grid size={12} sx={{ mt: 2 }}>
                             <CippFormComponent
                               type="textField"
@@ -839,6 +857,7 @@ const AlertWizard = () => {
                               placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
                             />
                           </Grid>
+
                           <Grid size={12} sx={{ mt: 2 }}>
                             <CippApiResults apiObject={apiRequest} />
                           </Grid>
@@ -897,19 +916,7 @@ const AlertWizard = () => {
                       </Grid>
 
                       <Grid size={12}>
-                        <CippButtonCard
-                          title="Alert Criteria"
-                          CardButton={
-                            <Button
-                              variant="contained"
-                              disabled={isValid ? false : true}
-                              type="submit"
-                              startIcon={<Save />}
-                            >
-                              Save Alert
-                            </Button>
-                          }
-                        >
+                        <CippButtonCard title="Alert Criteria">
                           <Grid spacing={2} container>
                             <Grid size={{ xs: 12, md: 6 }}>
                               <CippFormComponent
@@ -995,34 +1002,61 @@ const AlertWizard = () => {
                                   </Grid>
                                 ))}
                             </Grid>
-                            <Grid size={12}>
-                              <CippFormComponent
-                                type="autoComplete"
-                                name="postExecution"
-                                label="Alert via"
-                                validators={{
-                                  required: { value: true, message: "This field is required" },
-                                }}
-                                formControl={formControl}
-                                multiple={true}
-                                creatable={false}
-                                options={postExecutionOptions}
-                              />
-                            </Grid>
-                            <Grid size={12}>
-                              <CippFormComponent
-                                type="textField"
-                                name="AlertComment"
-                                label="Alert Comment"
-                                formControl={formControl}
-                                multiline={true}
-                                rows={3}
-                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
-                              />
-                            </Grid>
-                            <Grid size={12}>
-                              <CippApiResults apiObject={apiRequest} />
-                            </Grid>
+                          </Grid>
+                        </CippButtonCard>
+                      </Grid>
+
+                      <Grid size={12}>
+                        <CippButtonCard
+                          title="Notification Settings"
+                          sx={{ mb: 3 }}
+                          CardButton={
+                            <Button
+                              disabled={isValid ? false : true}
+                              type="submit"
+                              startIcon={<Save />}
+                            >
+                              Save Alert
+                            </Button>
+                          }
+                        >
+                          <Grid size={12}>
+                            <CippFormComponent
+                              type="textField"
+                              name="CustomSubject"
+                              label="Custom Subject"
+                              formControl={formControl}
+                              helperText="This text will be prefixed with the Tenant default domain name for easier filtering (e.g. $TenantDomain - $CustomSubject). Leave blank to use default subject format."
+                            />
+                          </Grid>
+                          <Grid size={12} sx={{ mt: 2 }}>
+                            <CippFormComponent
+                              type="autoComplete"
+                              name="postExecution"
+                              label="Actions to take"
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
+                              formControl={formControl}
+                              multiple={true}
+                              creatable={false}
+                              options={postExecutionOptions}
+                            />
+                          </Grid>
+                          <Grid size={12} sx={{ mt: 2 }}>
+                            <CippFormComponent
+                              type="textField"
+                              name="AlertComment"
+                              label="Alert Comment"
+                              formControl={formControl}
+                              multiline={true}
+                              rows={3}
+                              placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
+                            />
+                          </Grid>
+
+                          <Grid size={12} sx={{ mt: 2 }}>
+                            <CippApiResults apiObject={apiRequest} />
                           </Grid>
                         </CippButtonCard>
                       </Grid>

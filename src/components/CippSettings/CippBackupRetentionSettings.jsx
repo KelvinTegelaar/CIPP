@@ -1,8 +1,7 @@
-import { Button, ButtonGroup, SvgIcon, Typography, TextField, Box } from "@mui/material";
+import { Button, Typography, TextField, Box } from "@mui/material";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
-import { History } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 
 const CippBackupRetentionSettings = () => {
@@ -55,40 +54,36 @@ const CippBackupRetentionSettings = () => {
     }
   };
 
-  const RetentionControls = () => {
-    return (
-      <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
-        <TextField
-          size="small"
-          type="number"
-          value={retentionDays}
-          onChange={handleInputChange}
-          disabled={retentionChange.isPending || retentionSetting.isLoading}
-          inputProps={{ min: 7 }}
-          error={!!error}
-          helperText={error}
-          sx={{ width: "120px" }}
-          label="Days"
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          disabled={retentionChange.isPending || retentionSetting.isLoading || !!error}
-          onClick={handleRetentionChange}
-          sx={{ mt: 0.5 }}
-        >
-          Save
-        </Button>
-      </Box>
-    );
-  };
-
   return (
     <CippButtonCard
       title="Backup Retention"
       cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
-      CardButton={<RetentionControls />}
+      CardButton={
+        <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
+          <TextField
+            size="small"
+            type="number"
+            value={retentionDays}
+            onChange={handleInputChange}
+            disabled={retentionChange.isPending || retentionSetting.isLoading}
+            inputProps={{ min: 7 }}
+            error={!!error}
+            helperText={error}
+            sx={{ width: "120px" }}
+            label="Days"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            disabled={retentionChange.isPending || retentionSetting.isLoading || !!error}
+            onClick={handleRetentionChange}
+            sx={{ mt: 0.5 }}
+          >
+            Save
+          </Button>
+        </Box>
+      }
     >
       <Typography variant="body2">
         Configure how long to keep backup files. Both CIPP system backups and tenant backups will be

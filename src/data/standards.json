@@ -1357,7 +1357,7 @@
         "creatable": false,
         "required": false,
         "name": "standards.AppManagementPolicy.passwordCredentialsPasswordAddition",
-        "label": "Password Addition",
+        "label": "Disable Password Addition",
         "options": [
           {
             "label": "Enabled",
@@ -1375,7 +1375,7 @@
         "creatable": false,
         "required": false,
         "name": "standards.AppManagementPolicy.passwordCredentialsCustomPasswordAddition",
-        "label": "Custom Password",
+        "label": "Disable Custom Password",
         "options": [
           {
             "label": "Enabled",
@@ -1780,8 +1780,8 @@
     "name": "standards.AddDMARCToMOERA",
     "cat": "Global Standards",
     "tag": ["CIS M365 5.0 (2.1.10)", "Security", "PhishingProtection"],
-    "helpText": "Note: requires 'Domain Name Administrator' GDAP role. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default value is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
-    "docsDescription": "Note: requires 'Domain Name Administrator' GDAP role. Adds a DMARC record to MOERA (onmicrosoft.com) domains. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default record is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
+    "helpText": "** Remediation is not available ** Note: requires 'Domain Name Administrator' GDAP role. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default value is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
+    "docsDescription": "** Remediation is not available ** Note: requires 'Domain Name Administrator' GDAP role. Adds a DMARC record to MOERA (onmicrosoft.com) domains. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default record is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
     "executiveText": "Implements advanced email security for Microsoft's default domain names (onmicrosoft.com) to prevent criminals from impersonating your organization. This blocks fraudulent emails that could damage your company's reputation and protects partners and customers from phishing attacks using your domain names.",
     "addedComponent": [
       {
@@ -1805,7 +1805,10 @@
     "impactColour": "info",
     "addedDate": "2025-06-16",
     "powershellEquivalent": "Portal only",
-    "recommendedBy": ["CIS", "Microsoft"]
+    "recommendedBy": ["CIS", "Microsoft"],
+    "disabledFeatures": {
+      "remediate": true
+    }
   },
   {
     "name": "standards.EnableMailboxAuditing",
@@ -4741,6 +4744,11 @@
         "label": "Allow anonymous users to join meeting"
       },
       {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToStartMeeting",
+        "label": "Allow anonymous users to start meeting"
+      },
+      {
         "type": "autoComplete",
         "required": false,
         "multiple": false,
@@ -4758,10 +4766,23 @@
             "value": "EveryoneInCompanyExcludingGuests"
           },
           {
+            "label": "People in same or federated organizations",
+            "value": "EveryoneInSameAndFederatedCompany"
+          },
+          {
             "label": "People who were invited",
             "value": "InvitedUsers"
+          },
+          {
+            "label": "Everyone",
+            "value": "Everyone"
           }
         ]
+      },
+            {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowPSTNUsersToBypassLobby",
+        "label": "Allow dial-in users to bypass lobby"
       },
       {
         "type": "autoComplete",
@@ -5826,21 +5847,33 @@
     "name": "standards.DeployCheckChromeExtension",
     "cat": "Intune Standards",
     "tag": [],
-    "helpText": "Deploys the Check Chrome extension via Intune OMA-URI custom policies for both Chrome and Edge browsers with configurable settings. Chrome ID: benimdeioplgkhanklclahllklceahbe, Edge ID: knepjpocdagponkonnbggpcnhnaikajg",
-    "docsDescription": "Creates Intune OMA-URI custom policies that automatically install and configure the Check Chrome extension on managed devices for both Google Chrome and Microsoft Edge browsers. This ensures the extension is deployed consistently across all corporate devices with customizable settings.",
-    "executiveText": "Automatically deploys the Check browser extension across all company devices with configurable security and branding settings, ensuring consistent security monitoring and compliance capabilities. This extension provides enhanced security features and monitoring tools that help protect against threats while maintaining user productivity.",
+    "helpText": "Deploys the Check by CyberDrain browser extension via a Win32 script app in Intune for both Chrome and Edge browsers with configurable settings. Chrome ID: benimdeioplgkhanklclahllklceahbe, Edge ID: knepjpocdagponkonnbggpcnhnaikajg",
+    "docsDescription": "Creates an Intune Win32 script application that writes registry keys to install and configure the Check by CyberDrain browser extension on managed devices for both Google Chrome and Microsoft Edge browsers. Uses a PowerShell detection script to enforce configuration drift — when settings change in CIPP the app is automatically redeployed.",
+    "executiveText": "Automatically deploys the Check by CyberDrain browser extension across all company devices with configurable security and branding settings, ensuring consistent security monitoring and compliance capabilities. This extension provides enhanced security features and monitoring tools that help protect against threats while maintaining user productivity.",
     "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.showNotifications",
+        "label": "Show notifications",
+        "defaultValue": true
+      },
       {
         "type": "switch",
         "name": "standards.DeployCheckChromeExtension.enableValidPageBadge",
         "label": "Enable valid page badge",
-        "defaultValue": true
+        "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DeployCheckChromeExtension.enablePageBlocking",
         "label": "Enable page blocking",
         "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.forceToolbarPin",
+        "label": "Force pin extension to toolbar",
+        "defaultValue": false
       },
       {
         "type": "switch",
@@ -5853,13 +5886,14 @@
         "name": "standards.DeployCheckChromeExtension.customRulesUrl",
         "label": "Custom Rules URL",
         "placeholder": "https://YOUR-CIPP-SERVER-URL/rules.json",
+        "helperText": "Enter the URL for custom rules if you have them. This should point to a JSON file with the same structure as the rules.json used for CIPP reporting.",
         "required": false
       },
       {
         "type": "number",
         "name": "standards.DeployCheckChromeExtension.updateInterval",
         "label": "Update interval (hours)",
-        "defaultValue": 12
+        "defaultValue": 24
       },
       {
         "type": "switch",
@@ -5868,10 +5902,50 @@
         "defaultValue": false
       },
       {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableGenericWebhook",
+        "label": "Enable generic webhook",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.webhookUrl",
+        "label": "Webhook URL",
+        "placeholder": "https://webhook.example.com/endpoint",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.DeployCheckChromeExtension.webhookEvents",
+        "label": "Webhook Events",
+        "placeholder": "e.g. pageBlocked, pageAllowed"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "freeSolo": true,
+        "name": "standards.DeployCheckChromeExtension.urlAllowlist",
+        "label": "URL Allowlist",
+        "placeholder": "e.g. https://example.com/*",
+        "helperText": "Enter URLs to allowlist in the extension. Press enter to add each URL. Wildcards are allowed. This should be used for sites that are being blocked by the extension but are known to be safe."
+      },
+      {
         "type": "textField",
         "name": "standards.DeployCheckChromeExtension.companyName",
         "label": "Company Name",
         "placeholder": "YOUR-COMPANY",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.companyURL",
+        "label": "Company URL",
+        "placeholder": "https://yourcompany.com",
         "required": false
       },
       {
@@ -5892,7 +5966,7 @@
         "type": "textField",
         "name": "standards.DeployCheckChromeExtension.primaryColor",
         "label": "Primary Color",
-        "placeholder": "#0044CC",
+        "placeholder": "#F77F00",
         "required": false
       },
       {
@@ -5904,7 +5978,7 @@
       },
       {
         "name": "AssignTo",
-        "label": "Who should this policy be assigned to?",
+        "label": "Who should this app be assigned to?",
         "type": "radio",
         "options": [
           {
@@ -5936,11 +6010,11 @@
         "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
       }
     ],
-    "label": "Deploy Check Chrome Extension",
+    "label": "Deploy Check by CyberDrain Browser Extension",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2025-09-18",
-    "powershellEquivalent": "New-GraphPostRequest -uri 'https://graph.microsoft.com/beta/deviceManagement/configurationPolicies'",
+    "powershellEquivalent": "Add-CIPPW32ScriptApplication",
     "recommendedBy": ["CIPP"]
   },
   {
