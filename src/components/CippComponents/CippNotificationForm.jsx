@@ -69,6 +69,7 @@ export const CippNotificationForm = ({
         onePerTenant: listNotificationConfig.data?.onePerTenant,
         sendtoIntegration: listNotificationConfig.data?.sendtoIntegration,
         includeTenantId: listNotificationConfig.data?.includeTenantId,
+        UseStandardizedSchema: listNotificationConfig.data?.UseStandardizedSchema || false,
       });
     }
   }, [listNotificationConfig.isSuccess]);
@@ -135,6 +136,14 @@ export const CippNotificationForm = ({
               label="Send to integration - This allows you to send alerts to your PSA."
               name="sendtoIntegration"
               formControl={formControl}
+            />
+            <CippFormComponent
+              type="switch"
+              disabled={listNotificationConfig.isFetching}
+              label="Use Standardized Alert Schema"
+              name="UseStandardizedSchema"
+              formControl={formControl}
+              helperText="Enable standardized JSON schema for webhook alerts. This provides a consistent structure across all alert types, making Power Automate and Logic Apps integrations easier. Disabled by default for backward compatibility."
             />
           </Grid>
           {showTestButton && (
