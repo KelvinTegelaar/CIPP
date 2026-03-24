@@ -9,6 +9,7 @@ import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog"
 import { useDialog } from "../../../hooks/use-dialog";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
+import { ApiGetCall } from "../../../api/ApiCall";
 import M365Licenses from "../../../data/M365Licenses.json";
 import { useMemo } from "react";
 
@@ -19,7 +20,16 @@ const Page = () => {
   const resetDialog = useDialog();
   const simpleColumns = ["Product_Display_Name", "GUID"];
 
-  // Deduplicate licenses by GUID and create autocomplete options
+  const excludedLicenses = ApiGetCall({
+    url: "/api/ListExcludedLicenses",
+    queryKey: "ExcludedLicenses",
+  });
+
+  const excludedGuids = useMemo(
+    () => excludedLicenses.data?.Results?.map((license) => license.GUID) || [],
+    [excludedLicenses.data]
+  );
+
   const licenseOptions = useMemo(() => {
     const uniqueLicenses = new Map();
     M365Licenses.forEach((license) => {
@@ -148,6 +158,7 @@ const Page = () => {
                 name="selectedLicense"
                 label="Select License"
                 options={licenseOptions}
+                removeOptions={excludedGuids}
                 formControl={formHook}
                 multiple={false}
                 validators={{ required: "Please select a license" }}
