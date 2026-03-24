@@ -30,7 +30,7 @@ Go to `Tenant Administration` > `GDAP Management` > `Role Mappings` and click `M
 {% step %}
 ### Add the CIPP Service Account to the New Role Groups
 
-If you've added your partner/internal tenant to CIPP, use `Identity Management` > `Administration` > `Users` to add the service account to the three addiitonal security groups. If not, manually complete this in Entra or the Microsoft 365 Admin portal.
+If you've added your partner/internal tenant to CIPP, use `Identity Management` > `Administration` > `Users` to add the service account to the three additional security groups. If not, manually complete this in Entra or the Microsoft 365 Admin portal.
 {% endstep %}
 
 {% step %}
