@@ -29,7 +29,6 @@ const Page = () => {
   });
 
   const watcher = useWatch({ control: formControl.control });
-<<<<<<< fix/jit-admin-tap-policy-check
   const useTAP = useWatch({ control: formControl.control, name: "UseTAP" });
 
   const tapPolicy = ApiGetCall({
@@ -44,7 +43,6 @@ const Page = () => {
     waiting: !!selectedTenant,
   });
   const tapEnabled = tapPolicy.isSuccess && tapPolicy.data?.Results?.[0]?.state === "enabled";
-=======
   const useRoles = useWatch({ control: formControl.control, name: "useRoles" });
   const useGroups = useWatch({ control: formControl.control, name: "useGroups" });
 
@@ -78,7 +76,6 @@ const Page = () => {
       formControl.setValue("expireAction", null);
     }
   }, [useRoles, useGroups]);
->>>>>>> dev
 
   // Simple duration parser for basic ISO 8601 durations
   const parseDuration = (duration) => {
