@@ -25,15 +25,13 @@ const Page = () => {
     queryKey: "ExcludedLicenses",
   });
 
-  const excludedGuids = useMemo(
-    () => excludedLicenses.data?.Results?.map((license) => license.GUID) || [],
-    [excludedLicenses.data]
-  );
-
   const licenseOptions = useMemo(() => {
+    const excludedGuids = new Set(
+      excludedLicenses.data?.Results?.map((license) => license.GUID) || []
+    );
     const uniqueLicenses = new Map();
     M365Licenses.forEach((license) => {
-      if (!uniqueLicenses.has(license.GUID)) {
+      if (!uniqueLicenses.has(license.GUID) && !excludedGuids.has(license.GUID)) {
         uniqueLicenses.set(license.GUID, {
           label: license.Product_Display_Name,
           value: license.GUID,
@@ -43,7 +41,7 @@ const Page = () => {
     return Array.from(uniqueLicenses.values()).sort((a, b) =>
       a.label.localeCompare(b.label)
     );
-  }, []);
+  }, [excludedLicenses.data]);
 
   const actions = [
     {
@@ -158,7 +156,6 @@ const Page = () => {
                 name="selectedLicense"
                 label="Select License"
                 options={licenseOptions}
-                removeOptions={excludedGuids}
                 formControl={formHook}
                 multiple={false}
                 validators={{ required: "Please select a license" }}
