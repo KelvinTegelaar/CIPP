@@ -4,6 +4,7 @@ import {
   Archive,
   Clear,
   CloudDone,
+  ContentCopy,
   Edit,
   Email,
   ForwardToInbox,
@@ -342,6 +343,55 @@ export const useCippUserActions = () => {
       icon: <Edit />,
       color: "success",
       target: "_self",
+      condition: () => canWriteUser,
+    },
+    {
+      label: "Create Template from User",
+      type: "POST",
+      icon: <ContentCopy />,
+      url: "/api/AddUserDefaults",
+      fields: [
+        {
+          type: "textField",
+          name: "templateName",
+          label: "Template Name",
+          validators: { required: "Please enter a template name" },
+        },
+        {
+          type: "switch",
+          name: "defaultForTenant",
+          label: "Default for Tenant",
+        },
+      ],
+      customDataformatter: (row, action, formData) => {
+        const user = Array.isArray(row) ? row[0] : row;
+        const licenses =
+          user.assignedLicenses?.map((l) => ({
+            label: getCippLicenseTranslation([l])?.[0] || l.skuId,
+            value: l.skuId,
+          })) || [];
+        return {
+          tenantFilter: tenant,
+          templateName: formData.templateName,
+          defaultForTenant: formData.defaultForTenant || false,
+          sourceUserId: user.id,
+          jobTitle: user.jobTitle || "",
+          department: user.department || "",
+          streetAddress: user.streetAddress || "",
+          city: user.city || "",
+          state: user.state || "",
+          postalCode: user.postalCode || "",
+          country: user.country || "",
+          companyName: user.companyName || "",
+          mobilePhone: user.mobilePhone || "",
+          "businessPhones[0]": user.businessPhones?.[0] || "",
+          usageLocation: user.usageLocation || "",
+          licenses: licenses,
+        };
+      },
+      confirmText:
+        "Create a new user default template based on [displayName]'s properties (job title, department, location, licenses, and group memberships).",
+      multiPost: false,
       condition: () => canWriteUser,
     },
     {
