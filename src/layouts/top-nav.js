@@ -16,7 +16,11 @@ import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   Box,
+  Button,
   Divider,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Stack,
   SvgIcon,
@@ -37,11 +41,13 @@ import { NotificationsPopover } from "./notifications-popover";
 import { useDialog } from "../hooks/use-dialog";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CippCentralSearch } from "../components/CippComponents/CippCentralSearch";
+import { CippUniversalSearchV2 } from "../components/CippCards/CippUniversalSearchV2";
 
 const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
   const searchDialog = useDialog();
+  const universalSearchDialog = useDialog();
   const { onNavOpen } = props;
   const settings = useSettings();
   const { bookmarks, setBookmarks } = useUserBookmarks();
@@ -64,6 +70,7 @@ export const TopNav = (props) => {
   const [animatingPair, setAnimatingPair] = useState(null);
   const [flashSort, setFlashSort] = useState(false);
   const [flashLock, setFlashLock] = useState(false);
+  const [universalSearchKey, setUniversalSearchKey] = useState(0);
   const itemRefs = useRef({});
   const touchDragRef = useRef({ startIdx: null, overIdx: null });
   const tenantSelectorRef = useRef(null);
@@ -198,11 +205,23 @@ export const TopNav = (props) => {
     searchDialog.handleOpen();
   }, [searchDialog.handleOpen]);
 
+  const openUniversalSearch = useCallback(() => {
+    universalSearchDialog.handleOpen();
+  }, [universalSearchDialog.handleOpen]);
+
+  const closeUniversalSearch = useCallback(() => {
+    universalSearchDialog.handleClose();
+    setUniversalSearchKey((prev) => prev + 1);
+  }, [universalSearchDialog.handleClose]);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.altKey && event.key === "k") {
         event.preventDefault();
         tenantSelectorRef.current?.focus();
+      } else if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === "K") {
+        event.preventDefault();
+        openUniversalSearch();
       } else if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
         openSearch();
@@ -212,7 +231,7 @@ export const TopNav = (props) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [openSearch]);
+  }, [openSearch, openUniversalSearch]);
 
   return (
     <Box
@@ -228,6 +247,7 @@ export const TopNav = (props) => {
       <Stack
         direction="row"
         justifyContent="space-between"
+        alignItems="center"
         sx={{
           minHeight: TOP_NAV_HEIGHT,
           px: 3,
@@ -269,6 +289,34 @@ export const TopNav = (props) => {
             </IconButton>
           )}
         </Stack>
+        {!mdDown && (
+          <Box sx={{ flex: 1, mx: 2, display: "flex", justifyContent: "center" }}>
+            <Button
+              variant="outlined"
+              color="inherit"
+              onClick={universalSearchDialog.handleOpen}
+              title="Open CIPP Search (Ctrl/Cmd+Shift+K)"
+              startIcon={
+                <SvgIcon color="inherit" fontSize="small">
+                  <MagnifyingGlassIcon />
+                </SvgIcon>
+              }
+              sx={{
+                textTransform: "none",
+                whiteSpace: "nowrap",
+                borderColor: "neutral.500",
+                borderRadius: 999,
+                px: 2,
+                "&:hover": {
+                  borderColor: "neutral.300",
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                },
+              }}
+            >
+              Universal Search
+            </Button>
+          </Box>
+        )}
         <Stack alignItems="center" direction="row" spacing={1.5}>
           {!mdDown && (
             <IconButton color="inherit" onClick={handleThemeSwitch}>
@@ -570,6 +618,32 @@ export const TopNav = (props) => {
               </Popover>
             </>
           )}
+          <Dialog
+            open={universalSearchDialog.open}
+            onClose={closeUniversalSearch}
+            fullWidth
+            maxWidth="md"
+            sx={{
+              "& .MuiDialog-container": {
+                alignItems: "flex-start",
+              },
+              "& .MuiDialog-paper": {
+                mt: 8,
+              },
+            }}
+          >
+            <DialogTitle sx={{ px: 3, pt: 2, pb: 1 }}>Universal Search</DialogTitle>
+            <DialogContent sx={{ px: 3, pt: 1, pb: 3 }}>
+              <Box>
+                <CippUniversalSearchV2
+                  key={universalSearchKey}
+                  maxResults={12}
+                  autoFocus={true}
+                  onConfirm={closeUniversalSearch}
+                />
+              </Box>
+            </DialogContent>
+          </Dialog>
           <CippCentralSearch open={searchDialog.open} handleClose={searchDialog.handleClose} />
           <NotificationsPopover />
           <AccountPopover
