@@ -2740,11 +2740,12 @@ export const ExecutiveReportButton = (props) => {
 
   // Get real device data - only when preview is open
   const deviceData = ApiGetCall({
-    url: "/api/ListDevices",
+    url: "/api/ListGraphRequest",
     data: {
       tenantFilter: settings.currentTenant,
+      Endpoint: "deviceManagement/managedDevices",
     },
-    queryKey: `devices-report-${settings.currentTenant}`,
+    queryKey: `ListGraphRequest-devices-report-${settings.currentTenant}`,
     waiting: previewOpen,
   });
 
@@ -2861,7 +2862,7 @@ export const ExecutiveReportButton = (props) => {
           brandingSettings={brandingSettings}
           secureScoreData={secureScore.isSuccess ? secureScore : null}
           licensingData={licenseData.isSuccess ? licenseData?.data : null}
-          deviceData={deviceData.isSuccess ? deviceData?.data : null}
+          deviceData={deviceData.isSuccess ? deviceData?.data?.Results : null}
           conditionalAccessData={
             conditionalAccessData.isSuccess ? conditionalAccessData?.data?.Results : null
           }
@@ -3211,7 +3212,7 @@ export const ExecutiveReportButton = (props) => {
                   brandingSettings={brandingSettings}
                   secureScoreData={secureScore.isSuccess ? secureScore : null}
                   licensingData={licenseData.isSuccess ? licenseData?.data : null}
-                  deviceData={deviceData.isSuccess ? deviceData?.data : null}
+                  deviceData={deviceData.isSuccess ? deviceData?.data?.Results : null}
                   conditionalAccessData={
                     conditionalAccessData.isSuccess ? conditionalAccessData?.data?.Results : null
                   }
