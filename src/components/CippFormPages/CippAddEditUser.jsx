@@ -278,6 +278,11 @@ const CippAddEditUser = (props) => {
       if (template.licenses && Array.isArray(template.licenses)) {
         setFieldIfEmpty("licenses", template.licenses);
       }
+
+      // Pass stored group memberships from template to user creation
+      if (template.groupMemberships && Array.isArray(template.groupMemberships) && template.groupMemberships.length > 0) {
+        formControl.setValue("groupMemberships", template.groupMemberships);
+      }
     }
   }, [watcher.userTemplate, formType]);
 
