@@ -5,6 +5,7 @@ import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
 import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -17,6 +18,9 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   Box,
   Divider,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Stack,
   SvgIcon,
@@ -26,6 +30,7 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  TravelExplore,
 } from "@mui/material";
 import { Logo } from "../components/logo";
 import { useSettings } from "../hooks/use-settings";
@@ -37,11 +42,13 @@ import { NotificationsPopover } from "./notifications-popover";
 import { useDialog } from "../hooks/use-dialog";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CippCentralSearch } from "../components/CippComponents/CippCentralSearch";
+import { CippUniversalSearchV2 } from "../components/CippCards/CippUniversalSearchV2";
 
 const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
   const searchDialog = useDialog();
+  const universalSearchDialog = useDialog();
   const { onNavOpen } = props;
   const settings = useSettings();
   const { bookmarks, setBookmarks } = useUserBookmarks();
@@ -64,6 +71,7 @@ export const TopNav = (props) => {
   const [animatingPair, setAnimatingPair] = useState(null);
   const [flashSort, setFlashSort] = useState(false);
   const [flashLock, setFlashLock] = useState(false);
+  const [universalSearchKey, setUniversalSearchKey] = useState(0);
   const itemRefs = useRef({});
   const touchDragRef = useRef({ startIdx: null, overIdx: null });
   const tenantSelectorRef = useRef(null);
@@ -198,11 +206,23 @@ export const TopNav = (props) => {
     searchDialog.handleOpen();
   }, [searchDialog.handleOpen]);
 
+  const openUniversalSearch = useCallback(() => {
+    universalSearchDialog.handleOpen();
+  }, [universalSearchDialog.handleOpen]);
+
+  const closeUniversalSearch = useCallback(() => {
+    universalSearchDialog.handleClose();
+    setUniversalSearchKey((prev) => prev + 1);
+  }, [universalSearchDialog.handleClose]);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.altKey && event.key === "k") {
         event.preventDefault();
         tenantSelectorRef.current?.focus();
+      } else if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === "K") {
+        event.preventDefault();
+        openUniversalSearch();
       } else if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
         openSearch();
@@ -212,7 +232,7 @@ export const TopNav = (props) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [openSearch]);
+  }, [openSearch, openUniversalSearch]);
 
   return (
     <Box
@@ -228,6 +248,7 @@ export const TopNav = (props) => {
       <Stack
         direction="row"
         justifyContent="space-between"
+        alignItems="center"
         sx={{
           minHeight: TOP_NAV_HEIGHT,
           px: 3,
@@ -270,6 +291,15 @@ export const TopNav = (props) => {
           )}
         </Stack>
         <Stack alignItems="center" direction="row" spacing={1.5}>
+          {!mdDown && (
+            <IconButton
+              color="inherit"
+              onClick={openUniversalSearch}
+              title="Open Universal Search (Ctrl/Cmd+Shift+K)"
+            >
+              <TravelExploreIcon color="action" fontSize="small" />
+            </IconButton>
+          )}
           {!mdDown && (
             <IconButton color="inherit" onClick={handleThemeSwitch}>
               <SvgIcon color="action" fontSize="small">
@@ -570,6 +600,32 @@ export const TopNav = (props) => {
               </Popover>
             </>
           )}
+          <Dialog
+            open={universalSearchDialog.open}
+            onClose={closeUniversalSearch}
+            fullWidth
+            maxWidth="md"
+            sx={{
+              "& .MuiDialog-container": {
+                alignItems: "flex-start",
+              },
+              "& .MuiDialog-paper": {
+                mt: 8,
+              },
+            }}
+          >
+            <DialogTitle sx={{ px: 3, pt: 2, pb: 1 }}>Universal Search</DialogTitle>
+            <DialogContent sx={{ px: 3, pt: 1, pb: 3 }}>
+              <Box>
+                <CippUniversalSearchV2
+                  key={universalSearchKey}
+                  maxResults={12}
+                  autoFocus={true}
+                  onConfirm={closeUniversalSearch}
+                />
+              </Box>
+            </DialogContent>
+          </Dialog>
           <CippCentralSearch open={searchDialog.open} handleClose={searchDialog.handleClose} />
           <NotificationsPopover />
           <AccountPopover
