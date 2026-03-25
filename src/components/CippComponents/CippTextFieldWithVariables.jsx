@@ -33,7 +33,12 @@ export const CippTextFieldWithVariables = ({
   // Track cursor position
   const handleSelectionChange = () => {
     if (textFieldRef.current) {
-      setCursorPosition(textFieldRef.current.selectionStart || 0);
+      // Check for input first, then textarea
+      const inputElement =
+        textFieldRef.current.querySelector("input") ||
+        textFieldRef.current.querySelector("textarea") ||
+        textFieldRef.current;
+      setCursorPosition(inputElement?.selectionStart || 0);
     }
   };
 
@@ -97,7 +102,11 @@ export const CippTextFieldWithVariables = ({
       // Get fresh cursor position from the DOM
       let cursorPos = cursorPosition;
       if (textFieldRef.current) {
-        const inputElement = textFieldRef.current.querySelector("input") || textFieldRef.current;
+        // Check for input first, then textarea
+        const inputElement =
+          textFieldRef.current.querySelector("input") ||
+          textFieldRef.current.querySelector("textarea") ||
+          textFieldRef.current;
         if (inputElement && typeof inputElement.selectionStart === "number") {
           cursorPos = inputElement.selectionStart;
         }
@@ -128,8 +137,11 @@ export const CippTextFieldWithVariables = ({
             const newCursorPos = lastPercentIndex + variableString.length;
 
             // Access the actual input element for Material-UI TextField
+            // Check for input first, then textarea
             const inputElement =
-              textFieldRef.current.querySelector("input") || textFieldRef.current;
+              textFieldRef.current.querySelector("input") ||
+              textFieldRef.current.querySelector("textarea") ||
+              textFieldRef.current;
             if (inputElement && inputElement.setSelectionRange) {
               inputElement.setSelectionRange(newCursorPos, newCursorPos);
               inputElement.focus();
