@@ -87,10 +87,12 @@ const Page = () => {
   }, [reportIdValue]);
 
   const organization = ApiGetCall({
-    url: "/api/ListOrg",
-    queryKey: `${currentTenant}-ListOrg`,
-    data: { tenantFilter: currentTenant },
+    url: "/api/ListGraphRequest",
+    queryKey: `${currentTenant}-ListGraphRequest-organization`,
+    data: { tenantFilter: currentTenant, Endpoint: "organization" },
   });
+
+  const organizationRecord = organization.data?.Results?.[0];
 
   const testsApi = ApiGetCall({
     url: "/api/ListTests",
@@ -112,7 +114,7 @@ const Page = () => {
     testsApi.isSuccess && testsApi.data?.TenantCounts
       ? {
           ExecutedAt: testsApi.data?.LatestReportTimeStamp || null,
-          TenantName: organization.data?.displayName || "",
+          TenantName: organizationRecord?.displayName || "",
           Domain: currentTenant || "",
           TestResultSummary: {
             IdentityPassed: testsApi.data.TestCounts?.Identity?.Passed || 0,
@@ -326,7 +328,7 @@ const Page = () => {
         <Grid container spacing={3} sx={{ mb: 6 }}>
           {/* Column 1: Tenant Information */}
           <Grid size={{ xs: 12, lg: 4 }}>
-            <TenantInfoCard data={organization.data} isLoading={organization.isFetching} />
+            <TenantInfoCard data={organizationRecord} isLoading={organization.isFetching} />
           </Grid>
 
           {/* Column 2: Tenant Metrics - 2x3 Grid */}

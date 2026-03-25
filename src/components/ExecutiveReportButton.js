@@ -2709,11 +2709,13 @@ export const ExecutiveReportButton = (props) => {
 
   // Fetch organization data - only when preview is open
   const organization = ApiGetCall({
-    url: "/api/ListOrg",
-    queryKey: `${settings.currentTenant}-ListOrg-report`,
-    data: { tenantFilter: settings.currentTenant },
+    url: "/api/ListGraphRequest",
+    queryKey: `${settings.currentTenant}-ListGraphRequest-organization-report`,
+    data: { tenantFilter: settings.currentTenant, Endpoint: "organization" },
     waiting: previewOpen,
   });
+
+  const organizationRecord = organization.data?.Results?.[0];
 
   // Fetch user counts - only when preview is open
   const dashboard = ApiGetCall({
@@ -2812,8 +2814,8 @@ export const ExecutiveReportButton = (props) => {
   // Button is always available now since we don't need to wait for data
   const shouldShowButton = true;
 
-  const tenantName = organization.data?.displayName || "Tenant";
-  const tenantId = organization.data?.id;
+  const tenantName = organizationRecord?.displayName || "Tenant";
+  const tenantId = organizationRecord?.id;
   const userStats = {
     licensedUsers: dashboard.data?.LicUsers || 0,
     unlicensedUsers:
@@ -2855,7 +2857,7 @@ export const ExecutiveReportButton = (props) => {
           tenantId={tenantId}
           userStats={userStats}
           standardsData={driftComplianceData.data}
-          organizationData={organization.data}
+          organizationData={organizationRecord}
           brandingSettings={brandingSettings}
           secureScoreData={secureScore.isSuccess ? secureScore : null}
           licensingData={licenseData.isSuccess ? licenseData?.data : null}
@@ -2889,7 +2891,7 @@ export const ExecutiveReportButton = (props) => {
     tenantName,
     tenantId,
     userStats,
-    organization.data,
+    organizationRecord,
     dashboard.data,
     brandingSettings,
     secureScore?.isSuccess,
@@ -3205,7 +3207,7 @@ export const ExecutiveReportButton = (props) => {
                   tenantId={tenantId}
                   userStats={userStats}
                   standardsData={driftComplianceData.data}
-                  organizationData={organization.data}
+                  organizationData={organizationRecord}
                   brandingSettings={brandingSettings}
                   secureScoreData={secureScore.isSuccess ? secureScore : null}
                   licensingData={licenseData.isSuccess ? licenseData?.data : null}
