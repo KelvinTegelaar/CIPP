@@ -19,8 +19,9 @@
     "build": "next build && rm -rf package.json yarn.lock",
     "start": "next start",
     "export": "next export",
-    "lint": "next lint",
-    "lint-fix": "next lint --fix",
+    "lint": "npx eslint .",
+    "lint-fix": "npx eslint . --fix",
+    "prettier": "prettier --write '**/*.{js,jsx,json}'",
     "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://127.0.0.1:7071 --verbose=silly"
   },
   "dependencies": {
@@ -117,7 +118,10 @@
     "@svgr/webpack": "8.1.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "9.39.2",
-    "eslint-config-next": "16.1.6"
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.1",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "prettier-eslint": "^16.4.2"
   }
 }
