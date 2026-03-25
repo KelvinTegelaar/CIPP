@@ -8,7 +8,6 @@ import { ApiGetCall } from "../../api/ApiCall.jsx";
 import Portals from "../../data/portals";
 import { BulkActionsMenu } from "../../components/bulk-actions-menu.js";
 import { ExecutiveReportButton } from "../../components/ExecutiveReportButton.js";
-import { CippUniversalSearchV2 } from "../../components/CippCards/CippUniversalSearchV2.jsx";
 import { TabbedLayout } from "../../layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "../../layouts/index.js";
 import tabOptions from "./tabOptions";
@@ -87,10 +86,12 @@ const Page = () => {
   }, [reportIdValue]);
 
   const organization = ApiGetCall({
-    url: "/api/ListOrg",
-    queryKey: `${currentTenant}-ListOrg`,
-    data: { tenantFilter: currentTenant },
+    url: "/api/ListGraphRequest",
+    queryKey: `${currentTenant}-ListGraphRequest-organization`,
+    data: { tenantFilter: currentTenant, Endpoint: "organization" },
   });
+
+  const organizationRecord = organization.data?.Results?.[0];
 
   const testsApi = ApiGetCall({
     url: "/api/ListTests",
@@ -112,7 +113,7 @@ const Page = () => {
     testsApi.isSuccess && testsApi.data?.TenantCounts
       ? {
           ExecutedAt: testsApi.data?.LatestReportTimeStamp || null,
-          TenantName: organization.data?.displayName || "",
+          TenantName: organizationRecord?.displayName || "",
           Domain: currentTenant || "",
           TestResultSummary: {
             IdentityPassed: testsApi.data.TestCounts?.Identity?.Passed || 0,
@@ -208,13 +209,6 @@ const Page = () => {
   return (
     <Container maxWidth={false} sx={{ mt: 12, mb: 6 }}>
       <Box sx={{ width: "100%", mx: "auto" }}>
-        {/* Universal Search */}
-        <Card sx={{ mb: 3 }}>
-          <CardContent sx={{ px: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
-            <CippUniversalSearchV2 />
-          </CardContent>
-        </Card>
-
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid size={{ xs: 12, md: 5 }}>
             <Card sx={{ height: "100%" }}>
@@ -326,7 +320,7 @@ const Page = () => {
         <Grid container spacing={3} sx={{ mb: 6 }}>
           {/* Column 1: Tenant Information */}
           <Grid size={{ xs: 12, lg: 4 }}>
-            <TenantInfoCard data={organization.data} isLoading={organization.isFetching} />
+            <TenantInfoCard data={organizationRecord} isLoading={organization.isFetching} />
           </Grid>
 
           {/* Column 2: Tenant Metrics - 2x3 Grid */}
