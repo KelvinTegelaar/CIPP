@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
+import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
 import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
 import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
@@ -30,7 +31,6 @@ import {
   ListItem,
   ListItemText,
   Typography,
-  TravelExplore,
 } from "@mui/material";
 import { Logo } from "../components/logo";
 import { useSettings } from "../hooks/use-settings";
@@ -40,14 +40,11 @@ import { AccountPopover } from "./account-popover";
 import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
 import { NotificationsPopover } from "./notifications-popover";
 import { useDialog } from "../hooks/use-dialog";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { CippCentralSearch } from "../components/CippComponents/CippCentralSearch";
 import { CippUniversalSearchV2 } from "../components/CippCards/CippUniversalSearchV2";
 
 const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
-  const searchDialog = useDialog();
   const universalSearchDialog = useDialog();
   const { onNavOpen } = props;
   const settings = useSettings();
@@ -72,6 +69,7 @@ export const TopNav = (props) => {
   const [flashSort, setFlashSort] = useState(false);
   const [flashLock, setFlashLock] = useState(false);
   const [universalSearchKey, setUniversalSearchKey] = useState(0);
+  const [universalSearchDefaultType, setUniversalSearchDefaultType] = useState("Users");
   const itemRefs = useRef({});
   const touchDragRef = useRef({ startIdx: null, overIdx: null });
   const tenantSelectorRef = useRef(null);
@@ -202,11 +200,8 @@ export const TopNav = (props) => {
   const popoverOpen = Boolean(anchorEl);
   const popoverId = popoverOpen ? "bookmark-popover" : undefined;
 
-  const openSearch = useCallback(() => {
-    searchDialog.handleOpen();
-  }, [searchDialog.handleOpen]);
-
-  const openUniversalSearch = useCallback(() => {
+  const openUniversalSearch = useCallback((defaultType = "Users") => {
+    setUniversalSearchDefaultType(defaultType);
     universalSearchDialog.handleOpen();
   }, [universalSearchDialog.handleOpen]);
 
@@ -222,17 +217,17 @@ export const TopNav = (props) => {
         tenantSelectorRef.current?.focus();
       } else if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === "K") {
         event.preventDefault();
-        openUniversalSearch();
+        openUniversalSearch("Users");
       } else if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
-        openSearch();
+        openUniversalSearch("Pages");
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [openSearch, openUniversalSearch]);
+  }, [openUniversalSearch]);
 
   return (
     <Box
@@ -294,7 +289,7 @@ export const TopNav = (props) => {
           {!mdDown && (
             <IconButton
               color="inherit"
-              onClick={openUniversalSearch}
+              onClick={() => openUniversalSearch("Users")}
               title="Open Universal Search (Ctrl/Cmd+Shift+K)"
             >
               <TravelExploreIcon color="action" fontSize="small" />
@@ -307,11 +302,17 @@ export const TopNav = (props) => {
               </SvgIcon>
             </IconButton>
           )}
-          <IconButton color="inherit" onClick={() => openSearch()}>
-            <SvgIcon color="action" fontSize="small">
-              <MagnifyingGlassIcon />
-            </SvgIcon>
-          </IconButton>
+          {!mdDown && (
+            <IconButton
+              color="inherit"
+              onClick={() => openUniversalSearch("Pages")}
+              title="Open Page Search (Ctrl/Cmd+K)"
+            >
+              <SvgIcon color="action" fontSize="small">
+                <MagnifyingGlassIcon />
+              </SvgIcon>
+            </IconButton>
+          )}
           {showPopoverBookmarks && (
             <>
               <IconButton color="inherit" onClick={handleBookmarkClick}>
@@ -621,12 +622,12 @@ export const TopNav = (props) => {
                   key={universalSearchKey}
                   maxResults={12}
                   autoFocus={true}
+                  defaultSearchType={universalSearchDefaultType}
                   onConfirm={closeUniversalSearch}
                 />
               </Box>
             </DialogContent>
           </Dialog>
-          <CippCentralSearch open={searchDialog.open} handleClose={searchDialog.handleClose} />
           <NotificationsPopover />
           <AccountPopover
             onThemeSwitch={handleThemeSwitch}
