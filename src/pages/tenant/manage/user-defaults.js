@@ -57,6 +57,25 @@ const Page = () => {
       creatable: true,
     },
     {
+      label: "Username Space Handling",
+      name: "usernameSpaceHandling",
+      type: "autoComplete",
+      options: [
+        { label: "Keep spaces", value: "keep" },
+        { label: "Remove spaces", value: "remove" },
+        { label: "Replace spaces", value: "replace" },
+      ],
+      helperText: "How spaces in the generated username should be handled.",
+      multiple: false,
+      creatable: false,
+    },
+    {
+      label: "Username Space Replacement",
+      name: "usernameSpaceReplacement",
+      type: "textField",
+      helperText: "Used when space handling is set to Replace spaces (example: _ or .).",
+    },
+    {
       label: "Primary Domain",
       name: "primDomain",
       type: "autoComplete",
@@ -184,6 +203,8 @@ const Page = () => {
       "defaultForTenant",
       "displayName",
       "usernameFormat",
+      "usernameSpaceHandling",
+      "usernameSpaceReplacement",
       "primDomain",
       "usageLocation",
       "licenses",
@@ -222,6 +243,7 @@ const Page = () => {
           "defaultForTenant",
           "displayName",
           "usernameFormat",
+          "usernameSpaceHandling",
           "usageLocation",
           "department",
         ]}
