@@ -20,7 +20,7 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippBitlockerKeySearch } from "../CippComponents/CippBitlockerKeySearch";
 
 export const CippUniversalSearchV2 = React.forwardRef(
-  ({ onConfirm = () => {}, onChange = () => {}, maxResults = 10, value = "" }, ref) => {
+  ({ onConfirm = () => {}, onChange = () => {}, maxResults = 10, value = "", autoFocus = false }, ref) => {
     const [searchValue, setSearchValue] = useState(value);
     const [searchType, setSearchType] = useState("Users");
     const [bitlockerLookupType, setBitlockerLookupType] = useState("keyId");
@@ -104,7 +104,9 @@ export const CippUniversalSearchV2 = React.forwardRef(
           `/identity/administration/groups/group?groupId=${itemData.id}&tenantFilter=${tenantDomain}`,
         );
       }
+      setSearchValue("");
       setShowDropdown(false);
+      onConfirm(match);
     };
 
     const handleTypeChange = (type) => {
@@ -124,7 +126,9 @@ export const CippUniversalSearchV2 = React.forwardRef(
         searchType: bitlockerLookupType,
       });
       setBitlockerDrawerVisible(true);
+      setSearchValue("");
       setShowDropdown(false);
+      onConfirm(match);
     };
 
     const typeMenuActions = [
@@ -216,7 +220,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
 
     return (
       <>
-        <Box ref={containerRef} sx={{ width: "100%", display: "flex", gap: 1 }}>
+        <Box ref={containerRef} sx={{ width: "100%", display: "flex", gap: 1, alignItems: "flex-start" }}>
           <BulkActionsMenu
             buttonName={searchType}
             actions={typeMenuActions}
@@ -238,7 +242,8 @@ export const CippUniversalSearchV2 = React.forwardRef(
             }}
             fullWidth
             type="text"
-            label={getLabel()}
+            placeholder={getLabel()}
+            autoFocus={autoFocus}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             value={searchValue}
