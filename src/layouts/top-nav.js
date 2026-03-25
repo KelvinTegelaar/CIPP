@@ -5,6 +5,7 @@ import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
 import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -16,7 +17,6 @@ import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   Box,
-  Button,
   Divider,
   Dialog,
   DialogContent,
@@ -30,6 +30,7 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  TravelExplore,
 } from "@mui/material";
 import { Logo } from "../components/logo";
 import { useSettings } from "../hooks/use-settings";
@@ -289,35 +290,16 @@ export const TopNav = (props) => {
             </IconButton>
           )}
         </Stack>
-        {!mdDown && (
-          <Box sx={{ flex: 1, mx: 2, display: "flex", justifyContent: "center" }}>
-            <Button
-              variant="outlined"
-              color="inherit"
-              onClick={universalSearchDialog.handleOpen}
-              title="Open CIPP Search (Ctrl/Cmd+Shift+K)"
-              startIcon={
-                <SvgIcon color="inherit" fontSize="small">
-                  <MagnifyingGlassIcon />
-                </SvgIcon>
-              }
-              sx={{
-                textTransform: "none",
-                whiteSpace: "nowrap",
-                borderColor: "neutral.500",
-                borderRadius: 999,
-                px: 2,
-                "&:hover": {
-                  borderColor: "neutral.300",
-                  backgroundColor: "rgba(255, 255, 255, 0.08)",
-                },
-              }}
-            >
-              Universal Search
-            </Button>
-          </Box>
-        )}
         <Stack alignItems="center" direction="row" spacing={1.5}>
+          {!mdDown && (
+            <IconButton
+              color="inherit"
+              onClick={openUniversalSearch}
+              title="Open Universal Search (Ctrl/Cmd+Shift+K)"
+            >
+              <TravelExploreIcon color="action" fontSize="small" />
+            </IconButton>
+          )}
           {!mdDown && (
             <IconButton color="inherit" onClick={handleThemeSwitch}>
               <SvgIcon color="action" fontSize="small">
