@@ -80,10 +80,14 @@ const Page = () => {
       name: "primDomain",
       type: "autoComplete",
       api: {
-        url: "/api/ListDomains",
+        url: "/api/ListGraphRequest",
+        dataKey: "Results",
+        data: {
+          Endpoint: "domains",
+        },
         labelField: "id",
         valueField: "id",
-        queryKey: "ListDomains",
+        queryKey: "ListGraphRequest-domains",
       },
       multiple: false,
       creatable: false,
