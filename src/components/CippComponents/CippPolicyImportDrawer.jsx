@@ -130,7 +130,7 @@ export const CippPolicyImportDrawer = ({
         } else if (mode === "Standards") {
           // For Standards templates, clone the template
           importPolicy.mutate({
-            url: "/api/AddStandardTemplate",
+            url: "/api/AddStandardsTemplate",
             data: {
               tenantFilter: tenantFilter?.value,
               templateId: policy.GUID,
