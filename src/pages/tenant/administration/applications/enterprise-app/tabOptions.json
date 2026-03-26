@@ -1,0 +1,10 @@
+[
+  {
+    "label": "View Enterprise App",
+    "path": "/tenant/administration/applications/enterprise-app"
+  },
+  {
+    "label": "Permissions",
+    "path": "/tenant/administration/applications/enterprise-app/permissions"
+  }
+]
