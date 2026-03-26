@@ -6939,16 +6939,16 @@ react-fast-compare@^2.0.1:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
 
-react-grid-layout@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/react-grid-layout/-/react-grid-layout-2.2.2.tgz#8fa1802ffafc21c5aeb087b75809acaac53071a4"
-  integrity sha512-yNo9pxQWoxHWRAwHGSVT4DEGELYPyQ7+q9lFclb5jcqeFzva63/2F72CryS/jiTIr/SBIlTaDdyjqH+ODg8oBw==
+react-grid-layout@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/react-grid-layout/-/react-grid-layout-2.2.3.tgz#6daf24b8c48448af617238520dd233a9375e2f16"
+  integrity sha512-OAEJHBxmfuxQfVtZwRzmsokijGlBgzYIJ7MUlLk/VSa43SaGzu15w5D0P2RDrfX5EvP9POMbL6bFrai/huDzbQ==
   dependencies:
     clsx "^2.1.1"
     fast-equals "^4.0.3"
     prop-types "^15.8.1"
     react-draggable "^4.4.6"
-    react-resizable "^3.0.5"
+    react-resizable "^3.1.3"
     resize-observer-polyfill "^1.5.1"
 
 react-hook-form@^7.71.2:
@@ -7076,7 +7076,7 @@ react-redux@^7.2.0:
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
-react-resizable@^3.0.5:
+react-resizable@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/react-resizable/-/react-resizable-3.1.3.tgz#b8c3f8aeffb7b0b2c2306bfc7a742462e58125fb"
   integrity sha512-liJBNayhX7qA4tBJiBD321FDhJxgGTJ07uzH5zSORXoE8h7PyEZ8mLqmosST7ppf6C4zUsbd2gzDMmBCfFp9Lw==
