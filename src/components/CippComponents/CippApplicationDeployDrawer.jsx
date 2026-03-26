@@ -869,22 +869,55 @@ export const CippApplicationDeployDrawer = ({
                 rows={6}
               />
             </Grid>
-            <Grid size={{ md: 6, xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
-                type="textField"
-                label="Detection Path (e.g., C:\Program Files\MyApp or %ProgramData%\MyApp)"
-                name="detectionPath"
+                type="switch"
+                label="Use Detection Script instead of file/path detection"
+                name="useDetectionScript"
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ md: 6, xs: 12 }}>
-              <CippFormComponent
-                type="textField"
-                label="Detection File/Folder Name (Optional, e.g., app.exe)"
-                name="detectionFile"
-                formControl={formControl}
-              />
-            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="useDetectionScript"
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Detection Script (PowerShell — exit 0 with STDOUT = detected)"
+                  name="detectionScript"
+                  formControl={formControl}
+                  multiline
+                  rows={6}
+                  validators={{ required: "Detection script is required when using script detection" }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="useDetectionScript"
+              compareType="is"
+              compareValue={false}
+            >
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Detection Path (e.g., C:\Program Files\MyApp or %ProgramData%\MyApp)"
+                  name="detectionPath"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Detection File/Folder Name (Optional, e.g., app.exe)"
+                  name="detectionFile"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="switch"

@@ -58,18 +58,31 @@ export const CippWizardVacationConfirmation = (props) => {
     }
 
     if (values.enableOOO) {
+      const oooData = {
+        tenantFilter,
+        Users: values.Users,
+        internalMessage: values.oooInternalMessage,
+        externalMessage: values.oooExternalMessage,
+        startDate: values.startDate,
+        endDate: values.endDate,
+        reference: values.reference || null,
+        postExecution: values.postExecution || [],
+      };
+      // Calendar options — only include when truthy
+      if (values.oooCreateOOFEvent) {
+        oooData.CreateOOFEvent = true;
+        if (values.oooOOFEventSubject) oooData.OOFEventSubject = values.oooOOFEventSubject;
+      }
+      if (values.oooAutoDeclineFutureRequests) {
+        oooData.AutoDeclineFutureRequestsWhenOOF = true;
+      }
+      if (values.oooDeclineEvents) {
+        oooData.DeclineEventsForScheduledOOF = true;
+        if (values.oooDeclineMeetingMessage) oooData.DeclineMeetingMessage = values.oooDeclineMeetingMessage;
+      }
       oooVacation.mutate({
         url: "/api/ExecScheduleOOOVacation",
-        data: {
-          tenantFilter,
-          Users: values.Users,
-          internalMessage: values.oooInternalMessage,
-          externalMessage: values.oooExternalMessage,
-          startDate: values.startDate,
-          endDate: values.endDate,
-          reference: values.reference || null,
-          postExecution: values.postExecution || [],
-        },
+        data: oooData,
       });
     }
   };
@@ -242,6 +255,24 @@ export const CippWizardVacationConfirmation = (props) => {
                             {String(values.oooExternalMessage).replace(/[<>]/g, "").slice(0, 120) +
                               (String(values.oooExternalMessage).replace(/[<>]/g, "").length > 120 ? "…" : "")}
                           </Typography>
+                        </div>
+                      )}
+                      {(values.oooCreateOOFEvent || values.oooAutoDeclineFutureRequests || values.oooDeclineEvents) && (
+                        <div>
+                          <Typography variant="subtitle2" color="text.secondary">
+                            Calendar Options
+                          </Typography>
+                          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                            {values.oooCreateOOFEvent && (
+                              <Chip label="Block Calendar" size="small" color="info" />
+                            )}
+                            {values.oooAutoDeclineFutureRequests && (
+                              <Chip label="Decline New Invitations" size="small" color="info" />
+                            )}
+                            {values.oooDeclineEvents && (
+                              <Chip label="Decline & Cancel Meetings" size="small" color="info" />
+                            )}
+                          </Stack>
                         </div>
                       )}
                     </Stack>

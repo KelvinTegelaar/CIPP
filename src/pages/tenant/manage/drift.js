@@ -2128,6 +2128,15 @@ const ManageDriftPage = () => {
         >
           <MenuItem
             onClick={() => {
+              handleDeviationAction("deny-remediate", item);
+              handleMenuClose(`denied-${item.id}`);
+            }}
+          >
+            <Cancel sx={{ mr: 1, color: "error.main" }} />
+            Deny - Remediate to align with template
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
               handleDeviationAction("accept", item);
               handleMenuClose(`denied-${item.id}`);
             }}

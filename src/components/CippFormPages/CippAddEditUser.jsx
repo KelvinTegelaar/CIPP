@@ -85,7 +85,13 @@ const CippAddEditUser = (props) => {
   const watcher = useWatch({ control: formControl.control });
 
   // Helper function to generate username from template format
-  const generateUsername = (format, firstName, lastName) => {
+  const generateUsername = (
+    format,
+    firstName,
+    lastName,
+    spaceHandling = "keep",
+    spaceReplacement = "",
+  ) => {
     if (!format || !firstName || !lastName) return "";
 
     // Ensure format is a string
@@ -106,6 +112,13 @@ const CippAddEditUser = (props) => {
     // Replace %FirstName% and %LastName%
     username = username.replace(/%FirstName%/gi, firstName);
     username = username.replace(/%LastName%/gi, lastName);
+
+    // Apply optional space handling
+    if (spaceHandling === "remove") {
+      username = username.replace(/\s+/g, "");
+    } else if (spaceHandling === "replace") {
+      username = username.replace(/\s+/g, spaceReplacement || "");
+    }
 
     // Convert to lowercase
     return username.toLowerCase();
@@ -151,10 +164,26 @@ const CippAddEditUser = (props) => {
             : selectedTemplate.usernameFormat?.value || selectedTemplate.usernameFormat?.label;
 
         if (formatString) {
+          const spaceHandling =
+            typeof selectedTemplate.usernameSpaceHandling === "string"
+              ? selectedTemplate.usernameSpaceHandling
+              : selectedTemplate.usernameSpaceHandling?.value ||
+                selectedTemplate.usernameSpaceHandling?.label ||
+                "keep";
+
+          const spaceReplacement =
+            typeof selectedTemplate.usernameSpaceReplacement === "string"
+              ? selectedTemplate.usernameSpaceReplacement
+              : selectedTemplate.usernameSpaceReplacement?.value ||
+                selectedTemplate.usernameSpaceReplacement?.label ||
+                "";
+
           const generatedUsername = generateUsername(
             formatString,
             watcher.givenName,
             watcher.surname,
+            spaceHandling,
+            spaceReplacement,
           );
           if (generatedUsername) {
             formControl.setValue("username", generatedUsername, { shouldDirty: true });
