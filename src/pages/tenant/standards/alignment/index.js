@@ -1,44 +1,57 @@
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import { TabbedLayout } from "../../../../layouts/TabbedLayout";
-import { Delete, Add } from "@mui/icons-material";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import tabOptions from "../tabOptions.json";
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import { Delete, Add } from '@mui/icons-material'
+import { EyeIcon } from '@heroicons/react/24/outline'
+import tabOptions from '../tabOptions.json'
 
 const Page = () => {
-  const pageTitle = "Standard & Drift Alignment";
+  const pageTitle = 'Standard & Drift Alignment'
+
+  const filterList = [
+    {
+      filterName: 'Drift Templates',
+      value: [{ id: 'standardType', value: 'drift' }],
+      type: 'column',
+    },
+    {
+      filterName: 'Classic Templates',
+      value: [{ id: 'standardType', value: 'classic' }],
+      type: 'column',
+    },
+  ]
 
   const actions = [
     {
-      label: "View Tenant Report",
-      link: "/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[standardId]",
+      label: 'View Tenant Report',
+      link: '/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[standardId]',
       icon: <EyeIcon />,
-      color: "info",
-      target: "_self",
+      color: 'info',
+      target: '_self',
     },
     {
-      label: "Manage Drift",
-      link: "/tenant/manage/drift?templateId=[standardId]&tenantFilter=[tenantFilter]",
+      label: 'Manage Drift',
+      link: '/tenant/manage/drift?templateId=[standardId]&tenantFilter=[tenantFilter]',
       icon: <EyeIcon />,
-      color: "info",
-      target: "_self",
-      condition: (row) => row.standardType === "drift",
+      color: 'info',
+      target: '_self',
+      condition: (row) => row.standardType === 'drift',
     },
     {
-      label: "Remove Drift Customization",
-      type: "POST",
-      url: "/api/ExecUpdateDriftDeviation",
+      label: 'Remove Drift Customization',
+      type: 'POST',
+      url: '/api/ExecUpdateDriftDeviation',
       icon: <Delete />,
       data: {
-        RemoveDriftCustomization: "true",
-        tenantFilter: "tenantFilter",
+        RemoveDriftCustomization: 'true',
+        tenantFilter: 'tenantFilter',
       },
       confirmText:
-        "Are you sure you want to remove all drift customizations? This resets the Drift Standard to the default template, and will generate alerts for the drifted items.",
+        'Are you sure you want to remove all drift customizations? This resets the Drift Standard to the default template, and will generate alerts for the drifted items.',
       multiPost: false,
-      condition: (row) => row.standardType === "drift",
+      condition: (row) => row.standardType === 'drift',
     },
-  ];
+  ]
 
   return (
     <CippTablePage
@@ -46,23 +59,25 @@ const Page = () => {
       apiUrl="/api/ListTenantAlignment"
       tenantInTitle={false}
       actions={actions}
+      filters={filterList}
+      initialFilters={[{ id: 'standardType', value: 'drift' }]}
       simpleColumns={[
-        "tenantFilter",
-        "standardName",
-        "standardType",
-        "alignmentScore",
-        "LicenseMissingPercentage",
-        "combinedAlignmentScore",
+        'tenantFilter',
+        'standardName',
+        'standardType',
+        'alignmentScore',
+        'LicenseMissingPercentage',
+        'combinedAlignmentScore',
       ]}
       queryKey="listTenantAlignment"
     />
-  );
-};
+  )
+}
 
 Page.getLayout = (page) => (
   <DashboardLayout>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
-);
+)
 
-export default Page;
+export default Page

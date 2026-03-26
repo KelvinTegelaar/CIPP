@@ -52,7 +52,6 @@ const CippAddEditUser = (props) => {
     queryKey: `ListGroups-${tenantDomain}`,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    waiting: !!userId,
   });
 
   // Get manual entry custom data mappings for current tenant
@@ -279,9 +278,29 @@ const CippAddEditUser = (props) => {
         setFieldIfEmpty("licenses", template.licenses);
       }
 
-      // Pass stored group memberships from template to user creation
-      if (template.groupMemberships && Array.isArray(template.groupMemberships) && template.groupMemberships.length > 0) {
-        formControl.setValue("groupMemberships", template.groupMemberships);
+      // Handle groups from template
+      const templateGroups = template.addToGroups || template.groupMemberships;
+      if (templateGroups) {
+        const rawGroups = Array.isArray(templateGroups) ? templateGroups : [templateGroups];
+        const groups = rawGroups.map((g) => {
+          if (g.label && g.value) return g;
+          const groupType = g.groupTypes?.includes("Unified")
+            ? "Microsoft 365"
+            : g.mailEnabled && !g.groupTypes?.includes("Unified")
+              ? g.securityEnabled ? "Mail-Enabled Security" : "Distribution list"
+              : "Security";
+          return {
+            label: g.displayName,
+            value: g.id,
+            addedFields: { groupType },
+          };
+        });
+        if (groups.length > 0) {
+          const currentGroups = watcher.AddToGroups;
+          if (!currentGroups || (Array.isArray(currentGroups) && currentGroups.length === 0)) {
+            formControl.setValue("AddToGroups", groups, { shouldDirty: true });
+          }
+        }
       }
     }
   }, [watcher.userTemplate, formType]);
@@ -708,25 +727,28 @@ const CippAddEditUser = (props) => {
           multiple={false}
         />
       </Grid>
-      {formType === "edit" && (
-        <Grid size={{ xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Add to Groups"
-            name="AddToGroups"
-            multiple={true}
-            options={filteredTenantGroups?.map((tenantGroup) => ({
-              label: tenantGroup.displayName,
-              value: tenantGroup.id,
-              addedFields: {
-                groupType: tenantGroup.groupType,
-              },
-            }))}
-            creatable={false}
-            formControl={formControl}
-          />
-        </Grid>
-      )}
+      <Grid size={{ xs: 12 }}>
+        <CippFormComponent
+          type="autoComplete"
+          label="Add to Groups"
+          name="AddToGroups"
+          multiple={true}
+          options={
+            (formType === "edit" ? filteredTenantGroups : tenantGroups?.data)?.map(
+              (group) => ({
+                label: group.displayName,
+                value: group.id,
+                addedFields: {
+                  groupType: group.calculatedGroupType || group.groupType,
+                },
+              })
+            ) || []
+          }
+          isFetching={tenantGroups.isFetching}
+          creatable={false}
+          formControl={formControl}
+        />
+      </Grid>
       {formType === "edit" && (
         <Grid size={{ xs: 12 }}>
           <CippFormComponent

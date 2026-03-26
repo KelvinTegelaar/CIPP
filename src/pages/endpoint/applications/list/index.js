@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
 import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
-import { LaptopMac, Sync } from "@mui/icons-material";
+import { LaptopMac, Sync, BookmarkAdd } from "@mui/icons-material";
 import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
 import { Button, Box } from "@mui/material";
 import { useSettings } from "../../../../hooks/use-settings.js";
@@ -31,6 +31,15 @@ const getAppAssignmentSettingsType = (odataType) => {
   }
 
   return odataType.replace("#microsoft.graph.", "").replace(/App$/i, "");
+};
+
+const mapOdataToAppType = (odataType) => {
+  if (!odataType) return "win32ScriptApp";
+  const type = odataType.toLowerCase();
+  if (type.includes("wingetapp")) return "StoreApp";
+  if (type.includes("win32lobapp")) return "chocolateyApp";
+  if (type.includes("officesuiteapp")) return "officeApp";
+  return "win32ScriptApp";
 };
 
 const Page = () => {
@@ -213,6 +222,43 @@ const Page = () => {
           AssignmentMode: formData?.assignmentMode || "replace",
         };
       }),
+    },
+    {
+      label: "Save as Template",
+      type: "POST",
+      url: "/api/AddAppTemplate",
+      icon: <BookmarkAdd />,
+      color: "info",
+      fields: [
+        {
+          type: "textField",
+          name: "displayName",
+          label: "Template Name",
+          validators: { required: "Template name is required" },
+        },
+        {
+          type: "textField",
+          name: "description",
+          label: "Description",
+        },
+      ],
+      customDataformatter: (row, action, formData) => {
+        const rows = Array.isArray(row) ? row : [row];
+        return {
+          displayName: formData?.displayName,
+          description: formData?.description || "",
+          apps: rows.map((r) => ({
+            appType: mapOdataToAppType(r["@odata.type"]),
+            appName: r.displayName,
+            config: JSON.stringify({
+              ApplicationName: r.displayName,
+              IntuneBody: r,
+              assignTo: "On",
+            }),
+          })),
+        };
+      },
+      confirmText: 'Save selected application(s) as a reusable template?',
     },
     {
       label: "Delete Application",

@@ -11,11 +11,9 @@ import {
   SvgIcon,
   IconButton,
   Skeleton,
-  Divider,
   Tooltip,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import { useForm, useFormState, useWatch } from "react-hook-form";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
@@ -25,7 +23,6 @@ import alertList from "../../../../data/alerts.json";
 import auditLogTemplates from "../../../../data/AuditLogTemplates";
 import auditLogSchema from "../../../../data/AuditLogSchema.json";
 import { Save, Delete } from "@mui/icons-material";
-
 import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // Dashboard layout
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
@@ -823,43 +820,45 @@ const AlertWizard = () => {
                             </Button>
                           }
                         >
-                          <Grid size={12} sx={{ mt: 2 }}>
-                            <CippFormComponent
-                              type="autoComplete"
-                              name="Actions"
-                              label="Actions to take"
-                              validators={{
-                                required: { value: true, message: "This field is required" },
-                              }}
-                              formControl={formControl}
-                              multiple={true}
-                              creatable={false}
-                              options={actionsToTake}
-                            />
-                          </Grid>
-                          <Grid size={12}>
-                            <CippFormComponent
-                              type="textField"
-                              name="CustomSubject"
-                              label="Custom Subject"
-                              formControl={formControl}
-                              helperText="This text will be prefixed with the Tenant default domain name for easier filtering (e.g. $TenantDomain - $CustomSubject). Leave blank to use default subject format."
-                            />
-                          </Grid>
-                          <Grid size={12} sx={{ mt: 2 }}>
-                            <CippFormComponent
-                              type="textField"
-                              name="AlertComment"
-                              label="Alert Comment"
-                              formControl={formControl}
-                              multiline={true}
-                              rows={3}
-                              placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
-                            />
-                          </Grid>
+                          <Grid container spacing={2}>
+                            <Grid size={12}>
+                              <CippFormComponent
+                                type="autoComplete"
+                                name="Actions"
+                                label="Actions to take"
+                                validators={{
+                                  required: { value: true, message: "This field is required" },
+                                }}
+                                formControl={formControl}
+                                multiple={true}
+                                creatable={false}
+                                options={actionsToTake}
+                              />
+                            </Grid>
+                            <Grid size={12}>
+                              <CippFormComponent
+                                type="textField"
+                                name="CustomSubject"
+                                label="Custom Subject"
+                                formControl={formControl}
+                                helperText="This text will be prefixed with the Tenant default domain name for easier filtering (e.g. $TenantDomain - $CustomSubject). Leave blank to use default subject format."
+                              />
+                            </Grid>
+                            <Grid size={12}>
+                              <CippFormComponent
+                                type="textField"
+                                name="AlertComment"
+                                label="Alert Comment"
+                                formControl={formControl}
+                                multiline={true}
+                                rows={3}
+                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
+                              />
+                            </Grid>
 
-                          <Grid size={12} sx={{ mt: 2 }}>
-                            <CippApiResults apiObject={apiRequest} />
+                            <Grid size={12}>
+                              <CippApiResults apiObject={apiRequest} />
+                            </Grid>
                           </Grid>
                         </CippButtonCard>
                       </Grid>
@@ -966,11 +965,24 @@ const AlertWizard = () => {
                                     formControl={formControl}
                                     label={commandValue.value?.inputLabel}
                                     required={commandValue.value?.required || false}
+                                    validators={{
+                                      ...(commandValue.value?.validators || {}),
+                                      ...(commandValue.value?.required
+                                        ? {
+                                            required: {
+                                              value: true,
+                                              message: "This field is required",
+                                            },
+                                          }
+                                        : {}),
+                                    }}
                                     {...(commandValue.value?.inputType === "autoComplete"
                                       ? {
-                                          options: commandValue.value?.options,
-                                          creatable: commandValue.value?.creatable || true,
-                                          multiple: commandValue.value?.multiple || true,
+                                          ...(commandValue.value?.api
+                                            ? { api: commandValue.value.api }
+                                            : { options: commandValue.value?.options || [] }),
+                                          creatable: commandValue.value?.creatable ?? true,
+                                          multiple: commandValue.value?.multiple ?? true,
                                         }
                                       : {})}
                                   />
@@ -990,9 +1002,22 @@ const AlertWizard = () => {
                                         formControl={formControl}
                                         label={input.inputLabel}
                                         required={input.required || false}
+                                        validators={{
+                                          ...(input.validators || {}),
+                                          ...(input.required
+                                            ? {
+                                                required: {
+                                                  value: true,
+                                                  message: "This field is required",
+                                                },
+                                              }
+                                            : {}),
+                                        }}
                                         {...(input.inputType === "autoComplete"
                                           ? {
-                                              options: input.options,
+                                              ...(input.api
+                                                ? { api: input.api }
+                                                : { options: input.options || [] }),
                                               creatable: input.creatable ?? true,
                                               multiple: input.multiple ?? true,
                                             }
