@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Box, Container, Stack } from "@mui/material";
+import { Alert, Box, Container, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "../../layouts/index.js";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
@@ -254,7 +254,7 @@ const Page = () => {
                       title="General Settings"
                       propertyItems={[
                         {
-                          label: "Default usage location for users",
+                          label: "Default usage location for users *",
                           value: (
                             <CippFormComponent
                               type="autoComplete"
@@ -271,7 +271,7 @@ const Page = () => {
                           ),
                         },
                         {
-                          label: "Default Page Size",
+                          label: "Default Page Size *",
                           value: (
                             <CippFormComponent
                               type="autoComplete"
@@ -305,6 +305,58 @@ const Page = () => {
                             <CippFormComponent
                               type="switch"
                               name="persistFilters"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                    <CippPropertyListCard
+                      layout="two"
+                      showDivider={false}
+                      title="Navigation Settings"
+                      propertyItems={[
+                        {
+                          label: "Show Sidebar Bookmarks",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="bookmarkSidebar"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Show Popover Bookmarks",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="bookmarkPopover"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Bookmark Reorder Mode",
+                          value: (
+                            <CippFormComponent
+                              type="radio"
+                              name="bookmarkReorderMode"
+                              formControl={formcontrol}
+                              row={true}
+                              options={[
+                                { value: "arrows", label: "Arrow Buttons" },
+                                { value: "drag", label: "Drag and Drop" },
+                              ]}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Compact Navigation",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="compactNav"
                               formControl={formcontrol}
                             />
                           ),

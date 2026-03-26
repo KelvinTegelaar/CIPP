@@ -236,21 +236,47 @@ const Page = () => {
   };
 
   const handleRemoveStandard = (standardName) => {
-    setSelectedStandards((prev) => {
-      const newSelected = { ...prev };
-      delete newSelected[standardName];
-      return newSelected;
-    });
-
     const arrayPattern = /(.*)\[(\d+)\]$/;
     const match = standardName.match(arrayPattern);
 
     if (match) {
-      const [_, baseName, index] = match;
+      const baseName = match[1];
+      const removedIndex = parseInt(match[2]);
+
+      // Remove the item from the form array
       const currentArray = formControl.getValues(baseName) || [];
-      const updatedArray = currentArray.filter((_, i) => i !== parseInt(index));
+      const updatedArray = currentArray.filter((_, i) => i !== removedIndex);
       formControl.setValue(baseName, updatedArray);
+
+      // Re-index selectedStandards to keep indices contiguous
+      const escapedBaseName = baseName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const reindexPattern = new RegExp(`^${escapedBaseName}\\[(\\d+)\\]$`);
+
+      setSelectedStandards((prev) => {
+        const newSelected = {};
+        Object.keys(prev).forEach((key) => {
+          const keyMatch = key.match(reindexPattern);
+          if (keyMatch) {
+            const idx = parseInt(keyMatch[1]);
+            if (idx < removedIndex) {
+              newSelected[key] = prev[key];
+            } else if (idx > removedIndex) {
+              // Shift higher indices down by 1
+              newSelected[`${baseName}[${idx - 1}]`] = prev[key];
+            }
+            // Skip the removed index
+          } else {
+            newSelected[key] = prev[key];
+          }
+        });
+        return newSelected;
+      });
     } else {
+      setSelectedStandards((prev) => {
+        const newSelected = { ...prev };
+        delete newSelected[standardName];
+        return newSelected;
+      });
       formControl.unregister(standardName);
     }
   };
@@ -372,7 +398,7 @@ const Page = () => {
           </Stack>
         </Stack>
 
-        <Box sx={{ flexGrow: 1, height: "calc(100vh - 270px)", overflow: "hidden" }}>
+        <Box sx={{ flexGrow: 1, height: "calc(100vh - 240px)", overflow: "hidden" }}>
           <Grid container spacing={3} sx={{ height: "100%" }}>
             {/* Left Column for Accordions */}
             <Grid size={{ xs: 12, lg: 4 }} sx={{ height: "100%", overflow: "auto", pr: 1 }}>

@@ -46,9 +46,13 @@ export const CippTextFieldWithVariables = ({
 
   // Track cursor position
   const handleSelectionChange = () => {
-    const inputElement = getInputElement();
-    if (inputElement && typeof inputElement.selectionStart === "number") {
-      setCursorPosition(inputElement.selectionStart || 0);
+    if (textFieldRef.current) {
+      // Check for input first, then textarea
+      const inputElement =
+        textFieldRef.current.querySelector("input") ||
+        textFieldRef.current.querySelector("textarea") ||
+        textFieldRef.current;
+      setCursorPosition(inputElement?.selectionStart || 0);
     }
   };
 
@@ -118,9 +122,15 @@ export const CippTextFieldWithVariables = ({
 
       // Get fresh cursor position from the DOM
       let cursorPos = cursorPosition;
-      const inputElement = getInputElement();
-      if (inputElement && typeof inputElement.selectionStart === "number") {
-        cursorPos = inputElement.selectionStart;
+      if (textFieldRef.current) {
+        // Check for input first, then textarea
+        const inputElement =
+          textFieldRef.current.querySelector("input") ||
+          textFieldRef.current.querySelector("textarea") ||
+          textFieldRef.current;
+        if (inputElement && typeof inputElement.selectionStart === "number") {
+          cursorPos = inputElement.selectionStart;
+        }
       }
 
       // Find the trigger sequence that opened autocomplete
@@ -148,7 +158,11 @@ export const CippTextFieldWithVariables = ({
             const newCursorPos = lastTriggerIndex + variableString.length;
 
             // Access the actual input element for Material-UI TextField
-            const inputElement = getInputElement();
+            // Check for input first, then textarea
+            const inputElement =
+              textFieldRef.current.querySelector("input") ||
+              textFieldRef.current.querySelector("textarea") ||
+              textFieldRef.current;
             if (inputElement && inputElement.setSelectionRange) {
               inputElement.setSelectionRange(newCursorPos, newCursorPos);
               inputElement.focus();

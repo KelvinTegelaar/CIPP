@@ -1344,6 +1344,70 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.AppManagementPolicy",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Configures the default app management policy to control application and service principal credential restrictions such as password and key credential lifetimes.",
+    "docsDescription": "Configures the default app management policy to control application and service principal credential restrictions. This includes password addition restrictions, custom password addition, symmetric key addition, and credential lifetime limits for both applications and service principals.",
+    "executiveText": "Enforces credential restrictions on application registrations and service principals to limit how secrets and certificates are created and how long they remain valid. This reduces the risk of long-lived or unmanaged credentials being used to access your tenant.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "name": "standards.AppManagementPolicy.passwordCredentialsPasswordAddition",
+        "label": "Disable Password Addition",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "name": "standards.AppManagementPolicy.passwordCredentialsCustomPasswordAddition",
+        "label": "Disable Custom Password",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "required": false,
+        "name": "standards.AppManagementPolicy.passwordCredentialsMaxLifetime",
+        "label": "Password Credentials Max Lifetime (Days)"
+      },
+      {
+        "type": "number",
+        "required": false,
+        "name": "standards.AppManagementPolicy.keyCredentialsMaxLifetime",
+        "label": "Key Credentials Max Lifetime (Days)"
+      }
+    ],
+    "label": "Set Default App Management Policy",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-03-13",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
     "tag": ["CIS M365 5.0 (2.1.6)"],
@@ -1564,7 +1628,8 @@
         "type": "textField",
         "name": "standards.EnableLitigationHold.days",
         "required": false,
-        "label": "Days to apply for litigation hold"
+        "label": "Days to apply for litigation hold",
+        "helperText": "Number of days to apply litigation hold for. If left blank or set to Unlimited, litigation hold will be applied indefinitely."
       }
     ],
     "label": "Enable Litigation Hold for all users",
@@ -1715,8 +1780,8 @@
     "name": "standards.AddDMARCToMOERA",
     "cat": "Global Standards",
     "tag": ["CIS M365 5.0 (2.1.10)", "Security", "PhishingProtection"],
-    "helpText": "Note: requires 'Domain Name Administrator' GDAP role. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default value is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
-    "docsDescription": "Note: requires 'Domain Name Administrator' GDAP role. Adds a DMARC record to MOERA (onmicrosoft.com) domains. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default record is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
+    "helpText": "** Remediation is not available ** Note: requires 'Domain Name Administrator' GDAP role. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default value is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
+    "docsDescription": "** Remediation is not available ** Note: requires 'Domain Name Administrator' GDAP role. Adds a DMARC record to MOERA (onmicrosoft.com) domains. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default record is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
     "executiveText": "Implements advanced email security for Microsoft's default domain names (onmicrosoft.com) to prevent criminals from impersonating your organization. This blocks fraudulent emails that could damage your company's reputation and protects partners and customers from phishing attacks using your domain names.",
     "addedComponent": [
       {
@@ -1740,7 +1805,10 @@
     "impactColour": "info",
     "addedDate": "2025-06-16",
     "powershellEquivalent": "Portal only",
-    "recommendedBy": ["CIS", "Microsoft"]
+    "recommendedBy": ["CIS", "Microsoft"],
+    "disabledFeatures": {
+      "remediate": true
+    }
   },
   {
     "name": "standards.EnableMailboxAuditing",
@@ -2256,11 +2324,23 @@
     "name": "standards.SendFromAlias",
     "cat": "Exchange Standards",
     "tag": [],
-    "helpText": "Enables the ability for users to send from their alias addresses.",
+    "helpText": "Enables or disables the ability for users to send from their alias addresses.",
     "docsDescription": "Allows users to change the 'from' address to any set in their Azure AD Profile.",
     "executiveText": "Allows employees to send emails from their alternative email addresses (aliases) rather than just their primary address. This is useful for employees who manage multiple roles or departments, enabling them to send emails from the most appropriate address for the context.",
-    "addedComponent": [],
-    "label": "Allow users to send from their alias addresses",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.SendFromAlias.state",
+        "options": [
+          { "label": "Enabled", "value": "true" },
+          { "label": "Disabled", "value": "false" }
+        ]
+      }
+    ],
+    "label": "Set Send from alias state",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2022-05-25",
@@ -3516,6 +3596,34 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.WindowsBackupRestore",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Configures the Windows Backup and Restore enrollment setting in Intune. When enabled, users see a restore page during Windows Autopilot/OOBE that allows them to restore their apps and settings from a previous device backup. **Before you can restore a backup, a policy to enable it on devices must be set up in Settings Catalog.**",
+    "docsDescription": "Configures the Windows Backup and Restore (WBfO) device enrollment setting in Intune. This feature allows users to restore apps and settings from a previous device backup during Windows setup. Enabling this shows a restore page during enrollment (OOBE) so users can migrate their workspace configuration to a new device. More information can be found in [Microsoft's documentation.](https://learn.microsoft.com/en-us/intune/intune-service/enrollment/windows-backup-restore)",
+    "executiveText": "Controls the Windows Backup and Restore for Organizations feature in Intune. When enabled, employees setting up new devices can restore their apps and settings from a previous backup during Windows enrollment. This streamlines device provisioning, reduces setup time for new or replacement devices, and improves the employee experience during device transitions.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.WindowsBackupRestore.state",
+        "options": [
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
+      }
+    ],
+    "label": "Set Windows Backup and Restore state",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-02-26",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": [],
@@ -3972,6 +4080,56 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2023-03-27",
+    "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.intuneDeviceRegLocalAdmins",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Controls whether users who register Microsoft Entra joined devices are granted local administrator rights on those devices and if Global Administrators are added as local admins.",
+    "docsDescription": "Configures the Device Registration Policy local administrator behavior for registering users. When enabled, users who register devices are not granted local administrator rights, you can also configure if Global Administrators are added as local admins.",
+    "executiveText": "Controls whether employees who enroll devices automatically receive local administrator access. Disabling registering-user admin rights follows least-privilege principles and reduces security risk from over-privileged endpoints.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.intuneDeviceRegLocalAdmins.disableRegisteringUsers",
+        "label": "Disable registering users as local administrators",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.intuneDeviceRegLocalAdmins.enableGlobalAdmins",
+        "label": "Allow Global Administrators to be local administrators",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure local administrator rights for users joining devices",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-02-23",
+    "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.intuneRestrictUserDeviceRegistration",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Controls whether users can register devices with Entra.",
+    "docsDescription": "Configures whether users can register devices with Entra. When disabled, users are unable to register devices with Entra.",
+    "executiveText": "Controls whether employees can register their devices for corporate access. Disabling user device registration prevents unauthorized or unmanaged devices from connecting to company resources, enhancing overall security posture.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.intuneRestrictUserDeviceRegistration.disableUserDeviceRegistration",
+        "label": "Disable users from registering devices",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure user restriction for Entra device registration",
+    "impact": "High Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-02-23",
     "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
     "recommendedBy": []
   },
@@ -4586,6 +4744,11 @@
         "label": "Allow anonymous users to join meeting"
       },
       {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToStartMeeting",
+        "label": "Allow anonymous users to start meeting"
+      },
+      {
         "type": "autoComplete",
         "required": false,
         "multiple": false,
@@ -4603,10 +4766,23 @@
             "value": "EveryoneInCompanyExcludingGuests"
           },
           {
+            "label": "People in same or federated organizations",
+            "value": "EveryoneInSameAndFederatedCompany"
+          },
+          {
             "label": "People who were invited",
             "value": "InvitedUsers"
+          },
+          {
+            "label": "Everyone",
+            "value": "Everyone"
           }
         ]
+      },
+            {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowPSTNUsersToBypassLobby",
+        "label": "Allow dial-in users to bypass lobby"
       },
       {
         "type": "autoComplete",
@@ -4926,7 +5102,15 @@
         "type": "textField",
         "name": "standards.TeamsFederationConfiguration.DomainList",
         "label": "Domains, Comma separated",
-        "required": false
+        "required": false,
+        "condition": {
+          "field": "standards.TeamsFederationConfiguration.DomainControl.value",
+          "compareType": "isOneOf",
+          "compareValue": [
+            "AllowSpecificExternal",
+            "BlockSpecificExternal"
+          ]
+        }
       }
     ],
     "label": "Federation Configuration for Microsoft Teams",
@@ -5312,6 +5496,11 @@
         "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
       },
       {
+        "type": "switch",
+        "name": "verifyAssignments",
+        "label": "Verify policy assignments"
+      },
+      {
         "name": "excludeGroup",
         "label": "Exclude Groups",
         "type": "textField",
@@ -5658,21 +5847,33 @@
     "name": "standards.DeployCheckChromeExtension",
     "cat": "Intune Standards",
     "tag": [],
-    "helpText": "Deploys the Check Chrome extension via Intune OMA-URI custom policies for both Chrome and Edge browsers with configurable settings. Chrome ID: benimdeioplgkhanklclahllklceahbe, Edge ID: knepjpocdagponkonnbggpcnhnaikajg",
-    "docsDescription": "Creates Intune OMA-URI custom policies that automatically install and configure the Check Chrome extension on managed devices for both Google Chrome and Microsoft Edge browsers. This ensures the extension is deployed consistently across all corporate devices with customizable settings.",
-    "executiveText": "Automatically deploys the Check browser extension across all company devices with configurable security and branding settings, ensuring consistent security monitoring and compliance capabilities. This extension provides enhanced security features and monitoring tools that help protect against threats while maintaining user productivity.",
+    "helpText": "Deploys the Check by CyberDrain browser extension via a Win32 script app in Intune for both Chrome and Edge browsers with configurable settings. Chrome ID: benimdeioplgkhanklclahllklceahbe, Edge ID: knepjpocdagponkonnbggpcnhnaikajg",
+    "docsDescription": "Creates an Intune Win32 script application that writes registry keys to install and configure the Check by CyberDrain browser extension on managed devices for both Google Chrome and Microsoft Edge browsers. Uses a PowerShell detection script to enforce configuration drift — when settings change in CIPP the app is automatically redeployed.",
+    "executiveText": "Automatically deploys the Check by CyberDrain browser extension across all company devices with configurable security and branding settings, ensuring consistent security monitoring and compliance capabilities. This extension provides enhanced security features and monitoring tools that help protect against threats while maintaining user productivity.",
     "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.showNotifications",
+        "label": "Show notifications",
+        "defaultValue": true
+      },
       {
         "type": "switch",
         "name": "standards.DeployCheckChromeExtension.enableValidPageBadge",
         "label": "Enable valid page badge",
-        "defaultValue": true
+        "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DeployCheckChromeExtension.enablePageBlocking",
         "label": "Enable page blocking",
         "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.forceToolbarPin",
+        "label": "Force pin extension to toolbar",
+        "defaultValue": false
       },
       {
         "type": "switch",
@@ -5685,13 +5886,14 @@
         "name": "standards.DeployCheckChromeExtension.customRulesUrl",
         "label": "Custom Rules URL",
         "placeholder": "https://YOUR-CIPP-SERVER-URL/rules.json",
+        "helperText": "Enter the URL for custom rules if you have them. This should point to a JSON file with the same structure as the rules.json used for CIPP reporting.",
         "required": false
       },
       {
         "type": "number",
         "name": "standards.DeployCheckChromeExtension.updateInterval",
         "label": "Update interval (hours)",
-        "defaultValue": 12
+        "defaultValue": 24
       },
       {
         "type": "switch",
@@ -5700,10 +5902,50 @@
         "defaultValue": false
       },
       {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableGenericWebhook",
+        "label": "Enable generic webhook",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.webhookUrl",
+        "label": "Webhook URL",
+        "placeholder": "https://webhook.example.com/endpoint",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.DeployCheckChromeExtension.webhookEvents",
+        "label": "Webhook Events",
+        "placeholder": "e.g. pageBlocked, pageAllowed"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "freeSolo": true,
+        "name": "standards.DeployCheckChromeExtension.urlAllowlist",
+        "label": "URL Allowlist",
+        "placeholder": "e.g. https://example.com/*",
+        "helperText": "Enter URLs to allowlist in the extension. Press enter to add each URL. Wildcards are allowed. This should be used for sites that are being blocked by the extension but are known to be safe."
+      },
+      {
         "type": "textField",
         "name": "standards.DeployCheckChromeExtension.companyName",
         "label": "Company Name",
         "placeholder": "YOUR-COMPANY",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.companyURL",
+        "label": "Company URL",
+        "placeholder": "https://yourcompany.com",
         "required": false
       },
       {
@@ -5724,7 +5966,7 @@
         "type": "textField",
         "name": "standards.DeployCheckChromeExtension.primaryColor",
         "label": "Primary Color",
-        "placeholder": "#0044CC",
+        "placeholder": "#F77F00",
         "required": false
       },
       {
@@ -5736,7 +5978,7 @@
       },
       {
         "name": "AssignTo",
-        "label": "Who should this policy be assigned to?",
+        "label": "Who should this app be assigned to?",
         "type": "radio",
         "options": [
           {
@@ -5768,11 +6010,11 @@
         "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
       }
     ],
-    "label": "Deploy Check Chrome Extension",
+    "label": "Deploy Check by CyberDrain Browser Extension",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2025-09-18",
-    "powershellEquivalent": "New-GraphPostRequest -uri 'https://graph.microsoft.com/beta/deviceManagement/configurationPolicies'",
+    "powershellEquivalent": "Add-CIPPW32ScriptApplication",
     "recommendedBy": ["CIPP"]
   },
   {
@@ -5839,5 +6081,62 @@
     "impactColour": "info",
     "addedDate": "2025-11-19",
     "powershellEquivalent": "New-GraphPostRequest to /beta/security/secureScoreControlProfiles/{id}"
+  },
+  {
+    "name": "standards.ColleagueImpersonationAlert",
+    "cat": "Exchange Standards",
+    "tag": [
+      "Exchange",
+      "Security",
+      "Transport Rules"
+    ],
+    "helpText": "Creates/updates 5x Exchange Online transport rules (A-E, F-J, K-O, P-T, U-Z) that prepend an HTML disclaimer banner to inbound emails where the sender display name matches a mailbox in the organisation. Accepted tenant domains are always exempt automatically. Inactive users are removed and enabled users are added. Any manually configured sender or domain exemptions already present on existing rules are preserved.",
+    "docsDescription": "Creates five Exchange Online transport rules grouped by the first letter of user display names (A-E, F-J, K-O, P-T, U-Z). Each rule fires when an external sender's From header matches a display name in that group, prepends a configurable HTML warning banner, and skips emails from accepted organisational domains. Any manually configured sender or domain exemptions on existing rules are preserved when the standard runs. The disclaimer HTML is fully customisable via the standard settings.",
+    "executiveText": "Protects staff from display-name impersonation attacks by injecting a visible warning banner on emails that appear to come from a colleague but originate externally. Rules are maintained automatically across all letter groups and updated whenever the standard runs.",
+    "addedComponent": [
+      {
+        "type": "heading",
+        "label": "Alert Banner (HTML)",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.ColleagueImpersonationAlert.disclaimerHtml",
+        "label": "Disclaimer HTML – Paste the full HTML for the warning banner",
+        "required": true
+      },
+      {
+        "type": "heading",
+        "label": "Keyword Exclusions (Exclude certain users by keywords)",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.ColleagueImpersonationAlert.excludedMailboxes",
+        "label": "Exclude mailboxes by keywords for example any Displayname starting with (Leaver)",
+        "multiple": true,
+        "creatable": true,
+        "required": false
+      },
+      {
+        "type": "heading",
+        "label": "Exempt Senders (Email Accounts)",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.ColleagueImpersonationAlert.additionalExemptSenders",
+        "label": "Additional exempt sender addresses",
+        "multiple": true,
+        "creatable": true,
+        "required": false
+      }
+    ],
+    "label": "Colleague Impersonation Alert Transport Rules",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-03-22",
+    "powershellEquivalent": "New-TransportRule / Set-TransportRule",
+    "recommendedBy": []
   }
 ]

@@ -13,6 +13,7 @@ import {
   Info,
   FactCheck,
   Search,
+  Edit,
 } from "@mui/icons-material";
 import {
   Box,
@@ -1315,6 +1316,11 @@ const ManageDriftPage = () => {
     }
   }, [templateId]);
 
+  // Effect to clear selected items when tenant changes
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [tenantFilter]);
+
   // Add action buttons to each deviation item
   const deviationItemsWithActions = actualDeviationItems.map((item) => {
     return {
@@ -1720,6 +1726,15 @@ const ManageDriftPage = () => {
                         );
                       }}
                       placeholder="Select a drift template..."
+                      disableClearable={true}
+                      customAction={{
+                        icon: <Edit fontSize="small" />,
+                        link: selectedTemplateOption?.value
+                          ? `/tenant/standards/templates/template?id=${selectedTemplateOption.value}&type=drift`
+                          : undefined,
+                        tooltip: "Edit Template",
+                        position: "inside",
+                      }}
                     />
 
                     <TextField
@@ -1949,6 +1964,10 @@ const ManageDriftPage = () => {
                     ? "for this tenant"
                     : "this deviation"
             }?`,
+            onSuccess: () => {
+              // Clear selected items after successful action
+              setSelectedItems([]);
+            },
           }}
           row={actionData.data}
           relatedQueryKeys={[`TenantDrift-${tenantFilter}`]}
@@ -2107,6 +2126,15 @@ const ManageDriftPage = () => {
           open={Boolean(anchorEl[`denied-${item.id}`])}
           onClose={() => handleMenuClose(`denied-${item.id}`)}
         >
+          <MenuItem
+            onClick={() => {
+              handleDeviationAction("deny-remediate", item);
+              handleMenuClose(`denied-${item.id}`);
+            }}
+          >
+            <Cancel sx={{ mr: 1, color: "error.main" }} />
+            Deny - Remediate to align with template
+          </MenuItem>
           <MenuItem
             onClick={() => {
               handleDeviationAction("accept", item);
