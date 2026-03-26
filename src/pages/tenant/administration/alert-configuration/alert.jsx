@@ -968,6 +968,17 @@ const AlertWizard = () => {
                                     formControl={formControl}
                                     label={commandValue.value?.inputLabel}
                                     required={commandValue.value?.required || false}
+                                    validators={{
+                                      ...(commandValue.value?.validators || {}),
+                                      ...(commandValue.value?.required
+                                        ? {
+                                            required: {
+                                              value: true,
+                                              message: "This field is required",
+                                            },
+                                          }
+                                        : {}),
+                                    }}
                                     {...(commandValue.value?.inputType === "autoComplete"
                                       ? {
                                           options: commandValue.value?.options,
@@ -992,6 +1003,17 @@ const AlertWizard = () => {
                                         formControl={formControl}
                                         label={input.inputLabel}
                                         required={input.required || false}
+                                        validators={{
+                                          ...(input.validators || {}),
+                                          ...(input.required
+                                            ? {
+                                                required: {
+                                                  value: true,
+                                                  message: "This field is required",
+                                                },
+                                              }
+                                            : {}),
+                                        }}
                                         {...(input.inputType === "autoComplete"
                                           ? {
                                               options: input.options,

@@ -26,6 +26,20 @@
   {
     "name": "SmtpAuthSuccess",
     "label": "Alert on SMTP AUTH usage with success, helps to phase out SMTP AUTH (Entra P1 Required)",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days to look back (default: 7, max: 30)",
+    "inputName": "SmtpAuthSuccessDays",
+    "validators": {
+      "min": {
+        "value": 7,
+        "message": "Days must be at least 7"
+      },
+      "max": {
+        "value": 30,
+        "message": "Days cannot exceed 30"
+      }
+    },
     "recommendedRunInterval": "1d"
   },
   {
