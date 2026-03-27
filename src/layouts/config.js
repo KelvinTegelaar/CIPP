@@ -981,6 +981,7 @@ export const nativeMenuItems = [
         path: "/cipp/custom-tests",
         roles: ["admin", "superadmin"],
         permissions: ["CIPP.Tests.*"],
+        scope: "global",
       },
       {
         title: "Advanced",
