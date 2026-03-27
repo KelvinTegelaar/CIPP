@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { Check, Error, Sync } from "@mui/icons-material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
@@ -81,6 +82,11 @@ const CippExchangeSettingsForm = (props) => {
           "ExternalMessage",
           "StartTime",
           "EndTime",
+          "CreateOOFEvent",
+          "OOFEventSubject",
+          "AutoDeclineFutureRequestsWhenOOF",
+          "DeclineEventsForScheduledOOF",
+          "DeclineMeetingMessage",
         ];
 
         // Reset the form
@@ -266,6 +272,72 @@ const CippExchangeSettingsForm = (props) => {
                 rows={4}
               />
             </Grid>
+            {!areDateFieldsDisabled && (
+              <>
+                <Grid size={12}>
+                  <Divider sx={{ my: 1 }} />
+                  <Typography variant="subtitle2" sx={{ mt: 1 }}>
+                    Calendar Options
+                  </Typography>
+                </Grid>
+                <Grid size={12}>
+                  <CippFormComponent
+                    type="switch"
+                    name="ooo.CreateOOFEvent"
+                    label="Block my calendar for this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="ooo.CreateOOFEvent"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <Grid size={12}>
+                    <CippFormComponent
+                      type="textField"
+                      name="ooo.OOFEventSubject"
+                      label="Calendar Event Subject"
+                      formControl={formControl}
+                    />
+                  </Grid>
+                </CippFormCondition>
+                <Grid size={12}>
+                  <CippFormComponent
+                    type="switch"
+                    name="ooo.AutoDeclineFutureRequestsWhenOOF"
+                    label="Automatically decline new invitations during this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <Grid size={12}>
+                  <CippFormComponent
+                    type="switch"
+                    name="ooo.DeclineEventsForScheduledOOF"
+                    label="Decline and cancel my meetings during this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="ooo.DeclineEventsForScheduledOOF"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <Grid size={12}>
+                    <CippFormComponent
+                      type="richText"
+                      name="ooo.DeclineMeetingMessage"
+                      label="Decline Message"
+                      formControl={formControl}
+                      multiline
+                      rows={3}
+                    />
+                  </Grid>
+                </CippFormCondition>
+              </>
+            )}
             <Grid size={12}>
               <CippApiResults apiObject={postRequest} />
             </Grid>

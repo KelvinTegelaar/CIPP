@@ -52,6 +52,7 @@ export const nativeMenuItems = [
             title: "Group Templates",
             path: "/identity/administration/group-templates",
             permissions: ["Identity.Group.*"],
+            scope: "global",
           },
           {
             title: "Devices",
@@ -77,6 +78,7 @@ export const nativeMenuItems = [
             title: "JIT Admin Templates",
             path: "/identity/administration/jit-admin-templates",
             permissions: ["Identity.Role.*"],
+            scope: "global",
           },
           {
             title: "Vacation Mode",
@@ -147,11 +149,13 @@ export const nativeMenuItems = [
             title: "Tenants",
             path: "/tenant/administration/tenants",
             permissions: ["Tenant.Administration.*"],
+            scope: "global",
           },
           {
             title: "Alert Configuration",
             path: "/tenant/administration/alert-configuration",
             permissions: ["Tenant.Alert.*"],
+            scope: "global",
           },
           {
             title: "Audit Logs",
@@ -194,6 +198,7 @@ export const nativeMenuItems = [
         title: "GDAP Management",
         path: "/tenant/gdap-management",
         permissions: ["Tenant.Relationship.*"],
+        scope: "global",
       },
       {
         title: "Standards & Drift",
@@ -207,16 +212,19 @@ export const nativeMenuItems = [
             title: "Standards Management",
             path: "/tenant/standards/alignment",
             permissions: ["Tenant.Standards.*"],
+            scope: "global",
           },
           {
             title: "Best Practice Analyser",
             path: "/tenant/standards/bpa-report",
             permissions: ["Tenant.BestPracticeAnalyser.*"],
+            scope: "global",
           },
           {
             title: "Domains Analyser",
             path: "/tenant/standards/domains-analyser",
             permissions: ["Tenant.DomainAnalyser.*"],
+            scope: "global",
           },
         ],
       },
@@ -238,6 +246,7 @@ export const nativeMenuItems = [
             title: "CA Templates",
             path: "/tenant/conditional/list-template",
             permissions: ["Tenant.ConditionalAccess.*"],
+            scope: "global",
           },
           {
             title: "Named Locations",
@@ -338,12 +347,17 @@ export const nativeMenuItems = [
       },
       {
         title: "Reports",
-        permissions: ["Tenant.DeviceCompliance.*"],
+        permissions: ["Tenant.DeviceCompliance.*", "Security.Defender.*"],
         items: [
           {
             title: "Device Compliance",
             path: "/security/reports/list-device-compliance",
             permissions: ["Tenant.DeviceCompliance.*"],
+          },
+          {
+            title: "MDE Onboarding",
+            path: "/security/reports/mde-onboarding",
+            permissions: ["Security.Defender.*"],
           },
         ],
       },
@@ -360,6 +374,7 @@ export const nativeMenuItems = [
             title: "Safe Links Templates",
             path: "/security/safelinks/safelinks-template",
             permissions: ["Security.SafeLinksPolicy.*"],
+            scope: "global",
           },
         ],
       },
@@ -393,6 +408,11 @@ export const nativeMenuItems = [
           {
             title: "Application Queue",
             path: "/endpoint/applications/queue",
+            permissions: ["Endpoint.Application.*"],
+          },
+          {
+            title: "Application Templates",
+            path: "/endpoint/applications/templates",
             permissions: ["Endpoint.Application.*"],
           },
         ],
@@ -451,6 +471,7 @@ export const nativeMenuItems = [
             title: "Policy Templates",
             path: "/endpoint/MEM/list-templates",
             permissions: ["Endpoint.MEM.*"],
+            scope: "global",
           },
           {
             title: "Reusable Settings",
@@ -461,6 +482,7 @@ export const nativeMenuItems = [
             title: "Reusable Settings Templates",
             path: "/endpoint/MEM/reusable-settings-templates",
             permissions: ["Endpoint.MEM.*"],
+            scope: "global",
           },
           {
             title: "Assignment Filters",
@@ -471,6 +493,7 @@ export const nativeMenuItems = [
             title: "Assignment Filter Templates",
             path: "/endpoint/MEM/assignment-filter-templates",
             permissions: ["Endpoint.MEM.*"],
+            scope: "global",
           },
           {
             title: "Scripts",
@@ -606,6 +629,7 @@ export const nativeMenuItems = [
             title: "Contact Templates",
             path: "/email/administration/contacts-template",
             permissions: ["Exchange.Contact.*"],
+            scope: "global",
           },
           {
             title: "Quarantine",
@@ -642,6 +666,7 @@ export const nativeMenuItems = [
             title: "Transport Templates",
             path: "/email/transport/list-templates",
             permissions: ["Exchange.TransportRule.*"],
+            scope: "global",
           },
           {
             title: "Connectors",
@@ -652,6 +677,7 @@ export const nativeMenuItems = [
             title: "Connector Templates",
             path: "/email/transport/list-connector-templates",
             permissions: ["Exchange.Connector.*"],
+            scope: "global",
           },
         ],
       },
@@ -668,6 +694,7 @@ export const nativeMenuItems = [
             title: "Spamfilter templates",
             path: "/email/spamfilter/list-templates",
             permissions: ["Exchange.SpamFilter.*"],
+            scope: "global",
           },
           {
             title: "Connection filter",
@@ -678,6 +705,7 @@ export const nativeMenuItems = [
             title: "Connection filter templates",
             path: "/email/spamfilter/list-connectionfilter-templates",
             permissions: ["Exchange.ConnectionFilter.*"],
+            scope: "global",
           },
           {
             title: "Quarantine Policies",
@@ -789,9 +817,22 @@ export const nativeMenuItems = [
       "Tenant.Application.*",
       "Tenant.DomainAnalyser.*",
       "Exchange.Mailbox.*",
+      "Endpoint.MEM.*",
       "CIPP.Scheduler.*",
     ],
     items: [
+      {
+        title: "Intune Tools",
+        permissions: ["Endpoint.MEM.*"],
+        items: [
+          {
+            title: "Compare Policies",
+            path: "/endpoint/MEM/compare-policies",
+            permissions: ["Endpoint.MEM.*"],
+            scope: "global",
+          },
+        ],
+      },
       {
         title: "Tenant Tools",
         permissions: ["Tenant.Administration.*"],
@@ -810,17 +851,20 @@ export const nativeMenuItems = [
             title: "Tenant Lookup",
             path: "/tenant/tools/tenantlookup",
             permissions: ["Tenant.Administration.*"],
+            scope: "global",
           },
           {
             title: "IP Database",
             path: "/tenant/tools/geoiplookup",
             permissions: ["CIPP.Core.*"],
+            scope: "global",
           },
 
           {
             title: "Individual Domain Check",
             path: "/tenant/tools/individual-domains",
             permissions: ["Tenant.DomainAnalyser.*"],
+            scope: "global",
           },
         ],
       },
@@ -853,11 +897,13 @@ export const nativeMenuItems = [
             title: "Tenant Breach Lookup",
             path: "/tools/tenantbreachlookup",
             permissions: ["CIPP.Core.*"],
+            scope: "global",
           },
           {
             title: "Breach Lookup",
             path: "/tools/breachlookup",
             permissions: ["CIPP.Core.*"],
+            scope: "global",
           },
         ],
       },
@@ -866,12 +912,14 @@ export const nativeMenuItems = [
         path: "/tools/templatelib",
         roles: ["editor", "admin", "superadmin"],
         permissions: ["CIPP.Core.*"],
+        scope: "global",
       },
       {
         title: "Community Repositories",
         path: "/tools/community-repos",
         roles: ["editor", "admin", "superadmin"],
         permissions: ["CIPP.Core.*"],
+        scope: "global",
       },
       {
         title: "Scheduler",
@@ -898,30 +946,41 @@ export const nativeMenuItems = [
         path: "/cipp/settings",
         roles: ["admin", "superadmin"],
         permissions: ["CIPP.AppSettings.*"],
+        scope: "global",
       },
       {
         title: "Logbook",
         path: "/cipp/logs",
         roles: ["editor", "admin", "superadmin"],
         permissions: ["CIPP.Core.*"],
+        scope: "global",
       },
       {
         title: "Setup Wizard",
         path: "/onboardingv2",
         roles: ["admin", "superadmin"],
         permissions: ["CIPP.AppSettings.*"],
+        scope: "global",
       },
       {
         title: "Integrations",
         path: "/cipp/integrations",
         roles: ["admin", "superadmin"],
         permissions: ["CIPP.Extension.*"],
+        scope: "global",
       },
       {
         title: "Custom Data",
         path: "/cipp/custom-data/directory-extensions",
         roles: ["admin", "superadmin"],
         permissions: ["CIPP.AppSettings.*"],
+        scope: "global",
+      },
+      {
+        title: "Custom Scripts",
+        path: "/cipp/custom-scripts",
+        roles: ["admin", "superadmin"],
+        permissions: ["CIPP.Alert.*"],
       },
       {
         title: "Advanced",
@@ -933,30 +992,35 @@ export const nativeMenuItems = [
             path: "/cipp/super-admin/tenant-mode",
             roles: ["superadmin"],
             permissions: ["CIPP.SuperAdmin.*"],
+            scope: "global",
           },
           {
             title: "Exchange Cmdlets",
             path: "/cipp/advanced/exchange-cmdlets",
             roles: ["superadmin"],
             permissions: ["CIPP.SuperAdmin.*"],
+            scope: "global",
           },
           {
             title: "Timers",
             path: "/cipp/advanced/timers",
             roles: ["superadmin"],
             permissions: ["CIPP.SuperAdmin.*"],
+            scope: "global",
           },
           {
             title: "Table Maintenance",
             path: "/cipp/advanced/table-maintenance",
             roles: ["superadmin"],
             permissions: ["CIPP.SuperAdmin.*"],
+            scope: "global",
           },
           {
             title: "Diagnostics",
             path: "/cipp/advanced/diagnostics",
             roles: ["superadmin"],
             permissions: ["CIPP.SuperAdmin.*"],
+            scope: "global",
           },
         ],
       },

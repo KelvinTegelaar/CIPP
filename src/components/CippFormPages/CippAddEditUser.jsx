@@ -52,7 +52,6 @@ const CippAddEditUser = (props) => {
     queryKey: `ListGroups-${tenantDomain}`,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    waiting: !!userId,
   });
 
   // Get manual entry custom data mappings for current tenant
@@ -86,7 +85,13 @@ const CippAddEditUser = (props) => {
   const watcher = useWatch({ control: formControl.control });
 
   // Helper function to generate username from template format
-  const generateUsername = (format, firstName, lastName) => {
+  const generateUsername = (
+    format,
+    firstName,
+    lastName,
+    spaceHandling = "keep",
+    spaceReplacement = "",
+  ) => {
     if (!format || !firstName || !lastName) return "";
 
     // Ensure format is a string
@@ -107,6 +112,13 @@ const CippAddEditUser = (props) => {
     // Replace %FirstName% and %LastName%
     username = username.replace(/%FirstName%/gi, firstName);
     username = username.replace(/%LastName%/gi, lastName);
+
+    // Apply optional space handling
+    if (spaceHandling === "remove") {
+      username = username.replace(/\s+/g, "");
+    } else if (spaceHandling === "replace") {
+      username = username.replace(/\s+/g, spaceReplacement || "");
+    }
 
     // Convert to lowercase
     return username.toLowerCase();
@@ -152,10 +164,26 @@ const CippAddEditUser = (props) => {
             : selectedTemplate.usernameFormat?.value || selectedTemplate.usernameFormat?.label;
 
         if (formatString) {
+          const spaceHandling =
+            typeof selectedTemplate.usernameSpaceHandling === "string"
+              ? selectedTemplate.usernameSpaceHandling
+              : selectedTemplate.usernameSpaceHandling?.value ||
+                selectedTemplate.usernameSpaceHandling?.label ||
+                "keep";
+
+          const spaceReplacement =
+            typeof selectedTemplate.usernameSpaceReplacement === "string"
+              ? selectedTemplate.usernameSpaceReplacement
+              : selectedTemplate.usernameSpaceReplacement?.value ||
+                selectedTemplate.usernameSpaceReplacement?.label ||
+                "";
+
           const generatedUsername = generateUsername(
             formatString,
             watcher.givenName,
             watcher.surname,
+            spaceHandling,
+            spaceReplacement,
           );
           if (generatedUsername) {
             formControl.setValue("username", generatedUsername, { shouldDirty: true });
@@ -248,6 +276,31 @@ const CippAddEditUser = (props) => {
       // Handle licenses - need to match the format expected by CippFormLicenseSelector
       if (template.licenses && Array.isArray(template.licenses)) {
         setFieldIfEmpty("licenses", template.licenses);
+      }
+
+      // Handle groups from template
+      const templateGroups = template.addToGroups || template.groupMemberships;
+      if (templateGroups) {
+        const rawGroups = Array.isArray(templateGroups) ? templateGroups : [templateGroups];
+        const groups = rawGroups.map((g) => {
+          if (g.label && g.value) return g;
+          const groupType = g.groupTypes?.includes("Unified")
+            ? "Microsoft 365"
+            : g.mailEnabled && !g.groupTypes?.includes("Unified")
+              ? g.securityEnabled ? "Mail-Enabled Security" : "Distribution list"
+              : "Security";
+          return {
+            label: g.displayName,
+            value: g.id,
+            addedFields: { groupType },
+          };
+        });
+        if (groups.length > 0) {
+          const currentGroups = watcher.AddToGroups;
+          if (!currentGroups || (Array.isArray(currentGroups) && currentGroups.length === 0)) {
+            formControl.setValue("AddToGroups", groups, { shouldDirty: true });
+          }
+        }
       }
     }
   }, [watcher.userTemplate, formType]);
@@ -674,25 +727,28 @@ const CippAddEditUser = (props) => {
           multiple={false}
         />
       </Grid>
-      {formType === "edit" && (
-        <Grid size={{ xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Add to Groups"
-            name="AddToGroups"
-            multiple={true}
-            options={filteredTenantGroups?.map((tenantGroup) => ({
-              label: tenantGroup.displayName,
-              value: tenantGroup.id,
-              addedFields: {
-                groupType: tenantGroup.groupType,
-              },
-            }))}
-            creatable={false}
-            formControl={formControl}
-          />
-        </Grid>
-      )}
+      <Grid size={{ xs: 12 }}>
+        <CippFormComponent
+          type="autoComplete"
+          label="Add to Groups"
+          name="AddToGroups"
+          multiple={true}
+          options={
+            (formType === "edit" ? filteredTenantGroups : tenantGroups?.data)?.map(
+              (group) => ({
+                label: group.displayName,
+                value: group.id,
+                addedFields: {
+                  groupType: group.calculatedGroupType || group.groupType,
+                },
+              })
+            ) || []
+          }
+          isFetching={tenantGroups.isFetching}
+          creatable={false}
+          formControl={formControl}
+        />
+      </Grid>
       {formType === "edit" && (
         <Grid size={{ xs: 12 }}>
           <CippFormComponent
