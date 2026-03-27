@@ -115,6 +115,7 @@ const Page = () => {
                     options={reportOptions}
                     placeholder={reportListApi.isFetching ? 'Loading reports…' : 'Choose a report'}
                     creatable={false}
+                    sortOptions={true}
                   />
                 </Box>
                 {showPeriod && (
