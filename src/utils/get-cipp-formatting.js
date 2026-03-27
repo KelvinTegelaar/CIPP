@@ -110,12 +110,15 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       const label = data.label ?? data;
       const severityColor = {
         info: "info",
+        informational: "info",
         warn: "warning",
         warning: "warning",
         error: "error",
         critical: "error",
         alert: "warning",
         debug: "default",
+        medium: "warning",
+        high: "error",
       };
       const color = severityColor[String(label).toLowerCase()] ?? "info";
       return <Chip variant="outlined" label={label} size="small" color={color} />;
@@ -430,7 +433,12 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
-  if (cellName === "ClientId" || cellName === "role" || cellName === "appId" || cellName === "SID") {
+  if (
+    cellName === "ClientId" ||
+    cellName === "role" ||
+    cellName === "appId" ||
+    cellName === "SID"
+  ) {
     return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
   }
 
@@ -906,6 +914,18 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       case "warning":
       case "skipped":
         color = "warning";
+        break;
+      case "active":
+        color = "warning";
+        break;
+      case "inprogress":
+        color = "warning";
+        break;
+      case "resolved":
+        color = "success";
+        break;
+      case "redirected":
+        color = "success";
         break;
       default:
         color = "default";
