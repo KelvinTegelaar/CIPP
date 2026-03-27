@@ -3,7 +3,7 @@ import { Security as SecurityIcon } from "@mui/icons-material";
 import { ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
 import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 
-export const AssessmentCard = ({ data, isLoading }) => {
+export const AssessmentCard = ({ data, isLoading, title }) => {
   // Extract data with null safety
   const identityPassed = data?.TestResultSummary?.IdentityPassed || 0;
   const identityTotal = data?.TestResultSummary?.IdentityTotal || 0;
@@ -48,7 +48,7 @@ export const AssessmentCard = ({ data, isLoading }) => {
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <SecurityIcon sx={{ fontSize: 20 }} />
-            <Typography variant="subtitle1">Assessment</Typography>
+            <Typography variant="subtitle1">{title || "Assessment"}</Typography>
           </Box>
         }
         sx={{ pb: 1.5 }}
@@ -74,7 +74,7 @@ export const AssessmentCard = ({ data, isLoading }) => {
                           color="text.secondary"
                           sx={{ ml: 1 }}
                         >
-                          tests
+                          passed tests
                         </Typography>
                       </>
                     )}
@@ -98,7 +98,7 @@ export const AssessmentCard = ({ data, isLoading }) => {
                           color="text.secondary"
                           sx={{ ml: 1 }}
                         >
-                          tests
+                          passed tests
                         </Typography>
                       </>
                     )}
@@ -122,7 +122,7 @@ export const AssessmentCard = ({ data, isLoading }) => {
                           color="text.secondary"
                           sx={{ ml: 1 }}
                         >
-                          tests
+                          passed tests
                         </Typography>
                       </>
                     )}
