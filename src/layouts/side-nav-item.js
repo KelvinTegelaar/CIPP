@@ -14,6 +14,7 @@ import { useSettings } from "../hooks/use-settings";
 export const SideNavItem = (props) => {
   const {
     active = false,
+    category = "",
     children,
     collapse = false,
     depth = 0,
@@ -46,10 +47,10 @@ export const SideNavItem = (props) => {
           ? bookmarks.filter((bookmark) => bookmark.path !== path)
           : bookmarks.length >= 50
             ? bookmarks
-            : [...bookmarks, { label: title, path }]
+            : [...bookmarks, { label: title, path, category: category || "" }]
       );
     },
-    [isBookmarked, bookmarks, setBookmarks, path, title]
+    [isBookmarked, bookmarks, setBookmarks, path, title, category]
   );
 
   // Dynamic spacing and font sizing based on depth
