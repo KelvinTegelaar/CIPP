@@ -47,12 +47,11 @@ const CippFormPage = (props) => {
   const { isValid, isDirty } = useFormState({ control: formControl.control });
 
   useEffect(() => {
-    delete router.query.tenantFilter;
-
     if (router.query) {
+      const { tenantFilter: _tenantFilter, ...queryWithoutTenant } = router.query;
       const resetValues = {
         ...formControl.getValues(),
-        ...router.query,
+        ...queryWithoutTenant,
       };
       formControl.reset(resetValues);
     }
@@ -79,12 +78,26 @@ const CippFormPage = (props) => {
     const values = customDataformatter
       ? customDataformatter(formControl.getValues())
       : formControl.getValues();
-    //remove all empty values or blanks
-    Object.keys(values).forEach((key) => {
-      if (values[key] === "" || values[key] === null) {
-        delete values[key];
+    //remove all empty values or blanks (recursively)
+    const removeEmpty = (obj) => {
+      if (Array.isArray(obj)) {
+        return obj
+          .map((item) => (item && typeof item === "object" ? removeEmpty(item) : item))
+          .filter((item) => item !== "" && item !== null && item !== undefined);
       }
-    });
+      Object.keys(obj).forEach((key) => {
+        if (obj[key] === "" || obj[key] === null || obj[key] === undefined) {
+          delete obj[key];
+        } else if (typeof obj[key] === "object") {
+          obj[key] = removeEmpty(obj[key]);
+          if (!Array.isArray(obj[key]) && Object.keys(obj[key]).length === 0) {
+            delete obj[key];
+          }
+        }
+      });
+      return obj;
+    };
+    removeEmpty(values);
     postCall.mutate({
       url: postUrl,
       data: values,
@@ -117,7 +130,9 @@ const CippFormPage = (props) => {
             <Card>
               <CardContent>
                 {children}
-                <CippApiResults apiObject={postCall} />
+                <Box sx={{ mt: postCall.isIdle ? 0 : 2 }}>
+                  <CippApiResults apiObject={postCall} />
+                </Box>
               </CardContent>
               {!hideSubmit && (
                 <CardActions sx={{ justifyContent: "flex-end" }}>

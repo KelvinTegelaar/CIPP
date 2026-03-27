@@ -7,7 +7,11 @@
   {
     "name": "MFAAdmins",
     "label": "Alert on admins without any form of MFA",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "switch",
+    "inputLabel": "Include disabled admin accounts?",
+    "inputName": "IncludeDisabled"
   },
   {
     "name": "NewMFADevice",
@@ -22,6 +26,20 @@
   {
     "name": "SmtpAuthSuccess",
     "label": "Alert on SMTP AUTH usage with success, helps to phase out SMTP AUTH (Entra P1 Required)",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days to look back (default: 7, max: 30)",
+    "inputName": "SmtpAuthSuccessDays",
+    "validators": {
+      "min": {
+        "value": 7,
+        "message": "Days must be at least 7"
+      },
+      "max": {
+        "value": 30,
+        "message": "Days cannot exceed 30"
+      }
+    },
     "recommendedRunInterval": "1d"
   },
   {
@@ -321,6 +339,16 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "LongLivedAppCredentials",
+    "label": "Alert on long-lived app registration secrets or certificates",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Maximum allowed credential lifetime in months (1-24)",
+    "inputName": "InputValue",
+    "description": "Checks app registrations for client secrets or certificates that are valid longer than the Microsoft UI currently allows. Set a threshold from 1 to 24 months."
+  },
+  {
     "name": "ApnCertExpiry",
     "label": "Alert on expiring APN certificates",
     "recommendedRunInterval": "1d"
@@ -389,6 +417,12 @@
     "name": "LicensedUsersWithRoles",
     "label": "Alert on licensed users with any administrator roles",
     "recommendedRunInterval": "7d"
+  },
+  {
+    "name": "RoleEscalableGroups",
+    "label": "Alert on groups or nested groups assigned to a role that could be used for privilege escalation",
+    "recommendedRunInterval": "1d",
+    "description": "Scans for groups, including nested groups, that are assigned to directory roles and are not role assignable, which allows group owners or group admins to add more users to the group and gain access to a potentially privileged role."
   },
   {
     "name": "HuntressRogueApps",
@@ -492,7 +526,7 @@
   {
     "name": "QuarantineReleaseRequests",
     "label": "Alert on quarantine release requests",
-    "recommendedRunInterval": "30m",
+    "recommendedRunInterval": "1h",
     "description": "Monitors for user requests to release quarantined messages and provides a CIPP-native alternative to the external email forwarding method. This helps MSPs maintain secure configurations while getting timely notifications about quarantine activity. Links to the tenant's quarantine page are provided in alerts."
   },
   {

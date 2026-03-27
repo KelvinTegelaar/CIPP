@@ -994,6 +994,87 @@ const Page = () => {
           });
         }
 
+        // Fallback: scan compare data for IntuneTemplate entries belonging to this template
+        // that weren't captured from tagTemplates (e.g., templates added to a package tag
+        // after the standard template was last saved).
+        if (currentTenantObj) {
+          Object.keys(currentTenantObj).forEach((key) => {
+            if (
+              key.startsWith("standards.IntuneTemplate.") &&
+              !allStandards.some((s) => s.standardId === key)
+            ) {
+              const standardObject = currentTenantObj[key];
+              if (standardObject?.TemplateId !== templateId) return;
+
+              const itemTemplateId = key.replace("standards.IntuneTemplate.", "");
+              const standardInfo = standards.find((s) => s.name === "standards.IntuneTemplate");
+              const directStandardValue = standardObject?.Value;
+
+              let isCompliant = false;
+              if (
+                standardObject?.CurrentValue !== undefined &&
+                standardObject?.ExpectedValue !== undefined
+              ) {
+                const sortedCurrent =
+                  typeof standardObject.CurrentValue === "object" &&
+                  standardObject.CurrentValue !== null
+                    ? Object.keys(standardObject.CurrentValue)
+                        .sort()
+                        .reduce((obj, k) => {
+                          obj[k] = standardObject.CurrentValue[k];
+                          return obj;
+                        }, {})
+                    : standardObject.CurrentValue;
+                const sortedExpected =
+                  typeof standardObject.ExpectedValue === "object" &&
+                  standardObject.ExpectedValue !== null
+                    ? Object.keys(standardObject.ExpectedValue)
+                        .sort()
+                        .reduce((obj, k) => {
+                          obj[k] = standardObject.ExpectedValue[k];
+                          return obj;
+                        }, {})
+                    : standardObject.ExpectedValue;
+                isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+              } else if (directStandardValue === true) {
+                isCompliant = true;
+              }
+
+              const templateDisplayName =
+                standardObject?.CurrentValue?.displayName ||
+                standardObject?.ExpectedValue?.displayName ||
+                itemTemplateId;
+
+              allStandards.push({
+                standardId: key,
+                standardName: `Intune Template: ${templateDisplayName}`,
+                currentTenantValue: {
+                  Value: directStandardValue,
+                  LastRefresh: standardObject?.LastRefresh,
+                  TemplateId: standardObject?.TemplateId,
+                  CurrentValue: standardObject?.CurrentValue,
+                  ExpectedValue: standardObject?.ExpectedValue,
+                },
+                standardValue: {
+                  templateId: itemTemplateId,
+                  Template: templateDisplayName,
+                },
+                complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                isOverridden: false,
+                overridingTemplateId: null,
+                overridingTemplateName: null,
+                complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
+                standardDescription: standardInfo?.helpText || "",
+                standardImpact: standardInfo?.impact || "Medium Impact",
+                standardImpactColour: standardInfo?.impactColour || "warning",
+                templateName: selectedTemplate?.templateName || "Standard Template",
+                templateActions: [],
+                autoRemediate: false,
+              });
+            }
+          });
+        }
+
         setComparisonData(allStandards);
       } else {
         setComparisonData([]);
@@ -1779,8 +1860,8 @@ const Page = () => {
                               </Box>
                             ) : (
                               <Alert severity="info">
-                                This data has not yet been collected. Collect the data by pressing
-                                the report button on the top of the page.
+                                This data has not yet been collected. Collect the data by selecting
+                                Refresh Data from the Actions dropdown on the top of the page.
                               </Alert>
                             )}
 
@@ -2188,7 +2269,7 @@ const Page = () => {
                                                   textTransform: "uppercase",
                                                   letterSpacing: 0.5,
                                                   display: "block",
-                                                  mb: 1,
+                                                  mb: 2,
                                                 }}
                                               >
                                                 Current Configuration
@@ -2480,16 +2561,7 @@ const Page = () => {
                                       typeof standard.currentTenantValue.CurrentValue ===
                                         "object" &&
                                       standard.currentTenantValue.CurrentValue !== null ? (
-                                        <Stack
-                                          spacing={2}
-                                          sx={{
-                                            mt:
-                                              standard.currentTenantValue?.Value === false ||
-                                              standard.currentTenantValue === false
-                                                ? 1
-                                                : 2,
-                                          }}
-                                        >
+                                        <Stack spacing={2}>
                                           <Typography
                                             variant="caption"
                                             sx={{
@@ -2598,15 +2670,7 @@ const Page = () => {
                                           })}
                                         </Stack>
                                       ) : (
-                                        <Box
-                                          sx={{
-                                            mt:
-                                              standard.currentTenantValue?.Value === false ||
-                                              standard.currentTenantValue === false
-                                                ? 1
-                                                : 2,
-                                          }}
-                                        >
+                                        <Box>
                                           <Typography
                                             variant="caption"
                                             sx={{
@@ -2615,7 +2679,7 @@ const Page = () => {
                                               textTransform: "uppercase",
                                               letterSpacing: 0.5,
                                               display: "block",
-                                              mb: 1,
+                                              mb: 2,
                                             }}
                                           >
                                             Current Configuration
