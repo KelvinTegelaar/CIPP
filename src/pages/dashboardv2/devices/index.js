@@ -98,6 +98,7 @@ const Page = () => {
         offCanvasOnRowClick={true}
         filters={filters}
         actions={[]}
+        maxHeightOffset="600px"
         refreshFunction={testsApi}
       />
     </Container>
