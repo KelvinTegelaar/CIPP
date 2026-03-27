@@ -1,7 +1,13 @@
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Alert, Button, SvgIcon, Typography } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import {
+  Add,
+  ToggleOn,
+  ToggleOff,
+  NotificationsActive,
+  NotificationsOff,
+} from "@mui/icons-material";
 import { TrashIcon, PencilIcon, ClockIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
 
@@ -55,6 +61,58 @@ const Page = () => {
             label: "View Versions",
             icon: <ClockIcon />,
             link: "/cipp/custom-scripts/versions?ScriptGuid=[ScriptGuid]",
+          },
+          {
+            label: "Enable Script",
+            icon: <ToggleOn />,
+            type: "POST",
+            url: "/api/AddCustomScript",
+            multiPost: false,
+            data: {
+              ScriptGuid: "ScriptGuid",
+              Action: "!EnableScript",
+            },
+            condition: (row) => row.Enabled !== true,
+            confirmText: "Enable script '[ScriptName]'?",
+          },
+          {
+            label: "Disable Script",
+            icon: <ToggleOff />,
+            type: "POST",
+            url: "/api/AddCustomScript",
+            multiPost: false,
+            data: {
+              ScriptGuid: "ScriptGuid",
+              Action: "!DisableScript",
+            },
+            condition: (row) => row.Enabled === true,
+            confirmText: "Disable script '[ScriptName]'?",
+          },
+          {
+            label: "Enable Alerts",
+            icon: <NotificationsActive />,
+            type: "POST",
+            url: "/api/AddCustomScript",
+            multiPost: false,
+            data: {
+              ScriptGuid: "ScriptGuid",
+              Action: "!EnableAlerts",
+            },
+            condition: (row) => row.AlertOnFailure !== true,
+            confirmText: "Enable alerts for '[ScriptName]'?",
+          },
+          {
+            label: "Disable Alerts",
+            icon: <NotificationsOff />,
+            type: "POST",
+            url: "/api/AddCustomScript",
+            multiPost: false,
+            data: {
+              ScriptGuid: "ScriptGuid",
+              Action: "!DisableAlerts",
+            },
+            condition: (row) => row.AlertOnFailure === true,
+            confirmText: "Disable alerts for '[ScriptName]'?",
           },
           {
             label: "Delete Script",
