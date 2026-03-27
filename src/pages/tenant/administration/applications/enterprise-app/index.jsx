@@ -1,105 +1,97 @@
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
-import { useSettings } from "../../../../../hooks/use-settings";
-import { useRouter } from "next/router";
-import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
-import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
-import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import {
-  Fingerprint,
-  Launch,
-  Apps,
-  Group,
-  CheckCircle,
-  Warning,
-  Badge,
-} from "@mui/icons-material";
-import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
-import tabOptions from "./tabOptions";
-import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
-import { Box, Stack } from "@mui/system";
-import { Grid } from "@mui/system";
-import { Typography, Card, CardHeader, Divider, Button, SvgIcon } from "@mui/material";
-import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
-import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
-import { useEffect, useMemo, useState } from "react";
-import { PropertyList } from "../../../../../components/property-list";
-import { PropertyListItem } from "../../../../../components/property-list-item";
-import { CippHead } from "../../../../../components/CippComponents/CippHead";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { usePermissions } from "../../../../../hooks/use-permissions.js";
-import { getEnterpriseAppDetailHeaderActions } from "../enterpriseAppActions.jsx";
-import Link from "next/link";
-import { getListGraphBulkRequestRows } from "../../../../../utils/getListGraphBulkRequestRows.js";
-import { CippCredentialExpandList } from "../../../../../components/CippComponents/CippCredentialExpandList.jsx";
+import { Layout as DashboardLayout } from '../../../../../layouts/index.js'
+import { useSettings } from '../../../../../hooks/use-settings'
+import { useRouter } from 'next/router'
+import { ApiGetCall, ApiPostCall } from '../../../../../api/ApiCall'
+import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSkeleton'
+import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
+import { Fingerprint, Launch, Apps, Group, CheckCircle, Warning, Badge } from '@mui/icons-material'
+import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
+import tabOptions from './tabOptions'
+import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
+import { Box, Stack } from '@mui/system'
+import { Grid } from '@mui/system'
+import { Typography, Card, CardHeader, Divider, Button, SvgIcon } from '@mui/material'
+import { CippBannerListCard } from '../../../../../components/CippCards/CippBannerListCard'
+import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
+import { useEffect, useMemo, useState } from 'react'
+import { PropertyList } from '../../../../../components/property-list'
+import { PropertyListItem } from '../../../../../components/property-list-item'
+import { CippHead } from '../../../../../components/CippComponents/CippHead'
+import { EyeIcon } from '@heroicons/react/24/outline'
+import { usePermissions } from '../../../../../hooks/use-permissions.js'
+import { getEnterpriseAppDetailHeaderActions } from '../../../../../components/CippComponents/EnterpriseAppActions.jsx'
+import Link from 'next/link'
+import { getListGraphBulkRequestRows } from '../../../../../utils/getListGraphBulkRequestRows.js'
+import { CippCredentialExpandList } from '../../../../../components/CippComponents/CippCredentialExpandList.jsx'
 
 const spSelect =
-  "id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials";
+  'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials'
 
 const getLatestCredentialExpiry = (credentials = []) => {
-  if (!Array.isArray(credentials) || credentials.length === 0) return "N/A";
+  if (!Array.isArray(credentials) || credentials.length === 0) return 'N/A'
   const validDates = credentials
     .map((cred) => cred?.endDateTime)
     .filter(Boolean)
-    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-  return validDates.length > 0 ? new Date(validDates[0]).toLocaleString() : "N/A";
-};
+    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+  return validDates.length > 0 ? new Date(validDates[0]).toLocaleString() : 'N/A'
+}
 
 const Page = () => {
-  const userSettingsDefaults = useSettings();
-  const { checkPermissions } = usePermissions();
-  const canWriteApplication = checkPermissions(["Tenant.Application.ReadWrite"]);
-  const router = useRouter();
-  const rawSpId = router.query.spId;
-  const spObjectId = Array.isArray(rawSpId) ? rawSpId[0] : rawSpId;
-  const [waiting, setWaiting] = useState(false);
+  const userSettingsDefaults = useSettings()
+  const { checkPermissions } = usePermissions()
+  const canWriteApplication = checkPermissions(['Tenant.Application.ReadWrite'])
+  const router = useRouter()
+  const rawSpId = router.query.spId
+  const spObjectId = Array.isArray(rawSpId) ? rawSpId[0] : rawSpId
+  const [waiting, setWaiting] = useState(false)
 
   useEffect(() => {
     if (spObjectId) {
-      setWaiting(true);
+      setWaiting(true)
     }
-  }, [spObjectId]);
+  }, [spObjectId])
 
   const spRequest = ApiGetCall({
-    url: "/api/ListGraphRequest",
+    url: '/api/ListGraphRequest',
     data: {
-      Endpoint: spObjectId ? `servicePrincipals/${spObjectId}` : "servicePrincipals",
+      Endpoint: spObjectId ? `servicePrincipals/${spObjectId}` : 'servicePrincipals',
       $select: spSelect,
       tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
     },
     queryKey: `EnterpriseApp-spId-${spObjectId}`,
     waiting: waiting,
-  });
+  })
 
-  let spData = null;
+  let spData = null
   if (spRequest.isSuccess && spRequest.data) {
     if (Array.isArray(spRequest.data.Results)) {
-      spData = spRequest.data.Results[0];
+      spData = spRequest.data.Results[0]
     } else if (spRequest.data.Results) {
-      spData = spRequest.data.Results;
+      spData = spRequest.data.Results
     } else {
-      spData = spRequest.data;
+      spData = spRequest.data
     }
   }
 
   const spBulkRequest = ApiPostCall({
     urlFromData: true,
-  });
+  })
 
   function refreshFunction() {
-    if (!spObjectId) return;
+    if (!spObjectId) return
     spBulkRequest.mutate({
-      url: "/api/ListGraphBulkRequest",
+      url: '/api/ListGraphBulkRequest',
       data: {
         tenantFilter: userSettingsDefaults.currentTenant,
         Requests: [
           {
-            id: "owners",
+            id: 'owners',
             url: `/servicePrincipals/${spObjectId}/owners`,
-            method: "GET",
+            method: 'GET',
           },
         ],
       },
-    });
+    })
   }
 
   useEffect(() => {
@@ -110,7 +102,7 @@ const Page = () => {
       spData?.id &&
       !spBulkRequest.isSuccess
     ) {
-      refreshFunction();
+      refreshFunction()
     }
   }, [
     spObjectId,
@@ -118,28 +110,28 @@ const Page = () => {
     spRequest.isSuccess,
     spData?.id,
     spBulkRequest.isSuccess,
-  ]);
+  ])
 
-  const bulkData = getListGraphBulkRequestRows(spBulkRequest);
-  const ownersData = bulkData.find((item) => item.id === "owners");
-  const owners = ownersData?.body?.value ?? [];
+  const bulkData = getListGraphBulkRequestRows(spBulkRequest)
+  const ownersData = bulkData.find((item) => item.id === 'owners')
+  const owners = ownersData?.body?.value ?? []
 
   const title = !spRequest.isSuccess
-    ? "Loading..."
-    : spData?.displayName || spData?.appId || spObjectId || "Enterprise application";
+    ? 'Loading...'
+    : spData?.displayName || spData?.appId || spObjectId || 'Enterprise application'
 
-  const data = spData;
+  const data = spData
 
   const subtitle =
     spRequest.isSuccess && spData
       ? [
           {
             icon: <Badge />,
-            text: <CippCopyToClipBoard type="chip" text={spData?.appId || "N/A"} />,
+            text: <CippCopyToClipBoard type="chip" text={spData?.appId || 'N/A'} />,
           },
           {
             icon: <Fingerprint />,
-            text: <CippCopyToClipBoard type="chip" text={spData?.id || "N/A"} />,
+            text: <CippCopyToClipBoard type="chip" text={spData?.id || 'N/A'} />,
           },
           {
             icon: <CalendarIcon />,
@@ -150,7 +142,7 @@ const Page = () => {
             ),
           },
           {
-            icon: <Launch style={{ color: "#667085" }} />,
+            icon: <Launch style={{ color: '#667085' }} />,
             text: (
               <Button
                 color="muted"
@@ -165,20 +157,20 @@ const Page = () => {
             ),
           },
         ]
-      : [];
+      : []
 
   const appActions = useMemo(
     () => getEnterpriseAppDetailHeaderActions(canWriteApplication),
-    [canWriteApplication],
-  );
+    [canWriteApplication]
+  )
 
   const actionsData = useMemo(() => {
     if (!spData) {
-      return undefined;
+      return undefined
     }
-    const tenant = router.query.tenantFilter ?? userSettingsDefaults.currentTenant;
-    return { ...spData, Tenant: tenant };
-  }, [spData, router.query.tenantFilter, userSettingsDefaults.currentTenant]);
+    const tenant = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
+    return { ...spData, Tenant: tenant }
+  }, [spData, router.query.tenantFilter, userSettingsDefaults.currentTenant])
 
   const ownersItems =
     owners.length > 0
@@ -188,54 +180,52 @@ const Page = () => {
             cardLabelBox: {
               cardLabelBoxHeader: <Group />,
             },
-            text: "Owners",
-            subtext: "Directory objects that own this service principal",
+            text: 'Owners',
+            subtext: 'Directory objects that own this service principal',
             statusText: `${owners.length} Owner(s)`,
-            statusColor: "info.main",
+            statusColor: 'info.main',
             table: {
-              title: "Owners",
+              title: 'Owners',
               hideTitle: true,
               data: owners,
               refreshFunction: refreshFunction,
-              simpleColumns: ["displayName", "userPrincipalName", "mail", "@odata.type"],
+              simpleColumns: ['displayName', 'userPrincipalName', 'mail', '@odata.type'],
               actions: [
                 {
                   icon: <EyeIcon />,
-                  label: "View User",
+                  label: 'View User',
                   link: `/identity/administration/users/user?userId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
-                  condition: (row) => row?.["@odata.type"] === "#microsoft.graph.user",
+                  condition: (row) => row?.['@odata.type'] === '#microsoft.graph.user',
                 },
               ],
             },
           },
         ]
-      : ownersData != null &&
-          typeof ownersData.status === "number" &&
-          ownersData.status !== 200
-      ? [
-          {
-            id: 1,
-            cardLabelBox: "!",
-            text: "Error loading owners",
-            subtext: ownersData?.body?.error?.message || "Unknown error",
-            statusColor: "error.main",
-            statusText: "Error",
-            propertyItems: [],
-          },
-        ]
-      : [
-          {
-            id: 1,
-            cardLabelBox: "-",
-            text: "No owners",
-            subtext: "No owners were returned for this enterprise application.",
-            statusColor: "warning.main",
-            statusText: "No Owners",
-            propertyItems: [],
-          },
-        ];
+      : ownersData != null && typeof ownersData.status === 'number' && ownersData.status !== 200
+        ? [
+            {
+              id: 1,
+              cardLabelBox: '!',
+              text: 'Error loading owners',
+              subtext: ownersData?.body?.error?.message || 'Unknown error',
+              statusColor: 'error.main',
+              statusText: 'Error',
+              propertyItems: [],
+            },
+          ]
+        : [
+            {
+              id: 1,
+              cardLabelBox: '-',
+              text: 'No owners',
+              subtext: 'No owners were returned for this enterprise application.',
+              statusColor: 'warning.main',
+              statusText: 'No Owners',
+              propertyItems: [],
+            },
+          ]
 
-  const tenantForApi = router.query.tenantFilter ?? userSettingsDefaults.currentTenant;
+  const tenantForApi = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
 
   const credentialsItems = [
     {
@@ -243,13 +233,13 @@ const Page = () => {
       cardLabelBox: {
         cardLabelBoxHeader: data?.passwordCredentials?.length > 0 ? <CheckCircle /> : <Warning />,
       },
-      text: "Password Credentials",
+      text: 'Password Credentials',
       subtext: `${data?.passwordCredentials?.length || 0} secret(s)`,
-      statusColor: data?.passwordCredentials?.length > 0 ? "info.main" : "warning.main",
-      statusText: data?.passwordCredentials?.length > 0 ? "Configured" : "None",
+      statusColor: data?.passwordCredentials?.length > 0 ? 'info.main' : 'warning.main',
+      statusText: data?.passwordCredentials?.length > 0 ? 'Configured' : 'None',
       propertyItems: [
-        { label: "Count", value: data?.passwordCredentials?.length || 0 },
-        { label: "Next Expiry", value: getLatestCredentialExpiry(data?.passwordCredentials) },
+        { label: 'Count', value: data?.passwordCredentials?.length || 0 },
+        { label: 'Next Expiry', value: getLatestCredentialExpiry(data?.passwordCredentials) },
       ],
       children: (
         <CippCredentialExpandList
@@ -268,13 +258,13 @@ const Page = () => {
       cardLabelBox: {
         cardLabelBoxHeader: data?.keyCredentials?.length > 0 ? <CheckCircle /> : <Warning />,
       },
-      text: "Certificate Credentials",
+      text: 'Certificate Credentials',
       subtext: `${data?.keyCredentials?.length || 0} certificate(s)`,
-      statusColor: data?.keyCredentials?.length > 0 ? "info.main" : "warning.main",
-      statusText: data?.keyCredentials?.length > 0 ? "Configured" : "None",
+      statusColor: data?.keyCredentials?.length > 0 ? 'info.main' : 'warning.main',
+      statusText: data?.keyCredentials?.length > 0 ? 'Configured' : 'None',
       propertyItems: [
-        { label: "Count", value: data?.keyCredentials?.length || 0 },
-        { label: "Next Expiry", value: getLatestCredentialExpiry(data?.keyCredentials) },
+        { label: 'Count', value: data?.keyCredentials?.length || 0 },
+        { label: 'Next Expiry', value: getLatestCredentialExpiry(data?.keyCredentials) },
       ],
       children: (
         <CippCredentialExpandList
@@ -288,11 +278,11 @@ const Page = () => {
         />
       ),
     },
-  ];
+  ]
 
   const tenantQs = encodeURIComponent(
-    router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
-  );
+    router.query.tenantFilter ?? userSettingsDefaults.currentTenant
+  )
 
   return (
     <HeaderedTabbedLayout
@@ -327,9 +317,9 @@ const Page = () => {
                         <SvgIcon sx={{ fontSize: 64 }}>
                           <Apps />
                         </SvgIcon>
-                        <Typography variant="h6">{data?.displayName || "N/A"}</Typography>
+                        <Typography variant="h6">{data?.displayName || 'N/A'}</Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {data?.accountEnabled === false ? "Disabled" : "Enabled"}
+                          {data?.accountEnabled === false ? 'Disabled' : 'Enabled'}
                         </Typography>
                       </Stack>
                     }
@@ -343,37 +333,37 @@ const Page = () => {
                           <Typography variant="inherit" color="text.primary" gutterBottom>
                             Display name:
                           </Typography>
-                          <Typography variant="inherit">{data?.displayName || "N/A"}</Typography>
+                          <Typography variant="inherit">{data?.displayName || 'N/A'}</Typography>
                         </Grid>
                         <Grid size={{ xs: 12 }}>
                           <Typography variant="inherit" color="text.primary" gutterBottom>
                             Application (client) ID:
                           </Typography>
-                          <Typography variant="inherit">{data?.appId || "N/A"}</Typography>
+                          <Typography variant="inherit">{data?.appId || 'N/A'}</Typography>
                         </Grid>
                         <Grid size={{ xs: 12 }}>
                           <Typography variant="inherit" color="text.primary" gutterBottom>
                             Object ID:
                           </Typography>
-                          <Typography variant="inherit">{data?.id || "N/A"}</Typography>
+                          <Typography variant="inherit">{data?.id || 'N/A'}</Typography>
                         </Grid>
                         <Grid size={{ xs: 12 }}>
                           <Typography variant="inherit" color="text.primary" gutterBottom>
                             Sign-in audience:
                           </Typography>
-                          <Typography variant="inherit">{data?.signInAudience || "N/A"}</Typography>
+                          <Typography variant="inherit">{data?.signInAudience || 'N/A'}</Typography>
                         </Grid>
                         <Grid size={{ xs: 12 }}>
                           <Typography variant="inherit" color="text.primary" gutterBottom>
                             Publisher:
                           </Typography>
-                          <Typography variant="inherit">{data?.publisherName || "N/A"}</Typography>
+                          <Typography variant="inherit">{data?.publisherName || 'N/A'}</Typography>
                         </Grid>
                         <Grid size={{ xs: 12 }}>
                           <Typography variant="inherit" color="text.primary" gutterBottom>
                             Homepage:
                           </Typography>
-                          <Typography variant="inherit">{data?.homepage || "N/A"}</Typography>
+                          <Typography variant="inherit">{data?.homepage || 'N/A'}</Typography>
                         </Grid>
                         <Grid size={{ xs: 12 }}>
                           <Typography variant="inherit" color="text.primary" gutterBottom>
@@ -382,7 +372,7 @@ const Page = () => {
                           <Typography variant="inherit">
                             {data?.createdDateTime
                               ? new Date(data.createdDateTime).toLocaleString()
-                              : "N/A"}
+                              : 'N/A'}
                           </Typography>
                         </Grid>
                         {data?.appId && (
@@ -423,9 +413,9 @@ const Page = () => {
         </Box>
       )}
     </HeaderedTabbedLayout>
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default Page;
+export default Page
