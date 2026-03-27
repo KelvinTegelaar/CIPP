@@ -1,15 +1,17 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippTablePage from "/src/components/CippComponents/CippTablePage";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import CippTablePage from "../../../components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 import { CippScheduledTaskActions } from "../../../components/CippComponents/CippScheduledTaskActions";
 import { CippSchedulerDrawer } from "../../../components/CippComponents/CippSchedulerDrawer";
+import { useSettings } from "../../../hooks/use-settings";
 
 const Page = () => {
   const [editTaskId, setEditTaskId] = useState(null);
   const [cloneTaskId, setCloneTaskId] = useState(null);
+  const currentTenant = useSettings().currentTenant;
 
   const drawerHandlers = {
     openEditDrawer: (row) => {
@@ -46,7 +48,9 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (extendedData) => <ScheduledTaskDetails data={extendedData} showActions={false} />,
+    children: (extendedData) => (
+      <ScheduledTaskDetails data={extendedData} showActions={true} showTitle={false} />
+    ),
     size: "xl",
     actions: actions,
   };
@@ -65,9 +69,13 @@ const Page = () => {
         tenantInTitle={false}
         title="Scheduled Tasks"
         apiUrl={
-          showHiddenJobs ? "/api/ListScheduledItems?ShowHidden=true" : "/api/ListScheduledItems"
+          showHiddenJobs ? `/api/ListScheduledItems?ShowHidden=true` : `/api/ListScheduledItems`
         }
-        queryKey={showHiddenJobs ? `ListScheduledItems-hidden` : `ListScheduledItems`}
+        queryKey={
+          showHiddenJobs
+            ? `ListScheduledItems-hidden-${currentTenant}`
+            : `ListScheduledItems-${currentTenant}`
+        }
         simpleColumns={[
           "ExecutedTime",
           "TaskState",

@@ -1,21 +1,25 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
 import tabOptions from "../tabOptions";
-import { Edit, PlayArrow, GroupAdd } from "@mui/icons-material";
+import { Edit, PlayArrow, GroupAdd, ViewList } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { CippAddTenantGroupDrawer } from "/src/components/CippComponents/CippAddTenantGroupDrawer";
-import { CippApiLogsDrawer } from "/src/components/CippComponents/CippApiLogsDrawer";
-import { CippTenantGroupOffCanvas } from "/src/components/CippComponents/CippTenantGroupOffCanvas";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog.jsx";
+import { CippAddTenantGroupDrawer } from "../../../../../components/CippComponents/CippAddTenantGroupDrawer";
+import { CippApiLogsDrawer } from "../../../../../components/CippComponents/CippApiLogsDrawer";
+import { CippTenantGroupOffCanvas } from "../../../../../components/CippComponents/CippTenantGroupOffCanvas";
+import { CippApiDialog } from "../../../../../components/CippComponents/CippApiDialog.jsx";
 import { Box, Button } from "@mui/material";
-import { useDialog } from "/src/hooks/use-dialog.js";
+import { useDialog } from "../../../../../hooks/use-dialog.js";
+import { useState } from "react"
 
 const Page = () => {
   const pageTitle = "Tenant Groups";
   const createDefaultGroupsDialog = useDialog();
+  const [showUsage, setShowUsage] = useState(false);
 
-  const simpleColumns = ["Name", "Description", "GroupType", "Members"];
+  const simpleColumns = showUsage
+    ? ["Name", "Description", "GroupType", "Members", "Usage"]
+    : ["Name", "Description", "GroupType", "Members"];
 
   const offcanvas = {
     children: (row) => {
@@ -57,12 +61,16 @@ const Page = () => {
         tenantInTitle={false}
         simpleColumns={simpleColumns}
         apiUrl="/api/ListTenantGroups"
-        queryKey="TenantGroupListPage"
+        apiData={{ includeUsage: showUsage }}
+        queryKey={showUsage ? "TenantGroupListPage-usage" : "TenantGroupListPage"}
         apiDataKey="Results"
         actions={actions}
         cardButton={
           <Box sx={{ display: "flex", gap: 1 }}>
             <CippAddTenantGroupDrawer />
+            <Button onClick={() => setShowUsage(!showUsage)} startIcon={<ViewList />}>
+              {showUsage ? "Hide Usage" : "Show Usage"}
+            </Button>
             <Button onClick={createDefaultGroupsDialog.handleOpen} startIcon={<GroupAdd />}>
               Create Default Groups
             </Button>

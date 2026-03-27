@@ -20,9 +20,9 @@ import {
   TimelineDot,
   TimelineOppositeContent,
 } from "@mui/lab";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
+import { ApiGetCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
 import {
   Policy,

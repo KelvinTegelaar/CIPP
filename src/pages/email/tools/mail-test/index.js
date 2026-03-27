@@ -1,5 +1,5 @@
 
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 
 const Page = () => {
   const pageTitle = "Mail Test";

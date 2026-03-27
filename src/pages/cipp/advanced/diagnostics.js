@@ -1,7 +1,7 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import CippDiagnosticsFilter from "/src/components/CippTable/CippDiagnosticsFilter";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
+import CippDiagnosticsFilter from "../../../components/CippTable/CippDiagnosticsFilter";
+import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
 import { useState } from "react";
 import { Grid } from "@mui/system";
 import { Box, Typography, Chip, Stack, Divider } from "@mui/material";

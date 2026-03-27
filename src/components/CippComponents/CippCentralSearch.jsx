@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useRouter } from "next/router";
-import { nativeMenuItems } from "/src/layouts/config";
-import { usePermissions } from "/src/hooks/use-permissions";
+import { nativeMenuItems } from "../../layouts/config";
+import { usePermissions } from "../../hooks/use-permissions";
 
 /**
  * Recursively collects only leaf items (those without sub-items).
@@ -62,7 +62,7 @@ async function loadTabOptions() {
 
   for (const basePath of tabOptionPaths) {
     try {
-      const module = await import(`/src/pages${basePath}/tabOptions.json`);
+      const module = await import(`../../pages${basePath}/tabOptions.json`);
       const options = module.default || module;
 
       // Add each tab option with metadata
@@ -172,7 +172,7 @@ export const CippCentralSearch = ({ handleClose, open }) => {
     const filteredMainMenu = filterItemsByPermissionsAndRoles(
       allLeafItems,
       userPermissions,
-      userRoles
+      userRoles,
     ).map((item) => {
       const rawBreadcrumbs = buildBreadcrumbPath(nativeMenuItems, item.path) || [];
       // Remove the leaf item's own title to avoid duplicate when rendering
@@ -250,10 +250,11 @@ export const CippCentralSearch = ({ handleClose, open }) => {
     const inTitle = leaf.title?.toLowerCase().includes(normalizedSearch);
     const inPath = leaf.path?.toLowerCase().includes(normalizedSearch);
     const inBreadcrumbs = leaf.breadcrumbs?.some((crumb) =>
-      crumb?.toLowerCase().includes(normalizedSearch)
+      crumb?.toLowerCase().includes(normalizedSearch),
     );
+    const inScope = (leaf.scope === "global" ? "global" : "tenant").includes(normalizedSearch);
     // If there's no search value, show no results (you could change this logic)
-    return normalizedSearch ? inTitle || inPath || inBreadcrumbs : false;
+    return normalizedSearch ? inTitle || inPath || inBreadcrumbs || inScope : false;
   });
 
   // Helper to bold‐highlight the matched text
@@ -267,7 +268,7 @@ export const CippCentralSearch = ({ handleClose, open }) => {
         </Typography>
       ) : (
         part
-      )
+      ),
     );
   };
 
@@ -310,7 +311,9 @@ export const CippCentralSearch = ({ handleClose, open }) => {
           {searchValue.trim().length > 0 ? (
             filteredItems.length > 0 ? (
               <Grid container spacing={2} mt={2}>
-                {filteredItems.map((item, index) => (
+                {filteredItems.map((item, index) => {
+                  const isGlobal = item.scope === "global";
+                  return (
                   <Grid size={{ md: 12, sm: 12, xs: 12 }} key={index}>
                     <Card variant="outlined" sx={{ height: "100%" }}>
                       <CardActionArea
@@ -333,6 +336,19 @@ export const CippCentralSearch = ({ handleClose, open }) => {
                             >
                               {getItemTypeLabel(item)}
                             </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                px: 1,
+                                py: 0.25,
+                                borderRadius: 1,
+                                backgroundColor: isGlobal ? "info.main" : "success.main",
+                                color: "white",
+                                fontSize: "0.7rem",
+                              }}
+                            >
+                              {isGlobal ? "Global" : "Tenant"}
+                            </Typography>
                           </Box>
                           {item.breadcrumbs && item.breadcrumbs.length > 0 && (
                             <Typography variant="body2" color="textSecondary" sx={{ mb: 0.5 }}>
@@ -353,7 +369,8 @@ export const CippCentralSearch = ({ handleClose, open }) => {
                       </CardActionArea>
                     </Card>
                   </Grid>
-                ))}
+                  );
+                })}
               </Grid>
             ) : (
               <Box mt={2}>No results found.</Box>

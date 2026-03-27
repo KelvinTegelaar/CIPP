@@ -1,15 +1,15 @@
 import { Box, Button, Container, Stack, Typography, SvgIcon, Skeleton } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Add, SaveRounded } from "@mui/icons-material";
 import { useEffect, useState, useCallback, useMemo, useRef, lazy, Suspense } from "react";
-import standards from "/src/data/standards";
+import standards from "../../../../data/standards";
 import CippStandardAccordion from "../../../../components/CippStandards/CippStandardAccordion";
 // Lazy load the dialog to improve initial page load performance
-const CippStandardDialog = lazy(() =>
-  import("../../../../components/CippStandards/CippStandardDialog")
+const CippStandardDialog = lazy(
+  () => import("../../../../components/CippStandards/CippStandardDialog"),
 );
 import CippStandardsSideBar from "../../../../components/CippStandards/CippStandardsSideBar";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
@@ -17,8 +17,8 @@ import { useDialog } from "../../../../hooks/use-dialog";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import _ from "lodash";
 import { createDriftManagementActions } from "../../manage/driftManagementActions";
-import { ActionsMenu } from "/src/components/actions-menu";
-import { useSettings } from "/src/hooks/use-settings";
+import { ActionsMenu } from "../../../../components/actions-menu";
+import { useSettings } from "../../../../hooks/use-settings";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
 
 const Page = () => {
@@ -62,7 +62,7 @@ const Page = () => {
   useEffect(() => {
     const stepsStatus = {
       step1: !!_.get(watchForm, "templateName"),
-      step2: isDriftMode || _.get(watchForm, "tenantFilter", []).length > 0, // Skip tenant requirement for drift mode
+      step2: _.get(watchForm, "tenantFilter", []).length > 0,
       step3: Object.keys(selectedStandards).length > 0,
       step4:
         _.get(watchForm, "standards") &&
@@ -84,7 +84,7 @@ const Page = () => {
     (url) => {
       if (hasUnsavedChanges) {
         const confirmLeave = window.confirm(
-          "You have unsaved changes. Are you sure you want to leave this page?"
+          "You have unsaved changes. Are you sure you want to leave this page?",
         );
         if (!confirmLeave) {
           router.events.emit("routeChangeError");
@@ -92,7 +92,7 @@ const Page = () => {
         }
       }
     },
-    [hasUnsavedChanges, router]
+    [hasUnsavedChanges, router],
   );
 
   // Handle browser back/forward navigation or tab close
@@ -144,7 +144,7 @@ const Page = () => {
       Object.keys(apiData.standards).forEach((key) => {
         if (Array.isArray(apiData.standards[key])) {
           apiData.standards[key] = apiData.standards[key].filter(
-            (value) => value !== null && value !== undefined
+            (value) => value !== null && value !== undefined,
           );
         }
       });
@@ -207,7 +207,7 @@ const Page = () => {
         standard.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
         standard.helpText.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (standard.tag &&
-          standard.tag.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+          standard.tag.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))),
     );
 
   const handleToggleStandard = (standardName) => {
@@ -236,21 +236,47 @@ const Page = () => {
   };
 
   const handleRemoveStandard = (standardName) => {
-    setSelectedStandards((prev) => {
-      const newSelected = { ...prev };
-      delete newSelected[standardName];
-      return newSelected;
-    });
-
     const arrayPattern = /(.*)\[(\d+)\]$/;
     const match = standardName.match(arrayPattern);
 
     if (match) {
-      const [_, baseName, index] = match;
+      const baseName = match[1];
+      const removedIndex = parseInt(match[2]);
+
+      // Remove the item from the form array
       const currentArray = formControl.getValues(baseName) || [];
-      const updatedArray = currentArray.filter((_, i) => i !== parseInt(index));
+      const updatedArray = currentArray.filter((_, i) => i !== removedIndex);
       formControl.setValue(baseName, updatedArray);
+
+      // Re-index selectedStandards to keep indices contiguous
+      const escapedBaseName = baseName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const reindexPattern = new RegExp(`^${escapedBaseName}\\[(\\d+)\\]$`);
+
+      setSelectedStandards((prev) => {
+        const newSelected = {};
+        Object.keys(prev).forEach((key) => {
+          const keyMatch = key.match(reindexPattern);
+          if (keyMatch) {
+            const idx = parseInt(keyMatch[1]);
+            if (idx < removedIndex) {
+              newSelected[key] = prev[key];
+            } else if (idx > removedIndex) {
+              // Shift higher indices down by 1
+              newSelected[`${baseName}[${idx - 1}]`] = prev[key];
+            }
+            // Skip the removed index
+          } else {
+            newSelected[key] = prev[key];
+          }
+        });
+        return newSelected;
+      });
     } else {
+      setSelectedStandards((prev) => {
+        const newSelected = { ...prev };
+        delete newSelected[standardName];
+        return newSelected;
+      });
       formControl.unregister(standardName);
     }
   };
@@ -269,10 +295,13 @@ const Page = () => {
 
   // Determine if save button should be disabled based on configuration
   const isSaveDisabled = isDriftMode
-    ? currentStep < 3 || hasDriftConflict // For drift mode, only require steps 1, 3, and 4 (skip tenant requirement) and no drift conflicts
+    ? !_.get(watchForm, "tenantFilter") ||
+      !_.get(watchForm, "tenantFilter").length ||
+      currentStep < 4 ||
+      hasDriftConflict // For drift mode, require all steps and no drift conflicts
     : !_.get(watchForm, "tenantFilter") ||
       !_.get(watchForm, "tenantFilter").length ||
-      currentStep < 3;
+      currentStep < 4;
 
   // Create drift management actions (excluding refresh)
   const driftActions = useMemo(() => {
@@ -300,7 +329,7 @@ const Page = () => {
   const handleSafeNavigation = (url) => {
     if (hasUnsavedChanges) {
       const confirmLeave = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave this page?"
+        "You have unsaved changes. Are you sure you want to leave this page?",
       );
       if (confirmLeave) {
         router.push(url);
@@ -319,8 +348,8 @@ const Page = () => {
               ? "Edit Drift Template"
               : "Edit Standards Template"
             : isDriftMode
-            ? "Add Drift Template"
-            : "Add Standards Template"
+              ? "Add Drift Template"
+              : "Add Standards Template"
         }
       />
 
@@ -338,8 +367,8 @@ const Page = () => {
                 ? "Edit Drift Template"
                 : "Edit Standards Template"
               : isDriftMode
-              ? "Add Drift Template"
-              : "Add Standards Template"}
+                ? "Add Drift Template"
+                : "Add Standards Template"}
           </Typography>
           <Stack direction="row" spacing={2}>
             <Button
@@ -369,7 +398,7 @@ const Page = () => {
           </Stack>
         </Stack>
 
-        <Box sx={{ flexGrow: 1, height: "calc(100vh - 270px)", overflow: "hidden" }}>
+        <Box sx={{ flexGrow: 1, height: "calc(100vh - 240px)", overflow: "hidden" }}>
           <Grid container spacing={3} sx={{ height: "100%" }}>
             {/* Left Column for Accordions */}
             <Grid size={{ xs: 12, lg: 4 }} sx={{ height: "100%", overflow: "auto", pr: 1 }}>

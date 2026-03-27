@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import {
   Button,
   Accordion,
@@ -14,7 +14,7 @@ import { Grid } from "@mui/system";
 import { ExpandMore, Sort } from "@mui/icons-material";
 import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useForm } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 
 const Page = () => {
   const formControl = useForm({

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { CardContent, Button, SvgIcon, Alert } from "@mui/material";
 import { PlusIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { CippDataTable } from "../CippTable/CippDataTable";
+import { CippApiResults } from "./CippApiResults";
+import { CippApiDialog } from "./CippApiDialog";
+import { ApiPostCall } from "../../api/ApiCall";
 
 const CippCustomVariables = ({ id }) => {
   const [openAddDialog, setOpenAddDialog] = useState(false);

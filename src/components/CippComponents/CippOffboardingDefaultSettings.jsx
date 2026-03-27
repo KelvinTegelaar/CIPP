@@ -116,6 +116,16 @@ export const CippOffboardingDefaultSettings = (props) => {
           ),
         },
         {
+          label: "Remove users calendar permissions",
+          value: (
+            <CippFormComponent
+              type="switch"
+              name="offboardingDefaults.removeCalendarPermissions"
+              formControl={formControl}
+            />
+          ),
+        },
+        {
           label: "Remove all Rules",
           value: (
             <CippFormComponent

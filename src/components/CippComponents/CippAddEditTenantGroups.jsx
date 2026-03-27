@@ -1,4 +1,4 @@
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "./CippFormComponent";
 import { Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";

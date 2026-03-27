@@ -44,7 +44,7 @@ const CippRoles = () => {
           disableVariables: true,
         },
       ],
-      relatedQueryKeys: ["customRoleList"],
+      relatedQueryKeys: ["customRoleList", "customRoleTable"],
       confirmText: "Are you sure you want to clone this custom role?",
       condition: (row) => row?.Type === "Custom",
     },
@@ -63,7 +63,7 @@ const CippRoles = () => {
         RoleName: "RoleName",
       },
       condition: (row) => row?.Type === "Custom",
-      relatedQueryKeys: ["customRoleList"],
+      relatedQueryKeys: ["customRoleList", "customRoleTable"],
     },
   ];
 

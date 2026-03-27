@@ -1,10 +1,11 @@
 import { Alert, Divider, InputAdornment, Typography } from "@mui/material";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
-import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormDomainSelector";
-import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
-import countryList from "/src/data/countryList.json";
-import { CippFormLicenseSelector } from "/src/components/CippComponents/CippFormLicenseSelector";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { getCippValidator } from "../../utils/get-cipp-validator";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
+import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
+import countryList from "../../data/countryList.json";
+import { CippFormLicenseSelector } from "../CippComponents/CippFormLicenseSelector";
 import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
@@ -76,7 +77,7 @@ const CippAddEditUser = (props) => {
       const tenantGroupsList = tenantGroups?.data || [];
 
       return tenantGroupsList.filter(
-        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id)
+        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id),
       );
     }
     return [];
@@ -111,6 +112,21 @@ const CippAddEditUser = (props) => {
     return username.toLowerCase();
   };
 
+  const validateOtherMails = (value) => {
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      return true;
+    }
+
+    const emailList = (Array.isArray(value) ? value.join(",") : value)
+      .split(",")
+      .map((email) => email.trim())
+      .filter(Boolean);
+
+    const invalidEmail = emailList.find((email) => getCippValidator(email, "email") !== true);
+
+    return !invalidEmail || `This is not a valid email: ${invalidEmail}`;
+  };
+
   useEffect(() => {
     //if watch.firstname changes, and watch.lastname changes, set displayname to firstname + lastname
     if (watcher.givenName && watcher.surname && formType === "add") {
@@ -124,7 +140,7 @@ const CippAddEditUser = (props) => {
           displayName += selectedTemplate.displayName;
         }
 
-        formControl.setValue("displayName", displayName);
+        formControl.setValue("displayName", displayName, { shouldDirty: true });
       }
 
       // Auto-generate username if template has usernameFormat
@@ -139,21 +155,33 @@ const CippAddEditUser = (props) => {
           const generatedUsername = generateUsername(
             formatString,
             watcher.givenName,
-            watcher.surname
+            watcher.surname,
           );
           if (generatedUsername) {
-            formControl.setValue("username", generatedUsername);
+            formControl.setValue("username", generatedUsername, { shouldDirty: true });
           }
         }
       }
     }
   }, [watcher.givenName, watcher.surname, selectedTemplate]);
 
+  // Reset manual flags and selected template when form is reset (fields become empty)
+  useEffect(() => {
+    if (formType === "add" && !watcher.givenName && !watcher.surname && !watcher.userTemplate) {
+      setDisplayNameManuallySet(false);
+      setUsernameManuallySet(false);
+      // Only clear selected template if it's not the default template
+      if (selectedTemplate && !selectedTemplate.defaultForTenant) {
+        setSelectedTemplate(null);
+      }
+    }
+  }, [watcher.givenName, watcher.surname, watcher.userTemplate, formType, selectedTemplate]);
+
   // Auto-select default template for tenant
   useEffect(() => {
     if (formType === "add" && userTemplates.isSuccess && !watcher.userTemplate) {
       const defaultTemplate = userTemplates.data?.find(
-        (template) => template.defaultForTenant === true
+        (template) => template.defaultForTenant === true,
       );
       if (defaultTemplate) {
         formControl.setValue("userTemplate", {
@@ -286,6 +314,9 @@ const CippAddEditUser = (props) => {
           label="First Name"
           name="givenName"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 64, message: "First Name cannot exceed 64 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -295,6 +326,9 @@ const CippAddEditUser = (props) => {
           label="Last Name"
           name="surname"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 64, message: "Last Name cannot exceed 64 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -304,9 +338,14 @@ const CippAddEditUser = (props) => {
           label="Display Name"
           name="displayName"
           formControl={formControl}
+          validators={{
+            required: "Display Name is required",
+            maxLength: { value: 256, message: "Display Name cannot exceed 256 characters" },
+          }}
           onChange={(e) => {
             setDisplayNameManuallySet(true);
           }}
+          required={true}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -319,9 +358,18 @@ const CippAddEditUser = (props) => {
           }}
           name="username"
           formControl={formControl}
+          validators={{
+            required: "Username is required",
+            maxLength: { value: 64, message: "Username cannot exceed 64 characters" },
+            pattern: {
+              value: /^[A-Za-z0-9'.\-_!#^~]+$/,
+              message: "Username can only contain letters, numbers, and ' . - _ ! # ^ ~ characters",
+            },
+          }}
           onChange={(e) => {
             setUsernameManuallySet(true);
           }}
+          required={true}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -329,6 +377,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
           name="primDomain"
           label="Primary Domain name"
+          validators={{ required: "Primary Domain is required" }}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -460,6 +509,9 @@ const CippAddEditUser = (props) => {
           label="Job Title"
           name="jobTitle"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 128, message: "Job Title cannot exceed 128 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -469,6 +521,9 @@ const CippAddEditUser = (props) => {
           label="Street"
           name="streetAddress"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 1024, message: "Street Address cannot exceed 1024 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -478,6 +533,7 @@ const CippAddEditUser = (props) => {
           label="City"
           name="city"
           formControl={formControl}
+          validators={{ maxLength: { value: 128, message: "City cannot exceed 128 characters" } }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -487,6 +543,9 @@ const CippAddEditUser = (props) => {
           label="State/Province"
           name="state"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 128, message: "State/Province cannot exceed 128 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -496,6 +555,9 @@ const CippAddEditUser = (props) => {
           label="Postal Code"
           name="postalCode"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 40, message: "Postal Code cannot exceed 40 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -514,6 +576,9 @@ const CippAddEditUser = (props) => {
           label="Company Name"
           name="companyName"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 64, message: "Company Name cannot exceed 64 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -523,6 +588,9 @@ const CippAddEditUser = (props) => {
           label="Department"
           name="department"
           formControl={formControl}
+          validators={{
+            maxLength: { value: 64, message: "Department cannot exceed 64 characters" },
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -532,6 +600,7 @@ const CippAddEditUser = (props) => {
           label="Mobile #"
           name="mobilePhone"
           formControl={formControl}
+          validators={{ maxLength: { value: 64, message: "Mobile # cannot exceed 64 characters" } }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -547,9 +616,10 @@ const CippAddEditUser = (props) => {
         <CippFormComponent
           type="textField"
           fullWidth
-          label="Alternate Email Address"
+          label="Alternate Email Addresses (comma separated)"
           name="otherMails"
           formControl={formControl}
+          validators={{ validate: validateOtherMails }}
         />
       </Grid>
       {userSettingsDefaults?.userAttributes
@@ -573,6 +643,9 @@ const CippAddEditUser = (props) => {
           name="setManager"
           label="Set Manager"
           valueField="userPrincipalName"
+          select={
+            "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+          }
           multiple={false}
         />
       </Grid>
@@ -583,6 +656,9 @@ const CippAddEditUser = (props) => {
             name="setSponsor"
             label="Set Sponsor"
             valueField="userPrincipalName"
+            select={
+              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+            }
             multiple={false}
           />
         </Grid>
@@ -592,6 +668,9 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
           name="copyFrom"
           label="Copy groups from user"
+          select={
+            "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+          }
           multiple={false}
         />
       </Grid>
@@ -606,9 +685,10 @@ const CippAddEditUser = (props) => {
               label: tenantGroup.displayName,
               value: tenantGroup.id,
               addedFields: {
-                calculatedGroupType: tenantGroup.calculatedGroupType,
+                groupType: tenantGroup.groupType,
               },
             }))}
+            creatable={false}
             formControl={formControl}
           />
         </Grid>
@@ -624,9 +704,10 @@ const CippAddEditUser = (props) => {
               label: userGroups.DisplayName,
               value: userGroups.id,
               addedFields: {
-                calculatedGroupType: userGroups.calculatedGroupType,
+                groupType: userGroups.groupType,
               },
             }))}
+            creatable={false}
             formControl={formControl}
           />
         </Grid>

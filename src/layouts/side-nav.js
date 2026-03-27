@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import { Box, Divider, Drawer, Stack, Typography } from "@mui/material";
-import { Scrollbar } from "../components/scrollbar";
+import { Box, Divider, Drawer, Stack } from "@mui/material";
 import { SideNavItem } from "./side-nav-item";
-import { useSettings } from "../hooks/use-settings";
+import { SideNavBookmarks } from "./side-nav-bookmarks";
 import { ApiGetCall } from "../api/ApiCall.jsx";
+import { CippSponsor } from "../components/CippComponents/CippSponsor";
+import { useSettings } from "../hooks/use-settings";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_COLLAPSED_WIDTH = 73; // icon size + padding + border right
@@ -60,6 +61,7 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
         key={item.title}
         openImmediately={item.openImmediately}
         path={item.path}
+        scope={item.scope}
         title={item.title}
         type={item.type}
       >
@@ -79,7 +81,7 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
             pathname,
           })}
         </Stack>
-      </SideNavItem>
+      </SideNavItem>,
     );
   } else {
     acc.push(
@@ -91,8 +93,9 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
         icon={item.icon}
         key={item.title}
         path={item.path}
+        scope={item.scope}
         title={item.title}
-      />
+      />,
     );
   }
 
@@ -105,61 +108,48 @@ export const SideNav = (props) => {
   const [hovered, setHovered] = useState(false);
   const collapse = !(pinned || hovered);
   const { data: profile } = ApiGetCall({ url: "/api/me", queryKey: "authmecipp" });
+  const settings = useSettings();
+  const showSidebarBookmarks = settings.bookmarkSidebar !== false;
+  const paperRef = useRef(null);
+
+  // Intercept wheel events on the side nav to fully isolate scroll.
+  // preventDefault stops wheel events from reaching the main content,
+  // and manual scrollTop has no momentum so it stops instantly when the cursor leaves.
+  // Uses RAF-based easing to smooth out discrete mouse wheel jumps.
+  useEffect(() => {
+    const el = paperRef.current;
+    if (!el) return;
+
+    let targetScrollTop = el.scrollTop;
+    let animating = false;
+
+    const animate = () => {
+      const diff = targetScrollTop - el.scrollTop;
+      if (Math.abs(diff) < 0.5) {
+        el.scrollTop = targetScrollTop;
+        animating = false;
+        return;
+      }
+      el.scrollTop += diff * 0.25;
+      requestAnimationFrame(animate);
+    };
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      targetScrollTop = Math.max(0, Math.min(maxScroll, targetScrollTop + e.deltaY));
+      if (!animating) {
+        animating = true;
+        requestAnimationFrame(animate);
+      }
+    };
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, []);
 
   // Preprocess items to mark which should be open
   const processedItems = markOpenItems(items, pathname);
-  //select a random sponsor image based on priority, priority 1 should be higher than priority 2 or higher
-  const currentSettings = useSettings();
-  const theme = currentSettings?.currentTheme?.value;
-  const sponsorimages = [
-    {
-      link: "https://rewst.io",
-      imagesrc: theme === "light" ? "/sponsors/rewst.png" : "/sponsors/rewst_dark.png",
-      priority: 1,
-    },
-    {
-      link: "https://www.domotz.com/cipp-community-free-domotz-beta.php?utm_source=Community_CIPP&utm_medium=Community_CIPP&utm_campaign=Community_CIPP",
-      imagesrc: theme === "light" ? "/sponsors/domotz-light.png" : "/sponsors/domotz-dark.png",
-      priority: 1,
-    },
-    {
-      link: "https://ninjaone.com",
-      imagesrc: theme === "light" ? "/sponsors/ninjaone.png" : "/sponsors/ninjaone_white.png",
-      priority: 1,
-    },
-    {
-      link: "https://augmentt.com",
-      imagesrc: theme === "light" ? "/sponsors/augmentt-light.png" : "/sponsors/augmentt-dark.png",
-      priority: 1,
-    },
-    {
-      link: "https://huntress.com",
-      imagesrc: "/sponsors/huntress_teal.png",
-      priority: 1,
-    },
-    {
-      link: "https://rightofboom.com/rob-2026-overview/rob-2026-registration/?utm_source=CIPP&utm_medium=referral&utm_campaign=CIPPM365&utm_content=cta_button",
-      imagesrc: theme === "light" ? "/sponsors/RoB-light.png" : "/sponsors/RoB.png",
-      priority: 1,
-    },
-  ];
-
-  const randomSponsorImage = () => {
-    let totalPriority = 0;
-    for (let i = 0; i < sponsorimages.length; i++) {
-      totalPriority += sponsorimages[i].priority;
-    }
-    let random = Math.floor(Math.random() * totalPriority);
-    let runningTotal = 0;
-    for (let i = 0; i < sponsorimages.length; i++) {
-      runningTotal += sponsorimages[i].priority;
-      if (random < runningTotal) {
-        return sponsorimages[i];
-      }
-    }
-  };
-
-  const randomimg = randomSponsorImage();
   return (
     <>
       {profile?.clientPrincipal && profile?.clientPrincipal?.userRoles?.length > 2 && (
@@ -167,16 +157,15 @@ export const SideNav = (props) => {
           open
           variant="permanent"
           PaperProps={{
-            onMouseEnter: () => {
-              setHovered(true);
-            },
-            onMouseLeave: () => {
-              setHovered(false);
-            },
+            ref: paperRef,
+            onMouseEnter: () => setHovered(true),
+            onMouseLeave: () => setHovered(false),
             sx: {
               backgroundColor: "background.default",
               height: `calc(100% - ${TOP_NAV_HEIGHT}px)`,
               overflowX: "hidden",
+              overflowY: "auto",
+              scrollbarGutter: "stable",
               top: TOP_NAV_HEIGHT,
               transition: "width 250ms ease-in-out",
               width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
@@ -184,76 +173,49 @@ export const SideNav = (props) => {
             },
           }}
         >
-          <Scrollbar
+          <Box
+            component="nav"
             sx={{
+              display: "flex",
+              flexDirection: "column",
               height: "100%",
-              overflowX: "hidden",
-              "& .simplebar-content": {
-                height: "100%",
-              },
+              p: 2,
             }}
           >
             <Box
-              component="nav"
+              component="ul"
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-                p: 2,
+                flexGrow: 1,
+                listStyle: "none",
+                m: 0,
+                p: 0,
               }}
             >
-              <Box
-                component="ul"
-                sx={{
-                  flexGrow: 1,
-                  listStyle: "none",
-                  m: 0,
-                  p: 0,
-                }}
-              >
-                {renderItems({
-                  collapse,
-                  depth: 0,
-                  items: processedItems,
-                  pathname,
-                })}
-              </Box>{" "}
-              {/* Add this closing tag */}
-              {profile?.clientPrincipal && (
+              {/* Bookmarks section above Dashboard */}
+              {showSidebarBookmarks && (
                 <>
-                  <Divider />
-                  <Typography
-                    color="text.secondary"
-                    variant="caption"
-                    sx={{ lineHeight: 4, textAlign: "center" }}
-                  >
-                    This application is sponsored by
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "55px", // Fixed height for the container
-                    }}
-                  >
-                    <img
-                      src={randomimg.imagesrc}
-                      alt="sponsor"
-                      style={{
-                        cursor: "pointer",
-                        maxHeight: "50px", // Limit the height of the image
-                        width: "auto",
-                        maxWidth: "100px", // Maintain aspect ratio with max width
-                      }}
-                      onClick={() => window.open(randomimg.link)}
-                    />
-                  </Box>
+                  <SideNavBookmarks collapse={collapse} />
+                  <Divider sx={{ my: 1 }} />
                 </>
               )}
+              {/* Render all menu items */}
+              {renderItems({
+                collapse,
+                depth: 0,
+                items: processedItems,
+                pathname,
+              })}
             </Box>{" "}
-            {/* Closing tag for the parent Box */}
-          </Scrollbar>
+            {/* Add this closing tag */}
+            {profile?.clientPrincipal && (
+              <Box
+                sx={{ position: "sticky", bottom: 0, backgroundColor: "background.default", pt: 1 }}
+              >
+                <CippSponsor />
+              </Box>
+            )}
+          </Box>{" "}
+          {/* Closing tag for the parent Box */}
         </Drawer>
       )}
     </>

@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 import { useSettings } from "../../../../hooks/use-settings";
 import { ApiGetCall } from "../../../../api/ApiCall";
-import countryList from "/src/data/countryList.json";
+import countryList from "../../../../data/countryList.json";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { Divider } from "@mui/material";
 
 const countryLookup = new Map(countryList.map((country) => [country.Name, country.Code]));

@@ -1,13 +1,13 @@
 import { useMemo } from "react";
-import { Layout as DashboardLayout } from "/src/layouts/index";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage";
 import { Sell, Edit } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
+import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "../tabOptions";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../../../../hooks/use-settings";
 
 const Page = () => {
   const pageTitle = "Retention Tag Management";

@@ -18,15 +18,15 @@ import { Grid } from "@mui/system";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import { useForm, useFormState, useWatch } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
-import alertList from "/src/data/alerts.json";
-import auditLogTemplates from "/src/data/AuditLogTemplates";
-import auditLogSchema from "/src/data/AuditLogSchema.json";
+import alertList from "../../../../data/alerts.json";
+import auditLogTemplates from "../../../../data/AuditLogTemplates";
+import auditLogSchema from "../../../../data/AuditLogSchema.json";
 import { Save, Delete } from "@mui/icons-material";
 
-import { Layout as DashboardLayout } from "/src/layouts/index.js"; // Dashboard layout
+import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // Dashboard layout
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { PlusIcon } from "@heroicons/react/24/outline";
@@ -116,7 +116,7 @@ const AlertWizard = () => {
             formControl.setValue(
               `conditions.${index}.Input`,
               { value: "" },
-              { shouldValidate: false }
+              { shouldValidate: false },
             );
           } else {
             formControl.setValue(`conditions.${index}.Input`, "", { shouldValidate: false });
@@ -139,13 +139,13 @@ const AlertWizard = () => {
           ? alert.excludedTenants.map((tenant) => ({ value: tenant, label: tenant }))
           : [];
         const usedCommand = alertList?.find(
-          (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", "")
+          (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", ""),
         );
         const recurrenceOption = recurrenceOptions?.find(
-          (opt) => opt.value === alert.RawAlert.Recurrence
+          (opt) => opt.value === alert.RawAlert.Recurrence,
         );
         const postExecutionValue = postExecutionOptions.filter((opt) =>
-          alert.RawAlert.PostExecution.split(",").includes(opt.value)
+          alert.RawAlert.PostExecution.split(",").includes(opt.value),
         );
         let tenantFilterForForm;
         if (alert.RawAlert.TenantGroup) {
@@ -216,7 +216,7 @@ const AlertWizard = () => {
         setAlertType("audit");
         setIsLoadingExistingAlert(true);
         const foundLogbook = logbookOptions?.find(
-          (logbook) => logbook.value === alert.RawAlert.type
+          (logbook) => logbook.value === alert.RawAlert.type,
         );
         const rawConditions = alert.RawAlert.Conditions || [];
         const formattedConditions = rawConditions.map((cond) => {
@@ -264,7 +264,7 @@ const AlertWizard = () => {
         setTimeout(() => {
           // Seed previous operator values BEFORE setting conditions to prevent clearing
           prevOperatorValuesRef.current = formattedConditions.map((c) =>
-            (c.Operator?.value || "").toLowerCase()
+            (c.Operator?.value || "").toLowerCase(),
           );
 
           // Process each condition with proper normalization
@@ -277,7 +277,7 @@ const AlertWizard = () => {
             // Normalize based on operator and property type
             if (Array.isArray(finalInput)) {
               finalInput = finalInput.map((item) =>
-                typeof item === "string" ? { label: item, value: item } : item
+                typeof item === "string" ? { label: item, value: item } : item,
               );
               // Further ensure label/value presence and rebuild from schema if possible
               const schemaOptions = auditLogSchema[cond.Property?.value] || [];
@@ -362,7 +362,7 @@ const AlertWizard = () => {
       }));
 
       const recommendedOption = updatedRecurrenceOptions?.find(
-        (opt) => opt.value === commandValue.value.recommendedRunInterval
+        (opt) => opt.value === commandValue.value.recommendedRunInterval,
       );
 
       if (recommendedOption) {
@@ -381,7 +381,7 @@ const AlertWizard = () => {
     if (!selectedPreset) return;
     setIsLoadingPreset(true);
     const selectedTemplate = auditLogTemplates?.find(
-      (template) => template.value === selectedPreset.value
+      (template) => template.value === selectedPreset.value,
     );
     if (!selectedTemplate) {
       setIsLoadingPreset(false);
@@ -412,7 +412,7 @@ const AlertWizard = () => {
     }
     setAddedEvent(formattedConditions.map((_, i) => ({ id: i })));
     prevOperatorValuesRef.current = formattedConditions.map((c) =>
-      (c.Operator?.value || "").toLowerCase()
+      (c.Operator?.value || "").toLowerCase(),
     );
     // Ensure React Hook Form registers nested fields before releasing the guard
     setTimeout(() => {
@@ -448,7 +448,7 @@ const AlertWizard = () => {
           // Prevent form reload after successful save
           setHasLoadedExistingAlert(true);
         },
-      }
+      },
     );
   };
 
@@ -493,7 +493,7 @@ const AlertWizard = () => {
           // Prevent form reload after successful save
           setHasLoadedExistingAlert(true);
         },
-      }
+      },
     );
   };
 
@@ -753,7 +753,7 @@ const AlertWizard = () => {
                                     creatable={true}
                                     options={
                                       propertyWatcher?.[event.id]?.Property?.value?.startsWith(
-                                        "List:"
+                                        "List:",
                                       )
                                         ? auditLogSchema[
                                             propertyWatcher?.[event.id]?.Property?.value
@@ -958,6 +958,14 @@ const AlertWizard = () => {
                                     name={commandValue.value?.inputName}
                                     formControl={formControl}
                                     label={commandValue.value?.inputLabel}
+                                    required={commandValue.value?.required || false}
+                                    {...(commandValue.value?.inputType === "autoComplete"
+                                      ? {
+                                          options: commandValue.value?.options,
+                                          creatable: commandValue.value?.creatable || true,
+                                          multiple: commandValue.value?.multiple || true,
+                                        }
+                                      : {})}
                                   />
                                 )}
                               {commandValue?.value?.multipleInput &&
@@ -974,6 +982,14 @@ const AlertWizard = () => {
                                         name={input.inputName}
                                         formControl={formControl}
                                         label={input.inputLabel}
+                                        required={input.required || false}
+                                        {...(input.inputType === "autoComplete"
+                                          ? {
+                                              options: input.options,
+                                              creatable: input.creatable ?? true,
+                                              multiple: input.multiple ?? true,
+                                            }
+                                          : {})}
                                       />
                                     </Grid>
                                   </Grid>

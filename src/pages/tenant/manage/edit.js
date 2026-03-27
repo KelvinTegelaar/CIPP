@@ -1,22 +1,22 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
 import { useForm, useFormState } from "react-hook-form";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { Stack, Box, Typography, Button, Card, CardContent } from "@mui/material";
 import { Grid } from "@mui/system";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { getCippFormatting } from "/src/utils/get-cipp-formatting";
-import CippCustomVariables from "/src/components/CippComponents/CippCustomVariables";
-import { CippOffboardingDefaultSettings } from "/src/components/CippComponents/CippOffboardingDefaultSettings";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
-import { useSettings } from "/src/hooks/use-settings";
+import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
+import CippButtonCard from "../../../components/CippCards/CippButtonCard";
+import { getCippFormatting } from "../../../utils/get-cipp-formatting";
+import CippCustomVariables from "../../../components/CippComponents/CippCustomVariables";
+import { CippOffboardingDefaultSettings } from "../../../components/CippComponents/CippOffboardingDefaultSettings";
+import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
+import { useSettings } from "../../../hooks/use-settings";
 import { Business, Save } from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
-import { CippHead } from "/src/components/CippComponents/CippHead";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const router = useRouter();
@@ -136,6 +136,15 @@ const Page = () => {
     };
 
     offboardingFormControl.reset({ offboardingDefaults: defaultOffboardingValues });
+
+    updateOffboardingDefaults.mutate({
+      url: "/api/EditTenantOffboardingDefaults",
+      data: {
+        customerId: tenantDetails.data?.id || currentTenant,
+        defaultDomainName: tenantDetails.data?.defaultDomainName || currentTenant,
+        offboardingDefaults: null,
+      },
+    });
   };
 
   const title = "Manage Tenant";
@@ -275,7 +284,8 @@ const Page = () => {
                   onClick={offboardingFormControl.handleSubmit((values) => {
                     const offboardingSettings = values.offboardingDefaults || values;
                     const formattedValues = {
-                      customerId: currentTenant,
+                      customerId: tenantDetails.data?.id || currentTenant,
+                      defaultDomainName: tenantDetails.data?.defaultDomainName || currentTenant,
                       offboardingDefaults: offboardingSettings,
                     };
                     updateOffboardingDefaults.mutate({
@@ -309,6 +319,7 @@ const Page = () => {
                   <Button
                     variant="outlined"
                     onClick={handleResetOffboardingDefaults}
+                    disabled={updateOffboardingDefaults.isPending || tenantDetails.isFetching}
                     sx={{ mr: 2 }}
                   >
                     Reset All to Off

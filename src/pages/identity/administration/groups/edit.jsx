@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { Box, Button, Divider, Typography, Alert } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -330,6 +330,7 @@ const EditGroup = () => {
                         },
                       })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 
@@ -353,6 +354,7 @@ const EditGroup = () => {
                       },
                     })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 
@@ -374,6 +376,7 @@ const EditGroup = () => {
                         addedFields: { id: m.id },
                       })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 

@@ -1,14 +1,14 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
+import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { Grid } from "@mui/system";
 import { Divider } from "@mui/material";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiGetCall } from "/src/api/ApiCall";
+import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
+import { ApiGetCall } from "../../../../../api/ApiCall";
 
 const RetentionPolicy = () => {
   const userSettingsDefaults = useSettings();

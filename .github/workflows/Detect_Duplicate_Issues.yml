@@ -1,0 +1,24 @@
+---
+name: Detect Duplicate Issues
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+permissions:
+  models: read
+  issues: write
+
+jobs:
+  detect-duplicates:
+    if: github.repository_owner == 'KelvinTegelaar' && github.event.issue.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Calculate lookback date
+        id: lookback
+        run: echo "since=$(date -u -d '60 days ago' +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - uses: pelikhan/action-genai-issue-dedup@v0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          since: ${{ steps.lookback.outputs.since }}

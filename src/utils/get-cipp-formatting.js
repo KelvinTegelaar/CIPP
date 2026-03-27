@@ -106,11 +106,22 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     if (Array.isArray(data)) {
       return isText ? data.join(", ") : renderChipList(data);
     } else {
-      return isText ? (
-        data
-      ) : (
-        <Chip variant="outlined" label={data.label ?? data} size="small" color="info" />
-      );
+      if (isText) return data.label ?? data;
+      const label = data.label ?? data;
+      const severityColor = {
+        info: "info",
+        informational: "info",
+        warn: "warning",
+        warning: "warning",
+        error: "error",
+        critical: "error",
+        alert: "warning",
+        debug: "default",
+        medium: "warning",
+        high: "error",
+      };
+      const color = severityColor[String(label).toLowerCase()] ?? "info";
+      return <Chip variant="outlined" label={label} size="small" color={color} />;
     }
   }
 
@@ -181,9 +192,11 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     "NotBefore",
     "NotAfter",
     "latestDataCollection",
+    "requestDate", // App Consent Requests
+    "reviewedDate", // App Consent Requests
   ];
 
-  const matchDateTime = /([dD]ate[tT]ime|[Ee]xpiration)/;
+  const matchDateTime = /([dD]ate[tT]ime|[Ee]xpiration|[Tt]imestamp|[sS]tart[Dd]ate)/;
   if (timeAgoArray.includes(cellName) || matchDateTime.test(cellName)) {
     return isText && canReceive === false ? (
       new Date(data).toLocaleString() // This runs if canReceive is false and isText is true
@@ -247,14 +260,14 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         unit === "d"
           ? "day"
           : unit === "h"
-          ? "hour"
-          : unit === "w"
-          ? "week"
-          : unit === "m"
-          ? "minutes"
-          : unit === "y"
-          ? "year"
-          : unit;
+            ? "hour"
+            : unit === "w"
+              ? "week"
+              : unit === "m"
+                ? "minutes"
+                : unit === "y"
+                  ? "year"
+                  : unit;
       return isText ? `Every ${value} ${unitText}` : `Every ${value} ${unitText}`;
     }
   }
@@ -350,7 +363,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
                 icon: icon,
                 key: key,
               };
-            })
+            }),
           );
     } else {
       // Handle null/undefined single element
@@ -420,7 +433,12 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
-  if (cellName === "ClientId" || cellName === "role") {
+  if (
+    cellName === "ClientId" ||
+    cellName === "role" ||
+    cellName === "appId" ||
+    cellName === "SID"
+  ) {
     return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
   }
 
@@ -457,7 +475,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         : renderChipList(
             data
               .filter((item) => item)
-              .map((item) => (typeof item === "object" && item?.label ? item.label : item))
+              .map((item) => (typeof item === "object" && item?.label ? item.label : item)),
           );
     }
   }
@@ -498,12 +516,12 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       normalized === "enabled"
         ? "Enabled"
         : normalized === "disabled"
-        ? "Disabled"
-        : normalized === "enabledforreportingbutnotenforced" ||
-          normalized === "report-only" ||
-          normalized === "reportonly"
-        ? "Report Only"
-        : data.charAt(0).toUpperCase() + data.slice(1);
+          ? "Disabled"
+          : normalized === "enabledforreportingbutnotenforced" ||
+              normalized === "report-only" ||
+              normalized === "reportonly"
+            ? "Report Only"
+            : data.charAt(0).toUpperCase() + data.slice(1);
 
     if (isText) {
       return label;
@@ -559,8 +577,8 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     const accessRights = Array.isArray(data)
       ? data.flatMap((item) => (typeof item === "string" ? item.split(", ") : []))
       : typeof data === "string"
-      ? data.split(", ")
-      : [];
+        ? data.split(", ")
+        : [];
     return isText ? accessRights.join(", ") : renderChipList(accessRights);
   }
 
@@ -633,6 +651,51 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
+  // Handle businessPhones
+  if (cellName === "businessPhones") {
+    if (!Array.isArray(data)) {
+      data = [data];
+    }
+
+    if (data.length === 0) {
+      return isText ? (
+        "No data"
+      ) : (
+        <Chip variant="outlined" label="No data" size="small" color="info" />
+      );
+    }
+
+    return isText ? data.join(", ") : renderChipList(data);
+  }
+
+  //handle assignedUsers
+  if (cellName === "AssignedUsers" || cellName === "assignedUsers") {
+    //show the display name in text. otherwise, just return the obj.
+    return isText ? (
+      Array.isArray(data) ? (
+        data.map((user) => user.displayName).join(",")
+      ) : (
+        data.displayName
+      )
+    ) : (
+      <CippDataTableButton data={data} tableTitle="Assigned Users" />
+    );
+  }
+
+  // handle assignedGroups
+  if (cellName === "AssignedGroups" || cellName === "assignedGroups") {
+    //show the display name in text. otherwise, just return the obj.
+    return isText ? (
+      Array.isArray(data) ? (
+        data.map((group) => group.displayName).join(",")
+      ) : (
+        data.displayName
+      )
+    ) : (
+      <CippDataTableButton data={data} tableTitle="Assigned Groups" />
+    );
+  }
+
   // Handle assigned licenses
   if (cellName === "assignedLicenses") {
     var translatedLicenses = getCippLicenseTranslation(data);
@@ -641,8 +704,37 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         ? translatedLicenses.join(", ")
         : translatedLicenses
       : Array.isArray(translatedLicenses)
-      ? renderChipList(translatedLicenses)
-      : translatedLicenses;
+        ? renderChipList(translatedLicenses)
+        : translatedLicenses;
+  }
+
+  // Handle license assignment states
+  if (cellName === "licenseAssignmentStates") {
+    if (!Array.isArray(data) || data.length === 0) {
+      return [];
+    }
+
+    // Transform the array to replace skuId with translated name and remove disabledPlans
+    const transformedData = data.map((license) => {
+      const translatedLicense = getCippLicenseTranslation([license]);
+      const licenseName = Array.isArray(translatedLicense)
+        ? translatedLicense[0]
+        : translatedLicense;
+
+      // Return new object with skuId replaced by License and without disabledPlans
+      const { skuId, disabledPlans, ...rest } = license;
+      return {
+        License: licenseName,
+        ...rest,
+      };
+    });
+
+    // Render as a table
+    return isText ? (
+      JSON.stringify(transformedData)
+    ) : (
+      <CippDataTableButton data={transformedData} tableTitle="License Assignment States" />
+    );
   }
 
   if (cellName === "unifiedRoles") {
@@ -796,6 +888,50 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       />
     );
   }
+  if (cellName === "Status" || cellName === "Risk" || cellName === "UserImpact") {
+    let color = "default";
+    let label = data;
+
+    switch (data.toLowerCase()) {
+      case "success":
+        color = "success";
+        break;
+      case "passed":
+        color = "success";
+        break;
+      case "failed":
+      case "high":
+        color = "error";
+        break;
+      case "in progress":
+        color = "info";
+        break;
+      case "not started":
+        color = "default";
+        break;
+      case "investigate":
+      case "medium":
+      case "warning":
+      case "skipped":
+        color = "warning";
+        break;
+      case "active":
+        color = "warning";
+        break;
+      case "inprogress":
+        color = "warning";
+        break;
+      case "resolved":
+        color = "success";
+        break;
+      case "redirected":
+        color = "success";
+        break;
+      default:
+        color = "default";
+    }
+    return isText ? label : <Chip label={label} size="small" color={color} />;
+  }
 
   // ISO 8601 Duration Formatting
   // Add property names here to automatically format ISO 8601 duration strings (e.g., "PT1H23M30S")
@@ -815,7 +951,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       },
       {
         fallbackLocale: "en",
-      }
+      },
     );
     const duration = isoDuration(data);
     return duration.humanize("en");
@@ -870,7 +1006,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
             return {
               label: item.label,
             };
-          })
+          }),
         );
   }
 

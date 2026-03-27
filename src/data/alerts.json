@@ -7,7 +7,16 @@
   {
     "name": "MFAAdmins",
     "label": "Alert on admins without any form of MFA",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "switch",
+    "inputLabel": "Include disabled admin accounts?",
+    "inputName": "IncludeDisabled"
+  },
+  {
+    "name": "NewMFADevice",
+    "label": "Alert when users register new MFA devices",
+    "recommendedRunInterval": "1h"
   },
   {
     "name": "LicenseAssignmentErrors",
@@ -31,12 +40,60 @@
   },
   {
     "name": "InactiveLicensedUsers",
-    "label": "Alert on licensed users that have not logged in for 90 days",
+    "label": "Alert on licensed users that have not logged in for X days",
+    "recommendedRunInterval": "1d",
     "requiresInput": true,
-    "inputType": "switch",
-    "inputLabel": "Exclude disabled users?",
-    "inputName": "InactiveLicensedUsersExcludeDisabled",
-    "recommendedRunInterval": "1d"
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last login (default: 90)",
+        "inputName": "DaysSinceLastLogin"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled users?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
+  {
+    "name": "InactiveGuestUsers",
+    "label": "Alert on guest users that have not logged in for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last login (default: 90)",
+        "inputName": "DaysSinceLastLogin"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled guest users?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
+  {
+    "name": "InactiveUsers",
+    "label": "Alert on users that have not logged in for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last login (default: 90)",
+        "inputName": "DaysSinceLastLogin"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled users?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
   },
   {
     "name": "EntraConnectSyncStatus",
@@ -104,6 +161,11 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "SecDefaultsDisabled",
+    "label": "Alert when Security Defaults is disabled with no Conditional Access policies",
+    "recommendedRunInterval": "1d"
+  },
+  {
     "name": "DefenderStatus",
     "label": "Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)",
     "recommendedRunInterval": "4h"
@@ -116,17 +178,117 @@
   {
     "name": "DefenderIncidents",
     "label": "Alert on new Defender Incidents found",
-    "recommendedRunInterval": "4h"
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Incident severities to include",
+        "inputName": "IncidentSeverities",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "All Severities", "value": "All" },
+          { "label": "High", "value": "high" },
+          { "label": "Medium", "value": "medium" },
+          { "label": "Low", "value": "low" },
+          { "label": "Informational", "value": "informational" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "DefenderAlerts",
+    "label": "Alert on new Defender Alerts found",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Alert severities to include",
+        "inputName": "AlertSeverities",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "All Severities", "value": "All" },
+          { "label": "High", "value": "high" },
+          { "label": "Medium", "value": "medium" },
+          { "label": "Low", "value": "low" },
+          { "label": "Informational", "value": "informational" }
+        ]
+      }
+    ]
   },
   {
     "name": "Vulnerabilities",
-    "label": "Alert on vulnerabilities older than X hours",
+    "label": "Alert on software vulnerabilities",
     "requiresInput": true,
-    "inputType": "number",
-    "inputLabel": "Alert on vulnerabilities first seen more than X hours ago (default: 24)",
-    "inputName": "AgeInHours",
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Minimum age in hours (default: 0)",
+        "inputName": "VulnerabilityAgeHours"
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Minimum CVSS severity",
+        "inputName": "CVSSSeverity",
+        "creatable": false,
+        "multiple": false,
+        "options": [
+          {
+            "label": "Low (0.0+)",
+            "value": "low"
+          },
+          {
+            "label": "Medium (4.0+)",
+            "value": "medium"
+          },
+          {
+            "label": "High (7.0+)",
+            "value": "high"
+          },
+          {
+            "label": "Critical (9.0+)",
+            "value": "critical"
+          }
+        ]
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Exploitability levels to include",
+        "inputName": "ExploitabilityLevels",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          {
+            "label": "All Levels",
+            "value": "All"
+          },
+          {
+            "label": "No Known Exploit",
+            "value": "NoExploit"
+          },
+          {
+            "label": "Public Exploit Available",
+            "value": "ExploitIsPublic"
+          },
+          {
+            "label": "Exploit Verified",
+            "value": "ExploitIsVerified"
+          },
+          {
+            "label": "Exploit In Kit",
+            "value": "ExploitIsInKit"
+          }
+        ]
+      }
+    ],
     "recommendedRunInterval": "4h",
-    "description": "Monitors for software vulnerabilities that were first discovered more than the specified number of hours ago. This helps identify lingering vulnerabilities that may have been missed or not yet remediated. Requires Defender for Endpoint/Business."
+    "description": "Monitors for software vulnerabilities based on age, CVSS severity, and exploitability level. Filter by minimum CVSS score (low=0+, medium=4+, high=7+, critical=9+) and select which exploitability levels to include. Requires Defender for Endpoint/Business."
   },
   {
     "name": "UnusedLicenses",
@@ -186,6 +348,41 @@
     "name": "DeviceCompliance",
     "label": "Alert on device compliance issues",
     "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "IntunePolicyConflicts",
+    "label": "Alert on Intune policy or app conflicts/errors",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert per issue (off = aggregated)",
+        "inputName": "AlertEachIssue"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include policy status issues",
+        "inputName": "IncludePolicies"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include app install issues",
+        "inputName": "IncludeApplications"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert on conflicts",
+        "inputName": "AlertConflicts"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert on errors/failures",
+        "inputName": "AlertErrors"
+      }
+    ],
+    "description": "Monitors Intune policy assignment states and app install statuses for conflicts or errors. Defaults to aggregated alerts with all mechanisms enabled and both conflicts and errors included."
   },
   {
     "name": "BreachAlert",
@@ -266,6 +463,16 @@
     "description": "Monitors for new risky users in the tenant. Risky users are defined as users who have performed actions that are considered risky, such as password resets, MFA failures, or suspicious activity."
   },
   {
+    "name": "GroupMembershipChange",
+    "label": "Alert on group membership changes for monitored groups",
+    "recommendedRunInterval": "1h",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Group display names to monitor (comma separated, wildcards supported)",
+    "inputName": "InputValue",
+    "description": "Monitors audit logs for membership changes (add/remove) in specified groups. Supports wildcards like 'CA*' or '*Exclusion*'. Particularly useful for tracking changes to groups used in Conditional Access exclusions or other security-critical groups."
+  },
+  {
     "name": "LowTenantAlignment",
     "label": "Alert on low tenant alignment percentage",
     "requiresInput": true,
@@ -289,7 +496,60 @@
   {
     "name": "QuarantineReleaseRequests",
     "label": "Alert on quarantine release requests",
-    "recommendedRunInterval": "30m",
+    "recommendedRunInterval": "1h",
     "description": "Monitors for user requests to release quarantined messages and provides a CIPP-native alternative to the external email forwarding method. This helps MSPs maintain secure configurations while getting timely notifications about quarantine activity. Links to the tenant's quarantine page are provided in alerts."
+  },
+  {
+    "name": "StaleEntraDevices",
+    "label": "Alert on stale Entra devices that have not been active for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceLastActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled devices?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
+  {
+    "name": "SecureScore",
+    "label": "Alert on a low Secure Score",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Threshold type absolute number or percent",
+        "inputName": "ThresholdType",
+        "creatable": false,
+        "multiple": false,
+        "options": [
+          {
+            "label": "Percent",
+            "value": "percent"
+          },
+          {
+            "label": "Absolute",
+            "value": "absolute"
+          }
+        ],
+        "required": true
+      },
+      {
+        "inputType": "number",
+        "inputLabel": "Threshold Value (below this will trigger the alert)",
+        "inputName": "InputValue",
+        "required": true
+      }
+    ],
+    "description": "Monitors Secure Score and alerts when it falls below the specified threshold (absolute or percent value). Helps identify security gaps and areas for improvement."
   }
 ]

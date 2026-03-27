@@ -49,7 +49,7 @@ import { useRouter } from "next/router";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
-import GraphExplorerPresets from "/src/data/GraphExplorerPresets.json";
+import GraphExplorerPresets from "../../data/GraphExplorerPresets.json";
 import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
 import { Stack } from "@mui/system";
 
@@ -182,6 +182,10 @@ export const CIPPTableToptoolbar = ({
   const [activeFilterName, setActiveFilterName] = useState(null);
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = settings?.currentTenant;
+  const [useCompactMode, setUseCompactMode] = useState(false);
+  const toolbarRef = useRef(null);
+  const leftContainerRef = useRef(null);
+  const actionsContainerRef = useRef(null);
 
   const getBulkActions = (actions, selectedRows) => {
     return (
@@ -335,6 +339,39 @@ export const CIPPTableToptoolbar = ({
   useEffect(() => {
     restoredFiltersRef.current.clear();
   }, [pageName]);
+
+  // Detect overflow and switch to compact mode
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (!leftContainerRef.current || !actionsContainerRef.current) {
+        return;
+      }
+
+      const leftContainerWidth = leftContainerRef.current.offsetWidth;
+      const leftContainerScrollWidth = leftContainerRef.current.scrollWidth;
+      const actionsWidth = actionsContainerRef.current.scrollWidth;
+      const isOverflowing = leftContainerScrollWidth > leftContainerWidth;
+      const shouldBeCompact = isOverflowing || actionsWidth > leftContainerWidth * 0.6; // Actions taking > 60% of left container
+
+      setUseCompactMode(shouldBeCompact);
+    };
+
+    // Check immediately on mount and when dependencies change
+    checkOverflow();
+
+    // Also check after a brief delay to ensure elements are fully rendered
+    const timeoutId = setTimeout(checkOverflow, 100);
+
+    const resizeObserver = new ResizeObserver(checkOverflow);
+    if (leftContainerRef.current) {
+      resizeObserver.observe(leftContainerRef.current);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      resizeObserver.disconnect();
+    };
+  }, [hasSelection, customBulkActions.length, exportEnabled, filters?.length, usedColumns?.length]);
 
   // Restore last used filter on mount if persistFilters is enabled (non-graph filters)
   useEffect(() => {
@@ -593,6 +630,7 @@ export const CIPPTableToptoolbar = ({
   return (
     <>
       <Box
+        ref={toolbarRef}
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
@@ -606,6 +644,7 @@ export const CIPPTableToptoolbar = ({
       >
         {/* Left side - Main controls */}
         <Box
+          ref={leftContainerRef}
           sx={{
             display: "flex",
             gap: { xs: 1, md: 2 },
@@ -621,8 +660,8 @@ export const CIPPTableToptoolbar = ({
               getRequestData?.isFetchNextPageError
                 ? "Could not retrieve all data. Click to try again."
                 : getRequestData?.isFetching
-                ? "Retrieving more data..."
-                : "Refresh data"
+                  ? "Retrieving more data..."
+                  : "Refresh data"
             }
           >
             <RefreshButton
@@ -652,7 +691,7 @@ export const CIPPTableToptoolbar = ({
                       : "none",
                   "@keyframes spin": {
                     "0%": { transform: "rotate(0deg)" },
-                    "100%": { transform: "rotate(360deg)" },
+                    "100%": { transform: "rotate(-360deg)" },
                   },
                 }}
               >
@@ -675,9 +714,22 @@ export const CIPPTableToptoolbar = ({
             />
           </ModernSearchContainer>
 
-          {/* Desktop Buttons */}
+          {/* Desktop Buttons - always render for measurement, hide when in compact mode */}
           {!mdDown && (
-            <>
+            <Box
+              ref={actionsContainerRef}
+              sx={{
+                display: "flex",
+                gap: 2,
+                flexShrink: 0,
+                mt: 0.5,
+                ...(useCompactMode && {
+                  position: "absolute",
+                  visibility: "hidden",
+                  pointerEvents: "none",
+                }),
+              }}
+            >
               {/* Filters Button */}
               <ModernButton
                 startIcon={<FilterListIcon />}
@@ -811,7 +863,17 @@ export const CIPPTableToptoolbar = ({
                   Export
                 </ModernButton>
               )}
-            </>
+            </Box>
+          )}
+
+          {/* Mobile/Compact Action Button */}
+          {(mdDown || useCompactMode) && !hasSelection && (
+            <IconButton
+              onClick={(event) => setActionMenuAnchor(event.currentTarget)}
+              sx={{ flexShrink: 0 }}
+            >
+              <MoreVertIcon />
+            </IconButton>
           )}
 
           {/* Mobile Action Menu */}
@@ -997,7 +1059,7 @@ export const CIPPTableToptoolbar = ({
               <MenuItem
                 onClick={() => {
                   // Trigger CSV export
-                  const csvButton = document.querySelector("[data-csv-export]");
+                  const csvButton = document.querySelector(`[data-csv-export="${title}"]`);
                   if (csvButton) csvButton.click();
                   setExportAnchor(null);
                 }}
@@ -1010,7 +1072,7 @@ export const CIPPTableToptoolbar = ({
               <MenuItem
                 onClick={() => {
                   // Trigger PDF export
-                  const pdfButton = document.querySelector("[data-pdf-export]");
+                  const pdfButton = document.querySelector(`[data-pdf-export="${title}"]`);
                   if (pdfButton) pdfButton.click();
                   setExportAnchor(null);
                 }}
@@ -1064,24 +1126,6 @@ export const CIPPTableToptoolbar = ({
                 <ListItemText primary="View API Response" />
               </MenuItem>
             </Menu>
-          )}
-
-          {/* Mobile Action Menu */}
-          {mdDown && (
-            <IconButton
-              onClick={(event) => setActionMenuAnchor(event.currentTarget)}
-              size="small"
-              sx={{
-                height: "40px",
-                width: "40px",
-                border: "1px solid",
-                borderColor: "divider",
-                borderRadius: "8px",
-                ml: "auto",
-              }}
-            >
-              <MoreVertIcon />
-            </IconButton>
           )}
         </Box>
 
@@ -1160,14 +1204,14 @@ export const CIPPTableToptoolbar = ({
             columns={usedColumns}
             reportName={title}
             columnVisibility={columnVisibility}
-            data-pdf-export
+            data-pdf-export={title}
           />
           <CSVExportButton
             reportName={title}
             columnVisibility={columnVisibility}
             rows={table.getFilteredRowModel().rows}
             columns={usedColumns}
-            data-csv-export
+            data-csv-export={title}
           />
         </Box>
       </Box>
@@ -1222,7 +1266,7 @@ export const CIPPTableToptoolbar = ({
 
                 if (action?.noConfirm && action.customFunction) {
                   selectedRows.map((row) =>
-                    action.customFunction(row.original.original, action, {})
+                    action.customFunction(row.original.original, action, {}),
                   );
                 } else {
                   createDialog.handleOpen();
@@ -1249,12 +1293,12 @@ export const CIPPTableToptoolbar = ({
           }}
         >
           <Stack spacing={2}>
-            <Typography variant="h4">API Response</Typography>
             <CippCodeBlock
               type="editor"
               code={JSON.stringify(usedData, null, 2)}
               editorHeight="1000px"
               showLineNumbers={!mdDown}
+              readOnly={true}
             />
           </Stack>
         </CippOffCanvas>
@@ -1279,10 +1323,20 @@ export const CIPPTableToptoolbar = ({
         title="Edit Filters"
         visible={filterCanvasVisible}
         onClose={() => setFilterCanvasVisible(!filterCanvasVisible)}
+        contentPadding={1}
+        keepMounted={true}
       >
         <CippGraphExplorerFilter
           endpointFilter={api?.data?.Endpoint}
           relatedQueryKeys={[queryKey, currentEffectiveQueryKey].filter(Boolean)}
+          selectedPreset={
+            activeFilterName ? filterList.find((f) => f.filterName === activeFilterName) : null
+          }
+          onPresetSelect={(preset) => {
+            if (preset?.value && preset?.type === "graph") {
+              setTableFilter(preset.value, preset.type, preset.filterName);
+            }
+          }}
           onSubmitFilter={(filter) => {
             setTableFilter(filter, "graph", "Custom Filter");
             if (filter?.$select) {

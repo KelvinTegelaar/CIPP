@@ -1,12 +1,12 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
 import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import { LaptopMac, Sync } from "@mui/icons-material";
-import { CippApplicationDeployDrawer } from "/src/components/CippComponents/CippApplicationDeployDrawer";
+import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
 import { Button, Box } from "@mui/material";
-import { useSettings } from "/src/hooks/use-settings.js";
-import { useDialog } from "/src/hooks/use-dialog.js";
+import { useSettings } from "../../../../hooks/use-settings.js";
+import { useDialog } from "../../../../hooks/use-dialog.js";
 
 const assignmentIntentOptions = [
   { label: "Required", value: "Required" },
@@ -18,6 +18,11 @@ const assignmentIntentOptions = [
 const assignmentModeOptions = [
   { label: "Replace existing assignments", value: "replace" },
   { label: "Append to existing assignments", value: "append" },
+];
+
+const assignmentFilterTypeOptions = [
+  { label: "Include - Apply to devices matching filter", value: "include" },
+  { label: "Exclude - Apply to devices NOT matching filter", value: "exclude" },
 ];
 
 const getAppAssignmentSettingsType = (odataType) => {
@@ -33,15 +38,35 @@ const Page = () => {
   const syncDialog = useDialog();
   const tenant = useSettings().currentTenant;
 
+  const getAssignmentFilterFields = () => [
+    {
+      type: "autoComplete",
+      name: "assignmentFilter",
+      label: "Assignment Filter (Optional)",
+      multiple: false,
+      creatable: false,
+      api: {
+        url: "/api/ListAssignmentFilters",
+        queryKey: `ListAssignmentFilters-${tenant}`,
+        labelField: (filter) => filter.displayName,
+        valueField: "displayName",
+      },
+    },
+    {
+      type: "radio",
+      name: "assignmentFilterType",
+      label: "Assignment Filter Mode",
+      options: assignmentFilterTypeOptions,
+      defaultValue: "include",
+      helperText: "Choose whether to include or exclude devices matching the filter.",
+    },
+  ];
+
   const actions = [
     {
       label: "Assign to All Users",
       type: "POST",
       url: "/api/ExecAssignApp",
-      data: {
-        AssignTo: "!AllUsers",
-        ID: "id",
-      },
       fields: [
         {
           type: "radio",
@@ -62,7 +87,22 @@ const Page = () => {
           helperText:
             "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
         },
+        ...getAssignmentFilterFields(),
       ],
+      customDataformatter: (row, action, formData) => {
+        const tenantFilterValue = tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant;
+        return {
+          tenantFilter: tenantFilterValue,
+          ID: row?.id,
+          AssignTo: "AllUsers",
+          Intent: formData?.Intent || "Required",
+          assignmentMode: formData?.assignmentMode || "replace",
+          AssignmentFilterName: formData?.assignmentFilter?.value || null,
+          AssignmentFilterType: formData?.assignmentFilter?.value
+            ? formData?.assignmentFilterType || "include"
+            : null,
+        };
+      },
       confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       icon: <UserIcon />,
       color: "info",
@@ -71,10 +111,6 @@ const Page = () => {
       label: "Assign to All Devices",
       type: "POST",
       url: "/api/ExecAssignApp",
-      data: {
-        AssignTo: "!AllDevices",
-        ID: "id",
-      },
       fields: [
         {
           type: "radio",
@@ -95,7 +131,22 @@ const Page = () => {
           helperText:
             "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
         },
+        ...getAssignmentFilterFields(),
       ],
+      customDataformatter: (row, action, formData) => {
+        const tenantFilterValue = tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant;
+        return {
+          tenantFilter: tenantFilterValue,
+          ID: row?.id,
+          AssignTo: "AllDevices",
+          Intent: formData?.Intent || "Required",
+          assignmentMode: formData?.assignmentMode || "replace",
+          AssignmentFilterName: formData?.assignmentFilter?.value || null,
+          AssignmentFilterType: formData?.assignmentFilter?.value
+            ? formData?.assignmentFilterType || "include"
+            : null,
+        };
+      },
       confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       icon: <LaptopMac />,
       color: "info",
@@ -104,10 +155,6 @@ const Page = () => {
       label: "Assign Globally (All Users / All Devices)",
       type: "POST",
       url: "/api/ExecAssignApp",
-      data: {
-        AssignTo: "!AllDevicesAndUsers",
-        ID: "id",
-      },
       fields: [
         {
           type: "radio",
@@ -128,7 +175,22 @@ const Page = () => {
           helperText:
             "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
         },
+        ...getAssignmentFilterFields(),
       ],
+      customDataformatter: (row, action, formData) => {
+        const tenantFilterValue = tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant;
+        return {
+          tenantFilter: tenantFilterValue,
+          ID: row?.id,
+          AssignTo: "AllDevicesAndUsers",
+          Intent: formData?.Intent || "Required",
+          assignmentMode: formData?.assignmentMode || "replace",
+          AssignmentFilterName: formData?.assignmentFilter?.value || null,
+          AssignmentFilterType: formData?.assignmentFilter?.value
+            ? formData?.assignmentFilterType || "include"
+            : null,
+        };
+      },
       confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
       icon: <GlobeAltIcon />,
       color: "info",
@@ -188,6 +250,7 @@ const Page = () => {
           helperText:
             "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
         },
+        ...getAssignmentFilterFields(),
       ],
       customDataformatter: (row, action, formData) => {
         const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : [];
@@ -200,6 +263,10 @@ const Page = () => {
           Intent: formData?.assignmentIntent || "Required",
           AssignmentMode: formData?.assignmentMode || "replace",
           AppType: getAppAssignmentSettingsType(row?.["@odata.type"]),
+          AssignmentFilterName: formData?.assignmentFilter?.value || null,
+          AssignmentFilterType: formData?.assignmentFilter?.value
+            ? formData?.assignmentFilterType || "include"
+            : null,
         };
       },
     },

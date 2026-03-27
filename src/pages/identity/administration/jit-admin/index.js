@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippTablePage from "/src/components/CippComponents/CippTablePage";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippTablePage from "../../../../components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
 import { AdminPanelSettings } from "@mui/icons-material";
 import Link from "next/link";
@@ -39,7 +39,7 @@ const Page = () => {
           </Button>
         </>
       }
-      title="JIT Admin Table"
+      title="JIT Admins"
       apiUrl="/api/ListJITAdmin"
       apiDataKey="Results"
       simpleColumns={simpleColumns}

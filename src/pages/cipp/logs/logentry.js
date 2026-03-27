@@ -1,22 +1,23 @@
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { ApiGetCall } from "../../../api/ApiCall";
 import { Button, SvgIcon, Box, Container, Chip } from "@mui/material";
 import { Stack } from "@mui/system";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
-import { CippInfoBar } from "/src/components/CippCards/CippInfoBar";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
+import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
+import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
+import CippFormSkeleton from "../../../components/CippFormPages/CippFormSkeleton";
 import { getCippTranslation } from "../../../utils/get-cipp-translation";
 
 const Page = () => {
   const router = useRouter();
-  const { logentry } = router.query;
+  const { logentry, dateFilter } = router.query;
 
   const logRequest = ApiGetCall({
     url: `/api/Listlogs`,
     data: {
       logentryid: logentry,
+      dateFilter: dateFilter,
     },
     queryKey: `GetLogEntry-${logentry}`,
     waiting: !!logentry,
@@ -44,12 +45,12 @@ const Page = () => {
                 logData.Severity === "CRITICAL"
                   ? "error"
                   : logData.Severity === "Error"
-                  ? "error"
-                  : logData.Severity === "Warn"
-                  ? "warning"
-                  : logData.Severity === "Info"
-                  ? "info"
-                  : "default"
+                    ? "error"
+                    : logData.Severity === "Warn"
+                      ? "warning"
+                      : logData.Severity === "Info"
+                        ? "info"
+                        : "default"
               }
               variant="filled"
             />

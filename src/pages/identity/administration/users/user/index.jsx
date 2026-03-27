@@ -1,10 +1,10 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
+import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
+import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { AdminPanelSettings, Check, Group, Mail, Fingerprint, Launch } from "@mui/icons-material";
+import { AdminPanelSettings, Check, Group, Mail, Fingerprint, Launch, Devices } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
@@ -15,11 +15,13 @@ import { SvgIcon, Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { useEffect, useState } from "react";
-import { useCippUserActions } from "/src/components/CippComponents/CippUserActions";
+import { useCippUserActions } from "../../../../../components/CippComponents/CippUserActions";
 import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
 import dynamic from "next/dynamic";
-const CippMap = dynamic(() => import("/src/components/CippComponents/CippMap"), { ssr: false });
+const CippMap = dynamic(() => import("../../../../../components/CippComponents/CippMap"), {
+  ssr: false,
+});
 
 import { Button, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
@@ -95,26 +97,38 @@ const Page = () => {
   });
 
   function refreshFunction() {
+    const userPrincipalName = userRequest.data?.[0]?.userPrincipalName;
+    const requests = [
+      {
+        id: "userMemberOf",
+        url: `/users/${userId}/memberOf`,
+        method: "GET",
+      },
+      {
+        id: "mfaDevices",
+        url: `/users/${userId}/authentication/methods?$top=99`,
+        method: "GET",
+      },
+      {
+        id: "signInLogs",
+        url: `/auditLogs/signIns?$filter=(userId eq '${userId}')&$top=1`,
+        method: "GET",
+      },
+    ];
+
+    // Only add managedDevices request if we have the userPrincipalName
+    if (userPrincipalName) {
+      requests.push({
+        id: "managedDevices",
+        url: `/deviceManagement/managedDevices?$filter=userPrincipalName eq '${userPrincipalName}'`,
+        method: "GET",
+      });
+    }
+
     userBulkRequest.mutate({
       url: "/api/ListGraphBulkRequest",
       data: {
-        Requests: [
-          {
-            id: "userMemberOf",
-            url: `/users/${userId}/memberOf`,
-            method: "GET",
-          },
-          {
-            id: "mfaDevices",
-            url: `/users/${userId}/authentication/methods?$top=99`,
-            method: "GET",
-          },
-          {
-            id: "signInLogs",
-            url: `/auditLogs/signIns?$filter=(userId eq '${userId}')&$top=1`,
-            method: "GET",
-          },
-        ],
+        Requests: requests,
         tenantFilter: userSettingsDefaults.currentTenant,
         noPaginateIds: ["signInLogs"],
       },
@@ -122,19 +136,21 @@ const Page = () => {
   }
 
   useEffect(() => {
-    if (userId && userSettingsDefaults.currentTenant && !userBulkRequest.isSuccess) {
+    if (userId && userSettingsDefaults.currentTenant && userRequest.isSuccess && !userBulkRequest.isSuccess) {
       refreshFunction();
     }
-  }, [userId, userSettingsDefaults.currentTenant, userBulkRequest.isSuccess]);
+  }, [userId, userSettingsDefaults.currentTenant, userRequest.isSuccess, userBulkRequest.isSuccess]);
 
   const bulkData = userBulkRequest?.data?.data ?? [];
   const signInLogsData = bulkData?.find((item) => item.id === "signInLogs");
   const userMemberOfData = bulkData?.find((item) => item.id === "userMemberOf");
   const mfaDevicesData = bulkData?.find((item) => item.id === "mfaDevices");
+  const managedDevicesData = bulkData?.find((item) => item.id === "managedDevices");
 
   const signInLogs = signInLogsData?.body?.value || [];
   const userMemberOf = userMemberOfData?.body?.value || [];
   const mfaDevices = mfaDevicesData?.body?.value || [];
+  const managedDevices = managedDevicesData?.body?.value || [];
 
   // Set the title and subtitle for the layout
   const title = userRequest.isSuccess ? userRequest.data?.[0]?.displayName : "Loading...";
@@ -275,7 +291,7 @@ const Page = () => {
     ) {
       // Filter policies where result is "success"
       const appliedPolicies = signInData.appliedConditionalAccessPolicies.filter(
-        (policy) => policy.result === "success"
+        (policy) => policy.result === "success",
       );
 
       if (appliedPolicies.length > 0) {
@@ -420,7 +436,7 @@ const Page = () => {
   if (mfaDevices.length > 0) {
     // Exclude password authentication method
     const mfaDevicesFiltered = mfaDevices.filter(
-      (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod"
+      (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod",
     );
 
     if (mfaDevicesFiltered.length > 0) {
@@ -538,7 +554,7 @@ const Page = () => {
               },
             ],
             data: userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.group"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.group",
             ),
             refreshFunction: refreshFunction,
             simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
@@ -558,7 +574,7 @@ const Page = () => {
           subtext: "List of roles the user is a member of",
           statusText: ` ${
             userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole",
             ).length
           } Role(s)`,
           statusColor: "info.main",
@@ -566,7 +582,7 @@ const Page = () => {
             title: "Admin Roles",
             hideTitle: true,
             data: userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole",
             ),
             simpleColumns: ["displayName", "description"],
             refreshFunction: refreshFunction,
@@ -574,6 +590,57 @@ const Page = () => {
         },
       ]
     : [];
+
+  const ownedDevicesItems = managedDevices.length > 0
+    ? [
+        {
+          id: 1,
+          cardLabelBox: {
+            cardLabelBoxHeader: <Devices />,
+          },
+          text: "Managed Devices",
+          subtext: "List of devices managed for this user",
+          statusText: `${managedDevices.length} Device(s)`,
+          statusColor: "info.main",
+          table: {
+            title: "Managed Devices",
+            hideTitle: true,
+            data: managedDevices,
+            refreshFunction: refreshFunction,
+            simpleColumns: ["deviceName", "operatingSystem", "osVersion", "managementType"],
+            actions: [
+              {
+                icon: <EyeIcon />,
+                label: "View Device",
+                link: `/endpoint/MEM/devices/device?deviceId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
+              },
+            ],
+          },
+        },
+      ]
+    : managedDevicesData?.status !== 200
+    ? [
+        {
+          id: 1,
+          cardLabelBox: "!",
+          text: "Error loading devices",
+          subtext: managedDevicesData?.error?.message || "Unknown error",
+          statusColor: "error.main",
+          statusText: "Error",
+          propertyItems: [],
+        },
+      ]
+    : [
+        {
+          id: 1,
+          cardLabelBox: "-",
+          text: "No devices",
+          subtext: "This user does not have any managed devices.",
+          statusColor: "warning.main",
+          statusText: "No Devices",
+          propertyItems: [],
+        },
+      ];
 
   return (
     <HeaderedTabbedLayout
@@ -630,6 +697,12 @@ const Page = () => {
                 <CippBannerListCard
                   isFetching={userBulkRequest.isPending}
                   items={roleMembershipItems}
+                  isCollapsible={true}
+                />
+                <Typography variant="h6">Managed Devices</Typography>
+                <CippBannerListCard
+                  isFetching={userBulkRequest.isPending}
+                  items={ownedDevicesItems}
                   isCollapsible={true}
                 />
               </Stack>

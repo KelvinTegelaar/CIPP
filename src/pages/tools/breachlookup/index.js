@@ -10,17 +10,17 @@ import {
   Alert,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
+import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 import { Search } from "@mui/icons-material";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiGetCall } from "/src/api/ApiCall";
+import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
+import { ApiGetCall } from "../../../api/ApiCall";
 import DOMPurify from "dompurify";
-import { getCippTranslation } from "/src/utils/get-cipp-translation";
+import { getCippTranslation } from "../../../utils/get-cipp-translation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import CippCsvExportButton from "/src/components/CippComponents/CippCsvExportButton";
+import CippCsvExportButton from "../../../components/CippComponents/CippCsvExportButton";
 import { CippCopyToClipBoard } from "../../../components/CippComponents/CippCopyToClipboard";
 
 const Page = () => {

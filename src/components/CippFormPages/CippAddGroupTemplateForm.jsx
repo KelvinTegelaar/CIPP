@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 const CippAddGroupTemplateForm = (props) => {
   const { formControl } = props;
@@ -41,7 +41,6 @@ const CippAddGroupTemplateForm = (props) => {
         <CippFormComponent
           type="textField"
           label="Username"
-          helperText="If this is a mail enabled group, CIPP variable replacement are supported for the domain (e.g mygroup@%tenantfilter%)"
           name="username"
           required
           formControl={formControl}
