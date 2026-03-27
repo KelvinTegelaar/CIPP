@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
-import { Alert, Button, SvgIcon, Typography } from "@mui/material";
+import { Button, SvgIcon } from "@mui/material";
 import {
   Add,
   ToggleOn,
@@ -12,7 +12,7 @@ import { TrashIcon, PencilIcon, ClockIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
 
 const Page = () => {
-  const pageTitle = "Custom PowerShell Scripts";
+  const pageTitle = "Custom Tests";
   const simpleColumns = [
     "ScriptName",
     "Description",
@@ -33,19 +33,19 @@ const Page = () => {
     <>
       <CippTablePage
         title={pageTitle}
-        queryKey="Custom PowerShell Scripts"
+        queryKey="Custom Tests"
         cardButton={
           <Button
             variant="contained"
             color="primary"
             size="small"
             component={NextLink}
-            href="/cipp/custom-scripts/add"
+            href="/cipp/custom-tests/add"
           >
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
               <Add />
             </SvgIcon>
-            Add Script
+            Add Test
           </Button>
         }
         tenantInTitle={false}
@@ -53,17 +53,17 @@ const Page = () => {
         simpleColumns={simpleColumns}
         actions={[
           {
-            label: "Edit Script",
+            label: "Edit Test",
             icon: <PencilIcon />,
-            link: "/cipp/custom-scripts/add?ScriptGuid=[ScriptGuid]",
+            link: "/cipp/custom-tests/add?ScriptGuid=[ScriptGuid]",
           },
           {
             label: "View Versions",
             icon: <ClockIcon />,
-            link: "/cipp/custom-scripts/versions?ScriptGuid=[ScriptGuid]",
+            link: "/cipp/custom-tests/versions?ScriptGuid=[ScriptGuid]",
           },
           {
-            label: "Enable Script",
+            label: "Enable Test",
             icon: <ToggleOn />,
             type: "POST",
             url: "/api/AddCustomScript",
@@ -76,7 +76,7 @@ const Page = () => {
             confirmText: "Enable script '[ScriptName]'?",
           },
           {
-            label: "Disable Script",
+            label: "Disable Test",
             icon: <ToggleOff />,
             type: "POST",
             url: "/api/AddCustomScript",
@@ -115,7 +115,7 @@ const Page = () => {
             confirmText: "Disable alerts for '[ScriptName]'?",
           },
           {
-            label: "Delete Script",
+            label: "Delete Test",
             icon: <TrashIcon />,
             url: "/api/RemoveCustomScript",
             type: "GET",
@@ -123,7 +123,7 @@ const Page = () => {
               ScriptGuid: "ScriptGuid",
             },
             confirmText:
-              "Are you sure you want to delete the script '[ScriptName]'? This will permanently delete ALL versions of this script.",
+              "Are you sure you want to delete the test '[ScriptName]'? This will permanently delete ALL versions of this script.",
           },
         ]}
       />

@@ -28,7 +28,7 @@ const Page = () => {
 
   const allVersions = ApiGetCall({
     url: `/api/ListCustomScripts?ScriptGuid=${ScriptGuid}&IncludeAllVersions=true`,
-    queryKey: `CustomScript-Versions-${ScriptGuid}`,
+    queryKey: `CustomTest-Versions-${ScriptGuid}`,
     waiting: !!ScriptGuid,
   });
 
@@ -60,7 +60,7 @@ const Page = () => {
         tableFilter={
           <Alert severity="info">
             <Typography variant="body2">
-              View all versions of this custom script. You can restore to any previous version, but
+              View all versions of this custom test. You can restore to any previous version, but
               note that restoring will permanently delete all versions newer than the selected
               version.
             </Typography>
@@ -69,7 +69,7 @@ const Page = () => {
         tenantInTitle={false}
         apiUrl={`/api/ListCustomScripts?ScriptGuid=${ScriptGuid}&IncludeAllVersions=true`}
         simpleColumns={simpleColumns}
-        queryKey={`CustomScript-Versions-List-${ScriptGuid}`}
+        queryKey={`CustomTest-Versions-List-${ScriptGuid}`}
         actions={[
           {
             label: "Restore to This Version",
@@ -77,8 +77,8 @@ const Page = () => {
             url: "/api/AddCustomScript",
             icon: <ArrowPathIcon />,
             relatedQueryKeys: [
-              "Custom PowerShell Scripts",
-              "CustomScript*",
+              "Custom PowerShell Tests",
+              "CustomTest*",
             ],
             data: {
               ScriptGuid: "ScriptGuid",
@@ -108,7 +108,7 @@ const Page = () => {
         fullWidth
       >
         <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          Compare Script Versions
+          Compare Test Versions
           <IconButton
             aria-label="close"
             onClick={() => setCompareOpen(false)}
@@ -126,7 +126,7 @@ const Page = () => {
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               <Box>
                 <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                  Script Content Diff
+                  Test Content Diff
                 </Typography>
                 <CippScriptDiff
                   oldScript={compareVersion.ScriptContent || ""}

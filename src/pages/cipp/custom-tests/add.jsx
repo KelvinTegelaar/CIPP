@@ -360,7 +360,7 @@ const Page = () => {
     rows: 8,
     disableVariables: false,
     autocompleteTrigger: "{{",
-    placeholder: `### Custom Script Finding
+    placeholder: `### Custom Tests Finding
 
 The script returned the following data:
 
@@ -457,9 +457,9 @@ return $results`,
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey={["Custom PowerShell Scripts", "CustomScript*"]}
-      title="Custom Script"
-      backButtonTitle="Custom Scripts"
+      queryKey={["Custom PowerShell Test", "CustomTest*"]}
+      title="Custom Test"
+      backButtonTitle="Custom Tests"
       formPageType={isEdit ? "Edit" : "Add"}
       postUrl="/api/AddCustomScript"
       customDataformatter={customDataformatter}
@@ -470,12 +470,12 @@ return $results`,
         onChange={(_, expanded) => setGuidanceExpanded(expanded)}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="subtitle2">Script Guidance</Typography>
+          <Typography variant="subtitle2">Test Guidance</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Alert severity="info">
             <Typography variant="body2">
-              <strong>Security Constraints:</strong> Scripts are validated using PowerShell AST
+              <strong>Security Constraints:</strong> Tests are validated using PowerShell AST
               parsing with an allowlist approach. Only specific commands are permitted (ForEach-Object,
               Where-Object, Select-Object, etc.). The += operator is blocked.
             </Typography>
@@ -484,7 +484,7 @@ return $results`,
             </Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
               <strong>Tip:</strong> The $TenantFilter parameter is automatically available in your
-              script. Return @() when there are no results.
+              test. Return @() when there are no results.
             </Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
               <strong>Pass/Fail contract:</strong> Return $false, $null, an empty string, or @() for
@@ -502,7 +502,7 @@ return $results`,
             </Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
               <strong>Persistence:</strong> Manual testing on this page is preview-only. Results are
-              written to CippTestResults only when the script is enabled and tenant tests are
+              written to CippTestResults only when the test is enabled and tenant tests are
               executed.
             </Typography>
             <Typography variant="body2" sx={{ mt: 1, whiteSpace: "pre-line" }}>

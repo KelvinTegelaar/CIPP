@@ -977,10 +977,10 @@ export const nativeMenuItems = [
         scope: "global",
       },
       {
-        title: "Custom Scripts",
-        path: "/cipp/custom-scripts",
+        title: "Custom Tests",
+        path: "/cipp/custom-tests",
         roles: ["admin", "superadmin"],
-        permissions: ["CIPP.Alert.*"],
+        permissions: ["CIPP.Tests.*"],
       },
       {
         title: "Advanced",
