@@ -12,6 +12,10 @@ import {
   Alert,
   Container,
   Divider,
+  Skeleton,
+  Card,
+  CardContent,
+  CardHeader,
 } from '@mui/material'
 import { Grid, Stack, Box } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
@@ -672,19 +676,52 @@ const Page = () => {
     (watchBlockType?.value === 'test' &&
       (!watchSelectedTest || (Array.isArray(watchSelectedTest) && watchSelectedTest.length === 0)))
 
-  /* ── Gate: wait for router ── */
-  if (!isReady) {
-    return <div>Loading...</div>
-  }
-
-  /* ── Gate: loading template data ── */
-  if (templateId && templatesApi.isFetching) {
+  /* ── Gate: wait for router / loading template ── */
+  if (!isReady || (templateId && templatesApi.isFetching)) {
     return (
       <Box sx={{ flexGrow: 1 }}>
         <Container maxWidth={false}>
-          <Typography color="text.secondary" sx={{ mt: 4 }}>
-            Loading template...
-          </Typography>
+          <Stack spacing={2}>
+            {/* Header skeleton */}
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Skeleton variant="circular" width={32} height={32} />
+                <Skeleton variant="text" width={200} height={40} />
+              </Stack>
+              <Stack direction="row" spacing={1}>
+                <Skeleton variant="rounded" width={120} height={32} />
+                <Skeleton variant="rounded" width={100} height={32} />
+                <Skeleton variant="rounded" width={120} height={32} />
+                <Skeleton variant="rounded" width={110} height={32} />
+              </Stack>
+            </Stack>
+
+            {/* Add Block card skeleton */}
+            <Card>
+              <CardHeader title={<Skeleton variant="text" width={100} />} />
+              <CardContent>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Skeleton variant="rounded" width="25%" height={40} />
+                  <Skeleton variant="rounded" width={80} height={32} />
+                </Stack>
+              </CardContent>
+            </Card>
+
+            {/* Block skeletons */}
+            {[1, 2, 3].map((i) => (
+              <Card key={i}>
+                <CardHeader
+                  title={<Skeleton variant="text" width={180} />}
+                  action={<Skeleton variant="rounded" width={60} height={24} />}
+                />
+                <CardContent>
+                  <Skeleton variant="text" width="100%" />
+                  <Skeleton variant="text" width="90%" />
+                  <Skeleton variant="text" width="75%" />
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
         </Container>
       </Box>
     )
