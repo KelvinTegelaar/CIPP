@@ -192,7 +192,16 @@ const MarkdownPaste = Extension.create({
 })
 
 /* ── ReportBlock ──────────────────────────────────────────── */
-const ReportBlock = ({ block, index, totalBlocks, onRemove, onUpdate, onRevert, onMoveUp, onMoveDown }) => {
+const ReportBlock = ({
+  block,
+  index,
+  totalBlocks,
+  onRemove,
+  onUpdate,
+  onRevert,
+  onMoveUp,
+  onMoveDown,
+}) => {
   const [editing, setEditing] = useState(false)
   const editorRef = useRef(null)
 
@@ -284,7 +293,11 @@ const ReportBlock = ({ block, index, totalBlocks, onRemove, onUpdate, onRevert, 
           </Tooltip>
           <Tooltip title="Move down">
             <span>
-              <IconButton size="small" onClick={() => onMoveDown(index)} disabled={index === totalBlocks - 1}>
+              <IconButton
+                size="small"
+                onClick={() => onMoveDown(index)}
+                disabled={index === totalBlocks - 1}
+              >
                 <ArrowDownward fontSize="small" />
               </IconButton>
             </span>
@@ -373,12 +386,14 @@ const Page = () => {
 
   const saveForm = useForm({ defaultValues: { templateName: '' } })
   const addBlockForm = useForm({ defaultValues: { blockType: null, selectedTest: null } })
+  const settingsForm = useForm({ defaultValues: { removeRemediation: true } })
   const scheduleForm = useForm({
     defaultValues: { scheduleName: '', recurrence: null, postExecution: [] },
   })
 
   const watchBlockType = useWatch({ control: addBlockForm.control, name: 'blockType' })
   const watchSelectedTest = useWatch({ control: addBlockForm.control, name: 'selectedTest' })
+  const removeRemediation = useWatch({ control: settingsForm.control, name: 'removeRemediation' })
 
   /* ── API hooks ── */
   const templatesApi = ApiGetCall({
@@ -468,13 +483,15 @@ const Page = () => {
 
       const parts = []
 
-      const stripRemediation = (text) => {
+      const maybeStripRemediation = (text) => {
         if (!text) return text
-        return text.split(/##?\s*Remediation\s*Action/i)[0].trim()
+        if (!removeRemediation) return text
+        // Match all variants: **Remediation action**, **Remediation Action:**, **Remediation actions**, **Remediation Resources**
+        return text.split(/\*\*Remediation\s+(?:action|actions|resources)\*\*:?/i)[0].trim()
       }
 
       if (result.Description) {
-        const desc = stripRemediation(result.Description)
+        const desc = maybeStripRemediation(result.Description)
         if (desc) parts.push(desc)
       }
 
@@ -492,7 +509,7 @@ const Page = () => {
         resultContent = result.ResultMarkdown || ''
       }
 
-      resultContent = stripRemediation(resultContent)
+      resultContent = maybeStripRemediation(resultContent)
 
       if (resultContent) {
         parts.push('## Results\n\n' + resultContent)
@@ -500,7 +517,7 @@ const Page = () => {
 
       return parts.length > 0 ? parts.join('\n\n') : '_No content available for this test._'
     },
-    [testResults, getTestResult]
+    [testResults, getTestResult, removeRemediation]
   )
 
   const getTestStatus = useCallback(
@@ -680,7 +697,7 @@ const Page = () => {
       } = require('../../../../components/ReportBuilder/ReportBuilderPDF')
       const doc = (
         <ReportBuilderDocument
-          blocks={blocks}
+          blocks={displayBlocks}
           tenantName={tenantDisplayName}
           templateName={saveForm.getValues('templateName') || 'Custom Report'}
           brandingSettings={brandingSettings}
@@ -710,8 +727,25 @@ const Page = () => {
     (watchBlockType?.value === 'test' &&
       (!watchSelectedTest || (Array.isArray(watchSelectedTest) && watchSelectedTest.length === 0)))
 
-  /* ── Gate: wait for router / loading template ── */
-  if (!isReady || (templateId && templatesApi.isFetching)) {
+  /* ── Resolve live test blocks with current data for PDF ── */
+  const displayBlocks = blocks.map((block) =>
+    block.type === 'test' && !block.static
+      ? {
+          ...block,
+          content: getTestContent(block.testId),
+          status: getTestStatus(block.testId),
+        }
+      : block
+  )
+
+  const isLoading =
+    !isReady ||
+    (templateId && templatesApi.isFetching) ||
+    availableTestsApi.isFetching ||
+    (!!currentTenant && testsApi.isFetching)
+
+  /* ── Gate: loading state with skeletons ── */
+  if (isLoading) {
     return (
       <Box sx={{ flexGrow: 1 }}>
         <Container maxWidth={false}>
@@ -823,8 +857,8 @@ const Page = () => {
               </Alert>
             )}
 
-            {/* Add Block */}
-            <CippButtonCard title="Add Block">
+            {/* Report Settings */}
+            <CippButtonCard title="Report Settings">
               <Grid container spacing={2} alignItems="center">
                 <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
@@ -846,7 +880,7 @@ const Page = () => {
                   formControl={addBlockForm}
                   clearOnHide={true}
                 >
-                  <Grid size={{ xs: 12, md: 6 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <CippFormComponent
                       type="autoComplete"
                       name="selectedTest"
@@ -858,7 +892,7 @@ const Page = () => {
                     />
                   </Grid>
                 </CippFormCondition>
-                <Grid size={{ xs: 12, md: 3 }}>
+                <Grid size={{ xs: 12, md: 2 }}>
                   <Button
                     variant="outlined"
                     size="small"
@@ -866,8 +900,16 @@ const Page = () => {
                     onClick={handleAddBlock}
                     disabled={addDisabled}
                   >
-                    Add
+                    Add Block
                   </Button>
+                </Grid>
+                <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <CippFormComponent
+                    type="switch"
+                    name="removeRemediation"
+                    label="Remove Remediation recommendations"
+                    formControl={settingsForm}
+                  />
                 </Grid>
               </Grid>
             </CippButtonCard>
@@ -929,7 +971,7 @@ const Page = () => {
         <DialogContent sx={{ p: 0, height: '100%' }}>
           {previewOpen && (
             <ReportBuilderPDF
-              blocks={blocks}
+              blocks={displayBlocks}
               tenantName={tenantDisplayName}
               templateName={saveForm.getValues('templateName') || 'Custom Report'}
               brandingSettings={brandingSettings}
