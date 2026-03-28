@@ -40,6 +40,8 @@ import {
   Save,
   Close,
   ArrowBack,
+  ArrowUpward,
+  ArrowDownward,
   Refresh,
 } from '@mui/icons-material'
 import {
@@ -190,7 +192,7 @@ const MarkdownPaste = Extension.create({
 })
 
 /* ── ReportBlock ──────────────────────────────────────────── */
-const ReportBlock = ({ block, index, onRemove, onUpdate, onRevert }) => {
+const ReportBlock = ({ block, index, totalBlocks, onRemove, onUpdate, onRevert, onMoveUp, onMoveDown }) => {
   const [editing, setEditing] = useState(false)
   const editorRef = useRef(null)
 
@@ -273,6 +275,20 @@ const ReportBlock = ({ block, index, onRemove, onUpdate, onRevert }) => {
               </Button>
             </>
           )}
+          <Tooltip title="Move up">
+            <span>
+              <IconButton size="small" onClick={() => onMoveUp(index)} disabled={index === 0}>
+                <ArrowUpward fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Tooltip title="Move down">
+            <span>
+              <IconButton size="small" onClick={() => onMoveDown(index)} disabled={index === totalBlocks - 1}>
+                <ArrowDownward fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
           <Tooltip title="Remove block">
             <IconButton size="small" color="error" onClick={() => onRemove(index)}>
               <Delete fontSize="small" />
@@ -564,6 +580,24 @@ const Page = () => {
   }
 
   const handleRemoveBlock = (index) => setBlocks((prev) => prev.filter((_, i) => i !== index))
+
+  const handleMoveBlockUp = (index) => {
+    if (index === 0) return
+    setBlocks((prev) => {
+      const next = [...prev]
+      ;[next[index - 1], next[index]] = [next[index], next[index - 1]]
+      return next
+    })
+  }
+
+  const handleMoveBlockDown = (index) => {
+    setBlocks((prev) => {
+      if (index >= prev.length - 1) return prev
+      const next = [...prev]
+      ;[next[index], next[index + 1]] = [next[index + 1], next[index]]
+      return next
+    })
+  }
 
   const handleUpdateBlock = (index, b) =>
     setBlocks((prev) => prev.map((x, i) => (i === index ? b : x)))
@@ -860,9 +894,12 @@ const Page = () => {
                       key={block.id}
                       block={displayBlock}
                       index={index}
+                      totalBlocks={blocks.length}
                       onRemove={handleRemoveBlock}
                       onUpdate={handleUpdateBlock}
                       onRevert={handleRevertBlock}
+                      onMoveUp={handleMoveBlockUp}
+                      onMoveDown={handleMoveBlockDown}
                     />
                   )
                 })}
