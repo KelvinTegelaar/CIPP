@@ -385,7 +385,7 @@ const Page = () => {
   const [saveOpen, setSaveOpen] = useState(false)
 
   const saveForm = useForm({ defaultValues: { templateName: '' } })
-  const addBlockForm = useForm({ defaultValues: { blockType: null, selectedTest: null } })
+  const addBlockForm = useForm({ defaultValues: { blockType: null, selectedTest: [] } })
   const settingsForm = useForm({ defaultValues: { removeRemediation: true } })
   const scheduleForm = useForm({
     defaultValues: { scheduleName: '', recurrence: null, postExecution: [] },
@@ -394,6 +394,15 @@ const Page = () => {
   const watchBlockType = useWatch({ control: addBlockForm.control, name: 'blockType' })
   const watchSelectedTest = useWatch({ control: addBlockForm.control, name: 'selectedTest' })
   const removeRemediation = useWatch({ control: settingsForm.control, name: 'removeRemediation' })
+
+  // CippFormCondition clearOnHide sets selectedTest to null; coerce back to [] so
+  // CippAutoComplete (multiple) doesn't wrap null into [null] → empty chip.
+  useEffect(() => {
+    const val = addBlockForm.getValues('selectedTest')
+    if (val === null || val === undefined) {
+      addBlockForm.setValue('selectedTest', [], { shouldDirty: false, shouldValidate: false })
+    }
+  }, [watchBlockType])
 
   /* ── API hooks ── */
   const templatesApi = ApiGetCall({
@@ -574,7 +583,7 @@ const Page = () => {
           static: false,
         },
       ])
-      addBlockForm.reset({ blockType: null, selectedTest: null })
+      addBlockForm.reset({ blockType: null, selectedTest: [] })
     } else if (type.value === 'test') {
       const tests = addBlockForm.getValues('selectedTest')
       const testArray = Array.isArray(tests) ? tests : tests ? [tests] : []
@@ -592,7 +601,7 @@ const Page = () => {
           static: false,
         })),
       ])
-      addBlockForm.reset({ blockType: null, selectedTest: null })
+      addBlockForm.reset({ blockType: null, selectedTest: [] })
     }
   }
 
