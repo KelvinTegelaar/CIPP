@@ -1790,7 +1790,7 @@
     "label": "Configure Exchange Cloud Management for Remote/On-Premises Mailboxes",
     "impact": "Low Impact",
     "impactColour": "info",
-    "addedDate": "2025-11-15",
+    "addedDate": "2026-03-28",
     "powershellEquivalent": "Set-Mailbox -Identity user@domain.com -IsExchangeCloudManaged $true or $false",
     "recommendedBy": ["Microsoft", "CIPP"]
   },
