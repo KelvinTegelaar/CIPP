@@ -71,7 +71,7 @@ export const CippReportToolbar = () => {
         <Box sx={{ flex: 1 }}>
           <CippFormComponent
             name="reportId"
-            label="Select a report"
+            label="Select a test suite"
             type="autoComplete"
             multiple={false}
             formControl={formControl}
@@ -81,11 +81,11 @@ export const CippReportToolbar = () => {
               value: r.id,
               description: r.description,
             }))}
-            placeholder="Choose a report"
+            placeholder="Choose a test suite"
             customAction={{
               position: 'outside',
               icon: <RefreshIcon fontSize="small" />,
-              tooltip: 'Refresh reports',
+              tooltip: 'Refresh test suites',
               onClick: handleRefresh,
             }}
             isFetching={reportsApi.isFetching}
@@ -119,10 +119,12 @@ export const CippReportToolbar = () => {
           }}
           startIcon={<RefreshIcon />}
         >
-          Update Report
+          Refresh
         </Button>
         <Tooltip
-          title={isBuiltIn ? 'Built-in reports cannot be deleted' : 'Delete this custom report'}
+          title={
+            isBuiltIn ? 'Built-in test suites cannot be deleted' : 'Delete this custom test suite'
+          }
           arrow
         >
           <Box component="span">

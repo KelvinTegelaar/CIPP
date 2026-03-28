@@ -1,8 +1,17 @@
-import { Box, Container, Button } from '@mui/material'
+import {
+  Box,
+  Container,
+  Button,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  SvgIcon,
+} from '@mui/material'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Grid } from '@mui/system'
+import { Grid, useMediaQuery } from '@mui/system'
 import { useSettings } from '../../hooks/use-settings'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
 import Portals from '../../data/portals'
@@ -20,7 +29,8 @@ import { TenantInfoCard } from '../../components/CippComponents/TenantInfoCard'
 import { TenantMetricsGrid } from '../../components/CippComponents/TenantMetricsGrid'
 import { AssessmentCard } from '../../components/CippComponents/AssessmentCard'
 import { CippReportToolbar } from '../../components/CippComponents/CippReportToolbar'
-import { Assessment as AssessmentIcon } from '@mui/icons-material'
+import { Assessment as AssessmentIcon, PictureAsPdf as PictureAsPdfIcon } from '@mui/icons-material'
+import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
 
 const Page = () => {
@@ -28,6 +38,8 @@ const Page = () => {
   const router = useRouter()
   const { currentTenant } = settings
   const [portalMenuItems, setPortalMenuItems] = useState([])
+  const isWide = useMediaQuery('(min-width:1513px)')
+  const [reportsMenuAnchor, setReportsMenuAnchor] = useState(null)
   // Get reportId from query params or default to "ztna"
   // Only use default if router is ready and reportId is still not present
   const selectedReport =
@@ -176,22 +188,66 @@ const Page = () => {
                 actions={portalMenuItems}
                 disabled={!currentTenantInfo.isSuccess || portalMenuItems.length === 0}
               />
-              <ExecutiveReportButton disabled={organization.isFetching} />
-              <Button
-                component={Link}
-                href="/tools/report-builder/generated"
-                variant="contained"
-                startIcon={<AssessmentIcon />}
-                sx={{
-                  fontWeight: 'bold',
-                  textTransform: 'none',
-                  borderRadius: 2,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                  transition: 'all 0.2s ease-in-out',
-                }}
-              >
-                Report Builder
-              </Button>
+              {isWide ? (
+                <>
+                  <ExecutiveReportButton disabled={organization.isFetching} />
+                  <Button
+                    component={Link}
+                    href="/tools/report-builder/generated"
+                    variant="contained"
+                    startIcon={<AssessmentIcon />}
+                    sx={{
+                      fontWeight: 'bold',
+                      textTransform: 'none',
+                      borderRadius: 2,
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      transition: 'all 0.2s ease-in-out',
+                    }}
+                  >
+                    Report Builder
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="contained"
+                    onClick={(e) => setReportsMenuAnchor(e.currentTarget)}
+                    startIcon={
+                      <SvgIcon fontSize="small">
+                        <ChevronDownIcon />
+                      </SvgIcon>
+                    }
+                    sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}
+                  >
+                    Dashboard Reports
+                  </Button>
+                  <Menu
+                    keepMounted
+                    anchorEl={reportsMenuAnchor}
+                    open={Boolean(reportsMenuAnchor)}
+                    onClose={() => setReportsMenuAnchor(null)}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    MenuListProps={{ dense: true, sx: { p: 1 } }}
+                  >
+                    <ExecutiveReportButton
+                      variant="menuItem"
+                      disabled={organization.isFetching}
+                      onClick={() => setReportsMenuAnchor(null)}
+                    />
+                    <MenuItem
+                      component={Link}
+                      href="/tools/report-builder/generated"
+                      onClick={() => setReportsMenuAnchor(null)}
+                    >
+                      <ListItemIcon>
+                        <AssessmentIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Report Builder</ListItemText>
+                    </MenuItem>
+                  </Menu>
+                </>
+              )}
             </Box>
           </Grid>
           <Grid size={{ xs: 12, md: 7 }}>
