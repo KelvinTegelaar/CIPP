@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useMemo } from 'react'
 import {
   Button,
   Typography,
@@ -328,7 +328,7 @@ const Page = () => {
     })),
   ]
 
-  const testResults = testsApi.data?.TestResults || []
+  const testResults = useMemo(() => testsApi.data?.TestResults || [], [testsApi.data])
 
   const getTestResult = useCallback(
     (testId) => {
@@ -723,16 +723,26 @@ const Page = () => {
               </Alert>
             ) : (
               <Stack spacing={2}>
-                {blocks.map((block, index) => (
-                  <ReportBlock
-                    key={block.id}
-                    block={block}
-                    index={index}
-                    onRemove={handleRemoveBlock}
-                    onUpdate={handleUpdateBlock}
-                    onRevert={handleRevertBlock}
-                  />
-                ))}
+                {blocks.map((block, index) => {
+                  const displayBlock =
+                    block.type === 'test' && !block.static
+                      ? {
+                          ...block,
+                          content: getTestContent(block.testId),
+                          status: getTestStatus(block.testId),
+                        }
+                      : block
+                  return (
+                    <ReportBlock
+                      key={block.id}
+                      block={displayBlock}
+                      index={index}
+                      onRemove={handleRemoveBlock}
+                      onUpdate={handleUpdateBlock}
+                      onRevert={handleRevertBlock}
+                    />
+                  )
+                })}
               </Stack>
             )}
           </Stack>
