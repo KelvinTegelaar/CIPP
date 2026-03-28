@@ -179,7 +179,7 @@ const Page = () => {
               <ExecutiveReportButton disabled={organization.isFetching} />
               <Button
                 component={Link}
-                href="/tools/report-builder"
+                href="/tools/report-builder/generated"
                 variant="contained"
                 startIcon={<AssessmentIcon />}
                 sx={{

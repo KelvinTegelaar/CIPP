@@ -934,7 +934,7 @@ export const nativeMenuItems = [
       },
       {
         title: 'Report Builder',
-        path: '/tools/report-builder',
+        path: '/tools/report-builder/generated',
         roles: ['admin', 'superadmin'],
         permissions: ['CIPP.Core.*'],
         scope: 'global',

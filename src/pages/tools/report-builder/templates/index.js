@@ -14,19 +14,19 @@ import {
   Divider,
 } from '@mui/material'
 import { Grid, Stack, Box } from '@mui/system'
-import { Layout as DashboardLayout } from '../../../layouts/index.js'
-import { useSettings } from '../../../hooks/use-settings'
-import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall.jsx'
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import { useSettings } from '../../../../hooks/use-settings'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall.jsx'
 import { useForm, useWatch } from 'react-hook-form'
-import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
-import { CippFormCondition } from '../../../components/CippComponents/CippFormCondition'
-import { CippApiResults } from '../../../components/CippComponents/CippApiResults'
-import { CippHead } from '../../../components/CippComponents/CippHead.jsx'
-import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
-import CippButtonCard from '../../../components/CippCards/CippButtonCard'
+import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
+import { CippFormCondition } from '../../../../components/CippComponents/CippFormCondition'
+import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { renderCustomScriptMarkdownTemplate } from '../../../utils/customScriptTemplate'
+import { renderCustomScriptMarkdownTemplate } from '../../../../utils/customScriptTemplate'
 import {
   Add,
   Delete,
@@ -50,7 +50,8 @@ import {
   RichTextEditor,
 } from 'mui-tiptap'
 import StarterKit from '@tiptap/starter-kit'
-import { ReportBuilderPDF } from '../../../components/ReportBuilder/ReportBuilderPDF'
+import { ReportBuilderPDF } from '../../../../components/ReportBuilder/ReportBuilderPDF'
+import tabOptions from '../tabOptions.json'
 
 /* ── Markdown styles (matches CippTestDetailOffCanvas) ── */
 const markdownStyles = {
@@ -75,7 +76,12 @@ const markdownStyles = {
     fontSize: '0.8rem',
   },
   '& th': { backgroundColor: 'action.hover', fontWeight: 600 },
-  '& code': { backgroundColor: 'action.hover', p: '1px 4px', borderRadius: 0.5, fontSize: '0.8em' },
+  '& code': {
+    backgroundColor: 'action.hover',
+    p: '1px 4px',
+    borderRadius: 0.5,
+    fontSize: '0.8em',
+  },
   '& pre': { backgroundColor: 'action.hover', p: 1.5, borderRadius: 1, overflow: 'auto' },
 }
 
@@ -121,7 +127,6 @@ const ReportBlock = ({ block, index, onRemove, onUpdate, onRevert }) => {
     setEditing(false)
   }
 
-  // Convert markdown content to HTML for TipTap when editing a test block
   const editorContent =
     editing && isTestBlock && !isStatic ? markdownToHtml(block.content || '') : block.content || ''
 
@@ -339,19 +344,16 @@ const Page = () => {
 
       const parts = []
 
-      // Strip Remediation Action from any content
       const stripRemediation = (text) => {
         if (!text) return text
         return text.split(/##?\s*Remediation\s*Action/i)[0].trim()
       }
 
-      // Add description ("What did we check") if available, excluding Remediation Action
       if (result.Description) {
         const desc = stripRemediation(result.Description)
         if (desc) parts.push(desc)
       }
 
-      // Add results
       let resultContent = ''
       if (result.TestType === 'Custom' && result.ResultDataJson) {
         try {
@@ -497,7 +499,7 @@ const Page = () => {
         Name: values.scheduleName || `Report Builder - ${name}`,
         command: {
           label: 'Generate Report Builder PDF',
-          value: 'Invoke-ExecGenerateReportBuilderReport',
+          value: 'Push-ExecGenerateReportBuilderReport',
         },
         parameters: {
           TemplateName: name,
@@ -526,7 +528,7 @@ const Page = () => {
     import('@react-pdf/renderer').then(({ pdf }) => {
       const {
         ReportBuilderDocument,
-      } = require('../../../components/ReportBuilder/ReportBuilderPDF')
+      } = require('../../../../components/ReportBuilder/ReportBuilderPDF')
       const doc = (
         <ReportBuilderDocument
           blocks={blocks}
@@ -575,169 +577,165 @@ const Page = () => {
     actions: tableActions,
   }
 
-  /* ── Determine add-block button disabled state ── */
   const addDisabled = !watchBlockType || (watchBlockType?.value === 'test' && !watchSelectedTest)
 
+  /* ── Template list view ── */
+  if (!builderOpen) {
+    return (
+      <CippTablePage
+        title="Templates"
+        tenantInTitle={false}
+        apiUrl="/api/ListReportBuilderTemplates"
+        queryKey="ListReportBuilderTemplates"
+        simpleColumns={['Name', 'Sections', 'TestCount', 'CustomCount']}
+        actions={tableActions}
+        offCanvas={offCanvas}
+        cardButton={
+          <Button
+            startIcon={<Add />}
+            variant="contained"
+            size="small"
+            onClick={() => {
+              setBlocks([])
+              setTemplateGUID(null)
+              saveForm.reset({ templateName: '' })
+              setBuilderOpen(true)
+            }}
+          >
+            New Report
+          </Button>
+        }
+      />
+    )
+  }
+
+  /* ── Builder view ── */
   return (
     <>
-      {/* ── Templates Table ── */}
-      {!builderOpen && (
-        <CippTablePage
-          title="Report Builder"
-          tenantInTitle={false}
-          apiUrl="/api/ListReportBuilderTemplates"
-          queryKey="ListReportBuilderTemplates"
-          simpleColumns={['Name', 'Sections', 'TestCount', 'CustomCount']}
-          actions={tableActions}
-          offCanvas={offCanvas}
-          cardButton={
-            <Button
-              startIcon={<Add />}
-              variant="contained"
-              size="small"
-              onClick={() => {
-                setBlocks([])
-                setTemplateGUID(null)
-                saveForm.reset({ templateName: '' })
-                setBuilderOpen(true)
-              }}
-            >
-              New Report
-            </Button>
-          }
-        />
-      )}
-
-      {/* ── Builder ── */}
-      {builderOpen && (
-        <>
-          <CippHead title="Report Builder" />
-          <Box sx={{ flexGrow: 1 }}>
-            <Container maxWidth={false}>
-              <Stack spacing={2}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <IconButton size="small" onClick={() => setBuilderOpen(false)}>
-                      <ArrowBack />
-                    </IconButton>
-                    <Typography variant="h4">
-                      {saveForm.watch('templateName') || 'New Report'}
-                    </Typography>
-                    {currentTenant && (
-                      <Chip label={currentTenant} size="small" variant="outlined" />
-                    )}
-                  </Stack>
-                  <Stack direction="row" spacing={1}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      startIcon={<Save />}
-                      onClick={() => setSaveOpen(true)}
-                      disabled={blocks.length === 0}
-                    >
-                      Save Template
-                    </Button>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      startIcon={<Schedule />}
-                      onClick={() => setScheduleOpen(true)}
-                      disabled={blocks.length === 0 || !currentTenant}
-                    >
-                      Schedule
-                    </Button>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      startIcon={<PictureAsPdf />}
-                      onClick={() => setPreviewOpen(true)}
-                      disabled={blocks.length === 0}
-                    >
-                      Preview PDF
-                    </Button>
-                  </Stack>
-                </Stack>
-
-                {!currentTenant && (
-                  <Alert severity="info">
-                    Select a tenant to load live test results. Custom blocks work without a tenant.
-                  </Alert>
-                )}
-
-                {/* Add Block */}
-                <CippButtonCard title="Add Block">
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid size={{ xs: 12, md: 3 }}>
-                      <CippFormComponent
-                        type="autoComplete"
-                        name="blockType"
-                        label="Block Type"
-                        formControl={addBlockForm}
-                        multiple={false}
-                        options={[
-                          { label: 'Custom Block', value: 'blank' },
-                          { label: 'Test Result', value: 'test' },
-                        ]}
-                      />
-                    </Grid>
-                    <CippFormCondition
-                      field="blockType"
-                      compareType="valueEq"
-                      compareValue="test"
-                      formControl={addBlockForm}
-                      clearOnHide={true}
-                    >
-                      <Grid size={{ xs: 12, md: 6 }}>
-                        <CippFormComponent
-                          type="autoComplete"
-                          name="selectedTest"
-                          label="Select Test"
-                          formControl={addBlockForm}
-                          multiple={false}
-                          options={allTestOptions}
-                          isFetching={availableTestsApi.isFetching}
-                        />
-                      </Grid>
-                    </CippFormCondition>
-                    <Grid size={{ xs: 12, md: 3 }}>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={<Add />}
-                        onClick={handleAddBlock}
-                        disabled={addDisabled}
-                      >
-                        Add
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </CippButtonCard>
-
-                {/* Blocks */}
-                {blocks.length === 0 ? (
-                  <Alert severity="info">
-                    No blocks added yet. Use the controls above to add test results or custom
-                    content blocks.
-                  </Alert>
-                ) : (
-                  <Stack spacing={2}>
-                    {blocks.map((block, index) => (
-                      <ReportBlock
-                        key={block.id}
-                        block={block}
-                        index={index}
-                        onRemove={handleRemoveBlock}
-                        onUpdate={handleUpdateBlock}
-                        onRevert={handleRevertBlock}
-                      />
-                    ))}
-                  </Stack>
+      <Box sx={{ flexGrow: 1 }}>
+        <Container maxWidth={false}>
+          <Stack spacing={2}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack direction="row" spacing={1} alignItems="center">
+                <IconButton size="small" onClick={() => setBuilderOpen(false)}>
+                  <ArrowBack />
+                </IconButton>
+                <Typography variant="h4">
+                  {saveForm.watch('templateName') || 'New Report'}
+                </Typography>
+                {currentTenant && (
+                  <Chip label={currentTenant} size="small" variant="outlined" />
                 )}
               </Stack>
-            </Container>
-          </Box>
-        </>
-      )}
+              <Stack direction="row" spacing={1}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<Save />}
+                  onClick={() => setSaveOpen(true)}
+                  disabled={blocks.length === 0}
+                >
+                  Save Template
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<Schedule />}
+                  onClick={() => setScheduleOpen(true)}
+                  disabled={blocks.length === 0 || !currentTenant}
+                >
+                  Schedule
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<PictureAsPdf />}
+                  onClick={() => setPreviewOpen(true)}
+                  disabled={blocks.length === 0}
+                >
+                  Preview PDF
+                </Button>
+              </Stack>
+            </Stack>
+
+            {!currentTenant && (
+              <Alert severity="info">
+                Select a tenant to load live test results. Custom blocks work without a tenant.
+              </Alert>
+            )}
+
+            {/* Add Block */}
+            <CippButtonCard title="Add Block">
+              <Grid container spacing={2} alignItems="center">
+                <Grid size={{ xs: 12, md: 3 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="blockType"
+                    label="Block Type"
+                    formControl={addBlockForm}
+                    multiple={false}
+                    options={[
+                      { label: 'Custom Block', value: 'blank' },
+                      { label: 'Test Result', value: 'test' },
+                    ]}
+                  />
+                </Grid>
+                <CippFormCondition
+                  field="blockType"
+                  compareType="valueEq"
+                  compareValue="test"
+                  formControl={addBlockForm}
+                  clearOnHide={true}
+                >
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      name="selectedTest"
+                      label="Select Test"
+                      formControl={addBlockForm}
+                      multiple={false}
+                      options={allTestOptions}
+                      isFetching={availableTestsApi.isFetching}
+                    />
+                  </Grid>
+                </CippFormCondition>
+                <Grid size={{ xs: 12, md: 3 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<Add />}
+                    onClick={handleAddBlock}
+                    disabled={addDisabled}
+                  >
+                    Add
+                  </Button>
+                </Grid>
+              </Grid>
+            </CippButtonCard>
+
+            {/* Blocks */}
+            {blocks.length === 0 ? (
+              <Alert severity="info">
+                No blocks added yet. Use the controls above to add test results or custom content
+                blocks.
+              </Alert>
+            ) : (
+              <Stack spacing={2}>
+                {blocks.map((block, index) => (
+                  <ReportBlock
+                    key={block.id}
+                    block={block}
+                    index={index}
+                    onRemove={handleRemoveBlock}
+                    onUpdate={handleUpdateBlock}
+                    onRevert={handleRevertBlock}
+                  />
+                ))}
+              </Stack>
+            )}
+          </Stack>
+        </Container>
+      </Box>
 
       {/* ── PDF Preview Dialog ── */}
       <Dialog
@@ -866,6 +864,10 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+)
 
 export default Page
