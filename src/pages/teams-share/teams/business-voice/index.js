@@ -1,114 +1,116 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { PersonAdd, PersonRemove, LocationOn } from "@mui/icons-material";
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { PersonAdd, PersonRemove, LocationOn } from '@mui/icons-material'
 
 const Page = () => {
-  const pageTitle = "Teams Business Voice";
+  const pageTitle = 'Teams Business Voice'
 
   const actions = [
     // the modal dropdowns that were added below may not exist yet, and will need to be tested.
     {
-      label: "Assign User",
-      type: "POST",
+      label: 'Assign User',
+      type: 'POST',
       icon: <PersonAdd />,
-      url: "/api/ExecTeamsVoicePhoneNumberAssignment",
+      url: '/api/ExecTeamsVoicePhoneNumberAssignment',
       data: {
-        PhoneNumber: "TelephoneNumber",
-        PhoneNumberType: "NumberType",
+        PhoneNumber: 'TelephoneNumber',
+        PhoneNumberType: 'NumberType',
         locationOnly: false,
       },
       fields: [
         {
-          type: "autoComplete",
-          name: "input",
-          label: "Select User",
+          type: 'autoComplete',
+          name: 'input',
+          label: 'Select User',
           multiple: false,
           creatable: false,
           api: {
-            url: "/api/listUsers",
+            url: '/api/listUsers',
             labelField: (input) => `${input.displayName} (${input.userPrincipalName})`,
-            valueField: "userPrincipalName",
+            valueField: 'userPrincipalName',
           },
         },
       ],
-      confirmText: "Select the User to assign the phone number to.",
+      confirmText: 'Select the User to assign the phone number to.',
     },
     {
-      label: "Unassign User",
-      type: "POST",
+      label: 'Unassign User',
+      type: 'POST',
       icon: <PersonRemove />,
-      url: "/api/ExecRemoveTeamsVoicePhoneNumberAssignment",
+      url: '/api/ExecRemoveTeamsVoicePhoneNumberAssignment',
       data: {
-        PhoneNumber: "TelephoneNumber",
-        AssignedTo: "AssignedTo",
-        PhoneNumberType: "NumberType",
+        PhoneNumber: 'TelephoneNumber',
+        AssignedTo: 'AssignedTo',
+        PhoneNumberType: 'NumberType',
       },
-      confirmText: "Are you sure you want to remove the assignment?",
+      confirmText: 'Are you sure you want to remove the assignment?',
     },
     {
-      label: "Set Emergency Location",
-      type: "POST",
+      label: 'Set Emergency Location',
+      type: 'POST',
       icon: <LocationOn />,
-      url: "/api/ExecTeamsVoicePhoneNumberAssignment",
+      url: '/api/ExecTeamsVoicePhoneNumberAssignment',
       data: {
-        PhoneNumber: "TelephoneNumber",
+        PhoneNumber: 'TelephoneNumber',
         locationOnly: true,
       },
       fields: [
         {
-          type: "autoComplete",
-          name: "input",
-          label: "Emergency Location",
+          type: 'autoComplete',
+          name: 'input',
+          label: 'Emergency Location',
           api: {
-            url: "/api/ListTeamsLisLocation",
-            labelField: "Description",
-            valueField: "LocationId",
+            url: '/api/ListTeamsLisLocation',
+            labelField: 'Description',
+            valueField: 'LocationId',
           },
         },
       ],
-      confirmText: "Select the Emergency Location.",
+      confirmText: 'Select the Emergency Location.',
     },
-  ];
+  ]
 
   const offCanvas = {
     extendedInfoFields: [
-      "TelephoneNumber",
-      "AcquiredCapabilities",
-      "AssignmentStatus",
-      "AssignedTo",
+      'TelephoneNumber',
+      'AcquiredCapabilities',
+      'AssignmentStatus',
+      'AssignedTo',
     ],
     actions: actions,
-  };
+  }
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListTeamsVoice"
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
-        "AssignedTo",
-        "TelephoneNumber",
-        "AssignmentStatus",
-        "NumberType",
-        "AcquiredCapabilities",
-        "IsoCountryCode",
-        "PlaceName",
-        "ActivationState",
-        "IsOperatorConnect",
-        "AcquisitionDate",
+        'Tenant',
+        'AssignedTo',
+        'TelephoneNumber',
+        'AssignmentStatus',
+        'NumberType',
+        'AcquiredCapabilities',
+        'IsoCountryCode',
+        'PlaceName',
+        'ActivationState',
+        'IsOperatorConnect',
+        'AcquisitionDate',
       ]}
       filterlist={[
         {
-          filterName: "Unassigned User Numbers",
+          filterName: 'Unassigned User Numbers',
           filter:
-            "Complex: AssignmentStatus eq Unassigned; AcquiredCapabilities like UserAssignment",
+            'Complex: AssignmentStatus eq Unassigned; AcquiredCapabilities like UserAssignment',
         },
       ]}
     />
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 
-export default Page;
+export default Page

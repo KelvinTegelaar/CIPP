@@ -1,10 +1,10 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
-import { useSettings } from "../../../../hooks/use-settings";
-import { useDialog } from "../../../../hooks/use-dialog.js";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { Box, Button } from "@mui/material";
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog.jsx'
+import { useSettings } from '../../../../hooks/use-settings'
+import { useDialog } from '../../../../hooks/use-dialog.js'
+import { EyeIcon } from '@heroicons/react/24/outline'
+import { Box, Button } from '@mui/material'
 import {
   Sync,
   RestartAlt,
@@ -20,383 +20,383 @@ import {
   AutoMode,
   Recycling,
   ManageAccounts,
-} from "@mui/icons-material";
+} from '@mui/icons-material'
 
 const Page = () => {
-  const pageTitle = "Devices";
-  const tenantFilter = useSettings().currentTenant;
-  const depSyncDialog = useDialog();
+  const pageTitle = 'Devices'
+  const tenantFilter = useSettings().currentTenant
+  const depSyncDialog = useDialog()
 
   const actions = [
     {
-      label: "View Device",
+      label: 'View Device',
       link: `/endpoint/MEM/devices/device?deviceId=[id]`,
-      color: "info",
+      color: 'info',
       icon: <EyeIcon />,
       multiPost: false,
     },
     {
-      label: "View in Intune",
+      label: 'View in Intune',
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
-      color: "info",
+      color: 'info',
       icon: <EyeIcon />,
-      target: "_blank",
+      target: '_blank',
       multiPost: false,
       external: true,
     },
     {
-      label: "Change Primary User",
-      type: "POST",
+      label: 'Change Primary User',
+      type: 'POST',
       icon: <ManageAccounts />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "!users",
+        GUID: 'id',
+        Action: '!users',
       },
       fields: [
         {
-          type: "autoComplete",
-          name: "user",
-          label: "Select User",
+          type: 'autoComplete',
+          name: 'user',
+          label: 'Select User',
           multiple: false,
           creatable: false,
           api: {
-            url: "/api/ListGraphRequest",
+            url: '/api/ListGraphRequest',
             data: {
-              Endpoint: "users",
-              $select: "id,displayName,userPrincipalName",
+              Endpoint: 'users',
+              $select: 'id,displayName,userPrincipalName',
               $top: 999,
               $count: true,
             },
-            queryKey: "ListUsersAutoComplete",
-            dataKey: "Results",
+            queryKey: 'ListUsersAutoComplete',
+            dataKey: 'Results',
             labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
-            valueField: "id",
+            valueField: 'id',
             addedField: {
-              userPrincipalName: "userPrincipalName",
+              userPrincipalName: 'userPrincipalName',
             },
             showRefresh: true,
           },
         },
       ],
-      confirmText: "Select the User to set as the primary user for [deviceName]",
+      confirmText: 'Select the User to set as the primary user for [deviceName]',
     },
     {
-      label: "Rename Device",
-      type: "POST",
+      label: 'Rename Device',
+      type: 'POST',
       icon: <Edit />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "setDeviceName",
+        GUID: 'id',
+        Action: 'setDeviceName',
       },
-      confirmText: "Enter the new name for the device",
+      confirmText: 'Enter the new name for the device',
       fields: [
         {
-          type: "textField",
-          name: "input",
-          label: "New Device Name",
+          type: 'textField',
+          name: 'input',
+          label: 'New Device Name',
           required: true,
         },
       ],
     },
     {
-      label: "Sync Device",
-      type: "POST",
+      label: 'Sync Device',
+      type: 'POST',
       icon: <Sync />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "syncDevice",
+        GUID: 'id',
+        Action: 'syncDevice',
       },
-      confirmText: "Are you sure you want to sync [deviceName]?",
+      confirmText: 'Are you sure you want to sync [deviceName]?',
     },
     {
-      label: "Reboot Device",
-      type: "POST",
+      label: 'Reboot Device',
+      type: 'POST',
       icon: <RestartAlt />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "rebootNow",
+        GUID: 'id',
+        Action: 'rebootNow',
       },
-      confirmText: "Are you sure you want to reboot [deviceName]?",
+      confirmText: 'Are you sure you want to reboot [deviceName]?',
     },
     {
-      label: "Locate Device",
-      type: "POST",
+      label: 'Locate Device',
+      type: 'POST',
       icon: <LocationOn />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "locateDevice",
+        GUID: 'id',
+        Action: 'locateDevice',
       },
-      confirmText: "Are you sure you want to locate [deviceName]?",
+      confirmText: 'Are you sure you want to locate [deviceName]?',
     },
     {
-      label: "Retrieve LAPS password",
-      type: "POST",
+      label: 'Retrieve LAPS password',
+      type: 'POST',
       icon: <Password />,
-      url: "/api/ExecGetLocalAdminPassword",
+      url: '/api/ExecGetLocalAdminPassword',
       data: {
-        GUID: "azureADDeviceId",
+        GUID: 'azureADDeviceId',
       },
-      condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to retrieve the local admin password for [deviceName]?",
+      condition: (row) => row.operatingSystem === 'Windows',
+      confirmText: 'Are you sure you want to retrieve the local admin password for [deviceName]?',
     },
     {
-      label: "Rotate Local Admin Password",
-      type: "POST",
+      label: 'Rotate Local Admin Password',
+      type: 'POST',
       icon: <PasswordOutlined />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "RotateLocalAdminPassword",
+        GUID: 'id',
+        Action: 'RotateLocalAdminPassword',
       },
-      condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to rotate the password for [deviceName]?",
+      condition: (row) => row.operatingSystem === 'Windows',
+      confirmText: 'Are you sure you want to rotate the password for [deviceName]?',
     },
     {
-      label: "Retrieve BitLocker Keys",
-      type: "POST",
+      label: 'Retrieve BitLocker Keys',
+      type: 'POST',
       icon: <Key />,
-      url: "/api/ExecGetRecoveryKey",
+      url: '/api/ExecGetRecoveryKey',
       data: {
-        GUID: "azureADDeviceId",
-        RecoveryKeyType: "!BitLocker",
+        GUID: 'azureADDeviceId',
+        RecoveryKeyType: '!BitLocker',
       },
-      condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to retrieve the BitLocker keys for [deviceName]?",
+      condition: (row) => row.operatingSystem === 'Windows',
+      confirmText: 'Are you sure you want to retrieve the BitLocker keys for [deviceName]?',
     },
     {
-      label: "Retrieve FileVault Key",
-      type: "POST",
+      label: 'Retrieve FileVault Key',
+      type: 'POST',
       icon: <Security />,
-      url: "/api/ExecGetRecoveryKey",
+      url: '/api/ExecGetRecoveryKey',
       data: {
-        GUID: "id",
-        RecoveryKeyType: "!FileVault",
+        GUID: 'id',
+        RecoveryKeyType: '!FileVault',
       },
-      condition: (row) => row.operatingSystem === "macOS",
-      confirmText: "Are you sure you want to retrieve the FileVault key for [deviceName]?",
+      condition: (row) => row.operatingSystem === 'macOS',
+      confirmText: 'Are you sure you want to retrieve the FileVault key for [deviceName]?',
     },
     {
-      label: "Reset Passcode",
-      type: "POST",
+      label: 'Reset Passcode',
+      type: 'POST',
       icon: <PasswordOutlined />,
-      url: "/api/ExecDevicePasscodeAction",
+      url: '/api/ExecDevicePasscodeAction',
       data: {
-        GUID: "id",
-        Action: "resetPasscode",
+        GUID: 'id',
+        Action: 'resetPasscode',
       },
-      condition: (row) => row.operatingSystem === "Android",
+      condition: (row) => row.operatingSystem === 'Android',
       confirmText:
-        "Are you sure you want to reset the passcode for [deviceName]? A new passcode will be generated and displayed.",
+        'Are you sure you want to reset the passcode for [deviceName]? A new passcode will be generated and displayed.',
     },
     {
-      label: "Remove Passcode",
-      type: "POST",
+      label: 'Remove Passcode',
+      type: 'POST',
       icon: <Password />,
-      url: "/api/ExecDevicePasscodeAction",
+      url: '/api/ExecDevicePasscodeAction',
       data: {
-        GUID: "id",
-        Action: "resetPasscode",
+        GUID: 'id',
+        Action: 'resetPasscode',
       },
-      condition: (row) => row.operatingSystem === "iOS",
+      condition: (row) => row.operatingSystem === 'iOS',
       confirmText:
-        "Are you sure you want to remove the passcode from [deviceName]? This will remove the device passcode requirement.",
+        'Are you sure you want to remove the passcode from [deviceName]? This will remove the device passcode requirement.',
     },
     {
-      label: "Windows Defender Full Scan",
-      type: "POST",
+      label: 'Windows Defender Full Scan',
+      type: 'POST',
       icon: <Security />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "WindowsDefenderScan",
+        GUID: 'id',
+        Action: 'WindowsDefenderScan',
         quickScan: false,
       },
-      confirmText: "Are you sure you want to perform a full scan on [deviceName]?",
+      confirmText: 'Are you sure you want to perform a full scan on [deviceName]?',
     },
     {
-      label: "Windows Defender Quick Scan",
-      type: "POST",
+      label: 'Windows Defender Quick Scan',
+      type: 'POST',
       icon: <FindInPage />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "WindowsDefenderScan",
+        GUID: 'id',
+        Action: 'WindowsDefenderScan',
         quickScan: true,
       },
-      confirmText: "Are you sure you want to perform a quick scan on [deviceName]?",
+      confirmText: 'Are you sure you want to perform a quick scan on [deviceName]?',
     },
     {
-      label: "Update Windows Defender",
-      type: "POST",
+      label: 'Update Windows Defender',
+      type: 'POST',
       icon: <Shield />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "windowsDefenderUpdateSignatures",
+        GUID: 'id',
+        Action: 'windowsDefenderUpdateSignatures',
       },
       confirmText:
-        "Are you sure you want to update the Windows Defender signatures for [deviceName]?",
+        'Are you sure you want to update the Windows Defender signatures for [deviceName]?',
     },
     {
-      label: "Generate logs and ship to MEM",
-      type: "POST",
+      label: 'Generate logs and ship to MEM',
+      type: 'POST',
       icon: <Archive />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "createDeviceLogCollectionRequest",
+        GUID: 'id',
+        Action: 'createDeviceLogCollectionRequest',
       },
-      condition: (row) => row.operatingSystem === "Windows",
+      condition: (row) => row.operatingSystem === 'Windows',
       confirmText:
-        "Are you sure you want to generate logs for device [deviceName] and ship these to MEM?",
+        'Are you sure you want to generate logs for device [deviceName] and ship these to MEM?',
     },
     {
-      label: "Fresh Start (Remove user data)",
-      type: "POST",
+      label: 'Fresh Start (Remove user data)',
+      type: 'POST',
       icon: <RestartAlt />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "cleanWindowsDevice",
+        GUID: 'id',
+        Action: 'cleanWindowsDevice',
         keepUserData: false,
       },
-      condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to Fresh Start [deviceName]?",
+      condition: (row) => row.operatingSystem === 'Windows',
+      confirmText: 'Are you sure you want to Fresh Start [deviceName]?',
     },
     {
-      label: "Fresh Start (Do not remove user data)",
-      type: "POST",
+      label: 'Fresh Start (Do not remove user data)',
+      type: 'POST',
       icon: <RestartAlt />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "cleanWindowsDevice",
+        GUID: 'id',
+        Action: 'cleanWindowsDevice',
         keepUserData: true,
       },
-      condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to Fresh Start [deviceName]?",
+      condition: (row) => row.operatingSystem === 'Windows',
+      confirmText: 'Are you sure you want to Fresh Start [deviceName]?',
     },
     {
-      label: "Wipe Device, keep enrollment data",
-      type: "POST",
+      label: 'Wipe Device, keep enrollment data',
+      type: 'POST',
       icon: <RestartAlt />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "cleanWindowsDevice",
+        GUID: 'id',
+        Action: 'cleanWindowsDevice',
         keepUserData: false,
         keepEnrollmentData: true,
       },
-      condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to wipe [deviceName], and retain enrollment data?",
+      condition: (row) => row.operatingSystem === 'Windows',
+      confirmText: 'Are you sure you want to wipe [deviceName], and retain enrollment data?',
     },
     {
-      label: "Wipe Device, remove enrollment data",
-      type: "POST",
+      label: 'Wipe Device, remove enrollment data',
+      type: 'POST',
       icon: <RestartAlt />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "cleanWindowsDevice",
+        GUID: 'id',
+        Action: 'cleanWindowsDevice',
         keepUserData: false,
         keepEnrollmentData: false,
       },
-      condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to wipe [deviceName], and remove enrollment data?",
+      condition: (row) => row.operatingSystem === 'Windows',
+      confirmText: 'Are you sure you want to wipe [deviceName], and remove enrollment data?',
     },
     {
-      label: "Wipe Device, keep enrollment data, and continue at powerloss",
-      type: "POST",
+      label: 'Wipe Device, keep enrollment data, and continue at powerloss',
+      type: 'POST',
       icon: <RestartAlt />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "cleanWindowsDevice",
+        GUID: 'id',
+        Action: 'cleanWindowsDevice',
         keepEnrollmentData: true,
         keepUserData: false,
         useProtectedWipe: true,
       },
-      condition: (row) => row.operatingSystem === "Windows",
+      condition: (row) => row.operatingSystem === 'Windows',
       confirmText:
-        "Are you sure you want to wipe [deviceName]? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
+        'Are you sure you want to wipe [deviceName]? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.',
     },
     {
-      label: "Wipe Device, remove enrollment data, and continue at powerloss",
-      type: "POST",
+      label: 'Wipe Device, remove enrollment data, and continue at powerloss',
+      type: 'POST',
       icon: <RestartAlt />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "cleanWindowsDevice",
+        GUID: 'id',
+        Action: 'cleanWindowsDevice',
         keepEnrollmentData: false,
         keepUserData: false,
         useProtectedWipe: true,
       },
-      condition: (row) => row.operatingSystem === "Windows",
+      condition: (row) => row.operatingSystem === 'Windows',
       confirmText:
-        "Are you sure you want to wipe [deviceName]? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
+        'Are you sure you want to wipe [deviceName]? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.',
     },
     {
-      label: "Autopilot Reset",
-      type: "POST",
+      label: 'Autopilot Reset',
+      type: 'POST',
       icon: <AutoMode />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "wipe",
-        keepUserData: "false",
-        keepEnrollmentData: "true",
+        GUID: 'id',
+        Action: 'wipe',
+        keepUserData: 'false',
+        keepEnrollmentData: 'true',
       },
-      condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to Autopilot Reset [deviceName]?",
+      condition: (row) => row.operatingSystem === 'Windows',
+      confirmText: 'Are you sure you want to Autopilot Reset [deviceName]?',
     },
     {
-      label: "Delete device",
-      type: "POST",
+      label: 'Delete device',
+      type: 'POST',
       icon: <Recycling />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "delete",
+        GUID: 'id',
+        Action: 'delete',
       },
-      confirmText: "Are you sure you want to delete [deviceName]?",
+      confirmText: 'Are you sure you want to delete [deviceName]?',
     },
     {
-      label: "Retire device",
-      type: "POST",
+      label: 'Retire device',
+      type: 'POST',
       icon: <Recycling />,
-      url: "/api/ExecDeviceAction",
+      url: '/api/ExecDeviceAction',
       data: {
-        GUID: "id",
-        Action: "retire",
+        GUID: 'id',
+        Action: 'retire',
       },
-      confirmText: "Are you sure you want to retire [deviceName]?",
+      confirmText: 'Are you sure you want to retire [deviceName]?',
     },
-  ];
+  ]
 
   const offCanvas = {
-    extendedInfoFields: ["deviceName", "userPrincipalName"],
+    extendedInfoFields: ['deviceName', 'userPrincipalName'],
     actions: actions,
-  };
+  }
 
   const simpleColumns = [
-    "deviceName",
-    "userPrincipalName",
-    "complianceState",
-    "manufacturer",
-    "model",
-    "operatingSystem",
-    "osVersion",
-    "enrolledDateTime",
-    "managedDeviceOwnerType",
-    "deviceEnrollmentType",
-    "joinType",
-  ];
+    'deviceName',
+    'userPrincipalName',
+    'complianceState',
+    'manufacturer',
+    'model',
+    'operatingSystem',
+    'osVersion',
+    'enrolledDateTime',
+    'managedDeviceOwnerType',
+    'deviceEnrollmentType',
+    'joinType',
+  ]
 
   return (
     <>
@@ -404,7 +404,7 @@ const Page = () => {
         title={pageTitle}
         apiUrl="/api/ListGraphRequest"
         apiData={{
-          Endpoint: "deviceManagement/managedDevices",
+          Endpoint: 'deviceManagement/managedDevices',
         }}
         apiDataKey="Results"
         actions={actions}
@@ -412,7 +412,7 @@ const Page = () => {
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         cardButton={
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
             <Button onClick={depSyncDialog.handleOpen} startIcon={<Sync />}>
               Sync DEP
             </Button>
@@ -423,16 +423,16 @@ const Page = () => {
         title="Sync DEP Tokens"
         createDialog={depSyncDialog}
         api={{
-          type: "POST",
-          url: "/api/ExecSyncDEP",
+          type: 'POST',
+          url: '/api/ExecSyncDEP',
           data: {},
           confirmText: `Are you sure you want to sync Apple Device Enrollment Program (DEP) tokens? This will sync all DEP tokens for ${tenantFilter}. This may take several minutes to complete in the background, and can only be done every 15 minutes.`,
         }}
       />
     </>
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 
-export default Page;
+export default Page

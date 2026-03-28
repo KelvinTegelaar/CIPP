@@ -1,66 +1,66 @@
-import { Button } from "@mui/material";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import Link from "next/link";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { Edit, Add, Book } from "@mui/icons-material";
-import { Stack } from "@mui/system";
-import { useSettings } from "../../../../hooks/use-settings";
+import { Button } from '@mui/material'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import Link from 'next/link'
+import { TrashIcon } from '@heroicons/react/24/outline'
+import { Edit, Add, Book } from '@mui/icons-material'
+import { Stack } from '@mui/system'
+import { useSettings } from '../../../../hooks/use-settings'
 
 const Page = () => {
-  const pageTitle = "Assignment Filters";
-  const { currentTenant } = useSettings();
+  const pageTitle = 'Assignment Filters'
+  const { currentTenant } = useSettings()
 
   const actions = [
     {
-      label: "Create template based on filter",
-      type: "POST",
-      url: "/api/AddAssignmentFilterTemplate",
+      label: 'Create template based on filter',
+      type: 'POST',
+      url: '/api/AddAssignmentFilterTemplate',
       icon: <Book />,
       data: {
-        displayName: "displayName",
-        description: "description",
-        platform: "platform",
-        rule: "rule",
-        assignmentFilterManagementType: "assignmentFilterManagementType",
+        displayName: 'displayName',
+        description: 'description',
+        platform: 'platform',
+        rule: 'rule',
+        assignmentFilterManagementType: 'assignmentFilterManagementType',
       },
-      confirmText: "Are you sure you want to create a template based on this filter?",
+      confirmText: 'Are you sure you want to create a template based on this filter?',
       multiPost: false,
     },
     {
-      label: "Edit Filter",
-      link: "/endpoint/MEM/assignment-filters/edit?filterId=[id]",
+      label: 'Edit Filter',
+      link: '/endpoint/MEM/assignment-filters/edit?filterId=[id]',
       multiPost: false,
       icon: <Edit />,
-      color: "success",
+      color: 'success',
     },
     {
-      label: "Delete Filter",
-      type: "POST",
-      url: "/api/ExecAssignmentFilter",
+      label: 'Delete Filter',
+      type: 'POST',
+      url: '/api/ExecAssignmentFilter',
       icon: <TrashIcon />,
       data: {
-        ID: "id",
-        Action: "Delete",
+        ID: 'id',
+        Action: 'Delete',
       },
-      confirmText: "Are you sure you want to delete this assignment filter?",
+      confirmText: 'Are you sure you want to delete this assignment filter?',
       multiPost: false,
     },
-  ];
+  ]
 
   const offCanvas = {
     extendedInfoFields: [
-      "displayName",
-      "description",
-      "id",
-      "platform",
-      "rule",
-      "assignmentFilterManagementType",
-      "createdDateTime",
-      "lastModifiedDateTime",
+      'displayName',
+      'description',
+      'id',
+      'platform',
+      'rule',
+      'assignmentFilterManagementType',
+      'createdDateTime',
+      'lastModifiedDateTime',
     ],
     actions: actions,
-  };
+  }
 
   return (
     <CippTablePage
@@ -73,20 +73,22 @@ const Page = () => {
         </Stack>
       }
       apiUrl="/api/ListAssignmentFilters"
+      apiDataKey="Results"
       queryKey={`assignment-filters-${currentTenant}`}
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
-        "displayName",
-        "description",
-        "platform",
-        "assignmentFilterManagementType",
-        "rule",
+        'Tenant',
+        'displayName',
+        'description',
+        'platform',
+        'assignmentFilterManagementType',
+        'rule',
       ]}
     />
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 
-export default Page;
+export default Page

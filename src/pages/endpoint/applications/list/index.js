@@ -1,314 +1,317 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
-import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
-import { LaptopMac, Sync, BookmarkAdd } from "@mui/icons-material";
-import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
-import { Button, Box } from "@mui/material";
-import { useSettings } from "../../../../hooks/use-settings.js";
-import { useDialog } from "../../../../hooks/use-dialog.js";
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog.jsx'
+import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from '@heroicons/react/24/outline'
+import { LaptopMac, Sync, BookmarkAdd } from '@mui/icons-material'
+import { CippApplicationDeployDrawer } from '../../../../components/CippComponents/CippApplicationDeployDrawer'
+import { Button, Box } from '@mui/material'
+import { useSettings } from '../../../../hooks/use-settings.js'
+import { useDialog } from '../../../../hooks/use-dialog.js'
 
 const assignmentIntentOptions = [
-  { label: "Required", value: "Required" },
-  { label: "Available", value: "Available" },
-  { label: "Available without enrollment", value: "AvailableWithoutEnrollment" },
-  { label: "Uninstall", value: "Uninstall" },
-];
+  { label: 'Required', value: 'Required' },
+  { label: 'Available', value: 'Available' },
+  { label: 'Available without enrollment', value: 'AvailableWithoutEnrollment' },
+  { label: 'Uninstall', value: 'Uninstall' },
+]
 
 const assignmentModeOptions = [
-  { label: "Replace existing assignments", value: "replace" },
-  { label: "Append to existing assignments", value: "append" },
-];
+  { label: 'Replace existing assignments', value: 'replace' },
+  { label: 'Append to existing assignments', value: 'append' },
+]
 
 const assignmentFilterTypeOptions = [
-  { label: "Include - Apply to devices matching filter", value: "include" },
-  { label: "Exclude - Apply to devices NOT matching filter", value: "exclude" },
-];
+  { label: 'Include - Apply to devices matching filter', value: 'include' },
+  { label: 'Exclude - Apply to devices NOT matching filter', value: 'exclude' },
+]
 
 const getAppAssignmentSettingsType = (odataType) => {
-  if (!odataType || typeof odataType !== "string") {
-    return undefined;
+  if (!odataType || typeof odataType !== 'string') {
+    return undefined
   }
 
-  return odataType.replace("#microsoft.graph.", "").replace(/App$/i, "");
-};
+  return odataType.replace('#microsoft.graph.', '').replace(/App$/i, '')
+}
 
 const mapOdataToAppType = (odataType) => {
-  if (!odataType) return "win32ScriptApp";
-  const type = odataType.toLowerCase();
-  if (type.includes("wingetapp")) return "StoreApp";
-  if (type.includes("win32lobapp")) return "chocolateyApp";
-  if (type.includes("officesuiteapp")) return "officeApp";
-  return "win32ScriptApp";
-};
+  if (!odataType) return 'win32ScriptApp'
+  const type = odataType.toLowerCase()
+  if (type.includes('wingetapp')) return 'StoreApp'
+  if (type.includes('win32lobapp')) return 'chocolateyApp'
+  if (type.includes('officesuiteapp')) return 'officeApp'
+  return 'win32ScriptApp'
+}
 
 const Page = () => {
-  const pageTitle = "Applications";
-  const syncDialog = useDialog();
-  const tenant = useSettings().currentTenant;
+  const pageTitle = 'Applications'
+  const syncDialog = useDialog()
+  const tenant = useSettings().currentTenant
 
   const getAssignmentFilterFields = () => [
     {
-      type: "autoComplete",
-      name: "assignmentFilter",
-      label: "Assignment Filter (Optional)",
+      type: 'autoComplete',
+      name: 'assignmentFilter',
+      label: 'Assignment Filter (Optional)',
       multiple: false,
       creatable: false,
       api: {
-        url: "/api/ListAssignmentFilters",
+        url: '/api/ListAssignmentFilters',
+        dataKey: 'Results',
         queryKey: `ListAssignmentFilters-${tenant}`,
         labelField: (filter) => filter.displayName,
-        valueField: "displayName",
+        valueField: 'displayName',
       },
     },
     {
-      type: "radio",
-      name: "assignmentFilterType",
-      label: "Assignment Filter Mode",
+      type: 'radio',
+      name: 'assignmentFilterType',
+      label: 'Assignment Filter Mode',
       options: assignmentFilterTypeOptions,
-      defaultValue: "include",
-      helperText: "Choose whether to include or exclude devices matching the filter.",
+      defaultValue: 'include',
+      helperText: 'Choose whether to include or exclude devices matching the filter.',
     },
-  ];
+  ]
 
   // Builds a customDataformatter that handles both single-row and bulk (array) inputs.
   const makeAssignFormatter = (getRowData) => (row, action, formData) => {
     const formatRow = (singleRow) => {
       const tenantFilterValue =
-        tenant === "AllTenants" && singleRow?.Tenant ? singleRow.Tenant : tenant;
+        tenant === 'AllTenants' && singleRow?.Tenant ? singleRow.Tenant : tenant
       return {
         tenantFilter: tenantFilterValue,
         ID: singleRow?.id,
-        AppType: getAppAssignmentSettingsType(singleRow?.["@odata.type"]),
+        AppType: getAppAssignmentSettingsType(singleRow?.['@odata.type']),
         AssignmentFilterName: formData?.assignmentFilter?.value || null,
         AssignmentFilterType: formData?.assignmentFilter?.value
-          ? formData?.assignmentFilterType || "include"
+          ? formData?.assignmentFilterType || 'include'
           : null,
         ...getRowData(singleRow, formData),
-      };
-    };
-    return Array.isArray(row) ? row.map(formatRow) : formatRow(row);
-  };
+      }
+    }
+    return Array.isArray(row) ? row.map(formatRow) : formatRow(row)
+  }
 
   const assignmentFields = [
     {
-      type: "radio",
-      name: "Intent",
-      label: "Assignment intent",
+      type: 'radio',
+      name: 'Intent',
+      label: 'Assignment intent',
       options: assignmentIntentOptions,
-      defaultValue: "Required",
-      validators: { required: "Select an assignment intent" },
+      defaultValue: 'Required',
+      validators: { required: 'Select an assignment intent' },
       helperText:
-        "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
+        'Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.',
     },
     {
-      type: "radio",
-      name: "assignmentMode",
-      label: "Assignment mode",
+      type: 'radio',
+      name: 'assignmentMode',
+      label: 'Assignment mode',
       options: assignmentModeOptions,
-      defaultValue: "replace",
+      defaultValue: 'replace',
       helperText:
-        "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
+        'Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.',
     },
     ...getAssignmentFilterFields(),
-  ];
+  ]
 
   const actions = [
     {
-      label: "Assign to All Users",
-      type: "POST",
-      url: "/api/ExecAssignApp",
+      label: 'Assign to All Users',
+      type: 'POST',
+      url: '/api/ExecAssignApp',
       fields: assignmentFields,
       customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
-        AssignTo: "AllUsers",
-        Intent: formData?.Intent || "Required",
-        assignmentMode: formData?.assignmentMode || "replace",
+        AssignTo: 'AllUsers',
+        Intent: formData?.Intent || 'Required',
+        assignmentMode: formData?.assignmentMode || 'replace',
       })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       icon: <UserIcon />,
-      color: "info",
+      color: 'info',
     },
     {
-      label: "Assign to All Devices",
-      type: "POST",
-      url: "/api/ExecAssignApp",
+      label: 'Assign to All Devices',
+      type: 'POST',
+      url: '/api/ExecAssignApp',
       fields: assignmentFields,
       customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
-        AssignTo: "AllDevices",
-        Intent: formData?.Intent || "Required",
-        assignmentMode: formData?.assignmentMode || "replace",
+        AssignTo: 'AllDevices',
+        Intent: formData?.Intent || 'Required',
+        assignmentMode: formData?.assignmentMode || 'replace',
       })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       icon: <LaptopMac />,
-      color: "info",
+      color: 'info',
     },
     {
-      label: "Assign Globally (All Users / All Devices)",
-      type: "POST",
-      url: "/api/ExecAssignApp",
+      label: 'Assign Globally (All Users / All Devices)',
+      type: 'POST',
+      url: '/api/ExecAssignApp',
       fields: assignmentFields,
       customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
-        AssignTo: "AllDevicesAndUsers",
-        Intent: formData?.Intent || "Required",
-        assignmentMode: formData?.assignmentMode || "replace",
+        AssignTo: 'AllDevicesAndUsers',
+        Intent: formData?.Intent || 'Required',
+        assignmentMode: formData?.assignmentMode || 'replace',
       })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
       icon: <GlobeAltIcon />,
-      color: "info",
+      color: 'info',
     },
     {
-      label: "Assign to Custom Group",
-      type: "POST",
-      url: "/api/ExecAssignApp",
+      label: 'Assign to Custom Group',
+      type: 'POST',
+      url: '/api/ExecAssignApp',
       icon: <UserGroupIcon />,
-      color: "info",
+      color: 'info',
       confirmText: 'Select the target groups and intent for "[displayName]".',
       fields: [
         {
-          type: "autoComplete",
-          name: "groupTargets",
-          label: "Group(s)",
+          type: 'autoComplete',
+          name: 'groupTargets',
+          label: 'Group(s)',
           multiple: true,
           creatable: false,
           allowResubmit: true,
-          validators: { required: "Please select at least one group" },
+          validators: { required: 'Please select at least one group' },
           api: {
-            url: "/api/ListGraphRequest",
-            dataKey: "Results",
+            url: '/api/ListGraphRequest',
+            dataKey: 'Results',
             queryKey: `ListAppAssignmentGroups-${tenant}`,
             labelField: (group) =>
               group.id ? `${group.displayName} (${group.id})` : group.displayName,
-            valueField: "id",
+            valueField: 'id',
             addedField: {
-              description: "description",
+              description: 'description',
             },
             data: {
-              Endpoint: "groups",
+              Endpoint: 'groups',
               manualPagination: true,
-              $select: "id,displayName,description",
-              $orderby: "displayName",
+              $select: 'id,displayName,description',
+              $orderby: 'displayName',
               $top: 999,
               $count: true,
             },
           },
         },
         {
-          type: "radio",
-          name: "assignmentIntent",
-          label: "Assignment intent",
+          type: 'radio',
+          name: 'assignmentIntent',
+          label: 'Assignment intent',
           options: assignmentIntentOptions,
-          defaultValue: "Required",
-          validators: { required: "Select an assignment intent" },
+          defaultValue: 'Required',
+          validators: { required: 'Select an assignment intent' },
           helperText:
-            "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
+            'Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.',
         },
         {
-          type: "radio",
-          name: "assignmentMode",
-          label: "Assignment mode",
+          type: 'radio',
+          name: 'assignmentMode',
+          label: 'Assignment mode',
           options: assignmentModeOptions,
-          defaultValue: "replace",
+          defaultValue: 'replace',
           helperText:
-            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
+            'Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.',
         },
         ...getAssignmentFilterFields(),
       ],
       customDataformatter: makeAssignFormatter((_singleRow, formData) => {
-        const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : [];
+        const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : []
         return {
           GroupIds: selectedGroups.map((group) => group.value).filter(Boolean),
           GroupNames: selectedGroups.map((group) => group.label).filter(Boolean),
-          Intent: formData?.assignmentIntent || "Required",
-          AssignmentMode: formData?.assignmentMode || "replace",
-        };
+          Intent: formData?.assignmentIntent || 'Required',
+          AssignmentMode: formData?.assignmentMode || 'replace',
+        }
       }),
     },
     {
-      label: "Save as Template",
-      type: "POST",
-      url: "/api/AddAppTemplate",
+      label: 'Save as Template',
+      type: 'POST',
+      url: '/api/AddAppTemplate',
       icon: <BookmarkAdd />,
-      color: "info",
+      color: 'info',
       fields: [
         {
-          type: "textField",
-          name: "displayName",
-          label: "Template Name",
-          validators: { required: "Template name is required" },
+          type: 'textField',
+          name: 'displayName',
+          label: 'Template Name',
+          validators: { required: 'Template name is required' },
         },
         {
-          type: "textField",
-          name: "description",
-          label: "Description",
+          type: 'textField',
+          name: 'description',
+          label: 'Description',
         },
       ],
       customDataformatter: (row, action, formData) => {
-        const rows = Array.isArray(row) ? row : [row];
+        const rows = Array.isArray(row) ? row : [row]
         return {
           displayName: formData?.displayName,
-          description: formData?.description || "",
+          description: formData?.description || '',
           apps: rows.map((r) => ({
-            appType: mapOdataToAppType(r["@odata.type"]),
+            appType: mapOdataToAppType(r['@odata.type']),
             appName: r.displayName,
             config: JSON.stringify({
               ApplicationName: r.displayName,
               IntuneBody: r,
-              assignTo: "On",
+              assignTo: 'On',
             }),
           })),
-        };
+        }
       },
       confirmText: 'Save selected application(s) as a reusable template?',
     },
     {
-      label: "Delete Application",
-      type: "POST",
-      url: "/api/RemoveApp",
+      label: 'Delete Application',
+      type: 'POST',
+      url: '/api/RemoveApp',
       data: {
-        ID: "id",
+        ID: 'id',
       },
       confirmText: 'Are you sure you want to delete "[displayName]"?',
       icon: <TrashIcon />,
-      color: "danger",
+      color: 'danger',
     },
-  ];
+  ]
 
   const offCanvas = {
     extendedInfoFields: [
-      "installExperience.runAsAccount",
-      "installExperience.deviceRestartBehavior",
-      "isAssigned",
-      "createdDateTime",
-      "lastModifiedDateTime",
-      "isFeatured",
-      "publishingState",
-      "dependentAppCount",
-      "rules.0.ruleType",
-      "rules.0.fileOrFolderName",
-      "rules.0.path",
+      'installExperience.runAsAccount',
+      'installExperience.deviceRestartBehavior',
+      'isAssigned',
+      'createdDateTime',
+      'lastModifiedDateTime',
+      'isFeatured',
+      'publishingState',
+      'dependentAppCount',
+      'rules.0.ruleType',
+      'rules.0.fileOrFolderName',
+      'rules.0.path',
     ],
     actions: actions,
-  };
+  }
 
   const simpleColumns = [
-    "displayName",
-    "AppAssignment",
-    "AppExclude",
-    "publishingState",
-    "lastModifiedDateTime",
-    "createdDateTime",
-  ];
+    'Tenant',
+    'displayName',
+    'AppAssignment',
+    'AppExclude',
+    'publishingState',
+    'lastModifiedDateTime',
+    'createdDateTime',
+  ]
 
   return (
     <>
       <CippTablePage
         title={pageTitle}
         apiUrl="/api/ListApps"
+        apiDataKey="Results"
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         cardButton={
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
             <CippApplicationDeployDrawer />
             <Button onClick={syncDialog.handleOpen} startIcon={<Sync />}>
               Sync VPP
@@ -320,15 +323,15 @@ const Page = () => {
         title="Sync VPP Tokens"
         createDialog={syncDialog}
         api={{
-          type: "POST",
-          url: "/api/ExecSyncVPP",
+          type: 'POST',
+          url: '/api/ExecSyncVPP',
           data: {},
           confirmText: `Are you sure you want to sync Apple Volume Purchase Program (VPP) tokens? This will sync all VPP tokens for ${tenant}.`,
         }}
       />
     </>
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-export default Page;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
+export default Page
