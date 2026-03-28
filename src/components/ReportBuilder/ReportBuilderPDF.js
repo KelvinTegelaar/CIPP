@@ -39,7 +39,6 @@ const createStyles = (brandColor) =>
       letterSpacing: 1,
       paddingHorizontal: 16,
       paddingVertical: 8,
-      borderRadius: 20,
       marginBottom: 30,
       alignSelf: 'flex-start',
     },
@@ -105,14 +104,16 @@ const createStyles = (brandColor) =>
       padding: 40,
     },
     pageHeader: {
-      borderBottom: `1px solid ${brandColor}`,
       paddingBottom: 12,
-      marginBottom: 24,
+      marginBottom: 0,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'flex-start',
-      pageBreakAfter: 'avoid',
-      breakAfter: 'avoid',
+    },
+    pageHeaderDivider: {
+      height: 1,
+      backgroundColor: brandColor,
+      marginBottom: 24,
     },
     pageHeaderContent: { flex: 1 },
     pageTitle: {
@@ -127,8 +128,6 @@ const createStyles = (brandColor) =>
     /* ── Sections ──────────────────────────────────────── */
     section: {
       marginBottom: 24,
-      pageBreakInside: 'avoid',
-      breakInside: 'avoid',
     },
     sectionTitle: {
       fontSize: 14,
@@ -158,11 +157,8 @@ const createStyles = (brandColor) =>
 
     /* ── Tables ────────────────────────────────────────── */
     controlsTable: {
-      border: '1px solid #E2E8F0',
-      borderRadius: 6,
-      overflow: 'hidden',
-      pageBreakInside: 'avoid',
-      breakInside: 'avoid',
+      backgroundColor: '#FAFAFA',
+      marginBottom: 8,
     },
     tableHeader: {
       flexDirection: 'row',
@@ -180,16 +176,13 @@ const createStyles = (brandColor) =>
     },
     tableRow: {
       flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: '#F7FAFC',
       paddingVertical: 8,
       paddingHorizontal: 12,
       alignItems: 'center',
+      backgroundColor: '#FFFFFF',
     },
     tableRowAlt: {
       flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: '#F7FAFC',
       paddingVertical: 8,
       paddingHorizontal: 12,
       alignItems: 'center',
@@ -210,16 +203,10 @@ const createStyles = (brandColor) =>
 
     /* ── Info boxes ─────────────────────────────────────── */
     infoBox: {
-      backgroundColor: '#FFFFFF',
-      border: '1px solid #E2E8F0',
-      borderLeft: `4px solid ${brandColor}`,
-      borderRadius: 4,
-      padding: 12,
+      backgroundColor: '#F7FAFC',
+      paddingVertical: 12,
+      paddingHorizontal: 16,
       marginBottom: 12,
-      pageBreakInside: 'avoid',
-      breakInside: 'avoid',
-      orphans: 3,
-      widows: 3,
     },
     infoTitle: {
       fontSize: 9,
@@ -286,8 +273,6 @@ const createStyles = (brandColor) =>
       backgroundColor: '#F7FAFC',
       padding: 8,
       marginVertical: 6,
-      borderRadius: 4,
-      border: '1px solid #E2E8F0',
       fontSize: 8,
       fontFamily: 'Courier',
       color: '#2D3748',
@@ -298,18 +283,6 @@ const createStyles = (brandColor) =>
       marginVertical: 8,
     },
 
-    /* ── Footer ────────────────────────────────────────── */
-    footer: {
-      position: 'absolute',
-      bottom: 20,
-      left: 40,
-      right: 40,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      borderTop: '1px solid #E2E8F0',
-      paddingTop: 8,
-    },
     footerText: { fontSize: 7, color: '#718096' },
     pageNumber: { fontSize: 7, color: '#718096', fontWeight: 'bold' },
   })
@@ -604,32 +577,31 @@ export const ReportBuilderDocument = ({
         </View>
       </Page>
 
-      {/* ── Content Pages ── */}
-      <Page size="A4" style={s.page} wrap>
-        {/* Repeating header */}
-        <View style={s.pageHeader} fixed>
-          <View style={s.pageHeaderContent}>
-            <Text style={s.pageTitle}>{reportName}</Text>
-            <Text style={s.pageSubtitle}>{currentDate}</Text>
-          </View>
-          {logo && <Image style={s.headerLogo} src={logo} cache={false} />}
-        </View>
+      {/* ── Content Pages — one Page per block, matching Executive Report pattern ── */}
+      {safeBlocks.map((block, index) => {
+        const statusStyle =
+          block.status === 'Passed'
+            ? s.statusPassed
+            : block.status === 'Failed'
+              ? s.statusFailed
+              : block.status === 'Investigate'
+                ? s.statusInvestigate
+                : block.status === 'Skipped'
+                  ? s.statusSkipped
+                  : null
 
-        {/* Sections — each block flows naturally as a section, not a card */}
-        {safeBlocks.map((block, index) => {
-          const statusStyle =
-            block.status === 'Passed'
-              ? s.statusPassed
-              : block.status === 'Failed'
-                ? s.statusFailed
-                : block.status === 'Investigate'
-                  ? s.statusInvestigate
-                  : block.status === 'Skipped'
-                    ? s.statusSkipped
-                    : null
+        return (
+          <Page key={index} size="A4" style={s.page}>
+            <View style={s.pageHeader}>
+              <View style={s.pageHeaderContent}>
+                <Text style={s.pageTitle}>{reportName}</Text>
+                <Text style={s.pageSubtitle}>{currentDate}</Text>
+              </View>
+              {logo && <Image style={s.headerLogo} src={logo} cache={false} />}
+            </View>
+            <View style={s.pageHeaderDivider} />
 
-          return (
-            <View key={index} style={s.section} wrap={false}>
+            <View style={s.section}>
               {block.title ? <Text style={s.sectionTitle}>{block.title}</Text> : null}
               {block.type === 'test' && block.status ? (
                 <Text style={{ ...s.statusText, ...statusStyle }}>Status: {block.status}</Text>
@@ -638,18 +610,9 @@ export const ReportBuilderDocument = ({
                 ? htmlToElements(block.content, s)
                 : markdownToElements(block.content, s)}
             </View>
-          )
-        })}
-
-        {/* Repeating footer */}
-        <View style={s.footer} fixed>
-          <Text style={s.footerText}>{reportName}</Text>
-          <Text
-            style={s.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
+          </Page>
+        )
+      })}
     </Document>
   )
 }

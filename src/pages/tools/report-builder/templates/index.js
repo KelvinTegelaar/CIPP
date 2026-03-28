@@ -405,12 +405,13 @@ const Page = () => {
       ])
       addBlockForm.reset({ blockType: null, selectedTest: null })
     } else if (type.value === 'test') {
-      const test = addBlockForm.getValues('selectedTest')
-      if (!test) return
+      const tests = addBlockForm.getValues('selectedTest')
+      const testArray = Array.isArray(tests) ? tests : tests ? [tests] : []
+      if (testArray.length === 0) return
       setBlocks((prev) => [
         ...prev,
-        {
-          id: `block-${Date.now()}`,
+        ...testArray.map((test, i) => ({
+          id: `block-${Date.now()}-${i}`,
           type: 'test',
           testId: test.value,
           testCategory: test.category,
@@ -418,7 +419,7 @@ const Page = () => {
           content: getTestContent(test.value),
           status: getTestStatus(test.value),
           static: false,
-        },
+        })),
       ])
       addBlockForm.reset({ blockType: null, selectedTest: null })
     }
@@ -577,7 +578,10 @@ const Page = () => {
     actions: tableActions,
   }
 
-  const addDisabled = !watchBlockType || (watchBlockType?.value === 'test' && !watchSelectedTest)
+  const addDisabled =
+    !watchBlockType ||
+    (watchBlockType?.value === 'test' &&
+      (!watchSelectedTest || (Array.isArray(watchSelectedTest) && watchSelectedTest.length === 0)))
 
   /* ── Template list view ── */
   if (!builderOpen) {
@@ -689,9 +693,9 @@ const Page = () => {
                     <CippFormComponent
                       type="autoComplete"
                       name="selectedTest"
-                      label="Select Test"
+                      label="Select Tests"
                       formControl={addBlockForm}
-                      multiple={false}
+                      multiple={true}
                       options={allTestOptions}
                       isFetching={availableTestsApi.isFetching}
                     />
