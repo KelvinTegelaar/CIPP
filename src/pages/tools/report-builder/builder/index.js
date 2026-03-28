@@ -834,7 +834,11 @@ const Page = () => {
                   size="small"
                   variant="outlined"
                   startIcon={<Schedule />}
-                  onClick={() => setScheduleOpen(true)}
+                  onClick={() => {
+                    const tplName = saveForm.getValues('templateName') || 'Report'
+                    scheduleForm.setValue('scheduleName', `Scheduled ${tplName} - ${currentTenant}`)
+                    setScheduleOpen(true)
+                  }}
                   disabled={blocks.length === 0 || !currentTenant}
                 >
                   Schedule
