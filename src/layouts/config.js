@@ -827,18 +827,6 @@ export const nativeMenuItems = [
     ],
     items: [
       {
-        title: 'Intune Tools',
-        permissions: ['Endpoint.MEM.*'],
-        items: [
-          {
-            title: 'Compare Policies',
-            path: '/endpoint/MEM/compare-policies',
-            permissions: ['Endpoint.MEM.*'],
-            scope: 'global',
-          },
-        ],
-      },
-      {
         title: 'Tenant Tools',
         permissions: ['Tenant.Administration.*'],
         items: [
@@ -848,27 +836,26 @@ export const nativeMenuItems = [
             permissions: ['Tenant.Administration.*'],
           },
           {
-            title: 'Application Approval',
-            path: '/tenant/tools/appapproval',
-            permissions: ['Tenant.Application.*'],
-          },
-          {
             title: 'Tenant Lookup',
             path: '/tenant/tools/tenantlookup',
             permissions: ['Tenant.Administration.*'],
             scope: 'global',
           },
           {
-            title: 'IP Database',
-            path: '/tenant/tools/geoiplookup',
-            permissions: ['CIPP.Core.*'],
-            scope: 'global',
+            title: 'Application Approval',
+            path: '/tenant/tools/appapproval',
+            permissions: ['Tenant.Application.*'],
           },
-
           {
             title: 'Individual Domain Check',
             path: '/tenant/tools/individual-domains',
             permissions: ['Tenant.DomainAnalyser.*'],
+            scope: 'global',
+          },
+          {
+            title: 'IP Database',
+            path: '/tenant/tools/geoiplookup',
+            permissions: ['CIPP.Core.*'],
             scope: 'global',
           },
         ],
@@ -883,14 +870,26 @@ export const nativeMenuItems = [
             permissions: ['Exchange.Mailbox.*'],
           },
           {
+            title: 'Message Viewer',
+            path: '/email/tools/message-viewer',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
             title: 'Mailbox Restores',
             path: '/email/tools/mailbox-restores',
             permissions: ['Exchange.Mailbox.*'],
           },
+        ],
+      },
+      {
+        title: 'Intune Tools',
+        permissions: ['Endpoint.MEM.*'],
+        items: [
           {
-            title: 'Message Viewer',
-            path: '/email/tools/message-viewer',
-            permissions: ['Exchange.Mailbox.*'],
+            title: 'Compare Policies',
+            path: '/endpoint/MEM/compare-policies',
+            permissions: ['Endpoint.MEM.*'],
+            scope: 'global',
           },
         ],
       },
@@ -913,6 +912,13 @@ export const nativeMenuItems = [
         ],
       },
       {
+        title: 'Report Builder',
+        path: '/tools/report-builder/generated',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+        scope: 'global',
+      },
+      {
         title: 'Template Library',
         path: '/tools/templatelib',
         roles: ['editor', 'admin', 'superadmin'],
@@ -931,13 +937,6 @@ export const nativeMenuItems = [
         path: '/cipp/scheduler',
         roles: ['editor', 'admin', 'superadmin'],
         permissions: ['CIPP.Scheduler.*'],
-      },
-      {
-        title: 'Report Builder',
-        path: '/tools/report-builder/generated',
-        roles: ['admin', 'superadmin'],
-        permissions: ['CIPP.Core.*'],
-        scope: 'global',
       },
     ],
   },
