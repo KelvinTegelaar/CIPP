@@ -495,8 +495,9 @@ const Page = () => {
       const maybeStripRemediation = (text) => {
         if (!text) return text
         if (!removeRemediation) return text
-        // Match all variants: **Remediation action**, **Remediation Action:**, **Remediation actions**, **Remediation Resources**
-        return text.split(/\*\*Remediation\s+(?:action|actions|resources)\*\*:?/i)[0].trim()
+        // Match all variants: **Remediation action**, **Remediation Action:**, **Remediation Action:**,
+        // **Remediation actions**, **Remediation Resources**, with colon inside or outside bold
+        return text.split(/\*\*Remediation\s+(?:action|actions|resources):?\*\*:?/i)[0].trim()
       }
 
       if (result.Description) {
