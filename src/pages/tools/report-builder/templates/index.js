@@ -623,9 +623,7 @@ const Page = () => {
                 <Typography variant="h4">
                   {saveForm.watch('templateName') || 'New Report'}
                 </Typography>
-                {currentTenant && (
-                  <Chip label={currentTenant} size="small" variant="outlined" />
-                )}
+                {currentTenant && <Chip label={currentTenant} size="small" variant="outlined" />}
               </Stack>
               <Stack direction="row" spacing={1}>
                 <Button
