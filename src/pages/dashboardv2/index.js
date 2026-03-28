@@ -1,4 +1,5 @@
-import { Box, Container, Button, Tooltip } from '@mui/material'
+import { Box, Container, Button } from '@mui/material'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Grid } from '@mui/system'
@@ -176,24 +177,21 @@ const Page = () => {
                 disabled={!currentTenantInfo.isSuccess || portalMenuItems.length === 0}
               />
               <ExecutiveReportButton disabled={organization.isFetching} />
-              <Tooltip title="Coming soon!" arrow>
-                <span>
-                  <Button
-                    variant="contained"
-                    startIcon={<AssessmentIcon />}
-                    disabled
-                    sx={{
-                      fontWeight: 'bold',
-                      textTransform: 'none',
-                      borderRadius: 2,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      transition: 'all 0.2s ease-in-out',
-                    }}
-                  >
-                    Report Builder
-                  </Button>
-                </span>
-              </Tooltip>
+              <Button
+                component={Link}
+                href="/tools/report-builder"
+                variant="contained"
+                startIcon={<AssessmentIcon />}
+                sx={{
+                  fontWeight: 'bold',
+                  textTransform: 'none',
+                  borderRadius: 2,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                  transition: 'all 0.2s ease-in-out',
+                }}
+              >
+                Report Builder
+              </Button>
             </Box>
           </Grid>
           <Grid size={{ xs: 12, md: 7 }}>
