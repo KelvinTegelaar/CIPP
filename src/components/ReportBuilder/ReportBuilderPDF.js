@@ -591,12 +591,14 @@ export const ReportBuilderDocument = ({
   tenantName,
   templateName,
   brandingSettings,
+  generatedDate,
 }) => {
   const brandColor = brandingSettings?.colour || '#F77F00'
   const logo = brandingSettings?.logo || null
   const s = createStyles(brandColor)
 
-  const currentDate = new Date().toLocaleDateString('en-US', {
+  const dateObj = generatedDate ? new Date(generatedDate) : new Date()
+  const currentDate = dateObj.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -698,6 +700,7 @@ export const ReportBuilderPDF = ({
   tenantName,
   templateName,
   brandingSettings,
+  generatedDate,
   mode = 'preview',
 }) => {
   const document = useMemo(
@@ -707,9 +710,10 @@ export const ReportBuilderPDF = ({
         tenantName={tenantName}
         templateName={templateName}
         brandingSettings={brandingSettings}
+        generatedDate={generatedDate}
       />
     ),
-    [blocks, tenantName, templateName, brandingSettings]
+    [blocks, tenantName, templateName, brandingSettings, generatedDate]
   )
 
   if (mode === 'preview') {

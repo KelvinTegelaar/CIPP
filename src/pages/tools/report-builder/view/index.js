@@ -59,6 +59,7 @@ const Page = () => {
           tenantName={tenantName}
           templateName={reportName}
           brandingSettings={brandingSettings}
+          generatedDate={report?.GeneratedAt}
         />
       )
       pdf(doc)
@@ -120,6 +121,7 @@ const Page = () => {
                 tenantName={tenantName}
                 templateName={reportName}
                 brandingSettings={brandingSettings}
+                generatedDate={report?.GeneratedAt}
                 mode="preview"
               />
             ) : (
