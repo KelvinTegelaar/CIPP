@@ -153,6 +153,7 @@ export const CippFormComponent = (props) => {
                       label={label}
                       value={field.value || ""}
                       onChange={field.onChange}
+                      onBlur={field.onBlur}
                       includeSystemVariables={includeSystemVariables}
                     />
                   ) : (
@@ -166,6 +167,7 @@ export const CippFormComponent = (props) => {
                       label={label}
                       value={field.value || ""}
                       onChange={field.onChange}
+                      onBlur={field.onBlur}
                     />
                   )
                 }
@@ -205,6 +207,7 @@ export const CippFormComponent = (props) => {
                     label={label}
                     value={field.value || ""}
                     onChange={field.onChange}
+                    onBlur={field.onBlur}
                     tenantFilter={tenantFilter}
                     includeSystemVariables={includeSystemVariables}
                   />
@@ -300,7 +303,7 @@ export const CippFormComponent = (props) => {
                     checked={Boolean(field.value)}
                     {...other}
                     {...formControl.register(convertedName, { ...validators })}
-                  />
+                  />,
                 )
               }
             />
@@ -355,8 +358,10 @@ export const CippFormComponent = (props) => {
               render={({ field }) => {
                 return (
                   <RadioGroup
+                    row={row}
                     value={field.value || ""}
                     onChange={(e) => field.onChange(e.target.value)}
+                    onBlur={field.onBlur}
                     {...other}
                   >
                     {props.options.map((option, idx) => (
@@ -397,6 +402,7 @@ export const CippFormComponent = (props) => {
                   label={label}
                   multiple={false}
                   onChange={(value) => field.onChange(value?.value)}
+                  onBlur={field.onBlur}
                 />
               )}
             />
@@ -440,6 +446,7 @@ export const CippFormComponent = (props) => {
                 defaultValue={field.value}
                 label={label}
                 onChange={(value) => field.onChange(value)}
+                onBlur={field.onBlur}
               />
             )}
           />
@@ -535,7 +542,7 @@ export const CippFormComponent = (props) => {
               acc[csvHeader] = internalKey;
               return acc;
             },
-            {}
+            {},
           );
 
           return data.map((row) => {
@@ -615,6 +622,7 @@ export const CippFormComponent = (props) => {
                           field.onChange(null); // Handle the case where no date is selected
                         }
                       }}
+                      onClose={field.onBlur}
                       ampm={false}
                       minutesStep={15}
                       inputFormat="yyyy/MM/dd HH:mm" // Display format
@@ -720,6 +728,7 @@ export const CippFormComponent = (props) => {
                         other.onChange(file);
                       }
                     }}
+                    onBlur={field.onBlur}
                   />
                 </Box>
               )}

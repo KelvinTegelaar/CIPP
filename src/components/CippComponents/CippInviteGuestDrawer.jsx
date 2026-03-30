@@ -8,6 +8,7 @@ import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
+import { getCippValidator } from "../../utils/get-cipp-validator";
 
 export const CippInviteGuestDrawer = ({
   buttonText = "Invite Guest",
@@ -18,13 +19,14 @@ export const CippInviteGuestDrawer = ({
   const userSettingsDefaults = useSettings();
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
       displayName: "",
       mail: "",
       redirectUri: "",
-      sendInvite: false,
+      message: "",
+      sendInvite: true,
     },
   });
 
@@ -63,15 +65,28 @@ export const CippInviteGuestDrawer = ({
       displayName: "",
       mail: "",
       redirectUri: "",
-      sendInvite: false,
+      message: "",
+      sendInvite: true,
     });
+  };
+
+  const handleOpenDrawer = () => {
+    formControl.reset({
+      tenantFilter: userSettingsDefaults.currentTenant,
+      displayName: "",
+      mail: "",
+      redirectUri: "",
+      message: "",
+      sendInvite: true,
+    });
+    setDrawerVisible(true);
   };
 
   return (
     <>
       <PermissionButton
         requiredPermissions={requiredPermissions}
-        onClick={() => setDrawerVisible(true)}
+        onClick={handleOpenDrawer}
         startIcon={<Send />}
       >
         {buttonText}
@@ -92,8 +107,8 @@ export const CippInviteGuestDrawer = ({
               {inviteGuest.isLoading
                 ? "Sending Invite..."
                 : inviteGuest.isSuccess
-                ? "Send Another Invite"
-                : "Send Invite"}
+                  ? "Send Another Invite"
+                  : "Send Invite"}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
@@ -121,10 +136,7 @@ export const CippInviteGuestDrawer = ({
               formControl={formControl}
               validators={{
                 required: "Email address is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
+                validate: (value) => !value || getCippValidator(value, "email"),
               }}
             />
           </Grid>
@@ -135,6 +147,18 @@ export const CippInviteGuestDrawer = ({
               label="Redirect URL"
               name="redirectUri"
               placeholder="Optional Redirect URL defaults to https://myapps.microsoft.com if blank"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 12, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              fullWidth
+              label="Custom invite message"
+              name="message"
+              multiline
+              minRows={3}
+              placeholder="Optional message included in the invite email"
               formControl={formControl}
             />
           </Grid>

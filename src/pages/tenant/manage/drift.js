@@ -13,6 +13,7 @@ import {
   Info,
   FactCheck,
   Search,
+  Edit,
 } from "@mui/icons-material";
 import {
   Box,
@@ -74,7 +75,7 @@ const ManageDriftPage = () => {
   const driftApi = ApiGetCall({
     url: "/api/listTenantDrift",
     data: {
-      TenantFilter: tenantFilter,
+      tenantFilter: tenantFilter,
     },
     queryKey: `TenantDrift-${tenantFilter}`,
   });
@@ -99,7 +100,7 @@ const ManageDriftPage = () => {
     url: "/api/ListStandardsCompare",
     data: {
       TemplateId: templateId,
-      TenantFilter: tenantFilter,
+      tenantFilter: tenantFilter,
       CompareToStandard: true,
     },
     queryKey: `StandardsCompare-${templateId}-${tenantFilter}`,
@@ -1109,7 +1110,7 @@ const ManageDriftPage = () => {
             receivedValue: deviation.receivedValue,
           },
         ],
-        TenantFilter: tenantFilter,
+        tenantFilter: tenantFilter,
       },
       action: {
         text: actionText,
@@ -1162,7 +1163,7 @@ const ManageDriftPage = () => {
             receivedValue: deviation.receivedValue,
           },
         ],
-        TenantFilter: tenantFilter,
+        tenantFilter: tenantFilter,
       },
       action: {
         text: actionText,
@@ -1239,7 +1240,7 @@ const ManageDriftPage = () => {
     setActionData({
       data: {
         deviations: deviations,
-        TenantFilter: tenantFilter,
+        tenantFilter: tenantFilter,
         receivedValues: deviations.map((d) => d.receivedValue),
       },
       action: {
@@ -1259,7 +1260,7 @@ const ManageDriftPage = () => {
     setActionData({
       data: {
         RemoveDriftCustomization: true,
-        TenantFilter: tenantFilter,
+        tenantFilter: tenantFilter,
       },
       action: {
         text: "remove all drift customizations",
@@ -1314,6 +1315,11 @@ const ManageDriftPage = () => {
       comparisonApi.refetch();
     }
   }, [templateId]);
+
+  // Effect to clear selected items when tenant changes
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [tenantFilter]);
 
   // Add action buttons to each deviation item
   const deviationItemsWithActions = actualDeviationItems.map((item) => {
@@ -1720,6 +1726,15 @@ const ManageDriftPage = () => {
                         );
                       }}
                       placeholder="Select a drift template..."
+                      disableClearable={true}
+                      customAction={{
+                        icon: <Edit fontSize="small" />,
+                        link: selectedTemplateOption?.value
+                          ? `/tenant/standards/templates/template?id=${selectedTemplateOption.value}&type=drift`
+                          : undefined,
+                        tooltip: "Edit Template",
+                        position: "inside",
+                      }}
                     />
 
                     <TextField
@@ -1949,6 +1964,10 @@ const ManageDriftPage = () => {
                     ? "for this tenant"
                     : "this deviation"
             }?`,
+            onSuccess: () => {
+              // Clear selected items after successful action
+              setSelectedItems([]);
+            },
           }}
           row={actionData.data}
           relatedQueryKeys={[`TenantDrift-${tenantFilter}`]}

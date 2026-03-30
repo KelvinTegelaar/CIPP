@@ -12,6 +12,7 @@ import {
   Switch,
   Grid,
   Paper,
+  Stack,
   IconButton,
 } from "@mui/material";
 import { PictureAsPdf, Download, Close, Settings } from "@mui/icons-material";
@@ -44,6 +45,7 @@ const ExecutiveReportDocument = ({
   conditionalAccessData,
   standardsCompareData,
   driftComplianceData,
+  standardTemplatesData,
   sectionConfig = {
     executiveSummary: true,
     securityStandards: true,
@@ -676,7 +678,7 @@ const ExecutiveReportDocument = ({
   });
 
   // PROCESS REAL STANDARDS DATA
-  const processStandardsData = (apiData) => {
+  const processStandardsData = (apiData, standardTemplates) => {
     // Try to fetch standards data dynamically
     let standardsData = null;
     try {
@@ -685,6 +687,65 @@ const ExecutiveReportDocument = ({
 
     if (!apiData || !Array.isArray(apiData) || apiData.length === 0) {
       return [];
+    }
+
+    // Build a lookup map from template configurations
+    // Format: { "GUID": "Display Name" }
+    const templateDisplayNameMap = {};
+
+    if (standardTemplates && Array.isArray(standardTemplates)) {
+      standardTemplates.forEach((template) => {
+        if (template.standards) {
+          // Process IntuneTemplate arrays
+          if (Array.isArray(template.standards.IntuneTemplate)) {
+            template.standards.IntuneTemplate.forEach((templateItem) => {
+              if (templateItem?.TemplateList?.value && templateItem?.TemplateList?.label) {
+                templateDisplayNameMap[templateItem.TemplateList.value.toLowerCase()] =
+                  templateItem.TemplateList.label;
+              }
+              // Handle TemplateList-Tags expansion
+              const tagTemplates =
+                templateItem?.["TemplateList-Tags"]?.addedFields?.templates ||
+                templateItem?.["TemplateList-Tags"]?.rawData?.templates;
+              if (tagTemplates && Array.isArray(tagTemplates)) {
+                tagTemplates.forEach((expandedTemplate) => {
+                  if (
+                    expandedTemplate?.GUID &&
+                    (expandedTemplate?.displayName || expandedTemplate?.name)
+                  ) {
+                    templateDisplayNameMap[expandedTemplate.GUID.toLowerCase()] =
+                      expandedTemplate.displayName || expandedTemplate.name;
+                  }
+                });
+              }
+            });
+          }
+          // Process ConditionalAccessTemplate arrays
+          if (Array.isArray(template.standards.ConditionalAccessTemplate)) {
+            template.standards.ConditionalAccessTemplate.forEach((templateItem) => {
+              if (templateItem?.TemplateList?.value && templateItem?.TemplateList?.label) {
+                templateDisplayNameMap[templateItem.TemplateList.value.toLowerCase()] =
+                  templateItem.TemplateList.label;
+              }
+              // Handle TemplateList-Tags expansion
+              const tagTemplates =
+                templateItem?.["TemplateList-Tags"]?.addedFields?.templates ||
+                templateItem?.["TemplateList-Tags"]?.rawData?.templates;
+              if (tagTemplates && Array.isArray(tagTemplates)) {
+                tagTemplates.forEach((expandedTemplate) => {
+                  if (
+                    expandedTemplate?.GUID &&
+                    (expandedTemplate?.displayName || expandedTemplate?.name)
+                  ) {
+                    templateDisplayNameMap[expandedTemplate.GUID.toLowerCase()] =
+                      expandedTemplate.displayName || expandedTemplate.name;
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
     }
 
     const processedStandards = [];
@@ -698,13 +759,43 @@ const ExecutiveReportDocument = ({
         const standardDef = standardsData?.find((std) => std.name === standardKey);
 
         if (standardDef) {
-          // Determine compliance status
+          // Determine compliance status using the same logic as applied-standards.js
           let status = "Review";
-          if (standardValue && typeof standardValue === "object" && standardValue.Value === true) {
-            status = "Compliant";
-          } else if (standardValue && standardValue.Value === true) {
-            status = "Compliant";
+          let isCompliant = false;
+
+          // FIRST: Check if CurrentValue and ExpectedValue exist and match
+          if (
+            standardValue?.CurrentValue !== undefined &&
+            standardValue?.ExpectedValue !== undefined
+          ) {
+            const sortedCurrent =
+              typeof standardValue.CurrentValue === "object" && standardValue.CurrentValue !== null
+                ? Object.keys(standardValue.CurrentValue)
+                    .sort()
+                    .reduce((obj, key) => {
+                      obj[key] = standardValue.CurrentValue[key];
+                      return obj;
+                    }, {})
+                : standardValue.CurrentValue;
+            const sortedExpected =
+              typeof standardValue.ExpectedValue === "object" &&
+              standardValue.ExpectedValue !== null
+                ? Object.keys(standardValue.ExpectedValue)
+                    .sort()
+                    .reduce((obj, key) => {
+                      obj[key] = standardValue.ExpectedValue[key];
+                      return obj;
+                    }, {})
+                : standardValue.ExpectedValue;
+            isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
           }
+          // SECOND: Check if Value is explicitly true
+          else if (standardValue?.Value === true) {
+            isCompliant = true;
+          }
+
+          status = isCompliant ? "Compliant" : "Review";
+
           // Get tags for display - fix the tags access
           const tags =
             standardDef.tag && Array.isArray(standardDef.tag) && standardDef.tag.length > 0
@@ -720,18 +811,70 @@ const ExecutiveReportDocument = ({
         } else {
           // If no definition found, still add it with basic info
           let status = "Review";
-          if (standardValue && typeof standardValue === "object" && standardValue.Value === true) {
-            status = "Compliant";
-          } else if (standardValue && standardValue.Value === true) {
-            status = "Compliant";
+          let isCompliant = false;
+
+          // FIRST: Check if CurrentValue and ExpectedValue exist and match
+          if (
+            standardValue?.CurrentValue !== undefined &&
+            standardValue?.ExpectedValue !== undefined
+          ) {
+            const sortedCurrent =
+              typeof standardValue.CurrentValue === "object" && standardValue.CurrentValue !== null
+                ? Object.keys(standardValue.CurrentValue)
+                    .sort()
+                    .reduce((obj, key) => {
+                      obj[key] = standardValue.CurrentValue[key];
+                      return obj;
+                    }, {})
+                : standardValue.CurrentValue;
+            const sortedExpected =
+              typeof standardValue.ExpectedValue === "object" &&
+              standardValue.ExpectedValue !== null
+                ? Object.keys(standardValue.ExpectedValue)
+                    .sort()
+                    .reduce((obj, key) => {
+                      obj[key] = standardValue.ExpectedValue[key];
+                      return obj;
+                    }, {})
+                : standardValue.ExpectedValue;
+            isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+          }
+          // SECOND: Check if Value is explicitly true
+          else if (standardValue?.Value === true) {
+            isCompliant = true;
           }
 
-          // Create a proper name from the key
-          const displayName = standardKey
-            .replace("standards.", "")
-            .replace(/([A-Z])/g, " $1") // Add space before capital letters
-            .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
-            .trim();
+          status = isCompliant ? "Compliant" : "Review";
+
+          // Create a proper name from the key - handle template types specially
+          let displayName = "";
+
+          // Check if this is an IntuneTemplate or ConditionalAccessTemplate
+          const intuneTemplateMatch = standardKey.match(
+            /^standards\.IntuneTemplate\.([0-9a-f-]+)/i,
+          );
+          const caTemplateMatch = standardKey.match(
+            /^standards\.ConditionalAccessTemplate\.([0-9a-f-]+)/i,
+          );
+
+          if (intuneTemplateMatch) {
+            // IntuneTemplate - look up display name from template configurations
+            const guid = intuneTemplateMatch[1];
+            const lookupName = templateDisplayNameMap[guid.toLowerCase()];
+            displayName = lookupName || `Intune Template - ${guid.substring(0, 8)}`;
+          } else if (caTemplateMatch) {
+            // ConditionalAccessTemplate - look up display name from template configurations
+            const guid = caTemplateMatch[1];
+            const lookupName = templateDisplayNameMap[guid.toLowerCase()];
+            displayName = lookupName || `CA Template - ${guid.substring(0, 8)}`;
+          } else {
+            // Regular standard - use basic name formatting
+            displayName = standardKey
+              .replace("standards.", "")
+              .replace(/([A-Z])/g, " $1") // Add space before capital letters
+              .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
+              .trim();
+          }
 
           processedStandards.push({
             name: displayName,
@@ -803,22 +946,22 @@ const ExecutiveReportDocument = ({
         // Collect deviations with pretty names
         if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
           acc.currentDeviations.push(
-            ...processDeviations(item.currentDeviations.filter((dev) => dev !== null))
+            ...processDeviations(item.currentDeviations.filter((dev) => dev !== null)),
           );
         }
         if (item.acceptedDeviations && Array.isArray(item.acceptedDeviations)) {
           acc.acceptedDeviations.push(
-            ...processDeviations(item.acceptedDeviations.filter((dev) => dev !== null))
+            ...processDeviations(item.acceptedDeviations.filter((dev) => dev !== null)),
           );
         }
         if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
           acc.customerSpecificDeviations.push(
-            ...processDeviations(item.customerSpecificDeviations.filter((dev) => dev !== null))
+            ...processDeviations(item.customerSpecificDeviations.filter((dev) => dev !== null)),
           );
         }
         if (item.deniedDeviations && Array.isArray(item.deniedDeviations)) {
           acc.deniedDeviations.push(
-            ...processDeviations(item.deniedDeviations.filter((dev) => dev !== null))
+            ...processDeviations(item.deniedDeviations.filter((dev) => dev !== null)),
           );
         }
 
@@ -835,7 +978,7 @@ const ExecutiveReportDocument = ({
         customerSpecificDeviations: [],
         deniedDeviations: [],
         appliedStandards: [],
-      }
+      },
     );
 
     // Get complete list of applied standards from standards comparison data (like policies-deployed)
@@ -871,7 +1014,7 @@ const ExecutiveReportDocument = ({
     return aggregatedData;
   };
 
-  let securityControls = processStandardsData(standardsCompareData);
+  let securityControls = processStandardsData(standardsCompareData, standardTemplatesData);
   let driftComplianceInfo = processDriftComplianceData(driftComplianceData, standardsCompareData);
 
   const getBadgeStyle = (status) => {
@@ -1434,7 +1577,7 @@ const ExecutiveReportDocument = ({
                       } catch (error) {}
 
                       const standardDef = standardsData?.find(
-                        (std) => std.name === deviation.standardName
+                        (std) => std.name === deviation.standardName,
                       );
                       const description =
                         standardDef?.executiveText ||
@@ -1466,7 +1609,7 @@ const ExecutiveReportDocument = ({
                       } catch (error) {}
 
                       const standardDef = standardsData?.find(
-                        (std) => std.name === deviation.standardName
+                        (std) => std.name === deviation.standardName,
                       );
                       const description =
                         standardDef?.executiveText ||
@@ -1502,7 +1645,7 @@ const ExecutiveReportDocument = ({
                         } catch (error) {}
 
                         const standardDef = standardsData?.find(
-                          (std) => std.name === deviation.standardName
+                          (std) => std.name === deviation.standardName,
                         );
                         const description =
                           standardDef?.executiveText ||
@@ -1536,7 +1679,7 @@ const ExecutiveReportDocument = ({
                       } catch (error) {}
 
                       const standardDef = standardsData?.find(
-                        (std) => std.name === deviation.standardName
+                        (std) => std.name === deviation.standardName,
                       );
                       const description =
                         standardDef?.executiveText ||
@@ -1603,7 +1746,7 @@ const ExecutiveReportDocument = ({
                       acc[category].push(standard);
                       return acc;
                     },
-                    {}
+                    {},
                   );
 
                   return Object.entries(groupedStandards).map(([category, standards]) => (
@@ -1998,7 +2141,7 @@ const ExecutiveReportDocument = ({
                               "DEBUG: license.CountUsed is an object:",
                               countUsed,
                               "full license:",
-                              license
+                              license,
                             );
                           }
                           return countUsed;
@@ -2138,8 +2281,11 @@ const ExecutiveReportDocument = ({
                       {
                         deviceData.filter(
                           (device) =>
-                            device.complianceState === "compliant" ||
-                            device.ComplianceState === "compliant"
+                            (
+                              device.complianceState ||
+                              device.ComplianceState ||
+                              ""
+                            ).toLowerCase() === "compliant",
                         ).length
                       }
                     </Text>
@@ -2150,8 +2296,11 @@ const ExecutiveReportDocument = ({
                       {
                         deviceData.filter(
                           (device) =>
-                            device.complianceState !== "compliant" &&
-                            device.ComplianceState !== "compliant"
+                            (
+                              device.complianceState ||
+                              device.ComplianceState ||
+                              ""
+                            ).toLowerCase() !== "compliant",
                         ).length
                       }
                     </Text>
@@ -2162,11 +2311,14 @@ const ExecutiveReportDocument = ({
                       {Math.round(
                         (deviceData.filter(
                           (device) =>
-                            device.complianceState === "Compliant" ||
-                            device.ComplianceState === "Compliant"
+                            (
+                              device.complianceState ||
+                              device.ComplianceState ||
+                              ""
+                            ).toLowerCase() === "compliant",
                         ).length /
                           deviceData.length) *
-                          100
+                          100,
                       )}
                       %
                     </Text>
@@ -2212,13 +2364,18 @@ const ExecutiveReportDocument = ({
                           <Text
                             style={[
                               styles.statusText,
-                              device.complianceState === "compliant"
+                              (
+                                device.complianceState ||
+                                device.ComplianceState ||
+                                ""
+                              ).toLowerCase() === "compliant"
                                 ? styles.statusCompliant
                                 : styles.statusReview,
                             ]}
                           >
                             {(() => {
-                              const complianceState = device.complianceState || "Unknown";
+                              const complianceState =
+                                device.complianceState || device.ComplianceState || "Unknown";
                               if (typeof complianceState === "object") {
                               }
                               return complianceState;
@@ -2440,7 +2597,7 @@ const ExecutiveReportDocument = ({
                     <Text style={styles.statNumber}>
                       {
                         conditionalAccessData.filter(
-                          (policy) => policy.state === "enabledForReportingButNotEnforced"
+                          (policy) => policy.state === "enabledForReportingButNotEnforced",
                         ).length
                       }
                     </Text>
@@ -2451,7 +2608,7 @@ const ExecutiveReportDocument = ({
                       {
                         conditionalAccessData.filter(
                           (policy) =>
-                            policy.builtInControls && policy.builtInControls.includes("mfa")
+                            policy.builtInControls && policy.builtInControls.includes("mfa"),
                         ).length
                       }
                     </Text>
@@ -2485,7 +2642,7 @@ const ExecutiveReportDocument = ({
                       <Text style={styles.recommendationLabel}>Testing Phase:</Text>{" "}
                       {
                         conditionalAccessData.filter(
-                          (policy) => policy.state === "enabledForReportingButNotEnforced"
+                          (policy) => policy.state === "enabledForReportingButNotEnforced",
                         ).length
                       }{" "}
                       policies in report-only mode
@@ -2505,11 +2662,11 @@ const ExecutiveReportDocument = ({
                 <Text style={styles.infoTitle}>Access Control Recommendations</Text>
                 <Text style={styles.infoText}>
                   {conditionalAccessData.filter(
-                    (policy) => policy.state === "enabledForReportingButNotEnforced"
+                    (policy) => policy.state === "enabledForReportingButNotEnforced",
                   ).length > 0
                     ? `Consider activating ${
                         conditionalAccessData.filter(
-                          (policy) => policy.state === "enabledForReportingButNotEnforced"
+                          (policy) => policy.state === "enabledForReportingButNotEnforced",
                         ).length
                       } policies currently in testing mode after ensuring they don't disrupt business operations. `
                     : "Your access controls are properly configured. "}
@@ -2619,6 +2776,14 @@ export const ExecutiveReportButton = (props) => {
     waiting: previewOpen,
   });
 
+  // Load all standard templates to resolve template display names
+  const standardTemplatesData = ApiGetCall({
+    url: `/api/listStandardTemplates`,
+    data: {}, // No templateId filter - get all templates
+    queryKey: `standard-templates-report-all`,
+    waiting: previewOpen,
+  });
+
   // Check if all data is loaded (either successful or failed) - only relevant when preview is open
   const isDataLoading =
     previewOpen &&
@@ -2629,7 +2794,8 @@ export const ExecutiveReportButton = (props) => {
       deviceData.isFetching ||
       conditionalAccessData.isFetching ||
       standardsCompareData.isFetching ||
-      driftComplianceData.isFetching);
+      driftComplianceData.isFetching ||
+      standardTemplatesData.isFetching);
 
   const hasAllDataFinished =
     !previewOpen ||
@@ -2640,7 +2806,8 @@ export const ExecutiveReportButton = (props) => {
       (deviceData.isSuccess || deviceData.isError) &&
       (conditionalAccessData.isSuccess || conditionalAccessData.isError) &&
       (standardsCompareData.isSuccess || standardsCompareData.isError) &&
-      (driftComplianceData.isSuccess || driftComplianceData.isError));
+      (driftComplianceData.isSuccess || driftComplianceData.isError) &&
+      (standardTemplatesData.isSuccess || standardTemplatesData.isError));
 
   // Button is always available now since we don't need to wait for data
   const shouldShowButton = true;
@@ -2698,6 +2865,9 @@ export const ExecutiveReportButton = (props) => {
           }
           standardsCompareData={standardsCompareData.isSuccess ? standardsCompareData?.data : null}
           driftComplianceData={driftComplianceData.isSuccess ? driftComplianceData?.data : null}
+          standardTemplatesData={
+            standardTemplatesData.isSuccess ? standardTemplatesData?.data : null
+          }
           sectionConfig={sectionConfig}
         />
       );
@@ -2896,64 +3066,59 @@ export const ExecutiveReportButton = (props) => {
                 in real-time.
               </Typography>
 
-              <Grid container spacing={1.5}>
+              <Stack spacing={1.5}>
                 {sectionOptions.map((option) => (
-                  <Grid item xs={12} key={option.key}>
-                    <Paper
-                      sx={{
-                        p: 1.5,
-                        border: "1px solid",
-                        borderColor: sectionConfig[option.key] ? "primary.main" : "divider",
-                        bgcolor: sectionConfig[option.key] ? "primary.50" : "background.paper",
-                        cursor: "pointer",
-                        transition: "all 0.2s ease-in-out",
-                        "&:hover": {
-                          borderColor: "primary.main",
-                          bgcolor: sectionConfig[option.key] ? "primary.100" : "primary.25",
-                        },
+                  <Paper
+                    key={option.key}
+                    onClick={() => handleSectionToggle(option.key)}
+                    sx={{
+                      p: 1.5,
+                      border: "1px solid",
+                      borderColor: sectionConfig[option.key] ? "primary.main" : "divider",
+                      bgcolor: sectionConfig[option.key] ? "primary.50" : "background.paper",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease-in-out",
+                      display: "flex",
+                      alignItems: "center",
+                      "&:hover": {
+                        borderColor: "primary.main",
+                        bgcolor: sectionConfig[option.key] ? "primary.100" : "primary.25",
+                      },
+                    }}
+                  >
+                    <Switch
+                      checked={sectionConfig[option.key]}
+                      onChange={(event) => {
+                        event.stopPropagation();
+                        handleSectionToggle(option.key);
                       }}
-                    >
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={sectionConfig[option.key]}
-                            onChange={(event) => {
-                              event.stopPropagation();
-                              handleSectionToggle(option.key);
-                            }}
-                            color="primary"
-                            size="small"
-                            disabled={
-                              // Disable if this is the last enabled section
-                              sectionConfig[option.key] &&
-                              Object.values(sectionConfig).filter(Boolean).length === 1
-                            }
-                          />
-                        }
-                        label={
-                          <Box onClick={() => handleSectionToggle(option.key)}>
-                            <Typography
-                              variant="subtitle2"
-                              fontWeight="bold"
-                              sx={{ fontSize: "0.875rem" }}
-                            >
-                              {option.label}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              sx={{ fontSize: "0.75rem" }}
-                            >
-                              {option.description}
-                            </Typography>
-                          </Box>
-                        }
-                        sx={{ margin: 0, width: "100%" }}
-                      />
-                    </Paper>
-                  </Grid>
+                      onClick={(event) => event.stopPropagation()}
+                      color="primary"
+                      size="small"
+                      disabled={
+                        sectionConfig[option.key] &&
+                        Object.values(sectionConfig).filter(Boolean).length === 1
+                      }
+                    />
+                    <Box sx={{ ml: 1, flexGrow: 1 }}>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight="bold"
+                        sx={{ fontSize: "0.875rem" }}
+                      >
+                        {option.label}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: "0.75rem" }}
+                      >
+                        {option.description}
+                      </Typography>
+                    </Box>
+                  </Paper>
                 ))}
-              </Grid>
+              </Stack>
 
               <Box sx={{ mt: 3, p: 2, bgcolor: "primary.50", borderRadius: 1 }}>
                 <Typography variant="caption" color="primary.main" fontWeight="bold">

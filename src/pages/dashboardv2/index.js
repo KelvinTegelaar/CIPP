@@ -8,6 +8,7 @@ import { ApiGetCall } from "../../api/ApiCall.jsx";
 import Portals from "../../data/portals";
 import { BulkActionsMenu } from "../../components/bulk-actions-menu.js";
 import { ExecutiveReportButton } from "../../components/ExecutiveReportButton.js";
+import { CippUniversalSearchV2 } from "../../components/CippCards/CippUniversalSearchV2.jsx";
 import { TabbedLayout } from "../../layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "../../layouts/index.js";
 import tabOptions from "./tabOptions";
@@ -99,8 +100,12 @@ const Page = () => {
   });
 
   const currentTenantInfo = ApiGetCall({
-    url: "/api/ListTenants",
-    queryKey: `ListTenants`,
+    url: "/api/listTenants",
+    data: { AllTenantSelector: true },
+    queryKey: "TenantSelector",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
 
   const reportData =
@@ -203,6 +208,13 @@ const Page = () => {
   return (
     <Container maxWidth={false} sx={{ mt: 12, mb: 6 }}>
       <Box sx={{ width: "100%", mx: "auto" }}>
+        {/* Universal Search */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent sx={{ px: 2, py: 1.5, "&:last-child": { pb: 1.5 } }}>
+            <CippUniversalSearchV2 />
+          </CardContent>
+        </Card>
+
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid size={{ xs: 12, md: 5 }}>
             <Card sx={{ height: "100%" }}>
