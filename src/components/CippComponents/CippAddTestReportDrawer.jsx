@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   Card,
@@ -14,16 +14,22 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState, useWatch } from "react-hook-form";
-import { Add } from "@mui/icons-material";
+import { Add, Edit } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
 import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
 
-export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" }) => {
+export const CippAddTestReportDrawer = ({
+  buttonText = "Create Custom Report",
+  mode = "create",
+  reportToEdit = null,
+  disabled = false,
+}) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const isEditMode = mode === "edit";
 
   const formControl = useForm({
     mode: "onChange",
@@ -46,7 +52,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
 
   const createReport = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: "ListTestReports",
+    relatedQueryKeys: ["ListTestReports", "*-ListTests-*"],
   });
 
   // Fetch available tests for the form
@@ -64,15 +70,29 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
   // Reset form fields on successful creation
   useEffect(() => {
     if (createReport.isSuccess) {
+      if (!isEditMode) {
+        formControl.reset({
+          name: "",
+          description: "",
+          IdentityTests: [],
+          DevicesTests: [],
+          CustomTests: [],
+        });
+      }
+    }
+  }, [createReport.isSuccess, formControl, isEditMode]);
+
+  useEffect(() => {
+    if (drawerVisible && isEditMode && reportToEdit) {
       formControl.reset({
-        name: "",
-        description: "",
-        IdentityTests: [],
-        DevicesTests: [],
-        CustomTests: [],
+        name: reportToEdit.name || "",
+        description: reportToEdit.description || "",
+        IdentityTests: reportToEdit.IdentityTests || [],
+        DevicesTests: reportToEdit.DevicesTests || [],
+        CustomTests: reportToEdit.CustomTests || [],
       });
     }
-  }, [createReport.isSuccess, formControl]);
+  }, [drawerVisible, isEditMode, reportToEdit, formControl]);
 
   const handleSubmit = () => {
     formControl.trigger();
@@ -87,6 +107,10 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
       }
     });
 
+    if (isEditMode && reportToEdit?.id) {
+      values.ReportId = reportToEdit.id;
+    }
+
     createReport.mutate({
       url: "/api/AddTestReport",
       data: values,
@@ -94,6 +118,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
   };
 
   const handleCloseDrawer = () => {
+    createReport.reset();
     setDrawerVisible(false);
     setSearchTerm("");
     setActiveTab(0);
@@ -159,7 +184,10 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
       <Button
         variant="contained"
         sx={{
+          minWidth: 0,
+          overflow: "hidden",
           whiteSpace: "nowrap",
+          textOverflow: "ellipsis",
           fontWeight: "bold",
           textTransform: "none",
           borderRadius: 2,
@@ -168,12 +196,23 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
           px: 2,
         }}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Add />}
+        startIcon={isEditMode ? <Edit /> : <Add />}
+        disabled={disabled}
       >
-        {buttonText}
+        <Box
+          component="span"
+          sx={{
+            minWidth: 0,
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {buttonText}
+        </Box>
       </Button>
       <CippOffCanvas
-        title="Create Custom Report"
+        title={isEditMode ? "Edit Custom Report" : "Create Custom Report"}
         visible={drawerVisible}
         onClose={handleCloseDrawer}
         size="lg"
@@ -188,9 +227,15 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                 disabled={createReport.isPending || !isValid}
               >
                 {createReport.isPending
-                  ? "Creating..."
+                  ? isEditMode
+                    ? "Updating..."
+                    : "Creating..."
                   : createReport.isSuccess
-                  ? "Create Another"
+                  ? isEditMode
+                    ? "Updated"
+                    : "Create Another"
+                  : isEditMode
+                  ? "Update Report"
                   : "Create Report"}
               </Button>
               <Button variant="outlined" onClick={handleCloseDrawer}>
@@ -200,7 +245,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
           </div>
         }
       >
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ height: "100%", minHeight: 0, alignContent: "flex-start" }}>
           {/* Report Details Section */}
           <Grid size={12}>
             <Paper sx={{ p: 3, backgroundColor: "background.default" }}>
@@ -265,8 +310,17 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
           </Grid>
 
           {/* Test Selection Section */}
-          <Grid size={12}>
-            <Paper sx={{ p: 0 }}>
+          <Grid size={12} sx={{ display: "flex", minHeight: 0, flexGrow: 1 }}>
+            <Paper
+              sx={{
+                p: 0,
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                minHeight: 0,
+                maxHeight: "calc(100vh - 535px)",
+              }}
+            >
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
                   value={activeTab}
@@ -323,7 +377,8 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
               {/* Test List */}
               <Box
                 sx={{
-                  maxHeight: "400px",
+                  flex: 1,
+                  minHeight: 0,
                   overflowY: "auto",
                   p: 2,
                 }}
