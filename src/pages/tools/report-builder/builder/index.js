@@ -385,24 +385,27 @@ const Page = () => {
   const [saveOpen, setSaveOpen] = useState(false)
 
   const saveForm = useForm({ defaultValues: { templateName: '' } })
-  const addBlockForm = useForm({ defaultValues: { blockType: null, selectedTest: [] } })
+  const addBlockForm = useForm({ defaultValues: { blockType: null, testSuite: null, selectedTest: [] } })
   const settingsForm = useForm({ defaultValues: { removeRemediation: true } })
   const scheduleForm = useForm({
     defaultValues: { scheduleName: '', recurrence: null, postExecution: [] },
   })
 
   const watchBlockType = useWatch({ control: addBlockForm.control, name: 'blockType' })
+  const watchTestSuite = useWatch({ control: addBlockForm.control, name: 'testSuite' })
   const watchSelectedTest = useWatch({ control: addBlockForm.control, name: 'selectedTest' })
   const removeRemediation = useWatch({ control: settingsForm.control, name: 'removeRemediation' })
 
-  // CippFormCondition clearOnHide sets selectedTest to null; coerce back to [] so
-  // CippAutoComplete (multiple) doesn't wrap null into [null] → empty chip.
+  // When block type changes, reset suite and test selections.
   useEffect(() => {
-    const val = addBlockForm.getValues('selectedTest')
-    if (val === null || val === undefined) {
-      addBlockForm.setValue('selectedTest', [], { shouldDirty: false, shouldValidate: false })
-    }
+    addBlockForm.setValue('testSuite', null, { shouldDirty: false, shouldValidate: false })
+    addBlockForm.setValue('selectedTest', [], { shouldDirty: false, shouldValidate: false })
   }, [watchBlockType])
+
+  // When test suite changes, reset test selection.
+  useEffect(() => {
+    addBlockForm.setValue('selectedTest', [], { shouldDirty: false, shouldValidate: false })
+  }, [watchTestSuite])
 
   /* ── API hooks ── */
   const templatesApi = ApiGetCall({
@@ -461,20 +464,33 @@ const Page = () => {
       value: t.id,
       category: 'Identity',
       name: t.name,
+      testFolder: t.testFolder,
     })),
     ...(availableTests.DevicesTests || []).map((t) => ({
       label: `[Devices] ${t.name}`,
       value: t.id,
       category: 'Devices',
       name: t.name,
+      testFolder: t.testFolder,
     })),
     ...(availableTests.CustomTests || []).map((t) => ({
       label: `[Custom] ${t.name}`,
       value: t.id,
       category: 'Custom',
       name: t.name,
+      testFolder: t.testFolder || 'Custom',
     })),
   ]
+
+  const suiteOptions = useMemo(() => {
+    const folders = [...new Set(allTestOptions.map((t) => t.testFolder).filter(Boolean))]
+    return folders.sort().map((f) => ({ label: f, value: f }))
+  }, [allTestOptions])
+
+  const filteredTestOptions = useMemo(() => {
+    if (!watchTestSuite?.value) return allTestOptions
+    return allTestOptions.filter((t) => t.testFolder === watchTestSuite.value)
+  }, [allTestOptions, watchTestSuite])
 
   const testResults = useMemo(() => testsApi.data?.TestResults || [], [testsApi.data])
 
@@ -584,7 +600,7 @@ const Page = () => {
           static: false,
         },
       ])
-      addBlockForm.reset({ blockType: null, selectedTest: [] })
+      addBlockForm.reset({ blockType: null, testSuite: null, selectedTest: [] })
     } else if (type.value === 'test') {
       const tests = addBlockForm.getValues('selectedTest')
       const testArray = Array.isArray(tests) ? tests : tests ? [tests] : []
@@ -602,7 +618,7 @@ const Page = () => {
           static: false,
         })),
       ])
-      addBlockForm.reset({ blockType: null, selectedTest: [] })
+      addBlockForm.reset({ blockType: null, testSuite: null, selectedTest: [] })
     }
   }
 
@@ -892,17 +908,29 @@ const Page = () => {
                   compareType="valueEq"
                   compareValue="test"
                   formControl={addBlockForm}
-                  clearOnHide={true}
+                  clearOnHide={false}
                 >
-                  <Grid size={{ xs: 12, md: 4 }}>
+                  <Grid size={{ xs: 12, md: 2 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      name="testSuite"
+                      label="Test Suite"
+                      formControl={addBlockForm}
+                      multiple={false}
+                      options={suiteOptions}
+                      isFetching={availableTestsApi.isFetching}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 3 }}>
                     <CippFormComponent
                       type="autoComplete"
                       name="selectedTest"
                       label="Select Tests"
                       formControl={addBlockForm}
                       multiple={true}
-                      options={allTestOptions}
+                      options={filteredTestOptions}
                       isFetching={availableTestsApi.isFetching}
+                      disabled={!watchTestSuite?.value}
                     />
                   </Grid>
                 </CippFormCondition>

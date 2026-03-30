@@ -1,5 +1,14 @@
 import { useMemo } from 'react'
-import { Document, Page, Text, View, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet, PDFViewer, Image, Font } from '@react-pdf/renderer'
+
+/* ── Emoji support ─────────────────────────────────────────
+ * Helvetica has no emoji glyphs.  react-pdf can render emojis
+ * as inline Twemoji images via Font.registerEmojiSource().
+ * ───────────────────────────────────────────────────────── */
+Font.registerEmojiSource({
+  format: 'png',
+  url: 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/',
+})
 
 /**
  * Styles matching the CIPP Executive Report design system exactly.
