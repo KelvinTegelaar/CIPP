@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Button, Typography, IconButton, Container, Divider } from '@mui/material'
+import { Button, Typography, IconButton, Container, Divider, Skeleton, Card, CardContent } from '@mui/material'
 import { Stack, Box } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -81,8 +81,42 @@ const Page = () => {
     router.push('/tools/report-builder/generated')
   }
 
-  if (!isReady) {
-    return <div>Loading...</div>
+  if (!isReady || reportApi.isFetching) {
+    return (
+      <Box sx={{ flexGrow: 1 }}>
+        <Container maxWidth={false}>
+          <Stack spacing={2}>
+            {/* Header skeleton */}
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Skeleton variant="circular" width={32} height={32} />
+                <Skeleton variant="text" width={250} height={40} />
+              </Stack>
+              <Skeleton variant="rounded" width={140} height={36} />
+            </Stack>
+            <Divider />
+            {/* Report content skeleton */}
+            <Box sx={{ height: 'calc(100vh - 220px)', minHeight: 500 }}>
+              <Card sx={{ height: '100%' }}>
+                <CardContent>
+                  <Stack spacing={2}>
+                    <Skeleton variant="text" width="60%" height={32} />
+                    <Skeleton variant="text" width="40%" height={24} />
+                    <Skeleton variant="rounded" width="100%" height={200} />
+                    <Skeleton variant="text" width="80%" />
+                    <Skeleton variant="text" width="90%" />
+                    <Skeleton variant="text" width="70%" />
+                    <Skeleton variant="rounded" width="100%" height={150} />
+                    <Skeleton variant="text" width="85%" />
+                    <Skeleton variant="text" width="75%" />
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Box>
+          </Stack>
+        </Container>
+      </Box>
+    )
   }
 
   if (!reportId) {
@@ -99,7 +133,7 @@ const Page = () => {
                 <ArrowBack />
               </IconButton>
               <Typography variant="h4">
-                {reportApi.isFetching ? 'Loading...' : reportName}
+                {reportName}
               </Typography>
             </Stack>
             <Button
@@ -113,9 +147,7 @@ const Page = () => {
           </Stack>
           <Divider />
           <Box sx={{ height: 'calc(100vh - 220px)', minHeight: 500 }}>
-            {reportApi.isFetching ? (
-              <Typography color="text.secondary">Loading report...</Typography>
-            ) : report && blocks.length > 0 ? (
+            {report && blocks.length > 0 ? (
               <ReportBuilderPDF
                 blocks={blocks}
                 tenantName={tenantName}
