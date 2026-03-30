@@ -385,7 +385,9 @@ const Page = () => {
   const [saveOpen, setSaveOpen] = useState(false)
 
   const saveForm = useForm({ defaultValues: { templateName: '' } })
-  const addBlockForm = useForm({ defaultValues: { blockType: null, testSuite: null, selectedTest: [] } })
+  const addBlockForm = useForm({
+    defaultValues: { blockType: null, testSuite: null, selectedTest: [] },
+  })
   const settingsForm = useForm({ defaultValues: { removeRemediation: true } })
   const scheduleForm = useForm({
     defaultValues: { scheduleName: '', recurrence: null, postExecution: [] },
