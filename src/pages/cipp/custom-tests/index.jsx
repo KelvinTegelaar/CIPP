@@ -118,7 +118,8 @@ const Page = () => {
             label: "Delete Test",
             icon: <TrashIcon />,
             url: "/api/RemoveCustomScript",
-            type: "GET",
+            type: "POST",
+            relatedquerykeys: ["ListAvailableTests"],
             data: {
               ScriptGuid: "ScriptGuid",
             },

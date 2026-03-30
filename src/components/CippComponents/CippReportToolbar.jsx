@@ -63,11 +63,13 @@ export const CippReportToolbar = () => {
     })
   }
 
-  const isBuiltIn = reports.find((r) => r.id === selectedReport)?.source === 'file'
+  const selectedReportObject = reports.find((r) => r.id === selectedReport)
+  const isBuiltIn = selectedReportObject?.source === 'file'
+  const selectedCustomReport = selectedReportObject?.type === 'custom' ? selectedReportObject : null
 
   return (
     <>
-      <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', width: '100%' }}>
         <Box sx={{ flex: 1 }}>
           <CippFormComponent
             name="reportId"
@@ -121,6 +123,19 @@ export const CippReportToolbar = () => {
         >
           Refresh
         </Button>
+        <Tooltip
+          title={
+            isBuiltIn ? 'Built-in test suites cannot be edited' : 'Edit this custom test suite'
+          }
+          arrow
+        >
+          <CippAddTestReportDrawer
+            buttonText="Edit"
+            mode="edit"
+            reportToEdit={selectedCustomReport}
+            disabled={!selectedCustomReport}
+          />
+        </Tooltip>
         <Tooltip
           title={
             isBuiltIn ? 'Built-in test suites cannot be deleted' : 'Delete this custom test suite'

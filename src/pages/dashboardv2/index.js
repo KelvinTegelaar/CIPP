@@ -29,7 +29,7 @@ import { TenantInfoCard } from '../../components/CippComponents/TenantInfoCard'
 import { TenantMetricsGrid } from '../../components/CippComponents/TenantMetricsGrid'
 import { AssessmentCard } from '../../components/CippComponents/AssessmentCard'
 import { CippReportToolbar } from '../../components/CippComponents/CippReportToolbar'
-import { Assessment as AssessmentIcon, PictureAsPdf as PictureAsPdfIcon } from '@mui/icons-material'
+import { Assessment as AssessmentIcon } from '@mui/icons-material'
 import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
 
@@ -85,10 +85,22 @@ const Page = () => {
           Domain: currentTenant || '',
           TestResultSummary: {
             IdentityPassed: testsApi.data.TestCounts?.Identity?.Passed || 0,
+            IdentityFailed: testsApi.data.TestCounts?.Identity?.Failed || 0,
+            IdentitySkipped: testsApi.data.TestCounts?.Identity?.Skipped || 0,
+            IdentityInformational: testsApi.data.TestCounts?.Identity?.Informational || 0,
+            IdentityNeedsAttention: testsApi.data.TestCounts?.Identity?.NeedsAttention || 0,
             IdentityTotal: testsApi.data.TestCounts?.Identity?.Total || 0,
             DevicesPassed: testsApi.data.TestCounts?.Devices?.Passed || 0,
+            DevicesFailed: testsApi.data.TestCounts?.Devices?.Failed || 0,
+            DevicesSkipped: testsApi.data.TestCounts?.Devices?.Skipped || 0,
+            DevicesInformational: testsApi.data.TestCounts?.Devices?.Informational || 0,
+            DevicesNeedsAttention: testsApi.data.TestCounts?.Devices?.NeedsAttention || 0,
             DevicesTotal: testsApi.data.TestCounts?.Devices?.Total || 0,
             CustomPassed: testsApi.data.TestCounts?.Custom?.Passed || 0,
+            CustomFailed: testsApi.data.TestCounts?.Custom?.Failed || 0,
+            CustomSkipped: testsApi.data.TestCounts?.Custom?.Skipped || 0,
+            CustomInformational: testsApi.data.TestCounts?.Custom?.Informational || 0,
+            CustomNeedsAttention: testsApi.data.TestCounts?.Custom?.NeedsAttention || 0,
             CustomTotal: testsApi.data.TestCounts?.Custom?.Total || 0,
             DataPassed: 0,
             DataTotal: 0,
@@ -181,46 +193,95 @@ const Page = () => {
       <CippHead title="Dashboard" />
       <Box sx={{ width: '100%', mx: 'auto' }}>
         <Grid container spacing={3} sx={{ mb: 2 }}>
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, height: '100%' }}>
-              <BulkActionsMenu
-                buttonName="Portals"
-                actions={portalMenuItems}
-                disabled={!currentTenantInfo.isSuccess || portalMenuItems.length === 0}
-              />
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 2, height: '100%' }}>
+              <Box
+                sx={{
+                  flex: '0.7 1 0',
+                  minWidth: 0,
+                  display: 'flex',
+                  '& .MuiButtonBase-root': {
+                    width: '100%',
+                    minWidth: 0,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  },
+                }}
+              >
+                <BulkActionsMenu
+                  buttonName="Portals"
+                  actions={portalMenuItems}
+                  disabled={!currentTenantInfo.isSuccess || portalMenuItems.length === 0}
+                />
+              </Box>
               {isWide ? (
                 <>
-                  <ExecutiveReportButton disabled={organization.isFetching} />
-                  <Button
-                    component={Link}
-                    href="/tools/report-builder/generated"
-                    variant="contained"
-                    startIcon={<AssessmentIcon />}
+                  <Box
                     sx={{
-                      fontWeight: 'bold',
-                      textTransform: 'none',
-                      borderRadius: 2,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      transition: 'all 0.2s ease-in-out',
+                      flex: '1.15 1 0',
+                      minWidth: 0,
+                      display: 'flex',
+                      '& .MuiButtonBase-root': {
+                        width: '100%',
+                        minWidth: 0,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      },
                     }}
                   >
-                    Report Builder
-                  </Button>
+                    <ExecutiveReportButton disabled={organization.isFetching} />
+                  </Box>
+                  <Box sx={{ flex: '1.15 1 0', minWidth: 0, display: 'flex' }}>
+                    <Button
+                      component={Link}
+                      href="/tools/report-builder/generated"
+                      variant="contained"
+                      startIcon={<AssessmentIcon />}
+                      sx={{
+                        width: '100%',
+                        minWidth: 0,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontWeight: 'bold',
+                        textTransform: 'none',
+                        borderRadius: 2,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        transition: 'all 0.2s ease-in-out',
+                      }}
+                    >
+                      <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        Report Builder
+                      </Box>
+                    </Button>
+                  </Box>
                 </>
               ) : (
                 <>
-                  <Button
-                    variant="contained"
-                    onClick={(e) => setReportsMenuAnchor(e.currentTarget)}
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <ChevronDownIcon />
-                      </SvgIcon>
-                    }
-                    sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}
-                  >
-                    Dashboard Reports
-                  </Button>
+                  <Box sx={{ flex: 1, minWidth: 0, display: 'flex' }}>
+                    <Button
+                      variant="contained"
+                      onClick={(e) => setReportsMenuAnchor(e.currentTarget)}
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <ChevronDownIcon />
+                        </SvgIcon>
+                      }
+                      sx={{
+                        width: '100%',
+                        minWidth: 0,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        Dashboard Reports
+                      </Box>
+                    </Button>
+                  </Box>
                   <Menu
                     keepMounted
                     anchorEl={reportsMenuAnchor}
@@ -250,7 +311,7 @@ const Page = () => {
               )}
             </Box>
           </Grid>
-          <Grid size={{ xs: 12, md: 7 }}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <CippReportToolbar />
           </Grid>
         </Grid>
@@ -276,6 +337,7 @@ const Page = () => {
               data={reportData}
               isLoading={testsApi.isFetching}
               title={reports.find((r) => r.id === selectedReport)?.name}
+              description={reports.find((r) => r.id === selectedReport)?.description}
             />
           </Grid>
         </Grid>

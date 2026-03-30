@@ -8,9 +8,7 @@ import {
   DialogActions,
   Box,
   Typography,
-  FormControlLabel,
   Switch,
-  Grid,
   Paper,
   Stack,
   IconButton,
@@ -3014,6 +3012,19 @@ export const ExecutiveReportButton = (props) => {
             startIcon={<PictureAsPdf />}
             onClick={() => setPreviewOpen(true)}
             sx={{
+              minWidth: 0,
+              width: '100%',
+              pl: 1,
+              pr: 1,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              justifyContent: 'center',
+              '& .MuiButton-startIcon': {
+                marginLeft: 0,
+                marginRight: 0.75,
+                flexShrink: 0,
+              },
               fontWeight: 'bold',
               textTransform: 'none',
               borderRadius: 2,
@@ -3022,7 +3033,19 @@ export const ExecutiveReportButton = (props) => {
             }}
             {...other}
           >
-            Executive Summary
+            <Box
+              component="span"
+              sx={{
+                minWidth: 0,
+                maxWidth: '100%',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                textAlign: 'center',
+              }}
+            >
+              Executive Summary
+            </Box>
           </Button>
         </Tooltip>
       )}
