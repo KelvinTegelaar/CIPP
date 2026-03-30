@@ -1,5 +1,14 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Button, Typography, IconButton, Container, Divider, Skeleton, Card, CardContent } from '@mui/material'
+import {
+  Button,
+  Typography,
+  IconButton,
+  Container,
+  Divider,
+  Skeleton,
+  Card,
+  CardContent,
+} from '@mui/material'
 import { Stack, Box } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -132,9 +141,7 @@ const Page = () => {
               <IconButton size="small" onClick={handleBackClick}>
                 <ArrowBack />
               </IconButton>
-              <Typography variant="h4">
-                {reportName}
-              </Typography>
+              <Typography variant="h4">{reportName}</Typography>
             </Stack>
             <Button
               variant="contained"
