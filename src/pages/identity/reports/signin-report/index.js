@@ -141,7 +141,12 @@ const Page = () => {
   })
 
   const tableFilter = (
-    <CippButtonCard title="Filter Options" component="accordion" accordionExpanded={filterExpanded} onAccordionChange={setFilterExpanded}>
+    <CippButtonCard
+      title="Filter Options"
+      component="accordion"
+      accordionExpanded={filterExpanded}
+      onAccordionChange={setFilterExpanded}
+    >
       <Grid container spacing={2}>
         <Grid size={{ sm: 6, xs: 12 }}>
           <CippFormComponent
@@ -227,10 +232,19 @@ const Page = () => {
         </Grid>
         <Grid size={{ xs: 12 }}>
           <Stack direction="row" spacing={2} alignItems="flex-start">
-            <Button variant="contained" color="primary" onClick={handleFilterSubmit} startIcon={<FilterListIcon />}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFilterSubmit}
+              startIcon={<FilterListIcon />}
+            >
               Apply Filter
             </Button>
-            <Button variant="outlined" onClick={savePresetDialog.handleOpen} startIcon={<SaveIcon />}>
+            <Button
+              variant="outlined"
+              onClick={savePresetDialog.handleOpen}
+              startIcon={<SaveIcon />}
+            >
               Save as Preset
             </Button>
           </Stack>

@@ -192,9 +192,9 @@ const Page = () => {
     <Container maxWidth={false} sx={{ mt: 12, mb: 6 }}>
       <CippHead title="Dashboard" />
       <Box sx={{ width: '100%', mx: 'auto' }}>
-        <Grid container spacing={3} sx={{ mb: 2 }}>
+        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 2, height: '100%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 1.5}}>
               <Box
                 sx={{
                   flex: '0.7 1 0',
