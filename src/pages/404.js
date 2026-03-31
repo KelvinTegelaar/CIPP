@@ -29,7 +29,7 @@ const Page = () => (
               <Grid size={{ md: 6, xs: 12 }}>
                 <CippImageCard
                   isFetching={false}
-                  imageUrl="/assets/illustrations/undraw_lost_re_xqjt.svg"
+                  imageUrl="/assets/illustrations/lost.webp"
                   text="Oh no! We're lost. This page is here to help you find your way back. Let's go to the homepage to see if we know where we need to go next."
                   title="Error 404 - Page not found"
                   linkText={"Return"}
