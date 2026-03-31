@@ -692,7 +692,10 @@ const Page = () => {
       dbFormat: null,
     },
   })
-  const settingsForm = useForm({ defaultValues: { removeRemediation: true } })
+  const settingsForm = useForm({
+    defaultValues: { removeRemediation: true, includeRawAttachments: false },
+  })
+  const hasDatabaseBlocks = blocks.some((b) => b.type === 'database')
   const scheduleForm = useForm({
     defaultValues: { scheduleName: '', recurrence: null, postExecution: [] },
   })
@@ -1095,6 +1098,8 @@ const Page = () => {
         parameters: {
           TemplateName: name,
           TenantFilter: currentTenant,
+          IncludeRawAttachments:
+            settingsForm.getValues('includeRawAttachments') && hasDatabaseBlocks ? 'true' : 'false',
           Blocks: JSON.stringify(
             blocks.map((b) => ({
               type: b.type,
@@ -1390,7 +1395,9 @@ const Page = () => {
                     Add Block
                   </Button>
                 </Grid>
-                <Grid size={{ xs: 12, md: 3 }} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              </Grid>
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                <Grid size={{ xs: 12, md: 4 }}>
                   <CippFormComponent
                     type="switch"
                     name="removeRemediation"
@@ -1398,6 +1405,16 @@ const Page = () => {
                     formControl={settingsForm}
                   />
                 </Grid>
+                {hasDatabaseBlocks && (
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <CippFormComponent
+                      type="switch"
+                      name="includeRawAttachments"
+                      label="Include database items as email attachment"
+                      formControl={settingsForm}
+                    />
+                  </Grid>
+                )}
               </Grid>
             </CippButtonCard>
 
