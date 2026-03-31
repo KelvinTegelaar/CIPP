@@ -80,6 +80,17 @@ const buildGraphFilter = ({
   return clauses.join(' and ')
 }
 
+// Template version for saved presets — uses {DaysAgo:N} placeholder instead of
+// a baked-in date so the filter stays fresh when loaded later.
+const buildGraphFilterTemplate = (values) => {
+  // Build with Days=0 to get a valid date, then replace the date clause with the placeholder.
+  const compiled = buildGraphFilter({ ...values, Days: 0 })
+  return compiled.replace(
+    /createdDateTime ge [^\s]+/,
+    `createdDateTime ge {DaysAgo:${Number(values.Days)}}`,
+  )
+}
+
 const USER_COLUMNS = [
   'createdDateTime',
   'userPrincipalName',
@@ -132,7 +143,7 @@ const Page = () => {
 
   const formControl = useForm({ defaultValues: defaultFilterValues })
   const [appliedFilters, setAppliedFilters] = useState(defaultFilterValues)
-  const [filterExpanded, setFilterExpanded] = useState(true)
+  const [filterExpanded, setFilterExpanded] = useState(false)
   const savePresetDialog = useDialog()
 
   const handleFilterSubmit = formControl.handleSubmit((data) => {
@@ -292,8 +303,9 @@ const Page = () => {
             preset: {
               name: formData.presetName,
               endpoint: 'auditLogs/signIns',
-              $filter: buildGraphFilter(formControl.getValues()),
+              $filter: buildGraphFilterTemplate(formControl.getValues()),
               version: 'beta',
+              $top: appliedFilters.pageSize || 500,
             },
           }),
         }}

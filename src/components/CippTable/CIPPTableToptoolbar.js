@@ -308,10 +308,11 @@ export const CIPPTableToptoolbar = ({
           }
           return acc
         }, {})
+        const resolvedGraphFilter = resolveFilterVariables(graphFilter)
 
         const newQueryKey = `${queryKey ? queryKey : title}-${last.name}`
         setGraphFilterData({
-          data: { ...mergeCaseInsensitive(api.data, graphFilter) },
+          data: { ...mergeCaseInsensitive(api.data, resolvedGraphFilter) },
           queryKey: newQueryKey,
         })
         setCurrentEffectiveQueryKey(newQueryKey)
@@ -501,6 +502,25 @@ export const CIPPTableToptoolbar = ({
     return merged
   }
 
+  // Resolve variable placeholders in filter objects.
+  // Supported: {DaysAgo:N} → ISO date string N days in the past
+  const resolveFilterVariables = (obj) => {
+    if (!obj || typeof obj !== 'object') return obj
+    return Object.fromEntries(
+      Object.entries(obj).map(([k, v]) => {
+        if (typeof v === 'string') {
+          const resolved = v.replace(/\{DaysAgo:(\d+)\}/g, (_, n) => {
+            const d = new Date()
+            d.setDate(d.getDate() - Number(n))
+            return d.toISOString().split('T')[0]
+          })
+          return [k, resolved]
+        }
+        return [k, v]
+      })
+    )
+  }
+
   // Shared function for setting nested column visibility
   const setNestedVisibility = (col) => {
     if (typeof col === 'object' && col !== null) {
@@ -547,6 +567,7 @@ export const CIPPTableToptoolbar = ({
       }
     }
     if (filterType === 'graph') {
+      const resolvedFilter = resolveFilterVariables(filter)
       const filterProps = [
         '$filter',
         '$select',
@@ -559,8 +580,8 @@ export const CIPPTableToptoolbar = ({
         'AsApp',
       ]
       const graphFilter = filterProps.reduce((acc, prop) => {
-        if (filter[prop]) {
-          acc[prop] = filter[prop]
+        if (resolvedFilter[prop]) {
+          acc[prop] = resolvedFilter[prop]
         }
         return acc
       }, {})
@@ -1341,6 +1362,7 @@ export const CIPPTableToptoolbar = ({
           }}
           onSubmitFilter={(filter) => {
             setTableFilter(filter, 'graph', 'Custom Filter')
+            setFilterCanvasVisible(false)
             if (filter?.$select) {
               let selectedColumns = []
               if (Array.isArray(filter?.$select)) {
