@@ -421,7 +421,9 @@ const DatabaseBlock = ({
   }
 
   const error = dbCacheApi.isError
-    ? dbCacheApi.error?.response?.data?.Results || dbCacheApi.error?.message || 'Failed to fetch data'
+    ? dbCacheApi.error?.response?.data?.Results ||
+      dbCacheApi.error?.message ||
+      'Failed to fetch data'
     : null
 
   const handleHeaderToggle = (header) => {
@@ -476,8 +478,16 @@ const DatabaseBlock = ({
       cardActions={
         <Stack direction="row" spacing={0.5} alignItems="center">
           <Tooltip title="Refresh data">
-            <IconButton size="small" onClick={handleRefresh} disabled={dbCacheApi.isFetching || !currentTenant}>
-              {dbCacheApi.isFetching ? <CircularProgress size={16} /> : <Refresh fontSize="small" />}
+            <IconButton
+              size="small"
+              onClick={handleRefresh}
+              disabled={dbCacheApi.isFetching || !currentTenant}
+            >
+              {dbCacheApi.isFetching ? (
+                <CircularProgress size={16} />
+              ) : (
+                <Refresh fontSize="small" />
+              )}
             </IconButton>
           </Tooltip>
           <Tooltip title="Move up">
@@ -591,7 +601,9 @@ const DatabaseBlock = ({
       )}
       {!dbCacheApi.isFetching && !block.data && !error && (
         <Typography color="text.secondary" variant="body2">
-          {currentTenant ? 'Select a tenant to load database data.' : 'Select a tenant to load database data.'}
+          {currentTenant
+            ? 'Select a tenant to load database data.'
+            : 'Select a tenant to load database data.'}
         </Typography>
       )}
     </CippButtonCard>
