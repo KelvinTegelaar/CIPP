@@ -469,6 +469,15 @@ const CippAddEditUser = (props) => {
               label="Password"
               name="password"
               formControl={formControl}
+              validators={{
+                validate: (value) => {
+                  const isManualPasswordEnabled = formControl.getValues("Autopassword");
+                  if (!isManualPasswordEnabled) {
+                    return true;
+                  }
+                  return Boolean(value);
+                },
+              }}
             />
           </Grid>
         </CippFormCondition>

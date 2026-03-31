@@ -24,6 +24,14 @@ const MemoTextField = React.memo(function MemoTextField({
   params,
   label,
   placeholder,
+  // Autocomplete-specific props that must not be forwarded to TextField/DOM
+  getOptionLabel,
+  isOptionEqualToValue,
+  filterOptions,
+  getOptionDisabled,
+  groupBy,
+  renderGroup,
+  renderOption,
   ...otherProps
 }) {
   const { InputProps, ...otherParams } = params
@@ -43,7 +51,6 @@ const MemoTextField = React.memo(function MemoTextField({
           },
           input: {
             ...InputProps,
-            notched: true,
             sx: {
               transition: 'none',
               '& .MuiOutlinedInput-notchedOutline': {
@@ -458,8 +465,13 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
                 ? ''
                 : option.label || 'Label not found - Are you missing a labelField?'
             }
-            // Fallback for any edge cases
-            return option.label || option.value || ''
+            // Fallback for any edge cases (e.g. preset filter objects with filterName)
+            return (
+              option.label ||
+              option.filterName ||
+              (typeof option.value === 'string' ? option.value : '') ||
+              ''
+            )
           },
           [api]
         )}

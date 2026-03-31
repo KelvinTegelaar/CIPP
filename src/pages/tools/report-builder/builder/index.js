@@ -1471,7 +1471,9 @@ const Page = () => {
         <DialogTitle
           sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         >
-          <Typography variant="h6">Report Preview</Typography>
+          <Typography variant="h6" component="div">
+            Report Preview
+          </Typography>
           <IconButton onClick={() => setPreviewOpen(false)} size="small">
             <Close />
           </IconButton>

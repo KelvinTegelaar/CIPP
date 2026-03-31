@@ -174,13 +174,13 @@ export const CippReportToolbar = () => {
 
       <CippApiDialog
         createDialog={deleteDialog}
-        title="Delete Custom Report"
+        title="Delete Custom Test Suite"
         fields={[]}
         api={{
           url: '/api/DeleteTestReport',
           type: 'POST',
           data: { ReportId: selectedReport },
-          confirmText: 'Are you sure you want to delete this report? This action cannot be undone.',
+          confirmText: 'Are you sure you want to delete this test suite? This action cannot be undone.',
           relatedQueryKeys: ['ListTestReports'],
         }}
       />

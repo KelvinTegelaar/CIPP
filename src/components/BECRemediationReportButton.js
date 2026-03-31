@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react'
 import {
   Button,
   Tooltip,
@@ -10,8 +10,8 @@ import {
   Typography,
   IconButton,
   CircularProgress,
-} from "@mui/material";
-import { PictureAsPdf, Download, Close } from "@mui/icons-material";
+} from '@mui/material'
+import { PictureAsPdf, Download, Close } from '@mui/icons-material'
 import {
   Document,
   Page,
@@ -21,8 +21,8 @@ import {
   PDFViewer,
   PDFDownloadLink,
   Image,
-} from "@react-pdf/renderer";
-import { useSettings } from "../hooks/use-settings";
+} from '@react-pdf/renderer'
+import { useSettings } from '../hooks/use-settings'
 
 // BEC Remediation PDF Document Component
 const BECRemediationReportDocument = ({
@@ -32,44 +32,44 @@ const BECRemediationReportDocument = ({
   tenantName,
   remediationData,
 }) => {
-  const currentDate = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  const brandColor = brandingSettings?.colour || "#F77F00";
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+  const brandColor = brandingSettings?.colour || '#F77F00'
 
   const styles = StyleSheet.create({
     page: {
-      flexDirection: "column",
-      backgroundColor: "#FFFFFF",
-      fontFamily: "Helvetica",
+      flexDirection: 'column',
+      backgroundColor: '#FFFFFF',
+      fontFamily: 'Helvetica',
       fontSize: 10,
       lineHeight: 1.4,
-      color: "#2D3748",
+      color: '#2D3748',
       padding: 40,
     },
 
     // COVER PAGE
     coverPage: {
-      flexDirection: "column",
-      backgroundColor: "#FFFFFF",
-      fontFamily: "Helvetica",
+      flexDirection: 'column',
+      backgroundColor: '#FFFFFF',
+      fontFamily: 'Helvetica',
       padding: 60,
-      justifyContent: "space-between",
-      minHeight: "100%",
+      justifyContent: 'space-between',
+      minHeight: '100%',
     },
 
     coverHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       marginBottom: 80,
     },
 
     logoSection: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
     },
 
     logo: {
@@ -83,36 +83,36 @@ const BECRemediationReportDocument = ({
 
     dateStamp: {
       fontSize: 9,
-      color: "#000000",
-      textTransform: "uppercase",
+      color: '#000000',
+      textTransform: 'uppercase',
       letterSpacing: 0.5,
     },
 
     coverHero: {
       flex: 1,
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
       paddingTop: 40,
     },
 
     coverLabel: {
       backgroundColor: brandColor,
-      color: "#FFFFFF",
+      color: '#FFFFFF',
       fontSize: 10,
-      fontWeight: "bold",
-      textTransform: "uppercase",
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
       letterSpacing: 1,
       paddingHorizontal: 16,
       paddingVertical: 8,
       borderRadius: 20,
       marginBottom: 30,
-      alignSelf: "flex-start",
+      alignSelf: 'flex-start',
     },
 
     mainTitle: {
       fontSize: 48,
-      fontWeight: "bold",
-      color: "#1A202C",
+      fontWeight: 'bold',
+      color: '#1A202C',
       lineHeight: 1.1,
       marginBottom: 20,
       letterSpacing: -1,
@@ -124,41 +124,41 @@ const BECRemediationReportDocument = ({
 
     subtitle: {
       fontSize: 14,
-      color: "#000000",
-      fontWeight: "normal",
+      color: '#000000',
+      fontWeight: 'normal',
       lineHeight: 1.5,
       marginBottom: 40,
       maxWidth: 400,
     },
 
     userCard: {
-      backgroundColor: "transparent",
+      backgroundColor: 'transparent',
       padding: 0,
       maxWidth: 500,
     },
 
     userName: {
       fontSize: 18,
-      fontWeight: "bold",
-      color: "#000000",
+      fontWeight: 'bold',
+      color: '#000000',
       marginBottom: 8,
     },
 
     userEmail: {
       fontSize: 12,
-      color: "#333333",
+      color: '#333333',
       marginBottom: 4,
     },
 
     coverFooter: {
-      textAlign: "center",
+      textAlign: 'center',
       marginTop: 60,
     },
 
     confidential: {
       fontSize: 9,
-      color: "#A0AEC0",
-      textTransform: "uppercase",
+      color: '#A0AEC0',
+      textTransform: 'uppercase',
       letterSpacing: 1,
     },
 
@@ -167,9 +167,9 @@ const BECRemediationReportDocument = ({
       borderBottom: `1px solid ${brandColor}`,
       paddingBottom: 12,
       marginBottom: 24,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "flex-start",
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
     },
 
     pageHeaderContent: {
@@ -178,44 +178,44 @@ const BECRemediationReportDocument = ({
 
     pageTitle: {
       fontSize: 20,
-      fontWeight: "bold",
-      color: "#1A202C",
+      fontWeight: 'bold',
+      color: '#1A202C',
       marginBottom: 8,
     },
 
     pageSubtitle: {
       fontSize: 11,
-      color: "#4A5568",
-      fontWeight: "normal",
+      color: '#4A5568',
+      fontWeight: 'normal',
     },
 
     section: {
       marginBottom: 24,
-      pageBreakInside: "avoid",
-      breakInside: "avoid",
+      pageBreakInside: 'avoid',
+      breakInside: 'avoid',
     },
 
     sectionTitle: {
       fontSize: 14,
-      fontWeight: "bold",
+      fontWeight: 'bold',
       color: brandColor,
       marginBottom: 12,
     },
 
     sectionSubtitle: {
       fontSize: 11,
-      fontWeight: "bold",
-      color: "#2D3748",
+      fontWeight: 'bold',
+      color: '#2D3748',
       marginBottom: 8,
       marginTop: 12,
     },
 
     bodyText: {
       fontSize: 9,
-      color: "#2D3748",
+      color: '#2D3748',
       lineHeight: 1.5,
       marginBottom: 12,
-      textAlign: "justify",
+      textAlign: 'justify',
     },
 
     bulletList: {
@@ -224,8 +224,8 @@ const BECRemediationReportDocument = ({
     },
 
     bulletItem: {
-      flexDirection: "row",
-      alignItems: "flex-start",
+      flexDirection: 'row',
+      alignItems: 'flex-start',
       marginBottom: 6,
     },
 
@@ -233,20 +233,20 @@ const BECRemediationReportDocument = ({
       fontSize: 8,
       color: brandColor,
       marginRight: 6,
-      fontWeight: "bold",
+      fontWeight: 'bold',
       marginTop: 1,
     },
 
     bulletText: {
       fontSize: 9,
-      color: "#2D3748",
+      color: '#2D3748',
       lineHeight: 1.4,
       flex: 1,
     },
 
     // ALERT BOXES
     alertBox: {
-      backgroundColor: "#FFF5F5",
+      backgroundColor: '#FFF5F5',
       border: `2px solid ${brandColor}`,
       borderRadius: 6,
       padding: 12,
@@ -255,20 +255,20 @@ const BECRemediationReportDocument = ({
 
     alertTitle: {
       fontSize: 11,
-      fontWeight: "bold",
+      fontWeight: 'bold',
       color: brandColor,
       marginBottom: 6,
     },
 
     alertText: {
       fontSize: 9,
-      color: "#2D3748",
+      color: '#2D3748',
       lineHeight: 1.4,
     },
 
     // INFO BOXES
     infoBox: {
-      backgroundColor: "#F7FAFC",
+      backgroundColor: '#F7FAFC',
       border: `1px solid #E2E8F0`,
       borderLeft: `4px solid ${brandColor}`,
       borderRadius: 4,
@@ -278,62 +278,62 @@ const BECRemediationReportDocument = ({
 
     infoTitle: {
       fontSize: 10,
-      fontWeight: "bold",
-      color: "#2D3748",
+      fontWeight: 'bold',
+      color: '#2D3748',
       marginBottom: 6,
     },
 
     infoText: {
       fontSize: 8,
-      color: "#4A5568",
+      color: '#4A5568',
       lineHeight: 1.4,
     },
 
     // STATS GRID
     statsGrid: {
-      flexDirection: "row",
+      flexDirection: 'row',
       gap: 12,
       marginBottom: 20,
-      pageBreakInside: "avoid",
-      breakInside: "avoid",
+      pageBreakInside: 'avoid',
+      breakInside: 'avoid',
     },
 
     statCard: {
       flex: 1,
-      backgroundColor: "#FFFFFF",
+      backgroundColor: '#FFFFFF',
       border: `1px solid #E2E8F0`,
       borderRadius: 6,
       padding: 16,
-      alignItems: "center",
+      alignItems: 'center',
       borderTop: `3px solid ${brandColor}`,
     },
 
     statNumber: {
       fontSize: 20,
-      fontWeight: "bold",
+      fontWeight: 'bold',
       color: brandColor,
       marginBottom: 4,
     },
 
     statLabel: {
       fontSize: 7,
-      color: "#4A5568",
-      textTransform: "uppercase",
+      color: '#4A5568',
+      textTransform: 'uppercase',
       letterSpacing: 0.5,
-      textAlign: "center",
-      fontWeight: "bold",
+      textAlign: 'center',
+      fontWeight: 'bold',
     },
 
     // TABLES
     table: {
       border: `1px solid #E2E8F0`,
       borderRadius: 6,
-      overflow: "hidden",
+      overflow: 'hidden',
       marginBottom: 16,
     },
 
     tableHeader: {
-      flexDirection: "row",
+      flexDirection: 'row',
       backgroundColor: brandColor,
       paddingVertical: 10,
       paddingHorizontal: 12,
@@ -341,98 +341,98 @@ const BECRemediationReportDocument = ({
 
     tableHeaderCell: {
       fontSize: 7,
-      fontWeight: "bold",
-      color: "#FFFFFF",
-      textTransform: "uppercase",
+      fontWeight: 'bold',
+      color: '#FFFFFF',
+      textTransform: 'uppercase',
       letterSpacing: 0.5,
     },
 
     tableRow: {
-      flexDirection: "row",
+      flexDirection: 'row',
       borderBottomWidth: 1,
-      borderBottomColor: "#F7FAFC",
+      borderBottomColor: '#F7FAFC',
       paddingVertical: 8,
       paddingHorizontal: 12,
-      alignItems: "flex-start",
+      alignItems: 'flex-start',
     },
 
     tableCell: {
       fontSize: 8,
-      color: "#2D3748",
+      color: '#2D3748',
       lineHeight: 1.3,
     },
 
     // FOOTER
     footer: {
-      position: "absolute",
+      position: 'absolute',
       bottom: 20,
       left: 40,
       right: 40,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      borderTop: "1px solid #E2E8F0",
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderTop: '1px solid #E2E8F0',
       paddingTop: 8,
     },
 
     footerText: {
       fontSize: 7,
-      color: "#718096",
+      color: '#718096',
     },
 
     pageNumber: {
       fontSize: 7,
-      color: "#718096",
-      fontWeight: "bold",
+      color: '#718096',
+      fontWeight: 'bold',
     },
 
     // STATUS INDICATORS
     statusBadge: {
       fontSize: 7,
-      fontWeight: "bold",
+      fontWeight: 'bold',
       paddingHorizontal: 8,
       paddingVertical: 4,
       borderRadius: 4,
-      textTransform: "uppercase",
+      textTransform: 'uppercase',
       letterSpacing: 0.3,
     },
 
     statusSuccess: {
-      backgroundColor: "#C6F6D5",
-      color: "#22543D",
+      backgroundColor: '#C6F6D5',
+      color: '#22543D',
     },
 
     statusWarning: {
-      backgroundColor: "#FEEBC8",
-      color: "#744210",
+      backgroundColor: '#FEEBC8',
+      color: '#744210',
     },
 
     statusDanger: {
-      backgroundColor: "#FED7D7",
-      color: "#742A2A",
+      backgroundColor: '#FED7D7',
+      color: '#742A2A',
     },
 
     statusInfo: {
-      backgroundColor: "#BEE3F8",
-      color: "#2C5282",
+      backgroundColor: '#BEE3F8',
+      color: '#2C5282',
     },
-  });
+  })
 
   // Helper function to format dates
   const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
+    if (!dateString) return 'N/A'
     try {
-      return new Date(dateString).toLocaleString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      return new Date(dateString).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
     } catch {
-      return dateString;
+      return dateString
     }
-  };
+  }
 
   // Calculate statistics
   const stats = {
@@ -442,28 +442,26 @@ const BECRemediationReportDocument = ({
     permissionChanges: becData?.MailboxPermissionChanges?.length || 0,
     mfaDevices: becData?.MFADevices?.length || 0,
     passwordChanges: becData?.ChangedPasswords?.length || 0,
-  };
+  }
 
   // Determine threat level
   const calculateThreatLevel = () => {
-    let threatScore = 0;
-    if (stats.newRules > 0) threatScore += 3;
-    if (stats.permissionChanges > 0) threatScore += 2;
-    if (stats.newApps > 0) threatScore += 2;
-    if (stats.newUsers > 5) threatScore += 1;
+    let threatScore = 0
+    if (stats.newRules > 0) threatScore += 3
+    if (stats.permissionChanges > 0) threatScore += 2
+    if (stats.newApps > 0) threatScore += 2
+    if (stats.newUsers > 5) threatScore += 1
 
     // Check for suspicious rules (RSS folder moves)
-    const hasSuspiciousRules = becData?.NewRules?.some((rule) =>
-      rule.MoveToFolder?.includes("RSS"),
-    );
-    if (hasSuspiciousRules) threatScore += 5;
+    const hasSuspiciousRules = becData?.NewRules?.some((rule) => rule.MoveToFolder?.includes('RSS'))
+    if (hasSuspiciousRules) threatScore += 5
 
-    if (threatScore >= 7) return { level: "High", color: "#742A2A" };
-    if (threatScore >= 4) return { level: "Medium", color: "#744210" };
-    return { level: "Low", color: "#22543D" };
-  };
+    if (threatScore >= 7) return { level: 'High', color: '#742A2A' }
+    if (threatScore >= 4) return { level: 'Medium', color: '#744210' }
+    return { level: 'Low', color: '#22543D' }
+  }
 
-  const threatLevel = calculateThreatLevel();
+  const threatLevel = calculateThreatLevel()
 
   return (
     <Document>
@@ -482,19 +480,19 @@ const BECRemediationReportDocument = ({
           <Text style={styles.coverLabel}>SECURITY INCIDENT REPORT</Text>
 
           <Text style={styles.mainTitle}>
-            BEC Compromise{"\n"}
+            BEC Compromise{'\n'}
             <Text style={styles.titleAccent}>Analysis</Text>
           </Text>
 
           <Text style={styles.subtitle}>
-            Business Email Compromise Investigation Report for {tenantName || "your organization"}
+            Business Email Compromise Investigation Report for {tenantName || 'your organization'}
           </Text>
 
           <View style={styles.userCard}>
-            <Text style={styles.userName}>{userData?.displayName || "Unknown User"}</Text>
-            <Text style={styles.userEmail}>{userData?.userPrincipalName || "user@domain.com"}</Text>
+            <Text style={styles.userName}>{userData?.displayName || 'Unknown User'}</Text>
+            <Text style={styles.userEmail}>{userData?.userPrincipalName || 'user@domain.com'}</Text>
             <Text style={[styles.dateStamp, { marginTop: 8 }]}>
-              Analysis Date: {becData?.ExtractedAt ? formatDate(becData.ExtractedAt) : "N/A"}
+              Analysis Date: {becData?.ExtractedAt ? formatDate(becData.ExtractedAt) : 'N/A'}
             </Text>
           </View>
         </View>
@@ -523,9 +521,9 @@ const BECRemediationReportDocument = ({
         <View style={styles.section}>
           <Text style={styles.bodyText}>
             This report documents the findings of a Business Email Compromise (BEC) investigation
-            performed for the user account{" "}
-            <Text style={{ fontWeight: "bold" }}>{userData?.userPrincipalName}</Text> within{" "}
-            <Text style={{ fontWeight: "bold" }}>{tenantName}</Text>. The investigation analyzed
+            performed for the user account{' '}
+            <Text style={{ fontWeight: 'bold' }}>{userData?.userPrincipalName}</Text> within{' '}
+            <Text style={{ fontWeight: 'bold' }}>{tenantName}</Text>. The investigation analyzed
             suspicious activity indicators including mailbox rules, permission changes, new
             applications, and authentication patterns over a 7-day period.
           </Text>
@@ -566,12 +564,12 @@ const BECRemediationReportDocument = ({
               Threat Assessment: {threatLevel.level}
             </Text>
             <Text style={styles.alertText}>
-              {threatLevel.level === "High" &&
-                "HIGH RISK: Multiple indicators of compromise detected. Immediate remediation actions are strongly recommended. This account shows patterns consistent with active Business Email Compromise attacks."}
-              {threatLevel.level === "Medium" &&
-                "MEDIUM RISK: Suspicious activity patterns detected. Review findings and consider implementing recommended security measures. Some indicators suggest potential unauthorized access."}
-              {threatLevel.level === "Low" &&
-                "LOW RISK: Minimal suspicious activity detected. The findings show standard user behavior with no significant indicators of compromise. Continue monitoring as a precautionary measure."}
+              {threatLevel.level === 'High' &&
+                'HIGH RISK: Multiple indicators of compromise detected. Immediate remediation actions are strongly recommended. This account shows patterns consistent with active Business Email Compromise attacks.'}
+              {threatLevel.level === 'Medium' &&
+                'MEDIUM RISK: Suspicious activity patterns detected. Review findings and consider implementing recommended security measures. Some indicators suggest potential unauthorized access.'}
+              {threatLevel.level === 'Low' &&
+                'LOW RISK: Minimal suspicious activity detected. The findings show standard user behavior with no significant indicators of compromise. Continue monitoring as a precautionary measure.'}
             </Text>
           </View>
         </View>
@@ -580,12 +578,12 @@ const BECRemediationReportDocument = ({
           <Text style={styles.sectionTitle}>Data Source Information</Text>
           <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>Audit Log Status</Text>
-            <Text style={styles.infoText}>{becData?.ExtractResult || "Unknown"}</Text>
+            <Text style={styles.infoText}>{becData?.ExtractResult || 'Unknown'}</Text>
           </View>
           <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>Analysis Period</Text>
             <Text style={styles.infoText}>
-              Last 7 days ending {becData?.ExtractedAt ? formatDate(becData.ExtractedAt) : "N/A"}
+              Last 7 days ending {becData?.ExtractedAt ? formatDate(becData.ExtractedAt) : 'N/A'}
             </Text>
           </View>
         </View>
@@ -624,7 +622,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Monitor communications:</Text> Read sensitive
+                <Text style={{ fontWeight: 'bold' }}>Monitor communications:</Text> Read sensitive
                 emails to learn about business operations, financial processes, and key
                 relationships.
               </Text>
@@ -632,7 +630,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Impersonate executives:</Text> Send fraudulent
+                <Text style={{ fontWeight: 'bold' }}>Impersonate executives:</Text> Send fraudulent
                 emails appearing to come from company leadership requesting wire transfers or
                 sensitive data.
               </Text>
@@ -640,7 +638,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Manipulate transactions:</Text> Intercept
+                <Text style={{ fontWeight: 'bold' }}>Manipulate transactions:</Text> Intercept
                 legitimate invoices and alter payment information to redirect funds to
                 attacker-controlled accounts.
               </Text>
@@ -648,7 +646,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Hide their tracks:</Text> Create email rules to
+                <Text style={{ fontWeight: 'bold' }}>Hide their tracks:</Text> Create email rules to
                 automatically delete or hide messages, preventing detection.
               </Text>
             </View>
@@ -665,28 +663,28 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Phishing:</Text> Deceptive emails that trick
+                <Text style={{ fontWeight: 'bold' }}>Phishing:</Text> Deceptive emails that trick
                 users into providing their login credentials on fake websites.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Password Spraying:</Text> Automated attempts to
+                <Text style={{ fontWeight: 'bold' }}>Password Spraying:</Text> Automated attempts to
                 log in using common passwords across many accounts.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Credential Stuffing:</Text> Using usernames and
+                <Text style={{ fontWeight: 'bold' }}>Credential Stuffing:</Text> Using usernames and
                 passwords leaked from other breached websites.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Malware:</Text> Software that captures
+                <Text style={{ fontWeight: 'bold' }}>Malware:</Text> Software that captures
                 keystrokes or steals stored passwords from compromised devices.
               </Text>
             </View>
@@ -753,25 +751,25 @@ const BECRemediationReportDocument = ({
 
               {becData.NewRules.slice(0, 10).map((rule, index) => (
                 <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>Rule: {rule.Name || "Unnamed Rule"}</Text>
+                  <Text style={styles.infoTitle}>Rule: {rule.Name || 'Unnamed Rule'}</Text>
                   <Text style={styles.infoText}>
-                    Description: {rule.Description || "No description available"}
-                    {"\n"}
+                    Description: {rule.Description || 'No description available'}
+                    {'\n'}
                     {rule.MoveToFolder && `Moves to: ${rule.MoveToFolder}`}
                     {rule.ForwardTo && `\nForwards to: ${rule.ForwardTo}`}
-                    {rule.DeleteMessage && "\nDeletes messages"}
+                    {rule.DeleteMessage && '\nDeletes messages'}
                   </Text>
                 </View>
               ))}
               {becData.NewRules.length > 10 && (
-                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: "italic" }]}>
+                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
                   ... and {becData.NewRules.length - 10} more rules (see JSON export for full list)
                 </Text>
               )}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: "#F0FDF4" }]}>
-              <Text style={[styles.infoTitle, { color: "#22543D" }]}>
+            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
+              <Text style={[styles.infoTitle, { color: '#22543D' }]}>
                 ✓ No Suspicious Rules Found
               </Text>
               <Text style={styles.infoText}>
@@ -828,23 +826,23 @@ const BECRemediationReportDocument = ({
 
               {becData.NewUsers.slice(0, 8).map((user, index) => (
                 <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>{user.displayName || "Unknown"}</Text>
+                  <Text style={styles.infoTitle}>{user.displayName || 'Unknown'}</Text>
                   <Text style={styles.infoText}>
-                    Email: {user.userPrincipalName || "N/A"}
-                    {"\n"}
+                    Email: {user.userPrincipalName || 'N/A'}
+                    {'\n'}
                     Created: {formatDate(user.createdDateTime)}
                   </Text>
                 </View>
               ))}
               {becData.NewUsers.length > 8 && (
-                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: "italic" }]}>
+                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
                   ... and {becData.NewUsers.length - 8} more users (see JSON export for full list)
                 </Text>
               )}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: "#F0FDF4" }]}>
-              <Text style={[styles.infoTitle, { color: "#22543D" }]}>✓ No New Users Found</Text>
+            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
+              <Text style={[styles.infoTitle, { color: '#22543D' }]}>✓ No New Users Found</Text>
               <Text style={styles.infoText}>
                 No new user accounts were created during the analysis period.
               </Text>
@@ -877,26 +875,26 @@ const BECRemediationReportDocument = ({
               {becData.AddedApps.slice(0, 6).map((app, index) => (
                 <View key={index} style={styles.infoBox}>
                   <Text style={styles.infoTitle}>
-                    {app.displayName || app.appDisplayName || "Unknown"}
+                    {app.displayName || app.appDisplayName || 'Unknown'}
                   </Text>
                   <Text style={styles.infoText}>
-                    Publisher: {app.publisher || "Unknown"}
-                    {"\n"}
-                    App ID: {app.appId || "N/A"}
-                    {"\n"}
+                    Publisher: {app.publisher || 'Unknown'}
+                    {'\n'}
+                    App ID: {app.appId || 'N/A'}
+                    {'\n'}
                     Created: {formatDate(app.createdDateTime)}
                   </Text>
                 </View>
               ))}
               {becData.AddedApps.length > 6 && (
-                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: "italic" }]}>
+                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
                   ... and {becData.AddedApps.length - 6} more apps (see JSON export for full list)
                 </Text>
               )}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: "#F0FDF4" }]}>
-              <Text style={[styles.infoTitle, { color: "#22543D" }]}>
+            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
+              <Text style={[styles.infoTitle, { color: '#22543D' }]}>
                 ✓ No New Applications Found
               </Text>
               <Text style={styles.infoText}>
@@ -957,25 +955,25 @@ const BECRemediationReportDocument = ({
 
               {becData.MailboxPermissionChanges.slice(0, 5).map((change, index) => (
                 <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>{change.Operation || "Permission Change"}</Text>
+                  <Text style={styles.infoTitle}>{change.Operation || 'Permission Change'}</Text>
                   <Text style={styles.infoText}>
-                    User: {change.UserKey || "Unknown"}
-                    {"\n"}
-                    Target: {change.ObjectId || "N/A"}
-                    {"\n"}
-                    Permissions: {change.Permissions || "Unknown"}
+                    User: {change.UserKey || 'Unknown'}
+                    {'\n'}
+                    Target: {change.ObjectId || 'N/A'}
+                    {'\n'}
+                    Permissions: {change.Permissions || 'Unknown'}
                   </Text>
                 </View>
               ))}
               {becData.MailboxPermissionChanges.length > 5 && (
-                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: "italic" }]}>
+                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
                   ... and {becData.MailboxPermissionChanges.length - 5} more changes
                 </Text>
               )}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: "#F0FDF4" }]}>
-              <Text style={[styles.infoTitle, { color: "#22543D" }]}>
+            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
+              <Text style={[styles.infoTitle, { color: '#22543D' }]}>
                 ✓ No Permission Changes Found
               </Text>
               <Text style={styles.infoText}>
@@ -1007,21 +1005,21 @@ const BECRemediationReportDocument = ({
               {becData.MFADevices.slice(0, 5).map((device, index) => (
                 <View key={index} style={styles.infoBox}>
                   <Text style={styles.infoTitle}>
-                    {device["@odata.type"]
-                      ?.replace("#microsoft.graph.", "")
-                      .replace("AuthenticationMethod", "") || "Unknown"}
+                    {device['@odata.type']
+                      ?.replace('#microsoft.graph.', '')
+                      .replace('AuthenticationMethod', '') || 'Unknown'}
                   </Text>
                   <Text style={styles.infoText}>
-                    Display Name: {device.displayName || "N/A"}
-                    {"\n"}
+                    Display Name: {device.displayName || 'N/A'}
+                    {'\n'}
                     Registered: {formatDate(device.createdDateTime)}
                   </Text>
                 </View>
               ))}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: "#FEF5E7" }]}>
-              <Text style={[styles.infoTitle, { color: "#744210" }]}>⚠ No MFA Devices Found</Text>
+            <View style={[styles.infoBox, { backgroundColor: '#FEF5E7' }]}>
+              <Text style={[styles.infoTitle, { color: '#744210' }]}>⚠ No MFA Devices Found</Text>
               <Text style={styles.infoText}>
                 No multi-factor authentication devices are registered. MFA is highly recommended to
                 prevent unauthorized access.
@@ -1051,10 +1049,10 @@ const BECRemediationReportDocument = ({
 
               {becData.ChangedPasswords.slice(0, 5).map((user, index) => (
                 <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>{user.displayName || "Unknown"}</Text>
+                  <Text style={styles.infoTitle}>{user.displayName || 'Unknown'}</Text>
                   <Text style={styles.infoText}>
-                    Email: {user.userPrincipalName || "N/A"}
-                    {"\n"}
+                    Email: {user.userPrincipalName || 'N/A'}
+                    {'\n'}
                     Last Password Change: {formatDate(user.lastPasswordChangeDateTime)}
                   </Text>
                 </View>
@@ -1100,21 +1098,21 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>1.</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Reset Password:</Text> Change the user's
+                <Text style={{ fontWeight: 'bold' }}>Reset Password:</Text> Change the user's
                 password immediately to prevent further unauthorized access.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>2.</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Revoke Sessions:</Text> Sign out the user from
+                <Text style={{ fontWeight: 'bold' }}>Revoke Sessions:</Text> Sign out the user from
                 all active sessions to terminate any attacker access.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>3.</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Remove Suspicious Rules:</Text> Delete any
+                <Text style={{ fontWeight: 'bold' }}>Remove Suspicious Rules:</Text> Delete any
                 mailbox rules that forward, redirect, or hide emails, especially those moving
                 messages to unusual folders.
               </Text>
@@ -1122,21 +1120,21 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>4.</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Review MFA Devices:</Text> Remove any MFA
+                <Text style={{ fontWeight: 'bold' }}>Review MFA Devices:</Text> Remove any MFA
                 devices that the user doesn't recognize and re-register legitimate devices.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>5.</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Audit Permissions:</Text> Review and revoke any
+                <Text style={{ fontWeight: 'bold' }}>Audit Permissions:</Text> Review and revoke any
                 unauthorized mailbox permissions or application consents.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>6.</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Monitor Account:</Text> Continue monitoring the
+                <Text style={{ fontWeight: 'bold' }}>Monitor Account:</Text> Continue monitoring the
                 account for suspicious activity for at least 30 days.
               </Text>
             </View>
@@ -1154,9 +1152,9 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>
+                <Text style={{ fontWeight: 'bold' }}>
                   Enforce Multi-Factor Authentication (MFA):
-                </Text>{" "}
+                </Text>{' '}
                 Require MFA for all users, especially those with administrative privileges or access
                 to financial systems.
               </Text>
@@ -1164,7 +1162,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Implement Security Awareness Training:</Text>{" "}
+                <Text style={{ fontWeight: 'bold' }}>Implement Security Awareness Training:</Text>{' '}
                 Educate employees about phishing, social engineering, and how to identify suspicious
                 emails. Regular training significantly reduces successful attacks.
               </Text>
@@ -1172,7 +1170,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Enable Advanced Threat Protection:</Text> Use
+                <Text style={{ fontWeight: 'bold' }}>Enable Advanced Threat Protection:</Text> Use
                 email security solutions that detect and block phishing, malware, and suspicious
                 attachments.
               </Text>
@@ -1180,7 +1178,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Configure Conditional Access Policies:</Text>{" "}
+                <Text style={{ fontWeight: 'bold' }}>Configure Conditional Access Policies:</Text>{' '}
                 Restrict access based on location, device compliance, and risk level to prevent
                 unauthorized sign-ins.
               </Text>
@@ -1188,7 +1186,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Monitor Audit Logs:</Text> Regularly review
+                <Text style={{ fontWeight: 'bold' }}>Monitor Audit Logs:</Text> Regularly review
                 audit logs for suspicious activities such as unusual sign-in patterns, rule
                 creation, or permission changes.
               </Text>
@@ -1196,7 +1194,7 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>Establish Financial Controls:</Text> Implement
+                <Text style={{ fontWeight: 'bold' }}>Establish Financial Controls:</Text> Implement
                 multi-person approval processes for wire transfers and payment changes to prevent
                 fraudulent transactions.
               </Text>
@@ -1281,14 +1279,14 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>ISO 27001:</Text> Demonstrates incident
+                <Text style={{ fontWeight: 'bold' }}>ISO 27001:</Text> Demonstrates incident
                 detection, analysis, and response procedures (Controls A.16.1.1 - A.16.1.7).
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>CMMC Level 2:</Text> Provides evidence of
+                <Text style={{ fontWeight: 'bold' }}>CMMC Level 2:</Text> Provides evidence of
                 security incident monitoring, analysis, and documentation (AC.L2-3.1.12,
                 AU.L2-3.3.1).
               </Text>
@@ -1296,21 +1294,21 @@ const BECRemediationReportDocument = ({
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>SOC 2 Type II:</Text> Documents detective and
+                <Text style={{ fontWeight: 'bold' }}>SOC 2 Type II:</Text> Documents detective and
                 responsive controls for security incidents (CC7.3, CC7.4).
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>NIST CSF:</Text> Aligns with Detect (DE.AE,
+                <Text style={{ fontWeight: 'bold' }}>NIST CSF:</Text> Aligns with Detect (DE.AE,
                 DE.CM) and Respond (RS.AN, RS.MI) functions.
               </Text>
             </View>
             <View style={styles.bulletItem}>
               <Text style={styles.bulletPoint}>•</Text>
               <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: "bold" }}>GDPR:</Text> Demonstrates security breach
+                <Text style={{ fontWeight: 'bold' }}>GDPR:</Text> Demonstrates security breach
                 detection and potential data breach assessment (Articles 32, 33).
               </Text>
             </View>
@@ -1328,14 +1326,14 @@ const BECRemediationReportDocument = ({
             <Text style={styles.infoTitle}>Investigation Details</Text>
             <Text style={styles.infoText}>
               Investigation Date: {formatDate(becData?.ExtractedAt)}
-              {"\n"}
+              {'\n'}
               Analyzed User: {userData?.userPrincipalName}
-              {"\n"}
+              {'\n'}
               Organization: {tenantName}
-              {"\n"}
+              {'\n'}
               Analysis Period: 7 days
-              {"\n"}
-              Audit Log Status: {becData?.ExtractResult || "Unknown"}
+              {'\n'}
+              Audit Log Status: {becData?.ExtractResult || 'Unknown'}
             </Text>
           </View>
 
@@ -1343,17 +1341,17 @@ const BECRemediationReportDocument = ({
             <Text style={styles.infoTitle}>Findings Summary</Text>
             <Text style={styles.infoText}>
               Threat Level: {threatLevel.level}
-              {"\n"}
+              {'\n'}
               Mailbox Rules Found: {stats.newRules}
-              {"\n"}
+              {'\n'}
               Permission Changes: {stats.permissionChanges}
-              {"\n"}
+              {'\n'}
               New Applications: {stats.newApps}
-              {"\n"}
+              {'\n'}
               New Users: {stats.newUsers}
-              {"\n"}
+              {'\n'}
               MFA Devices: {stats.mfaDevices}
-              {"\n"}
+              {'\n'}
               Password Changes: {stats.passwordChanges}
             </Text>
           </View>
@@ -1408,33 +1406,33 @@ const BECRemediationReportDocument = ({
         </View>
       </Page>
     </Document>
-  );
-};
+  )
+}
 
 // Main Button Component
 export const BECRemediationReportButton = ({ userData, becData, tenantName }) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const userSettings = useSettings();
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const userSettings = useSettings()
 
   // Check if we have the necessary data
-  const hasData = userData && becData && !becData.Waiting;
+  const hasData = userData && becData && !becData.Waiting
 
   const brandingSettings = userSettings?.organizationSettings || {
     logo: userSettings?.organizationSettings?.logo,
-    colour: userSettings?.organizationSettings?.colour || "#F77F00",
-  };
+    colour: userSettings?.organizationSettings?.colour || '#F77F00',
+  }
 
   const handleOpenDialog = () => {
-    setDialogOpen(true);
-  };
+    setDialogOpen(true)
+  }
 
   const handleCloseDialog = () => {
-    setDialogOpen(false);
-  };
+    setDialogOpen(false)
+  }
 
   if (!hasData) {
-    return null; // Don't show button if data isn't ready
+    return null // Don't show button if data isn't ready
   }
 
   return (
@@ -1458,13 +1456,15 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
         fullWidth
         PaperProps={{
           sx: {
-            height: "90vh",
+            height: '90vh',
           },
         }}
       >
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">BEC Remediation Report Preview</Typography>
+            <Typography variant="h6" component="div">
+              BEC Remediation Report Preview
+            </Typography>
             <IconButton onClick={handleCloseDialog} size="small">
               <Close />
             </IconButton>
@@ -1493,8 +1493,8 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
                 tenantName={tenantName}
               />
             }
-            fileName={`BEC_Report_${userData?.userPrincipalName}_${new Date().toISOString().split("T")[0]}.pdf`}
-            style={{ textDecoration: "none" }}
+            fileName={`BEC_Report_${userData?.userPrincipalName}_${new Date().toISOString().split('T')[0]}.pdf`}
+            style={{ textDecoration: 'none' }}
           >
             {({ loading }) => (
               <Button
@@ -1502,12 +1502,12 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
                 startIcon={loading ? <CircularProgress size={20} /> : <Download />}
                 disabled={loading}
               >
-                {loading ? "Generating..." : "Download PDF"}
+                {loading ? 'Generating...' : 'Download PDF'}
               </Button>
             )}
           </PDFDownloadLink>
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
