@@ -64,7 +64,6 @@ import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { ReportBuilderPDF } from '../../../../components/ReportBuilder/ReportBuilderPDF'
 import { useRouter } from 'next/router'
-import axios from 'axios'
 
 /* ── Markdown styles (matches CippTestDetailOffCanvas) ── */
 const markdownStyles = {
@@ -379,55 +378,51 @@ const DatabaseBlock = ({
   onMoveDown,
   currentTenant,
 }) => {
-  const [loading, setLoading] = useState(false)
-  const [fetched, setFetched] = useState(!!block.data)
   const [allHeaders, setAllHeaders] = useState(block.allHeaders || [])
-  const [error, setError] = useState(null)
+  const processedRef = useRef(false)
 
-  const fetchData = useCallback(async () => {
-    if (!currentTenant || !block.dbType) return
-    setLoading(true)
-    setError(null)
-    try {
-      const resp = await axios.get('/api/ListDBCache', {
-        params: { tenantFilter: currentTenant, type: block.dbType },
-      })
-      const results = resp.data?.Results
-      // Derive all unique headers from the data
-      const headerSet = new Set()
-      if (Array.isArray(results)) {
-        results.forEach((row) => Object.keys(row).forEach((k) => headerSet.add(k)))
-      } else if (results && typeof results === 'object') {
-        Object.keys(results).forEach((k) => headerSet.add(k))
-      }
-      const headers = [...headerSet].sort()
-      setAllHeaders(headers)
-      // Auto-select headers: all except default excluded
-      const selectedHeaders =
-        block.selectedHeaders && block.selectedHeaders.length > 0
-          ? block.selectedHeaders
-          : headers.filter((h) => !DB_DEFAULT_EXCLUDED.includes(h.toLowerCase()))
-      onUpdate(index, {
-        ...block,
-        data: results,
-        allHeaders: headers,
-        selectedHeaders,
-        content: formatDatabaseContent(results, selectedHeaders, block.format || 'text'),
-      })
-      setFetched(true)
-    } catch (err) {
-      setError(err?.response?.data?.Results || err.message || 'Failed to fetch data')
-    } finally {
-      setLoading(false)
-    }
-  }, [currentTenant, block.dbType, index])
+  const dbCacheApi = ApiGetCall({
+    url: '/api/ListDBCache',
+    data: { tenantFilter: currentTenant, type: block.dbType },
+    queryKey: `ListDBCache-${currentTenant}-${block.dbType}`,
+    waiting: !!currentTenant && !!block.dbType && !block.data,
+  })
 
-  // Fetch data on mount if not already fetched
+  // Process results when API data arrives
   useEffect(() => {
-    if (!fetched && currentTenant && block.dbType) {
-      fetchData()
+    if (!dbCacheApi.isSuccess || !dbCacheApi.data?.Results || processedRef.current) return
+    processedRef.current = true
+    const results = dbCacheApi.data.Results
+    const headerSet = new Set()
+    if (Array.isArray(results)) {
+      results.forEach((row) => Object.keys(row).forEach((k) => headerSet.add(k)))
+    } else if (results && typeof results === 'object') {
+      Object.keys(results).forEach((k) => headerSet.add(k))
     }
-  }, [])
+    const headers = [...headerSet].sort()
+    setAllHeaders(headers)
+    const selectedHeaders =
+      block.selectedHeaders && block.selectedHeaders.length > 0
+        ? block.selectedHeaders
+        : headers.filter((h) => !DB_DEFAULT_EXCLUDED.includes(h.toLowerCase()))
+    onUpdate(index, {
+      ...block,
+      data: results,
+      allHeaders: headers,
+      selectedHeaders,
+      content: formatDatabaseContent(results, selectedHeaders, block.format || 'text'),
+    })
+  }, [dbCacheApi.isSuccess, dbCacheApi.data])
+
+  const handleRefresh = () => {
+    processedRef.current = false
+    onUpdate(index, { ...block, data: null })
+    dbCacheApi.refetch()
+  }
+
+  const error = dbCacheApi.isError
+    ? dbCacheApi.error?.response?.data?.Results || dbCacheApi.error?.message || 'Failed to fetch data'
+    : null
 
   const handleHeaderToggle = (header) => {
     const current = block.selectedHeaders || []
@@ -481,8 +476,8 @@ const DatabaseBlock = ({
       cardActions={
         <Stack direction="row" spacing={0.5} alignItems="center">
           <Tooltip title="Refresh data">
-            <IconButton size="small" onClick={fetchData} disabled={loading || !currentTenant}>
-              {loading ? <CircularProgress size={16} /> : <Refresh fontSize="small" />}
+            <IconButton size="small" onClick={handleRefresh} disabled={dbCacheApi.isFetching || !currentTenant}>
+              {dbCacheApi.isFetching ? <CircularProgress size={16} /> : <Refresh fontSize="small" />}
             </IconButton>
           </Tooltip>
           <Tooltip title="Move up">
@@ -516,14 +511,14 @@ const DatabaseBlock = ({
           {error}
         </Alert>
       )}
-      {loading && (
+      {dbCacheApi.isFetching && (
         <Stack spacing={1}>
           <Skeleton variant="text" width="80%" />
           <Skeleton variant="text" width="60%" />
           <Skeleton variant="rounded" height={60} />
         </Stack>
       )}
-      {!loading && fetched && allHeaders.length > 0 && (
+      {!dbCacheApi.isFetching && block.data && allHeaders.length > 0 && (
         <Box sx={{ mb: 2 }}>
           <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
             <Typography variant="caption" fontWeight={600}>
@@ -570,7 +565,7 @@ const DatabaseBlock = ({
           </FormGroup>
         </Box>
       )}
-      {!loading && fetched && block.content && (
+      {!dbCacheApi.isFetching && block.data && block.content && (
         <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
           {block.format === 'text' ? (
             <Box sx={markdownStyles}>
@@ -594,9 +589,9 @@ const DatabaseBlock = ({
           )}
         </Box>
       )}
-      {!loading && !fetched && !error && (
+      {!dbCacheApi.isFetching && !block.data && !error && (
         <Typography color="text.secondary" variant="body2">
-          {currentTenant ? 'Loading data...' : 'Select a tenant to load database data.'}
+          {currentTenant ? 'Select a tenant to load database data.' : 'Select a tenant to load database data.'}
         </Typography>
       )}
     </CippButtonCard>
@@ -708,36 +703,18 @@ const Page = () => {
   const removeRemediation = useWatch({ control: settingsForm.control, name: 'removeRemediation' })
 
   // Fetch available DB cache types dynamically when tenant changes
-  const [availableCacheTypes, setAvailableCacheTypes] = useState([])
-  const [cacheTypesLoading, setCacheTypesLoading] = useState(false)
-  useEffect(() => {
-    if (!currentTenant) {
-      setAvailableCacheTypes([])
-      return
-    }
-    let cancelled = false
-    setCacheTypesLoading(true)
-    axios
-      .get('/api/ListDBCache', {
-        params: { tenantFilter: currentTenant },
-        validateStatus: (s) => s < 500,
-      })
-      .then((resp) => {
-        if (!cancelled) {
-          const types = resp.data?.AvailableTypes || []
-          setAvailableCacheTypes(types.map((t) => ({ label: t, value: t })))
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setAvailableCacheTypes([])
-      })
-      .finally(() => {
-        if (!cancelled) setCacheTypesLoading(false)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [currentTenant])
+  const availableCacheTypesApi = ApiGetCall({
+    url: '/api/ListDBCache',
+    data: { tenantFilter: currentTenant, type: '_availableTypes' },
+    queryKey: `ListDBCache-availableTypes-${currentTenant}`,
+    waiting: !!currentTenant,
+  })
+
+  const availableCacheTypes = useMemo(() => {
+    if (!availableCacheTypesApi.isSuccess || !availableCacheTypesApi.data?.Results) return []
+    const types = availableCacheTypesApi.data.Results
+    return (Array.isArray(types) ? types : []).map((t) => ({ label: t, value: t }))
+  }, [availableCacheTypesApi.isSuccess, availableCacheTypesApi.data])
 
   // When block type changes, reset suite and test selections.
   useEffect(() => {
@@ -1366,7 +1343,7 @@ const Page = () => {
                       formControl={addBlockForm}
                       multiple={false}
                       options={availableCacheTypes}
-                      isFetching={cacheTypesLoading}
+                      isFetching={availableCacheTypesApi.isFetching}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, md: 2 }}>
