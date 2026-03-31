@@ -5,7 +5,7 @@ import standards from "../data/standards.json";
 
 export function useSecureScore({ waiting = true } = {}) {
   const currentTenant = useSettings().currentTenant;
-  const isAllTenants = currentTenant === 'AllTenants';
+  const isAllTenants = currentTenant === "AllTenants";
 
   const [translatedData, setTranslatedData] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -45,7 +45,7 @@ export function useSecureScore({ waiting = true } = {}) {
     if (controlScore.isFetching || secureScore.isFetching) {
       setIsFetching(true);
     } else {
-      setIsSuccess(false);
+      setIsFetching(false);
     }
   }, [controlScore.isFetching, secureScore.isFetching, isAllTenants]);
 
@@ -55,10 +55,10 @@ export function useSecureScore({ waiting = true } = {}) {
       const secureScoreData = secureScore.data.Results[0];
       const updatedControlScores = secureScoreData.controlScores.map((control) => {
         const translation = controlScore.data.Results?.find(
-          (controlTranslation) => controlTranslation.id === control.controlName
+          (controlTranslation) => controlTranslation.id === control.controlName,
         );
         const remediation = standards.find((standard) =>
-          standard.tag?.includes(control.controlName)
+          standard.tag?.includes(control.controlName),
         );
         return {
           ...control,
@@ -87,19 +87,25 @@ export function useSecureScore({ waiting = true } = {}) {
         ...secureScoreData,
         //secureScoreData.currentscore is the current score, secureScoreData.maxscore is the max score. calculate % reached.
         percentageCurrent: Math.round(
-          (secureScoreData.currentScore / secureScoreData.maxScore) * 100
+          (secureScoreData.currentScore / secureScoreData.maxScore) * 100,
         ),
         percentageVsAllTenants: Math.round(
-          secureScoreData.averageComparativeScores?.[0]?.averageScore
+          secureScoreData.averageComparativeScores?.[0]?.averageScore,
         ),
         percentageVsSimilar: Math.round(
-          secureScoreData.averageComparativeScores?.[1]?.averageScore
+          secureScoreData.averageComparativeScores?.[1]?.averageScore,
         ),
         controlScores: updatedControlScores,
       });
       setIsSuccess(true);
     }
-  }, [controlScore.isSuccess, secureScore.isSuccess, controlScore.data, secureScore.data, isAllTenants]);
+  }, [
+    controlScore.isSuccess,
+    secureScore.isSuccess,
+    controlScore.data,
+    secureScore.data,
+    isAllTenants,
+  ]);
 
   return {
     controlScore,

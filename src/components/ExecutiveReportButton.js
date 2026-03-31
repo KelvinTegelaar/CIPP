@@ -12,6 +12,7 @@ import {
   Switch,
   Grid,
   Paper,
+  Stack,
   IconButton,
 } from "@mui/material";
 import { PictureAsPdf, Download, Close, Settings } from "@mui/icons-material";
@@ -3065,64 +3066,59 @@ export const ExecutiveReportButton = (props) => {
                 in real-time.
               </Typography>
 
-              <Grid container spacing={1.5}>
+              <Stack spacing={1.5}>
                 {sectionOptions.map((option) => (
-                  <Grid item xs={12} key={option.key}>
-                    <Paper
-                      sx={{
-                        p: 1.5,
-                        border: "1px solid",
-                        borderColor: sectionConfig[option.key] ? "primary.main" : "divider",
-                        bgcolor: sectionConfig[option.key] ? "primary.50" : "background.paper",
-                        cursor: "pointer",
-                        transition: "all 0.2s ease-in-out",
-                        "&:hover": {
-                          borderColor: "primary.main",
-                          bgcolor: sectionConfig[option.key] ? "primary.100" : "primary.25",
-                        },
+                  <Paper
+                    key={option.key}
+                    onClick={() => handleSectionToggle(option.key)}
+                    sx={{
+                      p: 1.5,
+                      border: "1px solid",
+                      borderColor: sectionConfig[option.key] ? "primary.main" : "divider",
+                      bgcolor: sectionConfig[option.key] ? "primary.50" : "background.paper",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease-in-out",
+                      display: "flex",
+                      alignItems: "center",
+                      "&:hover": {
+                        borderColor: "primary.main",
+                        bgcolor: sectionConfig[option.key] ? "primary.100" : "primary.25",
+                      },
+                    }}
+                  >
+                    <Switch
+                      checked={sectionConfig[option.key]}
+                      onChange={(event) => {
+                        event.stopPropagation();
+                        handleSectionToggle(option.key);
                       }}
-                    >
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={sectionConfig[option.key]}
-                            onChange={(event) => {
-                              event.stopPropagation();
-                              handleSectionToggle(option.key);
-                            }}
-                            color="primary"
-                            size="small"
-                            disabled={
-                              // Disable if this is the last enabled section
-                              sectionConfig[option.key] &&
-                              Object.values(sectionConfig).filter(Boolean).length === 1
-                            }
-                          />
-                        }
-                        label={
-                          <Box onClick={() => handleSectionToggle(option.key)}>
-                            <Typography
-                              variant="subtitle2"
-                              fontWeight="bold"
-                              sx={{ fontSize: "0.875rem" }}
-                            >
-                              {option.label}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              sx={{ fontSize: "0.75rem" }}
-                            >
-                              {option.description}
-                            </Typography>
-                          </Box>
-                        }
-                        sx={{ margin: 0, width: "100%" }}
-                      />
-                    </Paper>
-                  </Grid>
+                      onClick={(event) => event.stopPropagation()}
+                      color="primary"
+                      size="small"
+                      disabled={
+                        sectionConfig[option.key] &&
+                        Object.values(sectionConfig).filter(Boolean).length === 1
+                      }
+                    />
+                    <Box sx={{ ml: 1, flexGrow: 1 }}>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight="bold"
+                        sx={{ fontSize: "0.875rem" }}
+                      >
+                        {option.label}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: "0.75rem" }}
+                      >
+                        {option.description}
+                      </Typography>
+                    </Box>
+                  </Paper>
                 ))}
-              </Grid>
+              </Stack>
 
               <Box sx={{ mt: 3, p: 2, bgcolor: "primary.50", borderRadius: 1 }}>
                 <Typography variant="caption" color="primary.main" fontWeight="bold">
