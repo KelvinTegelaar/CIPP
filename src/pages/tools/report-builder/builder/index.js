@@ -49,7 +49,7 @@ import {
   Refresh,
   Storage,
 } from '@mui/icons-material'
-import cacheTypes from '../../../../data/CIPPDBCacheTypes.json'
+
 import {
   MenuButtonBold,
   MenuButtonItalic,
@@ -456,8 +456,7 @@ const DatabaseBlock = ({
     onUpdate(index, { ...block, format: newFormat, content: newContent })
   }
 
-  const dbTypeLabel =
-    cacheTypes.find((ct) => ct.type === block.dbType)?.friendlyName || block.dbType
+  const dbTypeLabel = block.title || block.dbType
 
   return (
     <CippButtonCard
@@ -704,6 +703,38 @@ const Page = () => {
   const watchDbCacheType = useWatch({ control: addBlockForm.control, name: 'dbCacheType' })
   const watchDbFormat = useWatch({ control: addBlockForm.control, name: 'dbFormat' })
   const removeRemediation = useWatch({ control: settingsForm.control, name: 'removeRemediation' })
+
+  // Fetch available DB cache types dynamically when tenant changes
+  const [availableCacheTypes, setAvailableCacheTypes] = useState([])
+  const [cacheTypesLoading, setCacheTypesLoading] = useState(false)
+  useEffect(() => {
+    if (!currentTenant) {
+      setAvailableCacheTypes([])
+      return
+    }
+    let cancelled = false
+    setCacheTypesLoading(true)
+    axios
+      .get('/api/ListDBCache', {
+        params: { tenantFilter: currentTenant },
+        validateStatus: (s) => s < 500,
+      })
+      .then((resp) => {
+        if (!cancelled) {
+          const types = resp.data?.AvailableTypes || []
+          setAvailableCacheTypes(types.map((t) => ({ label: t, value: t })))
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setAvailableCacheTypes([])
+      })
+      .finally(() => {
+        if (!cancelled) setCacheTypesLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [currentTenant])
 
   // When block type changes, reset suite and test selections.
   useEffect(() => {
@@ -954,8 +985,7 @@ const Page = () => {
       const dbType = addBlockForm.getValues('dbCacheType')
       const dbFormat = addBlockForm.getValues('dbFormat')
       if (!dbType?.value || !dbFormat?.value) return
-      const friendlyName =
-        cacheTypes.find((ct) => ct.type === dbType.value)?.friendlyName || dbType.value
+      const friendlyName = dbType.label || dbType.value
       setBlocks((prev) => [
         ...prev,
         {
@@ -1330,10 +1360,8 @@ const Page = () => {
                       label="Data Source"
                       formControl={addBlockForm}
                       multiple={false}
-                      options={cacheTypes.map((ct) => ({
-                        label: ct.friendlyName,
-                        value: ct.type,
-                      }))}
+                      options={availableCacheTypes}
+                      isFetching={cacheTypesLoading}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, md: 2 }}>
