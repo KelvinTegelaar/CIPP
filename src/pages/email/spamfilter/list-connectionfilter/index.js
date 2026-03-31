@@ -1,45 +1,53 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
-import { Book, AddModerator } from "@mui/icons-material";
-import Link from "next/link";
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { Button } from '@mui/material'
+import { Book, AddModerator } from '@mui/icons-material'
+import Link from 'next/link'
 
 const Page = () => {
-  const pageTitle = "Connection Filters";
+  const pageTitle = 'Connection Filters'
 
   const actions = [
     {
-      label: "Create template based on filter",
-      type: "POST",
-      url: "/api/AddConnectionfilterTemplate",
+      label: 'Create template based on filter',
+      type: 'POST',
+      url: '/api/AddConnectionfilterTemplate',
       dataFunction: (data) => {
-        return { ...data };
+        return { ...data }
       },
       icon: <Book />,
-      confirmText: "Are you sure you want to create a template based on this filter?",
+      confirmText: 'Are you sure you want to create a template based on this filter?',
     },
-  ];
+  ]
 
   const offCanvas = {
     extendedInfoFields: [
-      "DistinguishedName",
-      "DirectoryBasedEdgeBlockMode",
-      "ExchangeVersion",
-      "ExchangeObjectId",
-      "OrganizationalUnitRoot",
-      "WhenCreated",
-      "WhenChanged",
-      "Guid",
+      'DistinguishedName',
+      'DirectoryBasedEdgeBlockMode',
+      'ExchangeVersion',
+      'ExchangeObjectId',
+      'OrganizationalUnitRoot',
+      'WhenCreated',
+      'WhenChanged',
+      'Guid',
     ],
     actions: actions,
-  };
+  }
 
-  const simpleColumns = ["Name", "IsDefault", "IPAllowList", "IPBlockList", "EnableSafeList"];
+  const simpleColumns = [
+    'Tenant',
+    'Name',
+    'IsDefault',
+    'IPAllowList',
+    'IPBlockList',
+    'EnableSafeList',
+  ]
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListConnectionFilter"
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
@@ -55,8 +63,8 @@ const Page = () => {
         </>
       }
     />
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
-export default Page;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
+export default Page

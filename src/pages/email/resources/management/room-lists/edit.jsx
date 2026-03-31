@@ -1,40 +1,40 @@
-import { useEffect, useState } from "react";
-import { Box, Button, Divider, Typography } from "@mui/material";
-import { Grid } from "@mui/system";
-import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
-import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
-import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
-import { CippFormUserSelector } from "../../../../../components/CippComponents/CippFormUserSelector";
-import { useRouter } from "next/router";
-import { ApiGetCall } from "../../../../../api/ApiCall";
-import { useSettings } from "../../../../../hooks/use-settings";
-import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
+import { useEffect, useState } from 'react'
+import { Box, Button, Divider, Typography } from '@mui/material'
+import { Grid } from '@mui/system'
+import { useForm } from 'react-hook-form'
+import { Layout as DashboardLayout } from '../../../../../layouts/index.js'
+import CippFormPage from '../../../../../components/CippFormPages/CippFormPage'
+import CippFormComponent from '../../../../../components/CippComponents/CippFormComponent'
+import { CippFormUserSelector } from '../../../../../components/CippComponents/CippFormUserSelector'
+import { useRouter } from 'next/router'
+import { ApiGetCall } from '../../../../../api/ApiCall'
+import { useSettings } from '../../../../../hooks/use-settings'
+import { CippDataTable } from '../../../../../components/CippTable/CippDataTable'
 
 const EditRoomList = () => {
-  const router = useRouter();
-  const { groupId } = router.query;
-  const [groupIdReady, setGroupIdReady] = useState(false);
-  const [showMembershipTable, setShowMembershipTable] = useState(false);
-  const [combinedData, setCombinedData] = useState([]);
-  const [originalAllowExternal, setOriginalAllowExternal] = useState(null);
-  const tenantFilter = useSettings().currentTenant;
+  const router = useRouter()
+  const { groupId } = router.query
+  const [groupIdReady, setGroupIdReady] = useState(false)
+  const [showMembershipTable, setShowMembershipTable] = useState(false)
+  const [combinedData, setCombinedData] = useState([])
+  const [originalAllowExternal, setOriginalAllowExternal] = useState(null)
+  const tenantFilter = useSettings().currentTenant
 
   const groupInfo = ApiGetCall({
     url: `/api/ListRoomLists?groupID=${groupId}&tenantFilter=${tenantFilter}&members=true&owners=true`,
     queryKey: `ListRoomLists-${groupId}`,
     waiting: groupIdReady,
-  });
+  })
 
   useEffect(() => {
     if (groupId) {
-      setGroupIdReady(true);
-      groupInfo.refetch();
+      setGroupIdReady(true)
+      groupInfo.refetch()
     }
-  }, [router.query, groupId, tenantFilter]);
+  }, [router.query, groupId, tenantFilter])
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
       tenantFilter: tenantFilter,
       AddMember: [],
@@ -42,53 +42,53 @@ const EditRoomList = () => {
       AddOwner: [],
       RemoveOwner: [],
     },
-  });
+  })
 
   useEffect(() => {
     if (groupInfo.isSuccess) {
-      const group = groupInfo.data?.groupInfo;
+      const group = groupInfo.data?.groupInfo
       if (group) {
         // Create combined data for the table
-        const owners = Array.isArray(groupInfo.data?.owners) ? groupInfo.data.owners : [];
-        const members = Array.isArray(groupInfo.data?.members) ? groupInfo.data.members : [];
+        const owners = Array.isArray(groupInfo.data?.owners) ? groupInfo.data.owners : []
+        const members = Array.isArray(groupInfo.data?.members) ? groupInfo.data.members : []
 
         const combinedData = [
           ...owners.map((o) => ({
-            type: "Owner",
+            type: 'Owner',
             userPrincipalName: o.userPrincipalName,
             displayName: o.displayName,
           })),
           ...members.map((m) => ({
-            type: "Room",
+            type: 'Room',
             userPrincipalName: m.PrimarySmtpAddress || m.userPrincipalName || m.mail,
             displayName: m.DisplayName || m.displayName,
           })),
-        ];
-        setCombinedData(combinedData);
+        ]
+        setCombinedData(combinedData)
 
         // Store original allowExternal value for comparison
-        const allowExternalValue = groupInfo?.data?.allowExternal;
-        setOriginalAllowExternal(allowExternalValue);
+        const allowExternalValue = groupInfo?.data?.allowExternal
+        setOriginalAllowExternal(allowExternalValue)
 
         // Reset the form with all values
         formControl.reset({
           tenantFilter: tenantFilter,
           mail: group.PrimarySmtpAddress || group.mail,
-          mailNickname: group.Alias || group.mailNickname || "",
+          mailNickname: group.Alias || group.mailNickname || '',
           allowExternal: allowExternalValue,
           displayName: group.DisplayName || group.displayName,
-          description: group.Description || group.description || "",
+          description: group.Description || group.description || '',
           groupId: group.Guid || group.id,
-          groupType: "Room List",
+          groupType: 'Room List',
           // Initialize empty arrays for add/remove actions
           AddMember: [],
           RemoveMember: [],
           AddOwner: [],
           RemoveOwner: [],
-        });
+        })
       }
     }
-  }, [groupInfo.isSuccess, router.query, groupInfo.isFetching]);
+  }, [groupInfo.isSuccess, router.query, groupInfo.isFetching])
 
   return (
     <>
@@ -96,18 +96,18 @@ const EditRoomList = () => {
         formControl={formControl}
         queryKey={[`ListRoomLists-${groupId}`]}
         title={`Room List: ${
-          groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName || ""
+          groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName || ''
         }`}
         formPageType="Edit"
         backButtonTitle="Room Lists"
         postUrl="/api/EditRoomList"
         customDataformatter={(values) => {
           // Only include allowExternal if it has changed from the original value
-          const modifiedValues = { ...values };
+          const modifiedValues = { ...values }
           if (originalAllowExternal !== null && values.allowExternal === originalAllowExternal) {
-            delete modifiedValues.allowExternal;
+            delete modifiedValues.allowExternal
           }
-          return modifiedValues;
+          return modifiedValues
         }}
         titleButton={
           <>
@@ -117,7 +117,7 @@ const EditRoomList = () => {
               onClick={() => setShowMembershipTable(!showMembershipTable)}
               sx={{ mb: 2 }}
             >
-              {showMembershipTable ? "Edit Membership" : "View members"}
+              {showMembershipTable ? 'Edit Membership' : 'View members'}
             </Button>
           </>
         }
@@ -127,7 +127,7 @@ const EditRoomList = () => {
             <CippDataTable
               data={combinedData}
               isFetching={groupInfo.isFetching}
-              simpleColumns={["type", "userPrincipalName", "displayName"]}
+              simpleColumns={['type', 'userPrincipalName', 'displayName']}
               refreshFunction={groupInfo.refetch}
             />
           </Box>
@@ -187,16 +187,17 @@ const EditRoomList = () => {
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   api={{
-                    url: "/api/ListRooms",
+                    url: '/api/ListRooms',
+                    dataKey: 'Results',
                     labelField: (room) =>
-                      `${room.displayName || "Unknown"} (${
-                        room.mail || room.userPrincipalName || "No email"
+                      `${room.displayName || 'Unknown'} (${
+                        room.mail || room.userPrincipalName || 'No email'
                       })`,
-                    valueField: "mail",
+                    valueField: 'mail',
                     addedField: {
-                      roomType: "bookingType",
-                      capacity: "capacity",
-                      id: "id",
+                      roomType: 'bookingType',
+                      capacity: 'capacity',
+                      id: 'id',
                     },
                     queryKey: `rooms-${tenantFilter}`,
                     showRefresh: true,
@@ -204,20 +205,20 @@ const EditRoomList = () => {
                       // Get current member emails to filter out
                       const members = Array.isArray(groupInfo.data?.members)
                         ? groupInfo.data.members
-                        : [];
+                        : []
                       const currentMemberEmails = members
                         .map((m) => m.mail || m.userPrincipalName)
-                        .filter(Boolean);
+                        .filter(Boolean)
 
                       // Filter out rooms that are already members
                       // rooms here have been transformed to {label, value, addedFields} format
                       const filteredRooms = rooms.filter((room) => {
-                        const roomEmail = room.value; // email is in the value field
-                        const isAlreadyMember = currentMemberEmails.includes(roomEmail);
-                        return !isAlreadyMember;
-                      });
+                        const roomEmail = room.value // email is in the value field
+                        const isAlreadyMember = currentMemberEmails.includes(roomEmail)
+                        return !isAlreadyMember
+                      })
 
-                      return filteredRooms;
+                      return filteredRooms
                     },
                   }}
                 />
@@ -234,14 +235,14 @@ const EditRoomList = () => {
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   api={{
-                    url: "/api/ListUsers",
+                    url: '/api/ListUsers',
                     labelField: (user) =>
-                      `${user.displayName || "Unknown"} (${
-                        user.userPrincipalName || user.mail || "No email"
+                      `${user.displayName || 'Unknown'} (${
+                        user.userPrincipalName || user.mail || 'No email'
                       })`,
-                    valueField: "userPrincipalName",
+                    valueField: 'userPrincipalName',
                     addedField: {
-                      id: "id",
+                      id: 'id',
                     },
                     queryKey: `users-${tenantFilter}`,
                     showRefresh: true,
@@ -249,20 +250,20 @@ const EditRoomList = () => {
                       // Get current owner userPrincipalNames to filter out
                       const owners = Array.isArray(groupInfo.data?.owners)
                         ? groupInfo.data.owners
-                        : [];
+                        : []
                       const currentOwnerEmails = owners
                         .map((o) => o.userPrincipalName)
-                        .filter(Boolean);
+                        .filter(Boolean)
 
                       // Filter out users that are already owners
                       // users here have been transformed to {label, value, addedFields} format
                       const filteredUsers = users.filter((user) => {
-                        const userEmail = user.value; // userPrincipalName is in the value field
-                        const isAlreadyOwner = currentOwnerEmails.includes(userEmail);
-                        return !isAlreadyOwner;
-                      });
+                        const userEmail = user.value // userPrincipalName is in the value field
+                        const isAlreadyOwner = currentOwnerEmails.includes(userEmail)
+                        return !isAlreadyOwner
+                      })
 
-                      return filteredUsers;
+                      return filteredUsers
                     },
                   }}
                 />
@@ -285,7 +286,7 @@ const EditRoomList = () => {
                   options={
                     Array.isArray(groupInfo.data?.members)
                       ? groupInfo.data.members.map((m) => ({
-                          label: `${m.DisplayName || m.displayName || "Unknown"} (${
+                          label: `${m.DisplayName || m.displayName || 'Unknown'} (${
                             m.PrimarySmtpAddress || m.userPrincipalName || m.mail
                           })`,
                           value: m.PrimarySmtpAddress || m.userPrincipalName || m.mail,
@@ -337,9 +338,9 @@ const EditRoomList = () => {
         )}
       </CippFormPage>
     </>
-  );
-};
+  )
+}
 
-EditRoomList.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditRoomList.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default EditRoomList;
+export default EditRoomList

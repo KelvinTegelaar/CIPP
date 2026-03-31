@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { useState } from 'react'
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import {
   Button,
   Accordion,
@@ -9,50 +9,50 @@ import {
   Typography,
   SvgIcon,
   Stack,
-} from "@mui/material";
-import { Grid } from "@mui/system";
-import { ExpandMore, Sort } from "@mui/icons-material";
-import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useForm } from "react-hook-form";
-import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+} from '@mui/material'
+import { Grid } from '@mui/system'
+import { ExpandMore, Sort } from '@mui/icons-material'
+import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useForm } from 'react-hook-form'
+import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
 
 const Page = () => {
   const formControl = useForm({
     defaultValues: {
-      period: { value: "D30", label: "30 days" },
+      period: { value: 'D30', label: '30 days' },
     },
-  });
+  })
 
-  const [expanded, setExpanded] = useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState("D30");
-  const [selectedPeriodLabel, setSelectedPeriodLabel] = useState("30 days");
+  const [expanded, setExpanded] = useState(false)
+  const [selectedPeriod, setSelectedPeriod] = useState('D30')
+  const [selectedPeriodLabel, setSelectedPeriodLabel] = useState('30 days')
 
   const periodOptions = [
-    { value: "D7", label: "7 days" },
-    { value: "D30", label: "30 days" },
-    { value: "D90", label: "90 days" },
-    { value: "D180", label: "180 days" },
-  ];
+    { value: 'D7', label: '7 days' },
+    { value: 'D30', label: '30 days' },
+    { value: 'D90', label: '90 days' },
+    { value: 'D180', label: '180 days' },
+  ]
 
   const onSubmit = (data) => {
     const periodValue =
-      typeof data.period === "object" && data.period?.value ? data.period.value : data.period;
+      typeof data.period === 'object' && data.period?.value ? data.period.value : data.period
     const periodLabel =
-      typeof data.period === "object" && data.period?.label ? data.period.label : data.period;
+      typeof data.period === 'object' && data.period?.label ? data.period.label : data.period
 
-    setSelectedPeriod(periodValue);
-    setSelectedPeriodLabel(periodLabel);
-    setExpanded(false);
-  };
+    setSelectedPeriod(periodValue)
+    setSelectedPeriodLabel(periodLabel)
+    setExpanded(false)
+  }
 
   const clearFilters = () => {
     formControl.reset({
-      period: { value: "D30", label: "30 days" },
-    });
-    setSelectedPeriod("D30");
-    setSelectedPeriodLabel("30 days");
-    setExpanded(false);
-  };
+      period: { value: 'D30', label: '30 days' },
+    })
+    setSelectedPeriod('D30')
+    setSelectedPeriodLabel('30 days')
+    setExpanded(false)
+  }
 
   const tableFilter = (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
@@ -63,7 +63,7 @@ const Page = () => {
           </SvgIcon>
           <Typography variant="h6">
             Report Period
-            <span style={{ fontSize: "0.8em", marginLeft: "10px", fontWeight: "normal" }}>
+            <span style={{ fontSize: '0.8em', marginLeft: '10px', fontWeight: 'normal' }}>
               (Period: {selectedPeriodLabel})
             </span>
           </Typography>
@@ -116,7 +116,7 @@ const Page = () => {
         </form>
       </AccordionDetails>
     </Accordion>
-  );
+  )
 
   return (
     <CippTablePage
@@ -125,28 +125,29 @@ const Page = () => {
       apiUrl="/api/ListGraphRequest"
       apiData={{
         Endpoint: `reports/getEmailActivityUserDetail(period='${selectedPeriod}')`,
-        $format: "application/json",
-        Sort: "userPrincipalName",
+        $format: 'application/json',
+        Sort: 'userPrincipalName',
       }}
       apiDataKey="Results"
       queryKey={`MailboxActivity-${selectedPeriod}`}
       simpleColumns={[
-        "userPrincipalName",
-        "displayName",
-        "sendCount",
-        "receiveCount",
-        "readCount",
-        "meetingCreatedCount",
-        "meetingInteractedCount",
-        "lastActivityDate",
-        "reportRefreshDate",
-        "reportPeriod",
+        'Tenant',
+        'userPrincipalName',
+        'displayName',
+        'sendCount',
+        'receiveCount',
+        'readCount',
+        'meetingCreatedCount',
+        'meetingInteractedCount',
+        'lastActivityDate',
+        'reportRefreshDate',
+        'reportPeriod',
       ]}
       offCanvas={null}
     />
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 
-export default Page;
+export default Page

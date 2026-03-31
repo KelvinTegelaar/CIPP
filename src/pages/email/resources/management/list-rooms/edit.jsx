@@ -1,56 +1,56 @@
-import { useEffect } from "react";
-import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
-import { Sync } from "@mui/icons-material";
-import { Grid } from "@mui/system";
-import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
-import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
-import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
-import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
-import { useSettings } from "../../../../../hooks/use-settings";
-import { useRouter } from "next/router";
-import { ApiGetCall } from "../../../../../api/ApiCall";
-import countryList from "../../../../../data/countryList.json";
-import timezoneList from "../../../../../data/timezoneList.json";
+import { useEffect } from 'react'
+import { Box, Divider, IconButton, Tooltip, Typography } from '@mui/material'
+import { Sync } from '@mui/icons-material'
+import { Grid } from '@mui/system'
+import { useForm } from 'react-hook-form'
+import { Layout as DashboardLayout } from '../../../../../layouts/index.js'
+import CippFormPage from '../../../../../components/CippFormPages/CippFormPage'
+import CippFormComponent from '../../../../../components/CippComponents/CippFormComponent'
+import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSkeleton'
+import { useSettings } from '../../../../../hooks/use-settings'
+import { useRouter } from 'next/router'
+import { ApiGetCall } from '../../../../../api/ApiCall'
+import countryList from '../../../../../data/countryList.json'
+import timezoneList from '../../../../../data/timezoneList.json'
 
 // Work days options
 const workDaysOptions = [
-  { value: "Sunday", label: "Sunday" },
-  { value: "Monday", label: "Monday" },
-  { value: "Tuesday", label: "Tuesday" },
-  { value: "Wednesday", label: "Wednesday" },
-  { value: "Thursday", label: "Thursday" },
-  { value: "Friday", label: "Friday" },
-  { value: "Saturday", label: "Saturday" },
-  { value: "WeekDay", label: "Weekdays (Monday-Friday)" },
-  { value: "WeekendDay", label: "Weekend (Saturday-Sunday)" },
-  { value: "AllDays", label: "All Days" },
-];
+  { value: 'Sunday', label: 'Sunday' },
+  { value: 'Monday', label: 'Monday' },
+  { value: 'Tuesday', label: 'Tuesday' },
+  { value: 'Wednesday', label: 'Wednesday' },
+  { value: 'Thursday', label: 'Thursday' },
+  { value: 'Friday', label: 'Friday' },
+  { value: 'Saturday', label: 'Saturday' },
+  { value: 'WeekDay', label: 'Weekdays (Monday-Friday)' },
+  { value: 'WeekendDay', label: 'Weekend (Saturday-Sunday)' },
+  { value: 'AllDays', label: 'All Days' },
+]
 
 // Automation Processing Options
 const automateProcessingOptions = [
-  { value: "None", label: "None - No processing" },
-  { value: "AutoUpdate", label: "AutoUpdate - Accept/Decline but not delete" },
-  { value: "AutoAccept", label: "AutoAccept - Accept and delete" },
-];
+  { value: 'None', label: 'None - No processing' },
+  { value: 'AutoUpdate', label: 'AutoUpdate - Accept/Decline but not delete' },
+  { value: 'AutoAccept', label: 'AutoAccept - Accept and delete' },
+]
 
 const EditRoomMailbox = () => {
-  const router = useRouter();
-  const { roomId } = router.query;
-  const tenantDomain = useSettings().currentTenant;
+  const router = useRouter()
+  const { roomId } = router.query
+  const tenantDomain = useSettings().currentTenant
   const formControl = useForm({
-    mode: "onChange",
-  });
+    mode: 'onChange',
+  })
 
   const roomInfo = ApiGetCall({
     url: `/api/ListRooms?roomId=${roomId}&tenantFilter=${tenantDomain}`,
     queryKey: `Room-${roomId}`,
     waiting: false,
-  });
+  })
 
   useEffect(() => {
-    if (roomInfo.isSuccess && roomInfo.data?.[0]) {
-      const room = roomInfo.data[0];
+    if (roomInfo.isSuccess && roomInfo.data?.Results?.[0]) {
+      const room = roomInfo.data.Results[0]
       formControl.reset({
         // Core Properties
         displayName: room.displayName,
@@ -68,8 +68,8 @@ const EditRoomMailbox = () => {
         state: room.state,
         postalCode: room.postalCode,
         countryOrRegion: room.countryOrRegion
-          ? countryList.find((c) => c.Name === room.countryOrRegion)?.Code || ""
-          : "",
+          ? countryList.find((c) => c.Name === room.countryOrRegion)?.Code || ''
+          : '',
 
         // Room Equipment
         audioDeviceName: room.audioDeviceName,
@@ -97,7 +97,7 @@ const EditRoomMailbox = () => {
 
         // Calendar Configuration
         WorkDays:
-          room.WorkDays?.split(",")?.map((day) => ({
+          room.WorkDays?.split(',')?.map((day) => ({
             label: day.trim(),
             value: day.trim(),
           })) || [],
@@ -114,16 +114,16 @@ const EditRoomMailbox = () => {
                 : room.WorkingHoursTimeZone,
             }
           : null,
-      });
-      void formControl.trigger();
+      })
+      void formControl.trigger()
     }
-  }, [roomInfo.isSuccess, roomInfo.data]);
+  }, [roomInfo.isSuccess, roomInfo.data])
 
   useEffect(() => {
     if (roomId) {
-      roomInfo.refetch();
+      roomInfo.refetch()
     }
-  }, [router.query, roomId, tenantDomain]);
+  }, [router.query, roomId, tenantDomain])
 
   return (
     <CippFormPage
@@ -176,7 +176,7 @@ const EditRoomMailbox = () => {
         RemoveCanceledMeetings: values.RemoveCanceledMeetings,
 
         // Calendar Configuration
-        WorkDays: values.WorkDays?.map((day) => day.value).join(","),
+        WorkDays: values.WorkDays?.map((day) => day.value).join(','),
         WorkHoursStartTime: values.WorkHoursStartTime,
         WorkHoursEndTime: values.WorkHoursEndTime,
         WorkingHoursTimeZone: values.WorkingHoursTimeZone?.value || values.WorkingHoursTimeZone,
@@ -189,7 +189,9 @@ const EditRoomMailbox = () => {
         <Grid container spacing={2}>
           {/* Basic Information */}
           <Grid size={{ xs: 12 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}
+            >
               <Typography variant="subtitle1">Basic Information</Typography>
               <Tooltip title="Refresh">
                 <IconButton size="small" onClick={() => roomInfo.refetch()}>
@@ -205,7 +207,7 @@ const EditRoomMailbox = () => {
               label="Display Name"
               name="displayName"
               formControl={formControl}
-              validators={{ required: "Display Name is required" }}
+              validators={{ required: 'Display Name is required' }}
             />
           </Grid>
           <Grid size={{ md: 6, xs: 12 }}>
@@ -216,7 +218,7 @@ const EditRoomMailbox = () => {
               formControl={formControl}
             />
           </Grid>
-          <Divider sx={{ my: 2, width: "100%" }} />
+          <Divider sx={{ my: 2, width: '100%' }} />
           {/* Booking Settings */}
           <Grid size={{ xs: 12 }}>
             <Typography variant="subtitle1" sx={{ mb: 2 }}>
@@ -242,8 +244,8 @@ const EditRoomMailbox = () => {
               name="MaximumDurationInMinutes"
               formControl={formControl}
               validators={{
-                min: { value: 1, message: "Minimum duration is 1 minute" },
-                max: { value: 1440, message: "Maximum duration is 1440 minutes (24 hours)" },
+                min: { value: 1, message: 'Minimum duration is 1 minute' },
+                max: { value: 1440, message: 'Maximum duration is 1440 minutes (24 hours)' },
               }}
               InputProps={{
                 inputProps: { min: 1, max: 1440 },
@@ -258,8 +260,8 @@ const EditRoomMailbox = () => {
               name="BookingWindowInDays"
               formControl={formControl}
               validators={{
-                min: { value: 0, message: "Minimum is 0 days" },
-                max: { value: 1080, message: "Maximum is 1080 days (3 years)" },
+                min: { value: 0, message: 'Minimum is 0 days' },
+                max: { value: 1080, message: 'Maximum is 1080 days (3 years)' },
               }}
               InputProps={{
                 inputProps: { min: 0, max: 1080 },
@@ -342,7 +344,7 @@ const EditRoomMailbox = () => {
               formControl={formControl}
             />
           </Grid>
-          <Divider sx={{ my: 2, width: "100%" }} />
+          <Divider sx={{ my: 2, width: '100%' }} />
           {/* Working Hours */}
           <Grid size={{ xs: 12 }}>
             <Typography variant="subtitle1" sx={{ mb: 2 }}>
@@ -400,7 +402,7 @@ const EditRoomMailbox = () => {
               formControl={formControl}
             />
           </Grid>
-          <Divider sx={{ my: 2, width: "100%" }} />
+          <Divider sx={{ my: 2, width: '100%' }} />
           {/* Room Facilities */}
           <Grid size={{ xs: 12 }}>
             <Typography variant="subtitle1" sx={{ mb: 2 }}>
@@ -458,7 +460,7 @@ const EditRoomMailbox = () => {
               creatable={true}
             />
           </Grid>
-          <Divider sx={{ my: 2, width: "100%" }} />
+          <Divider sx={{ my: 2, width: '100%' }} />
           {/* Location Information */}
           <Grid size={{ xs: 12 }}>
             <Typography variant="subtitle1" sx={{ mb: 2 }}>
@@ -538,9 +540,9 @@ const EditRoomMailbox = () => {
         </Grid>
       )}
     </CippFormPage>
-  );
-};
+  )
+}
 
-EditRoomMailbox.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditRoomMailbox.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default EditRoomMailbox;
+export default EditRoomMailbox

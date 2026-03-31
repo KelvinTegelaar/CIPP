@@ -1,51 +1,58 @@
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
-import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
-import { Edit } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { CippAddRoomListDrawer } from "../../../../../components/CippComponents/CippAddRoomListDrawer";
+import { Layout as DashboardLayout } from '../../../../../layouts/index.js'
+import { CippTablePage } from '../../../../../components/CippComponents/CippTablePage.jsx'
+import { Edit } from '@mui/icons-material'
+import { TrashIcon } from '@heroicons/react/24/outline'
+import { CippAddRoomListDrawer } from '../../../../../components/CippComponents/CippAddRoomListDrawer'
 
 const Page = () => {
-  const pageTitle = "Room Lists";
-  const apiUrl = "/api/ListRoomLists";
-  const cardButtonPermissions = ["Exchange.Room.ReadWrite"];
+  const pageTitle = 'Room Lists'
+  const apiUrl = '/api/ListRoomLists'
+  const cardButtonPermissions = ['Exchange.Room.ReadWrite']
 
   const actions = [
     {
-      label: "Edit Room List",
-      link: "/email/resources/management/room-lists/edit?groupId=[PrimarySmtpAddress]",
+      label: 'Edit Room List',
+      link: '/email/resources/management/room-lists/edit?groupId=[PrimarySmtpAddress]',
       multiPost: false,
       icon: <Edit />,
-      color: "success",
+      color: 'success',
     },
     {
-      label: "Delete Room List",
-      type: "POST",
-      url: "/api/ExecGroupsDelete",
+      label: 'Delete Room List',
+      type: 'POST',
+      url: '/api/ExecGroupsDelete',
       icon: <TrashIcon />,
       data: {
-        id: "Guid",
-        displayName: "DisplayName",
-        GroupType: "!Distribution List",
+        id: 'Guid',
+        displayName: 'DisplayName',
+        GroupType: '!Distribution List',
       },
-      confirmText: "Are you sure you want to delete this room list?",
+      confirmText: 'Are you sure you want to delete this room list?',
       multiPost: false,
     },
-  ];
+  ]
 
   const offCanvas = {
     extendedInfoFields: [
-      "Guid",
-      "PrimarySmtpAddress",
-      "DisplayName",
-      "Phone",
-      "Identity",
-      "Notes",
-      "MailNickname",
+      'Guid',
+      'PrimarySmtpAddress',
+      'DisplayName',
+      'Phone',
+      'Identity',
+      'Notes',
+      'MailNickname',
     ],
     actions: actions,
-  };
+  }
 
-  const simpleColumns = ["DisplayName", "PrimarySmtpAddress", "Identity", "Phone", "Notes"];
+  const simpleColumns = [
+    'Tenant',
+    'DisplayName',
+    'PrimarySmtpAddress',
+    'Identity',
+    'Phone',
+    'Notes',
+  ]
 
   return (
     <CippTablePage
@@ -61,9 +68,9 @@ const Page = () => {
         </>
       }
     />
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 
-export default Page;
+export default Page
