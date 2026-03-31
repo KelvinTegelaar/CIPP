@@ -689,9 +689,15 @@ export const ReportBuilderDocument = ({
                   {block.type === 'test' && block.status ? (
                     <Text style={{ ...s.statusText, ...statusStyle }}>Status: {block.status}</Text>
                   ) : null}
-                  {block.type === 'blank' || (block.type === 'test' && block.static)
-                    ? htmlToElements(block.content, s)
-                    : markdownToElements(block.content, s)}
+                  {block.type === 'database' && block.format && block.format !== 'text' ? (
+                    <Text style={s.codeBlock}>{block.content || ''}</Text>
+                  ) : block.type === 'database' && (!block.format || block.format === 'text') ? (
+                    markdownToElements(block.content, s)
+                  ) : block.type === 'blank' || (block.type === 'test' && block.static) ? (
+                    htmlToElements(block.content, s)
+                  ) : (
+                    markdownToElements(block.content, s)
+                  )}
                 </View>
               )
             })}
