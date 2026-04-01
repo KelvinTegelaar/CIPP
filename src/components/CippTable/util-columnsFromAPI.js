@@ -36,9 +36,14 @@ const getAtPath = (obj, path) => {
   }, obj);
 };
 
-// Function to merge keys from all objects in the array
+// Function to merge keys from a sample of objects in the array.
+// Sampling the first MAX_SAMPLE rows is sufficient for schema detection and avoids
+// O(n * keys) traversal on large datasets.
+const MAX_MERGE_SAMPLE = 50;
+
 const mergeKeys = (dataArray) => {
-  return dataArray.reduce((acc, item) => {
+  const sample = dataArray.length > MAX_MERGE_SAMPLE ? dataArray.slice(0, MAX_MERGE_SAMPLE) : dataArray;
+  return sample.reduce((acc, item) => {
     const mergeRecursive = (obj, base = {}) => {
       // Add null/undefined check before calling Object.keys
       if (!obj || typeof obj !== 'object') {
@@ -74,13 +79,22 @@ const mergeKeys = (dataArray) => {
   }, {});
 };
 
+// Maximum rows to sample for filter heuristics (e.g. detecting value types).
+// Scanning the full dataset is O(n * columns) and dominates render time on large tables.
+const MAX_FILTER_SAMPLE = 50;
+
 export const utilColumnsFromAPI = (dataArray) => {
   // Add safety check for dataArray
   if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
     return [];
   }
-  
+
   const dataSample = mergeKeys(dataArray);
+
+  // Use a small sample for filter heuristics instead of scanning every row.
+  const filterSample = dataArray.length > MAX_FILTER_SAMPLE
+    ? dataArray.slice(0, MAX_FILTER_SAMPLE)
+    : dataArray;
 
   const generateColumns = (obj, parentKey = "") => {
     return Object.keys(obj)
@@ -100,8 +114,8 @@ export const utilColumnsFromAPI = (dataArray) => {
         const resolveValue = (rowLike) =>
           accessorKey.includes("@odata") ? rowLike?.[accessorKey] : getAtPath(rowLike, accessorKey);
 
-        // Pre-compute some sample values for filter heuristics (optional)
-        const valuesForColumn = (Array.isArray(dataArray) ? dataArray : [])
+        // Sample a small subset for filter heuristics instead of the full dataset.
+        const valuesForColumn = filterSample
           .map((r) => resolveValue(r))
           .filter((v) => v !== undefined && v !== null);
 
@@ -118,7 +132,7 @@ export const utilColumnsFromAPI = (dataArray) => {
             sampleValue,
             values: valuesForColumn,
             getValue: (row) => resolveValue(row),
-            dataArray: dataArray, // Pass the full data array for processing if needed
+            dataArray: filterSample,
           }),
           Cell: ({ row }) => {
             const value = resolveValue(row.original);
