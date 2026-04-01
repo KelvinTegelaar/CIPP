@@ -48,7 +48,7 @@ export const CippCodeBlock = (props) => {
       </div>
       {type === "editor" && (
         <Editor
-          defaultLanguage={language}
+          language={language}
           value={code}
           theme={currentTheme === "dark" ? "vs-dark" : "vs-light"}
           height={editorHeight}
@@ -57,6 +57,12 @@ export const CippCodeBlock = (props) => {
             lineNumbers: showLineNumbers ? "on" : "off",
             minimap: { enabled: showLineNumbers },
             readOnly: readOnly,
+            quickSuggestions: {
+              other: true,
+              comments: true,
+              strings: true,
+            },
+            suggestOnTriggerCharacters: true,
           }}
           {...other}
         />

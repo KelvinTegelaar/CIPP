@@ -1,70 +1,71 @@
-import { TabbedLayout } from "../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
-import { useForm } from "react-hook-form";
-import { Alert, Typography } from "@mui/material";
-import { Grid } from "@mui/system";
-import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
-import { ApiGetCall } from "../../../api/ApiCall";
-import { useEffect, useMemo } from "react";
-import CippFormPage from "../../../components/CippFormPages/CippFormPage";
-import { useTimezones } from "../../../hooks/use-timezones";
-import tabOptions from "./tabOptions";
+import { TabbedLayout } from '../../../layouts/TabbedLayout'
+import { Layout as DashboardLayout } from '../../../layouts/index.js'
+import { useForm } from 'react-hook-form'
+import { Alert, Typography } from '@mui/material'
+import { Grid } from '@mui/system'
+import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
+import { ApiGetCall } from '../../../api/ApiCall'
+import { useEffect, useMemo } from 'react'
+import CippFormPage from '../../../components/CippFormPages/CippFormPage'
+import { useTimezones } from '../../../hooks/use-timezones'
+import tabOptions from './tabOptions'
 
 const Page = () => {
-  const pageTitle = "Time Settings";
+  const pageTitle = 'Time Settings'
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      Timezone: { label: "UTC", value: "UTC" },
-      BusinessHoursStart: { label: "09:00", value: "09:00" },
+      Timezone: { label: 'UTC', value: 'UTC' },
+      BusinessHoursStart: { label: '09:00', value: '09:00' },
     },
-  });
+  })
 
   // Get timezone and backend info
   const backendInfo = ApiGetCall({
-    url: "/api/ExecBackendURLs",
-    queryKey: "backendInfo",
-  });
+    url: '/api/ExecBackendURLs',
+    queryKey: 'backendInfo',
+  })
 
-  const { timezones, loading: timezonesLoading } = useTimezones();
-  const isFlexConsumption = backendInfo.data?.Results?.SKU === "FlexConsumption";
+  const { timezones, loading: timezonesLoading } = useTimezones()
+  const isFlexConsumption = backendInfo.data?.Results?.SKU === 'FlexConsumption'
+  const isLinuxConsumption = backendInfo.data?.Results?.OS === 'Linux' && !isFlexConsumption
 
   // Generate business hours options (00:00 to 23:00 in hourly increments)
   const businessHoursOptions = useMemo(() => {
-    const hours = [];
+    const hours = []
     for (let i = 0; i < 24; i++) {
-      const hour = i.toString().padStart(2, "0");
+      const hour = i.toString().padStart(2, '0')
       hours.push({
         label: `${hour}:00`,
         value: `${hour}:00`,
-      });
+      })
     }
-    return hours;
-  }, []);
+    return hours
+  }, [])
 
   useEffect(() => {
     if (backendInfo.isSuccess && backendInfo.data) {
-      const tzStr = backendInfo.data?.Results?.Timezone || "UTC";
+      const tzStr = backendInfo.data?.Results?.Timezone || 'UTC'
       const tzOption = (timezones || []).find(
         (o) => o?.value === tzStr || o?.alternativeName === tzStr
       ) || {
         label: tzStr,
         value: tzStr,
-      };
+      }
 
-      const startStr = backendInfo.data?.Results?.BusinessHoursStart || "09:00";
+      const startStr = backendInfo.data?.Results?.BusinessHoursStart || '09:00'
       const startOption = businessHoursOptions.find((o) => o.value === startStr) || {
         label: startStr,
         value: startStr,
-      };
+      }
 
       formControl.reset({
         Timezone: tzOption,
         BusinessHoursStart: startOption,
-      });
+      })
     }
-  }, [backendInfo.isSuccess, backendInfo.data, timezones, businessHoursOptions]);
+  }, [backendInfo.isSuccess, backendInfo.data, timezones, businessHoursOptions])
 
   return (
     <CippFormPage
@@ -99,18 +100,31 @@ const Page = () => {
 
         {backendInfo.isSuccess && (
           <>
-            <Grid size={12}>
-              <CippFormComponent
-                type="autoComplete"
-                name="Timezone"
-                label="Timezone"
-                multiple={false}
-                formControl={formControl}
-                options={timezones?.length ? timezones : [{ label: "UTC", value: "UTC" }]}
-                creatable={false}
-                validators={{ required: "Please select a timezone" }}
-              />
-            </Grid>
+            {isLinuxConsumption ? (
+              <Grid size={12}>
+                <Alert severity="warning">
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                    Timezone Not Supported
+                  </Typography>
+                  The <strong>WEBSITE_TIME_ZONE</strong> setting is not supported on Linux
+                  Consumption function apps. Timezone configuration is only available on Windows
+                  plans, Premium Linux plans, and Flex Consumption plans.
+                </Alert>
+              </Grid>
+            ) : (
+              <Grid size={12}>
+                <CippFormComponent
+                  type="autoComplete"
+                  name="Timezone"
+                  label="Timezone"
+                  multiple={false}
+                  formControl={formControl}
+                  options={timezones?.length ? timezones : [{ label: 'UTC', value: 'UTC' }]}
+                  creatable={false}
+                  validators={{ required: 'Please select a timezone' }}
+                />
+              </Grid>
+            )}
 
             {isFlexConsumption && (
               <>
@@ -133,7 +147,7 @@ const Page = () => {
                     label="Business Hours Start Time (10-hour window)"
                     formControl={formControl}
                     options={businessHoursOptions}
-                    validators={{ required: "Please select business hours start time" }}
+                    validators={{ required: 'Please select business hours start time' }}
                     multiple={false}
                     creatable={false}
                   />
@@ -145,7 +159,7 @@ const Page = () => {
               <Grid size={12}>
                 <Alert severity="info">
                   <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                    App Service Plan: {backendInfo.data?.SKU || "Unknown"}
+                    App Service Plan: {backendInfo.data?.SKU || 'Unknown'}
                   </Typography>
                   Business hours configuration is only available for Flex Consumption App Service
                   Plans.
@@ -156,13 +170,13 @@ const Page = () => {
         )}
       </Grid>
     </CippFormPage>
-  );
-};
+  )
+}
 
 Page.getLayout = (page) => (
   <DashboardLayout>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
-);
+)
 
-export default Page;
+export default Page

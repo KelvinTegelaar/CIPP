@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react'
 import {
   Box,
   Button,
@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-} from "@mui/material";
+} from '@mui/material'
 import {
   Search as SearchIcon,
   FilterList as FilterListIcon,
@@ -33,110 +33,110 @@ import {
   Check as CheckIcon,
   MoreVert as MoreVertIcon,
   Fullscreen as FullscreenIcon,
-} from "@mui/icons-material";
-import { ExclamationCircleIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import { styled, alpha } from "@mui/material/styles";
-import { PDFExportButton, exportRowsToPdf } from "../pdfExportButton";
-import { CSVExportButton, exportRowsToCsv } from "../csvExportButton";
-import { getCippTranslation } from "../../utils/get-cipp-translation";
-import { useMediaQuery } from "@mui/material";
-import { CippQueueTracker } from "./CippQueueTracker";
-import { usePopover } from "../../hooks/use-popover";
-import { useDialog } from "../../hooks/use-dialog";
-import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { useSettings } from "../../hooks/use-settings";
-import { useRouter } from "next/router";
-import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
-import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
-import { ApiGetCall } from "../../api/ApiCall";
-import GraphExplorerPresets from "../../data/GraphExplorerPresets.json";
-import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
-import { Stack } from "@mui/system";
+} from '@mui/icons-material'
+import { ExclamationCircleIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
+import { styled, alpha } from '@mui/material/styles'
+import { PDFExportButton, exportRowsToPdf } from '../pdfExportButton'
+import { CSVExportButton, exportRowsToCsv } from '../csvExportButton'
+import { getCippTranslation } from '../../utils/get-cipp-translation'
+import { useMediaQuery } from '@mui/material'
+import { CippQueueTracker } from './CippQueueTracker'
+import { usePopover } from '../../hooks/use-popover'
+import { useDialog } from '../../hooks/use-dialog'
+import { CippApiDialog } from '../CippComponents/CippApiDialog'
+import { useSettings } from '../../hooks/use-settings'
+import { useRouter } from 'next/router'
+import { CippOffCanvas } from '../CippComponents/CippOffCanvas'
+import { CippCodeBlock } from '../CippComponents/CippCodeBlock'
+import { ApiGetCall } from '../../api/ApiCall'
+import GraphExplorerPresets from '../../data/GraphExplorerPresets.json'
+import CippGraphExplorerFilter from './CippGraphExplorerFilter'
+import { Stack } from '@mui/system'
 
 // Styled components for modern design
 const ModernSearchContainer = styled(Paper)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  width: "100%",
-  maxWidth: "300px",
-  minWidth: "200px",
-  height: "40px",
-  backgroundColor: theme.palette.mode === "dark" ? "#2A2D3A" : "#F8F9FA",
-  border: `1px solid ${theme.palette.mode === "dark" ? "#404040" : "#E0E0E0"}`,
-  borderRadius: "8px",
-  padding: "0 12px",
-  "&:hover": {
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  maxWidth: '300px',
+  minWidth: '200px',
+  height: '40px',
+  backgroundColor: theme.palette.mode === 'dark' ? '#2A2D3A' : '#F8F9FA',
+  border: `1px solid ${theme.palette.mode === 'dark' ? '#404040' : '#E0E0E0'}`,
+  borderRadius: '8px',
+  padding: '0 12px',
+  '&:hover': {
     borderColor: theme.palette.primary.main,
   },
-  "&:focus-within": {
+  '&:focus-within': {
     borderColor: theme.palette.primary.main,
     boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`,
   },
-  [theme.breakpoints.down("md")]: {
-    minWidth: "0",
-    maxWidth: "none",
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+    maxWidth: 'none',
     flex: 1,
   },
-}));
+}))
 
 const ModernSearchInput = styled(InputBase)(({ theme }) => ({
   marginLeft: theme.spacing(1),
   flex: 1,
-  fontSize: "14px",
-  "& .MuiInputBase-input": {
-    padding: "8px 0",
-    "&::placeholder": {
+  fontSize: '14px',
+  '& .MuiInputBase-input': {
+    padding: '8px 0',
+    '&::placeholder': {
       color: theme.palette.text.secondary,
       opacity: 0.7,
     },
   },
-}));
+}))
 
 const ModernButton = styled(Button)(({ theme }) => ({
-  height: "40px",
-  borderRadius: "8px",
-  textTransform: "none",
+  height: '40px',
+  borderRadius: '8px',
+  textTransform: 'none',
   fontWeight: 500,
-  fontSize: "14px",
-  padding: "8px 16px",
-  backgroundColor: theme.palette.mode === "dark" ? "#2A2D3A" : "#F8F9FA",
-  border: `1px solid ${theme.palette.mode === "dark" ? "#404040" : "#E0E0E0"}`,
+  fontSize: '14px',
+  padding: '8px 16px',
+  backgroundColor: theme.palette.mode === 'dark' ? '#2A2D3A' : '#F8F9FA',
+  border: `1px solid ${theme.palette.mode === 'dark' ? '#404040' : '#E0E0E0'}`,
   color: theme.palette.text.primary,
-  minWidth: "auto",
-  whiteSpace: "nowrap",
-  "&:hover": {
-    backgroundColor: theme.palette.mode === "dark" ? "#363A4A" : "#F0F0F0",
+  minWidth: 'auto',
+  whiteSpace: 'nowrap',
+  '&:hover': {
+    backgroundColor: theme.palette.mode === 'dark' ? '#363A4A' : '#F0F0F0',
     borderColor: theme.palette.primary.main,
   },
-  "& .MuiButton-startIcon": {
-    marginRight: "8px",
+  '& .MuiButton-startIcon': {
+    marginRight: '8px',
   },
-  "& .MuiButton-endIcon": {
-    marginLeft: "8px",
+  '& .MuiButton-endIcon': {
+    marginLeft: '8px',
   },
-  [theme.breakpoints.down("md")]: {
-    padding: "8px 12px",
-    fontSize: "13px",
-    "& .MuiButton-startIcon": {
-      marginRight: "6px",
+  [theme.breakpoints.down('md')]: {
+    padding: '8px 12px',
+    fontSize: '13px',
+    '& .MuiButton-startIcon': {
+      marginRight: '6px',
     },
-    "& .MuiButton-endIcon": {
-      marginLeft: "6px",
-    },
-  },
-  [theme.breakpoints.down("sm")]: {
-    padding: "8px 10px",
-    fontSize: "12px",
-    "& .MuiButton-startIcon": {
-      marginRight: "4px",
-    },
-    "& .MuiButton-endIcon": {
-      marginLeft: "4px",
+    '& .MuiButton-endIcon': {
+      marginLeft: '6px',
     },
   },
-}));
+  [theme.breakpoints.down('sm')]: {
+    padding: '8px 10px',
+    fontSize: '12px',
+    '& .MuiButton-startIcon': {
+      marginRight: '4px',
+    },
+    '& .MuiButton-endIcon': {
+      marginLeft: '4px',
+    },
+  },
+}))
 
-const RefreshButton = styled(IconButton)(({ theme }) => ({}));
+const RefreshButton = styled(IconButton)(({ theme }) => ({}))
 
 export const CIPPTableToptoolbar = ({
   api,
@@ -161,31 +161,31 @@ export const CIPPTableToptoolbar = ({
   isInDialog = false,
   showBulkExportAction = true,
 }) => {
-  const popover = usePopover();
-  const [filtersAnchor, setFiltersAnchor] = useState(null);
-  const [columnsAnchor, setColumnsAnchor] = useState(null);
-  const [exportAnchor, setExportAnchor] = useState(null);
-  const [actionMenuAnchor, setActionMenuAnchor] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
+  const popover = usePopover()
+  const [filtersAnchor, setFiltersAnchor] = useState(null)
+  const [columnsAnchor, setColumnsAnchor] = useState(null)
+  const [exportAnchor, setExportAnchor] = useState(null)
+  const [actionMenuAnchor, setActionMenuAnchor] = useState(null)
+  const [searchValue, setSearchValue] = useState('')
 
-  const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
-  const settings = useSettings();
-  const router = useRouter();
-  const createDialog = useDialog();
-  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  const [offcanvasVisible, setOffcanvasVisible] = useState(false);
-  const [jsonDialogOpen, setJsonDialogOpen] = useState(false); // For dialog-based JSON view
-  const [filterList, setFilterList] = useState(filters);
-  const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(queryKey || title);
-  const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns);
-  const [filterCanvasVisible, setFilterCanvasVisible] = useState(false);
-  const [activeFilterName, setActiveFilterName] = useState(null);
-  const pageName = router.pathname.split("/").slice(1).join("/");
-  const currentTenant = settings?.currentTenant;
-  const [useCompactMode, setUseCompactMode] = useState(false);
-  const toolbarRef = useRef(null);
-  const leftContainerRef = useRef(null);
-  const actionsContainerRef = useRef(null);
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
+  const settings = useSettings()
+  const router = useRouter()
+  const createDialog = useDialog()
+  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false })
+  const [offcanvasVisible, setOffcanvasVisible] = useState(false)
+  const [jsonDialogOpen, setJsonDialogOpen] = useState(false) // For dialog-based JSON view
+  const [filterList, setFilterList] = useState(filters)
+  const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(queryKey || title)
+  const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns)
+  const [filterCanvasVisible, setFilterCanvasVisible] = useState(false)
+  const [activeFilterName, setActiveFilterName] = useState(null)
+  const pageName = router.pathname.split('/').slice(1).join('/')
+  const currentTenant = settings?.currentTenant
+  const [useCompactMode, setUseCompactMode] = useState(false)
+  const toolbarRef = useRef(null)
+  const leftContainerRef = useRef(null)
+  const actionsContainerRef = useRef(null)
 
   const getBulkActions = (actions, selectedRows) => {
     return (
@@ -197,32 +197,32 @@ export const CIPPTableToptoolbar = ({
             ? !selectedRows.every((row) => action.condition(row.original))
             : false,
         })) || []
-    );
-  };
+    )
+  }
 
-  const selectedRows = table.getSelectedRowModel().rows;
-  const hasSelection = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
+  const selectedRows = table.getSelectedRowModel().rows
+  const hasSelection = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()
   // Built-in export actions should only appear when the page opts in and rows are selected.
   const builtInBulkExportAvailable =
-    showBulkExportAction && exportEnabled && selectedRows.length > 0;
-  const customBulkActions = getBulkActions(actions, selectedRows);
-  const showBulkActionsButton = hasSelection && customBulkActions.length > 0;
+    showBulkExportAction && exportEnabled && selectedRows.length > 0
+  const customBulkActions = getBulkActions(actions, selectedRows)
+  const showBulkActionsButton = hasSelection && customBulkActions.length > 0
 
   const handleExportSelectedToCsv = () => {
     if (!selectedRows.length) {
-      return;
+      return
     }
     exportRowsToCsv({
       rows: selectedRows,
       columns: usedColumns,
       reportName: `${title}`,
       columnVisibility,
-    });
-  };
+    })
+  }
 
   const handleExportSelectedToPdf = () => {
     if (!selectedRows.length) {
-      return;
+      return
     }
     exportRowsToPdf({
       rows: selectedRows,
@@ -230,35 +230,35 @@ export const CIPPTableToptoolbar = ({
       reportName: `${title}`,
       columnVisibility,
       brandingSettings: settings?.customBranding,
-    });
-  };
+    })
+  }
 
   // Track if we've restored filters for this page to prevent infinite loops
-  const restoredFiltersRef = useRef(new Set());
+  const restoredFiltersRef = useRef(new Set())
 
   useEffect(() => {
     //if usedData changes, deselect all rows
-    table.toggleAllRowsSelected(false);
-  }, [usedData]);
+    table.toggleAllRowsSelected(false)
+  }, [usedData])
 
   // Sync currentEffectiveQueryKey with queryKey prop changes (e.g., tenant changes)
   useEffect(() => {
-    setCurrentEffectiveQueryKey(queryKey || title);
+    setCurrentEffectiveQueryKey(queryKey || title)
     // Clear active filter name when query key changes (page load, tenant change, etc.)
-    setActiveFilterName(null);
-  }, [queryKey, title]);
+    setActiveFilterName(null)
+  }, [queryKey, title])
 
   //if the currentTenant Switches, remove Graph filters
   useEffect(() => {
     if (currentTenant) {
-      setGraphFilterData({});
+      setGraphFilterData({})
       // Clear active filter name when tenant changes
-      setActiveFilterName(null);
+      setActiveFilterName(null)
       // Clear restoration tracking so saved filters can be re-applied
-      const restorationKey = `${pageName}-graph`;
-      restoredFiltersRef.current.delete(restorationKey);
+      const restorationKey = `${pageName}-graph`
+      restoredFiltersRef.current.delete(restorationKey)
     }
-  }, [currentTenant, pageName]);
+  }, [currentTenant, pageName])
 
   //useEffect to set the column visibility to the preferred columns if they exist
   useEffect(() => {
@@ -266,112 +266,113 @@ export const CIPPTableToptoolbar = ({
       settings?.columnDefaults?.[pageName] &&
       Object.keys(settings?.columnDefaults?.[pageName]).length > 0
     ) {
-      setColumnVisibility(settings?.columnDefaults?.[pageName]);
+      setColumnVisibility(settings?.columnDefaults?.[pageName])
     }
-  }, [settings?.columnDefaults?.[pageName], router, usedColumns]);
+  }, [settings?.columnDefaults?.[pageName], router, usedColumns])
 
   useEffect(() => {
-    setOriginalSimpleColumns(simpleColumns);
-  }, [simpleColumns]);
+    setOriginalSimpleColumns(simpleColumns)
+  }, [simpleColumns])
 
   // Early restoration of graph filters (before API call) - run only once per page
   useEffect(() => {
-    const restorationKey = `${pageName}-graph`;
+    const restorationKey = `${pageName}-graph`
 
     if (
       settings.persistFilters &&
       settings.lastUsedFilters &&
       settings.lastUsedFilters[pageName] &&
-      api?.url === "/api/ListGraphRequest" && // Only for graph requests
+      api?.url === '/api/ListGraphRequest' && // Only for graph requests
       !restoredFiltersRef.current.has(restorationKey) // Only if not already restored
     ) {
-      const last = settings.lastUsedFilters[pageName];
-      if (last.type === "graph") {
+      const last = settings.lastUsedFilters[pageName]
+      if (last.type === 'graph') {
         // Mark as restored to prevent infinite loops
-        restoredFiltersRef.current.add(restorationKey);
+        restoredFiltersRef.current.add(restorationKey)
 
         // Directly set the graph filter data without calling setTableFilter to avoid loops
         const filterProps = [
-          "$filter",
-          "$select",
-          "$expand",
-          "$orderby",
-          "$count",
-          "$search",
-          "ReverseTenantLookup",
-          "ReverseTenantLookupProperty",
-          "AsApp",
-        ];
+          '$filter',
+          '$select',
+          '$expand',
+          '$orderby',
+          '$count',
+          '$search',
+          'ReverseTenantLookup',
+          'ReverseTenantLookupProperty',
+          'AsApp',
+        ]
         const graphFilter = filterProps.reduce((acc, prop) => {
           if (last.value[prop]) {
-            acc[prop] = last.value[prop];
+            acc[prop] = last.value[prop]
           }
-          return acc;
-        }, {});
+          return acc
+        }, {})
+        const resolvedGraphFilter = resolveFilterVariables(graphFilter)
 
-        const newQueryKey = `${queryKey ? queryKey : title}-${last.name}`;
+        const newQueryKey = `${queryKey ? queryKey : title}-${last.name}`
         setGraphFilterData({
-          data: { ...mergeCaseInsensitive(api.data, graphFilter) },
+          data: { ...mergeCaseInsensitive(api.data, resolvedGraphFilter) },
           queryKey: newQueryKey,
-        });
-        setCurrentEffectiveQueryKey(newQueryKey);
-        setActiveFilterName(last.name);
+        })
+        setCurrentEffectiveQueryKey(newQueryKey)
+        setActiveFilterName(last.name)
 
         if (last.value?.$select) {
-          let selectColumns = [];
+          let selectColumns = []
           if (Array.isArray(last.value.$select)) {
-            selectColumns = last.value.$select;
-          } else if (typeof last.value.$select === "string") {
             selectColumns = last.value.$select
-              .split(",")
+          } else if (typeof last.value.$select === 'string') {
+            selectColumns = last.value.$select
+              .split(',')
               .map((col) => col.trim())
-              .filter((col) => usedColumns.includes(col));
+              .filter((col) => usedColumns.includes(col))
           }
           if (selectColumns.length > 0) {
-            setConfiguredSimpleColumns(selectColumns);
+            setConfiguredSimpleColumns(selectColumns)
           }
         }
       }
     }
-  }, [settings.persistFilters, settings.lastUsedFilters, pageName, api?.url, queryKey, title]);
+  }, [settings.persistFilters, settings.lastUsedFilters, pageName, api?.url, queryKey, title])
 
   // Clear restoration tracking when page changes
   useEffect(() => {
-    restoredFiltersRef.current.clear();
-  }, [pageName]);
+    restoredFiltersRef.current.clear()
+  }, [pageName])
 
   // Detect overflow and switch to compact mode
   useEffect(() => {
     const checkOverflow = () => {
       if (!leftContainerRef.current || !actionsContainerRef.current) {
-        return;
+        return
       }
 
-      const leftContainerWidth = leftContainerRef.current.offsetWidth;
-      const leftContainerScrollWidth = leftContainerRef.current.scrollWidth;
-      const actionsWidth = actionsContainerRef.current.scrollWidth;
-      const isOverflowing = leftContainerScrollWidth > leftContainerWidth;
-      const shouldBeCompact = isOverflowing || actionsWidth > leftContainerWidth * 0.6; // Actions taking > 60% of left container
+      const leftContainerWidth = leftContainerRef.current.offsetWidth
+      const leftContainerScrollWidth = leftContainerRef.current.scrollWidth
+      const actionsWidth = actionsContainerRef.current.scrollWidth
+      const isOverflowing = leftContainerScrollWidth > leftContainerWidth
+      const shouldBeCompact = isOverflowing || actionsWidth > leftContainerWidth * 0.6 // Actions taking > 60% of left container
 
-      setUseCompactMode(shouldBeCompact);
-    };
+      setUseCompactMode(shouldBeCompact)
+    }
 
     // Check immediately on mount and when dependencies change
-    checkOverflow();
+    checkOverflow()
 
     // Also check after a brief delay to ensure elements are fully rendered
-    const timeoutId = setTimeout(checkOverflow, 100);
+    const timeoutId = setTimeout(checkOverflow, 100)
 
-    const resizeObserver = new ResizeObserver(checkOverflow);
+    const resizeObserver = new ResizeObserver(checkOverflow)
     if (leftContainerRef.current) {
-      resizeObserver.observe(leftContainerRef.current);
+      resizeObserver.observe(leftContainerRef.current)
     }
 
     return () => {
-      clearTimeout(timeoutId);
-      resizeObserver.disconnect();
-    };
-  }, [hasSelection, customBulkActions.length, exportEnabled, filters?.length, usedColumns?.length]);
+      clearTimeout(timeoutId)
+      resizeObserver.disconnect()
+    }
+  }, [hasSelection, customBulkActions.length, exportEnabled, filters?.length, usedColumns?.length])
 
   // Restore last used filter on mount if persistFilters is enabled (non-graph filters)
   useEffect(() => {
@@ -386,26 +387,26 @@ export const CIPPTableToptoolbar = ({
     ) {
       // Use setTimeout to ensure the table is fully rendered
       const timeoutId = setTimeout(() => {
-        const last = settings.lastUsedFilters[pageName];
+        const last = settings.lastUsedFilters[pageName]
 
-        if (last.type === "global") {
-          table.setGlobalFilter(last.value);
-          setActiveFilterName(last.name);
-        } else if (last.type === "column") {
+        if (last.type === 'global') {
+          table.setGlobalFilter(last.value)
+          setActiveFilterName(last.name)
+        } else if (last.type === 'column') {
           // Only apply if all filter columns exist in the current table
-          const allColumns = table.getAllColumns().map((col) => col.id);
-          const filterColumns = Array.isArray(last.value) ? last.value.map((f) => f.id) : [];
-          const allExist = filterColumns.every((colId) => allColumns.includes(colId));
+          const allColumns = table.getAllColumns().map((col) => col.id)
+          const filterColumns = Array.isArray(last.value) ? last.value.map((f) => f.id) : []
+          const allExist = filterColumns.every((colId) => allColumns.includes(colId))
           if (allExist) {
-            table.setShowColumnFilters(true);
-            table.setColumnFilters(last.value);
-            setActiveFilterName(last.name);
+            table.setShowColumnFilters(true)
+            table.setColumnFilters(last.value)
+            setActiveFilterName(last.name)
           }
         }
         // Note: graph filters are handled in the earlier useEffect
-      }, 100);
+      }, 100)
 
-      return () => clearTimeout(timeoutId);
+      return () => clearTimeout(timeoutId)
     }
   }, [
     settings.persistFilters,
@@ -414,68 +415,68 @@ export const CIPPTableToptoolbar = ({
     table,
     usedColumns,
     getRequestData?.isFetching,
-  ]);
+  ])
 
   const presetList = ApiGetCall({
-    url: "/api/ListGraphExplorerPresets",
-    queryKey: `ListGraphExplorerPresets${api?.data?.Endpoint ?? ""}`,
+    url: '/api/ListGraphExplorerPresets',
+    queryKey: `ListGraphExplorerPresets${api?.data?.Endpoint ?? ''}`,
     data: {
-      Endpoint: api?.data?.Endpoint ?? "",
+      Endpoint: api?.data?.Endpoint ?? '',
     },
     waiting: !!api?.data?.Endpoint,
-  });
+  })
 
   // Handle search input changes
   const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearchValue(value);
-    table.setGlobalFilter(value);
-  };
+    const value = event.target.value
+    setSearchValue(value)
+    table.setGlobalFilter(value)
+  }
 
   // Handle column filters toggle
   const handleColumnFiltersToggle = () => {
-    const currentState = table.getState().showColumnFilters;
-    table.setShowColumnFilters(!currentState);
-  };
+    const currentState = table.getState().showColumnFilters
+    table.setShowColumnFilters(!currentState)
+  }
 
   const resetToDefaultVisibility = () => {
     setColumnVisibility((prevVisibility) => {
-      const updatedVisibility = {};
+      const updatedVisibility = {}
       for (const col in prevVisibility) {
         if (Array.isArray(originalSimpleColumns)) {
-          updatedVisibility[col] = originalSimpleColumns.includes(col);
+          updatedVisibility[col] = originalSimpleColumns.includes(col)
         }
       }
-      return updatedVisibility;
-    });
+      return updatedVisibility
+    })
     settings.handleUpdate({
       columnDefaults: {
         ...settings?.columnDefaults,
         [pageName]: {},
       },
-    });
-    setColumnsAnchor(null);
-  };
+    })
+    setColumnsAnchor(null)
+  }
 
   const resetToPreferedVisibility = () => {
     if (
       settings?.columnDefaults?.[pageName] &&
       Object.keys(settings?.columnDefaults?.[pageName]).length > 0
     ) {
-      setColumnVisibility(settings?.columnDefaults?.[pageName]);
+      setColumnVisibility(settings?.columnDefaults?.[pageName])
     } else {
       setColumnVisibility((prevVisibility) => {
-        const updatedVisibility = {};
+        const updatedVisibility = {}
         for (const col in prevVisibility) {
           if (Array.isArray(originalSimpleColumns)) {
-            updatedVisibility[col] = originalSimpleColumns.includes(col);
+            updatedVisibility[col] = originalSimpleColumns.includes(col)
           }
         }
-        return updatedVisibility;
-      });
+        return updatedVisibility
+      })
     }
-    setColumnsAnchor(null);
-  };
+    setColumnsAnchor(null)
+  }
 
   const saveAsPreferedColumns = () => {
     settings.handleUpdate({
@@ -483,174 +484,194 @@ export const CIPPTableToptoolbar = ({
         ...settings?.columnDefaults,
         [pageName]: columnVisibility,
       },
-    });
-    setColumnsAnchor(null);
-  };
+    })
+    setColumnsAnchor(null)
+  }
 
   const mergeCaseInsensitive = (obj1, obj2) => {
-    const merged = { ...obj1 };
+    const merged = { ...obj1 }
     for (const key in obj2) {
-      const lowerCaseKey = key.toLowerCase();
-      const existingKey = Object.keys(merged).find((k) => k.toLowerCase() === lowerCaseKey);
+      const lowerCaseKey = key.toLowerCase()
+      const existingKey = Object.keys(merged).find((k) => k.toLowerCase() === lowerCaseKey)
       if (existingKey) {
-        merged[existingKey] = obj2[key];
+        merged[existingKey] = obj2[key]
       } else {
-        merged[key] = obj2[key];
+        merged[key] = obj2[key]
       }
     }
-    return merged;
-  };
+    return merged
+  }
+
+  // Resolve variable placeholders in filter objects.
+  // Supported: {DaysAgo:N} → ISO date string N days in the past
+  const resolveFilterVariables = (obj) => {
+    if (!obj || typeof obj !== 'object') return obj
+    return Object.fromEntries(
+      Object.entries(obj).map(([k, v]) => {
+        if (typeof v === 'string') {
+          const resolved = v.replace(/\{DaysAgo:(\d+)\}/g, (_, n) => {
+            const d = new Date()
+            d.setDate(d.getDate() - Number(n))
+            return d.toISOString().split('T')[0]
+          })
+          return [k, resolved]
+        }
+        return [k, v]
+      })
+    )
+  }
 
   // Shared function for setting nested column visibility
   const setNestedVisibility = (col) => {
-    if (typeof col === "object" && col !== null) {
+    if (typeof col === 'object' && col !== null) {
       Object.keys(col).forEach((key) => {
         if (usedColumns.includes(key.trim())) {
-          setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
-          setNestedVisibility(col[key]);
+          setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }))
+          setNestedVisibility(col[key])
         }
-      });
+      })
     } else {
       if (usedColumns.includes(col.trim())) {
-        setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
+        setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }))
       }
     }
-  };
+  }
 
   const setTableFilter = (filter, filterType, filterName) => {
-    if (filterType === "global" || filterType === undefined) {
-      table.setGlobalFilter(filter);
-      setActiveFilterName(filterName);
+    if (filterType === 'global' || filterType === undefined) {
+      table.setGlobalFilter(filter)
+      setActiveFilterName(filterName)
       if (settings.persistFilters && settings.setLastUsedFilter) {
-        settings.setLastUsedFilter(pageName, { type: "global", value: filter, name: filterName });
+        settings.setLastUsedFilter(pageName, { type: 'global', value: filter, name: filterName })
       }
     }
-    if (filterType === "column") {
-      table.setShowColumnFilters(true);
-      table.setColumnFilters(filter);
-      setActiveFilterName(filterName);
+    if (filterType === 'column') {
+      table.setShowColumnFilters(true)
+      table.setColumnFilters(filter)
+      setActiveFilterName(filterName)
       if (settings.persistFilters && settings.setLastUsedFilter) {
-        settings.setLastUsedFilter(pageName, { type: "column", value: filter, name: filterName });
+        settings.setLastUsedFilter(pageName, { type: 'column', value: filter, name: filterName })
       }
     }
-    if (filterType === "reset") {
-      table.resetGlobalFilter();
-      table.resetColumnFilters();
+    if (filterType === 'reset') {
+      table.resetGlobalFilter()
+      table.resetColumnFilters()
       if (api?.data) {
-        setGraphFilterData({});
-        resetToDefaultVisibility();
+        setGraphFilterData({})
+        resetToDefaultVisibility()
       }
-      setCurrentEffectiveQueryKey(queryKey || title); // Reset to original query key
-      setActiveFilterName(null); // Clear active filter
+      setCurrentEffectiveQueryKey(queryKey || title) // Reset to original query key
+      setActiveFilterName(null) // Clear active filter
       if (settings.persistFilters && settings.setLastUsedFilter) {
-        settings.setLastUsedFilter(pageName, { type: "reset", value: null, name: null });
+        settings.setLastUsedFilter(pageName, { type: 'reset', value: null, name: null })
       }
     }
-    if (filterType === "graph") {
+    if (filterType === 'graph') {
+      const resolvedFilter = resolveFilterVariables(filter)
       const filterProps = [
-        "$filter",
-        "$select",
-        "$expand",
-        "$orderby",
-        "$count",
-        "$search",
-        "ReverseTenantLookup",
-        "ReverseTenantLookupProperty",
-        "AsApp",
-      ];
+        '$filter',
+        '$select',
+        '$expand',
+        '$orderby',
+        '$count',
+        '$search',
+        'ReverseTenantLookup',
+        'ReverseTenantLookupProperty',
+        'AsApp',
+      ]
       const graphFilter = filterProps.reduce((acc, prop) => {
-        if (filter[prop]) {
-          acc[prop] = filter[prop];
+        if (resolvedFilter[prop]) {
+          acc[prop] = resolvedFilter[prop]
         }
-        return acc;
-      }, {});
-      table.resetGlobalFilter();
-      table.resetColumnFilters();
+        return acc
+      }, {})
+      table.resetGlobalFilter()
+      table.resetColumnFilters()
       //get api.data, merge with graphFilter, set api.data
-      const newQueryKey = `${queryKey ? queryKey : title}-${filterName}`;
+      const newQueryKey = `${queryKey ? queryKey : title}-${filterName}`
       setGraphFilterData({
         data: { ...mergeCaseInsensitive(api.data, graphFilter) },
         queryKey: newQueryKey,
-      });
-      setCurrentEffectiveQueryKey(newQueryKey);
-      setActiveFilterName(filterName); // Track active graph filter
+      })
+      setCurrentEffectiveQueryKey(newQueryKey)
+      setActiveFilterName(filterName) // Track active graph filter
       if (settings.persistFilters && settings.setLastUsedFilter) {
-        settings.setLastUsedFilter(pageName, { type: "graph", value: filter, name: filterName });
+        settings.setLastUsedFilter(pageName, { type: 'graph', value: filter, name: filterName })
       }
       if (filter?.$select) {
-        let selectedColumns = [];
+        let selectedColumns = []
         if (Array.isArray(filter?.$select)) {
-          selectedColumns = filter?.$select;
-        } else if (typeof filter?.$select === "string") {
-          selectedColumns = filter.$select.split(",");
+          selectedColumns = filter?.$select
+        } else if (typeof filter?.$select === 'string') {
+          selectedColumns = filter.$select.split(',')
         }
         if (selectedColumns.length > 0) {
-          setConfiguredSimpleColumns(selectedColumns);
+          setConfiguredSimpleColumns(selectedColumns)
           selectedColumns.forEach((col) => {
-            setNestedVisibility(col);
-          });
+            setNestedVisibility(col)
+          })
         }
       }
     }
-  };
+  }
 
   useEffect(() => {
-    if (api?.url === "/api/ListGraphRequest" && presetList.isSuccess) {
-      var endpoint = api?.data?.Endpoint?.replace(/^\//, "");
-      var graphPresetList = [];
+    if (api?.url === '/api/ListGraphRequest' && presetList.isSuccess) {
+      var endpoint = api?.data?.Endpoint?.replace(/^\//, '')
+      var graphPresetList = []
       GraphExplorerPresets.map((preset) => {
-        var presetEndpoint = preset?.params?.endpoint?.replace(/^\//, "");
+        var presetEndpoint = preset?.params?.endpoint?.replace(/^\//, '')
         if (presetEndpoint === endpoint) {
           graphPresetList.push({
             id: preset?.id,
             filterName: preset?.name,
             value: preset?.params,
-            type: "graph",
-          });
+            type: 'graph',
+          })
         }
-      });
+      })
 
       presetList?.data?.Results?.map((preset) => {
-        var customPresetEndpoint = preset?.params?.endpoint?.replace(/^\//, "");
+        var customPresetEndpoint = preset?.params?.endpoint?.replace(/^\//, '')
         if (customPresetEndpoint === endpoint) {
           graphPresetList.push({
             id: preset?.id,
             filterName: preset?.name,
             value: preset?.params,
-            type: "graph",
-          });
+            type: 'graph',
+          })
         }
-      });
+      })
 
       // update filters to include graph explorer presets
-      setFilterList([...filters, ...graphPresetList]);
+      setFilterList([...filters, ...graphPresetList])
     }
-  }, [presetList?.isSuccess, simpleColumns]);
+  }, [presetList?.isSuccess, simpleColumns])
 
   return (
     <>
       <Box
         ref={toolbarRef}
         sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
           gap: { xs: 1, md: 2 },
           px: 0.5,
           pb: 2,
-          justifyContent: "space-between",
-          alignItems: { xs: "stretch", md: "center" },
-          backgroundColor: "background.paper",
+          justifyContent: 'space-between',
+          alignItems: { xs: 'stretch', md: 'center' },
+          backgroundColor: 'background.paper',
         }}
       >
         {/* Left side - Main controls */}
         <Box
           ref={leftContainerRef}
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: { xs: 1, md: 2 },
-            alignItems: "center",
+            alignItems: 'center',
             flex: 1,
-            flexWrap: { xs: "nowrap", md: "nowrap" },
+            flexWrap: { xs: 'nowrap', md: 'nowrap' },
             minWidth: 0,
           }}
         >
@@ -658,55 +679,57 @@ export const CIPPTableToptoolbar = ({
           <Tooltip
             title={
               getRequestData?.isFetchNextPageError
-                ? "Could not retrieve all data. Click to try again."
+                ? 'Could not retrieve all data. Click to try again.'
                 : getRequestData?.isFetching
-                  ? "Retrieving more data..."
-                  : "Refresh data"
+                  ? 'Retrieving more data...'
+                  : 'Refresh data'
             }
           >
-            <RefreshButton
-              onClick={() => {
-                if (typeof refreshFunction === "object") {
-                  refreshFunction.refetch();
-                } else if (typeof refreshFunction === "function") {
-                  refreshFunction();
-                } else if (data && !getRequestData.isFetched) {
-                  // do nothing because data was sent native.
-                } else if (getRequestData) {
-                  getRequestData.refetch();
-                }
-              }}
-              disabled={
-                getRequestData?.isLoading ||
-                getRequestData?.isFetching ||
-                refreshFunction?.isFetching
-              }
-            >
-              <SvgIcon
-                fontSize="small"
-                sx={{
-                  animation:
-                    getRequestData?.isFetching || refreshFunction?.isFetching
-                      ? "spin 1s linear infinite"
-                      : "none",
-                  "@keyframes spin": {
-                    "0%": { transform: "rotate(0deg)" },
-                    "100%": { transform: "rotate(-360deg)" },
-                  },
+            <span>
+              <RefreshButton
+                onClick={() => {
+                  if (typeof refreshFunction === 'object') {
+                    refreshFunction.refetch()
+                  } else if (typeof refreshFunction === 'function') {
+                    refreshFunction()
+                  } else if (data && !getRequestData.isFetched) {
+                    // do nothing because data was sent native.
+                  } else if (getRequestData) {
+                    getRequestData.refetch()
+                  }
                 }}
+                disabled={
+                  getRequestData?.isLoading ||
+                  getRequestData?.isFetching ||
+                  refreshFunction?.isFetching
+                }
               >
-                {getRequestData?.isFetchNextPageError ? (
-                  <ExclamationCircleIcon color="red" />
-                ) : (
-                  <Sync />
-                )}
-              </SvgIcon>
-            </RefreshButton>
+                <SvgIcon
+                  fontSize="small"
+                  sx={{
+                    animation:
+                      getRequestData?.isFetching || refreshFunction?.isFetching
+                        ? 'spin 1s linear infinite'
+                        : 'none',
+                    '@keyframes spin': {
+                      '0%': { transform: 'rotate(0deg)' },
+                      '100%': { transform: 'rotate(-360deg)' },
+                    },
+                  }}
+                >
+                  {getRequestData?.isFetchNextPageError ? (
+                    <ExclamationCircleIcon color="red" />
+                  ) : (
+                    <Sync />
+                  )}
+                </SvgIcon>
+              </RefreshButton>
+            </span>
           </Tooltip>
 
           {/* Search Input */}
           <ModernSearchContainer elevation={0}>
-            <SearchIcon sx={{ color: "text.secondary", fontSize: 20 }} />
+            <SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
             <ModernSearchInput
               placeholder="Search input"
               value={searchValue}
@@ -719,14 +742,14 @@ export const CIPPTableToptoolbar = ({
             <Box
               ref={actionsContainerRef}
               sx={{
-                display: "flex",
+                display: 'flex',
                 gap: 2,
                 flexShrink: 0,
                 mt: 0.5,
                 ...(useCompactMode && {
-                  position: "absolute",
-                  visibility: "hidden",
-                  pointerEvents: "none",
+                  position: 'absolute',
+                  visibility: 'hidden',
+                  pointerEvents: 'none',
                 }),
               }}
             >
@@ -736,8 +759,8 @@ export const CIPPTableToptoolbar = ({
                 endIcon={<ArrowDownIcon />}
                 onClick={(event) => setFiltersAnchor(event.currentTarget)}
                 sx={{
-                  color: activeFilterName ? "primary.main" : "text.primary",
-                  borderColor: activeFilterName ? "primary.main" : undefined,
+                  color: activeFilterName ? 'primary.main' : 'text.primary',
+                  borderColor: activeFilterName ? 'primary.main' : undefined,
                 }}
               >
                 Filters
@@ -756,25 +779,25 @@ export const CIPPTableToptoolbar = ({
               >
                 <MenuItem
                   onClick={() => {
-                    handleColumnFiltersToggle();
-                    setFiltersAnchor(null);
+                    handleColumnFiltersToggle()
+                    setFiltersAnchor(null)
                   }}
                 >
                   <ListItemText>
                     {table.getState().showColumnFilters
-                      ? "Hide Column Filters"
-                      : "Show Column Filters"}
+                      ? 'Hide Column Filters'
+                      : 'Show Column Filters'}
                   </ListItemText>
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={() => setTableFilter("", "reset", "")}>
+                <MenuItem onClick={() => setTableFilter('', 'reset', '')}>
                   <ListItemText primary="Reset all filters" />
                 </MenuItem>
-                {api?.url === "/api/ListGraphRequest" && (
+                {api?.url === '/api/ListGraphRequest' && (
                   <MenuItem
                     onClick={() => {
-                      setFiltersAnchor(null);
-                      setFilterCanvasVisible(true);
+                      setFiltersAnchor(null)
+                      setFilterCanvasVisible(true)
                     }}
                   >
                     <ListItemText primary="Edit filters" />
@@ -785,15 +808,15 @@ export const CIPPTableToptoolbar = ({
                   <MenuItem
                     key={filter.id}
                     onClick={() => {
-                      setFiltersAnchor(null);
-                      setTableFilter(filter.value, filter.type, filter.filterName);
+                      setFiltersAnchor(null)
+                      setTableFilter(filter.value, filter.type, filter.filterName)
                     }}
                   >
                     <ListItemText
                       primary={
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           {activeFilterName === filter.filterName && (
-                            <CheckIcon sx={{ fontSize: 16, color: "primary.main" }} />
+                            <CheckIcon sx={{ fontSize: 16, color: 'primary.main' }} />
                           )}
                           {filter.filterName}
                         </Box>
@@ -836,7 +859,7 @@ export const CIPPTableToptoolbar = ({
                 <Divider />
                 {table
                   .getAllColumns()
-                  .filter((column) => !column.id.startsWith("mrt-"))
+                  .filter((column) => !column.id.startsWith('mrt-'))
                   .map((column) => (
                     <MenuItem
                       key={column.id}
@@ -891,8 +914,8 @@ export const CIPPTableToptoolbar = ({
           >
             <MenuItem
               onClick={(event) => {
-                setFiltersAnchor(event.currentTarget);
-                setActionMenuAnchor(null);
+                setFiltersAnchor(event.currentTarget)
+                setActionMenuAnchor(null)
               }}
             >
               <ListItemIcon>
@@ -902,8 +925,8 @@ export const CIPPTableToptoolbar = ({
             </MenuItem>
             <MenuItem
               onClick={(event) => {
-                setColumnsAnchor(event.currentTarget);
-                setActionMenuAnchor(null);
+                setColumnsAnchor(event.currentTarget)
+                setActionMenuAnchor(null)
               }}
             >
               <ListItemIcon>
@@ -914,8 +937,8 @@ export const CIPPTableToptoolbar = ({
             {exportEnabled && (
               <MenuItem
                 onClick={(event) => {
-                  setExportAnchor(event.currentTarget);
-                  setActionMenuAnchor(null);
+                  setExportAnchor(event.currentTarget)
+                  setActionMenuAnchor(null)
                 }}
               >
                 <ListItemIcon>
@@ -926,15 +949,15 @@ export const CIPPTableToptoolbar = ({
             )}
             <MenuItem
               onClick={() => {
-                table.setIsFullScreen(!table.getState().isFullScreen);
-                setActionMenuAnchor(null);
+                table.setIsFullScreen(!table.getState().isFullScreen)
+                setActionMenuAnchor(null)
               }}
             >
               <ListItemIcon>
                 <FullscreenIcon />
               </ListItemIcon>
               <ListItemText>
-                {table.getState().isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
+                {table.getState().isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
               </ListItemText>
             </MenuItem>
           </Menu>
@@ -954,23 +977,23 @@ export const CIPPTableToptoolbar = ({
           >
             <MenuItem
               onClick={() => {
-                handleColumnFiltersToggle();
-                setFiltersAnchor(null);
+                handleColumnFiltersToggle()
+                setFiltersAnchor(null)
               }}
             >
               <ListItemText>
-                {table.getState().showColumnFilters ? "Hide Column Filters" : "Show Column Filters"}
+                {table.getState().showColumnFilters ? 'Hide Column Filters' : 'Show Column Filters'}
               </ListItemText>
             </MenuItem>
             <Divider />
-            <MenuItem onClick={() => setTableFilter("", "reset", "")}>
+            <MenuItem onClick={() => setTableFilter('', 'reset', '')}>
               <ListItemText primary="Reset all filters" />
             </MenuItem>
-            {api?.url === "/api/ListGraphRequest" && (
+            {api?.url === '/api/ListGraphRequest' && (
               <MenuItem
                 onClick={() => {
-                  setFiltersAnchor(null);
-                  setFilterCanvasVisible(true);
+                  setFiltersAnchor(null)
+                  setFilterCanvasVisible(true)
                 }}
               >
                 <ListItemText primary="Edit filters" />
@@ -981,15 +1004,15 @@ export const CIPPTableToptoolbar = ({
               <MenuItem
                 key={filter.id}
                 onClick={() => {
-                  setFiltersAnchor(null);
-                  setTableFilter(filter.value, filter.type, filter.filterName);
+                  setFiltersAnchor(null)
+                  setTableFilter(filter.value, filter.type, filter.filterName)
                 }}
               >
                 <ListItemText
                   primary={
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       {activeFilterName === filter.filterName && (
-                        <CheckIcon sx={{ fontSize: 16, color: "primary.main" }} />
+                        <CheckIcon sx={{ fontSize: 16, color: 'primary.main' }} />
                       )}
                       {filter.filterName}
                     </Box>
@@ -1025,7 +1048,7 @@ export const CIPPTableToptoolbar = ({
             <Divider />
             {table
               .getAllColumns()
-              .filter((column) => !column.id.startsWith("mrt-"))
+              .filter((column) => !column.id.startsWith('mrt-'))
               .map((column) => (
                 <MenuItem
                   key={column.id}
@@ -1059,9 +1082,9 @@ export const CIPPTableToptoolbar = ({
               <MenuItem
                 onClick={() => {
                   // Trigger CSV export
-                  const csvButton = document.querySelector(`[data-csv-export="${title}"]`);
-                  if (csvButton) csvButton.click();
-                  setExportAnchor(null);
+                  const csvButton = document.querySelector(`[data-csv-export="${title}"]`)
+                  if (csvButton) csvButton.click()
+                  setExportAnchor(null)
                 }}
               >
                 <ListItemIcon>
@@ -1072,9 +1095,9 @@ export const CIPPTableToptoolbar = ({
               <MenuItem
                 onClick={() => {
                   // Trigger PDF export
-                  const pdfButton = document.querySelector(`[data-pdf-export="${title}"]`);
-                  if (pdfButton) pdfButton.click();
-                  setExportAnchor(null);
+                  const pdfButton = document.querySelector(`[data-pdf-export="${title}"]`)
+                  if (pdfButton) pdfButton.click()
+                  setExportAnchor(null)
                 }}
               >
                 <ListItemIcon>
@@ -1087,8 +1110,8 @@ export const CIPPTableToptoolbar = ({
                   <Divider sx={{ my: 0.5 }} />
                   <MenuItem
                     onClick={() => {
-                      handleExportSelectedToCsv();
-                      setExportAnchor(null);
+                      handleExportSelectedToCsv()
+                      setExportAnchor(null)
                     }}
                   >
                     <ListItemIcon>
@@ -1098,8 +1121,8 @@ export const CIPPTableToptoolbar = ({
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      handleExportSelectedToPdf();
-                      setExportAnchor(null);
+                      handleExportSelectedToPdf()
+                      setExportAnchor(null)
                     }}
                   >
                     <ListItemIcon>
@@ -1113,11 +1136,11 @@ export const CIPPTableToptoolbar = ({
               <MenuItem
                 onClick={() => {
                   if (isInDialog) {
-                    setJsonDialogOpen(true);
+                    setJsonDialogOpen(true)
                   } else {
-                    setOffcanvasVisible(true);
+                    setOffcanvasVisible(true)
                   }
-                  setExportAnchor(null);
+                  setExportAnchor(null)
                 }}
               >
                 <ListItemIcon>
@@ -1132,13 +1155,13 @@ export const CIPPTableToptoolbar = ({
         {/* Right side - Additional controls */}
         <Box
           sx={{
-            display: "flex",
+            display: 'flex',
             gap: 1,
-            alignItems: "center",
+            alignItems: 'center',
             flexShrink: 0,
-            flexWrap: "nowrap",
-            justifyContent: { xs: "space-between", md: "flex-end" },
-            width: { xs: "100%", md: "auto" },
+            flexWrap: 'nowrap',
+            justifyContent: { xs: 'space-between', md: 'flex-end' },
+            width: { xs: '100%', md: 'auto' },
             mt: { xs: 1, md: 0 },
           }}
         >
@@ -1147,9 +1170,9 @@ export const CIPPTableToptoolbar = ({
             <Typography
               variant="body2"
               sx={{
-                color: "text.secondary",
-                fontSize: { xs: "12px", md: "14px" },
-                whiteSpace: "nowrap",
+                color: 'text.secondary',
+                fontSize: { xs: '12px', md: '14px' },
+                whiteSpace: 'nowrap',
                 mr: 1,
               }}
             >
@@ -1171,10 +1194,10 @@ export const CIPPTableToptoolbar = ({
               size="small"
               sx={{
                 flexShrink: 0,
-                whiteSpace: "nowrap",
-                minWidth: "auto",
-                height: "32px",
-                fontSize: { xs: "12px", md: "14px" },
+                whiteSpace: 'nowrap',
+                minWidth: 'auto',
+                height: '32px',
+                fontSize: { xs: '12px', md: '14px' },
                 mr: 1,
               }}
             >
@@ -1198,7 +1221,7 @@ export const CIPPTableToptoolbar = ({
         </Box>
 
         {/* Hidden export buttons for triggering */}
-        <Box sx={{ display: "none" }}>
+        <Box sx={{ display: 'none' }}>
           <PDFExportButton
             rows={table.getFilteredRowModel().rows}
             columns={usedColumns}
@@ -1220,8 +1243,8 @@ export const CIPPTableToptoolbar = ({
       <Menu
         anchorEl={popover.anchorRef.current}
         anchorOrigin={{
-          horizontal: "right",
-          vertical: "bottom",
+          horizontal: 'right',
+          vertical: 'bottom',
         }}
         MenuListProps={{
           dense: true,
@@ -1230,8 +1253,8 @@ export const CIPPTableToptoolbar = ({
         onClose={popover.handleClose}
         open={popover.open}
         transformOrigin={{
-          horizontal: "right",
-          vertical: "top",
+          horizontal: 'right',
+          vertical: 'top',
         }}
       >
         {actions &&
@@ -1241,40 +1264,40 @@ export const CIPPTableToptoolbar = ({
               disabled={action.disabled}
               onClick={() => {
                 if (action.disabled) {
-                  return;
+                  return
                 }
 
-                const selectedRows = table.getSelectedRowModel().rows;
-                const selectedData = selectedRows.map((row) => row.original);
+                const selectedRows = table.getSelectedRowModel().rows
+                const selectedData = selectedRows.map((row) => row.original)
 
-                if (typeof action.customBulkHandler === "function") {
+                if (typeof action.customBulkHandler === 'function') {
                   action.customBulkHandler({
                     rows: selectedRows,
                     data: selectedData,
                     closeMenu: popover.handleClose,
                     clearSelection: () => table.toggleAllRowsSelected(false),
-                  });
-                  popover.handleClose();
-                  return;
+                  })
+                  popover.handleClose()
+                  return
                 }
 
                 setActionData({
                   data: selectedData,
                   action: action,
                   ready: true,
-                });
+                })
 
                 if (action?.noConfirm && action.customFunction) {
                   selectedRows.map((row) =>
-                    action.customFunction(row.original.original, action, {}),
-                  );
+                    action.customFunction(row.original.original, action, {})
+                  )
                 } else {
-                  createDialog.handleOpen();
-                  popover.handleClose();
+                  createDialog.handleOpen()
+                  popover.handleClose()
                 }
               }}
             >
-              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+              <SvgIcon fontSize="small" sx={{ minWidth: '30px' }}>
                 {action.icon}
               </SvgIcon>
               <ListItemText>{action.label}</ListItemText>
@@ -1289,7 +1312,7 @@ export const CIPPTableToptoolbar = ({
           title="API Response"
           visible={offcanvasVisible}
           onClose={() => {
-            setOffcanvasVisible(false);
+            setOffcanvasVisible(false)
           }}
         >
           <Stack spacing={2}>
@@ -1333,29 +1356,29 @@ export const CIPPTableToptoolbar = ({
             activeFilterName ? filterList.find((f) => f.filterName === activeFilterName) : null
           }
           onPresetSelect={(preset) => {
-            if (preset?.value && preset?.type === "graph") {
-              setTableFilter(preset.value, preset.type, preset.filterName);
+            if (preset?.value && preset?.type === 'graph') {
+              setTableFilter(preset.value, preset.type, preset.filterName)
             }
           }}
           onSubmitFilter={(filter) => {
-            setTableFilter(filter, "graph", "Custom Filter");
+            setTableFilter(filter, 'graph', 'Custom Filter')
+            setFilterCanvasVisible(false)
             if (filter?.$select) {
-              let selectedColumns = [];
+              let selectedColumns = []
               if (Array.isArray(filter?.$select)) {
-                selectedColumns = filter?.$select;
-              } else if (typeof filter?.$select === "string") {
-                selectedColumns = filter.$select.split(",");
+                selectedColumns = filter?.$select
+              } else if (typeof filter?.$select === 'string') {
+                selectedColumns = filter.$select.split(',')
               }
               if (selectedColumns.length > 0) {
-                setConfiguredSimpleColumns(selectedColumns);
+                setConfiguredSimpleColumns(selectedColumns)
                 selectedColumns.forEach((col) => {
-                  setNestedVisibility(col);
-                });
+                  setNestedVisibility(col)
+                })
               }
             } else {
-              setConfiguredSimpleColumns(originalSimpleColumns);
+              setConfiguredSimpleColumns(originalSimpleColumns)
             }
-            setFilterCanvasVisible(!filterCanvasVisible);
           }}
           component="card"
         />
@@ -1385,5 +1408,5 @@ export const CIPPTableToptoolbar = ({
         </Dialog>
       )}
     </>
-  );
-};
+  )
+}

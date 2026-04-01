@@ -1,5 +1,5 @@
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
 import {
@@ -16,7 +16,7 @@ import {
   AccordionDetails,
   CircularProgress,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Stack, Grid } from "@mui/system";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -86,6 +86,7 @@ const Page = () => {
   const [configExpanded, setConfigExpanded] = useState(true);
   const [scriptContentExpanded, setScriptContentExpanded] = useState(true);
   const [testerExpanded, setTesterExpanded] = useState(true);
+  const markdownEditorRef = useRef(null);
 
   const toSelectOption = (value, fallback) =>
     value
@@ -360,7 +361,7 @@ const Page = () => {
     rows: 8,
     disableVariables: false,
     autocompleteTrigger: "{{",
-    placeholder: `### Custom Script Finding
+    placeholder: `### Custom Tests Finding
 
 The script returned the following data:
 
@@ -406,32 +407,14 @@ return $results`,
   const markdownTemplateValue = formControl.watch("MarkdownTemplate");
   const resultSchemaValue = formControl.watch("ResultSchema");
 
-  const parsedResultSchema = useMemo(() => {
-    if (!resultSchemaValue) {
-      return null;
-    }
-    try {
-      return JSON.parse(resultSchemaValue);
-    } catch {
-      return null;
-    }
-  }, [resultSchemaValue]);
-
-  const schemaEntries = Array.isArray(parsedResultSchema?.entries) ? parsedResultSchema.entries : [];
-
   const markdownAutocompleteOptions = useMemo(() => {
     const suggestionsMap = new Map();
 
     const addSuggestion = (token, tokenType) => {
       if (!suggestionsMap.has(token)) {
         suggestionsMap.set(token, {
-          name: token,
-          variable: token,
-          value: token,
-          label: tokenType ? `${token} · ${tokenType}` : token,
-          description: `Type: ${tokenType || "token"}`,
-          type: "schema",
-          category: "markdown-template",
+          token,
+          tokenType,
         });
       }
     };
@@ -440,26 +423,102 @@ return $results`,
     addSuggestion("{{Result}}", "root");
     addSuggestion("{{count(Result)}}", "number");
 
-    schemaEntries.forEach((entry) => {
-      addSuggestion(`{{${entry.path}}}`, entry.type);
-      if (entry.type === "array") {
-        addSuggestion(`{{count(${entry.path})}}`, "number");
+    if (resultSchemaValue) {
+      try {
+        const parsedResultSchema = JSON.parse(resultSchemaValue);
+        const schemaEntries = Array.isArray(parsedResultSchema?.entries)
+          ? parsedResultSchema.entries
+          : [];
+
+        schemaEntries.forEach((entry) => {
+          addSuggestion(`{{${entry.path}}}`, entry.type);
+          if (entry.type === "array") {
+            addSuggestion(`{{count(${entry.path})}}`, "number");
+          }
+          if (entry.path.includes("[0]")) {
+            const wildcardPath = entry.path.replaceAll("[0]", "[*]");
+            addSuggestion(`{{join(${wildcardPath}, ", ")}}`, "string");
+          }
+        });
+      } catch {
       }
-      if (entry.path.includes("[0]")) {
-        const wildcardPath = entry.path.replaceAll("[0]", "[*]");
-        addSuggestion(`{{join(${wildcardPath}, ", ")}}`, "string");
+    }
+
+    return Array.from(suggestionsMap.values());
+  }, [resultSchemaValue]);
+
+  const handleMarkdownEditorMount = (_editor, monaco) => {
+    markdownEditorRef.current = _editor;
+
+    const provider = monaco.languages.registerCompletionItemProvider("markdown", {
+      triggerCharacters: ["{"],
+      provideCompletionItems: (model, position) => {
+        const linePrefix = model.getValueInRange({
+          startLineNumber: position.lineNumber,
+          startColumn: 1,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column,
+        });
+
+        const triggerIndex = linePrefix.lastIndexOf("{{");
+        if (triggerIndex === -1) {
+          return { suggestions: [] };
+        }
+
+        const range = {
+          startLineNumber: position.lineNumber,
+          startColumn: triggerIndex + 1,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column,
+        };
+
+        const suggestions = markdownAutocompleteOptions.map((item) => ({
+          label: item.token,
+          kind: monaco.languages.CompletionItemKind.Variable,
+          insertText: item.token,
+          detail: item.tokenType ? `Type: ${item.tokenType}` : "Token",
+          range,
+        }));
+
+        return { suggestions };
+      },
+    });
+
+    const contentListener = _editor.onDidChangeModelContent(() => {
+      const model = _editor.getModel();
+      const position = _editor.getPosition();
+
+      if (!model || !position) {
+        return;
+      }
+
+      const linePrefix = model.getValueInRange({
+        startLineNumber: position.lineNumber,
+        startColumn: 1,
+        endLineNumber: position.lineNumber,
+        endColumn: position.column,
+      });
+
+      if (linePrefix.endsWith("{{")) {
+        _editor.trigger("cipp-markdown", "editor.action.triggerSuggest", {});
       }
     });
 
-    return Array.from(suggestionsMap.values());
-  }, [schemaEntries]);
+    _editor.onDidDispose(() => {
+      provider.dispose();
+      contentListener.dispose();
+      if (markdownEditorRef.current === _editor) {
+        markdownEditorRef.current = null;
+      }
+    });
+  };
 
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey={["Custom PowerShell Scripts", "CustomScript*"]}
-      title="Custom Script"
-      backButtonTitle="Custom Scripts"
+      queryKey={["Custom PowerShell Test", "CustomTest*"]}
+      title="Custom Test"
+      backButtonTitle="Custom Tests"
       formPageType={isEdit ? "Edit" : "Add"}
       postUrl="/api/AddCustomScript"
       customDataformatter={customDataformatter}
@@ -470,12 +529,12 @@ return $results`,
         onChange={(_, expanded) => setGuidanceExpanded(expanded)}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="subtitle2">Script Guidance</Typography>
+          <Typography variant="subtitle2">Test Guidance</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Alert severity="info">
             <Typography variant="body2">
-              <strong>Security Constraints:</strong> Scripts are validated using PowerShell AST
+              <strong>Security Constraints:</strong> Tests are validated using PowerShell AST
               parsing with an allowlist approach. Only specific commands are permitted (ForEach-Object,
               Where-Object, Select-Object, etc.). The += operator is blocked.
             </Typography>
@@ -484,7 +543,7 @@ return $results`,
             </Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
               <strong>Tip:</strong> The $TenantFilter parameter is automatically available in your
-              script. Return @() when there are no results.
+              test. Return @() when there are no results.
             </Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
               <strong>Pass/Fail contract:</strong> Return $false, $null, an empty string, or @() for
@@ -502,7 +561,7 @@ return $results`,
             </Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
               <strong>Persistence:</strong> Manual testing on this page is preview-only. Results are
-              written to CippTestResults only when the script is enabled and tenant tests are
+              written to CippTestResults only when the test is enabled and tenant tests are
               executed.
             </Typography>
             <Typography variant="body2" sx={{ mt: 1, whiteSpace: "pre-line" }}>
@@ -604,19 +663,71 @@ return $results`,
         <AccordionDetails>
           <Stack spacing={3}>
             {selectedReturnType === "Markdown" && (
-              <>
-                <CippFormComponent
-                  formControl={formControl}
-                  {...markdownTemplateField}
-                  autocompleteOptions={markdownAutocompleteOptions}
-                  disabled={isScriptLoading}
-                />
-                <Typography variant="caption" color="text.secondary">
-                  Type <code>{"{{"}</code> to open schema autocomplete suggestions.
+              <Box>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  {markdownTemplateField.label}
                 </Typography>
-              </>
+                <Controller
+                  name="MarkdownTemplate"
+                  control={formControl.control}
+                  render={({ field }) => (
+                    <>
+                      <CippCodeBlock
+                        key={`markdown-editor-${resultSchemaValue || "base"}`}
+                        code={field.value || ""}
+                        language="markdown"
+                        type="editor"
+                        showLineNumbers={true}
+                        editorHeight="320px"
+                        readOnly={isScriptLoading}
+                        onMount={handleMarkdownEditorMount}
+                        onChange={(value) => field.onChange(value || "")}
+                      />
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                        {markdownTemplateField.helperText}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                        Type <code>{"{{"}</code> to use schema tokens.
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                        {markdownTemplateField.placeholder}
+                      </Typography>
+                    </>
+                  )}
+                />
+              </Box>
             )}
-            <CippFormComponent formControl={formControl} {...scriptContentField} disabled={isScriptLoading} />
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                {scriptContentField.label}
+              </Typography>
+              <Controller
+                name="ScriptContent"
+                control={formControl.control}
+                rules={{ required: "PowerShell script content is required." }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <CippCodeBlock
+                      code={field.value || ""}
+                      language="powershell"
+                      type="editor"
+                      showLineNumbers={true}
+                      editorHeight="540px"
+                      readOnly={isScriptLoading}
+                      onChange={(value) => field.onChange(value || "")}
+                    />
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                      {scriptContentField.placeholder}
+                    </Typography>
+                    {fieldState.error?.message && (
+                      <Typography variant="caption" color="error" sx={{ mt: 1, display: "block" }}>
+                        {fieldState.error.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </Box>
           </Stack>
         </AccordionDetails>
       </Accordion>
