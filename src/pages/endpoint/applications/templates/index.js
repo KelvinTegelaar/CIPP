@@ -13,12 +13,12 @@ const Page = () => {
   const pageTitle = "Application Templates";
   const [editDrawerOpen, setEditDrawerOpen] = useState(false);
   const [editTemplate, setEditTemplate] = useState(null);
-    const integrations = ApiGetCall({
-      url: "/api/ListExtensionsConfig",
-      queryKey: "Integrations",
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-    });
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
 
   const actions = [
     {
@@ -31,7 +31,7 @@ const Page = () => {
         setEditDrawerOpen(true);
       },
     },
-        {
+    {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
