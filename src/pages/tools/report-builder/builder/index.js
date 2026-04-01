@@ -538,7 +538,8 @@ const DatabaseBlock = ({
           {error}
         </Alert>
       )}
-      {(dbCacheApi.isFetching || (!!currentTenant && !!block.dbType && !dbCacheApi.isSuccess && !dbCacheApi.isError)) && (
+      {(dbCacheApi.isFetching ||
+        (!!currentTenant && !!block.dbType && !dbCacheApi.isSuccess && !dbCacheApi.isError)) && (
         <Stack spacing={1}>
           <Skeleton variant="text" width="80%" />
           <Skeleton variant="text" width="60%" />
@@ -623,9 +624,7 @@ const DatabaseBlock = ({
       )}
       {!dbCacheApi.isFetching && !dbCacheApi.isSuccess && !error && (
         <Typography color="text.secondary" variant="body2">
-          {currentTenant
-            ? 'Loading database data...'
-            : 'Select a tenant to load database data.'}
+          {currentTenant ? 'Loading database data...' : 'Select a tenant to load database data.'}
         </Typography>
       )}
     </CippButtonCard>
