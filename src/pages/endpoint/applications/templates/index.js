@@ -6,11 +6,19 @@ import { Edit, RocketLaunch } from "@mui/icons-material";
 import { CippAppTemplateDrawer } from "../../../../components/CippComponents/CippAppTemplateDrawer";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { Box } from "@mui/material";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { GitHub } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Application Templates";
   const [editDrawerOpen, setEditDrawerOpen] = useState(false);
   const [editTemplate, setEditTemplate] = useState(null);
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
 
   const actions = [
     {
@@ -22,6 +30,50 @@ const Page = () => {
         setEditTemplate({ ...row });
         setEditDrawerOpen(true);
       },
+    },
+    {
+      label: "Save to GitHub",
+      type: "POST",
+      url: "/api/ExecCommunityRepo",
+      icon: <GitHub />,
+      data: {
+        Action: "UploadTemplate",
+        GUID: "GUID",
+      },
+      fields: [
+        {
+          label: "Repository",
+          name: "FullName",
+          type: "select",
+          api: {
+            url: "/api/ListCommunityRepos",
+            data: {
+              WriteAccess: true,
+            },
+            queryKey: "CommunityRepos-Write",
+            dataKey: "Results",
+            valueField: "FullName",
+            labelField: "FullName",
+          },
+          multiple: false,
+          creatable: false,
+          required: true,
+          validators: {
+            required: { value: true, message: "This field is required" },
+          },
+        },
+        {
+          label: "Commit Message",
+          placeholder: "Enter a commit message for adding this file to GitHub",
+          name: "Message",
+          type: "textField",
+          multiline: true,
+          required: true,
+          rows: 4,
+        },
+      ],
+      confirmText: "Are you sure you want to save this template to the selected repository?",
+      condition: () => integrations.isSuccess && integrations?.data?.GitHub?.Enabled,
     },
     {
       label: "Deploy Template",
