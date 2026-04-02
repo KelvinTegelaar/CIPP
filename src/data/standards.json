@@ -5670,6 +5670,23 @@
         }
       },
       {
+        "type": "autoComplete",
+        "multiple": false,
+        "required": false,
+        "creatable": false,
+        "name": "TemplateList-Tags",
+        "label": "Or select a package of CA Templates",
+        "api": {
+          "queryKey": "ListCATemplates-tag-autocomplete",
+          "url": "/api/ListCATemplates?mode=Tag",
+          "labelField": "label",
+          "valueField": "value",
+          "addedField": {
+            "templates": "templates"
+          }
+        }
+      },
+      {
         "name": "state",
         "label": "What state should we deploy this template in?",
         "type": "radio",
