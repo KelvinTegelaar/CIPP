@@ -82,7 +82,14 @@
     }
   },
   "globalHeaders": {
-    "content-security-policy": "default-src https: blob: 'unsafe-eval' 'unsafe-inline'; object-src 'self' blob:; img-src 'self' blob: data: *"
+    "content-security-policy": "default-src https: blob: 'unsafe-eval' 'unsafe-inline'; script-src https: 'unsafe-eval' 'unsafe-inline'; style-src https: 'unsafe-inline'; connect-src https: blob:; img-src 'self' blob: data: https:; font-src https: data:; object-src 'self' blob:; frame-ancestors 'none'; form-action 'self' https:; base-uri 'self'",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "same-origin",
+    "X-XSS-Protection": "0"
   },
   "mimeTypes": {
     ".json": "text/json"
