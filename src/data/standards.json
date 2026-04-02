@@ -4811,7 +4811,7 @@
           }
         ]
       },
-            {
+      {
         "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowPSTNUsersToBypassLobby",
         "label": "Allow dial-in users to bypass lobby"
@@ -5138,10 +5138,7 @@
         "condition": {
           "field": "standards.TeamsFederationConfiguration.DomainControl.value",
           "compareType": "isOneOf",
-          "compareValue": [
-            "AllowSpecificExternal",
-            "BlockSpecificExternal"
-          ]
+          "compareValue": ["AllowSpecificExternal", "BlockSpecificExternal"]
         }
       }
     ],
@@ -5790,6 +5787,36 @@
     ]
   },
   {
+    "name": "standards.TenantAllowBlockListTemplate",
+    "label": "Tenant Allow/Block List Template",
+    "cat": "Templates",
+    "multiple": true,
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "Medium Impact",
+    "addedDate": "2026-04-02",
+    "helpText": "Deploy tenant allow/block list entries from a saved template.",
+    "executiveText": "Deploys standardized tenant allow/block list entries across tenants. These templates ensure consistent email filtering rules are applied, managing which senders, URLs, file hashes, and IP addresses are allowed or blocked across the organization.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "TemplateList",
+        "multiple": true,
+        "label": "Select Tenant Allow/Block List Templates",
+        "api": {
+          "url": "/api/ListTenantAllowBlockListTemplates",
+          "labelField": "templateName",
+          "valueField": "GUID",
+          "queryKey": "ListTenantAllowBlockListTemplates",
+          "showRefresh": true
+        }
+      }
+    ]
+  },
+  {
     "name": "standards.MailboxRecipientLimits",
     "cat": "Exchange Standards",
     "tag": [],
@@ -6117,11 +6144,7 @@
   {
     "name": "standards.ColleagueImpersonationAlert",
     "cat": "Exchange Standards",
-    "tag": [
-      "Exchange",
-      "Security",
-      "Transport Rules"
-    ],
+    "tag": ["Exchange", "Security", "Transport Rules"],
     "helpText": "Creates/updates 5x Exchange Online transport rules (A-E, F-J, K-O, P-T, U-Z) that prepend an HTML disclaimer banner to inbound emails where the sender display name matches a mailbox in the organisation. Accepted tenant domains are always exempt automatically. Inactive users are removed and enabled users are added. Any manually configured sender or domain exemptions already present on existing rules are preserved.",
     "docsDescription": "Creates five Exchange Online transport rules grouped by the first letter of user display names (A-E, F-J, K-O, P-T, U-Z). Each rule fires when an external sender's From header matches a display name in that group, prepends a configurable HTML warning banner, and skips emails from accepted organisational domains. Any manually configured sender or domain exemptions on existing rules are preserved when the standard runs. The disclaimer HTML is fully customisable via the standard settings.",
     "executiveText": "Protects staff from display-name impersonation attacks by injecting a visible warning banner on emails that appear to come from a colleague but originate externally. Rules are maintained automatically across all letter groups and updated whenever the standard runs.",

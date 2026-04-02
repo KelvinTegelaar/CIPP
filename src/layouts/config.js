@@ -652,6 +652,12 @@ export const nativeMenuItems = [
             permissions: ['Exchange.SpamFilter.*'],
           },
           {
+            title: 'Allow/Block List Templates',
+            path: '/email/administration/tenant-allow-block-list-templates',
+            permissions: ['Exchange.SpamFilter.*'],
+            scope: 'global',
+          },
+          {
             title: 'Retention Policies & Tags',
             path: '/email/administration/exchange-retention/policies',
             permissions: ['Exchange.RetentionPolicies.*'],
