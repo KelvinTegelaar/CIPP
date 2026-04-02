@@ -42,7 +42,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListAppProtectionPolicies"
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
