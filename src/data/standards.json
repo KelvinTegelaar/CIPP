@@ -5790,7 +5790,7 @@
     "name": "standards.TenantAllowBlockListTemplate",
     "label": "Tenant Allow/Block List Template",
     "cat": "Templates",
-    "multiple": true,
+    "multi": true,
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -5804,8 +5804,8 @@
       {
         "type": "autoComplete",
         "name": "TemplateList",
-        "multiple": true,
-        "label": "Select Tenant Allow/Block List Templates",
+        "multiple": false,
+        "label": "Select Tenant Allow/Block List Template",
         "api": {
           "url": "/api/ListTenantAllowBlockListTemplates",
           "labelField": "templateName",
