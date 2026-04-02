@@ -2,7 +2,7 @@ import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert } from "@mu
 import { useState } from "react";
 import isEqual from "lodash/isEqual";
 import { useForm } from "react-hook-form";
-import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import {
   ChevronDownIcon,
@@ -253,10 +253,11 @@ const CippApiClientManagement = () => {
           showDivider={false}
           isFetching={azureConfig.isFetching}
         />
-        {azureConfig.isSuccess && (
+        {azureConfig.isSuccess && apiClients.isSuccess && (
           <>
             {!isEqual(
-              apiClients.data?.pages?.[0]?.Results?.filter((c) => c.Enabled)
+              (apiClients.data?.pages?.[0]?.Results || [])
+                .filter((c) => c.Enabled)
                 .map((c) => c.ClientId)
                 .sort(),
               (azureConfig.data?.Results?.ClientIDs || []).sort()
@@ -264,7 +265,8 @@ const CippApiClientManagement = () => {
               <Box sx={{ px: 3 }}>
                 <Alert severity="warning">
                   You have unsaved changes. Click Actions &gt; Save Azure Configuration to update
-                  the allowed API Clients.
+                  the allowed API Clients. If you've just saved your API clients, try refreshing the
+                  configuration first.
                 </Alert>
               </Box>
             )}
@@ -306,6 +308,7 @@ const CippApiClientManagement = () => {
             name: "AppName",
             label: "App Name",
             placeholder: "Enter a name for this Application Registration.",
+            disableVariables: true,
           },
           {
             type: "autoComplete",

@@ -1,4 +1,4 @@
-import { Close, Download, Help } from "@mui/icons-material";
+import { Close, Download, Help, ExpandMore, ExpandLess } from "@mui/icons-material";
 import {
   Alert,
   CircularProgress,
@@ -16,6 +16,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { getCippError } from "../../utils/get-cipp-error";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import { CippDocsLookup } from "./CippDocsLookup";
+import { CippCodeBlock } from "./CippCodeBlock";
 import React from "react";
 import { CippTableDialog } from "./CippTableDialog";
 import { EyeIcon } from "@heroicons/react/24/outline";
@@ -43,12 +44,14 @@ const extractAllResults = (data) => {
       const copyField = item.copyField || "";
       const severity =
         typeof item.state === "string" ? item.state : getSeverity(item) ? "error" : "success";
+      const details = item.details || null;
 
       if (text) {
         return {
           text,
           copyField,
           severity,
+          details,
           ...item,
         };
       }
@@ -123,6 +126,7 @@ export const CippApiResults = (props) => {
   const [errorVisible, setErrorVisible] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState(false);
   const [finalResults, setFinalResults] = useState([]);
+  const [showDetails, setShowDetails] = useState({});
   const tableDialog = useDialog();
   const pageTitle = `${document.title} - Results`;
   const correctResultObj = useMemo(() => {
@@ -154,8 +158,27 @@ export const CippApiResults = (props) => {
 
   const allResults = useMemo(() => {
     const apiResults = extractAllResults(correctResultObj);
+
+    // Also extract error results if there's an error
+    if (apiObject.isError && apiObject.error) {
+      const errorResults = extractAllResults(apiObject.error.response.data);
+      if (errorResults.length > 0) {
+        // Mark all error results with error severity and merge with success results
+        return [...apiResults, ...errorResults.map((r) => ({ ...r, severity: "error" }))];
+      }
+
+      // Fallback to getCippError if extraction didn't work
+      const processedError = getCippError(apiObject.error);
+      if (typeof processedError === "string") {
+        return [
+          ...apiResults,
+          { text: processedError, copyField: processedError, severity: "error" },
+        ];
+      }
+    }
+
     return apiResults;
-  }, [correctResultObj]);
+  }, [correctResultObj, apiObject.isError, apiObject.error]);
 
   useEffect(() => {
     setErrorVisible(!!apiObject.isError);
@@ -175,7 +198,7 @@ export const CippApiResults = (props) => {
             severity: res.severity,
             visible: true,
             ...res,
-          }))
+          })),
         );
       } else {
         setFinalResults([]);
@@ -194,6 +217,10 @@ export const CippApiResults = (props) => {
     setFinalResults((prev) => prev.map((r) => (r.id === id ? { ...r, visible: false } : r)));
   }, []);
 
+  const toggleDetails = useCallback((id) => {
+    setShowDetails((prev) => ({ ...prev, [id]: !prev[id] }));
+  }, []);
+
   const handleDownloadCsv = useCallback(() => {
     if (!finalResults?.length) return;
 
@@ -202,7 +229,7 @@ export const CippApiResults = (props) => {
 
     const headers = Object.keys(finalResults[0]);
     const rows = finalResults.map((item) =>
-      headers.map((header) => `"${item[header] || ""}"`).join(",")
+      headers.map((header) => `"${item[header] || ""}"`).join(","),
     );
     const csvContent = [headers.join(","), ...rows].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -242,37 +269,28 @@ export const CippApiResults = (props) => {
           </Alert>
         </Collapse>
       )}
-      {/* Error alert */}
-      <Collapse in={errorVisible} unmountOnExit>
-        {apiObject.isError && (
-          <Alert
-            sx={alertSx}
-            variant="filled"
-            severity="error"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => setErrorVisible(false)}
-              >
-                <Close fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            {getCippError(apiObject.error)}
-          </Alert>
-        )}
-      </Collapse>
-
       {/* Individual result alerts */}
-      {apiObject.isSuccess && !errorsOnly && hasVisibleResults && (
+      {hasVisibleResults && (
         <>
           {finalResults.map((resultObj) => (
             <React.Fragment key={resultObj.id}>
               <Collapse in={resultObj.visible} unmountOnExit>
                 <Alert
-                  sx={alertSx}
+                  sx={{
+                    ...alertSx,
+                    display: "flex",
+                    width: "100%",
+                    "& .MuiAlert-message": {
+                      width: "100%",
+                      flex: "1 1 auto",
+                      minWidth: 0, // Allows content to shrink
+                    },
+                    "& .MuiAlert-action": {
+                      flex: "0 0 auto",
+                      alignSelf: "flex-start",
+                      marginLeft: "auto",
+                    },
+                  }}
                   variant="filled"
                   severity={resultObj.severity || "success"}
                   action={
@@ -285,7 +303,7 @@ export const CippApiResults = (props) => {
                           startIcon={<Help />}
                           onClick={() => {
                             const searchUrl = `https://docs.cipp.app/?q=Help+with:+${encodeURIComponent(
-                              resultObj.copyField || resultObj.text
+                              resultObj.copyField || resultObj.text,
                             )}&ask=true`;
                             window.open(searchUrl, "_blank");
                           }}
@@ -307,7 +325,29 @@ export const CippApiResults = (props) => {
                           Get Help
                         </Button>
                       )}
-                      <CippCopyToClipBoard text={resultObj.copyField || resultObj.text} />
+                      <CippCopyToClipBoard
+                        color="inherit"
+                        text={resultObj.copyField || resultObj.text}
+                      />
+
+                      {resultObj.details && (
+                        <Tooltip
+                          title={showDetails[resultObj.id] ? "Hide Details" : "Show Details"}
+                        >
+                          <IconButton
+                            size="small"
+                            color="inherit"
+                            onClick={() => toggleDetails(resultObj.id)}
+                            aria-label={showDetails[resultObj.id] ? "Hide Details" : "Show Details"}
+                          >
+                            {showDetails[resultObj.id] ? (
+                              <ExpandLess fontSize="inherit" />
+                            ) : (
+                              <ExpandMore fontSize="inherit" />
+                            )}
+                          </IconButton>
+                        </Tooltip>
+                      )}
 
                       <IconButton
                         aria-label="close"
@@ -320,7 +360,26 @@ export const CippApiResults = (props) => {
                     </>
                   }
                 >
-                  {resultObj.text}
+                  <Box sx={{ width: "100%" }}>
+                    <Typography variant="body2">{resultObj.text}</Typography>
+                    {resultObj.details && (
+                      <Collapse in={showDetails[resultObj.id]}>
+                        <Box mt={2} sx={{ width: "100%" }}>
+                          <CippCodeBlock
+                            code={
+                              typeof resultObj.details === "string"
+                                ? resultObj.details
+                                : JSON.stringify(resultObj.details, null, 2)
+                            }
+                            language={typeof resultObj.details === "object" ? "json" : "text"}
+                            showLineNumbers={false}
+                            type="syntax"
+                            readOnly={true}
+                          />
+                        </Box>
+                      </Collapse>
+                    )}
+                  </Box>
                 </Alert>
               </Collapse>
             </React.Fragment>

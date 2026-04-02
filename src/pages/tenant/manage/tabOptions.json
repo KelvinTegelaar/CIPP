@@ -1,0 +1,30 @@
+[
+  {
+    "label": "Edit Tenant",
+    "path": "/tenant/manage/edit"
+  },
+  {
+    "label": "Manage Drift",
+    "path": "/tenant/manage/drift"
+  },
+  {
+    "label": "Configuration Backup",
+    "path": "/tenant/manage/configuration-backup"
+  },
+  {
+    "label": "Applied Standards Report",
+    "path": "/tenant/manage/applied-standards"
+  },
+  {
+    "label": "Policies and Settings Deployed",
+    "path": "/tenant/manage/policies-deployed"
+  },
+  {
+    "label": "User Defaults",
+    "path": "/tenant/manage/user-defaults"
+  },
+  {
+    "label": "History",
+    "path": "/tenant/manage/history"
+  }
+]

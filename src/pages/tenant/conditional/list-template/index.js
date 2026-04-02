@@ -1,19 +1,47 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Button, Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
-import { Delete, GitHub } from "@mui/icons-material";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { Delete, GitHub, Edit, RocketLaunch } from "@mui/icons-material";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
+import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer.jsx";
+import { CippApiLogsDrawer } from "../../../../components/CippComponents/CippApiLogsDrawer";
+import { PermissionButton } from "../../../../utils/permissions";
+import { useSettings } from "../../../../hooks/use-settings.js";
+import { useState } from "react";
 
 const Page = () => {
   const pageTitle = "Available Conditional Access Templates";
+  const [deployDrawerOpen, setDeployDrawerOpen] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+  const tenant = useSettings().currentTenant;
+
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
     refetchOnMount: false,
     refetchOnReconnect: false,
   });
+
+  const handleDeployTemplate = (row) => {
+    setSelectedTemplateId(row.GUID);
+    setDeployDrawerOpen(true);
+  };
   const actions = [
+    {
+      label: "Deploy Template",
+      customFunction: handleDeployTemplate,
+      noConfirm: true,
+      icon: <RocketLaunch />,
+      color: "success",
+    },
+    {
+      label: "Edit Template",
+      link: "/tenant/conditional/list-template/edit?GUID=[GUID]",
+      icon: <Edit />,
+      color: "info",
+    },
     {
       label: "Save to GitHub",
       type: "POST",
@@ -70,20 +98,39 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (row) => <CippJsonView object={row} />,
+    children: (row) => <CippJsonView object={row} defaultOpen={true} />,
     size: "xl",
   };
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/ListCATemplates"
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={["displayName", "GUID"]}
-      cardButton={
-        <Button key="template-lib" href="/cipp/template-library" title="Add Template Library" />
-      }
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        tenantInTitle={false}
+        apiUrl="/api/ListCATemplates"
+        queryKey="ListCATemplates-table"
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={["displayName", "GUID"]}
+        cardButton={
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Button key="template-lib" href="/cipp/template-library" title="Add Template Library" />
+            <CippPolicyImportDrawer mode="ConditionalAccess" />
+            <CippApiLogsDrawer
+              apiFilter="Conditional|CA Policy|CATemplate|CAPolicy"
+              buttonText="View Logs"
+              title="Conditional Access Logs"
+              PermissionButton={PermissionButton}
+              tenantFilter={tenant}
+            />
+          </Box>
+        }
+      />
+      <CippCADeployDrawer
+        open={deployDrawerOpen}
+        onClose={() => setDeployDrawerOpen(false)}
+        templateId={selectedTemplateId}
+      />
+    </>
   );
 };
 

@@ -1,0 +1,60 @@
+[
+  {
+    "link": "https://rewst.io",
+    "imagesrcLight": "/sponsors/rewst.png",
+    "imagesrcDark": "/sponsors/rewst_dark.png",
+    "altText": "Rewst",
+    "tooltip": "Robotic process automation platform built for MSPs.",
+    "priority": 1
+  },
+  {
+    "link": "https://www.domotz.com/cipp-community-free-domotz-beta.php?utm_source=Community_CIPP&utm_medium=Community_CIPP&utm_campaign=Community_CIPP",
+    "imagesrcLight": "/sponsors/domotz-light.png",
+    "imagesrcDark": "/sponsors/domotz-dark.png",
+    "altText": "Domotz",
+    "tooltip": "Network monitoring and management for IT professionals.",
+    "priority": 1
+  },
+  {
+    "link": "https://ninjaone.com",
+    "imagesrcLight": "/sponsors/ninjaone.png",
+    "imagesrcDark": "/sponsors/ninjaone_white.png",
+    "altText": "NinjaOne",
+    "tooltip": "Unified IT management platform for endpoint management and RMM.",
+    "priority": 1
+  },
+  {
+    "link": "https://augmentt.com",
+    "imagesrcLight": "/sponsors/augmentt-light.png",
+    "imagesrcDark": "/sponsors/augmentt-dark.png",
+    "altText": "Augmentt",
+    "tooltip": "SaaS security and management platform for MSPs.",
+    "priority": 1
+  },
+  {
+    "link": "https://huntress.com",
+    "imagesrcLight": "/sponsors/huntress_teal.png",
+    "imagesrcDark": "/sponsors/huntress_teal.png",
+    "altText": "Huntress",
+    "tooltip": "Managed security platform for threat detection and response.",
+    "priority": 1
+  },
+  {
+    "link": "https://rightofboom.com/rob-2026-overview/rob-2026-registration/?utm_source=CIPP&utm_medium=referral&utm_campaign=CIPPM365&utm_content=cta_button",
+    "imagesrcLight": "/sponsors/RoB-light.png",
+    "imagesrcDark": "/sponsors/RoB.png",
+    "altText": "Right of Boom",
+    "tooltip": "Annual conference focused on cybersecurity incident response.",
+    "priority": 1,
+    "startDate": "2026-01-01",
+    "endDate": "2026-2-20"
+  },
+  {
+    "link": "https://www.relentlesssolutions.com/",
+    "imagesrcLight": "/sponsors/relentless-light.png",
+    "imagesrcDark": "/sponsors/relentless-dark.png",
+    "altText": "Relentless Solutions",
+    "tooltip": "Microsoft 365 consulting and managed services provider.",
+    "priority": 1
+  }
+]

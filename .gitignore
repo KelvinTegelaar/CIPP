@@ -5,6 +5,7 @@ node_modules
 .pnp
 .pnp.js
 build
+package-lock.json
 # testing
 coverage
 
@@ -29,6 +30,6 @@ yarn-error.log*
 debug.log
 app.log
 
-# Cursor IDE
-.cursor/rules
-
+# AI rules
+.*/rules
+AGENTS.md

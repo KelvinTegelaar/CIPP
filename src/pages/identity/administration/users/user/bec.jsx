@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../../api/ApiCall";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { CheckCircle, Download, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
@@ -16,6 +16,8 @@ import CippButtonCard from "../../../../../components/CippCards/CippButtonCard";
 import { SvgIcon, Typography, CircularProgress, Button } from "@mui/material";
 import { PropertyList } from "../../../../../components/property-list";
 import { PropertyListItem } from "../../../../../components/property-list-item";
+import { CippHead } from "../../../../../components/CippComponents/CippHead";
+import { BECRemediationReportButton } from "../../../../../components/BECRemediationReportButton";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -101,7 +103,7 @@ const Page = () => {
     if (becPollingCall.data.NewRules && becPollingCall.data.NewRules.length > 0) {
       // Example condition to check for potential breach
       const hasPotentialBreach = becPollingCall.data.NewRules.some((rule) =>
-        rule.MoveToFolder?.includes("RSS")
+        rule.MoveToFolder?.includes("RSS"),
       );
       if (hasPotentialBreach) {
         return "Potential Breach found. The rules for this user contain classic signs of a breach.";
@@ -124,7 +126,7 @@ const Page = () => {
     if (becPollingCall.data.AddedApps && becPollingCall.data.AddedApps.length > 0) {
       // Example condition to check for potential breach
       const hasPotentialBreach = becPollingCall.data.AddedApps.some(
-        (app) => /* your condition here */ false
+        (app) => /* your condition here */ false,
       );
       if (hasPotentialBreach) {
         return "Potential Breach found.";
@@ -167,15 +169,15 @@ const Page = () => {
           icon: <Launch style={{ color: "#667085" }} />,
           text: (
             <Button
-                color="muted"
-                style={{ paddingLeft: 0 }}
-                size="small"
-                href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View in Entra
-              </Button>
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
           ),
         },
       ]
@@ -188,12 +190,13 @@ const Page = () => {
       subtitle={subtitle}
       isFetching={userRequest.isFetching}
     >
+      <CippHead title="Compromise Remediation" />
       {/* Loading State: Show only Remediation Card and Check 1 with Loading Skeleton */}
       {isFetching && userRequest.isSuccess && (
         <Box
           sx={{
             flexGrow: 1,
-            py: 4,
+            py: 1,
           }}
         >
           <Grid container spacing={2}>
@@ -313,7 +316,11 @@ const Page = () => {
                       <Box mt={2}>
                         <PropertyList>
                           {becPollingCall.data.NewRules.map((rule, index) => (
-                            <PropertyListItem key={index} label={rule.Name} value={rule.Description} />
+                            <PropertyListItem
+                              key={index}
+                              label={rule?.Name}
+                              value={rule?.Description}
+                            />
                           ))}
                         </PropertyList>
                       </Box>
@@ -352,11 +359,11 @@ const Page = () => {
                     becPollingCall.data.NewUsers.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.NewUsers.map((user) => (
+                          {becPollingCall.data.NewUsers.map((user, index) => (
                             <PropertyListItem
                               key={index}
-                              label={user.userPrincipalName}
-                              value={user.createdDateTime}
+                              label={user?.userPrincipalName}
+                              value={user?.createdDateTime}
                             />
                           ))}
                         </PropertyList>
@@ -399,8 +406,8 @@ const Page = () => {
                           {becPollingCall.data.AddedApps.map((app, index) => (
                             <PropertyListItem
                               key={index}
-                              label={`${app.displayName} - ${app.appId}`}
-                              value={app.createdDateTime}
+                              label={`${app?.displayName} - ${app?.appId}`}
+                              value={app?.createdDateTime}
                             />
                           ))}
                         </PropertyList>
@@ -488,7 +495,7 @@ const Page = () => {
                             <PropertyListItem
                               key={index}
                               label={permission["@odata.type"]}
-                              value={`${permission.displayName} - Registered at ${permission.createdDateTime}`}
+                              value={`${permission?.displayName} - Registered at ${permission?.createdDateTime}`}
                             />
                           ))}
                         </PropertyList>
@@ -530,8 +537,8 @@ const Page = () => {
                           {becPollingCall.data.ChangedPasswords.map((permission, index) => (
                             <PropertyListItem
                               key={index}
-                              label={permission.displayName}
-                              value={`${permission.lastPasswordChangeDateTime}`}
+                              label={permission?.displayName}
+                              value={`${permission?.lastPasswordChangeDateTime}`}
                             />
                           ))}
                         </PropertyList>
@@ -561,33 +568,41 @@ const Page = () => {
                   }
                 >
                   <Typography variant="body2" gutterBottom>
-                    Click this button to download a report of all the data found during this
-                    research to perform your own analysis.
+                    Generate a comprehensive PDF report for documentation, compliance, or end-user
+                    review. The report includes detailed explanations suitable for non-technical
+                    users, managers, and compliance requirements (ISO/CMMC/SOC).
                   </Typography>
                   {/* Implement download functionality */}
                   {becPollingCall.data && (
                     <Box sx={{ mt: 2 }}>
-                      <Button
-                        onClick={() => {
-                          const blob = new Blob([JSON.stringify(becPollingCall.data, null, 2)], {
-                            type: "application/json",
-                          });
-                          const url = URL.createObjectURL(blob);
-                          const link = document.createElement("a");
-                          link.href = url;
-                          link.download = `BEC_Report_${userRequest.data[0].userPrincipalName}.json`;
-                          link.click();
-                          URL.revokeObjectURL(url);
-                        }}
-                        variant="contained"
-                        startIcon={
-                          <SvgIcon fontSize="small">
-                            <Download />
-                          </SvgIcon>
-                        }
-                      >
-                        Download Report
-                      </Button>
+                      <Stack direction="row" spacing={2}>
+                        <BECRemediationReportButton
+                          userData={userRequest.data[0]}
+                          becData={becPollingCall.data}
+                          tenantName={userSettingsDefaults.currentTenant}
+                        />
+                        <Button
+                          onClick={() => {
+                            const blob = new Blob([JSON.stringify(becPollingCall.data, null, 2)], {
+                              type: "application/json",
+                            });
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement("a");
+                            link.href = url;
+                            link.download = `BEC_Report_${userRequest.data[0].userPrincipalName}.json`;
+                            link.click();
+                            URL.revokeObjectURL(url);
+                          }}
+                          variant="outlined"
+                          startIcon={
+                            <SvgIcon fontSize="small">
+                              <Download />
+                            </SvgIcon>
+                          }
+                        >
+                          Download JSON
+                        </Button>
+                      </Stack>
                     </Box>
                   )}
                 </CippButtonCard>

@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
-import { RocketLaunch, Book, Check, Block, Delete } from "@mui/icons-material";
-import Link from "next/link";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Book, Check, Block, Delete } from "@mui/icons-material";
+import { CippAddConnectorDrawer } from "../../../../components/CippComponents/CippAddConnectorDrawer";
 
 const Page = () => {
   const pageTitle = "Connector List";
+  const cardButtonPermissions = ["Exchange.Connector.ReadWrite"];
 
   const actions = [
     {
@@ -72,6 +72,19 @@ const Page = () => {
     "TlsDomain",
   ];
 
+  const filters = [
+    {
+      filterName: "Inbound Connectors",
+      value: [{ id: "cippconnectortype", value: "Inbound" }],
+      type: "column",
+    },
+    {
+      filterName: "Outbound Connectors",
+      value: [{ id: "cippconnectortype", value: "Outbound" }],
+      type: "column",
+    },
+  ];
+
   const offCanvas = {
     extendedInfoFields: simpleColumns,
     actions: actions,
@@ -83,21 +96,12 @@ const Page = () => {
       apiUrl="/api/ListExchangeConnectors"
       actions={actions}
       offCanvas={offCanvas}
+      filters={filters}
       simpleColumns={simpleColumns}
-      cardButton={
-        <>
-          <Button
-            component={Link}
-            href="/email/transport/list-connectors/add"
-            startIcon={<RocketLaunch />}
-          >
-            Deploy Connector
-          </Button>
-        </>
-      }
+      cardButton={<CippAddConnectorDrawer requiredPermissions={cardButtonPermissions} />}
     />
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 export default Page;

@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { Box, Container, Typography, Button, Stack, SvgIcon, Skeleton, Chip, Alert } from "@mui/material";
 import { Grid } from "@mui/system";
 import Head from "next/head";
@@ -157,7 +157,6 @@ const Page = () => {
               <>
                 {blockCards.map((block, index) => (
                   <Grid
-                    item
                     size={{ md: layoutMode === "Table" ? 12 : 4, sm: layoutMode === "Table" ? 12 : 6, xs: 10 }}
                     key={block.name}
                   >

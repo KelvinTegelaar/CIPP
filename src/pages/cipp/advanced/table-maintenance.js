@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useEffect, useState } from "react";
 import { ApiPostCall } from "../../../api/ApiCall";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard"; // Fixed import
-import { CippDataTable } from "/src/components/CippTable/CippDataTable"; // Fixed import
+import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard"; // Fixed import
+import { CippDataTable } from "../../../components/CippTable/CippDataTable"; // Fixed import
 import { useDialog } from "../../../hooks/use-dialog";
 import {
   Box,
@@ -29,6 +29,7 @@ import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog"
 import { Grid } from "@mui/system";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultValues }) => {
   const fields = useWatch({ control: formControl.control, name: "fields" });
@@ -72,6 +73,7 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       name={`fields[${index}].name`}
                       formControl={formControl}
                       label="Name"
+                      disableVariables={true}
                     />
                   </Box>
                   <Box width="10%">
@@ -101,6 +103,7 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                           return {};
                         }
                       }}
+                      disableVariables={true}
                     />
                   </Box>
 
@@ -274,7 +277,8 @@ const Page = () => {
   };
 
   return (
-    <Container maxWidth={false} sx={{ mt: 4, width: "100%" }}>
+    <Container maxWidth={false} sx={{ width: "100%" }}>
+      <CippHead title={pageTitle} noTenant={true} />
       <Typography variant="h4" gutterBottom>
         {pageTitle}
       </Typography>

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, Typography, Alert } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -18,6 +18,7 @@ const EditGroup = () => {
   const [groupIdReady, setGroupIdReady] = useState(false);
   const [showMembershipTable, setShowMembershipTable] = useState(false);
   const [combinedData, setCombinedData] = useState([]);
+  const [initialValues, setInitialValues] = useState({});
   const tenantFilter = useSettings().currentTenant;
 
   const groupInfo = ApiGetCall({
@@ -43,6 +44,7 @@ const EditGroup = () => {
       RemoveOwner: [],
       AddContact: [],
       RemoveContact: [],
+      visibility: "Public",
     },
   });
 
@@ -65,13 +67,15 @@ const EditGroup = () => {
         ];
         setCombinedData(combinedData);
 
-        // Reset the form with all values
-        formControl.reset({
+        // Create initial values object
+        const formValues = {
           tenantFilter: tenantFilter,
           mail: group.mail,
           mailNickname: group.mailNickname || "",
           allowExternal: groupInfo?.data?.allowExternal,
           sendCopies: groupInfo?.data?.sendCopies,
+          hideFromOutlookClients: groupInfo?.data?.hideFromOutlookClients,
+          visibility: group?.visibility ?? "Public",
           displayName: group.displayName,
           description: group.description || "",
           membershipRules: group.membershipRule || "",
@@ -96,6 +100,7 @@ const EditGroup = () => {
             }
             return null;
           })(),
+          securityEnabled: group.securityEnabled,
           // Initialize empty arrays for add/remove actions
           AddMember: [],
           RemoveMember: [],
@@ -103,20 +108,55 @@ const EditGroup = () => {
           RemoveOwner: [],
           AddContact: [],
           RemoveContact: [],
+        };
+
+        // Store initial values for comparison
+        setInitialValues({
+          allowExternal: groupInfo?.data?.allowExternal,
+          sendCopies: groupInfo?.data?.sendCopies,
+          hideFromOutlookClients: groupInfo?.data?.hideFromOutlookClients,
+          securityEnabled: group.securityEnabled,
+          visibility: group.visibility ?? "Public",
         });
+
+        // Reset the form with all values
+        formControl.reset(formValues);
       }
     }
   }, [groupInfo.isSuccess, router.query, groupInfo.isFetching]);
+
+  // Custom data formatter to only send changed values
+  const customDataFormatter = (formData) => {
+    const cleanedData = { ...formData };
+
+    // Properties that should only be sent if they've changed from initial values
+    const changeDetectionProperties = [
+      "allowExternal",
+      "sendCopies",
+      "hideFromOutlookClients",
+      "securityEnabled",
+      "visibility",
+    ];
+
+    changeDetectionProperties.forEach((property) => {
+      if (formData[property] === initialValues[property]) {
+        delete cleanedData[property];
+      }
+    });
+
+    return cleanedData;
+  };
 
   return (
     <>
       <CippFormPage
         formControl={formControl}
         queryKey={[`ListGroups-${groupId}`]}
-        title={`Group: ${groupInfo.data?.groupInfo?.displayName || ""}`}
+        title={`Group - ${groupInfo.data?.groupInfo?.displayName || ""}`}
         formPageType="Edit"
         backButtonTitle="Group Overview"
         postUrl="/api/EditGroup"
+        customDataformatter={customDataFormatter}
         titleButton={
           <>
             <Button
@@ -130,6 +170,12 @@ const EditGroup = () => {
           </>
         }
       >
+        {groupInfo.isSuccess && groupInfo.data?.groupInfo?.onPremisesSyncEnabled && (
+          <Alert severity="error" sx={{ mb: 1 }}>
+            This group is synced from on-premises Active Directory. Changes should be made in the
+            on-premises environment instead.
+          </Alert>
+        )}
         {showMembershipTable ? (
           <Box sx={{ my: 2 }}>
             <CippDataTable
@@ -206,6 +252,14 @@ const EditGroup = () => {
                   multiple={true}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
+                  addedField={{
+                    id: "id",
+                    displayName: "displayName",
+                    userPrincipalName: "userPrincipalName",
+                  }}
+                  dataFilter={(option) =>
+                    !groupInfo.data?.members?.some((m) => m.id === option.value)
+                  }
                 />
               </Grid>
 
@@ -217,6 +271,14 @@ const EditGroup = () => {
                   multiple={true}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
+                  addedField={{
+                    id: "id",
+                    displayName: "displayName",
+                    userPrincipalName: "userPrincipalName",
+                  }}
+                  dataFilter={(option) =>
+                    !groupInfo.data?.owners?.some((o) => o.id === option.value)
+                  }
                 />
               </Grid>
 
@@ -233,6 +295,11 @@ const EditGroup = () => {
                   }}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
+                  dataFilter={(option) =>
+                    !groupInfo.data?.members
+                      ?.filter((m) => m?.["@odata.type"] === "#microsoft.graph.orgContact")
+                      ?.some((c) => c.id === option.value)
+                  }
                 />
               </Grid>
 
@@ -255,10 +322,15 @@ const EditGroup = () => {
                       ?.filter((m) => m?.["@odata.type"] !== "#microsoft.graph.orgContact")
                       ?.map((m) => ({
                         label: `${m.displayName} (${m.userPrincipalName})`,
-                        value: m.userPrincipalName,
-                        addedFields: { id: m.id },
+                        value: m.id,
+                        addedFields: {
+                          userPrincipalName: m.userPrincipalName,
+                          displayName: m.displayName,
+                          id: m.id,
+                        },
                       })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 
@@ -274,10 +346,15 @@ const EditGroup = () => {
                   options={
                     groupInfo.data?.owners?.map((o) => ({
                       label: `${o.displayName} (${o.userPrincipalName})`,
-                      value: o.userPrincipalName,
-                      addedFields: { id: o.id },
+                      value: o.id,
+                      addedFields: {
+                        userPrincipalName: o.userPrincipalName,
+                        displayName: o.displayName,
+                        id: o.id,
+                      },
                     })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 
@@ -299,6 +376,7 @@ const EditGroup = () => {
                         addedFields: { id: m.id },
                       })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 
@@ -306,6 +384,24 @@ const EditGroup = () => {
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6">Group Settings</Typography>
               </Grid>
+
+              {groupType === "Microsoft 365" && (
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="radio"
+                    label="Group visibility"
+                    name="visibility"
+                    formControl={formControl}
+                    isFetching={groupInfo.isFetching}
+                    disabled={groupInfo.isFetching}
+                    options={[
+                      { label: "Public", value: "Public" },
+                      { label: "Private", value: "Private" },
+                    ]}
+                  />
+                </Grid>
+              )}
+
               {(groupType === "Microsoft 365" || groupType === "Distribution List") && (
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
@@ -325,6 +421,31 @@ const EditGroup = () => {
                     type="switch"
                     label="Send Copies of team emails and events to team members inboxes"
                     name="sendCopies"
+                    formControl={formControl}
+                    isFetching={groupInfo.isFetching}
+                    disabled={groupInfo.isFetching}
+                  />
+                </Grid>
+              )}
+
+              {groupType === "Microsoft 365" && (
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    label="Hide group mailbox from Outlook"
+                    name="hideFromOutlookClients"
+                    formControl={formControl}
+                    isFetching={groupInfo.isFetching}
+                    disabled={groupInfo.isFetching}
+                  />
+                </Grid>
+              )}
+              {groupType === "Microsoft 365" && (
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    label="Security Enabled"
+                    name="securityEnabled"
                     formControl={formControl}
                     isFetching={groupInfo.isFetching}
                     disabled={groupInfo.isFetching}

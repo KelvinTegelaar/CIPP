@@ -1,12 +1,12 @@
 import { Button } from "@mui/material";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { useSettings } from "../../../../hooks/use-settings";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { CippDomainCards } from "../../../../components/CippCards/CippDomainCards";
-import { DeleteForever, TravelExplore, Refresh } from "@mui/icons-material";
+import { DeleteForever, TravelExplore, Refresh, Settings } from "@mui/icons-material";
 import { DomainAnalyserDialog } from "../../../../components/CippComponents/DomainAnalyserDialog";
 import { useDialog } from "../../../../hooks/use-dialog";
 
@@ -20,8 +20,26 @@ const Page = () => {
   });
   const actions = [
     {
+      label: "Add/Modify DKIM Selectors",
+      type: "POST",
+      icon: <Settings />,
+      url: "/api/ExecDnsConfig",
+      data: { Action: "!SetDkimConfig", Domain: "Domain" },
+      confirmText: "Enter the DKIM selectors for [Domain] (comma-separated)",
+      fields: [
+        {
+          type: "textField",
+          name: "Selector",
+          label: "DKIM Selectors",
+          placeholder: "selector1, selector2, selector3",
+          required: true,
+        },
+      ],
+      multiPost: false,
+    },
+    {
       label: "Delete from analyser",
-      type: "GET",
+      type: "POST",
       icon: <DeleteForever />,
       url: "/api/ExecDnsConfig",
       data: { Action: "!RemoveDomain", Domain: "Domain" },

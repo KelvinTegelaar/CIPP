@@ -1,6 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Alert, Button, Dialog, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Dialog,
+  Divider,
+  DialogContent,
+  DialogTitle,
+  useMediaQuery,
+} from "@mui/material";
+import { Stack } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import { useSettings } from "../hooks/use-settings";
 import { Footer } from "./footer";
@@ -14,7 +23,8 @@ import { Box, Container, Grid } from "@mui/system";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboardingv2";
 import { useDialog } from "../hooks/use-dialog";
-import { nativeMenuItems } from "/src/layouts/config";
+import { nativeMenuItems } from "./config";
+import { CippBreadcrumbNav } from "../components/CippComponents/CippBreadcrumbNav";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -54,6 +64,8 @@ const LayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
   flex: "1 1 auto",
   maxWidth: "100%",
+  height: "100vh",
+  overflow: "hidden",
   paddingTop: TOP_NAV_HEIGHT,
   [theme.breakpoints.up("lg")]: {
     paddingLeft: SIDE_NAV_WIDTH,
@@ -65,6 +77,8 @@ const LayoutContainer = styled("div")({
   flex: "1 1 auto",
   flexDirection: "column",
   width: "100%",
+  overflowY: "auto",
+  overscrollBehavior: "contain",
 });
 
 export const Layout = (props) => {
@@ -72,14 +86,10 @@ export const Layout = (props) => {
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const settings = useSettings();
   const mobileNav = useMobileNav();
-  const [userSettingsComplete, setUserSettingsComplete] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState([]);
   const [menuItems, setMenuItems] = useState(nativeMenuItems);
+  const lastUserSettingsUpdate = useRef(null);
   const currentTenant = settings?.currentTenant;
-  const currentRole = ApiGetCall({
-    url: "/api/me",
-    queryKey: "authmecipp",
-  });
   const [hideSidebar, setHideSidebar] = useState(false);
 
   const swaStatus = ApiGetCall({
@@ -89,23 +99,74 @@ export const Layout = (props) => {
     refetchOnWindowFocus: true,
   });
 
+  const currentRole = ApiGetCall({
+    url: "/api/me",
+    queryKey: "authmecipp",
+    waiting: !swaStatus.isSuccess || swaStatus.data?.clientPrincipal === null,
+  });
+
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000, // Cache for 10 minutes
+  });
+
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
       const userRoles = currentRole.data?.clientPrincipal?.userRoles;
+      const userPermissions = currentRole.data?.permissions;
       if (!userRoles) {
         setMenuItems([]);
         setHideSidebar(true);
         return;
       }
+
+      // Get disabled pages from feature flags - only filter if we have valid data
+      let disabledPages = [];
+      if (featureFlags.isSuccess && Array.isArray(featureFlags.data)) {
+        disabledPages = featureFlags.data
+          .filter((flag) => flag.Enabled === false || flag.enabled === false)
+          .flatMap((flag) => flag.Pages || flag.pages || [])
+          .filter((page) => typeof page === "string");
+      }
+
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
-            if (item.roles && item.roles.length > 0) {
-              const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
-              if (!hasRole) {
+            // Check if page is disabled by feature flag
+            if (item.path && disabledPages.length > 0 && disabledPages.includes(item.path)) {
+              return null;
+            }
+
+            // Check permission with pattern matching support
+            if (item.permissions && item.permissions.length > 0) {
+              const hasPermission = userPermissions?.some((userPerm) => {
+                return item.permissions.some((requiredPerm) => {
+                  // Exact match
+                  if (userPerm === requiredPerm) {
+                    return true;
+                  }
+
+                  // Pattern matching - check if required permission contains wildcards
+                  if (requiredPerm.includes("*")) {
+                    // Convert wildcard pattern to regex
+                    const regexPattern = requiredPerm
+                      .replace(/\./g, "\\.") // Escape dots
+                      .replace(/\*/g, ".*"); // Convert * to .*
+                    const regex = new RegExp(`^${regexPattern}$`);
+                    return regex.test(userPerm);
+                  }
+
+                  return false;
+                });
+              });
+              if (!hasPermission) {
                 return null;
               }
+            } else {
+              return null;
             }
+            // check sub-items
             if (item.items && item.items.length > 0) {
               const filteredSubItems = filterItemsByRole(item.items).filter(Boolean);
               return { ...item, items: filteredSubItems };
@@ -115,7 +176,6 @@ export const Layout = (props) => {
           })
           .filter(Boolean);
       };
-
       const filteredMenu = filterItemsByRole(nativeMenuItems);
       setMenuItems(filteredMenu);
     } else if (
@@ -126,7 +186,16 @@ export const Layout = (props) => {
     ) {
       setHideSidebar(true);
     }
-  }, [currentRole.isSuccess, swaStatus.data, swaStatus.isLoading]);
+  }, [
+    currentRole.isSuccess,
+    swaStatus.data,
+    swaStatus.isLoading,
+    currentRole.data?.clientPrincipal?.userRoles,
+    currentRole.data?.permissions,
+    currentRole.isFetching,
+    featureFlags.isSuccess,
+    featureFlags.data,
+  ]);
 
   const handleNavPin = useCallback(() => {
     settings.handleUpdate({
@@ -142,33 +211,38 @@ export const Layout = (props) => {
   });
 
   useEffect(() => {
-    if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching && !userSettingsComplete) {
-      console.log("User Settings API Data:", userSettingsAPI.data);
-      //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
-      if (userSettingsAPI.data.offboardingDefaults?.user) {
-        delete userSettingsAPI.data.offboardingDefaults.user;
-      }
-      if (userSettingsAPI?.data?.currentTheme) {
-        delete userSettingsAPI.data.currentTheme;
-      }
-      // get current devtools settings
-      var showDevtools = settings.showDevtools;
-      // get current bookmarks
-      var bookmarks = settings.bookmarks;
+    if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching) {
+      // Only update if the data has actually changed (using dataUpdatedAt as a proxy)
+      const dataUpdatedAt = userSettingsAPI.dataUpdatedAt;
+      if (dataUpdatedAt && dataUpdatedAt !== lastUserSettingsUpdate.current) {
+        const { bookmarks: _bookmarks, ...serverSettings } = userSettingsAPI.data || {};
+        //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
+        if (serverSettings.offboardingDefaults?.user) {
+          delete serverSettings.offboardingDefaults.user;
+        }
+        if (serverSettings.offboardingDefaults?.keepCopy) {
+          delete serverSettings.offboardingDefaults.keepCopy;
+        }
+        if (serverSettings?.currentTheme) {
+          delete serverSettings.currentTheme;
+        }
+        // get current devtools settings (device-local only)
+        var showDevtools = settings.showDevtools;
 
-      settings.handleUpdate({
-        ...userSettingsAPI.data,
-        bookmarks,
-        showDevtools,
-      });
-      setUserSettingsComplete(true);
+        settings.handleUpdate({
+          ...serverSettings,
+          showDevtools,
+        });
+
+        // Track this update and set completion status
+        lastUserSettingsUpdate.current = dataUpdatedAt;
+      }
     }
   }, [
     userSettingsAPI.isSuccess,
     userSettingsAPI.data,
     userSettingsAPI.isFetching,
-    userSettingsComplete,
-    settings,
+    userSettingsAPI.dataUpdatedAt,
   ]);
 
   const version = ApiGetCall({
@@ -209,7 +283,7 @@ export const Layout = (props) => {
               message: alert.Alert,
               title: alert.title,
               toastError: alert,
-            })
+            }),
           );
         });
       }
@@ -265,8 +339,9 @@ export const Layout = (props) => {
             </Box>
           )}
           {(currentTenant === "AllTenants" || !currentTenant) && !allTenantsSupport ? (
-            <Box sx={{ flexGrow: 1, py: 4 }}>
+            <Box sx={{ flexGrow: 1, py: 3 }}>
               <Container maxWidth={false}>
+                <CippBreadcrumbNav mode="hierarchical" />
                 <Grid container spacing={3}>
                   <Grid size={6}>
                     <CippImageCard
@@ -281,7 +356,13 @@ export const Layout = (props) => {
               </Container>
             </Box>
           ) : (
-            <>{children}</>
+            <Stack>
+              <Box sx={{ mx: 3, mt: 3 }}>
+                <CippBreadcrumbNav mode="hierarchical" />
+              </Box>
+              <Divider sx={{ mb: 2 }} />
+              {children}
+            </Stack>
           )}
           <Footer />
         </LayoutContainer>

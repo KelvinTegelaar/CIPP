@@ -1,13 +1,13 @@
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import CippFormPage from "../../../components/CippFormPages/CippFormPage";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import tabOptions from "./tabOptions";
 import { useForm, useWatch } from "react-hook-form";
-import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
-import vendorTenantList from "/src/data/vendorTenantList";
+import { CippFormComponent } from "../../../components/CippComponents/CippFormComponent";
+import vendorTenantList from "../../../data/vendorTenantList";
 import { Box, Grid, Stack } from "@mui/system";
 import { Alert, Divider, Typography } from "@mui/material";
-import { ApiGetCall, ApiGetCallWithPagination } from "/src/api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination } from "../../../api/ApiCall";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { Apps, Description, Widgets } from "@mui/icons-material";
@@ -139,12 +139,12 @@ const Page = () => {
                       icon: <ShieldCheckIcon />,
                       offcanvas: {
                         title: "GDAP Relationships",
-                        propertyItems: gdapRelationships.data?.Results
-                          ?.filter((relationship) => relationship?.customer?.tenantId === tenantId.value)
-                          ?.map((relationship) => ({
-                            label: `Relationship: ${relationship?.displayName}`,
-                            value: `Id: ${relationship?.id}`,
-                          })),
+                        propertyItems: gdapRelationships.data?.Results?.filter(
+                          (relationship) => relationship?.customer?.tenantId === tenantId.value
+                        )?.map((relationship) => ({
+                          label: `Relationship: ${relationship?.displayName}`,
+                          value: `Id: ${relationship?.id}`,
+                        })),
                       },
                     },
                     {
@@ -171,7 +171,11 @@ const Page = () => {
                     },
                     {
                       name: "Vendor Applications",
-                      data: vendorApps.data?.pages?.reduce((sum, page) => sum + (page?.Results?.length ?? 0), 0) ?? 0,
+                      data:
+                        vendorApps.data?.pages?.reduce(
+                          (sum, page) => sum + (page?.Results?.length ?? 0),
+                          0
+                        ) ?? 0,
                       icon: <Apps />,
                       offcanvas: {
                         title: "Vendor Applications",
@@ -181,7 +185,7 @@ const Page = () => {
                             label: app?.displayName,
                             value: app?.appId,
                           })),
-                      }
+                      },
                     },
                   ]}
                 />
@@ -234,6 +238,12 @@ const Page = () => {
                     label="Remove all notification contacts originating from the CSP tenant (technical, security, marketing notifications)."
                     type="switch"
                     disabled={mspApps?.data?.Results?.length > 0 ? false : true}
+                  />
+                  <CippFormComponent
+                    formControl={formControl}
+                    name="RemoveDomainAnalyserData"
+                    label="Remove all Domain Analyser results for this tenant."
+                    type="switch"
                   />
                 </Stack>
               </Grid>

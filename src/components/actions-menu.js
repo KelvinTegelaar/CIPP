@@ -71,6 +71,7 @@ export const ActionsMenu = (props) => {
 
                 if (action?.noConfirm && action.customFunction) {
                   action.customFunction(data, action, {});
+                  popover.handleClose();
                 } else {
                   createDialog.handleOpen();
                   popover.handleClose();
@@ -92,6 +93,7 @@ export const ActionsMenu = (props) => {
           api={actionData.action}
           row={actionData.data}
           relatedQueryKeys={queryKeys}
+          {...actionData.action}
         />
       )}
     </>

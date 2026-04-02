@@ -42,7 +42,7 @@ export const createComponents = ({ palette }) => {
       styleOverrides: {
         root: {
           [`&.${paperClasses.elevation1}`]: {
-            boxShadow: `0px 0px 1px ${palette.neutral[200]}, 0px 1px 3px ${alpha(
+            boxShadow: `0px 0px 1px ${alpha(palette.neutral[400], 0.3)}, 0px 1px 4px ${alpha(
               palette.neutral[800],
               0.08
             )}`,
@@ -70,14 +70,15 @@ export const createComponents = ({ palette }) => {
       styleOverrides: {
         root: {
           backgroundColor: palette.background.paper,
-          borderColor: palette.neutral[300],
-          boxShadow: `0px 1px 2px 0px ${alpha(palette.neutral[800], 0.08)}`,
+          borderColor: alpha(palette.neutral[400], 0.2),
+          boxShadow: `0px 1px 3px 0px ${alpha(palette.neutral[800], 0.06)}`,
           "&:hover": {
             backgroundColor: palette.background.paper,
+            borderColor: alpha(palette.neutral[400], 0.3),
           },
           [`&.${filledInputClasses.disabled}`]: {
-            backgroundColor: palette.action.disabledBackground,
-            borderColor: palette.neutral[300],
+            backgroundColor: alpha(palette.neutral[100], 0.5),
+            borderColor: alpha(palette.neutral[300], 0.2),
             boxShadow: "none",
           },
           [`&.${filledInputClasses.focused}`]: {
@@ -150,7 +151,7 @@ export const createComponents = ({ palette }) => {
     MuiSkeleton: {
       styleOverrides: {
         root: {
-          backgroundColor: palette.neutral[100],
+          backgroundColor: palette.neutral[200],
         },
       },
     },
@@ -191,12 +192,13 @@ export const createComponents = ({ palette }) => {
     MuiTableHead: {
       styleOverrides: {
         root: {
-          backgroundColor: palette.neutral[50],
+          backgroundColor: alpha(palette.neutral[200], 0.4),
           borderBottomWidth: 1,
           borderBottomStyle: "solid",
           borderBottomColor: palette.divider,
           [`.${tableCellClasses.root}`]: {
-            color: palette.text.secondary,
+            color: palette.text.primary,
+            fontWeight: 600,
           },
         },
       },
@@ -206,7 +208,7 @@ export const createComponents = ({ palette }) => {
         root: {
           [`&.${tableRowClasses.hover}`]: {
             "&:hover": {
-              backgroundColor: palette.neutral[50],
+              backgroundColor: alpha(palette.neutral[200], 0.3),
             },
           },
         },

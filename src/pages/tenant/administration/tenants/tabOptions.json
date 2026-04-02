@@ -6,5 +6,9 @@
   {
     "label": "Groups",
     "path": "/tenant/administration/tenants/groups"
+  },
+  {
+    "label": "Global Variables",
+    "path": "/tenant/administration/tenants/global-variables"
   }
 ]

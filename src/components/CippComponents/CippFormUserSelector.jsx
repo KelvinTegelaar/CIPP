@@ -12,6 +12,8 @@ export const CippFormUserSelector = ({
   select,
   addedField,
   valueField,
+  dataFilter = null,
+  showRefresh = false,
   ...other
 }) => {
   const currentTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
@@ -41,6 +43,13 @@ export const CippFormUserSelector = ({
           $orderby: "displayName",
           $top: 999,
         },
+        dataFilter: (options) => {
+          if (dataFilter) {
+            return options.filter(dataFilter);
+          }
+          return options;
+        },
+        showRefresh: showRefresh,
       }}
       creatable={false}
       {...other}

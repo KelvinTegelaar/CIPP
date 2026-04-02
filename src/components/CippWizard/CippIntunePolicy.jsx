@@ -7,15 +7,44 @@ import { ApiGetCall } from "../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { useWatch } from "react-hook-form";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import { useSettings } from "../../hooks/use-settings";
+
+const assignmentFilterTypeOptions = [
+  { label: "Include - Apply policy to devices matching filter", value: "include" },
+  { label: "Exclude - Apply policy to devices NOT matching filter", value: "exclude" },
+];
 
 export const CippIntunePolicy = (props) => {
   const { formControl, onPreviousStep, onNextStep, currentStep } = props;
   const values = formControl.getValues();
+  const tenantFilter = useSettings()?.currentTenant;
   const CATemplates = ApiGetCall({ url: "/api/ListIntuneTemplates", queryKey: "IntuneTemplates" });
   const [JSONData, setJSONData] = useState();
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
   const jsonWatch = useWatch({ control: formControl.control, name: "RAWJson" });
   const selectedTenants = useWatch({ control: formControl.control, name: "tenantFilter" });
+
+  // do not provide inputs for reserved placeholders
+  const reservedPlaceholders = [
+    "%serial%",
+    "%systemroot%",
+    "%systemdrive%",
+    "%temp%",
+    "%tenantid%",
+    "%tenantfilter%",
+    "%initialdomain%",
+    "%tenantname%",
+    "%partnertenantid%",
+    "%samappid%",
+    "%userprofile%",
+    "%username%",
+    "%userdomain%",
+    "%windir%",
+    "%programfiles%",
+    "%programfiles(x86)%",
+    "%programdata%",
+  ];
+
   useEffect(() => {
     if (CATemplates.isSuccess && watcher?.value) {
       const template = CATemplates.data.find((template) => template.GUID === watcher.value);
@@ -91,6 +120,40 @@ export const CippIntunePolicy = (props) => {
         </CippFormCondition>
         <CippFormCondition
           formControl={formControl}
+          field="AssignTo"
+          compareType="isOneOf"
+          compareValue={["allLicensedUsers", "AllDevices", "AllDevicesAndUsers", "customGroup"]}
+        >
+          <Grid size={{ xs: 12 }}>
+            <CippFormComponent
+              type="autoComplete"
+              name="assignmentFilter"
+              label="Assignment Filter (Optional)"
+              multiple={false}
+              creatable={false}
+              formControl={formControl}
+              api={{
+                url: "/api/ListAssignmentFilters",
+                queryKey: `ListAssignmentFilters-${tenantFilter}`,
+                labelField: (filter) => filter.displayName,
+                valueField: "displayName",
+              }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <CippFormComponent
+              type="radio"
+              name="assignmentFilterType"
+              label="Assignment Filter Mode"
+              options={assignmentFilterTypeOptions}
+              defaultValue="include"
+              helperText="Choose whether to include or exclude devices matching the filter."
+              formControl={formControl}
+            />
+          </Grid>
+        </CippFormCondition>
+        <CippFormCondition
+          formControl={formControl}
           field="RAWJson"
           compareType="regex"
           compareValue={/%(\w+)%/}
@@ -99,11 +162,15 @@ export const CippIntunePolicy = (props) => {
             const rawJson = jsonWatch ? jsonWatch : "";
             const placeholderMatches = [...rawJson.matchAll(/%(\w+)%/g)].map((m) => m[1]);
             const uniquePlaceholders = Array.from(new Set(placeholderMatches));
-            if (uniquePlaceholders.length === 0 || selectedTenants.length === 0) {
+            // Filter out reserved placeholders
+            const filteredPlaceholders = uniquePlaceholders.filter(
+              (placeholder) => !reservedPlaceholders.includes(`%${placeholder.toLowerCase()}%`)
+            );
+            if (filteredPlaceholders.length === 0 || selectedTenants.length === 0) {
               return null;
             }
-            return uniquePlaceholders.map((placeholder) => (
-              <Grid key={placeholder} item size={{ xs: 6 }}>
+            return filteredPlaceholders.map((placeholder) => (
+              <Grid key={placeholder} size={{ xs: 6 }}>
                 {selectedTenants.map((tenant, idx) => (
                   <CippFormComponent
                     key={`${tenant.value}-${placeholder}-${idx}`}

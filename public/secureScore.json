@@ -1,0 +1,3421 @@
+[
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_admin_accounts_separate_unassigned_cloud_only",
+    "title": "Ensure Administrative accounts are separate and cloud-only"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": null,
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_admin_consent_workflow",
+    "title": "Ensure the admin consent workflow is enabled"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_custom_banned_passwords",
+    "title": "Ensure custom banned passwords lists are used"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_limited_administrative_roles",
+    "title": "Ensure \u0027Microsoft Azure Management\u0027 is limited to administrative roles"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_linkedin_connection_disables",
+    "title": "Ensure \u0027LinkedIn account connections\u0027 is disabled"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_managed_approved_public_groups_only",
+    "title": "Ensure that only organizationally managed/approved public groups exist"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_password_protection",
+    "title": "Ensure password protection is enabled for on-prem Active Directory"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_phishing_MFA_strength",
+    "title": "Ensure \u0027Phishing-resistant MFA strength\u0027 is required for Administrators"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": null,
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_sign_in_freq_session_timeout",
+    "title": "Ensure Sign-in frequency is enabled and browser sessions are not persistent for Administrative users"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": null,
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "aad_third_party_apps",
+    "title": "Ensure third party integrated applications are not allowed"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_AccountsWithNonDefaultPrimaryGroup",
+    "title": "Accounts with non-default Primary Group ID"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_AccountWithLeakedCredentials",
+    "title": "Change password for accounts with leaked credentials"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_AdAccountWithPotentiallyLeakedCredentials",
+    "title": "Change password for on-prem account with potentially leaked credentials"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSCertificateTemplateArbitraryAppPolicies",
+    "title": "Prevent Certificate Enrollment with arbitrary Application Policies (ESC15)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSCertificateTemplateEnrolementSuppliesSubject",
+    "title": "Prevent users to request a certificate valid for arbitrary users based on the certificate template (ESC1)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_AdcsComputersWithNoMdiSensorInstalled",
+    "title": "Install Defender for Identity Sensor on ADCS servers "
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSInsecureCertificateEnrollmentIisEndpoints",
+    "title": "Edit insecure certificate enrollment IIS endpoints (ESC8)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSMisconfiguredCertificateAuthorityAcl",
+    "title": "Edit misconfigured Certificate Authority ACL (ESC7)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSMisconfiguredCertificateTemplateAcl",
+    "title": "Edit misconfigured certificate templates ACL (ESC4)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSMisconfiguredCertificateTemplateEku",
+    "title": "Edit overly permissive Certificate Template with privileged EKU (Any purpose EKU or No EKU) (ESC2)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSMisconfiguredCertificateTemplateEnrollmentAgent",
+    "title": "Edit misconfigured enrollment agent certificate template (ESC3)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSMisconfiguredCertificateTemplateOwner",
+    "title": "Edit misconfigured certificate templates owner (ESC4)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSMisconfiguredRpcEnrollmentSigning",
+    "title": "Enforce encryption for RPC certificate enrollment interface (ESC8)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ADCSSanSpecifiedByUserEnabled",
+    "title": "Edit vulnerable Certificate Authority setting (ESC6)"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_AdfsComputersWithNoMdiSensorInstalled",
+    "title": "Install Defender for Identity Sensor on ADFS servers "
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_AdminSDHolder",
+    "title": "Remove access rights on suspicious accounts with the Admin SDHolder permission"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_AzureSsoAccountOldPasswords",
+    "title": "Change password for Entra seamless SSO account"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_BuiltinAdministratorAccountWithOldPassword",
+    "title": "Change password of built-in domain Administrator account"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_BuiltinGuestAccountIsEnabled",
+    "title": "Built-in Active Directory Guest account is enabled"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_BuiltinKrbtgtAccountWithOldPassword",
+    "title": "Change password for krbtgt account"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ClearText",
+    "title": "Stop clear text credentials exposure"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_CyberArk_DormantPriviledgedAccounts",
+    "title": "Remove stale CyberArk Identity privileged accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_CyberArk_HighNumberOfPriviledgedIdentityAccounts",
+    "title": "High number of CyberArk Identity accounts with a privileged role assigned"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_CyberArk_HighNumberOfSystemAdmins",
+    "title": "Limit the number of CyberArk Identity accounts with system admin role"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_CyberArk_MFAforPriviledgedUserAccounts",
+    "title": "Assign multi-factor authentication for CyberArk Identity privileged user accounts "
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_CyberArk_PriviledgedUserAccountsWithOldPasswords",
+    "title": "Change password for CyberArk Identity  privileged User accounts "
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_DefenderForIdentityIsNotInstalled",
+    "title": "Start your Defender for Identity deployment, installing Sensors on Domain Controllers and other eligible servers."
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_DnsAdminsGroupWithUnsafePermissions",
+    "title": "Unsafe permissions on the DnsAdmins group"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_DomainControllerLocalUsers",
+    "title": "Remove local admins on identity assets"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_DomainControllersWithOldPassword",
+    "title": "Change Domain Controller computer account old password"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_DormantAccounts",
+    "title": "Remove dormant accounts from sensitive groups"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_EntraConnectAccountsOldPasswords",
+    "title": "Rotate password for Entra Connect AD DS Connector account"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_EntraConnectAccountsWithConnectorAccountAsDefaultAdmin",
+    "title": "Replace Enterprise or Domain Admin account for Entra Connect AD DS Connector account"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_EntraConnectAccountUnnecessaryReplicationPermission",
+    "title": "Remove unnecessary replication permissions for Entra Connect AD DS Connector Account"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_EntraConnectComputersWithNoMdiSensorInstalled",
+    "title": "Install Defender for Identity Sensor on Entra Connect servers"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_EntraConnectSensitiveAccountsWithUnsafePermissions",
+    "title": "Remove unsafe permissions on sensitive Entra Connect accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_ExposedPasswordsInADAttributes",
+    "title": "Remove discoverable passwords in Active Directory account attributes"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_GroupManagedServiceAccountWithUnrecommendedPasswordChangeInterval",
+    "title": "Set a valid password rotation interval for gMSA"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_GroupPolicyAbnormalModificationAssignment",
+    "title": "GPO can be modified by unprivileged accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_GroupPolicyAssignsUnprivilegedIdentitiesToElevatedLocalGroups",
+    "title": "GPO assigns unprivileged identities to local groups with elevated privileges"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_GroupPolicyPasswordInPreferences",
+    "title": "Reversible passwords found in GPOs"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_HoneyToken",
+    "title": "Set a honeytoken account"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_InactiveServiceAccounts",
+    "title": "Remove stale service accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_KerberosDelegations",
+    "title": "Modify unsecure Kerberos delegations to prevent impersonation"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "high",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_NonAdminDCSyncAccounts",
+    "title": "Remove non-admin accounts with DCSync permissions "
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Okta_Dormant",
+    "title": "Remove dormant Okta privileged accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Okta_HighNumberOfNonSuperAdminPrivilegedUserAccounts",
+    "title": "High number of Okta accounts with privileged role assigned"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Okta_HighNumberOfSuperAdmins",
+    "title": "Limit the Number of Okta Super Admins Accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Okta_SensitiveAccountWithOldPassword",
+    "title": "Change password for Okta privileged User accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Okta_SensitiveAccountWithoutFactorsAssigned",
+    "title": "Assign multi-factor authentication for Okta privileged user accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Okta_SensitiveApiToken",
+    "title": "Highly Privileged Okta Api Token"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_PathRisk",
+    "title": "Reduce lateral movement path risk to sensitive entities"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Ping_Dormant",
+    "title": "Remove stale PingOne privileged accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Ping_HighNumberOfNonSuperAdminPrivilegedUserAccounts",
+    "title": "High number of PingOne accounts with a privileged role assigned"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Ping_HighNumberOfSuperAdmins",
+    "title": "Limit the number of PingOne accounts with organization admin role"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Ping_SensitiveAccountWithOldPassword",
+    "title": "Change password for PingOne privileged User accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Ping_SensitiveAccountWithoutFactorsAssigned",
+    "title": "Assign multi-factor authentication for PingOne privileged user accounts"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_PrintSpooler",
+    "title": "Disable Print spooler service on domain controllers"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_PrivilegedAccountsWithDelegationAllowed",
+    "title": "Ensure privileged accounts are not delegated"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_PwdLAPS",
+    "title": "Protect and manage local admin passwords with Microsoft LAPS"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Sensor",
+    "title": "Install Defender for Identity Sensor on all Domain Controllers"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_SIDHistory",
+    "title": "Remove unsecure SID history attributes from entities"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "Medium",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_SingleManagedServiceAccountsWithOldPassword",
+    "title": "Rotate old password for sMSA and set up valid rotation interval in the GPO"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_UnsecureAccount",
+    "title": "Resolve unsecure account attributes"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_UnsecureDomain",
+    "title": "Resolve unsecure domain configurations"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_Vpn",
+    "title": "Configure VPN integration"
+  },
+  {
+    "service": "Azure ATP",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AATP_WeakCipher",
+    "title": "Stop weak cipher usage"
+  },
+  {
+    "service": "Admincenter",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "admincenter_owned_apps_and_services",
+    "title": "Ensure \u0027User owned apps and services\u0027 is restricted"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AdminMFAV2",
+    "title": "Ensure multifactor authentication is enabled for all users in administrative roles"
+  },
+  {
+    "service": "AppG",
+    "tier": "Core",
+    "userImpact": "moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AppG_regulate_access_to_sensitive_data",
+    "title": "Regulate cloud app access to sensitive data"
+  },
+  {
+    "service": "AppG",
+    "tier": "Core",
+    "userImpact": "moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "AppG_unusual_activity_with_priority_account",
+    "title": "Regulate apps with priority account consent"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Advanced",
+    "userImpact": "Moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "BlockLegacyAuthentication",
+    "title": "Enable Conditional Access policies to block legacy authentication"
+  },
+  {
+    "service": "EXO",
+    "tier": "Advanced",
+    "userImpact": "Moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "CustomerLockBoxEnabled",
+    "title": "Ensure the customer lockbox feature is enabled"
+  },
+  {
+    "service": "MIP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "dlp_datalossprevention",
+    "title": "Ensure DLP policies are enabled"
+  },
+  {
+    "service": "EXO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "exo_individualsharing",
+    "title": "Ensure \u0027External sharing\u0027 of calendars is not available"
+  },
+  {
+    "service": "EXO",
+    "tier": "Core",
+    "userImpact": null,
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "exo_mailboxaudit",
+    "title": "Ensure mailbox auditing for all users is Enabled"
+  },
+  {
+    "service": "EXO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "exo_mailtipsenabled",
+    "title": "Ensure MailTips are enabled for end users"
+  },
+  {
+    "service": "EXO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "exo_oauth2clientprofileenabled",
+    "title": "Ensure modern authentication for Exchange Online is enabled"
+  },
+  {
+    "service": "EXO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "exo_outlookaddins",
+    "title": "Ensure users installing Outlook add-ins is not allowed"
+  },
+  {
+    "service": "EXO",
+    "tier": "Core",
+    "userImpact": null,
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "exo_SPF_records_for_all_domains",
+    "title": "Ensure that SPF records are published for all Exchange Domains"
+  },
+  {
+    "service": "EXO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "exo_storageproviderrestricted",
+    "title": "Ensure additional storage providers are restricted in Outlook on the web"
+  },
+  {
+    "service": "EXO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "exo_transportrulesallowlistdomains",
+    "title": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains"
+  },
+  {
+    "service": "FORMS",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "forms_phishing_protection",
+    "title": "Ensure internal phishing protection for Forms is enabled"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Defense In Depth",
+    "userImpact": "Moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "IntegratedApps",
+    "title": "Ensure user consent to apps accessing company data on their behalf is not allowed"
+  },
+  {
+    "service": "MCAS",
+    "tier": "Core",
+    "userImpact": null,
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mcas_mda_enabled",
+    "title": "Ensure Microsoft Defender for Cloud Apps is enabled and configured"
+  },
+  {
+    "service": "MCAS",
+    "tier": "Advanced",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "McasFirewallLogUpload",
+    "title": "Deploy a log collector to discover shadow IT activity"
+  },
+  {
+    "service": "MDA_Atlassian",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Atlassian_EnableTwoFactorAuth",
+    "title": "Enable multi-factor authentication (MFA)"
+  },
+  {
+    "service": "MDA_Atlassian",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Atlassian_ForceSSO",
+    "title": "Enable Single Sing On (SSO)"
+  },
+  {
+    "service": "MDA_Atlassian",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Atlassian_InactiveTimeoutMins",
+    "title": "Enable session timeout for web users"
+  },
+  {
+    "service": "MDA_Atlassian",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Atlassian_mobile_access",
+    "title": "Atlassian mobile app security - App access requirement"
+  },
+  {
+    "service": "MDA_Atlassian",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Atlassian_mobile_dataprotection",
+    "title": "Atlassian mobile app security - App data protection"
+  },
+  {
+    "service": "MDA_Atlassian",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Atlassian_mobile_UsersAffected",
+    "title": "Atlassian mobile app security - Users that are affected by policies"
+  },
+  {
+    "service": "MDA_Atlassian",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Atlassian_passwordExpiry",
+    "title": "Enable Password expiration policies"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_EnableTwoFactorAuth",
+    "title": "Enable multi-factor authentication (MFA)"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_ForceSSO",
+    "title": "Enable Single Sign on (SSO)"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_InactiveTimeoutMins",
+    "title": "Enable session timeout for web users"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_LoginFailLockoutSecs",
+    "title": "Enhance \u0027login maximum attempts\u0027 - Lockout timer"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_LoginFailMaxAttempts",
+    "title": "Enhance \u0027login maximum attempts\u0027 - Number of attempts"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_MinimumLength",
+    "title": "Enable password minimum length"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_MinimumNumeric",
+    "title": "Enable password minimum numeric characters"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_MinimumSpecialCharacters",
+    "title": "Enable password minimum special characters"
+  },
+  {
+    "service": "MDA_CitrixSF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_CitrixSF_PasswordMaxAgeDays",
+    "title": "Enable password expiration policies"
+  },
+  {
+    "service": "MDA_DocuSign",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_DocuSign_EnhancedPassword",
+    "title": "Enhance password requirements"
+  },
+  {
+    "service": "MDA_DocuSign",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_DocuSign_PasswordExpires",
+    "title": "Password expiry requirements"
+  },
+  {
+    "service": "MDA_DocuSign",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_DocuSign_SessionTimeout",
+    "title": "Enable session timeout for web users"
+  },
+  {
+    "service": "MDA_Dropbox",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Dropbox_InactiveTimeoutMins",
+    "title": "Enable web session timeout for web users"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_DependencyInsights",
+    "title": "Disable \u0027Allow members to view dependency insights\u0027"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_EmailNotificationRestrictedToVerifiedOrApprovedDomains",
+    "title": "Enabled \u0027email notification delivery for this enterprise is restricted to verified or approved domains\u0027"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_IPallowListConfigurationForOrgResources",
+    "title": "Enforce IP allow list configuration for org resources"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_OutsideCollabInvitation",
+    "title": "Disable \u0027Allow repository administrators to invite outside collaborators to repositories for this organization"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_PrivateRepositoryForkingSetting",
+    "title": "Disable private repository forking"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_PublicRepoCreation",
+    "title": "Disable \u0027Members will be able to create public repositories, visible to anyone\u0027"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_RepoTransferOrDeletion",
+    "title": "Disable \u0027members with admin permissions for repositories can delete or transfer repositories\u0027"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_RepoVisibility_change",
+    "title": "Disable \u0027Allow members to change repository visibilities for this organization\u0027"
+  },
+  {
+    "service": "MDA_GitHub",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_GitHub_SAML",
+    "title": "Enable single sign on (SSO)"
+  },
+  {
+    "service": "MDA_Google",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Google_EnableTwoFactorAuth",
+    "title": "Enable multi-factor authentication (MFA)"
+  },
+  {
+    "service": "MDA_NetDocuments",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_NetDocuments_SSO",
+    "title": "Adopt SSO (Single sign on) in netDocuments"
+  },
+  {
+    "service": "MDA_Okta",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Okta_EnhancedPassword",
+    "title": "Enhance password requirements"
+  },
+  {
+    "service": "MDA_Okta",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Okta_MFA",
+    "title": "Enable multi-factor authentication"
+  },
+  {
+    "service": "MDA_Okta",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Okta_PasswordExpires",
+    "title": "Password expiry requirements"
+  },
+  {
+    "service": "MDA_Okta",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Okta_SessionTimeout",
+    "title": "Enable session timeout for web users"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_disableProtocolSecurity",
+    "title": "Remote Site"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableAdminLoginAsAnyUser",
+    "title": "Disable Administrators Can Log In As Any User"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableCacheAndAutocomplete",
+    "title": "Disable Caching and Autocomplete on Login Page via Session settings"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableClickjackNonsetupSFDC",
+    "title": "Enable clickjack protection for non-Setup for Salesforce pages"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableClickjackNonsetupUser",
+    "title": "Enable clickjack protection for customer VisualForce pages with standard headers"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableClickjackNonsetupUserHeaderless",
+    "title": "Enable clickjack protection for customer VisualForce pages with headers disabled"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableClickjackSetup",
+    "title": "Enable clickjack protection for Setup pages"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableContentSniffingProtection",
+    "title": "Enable Content Sniffing protection"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableCSPOnEmail",
+    "title": "Enable Content Security Policy protection for email templates"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableCSRFOnGet",
+    "title": "Enable CSRF protection on GET requests on non-setup pages"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableCSRFOnPost",
+    "title": "Enable CSRF protection on POST requests on non-setup pages"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableMultipleSamlConfigs",
+    "title": "Require identity verification during multi-factor authentication (MFA) registration"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enableSMSIdentity",
+    "title": "Let users verify their identity by text (SMS)"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_enforceIpRangesEveryRequest",
+    "title": "Enforce login IP ranges on every request"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_forceLogoutOnSessionTimeout",
+    "title": "Force logout on session timeout"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_forceRelogin",
+    "title": "Force (admin) relogin after Login-As-User"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_identityConfirmationOnEmailChange",
+    "title": "Require identity verification for change of email address"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_lockSessionsToDomain",
+    "title": "Lock sessions to the domain in which they were first used"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_maxLoginAttempts",
+    "title": "Maximum invalid login attempts"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_minimumPasswordLifetime",
+    "title": "Require a minimum 1 day password lifetime"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_password_complexity",
+    "title": "Password complexity requirement"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_password_expiration",
+    "title": "User passwords expire in 90 days or less"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_password_historyRestriction",
+    "title": "Enforce password history"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_password_lockoutInterval",
+    "title": "Lockout effective period"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_password_minimumPasswordLength",
+    "title": "Minimum password length"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_password_obscureSecretAnswer",
+    "title": "Obscure secret answer for password resets"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_password_questionRestriction",
+    "title": "Password question requirement"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_password_sessionTimeout",
+    "title": "Session timeout"
+  },
+  {
+    "service": "MDA_SF",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SF_requireHttpOnly",
+    "title": "Require HttpOnly attribute"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_authenticateMultifactor",
+    "title": "Enable multi-factor authentication"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_authRequiredJson2",
+    "title": "Enable enforcing JSONv2 requests with basic authorization"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_authRequiredSOAP",
+    "title": "Enable enforcing SOAP requests with basic authorization"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_authRequiredUnl",
+    "title": "Enable unload request authorization"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_cauthRequiredScriptedProcessor",
+    "title": "Enable script request authorization"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_concourseOnmessageEnforceSameOrigin",
+    "title": "Enable URL allow list for cross-origin iframe communication"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_enablePasswordPolicy",
+    "title": "Enable Password Reset Policy Checks"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_highSecurity",
+    "title": "Enable high security plugin"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_httpCacheControl",
+    "title": "Set default cache-control HTTP header value to private"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_loginNoBlankPassword",
+    "title": "Disable password-less authentication"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_roleManagement",
+    "title": "Enable Contextual Security: Role Management plugin"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_scriptCcsiIsPublic",
+    "title": "Set client-callable script includes to private"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_scriptSecureAjaxgliderecord",
+    "title": "Apply access control rule (ACL) validation when server-side records are accessed using GlideAjax APIs within a client script"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_scriptUseSandbox",
+    "title": "Enable client generated scripts sandbox"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_smDefaultMode",
+    "title": "Enable default deny with new ACL rules"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_sncUserLockoutCheck",
+    "title": "Enable managing failed login attempts"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_soapRequireContentTypeXml",
+    "title": "Enable SOAP content type checking"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_soapStrictSecurity",
+    "title": "Enable SOAP request strict security"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_systemSecurity",
+    "title": "Activate security jump start (ACL rules) plugin"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_uiSessionTimeout",
+    "title": "Enable session activity timeout"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_useCsrfToken",
+    "title": "Enable anti-CSRF token"
+  },
+  {
+    "service": "MDA_SNOW",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_SNOW_userCookieMaxLifeSpanInDays",
+    "title": "Enable absolute session timeout"
+  },
+  {
+    "service": "MDA_Workplace",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Workplace_SSO",
+    "title": "Adopt SSO (Single sign on) in Workplace by Meta"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_AdminPassChange",
+    "title": "Block admins to set passwords"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_BlockAccountAssumption",
+    "title": "Block account assumption"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_bypassIPrestrictions",
+    "title": "Block customers to bypass IP restrictions"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_EmailNotificationsforPassChange",
+    "title": "Send a notification on password change for admins, agents, and end users"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_enableapp",
+    "title": "Admins and agents can use the Zendesk Support mobile app"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_IPrestrictions",
+    "title": "Enable IP restrictions"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_MFA",
+    "title": "Enable and adopt two-factor authentication (2FA)"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_sessionexpiry",
+    "title": "Enable session timeout for users"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_SSO",
+    "title": "Enable external Authentication (google or microsoft or SSO)"
+  },
+  {
+    "service": "MDA_Zendesk",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zendesk_ZanAuth",
+    "title": "Enable Zendesk authentication"
+  },
+  {
+    "service": "MDA_Zoom",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zoom_BlockDomains",
+    "title": "Block users in specific domains from joining meetings and webinars"
+  },
+  {
+    "service": "MDA_Zoom",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zoom_MeetingE2eEncryption",
+    "title": "Enforce end to end encryption in all Zoom meetings"
+  },
+  {
+    "service": "MDA_Zoom",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zoom_MFA",
+    "title": "Enable multi-factor authentication"
+  },
+  {
+    "service": "MDA_Zoom",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zoom_PasswordReq",
+    "title": "Enhance password requirements"
+  },
+  {
+    "service": "MDA_Zoom",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zoom_SessionTimeoutClient",
+    "title": "Enable session timeout for client users"
+  },
+  {
+    "service": "MDA_Zoom",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MDA_Zoom_SessionTimeoutWeb",
+    "title": "Enable session timeout for web users"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_allowedsenderscombined",
+    "title": "Ensure that no sender domains are allowed for anti-spam policies"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_antiphishingpolicies",
+    "title": "Ensure that an anti-phishing policy has been created"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_atpprotection",
+    "title": "Turn on Microsoft Defender for Office 365 in SharePoint, OneDrive, and Microsoft Teams"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_autoforwardingmode",
+    "title": "Set automatic email forwarding rules to be system controlled"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_blockmailforward",
+    "title": "Ensure all forms of mail forwarding are blocked and/or disabled"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_bulkspamaction",
+    "title": "Set action to take on bulk spam detection"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_bulkthreshold",
+    "title": "Set the email bulk complaint level (BCL) threshold to be 6 or lower"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_commonattachmentsfilter",
+    "title": "Ensure the Common Attachment Types Filter is enabled"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_connectionfilter",
+    "title": "Don\u0027t add allowed IP addresses in the connection filter policy "
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_enabledomainstoprotect",
+    "title": "Enable impersonated domain protection"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_enablemailboxintelligence",
+    "title": "Ensure that mailbox intelligence is enabled"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_highconfidencephishaction",
+    "title": "Set action to take on high confidence phishing detection"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_highconfidencespamaction",
+    "title": "Set action to take on high confidence spam detection"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_mailboxintelligenceprotection",
+    "title": "Ensure that intelligence for impersonation protection is enabled"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_mailboxintelligenceprotectionaction",
+    "title": "Move messages that are detected as impersonated users by mailbox intelligence"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_phishthresholdlevel",
+    "title": "Set the phishing email level threshold at 2 or higher"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_phisspamacation",
+    "title": "Set action to take on phishing detection"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_quarantineretentionperiod",
+    "title": "Retain spam in quarantine for 30 days"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_recipientexternallimitperhour",
+    "title": "Set maximum number of external recipients that a user can email per hour"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_recipientinternallimitperhour",
+    "title": "Set maximum number of internal recipients that a user can send to within an hour"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_recipientlimitperday",
+    "title": "Set a daily message limit"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_safeattachmentpolicy",
+    "title": "Ensure Safe Attachments policy is enabled"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_safeattachments",
+    "title": "Turn on Safe Attachments in block mode"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_safedocuments",
+    "title": "Turn on Safe Documents for Office Clients"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_safelinksforemail",
+    "title": "Create Safe Links policies for email messages"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_safelinksforOfficeApps",
+    "title": "Ensure Safe Links for Office Applications is Enabled"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_similardomainssafetytips",
+    "title": "Enable the domain impersonation safety tip"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_similaruserssafetytips",
+    "title": "Enable the user impersonation safety tip"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_spam_notifications_only_for_admins",
+    "title": "Ensure Exchange Online Spam Policies are set to notify administrators"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_spamaction",
+    "title": "Set action to take on spam detection"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_targeteddomainprotectionaction",
+    "title": "Quarantine messages that are detected from impersonated domains"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_targeteduserprotectionaction",
+    "title": "Quarantine messages that are detected from impersonated users"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_targetedusersprotection",
+    "title": "Enable impersonated user protection"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_thresholdreachedaction",
+    "title": "Block users who reached the message limit"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_unusualcharacterssafetytips",
+    "title": "Enable the user impersonation unusual characters safety tip "
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_zapmalware",
+    "title": "Create zero-hour auto purge policies for malware"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_zapphish",
+    "title": "Create zero-hour auto purge policies for phishing messages"
+  },
+  {
+    "service": "MDO",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mdo_zapspam",
+    "title": "Create zero-hour auto purge policies for spam messages"
+  },
+  {
+    "service": "MS Teams",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "meeting_anonymousstartmeeting_v1",
+    "title": "Restrict anonymous users from starting Teams meetings"
+  },
+  {
+    "service": "MS Teams",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "meeting_autoadmitusers_v1",
+    "title": "Only invited users should be automatically admitted to Teams meetings"
+  },
+  {
+    "service": "MS Teams",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "meeting_designatedpresenter_v1",
+    "title": "Configure which users are allowed to present in Teams meetings"
+  },
+  {
+    "service": "MS Teams",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "meeting_externalrequestcontrol_v1",
+    "title": "Limit external participants from having control in a Teams meeting"
+  },
+  {
+    "service": "MS Teams",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "meeting_pstnusersbypasslobby_v1",
+    "title": "Restrict dial-in users from bypassing a meeting lobby "
+  },
+  {
+    "service": "MS Teams",
+    "tier": "Core",
+    "userImpact": "low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "meeting_restrictanonymousjoin_v1",
+    "title": "Restrict anonymous users from joining meetings"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "MFARegistrationV2",
+    "title": "Ensure multifactor authentication is enabled for all users"
+  },
+  {
+    "service": "MIP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mip_autosensitivitylabelspolicies",
+    "title": "Ensure that Auto-labeling data classification policies are set up and used"
+  },
+  {
+    "service": "MIP",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mip_DLP_policies_Teams",
+    "title": "Ensure DLP policies are enabled for Microsoft Teams"
+  },
+  {
+    "service": "MIP",
+    "tier": "Core",
+    "userImpact": null,
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mip_management_API_enabled_four_workloads",
+    "title": "Ensure Office 365 Management Activity API is Enabled for some workloads (see description)"
+  },
+  {
+    "service": "MIP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mip_purviewlabelconsent",
+    "title": "Extend M365 sensitivity labeling to assets in Microsoft Purview data map"
+  },
+  {
+    "service": "MIP",
+    "tier": "Core",
+    "userImpact": null,
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mip_search_auditlog",
+    "title": "Ensure Microsoft 365 audit log search is Enabled"
+  },
+  {
+    "service": "MIP",
+    "tier": "Core",
+    "userImpact": "High",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "mip_sensitivitylabelspolicies",
+    "title": "Publish M365 sensitivity label data classification policies"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "OneAdmin",
+    "title": "Designate more than one global admin"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Core",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "PasswordHashSync",
+    "title": "Ensure that password hash sync is enabled for hybrid deployments"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Defense In Depth",
+    "userImpact": "Moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "PWAgePolicyNew",
+    "title": "Ensure the \u0027Password expiration policy\u0027 is set to \u0027Set passwords to never expire (recommended)\u0027"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Defense In Depth",
+    "userImpact": "Low",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "RoleOverlap",
+    "title": "Use least privileged administrative roles"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Defense In Depth",
+    "userImpact": "Moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "SelfServicePasswordReset",
+    "title": "Ensure \u0027Self service password reset enabled\u0027 is set to \u0027All\u0027"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Advanced",
+    "userImpact": "Moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "SigninRiskPolicy",
+    "title": "Enable Microsoft Entra ID Identity Protection sign-in risk policies"
+  },
+  {
+    "service": "SPO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "spo_block_onedrive_sync_unmanaged_devices",
+    "title": "Block OneDrive for Business sync from unmanaged devices"
+  },
+  {
+    "service": "SPO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "spo_external_sharing_managed",
+    "title": "Ensure SharePoint external sharing is managed through domain whitelist/blacklists"
+  },
+  {
+    "service": "SPO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "spo_external_users_sharing",
+    "title": "Ensure that SharePoint guest users cannot share items they don\u0027t own"
+  },
+  {
+    "service": "SPO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "spo_idle_session_timeout",
+    "title": "Sign out inactive users in SharePoint Online"
+  },
+  {
+    "service": "SPO",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "spo_legacy_auth",
+    "title": "Ensure modern authentication for SharePoint applications is required"
+  },
+  {
+    "service": "SWAY",
+    "tier": "Core",
+    "userImpact": "Unknown",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "sway_block_sharing_with_outside_users",
+    "title": "Ensure that Sways cannot be shared with people outside of your organization"
+  },
+  {
+    "service": "AzureAD",
+    "tier": "Advanced",
+    "userImpact": "Moderate",
+    "vendorInformation": {
+      "provider": "SecureScore",
+      "providerVersion": null,
+      "subProvider": null,
+      "vendor": "Microsoft"
+    },
+    "id": "UserRiskPolicy",
+    "title": "Enable Microsoft Entra ID Identity Protection user risk policies"
+  }
+]

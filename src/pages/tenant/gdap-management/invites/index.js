@@ -1,17 +1,38 @@
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import tabOptions from "../tabOptions";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Link from "next/link";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 const pageTitle = "GDAP Invites";
-const simpleColumns = ["Timestamp", "RowKey", "InviteUrl", "OnboardingUrl", "RoleMappings"];
+const simpleColumns = ["Timestamp", "RowKey", "Reference", "Technician", "InviteUrl", "OnboardingUrl", "RoleMappings"];
 const apiUrl = "/api/ListGDAPInvite";
 
 const actions = [
+  {
+    label: "Update Internal Reference",
+    url: "/api/ExecGDAPInvite",
+    type: "POST",
+    icon: <PencilIcon />,
+    confirmText: "Are you sure you want to update the internal reference for this invite?",
+    data: {
+      Action: "Update",
+      InviteId: "RowKey",
+    },
+    fields: [
+      {
+        label: "Internal Reference",
+        name: "Reference",
+        type: "textField",
+        required: false,
+        helperText: "Enter an internal reference/note for this GDAP invite (e.g., client name, ticket number).",
+      },
+    ],
+    relatedQueryKeys: ["ListGDAPInvite"],
+  },
   {
     label: "Delete Invite",
     url: "/api/ExecGDAPInvite",
@@ -23,6 +44,7 @@ const actions = [
       Action: "Delete",
       InviteId: "RowKey",
     },
+    relatedQueryKeys: ["ListGDAPInvite"],
   },
 ];
 

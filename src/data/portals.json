@@ -79,5 +79,23 @@
     "target": "_blank",
     "external": true,
     "icon": "ShieldMoon"
+  },
+  {
+    "label": "Power Platform Portal",
+    "name": "Power_Platform_Portal",
+    "url": "https://admin.powerplatform.microsoft.com/account/login/customerId",
+    "variable": "customerId",
+    "target": "_blank",
+    "external": true,
+    "icon": "PrecisionManufacturing"
+  },
+  {
+    "label": "Power BI Portal",
+    "name": "Power_BI_Portal",
+    "url": "https://app.powerbi.com/admin-portal?ctid=customerId",
+    "variable": "customerId",
+    "target": "_blank",
+    "external": true,
+    "icon": "BarChart"
   }
 ]

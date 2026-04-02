@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import {
   Button,
   Accordion,
@@ -17,11 +17,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { EyeIcon } from "@heroicons/react/24/outline";
+import { useSettings } from "../../../hooks/use-settings.js";
 
 const simpleColumns = [
   "DateTime",
   "Tenant",
-  "TenantID",
   "User",
   "Message",
   "API",
@@ -31,8 +32,21 @@ const simpleColumns = [
   "LogData",
 ];
 
+const offcanvas = {
+  extendedInfoFields: ["DateTime", "API", "Severity", "Message", "User", "AppId", "IP", "LogData"],
+};
+
 const apiUrl = "/api/Listlogs";
 const pageTitle = "Logbook Results";
+
+const actions = [
+  {
+    label: "View Log Entry",
+    link: "/cipp/logs/logentry?logentry=[RowKey]&dateFilter=[DateFilter]",
+    icon: <EyeIcon />,
+    color: "primary",
+  },
+];
 
 const Page = () => {
   const formControl = useForm({
@@ -50,6 +64,8 @@ const Page = () => {
   const [endDate, setEndDate] = useState(null); // State for end date filter
   const [username, setUsername] = useState(null); // State for username filter
   const [severity, setSeverity] = useState(null); // State for severity filter
+  const settings = useSettings(); // Hook to access settings
+  const currentTenant = settings?.currentTenant;
 
   // Watch date fields to show warning for large date ranges
   const watchStartDate = formControl.watch("startDate");
@@ -91,14 +107,14 @@ const Page = () => {
     setStartDate(
       data.startDate
         ? new Date(data.startDate * 1000).toISOString().split("T")[0].replace(/-/g, "")
-        : null
+        : null,
     );
 
     // Format end date if available
     setEndDate(
       data.endDate
         ? new Date(data.endDate * 1000).toISOString().split("T")[0].replace(/-/g, "")
-        : null
+        : null,
     );
 
     // Set username filter if available
@@ -108,7 +124,7 @@ const Page = () => {
     setSeverity(
       data.severity && data.severity.length > 0
         ? data.severity.map((item) => item.value).join(",")
-        : null
+        : null,
     );
 
     // Close the accordion after applying filters
@@ -148,13 +164,13 @@ const Page = () => {
                       <>
                         {startDate
                           ? new Date(
-                              startDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00"
+                              startDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00",
                             ).toLocaleDateString()
                           : new Date().toLocaleDateString()}
                         {startDate && endDate ? " - " : ""}
                         {endDate
                           ? new Date(
-                              endDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00"
+                              endDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00",
                             ).toLocaleDateString()
                           : ""}
                       </>
@@ -180,7 +196,8 @@ const Page = () => {
                   <Alert severity="info">
                     Use the filters below to narrow down your logbook results. You can filter by
                     date range, username, and severity levels. By default, the logbook shows the
-                    current day based on UTC time. Your local time is {new Date().getTimezoneOffset() / -60} hours offset from UTC.
+                    current day based on UTC time. Your local time is{" "}
+                    {new Date().getTimezoneOffset() / -60} hours offset from UTC.
                   </Alert>
                 </Grid>
                 <Grid size={{ sm: 7, xs: 12 }}>
@@ -294,32 +311,21 @@ const Page = () => {
       title={pageTitle}
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
-      queryKey={`Listlogs-${startDate}-${endDate}-${username}-${severity}-${filterEnabled}`}
-      tenantInTitle={false}
+      queryKey={`Listlogs-${startDate}-${endDate}-${username}-${severity}-${filterEnabled}-${currentTenant}`}
+      tenantInTitle={true}
       apiData={{
         StartDate: startDate, // Pass start date filter from state
         EndDate: endDate, // Pass end date filter from state
         User: username, // Pass username filter from state
         Severity: severity, // Pass severity filter from state
         Filter: filterEnabled, // Pass filter toggle state
+        Tenant: currentTenant, // Pass current tenant from settings
       }}
+      actions={actions}
+      offCanvas={offcanvas}
     />
   );
 };
-
-/* Comment to Developer:
- - The filter is inside an expandable Accordion. By default, the filter is collapsed.
- - The "Apply Filters" button sets the form data for date, username, and severity filters.
- - The "Clear Filters" button resets all filters and disables filtering.
- - Filters are automatically enabled when any filter parameter is set.
- - Form state is managed using react-hook-form, and the filter states are applied to the table.
- - Both StartDate and EndDate are passed to the API in 'YYYYMMDD' format.
- - The User parameter is passed directly as a string for username filtering.
- - The Severity parameter is passed as a comma-separated list of severity levels.
- - The Filter toggle is passed as a boolean and is automatically enabled when any filter is set.
- - A warning alert is displayed when the selected date range exceeds 10 days instead of enforcing
-   a strict limit. This helps users understand potential issues with large data sets.
-*/
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 

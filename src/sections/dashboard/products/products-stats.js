@@ -2,7 +2,8 @@ import CheckCircleIcon from "@heroicons/react/24/outline/CheckCircleIcon";
 import CurrencyDollarIcon from "@heroicons/react/24/outline/CurrencyDollarIcon";
 import ShoppingCartIcon from "@heroicons/react/24/outline/ShoppingCartIcon";
 import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
-import { Card, Stack, Typography, Unstable_Grid2 as Grid } from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 
 const stats = [
   {

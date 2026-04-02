@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Completed Tasks Summary (Last 24h)",
+    "id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+    "query": "customEvents\n| where timestamp between (ago(1d) .. now())\n| where name == \"CIPP.TaskCompleted\"\n| extend TaskName   = tostring(customDimensions.TaskName)\n       , Command    = tostring(customDimensions.Command)\n       , Tenant     = tostring(customDimensions.Tenant)\n       , DurationMs = todouble(customMeasurements.DurationMs)\n| summarize\n    Count          = count(),\n    TotalDurationMs = sum(DurationMs),\n    AvgDurationMs   = avg(DurationMs),\n    MaxDurationMs   = max(DurationMs)\n  by TaskName, Command, Tenant\n| extend name = \"CIPP.TaskCompleted\"\n| order by TotalDurationMs desc",
+    "isBuiltin": true,
+    "columns": [
+      "TaskName",
+      "Command",
+      "Tenant",
+      "Count",
+      "TotalDurationMs",
+      "AvgDurationMs",
+      "MaxDurationMs"
+    ]
+  },
+  {
+    "name": "Completed Standards Summary (Last 24h)",
+    "id": "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e",
+    "query": "customEvents\n| where timestamp between (ago(1d) .. now())\n| where name == \"CIPP.StandardCompleted\"\n| extend TaskName   = tostring(customDimensions.TaskName)\n       , Command    = tostring(customDimensions.Command)\n       , Tenant     = tostring(customDimensions.Tenant)\n       , DurationMs = todouble(customMeasurements.DurationMs)\n| summarize\n    Count          = count(),\n    TotalDurationMs = sum(DurationMs),\n    AvgDurationMs   = avg(DurationMs),\n    MaxDurationMs   = max(DurationMs)\n  by TaskName, Command, Tenant\n| extend name = \"CIPP.StandardCompleted\"\n| order by TotalDurationMs desc",
+    "isBuiltin": true,
+    "columns": [
+      "TaskName",
+      "Command",
+      "Tenant",
+      "Count",
+      "TotalDurationMs",
+      "AvgDurationMs",
+      "MaxDurationMs"
+    ]
+  },
+  {
+    "name": "Console Logs (Last 24h)",
+    "id": "c3d4e5f6-a7b8-4c5d-0e1f-2a3b4c5d6e7f",
+    "query": "customEvents\n| where timestamp > ago(1d)\n| where name == \"CIPP.ConsoleLog\"\n| extend Message = tostring(customDimensions['Message'])\n       , Level   = tostring(customDimensions['Level'])\n       , InvocationId = tostring(customDimensions['InvocationId'])\n| project timestamp, name, Level, Message, InvocationId\n| order by timestamp desc",
+    "isBuiltin": true,
+    "columns": [
+      "timestamp",
+      "Level",
+      "Message",
+      "InvocationId"
+    ]
+  },
+  {
+    "name": "Console Errors and Warnings (Last 24h)",
+    "id": "d4e5f6a7-b8c9-4d5e-1f2a-3b4c5d6e7f8a",
+    "query": "customEvents\n| where timestamp > ago(1d)\n| where name == \"CIPP.ConsoleLog\"\n| where tostring(customDimensions['Level']) in ('Error', 'Warning')\n| extend Message = tostring(customDimensions['Message'])\n       , Level   = tostring(customDimensions['Level'])\n       , InvocationId = tostring(customDimensions['InvocationId'])\n| project timestamp, name, Level, Message, InvocationId\n| order by timestamp desc",
+    "isBuiltin": true,
+    "columns": [
+      "timestamp",
+      "Level",
+      "Message",
+      "InvocationId"
+    ]
+  }
+]

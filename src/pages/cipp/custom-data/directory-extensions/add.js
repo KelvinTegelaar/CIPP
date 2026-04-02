@@ -1,6 +1,6 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useFormState } from "react-hook-form";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { ApiPostCall } from "../../../../api/ApiCall";
 import { useRouter } from "next/router";
 import {
   Box,
@@ -12,9 +12,9 @@ import {
   CardActions,
 } from "@mui/material";
 
-import CippPageCard from "/src/components/CippCards/CippPageCard";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippPageCard from "../../../../components/CippCards/CippPageCard";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 
 const availableTargetObjects = [
   { value: "User", label: "User" },
@@ -62,6 +62,7 @@ const Page = () => {
       type: "textField",
       required: true,
       placeholder: "Enter a unique name for the directory extension",
+      disableVariables: true,
     },
     {
       name: "dataType",

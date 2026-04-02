@@ -1,16 +1,6 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  ListItem,
-  ListItemText,
-  SvgIcon,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, ListItem, ListItemText, Typography } from "@mui/material";
 import { useState } from "react";
-import CopyToClipboard from "react-copy-to-clipboard";
-import { CopyAll } from "@mui/icons-material";
+import { CippCopyToClipBoard } from "./CippComponents/CippCopyToClipboard";
 
 export const PropertyListItem = (props) => {
   const {
@@ -57,17 +47,7 @@ export const PropertyListItem = (props) => {
                     )}
                   </>
                 )}
-                {copyItems && (
-                  <CopyToClipboard text={value}>
-                    <Tooltip title="Copy to clipboard">
-                      <IconButton size="small">
-                        <SvgIcon fontSize="5px">
-                          <CopyAll fontSize="small" />
-                        </SvgIcon>
-                      </IconButton>
-                    </Tooltip>
-                  </CopyToClipboard>
-                )}
+                {copyItems && <CippCopyToClipBoard text={value} type="button" />}
               </Typography>
             )}
           </Box>
