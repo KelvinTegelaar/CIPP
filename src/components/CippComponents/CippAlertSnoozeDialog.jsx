@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -11,16 +11,16 @@ import {
   Typography,
   Box,
   Alert,
-} from "@mui/material";
-import { ApiPostCall } from "../../api/ApiCall";
-import { CippApiResults } from "./CippApiResults";
+} from '@mui/material'
+import { ApiPostCall } from '../../api/ApiCall'
+import { CippApiResults } from './CippApiResults'
 
 const SNOOZE_OPTIONS = [
-  { value: "7", label: "Snooze for 7 days" },
-  { value: "14", label: "Snooze for 14 days" },
-  { value: "30", label: "Snooze for 30 days" },
-  { value: "-1", label: "Snooze forever" },
-];
+  { value: '7', label: 'Snooze for 7 days' },
+  { value: '14', label: 'Snooze for 14 days' },
+  { value: '30', label: 'Snooze for 30 days' },
+  { value: '-1', label: 'Snooze forever' },
+]
 
 export const CippAlertSnoozeDialog = ({
   open,
@@ -30,39 +30,39 @@ export const CippAlertSnoozeDialog = ({
   tenantFilter,
   relatedQueryKeys,
 }) => {
-  const [duration, setDuration] = useState("7");
-  const [submitted, setSubmitted] = useState(false);
+  const [duration, setDuration] = useState('7')
+  const [submitted, setSubmitted] = useState(false)
 
   const snoozeRequest = ApiPostCall({
-    relatedQueryKeys: relatedQueryKeys ?? ["ListSnoozedAlerts"],
-  });
+    relatedQueryKeys: relatedQueryKeys ?? ['ListSnoozedAlerts'],
+  })
 
   const handleSnooze = () => {
-    setSubmitted(true);
+    setSubmitted(true)
     snoozeRequest.mutate({
-      url: "/api/ExecSnoozeAlert",
+      url: '/api/ExecSnoozeAlert',
       data: {
         CmdletName: cmdletName,
         TenantFilter: tenantFilter,
         AlertItem: alertItem,
         Duration: parseInt(duration, 10),
       },
-    });
-  };
+    })
+  }
 
   const handleClose = () => {
-    setSubmitted(false);
-    snoozeRequest.reset();
-    setDuration("7");
-    onClose();
-  };
+    setSubmitted(false)
+    snoozeRequest.reset()
+    setDuration('7')
+    onClose()
+  }
 
   // Build a preview of the alert item
   const preview =
     alertItem?.UserPrincipalName ||
     alertItem?.Message ||
     alertItem?.DisplayName ||
-    (alertItem ? JSON.stringify(alertItem).substring(0, 120) : "");
+    (alertItem ? JSON.stringify(alertItem).substring(0, 120) : '')
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -70,7 +70,7 @@ export const CippAlertSnoozeDialog = ({
       <DialogContent>
         {preview && (
           <Alert severity="info" sx={{ mb: 2 }}>
-            <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
+            <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
               {preview}
             </Typography>
           </Alert>
@@ -97,7 +97,7 @@ export const CippAlertSnoozeDialog = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>{submitted ? "Close" : "Cancel"}</Button>
+        <Button onClick={handleClose}>{submitted ? 'Close' : 'Cancel'}</Button>
         {!submitted && (
           <Button variant="contained" onClick={handleSnooze}>
             Snooze
@@ -105,5 +105,5 @@ export const CippAlertSnoozeDialog = ({
         )}
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
