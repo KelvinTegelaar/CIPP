@@ -22,6 +22,20 @@
       "metadata": {
         "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token"
       }
+    },
+    "enableNetworkIsolation": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Deploy VNet with private endpoints for Key Vault and Storage. Adds ~$31 USD/month. Function App stays on Consumption plan and accesses resources via Azure Services bypass."
+      }
+    },
+    "enableVNetIntegration": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Upgrade to Elastic Premium EP1 plan with full VNet integration. Implies enableNetworkIsolation. Adds ~$197 USD/month (EP1 ~$166 + PEs ~$31). Only needed if Function App outbound traffic must stay on VNet."
+      }
     }
   },
   "variables": {
@@ -30,7 +44,14 @@
     "funcStorageName": "[tolower(concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),16)), 'stg', variables('suffix')))]",
     "serverFarmName": "[concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),14)), '-srv-', variables('suffix'))]",
     "uniqueResourceNameBase": "[toLower(concat(parameters('baseName'), variables('suffix')))]",
-    "swaName": "[toLower(concat(parameters('baseName'), '-swa-', variables('suffix')))]"
+    "swaName": "[toLower(concat(parameters('baseName'), '-swa-', variables('suffix')))]",
+    "deployNetworkIsolation": "[or(parameters('enableNetworkIsolation'), parameters('enableVNetIntegration'))]",
+    "vnetName": "[concat('vnet-', variables('funcAppName'))]",
+    "peSubnetName": "snet-private-endpoints",
+    "funcSubnetName": "snet-functions",
+    "vnetAddressPrefix": "10.0.0.0/16",
+    "peSubnetPrefix": "10.0.1.0/24",
+    "funcSubnetPrefix": "10.0.2.0/24"
   },
   "resources": [
     {
@@ -122,17 +143,21 @@
       "kind": "functionapp",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
       ],
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
         "httpsOnly": true,
+        "virtualNetworkSubnetId": "[if(parameters('enableVNetIntegration'), resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('funcSubnetName')), json('null'))]",
         "siteConfig": {
           "Use32BitWorkerProcess": false,
           "powerShellVersion": "7.4",
           "minTlsVersion": "1.2",
           "ftpsState": "Disabled",
           "http20Enabled": true,
+          "vnetName": "[if(parameters('enableVNetIntegration'), variables('vnetName'), json('null'))]",
+          "vnetRouteAllEnabled": "[if(parameters('enableVNetIntegration'), true, json('null'))]",
           "appSettings": [
             {
               "name": "AzureWebJobsStorage__accountName",
@@ -201,14 +226,15 @@
       "name": "[variables('serverFarmName')]",
       "location": "[resourceGroup().location]",
       "sku": {
-        "name": "Y1",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y",
-        "capacity": 0
+        "name": "[if(parameters('enableVNetIntegration'), 'EP1', 'Y1')]",
+        "tier": "[if(parameters('enableVNetIntegration'), 'ElasticPremium', 'Dynamic')]",
+        "size": "[if(parameters('enableVNetIntegration'), 'EP1', 'Y1')]",
+        "family": "[if(parameters('enableVNetIntegration'), 'EP', 'Y')]",
+        "capacity": "[if(parameters('enableVNetIntegration'), 1, 0)]"
       },
       "properties": {
-        "computeMode": "Dynamic"
+        "computeMode": "[if(parameters('enableVNetIntegration'), 'Dedicated', 'Dynamic')]",
+        "maximumElasticWorkerCount": "[if(parameters('enableVNetIntegration'), 20, 1)]"
       }
     },
     {
@@ -331,6 +357,327 @@
         "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
         "principalType": "ServicePrincipal",
         "scope": "[resourceGroup().id]"
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2023-04-01",
+      "name": "[variables('vnetName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('vnetAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('peSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('peSubnetPrefix')]",
+              "privateEndpointNetworkPolicies": "Disabled"
+            }
+          },
+          {
+            "name": "[variables('funcSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('funcSubnetPrefix')]",
+              "delegations": [
+                {
+                  "name": "Microsoft.Web.serverFarms",
+                  "properties": {
+                    "serviceName": "Microsoft.Web/serverFarms"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-kv')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('peSubnetName'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[concat('pec-', variables('funcAppName'), '-kv')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]",
+              "groupIds": [
+                "vault"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2020-06-01",
+      "name": "privatelink.vaultcore.azure.net",
+      "location": "global"
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('privatelink.vaultcore.azure.net/', variables('vnetName'), '-link')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.vaultcore.azure.net')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+        },
+        "registrationEnabled": false
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-kv/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', concat('pe-', variables('funcAppName'), '-kv'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.vaultcore.azure.net')]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "keyvault",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.vaultcore.azure.net')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-blob')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('peSubnetName'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[concat('pec-', variables('funcAppName'), '-blob')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]",
+              "groupIds": [
+                "blob"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2020-06-01",
+      "name": "privatelink.blob.core.windows.net",
+      "location": "global"
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('privatelink.blob.core.windows.net/', variables('vnetName'), '-link')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.blob.core.windows.net')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+        },
+        "registrationEnabled": false
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-blob/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', concat('pe-', variables('funcAppName'), '-blob'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.blob.core.windows.net')]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "blob",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.blob.core.windows.net')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-table')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('peSubnetName'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[concat('pec-', variables('funcAppName'), '-table')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]",
+              "groupIds": [
+                "table"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2020-06-01",
+      "name": "privatelink.table.core.windows.net",
+      "location": "global"
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('privatelink.table.core.windows.net/', variables('vnetName'), '-link')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.table.core.windows.net')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+        },
+        "registrationEnabled": false
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-table/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', concat('pe-', variables('funcAppName'), '-table'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.table.core.windows.net')]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "table",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.table.core.windows.net')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-queue')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('peSubnetName'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[concat('pec-', variables('funcAppName'), '-queue')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]",
+              "groupIds": [
+                "queue"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2020-06-01",
+      "name": "privatelink.queue.core.windows.net",
+      "location": "global"
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('privatelink.queue.core.windows.net/', variables('vnetName'), '-link')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.queue.core.windows.net')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+        },
+        "registrationEnabled": false
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-queue/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', concat('pe-', variables('funcAppName'), '-queue'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.queue.core.windows.net')]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "queue",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.queue.core.windows.net')]"
+            }
+          }
+        ]
       }
     }
   ],
