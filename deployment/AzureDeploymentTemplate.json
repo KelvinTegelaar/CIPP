@@ -80,6 +80,9 @@
           "virtualNetworkRules": []
         }
       },
+      "metadata": {
+        "comments": "networkAcls: Deployer IP must be added to ipRules when deploying from outside Azure (e.g., local machine). Use Cloud Shell or Azure DevOps for firewall-safe deployments."
+      },
       "resources": [
         {
           "type": "secrets",
@@ -143,21 +146,20 @@
       "kind": "functionapp",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
       ],
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
         "httpsOnly": true,
         "virtualNetworkSubnetId": "[if(parameters('enableVNetIntegration'), resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('funcSubnetName')), json('null'))]",
+        "keyVaultReferenceIdentity": "SystemAssigned",
         "siteConfig": {
           "Use32BitWorkerProcess": false,
           "powerShellVersion": "7.4",
           "minTlsVersion": "1.2",
           "ftpsState": "Disabled",
           "http20Enabled": true,
-          "vnetName": "[if(parameters('enableVNetIntegration'), variables('vnetName'), json('null'))]",
-          "vnetRouteAllEnabled": "[if(parameters('enableVNetIntegration'), true, json('null'))]",
+          "vnetRouteAllEnabled": "[if(parameters('enableVNetIntegration'), true(), json('null'))]",
           "appSettings": [
             {
               "name": "AzureWebJobsStorage__accountName",
@@ -165,7 +167,7 @@
             },
             {
               "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'), ';AccountKey=', listKeys(variables('funcStorageName'),'2022-09-01').keys[0].value)]"
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')), '2022-09-01').keys[0].value)]"
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
@@ -208,6 +210,9 @@
         "name": "Standard_LRS"
       },
       "kind": "StorageV2",
+      "metadata": {
+        "comments": "networkAcls: Deployer IP must be added to ipRules when deploying from outside Azure (e.g., local machine). Use Cloud Shell or Azure DevOps for firewall-safe deployments."
+      },
       "properties": {
         "supportsHttpsTrafficOnly": true,
         "minimumTlsVersion": "TLS1_2",
@@ -280,83 +285,83 @@
       ],
       "properties": {
         "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')), '2022-09-01', 'full').identity.principalId]",
         "scope": "[resourceGroup().id]"
       }
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(resourceGroup().id, variables('funcAppName'), 'KeyVaultSecretsUser')]",
+      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase')), variables('funcAppName'), 'KeyVaultSecretsUser')]",
+      "scope": "[concat('Microsoft.KeyVault/vaults/', variables('uniqueResourceNameBase'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]",
         "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
       ],
       "properties": {
         "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/4633458b-17de-408a-b874-0445c86b69e6')]",
-        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "scope": "[resourceGroup().id]"
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')), '2022-09-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
       }
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(resourceGroup().id, variables('funcAppName'), 'StorageBlobDataOwner')]",
+      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')), variables('funcAppName'), 'StorageBlobDataOwner')]",
+      "scope": "[concat('Microsoft.Storage/storageAccounts/', variables('funcStorageName'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
       ],
       "properties": {
         "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "scope": "[resourceGroup().id]"
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')), '2022-09-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
       }
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(resourceGroup().id, variables('funcAppName'), 'StorageQueueDataContributor')]",
+      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')), variables('funcAppName'), 'StorageQueueDataContributor')]",
+      "scope": "[concat('Microsoft.Storage/storageAccounts/', variables('funcStorageName'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
       ],
       "properties": {
         "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "scope": "[resourceGroup().id]"
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')), '2022-09-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
       }
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(resourceGroup().id, variables('funcAppName'), 'StorageTableDataContributor')]",
+      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')), variables('funcAppName'), 'StorageTableDataContributor')]",
+      "scope": "[concat('Microsoft.Storage/storageAccounts/', variables('funcStorageName'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
       ],
       "properties": {
         "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "scope": "[resourceGroup().id]"
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')), '2022-09-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
       }
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(resourceGroup().id, variables('funcAppName'), 'StorageAccountContributor')]",
+      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')), variables('funcAppName'), 'StorageAccountContributor')]",
+      "scope": "[concat('Microsoft.Storage/storageAccounts/', variables('funcStorageName'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
       ],
       "properties": {
         "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "scope": "[resourceGroup().id]"
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')), '2022-09-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
       }
     },
     {
@@ -675,6 +680,77 @@
             "name": "queue",
             "properties": {
               "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.queue.core.windows.net')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-file')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('peSubnetName'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[concat('pec-', variables('funcAppName'), '-file')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName'))]",
+              "groupIds": [
+                "file"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2020-06-01",
+      "name": "privatelink.file.core.windows.net",
+      "location": "global"
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2020-06-01",
+      "name": "[concat('privatelink.file.core.windows.net/', variables('vnetName'), '-link')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.file.core.windows.net')]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+        },
+        "registrationEnabled": false
+      }
+    },
+    {
+      "condition": "[variables('deployNetworkIsolation')]",
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2023-04-01",
+      "name": "[concat('pe-', variables('funcAppName'), '-file/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', concat('pe-', variables('funcAppName'), '-file'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.file.core.windows.net')]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "file",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', 'privatelink.file.core.windows.net')]"
             }
           }
         ]

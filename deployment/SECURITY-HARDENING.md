@@ -4,6 +4,12 @@
 
 CIPP supports three security tiers for Azure infrastructure. The base tier is applied automatically on new deployments. Existing deployments can use the migration script.
 
+> **Note:** Costs shown are approximate USD. Prices vary by Azure region (e.g., Australia East is ~10-15% higher than US East).
+
+> **Warning:** Enabling purge protection is irreversible. Once enabled, it cannot be disabled.
+
+> **Deployment note:** When Key Vault and Storage firewalls are set to Deny (default), ARM deployments must be run from within Azure (e.g., Cloud Shell, Azure DevOps pipeline) or you must temporarily add your IP to the firewall rules.
+
 ## Security Tiers
 
 ### Base (always applied, ~$0-5/month)
@@ -25,8 +31,8 @@ Adds private networking for Key Vault and Storage:
 | Resource | Cost/month |
 |----------|-----------|
 | VNet (10.0.0.0/16) | Free |
-| 4x Private Endpoints (KV, blob, table, queue) | ~$29.20 |
-| 4x Private DNS Zones | ~$2.00 |
+| 5x Private Endpoints (KV, blob, table, queue, file) | ~$36.50 |
+| 5x Private DNS Zones | ~$2.50 |
 
 The Function App stays on the Consumption plan and accesses resources via Azure Services bypass (traffic stays on the Azure backbone — it does not traverse the public internet).
 
@@ -109,6 +115,10 @@ The Function App's system-assigned managed identity is granted the necessary RBA
 ### Key Vault Auth Migration
 
 Key Vault access policies have been replaced with RBAC authorization. The Function App's managed identity is assigned the Key Vault Secrets User role.
+
+### Secret Rotation
+
+Operators should configure their own secret rotation policy using Azure Key Vault's built-in rotation features or their preferred automation.
 
 ### Rollback
 

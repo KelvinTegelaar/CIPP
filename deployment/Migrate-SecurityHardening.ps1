@@ -43,6 +43,9 @@ param(
     [Parameter(Mandatory)]
     [string]$FunctionAppName,
 
+    [string]$KeyVaultName,
+    [string]$StorageAccountName,
+
     [switch]$EnableNetworkIsolation,
     [switch]$EnableVNetIntegration,
     [switch]$SkipValidation
@@ -52,6 +55,14 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 if ($EnableVNetIntegration) { $EnableNetworkIsolation = $true }
+
+# --- Pre-flight Check ---
+Write-Host "`n=== Pre-flight Check ===" -ForegroundColor Cyan
+$account = az account show | ConvertFrom-Json
+if (-not $account) { throw "Not logged in to Azure CLI. Run 'az login' first." }
+Write-Host "Logged in as:   $($account.user.name)"
+Write-Host "Subscription:   $($account.name) ($($account.id))"
+Write-Host "Tenant:         $($account.tenantId)`n"
 
 # --- Discovery ---
 Write-Host "`n=== CIPP Security Migration ===" -ForegroundColor Cyan
@@ -65,11 +76,19 @@ if (-not $funcApp) { throw "Function App '$FunctionAppName' not found in '$Resou
 $principalId = $funcApp.identity.principalId
 if (-not $principalId) { throw "Function App does not have a managed identity enabled" }
 
-$kvName = (az keyvault list --resource-group $ResourceGroupName --query "[0].name" -o tsv)
-if (-not $kvName) { throw "No Key Vault found in '$ResourceGroupName'" }
+if ($KeyVaultName) {
+    $kvName = $KeyVaultName
+} else {
+    $kvName = (az keyvault list --resource-group $ResourceGroupName --query "[0].name" -o tsv)
+    if (-not $kvName) { throw "No Key Vault found in '$ResourceGroupName'. Use -KeyVaultName to specify explicitly." }
+}
 
-$storageName = (az storage account list --resource-group $ResourceGroupName --query "[0].name" -o tsv)
-if (-not $storageName) { throw "No Storage Account found in '$ResourceGroupName'" }
+if ($StorageAccountName) {
+    $storageName = $StorageAccountName
+} else {
+    $storageName = (az storage account list --resource-group $ResourceGroupName --query "[0].name" -o tsv)
+    if (-not $storageName) { throw "No Storage Account found in '$ResourceGroupName'. Use -StorageAccountName to specify explicitly." }
+}
 
 Write-Host "Key Vault:      $kvName"
 Write-Host "Storage:        $storageName"
@@ -213,22 +232,23 @@ if ($funcApp.siteConfig.minTlsVersion -ne '1.2') {
 
 # 5. Migrate storage auth to managed identity
 if ($hasOldStorage -and -not $hasMiStorage) {
+    $oldConnStr = ($appSettings | Where-Object { $_.name -eq 'AzureWebJobsStorage' }).value
+    Write-Host "  Saving old connection string for rollback:" -ForegroundColor Yellow
+    Write-Host "  $oldConnStr"
+
     if ($PSCmdlet.ShouldProcess($FunctionAppName, "Migrate AzureWebJobsStorage to managed identity")) {
         Write-Host "  Migrating storage auth to managed identity..."
         az functionapp config appsettings set --resource-group $ResourceGroupName --name $FunctionAppName --settings "AzureWebJobsStorage__accountName=$storageName" -o none
-        az functionapp config appsettings delete --resource-group $ResourceGroupName --name $FunctionAppName --setting-names AzureWebJobsStorage -o none
-    }
-}
 
-# 6. Set secret expiry dates (90 days)
-$expiry = (Get-Date).AddDays(90).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
-$secrets = @('applicationid', 'applicationsecret', 'refreshtoken', 'tenantid')
-foreach ($secret in $secrets) {
-    $existing = az keyvault secret show --vault-name $kvName --name $secret --query "attributes.expires" -o tsv 2>$null
-    if (-not $existing) {
-        if ($PSCmdlet.ShouldProcess("$kvName/$secret", "Set 90-day expiry")) {
-            Write-Host "  Setting expiry on secret: $secret"
-            az keyvault secret set-attributes --vault-name $kvName --name $secret --expires $expiry -o none 2>$null
+        # Health check before deleting old setting
+        Write-Host "  Waiting 30 seconds for managed identity auth to propagate..."
+        Start-Sleep -Seconds 30
+        $healthFuncCount = (az functionapp function list --resource-group $ResourceGroupName --name $FunctionAppName | ConvertFrom-Json).Count
+        if ($healthFuncCount -eq 0) {
+            Write-Warning "No functions loaded after switching to managed identity auth. Keeping AzureWebJobsStorage as fallback."
+        } else {
+            Write-Host "  Health check passed ($healthFuncCount functions loaded). Removing old AzureWebJobsStorage setting..."
+            az functionapp config appsettings delete --resource-group $ResourceGroupName --name $FunctionAppName --setting-names AzureWebJobsStorage -o none
         }
     }
 }
@@ -236,7 +256,7 @@ foreach ($secret in $secrets) {
 # --- Optional: Network Isolation ---
 if ($EnableNetworkIsolation) {
     Write-Host "`n=== Deploying Network Isolation ===" -ForegroundColor Green
-    Write-Host "  This will add ~`$31 USD/month (4 private endpoints + 4 DNS zones)"
+    Write-Host "  This will add ~`$39 USD/month (5 private endpoints + 5 DNS zones)"
 
     $vnetName = "vnet-$FunctionAppName"
 
@@ -259,6 +279,7 @@ if ($EnableNetworkIsolation) {
             @{ Name = "pe-$FunctionAppName-blob"; ResourceId = $storageId; GroupId = 'blob'; DnsZone = 'privatelink.blob.core.windows.net'; ZoneName = 'blob' }
             @{ Name = "pe-$FunctionAppName-table"; ResourceId = $storageId; GroupId = 'table'; DnsZone = 'privatelink.table.core.windows.net'; ZoneName = 'table' }
             @{ Name = "pe-$FunctionAppName-queue"; ResourceId = $storageId; GroupId = 'queue'; DnsZone = 'privatelink.queue.core.windows.net'; ZoneName = 'queue' }
+            @{ Name = "pe-$FunctionAppName-file"; ResourceId = $storageId; GroupId = 'file'; DnsZone = 'privatelink.file.core.windows.net'; ZoneName = 'file' }
         )
 
         foreach ($ep in $endpoints) {
