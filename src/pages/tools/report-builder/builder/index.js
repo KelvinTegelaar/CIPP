@@ -380,19 +380,37 @@ const DatabaseBlock = ({
 }) => {
   const [allHeaders, setAllHeaders] = useState(block.allHeaders || [])
   const processedRef = useRef(false)
+  const prevTenantRef = useRef(currentTenant)
+
+  // Reset processed flag synchronously when tenant changes so new data is always processed
+  if (prevTenantRef.current !== currentTenant) {
+    prevTenantRef.current = currentTenant
+    processedRef.current = false
+  }
 
   const dbCacheApi = ApiGetCall({
     url: '/api/ListDBCache',
     data: { tenantFilter: currentTenant, type: block.dbType },
     queryKey: `ListDBCache-${currentTenant}-${block.dbType}`,
-    waiting: !!currentTenant && !!block.dbType && !block.data,
+    waiting: !!currentTenant && !!block.dbType,
   })
 
-  // Process results when API data arrives
+  // Process results when API data arrives (or is empty)
   useEffect(() => {
-    if (!dbCacheApi.isSuccess || !dbCacheApi.data?.Results || processedRef.current) return
+    if (!dbCacheApi.isSuccess || processedRef.current) return
     processedRef.current = true
-    const results = dbCacheApi.data.Results
+    const results = dbCacheApi.data?.Results
+    if (!results || (Array.isArray(results) && results.length === 0)) {
+      setAllHeaders([])
+      onUpdate(index, {
+        ...block,
+        data: results ?? [],
+        allHeaders: [],
+        selectedHeaders: [],
+        content: '',
+      })
+      return
+    }
     const headerSet = new Set()
     if (Array.isArray(results)) {
       results.forEach((row) => Object.keys(row).forEach((k) => headerSet.add(k)))
@@ -416,7 +434,6 @@ const DatabaseBlock = ({
 
   const handleRefresh = () => {
     processedRef.current = false
-    onUpdate(index, { ...block, data: null })
     dbCacheApi.refetch()
   }
 
@@ -470,7 +487,7 @@ const DatabaseBlock = ({
             color="secondary"
             variant="outlined"
           />
-          {block.data && (
+          {Array.isArray(block.data) && block.data.length > 0 && (
             <Chip label={`${block.data.length} rows`} size="small" variant="outlined" />
           )}
         </Box>
@@ -521,14 +538,15 @@ const DatabaseBlock = ({
           {error}
         </Alert>
       )}
-      {dbCacheApi.isFetching && (
+      {(dbCacheApi.isFetching ||
+        (!!currentTenant && !!block.dbType && !dbCacheApi.isSuccess && !dbCacheApi.isError)) && (
         <Stack spacing={1}>
           <Skeleton variant="text" width="80%" />
           <Skeleton variant="text" width="60%" />
           <Skeleton variant="rounded" height={60} />
         </Stack>
       )}
-      {!dbCacheApi.isFetching && block.data && allHeaders.length > 0 && (
+      {!dbCacheApi.isFetching && dbCacheApi.isSuccess && block.data && allHeaders.length > 0 && (
         <Box sx={{ mb: 2 }}>
           <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
             <Typography variant="caption" fontWeight={600}>
@@ -575,7 +593,7 @@ const DatabaseBlock = ({
           </FormGroup>
         </Box>
       )}
-      {!dbCacheApi.isFetching && block.data && block.content && (
+      {!dbCacheApi.isFetching && dbCacheApi.isSuccess && block.data && block.content && (
         <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
           {block.format === 'text' ? (
             <Box sx={markdownStyles}>
@@ -599,11 +617,14 @@ const DatabaseBlock = ({
           )}
         </Box>
       )}
-      {!dbCacheApi.isFetching && !block.data && !error && (
+      {!dbCacheApi.isFetching && dbCacheApi.isSuccess && block.data && !block.content && (
         <Typography color="text.secondary" variant="body2">
-          {currentTenant
-            ? 'Select a tenant to load database data.'
-            : 'Select a tenant to load database data.'}
+          No data available for this tenant.
+        </Typography>
+      )}
+      {!dbCacheApi.isFetching && !dbCacheApi.isSuccess && !error && (
+        <Typography color="text.secondary" variant="body2">
+          {currentTenant ? 'Loading database data...' : 'Select a tenant to load database data.'}
         </Typography>
       )}
     </CippButtonCard>

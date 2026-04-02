@@ -26,7 +26,7 @@ const Page = () => {
     <>
       <CippFormPage
         resetForm={false}
-        queryKey={`ListJITAdminTemplates-${userSettingsDefaults.currentTenant}`}
+        queryKey="*JITAdminTemplate*"
         formControl={formControl}
         title="JIT Admin Template"
         backButtonTitle="JIT Admin Templates"

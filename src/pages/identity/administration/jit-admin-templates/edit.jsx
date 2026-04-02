@@ -50,7 +50,7 @@ const Page = () => {
     <>
       <CippFormPage
         resetForm={false}
-        queryKey={`JITAdminTemplate-${id}`}
+        queryKey="*JITAdminTemplate*"
         formControl={formControl}
         title="Edit JIT Admin Template"
         backButtonTitle="JIT Admin Templates"

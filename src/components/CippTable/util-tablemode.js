@@ -1,5 +1,3 @@
-import { useSettings } from '../../hooks/use-settings'
-
 export const utilTableMode = (
   columnVisibility,
   mode,
@@ -7,9 +5,9 @@ export const utilTableMode = (
   simpleColumns,
   offCanvas,
   onChange,
-  maxHeightOffset = '380px'
+  maxHeightOffset = '380px',
+  settings = {}
 ) => {
-  const settings = useSettings()
   if (mode === true) {
     return {
       enableRowSelection: false,

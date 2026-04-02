@@ -5624,7 +5624,7 @@
         "name": "transportRuleTemplate",
         "label": "Select Transport Rule Template",
         "api": {
-          "url": "/api/ListTransportRulesTemplates",
+          "url": "/api/ListTransportRulesTemplates?noJson=true",
           "labelField": "name",
           "valueField": "GUID",
           "queryKey": "ListTransportRulesTemplates"
