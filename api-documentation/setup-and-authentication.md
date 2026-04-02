@@ -77,6 +77,11 @@ Further documentation for the module and each of its available functions can be 
 This module is created and maintained by a community member. With CIPP's rapid development cycle, the module can be expected to lag behind in adding new endpoints. For those, it is recommended to use the command `Invoke-CIPPRestMethod`.
 {% endhint %}
 
+## Caveats
+1. If you are using an automation like N8N, you may need to add /api to the end of your URL
+
+2. If you get any API 400 Errors like "Invoke-CIPPRestMethod: Response status code does not indicate success: 400 (Bad Request)" when first authing/testing, your cipp api client app reg may be missing an "APP ID URI". Fix this by going to your tenant, finding the app registration for the client you just made and in the "expose an api" section, you should be able to click the add button at the top of the page, which will automatilly fill in the client id and a suggested URI, once added and saved, you should try authing again.
+
 ### Feature Requests / Ideas
 
 We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
