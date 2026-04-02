@@ -1,79 +1,79 @@
-import { useEffect, useState } from "react";
-import { Button, Divider } from "@mui/material";
-import { Grid } from "@mui/system";
-import { useForm, useFormState, useWatch } from "react-hook-form";
-import { SaveAlt } from "@mui/icons-material";
-import { CippOffCanvas } from "./CippOffCanvas";
-import CippFormComponent from "./CippFormComponent";
-import { CippApiResults } from "./CippApiResults";
-import { ApiPostCall } from "../../api/ApiCall";
-import { getCippValidator } from "../../utils/get-cipp-validator";
+import { useEffect, useState } from 'react'
+import { Button, Divider } from '@mui/material'
+import { Grid } from '@mui/system'
+import { useForm, useFormState, useWatch } from 'react-hook-form'
+import { SaveAlt } from '@mui/icons-material'
+import { CippOffCanvas } from './CippOffCanvas'
+import CippFormComponent from './CippFormComponent'
+import { CippApiResults } from './CippApiResults'
+import { ApiPostCall } from '../../api/ApiCall'
+import { getCippValidator } from '../../utils/get-cipp-validator'
 
 const defaultValues = {
-  templateName: "",
-  entries: "",
-  notes: "",
+  templateName: '',
+  entries: '',
+  notes: '',
   listType: null,
   listMethod: null,
   NoExpiration: false,
   RemoveAfter: false,
-};
+}
 
 export const CippTenantAllowBlockListTemplateDrawer = ({
-  buttonText = "Add Template",
+  buttonText = 'Add Template',
   requiredPermissions = [],
   PermissionButton = Button,
 }) => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const formControl = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues,
-  });
+  })
 
-  const { isValid } = useFormState({ control: formControl.control });
+  const { isValid } = useFormState({ control: formControl.control })
 
-  const noExpiration = useWatch({ control: formControl.control, name: "NoExpiration" });
-  const removeAfter = useWatch({ control: formControl.control, name: "RemoveAfter" });
-  const listMethod = useWatch({ control: formControl.control, name: "listMethod" });
-  const listType = useWatch({ control: formControl.control, name: "listType" });
+  const noExpiration = useWatch({ control: formControl.control, name: 'NoExpiration' })
+  const removeAfter = useWatch({ control: formControl.control, name: 'RemoveAfter' })
+  const listMethod = useWatch({ control: formControl.control, name: 'listMethod' })
+  const listType = useWatch({ control: formControl.control, name: 'listType' })
 
-  const isListMethodBlock = listMethod?.value === "Block";
-  const isListTypeFileHash = listType?.value === "FileHash";
-  const isListTypeSenderUrlOrFileHash = ["Sender", "Url", "FileHash"].includes(listType?.value);
+  const isListMethodBlock = listMethod?.value === 'Block'
+  const isListTypeFileHash = listType?.value === 'FileHash'
+  const isListTypeSenderUrlOrFileHash = ['Sender', 'Url', 'FileHash'].includes(listType?.value)
   const isNoExpirationCompatible =
-    isListMethodBlock || (listMethod?.value === "Allow" && ["Url", "IP"].includes(listType?.value));
+    isListMethodBlock || (listMethod?.value === 'Allow' && ['Url', 'IP'].includes(listType?.value))
 
   const saveTemplate = ApiPostCall({
-    relatedQueryKeys: ["ListTenantAllowBlockListTemplates"],
-  });
+    relatedQueryKeys: ['ListTenantAllowBlockListTemplates'],
+  })
 
   useEffect(() => {
-    if (noExpiration && formControl.getValues("RemoveAfter")) {
-      formControl.setValue("RemoveAfter", false, { shouldValidate: true });
+    if (noExpiration && formControl.getValues('RemoveAfter')) {
+      formControl.setValue('RemoveAfter', false, { shouldValidate: true })
     }
 
-    if (removeAfter && formControl.getValues("NoExpiration")) {
-      formControl.setValue("NoExpiration", false, { shouldValidate: true });
+    if (removeAfter && formControl.getValues('NoExpiration')) {
+      formControl.setValue('NoExpiration', false, { shouldValidate: true })
     }
 
-    if (isListMethodBlock && formControl.getValues("RemoveAfter")) {
-      formControl.setValue("RemoveAfter", false, { shouldValidate: true });
+    if (isListMethodBlock && formControl.getValues('RemoveAfter')) {
+      formControl.setValue('RemoveAfter', false, { shouldValidate: true })
     }
 
-    if (listType && !isListTypeSenderUrlOrFileHash && formControl.getValues("RemoveAfter")) {
-      formControl.setValue("RemoveAfter", false, { shouldValidate: true });
+    if (listType && !isListTypeSenderUrlOrFileHash && formControl.getValues('RemoveAfter')) {
+      formControl.setValue('RemoveAfter', false, { shouldValidate: true })
     }
 
-    if (isListTypeFileHash && listMethod?.value !== "Block") {
+    if (isListTypeFileHash && listMethod?.value !== 'Block') {
       formControl.setValue(
-        "listMethod",
-        { label: "Block", value: "Block" },
-        { shouldValidate: true },
-      );
+        'listMethod',
+        { label: 'Block', value: 'Block' },
+        { shouldValidate: true }
+      )
     }
 
     if ((listMethod || listType) && noExpiration && !isNoExpirationCompatible) {
-      formControl.setValue("NoExpiration", false, { shouldValidate: true });
+      formControl.setValue('NoExpiration', false, { shouldValidate: true })
     }
   }, [
     noExpiration,
@@ -85,70 +85,70 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
     isNoExpirationCompatible,
     listMethod,
     formControl,
-  ]);
+  ])
 
   const validateEntries = (value) => {
-    if (!value) return true;
+    if (!value) return true
 
     const entries = value
       .split(/[,;]/)
       .map((entry) => entry.trim())
-      .filter(Boolean);
-    const currentListType = listType?.value;
+      .filter(Boolean)
+    const currentListType = listType?.value
 
-    if (currentListType === "FileHash") {
+    if (currentListType === 'FileHash') {
       for (const entry of entries) {
-        if (entry.length !== 64) return "File hash entries must be exactly 64 characters";
+        if (entry.length !== 64) return 'File hash entries must be exactly 64 characters'
 
-        const hashResult = getCippValidator(entry, "sha256");
-        if (hashResult !== true) return hashResult;
+        const hashResult = getCippValidator(entry, 'sha256')
+        if (hashResult !== true) return hashResult
       }
-      return true;
+      return true
     }
 
-    if (currentListType === "IP") {
+    if (currentListType === 'IP') {
       for (const entry of entries) {
-        const ipv6Result = getCippValidator(entry, "ipv6");
-        const ipv6CidrResult = getCippValidator(entry, "ipv6cidr");
+        const ipv6Result = getCippValidator(entry, 'ipv6')
+        const ipv6CidrResult = getCippValidator(entry, 'ipv6cidr')
 
         if (ipv6Result !== true && ipv6CidrResult !== true) {
-          return "Invalid IPv6 address format. Use colon-hexadecimal or CIDR notation";
+          return 'Invalid IPv6 address format. Use colon-hexadecimal or CIDR notation'
         }
       }
-      return true;
+      return true
     }
 
-    if (currentListType === "Url") {
+    if (currentListType === 'Url') {
       for (const entry of entries) {
         if (entry.length > 250) {
-          return "URL entries must be 250 characters or less";
+          return 'URL entries must be 250 characters or less'
         }
 
         if (/^https?:\/\//i.test(entry)) {
-          return "Invalid URL format. Do not include http:// or https://";
+          return 'Invalid URL format. Do not include http:// or https://'
         }
 
-        if (entry.includes("*") || entry.includes("~")) {
-          const wildcardUrlResult = getCippValidator(entry, "wildcardUrl");
-          const wildcardDomainResult = getCippValidator(entry, "wildcardDomain");
+        if (entry.includes('*') || entry.includes('~')) {
+          const wildcardUrlResult = getCippValidator(entry, 'wildcardUrl')
+          const wildcardDomainResult = getCippValidator(entry, 'wildcardDomain')
 
           if (wildcardUrlResult === true || wildcardDomainResult === true) {
-            continue;
+            continue
           }
 
           if (!/^[a-zA-Z0-9.\-*~\/]+$/.test(entry)) {
-            return "Invalid wildcard pattern. Use only letters, numbers, dots, hyphens, slashes, and wildcards (* or ~)";
+            return 'Invalid wildcard pattern. Use only letters, numbers, dots, hyphens, slashes, and wildcards (* or ~)'
           }
 
-          return "Invalid wildcard format. Common formats are *.domain.com or domain.*";
+          return 'Invalid wildcard format. Common formats are *.domain.com or domain.*'
         }
 
-        const ipv4Result = getCippValidator(entry, "ip");
-        const ipv4CidrResult = getCippValidator(entry, "ipv4cidr");
-        const ipv6Result = getCippValidator(entry, "ipv6");
-        const ipv6CidrResult = getCippValidator(entry, "ipv6cidr");
-        const hostnameResult = getCippValidator(entry, "hostname");
-        const hostnamePathResult = getCippValidator(entry, "hostnamePath");
+        const ipv4Result = getCippValidator(entry, 'ip')
+        const ipv4CidrResult = getCippValidator(entry, 'ipv4cidr')
+        const ipv6Result = getCippValidator(entry, 'ipv6')
+        const ipv6CidrResult = getCippValidator(entry, 'ipv6cidr')
+        const hostnameResult = getCippValidator(entry, 'hostname')
+        const hostnamePathResult = getCippValidator(entry, 'hostnamePath')
 
         if (
           ipv4Result !== true &&
@@ -158,33 +158,33 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
           hostnameResult !== true &&
           hostnamePathResult !== true
         ) {
-          return "Invalid URL format. Enter hostnames, hostname paths, IPv4, or IPv6 addresses";
+          return 'Invalid URL format. Enter hostnames, hostname paths, IPv4, or IPv6 addresses'
         }
       }
-      return true;
+      return true
     }
 
-    if (currentListType === "Sender") {
+    if (currentListType === 'Sender') {
       for (const entry of entries) {
-        if (entry.includes("*") || entry.includes("~")) {
-          const wildcardDomainResult = getCippValidator(entry, "wildcardDomain");
+        if (entry.includes('*') || entry.includes('~')) {
+          const wildcardDomainResult = getCippValidator(entry, 'wildcardDomain')
 
           if (wildcardDomainResult !== true) {
-            return "Invalid sender wildcard pattern. Common format is *.domain.com";
+            return 'Invalid sender wildcard pattern. Common format is *.domain.com'
           }
-          continue;
+          continue
         }
 
-        const senderResult = getCippValidator(entry, "senderEntry");
+        const senderResult = getCippValidator(entry, 'senderEntry')
         if (senderResult !== true) {
-          return senderResult;
+          return senderResult
         }
       }
-      return true;
+      return true
     }
 
-    return true;
-  };
+    return true
+  }
 
   const handleSubmit = formControl.handleSubmit((values) => {
     const payload = {
@@ -195,18 +195,18 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
       listMethod: values.listMethod?.value,
       NoExpiration: values.NoExpiration,
       RemoveAfter: values.RemoveAfter,
-    };
+    }
 
     saveTemplate.mutate({
-      url: "/api/AddTenantAllowBlockListTemplate",
+      url: '/api/AddTenantAllowBlockListTemplate',
       data: payload,
-    });
-  });
+    })
+  })
 
   const handleCloseDrawer = () => {
-    setDrawerVisible(false);
-    formControl.reset(defaultValues);
-  };
+    setDrawerVisible(false)
+    formControl.reset(defaultValues)
+  }
 
   return (
     <>
@@ -224,7 +224,7 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
             <Button
               variant="contained"
               color="primary"
@@ -232,10 +232,10 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
               disabled={saveTemplate.isLoading || !isValid}
             >
               {saveTemplate.isLoading
-                ? "Saving..."
+                ? 'Saving...'
                 : saveTemplate.isSuccess
-                  ? "Save Another"
-                  : "Save Template"}
+                  ? 'Save Another'
+                  : 'Save Template'}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
@@ -250,11 +250,11 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
               label="Template Name"
               name="templateName"
               formControl={formControl}
-              validators={{ required: "Template name is required" }}
+              validators={{ required: 'Template name is required' }}
             />
           </Grid>
 
-          <Divider sx={{ my: 2, width: "100%" }} />
+          <Divider sx={{ my: 2, width: '100%' }} />
 
           <Grid size={{ md: 12, xs: 12 }}>
             <CippFormComponent
@@ -263,19 +263,19 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
               name="entries"
               formControl={formControl}
               validators={{
-                required: "Entries field is required",
+                required: 'Entries field is required',
                 validate: validateEntries,
               }}
               helperText={
-                listType?.value === "FileHash"
-                  ? "Enter SHA256 hash values separated by commas or semicolons (e.g., 768a813668695ef2483b2bde7cf5d1b2db0423a0d3e63e498f3ab6f2eb13ea3e)"
-                  : listType?.value === "Url"
-                    ? "Enter hostnames or hostname paths (e.g., test.com/test), IPv4, or IPv6 addresses with optional wildcards. Do not include http:// or https://"
-                    : listType?.value === "Sender"
-                      ? "Enter domains or email addresses separated by commas or semicolons (e.g., contoso.com,user@example.com)"
-                      : listType?.value === "IP"
-                        ? "Enter IPv6 addresses only in colon-hexadecimal format or CIDR notation"
-                        : ""
+                listType?.value === 'FileHash'
+                  ? 'Enter SHA256 hash values separated by commas or semicolons (e.g., 768a813668695ef2483b2bde7cf5d1b2db0423a0d3e63e498f3ab6f2eb13ea3e)'
+                  : listType?.value === 'Url'
+                    ? 'Enter hostnames or hostname paths (e.g., test.com/test), IPv4, or IPv6 addresses with optional wildcards. Do not include http:// or https://'
+                    : listType?.value === 'Sender'
+                      ? 'Enter domains or email addresses separated by commas or semicolons (e.g., contoso.com,user@example.com)'
+                      : listType?.value === 'IP'
+                        ? 'Enter IPv6 addresses only in colon-hexadecimal format or CIDR notation'
+                        : ''
               }
             />
           </Grid>
@@ -298,12 +298,12 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
               multiple={false}
               creatable={false}
               options={[
-                { label: "Sender", value: "Sender" },
-                { label: "Url/IPv4", value: "Url" },
-                { label: "FileHash", value: "FileHash" },
-                { label: "IPv6", value: "IP" },
+                { label: 'Sender', value: 'Sender' },
+                { label: 'Url/IPv4', value: 'Url' },
+                { label: 'FileHash', value: 'FileHash' },
+                { label: 'IPv6', value: 'IP' },
               ]}
-              validators={{ required: "Please choose a List Type." }}
+              validators={{ required: 'Please choose a List Type.' }}
             />
           </Grid>
 
@@ -316,15 +316,15 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
               multiple={false}
               creatable={false}
               options={[
-                { label: "Block", value: "Block" },
-                { label: "Allow", value: "Allow" },
+                { label: 'Block', value: 'Block' },
+                { label: 'Allow', value: 'Allow' },
               ]}
-              validators={{ required: "Please select Block or Allow." }}
+              validators={{ required: 'Please select Block or Allow.' }}
               disabled={isListTypeFileHash}
               helperText={
                 isListTypeFileHash
-                  ? "FileHash entries can only be Blocked"
-                  : "Choose whether to block or allow the entries"
+                  ? 'FileHash entries can only be Blocked'
+                  : 'Choose whether to block or allow the entries'
               }
             />
           </Grid>
@@ -337,14 +337,14 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
               formControl={formControl}
               helperText={
                 isListMethodBlock
-                  ? "Block entries will never expire"
-                  : "Available only for Block entries or specific Allow entries (URL/IP)"
+                  ? 'Block entries will never expire'
+                  : 'Available only for Block entries or specific Allow entries (URL/IP)'
               }
               disabled={
                 removeAfter ||
                 !(
                   isListMethodBlock ||
-                  (listMethod?.value === "Allow" && ["Url", "IP"].includes(listType?.value))
+                  (listMethod?.value === 'Allow' && ['Url', 'IP'].includes(listType?.value))
                 )
               }
             />
@@ -359,8 +359,8 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
               helperText="If checked, allow entries will be removed after 45 days of last use"
               disabled={
                 noExpiration ||
-                listMethod?.value !== "Allow" ||
-                !["Sender", "FileHash", "Url"].includes(listType?.value)
+                listMethod?.value !== 'Allow' ||
+                !['Sender', 'FileHash', 'Url'].includes(listType?.value)
               }
             />
           </Grid>
@@ -369,7 +369,7 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
         </Grid>
       </CippOffCanvas>
     </>
-  );
-};
+  )
+}
 
-export default CippTenantAllowBlockListTemplateDrawer;
+export default CippTenantAllowBlockListTemplateDrawer
