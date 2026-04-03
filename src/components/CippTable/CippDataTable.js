@@ -853,6 +853,7 @@ export const CippDataTable = (props) => {
   )
 
   const table = useMaterialReactTable({
+    layoutMode: 'grid-no-grow',
     enableRowVirtualization: true,
     enableColumnVirtualization: true,
     rowVirtualizerOptions: {
