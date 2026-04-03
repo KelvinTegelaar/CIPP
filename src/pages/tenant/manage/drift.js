@@ -1960,6 +1960,15 @@ const ManageDriftPage = () => {
               name: 'reason',
               label: 'Reason for change (Mandatory)',
             },
+            ...(actionData.data?.deviations?.some((d) => d.status === 'DeniedRemediate')
+              ? [
+                  {
+                    type: 'switch',
+                    name: 'persistentDeny',
+                    label: 'Permanently deny - Reset every 12 hours',
+                  },
+                ]
+              : []),
           ]}
           api={{
             url: '/api/ExecUpdateDriftDeviation',
