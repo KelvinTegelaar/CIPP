@@ -27,7 +27,7 @@ export const CippPolicyDeployDrawer = ({
     mode: 'onChange',
   })
   const { isValid } = useFormState({ control: formControl.control })
-  const tenantFilter = useSettings()?.tenantFilter
+  const tenantFilter = useSettings()?.currentTenant
   const selectedTenants = useWatch({ control: formControl.control, name: 'tenantFilter' }) || []
   const CATemplates = ApiGetCall({ url: '/api/ListIntuneTemplates', queryKey: 'IntuneTemplates' })
   const [JSONData, setJSONData] = useState()
@@ -51,8 +51,8 @@ export const CippPolicyDeployDrawer = ({
     relatedQueryKeys: [
       'IntuneTemplates',
       `Configuration Policies - ${tenantFilter}`,
-      `Compliance Policies - ${tenantFilter}`,
-      `Protection Policies - ${tenantFilter}`,
+      `Intune Compliance Policies - ${tenantFilter}`,
+      `App Protection & Configuration Policies - ${tenantFilter}`,
     ],
   })
 
