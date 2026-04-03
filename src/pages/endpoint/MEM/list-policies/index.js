@@ -45,13 +45,13 @@ const Page = () => {
   }
 
   const simpleColumns = [
+    ...(useReportDB ? ['Tenant', 'CacheTimestamp'] : []),
     'displayName',
     'PolicyTypeName',
     'PolicyAssignment',
     'PolicyExclude',
     'description',
     'lastModifiedDateTime',
-    ...(useReportDB ? ['CacheTimestamp'] : []),
   ]
 
   const pageActions = [
