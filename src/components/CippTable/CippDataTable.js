@@ -855,6 +855,9 @@ export const CippDataTable = (props) => {
   const table = useMaterialReactTable({
     enableRowVirtualization: true,
     enableColumnVirtualization: true,
+    rowVirtualizerOptions: {
+      overscan: 30,
+    },
     muiTableBodyCellProps: MUI_TABLE_BODY_CELL_PROPS,
     mrtTheme: MRT_THEME,
     muiTablePaperProps,
