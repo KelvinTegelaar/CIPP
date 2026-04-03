@@ -42,6 +42,22 @@ export const CippWizardVacationActions = (props) => {
       if (!currentExternal) {
         formControl.setValue("oooExternalMessage", oooData.data.ExternalMessage || "");
       }
+      // Pre-populate calendar options from existing config
+      if (oooData.data.CreateOOFEvent != null) {
+        formControl.setValue("oooCreateOOFEvent", !!oooData.data.CreateOOFEvent);
+      }
+      if (oooData.data.OOFEventSubject) {
+        formControl.setValue("oooOOFEventSubject", oooData.data.OOFEventSubject);
+      }
+      if (oooData.data.AutoDeclineFutureRequestsWhenOOF != null) {
+        formControl.setValue("oooAutoDeclineFutureRequests", !!oooData.data.AutoDeclineFutureRequestsWhenOOF);
+      }
+      if (oooData.data.DeclineEventsForScheduledOOF != null) {
+        formControl.setValue("oooDeclineEvents", !!oooData.data.DeclineEventsForScheduledOOF);
+      }
+      if (oooData.data.DeclineMeetingMessage) {
+        formControl.setValue("oooDeclineMeetingMessage", oooData.data.DeclineMeetingMessage);
+      }
     }
   }, [oooData.isSuccess, oooData.data]);
 
@@ -359,6 +375,70 @@ export const CippWizardVacationActions = (props) => {
                     />
                   )}
                 </Grid>
+
+                {/* Calendar Options */}
+                <Grid size={{ xs: 12 }}>
+                  <Divider sx={{ my: 1 }} />
+                  <Typography variant="subtitle2" sx={{ mt: 1 }}>
+                    Calendar Options
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    name="oooCreateOOFEvent"
+                    label="Block my calendar for this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="oooCreateOOFEvent"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="textField"
+                      name="oooOOFEventSubject"
+                      label="Calendar Event Subject"
+                      formControl={formControl}
+                    />
+                  </Grid>
+                </CippFormCondition>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    name="oooAutoDeclineFutureRequests"
+                    label="Automatically decline new invitations during this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    name="oooDeclineEvents"
+                    label="Decline and cancel my meetings during this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="oooDeclineEvents"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="richText"
+                      name="oooDeclineMeetingMessage"
+                      label="Decline Message"
+                      formControl={formControl}
+                      multiline
+                      rows={3}
+                    />
+                  </Grid>
+                </CippFormCondition>
               </Grid>
             </CippFormCondition>
           </Stack>

@@ -1,5 +1,5 @@
-import Button from "@mui/material/Button";
-import { usePermissions } from "../hooks/use-permissions.js";
+import Button from '@mui/material/Button'
+import { usePermissions } from '../hooks/use-permissions.js'
 /**
  * Permission Helper Utilities
  *
@@ -15,38 +15,38 @@ import { usePermissions } from "../hooks/use-permissions.js";
  */
 export const hasPermission = (userPermissions, requiredPermissions) => {
   if (!userPermissions || !requiredPermissions) {
-    return false;
+    return false
   }
 
   if (!Array.isArray(userPermissions) || !Array.isArray(requiredPermissions)) {
-    return false;
+    return false
   }
 
   if (requiredPermissions.length === 0) {
-    return true; // No permissions required
+    return true // No permissions required
   }
 
   return userPermissions.some((userPerm) => {
     return requiredPermissions.some((requiredPerm) => {
       // Exact match
       if (userPerm === requiredPerm) {
-        return true;
+        return true
       }
 
       // Pattern matching - check if required permission contains wildcards
-      if (requiredPerm.includes("*")) {
+      if (requiredPerm.includes('*')) {
         // Convert wildcard pattern to regex
         const regexPattern = requiredPerm
-          .replace(/\./g, "\\.") // Escape dots
-          .replace(/\*/g, ".*"); // Convert * to .*
-        const regex = new RegExp(`^${regexPattern}$`);
-        return regex.test(userPerm);
+          .replace(/\./g, '\\.') // Escape dots
+          .replace(/\*/g, '.*') // Convert * to .*
+        const regex = new RegExp(`^${regexPattern}$`)
+        return regex.test(userPerm)
       }
 
-      return false;
-    });
-  });
-};
+      return false
+    })
+  })
+}
 
 /**
  * Check if user has any of the required roles
@@ -56,19 +56,19 @@ export const hasPermission = (userPermissions, requiredPermissions) => {
  */
 export const hasRole = (userRoles, requiredRoles) => {
   if (!userRoles || !requiredRoles) {
-    return false;
+    return false
   }
 
   if (!Array.isArray(userRoles) || !Array.isArray(requiredRoles)) {
-    return false;
+    return false
   }
 
   if (requiredRoles.length === 0) {
-    return true; // No roles required
+    return true // No roles required
   }
 
-  return requiredRoles.some((requiredRole) => userRoles.includes(requiredRole));
-};
+  return requiredRoles.some((requiredRole) => userRoles.includes(requiredRole))
+}
 
 /**
  * Check if user has access based on both permissions and roles
@@ -87,22 +87,22 @@ export const hasAccess = ({
 }) => {
   // Check roles first (if any are required)
   if (requiredRoles.length > 0) {
-    const hasRequiredRole = hasRole(userRoles, requiredRoles);
+    const hasRequiredRole = hasRole(userRoles, requiredRoles)
     if (!hasRequiredRole) {
-      return false;
+      return false
     }
   }
 
   // Check permissions (if any are required)
   if (requiredPermissions.length > 0) {
-    const hasRequiredPermission = hasPermission(userPermissions, requiredPermissions);
+    const hasRequiredPermission = hasPermission(userPermissions, requiredPermissions)
     if (!hasRequiredPermission) {
-      return false;
+      return false
     }
   }
 
-  return true;
-};
+  return true
+}
 
 /**
  * Hook for checking permissions in React components
@@ -119,9 +119,9 @@ export const useHasAccess = (requiredPermissions = [], requiredRoles = []) => {
       userRoles,
       requiredPermissions,
       requiredRoles,
-    });
-  };
-};
+    })
+  }
+}
 
 /**
  * Higher-order component to conditionally render based on permissions
@@ -139,22 +139,22 @@ export const withPermissions = ({
   fallback = null,
 }) => {
   return (props) => {
-    const { userPermissions, userRoles, ...restProps } = props;
+    const { userPermissions, userRoles, ...restProps } = props
 
     const hasRequiredAccess = hasAccess({
       userPermissions,
       userRoles,
       requiredPermissions,
       requiredRoles,
-    });
+    })
 
     if (hasRequiredAccess) {
-      return <Component {...restProps} />;
+      return <Component {...restProps} />
     }
 
-    return fallback;
-  };
-};
+    return fallback
+  }
+}
 
 /**
  * Permission-aware Button component
@@ -171,7 +171,7 @@ export const PermissionButton = ({
   children,
   ...buttonProps
 }) => {
-  const { userPermissions, userRoles, isAuthenticated } = usePermissions();
+  const { userPermissions, userRoles, isAuthenticated } = usePermissions()
 
   const hasRequiredAccess =
     isAuthenticated &&
@@ -180,18 +180,18 @@ export const PermissionButton = ({
       userRoles,
       requiredPermissions,
       requiredRoles,
-    });
+    })
 
   if (!hasRequiredAccess && hideIfNoAccess) {
-    return null;
+    return null
   }
 
   return (
     <Button disabled={!hasRequiredAccess} {...buttonProps}>
       {children}
     </Button>
-  );
-};
+  )
+}
 
 /**
  * Permission-aware conditional rendering component
@@ -208,7 +208,7 @@ export const PermissionCheck = ({
   children,
   fallback = null,
 }) => {
-  const { userPermissions, userRoles, isAuthenticated } = usePermissions();
+  const { userPermissions, userRoles, isAuthenticated } = usePermissions()
 
   const hasRequiredAccess =
     isAuthenticated &&
@@ -217,11 +217,11 @@ export const PermissionCheck = ({
       userRoles,
       requiredPermissions,
       requiredRoles,
-    });
+    })
 
   if (hasRequiredAccess) {
-    return children;
+    return children
   }
 
-  return fallback;
-};
+  return fallback
+}
