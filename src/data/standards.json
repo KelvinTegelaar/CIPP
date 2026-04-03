@@ -5654,6 +5654,8 @@
         "type": "autoComplete",
         "name": "TemplateList",
         "multiple": false,
+        "required": false,
+        "creatable": false,
         "label": "Select Conditional Access Template",
         "api": {
           "url": "/api/ListCATemplates",
