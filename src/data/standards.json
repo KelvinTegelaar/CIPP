@@ -5789,11 +5789,10 @@
   {
     "name": "standards.TenantAllowBlockListTemplate",
     "label": "Tenant Allow/Block List Template",
-    "cat": "Templates",
-    "multi": true,
+    "cat": "Exchange Standards",
     "disabledFeatures": {
-      "report": true,
-      "warn": true,
+      "report": false,
+      "warn": false,
       "remediate": false
     },
     "impact": "Medium Impact",
@@ -5803,8 +5802,9 @@
     "addedComponent": [
       {
         "type": "autoComplete",
-        "name": "TemplateList",
-        "multiple": false,
+        "name": "TenantAllowBlockListTemplate",
+        "required": false,
+        "multiple": true,
         "label": "Select Tenant Allow/Block List Template",
         "api": {
           "url": "/api/ListTenantAllowBlockListTemplates",
@@ -6787,6 +6787,53 @@
     "impactColour": "warning",
     "addedDate": "2026-04-02",
     "powershellEquivalent": "Graph API - deviceManagement/configurationPolicies",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.GlobalQuarantineSettings",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Configures the Global Quarantine Policy settings including sender name, custom subject, disclaimer, from address, and org branding.",
+    "docsDescription": "Configures the Global Quarantine Policy branding and notification settings for the tenant. This includes the quarantine notification sender display name, custom subject line, disclaimer text, the from address used for notifications, and whether to use org branding. Notification frequency is managed separately by the GlobalQuarantineNotifications standard.",
+    "executiveText": "Ensures quarantine notification emails are branded and configured consistently, so end users receive clear, professional alerts about quarantined messages and know how to request release.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.GlobalQuarantineSettings.SenderName",
+        "label": "Sender Display Name (e.g. Contoso-Office365Alerts)",
+        "helperText": "Will be overridden if an active sender address with an existing display name is used.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.GlobalQuarantineSettings.CustomSubject",
+        "label": "Subject",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.GlobalQuarantineSettings.CustomDisclaimer",
+        "label": "Disclaimer (max 200 characters)",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.GlobalQuarantineSettings.FromAddress",
+        "label": "Specify Sender Address (must be an internal mailbox)",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.GlobalQuarantineSettings.OrganizationBrandingEnabled",
+        "label": "Use Organization Branding (logo)",
+        "helperText": "Requires branding to be configured in the Microsoft 365 admin centre."
+      }
+    ],
+    "label": "Configure Global Quarantine Notification Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-04-02",
+    "powershellEquivalent": "Set-QuarantinePolicy (GlobalQuarantinePolicy)",
     "recommendedBy": []
   }
 ]
