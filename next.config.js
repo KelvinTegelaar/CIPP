@@ -4,7 +4,6 @@ const config = {
   images: {
     unoptimized: true,
   },
-  cacheComponents: true,
   turbopack: {
     rules: {
       '*.svg': {
