@@ -63,11 +63,6 @@ const Page = () => {
             queryKey={`ListIntunePolicy-${tenant}`}
             title="Intune Policy Sync"
           />
-          <Tooltip title="Displaying cached data from the CIPP reporting database. Click Sync to refresh.">
-            <IconButton size="small">
-              <Info fontSize="small" />
-            </IconButton>
-          </Tooltip>
           <Button
             startIcon={
               <SvgIcon fontSize="small">
@@ -86,7 +81,7 @@ const Page = () => {
           isAllTenants
             ? 'AllTenants always uses cached data'
             : useReportDB
-              ? 'Showing cached data — click to switch to live'
+              ? 'Showing cached data from the Reporting Database — click to switch to live'
               : 'Showing live data — click to switch to cache'
         }
       >
