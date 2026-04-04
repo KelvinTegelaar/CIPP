@@ -1,0 +1,32 @@
+{
+  "_metadata": {
+    "endpoint": "ListIntunePolicy",
+    "generatedAt": "2026-04-03T23:43:05.7276359+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "@odata.type": "string",
+    "assignments": {
+      "id": "string",
+      "intent": "string",
+      "source": "string",
+      "sourceId": "string",
+      "target": {
+        "@odata.type": "truncated",
+        "deviceAndAppManagementAssignmentFilterId": "null",
+        "deviceAndAppManagementAssignmentFilterType": "truncated"
+      }
+    },
+    "assignments@odata.context": "string",
+    "description": "string",
+    "displayName": "string",
+    "id": "string",
+    "lastModifiedDateTime": "datetime",
+    "PolicyAssignment": "string",
+    "PolicyExclude": "string",
+    "PolicyTypeName": "string",
+    "roleScopeTagIds": "string",
+    "URLName": "string"
+  }
+}

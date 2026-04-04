@@ -1,0 +1,26 @@
+{
+  "_metadata": {
+    "endpoint": "ListSites",
+    "generatedAt": "2026-04-03T23:47:14.3463174+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AutoMapUrl": "string",
+    "createdDateTime": "datetime",
+    "displayName": "null",
+    "fileCount": "number",
+    "lastActivityDate": "string",
+    "ownerDisplayName": "string",
+    "ownerPrincipalName": "null",
+    "reportRefreshDate": "string",
+    "rootWebTemplate": "string",
+    "siteId": "string",
+    "storageAllocatedInBytes": "number",
+    "storageAllocatedInGigabytes": "number",
+    "storageUsedInBytes": "number",
+    "storageUsedInGigabytes": "number",
+    "webId": "string",
+    "webUrl": "string"
+  }
+}
