@@ -1,0 +1,235 @@
+{
+  "_metadata": {
+    "endpoint": "ListStandardsCompare",
+    "generatedAt": "2026-04-03T23:47:15.5389612+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "standards.AntiPhishPolicy": {
+      "CurrentValue": "string",
+      "ExpectedValue": "string",
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "bool"
+    },
+    "standards.AuditLog": {
+      "CurrentValue": {
+        "UnifiedAuditLogIngestionEnabled": "truncated"
+      },
+      "ExpectedValue": {
+        "UnifiedAuditLogIngestionEnabled": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.ConditionalAccessTemplate.5fe01a7f-8d81-419c-8a0d-0ef047cd9732": {
+      "CurrentValue": {
+        "Differences": "truncated"
+      },
+      "ExpectedValue": {
+        "Differences": "null"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.DisableBasicAuthSMTP": {
+      "CurrentValue": {
+        "SmtpClientAuthenticationDisabled": "truncated",
+        "UsersWithSmtpAuthEnabled": "null"
+      },
+      "ExpectedValue": {
+        "SmtpClientAuthenticationDisabled": "truncated",
+        "UsersWithSmtpAuthEnabled": "null"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.04e77498-4bb1-4f0b-9726-8ab3352d056e": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.212e1653-551f-4592-903c-7dd32b2edd8c": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.257ebf97-40cd-4861-a7a0-f19ada1e2316": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.5e0c779e-21cf-459a-ae17-8bafa9982620": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.6c9e2009-f72e-4aba-9393-ed58b328a201": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.872ccbb0-0152-4dc9-94a6-0f785b6b70e8": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.92d4d6e0-b818-4c52-bffa-5921a6e30921": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.9fcfd67e-9f82-4a97-9364-50528bdeee88": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.c39e5044-929b-49ea-818f-d6585810aa2f": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "standards.IntuneTemplate.f59b1553-9e7a-431d-9334-ab2c330e6215": {
+      "CurrentValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "ExpectedValue": {
+        "description": "truncated",
+        "displayName": "truncated",
+        "isAssigned": "truncated",
+        "isCompliant": "truncated"
+      },
+      "LastRefresh": "datetime",
+      "LicenseAvailable": "bool",
+      "TemplateId": "string",
+      "Value": "null"
+    },
+    "tenantFilter": "string"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "_metadata": {
+    "endpoint": "ListSharepointSettings",
+    "generatedAt": "2026-04-03T23:40:22.9080923+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "@odata.context": "string",
+    "allowedDomainGuidsForSyncApp": "null",
+    "availableManagedPathsForSiteCreation": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "deletedUserPersonalSiteRetentionPeriodInDays": "number",
+    "excludedFileExtensionsForSyncApp": "null",
+    "idleSessionSignOut": {
+      "isEnabled": "bool",
+      "signOutAfterInSeconds": "number",
+      "warnAfterInSeconds": "number"
+    },
+    "imageTaggingOption": "string",
+    "isCommentingOnSitePagesEnabled": "bool",
+    "isFileActivityNotificationEnabled": "bool",
+    "isLegacyAuthProtocolsEnabled": "bool",
+    "isLoopEnabled": "bool",
+    "isMacSyncAppEnabled": "bool",
+    "isResharingByExternalUsersEnabled": "bool",
+    "isSharePointMobileNotificationEnabled": "bool",
+    "isSharePointNewsfeedEnabled": "bool",
+    "isSiteCreationEnabled": "bool",
+    "isSiteCreationUIEnabled": "bool",
+    "isSitePagesCreationEnabled": "bool",
+    "isSitesStorageLimitAutomatic": "bool",
+    "isSyncButtonHiddenOnPersonalSite": "bool",
+    "isUnmanagedSyncAppForTenantRestricted": "bool",
+    "personalSiteDefaultStorageLimitInMB": "number",
+    "sharingAllowedDomainList": "null",
+    "sharingBlockedDomainList": "null",
+    "sharingCapability": "string",
+    "sharingDomainRestrictionMode": "string",
+    "siteCreationDefaultManagedPath": "string",
+    "siteCreationDefaultStorageLimitInMB": "number",
+    "tenantDefaultTimezone": "string"
+  }
+}

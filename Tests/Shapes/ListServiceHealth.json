@@ -1,0 +1,16 @@
+{
+  "_metadata": {
+    "endpoint": "ListServiceHealth",
+    "generatedAt": "2026-04-03T23:44:42.2897756+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "DefaultDomainName": "null",
+    "desc": "string",
+    "issueId": "string",
+    "service": "string",
+    "TenantName": "null",
+    "type": "string"
+  }
+}
