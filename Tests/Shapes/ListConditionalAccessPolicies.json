@@ -1,0 +1,37 @@
+{
+  "_metadata": {
+    "endpoint": "ListConditionalAccessPolicies",
+    "generatedAt": "2026-04-03T23:42:02.5933538+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "builtInControls": "string",
+    "clientAppTypes": "string",
+    "createdDateTime": "datetime",
+    "customAuthenticationFactors": "string",
+    "customer": "null",
+    "displayName": "string",
+    "excludeApplications": "string",
+    "excludeGroups": "string",
+    "excludeLocations": "string",
+    "excludePlatforms": "string",
+    "excludeRoles": "string",
+    "excludeUsers": "string",
+    "grantControlsOperator": "string",
+    "id": "string",
+    "includeApplications": "string",
+    "includeAuthenticationContextClassReferences": "string",
+    "includeGroups": "string",
+    "includeLocations": "string",
+    "includePlatforms": "string",
+    "includeRoles": "string",
+    "includeUserActions": "string",
+    "includeUsers": "string",
+    "modifiedDateTime": "datetime",
+    "rawjson": "string",
+    "state": "string",
+    "Tenant": "string",
+    "termsOfUse": "string"
+  }
+}

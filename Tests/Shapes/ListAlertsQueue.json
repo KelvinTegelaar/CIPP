@@ -1,0 +1,49 @@
+{
+  "_metadata": {
+    "endpoint": "ListAlertsQueue",
+    "generatedAt": "2026-04-03T23:40:51.8531891+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "Actions": "string",
+    "AlertComment": "string",
+    "Conditions": "string",
+    "EventType": "string",
+    "excludedTenants": {
+      "addedFields": {
+        "customerId": "truncated",
+        "defaultDomainName": "truncated",
+        "displayName": "truncated"
+      },
+      "label": "string",
+      "type": "string",
+      "value": "string"
+    },
+    "LogType": "string",
+    "PartitionKey": "string",
+    "RawAlert": {
+      "Actions": {
+        "label": "truncated",
+        "value": "truncated"
+      },
+      "AlertComment": "string",
+      "Conditions": {
+        "_type": "array",
+        "_element": "truncated"
+      },
+      "PartitionKey": "string",
+      "RowKey": "string",
+      "Tenants": {
+        "addedFields": "truncated",
+        "label": "truncated",
+        "type": "truncated",
+        "value": "truncated"
+      },
+      "type": "string"
+    },
+    "RepeatsEvery": "string",
+    "RowKey": "string",
+    "Tenants": "string"
+  }
+}

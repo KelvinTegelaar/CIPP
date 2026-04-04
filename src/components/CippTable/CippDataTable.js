@@ -655,9 +655,7 @@ export const CippDataTable = (props) => {
           setOffCanvasData(row.original)
           const filteredRowsArray = table?.getFilteredRowModel?.()?.rows
           if (filteredRowsArray) {
-            const indexInFiltered = filteredRowsArray.findIndex(
-              (r) => r.original === row.original
-            )
+            const indexInFiltered = filteredRowsArray.findIndex((r) => r.original === row.original)
             setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0)
           }
           setOffcanvasVisible(true)
@@ -782,9 +780,7 @@ export const CippDataTable = (props) => {
             closeMenu()
             setOffCanvasData(row.original)
             const filteredRowsArray = table.getFilteredRowModel().rows
-            const indexInFiltered = filteredRowsArray.findIndex(
-              (r) => r.original === row.original
-            )
+            const indexInFiltered = filteredRowsArray.findIndex((r) => r.original === row.original)
             setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0)
             setOffcanvasVisible(true)
           }}
@@ -857,6 +853,12 @@ export const CippDataTable = (props) => {
   )
 
   const table = useMaterialReactTable({
+    layoutMode: 'grid-no-grow',
+    enableRowVirtualization: true,
+    enableColumnVirtualization: true,
+    rowVirtualizerOptions: {
+      overscan: 5,
+    },
     muiTableBodyCellProps: MUI_TABLE_BODY_CELL_PROPS,
     mrtTheme: MRT_THEME,
     muiTablePaperProps,
@@ -956,13 +958,7 @@ export const CippDataTable = (props) => {
                 <>
                   {(getRequestData.isSuccess ||
                     getRequestData.data?.pages.length >= 0 ||
-                    (data && !getRequestData.isError)) && (
-                    <MaterialReactTable
-                      enableRowVirtualization
-                      enableColumnVirtualization
-                      table={table}
-                    />
-                  )}
+                    (data && !getRequestData.isError)) && <MaterialReactTable table={table} />}
                 </>
               )}
               {getRequestData.isError && !getRequestData.isFetchNextPageError && (

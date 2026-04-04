@@ -1,0 +1,15 @@
+{
+  "_metadata": {
+    "endpoint": "ListCustomVariables",
+    "generatedAt": "2026-04-03T23:42:08.3032803+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "Category": "string",
+    "Description": "string",
+    "Name": "string",
+    "Type": "string",
+    "Variable": "string"
+  }
+}

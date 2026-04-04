@@ -1,0 +1,38 @@
+{
+  "_metadata": {
+    "endpoint": "ListDomainAnalyser",
+    "generatedAt": "2026-04-03T23:42:14.1104497+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "ActualMXRecords": {
+      "Hostname": "string",
+      "Priority": "number"
+    },
+    "ActualSPFRecord": "string",
+    "DKIMEnabled": "bool",
+    "DKIMRecords": "string",
+    "DMARCActionPolicy": "string",
+    "DMARCFullPolicy": "string",
+    "DMARCPercentagePass": "string",
+    "DMARCPresent": "bool",
+    "DMARCReportingActive": "string",
+    "DNSSECPresent": "bool",
+    "Domain": "string",
+    "ExpectedSPFRecord": "string",
+    "GUID": "string",
+    "LastRefresh": "datetime",
+    "MailProvider": "string",
+    "MaximumScore": "number",
+    "MSCNAMEDKIMSelectors": "string",
+    "MXPassTest": "bool",
+    "NSRecords": "null",
+    "Score": "number",
+    "ScoreExplanation": "string",
+    "ScorePercentage": "number",
+    "SPFPassAll": "bool",
+    "Tenant": "string",
+    "TenantID": "string"
+  }
+}

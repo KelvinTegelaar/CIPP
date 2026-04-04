@@ -3,11 +3,9 @@ import { CippTablePage } from '../../../../components/CippComponents/CippTablePa
 import { Delete } from '@mui/icons-material'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 import { CippTenantAllowBlockListTemplateDrawer } from '../../../../components/CippComponents/CippTenantAllowBlockListTemplateDrawer.jsx'
-import { PermissionButton } from '../../../../utils/permissions.js'
 
 const Page = () => {
   const pageTitle = 'Tenant Allow/Block List Templates'
-  const cardButtonPermissions = ['Exchange.SpamFilter.ReadWrite']
 
   const actions = [
     {
@@ -47,10 +45,7 @@ const Page = () => {
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       cardButton={
-        <CippTenantAllowBlockListTemplateDrawer
-          requiredPermissions={cardButtonPermissions}
-          PermissionButton={PermissionButton}
-        />
+        <CippTenantAllowBlockListTemplateDrawer />
       }
     />
   )
