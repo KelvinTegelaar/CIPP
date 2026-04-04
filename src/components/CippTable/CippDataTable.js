@@ -857,7 +857,7 @@ export const CippDataTable = (props) => {
     enableRowVirtualization: true,
     enableColumnVirtualization: true,
     rowVirtualizerOptions: {
-      overscan: 30,
+      overscan: 5,
     },
     muiTableBodyCellProps: MUI_TABLE_BODY_CELL_PROPS,
     mrtTheme: MRT_THEME,
