@@ -125,6 +125,17 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     }
   }
 
+  if (cellNameLower === 'compliancestate') {
+    if (isText) return data
+    const label = data?.label ?? data
+    const complianceStateColor = {
+      compliant: 'success',
+      noncompliant: 'error',
+    }
+    const color = complianceStateColor[String(label).toLowerCase()] ?? 'default'
+    return <Chip variant="outlined" label={label} size="small" color={color} />
+  }
+
   //if the cellName starts with portal_, return text, or a link with an icon
   if (cellName.startsWith('portal_')) {
     const IconComponent = portalIcons[cellName]
