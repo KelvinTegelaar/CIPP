@@ -20,6 +20,8 @@
     "DMARCReportingActive": "string",
     "DNSSECPresent": "bool",
     "Domain": "string",
+    "EnterpriseEnrollment": "string",
+    "EnterpriseRegistration": "string",
     "ExpectedSPFRecord": "string",
     "GUID": "string",
     "LastRefresh": "datetime",

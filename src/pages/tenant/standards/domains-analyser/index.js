@@ -83,6 +83,8 @@ const Page = () => {
           "DMARCPercentagePass",
           "DNSSECPresent",
           "DKIMEnabled",
+          "EnterpriseEnrollment",
+          "EnterpriseRegistration",
         ]}
         offCanvas={offCanvas}
         actions={actions}
