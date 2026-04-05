@@ -1034,6 +1034,11 @@
         "name": "standards.DisableSelfServiceLicenses.Exclusions",
         "label": "License Ids to exclude from this standard",
         "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DisableSelfServiceLicenses.DisableTrials",
+        "label": "Disable starting trials on behalf of your organization"
       }
     ],
     "label": "Disable Self Service Licensing",
