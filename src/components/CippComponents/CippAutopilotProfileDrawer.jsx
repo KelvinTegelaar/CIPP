@@ -156,7 +156,7 @@ export const CippAutopilotProfileDrawer = ({
               name="languages"
               options={[
                 { value: "os-default", label: "Operating system default" },
-                { value: "user-select", label: "User Select" },
+                { value: "", label: "User Select" },
                 ...languageList.map(({ language, tag, "Geographic area": geographicArea }) => ({
                   value: tag,
                   label: `${language} - ${geographicArea}`, // Format as "language - geographic area" for display
