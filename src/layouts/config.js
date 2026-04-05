@@ -806,6 +806,11 @@ export const nativeMenuItems = [
             permissions: ['Exchange.Mailbox.*'],
           },
           {
+            title: 'ActiveSync Devices',
+            path: '/email/reports/activesync-devices',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
             title: 'Global Address List',
             path: '/email/reports/global-address-list',
             permissions: ['Exchange.Group.*'],
