@@ -48,6 +48,11 @@ const Page = () => {
             propertyName: "hardwareHash",
             alternativePropertyNames: ["Hardware Hash"],
           },
+          {
+            friendlyName: "Group Tag",
+            propertyName: "groupTag",
+            alternativePropertyNames: ["Group Tag"],
+          },
         ],
         fileName: "autopilot-template",
       },

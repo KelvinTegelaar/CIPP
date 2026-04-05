@@ -116,17 +116,18 @@ export const CippWizardAutopilotImport = (props) => {
           }
         } else {
           // Headerless CSV - assume order: serial, productid, hash
-          headers = ["SerialNumber", "productKey", "hardwareHash"];
+          headers = ["SerialNumber", "productKey", "hardwareHash", "groupTag"];
           headerMapping = {
             SerialNumber: "SerialNumber",
             productKey: "productKey",
             hardwareHash: "hardwareHash",
+            groupTag: "groupTag",
           };
 
           // Check if we have at least 3 columns for the expected order
           if (firstLine.length < 3) {
             console.error(
-              "Headerless CSV must have at least 3 columns in order: Serial Number, Product ID, Hardware Hash"
+              "Headerless CSV must have at least 3 columns in order: Serial Number, Product ID, Hardware Hash (optional: Group Tag)"
             );
             return;
           }
