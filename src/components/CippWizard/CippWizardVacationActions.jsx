@@ -135,8 +135,9 @@ export const CippWizardVacationActions = (props) => {
                     formControl={formControl}
                     validators={{
                       validate: (option) => {
-                        if (!option?.value) {
-                          return 'Picking a policy is required'
+                        //check if option is an array, if so, ensure at least one is selected
+                        if (Array.isArray(option) && option.length === 0) {
+                          return 'At least one policy must be selected'
                         }
                         return true
                       },
