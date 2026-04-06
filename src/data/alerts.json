@@ -243,8 +243,13 @@
     "inputs": [
       {
         "inputType": "number",
-        "inputLabel": "Minimum age in hours (default: 0)",
+        "inputLabel": "Age threshold in hours (default: 0)",
         "inputName": "VulnerabilityAgeHours"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Only alert on items newer than threshold (prevents duplicate alerts)",
+        "inputName": "NewerThanMode"
       },
       {
         "inputType": "autoComplete",
@@ -302,7 +307,7 @@
       }
     ],
     "recommendedRunInterval": "4h",
-    "description": "Monitors for software vulnerabilities based on age, CVSS severity, and exploitability level. Filter by minimum CVSS score (low=0+, medium=4+, high=7+, critical=9+) and select which exploitability levels to include. Requires Defender for Endpoint/Business."
+    "description": "Monitors for software vulnerabilities based on age, CVSS severity, and exploitability level. By default alerts on items older than the threshold; enable 'newer than' mode to only receive alerts for recent vulnerabilities and prevent duplicates. Filter by minimum CVSS score (low=0+, medium=4+, high=7+, critical=9+) and select which exploitability levels to include. Requires Defender for Endpoint/Business."
   },
   {
     "name": "UnusedLicenses",
