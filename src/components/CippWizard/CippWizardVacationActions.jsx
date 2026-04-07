@@ -16,6 +16,7 @@ import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
+import { getCippValidator } from '../../utils/get-cipp-validator'
 
 export const CippWizardVacationActions = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep, lastStep } = props
@@ -25,12 +26,14 @@ export const CippWizardVacationActions = (props) => {
 
   const enableCA = useWatch({ control: formControl.control, name: 'enableCAExclusion' })
   const enableMailbox = useWatch({ control: formControl.control, name: 'enableMailboxPermissions' })
+  const enableForwarding = useWatch({ control: formControl.control, name: 'enableForwarding' })
   const enableOOO = useWatch({ control: formControl.control, name: 'enableOOO' })
-  const atLeastOneEnabled = enableCA || enableMailbox || enableOOO
+  const atLeastOneEnabled = enableCA || enableMailbox || enableForwarding || enableOOO
 
   const users = useWatch({ control: formControl.control, name: 'Users' })
   const firstUser = Array.isArray(users) && users.length > 0 ? users[0] : null
   const firstUserUpn = firstUser?.addedFields?.userPrincipalName || firstUser?.value || null
+  const forwardOption = useWatch({ control: formControl.control, name: 'forwardOption' })
 
   const oooData = ApiGetCall({
     url: '/api/ListOoO',
@@ -40,6 +43,41 @@ export const CippWizardVacationActions = (props) => {
   })
 
   const isFetchingOOO = oooData.isFetching
+
+  const forwardingUsers = ApiGetCall({
+    url: '/api/ListGraphRequest',
+    data: {
+      Endpoint: 'users',
+      tenantFilter: tenantDomain,
+      $select: 'id,displayName,userPrincipalName,mail',
+      $top: 999,
+    },
+    queryKey: `VacationForwardingUsers-${tenantDomain}`,
+    waiting: !!(enableForwarding && tenantDomain),
+  })
+
+  const forwardingContacts = ApiGetCall({
+    url: '/api/ListGraphRequest',
+    data: {
+      Endpoint: 'contacts',
+      tenantFilter: tenantDomain,
+      $select: 'displayName,mail,mailNickname',
+      $top: 999,
+    },
+    queryKey: `VacationForwardingContacts-${tenantDomain}`,
+    waiting: !!(enableForwarding && tenantDomain),
+  })
+
+  const internalAddressOptions = [
+    ...((forwardingUsers.data?.Results || []).map((user) => ({
+      value: user.userPrincipalName,
+      label: `${user.displayName} (${user.userPrincipalName}) - User`,
+    })) || []),
+    ...((forwardingContacts.data?.Results || []).map((contact) => ({
+      value: contact.mail || contact.emailAddress,
+      label: `${contact.displayName} (${contact.mail || contact.emailAddress}) - Contact`,
+    })) || []),
+  ]
 
   useEffect(() => {
     if (oooData.isSuccess && oooData.data) {
@@ -71,7 +109,13 @@ export const CippWizardVacationActions = (props) => {
         formControl.setValue('oooDeclineMeetingMessage', oooData.data.DeclineMeetingMessage)
       }
     }
-  }, [oooData.isSuccess, oooData.data])
+  }, [oooData.isSuccess, oooData.data, formControl])
+
+  useEffect(() => {
+    if (enableForwarding && !forwardOption) {
+      formControl.setValue('forwardOption', 'internalAddress')
+    }
+  }, [enableForwarding, forwardOption, formControl])
 
   return (
     <Stack spacing={4}>
@@ -312,6 +356,120 @@ export const CippWizardVacationActions = (props) => {
                     </Grid>
                   </CippFormCondition>
                 </CippFormCondition>
+              </Grid>
+            </CippFormCondition>
+          </Stack>
+        </CardContent>
+      </Card>
+
+      {/* Mail Forwarding Section */}
+      <Card variant="outlined">
+        <CardHeader
+          title="Mail Forwarding"
+          subheader="Forward email to another recipient during the vacation period"
+        />
+        <Divider />
+        <CardContent>
+          <Stack spacing={2}>
+            <CippFormComponent
+              type="switch"
+              name="enableForwarding"
+              label="Enable Mail Forwarding"
+              formControl={formControl}
+            />
+
+            <CippFormCondition
+              formControl={formControl}
+              field="enableForwarding"
+              compareType="is"
+              compareValue={true}
+              clearOnHide={false}
+            >
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12 }}>
+                  <Alert severity="info" sx={{ mb: 1 }}>
+                    Vacation mode will enable forwarding at the start date and disable forwarding
+                    again at the end date. Existing forwarding settings are not restored after the
+                    vacation ends.
+                  </Alert>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="radio"
+                    name="forwardOption"
+                    formControl={formControl}
+                    options={[
+                      { label: 'Forward to Internal Address', value: 'internalAddress' },
+                      {
+                        label: 'Forward to External Address (Tenant must allow this)',
+                        value: 'ExternalAddress',
+                      },
+                    ]}
+                  />
+                </Grid>
+
+                <CippFormCondition
+                  formControl={formControl}
+                  field="forwardOption"
+                  compareType="is"
+                  compareValue="internalAddress"
+                >
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      label={
+                        tenantDomain
+                          ? `Forward to user or contact in ${tenantDomain}`
+                          : 'Select a tenant first'
+                      }
+                      name="forwardInternal"
+                      multiple={false}
+                      options={internalAddressOptions}
+                      formControl={formControl}
+                      creatable={false}
+                      disabled={!tenantDomain}
+                      validators={{
+                        validate: (option) => {
+                          if (!option?.value && !option) {
+                            return 'Forwarding target is required'
+                          }
+                          return true
+                        },
+                      }}
+                      required={true}
+                    />
+                  </Grid>
+                </CippFormCondition>
+
+                <CippFormCondition
+                  formControl={formControl}
+                  field="forwardOption"
+                  compareType="is"
+                  compareValue="ExternalAddress"
+                >
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="textField"
+                      label="External Email Address"
+                      name="forwardExternal"
+                      formControl={formControl}
+                      validators={{
+                        required: 'Email is required',
+                        validate: (value) => getCippValidator(value, 'email'),
+                      }}
+                      required={true}
+                    />
+                  </Grid>
+                </CippFormCondition>
+
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    label="Keep a Copy of the Forwarded Mail in the Source Mailbox"
+                    name="forwardKeepCopy"
+                    formControl={formControl}
+                  />
+                </Grid>
               </Grid>
             </CippFormCondition>
           </Stack>
