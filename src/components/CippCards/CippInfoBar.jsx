@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { Box, Card, Stack, SvgIcon, Typography, Skeleton, Tooltip } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
@@ -11,10 +11,9 @@ export const CippInfoBar = ({ data, isFetching }) => {
     <Card>
       <Grid container>
         {data.map((item, index) => (
-          <>
+          <Fragment key={item.name}>
             <Grid
               size={{ md: 3, sm: 6, xs: 12 }}
-              key={item.name}
               onClick={item.offcanvas ? () => setVisibleIndex(index) : undefined}
               sx={{
                 cursor: item.offcanvas ? "pointer" : "default",
@@ -140,7 +139,7 @@ export const CippInfoBar = ({ data, isFetching }) => {
                 </CippOffCanvas>
               </>
             )}
-          </>
+          </Fragment>
         ))}
       </Grid>
     </Card>
