@@ -626,14 +626,8 @@ export const ReportBuilderDocument = ({
   const safeBlocks = blocks || []
 
   // Dynamic cover title: shrink font for long names, truncate beyond 50 chars
-  const coverTitle = reportName.length > 50
-    ? reportName.slice(0, 47) + '...'
-    : reportName
-  const coverTitleFontSize = coverTitle.length <= 20
-    ? 48
-    : coverTitle.length <= 35
-      ? 36
-      : 28
+  const coverTitle = reportName.length > 50 ? reportName.slice(0, 47) + '...' : reportName
+  const coverTitleFontSize = coverTitle.length <= 20 ? 48 : coverTitle.length <= 35 ? 36 : 28
 
   return (
     <Document>
