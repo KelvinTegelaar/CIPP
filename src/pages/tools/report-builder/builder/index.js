@@ -1532,7 +1532,10 @@ const Page = () => {
               name="templateName"
               label="Template Name"
               formControl={saveForm}
-              validators={{ required: 'Template name is required' }}
+              validators={{
+                required: 'Template name is required',
+                maxLength: { value: 256, message: 'Template name must be 256 characters or fewer' },
+              }}
             />
             <CippApiResults apiObject={saveTemplateCall} />
           </Stack>

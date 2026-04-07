@@ -52,7 +52,6 @@ const createStyles = (brandColor) =>
       alignSelf: 'flex-start',
     },
     mainTitle: {
-      fontSize: 48,
       fontWeight: 'bold',
       color: '#1A202C',
       lineHeight: 1.1,
@@ -130,6 +129,8 @@ const createStyles = (brandColor) =>
       fontWeight: 'bold',
       color: '#1A202C',
       marginBottom: 8,
+      paddingTop: 4,
+      paddingBottom: 4,
     },
     pageSubtitle: { fontSize: 11, color: '#4A5568', fontWeight: 'normal' },
     headerLogo: { height: 30 },
@@ -143,6 +144,8 @@ const createStyles = (brandColor) =>
       fontWeight: 'bold',
       color: brandColor,
       marginBottom: 12,
+      paddingTop: 4,
+      paddingBottom: 4,
       pageBreakAfter: 'avoid',
       breakAfter: 'avoid',
       orphans: 3,
@@ -261,6 +264,8 @@ const createStyles = (brandColor) =>
       color: '#1A202C',
       marginTop: 10,
       marginBottom: 6,
+      paddingTop: 4,
+      paddingBottom: 2,
     },
     heading2: {
       fontSize: 14,
@@ -268,6 +273,8 @@ const createStyles = (brandColor) =>
       color: brandColor,
       marginTop: 8,
       marginBottom: 5,
+      paddingTop: 4,
+      paddingBottom: 2,
     },
     heading3: {
       fontSize: 12,
@@ -275,6 +282,8 @@ const createStyles = (brandColor) =>
       color: '#2D3748',
       marginTop: 6,
       marginBottom: 4,
+      paddingTop: 3,
+      paddingBottom: 2,
     },
 
     /* ── Code ──────────────────────────────────────────── */
@@ -616,6 +625,10 @@ export const ReportBuilderDocument = ({
   const reportName = templateName || 'Report'
   const safeBlocks = blocks || []
 
+  // Dynamic cover title: shrink font for long names, truncate beyond 50 chars
+  const coverTitle = reportName.length > 50 ? reportName.slice(0, 47) + '...' : reportName
+  const coverTitleFontSize = coverTitle.length <= 20 ? 48 : coverTitle.length <= 35 ? 36 : 28
+
   return (
     <Document>
       {/* ── Cover Page ── */}
@@ -631,13 +644,13 @@ export const ReportBuilderDocument = ({
 
         <View style={s.coverHero}>
           <Text style={s.coverLabel}>ASSESSMENT REPORT</Text>
-          <Text style={s.mainTitle}>
-            {reportName.toUpperCase().split(' ').slice(0, -1).join(' ') || reportName.toUpperCase()}
-            {reportName.split(' ').length > 1 ? (
+          <Text style={{ ...s.mainTitle, fontSize: coverTitleFontSize }}>
+            {coverTitle.toUpperCase().split(' ').slice(0, -1).join(' ') || coverTitle.toUpperCase()}
+            {coverTitle.split(' ').length > 1 ? (
               <>
                 {'\n'}
                 <Text style={s.titleAccent}>
-                  {reportName.toUpperCase().split(' ').slice(-1)[0]}
+                  {coverTitle.toUpperCase().split(' ').slice(-1)[0]}
                 </Text>
               </>
             ) : null}

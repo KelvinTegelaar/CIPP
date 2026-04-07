@@ -261,7 +261,10 @@ export const CippAddTestReportDrawer = ({
                     label="Name"
                     name="name"
                     formControl={formControl}
-                    validators={{ required: 'Name is required' }}
+                    validators={{
+                      required: 'Name is required',
+                      maxLength: { value: 256, message: 'Name must be 256 characters or fewer' },
+                    }}
                   />
                 </Grid>
                 <Grid size={12}>
