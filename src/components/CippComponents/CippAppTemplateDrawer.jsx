@@ -614,6 +614,7 @@ export const CippAppTemplateDrawer = ({
                   { value: "oneNote", label: "OneNote" },
                   { value: "outlook", label: "Outlook" },
                   { value: "powerPoint", label: "PowerPoint" },
+                  { value: "publisher", label: "Publisher" },
                   { value: "teams", label: "Teams" },
                   { value: "word", label: "Word" },
                   { value: "lync", label: "Skype For Business" },
