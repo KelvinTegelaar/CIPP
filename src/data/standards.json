@@ -5999,6 +5999,12 @@
         "helperText": "Enter URLs to allowlist in the extension. Press enter to add each URL. Wildcards are allowed. This should be used for sites that are being blocked by the extension but are known to be safe."
       },
       {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.domainSquattingEnabled",
+        "label": "Enable domain squatting detection",
+        "defaultValue": true
+      },
+      {
         "type": "textField",
         "name": "standards.DeployCheckChromeExtension.companyName",
         "label": "Company Name",
@@ -6024,6 +6030,27 @@
         "name": "standards.DeployCheckChromeExtension.supportEmail",
         "label": "Support Email",
         "placeholder": "support@yourcompany.com",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.supportUrl",
+        "label": "Support URL",
+        "placeholder": "https://support.yourcompany.com",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.privacyPolicyUrl",
+        "label": "Privacy Policy URL",
+        "placeholder": "https://yourcompany.com/privacy",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.aboutUrl",
+        "label": "About URL",
+        "placeholder": "https://yourcompany.com/about",
         "required": false
       },
       {
