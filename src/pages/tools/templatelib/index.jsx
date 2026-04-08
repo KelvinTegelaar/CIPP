@@ -64,7 +64,8 @@ const TemplateLibrary = () => {
           <Typography sx={{ mb: 2 }}>
             Template libraries are tenants set up to retrieve the latest version of a specific
             tenants policies. These are then stored in CIPPs templates, allowing you to keep an up
-            to date copy of the policies.This copy occurs every 4 hours.
+            to date copy of the policies. Tenant-based template libraries sync every 4 hours,
+            while community repository-based template libraries sync every 7 days.
           </Typography>
           <Typography>
             There are also template repositories, these are community driven and are used to share
