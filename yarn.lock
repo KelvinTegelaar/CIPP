@@ -2266,10 +2266,10 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extensions/-/extensions-3.20.5.tgz#d2460b110deed4a71aca4c0d37816fc8845b22ad"
   integrity sha512-c4am6SznqfMnbUNSh4MvufiD7cMLdqL1BArok22uBgSWkS1sB9RVBYe8+x0jrOkk0UPEVlzDHbQ+nU+WmIyS2Q==
 
-"@tiptap/pm@^3.20.5", "@tiptap/pm@^3.22.0":
-  version "3.22.0"
-  resolved "https://registry.yarnpkg.com/@tiptap/pm/-/pm-3.22.0.tgz#84d151790140283cda52e101328b7c3ecfef4625"
-  integrity sha512-O9kpzNnFX5837kFevwAM8yr7ImLHu8noIwIpoci0AwfJjiBMzfZBejhbzxnKEfTpFWnkvZ8rWohlb6CQdJ6Crg==
+"@tiptap/pm@^3.20.5", "@tiptap/pm@^3.22.3":
+  version "3.22.3"
+  resolved "https://registry.yarnpkg.com/@tiptap/pm/-/pm-3.22.3.tgz#e911150e900d52b2e5ccd596b32187da46f924d6"
+  integrity sha512-NjfWjZuvrqmpICT+GZWNIjtOdhPyqFKDMtQy7tsQ5rErM9L2ZQdy/+T/BKSO1JdTeBhdg9OP+0yfsqoYp2aT6A==
   dependencies:
     prosemirror-changeset "^2.3.0"
     prosemirror-collab "^1.3.1"
