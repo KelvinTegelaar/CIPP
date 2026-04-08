@@ -1,0 +1,14 @@
+{
+  "_metadata": {
+    "endpoint": "ListUserCounts",
+    "generatedAt": "2026-04-03T23:47:48.8664374+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "Gas": "number",
+    "Guests": "number",
+    "LicUsers": "number",
+    "Users": "number"
+  }
+}

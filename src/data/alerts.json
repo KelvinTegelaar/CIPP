@@ -26,6 +26,20 @@
   {
     "name": "SmtpAuthSuccess",
     "label": "Alert on SMTP AUTH usage with success, helps to phase out SMTP AUTH (Entra P1 Required)",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days to look back (default: 7, max: 30)",
+    "inputName": "SmtpAuthSuccessDays",
+    "validators": {
+      "min": {
+        "value": 7,
+        "message": "Days must be at least 7"
+      },
+      "max": {
+        "value": 30,
+        "message": "Days cannot exceed 30"
+      }
+    },
     "recommendedRunInterval": "1d"
   },
   {
@@ -229,8 +243,13 @@
     "inputs": [
       {
         "inputType": "number",
-        "inputLabel": "Minimum age in hours (default: 0)",
+        "inputLabel": "Age threshold in hours (default: 0)",
         "inputName": "VulnerabilityAgeHours"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Only alert on items newer than threshold (prevents duplicate alerts)",
+        "inputName": "NewerThanMode"
       },
       {
         "inputType": "autoComplete",
@@ -288,7 +307,7 @@
       }
     ],
     "recommendedRunInterval": "4h",
-    "description": "Monitors for software vulnerabilities based on age, CVSS severity, and exploitability level. Filter by minimum CVSS score (low=0+, medium=4+, high=7+, critical=9+) and select which exploitability levels to include. Requires Defender for Endpoint/Business."
+    "description": "Monitors for software vulnerabilities based on age, CVSS severity, and exploitability level. By default alerts on items older than the threshold; enable 'newer than' mode to only receive alerts for recent vulnerabilities and prevent duplicates. Filter by minimum CVSS score (low=0+, medium=4+, high=7+, critical=9+) and select which exploitability levels to include. Requires Defender for Endpoint/Business."
   },
   {
     "name": "UnusedLicenses",
@@ -323,6 +342,16 @@
     "name": "AppCertificateExpiry",
     "label": "Alert on expiring application certificates",
     "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "LongLivedAppCredentials",
+    "label": "Alert on long-lived app registration secrets or certificates",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Maximum allowed credential lifetime in months (1-24)",
+    "inputName": "InputValue",
+    "description": "Checks app registrations for client secrets or certificates that are valid longer than the Microsoft UI currently allows. Set a threshold from 1 to 24 months."
   },
   {
     "name": "ApnCertExpiry",
@@ -393,6 +422,12 @@
     "name": "LicensedUsersWithRoles",
     "label": "Alert on licensed users with any administrator roles",
     "recommendedRunInterval": "7d"
+  },
+  {
+    "name": "RoleEscalableGroups",
+    "label": "Alert on groups or nested groups assigned to a role that could be used for privilege escalation",
+    "recommendedRunInterval": "1d",
+    "description": "Scans for groups, including nested groups, that are assigned to directory roles and are not role assignable, which allows group owners or group admins to add more users to the group and gain access to a potentially privileged role."
   },
   {
     "name": "HuntressRogueApps",
@@ -551,5 +586,11 @@
       }
     ],
     "description": "Monitors Secure Score and alerts when it falls below the specified threshold (absolute or percent value). Helps identify security gaps and areas for improvement."
+  },
+  {
+    "name": "TenantAccess",
+    "label": "Alert on tenant accessibility issues (Graph, Exchange, GDAP roles)",
+    "recommendedRunInterval": "1d",
+    "description": "Proactively monitors tenant accessibility by testing Graph API connectivity, GDAP role assignments, and Exchange Online access. Alerts when tenants have lost permissions, removed GDAP consent, or are missing required roles. Helps identify tenants that need a permission refresh or offboarding."
   }
 ]

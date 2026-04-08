@@ -1,0 +1,10 @@
+[
+  {
+    "label": "Generated Reports",
+    "path": "/tools/report-builder/generated"
+  },
+  {
+    "label": "Templates",
+    "path": "/tools/report-builder/templates"
+  }
+]

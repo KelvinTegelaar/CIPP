@@ -38,10 +38,13 @@ const markOpenItems = (items, pathname) => {
   });
 };
 
-const renderItems = ({ collapse = false, depth = 0, items, pathname }) =>
-  items.reduce((acc, item) => reduceChildRoutes({ acc, collapse, depth, item, pathname }), []);
+const renderItems = ({ collapse = false, depth = 0, items, pathname, category = "" }) =>
+  items.reduce(
+    (acc, item) => reduceChildRoutes({ acc, collapse, depth, item, pathname, category }),
+    []
+  );
 
-const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
+const reduceChildRoutes = ({ acc, collapse, depth, item, pathname, category }) => {
   const checkPath = !!(item.path && pathname);
   const exactMatch = checkPath && pathname === item.path;
   // Special handling for root path "/" to avoid matching all paths
@@ -49,6 +52,7 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
 
   const hasChildren = item.items && item.items.length > 0;
   const isActive = exactMatch || (partialMatch && !hasChildren);
+  const currentCategory = depth === 0 && item.type === "header" ? item.title : category;
 
   if (hasChildren) {
     acc.push(
@@ -64,6 +68,7 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
         scope={item.scope}
         title={item.title}
         type={item.type}
+        category={currentCategory}
       >
         <Stack
           component="ul"
@@ -79,9 +84,10 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
             depth: depth + 1,
             items: item.items,
             pathname,
+            category: currentCategory,
           })}
         </Stack>
-      </SideNavItem>,
+      </SideNavItem>
     );
   } else {
     acc.push(
@@ -95,7 +101,8 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
         path={item.path}
         scope={item.scope}
         title={item.title}
-      />,
+        category={currentCategory}
+      />
     );
   }
 

@@ -1,0 +1,41 @@
+{
+  "_metadata": {
+    "endpoint": "ListSafeLinksPolicy",
+    "generatedAt": "2026-04-03T23:44:39.8331506+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AdminDisplayName": "string",
+    "AllowClickThrough": "bool",
+    "ConfigurationStatus": "string",
+    "CustomNotificationText": "string",
+    "DeliverMessageAfterScan": "bool",
+    "Description": "string",
+    "DisableUrlRewrite": "bool",
+    "DoNotRewriteUrls": "null",
+    "EnableForInternalSenders": "bool",
+    "EnableOrganizationBranding": "bool",
+    "EnableSafeLinksForEmail": "bool",
+    "EnableSafeLinksForOffice": "bool",
+    "EnableSafeLinksForTeams": "bool",
+    "ExceptIfRecipientDomainIs": "null",
+    "ExceptIfSentTo": "null",
+    "ExceptIfSentToMemberOf": "null",
+    "IsBuiltIn": "bool",
+    "IsValid": "bool",
+    "Name": "string",
+    "PolicyName": "string",
+    "Priority": "number",
+    "RecipientDomainIs": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "RuleName": "string",
+    "ScanUrls": "bool",
+    "SentTo": "null",
+    "SentToMemberOf": "null",
+    "State": "string",
+    "TrackClicks": "bool"
+  }
+}

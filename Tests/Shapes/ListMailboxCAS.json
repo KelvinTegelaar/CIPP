@@ -1,0 +1,19 @@
+{
+  "_metadata": {
+    "endpoint": "ListMailboxCAS",
+    "generatedAt": "2026-04-03T23:43:47.9978919+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "activesyncenabled": "bool",
+    "displayName": "string",
+    "ecpenabled": "bool",
+    "ewsenabled": "null",
+    "imapenabled": "bool",
+    "mapienabled": "bool",
+    "owaenabled": "bool",
+    "popenabled": "bool",
+    "primarySmtpAddress": "string"
+  }
+}

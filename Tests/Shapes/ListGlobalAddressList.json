@@ -1,0 +1,28 @@
+{
+  "_metadata": {
+    "endpoint": "ListGlobalAddressList",
+    "generatedAt": "2026-04-03T23:42:58.1072171+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AddressListMembership": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "Alias": "string",
+    "DisplayName": "string",
+    "EmailAddresses": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "ExternalDirectoryObjectId": "string",
+    "HiddenFromAddressListsEnabled": "bool",
+    "Identity": "string",
+    "IsDirSynced": "bool",
+    "PrimarySmtpAddress": "string",
+    "RecipientType": "string",
+    "RecipientTypeDetails": "string",
+    "SKUAssigned": "null"
+  }
+}

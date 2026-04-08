@@ -1,0 +1,16 @@
+{
+  "_metadata": {
+    "endpoint": "ListOAuthApps",
+    "generatedAt": "2026-04-03T23:44:20.5019097+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "ApplicationID": "string",
+    "Name": "string",
+    "ObjectID": "string",
+    "Scope": "string",
+    "StartTime": "datetime",
+    "Tenant": "string"
+  }
+}

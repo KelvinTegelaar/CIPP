@@ -1,0 +1,67 @@
+---
+name: CIPP API Tests
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  api-tests:
+    if: github.repository_owner == 'KelvinTegelaar'
+    name: API Shape & Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run Shape Tests
+        id: shape-tests
+        shell: pwsh
+        env:
+          CIPP_API_URL: ${{ secrets.CIPP_TEST_API_URL }}
+          CIPP_CLIENT_ID: ${{ secrets.CIPP_TEST_CLIENT_ID }}
+          CIPP_CLIENT_SECRET: ${{ secrets.CIPP_TEST_CLIENT_SECRET }}
+          CIPP_TENANT_ID: ${{ secrets.CIPP_TEST_TENANT_ID }}
+          CIPP_API_SCOPE: ${{ secrets.CIPP_TEST_API_SCOPE }}
+          CIPP_TENANT_FILTER: ${{ secrets.CIPP_TEST_TENANT_FILTER }}
+        run: |
+          ./Tools/Invoke-CippShapeTests.ps1 `
+            -CippApiUrl $env:CIPP_API_URL `
+            -CippClientId $env:CIPP_CLIENT_ID `
+            -CippClientSecret $env:CIPP_CLIENT_SECRET `
+            -CippTenantId $env:CIPP_TENANT_ID `
+            -CippApiScope $env:CIPP_API_SCOPE `
+            -TenantFilter $env:CIPP_TENANT_FILTER `
+            -CI
+
+      - name: Run Integration Tests
+        if: always()
+        id: integration-tests
+        shell: pwsh
+        env:
+          CIPP_API_URL: ${{ secrets.CIPP_TEST_API_URL }}
+          CIPP_CLIENT_ID: ${{ secrets.CIPP_TEST_CLIENT_ID }}
+          CIPP_CLIENT_SECRET: ${{ secrets.CIPP_TEST_CLIENT_SECRET }}
+          CIPP_TENANT_ID: ${{ secrets.CIPP_TEST_TENANT_ID }}
+          CIPP_API_SCOPE: ${{ secrets.CIPP_TEST_API_SCOPE }}
+          CIPP_TENANT_FILTER: ${{ secrets.CIPP_TEST_TENANT_FILTER }}
+        run: |
+          ./Tools/Invoke-CippIntegrationTests.ps1 `
+            -CippApiUrl $env:CIPP_API_URL `
+            -CippClientId $env:CIPP_CLIENT_ID `
+            -CippClientSecret $env:CIPP_CLIENT_SECRET `
+            -CippTenantId $env:CIPP_TENANT_ID `
+            -CippApiScope $env:CIPP_API_SCOPE `
+            -TenantFilter $env:CIPP_TENANT_FILTER `
+            -CI
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: Tests/Shapes/test-results.json
+          retention-days: 30

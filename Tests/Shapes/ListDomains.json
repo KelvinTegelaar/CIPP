@@ -1,0 +1,13 @@
+{
+  "_metadata": {
+    "endpoint": "ListDomains",
+    "generatedAt": "2026-04-03T23:42:15.7918264+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "id": "string",
+    "isDefault": "bool",
+    "isInitial": "bool"
+  }
+}

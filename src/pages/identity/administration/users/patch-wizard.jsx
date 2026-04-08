@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import CippWizardPage from "../../../../components/CippWizard/CippWizardPage.jsx";
+import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/router'
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import CippWizardPage from '../../../../components/CippWizard/CippWizardPage.jsx'
 import {
   Stack,
   Typography,
@@ -15,95 +15,95 @@ import {
   Switch,
   FormControlLabel,
   Autocomplete,
-} from "@mui/material";
-import { CippWizardStepButtons } from "../../../../components/CippWizard/CippWizardStepButtons";
-import { ApiPostCall, ApiGetCall } from "../../../../api/ApiCall";
-import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
-import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
-import { Delete } from "@mui/icons-material";
+} from '@mui/material'
+import { CippWizardStepButtons } from '../../../../components/CippWizard/CippWizardStepButtons'
+import { ApiPostCall, ApiGetCall } from '../../../../api/ApiCall'
+import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
+import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import { Delete } from '@mui/icons-material'
 
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
   {
-    property: "city",
-    label: "City",
-    type: "string",
+    property: 'city',
+    label: 'City',
+    type: 'string',
   },
   {
-    property: "companyName",
-    label: "Company Name",
-    type: "string",
+    property: 'companyName',
+    label: 'Company Name',
+    type: 'string',
   },
   {
-    property: "country",
-    label: "Country",
-    type: "string",
+    property: 'country',
+    label: 'Country',
+    type: 'string',
   },
   {
-    property: "department",
-    label: "Department",
-    type: "string",
+    property: 'department',
+    label: 'Department',
+    type: 'string',
   },
   {
-    property: "employeeType",
-    label: "Employee Type",
-    type: "string",
+    property: 'employeeType',
+    label: 'Employee Type',
+    type: 'string',
   },
   {
-    property: "jobTitle",
-    label: "Job Title",
-    type: "string",
+    property: 'jobTitle',
+    label: 'Job Title',
+    type: 'string',
   },
   {
-    property: "officeLocation",
-    label: "Office Location",
-    type: "string",
+    property: 'officeLocation',
+    label: 'Office Location',
+    type: 'string',
   },
   {
-    property: "postalCode",
-    label: "Postal Code",
-    type: "string",
+    property: 'postalCode',
+    label: 'Postal Code',
+    type: 'string',
   },
   {
-    property: "preferredDataLocation",
-    label: "Preferred Data Location",
-    type: "string",
+    property: 'preferredDataLocation',
+    label: 'Preferred Data Location',
+    type: 'string',
   },
   {
-    property: "preferredLanguage",
-    label: "Preferred Language",
-    type: "string",
+    property: 'preferredLanguage',
+    label: 'Preferred Language',
+    type: 'string',
   },
   {
-    property: "showInAddressList",
-    label: "Show in Address List",
-    type: "boolean",
+    property: 'showInAddressList',
+    label: 'Show in Address List',
+    type: 'boolean',
   },
   {
-    property: "state",
-    label: "State/Province",
-    type: "string",
+    property: 'state',
+    label: 'State/Province',
+    type: 'string',
   },
   {
-    property: "streetAddress",
-    label: "Street Address",
-    type: "string",
+    property: 'streetAddress',
+    label: 'Street Address',
+    type: 'string',
   },
   {
-    property: "usageLocation",
-    label: "Usage Location",
-    type: "string",
+    property: 'usageLocation',
+    label: 'Usage Location',
+    type: 'string',
   },
-];
+]
 
 // Step 1: Display users to be updated
 const UsersDisplayStep = (props) => {
-  const { onNextStep, onPreviousStep, formControl, currentStep, users, onUsersChange } = props;
+  const { onNextStep, onPreviousStep, formControl, currentStep, users, onUsersChange } = props
 
   const handleRemoveUser = (userToRemove) => {
-    const updatedUsers = users.filter((user) => user.id !== userToRemove.id);
-    onUsersChange(updatedUsers);
-  };
+    const updatedUsers = users.filter((user) => user.id !== userToRemove.id)
+    onUsersChange(updatedUsers)
+  }
 
   // Clean user data without circular references
   const tableData =
@@ -114,20 +114,20 @@ const UsersDisplayStep = (props) => {
       jobTitle: user.jobTitle,
       department: user.department,
       // Only include serializable properties
-    })) || [];
+    })) || []
 
-  const columns = ["displayName", "userPrincipalName", "jobTitle", "department"];
+  const columns = ['displayName', 'userPrincipalName', 'jobTitle', 'department']
 
   // Define actions separately to avoid circular references
   const rowActions = [
     {
-      label: "Remove from List",
+      label: 'Remove from List',
       icon: <Delete />,
-      color: "error",
+      color: 'error',
       customFunction: (user) => handleRemoveUser(user),
       noConfirm: true,
     },
-  ];
+  ]
 
   return (
     <Stack spacing={3}>
@@ -156,7 +156,7 @@ const UsersDisplayStep = (props) => {
       ) : (
         <Card variant="outlined">
           <CardContent>
-            <Typography color="text.secondary" variant="body2" sx={{ textAlign: "center", py: 2 }}>
+            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
               No users selected. Please go back and select users from the main table.
             </Typography>
           </CardContent>
@@ -171,17 +171,17 @@ const UsersDisplayStep = (props) => {
         noNextButton={!users || users.length === 0}
       />
     </Stack>
-  );
-};
+  )
+}
 
 // Step 2: Property selection and input
 const PropertySelectionStep = (props) => {
-  const { onNextStep, onPreviousStep, formControl, currentStep, users } = props;
-  const [selectedProperties, setSelectedProperties] = useState([]);
+  const { onNextStep, onPreviousStep, formControl, currentStep, users } = props
+  const [selectedProperties, setSelectedProperties] = useState([])
 
   // Get unique tenant domains from users
   const tenantDomains =
-    [...new Set(users?.map((user) => user.Tenant || user.tenantFilter).filter(Boolean))] || [];
+    [...new Set(users?.map((user) => user.Tenant || user.tenantFilter).filter(Boolean))] || []
 
   // Fetch custom data mappings for all tenants
   const customDataMappings = ApiGetCall({
@@ -189,51 +189,51 @@ const PropertySelectionStep = (props) => {
       tenantDomains.length > 0
         ? `/api/ListCustomDataMappings?sourceType=Manual Entry&directoryObject=User&tenantFilter=${tenantDomains[0]}`
         : null,
-    queryKey: `ManualEntryMappings-${tenantDomains.join(",")}`,
+    queryKey: `ManualEntryMappings-${tenantDomains.join(',')}`,
     enabled: tenantDomains.length > 0,
     refetchOnMount: false,
     refetchOnReconnect: false,
-  });
+  })
 
   // Process custom data mappings into property format
   const customDataProperties = useMemo(() => {
     if (customDataMappings.isSuccess && customDataMappings.data?.Results) {
       return customDataMappings.data.Results.filter((mapping) => {
         // Only include single-value properties, filter out multivalue ones
-        const dataType = mapping.customDataAttribute.addedFields.dataType?.toLowerCase();
-        const isMultiValue = mapping.customDataAttribute.addedFields.isMultiValue;
-        return !isMultiValue && dataType !== "collection";
+        const dataType = mapping.customDataAttribute.addedFields.dataType?.toLowerCase()
+        const isMultiValue = mapping.customDataAttribute.addedFields.isMultiValue
+        return !isMultiValue && dataType !== 'collection'
       }).map((mapping) => ({
         property: mapping.customDataAttribute.value, // Use the actual attribute name, not nested under customData
         label: `${mapping.manualEntryFieldLabel} (Custom)`,
-        type: mapping.customDataAttribute.addedFields.dataType?.toLowerCase() || "string",
+        type: mapping.customDataAttribute.addedFields.dataType?.toLowerCase() || 'string',
         isCustomData: true,
-      }));
+      }))
     }
-    return [];
-  }, [customDataMappings.isSuccess, customDataMappings.data]);
+    return []
+  }, [customDataMappings.isSuccess, customDataMappings.data])
 
   // Combine standard properties with custom data properties
   const allProperties = useMemo(() => {
-    return [...PATCHABLE_PROPERTIES, ...customDataProperties];
-  }, [customDataProperties]);
+    return [...PATCHABLE_PROPERTIES, ...customDataProperties]
+  }, [customDataProperties])
 
   // Register form fields
-  formControl.register("selectedProperties", { required: true });
-  formControl.register("propertyValues", { required: false });
+  formControl.register('selectedProperties', { required: true })
+  formControl.register('propertyValues', { required: false })
 
   const handlePropertyValueChange = (property, value) => {
-    const currentValues = formControl.getValues("propertyValues") || {};
-    const newValues = { ...currentValues, [property]: value };
-    formControl.setValue("propertyValues", newValues);
-    formControl.trigger();
-  };
+    const currentValues = formControl.getValues('propertyValues') || {}
+    const newValues = { ...currentValues, [property]: value }
+    formControl.setValue('propertyValues', newValues)
+    formControl.trigger()
+  }
 
   const renderPropertyInput = (propertyName) => {
-    const property = allProperties.find((p) => p.property === propertyName);
-    const currentValue = formControl.getValues("propertyValues")?.[propertyName];
+    const property = allProperties.find((p) => p.property === propertyName)
+    const currentValue = formControl.getValues('propertyValues')?.[propertyName]
 
-    if (property?.type === "boolean") {
+    if (property?.type === 'boolean') {
       return (
         <FormControlLabel
           control={
@@ -245,7 +245,7 @@ const PropertySelectionStep = (props) => {
           label={property.label}
           key={propertyName}
         />
-      );
+      )
     }
 
     // Default to text input for string types with consistent styling
@@ -254,7 +254,7 @@ const PropertySelectionStep = (props) => {
         key={propertyName}
         label={property?.label || propertyName}
         fullWidth
-        value={currentValue || ""}
+        value={currentValue || ''}
         onChange={(e) => handlePropertyValueChange(propertyName, e.target.value)}
         placeholder={`Enter new value for ${property?.label || propertyName}`}
         variant="filled"
@@ -262,21 +262,17 @@ const PropertySelectionStep = (props) => {
         slotProps={{
           inputLabel: {
             shrink: true,
-            sx: { transition: "none" },
+            sx: { transition: 'none' },
           },
           input: {
-            notched: true,
             sx: {
-              transition: "none",
-              "& .MuiOutlinedInput-notchedOutline": {
-                transition: "none",
-              },
+              transition: 'none',
             },
           },
         }}
       />
-    );
-  };
+    )
+  }
 
   return (
     <Stack spacing={3}>
@@ -289,7 +285,7 @@ const PropertySelectionStep = (props) => {
           )}
         </Typography>
         {customDataMappings.isLoading && (
-          <Typography color="text.secondary" variant="body2" sx={{ fontStyle: "italic" }}>
+          <Typography color="text.secondary" variant="body2" sx={{ fontStyle: 'italic' }}>
             Loading custom data mappings...
           </Typography>
         )}
@@ -300,7 +296,7 @@ const PropertySelectionStep = (props) => {
         disableCloseOnSelect
         options={[
           {
-            property: "select-all",
+            property: 'select-all',
             label: `Select All (${allProperties.length} properties)`,
             isSelectAll: true,
           },
@@ -309,64 +305,64 @@ const PropertySelectionStep = (props) => {
         value={allProperties.filter((prop) => selectedProperties.includes(prop.property))}
         onChange={(event, newValue) => {
           // Check if "Select All" was clicked
-          const selectAllOption = newValue.find((option) => option.isSelectAll);
+          const selectAllOption = newValue.find((option) => option.isSelectAll)
 
           if (selectAllOption) {
             // If Select All is in the new value, select all properties
-            const allSelected = selectedProperties.length === allProperties.length;
-            const newProperties = allSelected ? [] : allProperties.map((p) => p.property);
-            setSelectedProperties(newProperties);
-            formControl.setValue("selectedProperties", newProperties);
+            const allSelected = selectedProperties.length === allProperties.length
+            const newProperties = allSelected ? [] : allProperties.map((p) => p.property)
+            setSelectedProperties(newProperties)
+            formControl.setValue('selectedProperties', newProperties)
 
             // Reset property values when selection changes
-            const currentValues = formControl.getValues("propertyValues") || {};
-            const newValues = {};
+            const currentValues = formControl.getValues('propertyValues') || {}
+            const newValues = {}
             newProperties.forEach((prop) => {
               if (currentValues[prop]) {
-                newValues[prop] = currentValues[prop];
+                newValues[prop] = currentValues[prop]
               }
-            });
-            formControl.setValue("propertyValues", newValues);
-            formControl.trigger();
+            })
+            formControl.setValue('propertyValues', newValues)
+            formControl.trigger()
           } else {
             // Normal property selection
             const newProperties = newValue
               .filter((prop) => !prop.isSelectAll)
-              .map((prop) => prop.property);
-            setSelectedProperties(newProperties);
-            formControl.setValue("selectedProperties", newProperties);
+              .map((prop) => prop.property)
+            setSelectedProperties(newProperties)
+            formControl.setValue('selectedProperties', newProperties)
 
             // Reset property values when selection changes
-            const currentValues = formControl.getValues("propertyValues") || {};
-            const newValues = {};
+            const currentValues = formControl.getValues('propertyValues') || {}
+            const newValues = {}
             newProperties.forEach((prop) => {
               if (currentValues[prop]) {
-                newValues[prop] = currentValues[prop];
+                newValues[prop] = currentValues[prop]
               }
-            });
-            formControl.setValue("propertyValues", newValues);
-            formControl.trigger();
+            })
+            formControl.setValue('propertyValues', newValues)
+            formControl.trigger()
           }
         }}
         getOptionLabel={(option) => option.label}
         isOptionEqualToValue={(option, value) => option.property === value.property}
         size="small"
         renderOption={(props, option, { selected }) => {
-          const isAllSelected = selectedProperties.length === allProperties.length;
+          const isAllSelected = selectedProperties.length === allProperties.length
           const isIndeterminate =
-            selectedProperties.length > 0 && selectedProperties.length < allProperties.length;
+            selectedProperties.length > 0 && selectedProperties.length < allProperties.length
 
           if (option.isSelectAll) {
             return (
-              <li {...props} style={{ borderBottom: "1px solid #e0e0e0" }}>
+              <li {...props} style={{ borderBottom: '1px solid #e0e0e0' }}>
                 <Checkbox
                   checked={isAllSelected}
                   indeterminate={isIndeterminate}
                   style={{ marginRight: 8 }}
                 />
-                <Typography sx={{ fontWeight: "bold" }}>{option.label}</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>{option.label}</Typography>
               </li>
-            );
+            )
           }
 
           return (
@@ -374,7 +370,7 @@ const PropertySelectionStep = (props) => {
               <Checkbox checked={selected} style={{ marginRight: 8 }} />
               {option.label}
             </li>
-          );
+          )
         }}
         renderInput={(params) => (
           <TextField
@@ -384,15 +380,14 @@ const PropertySelectionStep = (props) => {
             slotProps={{
               inputLabel: {
                 shrink: true,
-                sx: { transition: "none" },
+                sx: { transition: 'none' },
               },
               input: {
                 ...params.InputProps,
-                notched: true,
                 sx: {
-                  transition: "none",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    transition: "none",
+                  transition: 'none',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    transition: 'none',
                   },
                 },
               },
@@ -431,25 +426,25 @@ const PropertySelectionStep = (props) => {
         formControl={formControl}
       />
     </Stack>
-  );
-};
+  )
+}
 
 // Step 3: Confirmation
 const ConfirmationStep = (props) => {
-  const { lastStep, formControl, onPreviousStep, currentStep, users, allProperties } = props;
-  const formValues = formControl.getValues();
-  const { selectedProperties = [], propertyValues = {} } = formValues;
+  const { lastStep, formControl, onPreviousStep, currentStep, users, allProperties } = props
+  const formValues = formControl.getValues()
+  const { selectedProperties = [], propertyValues = {} } = formValues
 
   // Create API call handler for bulk patch
   const patchUsersApi = ApiPostCall({
-    relatedQueryKeys: ["ListUsers"],
-  });
+    relatedQueryKeys: ['ListUsers'],
+  })
 
   const handleSubmit = () => {
     // Validate that we still have users to patch
     if (!users || users.length === 0) {
-      console.error("No users to patch");
-      return;
+      console.error('No users to patch')
+      return
     }
 
     // Create bulk request data
@@ -457,41 +452,41 @@ const ConfirmationStep = (props) => {
       const userData = {
         id: user.id,
         tenantFilter: user.Tenant || user.tenantFilter,
-      };
+      }
 
       selectedProperties.forEach((propName) => {
-        if (propertyValues[propName] !== undefined && propertyValues[propName] !== "") {
+        if (propertyValues[propName] !== undefined && propertyValues[propName] !== '') {
           // Handle dot notation properties (e.g., "extension_abc123.customField")
-          if (propName.includes(".")) {
-            const parts = propName.split(".");
-            let current = userData;
+          if (propName.includes('.')) {
+            const parts = propName.split('.')
+            let current = userData
 
             // Navigate to the nested object, creating it if it doesn't exist
             for (let i = 0; i < parts.length - 1; i++) {
               if (!current[parts[i]]) {
-                current[parts[i]] = {};
+                current[parts[i]] = {}
               }
-              current = current[parts[i]];
+              current = current[parts[i]]
             }
 
             // Set the final property value
-            current[parts[parts.length - 1]] = propertyValues[propName];
+            current[parts[parts.length - 1]] = propertyValues[propName]
           } else {
             // Handle regular properties
-            userData[propName] = propertyValues[propName];
+            userData[propName] = propertyValues[propName]
           }
         }
-      });
+      })
 
-      return userData;
-    });
+      return userData
+    })
 
     // Submit to API
     patchUsersApi.mutate({
-      url: "/api/PatchUser",
+      url: '/api/PatchUser',
       data: patchData,
-    });
-  };
+    })
+  }
 
   // Clean user data for table display
   const tableData =
@@ -501,17 +496,17 @@ const ConfirmationStep = (props) => {
       userPrincipalName: user.userPrincipalName,
       jobTitle: user.jobTitle,
       department: user.department,
-    })) || [];
+    })) || []
 
-  const columns = ["displayName", "userPrincipalName", "jobTitle", "department"];
+  const columns = ['displayName', 'userPrincipalName', 'jobTitle', 'department']
 
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Confirm User Updates</Typography>
         <Typography color="text.secondary" variant="body2">
-          Review the users that will be updated with {selectedProperties.length} selected{" "}
-          {selectedProperties.length === 1 ? "property" : "properties"}, then click Submit to apply
+          Review the users that will be updated with {selectedProperties.length} selected{' '}
+          {selectedProperties.length === 1 ? 'property' : 'properties'}, then click Submit to apply
           the changes.
         </Typography>
       </Stack>
@@ -525,16 +520,16 @@ const ConfirmationStep = (props) => {
             </Typography>
             <Stack spacing={1}>
               {selectedProperties.map((propName) => {
-                const property = allProperties.find((p) => p.property === propName);
-                const value = propertyValues[propName];
+                const property = allProperties.find((p) => p.property === propName)
+                const value = propertyValues[propName]
                 const displayValue =
-                  property?.type === "boolean" ? (value ? "Yes" : "No") : value || "Not set";
+                  property?.type === 'boolean' ? (value ? 'Yes' : 'No') : value || 'Not set'
 
                 return (
-                  <Box key={propName} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <Box key={propName} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Typography
                       variant="body2"
-                      sx={{ fontWeight: "medium", minWidth: "fit-content" }}
+                      sx={{ fontWeight: 'medium', minWidth: 'fit-content' }}
                     >
                       {property?.label || propName}:
                     </Typography>
@@ -542,7 +537,7 @@ const ConfirmationStep = (props) => {
                       {displayValue}
                     </Typography>
                   </Box>
-                );
+                )
               })}
             </Stack>
           </CardContent>
@@ -565,7 +560,7 @@ const ConfirmationStep = (props) => {
       ) : (
         <Card variant="outlined">
           <CardContent>
-            <Typography color="text.secondary" variant="body2" sx={{ textAlign: "center", py: 2 }}>
+            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
               No users to update. Please go back and select users.
             </Typography>
           </CardContent>
@@ -598,45 +593,45 @@ const ConfirmationStep = (props) => {
           }
           onClick={handleSubmit}
         >
-          {patchUsersApi.isSuccess ? "Resubmit" : "Submit"}
+          {patchUsersApi.isSuccess ? 'Resubmit' : 'Submit'}
         </Button>
       </Stack>
     </Stack>
-  );
-};
+  )
+}
 
 const Page = () => {
-  const router = useRouter();
-  const [users, setUsers] = useState([]);
+  const router = useRouter()
+  const [users, setUsers] = useState([])
 
   // Get users from URL parameters or session storage
   useEffect(() => {
     try {
       if (router.query.users) {
-        const parsedUsers = JSON.parse(decodeURIComponent(router.query.users));
-        setUsers(Array.isArray(parsedUsers) ? parsedUsers : [parsedUsers]);
+        const parsedUsers = JSON.parse(decodeURIComponent(router.query.users))
+        setUsers(Array.isArray(parsedUsers) ? parsedUsers : [parsedUsers])
       } else {
         // Fallback to session storage
-        const storedUsers = sessionStorage.getItem("patchWizardUsers");
+        const storedUsers = sessionStorage.getItem('patchWizardUsers')
         if (storedUsers) {
-          const parsedUsers = JSON.parse(storedUsers);
-          setUsers(Array.isArray(parsedUsers) ? parsedUsers : [parsedUsers]);
+          const parsedUsers = JSON.parse(storedUsers)
+          setUsers(Array.isArray(parsedUsers) ? parsedUsers : [parsedUsers])
           // Clear session storage after use
-          sessionStorage.removeItem("patchWizardUsers");
+          sessionStorage.removeItem('patchWizardUsers')
         }
       }
     } catch (error) {
-      console.error("Error parsing users data:", error);
-      setUsers([]);
+      console.error('Error parsing users data:', error)
+      setUsers([])
     }
-  }, [router.query.users]);
+  }, [router.query.users])
 
   // Get unique tenant domains from users
   const tenantDomains = useMemo(() => {
     return (
       [...new Set(users?.map((user) => user.Tenant || user.tenantFilter).filter(Boolean))] || []
-    );
-  }, [users]);
+    )
+  }, [users])
 
   // Fetch custom data mappings for all tenants
   const customDataMappings = ApiGetCall({
@@ -644,39 +639,39 @@ const Page = () => {
       tenantDomains.length > 0
         ? `/api/ListCustomDataMappings?sourceType=Manual Entry&directoryObject=User&tenantFilter=${tenantDomains[0]}`
         : null,
-    queryKey: `ManualEntryMappings-${tenantDomains.join(",")}`,
+    queryKey: `ManualEntryMappings-${tenantDomains.join(',')}`,
     enabled: tenantDomains.length > 0,
     refetchOnMount: false,
     refetchOnReconnect: false,
-  });
+  })
 
   // Process custom data mappings into property format
   const customDataProperties = useMemo(() => {
     if (customDataMappings.isSuccess && customDataMappings.data?.Results) {
       return customDataMappings.data.Results.filter((mapping) => {
         // Only include single-value properties, filter out multivalue ones
-        const dataType = mapping.customDataAttribute.addedFields.dataType?.toLowerCase();
-        const isMultiValue = mapping.customDataAttribute.addedFields.isMultiValue;
-        return !isMultiValue && dataType !== "collection";
+        const dataType = mapping.customDataAttribute.addedFields.dataType?.toLowerCase()
+        const isMultiValue = mapping.customDataAttribute.addedFields.isMultiValue
+        return !isMultiValue && dataType !== 'collection'
       }).map((mapping) => ({
         property: mapping.customDataAttribute.value, // Use the actual attribute name, not nested under customData
         label: `${mapping.manualEntryFieldLabel} (Custom)`,
-        type: mapping.customDataAttribute.addedFields.dataType?.toLowerCase() || "string",
+        type: mapping.customDataAttribute.addedFields.dataType?.toLowerCase() || 'string',
         isCustomData: true,
-      }));
+      }))
     }
-    return [];
-  }, [customDataMappings.isSuccess, customDataMappings.data]);
+    return []
+  }, [customDataMappings.isSuccess, customDataMappings.data])
 
   // Combine standard properties with custom data properties
   const allProperties = useMemo(() => {
-    return [...PATCHABLE_PROPERTIES, ...customDataProperties];
-  }, [customDataProperties]);
+    return [...PATCHABLE_PROPERTIES, ...customDataProperties]
+  }, [customDataProperties])
 
   const steps = [
     {
-      title: "Step 1",
-      description: "Review Users",
+      title: 'Step 1',
+      description: 'Review Users',
       component: UsersDisplayStep,
       componentProps: {
         users: users,
@@ -684,8 +679,8 @@ const Page = () => {
       },
     },
     {
-      title: "Step 2",
-      description: "Select Properties",
+      title: 'Step 2',
+      description: 'Select Properties',
       component: PropertySelectionStep,
       componentProps: {
         users: users,
@@ -695,20 +690,20 @@ const Page = () => {
       },
     },
     {
-      title: "Step 3",
-      description: "Confirmation",
+      title: 'Step 3',
+      description: 'Confirmation',
       component: ConfirmationStep,
       componentProps: {
         users: users,
         allProperties: allProperties,
       },
     },
-  ];
+  ]
 
   const initialState = {
     selectedProperties: [],
     propertyValues: {},
-  };
+  }
 
   return (
     <CippWizardPage
@@ -718,9 +713,9 @@ const Page = () => {
       postUrl="" // Empty since we handle submission manually
       initialState={initialState}
     />
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default Page;
+export default Page

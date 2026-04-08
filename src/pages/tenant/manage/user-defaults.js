@@ -57,14 +57,37 @@ const Page = () => {
       creatable: true,
     },
     {
+      label: "Username Space Handling",
+      name: "usernameSpaceHandling",
+      type: "autoComplete",
+      options: [
+        { label: "Keep spaces", value: "keep" },
+        { label: "Remove spaces", value: "remove" },
+        { label: "Replace spaces", value: "replace" },
+      ],
+      helperText: "How spaces in the generated username should be handled.",
+      multiple: false,
+      creatable: false,
+    },
+    {
+      label: "Username Space Replacement",
+      name: "usernameSpaceReplacement",
+      type: "textField",
+      helperText: "Used when space handling is set to Replace spaces (example: _ or .).",
+    },
+    {
       label: "Primary Domain",
       name: "primDomain",
       type: "autoComplete",
       api: {
-        url: "/api/ListDomains",
+        url: "/api/ListGraphRequest",
+        dataKey: "Results",
+        data: {
+          Endpoint: "domains",
+        },
         labelField: "id",
         valueField: "id",
-        queryKey: "ListDomains",
+        queryKey: "ListGraphRequest-domains",
       },
       multiple: false,
       creatable: false,
@@ -102,6 +125,22 @@ const Page = () => {
       },
       multiple: true,
       creatable: false,
+    },
+    {
+      label: "Add to Groups",
+      name: "groupMemberships",
+      type: "autoComplete",
+      api: {
+        url: "/api/ListGroups",
+        labelField: "displayName",
+        valueField: "id",
+        queryKey: "ListGroups",
+        addedField: {
+          groupType: "calculatedGroupType",
+        },
+      },
+      multiple: true,
+      creatable: false
     },
     {
       label: "Job Title",
@@ -184,9 +223,12 @@ const Page = () => {
       "defaultForTenant",
       "displayName",
       "usernameFormat",
+      "usernameSpaceHandling",
+      "usernameSpaceReplacement",
       "primDomain",
       "usageLocation",
       "licenses",
+      "groupMemberships",
       "jobTitle",
       "streetAddress",
       "city",
@@ -222,6 +264,7 @@ const Page = () => {
           "defaultForTenant",
           "displayName",
           "usernameFormat",
+          "usernameSpaceHandling",
           "usageLocation",
           "department",
         ]}

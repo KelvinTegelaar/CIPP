@@ -1,0 +1,175 @@
+{
+  "_metadata": {
+    "endpoint": "ListSignIns",
+    "generatedAt": "2026-04-03T23:46:50.9607317+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "additionalDetails": "null",
+    "agent": {
+      "agentSubjectParentId": "string",
+      "agentSubjectType": "string",
+      "agentType": "string",
+      "parentAppId": "string"
+    },
+    "appDisplayName": "string",
+    "appId": "string",
+    "appliedConditionalAccessPolicies": {
+      "_type": "array",
+      "_element": {
+        "authenticationStrength": "null",
+        "conditionsNotSatisfied": "truncated",
+        "conditionsSatisfied": "truncated",
+        "displayName": "truncated",
+        "enforcedGrantControls": "truncated",
+        "enforcedSessionControls": "null",
+        "excludeRulesSatisfied": "null",
+        "id": "truncated",
+        "includeRulesSatisfied": "truncated",
+        "result": "truncated",
+        "sessionControlsNotSatisfied": "null"
+      }
+    },
+    "appliedEventListeners": "null",
+    "appOwnerTenantId": "string",
+    "authenticationAppDeviceDetails": "null",
+    "authenticationAppPolicyEvaluationDetails": "null",
+    "authenticationContextClassReferences": {
+      "detail": "string",
+      "id": "string"
+    },
+    "authenticationDetails": {
+      "authenticationMethod": "string",
+      "authenticationMethodDetail": "string",
+      "authenticationStepDateTime": "datetime",
+      "authenticationStepRequirement": "string",
+      "authenticationStepResultDetail": "string",
+      "succeeded": "bool"
+    },
+    "authenticationMethodsUsed": "null",
+    "authenticationProcessingDetails": {
+      "_type": "array",
+      "_element": {
+        "key": "truncated",
+        "value": "truncated"
+      }
+    },
+    "authenticationProtocol": "string",
+    "authenticationRequirement": "string",
+    "authenticationRequirementPolicies": {
+      "_type": "array",
+      "_element": {
+        "detail": "truncated",
+        "requirementProvider": "truncated"
+      }
+    },
+    "autonomousSystemNumber": "number",
+    "clientAppUsed": "string",
+    "clientCredentialType": "string",
+    "conditionalAccessAudiences": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "conditionalAccessStatus": "string",
+    "correlationId": "string",
+    "createdDateTime": "datetime",
+    "crossTenantAccessType": "string",
+    "deviceDetail": {
+      "browser": "string",
+      "deviceId": "string",
+      "displayName": "string",
+      "isCompliant": "bool",
+      "isManaged": "bool",
+      "operatingSystem": "string",
+      "trustType": "null"
+    },
+    "errorCode": "number",
+    "federatedCredentialId": "null",
+    "flaggedForReview": "bool",
+    "globalSecureAccessIpAddress": "string",
+    "homeTenantId": "string",
+    "homeTenantName": "string",
+    "id": "string",
+    "incomingTokenType": "string",
+    "ipAddress": "string",
+    "ipAddressFromResourceProvider": "null",
+    "isInteractive": "bool",
+    "isTenantRestricted": "bool",
+    "isThroughGlobalSecureAccess": "bool",
+    "location": {
+      "city": "string",
+      "countryOrRegion": "string",
+      "geoCoordinates": {
+        "altitude": "null",
+        "latitude": "truncated",
+        "longitude": "truncated"
+      },
+      "state": "string"
+    },
+    "locationcipp": "string",
+    "managedServiceIdentity": {
+      "associatedResourceId": "null",
+      "federatedTokenId": "null",
+      "federatedTokenIssuer": "null",
+      "msiType": "string"
+    },
+    "mfaDetail": "null",
+    "networkLocationDetails": {
+      "_type": "array",
+      "_element": {
+        "networkNames": "truncated",
+        "networkType": "truncated"
+      }
+    },
+    "originalRequestId": "string",
+    "originalTransferMethod": "string",
+    "privateLinkDetails": {
+      "policyId": "string",
+      "policyName": "string",
+      "policyTenantId": "null",
+      "resourceId": "string"
+    },
+    "processingTimeInMilliseconds": "number",
+    "resourceDisplayName": "string",
+    "resourceId": "string",
+    "resourceOwnerTenantId": "string",
+    "resourceServicePrincipalId": "string",
+    "resourceTenantId": "string",
+    "riskDetail": "string",
+    "riskEventTypes_v2": "null",
+    "riskLevelAggregated": "string",
+    "riskLevelDuringSignIn": "string",
+    "riskState": "string",
+    "servicePrincipalCredentialKeyId": "null",
+    "servicePrincipalCredentialThumbprint": "string",
+    "servicePrincipalId": "string",
+    "servicePrincipalName": "null",
+    "sessionId": "string",
+    "sessionLifetimePolicies": {
+      "detail": "string",
+      "expirationRequirement": "string"
+    },
+    "signInEventTypes": "string",
+    "signInIdentifier": "string",
+    "signInIdentifierType": "null",
+    "signInTokenProtectionStatus": "string",
+    "status": {
+      "additionalDetails": "null",
+      "errorCode": "number",
+      "failureReason": "string"
+    },
+    "tokenIssuerName": "string",
+    "tokenIssuerType": "string",
+    "tokenProtectionStatusDetails": {
+      "signInSessionStatus": "string",
+      "signInSessionStatusCode": "number"
+    },
+    "uniqueTokenIdentifier": "string",
+    "userAgent": "string",
+    "userDisplayName": "string",
+    "userId": "string",
+    "userPrincipalName": "string",
+    "userType": "string"
+  }
+}
