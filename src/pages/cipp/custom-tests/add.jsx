@@ -15,12 +15,20 @@ import {
   AccordionSummary,
   AccordionDetails,
   CircularProgress,
+  Divider,
 } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Stack, Grid } from "@mui/system";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ExpandMore } from "@mui/icons-material";
+import {
+  ExpandMore,
+  CheckCircleOutline,
+  ErrorOutline,
+  NotificationsActive,
+  Code,
+  TableChart,
+} from "@mui/icons-material";
 import cacheTypes from "../../../data/CIPPDBCacheTypes.json";
 import { renderCustomScriptMarkdownTemplate } from "../../../utils/customScriptTemplate";
 import { useSettings } from "../../../hooks/use-settings";
@@ -339,6 +347,7 @@ const Page = () => {
     label: "Notify on Alert",
     type: "switch",
     defaultValue: false,
+    helperText: "When enabled, a failed test triggers an alert routed to your configured notification channels (email, webhook, or PSA).",
   };
 
   const returnTypeField = {
@@ -532,57 +541,81 @@ return $results`,
           <Typography variant="subtitle2">Test Guidance</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Alert severity="info">
-            <Typography variant="body2">
-              <strong>Security Constraints:</strong> Tests are validated using PowerShell AST
-              parsing with an allowlist approach. Only specific commands are permitted (ForEach-Object,
-              Where-Object, Select-Object, etc.). The += operator is blocked.
+          <Box sx={{ "& code": { fontSize: "0.8rem", fontFamily: "monospace", px: 0.5, py: 0.25, borderRadius: 0.5, bgcolor: "action.hover" } }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
+              Custom tests run PowerShell against each tenant. The script output determines pass or fail.
             </Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              <strong>Allowed Data Access:</strong> New-CIPPDbRequest, Get-CIPPDbItem (read-only)
+
+            <Grid container spacing={2} sx={{ mb: 2.5 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Box sx={{ p: 2, borderRadius: 1, border: 1, borderColor: "success.main", borderLeftWidth: 3, height: "100%" }}>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                    <CheckCircleOutline fontSize="small" color="success" />
+                    <Typography variant="subtitle2">Pass</Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary">
+                    Return <code>$null</code>, <code>$false</code>, an empty string, or <code>@()</code>
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Box sx={{ p: 2, borderRadius: 1, border: 1, borderColor: "error.main", borderLeftWidth: 3, height: "100%" }}>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                    <ErrorOutline fontSize="small" color="error" />
+                    <Typography variant="subtitle2">Fail</Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary">
+                    Return any non-empty value — object, array, string, or <code>$true</code>. The returned data becomes the test output.
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ mb: 2.5 }} />
+
+            <Grid container spacing={2} sx={{ mb: 2.5 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box sx={{ p: 2, borderRadius: 1, border: 1, borderColor: "divider", height: "100%" }}>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                    <NotificationsActive fontSize="small" color="warning" />
+                    <Typography variant="subtitle2">Alerts</Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary">
+                    Enable "Notify on Alert" to create alerts on failure. Deduplicated per tenant per day, then routed to email, webhook, or PSA via Alert Configuration.
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box sx={{ p: 2, borderRadius: 1, border: 1, borderColor: "divider", height: "100%" }}>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                    <Code fontSize="small" color="info" />
+                    <Typography variant="subtitle2">Scripting Rules</Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary">
+                    PowerShell AST allowlist — only approved cmdlets (ForEach-Object, Where-Object, Select-Object, etc.). The <code>+=</code> operator is blocked. <code>$TenantFilter</code> is available automatically.
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box sx={{ p: 2, borderRadius: 1, border: 1, borderColor: "divider", height: "100%" }}>
+                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                    <TableChart fontSize="small" color="info" />
+                    <Typography variant="subtitle2">Data Access</Typography>
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    Read-only via <code>New-CIPPDbRequest</code> and <code>Get-CIPPDbItem</code> with a <code>-Type</code> parameter.
+                  </Typography>
+                  <Button size="small" variant="outlined" onClick={() => setCacheTypesDialogOpen(true)}>
+                    View Cached Types ({cacheTypes.length})
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Typography variant="caption" color="text.secondary">
+              Manual testing on this page is preview-only. Results are persisted only during scheduled tenant test runs with the script enabled.
             </Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              <strong>Tip:</strong> The $TenantFilter parameter is automatically available in your
-              test. Return @() when there are no results.
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              <strong>Pass/Fail contract:</strong> Return $false, $null, an empty string, or @() for
-              pass/no findings. Return any non-empty value (object/string/true) to mark the test as
-              failed and include that payload in the test output.
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              <strong>Result display:</strong> JSON shows raw data in code view. Markdown renders rich
-              output and supports tokens like <code>{"{{ResultJson}}"}</code>,
-              <code>{" {{Result[0].DisplayName}}"}</code>,
-              <code>{" {{Result[0].DisplayName ?? \"Unknown\"}}"}</code>,
-              <code>{" {{join(Result[*].UserPrincipalName, \", \")}}"}</code>, and
-              <code>{" {{count(Result)}}"}</code>, and
-              <code>{" {{table(Result[*], \"displayName\", \"mail\")}}"}</code>.
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              <strong>Persistence:</strong> Manual testing on this page is preview-only. Results are
-              written to CippTestResults only when the test is enabled and tenant tests are
-              executed.
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 1, whiteSpace: "pre-line" }}>
-              <strong>CIPP DB Examples:</strong>
-              {"\n"}
-              1) Load parsed users data:{"\n"}
-              New-CIPPDbRequest -TenantFilter $TenantFilter -Type 'Users'{"\n"}
-              2) Load raw entities for one type:{"\n"}
-              Get-CIPPDbItem -TenantFilter $TenantFilter -Type 'Users'{"\n"}
-              3) Load count rows only:{"\n"}
-              Get-CIPPDbItem -TenantFilter $TenantFilter -CountsOnly
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              <strong>Cached Types:</strong> Use these values in the -Type parameter.
-            </Typography>
-            <Box sx={{ mt: 1 }}>
-              <Button size="small" variant="outlined" onClick={() => setCacheTypesDialogOpen(true)}>
-                View Cached Types ({cacheTypes.length})
-              </Button>
-            </Box>
-          </Alert>
+          </Box>
         </AccordionDetails>
       </Accordion>
 
