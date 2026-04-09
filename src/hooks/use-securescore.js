@@ -1,19 +1,11 @@
 import { useEffect, useState } from "react";
 import { ApiGetCall } from "../api/ApiCall";
 import { useSettings } from "./use-settings";
-import standards from "/src/data/standards.json";
+import standards from "../data/standards.json";
 
 export function useSecureScore({ waiting = true } = {}) {
   const currentTenant = useSettings().currentTenant;
-  if (currentTenant === "AllTenants") {
-    return {
-      controlScore: { isFetching: false, isSuccess: false, data: { Results: [] } },
-      secureScore: { isFetching: false, isSuccess: false, data: { Results: [] } },
-      translatedData: [],
-      isFetching: true,
-      isSuccess: false,
-    };
-  }
+  const isAllTenants = currentTenant === "AllTenants";
 
   const [translatedData, setTranslatedData] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -27,7 +19,7 @@ export function useSecureScore({ waiting = true } = {}) {
       $top: 999,
     },
     queryKey: `controlScore-${currentTenant}`,
-    waiting: waiting,
+    waiting: waiting || isAllTenants,
   });
 
   const secureScore = ApiGetCall({
@@ -40,26 +32,33 @@ export function useSecureScore({ waiting = true } = {}) {
       $top: 7,
     },
     queryKey: `secureScore-${currentTenant}`,
-    waiting: waiting,
+    waiting: waiting || isAllTenants,
   });
 
   useEffect(() => {
+    if (isAllTenants) {
+      setIsFetching(false);
+      setIsSuccess(false);
+      setTranslatedData([]);
+      return;
+    }
     if (controlScore.isFetching || secureScore.isFetching) {
       setIsFetching(true);
     } else {
       setIsFetching(false);
     }
-  }, [controlScore.isFetching, secureScore.isFetching]);
+  }, [controlScore.isFetching, secureScore.isFetching, isAllTenants]);
 
   useEffect(() => {
+    if (isAllTenants) return;
     if (controlScore.isSuccess && secureScore.isSuccess) {
       const secureScoreData = secureScore.data.Results[0];
       const updatedControlScores = secureScoreData.controlScores.map((control) => {
         const translation = controlScore.data.Results?.find(
-          (controlTranslation) => controlTranslation.id === control.controlName
+          (controlTranslation) => controlTranslation.id === control.controlName,
         );
         const remediation = standards.find((standard) =>
-          standard.tag?.includes(control.controlName)
+          standard.tag?.includes(control.controlName),
         );
         return {
           ...control,
@@ -68,7 +67,7 @@ export function useSecureScore({ waiting = true } = {}) {
           complianceInformation: translation?.complianceInformation,
           actionUrl: remediation
             ? //this needs to be updated to be a direct url to apply this standard.
-              "/tenant/standards/list-standards"
+              "/tenant/standards"
             : translation?.actionUrl,
           remediation: remediation
             ? `1. Enable the CIPP Standard: ${remediation.label}`
@@ -88,19 +87,25 @@ export function useSecureScore({ waiting = true } = {}) {
         ...secureScoreData,
         //secureScoreData.currentscore is the current score, secureScoreData.maxscore is the max score. calculate % reached.
         percentageCurrent: Math.round(
-          (secureScoreData.currentScore / secureScoreData.maxScore) * 100
+          (secureScoreData.currentScore / secureScoreData.maxScore) * 100,
         ),
         percentageVsAllTenants: Math.round(
-          secureScoreData.averageComparativeScores?.[0]?.averageScore
+          secureScoreData.averageComparativeScores?.[0]?.averageScore,
         ),
         percentageVsSimilar: Math.round(
-          secureScoreData.averageComparativeScores?.[1]?.averageScore
+          secureScoreData.averageComparativeScores?.[1]?.averageScore,
         ),
         controlScores: updatedControlScores,
       });
       setIsSuccess(true);
     }
-  }, [controlScore.isSuccess, secureScore.isSuccess, controlScore.data, secureScore.data]);
+  }, [
+    controlScore.isSuccess,
+    secureScore.isSuccess,
+    controlScore.data,
+    secureScore.data,
+    isAllTenants,
+  ]);
 
   return {
     controlScore,

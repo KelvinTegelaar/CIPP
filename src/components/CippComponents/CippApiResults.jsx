@@ -158,8 +158,27 @@ export const CippApiResults = (props) => {
 
   const allResults = useMemo(() => {
     const apiResults = extractAllResults(correctResultObj);
+
+    // Also extract error results if there's an error
+    if (apiObject.isError && apiObject.error) {
+      const errorResults = extractAllResults(apiObject.error.response.data);
+      if (errorResults.length > 0) {
+        // Mark all error results with error severity and merge with success results
+        return [...apiResults, ...errorResults.map((r) => ({ ...r, severity: "error" }))];
+      }
+
+      // Fallback to getCippError if extraction didn't work
+      const processedError = getCippError(apiObject.error);
+      if (typeof processedError === "string") {
+        return [
+          ...apiResults,
+          { text: processedError, copyField: processedError, severity: "error" },
+        ];
+      }
+    }
+
     return apiResults;
-  }, [correctResultObj]);
+  }, [correctResultObj, apiObject.isError, apiObject.error]);
 
   useEffect(() => {
     setErrorVisible(!!apiObject.isError);
@@ -179,7 +198,7 @@ export const CippApiResults = (props) => {
             severity: res.severity,
             visible: true,
             ...res,
-          }))
+          })),
         );
       } else {
         setFinalResults([]);
@@ -210,7 +229,7 @@ export const CippApiResults = (props) => {
 
     const headers = Object.keys(finalResults[0]);
     const rows = finalResults.map((item) =>
-      headers.map((header) => `"${item[header] || ""}"`).join(",")
+      headers.map((header) => `"${item[header] || ""}"`).join(","),
     );
     const csvContent = [headers.join(","), ...rows].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -250,31 +269,8 @@ export const CippApiResults = (props) => {
           </Alert>
         </Collapse>
       )}
-      {/* Error alert */}
-      <Collapse in={errorVisible} unmountOnExit>
-        {apiObject.isError && (
-          <Alert
-            sx={alertSx}
-            variant="filled"
-            severity="error"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => setErrorVisible(false)}
-              >
-                <Close fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            {getCippError(apiObject.error)}
-          </Alert>
-        )}
-      </Collapse>
-
       {/* Individual result alerts */}
-      {apiObject.isSuccess && !errorsOnly && hasVisibleResults && (
+      {hasVisibleResults && (
         <>
           {finalResults.map((resultObj) => (
             <React.Fragment key={resultObj.id}>
@@ -307,7 +303,7 @@ export const CippApiResults = (props) => {
                           startIcon={<Help />}
                           onClick={() => {
                             const searchUrl = `https://docs.cipp.app/?q=Help+with:+${encodeURIComponent(
-                              resultObj.copyField || resultObj.text
+                              resultObj.copyField || resultObj.text,
                             )}&ask=true`;
                             window.open(searchUrl, "_blank");
                           }}
@@ -378,6 +374,7 @@ export const CippApiResults = (props) => {
                             language={typeof resultObj.details === "object" ? "json" : "text"}
                             showLineNumbers={false}
                             type="syntax"
+                            readOnly={true}
                           />
                         </Box>
                       </Collapse>

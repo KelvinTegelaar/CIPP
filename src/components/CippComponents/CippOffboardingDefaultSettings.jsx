@@ -116,6 +116,16 @@ export const CippOffboardingDefaultSettings = (props) => {
           ),
         },
         {
+          label: "Remove users calendar permissions",
+          value: (
+            <CippFormComponent
+              type="switch"
+              name="offboardingDefaults.removeCalendarPermissions"
+              formControl={formControl}
+            />
+          ),
+        },
+        {
           label: "Remove all Rules",
           value: (
             <CippFormComponent
@@ -181,6 +191,16 @@ export const CippOffboardingDefaultSettings = (props) => {
             <CippFormComponent
               type="switch"
               name="offboardingDefaults.RemoveMFADevices"
+              formControl={formControl}
+            />
+          ),
+        },
+        {
+          label: "Remove Teams Phone DID",
+          value: (
+            <CippFormComponent
+              type="switch"
+              name="offboardingDefaults.RemoveTeamsPhoneDID"
               formControl={formControl}
             />
           ),

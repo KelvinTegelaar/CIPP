@@ -1,7 +1,7 @@
 import { InputAdornment } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
 
@@ -111,6 +111,21 @@ const CippAddGroupForm = (props) => {
             type="switch"
             label="Let people outside the organization email the group"
             name="allowExternal"
+            formControl={formControl}
+          />
+        </Grid>
+      </CippFormCondition>
+      <CippFormCondition
+        formControl={formControl}
+        field="groupType"
+        compareType="is"
+        compareValue="m365"
+      >
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            label="Subscribe members to receive group emails"
+            name="subscribeMembers"
             formControl={formControl}
           />
         </Grid>

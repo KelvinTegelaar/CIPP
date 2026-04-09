@@ -1,9 +1,9 @@
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
 import { CippFormDomainSelector } from "../../../../components/CippComponents/CippFormDomainSelector";
 

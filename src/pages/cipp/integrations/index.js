@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import {
   Box,
   Button,
@@ -11,12 +11,13 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import extensions from "/src/data/Extensions";
+import extensions from "../../../data/Extensions";
 import { Sync } from "@mui/icons-material";
-import { useSettings } from "/src/hooks/use-settings";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { useSettings } from "../../../hooks/use-settings";
+import { ApiGetCall } from "../../../api/ApiCall";
 import Link from "next/link";
 import { Grid } from "@mui/system";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const settings = useSettings();
@@ -31,12 +32,13 @@ const Page = () => {
 
   return (
     <Container maxWidth={"xl"}>
+      <CippHead title="Integrations" noTenant={true} />
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="center"
         spacing={4}
-        sx={{ mb: 3, mt: 3 }}
+        sx={{ mb: 3 }}
       >
         <Typography variant="h4">Integrations</Typography>
         <Button

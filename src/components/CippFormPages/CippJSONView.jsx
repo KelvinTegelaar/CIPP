@@ -19,9 +19,8 @@ import { PropertyList } from "../property-list";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
-import intuneCollection from "/src/data/intuneCollection.json";
-import { ApiPostCall } from "../../api/ApiCall";
-import { useSettings } from "../../hooks/use-settings";
+import intuneCollection from "../../data/intuneCollection.json";
+import { useGuidResolver } from "../../hooks/use-guid-resolver";
 
 const cleanObject = (obj) => {
   if (Array.isArray(obj)) {
@@ -42,30 +41,93 @@ const cleanObject = (obj) => {
   }
 };
 
-// Function to check if a string is a GUID
-const isGuid = (str) => {
-  if (typeof str !== "string") return false;
-  const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  return guidRegex.test(str);
-};
+const renderListItems = (data, onItemClick, guidMapping = {}, isLoadingGuids = false, isGuid) => {
+  // Check if this data object is from a diff
+  const isDiffData = data?.__isDiffData === true;
 
-// Function to recursively scan an object for GUIDs
-const findGuids = (obj, guidsSet = new Set()) => {
-  if (!obj) return guidsSet;
+  // Helper to try parsing JSON strings
+  const tryParseJson = (str) => {
+    if (typeof str !== "string") return null;
+    try {
+      return JSON.parse(str);
+    } catch {
+      return null;
+    }
+  };
 
-  if (typeof obj === "string" && isGuid(obj)) {
-    guidsSet.add(obj);
-  } else if (Array.isArray(obj)) {
-    obj.forEach((item) => findGuids(item, guidsSet));
-  } else if (typeof obj === "object") {
-    Object.values(obj).forEach((value) => findGuids(value, guidsSet));
-  }
+  // Helper to get deep object differences
+  const getObjectDiff = (oldObj, newObj, path = "") => {
+    const changes = [];
+    const allKeys = new Set([...Object.keys(oldObj || {}), ...Object.keys(newObj || {})]);
 
-  return guidsSet;
-};
+    allKeys.forEach((key) => {
+      const currentPath = path ? `${path}.${key}` : key;
+      const oldVal = oldObj?.[key];
+      const newVal = newObj?.[key];
 
-const renderListItems = (data, onItemClick, guidMapping = {}, isLoadingGuids = false) => {
+      if (oldVal === undefined && newVal !== undefined) {
+        changes.push({ path: currentPath, type: "added", newValue: newVal });
+      } else if (oldVal !== undefined && newVal === undefined) {
+        changes.push({ path: currentPath, type: "removed", oldValue: oldVal });
+      } else if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
+        if (typeof oldVal === "object" && typeof newVal === "object" && oldVal && newVal) {
+          changes.push(...getObjectDiff(oldVal, newVal, currentPath));
+        } else {
+          changes.push({ path: currentPath, type: "modified", oldValue: oldVal, newValue: newVal });
+        }
+      }
+    });
+
+    return changes;
+  };
+
   return Object.entries(data).map(([key, value]) => {
+    // Skip the diff marker key
+    if (key === "__isDiffData") {
+      return null;
+    }
+
+    // Special handling for oldValue/newValue pairs
+    if (key === "oldValue" && data.newValue !== undefined) {
+      const oldObj = tryParseJson(value);
+      const newObj = tryParseJson(data.newValue);
+
+      // If both are JSON objects, show detailed diff
+      if (oldObj && newObj) {
+        const diff = getObjectDiff(oldObj, newObj);
+        if (diff.length > 0) {
+          return (
+            <PropertyListItem
+              key={key}
+              label="Changes"
+              value={
+                <Button variant="text" onClick={() => onItemClick({ changes: diff })}>
+                  View {diff.length} change{diff.length > 1 ? "s" : ""}
+                </Button>
+              }
+            />
+          );
+        }
+      } else {
+        // For simple strings or non-JSON values, show old → new
+        return (
+          <PropertyListItem
+            key={key}
+            label="Change"
+            value={`${getCippFormatting(value, key)} → ${getCippFormatting(
+              data.newValue,
+              "newValue"
+            )}`}
+          />
+        );
+      }
+    }
+
+    // Skip newValue if we already handled it with oldValue
+    if (key === "newValue" && data.oldValue !== undefined) {
+      return null;
+    }
+
     if (Array.isArray(value)) {
       return (
         <PropertyListItem
@@ -117,13 +179,10 @@ const renderListItems = (data, onItemClick, guidMapping = {}, isLoadingGuids = f
         />
       );
     } else {
-      return (
-        <PropertyListItem
-          key={key}
-          label={getCippTranslation(key)}
-          value={getCippFormatting(value, key)}
-        />
-      );
+      // If this is diff data, show the value directly without formatting
+      const displayValue = isDiffData ? value : getCippFormatting(value, key);
+
+      return <PropertyListItem key={key} label={getCippTranslation(key)} value={displayValue} />;
     }
   });
 };
@@ -132,97 +191,14 @@ function CippJsonView({
   object = { "No Data Selected": "No Data Selected" },
   type,
   defaultOpen = false,
+  title = "Policy Details",
 }) {
   const [viewJson, setViewJson] = useState(false);
   const [accordionOpen, setAccordionOpen] = useState(defaultOpen);
-  const [drilldownData, setDrilldownData] = useState([]);
-  const [guidMapping, setGuidMapping] = useState({});
-  const [notFoundGuids, setNotFoundGuids] = useState(new Set());
-  const [isLoadingGuids, setIsLoadingGuids] = useState(false);
-  const [pendingGuids, setPendingGuids] = useState([]);
-  const [lastRequestTime, setLastRequestTime] = useState(0);
-  const tenantFilter = useSettings().currentTenant;
+  const [drilldownData, setDrilldownData] = useState([]); // Array of { data, title }
 
-  // Setup API call for directory objects resolution
-  const directoryObjectsMutation = ApiPostCall({
-    relatedQueryKeys: ["directoryObjects"],
-    onResult: (data) => {
-      if (data && Array.isArray(data.value)) {
-        const newMapping = {};
-
-        // Process the returned results
-        data.value.forEach((item) => {
-          if (item.id && (item.displayName || item.userPrincipalName || item.mail)) {
-            // Prefer displayName, fallback to UPN or mail if available
-            newMapping[item.id] = item.displayName || item.userPrincipalName || item.mail;
-          }
-        });
-
-        // Find GUIDs that were sent but not returned in the response
-        const processedGuids = new Set(pendingGuids);
-        const returnedGuids = new Set(data.value.map((item) => item.id));
-        const notReturned = [...processedGuids].filter((guid) => !returnedGuids.has(guid));
-
-        // Add them to the notFoundGuids set
-        if (notReturned.length > 0) {
-          setNotFoundGuids((prev) => {
-            const newSet = new Set(prev);
-            notReturned.forEach((guid) => newSet.add(guid));
-            return newSet;
-          });
-        }
-
-        setGuidMapping((prevMapping) => ({ ...prevMapping, ...newMapping }));
-        setPendingGuids([]);
-        setIsLoadingGuids(false);
-      }
-    },
-  });
-
-  // Function to handle resolving GUIDs - used in both useEffect and handleItemClick
-  const resolveGuids = (objectToScan) => {
-    const guidsSet = findGuids(objectToScan);
-
-    if (guidsSet.size === 0) return;
-
-    const guidsArray = Array.from(guidsSet);
-    // Filter out GUIDs that are already resolved or known to not be resolvable
-    const notResolvedGuids = guidsArray.filter(
-      (guid) => !guidMapping[guid] && !notFoundGuids.has(guid)
-    );
-
-    if (notResolvedGuids.length === 0) return;
-
-    // Merge with any pending GUIDs to avoid duplicate requests
-    const allPendingGuids = [...new Set([...pendingGuids, ...notResolvedGuids])];
-    setPendingGuids(allPendingGuids);
-    setIsLoadingGuids(true);
-
-    // Implement throttling - only send a new request every 2 seconds
-    const now = Date.now();
-    if (now - lastRequestTime < 2000) {
-      return;
-    }
-
-    setLastRequestTime(now);
-
-    // Only send a maximum of 1000 GUIDs per request
-    const batchSize = 1000;
-    const guidsToSend = allPendingGuids.slice(0, batchSize);
-
-    if (guidsToSend.length > 0) {
-      directoryObjectsMutation.mutate({
-        url: "/api/ListDirectoryObjects",
-        data: {
-          tenantFilter: tenantFilter,
-          ids: guidsToSend,
-          $select: "id,displayName,userPrincipalName,mail",
-        },
-      });
-    } else {
-      setIsLoadingGuids(false);
-    }
-  };
+  // Use the GUID resolver hook
+  const { guidMapping, isLoadingGuids, resolveGuids, isGuid } = useGuidResolver();
 
   const renderIntuneItems = (data) => {
     const items = [];
@@ -286,9 +262,11 @@ function CippJsonView({
                 let value;
                 if (child.choiceSettingValue && child.choiceSettingValue.value) {
                   value =
-                    childIntuneObj?.options?.find(
-                      (option) => option.id === child.choiceSettingValue.value
-                    )?.displayName || child.choiceSettingValue.value;
+                    (Array.isArray(childIntuneObj?.options) &&
+                      childIntuneObj.options.find(
+                        (option) => option.id === child.choiceSettingValue.value
+                      )?.displayName) ||
+                    child.choiceSettingValue.value;
                 }
                 items.push(
                   <PropertyListItem
@@ -328,7 +306,9 @@ function CippJsonView({
           const label = intuneObj?.displayName || settingInstance.settingDefinitionId;
           const rawValue = settingInstance.choiceSettingValue.value;
           let optionValue =
-            intuneObj?.options?.find((option) => option.id === rawValue)?.displayName || rawValue;
+            (Array.isArray(intuneObj?.options) &&
+              intuneObj.options.find((option) => option.id === rawValue)?.displayName) ||
+            rawValue;
 
           // Check if optionValue is a GUID that we've resolved
           if (typeof optionValue === "string" && isGuid(optionValue) && guidMapping[optionValue]) {
@@ -437,53 +417,156 @@ function CippJsonView({
     const filteredObj = Object.fromEntries(
       Object.entries(cleanedObj).filter(([key]) => !blacklist.includes(key))
     );
-    setDrilldownData([filteredObj]);
+    setDrilldownData([{ data: filteredObj, title: null }]);
 
-    // Using the centralized resolveGuids function to handle GUID resolution
+    // Using the resolveGuids function from the hook to handle GUID resolution
     resolveGuids(cleanedObj);
-  }, [object, tenantFilter]);
-
-  // Effect to reprocess any pending GUIDs when the guidMapping changes or throttling window passes
-  useEffect(() => {
-    if (pendingGuids.length > 0 && !isLoadingGuids) {
-      const now = Date.now();
-      if (now - lastRequestTime >= 2000) {
-        // Only send a maximum of 1000 GUIDs per request
-        const batchSize = 1000;
-        const guidsToSend = pendingGuids.slice(0, batchSize);
-
-        setLastRequestTime(now);
-        setIsLoadingGuids(true);
-
-        directoryObjectsMutation.mutate({
-          url: "/api/ListDirectoryObjects",
-          data: {
-            tenantFilter: tenantFilter,
-            ids: guidsToSend,
-            $select: "id,displayName,userPrincipalName,mail",
-          },
-        });
-      }
-    }
-  }, [
-    guidMapping,
-    notFoundGuids,
-    pendingGuids,
-    lastRequestTime,
-    isLoadingGuids,
-    directoryObjectsMutation,
-    tenantFilter,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [object]);
 
   const toggleView = () => setViewJson(!viewJson);
 
   const handleItemClick = (itemData, level) => {
     const updatedData = drilldownData.slice(0, level + 1);
-    updatedData[level + 1] = itemData;
+
+    // Helper to check if an array contains only simple key/value objects
+    const isArrayOfKeyValuePairs = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return false;
+      return arr.every((item) => {
+        if (typeof item !== "object" || item === null || Array.isArray(item)) return false;
+        // Check if all values are primitives (not nested objects/arrays)
+        return Object.values(item).every((val) => typeof val !== "object" || val === null);
+      });
+    };
+
+    // Compress single-property objects and single-item arrays into the same pane
+    let dataToAdd = itemData;
+    const compressedKeys = [];
+    let wasCompressed = false;
+
+    // Special handling for diff changes object
+    if (dataToAdd?.changes && Array.isArray(dataToAdd.changes)) {
+      const diffObject = {};
+      const blacklistFields = ["createdDateTime", "modifiedDateTime", "id"];
+
+      dataToAdd.changes.forEach((change) => {
+        const label = change.path;
+
+        // Skip blacklisted fields in nested paths
+        const pathParts = label.split(".");
+        const lastPart = pathParts[pathParts.length - 1];
+        if (blacklistFields.includes(lastPart)) {
+          return;
+        }
+
+        let hasValue = false;
+        let displayValue = "";
+
+        if (change.type === "added") {
+          if (change.newValue !== null && change.newValue !== undefined && change.newValue !== "") {
+            displayValue = `[ADDED] ${JSON.stringify(change.newValue)}`;
+            hasValue = true;
+          }
+        } else if (change.type === "removed") {
+          if (change.oldValue !== null && change.oldValue !== undefined && change.oldValue !== "") {
+            displayValue = `[REMOVED] ${JSON.stringify(change.oldValue)}`;
+            hasValue = true;
+          }
+        } else if (change.type === "modified") {
+          const oldHasValue =
+            change.oldValue !== null && change.oldValue !== undefined && change.oldValue !== "";
+          const newHasValue =
+            change.newValue !== null && change.newValue !== undefined && change.newValue !== "";
+
+          // Only show if at least one side has a meaningful value (not both empty)
+          if (oldHasValue || newHasValue) {
+            // If both have values, show the change
+            if (oldHasValue && newHasValue) {
+              displayValue = `${JSON.stringify(change.oldValue)} → ${JSON.stringify(
+                change.newValue
+              )}`;
+              hasValue = true;
+            }
+            // If only new has value, treat as added
+            else if (newHasValue) {
+              displayValue = `[ADDED] ${JSON.stringify(change.newValue)}`;
+              hasValue = true;
+            }
+            // If only old has value, treat as removed
+            else if (oldHasValue) {
+              displayValue = `[REMOVED] ${JSON.stringify(change.oldValue)}`;
+              hasValue = true;
+            }
+          }
+        }
+
+        if (hasValue) {
+          diffObject[label] = displayValue;
+        }
+      });
+      // Mark this object as containing diff data
+      dataToAdd = { ...diffObject, __isDiffData: true };
+    }
+
+    // Check if this is an array of items with oldValue/newValue (modifiedProperties pattern)
+    const hasOldNewValues = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return false;
+      return arr.some((item) => item?.oldValue !== undefined || item?.newValue !== undefined);
+    };
+
+    // If the data is an array of key/value pairs, convert to a flat object
+    // But skip if it's an array with oldValue/newValue properties (let normal rendering handle it)
+    if (isArrayOfKeyValuePairs(dataToAdd) && !hasOldNewValues(dataToAdd)) {
+      const flatObject = {};
+      dataToAdd.forEach((item) => {
+        const key = item.key || item.name || item.displayName;
+        const value = item.value || item.newValue || "";
+        if (key) {
+          flatObject[key] = value;
+        }
+      });
+      dataToAdd = flatObject;
+    }
+
+    while (dataToAdd && typeof dataToAdd === "object") {
+      // Handle single-item arrays
+      if (Array.isArray(dataToAdd) && dataToAdd.length === 1) {
+        const singleItem = dataToAdd[0];
+        if (singleItem && typeof singleItem === "object") {
+          compressedKeys.push("[0]");
+          dataToAdd = singleItem;
+          wasCompressed = true;
+          continue;
+        } else {
+          break;
+        }
+      }
+
+      // Handle single-property objects
+      if (!Array.isArray(dataToAdd) && Object.keys(dataToAdd).length === 1) {
+        const singleKey = Object.keys(dataToAdd)[0];
+        const singleValue = dataToAdd[singleKey];
+
+        // Only compress if the value is also an object or single-item array
+        if (singleValue && typeof singleValue === "object") {
+          compressedKeys.push(singleKey);
+          dataToAdd = singleValue;
+          wasCompressed = true;
+          continue;
+        }
+      }
+
+      break;
+    }
+
+    // Create title from compressed keys if compression occurred
+    const title = wasCompressed ? compressedKeys.join(" > ") : null;
+
+    updatedData[level + 1] = { data: dataToAdd, title };
     setDrilldownData(updatedData);
 
-    // Use the centralized resolveGuids function to handle GUID resolution for drill-down data
-    resolveGuids(itemData);
+    // Use the resolveGuids function from the hook to handle GUID resolution for drill-down data
+    resolveGuids(dataToAdd);
   };
 
   return (
@@ -498,7 +581,7 @@ function CippJsonView({
       >
         <Stack direction="row" spacing={1} alignItems="space-between" sx={{ width: "100%" }}>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Policy Details
+            {title}
           </Typography>
           {isLoadingGuids && (
             <Typography variant="caption" sx={{ display: "flex", alignItems: "center" }}>
@@ -516,8 +599,8 @@ function CippJsonView({
         ) : (
           <Grid container spacing={2}>
             {drilldownData
-              ?.filter((data) => data !== null && data !== undefined)
-              .map((data, index) => (
+              ?.filter((item) => item !== null && item !== undefined)
+              .map((item, index) => (
                 <Grid
                   size={{ sm: type === "intune" ? 12 : 3, xs: 12 }}
                   key={index}
@@ -531,17 +614,23 @@ function CippJsonView({
                     paddingRight: 2,
                   }}
                 >
+                  {item.title && (
+                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: "bold" }}>
+                      {getCippTranslation(item.title)}
+                    </Typography>
+                  )}
                   {type !== "intune" && (
                     <PropertyList>
                       {renderListItems(
-                        data,
+                        item.data,
                         (itemData) => handleItemClick(itemData, index),
                         guidMapping,
-                        isLoadingGuids
+                        isLoadingGuids,
+                        isGuid
                       )}
                     </PropertyList>
                   )}
-                  {type === "intune" && <PropertyList>{renderIntuneItems(data)}</PropertyList>}
+                  {type === "intune" && <PropertyList>{renderIntuneItems(item.data)}</PropertyList>}
                 </Grid>
               ))}
           </Grid>

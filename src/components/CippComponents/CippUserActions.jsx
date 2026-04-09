@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { EyeIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import {
   Archive,
@@ -11,27 +12,175 @@ import {
   LockPerson,
   LockReset,
   MeetingRoom,
-  NoMeetingRoom,
   Password,
   PersonOff,
   PhonelinkLock,
   PhonelinkSetup,
   Shortcut,
   EditAttributes,
+  CloudSync,
 } from "@mui/icons-material";
 import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
-import { useSettings } from "/src/hooks/use-settings.js";
+import { useSettings } from "../../hooks/use-settings.js";
 import { usePermissions } from "../../hooks/use-permissions";
-import { Stack, Grid, Tooltip, Box } from "@mui/material";
+import { Tooltip, Box } from "@mui/material";
 import CippFormComponent from "./CippFormComponent";
-import { useForm, useWatch } from "react-hook-form";
+import { useWatch } from "react-hook-form";
+
+// Separate component for Manage Licenses form to avoid hook issues
+const ManageLicensesForm = ({ formControl, tenant }) => {
+  const licenseOperation = useWatch({
+    control: formControl.control,
+    name: "LicenseOperation",
+  });
+
+  const removeAllLicenses = useWatch({
+    control: formControl.control,
+    name: "RemoveAllLicenses",
+  });
+
+  const replaceAllLicenses = useWatch({
+    control: formControl.control,
+    name: "ReplaceAllLicenses",
+  });
+
+  // Handle both string values and object values with .value property
+  const licenseOpValue = licenseOperation?.value || licenseOperation;
+  
+  const isRemoveOperation = licenseOpValue === "Remove";
+  const isReplaceOperation = licenseOpValue === "Replace";
+  const showLicensesToRemove = isRemoveOperation && !removeAllLicenses;
+  const showLicensesToReplace = isReplaceOperation && !replaceAllLicenses;
+
+  // Clear fields when operation changes to prevent stale data submission
+  useEffect(() => {
+    if (licenseOpValue) {
+      // Clear all license-related fields when switching operations
+      if (licenseOpValue === "Add") {
+        // Clear Remove/Replace specific fields
+        formControl.setValue("RemoveAllLicenses", false);
+        formControl.setValue("ReplaceAllLicenses", false);
+        formControl.setValue("LicensesToRemove", []);
+        formControl.setValue("LicensesToReplace", []);
+      } else if (licenseOpValue === "Remove") {
+        // Clear Add/Replace specific fields
+        formControl.setValue("ReplaceAllLicenses", false);
+        formControl.setValue("LicensesToReplace", []);
+        formControl.setValue("Licenses", []);
+      } else if (licenseOpValue === "Replace") {
+        // Clear Remove specific fields
+        formControl.setValue("RemoveAllLicenses", false);
+        formControl.setValue("LicensesToRemove", []);
+      }
+    }
+  }, [licenseOpValue, formControl]);
+
+  // Clear LicensesToReplace when ReplaceAllLicenses is toggled
+  useEffect(() => {
+    if (isReplaceOperation && replaceAllLicenses) {
+      formControl.setValue("LicensesToReplace", []);
+    }
+  }, [replaceAllLicenses, isReplaceOperation, formControl]);
+
+  return (
+    <>
+      <CippFormComponent
+        type="radio"
+        name="LicenseOperation"
+        label="License Operation"
+        formControl={formControl}
+        options={[
+          { label: "Add Licenses", value: "Add" },
+          { label: "Remove Licenses", value: "Remove" },
+          { label: "Replace Licenses", value: "Replace" },
+        ]}
+        validators={{ required: "Please select a license operation" }}
+      />
+
+      {isRemoveOperation && (
+        <CippFormComponent
+          type="switch"
+          name="RemoveAllLicenses"
+          label="Remove All Existing Licenses"
+          formControl={formControl}
+        />
+      )}
+
+      {isReplaceOperation && (
+        <CippFormComponent
+          type="switch"
+          name="ReplaceAllLicenses"
+          label="Replace All Existing Licenses"
+          formControl={formControl}
+        />
+      )}
+
+      {showLicensesToRemove && (
+        <CippFormComponent
+          type="autoComplete"
+          name="LicensesToRemove"
+          label="Select Licenses to Remove"
+          multiple={true}
+          creatable={false}
+          formControl={formControl}
+          validators={{ required: "Please select at least one license to remove" }}
+          api={{
+            url: "/api/ListLicenses",
+            labelField: (option) => option.displayName || option.skuPartNumber,
+            valueField: "skuId",
+            queryKey: `ListLicenses-${tenant}`,
+          }}
+        />
+      )}
+
+      {showLicensesToReplace && (
+        <CippFormComponent
+          type="autoComplete"
+          name="LicensesToReplace"
+          label="Select Licenses to Replace"
+          multiple={true}
+          creatable={false}
+          formControl={formControl}
+          validators={{ required: "Please select at least one license to replace" }}
+          api={{
+            url: "/api/ListLicenses",
+            labelField: (option) => option.displayName || option.skuPartNumber,
+            valueField: "skuId",
+            queryKey: `ListLicenses-${tenant}`,
+          }}
+        />
+      )}
+
+      {(licenseOpValue === "Add" || isReplaceOperation) && (
+        <CippFormComponent
+          type="autoComplete"
+          name="Licenses"
+          label={isReplaceOperation ? "Select New Licenses" : "Select Licenses"}
+          multiple={true}
+          creatable={false}
+          formControl={formControl}
+          validators={{ required: "Please select at least one license" }}
+          api={{
+            url: "/api/ListLicenses",
+            labelField: (option) =>
+              `${option.displayName || option.skuPartNumber} (${
+                option.availableUnits || 0
+              } available)`,
+            valueField: "skuId",
+            queryKey: `ListLicenses-Available-${tenant}`,
+          }}
+        />
+      )}
+    </>
+  );
+};
 
 // Separate component for Out of Office form to avoid hook issues
 const OutOfOfficeForm = ({ formControl }) => {
   // Watch the Auto Reply State value
   const autoReplyState = useWatch({
     control: formControl.control,
-    name: "ooo.AutoReplyState",
+    name: "AutoReplyState",
   });
 
   // Calculate if date fields should be disabled
@@ -144,7 +293,8 @@ export const useCippUserActions = () => {
       type: "GET",
       icon: <MagnifyingGlassIcon />,
       link: "/identity/administration/users/user/bec?userId=[id]",
-      confirmText: "Are you sure you want to research this compromised account?",
+      confirmText:
+        "Are you sure you want to research if [userPrincipalName] is a compromised account?",
       multiPost: false,
     },
     {
@@ -173,7 +323,8 @@ export const useCippUserActions = () => {
           dateTimeType: "datetime",
         },
       ],
-      confirmText: "Are you sure you want to create a Temporary Access Password?",
+      confirmText:
+        "Are you sure you want to create a Temporary Access Password for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -184,7 +335,7 @@ export const useCippUserActions = () => {
       icon: <PhonelinkSetup />,
       url: "/api/ExecResetMFA",
       data: { ID: "userPrincipalName" },
-      confirmText: "Are you sure you want to reset MFA for this user?",
+      confirmText: "Are you sure you want to reset MFA for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -195,7 +346,7 @@ export const useCippUserActions = () => {
       icon: <PhonelinkLock />,
       url: "/api/ExecSendPush",
       data: { UserEmail: "userPrincipalName" },
-      confirmText: "Are you sure you want to send an MFA request?",
+      confirmText: "Are you sure you want to send an MFA request to [userPrincipalName]?",
       multiPost: false,
     },
     {
@@ -281,6 +432,7 @@ export const useCippUserActions = () => {
       icon: <GroupAdd />,
       url: "/api/EditGroup",
       customDataformatter: (row, action, formData) => {
+        // Build the member list from selected users
         let addMember = [];
         if (Array.isArray(row)) {
           row
@@ -305,26 +457,35 @@ export const useCippUserActions = () => {
             },
           });
         }
-        return {
+
+        // Handle multiple groups - return an array of requests (one per group)
+        const selectedGroups = Array.isArray(formData.groupId)
+          ? formData.groupId
+          : [formData.groupId];
+
+        return selectedGroups.map((group) => ({
           addMember: addMember,
           tenantFilter: tenant,
-          groupId: formData.groupId,
-        };
+          groupId: group,
+        }));
       },
       fields: [
         {
           type: "autoComplete",
           name: "groupId",
-          label: "Select a group to add the user to",
-          multiple: false,
+          label: "Select groups to add the user to",
+          multiple: true,
           creatable: false,
-          validators: { required: "Please select a group" },
+          validators: { required: "Please select at least one group" },
           api: {
             url: "/api/ListGroups",
-            labelField: "displayName",
+            labelField: (option) =>
+              option?.calculatedGroupType
+                ? `${option.displayName} (${option.calculatedGroupType})`
+                : (option?.displayName ?? ""),
             valueField: "id",
             addedField: {
-              groupType: "calculatedGroupType",
+              groupType: "groupType",
               groupName: "displayName",
             },
             queryKey: `groups-${tenant}`,
@@ -332,8 +493,8 @@ export const useCippUserActions = () => {
           },
         },
       ],
-      confirmText: "Are you sure you want to add [userPrincipalName] to this group?",
-      multiPost: true,
+      confirmText: "Are you sure you want to add [userPrincipalName] to the selected groups?",
+      multiPost: false,
       allowResubmit: true,
       condition: () => canWriteGroup,
     },
@@ -344,40 +505,11 @@ export const useCippUserActions = () => {
       icon: <CloudDone />,
       data: { userIds: "id" },
       multiPost: true,
-      fields: [
-        {
-          type: "radio",
-          name: "LicenseOperation",
-          label: "License Operation",
-          options: [
-            { label: "Add Licenses", value: "Add" },
-            { label: "Remove Licenses", value: "Remove" },
-            { label: "Replace Licenses", value: "Replace" },
-          ],
-          validators: { required: "Please select a license operation" },
-        },
-        {
-          type: "switch",
-          name: "RemoveAllLicenses",
-          label: "Remove All Existing Licenses",
-        },
-        {
-          type: "autoComplete",
-          name: "Licenses",
-          label: "Select Licenses",
-          multiple: true,
-          creatable: false,
-          api: {
-            url: "/api/ListLicenses",
-            labelField: (option) =>
-              `${getCippLicenseTranslation([option])} (${option?.availableUnits} available)`,
-            valueField: "skuId",
-            queryKey: `licenses-${tenant}`,
-          },
-        },
-      ],
+      allowResubmit: true,
+      children: ({ formHook: formControl }) => (
+        <ManageLicensesForm formControl={formControl} tenant={tenant} />
+      ),
       confirmText: "Are you sure you want to manage licenses for the selected users?",
-      multiPost: true,
       condition: () => canWriteUser,
     },
     {
@@ -400,7 +532,7 @@ export const useCippUserActions = () => {
       icon: <CloudDone />,
       url: "/api/ExecOneDriveProvision",
       data: { UserPrincipalName: "userPrincipalName" },
-      confirmText: "Are you sure you want to pre-provision OneDrive for this user?",
+      confirmText: "Are you sure you want to pre-provision OneDrive for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -510,6 +642,43 @@ export const useCippUserActions = () => {
       confirmText: "Are you sure you want to clear the Immutable ID for [userPrincipalName]?",
       multiPost: false,
       condition: (row) => !row?.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
+    },
+    {
+      label: "Set Source of Authority",
+      type: "POST",
+      url: "/api/ExecSetCloudManaged",
+      icon: <CloudSync />,
+      data: {
+        ID: "id",
+        displayName: "displayName",
+        type: "!User",
+      },
+      fields: [
+        {
+          type: "radio",
+          name: "isCloudManaged",
+          label: "Source of Authority",
+          options: [
+            { label: "Cloud Managed", value: true },
+            { label: "On-Premises Managed", value: false },
+          ],
+          validators: { required: "Please select a source of authority" },
+        },
+      ],
+      confirmText:
+        "Are you sure you want to change the source of authority for [userPrincipalName]? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
+      multiPost: false,
+    },
+    {
+      label: "Reprocess License Assignments",
+      type: "POST",
+      icon: <CloudDone />,
+      url: "/api/ExecReprocessUserLicenses",
+      data: { ID: "id", userPrincipalName: "userPrincipalName" },
+      confirmText:
+        "Are you sure you want to reprocess license assignments for [userPrincipalName]?",
+      multiPost: false,
+      condition: (row) => canWriteUser,
     },
     {
       label: "Revoke all user sessions",

@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Edit, GitHub, LocalOffer } from "@mui/icons-material";
+import { Edit, GitHub, LocalOffer, LocalOfferOutlined, CopyAll } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
-import { PermissionButton } from "/src/utils/permissions.js";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
+import { PermissionButton } from "../../../../utils/permissions.js";
 
 const Page = () => {
   const pageTitle = "Available Endpoint Manager Templates";
@@ -23,6 +23,7 @@ const Page = () => {
       link: `/endpoint/MEM/list-templates/edit?id=[GUID]`,
       icon: <Edit />,
       color: "info",
+      condition: (row) => row.isSynced === false,
     },
     {
       label: "Edit Template Name and Description",
@@ -41,10 +42,25 @@ const Page = () => {
         },
       ],
       data: { GUID: "GUID", Type: "!IntuneTemplate" },
+      defaultvalues: (row) => ({
+        displayName: row.displayName,
+        description: row.description,
+      }),
       confirmText:
         "Enter the new name and description for the template. Warning: This will disconnect the template from a template library if applied.",
       multiPost: false,
       icon: <PencilIcon />,
+      color: "info",
+    },
+    {
+      label: "Clone Template",
+      type: "POST",
+      url: "/api/ExecCloneTemplate",
+      data: { GUID: "GUID", Type: "!IntuneTemplate" },
+      confirmText:
+        "Are you sure you want to clone [displayName]? Cloned template are no longer synced with a template library.",
+      multiPost: false,
+      icon: <CopyAll />,
       color: "info",
     },
     {
@@ -67,6 +83,16 @@ const Page = () => {
       multiPost: true,
       icon: <LocalOffer />,
       color: "info",
+    },
+    {
+      label: "Remove from package",
+      type: "POST",
+      url: "/api/ExecSetPackageTag",
+      data: { GUID: "GUID", Remove: true },
+      confirmText: "Are you sure you want to remove the selected template(s) from their package?",
+      multiPost: true,
+      icon: <LocalOfferOutlined />,
+      color: "warning",
     },
     {
       label: "Save to GitHub",
@@ -125,17 +151,18 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (row) => <CippJsonView object={row} type={"intune"} />,
+    children: (row) => <CippJsonView object={row} type={"intune"} defaultOpen={true} />,
     size: "lg",
   };
 
-  const simpleColumns = ["displayName", "package", "description", "Type"];
+  const simpleColumns = ["displayName", "isSynced", "package", "description", "Type"];
 
   return (
     <>
       <CippTablePage
         title={pageTitle}
         apiUrl="/api/ListIntuneTemplates?View=true"
+        tenantInTitle={false}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}

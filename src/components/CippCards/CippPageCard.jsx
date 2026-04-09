@@ -25,27 +25,12 @@ const CippPageCard = (props) => {
       <Box
         sx={{
           flexGrow: 1,
-          py: 4,
+          pb: 4,
         }}
       >
         <Container maxWidth={cardSize}>
           <Stack spacing={2}>
             <Stack spacing={2}>
-              <div>
-                {!hideBackButton && (
-                  <Button
-                    color="inherit"
-                    onClick={handleBackClick} // Go back to the previous page
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <ArrowLeftIcon />
-                      </SvgIcon>
-                    }
-                  >
-                    {backButtonTitle}
-                  </Button>
-                )}
-              </div>
               {hideTitleText !== true && (
                 <div>
                   <Typography variant="h4">{title}</Typography>

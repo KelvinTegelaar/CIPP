@@ -1,7 +1,7 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
+import { ApiGetCall } from "../../../../../api/ApiCall";
+import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions.json";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";

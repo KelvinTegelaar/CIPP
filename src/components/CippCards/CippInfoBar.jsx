@@ -37,9 +37,13 @@ export const CippInfoBar = ({ data, isFetching }) => {
                 },
               }}
             >
-              <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
+              <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2, minWidth: 0 }}>
                 {item?.icon && (
-                  <SvgIcon color={item.color ? item.color : "primary"} fontSize="small">
+                  <SvgIcon
+                    color={item.color ? item.color : "primary"}
+                    fontSize="small"
+                    sx={{ flexShrink: 0 }}
+                  >
                     {item.icon}
                   </SvgIcon>
                 )}
@@ -48,14 +52,27 @@ export const CippInfoBar = ({ data, isFetching }) => {
                     <Box
                       sx={() => {
                         if (!item?.icon) {
-                          return { pl: 2 };
+                          return { pl: 2, minWidth: 0, flex: 1 };
                         }
+                        return { minWidth: 0, flex: 1 };
                       }}
                     >
-                      <Typography color="text.secondary" variant="overline">
+                      <Typography
+                        color="text.secondary"
+                        variant="overline"
+                        sx={{
+                          display: "block",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {item.name}
                       </Typography>
-                      <Typography variant="h6">
+                      <Typography
+                        variant="h6"
+                        sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                      >
                         {isFetching ? <Skeleton width={"100%"} /> : item.data}
                       </Typography>
                     </Box>
@@ -64,14 +81,27 @@ export const CippInfoBar = ({ data, isFetching }) => {
                   <Box
                     sx={() => {
                       if (!item?.icon) {
-                        return { pl: 2 };
+                        return { pl: 2, minWidth: 0, flex: 1 };
                       }
+                      return { minWidth: 0, flex: 1 };
                     }}
                   >
-                    <Typography color="text.secondary" variant="overline">
+                    <Typography
+                      color="text.secondary"
+                      variant="overline"
+                      sx={{
+                        display: "block",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {item.name}
                     </Typography>
-                    <Typography variant="h6">
+                    <Typography
+                      variant="h6"
+                      sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                    >
                       {isFetching ? <Skeleton width={"100%"} /> : item.data}
                     </Typography>
                   </Box>

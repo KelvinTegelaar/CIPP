@@ -29,17 +29,17 @@ import {
   Construction,
 } from "@mui/icons-material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { useWatch } from "react-hook-form";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { useWatch, useFormState } from "react-hook-form";
 import _ from "lodash";
 import Microsoft from "../../icons/iconly/bulk/microsoft";
 import Azure from "../../icons/iconly/bulk/azure";
 import Exchange from "../../icons/iconly/bulk/exchange";
 import Defender from "../../icons/iconly/bulk/defender";
 import Intune from "../../icons/iconly/bulk/intune";
-import GDAPRoles from "/src/data/GDAPRoles";
-import timezoneList from "/src/data/timezoneList";
-import standards from "/src/data/standards.json";
+import GDAPRoles from "../../data/GDAPRoles";
+import timezoneList from "../../data/timezoneList";
+import standards from "../../data/standards.json";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippPolicyImportDrawer } from "../CippComponents/CippPolicyImportDrawer";
 import ReactMarkdown from "react-markdown";
@@ -107,6 +107,8 @@ const CippStandardAccordion = ({
   const watchedValues = useWatch({
     control: formControl.control,
   });
+
+  const { errors: formErrors } = useFormState({ control: formControl.control });
 
   // Watch all trackDrift values for all standards at once
   const allTrackDriftValues = useWatch({
@@ -255,7 +257,7 @@ const CippStandardAccordion = ({
           initialConfigured[standardName] = isStandardConfigured(
             standardName,
             standard,
-            currentValues
+            currentValues,
           );
         }
       });
@@ -268,6 +270,48 @@ const CippStandardAccordion = ({
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }
   }, [watchedValues, selectedStandards, editMode]);
+
+  // Sync internal state when selectedStandards keys change (e.g., after re-indexing on removal)
+  useEffect(() => {
+    const currentKeys = Object.keys(selectedStandards);
+    const stateKeys = Object.keys(savedValues);
+    if (stateKeys.length === 0) return;
+
+    const currentSet = new Set(currentKeys);
+    const stateSet = new Set(stateKeys);
+
+    const removedKeys = stateKeys.filter((k) => !currentSet.has(k));
+    const addedKeys = currentKeys.filter((k) => !stateSet.has(k));
+
+    if (removedKeys.length > 0 || addedKeys.length > 0) {
+      setSavedValues((prev) => {
+        const updated = { ...prev };
+        removedKeys.forEach((k) => delete updated[k]);
+        addedKeys.forEach((k) => {
+          const currentValues = _.get(watchedValues, k);
+          if (currentValues) {
+            updated[k] = _.cloneDeep(currentValues);
+          }
+        });
+        return updated;
+      });
+
+      setConfiguredState((prev) => {
+        const updated = { ...prev };
+        removedKeys.forEach((k) => delete updated[k]);
+        addedKeys.forEach((k) => {
+          const baseStandardName = k.split("[")[0];
+          const standard = providedStandards.find((s) => s.name === baseStandardName);
+          const currentValues = _.get(watchedValues, k);
+          if (standard && currentValues) {
+            updated[k] = isStandardConfigured(k, standard, currentValues);
+          }
+        });
+        return updated;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStandards]);
 
   // Save changes for a standard
   const handleSave = (standardName, standard, current) => {
@@ -568,25 +612,25 @@ const CippStandardAccordion = ({
               if (templateList && templateList.label) {
                 templateDisplayName = templateList.label;
               }
-              
+
               // Check for TemplateList-Tags selection (takes priority)
               const templateListTags = _.get(watchedValues, `${standardName}.TemplateList-Tags`);
               if (templateListTags && templateListTags.label) {
                 templateDisplayName = templateListTags.label;
               }
             }
-            
+
             // For multiple standards, check the first added component
             const selectedTemplateName = standard.multiple
               ? _.get(watchedValues, `${standardName}.${standard.addedComponent?.[0]?.name}`)
               : "";
-            
+
             // Build accordion title with template name if available
             const accordionTitle = templateDisplayName
               ? `${standard.label} - ${templateDisplayName}`
               : selectedTemplateName && _.get(selectedTemplateName, "label")
-              ? `${standard.label} - ${_.get(selectedTemplateName, "label")}`
-              : standard.label;
+                ? `${standard.label} - ${_.get(selectedTemplateName, "label")}`
+                : standard.label;
 
             // Get current values and check if they differ from saved values
             const current = _.get(watchedValues, standardName);
@@ -596,7 +640,7 @@ const CippStandardAccordion = ({
 
             // Check if all required fields are filled
             const requiredFieldsFilled = current
-              ? standard.addedComponent?.every((component) => {
+              ? (standard.addedComponent?.every((component) => {
                   // Always skip switches regardless of their required property
                   if (component.type === "switch") return true;
 
@@ -628,7 +672,7 @@ const CippStandardAccordion = ({
                       switch (compareType) {
                         case "valueEq":
                           conditionMet = conditionValue.some(
-                            (item) => item?.[propertyName] === compareValue
+                            (item) => item?.[propertyName] === compareValue,
                           );
                           break;
                         default:
@@ -656,7 +700,7 @@ const CippStandardAccordion = ({
 
                   // For other field types
                   return !!fieldValue;
-                }) ?? true
+                }) ?? true)
               : false;
 
             // ALWAYS require an action for all standards
@@ -666,7 +710,7 @@ const CippStandardAccordion = ({
             const hasRequiredComponents =
               standard.addedComponent &&
               standard.addedComponent.some(
-                (comp) => comp.type !== "switch" && comp.required !== false
+                (comp) => comp.type !== "switch" && comp.required !== false,
               );
 
             // Action is always required and must be an array with at least one element
@@ -674,11 +718,16 @@ const CippStandardAccordion = ({
             const hasAction =
               actionValue && (!Array.isArray(actionValue) || actionValue.length > 0);
 
+            // Check if this standard has any validation errors
+            const standardErrors = _.get(formErrors, standardName);
+            const hasValidationErrors = standardErrors && Object.keys(standardErrors).length > 0;
+
             // Allow saving if:
             // 1. Action is selected if required
             // 2. All required fields are filled
             // 3. There are unsaved changes
-            const canSave = hasAction && requiredFieldsFilled && hasUnsaved;
+            // 4. No validation errors
+            const canSave = hasAction && requiredFieldsFilled && hasUnsaved && !hasValidationErrors;
 
             return (
               <Card key={standardName} sx={{ mb: 2 }}>
@@ -707,6 +756,14 @@ const CippStandardAccordion = ({
                     <Stack>
                       <Typography variant="h6">{accordionTitle}</Typography>
                       <Stack direction="row" spacing={1} sx={{ my: 0.25 }}>
+                        {standard.deprecated && (
+                          <Chip
+                            label="Deprecated"
+                            color="error"
+                            size="small"
+                            sx={{ mr: 1, fontWeight: "bold" }}
+                          />
+                        )}
                         {/* Hide action chips in drift mode */}
                         {!isDriftMode && selectedActions && selectedActions?.length > 0 && (
                           <>
@@ -773,10 +830,21 @@ const CippStandardAccordion = ({
                   </Stack>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     {standard.multiple && (
-                      <Tooltip title={`Add another ${standard.label}`}>
-                        <IconButton onClick={() => handleAddMultipleStandard(standardName)}>
-                          <SvgIcon component={Add} />
-                        </IconButton>
+                      <Tooltip
+                        title={
+                          standard.deprecated
+                            ? "Cannot add deprecated standard"
+                            : `Add another ${standard.label}`
+                        }
+                      >
+                        <span>
+                          <IconButton
+                            onClick={() => handleAddMultipleStandard(standardName)}
+                            disabled={standard.deprecated}
+                          >
+                            <SvgIcon component={Add} />
+                          </IconButton>
+                        </span>
                       </Tooltip>
                     )}
                     <Box
@@ -807,7 +875,21 @@ const CippStandardAccordion = ({
 
                 <Collapse in={isExpanded} unmountOnExit>
                   <Divider />
-                  <Box sx={{ p: 3 }}>
+                  {standard.deprecated && (
+                    <Box sx={{ p: 2, backgroundColor: "error.dark", color: "error.contrastText" }}>
+                      <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                        ⚠️ This standard is deprecated and cannot be configured. Please remove it
+                        from your template and use an alternative standard if available.
+                      </Typography>
+                    </Box>
+                  )}
+                  <Box
+                    sx={{
+                      p: 3,
+                      opacity: standard.deprecated ? 0.5 : 1,
+                      pointerEvents: standard.deprecated ? "none" : "auto",
+                    }}
+                  >
                     {isDriftMode ? (
                       /* Drift mode layout - full width with slider first */
                       <Grid container spacing={2}>
@@ -864,7 +946,7 @@ const CippStandardAccordion = ({
                                   component={component}
                                   formControl={formControl}
                                 />
-                              )
+                              ),
                             )}
                           </>
                         )}
@@ -922,7 +1004,7 @@ const CippStandardAccordion = ({
                                     component={component}
                                     formControl={formControl}
                                   />
-                                )
+                                ),
                               )}
                             </Grid>
                           </Grid>

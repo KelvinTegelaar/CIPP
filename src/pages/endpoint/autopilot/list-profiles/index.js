@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Delete } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
-import { CippAutopilotProfileDrawer } from "/src/components/CippComponents/CippAutopilotProfileDrawer";
+import { CippAutopilotProfileDrawer } from "../../../../components/CippComponents/CippAutopilotProfileDrawer";
 
 const Page = () => {
   const pageTitle = "Autopilot Profiles";
@@ -21,13 +21,13 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (row) => <CippJsonView object={row} type="intune" />,
+    children: (row) => <CippJsonView object={row} type="intune" defaultOpen={true} />,
     size: "xl",
   };
 
   const simpleColumns = [
     "displayName",
-    "Description",
+    "description",
     "language",
     "extractHardwareHash",
     "deviceNameTemplate",
@@ -36,7 +36,12 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListAutopilotConfig?type=ApProfile"
+      apiUrl="/api/ListGraphRequest"
+      apiData={{
+        Endpoint: "deviceManagement/windowsAutopilotDeploymentProfiles",
+        $expand: "assignments",
+      }}
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

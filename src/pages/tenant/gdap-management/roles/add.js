@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Alert, Button, SvgIcon, Typography, Tooltip, Link } from "@mui/material";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
-import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
-import GDAPRoles from "/src/data/GDAPRoles";
+import { CippFormComponent } from "../../../../components/CippComponents/CippFormComponent";
+import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
+import GDAPRoles from "../../../../data/GDAPRoles";
 import { Box, Stack, Grid } from "@mui/system";
 import { ShieldCheckIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
-import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
-import cippDefaults from "/src/data/CIPPDefaultGDAPRoles";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { CippPropertyList } from "../../../../components/CippComponents/CippPropertyList";
+import cippDefaults from "../../../../data/CIPPDefaultGDAPRoles";
+import { ApiGetCall } from "../../../../api/ApiCall";
 import { Settings, SyncAlt } from "@mui/icons-material";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
@@ -56,12 +56,14 @@ const Page = () => {
       groupName: selectedGroup.label,
       groupId: selectedGroup.value,
       roleName: selectedRole.label,
-      roleId: selectedRole.value,
+      roleDefinitionId: selectedRole.value,
     };
 
     if (
       advancedMappings.some(
-        (mapping) => mapping.groupId === newMapping.groupId && mapping.roleId === newMapping.roleId
+        (mapping) =>
+          mapping.groupId === newMapping.groupId &&
+          mapping.roleDefinitionId === newMapping.roleDefinitionId
       )
     ) {
       return;
@@ -75,7 +77,8 @@ const Page = () => {
   const handleRemoveMapping = (mappingToRemove) => {
     const updatedMappings = advancedMappings.filter(
       (mapping) =>
-        mapping.groupId !== mappingToRemove.groupId || mapping.roleId !== mappingToRemove.roleId
+        mapping.groupId !== mappingToRemove.groupId ||
+        mapping.roleDefinitionId !== mappingToRemove.roleDefinitionId
     );
     setAdvancedMappings(updatedMappings);
   };

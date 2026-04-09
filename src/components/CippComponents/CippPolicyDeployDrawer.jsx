@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, Stack, Box } from "@mui/material";
 import { RocketLaunch } from "@mui/icons-material";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, useFormState } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
-import { CippIntunePolicy } from "../CippWizard/CippIntunePolicy";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import CippFormComponent from "./CippFormComponent";
 import CippJsonView from "../CippFormPages/CippJSONView";
@@ -13,13 +12,21 @@ import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 
+const assignmentFilterTypeOptions = [
+  { label: "Include - Apply policy to devices matching filter", value: "include" },
+  { label: "Exclude - Apply policy to devices NOT matching filter", value: "exclude" },
+];
+
 export const CippPolicyDeployDrawer = ({
   buttonText = "Deploy Policy",
   requiredPermissions = [],
   PermissionButton = Button,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const formControl = useForm();
+  const formControl = useForm({
+    mode: "onChange",
+  });
+  const { isValid } = useFormState({ control: formControl.control });
   const tenantFilter = useSettings()?.tenantFilter;
   const selectedTenants = useWatch({ control: formControl.control, name: "tenantFilter" }) || [];
   const CATemplates = ApiGetCall({ url: "/api/ListIntuneTemplates", queryKey: "IntuneTemplates" });
@@ -28,7 +35,7 @@ export const CippPolicyDeployDrawer = ({
   const jsonWatch = useWatch({ control: formControl.control, name: "RAWJson" });
   useEffect(() => {
     if (CATemplates.isSuccess && watcher?.value) {
-      const template = CATemplates.data.find((template) => template.GUID === watcher.value);
+      const template = CATemplates.data?.find((template) => template.GUID === watcher.value);
       if (template) {
         const jsonTemplate = template.RAWJson ? JSON.parse(template.RAWJson) : null;
         setJSONData(jsonTemplate);
@@ -50,7 +57,17 @@ export const CippPolicyDeployDrawer = ({
   });
 
   const handleSubmit = () => {
+    formControl.trigger();
+    // Check if the form is valid before proceeding
+    if (!isValid) {
+      return;
+    }
+
     const formData = formControl.getValues();
+    const assignmentFilterName = formData?.assignmentFilter?.value || null;
+    const assignmentFilterType = assignmentFilterName
+      ? formData?.assignmentFilterType || "include"
+      : null;
     console.log("Submitting form data:", formData);
     deployPolicy.mutate({
       url: "/api/AddPolicy",
@@ -60,7 +77,11 @@ export const CippPolicyDeployDrawer = ({
         "Compliance Policies",
         "Protection Policies",
       ],
-      data: { ...formData },
+      data: {
+        ...formData,
+        AssignmentFilterName: assignmentFilterName,
+        AssignmentFilterType: assignmentFilterType,
+      },
     });
   };
 
@@ -89,7 +110,7 @@ export const CippPolicyDeployDrawer = ({
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={deployPolicy.isLoading}
+              disabled={deployPolicy.isLoading || !isValid}
             >
               {deployPolicy.isLoading
                 ? "Deploying..."
@@ -121,7 +142,7 @@ export const CippPolicyDeployDrawer = ({
             multiple={false}
             formControl={formControl}
             options={
-              CATemplates.isSuccess
+              CATemplates.isSuccess && Array.isArray(CATemplates.data)
                 ? CATemplates.data.map((template) => ({
                     label: template.Displayname,
                     value: template.GUID,
@@ -166,6 +187,40 @@ export const CippPolicyDeployDrawer = ({
                 name="customGroup"
                 formControl={formControl}
                 validators={{ required: "Please specify custom group names" }}
+              />
+            </Grid>
+          </CippFormCondition>
+          <CippFormCondition
+            formControl={formControl}
+            field="AssignTo"
+            compareType="isOneOf"
+            compareValue={["allLicensedUsers", "AllDevices", "AllDevicesAndUsers", "customGroup"]}
+          >
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                name="assignmentFilter"
+                label="Assignment Filter (Optional)"
+                multiple={false}
+                creatable={false}
+                formControl={formControl}
+                api={{
+                  url: "/api/ListAssignmentFilters",
+                  queryKey: `ListAssignmentFilters-${tenantFilter}`,
+                  labelField: (filter) => filter.displayName,
+                  valueField: "displayName",
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="radio"
+                name="assignmentFilterType"
+                label="Assignment Filter Mode"
+                options={assignmentFilterTypeOptions}
+                defaultValue="include"
+                helperText="Choose whether to include or exclude devices matching the filter."
+                formControl={formControl}
               />
             </Grid>
           </CippFormCondition>

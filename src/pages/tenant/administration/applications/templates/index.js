@@ -1,15 +1,16 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import CippPermissionPreview from "/src/components/CippComponents/CippPermissionPreview.jsx";
-import { Edit, Delete, ContentCopy, Add, GitHub } from "@mui/icons-material";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
+import CippPermissionPreview from "../../../../../components/CippComponents/CippPermissionPreview.jsx";
+import { Edit, Delete, ContentCopy, Add, GitHub, RocketLaunch } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
+import { ApiGetCall } from "../../../../../api/ApiCall";
 import { Button } from "@mui/material";
+import { Stack } from "@mui/system";
 import Link from "next/link";
-import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
-  const pageTitle = "Templates";
+  const pageTitle = "Application Templates";
   const apiUrl = "/api/ListAppApprovalTemplates";
 
   // Fetch GitHub integration status
@@ -213,6 +214,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
+      tenantInTitle={false}
       queryKey="ListAppApprovalTemplates"
       columns={columns}
       simpleColumns={simpleColumns}
@@ -220,13 +222,24 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       cardButton={
-        <Button
-          component={Link}
-          href="/tenant/administration/applications/templates/add"
-          startIcon={<Add />}
-        >
-          Add App Approval Template
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <Button
+            component={Link}
+            href="/tenant/administration/applications/templates/add"
+            startIcon={<Add />}
+            sx={{ mr: 1 }}
+          >
+            Add Template
+          </Button>
+          <Button
+            component={Link}
+            href="/tenant/tools/appapproval"
+            startIcon={<RocketLaunch />}
+            sx={{ mr: 1 }}
+          >
+            Deploy Template
+          </Button>
+        </Stack>
       }
     />
   );

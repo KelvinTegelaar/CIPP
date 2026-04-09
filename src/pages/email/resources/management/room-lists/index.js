@@ -1,13 +1,13 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Visibility, ListAlt, Edit } from "@mui/icons-material";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
+import { Edit } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { Button } from "@mui/material";
-import Link from "next/link";
+import { CippAddRoomListDrawer } from "../../../../../components/CippComponents/CippAddRoomListDrawer";
 
 const Page = () => {
   const pageTitle = "Room Lists";
   const apiUrl = "/api/ListRoomLists";
+  const cardButtonPermissions = ["Exchange.Room.ReadWrite"];
 
   const actions = [
     {
@@ -45,13 +45,7 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = [
-    "DisplayName",
-    "PrimarySmtpAddress",
-    "Identity",
-    "Phone",
-    "Notes",
-  ];
+  const simpleColumns = ["DisplayName", "PrimarySmtpAddress", "Identity", "Phone", "Notes"];
 
   return (
     <CippTablePage
@@ -63,19 +57,13 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/email/resources/management/room-lists/add"
-            startIcon={<ListAlt />}
-          >
-            Create Room List
-          </Button>
+          <CippAddRoomListDrawer requiredPermissions={cardButtonPermissions} />
         </>
       }
     />
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

@@ -51,4 +51,12 @@ export const CippTranslations = {
   sendtoIntegration: "Send Notifications to Integration",
   includeTenantId: "Include Tenant ID in Notifications",
   logsToInclude: "Logs to Include in notifications",
+  assignmentFilterManagementType: "Filter Type",
+  microsoftSupport: "Microsoft Support",
+  syndicatePartner: "Syndicate Partner",
+  breadthPartner: "Breadth Partner",
+  breadthPartnerDelegatedAdmin: "Breadth Partner (Delegated)",
+  resellerPartnerDelegatedAdmin: "Direct Reseller",
+  valueAddedResellerPartnerDelegatedAdmin: "Indirect Reseller",
+  unknownFutureValue: "Unknown",
 };

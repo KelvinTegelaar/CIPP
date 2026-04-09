@@ -1,23 +1,27 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import {
-  Block as BlockIcon,
-  Check as CheckIcon,
-  Delete as DeleteIcon,
-  MenuBook as MenuBookIcon,
-  AddModerator as AddModeratorIcon,
-  Visibility as VisibilityIcon,
-  Edit as EditIcon,
+  Block,
+  Check,
+  Delete,
+  MenuBook,
+  Visibility,
+  Edit,
+  VerifiedUser,
 } from "@mui/icons-material";
-import { Box, Button } from "@mui/material";
-import Link from "next/link";
+import { Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer";
+import { CippApiLogsDrawer } from "../../../../components/CippComponents/CippApiLogsDrawer";
+import { PermissionButton } from "../../../../utils/permissions";
+import { useSettings } from "../../../../hooks/use-settings.js";
 
 // Page Component
 const Page = () => {
   const pageTitle = "Conditional Access";
   const apiUrl = "/api/ListConditionalAccessPolicies";
+  const cardButtonPermissions = ["Tenant.ConditionalAccess.ReadWrite"];
+  const tenant = useSettings().currentTenant;
 
   // Actions configuration
   const actions = [
@@ -32,59 +36,9 @@ const Page = () => {
         return JSON.parse(data.rawjson);
       },
       hideBulk: true,
-      confirmText: "Are you sure you want to create a template based on this policy?",
-      icon: <MenuBookIcon />,
+      confirmText: `Are you sure you want to create a template based on "[displayName]"?`,
+      icon: <MenuBook />,
       color: "info",
-    },
-    {
-      label: "Enable policy",
-      type: "POST",
-      url: "/api/EditCAPolicy",
-      data: {
-        GUID: "id",
-        State: "!Enabled",
-      },
-      confirmText: "Are you sure you want to enable this policy?",
-      condition: (row) => row.state !== "enabled",
-      icon: <CheckIcon />,
-      color: "info",
-    },
-    {
-      label: "Disable policy",
-      type: "POST",
-      url: "/api/EditCAPolicy",
-      data: {
-        GUID: "id",
-        State: "!Disabled",
-      },
-      confirmText: "Are you sure you want to disable this policy?",
-      condition: (row) => row.state !== "disabled",
-      icon: <BlockIcon />,
-      color: "info",
-    },
-    {
-      label: "Set policy to report only",
-      type: "POST",
-      url: "/api/EditCAPolicy",
-      data: {
-        GUID: "id",
-        State: "!enabledForReportingButNotEnforced",
-      },
-      confirmText: "Are you sure you want to set this policy to report only?",
-      condition: (row) => row.state !== "enabledForReportingButNotEnforced",
-      icon: <VisibilityIcon />,
-      color: "info",
-    },
-    {
-      label: "Delete policy",
-      type: "POST",
-      url: "/api/RemoveCAPolicy",
-      data: {
-        GUID: "id",
-      },
-      confirmText: "Are you sure you want to delete this policy?",
-      icon: <DeleteIcon />,
-      color: "danger",
     },
     {
       label: "Change Display Name",
@@ -93,8 +47,8 @@ const Page = () => {
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to change the display name of this policy?",
-      icon: <EditIcon />,
+      confirmText: `What do you want to change the display name of "[displayName]" to?`,
+      icon: <Edit />,
       color: "info",
       hideBulk: true,
       fields: [
@@ -113,15 +67,65 @@ const Page = () => {
       ],
     },
     {
+      label: "Enable policy",
+      type: "POST",
+      url: "/api/EditCAPolicy",
+      data: {
+        GUID: "id",
+        State: "!Enabled",
+      },
+      confirmText: `Are you sure you want to enable "[displayName]"?`,
+      condition: (row) => row.state !== "enabled",
+      icon: <Check />,
+      color: "info",
+    },
+    {
+      label: "Disable policy",
+      type: "POST",
+      url: "/api/EditCAPolicy",
+      data: {
+        GUID: "id",
+        State: "!Disabled",
+      },
+      confirmText: `Are you sure you want to disable "[displayName]"?`,
+      condition: (row) => row.state !== "disabled",
+      icon: <Block />,
+      color: "info",
+    },
+    {
+      label: "Set policy to report only",
+      type: "POST",
+      url: "/api/EditCAPolicy",
+      data: {
+        GUID: "id",
+        State: "!enabledForReportingButNotEnforced",
+      },
+      confirmText: `Are you sure you want to set "[displayName]" to report only?`,
+      condition: (row) => row.state !== "enabledForReportingButNotEnforced",
+      icon: <Visibility />,
+      color: "info",
+    },
+    {
       label: "Add service provider exception to policy",
       type: "POST",
       url: "/api/ExecCAServiceExclusion",
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to add the service provider exception to this policy?",
-      icon: <DeleteIcon />,
+      confirmText: `Are you sure you want to add the service provider exception to "[displayName]"?`,
+      icon: <VerifiedUser />,
       color: "warning",
+    },
+    {
+      label: "Delete policy",
+      type: "POST",
+      url: "/api/RemoveCAPolicy",
+      data: {
+        GUID: "id",
+      },
+      confirmText: `Are you sure you want to delete "[displayName]"?`,
+      icon: <Delete />,
+      color: "danger",
     },
   ];
 
@@ -137,6 +141,7 @@ const Page = () => {
 
   // Columns for CippTablePage
   const simpleColumns = [
+    "Tenant",
     "displayName",
     "state",
     "modifiedDateTime",
@@ -158,12 +163,20 @@ const Page = () => {
   return (
     <CippTablePage
       cardButton={
-        <>
-          <CippCADeployDrawer />
-        </>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <CippCADeployDrawer requiredPermissions={cardButtonPermissions} />
+          <CippApiLogsDrawer
+            apiFilter="Conditional|CA Policy|CATemplate|CAPolicy"
+            buttonText="View Logs"
+            title="Conditional Access Logs"
+            PermissionButton={PermissionButton}
+            tenantFilter={tenant}
+          />
+        </Box>
       }
       title={pageTitle}
       apiUrl={apiUrl}
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
@@ -171,5 +184,5 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
 export default Page;

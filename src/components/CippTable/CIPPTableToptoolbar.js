@@ -14,6 +14,10 @@ import {
   Paper,
   Checkbox,
   SvgIcon,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import {
   Search as SearchIcon,
@@ -21,8 +25,6 @@ import {
   ViewColumn as ViewColumnIcon,
   FileDownload as ExportIcon,
   KeyboardArrowDown as ArrowDownIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
   Code as CodeIcon,
   PictureAsPdf as PdfIcon,
   TableChart as CsvIcon,
@@ -34,9 +36,8 @@ import {
 } from "@mui/icons-material";
 import { ExclamationCircleIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { styled, alpha } from "@mui/material/styles";
-import { MRT_ToggleFullScreenButton } from "material-react-table";
-import { PDFExportButton } from "../pdfExportButton";
-import { CSVExportButton } from "../csvExportButton";
+import { PDFExportButton, exportRowsToPdf } from "../pdfExportButton";
+import { CSVExportButton, exportRowsToCsv } from "../csvExportButton";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { useMediaQuery } from "@mui/material";
 import { CippQueueTracker } from "./CippQueueTracker";
@@ -48,8 +49,7 @@ import { useRouter } from "next/router";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
-import { useQueryClient } from "@tanstack/react-query";
-import GraphExplorerPresets from "/src/data/GraphExplorerPresets.json";
+import GraphExplorerPresets from "../../data/GraphExplorerPresets.json";
 import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
 import { Stack } from "@mui/system";
 
@@ -158,6 +158,8 @@ export const CIPPTableToptoolbar = ({
   setGraphFilterData,
   setConfiguredSimpleColumns,
   queueMetadata,
+  isInDialog = false,
+  showBulkExportAction = true,
 }) => {
   const popover = usePopover();
   const [filtersAnchor, setFiltersAnchor] = useState(null);
@@ -172,6 +174,7 @@ export const CIPPTableToptoolbar = ({
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+  const [jsonDialogOpen, setJsonDialogOpen] = useState(false); // For dialog-based JSON view
   const [filterList, setFilterList] = useState(filters);
   const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(queryKey || title);
   const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns);
@@ -179,9 +182,10 @@ export const CIPPTableToptoolbar = ({
   const [activeFilterName, setActiveFilterName] = useState(null);
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = settings?.currentTenant;
-
-  // Track if we've restored filters for this page to prevent infinite loops
-  const restoredFiltersRef = useRef(new Set());
+  const [useCompactMode, setUseCompactMode] = useState(false);
+  const toolbarRef = useRef(null);
+  const leftContainerRef = useRef(null);
+  const actionsContainerRef = useRef(null);
 
   const getBulkActions = (actions, selectedRows) => {
     return (
@@ -195,6 +199,42 @@ export const CIPPTableToptoolbar = ({
         })) || []
     );
   };
+
+  const selectedRows = table.getSelectedRowModel().rows;
+  const hasSelection = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
+  // Built-in export actions should only appear when the page opts in and rows are selected.
+  const builtInBulkExportAvailable =
+    showBulkExportAction && exportEnabled && selectedRows.length > 0;
+  const customBulkActions = getBulkActions(actions, selectedRows);
+  const showBulkActionsButton = hasSelection && customBulkActions.length > 0;
+
+  const handleExportSelectedToCsv = () => {
+    if (!selectedRows.length) {
+      return;
+    }
+    exportRowsToCsv({
+      rows: selectedRows,
+      columns: usedColumns,
+      reportName: `${title}`,
+      columnVisibility,
+    });
+  };
+
+  const handleExportSelectedToPdf = () => {
+    if (!selectedRows.length) {
+      return;
+    }
+    exportRowsToPdf({
+      rows: selectedRows,
+      columns: usedColumns,
+      reportName: `${title}`,
+      columnVisibility,
+      brandingSettings: settings?.customBranding,
+    });
+  };
+
+  // Track if we've restored filters for this page to prevent infinite loops
+  const restoredFiltersRef = useRef(new Set());
 
   useEffect(() => {
     //if usedData changes, deselect all rows
@@ -247,8 +287,6 @@ export const CIPPTableToptoolbar = ({
     ) {
       const last = settings.lastUsedFilters[pageName];
       if (last.type === "graph") {
-        console.log("Early restoring graph filter:", last, "for page:", pageName);
-
         // Mark as restored to prevent infinite loops
         restoredFiltersRef.current.add(restorationKey);
 
@@ -278,6 +316,21 @@ export const CIPPTableToptoolbar = ({
         });
         setCurrentEffectiveQueryKey(newQueryKey);
         setActiveFilterName(last.name);
+
+        if (last.value?.$select) {
+          let selectColumns = [];
+          if (Array.isArray(last.value.$select)) {
+            selectColumns = last.value.$select;
+          } else if (typeof last.value.$select === "string") {
+            selectColumns = last.value.$select
+              .split(",")
+              .map((col) => col.trim())
+              .filter((col) => usedColumns.includes(col));
+          }
+          if (selectColumns.length > 0) {
+            setConfiguredSimpleColumns(selectColumns);
+          }
+        }
       }
     }
   }, [settings.persistFilters, settings.lastUsedFilters, pageName, api?.url, queryKey, title]);
@@ -286,6 +339,39 @@ export const CIPPTableToptoolbar = ({
   useEffect(() => {
     restoredFiltersRef.current.clear();
   }, [pageName]);
+
+  // Detect overflow and switch to compact mode
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (!leftContainerRef.current || !actionsContainerRef.current) {
+        return;
+      }
+
+      const leftContainerWidth = leftContainerRef.current.offsetWidth;
+      const leftContainerScrollWidth = leftContainerRef.current.scrollWidth;
+      const actionsWidth = actionsContainerRef.current.scrollWidth;
+      const isOverflowing = leftContainerScrollWidth > leftContainerWidth;
+      const shouldBeCompact = isOverflowing || actionsWidth > leftContainerWidth * 0.6; // Actions taking > 60% of left container
+
+      setUseCompactMode(shouldBeCompact);
+    };
+
+    // Check immediately on mount and when dependencies change
+    checkOverflow();
+
+    // Also check after a brief delay to ensure elements are fully rendered
+    const timeoutId = setTimeout(checkOverflow, 100);
+
+    const resizeObserver = new ResizeObserver(checkOverflow);
+    if (leftContainerRef.current) {
+      resizeObserver.observe(leftContainerRef.current);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      resizeObserver.disconnect();
+    };
+  }, [hasSelection, customBulkActions.length, exportEnabled, filters?.length, usedColumns?.length]);
 
   // Restore last used filter on mount if persistFilters is enabled (non-graph filters)
   useEffect(() => {
@@ -301,7 +387,6 @@ export const CIPPTableToptoolbar = ({
       // Use setTimeout to ensure the table is fully rendered
       const timeoutId = setTimeout(() => {
         const last = settings.lastUsedFilters[pageName];
-        console.log("Restoring filter:", last, "for page:", pageName);
 
         if (last.type === "global") {
           table.setGlobalFilter(last.value);
@@ -311,7 +396,6 @@ export const CIPPTableToptoolbar = ({
           const allColumns = table.getAllColumns().map((col) => col.id);
           const filterColumns = Array.isArray(last.value) ? last.value.map((f) => f.id) : [];
           const allExist = filterColumns.every((colId) => allColumns.includes(colId));
-          console.log("Column filter check:", { allColumns, filterColumns, allExist });
           if (allExist) {
             table.setShowColumnFilters(true);
             table.setColumnFilters(last.value);
@@ -417,6 +501,22 @@ export const CIPPTableToptoolbar = ({
     return merged;
   };
 
+  // Shared function for setting nested column visibility
+  const setNestedVisibility = (col) => {
+    if (typeof col === "object" && col !== null) {
+      Object.keys(col).forEach((key) => {
+        if (usedColumns.includes(key.trim())) {
+          setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
+          setNestedVisibility(col[key]);
+        }
+      });
+    } else {
+      if (usedColumns.includes(col.trim())) {
+        setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
+      }
+    }
+  };
+
   const setTableFilter = (filter, filterType, filterName) => {
     if (filterType === "global" || filterType === undefined) {
       table.setGlobalFilter(filter);
@@ -442,6 +542,9 @@ export const CIPPTableToptoolbar = ({
       }
       setCurrentEffectiveQueryKey(queryKey || title); // Reset to original query key
       setActiveFilterName(null); // Clear active filter
+      if (settings.persistFilters && settings.setLastUsedFilter) {
+        settings.setLastUsedFilter(pageName, { type: "reset", value: null, name: null });
+      }
     }
     if (filterType === "graph") {
       const filterProps = [
@@ -478,23 +581,9 @@ export const CIPPTableToptoolbar = ({
         let selectedColumns = [];
         if (Array.isArray(filter?.$select)) {
           selectedColumns = filter?.$select;
-        } else {
-          selectedColumns = filter?.$select.split(",");
+        } else if (typeof filter?.$select === "string") {
+          selectedColumns = filter.$select.split(",");
         }
-        const setNestedVisibility = (col) => {
-          if (typeof col === "object" && col !== null) {
-            Object.keys(col).forEach((key) => {
-              if (usedColumns.includes(key.trim())) {
-                setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
-                setNestedVisibility(col[key]);
-              }
-            });
-          } else {
-            if (usedColumns.includes(col.trim())) {
-              setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
-            }
-          }
-        };
         if (selectedColumns.length > 0) {
           setConfiguredSimpleColumns(selectedColumns);
           selectedColumns.forEach((col) => {
@@ -541,6 +630,7 @@ export const CIPPTableToptoolbar = ({
   return (
     <>
       <Box
+        ref={toolbarRef}
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
@@ -554,6 +644,7 @@ export const CIPPTableToptoolbar = ({
       >
         {/* Left side - Main controls */}
         <Box
+          ref={leftContainerRef}
           sx={{
             display: "flex",
             gap: { xs: 1, md: 2 },
@@ -569,8 +660,8 @@ export const CIPPTableToptoolbar = ({
               getRequestData?.isFetchNextPageError
                 ? "Could not retrieve all data. Click to try again."
                 : getRequestData?.isFetching
-                ? "Retrieving more data..."
-                : "Refresh data"
+                  ? "Retrieving more data..."
+                  : "Refresh data"
             }
           >
             <RefreshButton
@@ -600,7 +691,7 @@ export const CIPPTableToptoolbar = ({
                       : "none",
                   "@keyframes spin": {
                     "0%": { transform: "rotate(0deg)" },
-                    "100%": { transform: "rotate(360deg)" },
+                    "100%": { transform: "rotate(-360deg)" },
                   },
                 }}
               >
@@ -623,9 +714,22 @@ export const CIPPTableToptoolbar = ({
             />
           </ModernSearchContainer>
 
-          {/* Desktop Buttons */}
+          {/* Desktop Buttons - always render for measurement, hide when in compact mode */}
           {!mdDown && (
-            <>
+            <Box
+              ref={actionsContainerRef}
+              sx={{
+                display: "flex",
+                gap: 2,
+                flexShrink: 0,
+                mt: 0.5,
+                ...(useCompactMode && {
+                  position: "absolute",
+                  visibility: "hidden",
+                  pointerEvents: "none",
+                }),
+              }}
+            >
               {/* Filters Button */}
               <ModernButton
                 startIcon={<FilterListIcon />}
@@ -743,7 +847,7 @@ export const CIPPTableToptoolbar = ({
                         })
                       }
                     >
-                      <Checkbox checked={column.getIsVisible()} size="small" />
+                      <Checkbox checked={Boolean(column.getIsVisible())} size="small" />
                       <ListItemText primary={getCippTranslation(column.id)} />
                     </MenuItem>
                   ))}
@@ -759,7 +863,17 @@ export const CIPPTableToptoolbar = ({
                   Export
                 </ModernButton>
               )}
-            </>
+            </Box>
+          )}
+
+          {/* Mobile/Compact Action Button */}
+          {(mdDown || useCompactMode) && !hasSelection && (
+            <IconButton
+              onClick={(event) => setActionMenuAnchor(event.currentTarget)}
+              sx={{ flexShrink: 0 }}
+            >
+              <MoreVertIcon />
+            </IconButton>
           )}
 
           {/* Mobile Action Menu */}
@@ -922,7 +1036,7 @@ export const CIPPTableToptoolbar = ({
                     })
                   }
                 >
-                  <Checkbox checked={column.getIsVisible()} size="small" />
+                  <Checkbox checked={Boolean(column.getIsVisible())} size="small" />
                   <ListItemText primary={getCippTranslation(column.id)} />
                 </MenuItem>
               ))}
@@ -945,7 +1059,7 @@ export const CIPPTableToptoolbar = ({
               <MenuItem
                 onClick={() => {
                   // Trigger CSV export
-                  const csvButton = document.querySelector("[data-csv-export]");
+                  const csvButton = document.querySelector(`[data-csv-export="${title}"]`);
                   if (csvButton) csvButton.click();
                   setExportAnchor(null);
                 }}
@@ -958,7 +1072,7 @@ export const CIPPTableToptoolbar = ({
               <MenuItem
                 onClick={() => {
                   // Trigger PDF export
-                  const pdfButton = document.querySelector("[data-pdf-export]");
+                  const pdfButton = document.querySelector(`[data-pdf-export="${title}"]`);
                   if (pdfButton) pdfButton.click();
                   setExportAnchor(null);
                 }}
@@ -968,9 +1082,41 @@ export const CIPPTableToptoolbar = ({
                 </ListItemIcon>
                 <ListItemText primary="Export to PDF" />
               </MenuItem>
+              {builtInBulkExportAvailable && (
+                <>
+                  <Divider sx={{ my: 0.5 }} />
+                  <MenuItem
+                    onClick={() => {
+                      handleExportSelectedToCsv();
+                      setExportAnchor(null);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <CsvIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Export Selected to CSV" />
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleExportSelectedToPdf();
+                      setExportAnchor(null);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <PdfIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Export Selected to PDF" />
+                  </MenuItem>
+                </>
+              )}
+              <Divider sx={{ my: 0.5 }} />
               <MenuItem
                 onClick={() => {
-                  setOffcanvasVisible(true);
+                  if (isInDialog) {
+                    setJsonDialogOpen(true);
+                  } else {
+                    setOffcanvasVisible(true);
+                  }
                   setExportAnchor(null);
                 }}
               >
@@ -980,24 +1126,6 @@ export const CIPPTableToptoolbar = ({
                 <ListItemText primary="View API Response" />
               </MenuItem>
             </Menu>
-          )}
-
-          {/* Mobile Action Menu */}
-          {mdDown && (
-            <IconButton
-              onClick={(event) => setActionMenuAnchor(event.currentTarget)}
-              size="small"
-              sx={{
-                height: "40px",
-                width: "40px",
-                border: "1px solid",
-                borderColor: "divider",
-                borderRadius: "8px",
-                ml: "auto",
-              }}
-            >
-              <MoreVertIcon />
-            </IconButton>
           )}
         </Box>
 
@@ -1030,31 +1158,29 @@ export const CIPPTableToptoolbar = ({
           )}
 
           {/* Bulk Actions - inline with toolbar */}
-          {actions &&
-            getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 &&
-            (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
-              <Button
-                onClick={popover.handleOpen}
-                ref={popover.anchorRef}
-                startIcon={
-                  <SvgIcon fontSize="small">
-                    <ChevronDownIcon />
-                  </SvgIcon>
-                }
-                variant="outlined"
-                size="small"
-                sx={{
-                  flexShrink: 0,
-                  whiteSpace: "nowrap",
-                  minWidth: "auto",
-                  height: "32px",
-                  fontSize: { xs: "12px", md: "14px" },
-                  mr: 1,
-                }}
-              >
-                Bulk Actions
-              </Button>
-            )}
+          {showBulkActionsButton && (
+            <Button
+              onClick={popover.handleOpen}
+              ref={popover.anchorRef}
+              startIcon={
+                <SvgIcon fontSize="small">
+                  <ChevronDownIcon />
+                </SvgIcon>
+              }
+              variant="outlined"
+              size="small"
+              sx={{
+                flexShrink: 0,
+                whiteSpace: "nowrap",
+                minWidth: "auto",
+                height: "32px",
+                fontSize: { xs: "12px", md: "14px" },
+                mr: 1,
+              }}
+            >
+              Bulk Actions
+            </Button>
+          )}
 
           {/* Cold start indicator */}
           {getRequestData?.data?.pages?.[0].Metadata?.ColdStart === true && (
@@ -1078,14 +1204,14 @@ export const CIPPTableToptoolbar = ({
             columns={usedColumns}
             reportName={title}
             columnVisibility={columnVisibility}
-            data-pdf-export
+            data-pdf-export={title}
           />
           <CSVExportButton
             reportName={title}
             columnVisibility={columnVisibility}
             rows={table.getFilteredRowModel().rows}
             columns={usedColumns}
-            data-csv-export
+            data-csv-export={title}
           />
         </Box>
       </Box>
@@ -1109,22 +1235,39 @@ export const CIPPTableToptoolbar = ({
         }}
       >
         {actions &&
-          getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
+          customBulkActions.map((action, index) => (
             <MenuItem
               key={index}
               disabled={action.disabled}
               onClick={() => {
-                if (action.disabled) return;
+                if (action.disabled) {
+                  return;
+                }
+
+                const selectedRows = table.getSelectedRowModel().rows;
+                const selectedData = selectedRows.map((row) => row.original);
+
+                if (typeof action.customBulkHandler === "function") {
+                  action.customBulkHandler({
+                    rows: selectedRows,
+                    data: selectedData,
+                    closeMenu: popover.handleClose,
+                    clearSelection: () => table.toggleAllRowsSelected(false),
+                  });
+                  popover.handleClose();
+                  return;
+                }
+
                 setActionData({
-                  data: table.getSelectedRowModel().rows.map((row) => row.original),
+                  data: selectedData,
                   action: action,
                   ready: true,
                 });
 
                 if (action?.noConfirm && action.customFunction) {
-                  table
-                    .getSelectedRowModel()
-                    .rows.map((row) => action.customFunction(row.original.original, action, {}));
+                  selectedRows.map((row) =>
+                    action.customFunction(row.original.original, action, {}),
+                  );
                 } else {
                   createDialog.handleOpen();
                   popover.handleClose();
@@ -1139,25 +1282,27 @@ export const CIPPTableToptoolbar = ({
           ))}
       </Menu>
 
-      {/* API Response Off-Canvas */}
-      <CippOffCanvas
-        size="xl"
-        title="API Response"
-        visible={offcanvasVisible}
-        onClose={() => {
-          setOffcanvasVisible(false);
-        }}
-      >
-        <Stack spacing={2}>
-          <Typography variant="h4">API Response</Typography>
-          <CippCodeBlock
-            type="editor"
-            code={JSON.stringify(usedData, null, 2)}
-            editorHeight="1000px"
-            showLineNumbers={!mdDown}
-          />
-        </Stack>
-      </CippOffCanvas>
+      {/* API Response Off-Canvas - only show when not in dialog mode */}
+      {!isInDialog && (
+        <CippOffCanvas
+          size="xl"
+          title="API Response"
+          visible={offcanvasVisible}
+          onClose={() => {
+            setOffcanvasVisible(false);
+          }}
+        >
+          <Stack spacing={2}>
+            <CippCodeBlock
+              type="editor"
+              code={JSON.stringify(usedData, null, 2)}
+              editorHeight="1000px"
+              showLineNumbers={!mdDown}
+              readOnly={true}
+            />
+          </Stack>
+        </CippOffCanvas>
+      )}
 
       {/* Action Dialog */}
       {actionData.ready && (
@@ -1168,6 +1313,7 @@ export const CIPPTableToptoolbar = ({
           api={actionData.action}
           row={actionData.data}
           relatedQueryKeys={queryKeys}
+          {...actionData.action}
         />
       )}
 
@@ -1177,33 +1323,29 @@ export const CIPPTableToptoolbar = ({
         title="Edit Filters"
         visible={filterCanvasVisible}
         onClose={() => setFilterCanvasVisible(!filterCanvasVisible)}
+        contentPadding={1}
+        keepMounted={true}
       >
         <CippGraphExplorerFilter
           endpointFilter={api?.data?.Endpoint}
           relatedQueryKeys={[queryKey, currentEffectiveQueryKey].filter(Boolean)}
+          selectedPreset={
+            activeFilterName ? filterList.find((f) => f.filterName === activeFilterName) : null
+          }
+          onPresetSelect={(preset) => {
+            if (preset?.value && preset?.type === "graph") {
+              setTableFilter(preset.value, preset.type, preset.filterName);
+            }
+          }}
           onSubmitFilter={(filter) => {
             setTableFilter(filter, "graph", "Custom Filter");
             if (filter?.$select) {
               let selectedColumns = [];
               if (Array.isArray(filter?.$select)) {
                 selectedColumns = filter?.$select;
-              } else {
-                selectedColumns = filter?.$select.split(",");
+              } else if (typeof filter?.$select === "string") {
+                selectedColumns = filter.$select.split(",");
               }
-              const setNestedVisibility = (col) => {
-                if (typeof col === "object" && col !== null) {
-                  Object.keys(col).forEach((key) => {
-                    if (usedColumns.includes(key.trim())) {
-                      setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
-                      setNestedVisibility(col[key]);
-                    }
-                  });
-                } else {
-                  if (usedColumns.includes(col.trim())) {
-                    setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
-                  }
-                }
-              };
               if (selectedColumns.length > 0) {
                 setConfiguredSimpleColumns(selectedColumns);
                 selectedColumns.forEach((col) => {
@@ -1218,6 +1360,30 @@ export const CIPPTableToptoolbar = ({
           component="card"
         />
       </CippOffCanvas>
+
+      {/* JSON Dialog for when in dialog mode */}
+      {isInDialog && (
+        <Dialog
+          fullWidth
+          maxWidth="xl"
+          open={jsonDialogOpen}
+          onClose={() => setJsonDialogOpen(false)}
+          sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
+        >
+          <DialogTitle>API Response</DialogTitle>
+          <DialogContent>
+            <CippCodeBlock
+              type="editor"
+              code={JSON.stringify(usedData, null, 2)}
+              editorHeight="600px"
+              showLineNumbers={!mdDown}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setJsonDialogOpen(false)}>Close</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 };

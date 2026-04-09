@@ -2,15 +2,15 @@ import React, { useEffect } from "react";
 import { Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
+import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
-import countryList from "/src/data/countryList.json";
-import timezoneList from "/src/data/timezoneList.json";
+import { ApiGetCall } from "../../../../../api/ApiCall";
+import countryList from "../../../../../data/countryList.json";
+import timezoneList from "../../../../../data/timezoneList.json";
 
 // Work days options
 const workDaysOptions = [
@@ -193,19 +193,24 @@ const EditEquipmentMailbox = () => {
           </Grid>
 
           <Grid size={{ md: 4, xs: 12 }}>
+            {/* MaximumDurationInMinutes: 0 = Unlimited, 0..2147483647 (default 1440) per Exchange/EXO spec */}
             <CippFormComponent
               type="number"
               label="Maximum Booking Duration (Minutes)"
               name="maximumDurationInMinutes"
               formControl={formControl}
               validators={{
-                min: { value: 1, message: "Minimum duration is 1 minute" },
-                max: { value: 1440, message: "Maximum duration is 1440 minutes (24 hours)" },
+                min: { value: 0, message: "Minimum is 0 (0 = Unlimited)" },
+                max: {
+                  value: 2147483647,
+                  message: "Maximum is 2,147,483,647 minutes",
+                },
               }}
               InputProps={{
-                inputProps: { min: 1, max: 1440 },
+                inputProps: { min: 0, max: 2147483647 },
               }}
               fullWidth
+              helperText="Set to 0 for unlimited duration"
             />
           </Grid>
 

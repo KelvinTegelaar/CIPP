@@ -1,12 +1,24 @@
 // this page is going to need some love for accounting for filters: https://github.com/KelvinTegelaar/CIPP/blob/main/src/views/tenant/administration/ListEnterpriseApps.jsx#L83
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent.jsx";
-import { CertificateCredentialRemovalForm } from "/src/components/CippComponents/CertificateCredentialRemovalForm.jsx";
-import { Launch, Delete, Edit, Key, Security, Block, CheckCircle } from "@mui/icons-material";
-import { usePermissions } from "/src/hooks/use-permissions.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { CippFormComponent } from "../../../../components/CippComponents/CippFormComponent.jsx";
+import { CertificateCredentialRemovalForm } from "../../../../components/CippComponents/CertificateCredentialRemovalForm.jsx";
+import {
+  Launch,
+  Delete,
+  Edit,
+  Key,
+  Security,
+  Block,
+  CheckCircle,
+  ContentCopy,
+  RocketLaunch,
+} from "@mui/icons-material";
+import { usePermissions } from "../../../../hooks/use-permissions.js";
 import tabOptions from "./tabOptions";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Enterprise Applications";
@@ -24,6 +36,29 @@ const Page = () => {
       target: "_blank",
       multiPost: false,
       external: true,
+    },
+    {
+      icon: <ContentCopy />,
+      label: "Create Template from App",
+      type: "POST",
+      color: "info",
+      multiPost: false,
+      url: "/api/ExecCreateAppTemplate",
+      data: {
+        AppId: "appId",
+        DisplayName: "displayName",
+        Type: "servicePrincipal",
+      },
+      fields: [
+        {
+          type: "switch",
+          name: "Overwrite",
+          label: "Overwrite Existing Template",
+        },
+      ],
+      confirmText:
+        "Create a deployment template from '[displayName]'? This will copy all permissions and create a reusable template.",
+      condition: (row) => canWriteApplication && row?.signInAudience === "AzureADMultipleOrgs",
     },
     {
       icon: <Key />,
@@ -50,7 +85,7 @@ const Page = () => {
             options={
               row?.passwordCredentials?.map((cred) => ({
                 label: `${cred.displayName || "Unnamed"} (Expiration: ${new Date(
-                  cred.endDateTime
+                  cred.endDateTime,
                 ).toLocaleDateString()})`,
                 value: cred.keyId,
               })) || []
@@ -178,6 +213,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      cardButton={
+        <>
+          <Button component={Link} href="/tenant/tools/appapproval" startIcon={<RocketLaunch />}>
+            Deploy Template
+          </Button>
+        </>
+      }
     />
   );
 };

@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import {
   Button,
   Dialog,
@@ -10,11 +10,11 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiPostCall } from "/src/api/ApiCall";
-import { useSettings } from "/src/hooks/use-settings";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { ApiPostCall } from "../../../../api/ApiCall";
+import { useSettings } from "../../../../hooks/use-settings";
+import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
+import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { useState } from "react";
 import { Search, Close, ClearAll } from "@mui/icons-material";
 import { Grid } from "@mui/system";
@@ -148,7 +148,7 @@ const Page = () => {
 
   return (
     <>
-      <Stack spacing={2} sx={{ p: 3, mt: 1 }}>
+      <Stack spacing={2} sx={{ px: 3 }}>
         <CippButtonCard
           component="accordion"
           title="Message Trace Options"

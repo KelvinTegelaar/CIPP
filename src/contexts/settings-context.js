@@ -67,6 +67,15 @@ const storeSettings = (value) => {
   storage.setItem(STORAGE_KEY, JSON.stringify(value));
 };
 
+const stripServerManagedSettings = (settings) => {
+  if (!settings || typeof settings !== "object") {
+    return settings;
+  }
+
+  const { bookmarks, ...cleanedSettings } = settings;
+  return cleanedSettings;
+};
+
 const initialSettings = {
   direction: "ltr",
   paletteMode: "light",
@@ -80,6 +89,10 @@ const initialSettings = {
   },
   persistFilters: false,
   lastUsedFilters: {},
+  breadcrumbMode: "hierarchical",
+  bookmarkSidebar: true,
+  bookmarkPopover: false,
+  compactNav: false,
 };
 
 const initialState = {
@@ -103,17 +116,36 @@ export const SettingsProvider = (props) => {
     const restored = restoreSettings();
 
     if (restored) {
-      if (!restored.currentTheme && restored.paletteMode) {
-        restored.currentTheme = { value: restored.paletteMode, label: restored.paletteMode };
+      const cleanedRestored = stripServerManagedSettings(restored);
+
+      if (!cleanedRestored.currentTheme && cleanedRestored.paletteMode) {
+        cleanedRestored.currentTheme = {
+          value: cleanedRestored.paletteMode,
+          label: cleanedRestored.paletteMode,
+        };
       }
+
+      storeSettings(cleanedRestored);
 
       setState((prevState) => ({
         ...prevState,
-        ...restored,
+        ...cleanedRestored,
+        isInitialized: true,
+      }));
+    } else {
+      // No stored settings found, initialize with defaults
+      setState((prevState) => ({
+        ...prevState,
         isInitialized: true,
       }));
     }
   }, []);
+
+  useEffect(() => {
+    if (state.isInitialized) {
+      storeSettings(state);
+    }
+  }, [state]);
 
   const handleReset = useCallback(() => {
     deleteSettings();
@@ -125,15 +157,22 @@ export const SettingsProvider = (props) => {
 
   const handleUpdate = useCallback((settings) => {
     setState((prevState) => {
-      storeSettings({
+      // Filter out null and undefined values to prevent resetting settings
+      const filteredSettings = Object.entries(settings).reduce((acc, [key, value]) => {
+        if (key !== "bookmarks" && value !== null && value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {});
+
+      const updatedSettings = stripServerManagedSettings({
         ...prevState,
-        ...settings,
+        ...filteredSettings,
       });
 
-      return {
-        ...prevState,
-        ...settings,
-      };
+      storeSettings(updatedSettings);
+
+      return updatedSettings;
     });
   }, []);
 
@@ -155,13 +194,13 @@ export const SettingsProvider = (props) => {
         isCustom,
         setLastUsedFilter: (page, filter) => {
           setState((prevState) => {
-            const updated = {
+            const updated = stripServerManagedSettings({
               ...prevState,
               lastUsedFilters: {
                 ...prevState.lastUsedFilters,
                 [page]: filter,
               },
-            };
+            });
             storeSettings(updated);
             return updated;
           });

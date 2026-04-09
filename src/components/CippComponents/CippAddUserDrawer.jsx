@@ -3,11 +3,11 @@ import { Button, Box } from "@mui/material";
 import { useForm, useWatch, useFormState } from "react-hook-form";
 import { PersonAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
-import { CippFormUserSelector } from "./CippFormUserSelector";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 import CippAddEditUser from "../CippFormPages/CippAddEditUser";
+import { Stack } from "@mui/system";
 
 export const CippAddUserDrawer = ({
   buttonText = "Add User",
@@ -18,7 +18,7 @@ export const CippAddUserDrawer = ({
   const userSettingsDefaults = useSettings();
 
   const formControl = useForm({
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
       usageLocation: userSettingsDefaults.usageLocation,
@@ -52,22 +52,36 @@ export const CippAddUserDrawer = ({
       }
       newFields.tenantFilter = userSettingsDefaults.currentTenant;
 
+      // Preserve the currently selected template when copying properties
+      const currentTemplate = formControl.getValues("userTemplate");
+      if (currentTemplate) {
+        newFields.userTemplate = currentTemplate;
+      }
+
       formControl.reset(newFields);
     }
   }, [formValues]);
 
   useEffect(() => {
     if (createUser.isSuccess) {
-      formControl.reset({
+      const resetValues = {
         tenantFilter: userSettingsDefaults.currentTenant,
         usageLocation: userSettingsDefaults.usageLocation,
-      });
+      };
+
+      // Preserve the default template if it exists
+      const currentTemplate = formControl.getValues("userTemplate");
+      if (currentTemplate?.addedFields?.defaultForTenant) {
+        resetValues.userTemplate = currentTemplate;
+      }
+
+      formControl.reset(resetValues);
     }
   }, [createUser.isSuccess]);
 
-  const handleSubmit = () => {
-    formControl.trigger();
-    if (!isValid) {
+  const handleSubmit = async () => {
+    const isFormValid = await formControl.trigger();
+    if (!isFormValid) {
       return;
     }
     const values = formControl.getValues();
@@ -84,17 +98,40 @@ export const CippAddUserDrawer = ({
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
-    formControl.reset({
+    const resetValues = {
       tenantFilter: userSettingsDefaults.currentTenant,
       usageLocation: userSettingsDefaults.usageLocation,
-    });
+    };
+
+    // Preserve the default template if it exists
+    const currentTemplate = formControl.getValues("userTemplate");
+    if (currentTemplate?.addedFields?.defaultForTenant) {
+      resetValues.userTemplate = currentTemplate;
+    }
+
+    formControl.reset(resetValues);
+  };
+
+  const handleOpenDrawer = () => {
+    const resetValues = {
+      tenantFilter: userSettingsDefaults.currentTenant,
+      usageLocation: userSettingsDefaults.usageLocation,
+    };
+
+    const currentTemplate = formControl.getValues("userTemplate");
+    if (currentTemplate?.addedFields?.defaultForTenant) {
+      resetValues.userTemplate = currentTemplate;
+    }
+
+    formControl.reset(resetValues);
+    setDrawerVisible(true);
   };
 
   return (
     <>
       <PermissionButton
         requiredPermissions={requiredPermissions}
-        onClick={() => setDrawerVisible(true)}
+        onClick={handleOpenDrawer}
         startIcon={<PersonAdd />}
       >
         {buttonText}
@@ -105,56 +142,28 @@ export const CippAddUserDrawer = ({
         onClose={handleCloseDrawer}
         size="xl"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={formControl.handleSubmit(handleSubmit)}
-              disabled={createUser.isPending || !isValid || (!isDirty && !createUser.isSuccess)}
-            >
-              {createUser.isPending
-                ? "Creating User..."
-                : createUser.isSuccess
-                ? "Create Another User"
-                : "Create User"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={createUser} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={formControl.handleSubmit(handleSubmit)}
+                disabled={createUser.isPending || !isValid || (!isDirty && !createUser.isSuccess)}
+              >
+                {createUser.isPending
+                  ? "Creating User..."
+                  : createUser.isSuccess
+                    ? "Create Another User"
+                    : "Create User"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
-        <Box sx={{ my: 2 }}>
-          <CippFormUserSelector
-            formControl={formControl}
-            name="userProperties"
-            label="Copy properties from another user"
-            multiple={false}
-            select={
-              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
-            }
-            addedField={{
-              groupType: "calculatedGroupType",
-              displayName: "displayName",
-              userPrincipalName: "userPrincipalName",
-              id: "id",
-              givenName: "givenName",
-              surname: "surname",
-              mailNickname: "mailNickname",
-              jobTitle: "jobTitle",
-              department: "department",
-              streetAddress: "streetAddress",
-              city: "city",
-              state: "state",
-              postalCode: "postalCode",
-              companyName: "companyName",
-              mobilePhone: "mobilePhone",
-              businessPhones: "businessPhones",
-              usageLocation: "usageLocation",
-              office: "office",
-            }}
-          />
-        </Box>
         <Box sx={{ my: 2 }}>
           <CippAddEditUser
             formControl={formControl}
@@ -162,7 +171,6 @@ export const CippAddUserDrawer = ({
             formType="add"
           />
         </Box>
-        <CippApiResults apiObject={createUser} />
       </CippOffCanvas>
     </>
   );

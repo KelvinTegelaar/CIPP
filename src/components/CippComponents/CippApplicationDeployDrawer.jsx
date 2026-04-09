@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react";
-import { Divider, Button, Alert } from "@mui/material";
+import { Divider, Button, Alert, CircularProgress } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { Add } from "@mui/icons-material";
@@ -8,7 +8,7 @@ import CippFormComponent from "./CippFormComponent";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 import { CippFormCondition } from "./CippFormCondition";
 import { CippApiResults } from "./CippApiResults";
-import languageList from "/src/data/languageList.json";
+import languageList from "../../data/languageList.json";
 import { ApiPostCall } from "../../api/ApiCall";
 
 export const CippApplicationDeployDrawer = ({
@@ -47,7 +47,7 @@ export const CippApplicationDeployDrawer = ({
           : null;
       }
     },
-    [formControl.setValue]
+    [formControl.setValue],
   );
 
   useEffect(() => {
@@ -60,6 +60,7 @@ export const CippApplicationDeployDrawer = ({
     winGetApp: "/api/AddwinGetApp",
     chocolateyApp: "/api/AddChocoApp",
     officeApp: "/api/AddOfficeApp",
+    win32ScriptApp: "/api/AddWin32ScriptApp",
   };
 
   const ChocosearchResults = ApiPostCall({
@@ -96,6 +97,7 @@ export const CippApplicationDeployDrawer = ({
   const handleSubmit = () => {
     const formData = formControl.getValues();
     const formattedData = { ...formData };
+    formattedData.tenantFilter = "allTenants"; //added to prevent issues with location check. temp fix
     formattedData.selectedTenants = selectedTenants.map((tenant) => ({
       defaultDomainName: tenant.value,
       customerId: tenant.addedFields.customerId,
@@ -138,8 +140,8 @@ export const CippApplicationDeployDrawer = ({
               {deployApplication.isLoading
                 ? "Deploying..."
                 : deployApplication.isSuccess
-                ? "Deploy Another"
-                : "Deploy Application"}
+                  ? "Deploy Another"
+                  : "Deploy Application"}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
@@ -159,6 +161,7 @@ export const CippApplicationDeployDrawer = ({
                 // uncomment after release { label: "WinGet App", value: "winGetApp" },
                 { label: "Chocolatey App", value: "chocolateyApp" },
                 { label: "Microsoft Office", value: "officeApp" },
+                { label: "Custom Application", value: "win32ScriptApp" },
               ]}
               multiple={false}
               formControl={formControl}
@@ -241,7 +244,7 @@ export const CippApplicationDeployDrawer = ({
               <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
-                  label="Server URL (e.g., https://pinotage.centrastage.net)"
+                  label="Server URL (e.g., https://pinotage.rmm.datto.com)"
                   name="params.dattoUrl"
                   formControl={formControl}
                   validators={{ required: "Server URL is required" }}
@@ -426,6 +429,7 @@ export const CippApplicationDeployDrawer = ({
                 onClick={() => {
                   searchApp(formControl.getValues("searchQuery"), "StoreApp");
                 }}
+                disabled={winGetSearchResults.isPending}
               >
                 Search
               </Button>
@@ -446,8 +450,8 @@ export const CippApplicationDeployDrawer = ({
                 }
                 multiple={false}
                 formControl={formControl}
-                disabled={winGetSearchResults.isLoading}
-                isFetching={winGetSearchResults.isLoading}
+                disabled={winGetSearchResults.isPending}
+                isFetching={winGetSearchResults.isPending}
               />
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
@@ -541,6 +545,7 @@ export const CippApplicationDeployDrawer = ({
                 onClick={() => {
                   searchApp(formControl.getValues("searchQuery"), "choco");
                 }}
+                disabled={ChocosearchResults.isPending}
               >
                 Search
               </Button>
@@ -561,7 +566,7 @@ export const CippApplicationDeployDrawer = ({
                 }
                 multiple={false}
                 formControl={formControl}
-                isFetching={ChocosearchResults.isLoading}
+                isFetching={ChocosearchResults.isPending}
               />
             </Grid>
 
@@ -596,6 +601,14 @@ export const CippApplicationDeployDrawer = ({
                 type="textField"
                 label="Custom Repository URL"
                 name="customRepo"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Custom Chocolatey Arguments (include full syntax with flags, supports variables). e.g., --params '/quiet' or --install-arguments '/S /KEY=%customlicensekey%'"
+                name="customArguments"
                 formControl={formControl}
               />
             </Grid>
@@ -751,6 +764,40 @@ export const CippApplicationDeployDrawer = ({
                 defaultValue={true}
               />
             </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="switch"
+                label="Use Custom XML Configuration"
+                name="useCustomXml"
+                formControl={formControl}
+              />
+            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="useCustomXml"
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Custom Office Configuration XML"
+                  name="customXml"
+                  formControl={formControl}
+                  multiline
+                  rows={10}
+                  validators={{ required: "Please provide custom XML configuration" }}
+                />
+                <Alert severity="info" sx={{ mt: 1 }}>
+                  Provide a custom Office Configuration XML. When using custom XML, all other Office
+                  configuration options above will be ignored. See{" "}
+                  <a href="https://config.office.com/" target="_blank" rel="noopener noreferrer">
+                    Office Customization Tool
+                  </a>{" "}
+                  to generate XML.
+                </Alert>
+              </Grid>
+            </CippFormCondition>
 
             {/* Assign To Options */}
             <Grid size={{ xs: 12 }}>
@@ -767,6 +814,144 @@ export const CippApplicationDeployDrawer = ({
                 row
               />
             </Grid>
+          </CippFormCondition>
+
+          {/* Win32 Script App Section */}
+          <CippFormCondition
+            formControl={formControl}
+            field="appType.value"
+            compareType="is"
+            compareValue="win32ScriptApp"
+          >
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Application Name"
+                name="applicationName"
+                formControl={formControl}
+                validators={{ required: "Application Name is required" }}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Publisher"
+                name="publisher"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Description"
+                name="description"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Install Script (PowerShell)"
+                name="installScript"
+                formControl={formControl}
+                multiline
+                rows={8}
+                validators={{ required: "Install script is required" }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Uninstall Script (PowerShell, Optional)"
+                name="uninstallScript"
+                formControl={formControl}
+                multiline
+                rows={6}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Detection Path (e.g., C:\Program Files\MyApp or %ProgramData%\MyApp)"
+                name="detectionPath"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Detection File/Folder Name (Optional, e.g., app.exe)"
+                name="detectionFile"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="switch"
+                label="Install as System"
+                name="InstallAsSystem"
+                formControl={formControl}
+                defaultValue={true}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Disable Restart"
+                name="DisableRestart"
+                formControl={formControl}
+                defaultValue={true}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Run as 32-bit on 64-bit system"
+                name="runAs32Bit"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Enforce signature check"
+                name="enforceSignatureCheck"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Mark for Uninstallation"
+                name="InstallationIntent"
+                formControl={formControl}
+              />
+            </Grid>
+
+            {/* Assign To Options */}
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="radio"
+                name="AssignTo"
+                options={[
+                  { label: "Do not assign", value: "On" },
+                  { label: "Assign to all users", value: "allLicensedUsers" },
+                  { label: "Assign to all devices", value: "AllDevices" },
+                  { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
+                  { label: "Assign to Custom Group", value: "customGroup" },
+                ]}
+                formControl={formControl}
+                row
+              />
+            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="is"
+              compareValue="customGroup"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+                  name="customGroup"
+                  formControl={formControl}
+                  validators={{ required: "Please specify custom group names" }}
+                />
+              </Grid>
+            </CippFormCondition>
           </CippFormCondition>
 
           <CippApiResults apiObject={deployApplication} />
