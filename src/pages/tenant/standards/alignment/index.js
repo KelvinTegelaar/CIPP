@@ -60,7 +60,6 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       filters={filterList}
-      initialFilters={[{ id: 'standardType', value: 'drift' }]}
       simpleColumns={[
         'tenantFilter',
         'standardName',
