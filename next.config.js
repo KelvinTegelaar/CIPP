@@ -6,17 +6,23 @@ const config = {
   },
   turbopack: {
     rules: {
-      "*.svg": {
-        loaders: ["@svgr/webpack"],
-        as: "*.js",
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
-  async redirects() {
-    return [];
+  experimental: {
+    webpackMemoryOptimizations: true,
+    preloadEntriesOnStart: false,
+    turbopackFileSystemCacheForDev: false,
+    turbopackMemoryLimit: 4096,
   },
-  output: "export",
-  distDir: "./out",
-};
+  async redirects() {
+    return []
+  },
+  output: 'export',
+  distDir: './out',
+}
 
-module.exports = config;
+module.exports = config

@@ -5,6 +5,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
 import standardsData from "../../data/standards.json";
+import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
+import { renderCustomScriptMarkdownTemplate } from "../../utils/customScriptTemplate";
 
 const getStatusColor = (status) => {
   switch (status?.toLowerCase()) {
@@ -122,6 +124,23 @@ const markdownStyles = {
 };
 
 export const CippTestDetailOffCanvas = ({ row }) => {
+  const hasRawCustomData = row.TestType === "Custom" && !!row.ResultDataJson;
+  let parsedCustomResult = null;
+  if (hasRawCustomData) {
+    try {
+      parsedCustomResult = JSON.parse(row.ResultDataJson);
+    } catch {
+      parsedCustomResult = null;
+    }
+  }
+
+  const computedCustomMarkdown =
+    hasRawCustomData && parsedCustomResult !== null
+      ? renderCustomScriptMarkdownTemplate(parsedCustomResult, row.MarkdownTemplate || "")
+      : null;
+  const shouldRenderCustomJson = hasRawCustomData && row.ReturnType === "JSON";
+  const shouldRenderCustomMarkdown = hasRawCustomData && !shouldRenderCustomJson;
+
   return (
     <Stack spacing={3}>
       <Card>
@@ -227,7 +246,7 @@ export const CippTestDetailOffCanvas = ({ row }) => {
         </Grid>
       </Card>
 
-      {row.ResultMarkdown && (
+      {(row.ResultMarkdown || shouldRenderCustomJson || shouldRenderCustomMarkdown) && (
         <Card variant="outlined">
           <CardContent>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -238,20 +257,28 @@ export const CippTestDetailOffCanvas = ({ row }) => {
                 size="small"
               />
             </Box>
-            <Box sx={markdownStyles}>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  a: ({ href, children, ...props }) => (
-                    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
-                      {children}
-                    </a>
-                  ),
-                }}
-              >
-                {row.ResultMarkdown}
-              </ReactMarkdown>
-            </Box>
+            {shouldRenderCustomJson && parsedCustomResult !== null ? (
+              <CippCodeBlock
+                code={JSON.stringify(parsedCustomResult, null, 2)}
+                language="json"
+                showLineNumbers={false}
+              />
+            ) : (
+              <Box sx={markdownStyles}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({ href, children, ...props }) => (
+                      <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                        {children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {shouldRenderCustomMarkdown ? computedCustomMarkdown : row.ResultMarkdown}
+                </ReactMarkdown>
+              </Box>
+            )}
           </CardContent>
         </Card>
       )}

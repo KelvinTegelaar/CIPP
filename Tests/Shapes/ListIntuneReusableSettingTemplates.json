@@ -1,0 +1,15 @@
+{
+  "_metadata": {
+    "endpoint": "ListIntuneReusableSettingTemplates",
+    "generatedAt": "2026-04-03T23:40:17.8066858+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "description": "string",
+    "displayName": "string",
+    "GUID": "string",
+    "isSynced": "bool",
+    "RawJSON": "string"
+  }
+}

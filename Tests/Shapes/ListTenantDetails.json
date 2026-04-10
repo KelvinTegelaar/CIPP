@@ -1,0 +1,44 @@
+{
+  "_metadata": {
+    "endpoint": "ListTenantDetails",
+    "generatedAt": "2026-04-03T23:47:30.6447502+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "assignedPlans": {
+      "_type": "array",
+      "_element": {
+        "assignedDateTime": "truncated",
+        "capabilityStatus": "truncated",
+        "service": "truncated",
+        "servicePlanId": "truncated"
+      }
+    },
+    "businessPhones": "string",
+    "city": "string",
+    "country": "null",
+    "countryLetterCode": "string",
+    "createdDateTime": "datetime",
+    "customProperties": {},
+    "displayName": "string",
+    "Groups": {
+      "_type": "array",
+      "_element": {
+        "Description": "truncated",
+        "GroupType": "truncated",
+        "Id": "truncated",
+        "Name": "truncated"
+      }
+    },
+    "id": "string",
+    "onPremisesLastPasswordSyncDateTime": "null",
+    "onPremisesLastSyncDateTime": "null",
+    "onPremisesSyncEnabled": "null",
+    "postalCode": "string",
+    "state": "string",
+    "street": "string",
+    "technicalNotificationMails": "string",
+    "tenantType": "string"
+  }
+}

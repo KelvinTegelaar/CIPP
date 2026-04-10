@@ -1,0 +1,10 @@
+[
+  {
+    "label": "Alert Configuration",
+    "path": "/tenant/administration/alert-configuration"
+  },
+  {
+    "label": "Snoozed Alerts",
+    "path": "/tenant/administration/alert-configuration/snoozed-alerts"
+  }
+]

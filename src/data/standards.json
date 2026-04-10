@@ -1034,6 +1034,11 @@
         "name": "standards.DisableSelfServiceLicenses.Exclusions",
         "label": "License Ids to exclude from this standard",
         "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DisableSelfServiceLicenses.DisableTrials",
+        "label": "Disable starting trials on behalf of your organization"
       }
     ],
     "label": "Disable Self Service Licensing",
@@ -1761,6 +1766,38 @@
     "addedDate": "2023-03-14",
     "powershellEquivalent": "Rotate-DkimSigningConfig",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.EnableExchangeCloudManagement",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Configures cloud-based management of Exchange attributes for directory-synced users with remote mailboxes in Exchange Online. This allows you to enable or disable management of Exchange attributes directly in the cloud without requiring an on-premises Exchange server. More information can be found [here](https://learn.microsoft.com/da-dk/exchange/hybrid-deployment/enable-exchange-attributes-cloud-management).",
+    "docsDescription": "Configures the IsExchangeCloudManaged property for mailboxes, allowing Exchange attributes (aliases, mailbox flags, custom attributes, etc.) to be managed directly in Exchange Online or revert back to on-premises management. This feature helps organizations retire their last on-premises Exchange server in hybrid deployments while maintaining the ability to manage recipient attributes. Identity attributes (names, UPN) remain managed on-premises via Active Directory. More information can be found [here](https://learn.microsoft.com/da-dk/exchange/hybrid-deployment/enable-exchange-attributes-cloud-management).",
+    "executiveText": "Configures cloud-based management of Exchange mailbox attributes for hybrid organizations. When enabled, eliminates the dependency on on-premises Exchange servers for attribute management. This modernizes email administration, reduces infrastructure complexity, and allows direct management of mailbox properties through cloud portals and PowerShell. When disabled, returns management to on-premises Exchange servers.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.EnableExchangeCloudManagement.state",
+        "label": "Cloud Management State",
+        "options": [
+          {
+            "label": "Cloud Management",
+            "value": true
+          },
+          {
+            "label": "On-Premises Management",
+            "value": false
+          }
+        ]
+      }
+    ],
+    "label": "Configure Exchange Cloud Management for Remote/On-Premises Mailboxes",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-03-28",
+    "powershellEquivalent": "Set-Mailbox -Identity user@domain.com -IsExchangeCloudManaged $true or $false",
+    "recommendedBy": ["Microsoft", "CIPP"]
   },
   {
     "name": "standards.AddDKIM",
@@ -4779,7 +4816,7 @@
           }
         ]
       },
-            {
+      {
         "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowPSTNUsersToBypassLobby",
         "label": "Allow dial-in users to bypass lobby"
@@ -5106,10 +5143,7 @@
         "condition": {
           "field": "standards.TeamsFederationConfiguration.DomainControl.value",
           "compareType": "isOneOf",
-          "compareValue": [
-            "AllowSpecificExternal",
-            "BlockSpecificExternal"
-          ]
+          "compareValue": ["AllowSpecificExternal", "BlockSpecificExternal"]
         }
       }
     ],
@@ -5592,7 +5626,7 @@
         "name": "transportRuleTemplate",
         "label": "Select Transport Rule Template",
         "api": {
-          "url": "/api/ListTransportRulesTemplates",
+          "url": "/api/ListTransportRulesTemplates?noJson=true",
           "labelField": "name",
           "valueField": "GUID",
           "queryKey": "ListTransportRulesTemplates"
@@ -5758,6 +5792,36 @@
     ]
   },
   {
+    "name": "standards.TenantAllowBlockListTemplate",
+    "label": "Tenant Allow/Block List Template",
+    "cat": "Exchange Standards",
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "impact": "Medium Impact",
+    "addedDate": "2026-04-02",
+    "helpText": "Deploy tenant allow/block list entries from a saved template.",
+    "executiveText": "Deploys standardized tenant allow/block list entries across tenants. These templates ensure consistent email filtering rules are applied, managing which senders, URLs, file hashes, and IP addresses are allowed or blocked across the organization.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "TenantAllowBlockListTemplate",
+        "required": false,
+        "multiple": true,
+        "label": "Select Tenant Allow/Block List Template",
+        "api": {
+          "url": "/api/ListTenantAllowBlockListTemplates",
+          "labelField": "templateName",
+          "valueField": "GUID",
+          "queryKey": "ListTenantAllowBlockListTemplates",
+          "showRefresh": true
+        }
+      }
+    ]
+  },
+  {
     "name": "standards.MailboxRecipientLimits",
     "cat": "Exchange Standards",
     "tag": [],
@@ -5847,21 +5911,33 @@
     "name": "standards.DeployCheckChromeExtension",
     "cat": "Intune Standards",
     "tag": [],
-    "helpText": "Deploys the Check Chrome extension via Intune OMA-URI custom policies for both Chrome and Edge browsers with configurable settings. Chrome ID: benimdeioplgkhanklclahllklceahbe, Edge ID: knepjpocdagponkonnbggpcnhnaikajg",
-    "docsDescription": "Creates Intune OMA-URI custom policies that automatically install and configure the Check Chrome extension on managed devices for both Google Chrome and Microsoft Edge browsers. This ensures the extension is deployed consistently across all corporate devices with customizable settings.",
-    "executiveText": "Automatically deploys the Check browser extension across all company devices with configurable security and branding settings, ensuring consistent security monitoring and compliance capabilities. This extension provides enhanced security features and monitoring tools that help protect against threats while maintaining user productivity.",
+    "helpText": "Deploys the Check by CyberDrain browser extension via a Win32 script app in Intune for both Chrome and Edge browsers with configurable settings. Chrome ID: benimdeioplgkhanklclahllklceahbe, Edge ID: knepjpocdagponkonnbggpcnhnaikajg",
+    "docsDescription": "Creates an Intune Win32 script application that writes registry keys to install and configure the Check by CyberDrain browser extension on managed devices for both Google Chrome and Microsoft Edge browsers. Uses a PowerShell detection script to enforce configuration drift — when settings change in CIPP the app is automatically redeployed.",
+    "executiveText": "Automatically deploys the Check by CyberDrain browser extension across all company devices with configurable security and branding settings, ensuring consistent security monitoring and compliance capabilities. This extension provides enhanced security features and monitoring tools that help protect against threats while maintaining user productivity.",
     "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.showNotifications",
+        "label": "Show notifications",
+        "defaultValue": true
+      },
       {
         "type": "switch",
         "name": "standards.DeployCheckChromeExtension.enableValidPageBadge",
         "label": "Enable valid page badge",
-        "defaultValue": true
+        "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DeployCheckChromeExtension.enablePageBlocking",
         "label": "Enable page blocking",
         "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.forceToolbarPin",
+        "label": "Force pin extension to toolbar",
+        "defaultValue": false
       },
       {
         "type": "switch",
@@ -5874,13 +5950,14 @@
         "name": "standards.DeployCheckChromeExtension.customRulesUrl",
         "label": "Custom Rules URL",
         "placeholder": "https://YOUR-CIPP-SERVER-URL/rules.json",
+        "helperText": "Enter the URL for custom rules if you have them. This should point to a JSON file with the same structure as the rules.json used for CIPP reporting.",
         "required": false
       },
       {
         "type": "number",
         "name": "standards.DeployCheckChromeExtension.updateInterval",
         "label": "Update interval (hours)",
-        "defaultValue": 12
+        "defaultValue": 24
       },
       {
         "type": "switch",
@@ -5889,10 +5966,56 @@
         "defaultValue": false
       },
       {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableGenericWebhook",
+        "label": "Enable generic webhook",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.webhookUrl",
+        "label": "Webhook URL",
+        "placeholder": "https://webhook.example.com/endpoint",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.DeployCheckChromeExtension.webhookEvents",
+        "label": "Webhook Events",
+        "placeholder": "e.g. pageBlocked, pageAllowed"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "freeSolo": true,
+        "name": "standards.DeployCheckChromeExtension.urlAllowlist",
+        "label": "URL Allowlist",
+        "placeholder": "e.g. https://example.com/*",
+        "helperText": "Enter URLs to allowlist in the extension. Press enter to add each URL. Wildcards are allowed. This should be used for sites that are being blocked by the extension but are known to be safe."
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.domainSquattingEnabled",
+        "label": "Enable domain squatting detection",
+        "defaultValue": true
+      },
+      {
         "type": "textField",
         "name": "standards.DeployCheckChromeExtension.companyName",
         "label": "Company Name",
         "placeholder": "YOUR-COMPANY",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.companyURL",
+        "label": "Company URL",
+        "placeholder": "https://yourcompany.com",
         "required": false
       },
       {
@@ -5911,9 +6034,30 @@
       },
       {
         "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.supportUrl",
+        "label": "Support URL",
+        "placeholder": "https://support.yourcompany.com",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.privacyPolicyUrl",
+        "label": "Privacy Policy URL",
+        "placeholder": "https://yourcompany.com/privacy",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.aboutUrl",
+        "label": "About URL",
+        "placeholder": "https://yourcompany.com/about",
+        "required": false
+      },
+      {
+        "type": "textField",
         "name": "standards.DeployCheckChromeExtension.primaryColor",
         "label": "Primary Color",
-        "placeholder": "#0044CC",
+        "placeholder": "#F77F00",
         "required": false
       },
       {
@@ -5925,7 +6069,7 @@
       },
       {
         "name": "AssignTo",
-        "label": "Who should this policy be assigned to?",
+        "label": "Who should this app be assigned to?",
         "type": "radio",
         "options": [
           {
@@ -5957,11 +6101,11 @@
         "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
       }
     ],
-    "label": "Deploy Check Chrome Extension",
+    "label": "Deploy Check by CyberDrain Browser Extension",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2025-09-18",
-    "powershellEquivalent": "New-GraphPostRequest -uri 'https://graph.microsoft.com/beta/deviceManagement/configurationPolicies'",
+    "powershellEquivalent": "Add-CIPPW32ScriptApplication",
     "recommendedBy": ["CIPP"]
   },
   {
@@ -6028,5 +6172,217 @@
     "impactColour": "info",
     "addedDate": "2025-11-19",
     "powershellEquivalent": "New-GraphPostRequest to /beta/security/secureScoreControlProfiles/{id}"
+  },
+  {
+    "name": "standards.ColleagueImpersonationAlert",
+    "cat": "Exchange Standards",
+    "tag": ["Exchange", "Security", "Transport Rules"],
+    "helpText": "Creates/updates 5x Exchange Online transport rules (A-E, F-J, K-O, P-T, U-Z) that prepend an HTML disclaimer banner to inbound emails where the sender display name matches a mailbox in the organisation. Accepted tenant domains are always exempt automatically. Inactive users are removed and enabled users are added. Any manually configured sender or domain exemptions already present on existing rules are preserved.",
+    "docsDescription": "Creates five Exchange Online transport rules grouped by the first letter of user display names (A-E, F-J, K-O, P-T, U-Z). Each rule fires when an external sender's From header matches a display name in that group, prepends a configurable HTML warning banner, and skips emails from accepted organisational domains. Any manually configured sender or domain exemptions on existing rules are preserved when the standard runs. The disclaimer HTML is fully customisable via the standard settings.",
+    "executiveText": "Protects staff from display-name impersonation attacks by injecting a visible warning banner on emails that appear to come from a colleague but originate externally. Rules are maintained automatically across all letter groups and updated whenever the standard runs.",
+    "addedComponent": [
+      {
+        "type": "heading",
+        "label": "Alert Banner (HTML)",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.ColleagueImpersonationAlert.disclaimerHtml",
+        "label": "Disclaimer HTML – Paste the full HTML for the warning banner",
+        "required": true
+      },
+      {
+        "type": "heading",
+        "label": "Keyword Exclusions (Exclude certain users by keywords)",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.ColleagueImpersonationAlert.excludedMailboxes",
+        "label": "Exclude mailboxes by keywords for example any Displayname starting with (Leaver)",
+        "multiple": true,
+        "creatable": true,
+        "required": false
+      },
+      {
+        "type": "heading",
+        "label": "Exempt Senders (Email Accounts)",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.ColleagueImpersonationAlert.additionalExemptSenders",
+        "label": "Additional exempt sender addresses",
+        "multiple": true,
+        "creatable": true,
+        "required": false
+      }
+    ],
+    "label": "Colleague Impersonation Alert Transport Rules",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-03-22",
+    "powershellEquivalent": "New-TransportRule / Set-TransportRule",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.DefenderCompliancePolicy",
+    "cat": "Defender Standards",
+    "tag": ["defender_mde_connector", "defender_intune_compliance"],
+    "helpText": "Configures the Microsoft Defender for Endpoint connector with Intune, enabling compliance evaluation for mobile and desktop platforms (Android, iOS, macOS, Windows). Controls which platforms connect to MDE and whether devices are blocked when partner data is missing.",
+    "docsDescription": "Configures the Microsoft Defender for Endpoint mobile threat defense connector with Intune. This enables compliance evaluation across platforms (Android, iOS/iPadOS, macOS, Windows) and controls settings like blocking unsupported OS versions, requiring partner data for compliance, and enabling mobile application management. The connector must be enabled before platform-specific compliance policies can evaluate device risk from MDE.",
+    "executiveText": "Establishes the critical link between Microsoft Defender for Endpoint and Intune, enabling security risk data from MDE to be used in device compliance policies. This ensures that only devices meeting your organization's security standards can access corporate resources, providing a foundational layer of Zero Trust security across all platforms.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.ConnectAndroid",
+        "label": "Connect Android devices to MDE",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.ConnectAndroidCompliance",
+        "label": "Connect Android 6.0.0+ (App-based MAM)",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.androidDeviceBlockedOnMissingPartnerData",
+        "label": "Block Android if partner data unavailable",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.ConnectIos",
+        "label": "Connect iOS/iPadOS devices to MDE",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.ConnectIosCompliance",
+        "label": "Connect iOS 13.0+ (App-based MAM)",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.appSync",
+        "label": "Enable App Sync for iOS",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.iosDeviceBlockedOnMissingPartnerData",
+        "label": "Block iOS if partner data unavailable",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosCertificateMetadata",
+        "label": "Collect certificate metadata from iOS",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalCertificateMetadata",
+        "label": "Collect personal certificate metadata from iOS",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.ConnectMac",
+        "label": "Connect macOS devices to MDE",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.macDeviceBlockedOnMissingPartnerData",
+        "label": "Block macOS if partner data unavailable",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.ConnectWindows",
+        "label": "Connect Windows 10.0.15063+ to MDE",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.windowsMobileApplicationManagementEnabled",
+        "label": "Connect Windows (MAM)",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.windowsDeviceBlockedOnMissingPartnerData",
+        "label": "Block Windows if partner data unavailable",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.BlockunsupportedOS",
+        "label": "Block unsupported OS versions",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.AllowMEMEnforceCompliance",
+        "label": "Allow MEM enforcement of compliance",
+        "defaultValue": false
+      }
+    ],
+    "label": "Defender for Endpoint - Intune Compliance Connector",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-04-02",
+    "powershellEquivalent": "Graph API - deviceManagement/mobileThreatDefenseConnectors",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.GlobalQuarantineSettings",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Configures the Global Quarantine Policy settings including sender name, custom subject, disclaimer, from address, and org branding.",
+    "docsDescription": "Configures the Global Quarantine Policy branding and notification settings for the tenant. This includes the quarantine notification sender display name, custom subject line, disclaimer text, the from address used for notifications, and whether to use org branding. Notification frequency is managed separately by the GlobalQuarantineNotifications standard.",
+    "executiveText": "Ensures quarantine notification emails are branded and configured consistently, so end users receive clear, professional alerts about quarantined messages and know how to request release.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.GlobalQuarantineSettings.SenderName",
+        "label": "Sender Display Name (e.g. Contoso-Office365Alerts)",
+        "helperText": "Will be overridden if an active sender address with an existing display name is used.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.GlobalQuarantineSettings.CustomSubject",
+        "label": "Subject",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.GlobalQuarantineSettings.CustomDisclaimer",
+        "label": "Disclaimer (max 200 characters)",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.GlobalQuarantineSettings.FromAddress",
+        "label": "Specify Sender Address (must be an internal mailbox)",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.GlobalQuarantineSettings.OrganizationBrandingEnabled",
+        "label": "Use Organization Branding (logo)",
+        "helperText": "Requires branding to be configured in the Microsoft 365 admin centre."
+      }
+    ],
+    "label": "Configure Global Quarantine Notification Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-04-02",
+    "powershellEquivalent": "Set-QuarantinePolicy (GlobalQuarantinePolicy)",
+    "recommendedBy": []
   }
 ]

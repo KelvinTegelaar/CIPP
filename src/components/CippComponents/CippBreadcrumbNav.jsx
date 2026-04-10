@@ -15,7 +15,7 @@ async function loadTabOptions() {
   const tabOptionPaths = [
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
-    "/cipp/super-admin",
+    "/cipp/advanced/super-admin",
     "/tenant/standards",
     "/tenant/manage",
     "/tenant/administration/applications",

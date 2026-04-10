@@ -61,6 +61,11 @@ const Page = () => {
       type: "column",
     },
     {
+      filterName: "Mail Forwarding",
+      value: [{ id: "Name", value: "Forwarding Vacation" }],
+      type: "column",
+    },
+    {
       filterName: "Out of Office",
       value: [{ id: "Name", value: "OOO Vacation" }],
       type: "column",

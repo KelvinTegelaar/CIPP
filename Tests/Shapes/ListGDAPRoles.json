@@ -1,0 +1,14 @@
+{
+  "_metadata": {
+    "endpoint": "ListGDAPRoles",
+    "generatedAt": "2026-04-03T23:40:15.7852513+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "GroupId": "string",
+    "GroupName": "string",
+    "roleDefinitionId": "string",
+    "RoleName": "string"
+  }
+}
