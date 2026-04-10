@@ -1,6 +1,7 @@
 import { getCippFilterVariant } from '../../utils/get-cipp-filter-variant'
 import { getCippFormatting } from '../../utils/get-cipp-formatting'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
+import { getCippColumnSize } from '../../utils/get-cipp-column-size'
 
 const skipRecursion = ['location', 'ScheduledBackupValues', 'Tenant']
 
@@ -17,15 +18,10 @@ const MAX_COL_SIZE = 500
 // rawValues are the original data values (before formatting) — if they contain arrays or
 // complex objects the column renders as a button/chip list, so we cap to header width.
 // Returns { size, minSize } where minSize is always header-width + 30px safe space.
-const measureColumnSize = (header, valuesForColumn, rawValues, accessorKey) => {
+const measureColumnSize = (header, valuesForColumn, rawValues) => {
   const headerLen = header ? header.length : 6
   const headerPx = Math.round(headerLen * CHAR_WIDTH + CELL_PADDING + 30)
   const minSize = Math.max(MIN_COL_SIZE, headerPx)
-
-  // Portal columns always render as a small icon — size to header only.
-  if (accessorKey && accessorKey.startsWith('portal_')) {
-    return { size: minSize, minSize }
-  }
 
   // If any raw value is an array or complex object, the cell renders as a compact
   // button or chip list. We measure the longest individual chip/item rather than the
@@ -210,12 +206,24 @@ export const utilColumnsFromAPI = (dataArray) => {
         // Measure content width from formatted text values for this column.
         const textValues = valuesForColumn.map((v) => getCippFormatting(v, accessorKey, 'text'))
         const header = getCippTranslation(accessorKey)
-        const measuredSize = measureColumnSize(header, textValues, valuesForColumn, accessorKey)
+        const measuredSize = measureColumnSize(header, textValues, valuesForColumn)
+
+        // Allow per-column size overrides for columns whose rendered output
+        // doesn't match text width (icons, progress bars, etc.).
+        const sizeOverride = getCippColumnSize(accessorKey)
+        let finalSize = { ...measuredSize }
+        if (sizeOverride) {
+          const resolve = (v) => (v === 'header' ? measuredSize.minSize : v)
+          finalSize = {
+            size: Math.max(resolve(sizeOverride.size), measuredSize.minSize),
+            minSize: resolve(sizeOverride.minSize ?? measuredSize.minSize),
+          }
+        }
 
         const column = {
           header,
           id: accessorKey,
-          ...measuredSize,
+          ...finalSize,
           accessorFn: (row) => {
             const value = resolveValue(row)
             return getCippFormatting(value, accessorKey, 'text')
