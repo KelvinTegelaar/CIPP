@@ -17,10 +17,15 @@ const MAX_COL_SIZE = 500;
 // rawValues are the original data values (before formatting) — if they contain arrays or
 // complex objects the column renders as a button/chip list, so we cap to header width.
 // Returns { size, minSize } where minSize is always header-width + 30px safe space.
-const measureColumnSize = (header, valuesForColumn, rawValues) => {
+const measureColumnSize = (header, valuesForColumn, rawValues, accessorKey) => {
   const headerLen = header ? header.length : 6;
   const headerPx = Math.round(headerLen * CHAR_WIDTH + CELL_PADDING + 30);
   const minSize = Math.max(MIN_COL_SIZE, headerPx);
+
+  // Portal columns always render as a small icon — size to header only.
+  if (accessorKey && accessorKey.startsWith('portal_')) {
+    return { size: minSize, minSize };
+  }
 
   // If any raw value is an array or complex object, the cell renders as a compact
   // button or chip list. We measure the longest individual chip/item rather than the
@@ -76,7 +81,7 @@ const measureColumnSize = (header, valuesForColumn, rawValues) => {
   for (const v of sample) {
     const str = typeof v === 'string' ? v : v != null ? String(v) : '';
     // URLs render as icons/links in the cell — don't measure the full URL text.
-    if (str.match(/^https?:\/\//i)) continue;
+    if (str.match(/^https?:\/\//i) || str.match(/^\/api\//i)) continue;
     if (str.length > maxLen) maxLen = str.length;
   }
   const px = Math.round(maxLen * CHAR_WIDTH + CELL_PADDING);
@@ -204,7 +209,7 @@ export const utilColumnsFromAPI = (dataArray) => {
         // Measure content width from formatted text values for this column.
         const textValues = valuesForColumn.map((v) => getCippFormatting(v, accessorKey, "text"));
         const header = getCippTranslation(accessorKey);
-        const measuredSize = measureColumnSize(header, textValues, valuesForColumn);
+        const measuredSize = measureColumnSize(header, textValues, valuesForColumn, accessorKey);
 
         const column = {
           header,
