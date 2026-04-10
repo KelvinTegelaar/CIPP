@@ -26,13 +26,7 @@ This wizard allows you to create a new HVE user.
 
 </details>
 
-<details>
-
-<summary>Sync</summary>
-
-This will queue up a refresh of the cached reporting db.
-
-</details>
+{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
 
 ## Table Details
 

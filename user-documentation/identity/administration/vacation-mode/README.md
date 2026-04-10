@@ -1,6 +1,10 @@
-# CA Vacation Mode
+# Vacation Mode
 
 The "Vacation Mode" feature enables administrators to schedule tasks that temporarily modify Conditional Access (CA) policies for users. This feature is particularly useful for managing user access during vacation periods, ensuring that CA exclusions are applied and removed automatically according to a defined schedule.
+
+## Vacation Mode In Action
+
+{% @storylane/embed subdomain="app" linkValue="d7llhd4j78qv" url="https://app.storylane.io/share/d7llhd4j78qv" %}
 
 ## Action Buttons
 
@@ -8,7 +12,7 @@ The "Vacation Mode" feature enables administrators to schedule tasks that tempor
 
 <summary>Add Vacation Schedule</summary>
 
-This flyout allows you to schedule a task to add and remove a user or multiple users from CA exclusions for the specified period of time. Select the user(s), the conditional access policies to exclude the user(s) from during vacation, and the start and end dates. You can also optionally exclude this user from any location-based audit log alerts during the scheduled vacation. Be sure to include a note in the reference field for ease of identification later and this will be used in the notification title, if enabled. Click `Submit` once you have completed and reviewed all fields.
+Opens [add-vacation-schedule.md](add-vacation-schedule.md "mention")
 
 </details>
 

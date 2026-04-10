@@ -22,41 +22,41 @@ With v10.1, CIPP added the three previously suggested roles to the core recommen
 
 {% stepper %}
 {% step %}
-### Map the Additional Roles
+#### Map the Additional Roles
 
 Go to `Tenant Administration` > `GDAP Management` > `Role Mappings` and click `Map GDAP Roles`. Select `Billing Administrator`, `Domain Name Administrator`, and `Global Reader` in the dropdown. Hit `Submit` and CIPP will create the `M365 GDAP` groups.
 {% endstep %}
 
 {% step %}
-### Add the CIPP Service Account to the New Role Groups
+#### Add the CIPP Service Account to the New Role Groups
 
 If you've added your partner/internal tenant to CIPP, use `Identity Management` > `Administration` > `Users` to add the service account to the three additional security groups. If not, manually complete this in Entra or the Microsoft 365 Admin portal.
 {% endstep %}
 
 {% step %}
-### Recreate the CIPP Defaults Role Template
+#### Recreate the CIPP Defaults Role Template
 
 In `Tenant Administration` > `GDAP Management` > `Role Templates`, locate your CIPP Defaults role template and delete it. A prompt will show asking if you would like to create the CIPP Defaults template. Click the button to create the defaults. This new template will include all 15 roles.
 {% endstep %}
 
 {% step %}
-### Generate New GDAP Relationships
+#### Generate New GDAP Relationships
 
 {% hint style="warning" %}
 You cannot add GDAP roles to an existing relationship and there is no supported way to automate this.
 {% endhint %}
 
-From the `Invites` tab, use the `New Invite` action to generate enough invite links with the new CIPP Defaults template to establish new relationships with all your GDAP clients.&#x20;
+From the `Invites` tab, use the `New Invite` action to generate enough invite links with the new CIPP Defaults template to establish new relationships with all your GDAP clients.
 {% endstep %}
 
 {% step %}
-### Consent to New GDAP Relationships
+#### Consent to New GDAP Relationships
 
 A Global Administrator in each client tenant will need to consent to the new relationship.
 {% endstep %}
 
 {% step %}
-### (Optional) Terminate Old GDAP Relationships
+#### (Optional) Terminate Old GDAP Relationships
 
 From `Tenant Administration` > `GDAP Management` > `Relationships`, select your old relationships and use the action `Terminate Relationship`. This can either be done one by one or using the check boxes and bulk actions.
 {% endstep %}

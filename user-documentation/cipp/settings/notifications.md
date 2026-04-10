@@ -45,20 +45,42 @@ Sent Items Notification emails **do not save** to the CIPP account's _Sent Items
 
 Enter a webhook URL. Data is formatted based on the receiving server:
 
-| Service                                     | Format                                                |
-| ------------------------------------------- | ----------------------------------------------------- |
-| _webhook.office.com_ (see deprecation note) | A basic HTML formatted table.                         |
-| _slack.com_                                 | A separate markdown-formatted message for each alert. |
-| _discord.com_                               | A basic HTML formatted table.                         |
-| All other services                          | JSON array of data values. Method is `POST`           |
+| Service            | Format                                                |
+| ------------------ | ----------------------------------------------------- |
+| _slack.com_        | A separate markdown-formatted message for each alert. |
+| _discord.com_      | A basic HTML formatted table.                         |
+| All other services | JSON array of data values. Method is `POST`           |
 
 {% hint style="warning" %}
-Office 365 connector webhooks in Teams are currently on a deprecation path. We've seen reports that newly created webhooks are not functioning as expected even though deprecation isn't until [March 31, 2026](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/).
+Office 365 connector webhooks in Teams are deprecated as of [March 31, 2026](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/).
 {% endhint %}
 
 {% hint style="info" %}
 Custom Webhook Formatting: Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API](https://github.com/KelvinTegelaar/CIPP-API/tree/dev).
 {% endhint %}
+
+### Webhook Authentication
+
+You are optionally able to set authentication on webhooks sent to your automation platform.
+
+#### Authentication Methods
+
+| Method                | Description                                                   |
+| --------------------- | ------------------------------------------------------------- |
+| None                  | No auth, POST is unauthenticated                              |
+| Bearer Token          | Adds `Authorization: Bearer <token>` header                   |
+| Basic Auth            | Standard HTTP basic auth                                      |
+| API Key Header        | Custom header name + value (e.g. `x-api-key: abc123`)         |
+| Custom Headers (JSON) | Used if the other methods are too restrictive for your needs. |
+
+| Setting                       | Description                                                                                                                                                           |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Webhook Bearer Token          | The token value only — CIPP prepends `Authorization: Bearer` automatically. Masked input.                                                                             |
+| Webhook Basic Username        | Plain text username for HTTP basic auth.                                                                                                                              |
+| Webhook Basic Password        | Password for HTTP basic auth. Masked input.                                                                                                                           |
+| Webhook API Key Header Name   | The header name to use, e.g. `x-api-key`. Free text — whatever your endpoint expects.                                                                                 |
+| Webhook API Key Header Value  | The value for that header. Masked input.                                                                                                                              |
+| Webhook Custom Headers (JSON) | A full JSON object of key/value header pairs. Must be valid JSON. Example: `{"Authorization":"Bearer token","x-api-key":"value"}`. Masked input — stored as a secret. |
 
 ## Log and Severity Settings
 
@@ -76,10 +98,34 @@ Selecting these severities will send any [logs](../logs/ "mention") entry that m
 
 ## Notification Setting Options
 
-| Setting                                         | Description                                                                                                                      |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Receive one email per tenant                    | Toggling on this option will separate emailed alerts by tenant as opposed to sending all matching log entries as a single alert. |
-| Send notifications to configured integration(s) | This will enable notifications to be sent to the integration(s) you have configured.                                             |
+| Setting                                         | Description                                                                                                                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Receive one email per tenant                    | Toggling on this option will separate emailed alerts by tenant as opposed to sending all matching log entries as a single alert.                                    |
+| Send notifications to configured integration(s) | This will enable notifications to be sent to the integration(s) you have configured.                                                                                |
+| Use Standardized Alert Schema                   | Opts the webhook payload into the versioned `schemaVersion: 1.0` envelope. Off by default — existing integrations are unaffected unless this is explicitly enabled. |
+
+{% hint style="warning" %}
+Previously saved credential values are retained in the form even when the auth type is switched. Users should be aware their old values may persist until explicitly cleared.
+{% endhint %}
+
+### Standardized Alert Schema
+
+```
+{
+    "schemaVersion": "1.0",
+    "source": "CIPP",
+    "invoking": "Get-CIPPAuditLogContent",
+    "title": "Risky Sign-Ins Detected",
+    "tenant": "contoso.onmicrosoft.com",
+    "generatedAt": "2026-03-31T16:00:00.0000000Z",
+    "alertCount": 3,
+    "payload": [
+            { "API": "Get-CIPPAuditLogContent", "UserId": "user1@contoso.onmicrosoft.com" },
+            { "API": "Get-CIPPAuditLogContent", "UserId": "user2@contoso.onmicrosoft.com" },
+            { "API": "Get-CIPPAuditLogContent", "UserId": "user3@contoso.onmicrosoft.com" }
+        ]
+}
+```
 
 ## Send Test Alert
 

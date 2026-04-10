@@ -4,4 +4,4 @@ This page will allow you to edit the settings for your app approval template
 
 ***
 
-{% include "../../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../../.gitbook/includes/feature-request.md" %}

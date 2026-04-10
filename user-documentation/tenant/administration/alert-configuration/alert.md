@@ -29,25 +29,35 @@ Within CIPP, there are two types of alerts:
   * 1 hour
   * 30 minutes
 
-## Alert Delivery Methods
+## Notification Settings
+
+### Custom Subject
+
+This section will allow you to override the default notification subject with your own custom text. The custom notification will be prefixed with the tenant default domain name.
+
+### Actions to take
 
 * Webhook - This will deliver a JSON payload to the webhook configured in [notifications.md](../../../cipp/settings/notifications.md "mention").
 * PSA - This will deliver a formatted payload to the configured PSA in [notifications.md](../../../cipp/settings/notifications.md "mention").
 * Email - This will deliver an HTML-formatted table to the email address provided in [notifications.md](../../../cipp/settings/notifications.md "mention").&#x20;
 
+### Alert Comment
+
+This text block can include any custom information that you want to include with the alert. You can include helpful links, custom instructions, etc. Variable replacement is supported, eg `%tenantname%`.
+
 ## Setting Up an Audit Log Alert
 
-{% @storylane/embed subdomain="app" linkValue="0f4f3u4ah74m" url="https://app.storylane.io/share/0f4f3u4ah74m" %}
+{% @storylane/embed subdomain="app" linkValue="6wxwpjesdsrx" url="https://app.storylane.io/share/6wxwpjesdsrx" %}
 
 ## Setting Up A CIPP Scripted Alert
 
-{% @storylane/embed subdomain="app" linkValue="d8riyacsbdog" url="https://app.storylane.io/share/d8riyacsbdog" %}
+{% @storylane/embed subdomain="app" linkValue="9r1i7cklndrq" url="https://app.storylane.io/share/9r1i7cklndrq" %}
 
 ## Available Alerts
 
 You can review the available alerts embedded below or navigate to [https://resources.cipp.app/?tab=alerts](https://resources.cipp.app/?tab=alerts).
 
-{% @cipp-external-webpage-block/cyberdrain url="https://resources.cipp.app/?tab=alerts" %}
+{% @cipp-external-webpage-block/cyberdrain url="https://resources.cipp.app/?tab=alerts" fullWidth="true" %}
 
 ***
 

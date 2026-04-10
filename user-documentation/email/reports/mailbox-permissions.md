@@ -1,10 +1,20 @@
 # Mailbox Permissions
 
-{% hint style="info" %}
-This report displays cached data from the CIPP reporting database. Cache timestamps are shown in the table. Click the Sync button to update the cache for the current tenant.
-{% endhint %}
+## Page Actions
 
-This report will display the mailbox permissions for the selected tenant. By default, the "Group by User" toggle will be enabled, but you can disable this to group by permission.
+<details>
+
+<summary>By User/By Calendar</summary>
+
+By default, the "Group by User" toggle will be enabled, but you can disable this to group by permission.
+
+</details>
+
+{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
+
+## Table Details
+
+This report will display the mailbox permissions for the selected tenant.
 
 Clicking on the button in the "Permissions" column will display another table with further details.
 

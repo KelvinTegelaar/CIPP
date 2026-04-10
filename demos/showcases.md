@@ -1,5 +1,9 @@
 # Showcases
 
+### Report Builder
+
+{% @storylane/embed subdomain="app" linkValue="vcrohqu0snfg" url="https://app.storylane.io/share/vcrohqu0snfg" %}
+
 ### Drift Management
 
 {% @storylane/embed subdomain="app" linkValue="cqb21ohc9fgp" url="https://app.storylane.io/share/cqb21ohc9fgp" %}
@@ -7,6 +11,10 @@
 ### Drift Standard Creation
 
 {% @storylane/embed subdomain="app" linkValue="gykd6vk1y7kr" url="https://app.storylane.io/share/gykd6vk1y7kr" %}
+
+### Custom Tests
+
+{% @storylane/embed subdomain="app" linkValue="qevotii3ats1" url="https://app.storylane.io/share/qevotii3ats1" %}
 
 ### AI Powered Help
 
@@ -35,3 +43,7 @@
 ### Graph Explorer
 
 {% @storylane/embed subdomain="app" linkValue="p0ljufhpgkmb" url="https://app.storylane.io/share/p0ljufhpgkmb" %}
+
+### Vacation Mode
+
+{% @storylane/embed subdomain="app" linkValue="d7llhd4j78qv" url="https://app.storylane.io/share/d7llhd4j78qv" %}

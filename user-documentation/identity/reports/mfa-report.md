@@ -1,7 +1,5 @@
 # MFA Report
 
-{% include "../../../.gitbook/includes/cached-data-report.md" %}
-
 This report provides an overview of the Multi-Factor Authentication (MFA) status for all users within the tenant. It's a combination of the built in Entra MFA report and getting the Per User MFA state and combining them for a complete picture.
 
 {% hint style="info" %}
@@ -16,7 +14,11 @@ A user must have at least one checkmark in any of the following categories to be
 * **Covered by Security Defaults (SD)**: This indicates that the user is protected by default security settings, automatically enabling and enforcing usage of MFA, when Microsoft deems a sign-in as risky.
 * **Covered by Conditional Access (CA)**: In this case, MFA is enabled through Conditional Access policies which might require MFA based on conditions like user location, device compliance, etc.
 
-## Detailed User MFA Status
+## Page Actions
+
+{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
+
+## Table Details
 
 The report lists every user in the tenant and provides detailed information about their MFA status, including:
 
@@ -26,9 +28,9 @@ The report lists every user in the tenant and provides detailed information abou
 * If the user is capable of using MFA.
 * The MFA methods the user has setup.
 
-{% hint style="warning" %}
-This table doesn't utilize a per-row Actions column like many of the other tables introduced with CIPP v7.
-{% endhint %}
+## Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Set Per-User MFA</td><td>Allows you to select the per-user MFA state for the user. One of <code>Enforced</code>, <code>Enabled</code>, or <code>Disabled</code>.</td><td>true</td></tr></tbody></table>
 
 ***
 

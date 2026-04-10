@@ -12,7 +12,7 @@ This page will contain your application appoval templates.
 
 <summary>Deploy Template</summary>
 
-This button will launch [appapproval.md](../../../tools/tenant-tools/appapproval.md "mention").
+This button will launch [appapproval.md](../../../../tools/tenant-tools/appapproval.md "mention").
 
 </details>
 
@@ -26,4 +26,4 @@ This table will include basic information on the template name, app id, app name
 
 ***
 
-{% include "../../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../../.gitbook/includes/feature-request.md" %}

@@ -9,7 +9,7 @@ description: API Authentication
 Before being able to utilize the CIPP API, you need to first configure an API client via [cipp-api.md](../user-documentation/cipp/integrations/cipp-api.md "mention"). Once that is completed, come back to this page. You'll need the integration page still open to reference the necessary fields below for authentication.
 
 {% hint style="warning" %}
-### Self-Hosted Clients
+#### Self-Hosted Clients
 
 If you originally deployed CIPP prior to v7.1 you will need to follow the instructions on [self-hosted-api-setup.md](../setup/self-hosting-guide/self-hosted-api-setup.md "mention")
 {% endhint %}
@@ -77,11 +77,15 @@ Further documentation for the module and each of its available functions can be 
 This module is created and maintained by a community member. With CIPP's rapid development cycle, the module can be expected to lag behind in adding new endpoints. For those, it is recommended to use the command `Invoke-CIPPRestMethod`.
 {% endhint %}
 
-## Caveats
-1. If you are using an automation like N8N, you may need to add /api to the end of your URL
+## Common Issues
 
-2. If you get any API 400 Errors like "Invoke-CIPPRestMethod: Response status code does not indicate success: 400 (Bad Request)" when first authing/testing, your cipp api client app reg may be missing an "APP ID URI". Fix this by going to your tenant, finding the app registration for the client you just made and in the "expose an api" section, you should be able to click the add button at the top of the page, which will automatilly fill in the client id and a suggested URI, once added and saved, you should try authing again.
+1. If you are calling CIPP from an external automation platform (e.g., n8n, Rewst, Power Automate), make sure your base URL includes the `/api` path (e.g., `https://your-cipp-domain.com/api`). Direct API calls need to target the Azure Functions backend, not the static frontend — without `/api`, your requests will hit the web interface and return HTML instead of the expected JSON responses
+2.  If you receive 400 (Bad Request) errors when first authenticating or testing your CIPP API connection (e.g. `Invoke-CIPPRestMethod: Response status code does not indicate success: 400 (Bad Request)`) your CIPP API app registration may be missing an Application ID URI.
 
-### Feature Requests / Ideas
+    To fix this, go to **Microsoft Entra ID → App registrations** in your tenant and open the app registration for your CIPP API (not a separate client registration, unless your setup uses one). Navigate to **Expose an API**. If the **Application ID URI** field at the top is empty, click **Add**. Azure will auto-suggest a URI in the format `api://{application-id}`. The default is fine, no need to customize it. Click **Save**.
 
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+    If your setup requires a custom scope (e.g., `access_as_user`), you may also need to add one under **Expose an API → Add a scope** and then grant that scope as an API permission on the client side.
+
+    After making changes, wait a minute or two before retrying authentication since propagation isn't always instant. If the error persists, try re-consenting to the app permissions.
+
+{% include "../.gitbook/includes/feature-request.md" %}

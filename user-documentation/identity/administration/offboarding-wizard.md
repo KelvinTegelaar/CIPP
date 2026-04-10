@@ -44,23 +44,23 @@ Review your selections and confirm to apply the offboarding process.
 
 The Offboarding Wizard offers a range of settings that can be performed during the offboarding process. These tasks include:
 
-| Setting                            | Description                                                                                                                         |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Convert to Shared Mailbox          | Converts the user's mailbox to a shared mailbox                                                                                     |
-| Hide from Global Address List      | Hides the user from the Global Address List                                                                                         |
-| Cancel all calendar invites        | Cancels all upcoming calendar events and meetings organized by the user                                                             |
-| Remove user's mailbox permissions  | Removes all the offboarded user's permissions to all other mailboxes                                                                |
-| Remove user's calendar permissions | Removes all the offboarded user's permission to all other calendars                                                                 |
-| Remove all Rules                   | Removes all rules associated with the user                                                                                          |
-| Remove all Mobile Devices          | Removes all mobile devices associated with the user                                                                                 |
-| Remove from all Groups             | Removes the user from all groups                                                                                                    |
-| Remove Licenses                    | Removes all licenses associated with the user                                                                                       |
-| Revoke all sessions                | Revokes all active sessions of the user                                                                                             |
-| Disable Sign-In                    | Disables the user's ability to sign in                                                                                              |
-| Clear Immutable ID                 | Clears the Immutable ID for a user synced from on-premises Active Directory. Note: This only works after the link is broken from AD |
-| Reset Password                     | Resets the user's password to a randomly generated value, preventing the user from signing in after offboarding                     |
-| Remove all MFA Devices             | Removes all MFA devices associated with the user                                                                                    |
-| Delete User                        | Deletes the user from the tenant                                                                                                    |
+| Setting                            | Description                                                                                                                                                                                                     |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Convert to Shared Mailbox          | Converts the user's mailbox to a shared mailbox                                                                                                                                                                 |
+| Hide from Global Address List      | Hides the user from the Global Address List                                                                                                                                                                     |
+| Cancel all calendar invites        | Cancels all upcoming calendar events and meetings organized by the user                                                                                                                                         |
+| Remove user's mailbox permissions  | Removes all the offboarded user's permissions to all other mailboxes                                                                                                                                            |
+| Remove user's calendar permissions | Removes all the offboarded user's permission to all other calendars                                                                                                                                             |
+| Remove all Rules                   | Removes all rules associated with the user                                                                                                                                                                      |
+| Remove all Mobile Devices          | Removes all mobile devices associated with the user                                                                                                                                                             |
+| Remove from all Groups             | Removes the user from all groups                                                                                                                                                                                |
+| Remove Licenses                    | Removes all licenses associated with the user                                                                                                                                                                   |
+| Revoke all sessions                | Revokes all active sessions of the user                                                                                                                                                                         |
+| Disable Sign-In                    | Disables the user's ability to sign in                                                                                                                                                                          |
+| Clear Immutable ID                 | Clears the Immutable ID for a user synced from on-premises Active Directory. Note: This only works after the link is broken from AD                                                                             |
+| Reset Password                     | Resets the user's password to a randomly generated value, preventing the user from signing in after offboarding                                                                                                 |
+| Remove all MFA Devices             | Removes all MFA devices associated with the user                                                                                                                                                                |
+| Delete User                        | Deletes the user from the tenant. <mark style="color:$primary;">Selecting this will disable most of the other settings since deleting the user is a destructive action for things like the mailbox, etc.</mark> |
 
 ## Permissions and forwarding
 

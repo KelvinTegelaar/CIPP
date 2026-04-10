@@ -52,7 +52,15 @@ Each card contains the following information:
 
 ## Card Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Accept Deviation - Customer Specific</td><td>Will place a customer specific override on the Drift Management template</td><td>true</td></tr><tr><td>Accept Deviation</td><td>Will override the Drift Management template for all tenants</td><td>true</td></tr><tr><td>Deny Deviation - Remediate to align with template</td><td>Forces the standard to alignment with the values set in the Drift Management template</td><td>true</td></tr><tr><td>Deny Deviation - Delete</td><td>Will delete the conditional access policy that does not align with the Drift Management templated</td><td>true</td></tr><tr><td>Remove Drift Customization</td><td>Only available as a bulk action, this will remove all customization from the drift management and reset to comparing to the standard</td><td>true</td></tr></tbody></table>
+### New Deviations
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Accept Deviation — Customer Specific</td><td>Mmarks the deviation as intentional and unique to this tenant. Counts as compliant in the alignment score. Use when the tenant legitimately differs from the template by design.</td><td>true</td></tr><tr><td>Accept Deviation</td><td>Acknowledges the deviation as known/approved. Also counts as compliant in the alignment score. Use when you've reviewed it and it's fine as-is, but it's not a customer-specific exception.</td><td>true</td></tr><tr><td>Deny Deviation - Remediate to align with template</td><td>Queues a remediation job to bring the tenant back into alignment with the template. Includes the option to permanently deny the drift which will auto remediate future occurrences.</td><td>true</td></tr><tr><td>Deny Deviation — Delete Policy</td><td>Queues a deletion of the rogue policy.</td><td>true</td></tr><tr><td>Remove Drift Customization</td><td>Only available as a bulk action, this will remove all customization from drift management and reset to comparing to the standard</td><td>true</td></tr></tbody></table>
+
+### Already-Accepted Deviations
+
+<table><thead><tr><th></th><th></th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Deny — Delete Policy</td><td>Reverses the acceptance and queues a deletion of the rogue policy.</td><td>false</td></tr><tr><td>Deny — Remediate to align with template</td><td>Reverses acceptance and queues a remediation job to bring the tenant back into alignment with the template. Includes the option to permanently deny the drift which will auto remediate future occurrences.</td><td>false</td></tr><tr><td>Accept — Customer Specific</td><td>Re-categorizes from generic accepted to a customer specific deviation.</td><td>false</td></tr></tbody></table>
+
+
 
 ***
 

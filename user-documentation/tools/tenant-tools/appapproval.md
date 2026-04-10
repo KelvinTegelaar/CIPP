@@ -16,7 +16,7 @@ Select the tenant(s) or All Tenants you want to approve the application for
 {% step %}
 ### App Selection
 
-Select "Use App Approval Template" to use one of your [templates](../../tenant/administration/templates/ "mention")
+Select "Use App Approval Template" to use one of your [templates](../../tenant/administration/applications/templates/ "mention")
 
 Select Manual Configuration to be presented with the legacy option to enter the application ID.
 {% endstep %}

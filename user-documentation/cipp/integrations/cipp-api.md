@@ -29,7 +29,15 @@ The IP Range list supports both IPv4 and IPv6 addresses as standalone IP address
 Custom Roles will limit which API endpoints each API Client can access. This can be used to limit all API calls to read only for example.
 {% endhint %}
 
-## **Disabling an API client**
+## Using an API Client
+
+After creating your first API client, the page will update to include additional information that is necessary for your automation:
+
+* Token URL: This URL is what you will need when authenticating your automation to your CIPP instance. See [setup-and-authentication.md](../../../api-documentation/setup-and-authentication.md "mention") for more information.
+* Tenant ID: This is the tenant ID for the tenant used to authenticate CIPP where your CIPP service account lives.
+* API URL: This will be the base URL required for all post-authenticated calls. Note that most automation tools will require you to append `/api` to this base URL for successful responses.
+
+## **Disabling an API Client**
 
 1. Navigate to CIPP > Integrations and click on CIPP-API.
 2. Find the API client in the table and click on the 3 dots in the Actions column > Edit.

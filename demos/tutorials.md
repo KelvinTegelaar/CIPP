@@ -14,11 +14,11 @@
 
 ### Setting up an audit log alert
 
-{% @storylane/embed subdomain="app" linkValue="0f4f3u4ah74m" url="https://app.storylane.io/share/0f4f3u4ah74m" %}
+{% @storylane/embed subdomain="app" linkValue="6wxwpjesdsrx" url="https://app.storylane.io/share/6wxwpjesdsrx" %}
 
 ### Setting up a CIPP scripted alert
 
-{% @storylane/embed subdomain="app" linkValue="d8riyacsbdog" url="https://app.storylane.io/share/d8riyacsbdog" %}
+{% @storylane/embed subdomain="app" linkValue="9r1i7cklndrq" url="https://app.storylane.io/share/9r1i7cklndrq" %}
 
 ### Offboarding users
 

@@ -55,9 +55,9 @@ For security reasons, signInAudience must be 'AzureADMyOrg' or not specified.
 {% endstepper %}
 
 {% hint style="success" %}
-You can now deploy the application with the permissions template in [standards](../../standards/ "mention") or [appapproval.md](../../../tools/tenant-tools/appapproval.md "mention").
+You can now deploy the application with the permissions template in [standards](../../../standards/ "mention") or [appapproval.md](../../../../tools/tenant-tools/appapproval.md "mention").
 {% endhint %}
 
 ***
 
-{% include "../../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../../.gitbook/includes/feature-request.md" %}

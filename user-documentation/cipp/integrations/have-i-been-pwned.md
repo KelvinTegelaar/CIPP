@@ -2,7 +2,7 @@
 
 This integration allows you to scan your tenant for compromised credentials, breaches, and dark web scanning through leveraging the Have I Been Pwned database.
 
-### Setting Up the Integration
+## Setting Up the Integration
 
 {% stepper %}
 {% step %}
@@ -39,6 +39,10 @@ Click the Submit button
 Click the test button. If there are any failures, information regarding the failure will be displayed.
 {% endstep %}
 {% endstepper %}
+
+## Clearing the API Key
+
+CIPP includes a `Clear API Key` button if you need to remove the key you previously entered. This is helpful for those migrating from self-hosted to CyberDrain hosted wanting to leverage the complimentary key.
 
 ***
 

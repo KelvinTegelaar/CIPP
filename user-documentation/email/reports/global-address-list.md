@@ -4,10 +4,6 @@ description: This page will display the Global Address List (GAL) for the select
 
 # Global Address List
 
-{% hint style="warning" %}
-This page will not load table information when AllTenants is selected in the top menu bar.
-{% endhint %}
-
 ## Table Details
 
 The properties returned are for the Exchange PowerShell command `Get-Recipient`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/get-recipient?view=exchange-ps).&#x20;

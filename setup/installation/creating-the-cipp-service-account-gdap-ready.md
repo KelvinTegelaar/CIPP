@@ -11,7 +11,7 @@
 
 ### Administration Requirements
 
-1. Must be at least **Application Administration** and **User Administrator** while setting up the integration. These permissions must be removed after the integration has been setup, and the application has been installed.
+1. Must be at least **Application Administration**, **Privileged Role Administrator**, and **User Administrator** while setting up the integration. These permissions must be removed after the integration has been setup, and the application has been installed. If setup fails, you may need to switch to **Global Administrator** to ensure all necessary permissions are granted.
 2. Must be added to the **AdminAgents** grou&#x70;**.** This group is required for connection to the Microsoft Partner API.
 
 ### Multi-factor Authentication
@@ -88,7 +88,7 @@ If you want to move to using CIPP and Microsoft's best practice recommendation o
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FrNKg3zxDF4cCxMzhGPHRfT_doc.png?alt=media\&token=eee64997-0439-4965-ad41-c8a89d343d36\&time=Fri%20Jul%2026%202024%2021:58:01%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
-11. Add the Application Administrator and User Administrator Roles
+11. Add the Application Administrator, Privileged Role Administrator, and User Administrator Roles
 
 Find the Application Administrator and User Administrator roles. These roles are required for the CIPP-SAM application creation and are recommended to be removed directly after installation.
 

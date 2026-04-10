@@ -9,9 +9,9 @@ description: How to grant users access to the CIPP App
 When you first set up CIPP, you will need to create your first user in one of two ways:
 
 {% hint style="info" %}
-This user should be at minimum given the role of `superadmin` to allow you to complete the setup of your additional users. This user will be used to configure the remaining settings within CIPP and certain features like role management are restricted to `superadmin` only.
+This user should be at minimum given the role of `admin` . This user will be used to configure the remaining settings within CIPP. Certain features like role management are restricted to `superadmin` only so the `superadmin` role should only be assigned as needed for those very specific tasks.
 
-We recommend that this user be your break glass CIPP `superadmin` account while all remaining users get invited via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
+We recommend that all remaining users get invited via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
 {% endhint %}
 
 * For **hosted clients,** invites and roles can be managed by logging into the management portal [here](https://management.cipp.app/)
@@ -29,7 +29,7 @@ After the invite link is sent to the user, they must click on it to accept the i
 
 ### Additional User Setup
 
-Once you have your initial `superadmin` user added, you are now ready to finish the first setup. After completing the setup, you can return hereto set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
+Once you have your initial `admin` user added, you are now ready to finish the first setup. After completing the setup, you can return hereto set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
 
 ### Built-In Roles
 

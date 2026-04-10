@@ -13,50 +13,92 @@ The data CIPP uses to display the dashboard is cached in a database that gets up
 
 ## Walkthrough
 
-{% @storylane/embed subdomain="app" linkValue="zt4porabti6d" url="https://app.storylane.io/share/zt4porabti6d" %}
+{% @storylane/embed subdomain="app" url="https://app.storylane.io/share/zt4porabti6d" linkValue="zt4porabti6d" %}
 
 ## Overview Tab
 
 <details>
 
-<summary>Universal Search</summary>
+<summary>Portals Quick Access</summary>
 
-This is a universal search bar that allows you to quickly find the information you need. For example, enter a first name of a user. CIPP will return a list of all users in your connected tenants with that first name. You can toggle between "Users", "Groups", and "BitLocker" to alter what the search is looking for. When you select "BitLocker" you also have the option to search by "Key ID" or "Device ID".
-
-{% hint style="info" %}
-This feature relies on the cached data from the CIPP reporting database. You can force a databse refresh using the "Update Report" button in [#report-control](./#report-control "mention")
-{% endhint %}
-
-</details>
-
-<details>
-
-<summary>Quick Access</summary>
-
-This card will allow you to quickly access several options for the selected tenant:
-
-* Portals: This dropdown will give you quick links to the Microsoft portals for the selected tenant.&#x20;
+This dropdown will give you quick links to the Microsoft portals for the selected tenant.
 
 {% hint style="warning" %}
 Clicking these links cause you to leave CIPP and will require your user - not the CIPP service account - to have GDAP permissions to access the appropriate resource.
 {% endhint %}
 
-* Executive Summary: This will allow you to generate a client friendly executive summary report gathered from CIPP data to present to your client. This is fully brandable via [#branding-settings](../cipp/settings/#branding-settings "mention") and you can select which sections you want to include by toggling them off or on.
-* Report Builder: Functionality to be added in a future release!
+</details>
+
+<details>
+
+<summary>Executive Summary</summary>
+
+This will allow you to generate a client friendly executive summary report gathered from CIPP data to present to your client. This is fully brandable via [#branding-settings](../cipp/settings/#branding-settings "mention") and you can select which sections you want to include by toggling them off or on.
 
 </details>
 
 <details>
 
-<summary>Report Control</summary>
+<summary>Report Builder</summary>
 
-This card controls the report used in displaying the test information on the dashboard [#assessment-overview](./#assessment-overview "mention") and the [#identity-tab](./#identity-tab "mention") and [#devices-tab](./#devices-tab "mention").&#x20;
+This button will take you to the [#report-builder](./#report-builder "mention") tool where you are able to leverage the data collected by CIPP's test suites to generate custom client-facing reports.
 
-Select a report from the dropdown to change the display. Alternatively, you can click on the "Create custom report" button to select your own custom set of tests from the CIPP database to include in your report.&#x20;
+</details>
 
-The Update Report button will kick off a refresh of the cached database. Once that refresh is complete the test data will be updated.
+<details>
 
-The "Delete" button allows you to delete a custom report that you created.
+<summary>Test Suite Control</summary>
+
+This dropdown controls the test suite used in displaying the test information on the dashboard [#assessment-overview](./#assessment-overview "mention") and the [#identity-tab](./#identity-tab "mention") and [#devices-tab](./#devices-tab "mention"). Select a test suite from the dropdown to change the display.&#x20;
+
+**Available Built-In Test Suites:**
+
+* CISA ScubaGear Tests for Exchange Online: Security configuration assessment tests based on CISA's Secure Cloud Business Applications (SCubaGear) project for Microsoft Exchange Online. These tests validate compliance with federal security baselines.
+* Microsoft 365 Copilot Readiness Tests: Assess tenant readiness for Microsoft 365 Copilot deployment. Tests cover prerequisite licensing, Copilot license assignment, and active M365 app usage that determines which users would benefit most from Copilot.
+* Entra ID Security Configuration Analyzer (EIDSCA) Tests: Comprehensive security assessment for Microsoft Entra ID (formerly Azure AD) covering authorization policies, authentication methods, consent policies, password policies, and group settings. Based on Microsoft's EIDSCA framework for identity security best practices.
+* Generic Tenant Tests: Executive-level informational reports covering licensing, MFA posture, secure score trends, and tenant capabilities. These tests provide a clear snapshot of your tenant's current state without pass/fail criteria.
+* ORCA (Office 365 Recommended Configuration Analyzer) Tests: Comprehensive security assessment for Microsoft Exchange Online and Office 365 security configurations. Tests cover anti-spam, anti-phish, anti-malware, safe links, safe attachments, DKIM, transport rules, and other Exchange Online security settings.
+* Zero Trust Network Access Tests: Microsoft's Comprehensive security assessment covering identity and device compliance, conditional access policies, authentication methods, and endpoint protection aligned with Zero Trust principles.
+
+</details>
+
+<details>
+
+<summary>Refresh Test Suites</summary>
+
+Pulls in a fresh version of the latest cached data for the referenced test suite.
+
+</details>
+
+<details>
+
+<summary>Create Suite</summary>
+
+This will allow you to utilize existing tests to create your own custom test suite. Set a name, description, and select from the available Identity, Device, and Custom Tests.
+
+</details>
+
+<details>
+
+<summary>Refresh</summary>
+
+This will trigger CIPP to pull in fresh data for the tenant. This update happens in the background so you may have to revisit the dashboard after allowing the tests to complete.
+
+</details>
+
+<details>
+
+<summary>Edit</summary>
+
+When a custom test suite is selected, this option allows you to edit the test suite.
+
+</details>
+
+<details>
+
+<summary>Delete</summary>
+
+When a custom test suite is selected, this option allows you to delete the test suite.
 
 </details>
 
@@ -116,7 +158,7 @@ This card will display the types of authentication methods users in the tenant a
 
 <summary>License Overview</summary>
 
-This card will display the licenses present on the tenant.&#x20;
+This card will display the licenses present on the tenant.
 
 {% hint style="info" %}
 To exclude a license from this and all other reports in CIPP, add the license in [licenses.md](../cipp/settings/licenses.md "mention").
@@ -162,6 +204,14 @@ This section will display the test category, outline in detail what the test is 
 ## Devices Tab
 
 This tab will display information about the Device tests, including links to remediation steps for any failed tests. The format of the page is identical to the [#identity-tab](./#identity-tab "mention").
+
+## Custom Tab
+
+This tab will display information about the Custom tests, including links to remediation steps for any failed tests. The format of the page is identical to the [#identity-tab](./#identity-tab "mention").
+
+{% hint style="info" %}
+Custom test can be reviewed and created via [custom-tests](../tools/custom-tests/ "mention").
+{% endhint %}
 
 ## Previous Dashboard Experience
 

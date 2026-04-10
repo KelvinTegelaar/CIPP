@@ -20,6 +20,10 @@ On this page, you’ll create the necessary Application Registration in your Mic
 
 * Click Authenticate and follow the on-screen instructions to register the application.
 * Important: Use the dedicated CIPP service account created during the preparation steps.
+
+{% hint style="info" %}
+If authentication fails, assign Global Administrator to the service account temporarily to ensure sufficient rights to approve all necessary application permissions.
+{% endhint %}
 {% endstep %}
 
 {% step %}

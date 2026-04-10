@@ -10,7 +10,11 @@ This includes basic tenant details like the Display Name and Tenant ID pulled fr
 
 ### Properties
 
-Here you can view/edit a custom alias for the tenant. This alias will currently only populate in the tenant dropdown in the menu bar. You can also manage the tenant's CIPP group membership.
+Here you can view/edit a custom alias for the tenant. You can also manage the tenant's CIPP group membership.
+
+## Tenant Offboarding Defaults
+
+Here you can configure default offboarding settings that will specifically apply for this tenant. These settings will override user defaults.
 
 ## Custom Variables
 

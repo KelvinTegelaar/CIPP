@@ -1,6 +1,8 @@
 # Defender Deployment
 
-Disable Catchup Quick ScanThe Defender Deployment setup form allows you to set up default defender policies for your tenants or create specific policies.
+The Defender Deployment setup form allows you to set up default defender policies for your tenants or create specific policies.
+
+## Deploying Defender
 
 {% stepper %}
 {% step %}
@@ -153,6 +155,14 @@ Do not assign / Assign to all users / Assign to all devices / Assign to all user
 {% endstepper %}
 
 For more details on each setting, refer to the [Microsoft Defender for Endpoint documentation](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-endpoint?view=o365-worldwide).
+
+## Save as Template
+
+Clicking this button will allow you to save the current Defender policy settings as Intune templates. These templates can be used in deploying Defender to tenants via Standards or Drift Management. Add a Package to simplify that deployment process.
+
+{% hint style="info" %}
+Saved templates are visible in [list-templates](../../endpoint/mem/list-templates/ "mention").
+{% endhint %}
 
 ***
 

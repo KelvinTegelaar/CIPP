@@ -18,7 +18,7 @@ Select the user(s) you want to apply the vacation schedule to
 {% step %}
 ### Vacation Actions
 
-Optionally you can enable CA policy exclusions, grant temporary mailbox and calendar access, and set out of office autoreplies.
+Optionally you can enable CA policy exclusions, grant temporary mailbox and calendar access, enable mail forwarding, and set out of office autoreplies.
 
 {% hint style="info" %}
 You must enable at least one of these options to continue.

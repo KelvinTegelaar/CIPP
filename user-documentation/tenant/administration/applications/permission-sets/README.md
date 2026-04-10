@@ -18,4 +18,4 @@ This table will display the permission sets that you have created along with som
 
 ***
 
-{% include "../../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../../.gitbook/includes/feature-request.md" %}

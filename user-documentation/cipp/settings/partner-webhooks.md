@@ -20,7 +20,7 @@ CIPP will automatically configure the required Event Types.
 
 ## Option
 
-You can also optionally toggle the "Exclude onboarded tenants from top-level standards". This will exclude all newly onboarded tenants from all Standards templates that apply to AllTenants.
+You can also optionally toggle the "Exclude onboarded tenants from top-level standards". This will add all newly onboarded tenants to the excluded tenants list for all Standards and Drift Management templates that apply to AllTenants. Those exclusions need to be manually removed later for the template to apply.
 
 ***
 
