@@ -1,0 +1,15 @@
+{
+  "_metadata": {
+    "endpoint": "ListTeamsActivity",
+    "generatedAt": "2026-04-03T23:47:18.9720145+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "CallCount": "string",
+    "LastActive": "string",
+    "MeetingCount": "string",
+    "TeamsChat": "string",
+    "UPN": "string"
+  }
+}

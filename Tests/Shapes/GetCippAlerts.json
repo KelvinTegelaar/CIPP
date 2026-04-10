@@ -1,0 +1,14 @@
+{
+  "_metadata": {
+    "endpoint": "GetCippAlerts",
+    "generatedAt": "2026-04-03T23:40:00.7267346+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "Alert": "string",
+    "link": "string",
+    "title": "string",
+    "type": "string"
+  }
+}

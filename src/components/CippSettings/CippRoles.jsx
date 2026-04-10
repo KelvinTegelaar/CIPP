@@ -18,7 +18,7 @@ const CippRoles = () => {
           <PencilIcon />
         </SvgIcon>
       ),
-      link: "/cipp/super-admin/cipp-roles/edit?role=[RoleName]",
+      link: "/cipp/advanced/super-admin/cipp-roles/edit?role=[RoleName]",
     },
     {
       label: "Clone",
@@ -124,7 +124,7 @@ const CippRoles = () => {
               </SvgIcon>
             }
             component={NextLink}
-            href="/cipp/super-admin/cipp-roles/add"
+            href="/cipp/advanced/super-admin/cipp-roles/add"
           >
             Add Role
           </Button>
