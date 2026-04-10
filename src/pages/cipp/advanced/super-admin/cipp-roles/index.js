@@ -1,8 +1,8 @@
-import { TabbedLayout } from "../../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
 import tabOptions from "../tabOptions";
-import CippPageCard from "../../../../components/CippCards/CippPageCard";
-import CippRoles from "../../../../components/CippSettings/CippRoles";
+import CippPageCard from "../../../../../components/CippCards/CippPageCard";
+import CippRoles from "../../../../../components/CippSettings/CippRoles";
 import { CardContent, Stack, Alert } from "@mui/material";
 
 const Page = () => {

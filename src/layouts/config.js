@@ -930,6 +930,13 @@ export const nativeMenuItems = [
         scope: 'global',
       },
       {
+        title: 'Custom Tests',
+        path: '/tools/custom-tests',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.Tests.*'],
+        scope: 'global',
+      },
+      {
         title: 'Template Library',
         path: '/tools/templatelib',
         roles: ['editor', 'admin', 'superadmin'],
@@ -999,20 +1006,13 @@ export const nativeMenuItems = [
         scope: 'global',
       },
       {
-        title: 'Custom Tests',
-        path: '/cipp/custom-tests',
-        roles: ['admin', 'superadmin'],
-        permissions: ['CIPP.Tests.*'],
-        scope: 'global',
-      },
-      {
         title: 'Advanced',
         roles: ['superadmin'],
         permissions: ['CIPP.SuperAdmin.*'],
         items: [
           {
             title: 'Super Admin',
-            path: '/cipp/super-admin/tenant-mode',
+            path: '/cipp/advanced/super-admin/tenant-mode',
             roles: ['superadmin'],
             permissions: ['CIPP.SuperAdmin.*'],
             scope: 'global',

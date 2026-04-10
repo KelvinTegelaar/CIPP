@@ -1,12 +1,12 @@
-import { TabbedLayout } from "../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import tabOptions from "./tabOptions";
-import CippFormPage from "../../../components/CippFormPages/CippFormPage";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
 import { Typography } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
-import { ApiGetCall } from "../../../api/ApiCall";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { ApiGetCall } from "../../../../api/ApiCall";
 import { useEffect } from "react";
 import Link from "next/link";
 

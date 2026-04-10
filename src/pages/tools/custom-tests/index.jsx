@@ -40,7 +40,7 @@ const Page = () => {
             color="primary"
             size="small"
             component={NextLink}
-            href="/cipp/custom-tests/add"
+            href="/tools/custom-tests/add"
           >
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
               <Add />
@@ -55,12 +55,12 @@ const Page = () => {
           {
             label: "Edit Test",
             icon: <PencilIcon />,
-            link: "/cipp/custom-tests/add?ScriptGuid=[ScriptGuid]",
+            link: "/tools/custom-tests/add?ScriptGuid=[ScriptGuid]",
           },
           {
             label: "View Versions",
             icon: <ClockIcon />,
-            link: "/cipp/custom-tests/versions?ScriptGuid=[ScriptGuid]",
+            link: "/tools/custom-tests/versions?ScriptGuid=[ScriptGuid]",
           },
           {
             label: "Enable Test",

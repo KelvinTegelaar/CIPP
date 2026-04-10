@@ -206,6 +206,16 @@ const Page = () => {
     })
   }
 
+  const handleSubmitResult = (result) => {
+    if (!isEdit && result?.ScriptGuid) {
+      router.replace(
+        { pathname: router.pathname, query: { ...router.query, ScriptGuid: result.ScriptGuid } },
+        undefined,
+        { shallow: false }
+      )
+    }
+  }
+
   const customDataformatter = (data) => {
     const payload = {
       ScriptName: data.ScriptName,
@@ -216,11 +226,11 @@ const Page = () => {
       MarkdownTemplate: data.MarkdownTemplate,
       ResultSchema: data.ResultSchema,
       Description: data.Description,
-      Category: data.Category?.value,
-      Pillar: data.Pillar?.value,
-      Risk: data.Risk?.value,
-      UserImpact: data.UserImpact?.value,
-      ImplementationEffort: data.ImplementationEffort?.value,
+      Category: data.Category?.value ?? data.Category,
+      Pillar: data.Pillar?.value ?? data.Pillar,
+      Risk: data.Risk?.value ?? data.Risk,
+      UserImpact: data.UserImpact?.value ?? data.UserImpact,
+      ImplementationEffort: data.ImplementationEffort?.value ?? data.ImplementationEffort,
     }
 
     if (isEdit) {
@@ -525,12 +535,13 @@ return $results`,
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey={['Custom PowerShell Test', 'CustomTest*']}
+      queryKey={['Custom Tests', 'CustomScript*']}
       title="Custom Test"
       backButtonTitle="Custom Tests"
       formPageType={isEdit ? 'Edit' : 'Add'}
       postUrl="/api/AddCustomScript"
       customDataformatter={customDataformatter}
+      onSubmitResult={handleSubmitResult}
     >
       <Accordion
         sx={{ mb: 2 }}
