@@ -92,7 +92,11 @@ export const SecureScoreChart = ({ data, isLoading }) => {
           <LineChart data={chartData} margin={{ left: 12, right: 12, top: 10, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
             <XAxis dataKey="date" tick={{ fontSize: 12 }} tickMargin={8} />
-            <YAxis tick={{ fontSize: 12 }} tickMargin={8} domain={[0, "dataMax + 20"]} />
+            <YAxis
+              tick={{ fontSize: 12 }}
+              tickMargin={8}
+              domain={[0, latestScore.maxScore]}
+            />
             <RechartsTooltip
               contentStyle={{
                 backgroundColor: "rgba(255, 255, 255, 0.95)",
