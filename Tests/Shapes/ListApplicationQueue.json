@@ -1,0 +1,16 @@
+{
+  "_metadata": {
+    "endpoint": "ListApplicationQueue",
+    "generatedAt": "2026-04-03T23:40:03.9716316+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "applicationName": "string",
+    "assignTo": "string",
+    "cmdLine": "null",
+    "id": "string",
+    "status": "string",
+    "tenantName": "string"
+  }
+}

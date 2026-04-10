@@ -2,17 +2,20 @@ import { useEffect } from "react";
 import { Button, Box } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "./CippFormComponent";
+import { CippFormCondition } from "./CippFormCondition";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "./CippApiDialog";
 import { useFormState } from "react-hook-form";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippNotificationForm = ({
   formControl,
   showTestButton = true,
-  hideButtons = false,
 }) => {
   const notificationDialog = useDialog();
+  const settings = useSettings();
+  const currentTenant = settings.currentTenant;
 
   // API call to get notification configuration
   const listNotificationConfig = ApiGetCall({
@@ -49,6 +52,14 @@ export const CippNotificationForm = ({
     { label: "Critical", value: "Critical" },
   ];
 
+  const webhookAuthTypes = [
+    { label: "None", value: "None" },
+    { label: "Bearer Token", value: "Bearer" },
+    { label: "Basic Auth", value: "Basic" },
+    { label: "API Key Header", value: "ApiKey" },
+    { label: "Custom Headers (JSON)", value: "CustomHeaders" },
+  ];
+
   // Load notification config data into form
   useEffect(() => {
     if (listNotificationConfig.isSuccess) {
@@ -69,9 +80,19 @@ export const CippNotificationForm = ({
         onePerTenant: listNotificationConfig.data?.onePerTenant,
         sendtoIntegration: listNotificationConfig.data?.sendtoIntegration,
         includeTenantId: listNotificationConfig.data?.includeTenantId,
+        UseStandardizedSchema: listNotificationConfig.data?.UseStandardizedSchema || false,
+        webhookAuthType: webhookAuthTypes.find(
+          (type) => type.value === listNotificationConfig.data?.webhookAuthType,
+        ) || webhookAuthTypes[0],
+        webhookAuthToken: listNotificationConfig.data?.webhookAuthToken,
+        webhookAuthUsername: listNotificationConfig.data?.webhookAuthUsername,
+        webhookAuthPassword: listNotificationConfig.data?.webhookAuthPassword,
+        webhookAuthHeaderName: listNotificationConfig.data?.webhookAuthHeaderName,
+        webhookAuthHeaderValue: listNotificationConfig.data?.webhookAuthHeaderValue,
+        webhookAuthHeaders: listNotificationConfig.data?.webhookAuthHeaders,
       });
     }
-  }, [listNotificationConfig.isSuccess]);
+  }, [listNotificationConfig.isSuccess, listNotificationConfig.dataUpdatedAt]);
 
   return (
     <>
@@ -98,6 +119,117 @@ export const CippNotificationForm = ({
               helperText="Enter the webhook URL to send notifications to. The URL should be configured to receive a POST request."
             />
           </Grid>
+          <Grid size={{ xs: 12 }}>
+            <CippFormComponent
+              disabled={listNotificationConfig.isFetching}
+              type="autoComplete"
+              label="Webhook Endpoint Authentication"
+              name="webhookAuthType"
+              creatable={false}
+              multiple={false}
+              options={webhookAuthTypes}
+              formControl={formControl}
+            />
+          </Grid>
+          <CippFormCondition
+            field="webhookAuthType"
+            compareType="valueEq"
+            compareValue="Bearer"
+            formControl={formControl}
+            clearOnHide={false}
+          >
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                disabled={listNotificationConfig.isFetching}
+                type="password"
+                label="Webhook Bearer Token"
+                name="webhookAuthToken"
+                formControl={formControl}
+                helperText="Used when auth type is Bearer Token."
+              />
+            </Grid>
+          </CippFormCondition>
+
+          <CippFormCondition
+            field="webhookAuthType"
+            compareType="valueEq"
+            compareValue="Basic"
+            formControl={formControl}
+            clearOnHide={false}
+          >
+            <>
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  disabled={listNotificationConfig.isFetching}
+                  type="textField"
+                  label="Webhook Basic Username"
+                  name="webhookAuthUsername"
+                  formControl={formControl}
+                  helperText="Used when auth type is Basic Auth."
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  disabled={listNotificationConfig.isFetching}
+                  type="password"
+                  label="Webhook Basic Password"
+                  name="webhookAuthPassword"
+                  formControl={formControl}
+                  helperText="Used when auth type is Basic Auth."
+                />
+              </Grid>
+            </>
+          </CippFormCondition>
+
+          <CippFormCondition
+            field="webhookAuthType"
+            compareType="valueEq"
+            compareValue="ApiKey"
+            formControl={formControl}
+            clearOnHide={false}
+          >
+            <>
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  disabled={listNotificationConfig.isFetching}
+                  type="textField"
+                  label="Webhook API Key Header Name"
+                  name="webhookAuthHeaderName"
+                  formControl={formControl}
+                  helperText="Used when auth type is API Key Header (example: x-api-key)."
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  disabled={listNotificationConfig.isFetching}
+                  type="password"
+                  label="Webhook API Key Header Value"
+                  name="webhookAuthHeaderValue"
+                  formControl={formControl}
+                  helperText="Used when auth type is API Key Header."
+                />
+              </Grid>
+            </>
+          </CippFormCondition>
+
+          <CippFormCondition
+            field="webhookAuthType"
+            compareType="valueEq"
+            compareValue="CustomHeaders"
+            formControl={formControl}
+            clearOnHide={false}
+          >
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                disabled={listNotificationConfig.isFetching}
+                type="password"
+                label="Webhook Custom Headers JSON"
+                name="webhookAuthHeaders"
+                formControl={formControl}
+                helperText={'Used when auth type is Custom Headers. Example: {"Authorization":"Bearer token","x-api-key":"value"}'}
+              />
+            </Grid>
+          </CippFormCondition>
           <Grid size={{ xs: 12 }}>
             <CippFormComponent
               disabled={listNotificationConfig.isFetching}
@@ -136,13 +268,21 @@ export const CippNotificationForm = ({
               name="sendtoIntegration"
               formControl={formControl}
             />
+            <CippFormComponent
+              type="switch"
+              disabled={listNotificationConfig.isFetching}
+              label="Use Standardized Alert Schema"
+              name="UseStandardizedSchema"
+              formControl={formControl}
+              helperText="Enable standardized JSON schema for webhook alerts. This provides a consistent structure across all alert types, making Power Automate and Logic Apps integrations easier. Disabled by default for backward compatibility."
+            />
           </Grid>
           {showTestButton && (
             <Grid size={{ xs: 12 }}>
               <Button
                 variant="outlined"
                 onClick={notificationDialog.handleOpen}
-                disabled={formState.isDirty && !formState.isSubmitSuccessful}
+                disabled={formState.isDirty}
               >
                 Send Test Alert
               </Button>
@@ -185,6 +325,7 @@ export const CippNotificationForm = ({
             type: "POST",
             dataFunction: (row) => ({
               ...row,
+              tenantFilter: currentTenant,
               text: "This is a test from Notification Settings",
             }),
           }}

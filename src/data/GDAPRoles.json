@@ -806,5 +806,13 @@
     "IsSystem": true,
     "Name": "Yammer Administrator",
     "ObjectId": "810a2642-a034-447f-a5e8-41beaa378541"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Assign the Customer Delegated Admin Relationship Administrator role to users who need to accept, view, or terminate GDAP relationships with partners.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Customer Delegated Admin Relationship Administrator",
+    "ObjectId": "fc8ad4e2-40e4-4724-8317-bcda7503ecbf"
   }
 ]

@@ -29,6 +29,20 @@ const Page = () => {
   });
 
   const watcher = useWatch({ control: formControl.control });
+  const useTAP = useWatch({ control: formControl.control, name: "UseTAP" });
+
+  const tapPolicy = ApiGetCall({
+    url: selectedTenant
+      ? `/api/ListGraphRequest`
+      : undefined,
+    data: {
+      Endpoint: "policies/authenticationMethodsPolicy/authenticationMethodConfigurations/TemporaryAccessPass",
+      tenantFilter: selectedTenant?.value,
+    },
+    queryKey: selectedTenant ? `TAPPolicy-${selectedTenant.value}` : "TAPPolicy",
+    waiting: !!selectedTenant,
+  });
+  const tapEnabled = tapPolicy.isSuccess && tapPolicy.data?.Results?.[0]?.state === "enabled";
   const useRoles = useWatch({ control: formControl.control, name: "useRoles" });
   const useGroups = useWatch({ control: formControl.control, name: "useGroups" });
 
@@ -473,6 +487,11 @@ const Page = () => {
                 name="UseTAP"
                 formControl={formControl}
               />
+              {useTAP && tapPolicy.isSuccess && !tapEnabled && (
+                <Box sx={{ color: "error.main", fontSize: "0.875rem", mt: 0.5 }}>
+                  TAP is not enabled in this tenant. TAP generation will fail.
+                </Box>
+              )}
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent

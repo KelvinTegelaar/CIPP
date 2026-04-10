@@ -1,0 +1,34 @@
+{
+  "_metadata": {
+    "endpoint": "ListGroups",
+    "generatedAt": "2026-04-03T23:42:59.6581352+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "assignedLicenses": "null",
+    "calculatedGroupType": "string",
+    "createdDateTime": "datetime",
+    "description": "string",
+    "displayName": "string",
+    "dynamicGroupBool": "bool",
+    "groupType": "string",
+    "groupTypes": "string",
+    "id": "string",
+    "licenseProcessingState": "null",
+    "mail": "string",
+    "mailEnabled": "bool",
+    "mailNickname": "string",
+    "membersCsv": "string",
+    "membershipRule": "null",
+    "onPremisesSamAccountName": "null",
+    "onPremisesSyncEnabled": "null",
+    "organizationId": "string",
+    "primDomain": "string",
+    "resourceProvisioningOptions": "null",
+    "securityEnabled": "bool",
+    "SID": "string",
+    "teamsEnabled": "bool",
+    "visibility": "string"
+  }
+}

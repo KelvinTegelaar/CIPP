@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
   Button,
   Card,
@@ -11,156 +11,213 @@ import {
   Tabs,
   Paper,
   Stack,
-} from "@mui/material";
-import { Grid } from "@mui/system";
-import { useForm, useFormState, useWatch } from "react-hook-form";
-import { Add } from "@mui/icons-material";
-import { CippOffCanvas } from "./CippOffCanvas";
-import CippFormComponent from "./CippFormComponent";
-import { CippApiResults } from "./CippApiResults";
-import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
+} from '@mui/material'
+import { Grid } from '@mui/system'
+import { useForm, useFormState, useWatch } from 'react-hook-form'
+import { Add, Edit } from '@mui/icons-material'
+import { CippOffCanvas } from './CippOffCanvas'
+import CippFormComponent from './CippFormComponent'
+import { CippApiResults } from './CippApiResults'
+import { ApiPostCall, ApiGetCall } from '../../api/ApiCall'
 
-export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" }) => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
+export const CippAddTestReportDrawer = ({
+  buttonText = 'Create Suite',
+  mode = 'create',
+  reportToEdit = null,
+  disabled = false,
+}) => {
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  const [activeTab, setActiveTab] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('')
+  const isEditMode = mode === 'edit'
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       IdentityTests: [],
       DevicesTests: [],
+      CustomTests: [],
     },
-  });
+  })
 
-  const { isValid } = useFormState({ control: formControl.control });
+  const { isValid } = useFormState({ control: formControl.control })
   const selectedIdentityTests =
-    useWatch({ control: formControl.control, name: "IdentityTests" }) || [];
-  const selectedDeviceTests =
-    useWatch({ control: formControl.control, name: "DevicesTests" }) || [];
+    useWatch({ control: formControl.control, name: 'IdentityTests' }) || []
+  const selectedDeviceTests = useWatch({ control: formControl.control, name: 'DevicesTests' }) || []
+  const selectedCustomTests = useWatch({ control: formControl.control, name: 'CustomTests' }) || []
 
   const createReport = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: "ListTestReports",
-  });
+    relatedQueryKeys: ['ListTestReports', '*-ListTests-*'],
+  })
 
   // Fetch available tests for the form
   const availableTestsApi = ApiGetCall({
-    url: "/api/ListAvailableTests",
-    queryKey: "ListAvailableTests",
-  });
+    url: '/api/ListAvailableTests',
+    queryKey: 'ListAvailableTests',
+  })
 
-  const availableTests = availableTestsApi.data || { IdentityTests: [], DevicesTests: [] };
+  const availableTests = availableTestsApi.data || {
+    IdentityTests: [],
+    DevicesTests: [],
+    CustomTests: [],
+  }
 
   // Reset form fields on successful creation
   useEffect(() => {
     if (createReport.isSuccess) {
-      formControl.reset({
-        name: "",
-        description: "",
-        IdentityTests: [],
-        DevicesTests: [],
-      });
+      if (!isEditMode) {
+        formControl.reset({
+          name: '',
+          description: '',
+          IdentityTests: [],
+          DevicesTests: [],
+          CustomTests: [],
+        })
+      }
     }
-  }, [createReport.isSuccess, formControl]);
+  }, [createReport.isSuccess, formControl, isEditMode])
+
+  useEffect(() => {
+    if (drawerVisible && isEditMode && reportToEdit) {
+      formControl.reset({
+        name: reportToEdit.name || '',
+        description: reportToEdit.description || '',
+        IdentityTests: reportToEdit.IdentityTests || [],
+        DevicesTests: reportToEdit.DevicesTests || [],
+        CustomTests: reportToEdit.CustomTests || [],
+      })
+    }
+  }, [drawerVisible, isEditMode, reportToEdit, formControl])
 
   const handleSubmit = () => {
-    formControl.trigger();
+    formControl.trigger()
     if (!isValid) {
-      return;
+      return
     }
 
-    const values = formControl.getValues();
+    const values = formControl.getValues()
     Object.keys(values).forEach((key) => {
-      if (values[key] === "" || values[key] === null) {
-        delete values[key];
+      if (values[key] === '' || values[key] === null) {
+        delete values[key]
       }
-    });
+    })
+
+    if (isEditMode && reportToEdit?.id) {
+      values.ReportId = reportToEdit.id
+    }
 
     createReport.mutate({
-      url: "/api/AddTestReport",
+      url: '/api/AddTestReport',
       data: values,
-    });
-  };
+    })
+  }
 
   const handleCloseDrawer = () => {
-    setDrawerVisible(false);
-    setSearchTerm("");
-    setActiveTab(0);
+    createReport.reset()
+    setDrawerVisible(false)
+    setSearchTerm('')
+    setActiveTab(0)
     formControl.reset({
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       IdentityTests: [],
       DevicesTests: [],
-    });
-  };
+      CustomTests: [],
+    })
+  }
 
   const toggleTest = (testId, testType) => {
-    const fieldName = testType === "Identity" ? "IdentityTests" : "DevicesTests";
-    const currentTests = formControl.getValues(fieldName) || [];
+    const fieldMap = {
+      Identity: 'IdentityTests',
+      Devices: 'DevicesTests',
+      Custom: 'CustomTests',
+    }
+    const fieldName = fieldMap[testType] || 'IdentityTests'
+    const currentTests = formControl.getValues(fieldName) || []
 
     if (currentTests.includes(testId)) {
       formControl.setValue(
         fieldName,
         currentTests.filter((id) => id !== testId),
         { shouldValidate: true }
-      );
+      )
     } else {
-      formControl.setValue(fieldName, [...currentTests, testId], { shouldValidate: true });
+      formControl.setValue(fieldName, [...currentTests, testId], { shouldValidate: true })
     }
-  };
+  }
 
   const isTestSelected = (testId, testType) => {
-    return testType === "Identity"
-      ? selectedIdentityTests.includes(testId)
-      : selectedDeviceTests.includes(testId);
-  };
+    if (testType === 'Identity') {
+      return selectedIdentityTests.includes(testId)
+    }
+    if (testType === 'Devices') {
+      return selectedDeviceTests.includes(testId)
+    }
+    return selectedCustomTests.includes(testId)
+  }
 
   const filterTests = (tests) => {
-    if (!searchTerm) return tests;
+    if (!searchTerm) return tests
     return tests.filter(
       (test) =>
         test.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         test.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
+    )
+  }
 
   const currentTests =
     activeTab === 0
       ? filterTests(availableTests.IdentityTests || [])
-      : filterTests(availableTests.DevicesTests || []);
+      : activeTab === 1
+        ? filterTests(availableTests.DevicesTests || [])
+        : filterTests(availableTests.CustomTests || [])
 
-  const currentTestType = activeTab === 0 ? "Identity" : "Devices";
+  const currentTestType = activeTab === 0 ? 'Identity' : activeTab === 1 ? 'Devices' : 'Custom'
 
   return (
     <>
       <Button
         variant="contained"
         sx={{
-          whiteSpace: "nowrap",
-          fontWeight: "bold",
-          textTransform: "none",
+          minWidth: 0,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          fontWeight: 'bold',
+          textTransform: 'none',
           borderRadius: 2,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-          transition: "all 0.2s ease-in-out",
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          transition: 'all 0.2s ease-in-out',
           px: 2,
         }}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Add />}
+        startIcon={isEditMode ? <Edit /> : <Add />}
+        disabled={disabled}
       >
-        {buttonText}
+        <Box
+          component="span"
+          sx={{
+            minWidth: 0,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {buttonText}
+        </Box>
       </Button>
       <CippOffCanvas
-        title="Create Custom Report"
+        title={isEditMode ? 'Edit Test Suite' : 'Create Test Suite'}
         visible={drawerVisible}
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <CippApiResults apiObject={createReport} />
-            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
               <Button
                 variant="contained"
                 color="primary"
@@ -168,10 +225,16 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                 disabled={createReport.isPending || !isValid}
               >
                 {createReport.isPending
-                  ? "Creating..."
+                  ? isEditMode
+                    ? 'Updating...'
+                    : 'Creating...'
                   : createReport.isSuccess
-                  ? "Create Another"
-                  : "Create Report"}
+                    ? isEditMode
+                      ? 'Updated'
+                      : 'Create Another'
+                    : isEditMode
+                      ? 'Update Test Suite'
+                      : 'Create Test Suite'}
               </Button>
               <Button variant="outlined" onClick={handleCloseDrawer}>
                 Close
@@ -180,21 +243,28 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
           </div>
         }
       >
-        <Grid container spacing={3}>
-          {/* Report Details Section */}
+        <Grid
+          container
+          spacing={3}
+          sx={{ height: '100%', minHeight: 0, alignContent: 'flex-start' }}
+        >
+          {/* Test Suite Details Section */}
           <Grid size={12}>
-            <Paper sx={{ p: 3, backgroundColor: "background.default" }}>
-              <Typography variant="h6" gutterBottom>
-                Report Details
+            <Paper sx={{ p: 3, backgroundColor: 'background.default' }}>
+              <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+                Test Suite Details
               </Typography>
               <Grid container spacing={2}>
                 <Grid size={12}>
                   <CippFormComponent
                     type="textField"
-                    label="Report Name"
+                    label="Name"
                     name="name"
                     formControl={formControl}
-                    validators={{ required: "Report Name is required" }}
+                    validators={{
+                      required: 'Name is required',
+                      maxLength: { value: 256, message: 'Name must be 256 characters or fewer' },
+                    }}
                   />
                 </Grid>
                 <Grid size={12}>
@@ -213,7 +283,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
 
           {/* Selection Summary */}
           <Grid size={12}>
-            <Paper sx={{ p: 2, backgroundColor: "primary.50" }}>
+            <Paper sx={{ p: 2, backgroundColor: 'primary.50' }}>
               <Stack direction="row" spacing={2} alignItems="center">
                 <Typography variant="subtitle2" color="primary">
                   Selected Tests:
@@ -230,29 +300,48 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                   size="small"
                   variant="outlined"
                 />
+                <Chip
+                  label={`${selectedCustomTests.length} Custom`}
+                  color="info"
+                  size="small"
+                  variant="outlined"
+                />
                 <Box sx={{ flex: 1 }} />
                 <Typography variant="caption" color="text.secondary">
-                  Total: {selectedIdentityTests.length + selectedDeviceTests.length} tests
+                  Total:{' '}
+                  {selectedIdentityTests.length +
+                    selectedDeviceTests.length +
+                    selectedCustomTests.length}{' '}
+                  tests
                 </Typography>
               </Stack>
             </Paper>
           </Grid>
 
           {/* Test Selection Section */}
-          <Grid size={12}>
-            <Paper sx={{ p: 0 }}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Grid size={12} sx={{ display: 'flex', minHeight: 0, flexGrow: 1 }}>
+            <Paper
+              sx={{
+                p: 0,
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 0,
+                maxHeight: 'calc(100vh - 535px)',
+              }}
+            >
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
                   value={activeTab}
                   onChange={(e, newValue) => {
-                    setActiveTab(newValue);
-                    setSearchTerm("");
+                    setActiveTab(newValue)
+                    setSearchTerm('')
                   }}
                   variant="fullWidth"
                 >
                   <Tab
                     label={
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <span>Identity Tests</span>
                         {selectedIdentityTests.length > 0 && (
                           <Chip size="small" label={selectedIdentityTests.length} color="primary" />
@@ -262,10 +351,20 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                   />
                   <Tab
                     label={
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <span>Device Tests</span>
                         {selectedDeviceTests.length > 0 && (
                           <Chip size="small" label={selectedDeviceTests.length} color="secondary" />
+                        )}
+                      </Box>
+                    }
+                  />
+                  <Tab
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <span>Custom Tests</span>
+                        {selectedCustomTests.length > 0 && (
+                          <Chip size="small" label={selectedCustomTests.length} color="info" />
                         )}
                       </Box>
                     }
@@ -274,7 +373,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
               </Box>
 
               {/* Search Bar */}
-              <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
+              <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
                 <TextField
                   fullWidth
                   size="small"
@@ -287,48 +386,49 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
               {/* Test List */}
               <Box
                 sx={{
-                  maxHeight: "400px",
-                  overflowY: "auto",
+                  flex: 1,
+                  minHeight: 0,
+                  overflowY: 'auto',
                   p: 2,
                 }}
               >
                 {availableTestsApi.isFetching ? (
-                  <Box sx={{ textAlign: "center", py: 4 }}>
+                  <Box sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">Loading tests...</Typography>
                   </Box>
                 ) : currentTests.length === 0 ? (
-                  <Box sx={{ textAlign: "center", py: 4 }}>
+                  <Box sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      {searchTerm ? "No tests found matching your search" : "No tests available"}
+                      {searchTerm ? 'No tests found matching your search' : 'No tests available'}
                     </Typography>
                   </Box>
                 ) : (
                   <Grid container spacing={1}>
                     {currentTests.map((test) => {
-                      const isSelected = isTestSelected(test.id, currentTestType);
+                      const isSelected = isTestSelected(test.id, currentTestType)
                       return (
                         <Grid size={12} key={test.id}>
                           <Card
                             sx={{
-                              cursor: "pointer",
-                              transition: "all 0.2s",
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
                               border: 1,
-                              borderColor: isSelected ? "primary.main" : "divider",
-                              backgroundColor: isSelected ? "primary.50" : "background.paper",
-                              "&:hover": {
-                                borderColor: "primary.main",
+                              borderColor: isSelected ? 'primary.main' : 'divider',
+                              backgroundColor: isSelected ? 'primary.50' : 'background.paper',
+                              '&:hover': {
+                                borderColor: 'primary.main',
                                 boxShadow: 2,
                               },
                             }}
                             onClick={() => toggleTest(test.id, currentTestType)}
                           >
-                            <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-                              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                                 <Box sx={{ flex: 1, minWidth: 0 }}>
                                   <Box
                                     sx={{
-                                      display: "flex",
-                                      alignItems: "center",
+                                      display: 'flex',
+                                      alignItems: 'center',
                                       gap: 1,
                                       mb: 0.5,
                                     }}
@@ -336,17 +436,17 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                                     <Chip
                                       label={test.id}
                                       size="small"
-                                      color={isSelected ? "primary" : "default"}
-                                      sx={{ fontFamily: "monospace", fontSize: "0.75rem" }}
+                                      color={isSelected ? 'primary' : 'default'}
+                                      sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}
                                     />
                                     <Typography
                                       variant="body2"
                                       sx={{
                                         fontWeight: isSelected ? 600 : 400,
-                                        color: isSelected ? "primary.main" : "text.primary",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap",
+                                        color: isSelected ? 'primary.main' : 'text.primary',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
                                       }}
                                     >
                                       {test.name}
@@ -357,10 +457,10 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                                       variant="caption"
                                       color="text.secondary"
                                       sx={{
-                                        display: "-webkit-box",
+                                        display: '-webkit-box',
                                         WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
-                                        overflow: "hidden",
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
                                       }}
                                     >
                                       {test.description}
@@ -371,7 +471,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                             </CardContent>
                           </Card>
                         </Grid>
-                      );
+                      )
                     })}
                   </Grid>
                 )}
@@ -381,5 +481,5 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
         </Grid>
       </CippOffCanvas>
     </>
-  );
-};
+  )
+}

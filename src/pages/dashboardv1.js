@@ -21,10 +21,12 @@ const Page = () => {
   const [domainVisible, setDomainVisible] = useState(false);
 
   const organization = ApiGetCall({
-    url: "/api/ListOrg",
-    queryKey: `${currentTenant}-ListOrg`,
-    data: { tenantFilter: currentTenant },
+    url: "/api/ListGraphRequest",
+    queryKey: `${currentTenant}-ListGraphRequest-organization`,
+    data: { tenantFilter: currentTenant, Endpoint: "organization" },
   });
+
+  const organizationRecord = organization.data?.Results?.[0];
 
   const dashboard = ApiGetCall({
     url: "/api/ListuserCounts",
@@ -68,12 +70,12 @@ const Page = () => {
 
   // Top bar data
   const tenantInfo = [
-    { name: "Tenant Name", data: organization.data?.displayName },
+    { name: "Tenant Name", data: organizationRecord?.displayName },
     {
       name: "Tenant ID",
       data: (
         <>
-          <CippCopyToClipBoard text={organization.data?.id} type="chip" />
+          <CippCopyToClipBoard text={organizationRecord?.id} type="chip" />
         </>
       ),
     },
@@ -83,7 +85,7 @@ const Page = () => {
         <>
           <CippCopyToClipBoard
             text={
-              organization.data?.verifiedDomains?.find((domain) => domain.isDefault === true)?.name
+              organizationRecord?.verifiedDomains?.find((domain) => domain.isDefault === true)?.name
             }
             type="chip"
           />
@@ -92,7 +94,7 @@ const Page = () => {
     },
     {
       name: "AD Sync Enabled",
-      data: getCippFormatting(organization.data?.onPremisesSyncEnabled, "dirsync"),
+      data: getCippFormatting(organizationRecord?.onPremisesSyncEnabled, "dirsync"),
     },
   ];
 
@@ -369,14 +371,14 @@ const Page = () => {
                 showDivider={false}
                 copyItems={true}
                 isFetching={organization.isFetching}
-                propertyItems={organization.data?.verifiedDomains
+                propertyItems={organizationRecord?.verifiedDomains
                   ?.slice(0, domainVisible ? undefined : 3)
                   .map((domain, idx) => ({
                     label: "",
                     value: domain.name,
                   }))}
                 actionButton={
-                  organization.data?.verifiedDomains?.length > 3 && (
+                  organizationRecord?.verifiedDomains?.length > 3 && (
                     <Button onClick={() => setDomainVisible(!domainVisible)}>
                       {domainVisible ? "See less" : "See more..."}
                     </Button>
@@ -417,7 +419,7 @@ const Page = () => {
                 propertyItems={[
                   {
                     label: "Services",
-                    value: organization.data?.assignedPlans
+                    value: organizationRecord?.assignedPlans
                       ?.filter(
                         (plan) =>
                           plan.capabilityStatus === "Enabled" &&

@@ -13,7 +13,7 @@ import CippIntegrationSettings from "../../../components/CippIntegrations/CippIn
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../hooks/use-settings";
-import { ApiGetCall } from "../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "../../../data/Extensions.json";
 import { useEffect } from "react";
@@ -73,6 +73,9 @@ const Page = () => {
   const [syncQuery, setSyncQuery] = useState({ url: "", waiting: false, queryKey: "" });
   const actionSyncResults = ApiGetCall({
     ...syncQuery,
+  });
+  const clearHIBPKey = ApiPostCall({
+    relatedQueryKeys: ["Integrations"],
   });
   const handleIntegrationSync = () => {
     setSyncQuery({
@@ -191,6 +194,23 @@ const Page = () => {
                   </Button>
                 </Box>
               )}
+              {extension?.id === "HIBP" && (
+                <Box>
+                  <Button
+                    variant="outlined"
+                    color="warning"
+                    onClick={() =>
+                      clearHIBPKey.mutate({
+                        url: "/api/ExecExtensionClearHIBPKey",
+                        data: {},
+                      })
+                    }
+                    disabled={clearHIBPKey.isPending}
+                  >
+                    Clear API Key
+                  </Button>
+                </Box>
+              )}
               {extension?.links && (
                 <>
                   {extension.links.map((link, index) => (
@@ -208,6 +228,7 @@ const Page = () => {
             </Stack>
             <CippApiResults apiObject={actionTestResults} />
             <CippApiResults apiObject={actionSyncResults} />
+            <CippApiResults apiObject={clearHIBPKey} />
           </CardContent>
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider", px: "24px", m: "auto" }}>

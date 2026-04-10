@@ -244,7 +244,7 @@ export const CippApiResults = (props) => {
 
   const hasVisibleResults = finalResults.some((r) => r.visible);
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{ minWidth: 0 }}>
       {/* Loading alert */}
       {!errorsOnly && (
         <Collapse in={fetchingVisible} unmountOnExit>

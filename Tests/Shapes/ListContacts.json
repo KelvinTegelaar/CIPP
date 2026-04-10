@@ -1,0 +1,20 @@
+{
+  "_metadata": {
+    "endpoint": "ListContacts",
+    "generatedAt": "2026-04-03T23:42:06.7536493+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "City": "string",
+    "Company": "string",
+    "Department": "string",
+    "DisplayName": "string",
+    "FirstName": "string",
+    "graphId": "string",
+    "Guid": "string",
+    "IsDirSynced": "bool",
+    "LastName": "string",
+    "WindowsEmailAddress": "string"
+  }
+}

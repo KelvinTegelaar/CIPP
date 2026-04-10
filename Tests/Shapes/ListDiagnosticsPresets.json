@@ -1,0 +1,13 @@
+{
+  "_metadata": {
+    "endpoint": "ListDiagnosticsPresets",
+    "generatedAt": "2026-04-03T23:40:11.0585232+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "GUID": "string",
+    "name": "string",
+    "query": "string"
+  }
+}

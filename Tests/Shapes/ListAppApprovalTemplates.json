@@ -1,0 +1,31 @@
+{
+  "_metadata": {
+    "endpoint": "ListAppApprovalTemplates",
+    "generatedAt": "2026-04-03T23:40:02.4726473+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "AppId": "string",
+    "AppName": "string",
+    "AppType": "string",
+    "CreatedBy": "string",
+    "CreatedOn": "datetime",
+    "GUID": "string",
+    "Permissions": {
+      "00000002-0000-0ff1-ce00-000000000000": {
+        "applicationPermissions": "truncated",
+        "delegatedPermissions": "truncated"
+      },
+      "00000003-0000-0000-c000-000000000000": {
+        "applicationPermissions": "truncated",
+        "delegatedPermissions": "truncated"
+      }
+    },
+    "PermissionSetId": "string",
+    "PermissionSetName": "string",
+    "TemplateId": "string",
+    "TemplateName": "string",
+    "Timestamp": "datetime"
+  }
+}

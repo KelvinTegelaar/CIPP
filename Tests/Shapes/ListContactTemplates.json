@@ -1,0 +1,18 @@
+{
+  "_metadata": {
+    "endpoint": "ListContactTemplates",
+    "generatedAt": "2026-04-03T23:40:08.8205669+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "comments": "string",
+    "displayName": "string",
+    "email": "string",
+    "firstName": "string",
+    "GUID": "string",
+    "hidefromGAL": "bool",
+    "lastName": "string",
+    "name": "string"
+  }
+}
