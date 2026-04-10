@@ -35,6 +35,7 @@ const CippFormPage = (props) => {
     hideSubmit = false,
     allowResubmit = false,
     addedButtons,
+    onSubmitResult,
     ...other
   } = props;
   const router = useRouter();
@@ -42,6 +43,11 @@ const CippFormPage = (props) => {
   const postCall = ApiPostCall({
     datafromUrl: true,
     relatedQueryKeys: queryKey,
+    onResult: (result) => {
+      if (onSubmitResult) {
+        onSubmitResult(result);
+      }
+    },
   });
 
   const { isValid, isDirty } = useFormState({ control: formControl.control });
@@ -67,7 +73,7 @@ const CippFormPage = (props) => {
         formControl.reset();
       }
     }
-  }, [postCall.isSuccess]);
+  }, [postCall.isSuccess]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = () => {
     formControl.trigger();
