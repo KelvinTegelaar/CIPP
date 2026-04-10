@@ -535,7 +535,7 @@ return $results`,
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey={['Custom PowerShell Test', 'CustomTest*']}
+      queryKey={['Custom Tests', 'CustomScript*']}
       title="Custom Test"
       backButtonTitle="Custom Tests"
       formPageType={isEdit ? 'Edit' : 'Add'}
