@@ -1,10 +1,10 @@
-import { TabbedLayout } from "../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import tabOptions from "./tabOptions";
 import { useForm } from "react-hook-form";
-import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
-import CippAppPermissionBuilder from "../../../components/CippComponents/CippAppPermissionBuilder";
-import CippPageCard from "../../../components/CippCards/CippPageCard";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
+import CippAppPermissionBuilder from "../../../../components/CippComponents/CippAppPermissionBuilder";
+import CippPageCard from "../../../../components/CippCards/CippPageCard";
 import { Alert, CardContent, Skeleton, Stack, Typography } from "@mui/material";
 import { WarningAmberOutlined } from "@mui/icons-material";
 

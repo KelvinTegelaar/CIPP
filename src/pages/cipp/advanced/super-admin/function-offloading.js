@@ -1,14 +1,14 @@
-import { TabbedLayout } from "../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import tabOptions from "./tabOptions";
-import CippTablePage from "../../../components/CippComponents/CippTablePage";
+import CippTablePage from "../../../../components/CippComponents/CippTablePage";
 import { Alert, Button, FormControlLabel, Link, Stack, Switch, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
-import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import NextLink from "next/link";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 
 const Page = () => {
   const pageTitle = "Function Offloading";
