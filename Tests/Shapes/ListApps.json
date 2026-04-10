@@ -1,0 +1,40 @@
+{
+  "_metadata": {
+    "endpoint": "ListApps",
+    "generatedAt": "2026-04-03T23:41:06.0611589+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "@odata.type": "string",
+    "AppAssignment": "string",
+    "AppExclude": "string",
+    "assignments": "null",
+    "assignments@odata.context": "string",
+    "createdDateTime": "datetime",
+    "dependentAppCount": "number",
+    "description": "string",
+    "developer": "null",
+    "displayName": "string",
+    "id": "string",
+    "informationUrl": "null",
+    "installExperience": {
+      "runAsAccount": "string"
+    },
+    "isAssigned": "bool",
+    "isFeatured": "bool",
+    "largeIcon": "null",
+    "lastModifiedDateTime": "datetime",
+    "manifestHash": "null",
+    "notes": "null",
+    "owner": "null",
+    "packageIdentifier": "string",
+    "privacyInformationUrl": "null",
+    "publisher": "null",
+    "publishingState": "string",
+    "roleScopeTagIds": "null",
+    "supersededAppCount": "number",
+    "supersedingAppCount": "number",
+    "uploadState": "number"
+  }
+}

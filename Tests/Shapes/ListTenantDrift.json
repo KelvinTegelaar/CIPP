@@ -1,0 +1,83 @@
+{
+  "_metadata": {
+    "endpoint": "ListTenantDrift",
+    "generatedAt": "2026-04-03T23:47:37.4944459+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "acceptedDeviations": "null",
+    "acceptedDeviationsCount": "number",
+    "alignedCount": "number",
+    "alignmentScore": "number",
+    "allDeviations": {
+      "_type": "array",
+      "_element": {
+        "CurrentValue": "truncated",
+        "ExpectedValue": "truncated",
+        "lastChangedByUser": "null",
+        "LicenseAvailable": "truncated",
+        "Reason": "null",
+        "receivedValue": "truncated",
+        "standardDescription": "null",
+        "standardDisplayName": "truncated",
+        "standardName": "truncated",
+        "state": "truncated",
+        "Status": "truncated"
+      }
+    },
+    "currentDeviations": {
+      "_type": "array",
+      "_element": {
+        "CurrentValue": "truncated",
+        "ExpectedValue": "truncated",
+        "lastChangedByUser": "null",
+        "LicenseAvailable": "truncated",
+        "Reason": "null",
+        "receivedValue": "truncated",
+        "standardDescription": "null",
+        "standardDisplayName": "truncated",
+        "standardName": "truncated",
+        "state": "truncated",
+        "Status": "truncated"
+      }
+    },
+    "currentDeviationsCount": "number",
+    "customerSpecificDeviations": "null",
+    "customerSpecificDeviationsCount": "number",
+    "deniedDeviations": "null",
+    "deniedDeviationsCount": "number",
+    "driftSettings": {
+      "AlignmentScore": "number",
+      "CombinedScore": "number",
+      "ComparisonDetails": {
+        "_type": "array",
+        "_element": "truncated"
+      },
+      "CompliantStandards": "number",
+      "driftAlertDisableEmail": "bool",
+      "driftAlertEmail": "string",
+      "driftAlertWebhook": "string",
+      "LatestDataCollection": "datetime",
+      "LicenseMissingPercentage": "number",
+      "LicenseMissingStandards": "number",
+      "NonCompliantStandards": "number",
+      "ReportingDisabledCount": "number",
+      "StandardId": "string",
+      "StandardName": "string",
+      "standardSettings": {
+        "AuditLog": "truncated",
+        "ConditionalAccessTemplate": "truncated",
+        "IntuneTemplate": "truncated"
+      },
+      "standardType": "string",
+      "TenantFilter": "string",
+      "TotalStandards": "number"
+    },
+    "latestDataCollection": "datetime",
+    "newDeviationsCount": "number",
+    "standardId": "string",
+    "standardName": "string",
+    "tenantFilter": "string"
+  }
+}

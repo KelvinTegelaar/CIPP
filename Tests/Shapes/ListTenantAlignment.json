@@ -1,0 +1,18 @@
+{
+  "_metadata": {
+    "endpoint": "ListTenantAlignment",
+    "generatedAt": "2026-04-03T23:47:28.9148618+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "alignmentScore": "number",
+    "combinedAlignmentScore": "number",
+    "latestDataCollection": "datetime",
+    "LicenseMissingPercentage": "number",
+    "standardId": "string",
+    "standardName": "string",
+    "standardType": "string",
+    "tenantFilter": "string"
+  }
+}

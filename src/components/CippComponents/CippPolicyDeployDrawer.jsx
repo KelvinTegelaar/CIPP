@@ -1,94 +1,94 @@
-import { useEffect, useState } from "react";
-import { Button, Stack, Box } from "@mui/material";
-import { RocketLaunch } from "@mui/icons-material";
-import { useForm, useWatch, useFormState } from "react-hook-form";
-import { CippOffCanvas } from "./CippOffCanvas";
-import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-import CippFormComponent from "./CippFormComponent";
-import CippJsonView from "../CippFormPages/CippJSONView";
-import { Grid } from "@mui/system";
-import { CippFormCondition } from "./CippFormCondition";
-import { CippApiResults } from "./CippApiResults";
-import { useSettings } from "../../hooks/use-settings";
-import { CippFormTenantSelector } from "./CippFormTenantSelector";
+import { useEffect, useState } from 'react'
+import { Button, Stack, IconButton } from '@mui/material'
+import { RocketLaunch, Sync } from '@mui/icons-material'
+import { useForm, useWatch, useFormState } from 'react-hook-form'
+import { CippOffCanvas } from './CippOffCanvas'
+import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
+import CippFormComponent from './CippFormComponent'
+import CippJsonView from '../CippFormPages/CippJSONView'
+import { Grid } from '@mui/system'
+import { CippFormCondition } from './CippFormCondition'
+import { CippApiResults } from './CippApiResults'
+import { useSettings } from '../../hooks/use-settings'
+import { CippFormTenantSelector } from './CippFormTenantSelector'
 
 const assignmentFilterTypeOptions = [
-  { label: "Include - Apply policy to devices matching filter", value: "include" },
-  { label: "Exclude - Apply policy to devices NOT matching filter", value: "exclude" },
-];
+  { label: 'Include - Apply policy to devices matching filter', value: 'include' },
+  { label: 'Exclude - Apply policy to devices NOT matching filter', value: 'exclude' },
+]
 
 export const CippPolicyDeployDrawer = ({
-  buttonText = "Deploy Policy",
+  buttonText = 'Deploy Policy',
   requiredPermissions = [],
   PermissionButton = Button,
 }) => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const formControl = useForm({
-    mode: "onChange",
-  });
-  const { isValid } = useFormState({ control: formControl.control });
-  const tenantFilter = useSettings()?.tenantFilter;
-  const selectedTenants = useWatch({ control: formControl.control, name: "tenantFilter" }) || [];
-  const CATemplates = ApiGetCall({ url: "/api/ListIntuneTemplates", queryKey: "IntuneTemplates" });
-  const [JSONData, setJSONData] = useState();
-  const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
-  const jsonWatch = useWatch({ control: formControl.control, name: "RAWJson" });
+    mode: 'onChange',
+  })
+  const { isValid } = useFormState({ control: formControl.control })
+  const tenantFilter = useSettings()?.currentTenant
+  const selectedTenants = useWatch({ control: formControl.control, name: 'tenantFilter' }) || []
+  const CATemplates = ApiGetCall({ url: '/api/ListIntuneTemplates', queryKey: 'IntuneTemplates' })
+  const [JSONData, setJSONData] = useState()
+  const watcher = useWatch({ control: formControl.control, name: 'TemplateList' })
+  const jsonWatch = useWatch({ control: formControl.control, name: 'RAWJson' })
   useEffect(() => {
     if (CATemplates.isSuccess && watcher?.value) {
-      const template = CATemplates.data?.find((template) => template.GUID === watcher.value);
+      const template = CATemplates.data?.find((template) => template.GUID === watcher.value)
       if (template) {
-        const jsonTemplate = template.RAWJson ? JSON.parse(template.RAWJson) : null;
-        setJSONData(jsonTemplate);
-        formControl.setValue("RAWJson", template.RAWJson);
-        formControl.setValue("displayName", template.Displayname);
-        formControl.setValue("description", template.Description);
-        formControl.setValue("TemplateType", template.Type);
+        const jsonTemplate = template.RAWJson ? JSON.parse(template.RAWJson) : null
+        setJSONData(jsonTemplate)
+        formControl.setValue('RAWJson', template.RAWJson)
+        formControl.setValue('displayName', template.Displayname)
+        formControl.setValue('description', template.Description)
+        formControl.setValue('TemplateType', template.Type)
       }
     }
-  }, [watcher]);
+  }, [watcher])
   const deployPolicy = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: [
-      "IntuneTemplates",
+      'IntuneTemplates',
       `Configuration Policies - ${tenantFilter}`,
-      `Compliance Policies - ${tenantFilter}`,
-      `Protection Policies - ${tenantFilter}`,
+      `Intune Compliance Policies - ${tenantFilter}`,
+      `App Protection & Configuration Policies - ${tenantFilter}`,
     ],
-  });
+  })
 
   const handleSubmit = () => {
-    formControl.trigger();
+    formControl.trigger()
     // Check if the form is valid before proceeding
     if (!isValid) {
-      return;
+      return
     }
 
-    const formData = formControl.getValues();
-    const assignmentFilterName = formData?.assignmentFilter?.value || null;
+    const formData = formControl.getValues()
+    const assignmentFilterName = formData?.assignmentFilter?.value || null
     const assignmentFilterType = assignmentFilterName
-      ? formData?.assignmentFilterType || "include"
-      : null;
-    console.log("Submitting form data:", formData);
+      ? formData?.assignmentFilterType || 'include'
+      : null
+    console.log('Submitting form data:', formData)
     deployPolicy.mutate({
-      url: "/api/AddPolicy",
+      url: '/api/AddPolicy',
       relatedQueryKeys: [
-        "IntuneTemplates",
-        "Configuration Policies",
-        "Compliance Policies",
-        "Protection Policies",
+        'IntuneTemplates',
+        'Configuration Policies',
+        'Compliance Policies',
+        'Protection Policies',
       ],
       data: {
         ...formData,
         AssignmentFilterName: assignmentFilterName,
         AssignmentFilterType: assignmentFilterType,
       },
-    });
-  };
+    })
+  }
 
   const handleCloseDrawer = () => {
-    setDrawerVisible(false);
-    formControl.reset();
-  };
+    setDrawerVisible(false)
+    formControl.reset()
+  }
 
   return (
     <>
@@ -113,10 +113,10 @@ export const CippPolicyDeployDrawer = ({
               disabled={deployPolicy.isLoading || !isValid}
             >
               {deployPolicy.isLoading
-                ? "Deploying..."
+                ? 'Deploying...'
                 : deployPolicy.isSuccess
-                ? "Redeploy Policy"
-                : "Deploy Policy"}
+                  ? 'Redeploy Policy'
+                  : 'Deploy Policy'}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
@@ -138,7 +138,7 @@ export const CippPolicyDeployDrawer = ({
             type="autoComplete"
             name="TemplateList"
             label="Please choose a template to apply."
-            isFetching={CATemplates.isLoading}
+            isFetching={CATemplates.isFetching}
             multiple={false}
             formControl={formControl}
             options={
@@ -149,6 +149,17 @@ export const CippPolicyDeployDrawer = ({
                   }))
                 : []
             }
+            customAction={{
+              position: 'outside',
+              label: 'Refresh Templates',
+              icon: <Sync />,
+              onClick: () => {
+                CATemplates.refetch()
+              },
+              buttonProps: {
+                disabled: CATemplates.isFetching,
+              },
+            }}
           />
 
           <CippFormComponent
@@ -165,11 +176,11 @@ export const CippPolicyDeployDrawer = ({
               type="radio"
               name="AssignTo"
               options={[
-                { label: "Do not assign", value: "On" },
-                { label: "Assign to all users", value: "allLicensedUsers" },
-                { label: "Assign to all devices", value: "AllDevices" },
-                { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
-                { label: "Assign to Custom Group", value: "customGroup" },
+                { label: 'Do not assign', value: 'On' },
+                { label: 'Assign to all users', value: 'allLicensedUsers' },
+                { label: 'Assign to all devices', value: 'AllDevices' },
+                { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                { label: 'Assign to Custom Group', value: 'customGroup' },
               ]}
               formControl={formControl}
             />
@@ -186,7 +197,7 @@ export const CippPolicyDeployDrawer = ({
                 label="Custom Group Names separated by comma. Wildcards (*) are allowed"
                 name="customGroup"
                 formControl={formControl}
-                validators={{ required: "Please specify custom group names" }}
+                validators={{ required: 'Please specify custom group names' }}
               />
             </Grid>
           </CippFormCondition>
@@ -194,7 +205,7 @@ export const CippPolicyDeployDrawer = ({
             formControl={formControl}
             field="AssignTo"
             compareType="isOneOf"
-            compareValue={["allLicensedUsers", "AllDevices", "AllDevicesAndUsers", "customGroup"]}
+            compareValue={['allLicensedUsers', 'AllDevices', 'AllDevicesAndUsers', 'customGroup']}
           >
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
@@ -205,10 +216,10 @@ export const CippPolicyDeployDrawer = ({
                 creatable={false}
                 formControl={formControl}
                 api={{
-                  url: "/api/ListAssignmentFilters",
+                  url: '/api/ListAssignmentFilters',
                   queryKey: `ListAssignmentFilters-${tenantFilter}`,
                   labelField: (filter) => filter.displayName,
-                  valueField: "displayName",
+                  valueField: 'displayName',
                 }}
               />
             </Grid>
@@ -231,11 +242,11 @@ export const CippPolicyDeployDrawer = ({
             compareValue={/%(\w+)%/}
           >
             {(() => {
-              const rawJson = jsonWatch ? jsonWatch : "";
-              const placeholderMatches = [...rawJson.matchAll(/%(\w+)%/g)].map((m) => m[1]);
-              const uniquePlaceholders = Array.from(new Set(placeholderMatches));
+              const rawJson = jsonWatch ? jsonWatch : ''
+              const placeholderMatches = [...rawJson.matchAll(/%(\w+)%/g)].map((m) => m[1])
+              const uniquePlaceholders = Array.from(new Set(placeholderMatches))
               if (uniquePlaceholders.length === 0 || selectedTenants.length === 0) {
-                return null;
+                return null
               }
               return uniquePlaceholders.map((placeholder) => (
                 <Grid key={placeholder} size={{ xs: 12 }}>
@@ -245,11 +256,11 @@ export const CippPolicyDeployDrawer = ({
                       type="textField"
                       defaultValue={
                         //if the placeholder is tenantid then replace it with tenant.addedFields.customerId, if the placeholder is tenantdomain then replace it with tenant.addedFields.defaultDomainName.
-                        placeholder === "tenantid"
+                        placeholder === 'tenantid'
                           ? tenant?.addedFields?.customerId
-                          : placeholder === "tenantdomain"
-                          ? tenant?.addedFields?.defaultDomainName
-                          : ""
+                          : placeholder === 'tenantdomain'
+                            ? tenant?.addedFields?.defaultDomainName
+                            : ''
                       }
                       name={`replacemap.${tenant.value}.%${placeholder}%`}
                       label={`Value for '${placeholder}' in Tenant '${tenant.addedFields.defaultDomainName}'`}
@@ -259,12 +270,12 @@ export const CippPolicyDeployDrawer = ({
                     />
                   ))}
                 </Grid>
-              ));
+              ))
             })()}
           </CippFormCondition>
           <CippApiResults apiObject={deployPolicy} />
         </Stack>
       </CippOffCanvas>
     </>
-  );
-};
+  )
+}

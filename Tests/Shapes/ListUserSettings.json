@@ -1,0 +1,68 @@
+{
+  "_metadata": {
+    "endpoint": "ListUserSettings",
+    "generatedAt": "2026-04-03T23:40:40.0340526+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "bookmarkPopover": "bool",
+    "bookmarkSidebar": "bool",
+    "compactNav": "bool",
+    "customBranding": {
+      "colour": "string",
+      "ETag": "string",
+      "logo": "string",
+      "PartitionKey": "string",
+      "RowKey": "string",
+      "Timestamp": "datetime"
+    },
+    "offboardingDefaults": {
+      "ClearImmutableId": "bool",
+      "ConvertToShared": "bool",
+      "DeleteUser": "bool",
+      "DisableSignIn": "bool",
+      "HideFromGAL": "bool",
+      "KeepCopy": "bool",
+      "removeCalendarInvites": "bool",
+      "RemoveGroups": "bool",
+      "RemoveLicenses": "bool",
+      "RemoveMFADevices": "bool",
+      "RemoveMobile": "bool",
+      "removePermissions": "bool",
+      "RemoveRules": "bool",
+      "RemoveTeamsPhoneDID": "bool",
+      "ResetPass": "bool",
+      "RevokeSessions": "bool"
+    },
+    "persistFilters": "bool",
+    "portalLinks": {
+      "Azure_Portal": "bool",
+      "Compliance_Portal": "bool",
+      "Entra_Portal": "bool",
+      "Exchange_Portal": "bool",
+      "Intune_Portal": "bool",
+      "M365_Portal": "bool",
+      "Power_BI_Portal": "bool",
+      "Power_Platform_Portal": "bool",
+      "Security_Portal": "bool",
+      "SharePoint_Admin": "bool",
+      "Teams_Portal": "bool"
+    },
+    "tablePageSize": {
+      "label": "string",
+      "value": "string"
+    },
+    "usageLocation": {
+      "label": "string",
+      "value": "string"
+    },
+    "userAttributes": {
+      "_type": "array",
+      "_element": {
+        "label": "truncated",
+        "value": "truncated"
+      }
+    }
+  }
+}

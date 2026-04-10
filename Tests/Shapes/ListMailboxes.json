@@ -1,0 +1,36 @@
+{
+  "_metadata": {
+    "endpoint": "ListMailboxes",
+    "generatedAt": "2026-04-03T23:44:10.4588770+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AdditionalEmailAddresses": "null",
+    "ArchiveGuid": "string",
+    "ComplianceTagHoldApplied": "bool",
+    "DeliverToMailboxAndForward": "bool",
+    "displayName": "string",
+    "ExchangeGuid": "string",
+    "ExternalDirectoryObjectId": "string",
+    "ForwardingSmtpAddress": "string",
+    "HiddenFromAddressListsEnabled": "bool",
+    "Id": "string",
+    "InPlaceHolds": "null",
+    "InternalForwardingAddress": "null",
+    "IsDirSynced": "bool",
+    "LicensedForLitigationHold": "bool",
+    "LitigationHoldDate": "datetime",
+    "LitigationHoldDuration": "string",
+    "LitigationHoldEnabled": "bool",
+    "MessageCopyForSendOnBehalfEnabled": "bool",
+    "MessageCopyForSentAsEnabled": "bool",
+    "primarySmtpAddress": "string",
+    "recipientType": "string",
+    "recipientTypeDetails": "string",
+    "RetentionHoldEnabled": "bool",
+    "RetentionPolicy": "string",
+    "UPN": "string",
+    "WhenSoftDeleted": "null"
+  }
+}

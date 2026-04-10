@@ -1,0 +1,27 @@
+{
+  "_metadata": {
+    "endpoint": "ListCommunityRepos",
+    "generatedAt": "2026-04-03T23:40:07.6491051+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "DefaultBranch": "string",
+    "Description": "string",
+    "FullName": "string",
+    "Id": "string",
+    "Name": "string",
+    "Owner": "string",
+    "RepoPermissions": {
+      "admin": "bool",
+      "maintain": "bool",
+      "pull": "bool",
+      "push": "bool",
+      "triage": "bool"
+    },
+    "UploadBranch": "string",
+    "URL": "string",
+    "Visibility": "string",
+    "WriteAccess": "bool"
+  }
+}
