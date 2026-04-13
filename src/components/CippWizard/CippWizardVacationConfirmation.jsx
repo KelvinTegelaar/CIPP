@@ -105,6 +105,32 @@ export const CippWizardVacationConfirmation = (props) => {
       })
     }
 
+    if (values.enableForwarding) {
+      const forwardingData = {
+        tenantFilter,
+        Users: values.Users,
+        forwardOption: values.forwardOption,
+        KeepCopy: values.forwardKeepCopy || false,
+        startDate: values.startDate,
+        endDate: values.endDate,
+        reference: values.reference || null,
+        postExecution: values.postExecution || [],
+      }
+
+      if (values.forwardOption === 'internalAddress') {
+        forwardingData.ForwardInternal = values.forwardInternal
+      }
+
+      if (values.forwardOption === 'ExternalAddress') {
+        forwardingData.ForwardExternal = values.forwardExternal
+      }
+
+      forwardingVacation.mutate({
+        url: '/api/ExecScheduleForwardingVacation',
+        data: forwardingData,
+      })
+    }
+
     if (values.enableOOO) {
       const oooData = {
         tenantFilter,
