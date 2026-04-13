@@ -115,20 +115,20 @@ export const CippWizardVacationConfirmation = (props) => {
         endDate: values.endDate,
         reference: values.reference || null,
         postExecution: values.postExecution || [],
-      };
-
-      if (values.forwardOption === "internalAddress") {
-        forwardingData.ForwardInternal = values.forwardInternal;
       }
 
-      if (values.forwardOption === "ExternalAddress") {
-        forwardingData.ForwardExternal = values.forwardExternal;
+      if (values.forwardOption === 'internalAddress') {
+        forwardingData.ForwardInternal = values.forwardInternal
+      }
+
+      if (values.forwardOption === 'ExternalAddress') {
+        forwardingData.ForwardExternal = values.forwardExternal
       }
 
       forwardingVacation.mutate({
-        url: "/api/ExecScheduleForwardingVacation",
+        url: '/api/ExecScheduleForwardingVacation',
         data: forwardingData,
-      });
+      })
     }
 
     if (values.enableOOO) {
@@ -188,18 +188,6 @@ export const CippWizardVacationConfirmation = (props) => {
 
     return 'Not set'
   }
-
-  const formatForwardingTarget = () => {
-    if (values.forwardOption === "internalAddress") {
-      return values.forwardInternal?.label || values.forwardInternal?.value || values.forwardInternal || "Not set";
-    }
-
-    if (values.forwardOption === "ExternalAddress") {
-      return values.forwardExternal || "Not set";
-    }
-
-    return "Not set";
-  };
 
   return (
     <Stack spacing={3}>
