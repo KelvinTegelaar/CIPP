@@ -30,19 +30,22 @@ export const CippWizardVacationConfirmation = (props) => {
 
   const handleSubmit = () => {
     if (values.enableCAExclusion) {
-      caExclusion.mutate({
-        url: "/api/ExecCAExclusion",
-        data: {
-          tenantFilter,
-          Users: values.Users,
-          PolicyId: values.PolicyId?.value,
-          StartDate: values.startDate,
-          EndDate: values.endDate,
-          vacation: true,
-          reference: values.reference || null,
-          postExecution: values.postExecution || [],
-          excludeLocationAuditAlerts: values.excludeLocationAuditAlerts || false,
-        },
+      const policies = Array.isArray(values.PolicyId) ? values.PolicyId : [values.PolicyId];
+      policies.forEach((policy) => {
+        caExclusion.mutate({
+          url: "/api/ExecCAExclusion",
+          data: {
+            tenantFilter,
+            Users: values.Users,
+            PolicyId: policy?.value ?? policy,
+            StartDate: values.startDate,
+            EndDate: values.endDate,
+            vacation: true,
+            reference: values.reference || null,
+            postExecution: values.postExecution || [],
+            excludeLocationAuditAlerts: values.excludeLocationAuditAlerts || false,
+          },
+        });
       });
     }
 
@@ -216,10 +219,12 @@ export const CippWizardVacationConfirmation = (props) => {
                     <Stack spacing={1}>
                       <div>
                         <Typography variant="subtitle2" color="text.secondary">
-                          Policy
+                          {Array.isArray(values.PolicyId) && values.PolicyId.length > 1 ? "Policies" : "Policy"}
                         </Typography>
                         <Typography variant="body2">
-                          {values.PolicyId?.label || "Not selected"}
+                          {Array.isArray(values.PolicyId) && values.PolicyId.length > 0
+                            ? values.PolicyId.map((p) => p.label || p.value).join(", ")
+                            : "Not selected"}
                         </Typography>
                       </div>
                       {values.excludeLocationAuditAlerts && (
