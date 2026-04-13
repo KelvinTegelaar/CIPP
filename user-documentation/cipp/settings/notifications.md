@@ -127,6 +127,10 @@ Previously saved credential values are retained in the form even when the auth t
 }
 ```
 
+{% hint style="danger" %}
+Those who are utilizing the Rewst crate to handle CIPP notifications should not enable the Standardized Alert Schema as it has not been updated to handle this new format.
+{% endhint %}
+
 ## Send Test Alert
 
 You are able to select to send a test alert. Select which options you want to include in your test before clicking `Confirm`.
