@@ -6,7 +6,7 @@ import { ApiPostCall } from '../../api/ApiCall'
 import { CippApiResults } from '../../components/CippComponents/CippApiResults'
 import CippPageCard from '../../components/CippCards/CippPageCard'
 
-const VALID_DURATIONS = [7, 14, 30, -1]
+const VALID_DURATIONS = [7, 14, 30, 90, -1]
 
 const durationLabel = (d) => {
   if (d === -1) return 'forever'
