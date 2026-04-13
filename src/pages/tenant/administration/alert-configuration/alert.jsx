@@ -515,7 +515,7 @@ const AlertWizard = () => {
       CustomSubject: values.CustomSubject,
     }
     apiRequest.mutate(
-      { url: '/api/AddScheduledItem?hidden=true', data: postObject },
+      { url: '/api/AddScriptedAlert', data: postObject },
       {
         onSuccess: () => {
           // Prevent form reload after successful save
