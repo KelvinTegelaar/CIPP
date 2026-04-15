@@ -113,9 +113,9 @@ This requires that scan groups are allready set up in NinjaOne and that
 
 **Configuring Defender CVE Sync**
 
-1. Inside CIPP browse to **Security & Compliance -> Defender -> CVE Management**
-2. Click on **Schedule CVE Sync**
-3. Select a tenant or *All Tenants, set a frequency and click **Create Schedule**
+1. Inside CIPP browse to **Security & Compliance -> Defender -> CVE Management.**
+2. Click on **Schedule CVE Sync.**
+3. Select the appropriate tenant or "*All Tenants", set a frequency and click **Create Schedule.**
 
 **Configure CVE Sync**
 
