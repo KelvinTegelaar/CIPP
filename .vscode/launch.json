@@ -37,6 +37,13 @@
     },
     {
       "type": "PowerShell",
+      "name": "Launch in Windows Terminal with Offloading Proc and HTTP only workers",
+      "request": "launch",
+      "cwd": "${cwd}",
+      "script": ". '${cwd}\\Tools\\Start-CippOffloadSimulation.ps1'"
+    },
+    {
+      "type": "PowerShell",
       "name": "Launch in Kitty Terminal",
       "request": "launch",
       "cwd": "${cwd}",
