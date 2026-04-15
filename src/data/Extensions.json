@@ -504,7 +504,42 @@
           "compareValue": true,
           "action": "disable"
         }
+      },
+      {
+      "type": "switch",
+      "name": "NinjaOne.CveSyncEnabled",
+      "label": "Enable Automated CVE Sync",
+      "condition": {
+        "field": "NinjaOne.Enabled",
+        "compareType": "is",
+        "compareValue": true,
+        "action": "disable"
       }
+    },
+    {
+      "type": "textField",
+      "name": "NinjaOne.CveSyncPrefix",
+      "label": "CVE Sync Scan Group Prefix",
+      "placeholder": "CIPP-",
+      "helperText": "Scan groups will be named: [Prefix][tenant-domain] (e.g., CIPP-contoso.com)",
+      "condition": {
+        "field": "NinjaOne.CveSyncEnabled",
+        "compareType": "is",
+        "compareValue": true
+      }
+    },
+    {
+      "type": "number",
+      "name": "NinjaOne.CveSyncHours",
+      "label": "CVE Sync Frequency (hours)",
+      "placeholder": "24",
+      "helperText": "How often to sync CVE data (recommended: 24 hours for daily sync)",
+      "condition": {
+        "field": "NinjaOne.CveSyncEnabled",
+        "compareType": "is",
+        "compareValue": true
+      }
+    }
     ],
     "mappingRequired": true,
     "fieldMapping": true,

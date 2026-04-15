@@ -348,6 +348,11 @@ export const nativeMenuItems = [
             path: '/security/defender/list-defender-tvm',
             permissions: ['Security.Alert.*'],
           },
+          {
+            title: "CVE Management",
+            path: "/security/defender/defender-cve-exceptions",
+            permissions: ["Security.Alert.*"],
+          },
         ],
       },
       {
@@ -363,6 +368,11 @@ export const nativeMenuItems = [
             title: 'MDE Onboarding',
             path: '/security/reports/mde-onboarding',
             permissions: ['Security.Defender.*'],
+          },
+          {
+            title: "CVE Report",
+            path: "/security/reports/cve-report",
+            permissions: ["Security.Alert.*"],
           },
         ],
       },
