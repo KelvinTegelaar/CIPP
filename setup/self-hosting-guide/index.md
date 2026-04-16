@@ -38,7 +38,7 @@ You’ll need an **active Azure Subscription** where your CIPP resources (Functi
 {% step %}
 ### GitHub Personal Access Token
 
-CIPP uses Azure Static Web Apps (SWA) to deploy from GitHub. You’ll need a classic **PAT** (Personal Access Token) with the relevant repo permissions included in Microsoft’s [Create a GitHub Personal Access Token](https://learn.microsoft.com/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token) documentation.
+CIPP uses Azure Static Web Apps (SWA) to deploy from GitHub. You’ll need a classic **PAT** (Personal Access Token) with the relevant repo permissions included in Microsoft’s [Create a GitHub Personal Access Token](https://learn.microsoft.com/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token) documentation, currently these are repo, workflow, write:packages, please check the microsoft documentation since this does change.
 {% endstep %}
 
 {% step %}
