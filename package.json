@@ -56,7 +56,7 @@
     "@uiw/react-json-view": "^2.0.0-alpha.41",
     "@vvo/tzdb": "^6.198.0",
     "apexcharts": "5.10.4",
-    "axios": "1.14.0",
+    "axios": "1.15.0",
     "date-fns": "4.1.0",
     "diff": "^8.0.3",
     "eml-parse-js": "^1.2.0-beta.0",
