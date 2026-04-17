@@ -1466,7 +1466,26 @@
   dependencies:
     "@babel/runtime" "^7.28.6"
 
-"@mui/utils@^7.3.2", "@mui/utils@^7.3.5", "@mui/utils@^7.3.7", "@mui/utils@^7.3.9":
+"@mui/types@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@mui/types/-/types-9.0.0.tgz#92d8c64e72cb863ee59108cb20cc476d648a3ab9"
+  integrity sha512-i1cuFCAWN44b3AJWO7mh7tuh1sqbQSeVr/94oG0TX5uXivac8XalgE4/6fQZcmGZigzbQ35IXxj/4jLpRIBYZg==
+  dependencies:
+    "@babel/runtime" "^7.29.2"
+
+"@mui/utils@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@mui/utils/-/utils-9.0.0.tgz#25b563ccbf537feba5f89c37a00cb8e6eea45ad0"
+  integrity sha512-bQcqyg/gjULUqTuyUjSAFr6LQGLvtkNtDbJerAtoUn9kGZ0hg5QJiN1PLHMLbeFpe3te1831uq7GFl2ITokGdg==
+  dependencies:
+    "@babel/runtime" "^7.29.2"
+    "@mui/types" "^9.0.0"
+    "@types/prop-types" "^15.7.15"
+    clsx "^2.1.1"
+    prop-types "^15.8.1"
+    react-is "^19.2.4"
+
+"@mui/utils@^7.3.2", "@mui/utils@^7.3.7", "@mui/utils@^7.3.9":
   version "7.3.9"
   resolved "https://registry.yarnpkg.com/@mui/utils/-/utils-7.3.9.tgz#8af5093fc93c2e582fa3d047f561c7b690509bc2"
   integrity sha512-U6SdZaGbfb65fqTsH3V5oJdFj9uYwyLE2WVuNvmbggTSDBb8QHrFsqY8BN3taK9t3yJ8/BPHD/kNvLNyjwM7Yw==
@@ -1478,26 +1497,26 @@
     prop-types "^15.8.1"
     react-is "^19.2.3"
 
-"@mui/x-date-pickers@^8.27.2":
-  version "8.27.2"
-  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers/-/x-date-pickers-8.27.2.tgz#5ada1fb3adffff3e0fd0fee7702fba7f770dca68"
-  integrity sha512-06LFkHFRXJ2O9DMXtWAA3kY0jpbL7XH8iqa8L5cBlN+8bRx/UVLKlZYlhGv06C88jF9kuZWY1bUgrv/EoY/2Ww==
+"@mui/x-date-pickers@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers/-/x-date-pickers-9.0.2.tgz#ac601e4655ce3017185d652f9f91a2914bb6e63a"
+  integrity sha512-rnyc2wFPnprTS5i8Lq9aX2Rlx+ZRvNZERTd7sPMErf/8HnMCYzxwErITbd+TuImlvo2vaLF1gNynqT8AJMusYw==
   dependencies:
-    "@babel/runtime" "^7.28.4"
-    "@mui/utils" "^7.3.5"
-    "@mui/x-internals" "8.26.0"
+    "@babel/runtime" "^7.28.6"
+    "@mui/utils" "9.0.0"
+    "@mui/x-internals" "^9.0.0"
     "@types/react-transition-group" "^4.4.12"
     clsx "^2.1.1"
     prop-types "^15.8.1"
     react-transition-group "^4.4.5"
 
-"@mui/x-internals@8.26.0":
-  version "8.26.0"
-  resolved "https://registry.yarnpkg.com/@mui/x-internals/-/x-internals-8.26.0.tgz#49caacac954c29a1b10425c67418310ceb9c8cfa"
-  integrity sha512-B9OZau5IQUvIxwpJZhoFJKqRpmWf5r0yMmSXjQuqb5WuqM755EuzWJOenY48denGoENzMLT8hQpA0hRTeU2IPA==
+"@mui/x-internals@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@mui/x-internals/-/x-internals-9.0.0.tgz#8851a058e09b719690b4f398319805239e923855"
+  integrity sha512-E/4rdg69JjhyybpPGypCjAKSKLLnSdCFM+O6P/nkUg47+qt3uftxQEhjQO53rcn6ahHl6du/uNZ9BLgeY6kYxQ==
   dependencies:
-    "@babel/runtime" "^7.28.4"
-    "@mui/utils" "^7.3.5"
+    "@babel/runtime" "^7.28.6"
+    "@mui/utils" "9.0.0"
     reselect "^5.1.1"
     use-sync-external-store "^1.6.0"
 
@@ -7009,6 +7028,11 @@ react-is@^19.2.3:
   version "19.2.4"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.4.tgz#a080758243c572ccd4a63386537654298c99d135"
   integrity sha512-W+EWGn2v0ApPKgKKCy/7s7WHXkboGcsrXE+2joLyVxkbyVQfO3MUEaUQDHoSmb8TFFrSKYa9mw64WZHNHSDzYA==
+
+react-is@^19.2.4:
+  version "19.2.5"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.5.tgz#7e7b54143e9313fed787b23fd4295d5a23872ad9"
+  integrity sha512-Dn0t8IQhCmeIT3wu+Apm1/YVsJXsGWi6k4sPdnBIdqMVtHtv0IGi6dcpNpNkNac0zB2uUAqNX3MHzN8c+z2rwQ==
 
 react-leaflet-markercluster@^5.0.0-rc.0:
   version "5.0.0-rc.0"
