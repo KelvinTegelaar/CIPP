@@ -15,10 +15,14 @@ $ApiPath = Join-Path -Path $Path -ChildPath 'CIPP-API'
 $FrontendPath = Join-Path -Path $Path -ChildPath 'CIPP'
 
 Write-Host 'Starting emulators...' -ForegroundColor Cyan
+$ApiMode = Read-Host -Prompt 'Start API Processor in same host (y/n)?'
 
 # Build commands with error handling
 $azuriteCommand = 'try { azurite } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
-$apiCommand = @'
+if ($ApiMode -eq 'y') {
+  $apiCommand = 'try { func start } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
+} else {
+  $apiCommand = @'
 try {
 	# Use a stable local identity so timer node selection treats this as the catch-all host.
 	$env:WEBSITE_SITE_NAME = "cipp"
@@ -39,6 +43,7 @@ try {
 	Read-Host "Press Enter to exit"
 }
 '@
+}
 $frontendCommand = 'try { npm run dev } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
 $swaCommand = 'try { npm run start-swa } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
 
