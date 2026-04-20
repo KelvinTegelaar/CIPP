@@ -16,7 +16,7 @@ export const getCippError = (data) => {
   if (data.response?.data?.Results) {
     return data.response.data.Results;
   }
-  
+
   if (data.response?.data) {
     return data.response.data;
   }
