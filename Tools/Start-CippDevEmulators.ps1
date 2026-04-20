@@ -42,5 +42,11 @@ try {
 $frontendCommand = 'try { npm run dev } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
 $swaCommand = 'try { npm run start-swa } catch { Write-Error $_.Exception.Message } finally { Read-Host "Press Enter to exit" }'
 
+# Encode commands to avoid parsing issues with multi-line strings
+$azuriteEncoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($azuriteCommand))
+$apiEncoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($apiCommand))
+$frontendEncoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($frontendCommand))
+$swaEncoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($swaCommand))
+
 # Start Windows Terminal with all tabs
-wt --title CIPP`; new-tab --title 'Azurite' -d $Path pwsh -c $azuriteCommand`; new-tab --title 'FunctionApp' -d $ApiPath pwsh -c $apiCommand`; new-tab --title 'CIPP Frontend' -d $FrontendPath pwsh -c $frontendCommand`; new-tab --title 'SWA' -d $FrontendPath pwsh -c $swaCommand
+wt --title CIPP`; new-tab --title 'Azurite' -d $Path pwsh -EncodedCommand $azuriteEncoded`; new-tab --title 'FunctionApp' -d $ApiPath pwsh -EncodedCommand $apiEncoded`; new-tab --title 'CIPP Frontend' -d $FrontendPath pwsh -EncodedCommand $frontendEncoded`; new-tab --title 'SWA' -d $FrontendPath pwsh -EncodedCommand $swaEncoded
