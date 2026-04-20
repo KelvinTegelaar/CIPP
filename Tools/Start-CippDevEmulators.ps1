@@ -22,7 +22,7 @@ $apiCommand = @'
 try {
 	# Use a stable local identity so timer node selection treats this as the catch-all host.
 	$env:WEBSITE_SITE_NAME = "cipp"
-	$env:CIPP_PROCESSOR = "true"
+	$env:CIPP_PROCESSOR = "false"
 	$env:AzureFunctionsWebHost__hostid = "cipp-single"
 
 	# Ensure prior offload simulation env overrides do not disable triggers in this shell.
