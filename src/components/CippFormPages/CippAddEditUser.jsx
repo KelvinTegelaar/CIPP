@@ -10,7 +10,7 @@ import { Grid } from '@mui/system'
 import { ApiGetCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
 import { useWatch } from 'react-hook-form'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Sync } from '@mui/icons-material'
 
@@ -83,7 +83,31 @@ const CippAddEditUser = (props) => {
     return []
   }, [tenantGroups.isSuccess, userGroups.isSuccess, tenantGroups.data, userGroups.data])
 
-  const watcher = useWatch({ control: formControl.control })
+  const watcher = useWatch({
+    control: formControl.control,
+    name: ['givenName', 'surname', 'userTemplate', 'AddToGroups'],
+  })
+
+  // Debounce givenName/surname so auto-generated displayName/username
+  // don't trigger setValue on every keystroke
+  const rawGivenName = watcher[0]
+  const rawSurname = watcher[1]
+  const [debouncedName, setDebouncedName] = useState({ givenName: rawGivenName, surname: rawSurname })
+  const debounceRef = useRef(null)
+  useEffect(() => {
+    debounceRef.current = setTimeout(() => {
+      setDebouncedName({ givenName: rawGivenName, surname: rawSurname })
+    }, 250)
+    return () => clearTimeout(debounceRef.current)
+  }, [rawGivenName, rawSurname])
+
+  // useWatch with a name array returns values in the same order
+  const watchedFields = {
+    givenName: debouncedName.givenName,
+    surname: debouncedName.surname,
+    userTemplate: watcher[2],
+    AddToGroups: watcher[3],
+  }
 
   // Helper function to generate username from template format
   const generateUsername = (
@@ -142,11 +166,11 @@ const CippAddEditUser = (props) => {
 
   useEffect(() => {
     //if watch.firstname changes, and watch.lastname changes, set displayname to firstname + lastname
-    if (watcher.givenName && watcher.surname && formType === 'add') {
+    if (watchedFields.givenName && watchedFields.surname && formType === 'add') {
       // Only auto-set display name if user hasn't manually changed it
       if (!displayNameManuallySet) {
         // Build base display name from first and last name
-        let displayName = `${watcher.givenName} ${watcher.surname}`
+        let displayName = `${watchedFields.givenName} ${watchedFields.surname}`
 
         // Add template displayName as suffix if it exists
         if (selectedTemplate?.displayName) {
@@ -181,8 +205,8 @@ const CippAddEditUser = (props) => {
 
           const generatedUsername = generateUsername(
             formatString,
-            watcher.givenName,
-            watcher.surname,
+            watchedFields.givenName,
+            watchedFields.surname,
             spaceHandling,
             spaceReplacement
           )
@@ -192,11 +216,11 @@ const CippAddEditUser = (props) => {
         }
       }
     }
-  }, [watcher.givenName, watcher.surname, selectedTemplate])
+  }, [watchedFields.givenName, watchedFields.surname, selectedTemplate])
 
   // Reset manual flags and selected template when form is reset (fields become empty)
   useEffect(() => {
-    if (formType === 'add' && !watcher.givenName && !watcher.surname && !watcher.userTemplate) {
+    if (formType === 'add' && !watchedFields.givenName && !watchedFields.surname && !watchedFields.userTemplate) {
       setDisplayNameManuallySet(false)
       setUsernameManuallySet(false)
       // Only clear selected template if it's not the default template
@@ -204,11 +228,11 @@ const CippAddEditUser = (props) => {
         setSelectedTemplate(null)
       }
     }
-  }, [watcher.givenName, watcher.surname, watcher.userTemplate, formType, selectedTemplate])
+  }, [watchedFields.givenName, watchedFields.surname, watchedFields.userTemplate, formType, selectedTemplate])
 
   // Auto-select default template for tenant
   useEffect(() => {
-    if (formType === 'add' && userTemplates.isSuccess && !watcher.userTemplate) {
+    if (formType === 'add' && userTemplates.isSuccess && !watchedFields.userTemplate) {
       const defaultTemplate = userTemplates.data?.find(
         (template) => template.defaultForTenant === true
       )
@@ -225,8 +249,8 @@ const CippAddEditUser = (props) => {
 
   // Auto-populate fields when template selected
   useEffect(() => {
-    if (formType === 'add' && watcher.userTemplate?.addedFields) {
-      const template = watcher.userTemplate.addedFields
+    if (formType === 'add' && watchedFields.userTemplate?.addedFields) {
+      const template = watchedFields.userTemplate.addedFields
       setSelectedTemplate(template)
 
       // Reset manual edit flags when template changes
@@ -235,7 +259,7 @@ const CippAddEditUser = (props) => {
 
       // Only set fields if they don't already have values (don't override user input)
       const setFieldIfEmpty = (fieldName, value) => {
-        if (!watcher[fieldName] && value) {
+        if (value) {
           formControl.setValue(fieldName, value)
         }
       }
@@ -299,14 +323,14 @@ const CippAddEditUser = (props) => {
           }
         })
         if (groups.length > 0) {
-          const currentGroups = watcher.AddToGroups
+          const currentGroups = watchedFields.AddToGroups
           if (!currentGroups || (Array.isArray(currentGroups) && currentGroups.length === 0)) {
             formControl.setValue('AddToGroups', groups, { shouldDirty: true })
           }
         }
       }
     }
-  }, [watcher.userTemplate, formType])
+  }, [watchedFields.userTemplate, formType])
 
   return (
     <Grid container spacing={2}>
