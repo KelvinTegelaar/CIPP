@@ -92,7 +92,7 @@ const Page = () => {
     },
     {
       label: 'Edit Template',
-      link: '/tenant/standards/templates/template?id=[templateId]&type=[standardType]',
+      link: '/tenant/standards/templates/template?id=[templateId]&type=[templateType]',
       icon: <Edit />,
       color: 'success',
       target: '_self',
@@ -103,7 +103,7 @@ const Page = () => {
       icon: <EyeIcon />,
       color: 'info',
       target: '_self',
-      condition: (row) => row.standardType === 'drift',
+      condition: (row) => row.templateType === 'drift',
     },
   ]
 
