@@ -247,7 +247,7 @@ const CippAddEditUser = (props) => {
           typeof template.primDomain === 'string'
             ? { label: template.primDomain, value: template.primDomain }
             : template.primDomain
-        setFieldIfEmpty('primDomain', primDomainValue)
+        formControl.setValue('primDomain', primDomainValue)
       }
       if (template.usageLocation) {
         // Handle both object and string formats
