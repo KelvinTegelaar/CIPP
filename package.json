@@ -53,7 +53,7 @@
     "@tiptap/pm": "^3.22.3",
     "@tiptap/react": "^3.20.5",
     "@tiptap/starter-kit": "^3.20.5",
-    "@uiw/react-json-view": "^2.0.0-alpha.41",
+    "@uiw/react-json-view": "^2.0.0-alpha.42",
     "@vvo/tzdb": "^6.198.0",
     "apexcharts": "5.10.4",
     "axios": "1.15.0",
