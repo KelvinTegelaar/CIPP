@@ -9,58 +9,56 @@ const skipRecursion = ['location', 'ScheduledBackupValues', 'Tenant']
 const MAX_SIZE_SAMPLE = 30
 // Average character width in pixels at compact density (roughly 7–8px per char).
 const CHAR_WIDTH = 8
-// Extra padding per cell (sort icon, filter icon, cell padding).
-const CELL_PADDING = 36
+// Extra padding per cell (sort icon, filter icon, cell padding, resize handle).
+const CELL_PADDING = 5
 const MIN_COL_SIZE = 80
 const MAX_COL_SIZE = 500
+
+// Extra pixels reserved in the header for MRT chrome (sort icon, column actions menu,
+// resize handle, filter icon). These sit alongside the header text and consume space.
+const HEADER_CHROME_PX = 75
 
 // Measure the pixel width a column needs based on its header and sampled cell values.
 // rawValues are the original data values (before formatting) — if they contain arrays or
 // complex objects the column renders as a button/chip list, so we cap to header width.
-// Returns { size, minSize } where minSize is always header-width + 30px safe space.
+// Returns { size, minSize } where minSize is always header-width + chrome safe space.
 const measureColumnSize = (header, valuesForColumn, rawValues) => {
   const headerLen = header ? header.length : 6
-  const headerPx = Math.round(headerLen * CHAR_WIDTH + CELL_PADDING + 30)
+  const headerPx = Math.round(headerLen * CHAR_WIDTH + CELL_PADDING + HEADER_CHROME_PX)
   const minSize = Math.max(MIN_COL_SIZE, headerPx)
 
-  // If any raw value is an array or complex object, the cell renders as a compact
-  // button or chip list. We measure the longest individual chip/item rather than the
-  // full joined text. For object arrays that format into comma-separated chip labels
-  // (e.g. assignedLicenses), we split the formatted text on commas to measure each chip.
+  // If any raw value is an array or complex object, the cell renders as either:
+  // - A CippDataTableButton ("X items" button) for object arrays and plain objects
+  // - A CollapsibleChipList for string/primitive arrays
+  // Size accordingly: buttons are compact, chips need per-item measurement.
   if (rawValues && rawValues.length > 0) {
     const hasComplex = rawValues.some(
       (v) => Array.isArray(v) || (typeof v === 'object' && v !== null)
     )
     if (hasComplex) {
+      // Check if these are object arrays or plain objects — they render as a small
+      // "X items" button (CippDataTableButton), so size to the button width.
+      const allObjectLike = rawValues.every((v) => {
+        if (v === null || v === undefined) return true // nulls are fine, they show "No items"
+        if (Array.isArray(v)) return v.some((el) => typeof el === 'object' && el !== null)
+        return typeof v === 'object'
+      })
+      if (allObjectLike) {
+        // "X items" button is roughly 80-100px wide — just use header width
+        return { size: minSize, minSize }
+      }
+
+      // String/primitive arrays → rendered as chip list. Measure longest chip,
+      // but cap per-chip text since chips truncate long values (e.g. email addresses).
+      const MAX_CHIP_TEXT = 15
       let longestItem = headerLen
       for (let i = 0; i < rawValues.length; i++) {
         const v = rawValues[i]
         if (Array.isArray(v)) {
-          const isObjectArray = v.some((el) => typeof el === 'object' && el !== null)
-          if (isObjectArray) {
-            // Object arrays get translated by getCippFormatting into comma-joined text.
-            // Split on ", " and measure each segment (each becomes a chip).
-            const formatted = valuesForColumn[i]
-            if (typeof formatted === 'string') {
-              for (const seg of formatted.split(', ')) {
-                if (seg.length > longestItem) longestItem = seg.length
-              }
-            }
-            continue
-          }
-          // Arrays of strings/numbers → chips — measure each item
           for (const el of v) {
             const s = typeof el === 'string' ? el : el != null ? String(el) : ''
-            if (s.length > longestItem) longestItem = s.length
-          }
-        }
-        // Plain objects → may also format into chip text
-        if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
-          const formatted = valuesForColumn[i]
-          if (typeof formatted === 'string') {
-            for (const seg of formatted.split(', ')) {
-              if (seg.length > longestItem) longestItem = seg.length
-            }
+            const len = Math.min(s.length, MAX_CHIP_TEXT)
+            if (len > longestItem) longestItem = len
           }
         }
       }
@@ -70,17 +68,27 @@ const measureColumnSize = (header, valuesForColumn, rawValues) => {
     }
   }
 
-  let maxLen = headerLen
   const sample =
     valuesForColumn.length > MAX_SIZE_SAMPLE
       ? valuesForColumn.slice(0, MAX_SIZE_SAMPLE)
       : valuesForColumn
-  for (const v of sample) {
-    const str = typeof v === 'string' ? v : v != null ? String(v) : ''
-    // URLs render as icons/links in the cell — don't measure the full URL text.
-    if (str.match(/^https?:\/\//i) || str.match(/^\/api\//i)) continue
-    if (str.length > maxLen) maxLen = str.length
+  const lengths = sample
+    .map((v) => {
+      const str = typeof v === 'string' ? v : v != null ? String(v) : ''
+      // URLs render as icons/links in the cell — don't measure the full URL text.
+      if (str.match(/^https?:\/\//i) || str.match(/^\/api\//i)) return 0
+      return str.length
+    })
+    .sort((a, b) => a - b)
+
+  // Trim the top and bottom 10% to remove outliers, then use the longest remaining value.
+  let trimmedLengths = lengths
+  if (lengths.length >= 5) {
+    const trimCount = Math.max(1, Math.floor(lengths.length * 0.1))
+    trimmedLengths = lengths.slice(trimCount, lengths.length - trimCount)
   }
+  const maxLen = Math.max(headerLen, ...trimmedLengths)
+
   const px = Math.round(maxLen * CHAR_WIDTH + CELL_PADDING)
   const size = Math.max(minSize, Math.min(MAX_COL_SIZE, px))
   return { size, minSize }
@@ -210,7 +218,7 @@ export const utilColumnsFromAPI = (dataArray) => {
 
         // Allow per-column size overrides for columns whose rendered output
         // doesn't match text width (icons, progress bars, etc.).
-        const sizeOverride = getCippColumnSize(accessorKey)
+        const sizeOverride = getCippColumnSize(accessorKey, header)
         let finalSize = { ...measuredSize }
         if (sizeOverride) {
           const resolve = (v) => (v === 'header' ? measuredSize.minSize : v)
