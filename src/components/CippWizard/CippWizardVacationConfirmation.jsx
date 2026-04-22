@@ -41,21 +41,21 @@ export const CippWizardVacationConfirmation = (props) => {
   const handleSubmit = () => {
     if (values.enableCAExclusion) {
       const policies = Array.isArray(values.PolicyId) ? values.PolicyId : [values.PolicyId]
-      policies.forEach((policy) => {
-        caExclusion.mutate({
-          url: '/api/ExecCAExclusion',
-          data: {
-            tenantFilter,
-            Users: values.Users,
-            PolicyId: policy?.value ?? policy,
-            StartDate: values.startDate,
-            EndDate: values.endDate,
-            vacation: true,
-            reference: values.reference || null,
-            postExecution: values.postExecution || [],
-            excludeLocationAuditAlerts: values.excludeLocationAuditAlerts || false,
-          },
-        })
+      const policyData = policies.map((policy) => ({
+        tenantFilter,
+        Users: values.Users,
+        PolicyId: policy?.value ?? policy,
+        StartDate: values.startDate,
+        EndDate: values.endDate,
+        vacation: true,
+        reference: values.reference || null,
+        postExecution: values.postExecution || [],
+        excludeLocationAuditAlerts: values.excludeLocationAuditAlerts || false,
+      }))
+      caExclusion.mutate({
+        url: '/api/ExecCAExclusion',
+        data: policyData,
+        bulkRequest: true,
       })
     }
 
