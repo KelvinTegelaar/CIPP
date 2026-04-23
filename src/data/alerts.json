@@ -596,5 +596,11 @@
     "label": "Alert on tenant accessibility issues (Graph, Exchange, GDAP roles)",
     "recommendedRunInterval": "1d",
     "description": "Proactively monitors tenant accessibility by testing Graph API connectivity, GDAP role assignments, and Exchange Online access. Alerts when tenants have lost permissions, removed GDAP consent, or are missing required roles. Helps identify tenants that need a permission refresh or offboarding."
+  },
+  {
+    "name": "CheckExtension",
+    "label": "Alert on new Check phishing extension detections",
+    "recommendedRunInterval": "15m",
+    "description": "Monitors for new phishing site detections reported by the Check browser extension. Alerts when a user visits a page that the extension flags as a potential credential phishing or AiTM attack. Requires the Check browser extension to be deployed to users."
   }
 ]
