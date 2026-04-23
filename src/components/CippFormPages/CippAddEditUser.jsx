@@ -124,14 +124,22 @@ const CippAddEditUser = (props) => {
 
     let username = formatString
 
-    // Replace %FirstName[n]% patterns (extract first n characters)
+    // Replace %FirstName[n]% patterns (extract first n characters per word)
     username = username.replace(/%FirstName\[(\d+)\]%/gi, (match, num) => {
-      return firstName.substring(0, parseInt(num))
+      const n = parseInt(num)
+      return firstName
+        .split(/\s+/)
+        .map((word) => word.substring(0, n))
+        .join('')
     })
 
-    // Replace %LastName[n]% patterns (extract first n characters)
+    // Replace %LastName[n]% patterns (extract first n characters per word)
     username = username.replace(/%LastName\[(\d+)\]%/gi, (match, num) => {
-      return lastName.substring(0, parseInt(num))
+      const n = parseInt(num)
+      return lastName
+        .split(/\s+/)
+        .map((word) => word.substring(0, n))
+        .join('')
     })
 
     // Replace %FirstName% and %LastName%
