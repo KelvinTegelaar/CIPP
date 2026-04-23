@@ -107,6 +107,49 @@ const ManageDriftPage = () => {
     enabled: !!templateId && !!tenantFilter,
   })
 
+  // API call for persistent drift remediation tasks
+  const persistentDriftTasksApi = ApiGetCall({
+    url: '/api/ListScheduledItems',
+    data: {
+      tenantFilter: tenantFilter,
+      SearchTitle: 'Persistent Drift Remediation:*',
+    },
+    queryKey: `PersistentDriftTasks-${tenantFilter}`,
+    waiting: !!tenantFilter,
+  })
+
+  const persistentTaskNameSet = new Set(
+    (persistentDriftTasksApi.data || [])
+      .map((task) => (task?.Name ? String(task.Name).toLowerCase() : null))
+      .filter(Boolean)
+  )
+
+  const getDriftTaskSettingName = (standardName) => {
+    if (!standardName) return ''
+
+    const normalizedName = String(standardName)
+    const withoutPrefix = normalizedName.replace(/^standards\./, '')
+
+    if (withoutPrefix.startsWith('IntuneTemplate.')) {
+      return 'IntuneTemplate'
+    }
+
+    if (withoutPrefix.startsWith('ConditionalAccessTemplate.')) {
+      return 'ConditionalAccessTemplate'
+    }
+
+    return withoutPrefix
+  }
+
+  const hasPersistentDenyTask = (standardName) => {
+    const settingName = getDriftTaskSettingName(standardName)
+    if (!settingName || !tenantFilter) return false
+
+    const expectedTaskName =
+      `Persistent Drift Remediation: ${settingName} - ${tenantFilter}`.toLowerCase()
+    return persistentTaskNameSet.has(expectedTaskName)
+  }
+
   // Process drift data for chart - filter by current tenant and aggregate
   const rawDriftData = driftApi.data || []
   const tenantDriftData = Array.isArray(rawDriftData)
@@ -512,6 +555,7 @@ const ManageDriftPage = () => {
           : isLicenseSkipped
             ? 'Skipped - No License Available'
             : getDeviationStatusText(actualStatus)
+        const isPersistentDenyEnabled = hasPersistentDenyTask(deviation.standardName)
 
         // For skipped items, show different expected/received values
         let displayExpectedValue = deviation.ExpectedValue || deviation.expectedValue
@@ -536,15 +580,29 @@ const ManageDriftPage = () => {
           text: prettyName,
           subtext: description,
           statusColor: isLicenseSkipped ? 'text.secondary' : getDeviationColor(actualStatus),
-          statusText: actualStatusText,
+          statusText: isPersistentDenyEnabled
+            ? `${actualStatusText} | Persistent deny (12h)`
+            : actualStatusText,
           standardName: deviation.standardName, // Store the original standardName for action handlers
           receivedValue: deviation.receivedValue, // Store the original receivedValue for action handlers
           expectedValue: deviation.expectedValue, // Store the original expectedValue for action handlers
           originalDeviation: deviation, // Store the complete original deviation object for reference
           isLicenseSkipped: isLicenseSkipped, // Flag for filtering and disabling actions
           isActuallyCompliant: isActuallyCompliant, // Flag to move to compliant section
+          isPersistentDenyEnabled: isPersistentDenyEnabled,
           children: (
             <Stack spacing={2} sx={{ p: 2 }}>
+              {isPersistentDenyEnabled && (
+                <Box>
+                  <Chip
+                    size="small"
+                    color="warning"
+                    variant="outlined"
+                    label="Permanently denied - resets every 12 hours"
+                  />
+                </Box>
+              )}
+
               {description && description !== 'No description available' && (
                 <Typography variant="body2" color="text.secondary">
                   {description}
@@ -1599,7 +1657,12 @@ const ManageDriftPage = () => {
       subtitle={subtitle}
       actions={actions}
       actionsData={{}}
-      isFetching={driftApi.isFetching || standardsApi.isFetching || comparisonApi.isFetching}
+      isFetching={
+        driftApi.isFetching ||
+        standardsApi.isFetching ||
+        comparisonApi.isFetching ||
+        persistentDriftTasksApi.isFetching
+      }
     >
       <CippHead title="Manage Drift" />
       <Box sx={{ py: 2 }}>
@@ -2014,7 +2077,7 @@ const ManageDriftPage = () => {
             },
           }}
           row={actionData.data}
-          relatedQueryKeys={[`TenantDrift-${tenantFilter}`]}
+          relatedQueryKeys={[`TenantDrift-${tenantFilter}`, `PersistentDriftTasks-${tenantFilter}`]}
         />
       )}
 
