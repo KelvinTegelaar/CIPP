@@ -236,6 +236,10 @@ const Page = () => {
                 validators={{ required: "Expiration action is required" }}
               />
             </Grid>
+
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
                 fullWidth
                 label="Default Notification Actions"
                 name="defaultNotificationActions"
