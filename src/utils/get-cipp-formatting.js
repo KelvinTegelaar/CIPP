@@ -33,6 +33,7 @@ import DOMPurify from 'dompurify'
 import { getSignInErrorCodeTranslation } from './get-cipp-signin-errorcode-translation'
 import { CollapsibleChipList } from '../components/CippComponents/CollapsibleChipList'
 import countryList from '../data/countryList.json'
+import standardsData from '../data/standards.json'
 
 // Helper function to convert country codes to country names
 const getCountryNameFromCode = (countryCode) => {
@@ -436,6 +437,29 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
           ))
     }
   }
+  if (cellName === 'complianceStatus') {
+    if (isText) return data
+    const complianceColors = {
+      compliant: 'success',
+      'non-compliant': 'error',
+      'license missing': 'warning',
+      'reporting disabled': 'default',
+    }
+    const color = complianceColors[String(data).toLowerCase()] ?? 'default'
+    return <Chip variant="outlined" label={data} size="small" color={color} />
+  }
+
+  if (cellName === 'standardName') {
+    // Already resolved for templates; do a standards.json lookup for classic standards
+    if (!data?.startsWith('standards.')) return isText ? data : <span>{data}</span>
+    const baseName = data.split('.').slice(0, -1).join('.')
+    const label =
+      standardsData.find((s) => s.name === data)?.label ??
+      standardsData.find((s) => s.name === baseName)?.label ??
+      data
+    return label
+  }
+
   if (cellName === 'standardType') {
     return isText ? (
       data

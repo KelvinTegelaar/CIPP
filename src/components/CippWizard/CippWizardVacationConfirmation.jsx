@@ -41,21 +41,21 @@ export const CippWizardVacationConfirmation = (props) => {
   const handleSubmit = () => {
     if (values.enableCAExclusion) {
       const policies = Array.isArray(values.PolicyId) ? values.PolicyId : [values.PolicyId]
-      policies.forEach((policy) => {
-        caExclusion.mutate({
-          url: '/api/ExecCAExclusion',
-          data: {
-            tenantFilter,
-            Users: values.Users,
-            PolicyId: policy?.value ?? policy,
-            StartDate: values.startDate,
-            EndDate: values.endDate,
-            vacation: true,
-            reference: values.reference || null,
-            postExecution: values.postExecution || [],
-            excludeLocationAuditAlerts: values.excludeLocationAuditAlerts || false,
-          },
-        })
+      const policyData = policies.map((policy) => ({
+        tenantFilter,
+        Users: values.Users,
+        PolicyId: policy?.value ?? policy,
+        StartDate: values.startDate,
+        EndDate: values.endDate,
+        vacation: true,
+        reference: values.reference || null,
+        postExecution: values.postExecution || [],
+        excludeLocationAuditAlerts: values.excludeLocationAuditAlerts || false,
+      }))
+      caExclusion.mutate({
+        url: '/api/ExecCAExclusion',
+        data: policyData,
+        bulkRequest: true,
       })
     }
 
@@ -76,32 +76,6 @@ export const CippWizardVacationConfirmation = (props) => {
           reference: values.reference || null,
           postExecution: values.postExecution || [],
         },
-      })
-    }
-
-    if (values.enableForwarding) {
-      const forwardingData = {
-        tenantFilter,
-        Users: values.Users,
-        forwardOption: values.forwardOption,
-        KeepCopy: values.forwardKeepCopy || false,
-        startDate: values.startDate,
-        endDate: values.endDate,
-        reference: values.reference || null,
-        postExecution: values.postExecution || [],
-      }
-
-      if (values.forwardOption === 'internalAddress') {
-        forwardingData.ForwardInternal = values.forwardInternal
-      }
-
-      if (values.forwardOption === 'ExternalAddress') {
-        forwardingData.ForwardExternal = values.forwardExternal
-      }
-
-      forwardingVacation.mutate({
-        url: '/api/ExecScheduleForwardingVacation',
-        data: forwardingData,
       })
     }
 

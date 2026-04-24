@@ -406,7 +406,7 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
     placeholder: `# Example: Find disabled users with licenses
 param($TenantFilter, $DaysThreshold = 30)
 
-$users = New-CIPPDbRequest -TenantFilter $TenantFilter -Type 'Users'
+$users = Get-CIPPTestData -TenantFilter $TenantFilter -Type 'Users'
 $results = $users | Where-Object {
     $_.assignedLicenses.Count -gt 0 -and
     $_.accountEnabled -eq $false
@@ -655,7 +655,7 @@ return $results`,
                     <Typography variant="subtitle2">Data Access</Typography>
                   </Stack>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    Read-only via <code>New-CIPPDbRequest</code> and <code>Get-CIPPDbItem</code>{' '}
+                    Read-only via <code>Get-CIPPTestData</code> and <code>Get-CIPPDbItem</code>{' '}
                     with a <code>-Type</code> parameter.
                   </Typography>
                   <Button

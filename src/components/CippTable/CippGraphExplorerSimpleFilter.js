@@ -188,6 +188,7 @@ const CippGraphExplorerSimpleFilter = ({
           relatedQueryKeys={relatedQueryKeys}
           selectedPreset={selectedPreset}
           onPresetSelect={handlePresetChange}
+          initialValues={currentFilterValues}
         />
       </CippOffCanvas>
     </>

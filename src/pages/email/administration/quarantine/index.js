@@ -126,7 +126,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to deny this message?",
       icon: <Block />,
-      condition: (row) => row.ReleaseStatus !== "DENIED",
+      condition: (row) => row.ReleaseStatus === "REQUESTED",
     },
     {
       label: "Release & Allow Sender",
@@ -136,6 +136,8 @@ const Page = () => {
         Identity: "Identity",
         Type: "!Release",
         AllowSender: true,
+        SenderAddress: "SenderAddress",
+        PolicyName: "PolicyName",
       },
       confirmText:
         "Are you sure you want to release this email and add the sender to the whitelist?",

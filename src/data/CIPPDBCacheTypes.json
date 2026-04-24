@@ -205,26 +205,6 @@
     "description": "Exchange Online hosted outbound spam filter policy"
   },
   {
-    "type": "ExoAntiPhishPolicy",
-    "friendlyName": "Exchange Anti-Phish Policy",
-    "description": "Exchange Online anti-phishing policy"
-  },
-  {
-    "type": "ExoSafeLinksPolicy",
-    "friendlyName": "Exchange Safe Links Policy",
-    "description": "Exchange Online Safe Links policy"
-  },
-  {
-    "type": "ExoSafeAttachmentPolicy",
-    "friendlyName": "Exchange Safe Attachment Policy",
-    "description": "Exchange Online Safe Attachment policy"
-  },
-  {
-    "type": "ExoMalwareFilterPolicy",
-    "friendlyName": "Exchange Malware Filter Policy",
-    "description": "Exchange Online malware filter policy"
-  },
-  {
     "type": "ExoAtpPolicyForO365",
     "friendlyName": "Exchange ATP Policy for O365",
     "description": "Exchange Online Advanced Threat Protection policy"

@@ -12,12 +12,19 @@ const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_COLLAPSED_WIDTH = 73; // icon size + padding + border right
 const TOP_NAV_HEIGHT = 64;
 
+const isPathPrefix = (pathname, itemPath) => {
+  if (!pathname || !itemPath) return false;
+  if (pathname === itemPath) return true;
+  // Root "/" maps to /dashboardv2 under the hood
+  if (itemPath === "/") return pathname.startsWith("/dashboardv2");
+  return pathname.startsWith(itemPath + "/") || pathname.startsWith(itemPath + "?");
+};
+
 const markOpenItems = (items, pathname) => {
   return items.map((item) => {
     const checkPath = !!(item.path && pathname);
     const exactMatch = checkPath ? pathname === item.path : false;
-    // Special handling for root path "/" to avoid matching all paths
-    const partialMatch = checkPath && item.path !== "/" ? pathname.startsWith(item.path) : false;
+    const partialMatch = checkPath ? isPathPrefix(pathname, item.path) : false;
 
     let openImmediately = exactMatch;
     let newItems = item.items || [];
@@ -47,8 +54,7 @@ const renderItems = ({ collapse = false, depth = 0, items, pathname, category = 
 const reduceChildRoutes = ({ acc, collapse, depth, item, pathname, category }) => {
   const checkPath = !!(item.path && pathname);
   const exactMatch = checkPath && pathname === item.path;
-  // Special handling for root path "/" to avoid matching all paths
-  const partialMatch = checkPath && item.path !== "/" ? pathname.startsWith(item.path) : false;
+  const partialMatch = checkPath ? isPathPrefix(pathname, item.path) : false;
 
   const hasChildren = item.items && item.items.length > 0;
   const isActive = exactMatch || (partialMatch && !hasChildren);
