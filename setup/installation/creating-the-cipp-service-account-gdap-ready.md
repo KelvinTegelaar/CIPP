@@ -72,7 +72,7 @@ It is recommended to use these values since the Permissions Check in [permission
 
 9. Select your GDAP groups
 
-_**If**_ you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`.If you have migrated but not using CIPP check the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
+_**If**_ you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`.If you have migrated but not using CIPP check the latest required GDAP roles check our [recommended-roles.md](../maintaining-cipp/recommended-roles.md "mention") page.
 
 If you have not migrated or used GDAP at all or are planning to onboard your GDAP tenants using CIPP, continue on. You'll want to come back after creating your `M365 GDAP` groups and add your service account to them.
 

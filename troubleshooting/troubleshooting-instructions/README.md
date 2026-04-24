@@ -75,7 +75,7 @@ The output of these checks includes information that may be possible for you to 
 #### GDAP Group Requirements
 
 1. **Recommended Roles:** When going through the invite process in CIPP, these groups will be automatically created. If you performed the migration with CIPP, these groups will start with `M365 GDAP`.
-   1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](../../setup/installation/recommended-roles.md "mention")
+   1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](../../setup/maintaining-cipp/recommended-roles.md "mention")
 2. **Don't over-assign GDAP roles.** Too many permissions will stop GDAP functionality.
    1. Review Microsoft's [GDAP frequently asked questions ](https://learn.microsoft.com/en-us/partner-center/gdap-faq)page for more information.
 

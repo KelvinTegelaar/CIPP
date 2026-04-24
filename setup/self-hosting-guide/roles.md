@@ -29,18 +29,18 @@ After the invite link is sent to the user, they must click on it to accept the i
 
 ### Additional User Setup
 
-Once you have your initial `admin` user added, you are now ready to finish the first setup. After completing the setup, you can return hereto set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
+Once you have your initial `admin` user added, you are now ready to finish the first setup. After completing the setup, you can return here to set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
 
 ### Built-In Roles
 
 CIPP features a role management system which utilizes the [Roles feature of Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#roles). The roles available in CIPP are as follows:
 
-| Role Name  | Description                                                                                                                                                           |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                  |
-| editor     | Allowed to perform everything, except change system settings and manage Standards.                                                                                    |
-| admin      | Allowed to perform everything.                                                                                                                                        |
-| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. |
+| Role Name  | Description                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                                  |
+| editor     | Allowed to perform everything, except change system settings and manage Standards.                                                                                                    |
+| admin      | Allowed to perform everything.                                                                                                                                                        |
+| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](../installation/owntenant.md "mention") settings. |
 
 You can assign these roles to users using the [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention") page.
 

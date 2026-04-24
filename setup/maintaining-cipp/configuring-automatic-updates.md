@@ -1,4 +1,4 @@
-# Configuring Automatic Updates
+# Configuring Automatic Github Updates
 
 {% hint style="warning" %}
 If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps and jump over to our [sponsor-quick-start.md](../resources/sponsor-quick-start.md "mention") guide for further direction.
@@ -118,4 +118,4 @@ Pull, like CIPP, is an Open Source Software project. Consider sponsoring the dev
 
 ### You’re All Set!
 
-With Pull handling your repository’s updates, your **self-hosted CIPP** instance will stay current with minimal effort. Just watch for those PR notifications, merge them, and enjoy the latest features!
+After setting up Pull you might also want to configure automatic API updates. When setting up automatic API updates the backend will automatically update when the new update is pulled into your repository.

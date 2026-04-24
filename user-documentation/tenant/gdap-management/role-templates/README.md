@@ -1,6 +1,6 @@
 # Role Templates
 
-This page will list the GDAP role templates that you have created. If this is your first time setting up CIPP, this page will prompt you to create the "CIPP Defaults" template that includes the 12 roles included on the [recommended-roles.md](../../../../setup/installation/recommended-roles.md "mention") page.
+This page will list the GDAP role templates that you have created. If this is your first time setting up CIPP, this page will prompt you to create the "CIPP Defaults" template that includes the 12 roles included on the [recommended-roles.md](../../../../setup/maintaining-cipp/recommended-roles.md "mention") page.
 
 ## Action Buttons
 

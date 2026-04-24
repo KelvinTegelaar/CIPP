@@ -6,7 +6,7 @@ On this page you can find a list of frequently asked questions about the CyberDr
 
 <summary>I updated, but CIPP still says my frontend is out of date. How do I fix this?</summary>
 
-SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found in [updating.md](../../setup/self-hosting-guide/updating.md "mention").
+SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found in [updating.md](../../setup/maintaining-cipp/updating.md "mention").
 
 CIPP-HOSTED NOTE: Updates can take several hours to roll out to all instances depending on how well GitHub and Azure are communicating at the time the release is pushed. If it's been more than 48 hours, follow these instructions and then reach out to CIPP's helpdesk if still not resolved.
 
@@ -381,7 +381,7 @@ This error can mean two things;
 * You migrated using different tools, such as Microsoft Lighthouse.
 * You didn't assign the groups to the user after migrating.
 
-Make sure you assign the correct groups to the CIPP service account. For more information see our best practices in [recommended-roles.md](../../setup/installation/recommended-roles.md "mention").
+Make sure you assign the correct groups to the CIPP service account. For more information see our best practices in [recommended-roles.md](../../setup/maintaining-cipp/recommended-roles.md "mention").
 
 </details>
 
@@ -389,7 +389,7 @@ Make sure you assign the correct groups to the CIPP service account. For more in
 
 <summary>I've already setup my GDAP relationships and given them access to a Global Administrator role. Can I still auto-extend these after their expiration?</summary>
 
-Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years. If your relationships contain at least the [recommended-roles.md](../../setup/installation/recommended-roles.md "mention") in addition to Global Administrator, you can go to [gdap-management](../../user-documentation/tenant/gdap-management/ "mention") -> [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention"), select one or more relationship and choose the action "Remove Global Administrator from Relationship". After waiting for changes to sync, you can then select the action "Enable automatic extension".
+Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years. If your relationships contain at least the [recommended-roles.md](../../setup/maintaining-cipp/recommended-roles.md "mention") in addition to Global Administrator, you can go to [gdap-management](../../user-documentation/tenant/gdap-management/ "mention") -> [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention"), select one or more relationship and choose the action "Remove Global Administrator from Relationship". After waiting for changes to sync, you can then select the action "Enable automatic extension".
 
 </details>
 
@@ -400,7 +400,7 @@ Auto Extend is only available for relationships without the Global Administrator
 If your CIPP-API isn't updating, start by checking the Actions tab in your repository for a workflow named `_master*.yml`.
 
 * **If the workflow is missing:**\
-  Your repository may not be fully configured. Follow the instructions provided in [#recreate-the-workflow-file](../../setup/self-hosting-guide/updating.md#recreate-the-workflow-file "mention")to restore the action workflow.
+  Your repository may not be fully configured. Follow the instructions provided in [#recreate-the-workflow-file](../../setup/maintaining-cipp/updating.md#recreate-the-workflow-file "mention")to restore the action workflow.
 
 </details>
 

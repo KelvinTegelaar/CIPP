@@ -1,7 +1,7 @@
 # CIPP-API
 
 {% hint style="warning" %}
-Self-hosted clients, please see the [self-hosted-api-setup.md](../../../setup/self-hosting-guide/self-hosted-api-setup.md "mention") for how to setup and configure your API for use before proceeding with this page.
+Self-hosted clients, please see the [self-hosted-api-setup.md](../../../setup/maintaining-cipp/self-hosted-api-setup.md "mention") for how to setup and configure your API for use before proceeding with this page.
 
 If you're using a **hosted CIPP instance**, you can follow the instructions below to set up and manage your API clients with no additional steps.
 {% endhint %}
@@ -17,7 +17,7 @@ If you're using a **hosted CIPP instance**, you can follow the instructions belo
       1. Click on Actions > Add Existing Client.
       2. Select the API Client from the list.
    3. Ensure that you Enable the client in order to save it to the Function App authentication settings.
-   4. Optionally set the [#custom-roles](../../../setup/installation/roles.md#custom-roles "mention") and Allowed IP Ranges for additional security.
+   4. Optionally set the [#custom-roles](../../../setup/self-hosting-guide/roles.md#custom-roles "mention") and Allowed IP Ranges for additional security.
    5. Submit the form to create the client. Remember to copy the Application secret to a secure location.
 3. Once you have the API Client(s) configured, click Actions > Save Azure Configuration, this updates the Function App authentication settings with the new Client IDs.
 

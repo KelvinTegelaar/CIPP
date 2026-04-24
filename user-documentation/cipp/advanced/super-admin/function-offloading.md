@@ -385,7 +385,7 @@ After successful deployment of the offloading function apps, follow these steps 
 
 ### Automatic Updates
 
-After setting up your additional function apps, make sure to enable CI/CD from the Deployment Center on each of them to ensure they stay on the same version as your main function app. Please see the [runfrompackage.md](../../../../setup/self-hosting-guide/runfrompackage.md "mention")document for the section "Run from Package" for more information.
+After setting up your additional function apps, make sure to enable CI/CD from the Deployment Center on each of them to ensure they stay on the same version as your main function app. Please see the [runfrompackage.md](../../../../setup/maintaining-cipp/runfrompackage.md "mention")document for the section "Run from Package" for more information.
 
 ## Limitations / Considerations
 

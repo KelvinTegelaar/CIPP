@@ -38,7 +38,7 @@ Multiple Potential Causes:
 
 1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 2. The user that was used for the CIPP authorization is a guest in this tenant
-3. You have not added the user to the correct group(s) for CIPP to function. See [recommended-roles.md](../setup/installation/recommended-roles.md "mention") for more information.
+3. You have not added the user to the correct group(s) for CIPP to function. See [recommended-roles.md](../setup/maintaining-cipp/recommended-roles.md "mention") for more information.
 
 ### AADSTS50020 or AADSTS50177
 
@@ -47,7 +47,7 @@ Multiple Potential Causes:
 * The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 * The user that was used for the CIPP authorization is a guest in this tenant
 * A Conditional Access policy may be blocking your access. Add your CSP tenant as a serviceProvider exception.
-* You have not added the user to the correct group(s) for CIPP to function. See [recommended-roles.md](../setup/installation/recommended-roles.md "mention") for more information.
+* You have not added the user to the correct group(s) for CIPP to function. See [recommended-roles.md](../setup/maintaining-cipp/recommended-roles.md "mention") for more information.
 
 {% hint style="info" %}
 **These errors may also present themselves something like the below. The steps above are still accurate in these cases:**

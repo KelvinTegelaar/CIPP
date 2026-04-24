@@ -1,6 +1,6 @@
-# I Want to Manage My Own Tenant
+# I want to manage my own tenant
 
-If you want to manage your own tenant or if you are not a Microsoft Partner but still want to use CIPP you can perform the setup and enable access to the partner tenant or enable Single Tenant Mode. The CIPP Service Account should be granted at least the [recommended-roles.md](recommended-roles.md "mention") within the tenant being managed.
+If you want to manage your own tenant or if you are not a Microsoft Partner but still want to use CIPP you can perform the setup and enable access to the partner tenant or enable Single Tenant Mode. The CIPP Service Account should be granted at least the [recommended-roles.md](../maintaining-cipp/recommended-roles.md "mention") within the tenant being managed.
 
 {% hint style="warning" %}
 To manage the tenant mode, a user with the CIPP "superadmin" roles will need to access the [tenant-mode.md](../../user-documentation/cipp/advanced/super-admin/tenant-mode.md "mention")page of the Super Admin settings.

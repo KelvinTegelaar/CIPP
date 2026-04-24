@@ -27,7 +27,7 @@ Select "Add GDAP Tennant" and click "Next Step"
 Select the GDAP Role Template you would like to use for this onboarding. This will automatically map your GDAP security groups with the GDAP roles.
 
 {% hint style="info" %}
-If this is your first GDAP tenant, you will be prompted to optionally add the CIPP Default role template. This role template will automatically create the 15 GDAP groups matching the [recommended-roles.md](recommended-roles.md "mention").
+If this is your first GDAP tenant, you will be prompted to optionally add the CIPP Default role template. This role template will automatically create the 15 GDAP groups matching the [recommended-roles.md](../maintaining-cipp/recommended-roles.md "mention").
 {% endhint %}
 {% endstep %}
 
@@ -72,7 +72,7 @@ Select "Add Direct Tenant" and click "Next Step"
 {% step %}
 ### Click "Connect to Tenant"
 
-Click the "Connect to Tenant" button. Use a service account with equivalent permissions as the partner tenant. More information on these roles can be found under [recommended-roles.md](recommended-roles.md "mention").
+Click the "Connect to Tenant" button. Use a service account with equivalent permissions as the partner tenant. More information on these roles can be found under [recommended-roles.md](../maintaining-cipp/recommended-roles.md "mention").
 
 {% hint style="info" %}
 Be sure to Consent on behalf of the organization to prevent any prompting for future users that may log into CIPP, such as a comanaged client technician.
@@ -92,18 +92,10 @@ Do not attempt to add your partner tenant as a direct tenant. This will result i
 
 ### Limitations of Direct Tenants
 
-There are limitations to what CIPP can do with directly added tenants due to some features relying on Lighthouse, Partner Center APIs, etc.
+There are limitations to what CIPP can do with directly added tenants due to some features relying on Lighthouse, Partner Center APIs or authentication via GDAP;
 
-* Permissions errors during addition of the tenant
-  * Consent can only be granted for permissions the direct tenant is licensed for.&#x20;
-  * To work around this until a more robust method can be devised, if you see one of these errors, remove the offending permission (NOT THE CONSENT) from the CIPP-SAM app registration in your tenant.&#x20;
-* Universal Search - This relies on Lighthouse to search for users
 * Admin Portal Links - These utilize the GDAP relationship to log in as your CSP user. You will have to log in to the portal with an account native to the tenant
 * Alerts - There are certain alerts that will only work with GDAP/Lighthouse
   * Alert if Defender is not running
   * Alert if Defender Malware found
 * Inactive Users Report - Relies on a CSP report
-
-## Role Management Considerations
-
-Any additional users who need access to your Microsoft CSP Tenants via the admin portals must be manually added to the relevant security groups. These groups start with "M365 GDAP".

@@ -11,7 +11,7 @@ Before being able to utilize the CIPP API, you need to first configure an API cl
 {% hint style="warning" %}
 #### Self-Hosted Clients
 
-If you originally deployed CIPP prior to v7.1 you will need to follow the instructions on [self-hosted-api-setup.md](../setup/self-hosting-guide/self-hosted-api-setup.md "mention")
+If you originally deployed CIPP prior to v7.1 you will need to follow the instructions on [self-hosted-api-setup.md](../setup/maintaining-cipp/self-hosted-api-setup.md "mention")
 {% endhint %}
 
 ## Authentication

@@ -18,7 +18,7 @@ To easily add users to these groups, you can do the following
 
 If multiple invites are generated, but not used, the unused ones can either be found on the [.](./ "mention") page. Here onboarding of the tenant can be started again. The invite needs to be accepted by a Global Administrator in the customer tenant.
 
-All mapped GDAP [roles](../roles/ "mention") can be selected from the list. To use the [recommended-roles.md](../../../../setup/installation/recommended-roles.md "mention"), select "CIPP Defaults".
+All mapped GDAP [roles](../roles/ "mention") can be selected from the list. To use the [recommended-roles.md](../../../../setup/maintaining-cipp/recommended-roles.md "mention"), select "CIPP Defaults".
 
 ***
 

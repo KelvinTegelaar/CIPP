@@ -1,10 +1,4 @@
----
-description: >-
-  Whenever you push changes to the chosen branch, the Function App updates
-  itself automatically if you follow this guide.
----
-
-# Setup Automatic API Updates
+# Configuring Automatic API Updates
 
 {% hint style="warning" %}
 If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps and jump over to our [sponsor-quick-start.md](../resources/sponsor-quick-start.md "mention") guide for further direction.

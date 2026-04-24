@@ -22,7 +22,7 @@ If you've started the sponsorship process and are ready to enhance your manageme
 
 ## Accessing CIPP & Executing Setup Wizard
 
-5. **Add Yourself to CIPP:** On the [User Management](https://management.cipp.app/invite-users) page in your management portal, ensure you've invited your work account as an `admin` into your newly deployed instance to avoid `403 Forbidden` errors during login. Further guidance can be found on the [roles.md](../installation/roles.md "mention") page.
+5. **Add Yourself to CIPP:** On the [User Management](https://management.cipp.app/invite-users) page in your management portal, ensure you've invited your work account as an `admin` into your newly deployed instance to avoid `403 Forbidden` errors during login. Further guidance can be found on the [roles.md](../self-hosting-guide/roles.md "mention") page.
 6. **Execute Setup Wizard:** Follow the instructions on the [Executing the Setup Wizard](../installation/executing-the-setup-wizard.md) page once logged into your CIPP instance using your newly invited account, **NOT** the service account. The service account is only used during specific configuration steps within the Setup Wizard.
 
 ## **Managing Client Relationships**

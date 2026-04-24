@@ -32,7 +32,7 @@ If authentication fails, assign Global Administrator to the service account temp
 Choose how you want to connect your tenants. Even if you’re not a Microsoft Partner, we strongly recommend selecting **"Connect to Partner Tenant"** first. This allows CIPP to manage credentials and application permissions effectively.
 
 * You can also add tenants individually, outside your partner relationship.
-* For these separate tenants, use a service account with equivalent permissions as the partner tenant. More information on these roles can be found under [recommended-roles.md](recommended-roles.md "mention")
+* For these separate tenants, use a service account with equivalent permissions as the partner tenant. More information on these roles can be found under [recommended-roles.md](../maintaining-cipp/recommended-roles.md "mention")
 {% endstep %}
 
 {% step %}

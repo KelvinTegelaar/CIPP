@@ -94,7 +94,7 @@ Click **Apply** (bottom of page) then **Confirm** after adding all settings.
 
 In a self-hosted environment the package URL points to a zip file inside **your own storage account**. The easiest way to restore it correctly is to re-run the GitHub Actions deployment workflow, which will write the correct URL automatically.
 
-See the CIPP documentation for instructions: [Setup Automatic API Updates](../../setup/self-hosting-guide/runfrompackage.md)
+See the CIPP documentation for instructions: [Setup Automatic API Updates](../../setup/maintaining-cipp/runfrompackage.md)
 
 ## Verify the Fix
 
