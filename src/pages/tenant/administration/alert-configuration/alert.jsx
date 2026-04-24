@@ -145,7 +145,25 @@ const AlertWizard = () => {
           alert.RawAlert.PostExecution.split(',').includes(opt.value)
         )
         let tenantFilterForForm
-        if (alert.RawAlert.TenantGroup) {
+        if (alert.RawAlert.Tenants) {
+          // Multi tenant alert - parse stored JSON
+          try {
+            const parsedTenants =
+              typeof alert.RawAlert.Tenants === 'string'
+                ? JSON.parse(alert.RawAlert.Tenants)
+                : alert.RawAlert.Tenants
+            tenantFilterForForm = Array.isArray(parsedTenants) ? parsedTenants : [parsedTenants]
+          } catch (error) {
+            console.error('Error parsing Tenants:', error)
+            tenantFilterForForm = [
+              {
+                value: alert.RawAlert.Tenant,
+                label: alert.RawAlert.Tenant,
+                type: 'Tenant',
+              },
+            ]
+          }
+        } else if (alert.RawAlert.TenantGroup) {
           try {
             const tenantGroupObject = JSON.parse(alert.RawAlert.TenantGroup)
             tenantFilterForForm = {
@@ -156,18 +174,23 @@ const AlertWizard = () => {
             }
           } catch (error) {
             console.error('Error parsing tenant group:', error)
-            tenantFilterForForm = {
+            tenantFilterForForm = [
+              {
+                value: alert.RawAlert.Tenant,
+                label: alert.RawAlert.Tenant,
+                type: 'Tenant',
+              },
+            ]
+          }
+        } else {
+          // Single tenant
+          tenantFilterForForm = [
+            {
               value: alert.RawAlert.Tenant,
               label: alert.RawAlert.Tenant,
               type: 'Tenant',
-            }
-          }
-        } else {
-          tenantFilterForForm = {
-            value: alert.RawAlert.Tenant,
-            label: alert.RawAlert.Tenant,
-            type: 'Tenant',
-          }
+            },
+          ]
         }
         let startDateTimeForForm = null
         if (alert.RawAlert.DesiredStartTime && alert.RawAlert.DesiredStartTime !== '0') {
@@ -472,13 +495,16 @@ const AlertWizard = () => {
       return {}
     }
 
+    const tenants = Array.isArray(values.tenantFilter) ? values.tenantFilter : [values.tenantFilter]
+    const tenantLabel = tenants.map((t) => t.label || t.value).join(', ')
+
     const postObject = {
       RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
       tenantFilter: values.tenantFilter,
       excludedTenants: values.excludedTenants,
       Name: values.CustomSubject
-        ? `${values.tenantFilter?.label || values.tenantFilter?.value}: ${values.CustomSubject}`
-        : `${values.tenantFilter?.label || values.tenantFilter?.value}: ${values.command.label}`,
+        ? `${tenantLabel}: ${values.CustomSubject}`
+        : `${tenantLabel}: ${values.command.label}`,
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
       Parameters: getInputParams(),
       ScheduledTime: Math.floor(new Date().getTime() / 1000) + 60,
@@ -489,7 +515,7 @@ const AlertWizard = () => {
       CustomSubject: values.CustomSubject,
     }
     apiRequest.mutate(
-      { url: '/api/AddScheduledItem?hidden=true', data: postObject },
+      { url: '/api/AddScriptedAlert', data: postObject },
       {
         onSuccess: () => {
           // Prevent form reload after successful save
@@ -884,19 +910,22 @@ const AlertWizard = () => {
                             <Grid size={12}>
                               <CippFormTenantSelector
                                 allTenants={true}
-                                multiple={false}
+                                multiple={true}
                                 formControl={formControl}
                                 label="Included Tenants for alert"
                                 includeGroups={true}
+                                required={true}
                                 validators={{
-                                  required: { value: true, message: 'This field is required' },
+                                  validate: (value) =>
+                                    value?.length > 0 ||
+                                    'At least one tenant or *All Tenants must be selected',
                                 }}
                               />
                             </Grid>
                             <CippFormCondition
                               field="tenantFilter"
                               formControl={formControl}
-                              compareType="contains"
+                              compareType="valueContains"
                               compareValue="AllTenants"
                               clearOnHide={false}
                             >
