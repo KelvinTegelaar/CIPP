@@ -18,11 +18,31 @@ const MAX_COL_SIZE = 500
 // resize handle, filter icon). These sit alongside the header text and consume space.
 const HEADER_CHROME_PX = 75
 
+// Extra pixels per chip for icon + internal padding + margin.
+const CHIP_CHROME_PX = 45
+
+// DateTime columns render as relative time (e.g. "about 2 months ago"). Use a fixed
+// character length instead of measuring the raw ISO date string.
+const RELATIVE_TIME_CHARS = 20
+
+// Known datetime accessor names and pattern — must stay in sync with get-cipp-formatting.js
+const TIME_AGO_NAMES = new Set([
+  'ExecutedTime', 'ScheduledTime', 'Timestamp', 'timestamp', 'DateTime', 'LastRun',
+  'LastRefresh', 'createdDateTime', 'activatedDateTime', 'lastModifiedDateTime',
+  'endDateTime', 'ReceivedTime', 'Expires', 'updatedAt', 'createdAt', 'Received',
+  'Date', 'WhenCreated', 'WhenChanged', 'CreationTime', 'renewalDate',
+  'commitmentTerm.renewalConfiguration.renewalDate', 'purchaseDate', 'NextOccurrence',
+  'LastOccurrence', 'NotBefore', 'NotAfter', 'latestDataCollection',
+  'requestDate', 'reviewedDate', 'GeneratedAt',
+])
+const MATCH_DATE_TIME = /([dD]ate[tT]ime|[Ee]xpiration|[Tt]imestamp|[sS]tart[Dd]ate)/
+const isDateTimeColumn = (key) => TIME_AGO_NAMES.has(key) || MATCH_DATE_TIME.test(key)
+
 // Measure the pixel width a column needs based on its header and sampled cell values.
 // rawValues are the original data values (before formatting) — if they contain arrays or
 // complex objects the column renders as a button/chip list, so we cap to header width.
 // Returns { size, minSize } where minSize is always header-width + chrome safe space.
-const measureColumnSize = (header, valuesForColumn, rawValues) => {
+const measureColumnSize = (header, valuesForColumn, rawValues, accessorKey) => {
   const headerLen = header ? header.length : 6
   const headerPx = Math.round(headerLen * CHAR_WIDTH + CELL_PADDING + HEADER_CHROME_PX)
   const minSize = Math.max(MIN_COL_SIZE, headerPx)
@@ -40,32 +60,62 @@ const measureColumnSize = (header, valuesForColumn, rawValues) => {
       // "X items" button (CippDataTableButton), so size to the button width.
       const allObjectLike = rawValues.every((v) => {
         if (v === null || v === undefined) return true // nulls are fine, they show "No items"
-        if (Array.isArray(v)) return v.some((el) => typeof el === 'object' && el !== null)
+        if (Array.isArray(v)) return v.length === 0 || v.some((el) => typeof el === 'object' && el !== null)
         return typeof v === 'object'
       })
       if (allObjectLike) {
-        // "X items" button is roughly 80-100px wide — just use header width
-        return { size: minSize, minSize }
+        // The formatted text tells us how this column actually renders:
+        // - JSON strings (starts with [ or {) → CippDataTableButton ("X items"), compact
+        // - Comma-separated text → chips/inline content, needs real measurement
+        const looksLikeButton = valuesForColumn.every((t) => {
+          if (t === null || t === undefined || t === '' || t === 'No data') return true
+          if (Array.isArray(t)) return true // handler returned a raw array (e.g. [])
+          const s = typeof t === 'string' ? t.trim() : ''
+          return s.startsWith('[') || s.startsWith('{') || s === 'Password hidden'
+        })
+        if (looksLikeButton) {
+          return { size: minSize, minSize }
+        }
+        // Object arrays that render as chips — measure the longest item from the
+        // comma-separated text representation.
+        let longestObjItem = headerLen
+        for (const t of valuesForColumn) {
+          if (typeof t !== 'string') continue
+          const parts = t.split(',')
+          for (const p of parts) {
+            const len = p.trim().length
+            if (len > longestObjItem) longestObjItem = len
+          }
+        }
+        const objChipPx = Math.round(longestObjItem * CHAR_WIDTH + CELL_PADDING + CHIP_CHROME_PX + HEADER_CHROME_PX)
+        const objSize = Math.max(minSize, Math.min(MAX_COL_SIZE, objChipPx))
+        return { size: objSize, minSize }
       }
 
-      // String/primitive arrays → rendered as chip list. Measure longest chip,
-      // but cap per-chip text since chips truncate long values (e.g. email addresses).
-      const MAX_CHIP_TEXT = 15
+      // String/primitive arrays → rendered as chip list. Measure the longest
+      // single item across all rows, then size like a regular text column.
       let longestItem = headerLen
       for (let i = 0; i < rawValues.length; i++) {
         const v = rawValues[i]
         if (Array.isArray(v)) {
           for (const el of v) {
             const s = typeof el === 'string' ? el : el != null ? String(el) : ''
-            const len = Math.min(s.length, MAX_CHIP_TEXT)
-            if (len > longestItem) longestItem = len
+            if (s.length > longestItem) longestItem = s.length
           }
         }
       }
-      const chipPx = Math.round(longestItem * CHAR_WIDTH + CELL_PADDING)
+      const chipPx = Math.round(longestItem * CHAR_WIDTH + CELL_PADDING + CHIP_CHROME_PX + HEADER_CHROME_PX)
       const size = Math.max(minSize, Math.min(MAX_COL_SIZE, chipPx))
       return { size, minSize }
     }
+  }
+
+  // DateTime columns render as relative time — use a fixed width instead of the raw string.
+  if (accessorKey && isDateTimeColumn(accessorKey)) {
+    const dtLen = Math.max(headerLen, RELATIVE_TIME_CHARS)
+    const dtPx = Math.round(dtLen * CHAR_WIDTH + CELL_PADDING)
+    const size = Math.max(minSize, Math.min(MAX_COL_SIZE, dtPx))
+    return { size, minSize }
   }
 
   const sample =
@@ -214,7 +264,7 @@ export const utilColumnsFromAPI = (dataArray) => {
         // Measure content width from formatted text values for this column.
         const textValues = valuesForColumn.map((v) => getCippFormatting(v, accessorKey, 'text'))
         const header = getCippTranslation(accessorKey)
-        const measuredSize = measureColumnSize(header, textValues, valuesForColumn)
+        const measuredSize = measureColumnSize(header, textValues, valuesForColumn, accessorKey)
 
         // Allow per-column size overrides for columns whose rendered output
         // doesn't match text width (icons, progress bars, etc.).
