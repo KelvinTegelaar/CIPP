@@ -4,8 +4,8 @@ import { PermissionButton } from '../../../../utils/permissions.js'
 import { CippPolicyDeployDrawer } from '../../../../components/CippComponents/CippPolicyDeployDrawer.jsx'
 import { useSettings } from '../../../../hooks/use-settings.js'
 import { useCippIntunePolicyActions } from '../../../../components/CippComponents/CippIntunePolicyActions.jsx'
-import { Sync, Info, CloudDone, Bolt } from '@mui/icons-material'
-import { Button, SvgIcon, IconButton, Tooltip, Chip } from '@mui/material'
+import { Sync, CloudDone, Bolt } from '@mui/icons-material'
+import { Button, SvgIcon, Tooltip, Chip } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useDialog } from '../../../../hooks/use-dialog'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
@@ -45,7 +45,8 @@ const Page = () => {
   }
 
   const simpleColumns = [
-    ...(useReportDB ? ['Tenant', 'CacheTimestamp'] : []),
+    ...(useReportDB ? ['CacheTimestamp'] : []),
+    ...(useReportDB && isAllTenants ? ['Tenant'] : []),
     'displayName',
     'PolicyTypeName',
     'PolicyAssignment',
@@ -81,8 +82,8 @@ const Page = () => {
           isAllTenants
             ? 'AllTenants always uses cached data'
             : useReportDB
-              ? 'Showing cached data from the Reporting Database — click to switch to live'
-              : 'Showing live data — click to switch to cache'
+              ? 'Showing cached data from the Reporting Database - click to switch to live'
+              : 'Showing live data - click to switch to cache'
         }
       >
         <span>

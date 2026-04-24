@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage";
+import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import {
   TrashIcon,
   PencilIcon,
@@ -16,14 +17,19 @@ import {
   IconButton,
   CircularProgress,
   DialogActions,
+  Chip,
+  SvgIcon,
+  Tooltip,
 } from "@mui/material";
 import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { Close, Save, LaptopChromebook } from "@mui/icons-material";
+import { Close, Save, LaptopChromebook, Sync, CloudDone, Bolt } from "@mui/icons-material";
 import { useSettings } from "../../../../hooks/use-settings";
+import { useDialog } from "../../../../hooks/use-dialog";
 import { Stack } from "@mui/system";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { CippQueueTracker } from "../../../../components/CippTable/CippQueueTracker";
 
 const assignmentModeOptions = [
   { label: "Replace existing assignments", value: "replace" },
@@ -39,6 +45,17 @@ const Page = () => {
   const [codeContentChanged, setCodeContentChanged] = useState(false);
   const [warnOpen, setWarnOpen] = useState(false);
   const [currentScript, setCurrentScript] = useState(null);
+  const [scriptTenant, setScriptTenant] = useState(null);
+
+  const tenantFilter = useSettings().currentTenant;
+  const isAllTenants = tenantFilter === "AllTenants";
+  const syncDialog = useDialog();
+  const [syncQueueId, setSyncQueueId] = useState(null);
+  const [useReportDB, setUseReportDB] = useState(isAllTenants);
+
+  useEffect(() => {
+    setUseReportDB(tenantFilter === "AllTenants");
+  }, [tenantFilter]);
 
   const dispatch = useDispatch();
 
@@ -48,17 +65,16 @@ const Page = () => {
       : "powershell";
   }, [currentScript?.scriptType]);
 
-  const tenantFilter = useSettings().currentTenant;
   const {
     isLoading: scriptIsLoading,
     isRefetching: scriptIsFetching,
     refetch: scriptRefetch,
     data,
   } = useQuery({
-    queryKey: ["script", { scriptId }],
+    queryKey: ["script", { scriptId, scriptTenant }],
     queryFn: async () => {
       const response = await fetch(
-        `/api/EditIntuneScript?TenantFilter=${tenantFilter}&ScriptId=${scriptId}`
+        `/api/EditIntuneScript?TenantFilter=${scriptTenant || tenantFilter}&ScriptId=${scriptId}`
       );
       return response.json();
     },
@@ -79,6 +95,7 @@ const Page = () => {
 
   const handleScriptEdit = async (row, action) => {
     setScriptId(row.id);
+    setScriptTenant(row?.Tenant || tenantFilter);
     setCodeOpen(!codeOpen);
   };
 
@@ -94,6 +111,7 @@ const Page = () => {
       setCodeOpen(!codeOpen);
       setCodeContentChanged(false);
       setScriptId(null);
+      setScriptTenant(null);
       setCodeContent("");
     }
   };
@@ -114,7 +132,7 @@ const Page = () => {
         scriptType,
       } = currentScript;
       const patchData = {
-        TenantFilter: tenantFilter,
+        TenantFilter: scriptTenant || tenantFilter,
         ScriptId: id,
         ScriptType: scriptType,
         IntuneScript: JSON.stringify({
@@ -197,7 +215,7 @@ const Page = () => {
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       customDataformatter: (row, action, formData) => ({
-        tenantFilter: tenantFilter,
+        tenantFilter: tenantFilter === "AllTenants" && row?.Tenant ? row.Tenant : tenantFilter,
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: "allLicensedUsers",
@@ -223,7 +241,7 @@ const Page = () => {
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       customDataformatter: (row, action, formData) => ({
-        tenantFilter: tenantFilter,
+        tenantFilter: tenantFilter === "AllTenants" && row?.Tenant ? row.Tenant : tenantFilter,
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: "AllDevices",
@@ -249,7 +267,7 @@ const Page = () => {
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
       customDataformatter: (row, action, formData) => ({
-        tenantFilter: tenantFilter,
+        tenantFilter: tenantFilter === "AllTenants" && row?.Tenant ? row.Tenant : tenantFilter,
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: "AllDevicesAndUsers",
@@ -305,7 +323,7 @@ const Page = () => {
       customDataformatter: (row, action, formData) => {
         const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : [];
         return {
-          tenantFilter: tenantFilter,
+          tenantFilter: tenantFilter === "AllTenants" && row?.Tenant ? row.Tenant : tenantFilter,
           ID: row?.id,
           Type: getScriptEndpoint(row?.scriptType),
           GroupIds: selectedGroups.map((group) => group.value).filter(Boolean),
@@ -354,6 +372,8 @@ const Page = () => {
   };
 
   const simpleColumns = [
+    ...(useReportDB ? ["CacheTimestamp"] : []),
+    ...(useReportDB && isAllTenants ? ["Tenant"] : []),
     "scriptType",
     "displayName",
     "ScriptAssignment",
@@ -363,14 +383,63 @@ const Page = () => {
     "lastModifiedDateTime",
   ];
 
+  const pageActions = [
+    <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
+      {useReportDB && (
+        <>
+          <CippQueueTracker
+            queueId={syncQueueId}
+            queryKey={`ListIntuneScript-${tenantFilter}`}
+            title="Intune Scripts Sync"
+          />
+          <Button
+            startIcon={
+              <SvgIcon fontSize="small">
+                <Sync />
+              </SvgIcon>
+            }
+            size="xs"
+            onClick={syncDialog.handleOpen}
+          >
+            Sync
+          </Button>
+        </>
+      )}
+      <Tooltip
+        title={
+          isAllTenants
+            ? "AllTenants always uses cached data"
+            : useReportDB
+              ? "Showing cached data from the Reporting Database - click to switch to live"
+              : "Showing live data - click to switch to cache"
+        }
+      >
+        <span>
+          <Chip
+            icon={useReportDB ? <CloudDone /> : <Bolt />}
+            label={useReportDB ? "Cached" : "Live"}
+            color="primary"
+            size="small"
+            onClick={isAllTenants ? undefined : () => setUseReportDB((prev) => !prev)}
+            clickable={!isAllTenants}
+            disabled={isAllTenants}
+            variant="outlined"
+          />
+        </span>
+      </Tooltip>
+    </Stack>,
+  ];
+
   return (
     <>
       <CippTablePage
         title={pageTitle}
-        apiUrl="/api/ListIntuneScript"
+        apiUrl={`/api/ListIntuneScript${useReportDB ? "?UseReportDB=true" : ""}`}
+        queryKey={`ListIntuneScript-${tenantFilter}-${useReportDB}`}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
+        cardButton={pageActions}
       />
 
       <Dialog open={codeOpen} maxWidth="lg" fullWidth>
@@ -427,6 +496,7 @@ const Page = () => {
               setWarnOpen(false);
               setCodeContent("");
               setScriptId(null);
+              setScriptTenant(null);
               setCodeContentChanged(false);
             }}
           >
@@ -434,9 +504,28 @@ const Page = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <CippApiDialog
+        createDialog={syncDialog}
+        title="Sync Intune Scripts Report"
+        fields={[]}
+        api={{
+          type: "GET",
+          url: "/api/ExecCIPPDBCache",
+          confirmText: `Run Intune scripts cache sync for ${tenantFilter}? This will update script data immediately.`,
+          relatedQueryKeys: [`ListIntuneScript-${tenantFilter}-true`],
+          data: {
+            Name: "IntuneScripts",
+          },
+          onSuccess: (result) => {
+            if (result?.Metadata?.QueueId) {
+              setSyncQueueId(result?.Metadata?.QueueId);
+            }
+          },
+        }}
+      />
     </>
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 export default Page;
