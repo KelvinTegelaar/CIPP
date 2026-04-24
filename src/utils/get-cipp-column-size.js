@@ -23,6 +23,11 @@ export const getCippColumnSize = (accessorKey, header) => {
     case 'info.logoUrl':
       return { size: 'header', minSize: 'header' }
 
+    // String arrays that named handlers transform into CippDataTableButton
+    // ("X items" button) — don't measure the raw text.
+    case 'proxyAddresses':
+      return { size: 'header', minSize: 'header' }
+
     default:
       return null
   }
