@@ -856,6 +856,8 @@ export const CippDataTable = (props) => {
     layoutMode: 'grid-no-grow',
     enableRowVirtualization: true,
     enableColumnVirtualization: true,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
     rowVirtualizerOptions: {
       overscan: 5,
     },

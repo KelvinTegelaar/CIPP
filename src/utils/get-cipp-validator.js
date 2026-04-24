@@ -41,7 +41,7 @@ export const getCippValidator = (value, type) => {
     case "wildcardDomain":
       return /^(\*\.)?([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.\*)?$/.test(value) || /^(\*)?[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\*)?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$/.test(value) || "This is not a valid domain pattern";
     case "wildcardUrl":
-      return /^(https?:\/\/)?(\*\.)?([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.\*)?([\/\?\*][a-zA-Z0-9\-\.\~\*\/\?=&%]*)?$/.test(value) || "This is not a valid URL pattern";
+      return /^(https?:\/\/)?(\*\.)?([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.\*)?([\/\?\*][a-zA-Z0-9\-\.\~\*\/\?=&%]*)?$/.test(value) || "This is not a valid URL pattern";
     case "senderEntry":
       return (
         /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/.test(value) ||
