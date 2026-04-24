@@ -61,6 +61,10 @@ Some values have special display settings for ease of reading.
 | Boolean    | Columns that display information in a Boolean will utilize a graphical representation instead of `true` and `false`. The value for `true` will display as a check mark. The value for `false` will display as a circle with an X in it. |
 | Table      | Columns that return data in a complex list will an orange button with the number of items in the list. Clicking the button will open a modal that will display a second table with the contents of that list.                           |
 
+## Column Resizing
+
+Columns can be resized for easier viewing of information while looking at the table. Hover your mouse over the divider between the column headers and you can hold left click to drag the divider. The resizing will reset on next page load.
+
 ## Actions
 
 Most tables also include an "Actions" column that will be visible to the right of the table. Clicking the ellipses will open the menu for available per-row actions that can be taken for this table. In many tables, selecting multiple check boxes next to rows will enable a `Bulk Actions` button for you to take the same action on every row selected.

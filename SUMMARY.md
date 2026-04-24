@@ -84,6 +84,8 @@
     * [Roles](user-documentation/identity/administration/roles.md)
     * [JIT Admin](user-documentation/identity/administration/jit-admin/README.md)
       * [Add JIT Admin](user-documentation/identity/administration/jit-admin/add.md)
+    * [JIT Admin Templates](user-documentation/identity/administration/jit-admin-templates/README.md)
+      * [Add JIT Admin Template](user-documentation/identity/administration/jit-admin-templates/add-jit-admin-template.md)
     * [Vacation Mode](user-documentation/identity/administration/vacation-mode/README.md)
       * [Add Vacation Schedule](user-documentation/identity/administration/vacation-mode/add-vacation-schedule.md)
     * [Offboarding Wizard](user-documentation/identity/administration/offboarding-wizard.md)

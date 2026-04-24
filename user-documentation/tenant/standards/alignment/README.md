@@ -10,6 +10,10 @@ This page will allow you to get a snapshot overview of your tenants and their al
 
 ## Table Details
 
+### Summary View
+
+This view shows you a high level overview of your tenant compliance with your standards templates.
+
 | Column                     | Description                                                                                                                                                                                                                       |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Tenant                     | The name of the tenant                                                                                                                                                                                                            |
@@ -20,9 +24,22 @@ This page will allow you to get a snapshot overview of your tenants and their al
 | Combined Alignment Score   | This reweights alignment to account for the number of standards in the template that the tenant is not licensed for. If the tenant is not licensed for any of the features, they will not count against alignment in this column. |
 | Latest Data Collection     | Relative time since the last standards run to gather information needed to calculate the alignment report.                                                                                                                        |
 
+### Per Standard View
+
+This view breaks out the compliance review to a per standard basis to get an overview of how all your tenants score across each. You can use this table to filter to look at specific standards
+
+| Column                 | Description                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| Tenant                 | The name of the tenant                                                                         |
+| Compliance Status      | The status of the standard compliance. One of `Non-Compliant`, `License Missing`, `Compliant`. |
+| Standard Name          | The name of the standard being evaluated                                                       |
+| Template Name          | The template containing the standard                                                           |
+| Standard Type          | The type of template. One of `Drift Standard` or `Classic Standard`                            |
+| Latest Data Collection | The relative time since the last data collection                                               |
+
 ## Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Tenant Report</td><td>Opens <a data-mention href="../../manage/applied-standards.md">applied-standards.md</a> for the selected standards template.</td><td>false</td></tr><tr><td>Manage Drift</td><td>Opens the <a data-mention href="../../manage/drift.md">drift.md</a> page to the selected drift standard.</td><td>false</td></tr><tr><td>Remove Drift Customization</td><td>Removes all global and client level overrides from the standard and resets it to the template settings</td><td>true</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Tenant Report</td><td>Opens <a data-mention href="../../manage/applied-standards.md">applied-standards.md</a> for the selected standards template.</td><td>false</td></tr><tr><td>Edit Template</td><td>Opens the selected standard to edit.</td><td>false</td></tr><tr><td>Manage Drift</td><td>Opens the <a data-mention href="../../manage/drift.md">drift.md</a> page to the selected drift standard.</td><td>false</td></tr><tr><td>Remove Drift Customization</td><td>Removes all global and client level overrides from the standard and resets it to the template settings</td><td>true</td></tr></tbody></table>
 
 ## Known Issues
 

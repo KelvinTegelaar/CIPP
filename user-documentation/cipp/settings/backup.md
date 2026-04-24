@@ -56,6 +56,7 @@ The following tables will get copied into the backup:
 * CommunityRepos
 * Config
 * CustomData
+* CustomPowershellScripts
 * CustomRoles
 * CustomVariables
 * Domains

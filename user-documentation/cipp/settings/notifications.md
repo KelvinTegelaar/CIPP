@@ -135,8 +135,10 @@ Those who are utilizing the Rewst crate to handle CIPP notifications should not 
 
 You are able to select to send a test alert. Select which options you want to include in your test before clicking `Confirm`.
 
+## Alert Flow Visualized
+
+<figure><img src="../../../.gitbook/assets/paths_overview.png" alt=""><figcaption></figcaption></figure>
+
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../.gitbook/includes/feature-request.md" %}
