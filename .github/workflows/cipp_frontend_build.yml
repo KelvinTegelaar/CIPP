@@ -38,6 +38,13 @@ jobs:
       - name: Build Project
         run: npm run build
 
+      # Update version.json with commit hash
+      - name: Update version.json
+        run: |
+          VERSION=$(jq -r '.version' public/version.json)
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "{\"version\": \"${VERSION}\", \"commit\": \"${SHORT_SHA}\"}" > out/version.json
+
       # Create ZIP File in a New Source Directory
       - name: Prepare and Zip Build Files
         run: |
