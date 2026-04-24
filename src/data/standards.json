@@ -6102,17 +6102,11 @@
     "docsDescription": "Creates five Exchange Online transport rules grouped by the first letter of user display names (A-E, F-J, K-O, P-T, U-Z). Each rule fires when an external sender's From header matches a display name in that group, prepends a configurable HTML warning banner, and skips emails from accepted organisational domains. Any manually configured sender or domain exemptions on existing rules are preserved when the standard runs. The disclaimer HTML is fully customisable via the standard settings.",
     "executiveText": "Protects staff from display-name impersonation attacks by injecting a visible warning banner on emails that appear to come from a colleague but originate externally. Rules are maintained automatically across all letter groups and updated whenever the standard runs.",
     "addedComponent": [
-      { "type": "heading", "label": "Alert Banner (HTML)", "required": false },
       {
         "type": "textField",
         "name": "standards.ColleagueImpersonationAlert.disclaimerHtml",
         "label": "Disclaimer HTML – Paste the full HTML for the warning banner",
         "required": true
-      },
-      {
-        "type": "heading",
-        "label": "Keyword Exclusions (Exclude certain users by keywords)",
-        "required": false
       },
       {
         "type": "autoComplete",
@@ -6122,7 +6116,6 @@
         "creatable": true,
         "required": false
       },
-      { "type": "heading", "label": "Exempt Senders (Email Accounts)", "required": false },
       {
         "type": "autoComplete",
         "name": "standards.ColleagueImpersonationAlert.additionalExemptSenders",
