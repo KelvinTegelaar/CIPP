@@ -2,14 +2,13 @@ import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
 import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
-import { LaptopMac, Sync, BookmarkAdd, CloudDone, Bolt } from "@mui/icons-material";
+import { LaptopMac, Sync, BookmarkAdd } from "@mui/icons-material";
 import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
-import { Button, Chip, SvgIcon, Tooltip } from "@mui/material";
+import { Button } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useSettings } from "../../../../hooks/use-settings.js";
 import { useDialog } from "../../../../hooks/use-dialog.js";
-import { CippQueueTracker } from "../../../../components/CippTable/CippQueueTracker";
-import { useEffect, useState } from "react";
+import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const assignmentIntentOptions = [
   { label: "Required", value: "Required" },
@@ -48,15 +47,16 @@ const mapOdataToAppType = (odataType) => {
 const Page = () => {
   const pageTitle = "Applications";
   const vppSyncDialog = useDialog();
-  const cacheSyncDialog = useDialog();
   const tenant = useSettings().currentTenant;
-  const isAllTenants = tenant === "AllTenants";
-  const [syncQueueId, setSyncQueueId] = useState(null);
-  const [useReportDB, setUseReportDB] = useState(isAllTenants);
 
-  useEffect(() => {
-    setUseReportDB(tenant === "AllTenants");
-  }, [tenant]);
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListApps",
+    queryKey: "ListApps",
+    cacheName: "IntuneApplications",
+    syncTitle: "Sync Intune Applications Report",
+    allowToggle: true,
+    defaultCached: false,
+  });
 
   const getAssignmentFilterFields = () => [
     {
@@ -302,8 +302,7 @@ const Page = () => {
   };
 
   const simpleColumns = [
-    ...(useReportDB ? ["CacheTimestamp"] : []),
-    ...(useReportDB && isAllTenants ? ["Tenant"] : []),
+    ...reportDB.cacheColumns,
     "displayName",
     "AppAssignment",
     "AppExclude",
@@ -312,69 +311,22 @@ const Page = () => {
     "createdDateTime",
   ];
 
-  const pageActions = [
-    <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
-      {useReportDB && (
-        <>
-          <CippQueueTracker
-            queueId={syncQueueId}
-            queryKey={`ListApps-${tenant}-true`}
-            title="Intune Applications Sync"
-          />
-          <Button
-            startIcon={
-              <SvgIcon fontSize="small">
-                <Sync />
-              </SvgIcon>
-            }
-            size="xs"
-            onClick={cacheSyncDialog.handleOpen}
-          >
-            Sync
-          </Button>
-        </>
-      )}
-      <Tooltip
-        title={
-          isAllTenants
-            ? "AllTenants always uses cached data"
-            : useReportDB
-              ? "Showing cached data from the Reporting Database - click to switch to live"
-              : "Showing live data - click to switch to cache"
-        }
-      >
-        <span>
-          <Chip
-            icon={useReportDB ? <CloudDone /> : <Bolt />}
-            label={useReportDB ? "Cached" : "Live"}
-            color="primary"
-            size="small"
-            onClick={isAllTenants ? undefined : () => setUseReportDB((prev) => !prev)}
-            clickable={!isAllTenants}
-            disabled={isAllTenants}
-            variant="outlined"
-          />
-        </span>
-      </Tooltip>
-    </Stack>,
-  ];
-
   return (
     <>
       <CippTablePage
         title={pageTitle}
-        apiUrl={`/api/ListApps${useReportDB ? "?UseReportDB=true" : ""}`}
+        apiUrl={reportDB.resolvedApiUrl}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
-        queryKey={`ListApps-${tenant}-${useReportDB}`}
+        queryKey={reportDB.resolvedQueryKey}
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             <CippApplicationDeployDrawer />
             <Button onClick={vppSyncDialog.handleOpen} startIcon={<Sync />}>
               Sync VPP
             </Button>
-            {pageActions}
+            {reportDB.controls}
           </Stack>
         }
       />
@@ -388,25 +340,7 @@ const Page = () => {
           confirmText: `Are you sure you want to sync Apple Volume Purchase Program (VPP) tokens? This will sync all VPP tokens for ${tenant}.`,
         }}
       />
-      <CippApiDialog
-        title="Sync Intune Applications Report"
-        createDialog={cacheSyncDialog}
-        fields={[]}
-        api={{
-          type: "GET",
-          url: "/api/ExecCIPPDBCache",
-          confirmText: `Run Intune applications cache sync for ${tenant}? This will update application data immediately.`,
-          relatedQueryKeys: [`ListApps-${tenant}-true`],
-          data: {
-            Name: "IntuneApplications",
-          },
-          onSuccess: (result) => {
-            if (result?.Metadata?.QueueId) {
-              setSyncQueueId(result?.Metadata?.QueueId);
-            }
-          },
-        }}
-      />
+      {reportDB.syncDialog}
     </>
   );
 };

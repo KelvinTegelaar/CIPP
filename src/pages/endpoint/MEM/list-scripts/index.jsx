@@ -1,6 +1,5 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage";
-import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import {
   TrashIcon,
   PencilIcon,
@@ -17,19 +16,15 @@ import {
   IconButton,
   CircularProgress,
   DialogActions,
-  Chip,
-  SvgIcon,
-  Tooltip,
 } from "@mui/material";
 import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { Close, Save, LaptopChromebook, Sync, CloudDone, Bolt } from "@mui/icons-material";
+import { Close, Save, LaptopChromebook } from "@mui/icons-material";
 import { useSettings } from "../../../../hooks/use-settings";
-import { useDialog } from "../../../../hooks/use-dialog";
 import { Stack } from "@mui/system";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CippQueueTracker } from "../../../../components/CippTable/CippQueueTracker";
+import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const assignmentModeOptions = [
   { label: "Replace existing assignments", value: "replace" },
@@ -48,14 +43,14 @@ const Page = () => {
   const [scriptTenant, setScriptTenant] = useState(null);
 
   const tenantFilter = useSettings().currentTenant;
-  const isAllTenants = tenantFilter === "AllTenants";
-  const syncDialog = useDialog();
-  const [syncQueueId, setSyncQueueId] = useState(null);
-  const [useReportDB, setUseReportDB] = useState(isAllTenants);
-
-  useEffect(() => {
-    setUseReportDB(tenantFilter === "AllTenants");
-  }, [tenantFilter]);
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListIntuneScript",
+    queryKey: "ListIntuneScript",
+    cacheName: "IntuneScripts",
+    syncTitle: "Sync Intune Scripts Report",
+    allowToggle: true,
+    defaultCached: false,
+  });
 
   const dispatch = useDispatch();
 
@@ -372,8 +367,7 @@ const Page = () => {
   };
 
   const simpleColumns = [
-    ...(useReportDB ? ["CacheTimestamp"] : []),
-    ...(useReportDB && isAllTenants ? ["Tenant"] : []),
+    ...reportDB.cacheColumns,
     "scriptType",
     "displayName",
     "ScriptAssignment",
@@ -383,63 +377,16 @@ const Page = () => {
     "lastModifiedDateTime",
   ];
 
-  const pageActions = [
-    <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
-      {useReportDB && (
-        <>
-          <CippQueueTracker
-            queueId={syncQueueId}
-            queryKey={`ListIntuneScript-${tenantFilter}`}
-            title="Intune Scripts Sync"
-          />
-          <Button
-            startIcon={
-              <SvgIcon fontSize="small">
-                <Sync />
-              </SvgIcon>
-            }
-            size="xs"
-            onClick={syncDialog.handleOpen}
-          >
-            Sync
-          </Button>
-        </>
-      )}
-      <Tooltip
-        title={
-          isAllTenants
-            ? "AllTenants always uses cached data"
-            : useReportDB
-              ? "Showing cached data from the Reporting Database - click to switch to live"
-              : "Showing live data - click to switch to cache"
-        }
-      >
-        <span>
-          <Chip
-            icon={useReportDB ? <CloudDone /> : <Bolt />}
-            label={useReportDB ? "Cached" : "Live"}
-            color="primary"
-            size="small"
-            onClick={isAllTenants ? undefined : () => setUseReportDB((prev) => !prev)}
-            clickable={!isAllTenants}
-            disabled={isAllTenants}
-            variant="outlined"
-          />
-        </span>
-      </Tooltip>
-    </Stack>,
-  ];
-
   return (
     <>
       <CippTablePage
         title={pageTitle}
-        apiUrl={`/api/ListIntuneScript${useReportDB ? "?UseReportDB=true" : ""}`}
-        queryKey={`ListIntuneScript-${tenantFilter}-${useReportDB}`}
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
-        cardButton={pageActions}
+        cardButton={reportDB.controls}
       />
 
       <Dialog open={codeOpen} maxWidth="lg" fullWidth>
@@ -504,25 +451,7 @@ const Page = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <CippApiDialog
-        createDialog={syncDialog}
-        title="Sync Intune Scripts Report"
-        fields={[]}
-        api={{
-          type: "GET",
-          url: "/api/ExecCIPPDBCache",
-          confirmText: `Run Intune scripts cache sync for ${tenantFilter}? This will update script data immediately.`,
-          relatedQueryKeys: [`ListIntuneScript-${tenantFilter}-true`],
-          data: {
-            Name: "IntuneScripts",
-          },
-          onSuccess: (result) => {
-            if (result?.Metadata?.QueueId) {
-              setSyncQueueId(result?.Metadata?.QueueId);
-            }
-          },
-        }}
-      />
+      {reportDB.syncDialog}
     </>
   );
 };
