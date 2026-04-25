@@ -3,30 +3,31 @@ import { CippTablePage } from "../../../../components/CippComponents/CippTablePa
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
-import { Block, PlayArrow, DeleteForever, Sync, Info } from "@mui/icons-material";
-import { Button, SvgIcon, IconButton, Tooltip } from "@mui/material";
-import { Stack } from "@mui/system";
-import { useDialog } from "../../../../hooks/use-dialog";
-import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
-import { useSettings } from "../../../../hooks/use-settings";
-import { CippQueueTracker } from "../../../../components/CippTable/CippQueueTracker";
-import { useState } from "react";
+import { Block, PlayArrow, DeleteForever } from "@mui/icons-material";
+import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const Page = () => {
   const pageTitle = "Mailbox Rules";
-  const currentTenant = useSettings().currentTenant;
-  const syncDialog = useDialog();
-  const [syncQueueId, setSyncQueueId] = useState(null);
 
-  const isAllTenants = currentTenant === "AllTenants";
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListMailboxRules",
+    queryKey: "ListMailboxRules",
+    cacheName: "Mailboxes",
+    syncTitle: "Sync Mailbox Rules",
+    syncData: { Types: "Rules" },
+    allowToggle: false,
+    defaultCached: true,
+  });
 
-  const apiData = {
-    UseReportDB: true,
-  };
-
-  const simpleColumns = isAllTenants
-    ? ["Tenant", "UserPrincipalName", "Name", "Priority", "Enabled", "From", "CacheTimestamp"]
-    : ["UserPrincipalName", "Name", "Priority", "Enabled", "From", "CacheTimestamp"];
+  const simpleColumns = [
+    ...reportDB.cacheColumns.filter((c) => c === "Tenant"),
+    "UserPrincipalName",
+    "Name",
+    "Priority",
+    "Enabled",
+    "From",
+    ...reportDB.cacheColumns.filter((c) => c !== "Tenant"),
+  ];
 
   const actions = [
     {
@@ -96,64 +97,19 @@ const Page = () => {
     },
   };
 
-  const pageActions = [
-    <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
-      <CippQueueTracker
-        queueId={syncQueueId}
-        queryKey={`ListMailboxRules-${currentTenant}`}
-        title="Mailbox Rules Sync"
-      />
-      <Tooltip title="This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.">
-        <IconButton size="small">
-          <Info fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <Button
-        startIcon={
-          <SvgIcon fontSize="small">
-            <Sync />
-          </SvgIcon>
-        }
-        size="xs"
-        onClick={syncDialog.handleOpen}
-      >
-        Sync
-      </Button>
-    </Stack>,
-  ];
-
   return (
     <>
       <CippTablePage
         title={pageTitle}
-        apiUrl="/api/ListMailboxRules"
-        apiData={apiData}
-        queryKey={`ListMailboxRules-${currentTenant}`}
+        apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        queryKey={reportDB.resolvedQueryKey}
         simpleColumns={simpleColumns}
         offCanvas={offCanvas}
         actions={actions}
-        cardButton={pageActions}
+        cardButton={reportDB.controls}
       />
-      <CippApiDialog
-        createDialog={syncDialog}
-        title="Sync Mailbox Rules"
-        fields={[]}
-        api={{
-          type: "GET",
-          onSuccess: (result) => {
-            if (result?.Metadata?.QueueId) {
-              setSyncQueueId(result.Metadata.QueueId);
-            }
-          },
-          url: "/api/ExecCIPPDBCache",
-          confirmText: `Run mailbox rules cache sync for ${currentTenant}? This will update mailbox rules data immediately.`,
-          relatedQueryKeys: [`ListMailboxRules-${currentTenant}`],
-          data: {
-            Name: "Mailboxes",
-            Types: "Rules",
-          },
-        }}
-      />
+      {reportDB.syncDialog}
     </>
   );
 };
