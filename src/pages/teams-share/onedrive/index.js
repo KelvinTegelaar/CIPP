@@ -1,9 +1,20 @@
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
+import { useCippReportDB } from "../../../components/CippComponents/CippReportDBControls";
 import { PersonAdd, PersonRemove } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "OneDrive";
+
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListSites?type=OneDriveUsageAccount",
+    queryKey: "ListSites-OneDriveUsageAccount",
+    cacheName: "Sites",
+    syncTitle: "Sync OneDrive Report",
+    syncData: { Types: "OneDriveUsageAccount" },
+    allowToggle: true,
+    defaultCached: false,
+  });
 
   const actions = [
     {
@@ -77,25 +88,31 @@ const Page = () => {
   ];
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/ListSites?type=OneDriveUsageAccount"
-      actions={actions}
-      simpleColumns={[
-        "displayName",
-        "createdDateTime",
-        "ownerPrincipalName",
-        "lastActivityDate",
-        "fileCount",
-        "storageUsedInGigabytes",
-        "storageAllocatedInGigabytes",
-        "reportRefreshDate",
-        "webUrl",
-      ]}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={reportDB.resolvedQueryKey}
+        actions={actions}
+        simpleColumns={[
+          ...reportDB.cacheColumns,
+          "displayName",
+          "createdDateTime",
+          "ownerPrincipalName",
+          "lastActivityDate",
+          "fileCount",
+          "storageUsedInGigabytes",
+          "storageAllocatedInGigabytes",
+          "reportRefreshDate",
+          "webUrl",
+        ]}
+        cardButton={reportDB.controls}
+      />
+      {reportDB.syncDialog}
+    </>
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
 
 export default Page;
