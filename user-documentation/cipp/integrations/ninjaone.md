@@ -27,7 +27,7 @@ For Tenant and Device information custom fields are used. For detailed Users and
    2. Leave Redirect URIs blank.
    3. Select the '**Monitoring**' and '**Management**' scopes.
    4. Select the Allowed Grant Type of '**Client Credentials**'
-   5. Click Save in the top right.\\
+   5. Click Save in the top right.
 6. After clicking Save make sure to save the displayed secret securely.
 7. Close the API application.
 8. In the table copy the '**Client ID**' and also save this securely.
