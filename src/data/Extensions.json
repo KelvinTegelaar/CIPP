@@ -412,105 +412,128 @@
     "mappingRequired": true
   },
   {
-    "name": "NinjaOne",
-    "id": "NinjaOne",
-    "type": "NinjaOne",
-    "cat": "Documentation & Monitoring",
-    "logo": "/assets/integrations/ninjaone.png",
-    "logoDark": "/assets/integrations/ninjaone_dark.png",
-    "forceSyncButton": true,
-    "description": "Enable the NinjaOne integration to sync documentation and monitor device compliance.",
-    "helpText": "This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
-    "links": [
-      {
-        "name": "NinjaOne Documentation",
-        "url": "https://www.ninjaone.com/integrations/cyberdrain/"
+  "name": "NinjaOne",
+  "id": "NinjaOne",
+  "type": "NinjaOne",
+  "cat": "Documentation & Monitoring",
+  "logo": "/assets/integrations/ninjaone.png",
+  "logoDark": "/assets/integrations/ninjaone_dark.png",
+  "forceSyncButton": true,
+  "description": "Enable the NinjaOne integration to sync documentation and monitor device compliance.",
+  "helpText": "This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
+  "links": [
+    {
+      "name": "NinjaOne Documentation",
+      "url": "https://www.ninjaone.com/integrations/cyberdrain/"
+    }
+  ],
+  "SettingOptions": [
+    {
+      "type": "switch",
+      "name": "NinjaOne.Enabled",
+      "label": "Enable Integration"
+    },
+    {
+      "type": "textField",
+      "name": "NinjaOne.Instance",
+      "label": "Please enter your NinjaOne Instance hostname",
+      "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com",
+      "required": true,
+      "condition": {
+        "field": "NinjaOne.Enabled",
+        "compareType": "is",
+        "compareValue": true,
+        "action": "disable"
       }
-    ],
-    "SettingOptions": [
-      {
-        "type": "switch",
-        "name": "NinjaOne.Enabled",
-        "label": "Enable Integration"
-      },
-      {
-        "type": "textField",
-        "name": "NinjaOne.Instance",
-        "label": "Please enter your NinjaOne Instance hostname",
-        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com",
-        "required": true,
-        "condition": {
-          "field": "NinjaOne.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
-      },
-      {
-        "type": "textField",
-        "name": "NinjaOne.ClientID",
-        "label": "NinjaOne API Client ID",
-        "placeholder": "Enter your NinjaOne API Client ID",
-        "required": true,
-        "condition": {
-          "field": "NinjaOne.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
-      },
-      {
-        "type": "password",
-        "name": "NinjaOne.APIKey",
-        "label": "NinjaOne API Client Secret",
-        "placeholder": "Enter your NinjaOne API Client Secret",
-        "required": true,
-        "condition": {
-          "field": "NinjaOne.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
-      },
-      {
-        "type": "switch",
-        "name": "NinjaOne.LicenseDocumentsEnabled",
-        "label": "Sync Licenses (Requires NinjaOne Documentation)",
-        "condition": {
-          "field": "NinjaOne.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
-      },
-      {
-        "type": "switch",
-        "name": "NinjaOne.UserDocumentsEnabled",
-        "label": "Sync Users (Requires NinjaOne Documentation)",
-        "condition": {
-          "field": "NinjaOne.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
-      },
-      {
-        "type": "switch",
-        "name": "NinjaOne.LicensedOnly",
-        "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)",
-        "condition": {
-          "field": "NinjaOne.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
+    },
+    {
+      "type": "textField",
+      "name": "NinjaOne.ClientID",
+      "label": "NinjaOne API Client ID",
+      "placeholder": "Enter your NinjaOne API Client ID",
+      "required": true,
+      "condition": {
+        "field": "NinjaOne.Enabled",
+        "compareType": "is",
+        "compareValue": true,
+        "action": "disable"
       }
-    ],
-    "mappingRequired": true,
-    "fieldMapping": true,
-    "autoMapSyncApi": true,
-    "showSyncButton": true
-  },
+    },
+    {
+      "type": "password",
+      "name": "NinjaOne.APIKey",
+      "label": "NinjaOne API Client Secret",
+      "placeholder": "Enter your NinjaOne API Client Secret",
+      "required": true,
+      "condition": {
+        "field": "NinjaOne.Enabled",
+        "compareType": "is",
+        "compareValue": true,
+        "action": "disable"
+      }
+    },
+    {
+      "type": "switch",
+      "name": "NinjaOne.LicenseDocumentsEnabled",
+      "label": "Sync Licenses (Requires NinjaOne Documentation)",
+      "condition": {
+        "field": "NinjaOne.Enabled",
+        "compareType": "is",
+        "compareValue": true,
+        "action": "disable"
+      }
+    },
+    {
+      "type": "switch",
+      "name": "NinjaOne.UserDocumentsEnabled",
+      "label": "Sync Users (Requires NinjaOne Documentation)",
+      "condition": {
+        "field": "NinjaOne.Enabled",
+        "compareType": "is",
+        "compareValue": true,
+        "action": "disable"
+      }
+    },
+    {
+      "type": "switch",
+      "name": "NinjaOne.LicensedOnly",
+      "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)",
+      "condition": {
+        "field": "NinjaOne.Enabled",
+        "compareType": "is",
+        "compareValue": true,
+        "action": "disable"
+      }
+    },
+    {
+      "type": "switch",
+      "name": "NinjaOne.CveSyncEnabled",
+      "label": "Enable Automated CVE Sync",
+      "condition": {
+        "field": "NinjaOne.Enabled",
+        "compareType": "is",
+        "compareValue": true,
+        "action": "disable"
+      }
+    },
+    {
+      "type": "textField",
+      "name": "NinjaOne.CveSyncPrefix",
+      "label": "CVE Sync Scan Group Prefix",
+      "placeholder": "CIPP-",
+      "helperText": "Scan groups will be named: [Prefix][tenant-domain] (e.g., CIPP-contoso.com)",
+      "condition": {
+        "field": "NinjaOne.CveSyncEnabled",
+        "compareType": "is",
+        "compareValue": true
+      }
+    }
+  ],
+  "mappingRequired": true,
+  "fieldMapping": true,
+  "autoMapSyncApi": true,
+  "showSyncButton": true
+},
   {
     "name": "Hudu",
     "id": "Hudu",
