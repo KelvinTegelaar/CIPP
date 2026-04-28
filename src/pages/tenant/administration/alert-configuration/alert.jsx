@@ -166,12 +166,14 @@ const AlertWizard = () => {
         } else if (alert.RawAlert.TenantGroup) {
           try {
             const tenantGroupObject = JSON.parse(alert.RawAlert.TenantGroup)
-            tenantFilterForForm = {
-              value: tenantGroupObject.value,
-              label: tenantGroupObject.label,
-              type: 'Group',
-              addedFields: tenantGroupObject,
-            }
+            tenantFilterForForm = [
+              {
+                value: tenantGroupObject.value,
+                label: tenantGroupObject.label,
+                type: 'Group',
+                addedFields: tenantGroupObject,
+              },
+            ]
           } catch (error) {
             console.error('Error parsing tenant group:', error)
             tenantFilterForForm = [
