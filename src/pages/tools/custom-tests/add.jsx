@@ -300,6 +300,7 @@ const Page = () => {
     label: 'Category',
     type: 'autoComplete',
     required: true,
+    multiple: false,
     placeholder: 'Select or enter a category',
     options: categoryOptions,
     creatable: true,
