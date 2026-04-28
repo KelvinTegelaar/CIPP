@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { Button, Chip, SvgIcon, Tooltip } from "@mui/material";
-import { Stack } from "@mui/system";
-import { Sync, CloudDone, Bolt } from "@mui/icons-material";
-import { useSettings } from "../../hooks/use-settings";
-import { useDialog } from "../../hooks/use-dialog";
-import { CippApiDialog } from "./CippApiDialog";
-import { CippQueueTracker } from "../CippTable/CippQueueTracker";
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { Button, Chip, SvgIcon, Tooltip } from '@mui/material'
+import { Stack } from '@mui/system'
+import { Sync, CloudDone, Bolt } from '@mui/icons-material'
+import { useSettings } from '../../hooks/use-settings'
+import { useDialog } from '../../hooks/use-dialog'
+import { CippApiDialog } from './CippApiDialog'
+import { CippQueueTracker } from '../CippTable/CippQueueTracker'
 
 /**
  * Hook + UI component that encapsulates all CIPP Reporting DB cache/live mode logic.
@@ -44,80 +44,79 @@ export function useCippReportDB(config) {
     syncData,
     allowToggle = true,
     defaultCached = true,
-    cacheColumns = ["CacheTimestamp"],
-    tenantColumn = "Tenant",
+    cacheColumns = ['CacheTimestamp'],
+    tenantColumn = 'Tenant',
     apiData: extraApiData,
-  } = config;
+  } = config
 
-  const currentTenant = useSettings().currentTenant;
-  const isAllTenants = currentTenant === "AllTenants";
-  const dialog = useDialog();
-  const [syncQueueId, setSyncQueueId] = useState(null);
-  const [useReportDB, setUseReportDB] = useState(defaultCached);
+  const currentTenant = useSettings().currentTenant
+  const isAllTenants = currentTenant === 'AllTenants'
+  const dialog = useDialog()
+  const [syncQueueId, setSyncQueueId] = useState(null)
+  const [useReportDB, setUseReportDB] = useState(defaultCached)
 
   // Reset to default whenever tenant changes; AllTenants always forces cached
   useEffect(() => {
     if (isAllTenants) {
-      setUseReportDB(true);
+      setUseReportDB(true)
     } else {
-      setUseReportDB(defaultCached);
+      setUseReportDB(defaultCached)
     }
-  }, [currentTenant, isAllTenants, defaultCached]);
+  }, [currentTenant, isAllTenants, defaultCached])
 
   // Whether the toggle is actually clickable
-  const canToggle = allowToggle && !isAllTenants;
+  const canToggle = allowToggle && !isAllTenants
 
   // Resolved API URL — append UseReportDB param when cached
   const resolvedApiUrl = useMemo(() => {
-    if (!useReportDB) return apiUrl;
-    const sep = apiUrl.includes("?") ? "&" : "?";
-    return `${apiUrl}${sep}UseReportDB=true`;
-  }, [apiUrl, useReportDB]);
+    if (!useReportDB) return apiUrl
+    const sep = apiUrl.includes('?') ? '&' : '?'
+    return `${apiUrl}${sep}UseReportDB=true`
+  }, [apiUrl, useReportDB])
 
-  // Alternative: for pages that pass apiData prop instead of URL params
+  // Keep mode flag in the URL only; CippTablePage merges apiData into query params.
   const resolvedApiData = useMemo(() => {
-    if (!useReportDB && !extraApiData) return undefined;
+    if (!extraApiData) return undefined
     return {
-      ...(extraApiData || {}),
-      ...(useReportDB ? { UseReportDB: true } : {}),
-    };
-  }, [useReportDB, extraApiData]);
+      ...extraApiData,
+    }
+  }, [extraApiData])
 
   // Query key that includes tenant + mode for proper cache separation
   const resolvedQueryKey = useMemo(() => {
-    return `${queryKey}-${currentTenant}-${useReportDB}`;
-  }, [queryKey, currentTenant, useReportDB]);
+    return `${queryKey}-${currentTenant}-${useReportDB}`
+  }, [queryKey, currentTenant, useReportDB])
 
   // Extra columns to show when in cached mode
   const extraColumns = useMemo(() => {
-    const cols = [];
+    const cols = []
     if (useReportDB && isAllTenants) {
-      cols.push(tenantColumn);
+      cols.push(tenantColumn)
     }
     if (useReportDB) {
-      cols.push(...cacheColumns);
+      cols.push(...cacheColumns)
     }
-    return cols;
-  }, [useReportDB, isAllTenants, tenantColumn, cacheColumns]);
+    return cols
+  }, [useReportDB, isAllTenants, tenantColumn, cacheColumns])
 
   const handleSyncSuccess = useCallback((result) => {
     if (result?.Metadata?.QueueId) {
-      setSyncQueueId(result.Metadata.QueueId);
+      setSyncQueueId(result.Metadata.QueueId)
     }
-  }, []);
+  }, [])
 
   // Tooltip text
   const tooltipText = !allowToggle
-    ? "This page always uses cached data from the CIPP reporting database."
+    ? 'This page always uses cached data from the CIPP reporting database.'
     : isAllTenants
-      ? "AllTenants always uses cached data"
+      ? 'AllTenants always uses cached data'
       : useReportDB
-        ? "Showing cached data — click to switch to live"
-        : "Showing live data — click to switch to cache";
+        ? 'Showing cached data — click to switch to live'
+        : 'Showing live data — click to switch to cache'
 
   const confirmText =
     syncConfirmText ||
-    `Run ${cacheName} cache sync for ${currentTenant}? This will update data immediately.`;
+    `Run ${cacheName} cache sync for ${currentTenant}? This will update data immediately.`
 
   // The controls JSX
   const controls = (
@@ -147,7 +146,7 @@ export function useCippReportDB(config) {
         <span>
           <Chip
             icon={useReportDB ? <CloudDone /> : <Bolt />}
-            label={useReportDB ? "Cached" : "Live"}
+            label={useReportDB ? 'Cached' : 'Live'}
             color="primary"
             size="small"
             onClick={canToggle ? () => setUseReportDB((prev) => !prev) : undefined}
@@ -158,7 +157,7 @@ export function useCippReportDB(config) {
         </span>
       </Tooltip>
     </Stack>
-  );
+  )
 
   // The sync dialog JSX — render alongside the table page
   const syncDialogElement = (
@@ -167,19 +166,18 @@ export function useCippReportDB(config) {
       title={syncTitle}
       fields={[]}
       api={{
-        type: "GET",
-        url: "/api/ExecCIPPDBCache",
+        type: 'GET',
+        url: '/api/ExecCIPPDBCache',
         confirmText,
         relatedQueryKeys: [`${queryKey}-${currentTenant}-true`],
         data: {
           Name: cacheName,
-          Types: "None",
           ...(syncData || {}),
         },
         onSuccess: handleSyncSuccess,
       }}
     />
-  );
+  )
 
   return {
     useReportDB,
@@ -191,5 +189,5 @@ export function useCippReportDB(config) {
     cacheColumns: extraColumns,
     controls,
     syncDialog: syncDialogElement,
-  };
+  }
 }
