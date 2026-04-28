@@ -125,7 +125,7 @@ export function useCippReportDB(config) {
         <>
           <CippQueueTracker
             queueId={syncQueueId}
-            queryKey={`${queryKey}-${currentTenant}`}
+            queryKey={resolvedQueryKey}
             title={syncTitle}
           />
           <Button
