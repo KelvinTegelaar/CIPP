@@ -1,6 +1,7 @@
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { Stack } from "@mui/system";
 import {
   Add,
   AddToPhotos,
@@ -13,10 +14,21 @@ import {
 import Link from "next/link";
 import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { useSettings } from "../../../hooks/use-settings";
+import { useCippReportDB } from "../../../components/CippComponents/CippReportDBControls";
 
 const Page = () => {
   const pageTitle = "SharePoint Sites";
   const tenantFilter = useSettings().currentTenant;
+
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListSites?type=SharePointSiteUsage",
+    queryKey: "ListSites-SharePointSiteUsage",
+    cacheName: "Sites",
+    syncTitle: "Sync SharePoint Sites Report",
+    syncData: { Types: "SharePointSiteUsage" },
+    allowToggle: true,
+    defaultCached: true,
+    });
 
   const actions = [
     {
@@ -213,40 +225,46 @@ const Page = () => {
   };
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/ListSites?type=SharePointSiteUsage"
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={[
-        "displayName",
-        "createdDateTime",
-        "ownerPrincipalName",
-        "lastActivityDate",
-        "fileCount",
-        "storageUsedInGigabytes",
-        "storageAllocatedInGigabytes",
-        "reportRefreshDate",
-        "webUrl",
-      ]}
-      cardButton={
-        <>
-          <Button component={Link} href="/teams-share/sharepoint/add-site" startIcon={<Add />}>
-            Add Site
-          </Button>
-          <Button
-            component={Link}
-            href="/teams-share/sharepoint/bulk-add-site"
-            startIcon={<AddToPhotos />}
-          >
-            Bulk Add Sites
-          </Button>
-        </>
-      }
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={reportDB.resolvedQueryKey}
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={[
+          ...reportDB.cacheColumns,
+          "displayName",
+          "createdDateTime",
+          "ownerPrincipalName",
+          "lastActivityDate",
+          "fileCount",
+          "storageUsedInGigabytes",
+          "storageAllocatedInGigabytes",
+          "reportRefreshDate",
+          "webUrl",
+        ]}
+        cardButton={
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Button component={Link} href="/teams-share/sharepoint/add-site" startIcon={<Add />}>
+              Add Site
+            </Button>
+            <Button
+              component={Link}
+              href="/teams-share/sharepoint/bulk-add-site"
+              startIcon={<AddToPhotos />}
+            >
+              Bulk Add Sites
+            </Button>
+            {reportDB.controls}
+          </Stack>
+        }
+      />
+      {reportDB.syncDialog}
+    </>
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
 
 export default Page;
