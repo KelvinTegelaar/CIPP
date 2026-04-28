@@ -4,9 +4,11 @@ import { CippApiDialog } from "../../../../components/CippComponents/CippApiDial
 import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import { LaptopMac, Sync, BookmarkAdd } from "@mui/icons-material";
 import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
-import { Button, Box } from "@mui/material";
+import { Button } from "@mui/material";
+import { Stack } from "@mui/system";
 import { useSettings } from "../../../../hooks/use-settings.js";
 import { useDialog } from "../../../../hooks/use-dialog.js";
+import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const assignmentIntentOptions = [
   { label: "Required", value: "Required" },
@@ -44,8 +46,17 @@ const mapOdataToAppType = (odataType) => {
 
 const Page = () => {
   const pageTitle = "Applications";
-  const syncDialog = useDialog();
+  const vppSyncDialog = useDialog();
   const tenant = useSettings().currentTenant;
+
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListApps",
+    queryKey: "ListApps",
+    cacheName: "IntuneApplications",
+    syncTitle: "Sync Intune Applications Report",
+    allowToggle: true,
+    defaultCached: false,
+  });
 
   const getAssignmentFilterFields = () => [
     {
@@ -291,6 +302,7 @@ const Page = () => {
   };
 
   const simpleColumns = [
+    ...reportDB.cacheColumns,
     "displayName",
     "AppAssignment",
     "AppExclude",
@@ -303,22 +315,24 @@ const Page = () => {
     <>
       <CippTablePage
         title={pageTitle}
-        apiUrl="/api/ListApps"
+        apiUrl={reportDB.resolvedApiUrl}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
+        queryKey={reportDB.resolvedQueryKey}
         cardButton={
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Stack direction="row" spacing={1} alignItems="center">
             <CippApplicationDeployDrawer />
-            <Button onClick={syncDialog.handleOpen} startIcon={<Sync />}>
+            <Button onClick={vppSyncDialog.handleOpen} startIcon={<Sync />}>
               Sync VPP
             </Button>
-          </Box>
+            {reportDB.controls}
+          </Stack>
         }
       />
       <CippApiDialog
         title="Sync VPP Tokens"
-        createDialog={syncDialog}
+        createDialog={vppSyncDialog}
         api={{
           type: "POST",
           url: "/api/ExecSyncVPP",
@@ -326,9 +340,10 @@ const Page = () => {
           confirmText: `Are you sure you want to sync Apple Volume Purchase Program (VPP) tokens? This will sync all VPP tokens for ${tenant}.`,
         }}
       />
+      {reportDB.syncDialog}
     </>
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
 export default Page;
