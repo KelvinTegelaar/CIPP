@@ -255,9 +255,24 @@
     "description": "Exchange Online mailbox usage statistics"
   },
   {
+    "type": "OneDriveSiteListing",
+    "friendlyName": "OneDrive Site Listing",
+    "description": "OneDrive personal site listing details used for usage reporting"
+  },
+  {
     "type": "OneDriveUsage",
     "friendlyName": "OneDrive Usage",
     "description": "OneDrive usage statistics"
+  },
+  {
+    "type": "SharePointSiteListing",
+    "friendlyName": "SharePoint Site Listing",
+    "description": "SharePoint site listing details used for usage reporting"
+  },
+  {
+    "type": "SharePointSiteUsage",
+    "friendlyName": "SharePoint Site Usage",
+    "description": "SharePoint site usage statistics"
   },
   {
     "type": "ConditionalAccessPolicies",
