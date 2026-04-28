@@ -5609,6 +5609,8 @@
         "type": "autoComplete",
         "name": "TemplateList",
         "multiple": false,
+        "required": false,
+        "creatable": false,
         "label": "Select Conditional Access Template",
         "api": {
           "url": "/api/ListCATemplates",
@@ -5617,6 +5619,23 @@
           "queryKey": "ListCATemplates",
           "showRefresh": true,
           "templateView": { "title": "Conditional Access Policy" }
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "required": false,
+        "creatable": false,
+        "name": "TemplateList-Tags",
+        "label": "Or select a package of CA Templates",
+        "api": {
+          "queryKey": "ListCATemplates-tag-autocomplete",
+          "url": "/api/ListCATemplates?mode=Tag",
+          "labelField": "label",
+          "valueField": "value",
+          "addedField": {
+            "templates": "templates"
+          }
         }
       },
       {
