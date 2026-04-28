@@ -2,6 +2,7 @@ import {
   Alert,
   Box,
   Button,
+  Card,
   CardContent,
   Skeleton,
   Stack,
@@ -16,10 +17,9 @@ import { useSettings } from "../../../hooks/use-settings";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "../../../data/Extensions.json";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowPathIcon, ArrowTopRightOnSquareIcon, BeakerIcon } from "@heroicons/react/24/outline";
 import { SvgIcon } from "@mui/material";
-import { useState } from "react";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
 import CippIntegrationTenantMapping from "../../../components/CippIntegrations/CippIntegrationTenantMapping";
@@ -94,6 +94,7 @@ const Page = () => {
   });
 
   const extension = extensions.find((extension) => extension.id === router.query.id) || {};
+
 
   var logo = extension?.logo;
   if (preferredTheme === "dark" && extension?.logoDark) {
@@ -262,7 +263,9 @@ const Page = () => {
               {extension?.id === "cippapi" ? (
                 <CippApiClientManagement />
               ) : (
-                <CippIntegrationSettings />
+                <>
+                  <CippIntegrationSettings />
+                </>
               )}
             </CippCardTabPanel>
 
@@ -279,6 +282,7 @@ const Page = () => {
           </Box>
         </CippPageCard>
       )}
+
     </>
   );
 };
