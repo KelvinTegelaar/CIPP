@@ -268,6 +268,14 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     )
   }
 
+  if (cellName === 'currentDeviationsCount') {
+    if (data === undefined || data === null) return isText ? 'N/A' : <Chip variant="outlined" label="N/A" size="small" color="default" />
+    const count = Number(data)
+    const color = count > 0 ? 'warning' : 'success'
+    const label = count > 0 ? `${count} Deviation${count !== 1 ? 's' : ''}` : 'None'
+    return isText ? label : <Chip variant="outlined" label={label} size="small" color={color} />
+  }
+
   if (cellName === 'LicenseMissingPercentage') {
     return isText ? (
       `${data}%`
