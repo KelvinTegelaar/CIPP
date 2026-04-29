@@ -990,17 +990,13 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   }
 
   // ISO 8601 Duration Formatting
-  // Add property names here to automatically format ISO 8601 duration strings (e.g., "PT1H23M30S")
-  // into human-readable format (e.g., "1 hour 23 minutes 30 seconds") across all CIPP tables.
-  // This works for any API response property that contains ISO 8601 duration format.
+  // Any property whose name ends in "Duration" is auto-formatted from ISO 8601 (e.g. "PT1H23M30S")
+  // into human-readable form (e.g. "1 hour 23 minutes 30 seconds") across all CIPP tables.
+  // The try/catch below handles same-suffixed fields that are not actually ISO 8601.
+  // Add explicit entries below for fields that don't follow the *Duration naming convention.
   const durationArray = [
-    'autoExtendDuration', // GDAP page (/tenant/gdap-management/relationships)
-    'deploymentDuration', // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
-    'deploymentTotalDuration', // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
-    'deviceSetupDuration', // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
-    'accountSetupDuration', // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
   ]
-  if (durationArray.includes(cellName)) {
+  if (durationArray.includes(cellName) || cellName.endsWith('Duration')) {
     isoDuration.setLocales(
       {
         en,
@@ -1009,8 +1005,15 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         fallbackLocale: 'en',
       }
     )
-    const duration = isoDuration(data)
-    return duration.humanize('en')
+    try {
+      const duration = isoDuration(data)
+      const formattedDuration = duration.humanize('en')
+      if (formattedDuration) {
+        return formattedDuration
+      }
+    } catch {
+      // Fall through to the default formatter when a Duration-suffixed field is not ISO 8601.
+    }
   }
 
   //if string starts with http, return a link
