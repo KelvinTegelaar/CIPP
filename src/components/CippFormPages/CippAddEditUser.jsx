@@ -851,6 +851,17 @@ const CippAddEditUser = (props) => {
             }))}
             creatable={false}
             formControl={formControl}
+            customAction={{
+              icon: <Sync />,
+              tooltip: 'Refresh groups',
+              onClick: () => {
+                tenantGroups.refetch()
+                if (formType === 'edit') {
+                  userGroups.refetch()
+                }
+              },
+              position: 'outside',
+            }}
           />
         </Grid>
       )}

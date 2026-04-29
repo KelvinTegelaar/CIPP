@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
-import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
+import { useState } from 'react'
+import { Layout as DashboardLayout } from '../../../layouts/index.js'
+import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
 import {
   Button,
   Accordion,
@@ -11,73 +11,73 @@ import {
   Stack,
   Alert,
   Box,
-} from "@mui/material";
-import { Grid } from "@mui/system";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useForm } from "react-hook-form";
-import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
-import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { useSettings } from "../../../hooks/use-settings.js";
+} from '@mui/material'
+import { Grid } from '@mui/system'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useForm } from 'react-hook-form'
+import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
+import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { EyeIcon } from '@heroicons/react/24/outline'
+import { useSettings } from '../../../hooks/use-settings.js'
 
 const simpleColumns = [
-  "DateTime",
-  "Tenant",
-  "User",
-  "Message",
-  "API",
-  "Severity",
-  "AppId",
-  "IP",
-  "LogData",
-];
+  'DateTime',
+  'Tenant',
+  'User',
+  'Message',
+  'API',
+  'Severity',
+  'AppId',
+  'IP',
+  'LogData',
+]
 
 const offcanvas = {
-  extendedInfoFields: ["DateTime", "API", "Severity", "Message", "User", "AppId", "IP", "LogData"],
-};
+  extendedInfoFields: ['DateTime', 'API', 'Severity', 'Message', 'User', 'AppId', 'IP', 'LogData'],
+}
 
-const apiUrl = "/api/Listlogs";
-const pageTitle = "Logbook Results";
+const apiUrl = '/api/Listlogs'
+const pageTitle = 'Logbook Results'
 
 const actions = [
   {
-    label: "View Log Entry",
-    link: "/cipp/logs/logentry?logentry=[RowKey]&dateFilter=[DateFilter]",
+    label: 'View Log Entry',
+    link: '/cipp/logs/logentry?logentry=[RowKey]&dateFilter=[DateFilter]',
     icon: <EyeIcon />,
-    color: "primary",
+    color: 'primary',
   },
-];
+]
 
 const Page = () => {
   const formControl = useForm({
     defaultValues: {
       startDate: null,
       endDate: null,
-      username: "",
+      username: '',
       severity: [],
     },
-  });
+  })
 
-  const [expanded, setExpanded] = useState(false); // State for Accordion
-  const [filterEnabled, setFilterEnabled] = useState(false); // State for filter toggle
-  const [startDate, setStartDate] = useState(null); // State for start date filter
-  const [endDate, setEndDate] = useState(null); // State for end date filter
-  const [username, setUsername] = useState(null); // State for username filter
-  const [severity, setSeverity] = useState(null); // State for severity filter
-  const settings = useSettings(); // Hook to access settings
-  const currentTenant = settings?.currentTenant;
+  const [expanded, setExpanded] = useState(false) // State for Accordion
+  const [filterEnabled, setFilterEnabled] = useState(false) // State for filter toggle
+  const [startDate, setStartDate] = useState(null) // State for start date filter
+  const [endDate, setEndDate] = useState(null) // State for end date filter
+  const [username, setUsername] = useState(null) // State for username filter
+  const [severity, setSeverity] = useState(null) // State for severity filter
+  const settings = useSettings() // Hook to access settings
+  const currentTenant = settings?.currentTenant
 
   // Watch date fields to show warning for large date ranges
-  const watchStartDate = formControl.watch("startDate");
-  const watchEndDate = formControl.watch("endDate");
+  const watchStartDate = formControl.watch('startDate')
+  const watchEndDate = formControl.watch('endDate')
 
   // Component to display warning for large date ranges
   const DateRangeWarning = () => {
-    if (!watchStartDate || !watchEndDate) return null;
+    if (!watchStartDate || !watchEndDate) return null
 
-    const startDateMs = new Date(watchStartDate * 1000);
-    const endDateMs = new Date(watchEndDate * 1000);
-    const daysDifference = (endDateMs - startDateMs) / (1000 * 60 * 60 * 24);
+    const startDateMs = new Date(watchStartDate * 1000)
+    const endDateMs = new Date(watchEndDate * 1000)
+    const daysDifference = (endDateMs - startDateMs) / (1000 * 60 * 60 * 24)
 
     if (daysDifference > 10) {
       return (
@@ -88,11 +88,11 @@ const Page = () => {
             narrowing your date range if you encounter issues.
           </Alert>
         </Grid>
-      );
+      )
     }
 
-    return null;
-  };
+    return null
+  }
 
   const onSubmit = (data) => {
     // Check if any filter is applied
@@ -100,51 +100,51 @@ const Page = () => {
       data.startDate !== null ||
       data.endDate !== null ||
       data.username !== null ||
-      data.severity?.length > 0;
-    setFilterEnabled(hasFilter);
+      data.severity?.length > 0
+    setFilterEnabled(hasFilter)
 
     // Format start date if available
     setStartDate(
       data.startDate
-        ? new Date(data.startDate * 1000).toISOString().split("T")[0].replace(/-/g, "")
-        : null,
-    );
+        ? new Date(data.startDate * 1000).toISOString().split('T')[0].replace(/-/g, '')
+        : null
+    )
 
     // Format end date if available
     setEndDate(
       data.endDate
-        ? new Date(data.endDate * 1000).toISOString().split("T")[0].replace(/-/g, "")
-        : null,
-    );
+        ? new Date(data.endDate * 1000).toISOString().split('T')[0].replace(/-/g, '')
+        : null
+    )
 
     // Set username filter if available
-    setUsername(data.username || null);
+    setUsername(data.username || null)
 
     // Set severity filter if available (convert array to comma-separated string)
     setSeverity(
       data.severity && data.severity.length > 0
-        ? data.severity.map((item) => item.value).join(",")
-        : null,
-    );
+        ? data.severity.map((item) => item.value).join(',')
+        : null
+    )
 
     // Close the accordion after applying filters
-    setExpanded(false);
-  };
+    setExpanded(false)
+  }
 
   const clearFilters = () => {
     formControl.reset({
       startDate: null,
       endDate: null,
-      username: "",
+      username: '',
       severity: [],
-    });
-    setFilterEnabled(false);
-    setStartDate(null);
-    setEndDate(null);
-    setUsername(null);
-    setSeverity(null);
-    setExpanded(false); // Close the accordion when clearing filters
-  };
+    })
+    setFilterEnabled(false)
+    setStartDate(null)
+    setEndDate(null)
+    setUsername(null)
+    setSeverity(null)
+    setExpanded(false) // Close the accordion when clearing filters
+  }
 
   return (
     <CippTablePage
@@ -158,30 +158,30 @@ const Page = () => {
               <Typography variant="h6">
                 Logbook Filters
                 {filterEnabled ? (
-                  <span style={{ fontSize: "0.8em", marginLeft: "10px", fontWeight: "normal" }}>
+                  <span style={{ fontSize: '0.8em', marginLeft: '10px', fontWeight: 'normal' }}>
                     (
                     {startDate || endDate ? (
                       <>
                         {startDate
                           ? new Date(
-                              startDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00",
+                              startDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') + 'T00:00:00'
                             ).toLocaleDateString()
                           : new Date().toLocaleDateString()}
-                        {startDate && endDate ? " - " : ""}
+                        {startDate && endDate ? ' - ' : ''}
                         {endDate
                           ? new Date(
-                              endDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00",
+                              endDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') + 'T00:00:00'
                             ).toLocaleDateString()
-                          : ""}
+                          : ''}
                       </>
                     ) : null}
-                    {username && (startDate || endDate) && " | "}
+                    {username && (startDate || endDate) && ' | '}
                     {username && <>User: {username}</>}
-                    {severity && (username || startDate || endDate) && " | "}
-                    {severity && <>Severity: {severity.replace(/,/g, ", ")}</>})
+                    {severity && (username || startDate || endDate) && ' | '}
+                    {severity && <>Severity: {severity.replace(/,/g, ', ')}</>})
                   </span>
                 ) : (
-                  <span style={{ fontSize: "0.8em", marginLeft: "10px", fontWeight: "normal" }}>
+                  <span style={{ fontSize: '0.8em', marginLeft: '10px', fontWeight: 'normal' }}>
                     (Today: {new Date().toLocaleDateString()})
                   </span>
                 )}
@@ -196,7 +196,7 @@ const Page = () => {
                   <Alert severity="info">
                     Use the filters below to narrow down your logbook results. You can filter by
                     date range, username, and severity levels. By default, the logbook shows the
-                    current day based on UTC time. Your local time is{" "}
+                    current day based on UTC time. Your local time is{' '}
                     {new Date().getTimezoneOffset() / -60} hours offset from UTC.
                   </Alert>
                 </Grid>
@@ -220,18 +220,18 @@ const Page = () => {
                         formControl={formControl}
                         validators={{
                           validate: (value) => {
-                            const startDate = formControl.getValues("startDate");
+                            const startDate = formControl.getValues('startDate')
                             if (value && !startDate) {
-                              return "Start date must be set when using an end date";
+                              return 'Start date must be set when using an end date'
                             }
                             if (
                               startDate &&
                               value &&
                               new Date(value * 1000) < new Date(startDate * 1000)
                             ) {
-                              return "End date must be after start date";
+                              return 'End date must be after start date'
                             }
-                            return true;
+                            return true
                           },
                         }}
                       />
@@ -263,12 +263,12 @@ const Page = () => {
                     formControl={formControl}
                     multiple={true}
                     options={[
-                      { value: "Info", label: "Info" },
-                      { value: "Warn", label: "Warning" },
-                      { value: "Error", label: "Error" },
-                      { value: "Critical", label: "Critical" },
-                      { value: "Alert", label: "Alert" },
-                      { value: "Debug", label: "Debug" },
+                      { value: 'Info', label: 'Info' },
+                      { value: 'Warn', label: 'Warning' },
+                      { value: 'Error', label: 'Error' },
+                      { value: 'Critical', label: 'Critical' },
+                      { value: 'Alert', label: 'Alert' },
+                      { value: 'Debug', label: 'Debug' },
                     ]}
                     placeholder="Select severity levels"
                   />
@@ -312,7 +312,7 @@ const Page = () => {
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
       queryKey={`Listlogs-${startDate}-${endDate}-${username}-${severity}-${filterEnabled}-${currentTenant}`}
-      tenantInTitle={true}
+      tenantInTitle={false}
       apiData={{
         StartDate: startDate, // Pass start date filter from state
         EndDate: endDate, // Pass end date filter from state
@@ -324,9 +324,9 @@ const Page = () => {
       actions={actions}
       offCanvas={offcanvas}
     />
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default Page;
+export default Page

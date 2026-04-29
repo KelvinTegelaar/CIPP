@@ -3,27 +3,20 @@ import { CippTablePage } from '../../../../components/CippComponents/CippTablePa
 import CippExchangeActions from '../../../../components/CippComponents/CippExchangeActions'
 import { CippHVEUserDrawer } from '../../../../components/CippComponents/CippHVEUserDrawer.jsx'
 import { CippSharedMailboxDrawer } from '../../../../components/CippComponents/CippSharedMailboxDrawer.jsx'
-import { Sync, CloudDone, Bolt } from '@mui/icons-material'
-import { Button, SvgIcon, Tooltip, Chip } from '@mui/material'
-import { useSettings } from '../../../../hooks/use-settings'
+import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import { Stack } from '@mui/system'
-import { useDialog } from '../../../../hooks/use-dialog'
-import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
-import { useState, useEffect } from 'react'
-import { CippQueueTracker } from '../../../../components/CippTable/CippQueueTracker'
 
 const Page = () => {
   const pageTitle = 'Mailboxes'
-  const currentTenant = useSettings().currentTenant
-  const syncDialog = useDialog()
-  const [syncQueueId, setSyncQueueId] = useState(null)
 
-  const isAllTenants = currentTenant === 'AllTenants'
-  const [useReportDB, setUseReportDB] = useState(true)
-
-  useEffect(() => {
-    setUseReportDB(true)
-  }, [currentTenant])
+  const reportDB = useCippReportDB({
+    apiUrl: '/api/ListMailboxes',
+    queryKey: 'ListMailboxes',
+    cacheName: 'Mailboxes',
+    syncTitle: 'Sync Mailboxes',
+    allowToggle: true,
+    defaultCached: true,
+  })
 
   // Define off-canvas details
   const offCanvas = {
@@ -55,31 +48,22 @@ const Page = () => {
   ]
 
   // Simplified columns for the table
-  const simpleColumns = isAllTenants
-    ? [
-        'Tenant', // Tenant
-        'displayName', // Display Name
-        'recipientTypeDetails', // Recipient Type Details
-        'UPN', // User Principal Name
-        'primarySmtpAddress', // Primary Email Address
-        'AdditionalEmailAddresses', // Additional Email Addresses
-        'CacheTimestamp', // Cache Timestamp
-      ]
-    : [
-        'displayName', // Display Name
-        'recipientTypeDetails', // Recipient Type Details
-        'UPN', // User Principal Name
-        'primarySmtpAddress', // Primary Email Address
-        'AdditionalEmailAddresses', // Additional Email Addresses
-        'CacheTimestamp', // Cache Timestamp
-      ]
+  const simpleColumns = [
+    ...reportDB.cacheColumns.filter((c) => c === 'Tenant'),
+    'displayName',
+    'recipientTypeDetails',
+    'UPN',
+    'primarySmtpAddress',
+    'AdditionalEmailAddresses',
+    ...reportDB.cacheColumns.filter((c) => c !== 'Tenant'),
+  ]
 
   return (
     <>
       <CippTablePage
         title={pageTitle}
-        apiUrl={`/api/ListMailboxes${useReportDB ? '?UseReportDB=true' : ''}`}
-        queryKey={`ListMailboxes-${currentTenant}-${useReportDB}`}
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={reportDB.resolvedQueryKey}
         actions={CippExchangeActions()}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
@@ -88,72 +72,11 @@ const Page = () => {
           <Stack direction="row" spacing={1} alignItems="center">
             <CippSharedMailboxDrawer />
             <CippHVEUserDrawer />
-            {useReportDB && (
-              <>
-                <CippQueueTracker
-                  queueId={syncQueueId}
-                  queryKey={`ListMailboxes-${currentTenant}`}
-                  title="Mailboxes Sync"
-                />
-                <Button
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <Sync />
-                    </SvgIcon>
-                  }
-                  size="xs"
-                  onClick={syncDialog.handleOpen}
-                  disabled={isAllTenants}
-                >
-                  Sync
-                </Button>
-              </>
-            )}
-            <Tooltip
-              title={
-                isAllTenants
-                  ? 'AllTenants always uses cached data'
-                  : useReportDB
-                    ? 'Showing cached data — click to switch to live'
-                    : 'Showing live data — click to switch to cache'
-              }
-            >
-              <span>
-                <Chip
-                  icon={useReportDB ? <CloudDone /> : <Bolt />}
-                  label={useReportDB ? 'Cached' : 'Live'}
-                  color="primary"
-                  size="small"
-                  onClick={isAllTenants ? undefined : () => setUseReportDB((prev) => !prev)}
-                  clickable={!isAllTenants}
-                  disabled={isAllTenants}
-                  variant="outlined"
-                />
-              </span>
-            </Tooltip>
+            {reportDB.controls}
           </Stack>
         }
       />
-      <CippApiDialog
-        createDialog={syncDialog}
-        title="Sync Mailboxes"
-        fields={[]}
-        api={{
-          type: 'GET',
-          url: '/api/ExecCIPPDBCache',
-          confirmText: `Run mailboxes cache sync for ${currentTenant}? This will update mailbox data immediately.`,
-          relatedQueryKeys: [`ListMailboxes-${currentTenant}-true`],
-          data: {
-            Name: 'Mailboxes',
-            Types: 'None',
-          },
-          onSuccess: (response) => {
-            if (response?.Metadata?.QueueId) {
-              setSyncQueueId(response.Metadata.QueueId)
-            }
-          },
-        }}
-      />
+      {reportDB.syncDialog}
     </>
   )
 }

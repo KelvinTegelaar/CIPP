@@ -6304,5 +6304,73 @@
       "EXCHANGE_S_ENTERPRISE_GOV",
       "EXCHANGE_LITE"
     ]
+  },
+  {
+    "name": "standards.SPDisableCustomScripts",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Prevents users from running custom scripts on SharePoint and OneDrive sites. Custom scripts can modify site behaviors and bypass governance controls.",
+    "docsDescription": "Disables the ability to add and run custom scripts on SharePoint and OneDrive sites at the tenant level. When custom scripts are allowed, governance cannot be enforced, and the capabilities of inserted code cannot be scoped or blocked. Microsoft recommends using the SharePoint Framework instead of custom scripts.",
+    "executiveText": "Blocks custom scripts from being added to SharePoint and OneDrive sites, enforcing governance controls and preventing unscoped code execution. This aligns with Microsoft's Baseline Security Mode recommendation to permanently remove the ability to add new custom scripts, directing organizations to use the SharePoint Framework instead.",
+    "addedComponent": [],
+    "label": "Disable custom scripts on SharePoint sites",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-04-28",
+    "powershellEquivalent": "Set-SPOTenant -CustomScriptsRestrictMode $true",
+    "recommendedBy": ["CIPP"],
+    "requiredCapabilities": [
+      "SHAREPOINTWAC",
+      "SHAREPOINTSTANDARD",
+      "SHAREPOINTENTERPRISE",
+      "SHAREPOINTENTERPRISE_EDU",
+      "ONEDRIVE_BASIC",
+      "ONEDRIVE_ENTERPRISE"
+    ]
+  },
+  {
+    "name": "standards.SPDisableStoreAccess",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Disables end users from installing applications from the Microsoft Store into SharePoint sites.",
+    "docsDescription": "Removes the ability for end users to install applications directly from the Microsoft Store into SharePoint. This prevents uncontrolled app installations that can increase governance costs and go against organizational policies.",
+    "executiveText": "Prevents end users from installing applications from the Microsoft Store into SharePoint sites, ensuring that only approved applications are available. This reduces governance overhead and aligns with Microsoft's Baseline Security Mode recommendations.",
+    "addedComponent": [],
+    "label": "Disable SharePoint Store access",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-04-28",
+    "powershellEquivalent": "Set-SPOTenant -DisableSharePointStoreAccess $true",
+    "recommendedBy": ["CIPP"],
+    "requiredCapabilities": [
+      "SHAREPOINTWAC",
+      "SHAREPOINTSTANDARD",
+      "SHAREPOINTENTERPRISE",
+      "SHAREPOINTENTERPRISE_EDU",
+      "ONEDRIVE_BASIC",
+      "ONEDRIVE_ENTERPRISE"
+    ]
+  },
+  {
+    "name": "standards.DisableEWS",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Disables Exchange Web Services (EWS) organization-wide. This reduces the attack surface by blocking legacy API access to mailbox data. Warning: This may break Office web add-ins on builds older than 16.0.19127.",
+    "docsDescription": "Disables Exchange Web Services (EWS) at the organization level to reduce attack surface. EWS provides cross-platform API access to sensitive Exchange Online data such as emails, meetings, and contacts. If compromised, attackers can access confidential data, send phishing emails, or spoof identities. Disabling EWS also reduces legacy app usage and minimizes exploitable endpoints. Note that this may break first-party features including web add-ins for Word, Excel, PowerPoint, and Outlook on builds older than 16.0.19127.",
+    "executiveText": "Disables Exchange Web Services (EWS) across the organization to reduce attack surface and prevent legacy API access to sensitive mailbox data. This aligns with Microsoft's Baseline Security Mode recommendation to minimize exploitable endpoints while requiring updates to applications that depend on EWS.",
+    "addedComponent": [],
+    "label": "Disable Exchange Web Services",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-04-28",
+    "powershellEquivalent": "Set-OrganizationConfig -EwsEnabled $false",
+    "recommendedBy": ["CIPP"],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
   }
 ]

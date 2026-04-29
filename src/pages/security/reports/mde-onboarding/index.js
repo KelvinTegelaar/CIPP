@@ -12,16 +12,15 @@ import {
   CircularProgress,
   Button,
   SvgIcon,
-  IconButton,
-  Tooltip,
 } from "@mui/material";
-import { Sync, Info, OpenInNew } from "@mui/icons-material";
+import { Sync, OpenInNew } from "@mui/icons-material";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import { CippQueueTracker } from "../../../../components/CippTable/CippQueueTracker";
 import { useState } from "react";
+import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const statusColors = {
   enabled: "success",
@@ -78,11 +77,6 @@ const SingleTenantView = ({ tenant }) => {
                   queryKey={`MDEOnboarding-${tenant}`}
                   title="MDE Onboarding Sync"
                 />
-                <Tooltip title="This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.">
-                  <IconButton size="small">
-                    <Info fontSize="small" />
-                  </IconButton>
-                </Tooltip>
                 <Button
                   startIcon={
                     <SvgIcon fontSize="small">
@@ -163,69 +157,31 @@ const SingleTenantView = ({ tenant }) => {
 const Page = () => {
   const currentTenant = useSettings().currentTenant;
   const isAllTenants = currentTenant === "AllTenants";
-  const syncDialog = useDialog();
-  const [syncQueueId, setSyncQueueId] = useState(null);
+
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListMDEOnboarding",
+    queryKey: "MDEOnboarding",
+    cacheName: "MDEOnboarding",
+    syncTitle: "Sync MDE Onboarding Status",
+    allowToggle: false,
+    defaultCached: true,
+  });
 
   if (!isAllTenants) {
     return <SingleTenantView tenant={currentTenant} />;
   }
 
-  const pageActions = [
-    <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
-      <CippQueueTracker
-        queueId={syncQueueId}
-        queryKey="MDEOnboarding-AllTenants"
-        title="MDE Onboarding Sync"
-      />
-      <Tooltip title="This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for all tenants.">
-        <IconButton size="small">
-          <Info fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <Button
-        startIcon={
-          <SvgIcon fontSize="small">
-            <Sync />
-          </SvgIcon>
-        }
-        size="small"
-        onClick={syncDialog.handleOpen}
-      >
-        Sync
-      </Button>
-    </Stack>,
-  ];
-
   return (
     <>
       <CippTablePage
         title="MDE Onboarding Status"
-        apiUrl="/api/ListMDEOnboarding"
-        apiData={{ UseReportDB: true }}
-        queryKey="MDEOnboarding-AllTenants"
+        apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        queryKey={reportDB.resolvedQueryKey}
         simpleColumns={["Tenant", "partnerState", "CacheTimestamp"]}
-        cardButton={pageActions}
+        cardButton={reportDB.controls}
       />
-      <CippApiDialog
-        createDialog={syncDialog}
-        title="Sync MDE Onboarding Status"
-        fields={[]}
-        api={{
-          type: "GET",
-          url: "/api/ExecCIPPDBCache",
-          confirmText:
-            "Run MDE onboarding status sync for all tenants? This may take a while.",
-          relatedQueryKeys: ["MDEOnboarding-AllTenants"],
-          data: {
-            Name: "MDEOnboarding",
-          },
-          onSuccess: (result) => {
-            if (result?.Metadata?.QueueId) {
-              setSyncQueueId(result.Metadata.QueueId);
-            }
-          },
-        }}
-      />
+      {reportDB.syncDialog}
     </>
   );
 };
