@@ -23,6 +23,7 @@ const config = {
   },
   output: 'export',
   distDir: './out',
+  productionBrowserSourceMaps: false,
 }
 
 module.exports = config
