@@ -482,6 +482,7 @@ const Page = () => {
               'alignmentScore',
               'LicenseMissingPercentage',
               'combinedAlignmentScore',
+              'currentDeviationsCount',
             ]
       }
       queryKey={granular ? 'listTenantAlignment-granular' : 'listTenantAlignment'}

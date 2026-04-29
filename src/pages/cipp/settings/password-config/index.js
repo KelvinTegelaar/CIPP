@@ -41,32 +41,32 @@ function normalizeConfigForBackend(config) {
   return {
     passwordType: String(config.passwordType || PASSWORD_TYPES.CLASSIC),
     charCount: String(parseInt(config.charCount, 10) || DEFAULT_VALUES.CHAR_COUNT),
-    includeUppercase: String(Boolean(config.includeUppercase)),
-    includeLowercase: String(Boolean(config.includeLowercase)),
-    includeDigits: String(Boolean(config.includeDigits)),
-    includeSpecialChars: String(Boolean(config.includeSpecialChars)),
+    includeUppercase: Boolean(config.includeUppercase),
+    includeLowercase: Boolean(config.includeLowercase),
+    includeDigits: Boolean(config.includeDigits),
+    includeSpecialChars: Boolean(config.includeSpecialChars),
     specialCharSet: String(config.specialCharSet || DEFAULT_VALUES.SPECIAL_CHAR_SET),
     wordCount: String(parseInt(config.wordCount, 10) || DEFAULT_VALUES.WORD_COUNT),
     separator: config.separator !== undefined && config.separator !== null ? String(config.separator) : DEFAULT_VALUES.SEPARATOR,
-    capitalizeWords: String(Boolean(config.capitalizeWords)),
-    appendNumber: String(Boolean(config.appendNumber)),
-    appendSpecialChar: String(Boolean(config.appendSpecialChar)),
+    capitalizeWords: Boolean(config.capitalizeWords),
+    appendNumber: Boolean(config.appendNumber),
+    appendSpecialChar: Boolean(config.appendSpecialChar),
   };
 }
 
 
 const DEFAULT_CONFIG = {
-  passwordType: PASSWORD_TYPES.CLASSIC, 
+  passwordType: PASSWORD_TYPES.CLASSIC,
   charCount: String(DEFAULT_VALUES.CHAR_COUNT),
-  includeUppercase: true, 
-  includeLowercase: true, 
+  includeUppercase: true,
+  includeLowercase: true,
   includeDigits: true,
-  includeSpecialChars: true, 
+  includeSpecialChars: true,
   specialCharSet: DEFAULT_VALUES.SPECIAL_CHAR_SET,
-  wordCount: String(DEFAULT_VALUES.WORD_COUNT), 
+  wordCount: String(DEFAULT_VALUES.WORD_COUNT),
   separator: DEFAULT_VALUES.SEPARATOR,
-  capitalizeWords: false, 
-  appendNumber: false, 
+  capitalizeWords: false,
+  appendNumber: false,
   appendSpecialChar: false,
 };
 
@@ -89,7 +89,7 @@ const Page = () => {
         if (typeof v === 'number') return v === 1;
         return def;
       };
-      
+
       setConfig({
         passwordType: r.passwordType || DEFAULT_CONFIG.passwordType,
         charCount: String(parseInt(r.charCount, 10) || DEFAULT_CONFIG.charCount),
@@ -115,11 +115,11 @@ const Page = () => {
 
   const handleSave = () => {
     const normalizedConfig = normalizeConfigForBackend(config);
-    
+
     passwordSave.mutate(
-      { 
-        url: "/api/ExecPasswordConfig", 
-        data: normalizedConfig, 
+      {
+        url: "/api/ExecPasswordConfig",
+        data: normalizedConfig,
         queryKey: "PasswordSettingsPost",
       }
     );
