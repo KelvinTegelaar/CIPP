@@ -24,6 +24,12 @@ import { getCippFormatting } from '../../utils/get-cipp-formatting'
 import { CippCodeBlock } from '../CippComponents/CippCodeBlock'
 import intuneCollection from '../../data/intuneCollection.json'
 import { useGuidResolver } from '../../hooks/use-guid-resolver'
+import { useAdminTemplateDefinitions } from '../../hooks/use-admin-template-definitions'
+import {
+  definitionBindPattern,
+  presentationBindPattern,
+  extractBindGuid,
+} from '../../utils/intune-bind-helpers'
 
 const intuneCollectionMap = new Map(
   (intuneCollection || []).filter((item) => item?.id).map((item) => [item.id, item])
@@ -250,7 +256,21 @@ function CippJsonView({
   // Use the GUID resolver hook
   const { guidMapping, isLoadingGuids, resolveGuids, isGuid } = useGuidResolver()
   const resolvedType =
-    type || (object?.omaSettings || object?.settings || object?.added ? 'intune' : undefined)
+    type ||
+    (object?.omaSettings || object?.settings || object?.definitionValues || object?.added
+      ? 'intune'
+      : undefined)
+  const adminTemplateTenant =
+    object?.Tenant || object?.tenant || object?.TenantFilter || object?.tenantFilter || null
+  const {
+    definitionsMap: addedDefinitionsMap,
+    isLoadingDefinitions,
+    isDefinitionsError,
+  } = useAdminTemplateDefinitions({
+    added: object?.added,
+    manualTenant: adminTemplateTenant,
+    waiting: resolvedType === 'intune',
+  })
 
   const renderIntuneItems = (data) => {
     const items = []
@@ -292,7 +312,7 @@ function CippJsonView({
     }
 
     const renderDefinitionTooltip = (definition, optionDefinition) => {
-      const description = definition?.helpText || definition?.description
+      const description = definition?.helpText || definition?.description || definition?.explainText
       const optionDescription = optionDefinition?.helpText || optionDefinition?.description
       const infoUrls = Array.isArray(definition?.infoUrls) ? definition.infoUrls : []
 
@@ -394,6 +414,185 @@ function CippJsonView({
         value: optionDefinition?.displayName || rawValue,
       }
     }
+
+    const getDisplayValue = (value) => {
+      if (value === null || value === undefined || value === '') {
+        return ''
+      }
+
+      if (typeof value === 'boolean') {
+        return value ? 'Yes' : 'No'
+      }
+
+      if (typeof value === 'string' || typeof value === 'number') {
+        return value
+      }
+
+      try {
+        return JSON.stringify(value)
+      } catch {
+        return String(value)
+      }
+    }
+
+    const getAdministrativeTemplatePresentationValue = (presentationValue) => {
+      if (!presentationValue || typeof presentationValue !== 'object') {
+        return 'Not configured'
+      }
+
+      if (Object.prototype.hasOwnProperty.call(presentationValue, 'value')) {
+        const displayValue = getDisplayValue(presentationValue.value)
+        if (displayValue !== '') {
+          return displayValue
+        }
+      }
+
+      if (Array.isArray(presentationValue.values)) {
+        const values = presentationValue.values
+          .map((entry) => {
+            if (entry && typeof entry === 'object') {
+              const entryLabel =
+                entry.name ||
+                entry.key ||
+                entry.displayName ||
+                entry.id ||
+                entry.PresentationDefinitionLabel ||
+                ''
+              const entryValue = getDisplayValue(
+                entry.value ?? entry.text ?? entry.Value ?? entry.StringValue ?? entry
+              )
+
+              if (entryLabel && entryValue !== '') {
+                return `${entryLabel}: ${entryValue}`
+              }
+
+              return entryValue
+            }
+
+            return getDisplayValue(entry)
+          })
+          .filter((entry) => entry !== null && entry !== undefined && entry !== '')
+
+        if (values.length > 0) {
+          return values.join(', ')
+        }
+      }
+
+      return 'Not configured'
+    }
+
+    const getStatusText = (enabled) =>
+      enabled === true ? 'Enabled' : enabled === false ? 'Disabled' : 'Configured'
+
+    const addAdministrativeTemplateValue = (
+      value,
+      index,
+      { definition, definitionId, label, keyPrefix, presentationKeyInfix, resolvePresentationLabel }
+    ) => {
+      if (!value || typeof value !== 'object') {
+        return
+      }
+
+      const categoryPath = definition?.categoryPath
+      const presentationValues = Array.isArray(value.presentationValues)
+        ? value.presentationValues
+        : []
+      const itemKey = value.id || definitionId || index
+
+      items.push(
+        <PropertyListItem
+          key={`${keyPrefix}-${itemKey}`}
+          label={renderSettingLabel(label, definition)}
+          value={
+            <Stack spacing={0.5} sx={{ py: 0.25 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {getStatusText(value.enabled)}
+              </Typography>
+              {categoryPath && (
+                <Typography variant="caption" color="text.secondary">
+                  {categoryPath}
+                </Typography>
+              )}
+              {!definition && definitionId && (
+                <Typography variant="caption" color="text.secondary">
+                  Definition ID: {definitionId}
+                </Typography>
+              )}
+              {presentationValues.map((presentationValue, presentationIndex) => {
+                const presentationLabel = resolvePresentationLabel(
+                  definition,
+                  presentationValue,
+                  presentationIndex
+                )
+                const presentationDisplayValue = getAdministrativeTemplatePresentationValue(
+                  presentationValue
+                )
+
+                return (
+                  <Box
+                    key={`${itemKey}-${presentationKeyInfix}-${presentationValue?.id || presentationIndex}`}
+                    sx={{ fontSize: '0.875rem' }}
+                  >
+                    <Box component="span" sx={{ fontWeight: 600 }}>
+                      {presentationLabel}:
+                    </Box>{' '}
+                    {renderSettingValue(presentationDisplayValue)}
+                  </Box>
+                )
+              })}
+            </Stack>
+          }
+        />
+      )
+    }
+
+    const getPresentationTypeLabel = (odataType) => {
+      switch (odataType) {
+        case '#microsoft.graph.groupPolicyPresentationValueBoolean':
+          return 'Boolean value'
+        case '#microsoft.graph.groupPolicyPresentationValueDecimal':
+        case '#microsoft.graph.groupPolicyPresentationValueLongDecimal':
+          return 'Numeric value'
+        case '#microsoft.graph.groupPolicyPresentationValueMultiText':
+          return 'Text list'
+        case '#microsoft.graph.groupPolicyPresentationValueList':
+          return 'List value'
+        case '#microsoft.graph.groupPolicyPresentationValueText':
+          return 'Text value'
+        default:
+          return 'Value'
+      }
+    }
+
+    const getAddedPresentationLabel = (definition, presentationValue) => {
+      const presentationId = extractBindGuid(
+        presentationValue?.['presentation@odata.bind'],
+        presentationBindPattern
+      )
+
+      if (presentationId && Array.isArray(definition?.presentations)) {
+        const resolvedPresentation = definition.presentations.find(
+          (presentation) => String(presentation?.id || '').toLowerCase() === presentationId
+        )
+
+        if (resolvedPresentation) {
+          return (
+            resolvedPresentation.label ||
+            resolvedPresentation.displayName ||
+            resolvedPresentation.id ||
+            getPresentationTypeLabel(presentationValue?.['@odata.type'])
+          )
+        }
+      }
+
+      return getPresentationTypeLabel(presentationValue?.['@odata.type'])
+    }
+
+    const resolveLivePresentationLabel = (_definition, presentationValue, presentationIndex) =>
+      presentationValue?.presentation?.label ||
+      presentationValue?.presentation?.displayName ||
+      presentationValue?.presentation?.id ||
+      `Value ${presentationIndex + 1}`
 
     const addSettingInstance = (settingInstance, setting, keyPrefix) => {
       if (!settingInstance) {
@@ -498,14 +697,82 @@ function CippJsonView({
       data.settings.forEach((setting, index) => {
         addSettingInstance(setting.settingInstance, setting, `setting-${index}`)
       })
-    } else if (data.added) {
-      items.push(
-        <PropertyListItem
-          key="legacyPolicy"
-          label="Legacy Policy"
-          value="This is a legacy policy and the settings can only be shown in JSON format. Press the eye icon to view the JSON."
-        />
-      )
+    } else if (Array.isArray(data.definitionValues)) {
+      if (data.definitionValues.length === 0) {
+        items.push(
+          <PropertyListItem
+            key="definitionValues-empty"
+            label="Administrative Template"
+            value="This administrative template policy did not return any configured settings."
+          />
+        )
+      }
+
+      data.definitionValues.forEach((definitionValue, index) => {
+        const definition = definitionValue?.definition
+        addAdministrativeTemplateValue(definitionValue, index, {
+          definition,
+          definitionId: null,
+          label: definition?.displayName || definition?.id || definitionValue?.id || 'Setting',
+          keyPrefix: 'definitionValue',
+          presentationKeyInfix: 'presentation',
+          resolvePresentationLabel: resolveLivePresentationLabel,
+        })
+      })
+    } else if (Array.isArray(data.added)) {
+      const hasResolvedDefinitions = Object.keys(addedDefinitionsMap).length > 0
+
+      if (isLoadingDefinitions && !hasResolvedDefinitions) {
+        items.push(
+          <PropertyListItem
+            key="added-loading"
+            label="Administrative Template"
+            value={
+              <Stack direction="row" spacing={1} alignItems="center">
+                <CircularProgress size={16} />
+                <Typography variant="body2">Resolving administrative template settings...</Typography>
+              </Stack>
+            }
+          />
+        )
+        return items
+      }
+
+      if (data.added.length === 0) {
+        items.push(
+          <PropertyListItem
+            key="added-empty"
+            label="Administrative Template"
+            value="This administrative template policy did not return any configured settings."
+          />
+        )
+      }
+
+      if (isDefinitionsError && !hasResolvedDefinitions) {
+        items.push(
+          <PropertyListItem
+            key="added-definition-error"
+            label="Definition Lookup"
+            value="Microsoft definition metadata could not be resolved for this tenant. Rendering fallback values."
+          />
+        )
+      }
+
+      data.added.forEach((addedValue, index) => {
+        const definitionId = extractBindGuid(
+          addedValue?.['definition@odata.bind'],
+          definitionBindPattern
+        )
+        const definition = definitionId ? addedDefinitionsMap[definitionId] : null
+        addAdministrativeTemplateValue(addedValue, index, {
+          definition,
+          definitionId,
+          label: definition?.displayName || definitionId || `Setting ${index + 1}`,
+          keyPrefix: 'addedDefinition',
+          presentationKeyInfix: 'added-presentation',
+          resolvePresentationLabel: getAddedPresentationLabel,
+        })
+      })
     } else {
       Object.entries(data).forEach(([key, value]) => {
         // Check if value is a GUID that we've resolved
