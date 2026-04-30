@@ -355,6 +355,11 @@ const Page = () => {
     return errData?.Results || compareApi.error?.message || "An error occurred";
   }, [compareApi.isError, compareApi.error]);
 
+  const comparisonRows = useMemo(() => {
+    if (!Array.isArray(results?.Results)) return [];
+    return results.Results.filter(Boolean);
+  }, [results?.Results]);
+
   return (
     <CippPageCard title="Compare Intune Policies" backButtonTitle="Back to Policies">
       <CardContent>
@@ -405,14 +410,14 @@ const Page = () => {
               >
                 {results.identical
                   ? "Policies are identical - no differences found."
-                  : `${results.Results?.length || 0} difference${results.Results?.length === 1 ? "" : "s"} found between policies.`}
+                  : `${comparisonRows.length} difference${comparisonRows.length === 1 ? "" : "s"} found between policies.`}
                 <Box component="span" sx={{ display: "block", mt: 0.5 }}>
                   <strong>A:</strong> {results.sourceALabel} &mdash; <strong>B:</strong>{" "}
                   {results.sourceBLabel}
                 </Box>
               </Alert>
 
-              {!results.identical && results.Results?.length > 0 && (
+              {!results.identical && comparisonRows.length > 0 && (
                 <TableContainer component={Paper} variant="outlined">
                   <Table size="small">
                     <TableHead>
@@ -424,7 +429,7 @@ const Page = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {results.Results.map((row, index) => (
+                      {comparisonRows.map((row, index) => (
                         <TableRow
                           key={index}
                           sx={(theme) => ({
