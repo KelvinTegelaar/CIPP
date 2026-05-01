@@ -906,15 +906,14 @@ $noMfa = $RegDetails | Where-Object {
 }
 
 $count = @($noMfa).Count
-$md = "### Users Without MFA: $count\\n\\n"
 if ($count -gt 0) {
-    $md = $md + "| User | Admin | Message |\\n|---|---|---|\\n"
+    $header = "### Users Without MFA: $count\n\n| User | Admin | Message |\n|---|---|---|"
     $tableRows = $noMfa | ForEach-Object {
         "| $($_.UserPrincipalName) | $($_.IsAdmin) | $($_.Message) |"
     }
-    $md = @($md) + @($tableRows) -join "\\n"
+    $md = @($header) + @($tableRows) -join "\n"
 } else {
-    $md = $md + "All users have at least one MFA method registered."
+    $md = "### Users Without MFA: 0\n\nAll users have at least one MFA method registered."
 }
 
 @{
@@ -1007,20 +1006,20 @@ $counts = $grouped | ForEach-Object {
 }
 
 # Build markdown summary
-$md = "### Conditional Access Policies: $(@($Policies).Count) total\\n\\n"
-$md = $md + "| State | Count |\\n|---|---|\\n"
+$header = "### Conditional Access Policies: $(@($Policies).Count) total\n\n| State | Count |\n|---|---|"
 $countRows = $counts | ForEach-Object {
     "| $($_.State) | $($_.Count) |"
 }
-$md = @($md) + @($countRows) -join "\\n"
-$md = $md + "\\n\\n---\\n\\n"
+$summaryTable = @($header) + @($countRows) -join "\n"
 
 # List each policy
-$md = $md + "| Policy | State | Created |\\n|---|---|---|\\n"
+$policyHeader = "| Policy | State | Created |\n|---|---|---|"
 $policyRows = $Policies | Sort-Object -Property state, displayName | ForEach-Object {
     "| $($_.displayName) | $($_.state) | $($_.createdDateTime) |"
 }
-$md = @($md) + @($policyRows) -join "\\n"
+$policyTable = @($policyHeader) + @($policyRows) -join "\n"
+
+$md = $summaryTable + "\n\n---\n\n" + $policyTable
 
 @{
     CIPPStatus         = 'Passed'
