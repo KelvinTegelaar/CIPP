@@ -100,6 +100,7 @@ const Page = () => {
   const [scriptContentExpanded, setScriptContentExpanded] = useState(true)
   const [testerExpanded, setTesterExpanded] = useState(true)
   const markdownEditorRef = useRef(null)
+  const scriptEditorRef = useRef(null)
 
   const toSelectOption = (value, fallback) =>
     value
@@ -168,6 +169,15 @@ const Page = () => {
   }, [isEdit])
 
   const cacheExplorerTenant = router.query.tenantFilter || settings?.currentTenant
+
+  const variablesQuery = ApiGetCall({
+    url: `/api/ListCustomVariables?tenantFilter=${encodeURIComponent(cacheExplorerTenant || '')}`,
+    queryKey: `CustomVariables-${cacheExplorerTenant || 'global'}`,
+    waiting: !!cacheExplorerTenant,
+    staleTime: Infinity,
+    refetchOnMount: false,
+  })
+
   const cacheExplorerApi = ApiGetCall({
     url: '/api/ListDBCache',
     data: { tenantFilter: cacheExplorerTenant, type: expandedCacheType },
@@ -452,6 +462,12 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
   const selectedReturnType = formControl.watch('ReturnType')
   const markdownTemplateValue = formControl.watch('MarkdownTemplate')
   const resultSchemaValue = formControl.watch('ResultSchema')
+  const watchedScriptContent = formControl.watch('ScriptContent')
+
+  const hasTenantFilterParam = useMemo(() => {
+    if (!watchedScriptContent) return false
+    return /-TenantFilter\b/i.test(watchedScriptContent)
+  }, [watchedScriptContent])
 
   const markdownAutocompleteOptions = useMemo(() => {
     const suggestionsMap = new Map()
@@ -491,6 +507,71 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
 
     return Array.from(suggestionsMap.values())
   }, [resultSchemaValue])
+
+  const handleScriptEditorMount = (_editor, monaco) => {
+    scriptEditorRef.current = _editor
+
+    const provider = monaco.languages.registerCompletionItemProvider('powershell', {
+      triggerCharacters: ['%'],
+      provideCompletionItems: (model, position) => {
+        const linePrefix = model.getValueInRange({
+          startLineNumber: position.lineNumber,
+          startColumn: 1,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column,
+        })
+
+        const triggerIndex = linePrefix.lastIndexOf('%')
+        if (triggerIndex === -1) {
+          return { suggestions: [] }
+        }
+
+        const range = {
+          startLineNumber: position.lineNumber,
+          startColumn: triggerIndex + 1,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column,
+        }
+
+        const vars = variablesQuery.data?.Results || []
+        const suggestions = vars.map((v) => ({
+          label: v.Variable,
+          kind: monaco.languages.CompletionItemKind.Variable,
+          insertText: v.Variable,
+          detail: v.Type === 'reserved' ? `Built-in (${v.Category})` : `Custom (${v.Category})`,
+          documentation: v.Description || '',
+          range,
+        }))
+
+        return { suggestions }
+      },
+    })
+
+    const contentListener = _editor.onDidChangeModelContent(() => {
+      const model = _editor.getModel()
+      const position = _editor.getPosition()
+      if (!model || !position) return
+
+      const linePrefix = model.getValueInRange({
+        startLineNumber: position.lineNumber,
+        startColumn: 1,
+        endLineNumber: position.lineNumber,
+        endColumn: position.column,
+      })
+
+      if (linePrefix.endsWith('%')) {
+        _editor.trigger('cipp-variables', 'editor.action.triggerSuggest', {})
+      }
+    })
+
+    _editor.onDidDispose(() => {
+      provider.dispose()
+      contentListener.dispose()
+      if (scriptEditorRef.current === _editor) {
+        scriptEditorRef.current = null
+      }
+    })
+  }
 
   const handleMarkdownEditorMount = (_editor, monaco) => {
     markdownEditorRef.current = _editor
@@ -706,8 +787,10 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                     </Typography>
                   </Stack>
                   <Typography variant="caption" color="text.secondary">
-                    AST allowlist — approved cmdlets only. <code>+=</code> is blocked.{' '}
-                    <code>$TenantFilter</code> is injected automatically.
+                    AST allowlist — approved cmdlets only. <code>+=</code> is blocked. Data access
+                    is automatically tenant-locked — do not pass{' '}
+                    <code>-TenantFilter</code>. Type <code>%</code> in the editor for replacement
+                    variables.
                   </Typography>
                 </Box>
               </Grid>
@@ -732,7 +815,9 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                     color="text.secondary"
                     sx={{ display: 'block', mb: 0.5 }}
                   >
-                    Read-only via <code>Get-CIPPTestData</code> with <code>-Type</code>.
+                    Read-only via <code>Get-CIPPTestData</code> with <code>-Type</code>.{' '}
+                    Tenant is auto-locked — do not pass <code>-TenantFilter</code>. Use{' '}
+                    <code>%variable%</code> syntax for replacement variables.
                   </Typography>
                   <Button
                     size="small"
@@ -783,8 +868,8 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                 </Typography>
                 <CippCodeBlock
                   code={`# List all users and their licenses with friendly SKU names
-$Users = Get-CIPPTestData -TenantFilter $TenantFilter -Type 'Users'
-$Licenses = Get-CIPPTestData -TenantFilter $TenantFilter -Type 'LicenseOverview'
+$Users = Get-CIPPTestData -Type 'Users'
+$Licenses = Get-CIPPTestData -Type 'LicenseOverview'
 
 # Build a SKU ID -> display name lookup hashtable
 $SkuLookup = @{}
@@ -850,7 +935,7 @@ $md = @($header) + @($rows) -join "\\n"
                 </Typography>
                 <CippCodeBlock
                   code={`# Find disabled users that still have licenses (wasted cost)
-$Users = Get-CIPPTestData -TenantFilter $TenantFilter -Type 'Users'
+$Users = Get-CIPPTestData -Type 'Users'
 
 # Return only disabled users with licenses — non-empty = fail
 $Users | Where-Object {
@@ -891,7 +976,7 @@ $Users | Where-Object {
                 </Typography>
                 <CippCodeBlock
                   code={`# Find users without any MFA method registered
-$RegDetails = Get-CIPPTestData -TenantFilter $TenantFilter -Type 'UserRegistrationDetails'
+$RegDetails = Get-CIPPTestData -Type 'UserRegistrationDetails'
 
 $noMfa = $RegDetails | Where-Object {
     $_.methodsRegistered.Count -eq 0 -and
@@ -950,7 +1035,7 @@ if ($count -gt 0) {
                   code={`# Find guest accounts with no recent sign-in
 param($DaysThreshold = 90)
 
-$Guests = Get-CIPPTestData -TenantFilter $TenantFilter -Type 'Guests'
+$Guests = Get-CIPPTestData -Type 'Guests'
 $cutoff = (Get-Date).AddDays(-$DaysThreshold)
 
 $Guests | Where-Object {
@@ -990,12 +1075,13 @@ $Guests | Where-Object {
                   sx={{ display: 'block', mb: 1 }}
                 >
                   Provides an informational summary of all Conditional Access policies grouped by
-                  state. Demonstrates using <code>Group-Object</code> and building a multi-section
-                  markdown report. Always passes since it&apos;s informational.
+                  state. Demonstrates using <code>Group-Object</code>, building a multi-section
+                  markdown report, and <code>%tenantname%</code> replacement variables. Always
+                  passes since it&apos;s informational.
                 </Typography>
                 <CippCodeBlock
                   code={`# Summarize Conditional Access policies by state
-$Policies = Get-CIPPTestData -TenantFilter $TenantFilter -Type 'ConditionalAccessPolicies'
+$Policies = Get-CIPPTestData -Type 'ConditionalAccessPolicies'
 $grouped = $Policies | Group-Object -Property state
 
 $counts = $grouped | ForEach-Object {
@@ -1005,8 +1091,8 @@ $counts = $grouped | ForEach-Object {
     }
 }
 
-# Build markdown summary
-$header = "### Conditional Access Policies: $(@($Policies).Count) total\n\n| State | Count |\n|---|---|"
+# Build markdown summary — %tenantname% is replaced at runtime
+$header = "### %tenantname% — CA Policies: $(@($Policies).Count) total\n\n| State | Count |\n|---|---|"
 $countRows = $counts | ForEach-Object {
     "| $($_.State) | $($_.Count) |"
 }
@@ -1283,6 +1369,7 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
                       showLineNumbers={true}
                       editorHeight="540px"
                       readOnly={isScriptLoading}
+                      onMount={handleScriptEditorMount}
                       onChange={(value) => field.onChange(value || '')}
                     />
                     <Typography
@@ -1292,6 +1379,21 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
                     >
                       {scriptContentField.placeholder}
                     </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: 'block' }}
+                    >
+                      Type <code>%</code> to insert replacement variables (e.g.{' '}
+                      <code>%tenantid%</code>, <code>%defaultdomain%</code>, or custom variables).
+                    </Typography>
+                    {hasTenantFilterParam && (
+                      <Alert severity="warning" sx={{ mt: 1 }}>
+                        <code>-TenantFilter</code> is not needed — data access functions are
+                        automatically locked to the execution tenant. Remove{' '}
+                        <code>-TenantFilter $TenantFilter</code> from your calls.
+                      </Alert>
+                    )}
                     {fieldState.error?.message && (
                       <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
                         {fieldState.error.message}
