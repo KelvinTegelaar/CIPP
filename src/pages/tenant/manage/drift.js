@@ -95,6 +95,12 @@ const ManageDriftPage = () => {
     queryKey: 'ListIntuneTemplates',
   })
 
+  // API call to get all CA templates for displayName lookup
+  const caTemplatesApi = ApiGetCall({
+    url: '/api/ListCATemplates',
+    queryKey: 'ListCATemplates',
+  })
+
   // API call for standards comparison (when templateId is available)
   const comparisonApi = ApiGetCall({
     url: '/api/ListStandardsCompare',
@@ -232,6 +238,14 @@ const ManageDriftPage = () => {
                   displayName = template.TemplateList.label
                 }
               }
+              // If not found in standardSettings, look up in all CA templates (for tag templates)
+              if (!displayName && Array.isArray(caTemplatesApi.data)) {
+                const template = caTemplatesApi.data.find((t) => t.GUID === guid)
+                if (template?.displayName) {
+                  displayName = template.displayName
+                }
+              }
+
               // If template not found, return null to filter it out later
               if (!displayName) {
                 return null
