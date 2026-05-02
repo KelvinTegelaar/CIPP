@@ -53,7 +53,6 @@ import {
   ClearAll as ClearAllIcon,
 } from '@mui/icons-material'
 import { SvgIcon } from '@mui/material'
-import discordIcon from '../../public/discord-mark-blue.svg'
 import React, { useEffect, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/router'
@@ -69,6 +68,7 @@ TimeAgo.addDefaultLocale(en)
 
 const queryClient = new QueryClient()
 const clientSideEmotionCache = createEmotionCache()
+
 const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   const getLayout = Component.getLayout ?? ((page) => page)
@@ -226,13 +226,7 @@ const App = (props) => {
     },
     {
       id: 'discord',
-      icon: (
-        <SvgIcon
-          component={discordIcon}
-          viewBox="0 0 127.14 96.36"
-          sx={{ fontSize: '1.5rem' }}
-        ></SvgIcon>
-      ),
+      icon: <img src="/discord-mark-blue.svg" alt="Discord" style={{ width: 24, height: 24 }} />,
       name: 'Join the Discord!',
       href: 'https://discord.gg/cyberdrain',
       onClick: () => window.open('https://discord.gg/cyberdrain', '_blank'),

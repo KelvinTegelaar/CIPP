@@ -67,7 +67,7 @@ const checkCIPPStandardAvailable = (testName) => {
 };
 
 // Shared markdown styling for consistent rendering
-const markdownStyles = {
+export const markdownStyles = {
   "& a": {
     color: (theme) => theme.palette.primary.main,
     textDecoration: "underline",
@@ -135,11 +135,11 @@ export const CippTestDetailOffCanvas = ({ row }) => {
   }
 
   const computedCustomMarkdown =
-    hasRawCustomData && parsedCustomResult !== null
+    hasRawCustomData && parsedCustomResult !== null && !row.ResultMarkdown
       ? renderCustomScriptMarkdownTemplate(parsedCustomResult, row.MarkdownTemplate || "")
       : null;
-  const shouldRenderCustomJson = hasRawCustomData && row.ReturnType === "JSON";
-  const shouldRenderCustomMarkdown = hasRawCustomData && !shouldRenderCustomJson;
+  const shouldRenderCustomJson = hasRawCustomData && row.ReturnType === "JSON" && !row.ResultMarkdown;
+  const shouldRenderCustomMarkdown = hasRawCustomData && !shouldRenderCustomJson && !row.ResultMarkdown;
 
   return (
     <Stack spacing={3}>

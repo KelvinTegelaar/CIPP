@@ -6372,5 +6372,128 @@
       "EXCHANGE_S_ENTERPRISE_GOV",
       "EXCHANGE_LITE"
     ]
+  },
+  {
+    "name": "standards.OMEBranding",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Configures the branding applied to Microsoft Purview (OME) encrypted emails, including the logo, background color, and the text recipients see when viewing a protected message. [Read more](https://learn.microsoft.com/en-us/purview/add-your-organization-brand-to-encrypted-messages)",
+    "docsDescription": "Configures Office Message Encryption (OME) branding settings for the tenant default configuration. Allows organizations to apply a custom logo (via URL), background color, button text, and portal text to encrypted emails viewed by external recipients.",
+    "executiveText": "Applies organizational branding to encrypted emails so recipients see a professional, on-brand experience when viewing protected messages. Reinforces brand identity while preserving security compliance.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.OMEBranding.BackgroundColor",
+        "label": "Background Color - Optional",
+        "placeholder": "#ffffff",
+        "helpText": "The background color of the encrypted message wrapper. Enter an HTML hex color code (e.g. #ffffff) or a named color value (e.g. white).",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.OMEBranding.LogoUrl",
+        "label": "Logo Image URL - Optional (Less than 40kb 170x70 pixels)",
+        "placeholder": "https://example.com/logo.png or %CustomVarable%",
+        "helpText": "URL to your organization's logo displayed in the encrypted email and the reading portal. Supported formats: PNG, JPG, BMP, TIFF. Optimal size: 170x70 px, max 40 KB.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.OMEBranding.IntroductionText",
+        "label": "Text next to the sender's name and email address - Optional",
+        "placeholder": "has sent you a secure message.",
+        "helpText": "Text that appears next to the sender's name and email address. Maximum 1024 characters.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.OMEBranding.ReadButtonText",
+        "label": "Read Button Text - Optional",
+        "placeholder": "Read Secure Message.",
+        "helpText": "Text that appears on the 'Read Message' button. Maximum 1024 characters.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.OMEBranding.EmailText",
+        "label": "Email Text below the button - Optional",
+        "placeholder": "Encrypted message from Contoso secure messaging system.",
+        "helpText": "Text that appears below the 'Read Message' button. Maximum 1024 characters.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.OMEBranding.PrivacyStatementUrl",
+        "label": "Privacy Statement URL - Optional",
+        "placeholder": "https://contoso.com/privacystatement.html",
+        "helpText": "URL for the Privacy Statement link in the encrypted email notification. Leave blank to use Microsoft's default privacy statement.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.OMEBranding.DisclaimerText",
+        "label": "Disclaimer Statement  - Optional",
+        "placeholder": "This message is confidential for the use of the addressee only.",
+        "helpText": "Disclaimer statement shown in the email that contains the encrypted message. Maximum 1024 characters.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.OMEBranding.PortalText",
+        "label": "Text appears at the top of the encrypted mail viewing portal  - Optional",
+        "placeholder": "Contoso secure email portal.",
+        "helpText": "Text that appears at the top of the encrypted mail viewing portal. Maximum 128 characters.",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.OMEBranding.OTPEnabled",
+        "label": "One-Time Pass Code - Required",
+        "helpText": "Enable or disable authentication with a one-time pass code. When enabled, recipients without a Microsoft account can verify their identity via a code sent to their email.",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": true
+          },
+          {
+            "label": "Disabled",
+            "value": false
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.OMEBranding.SocialIdSignIn",
+        "label": "Social ID Sign-In - Required",
+        "helpText": "Enable or disable authentication with Microsoft, Google, or Yahoo identities. When enabled, recipients can sign in with an existing social account to view the encrypted message.",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": true
+          },
+          {
+            "label": "Disabled",
+            "value": false
+          }
+        ]
+      }
+    ],
+    "label": "Configure Encrypted Message Branding (OME)",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-04-25",
+    "powershellEquivalent": "Set-OMEConfiguration",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
   }
 ]

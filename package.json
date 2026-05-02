@@ -1,6 +1,6 @@
 {
   "name": "cipp",
-  "version": "10.4.2",
+  "version": "10.4.3",
   "author": "CIPP Contributors",
   "homepage": "https://cipp.app/",
   "bugs": {
@@ -16,7 +16,7 @@
   },
   "scripts": {
     "dev": "next -H 127.0.0.1",
-    "build": "next build && rm -rf package.json yarn.lock",
+    "build": "next build --webpack && rm -rf package.json yarn.lock",
     "start": "next start",
     "export": "next export",
     "lint": "npx eslint .",
