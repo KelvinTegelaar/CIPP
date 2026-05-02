@@ -43,7 +43,7 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@tanstack/query-sync-storage-persister": "^5.90.25",
     "@tanstack/react-query": "^5.96.2",
-    "@tanstack/react-query-devtools": "^5.51.11",
+    "@tanstack/react-query-devtools": "^5.96.2",
     "@tanstack/react-query-persist-client": "^5.76.0",
     "@tanstack/react-table": "^8.19.2",
     "@tiptap/core": "^3.4.1",
