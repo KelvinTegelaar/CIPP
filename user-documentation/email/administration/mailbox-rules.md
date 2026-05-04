@@ -1,6 +1,8 @@
 # Mailbox Rules
 
-{% include "../../../.gitbook/includes/cached-data-report.md" %}
+## Page Actions
+
+{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
 
 ## Table Details
 

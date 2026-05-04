@@ -22,6 +22,7 @@ Review the Test Guidance section for additional information on how to craft a cu
 | User Impact           | Options: `Low`, `Medium`, `High`                                                                                                                                                                                                                                                     |
 | Implementation Effort | Options: `Low`, `Medium`, `High`.                                                                                                                                                                                                                                                    |
 | Result Display Type   | Options: `JSON` or `Markdown`. Controls how test failure output is rendered in CIPP test details.                                                                                                                                                                                    |
+| Result Mode           | Options: `Auto`, `Always Pass`, or `Always Info`. For `Auto` the script output determines pass/fail.                                                                                                                                                                                 |
 | Enable Script         | Whether the test runs during scheduled test execution.                                                                                                                                                                                                                               |
 | Notify on Alert       | Whether a notification fires when the test fails.                                                                                                                                                                                                                                    |
 
@@ -34,6 +35,10 @@ This is only displayed when the Result Display Type is set to Markdown. This all
 ### PowerShell Script
 
 This editor allows you to create the PowerShell script used in the test. See the usage notes on the page for how to construct the test script.
+
+{% hint style="info" %}
+Type % to insert replacement variables (e.g. %tenantid%, %defaultdomain%, or custom variables).
+{% endhint %}
 
 ## Test Script Output
 

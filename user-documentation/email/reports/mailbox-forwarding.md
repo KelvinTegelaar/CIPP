@@ -1,6 +1,8 @@
 # Mailbox Forwarding
 
-{% include "../../../.gitbook/includes/cached-data-report.md" %}
+## Page Actions
+
+{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
 
 This report will display mailboxes with forwarding enabled.&#x20;
 

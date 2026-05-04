@@ -1,8 +1,10 @@
 # MDE Onboarding
 
-{% include "../../../.gitbook/includes/cached-data-report.md" %}
-
 This page will reflect the state of the connector between Microsoft Defender for Endpoint and Mobile Threat Defense. This page will have different views depending on if being accessed via All Tenants or a single tenant. All Tenants displays an informational table. Single tenant will also show a link to "Start Onboarding" that will send you to the MDE onboarding page within the Microsoft Defender portal if the state is not enabled or available.
+
+## Page Actions
+
+{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
 
 ## Partner State
 
