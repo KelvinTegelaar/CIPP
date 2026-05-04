@@ -160,6 +160,10 @@ Once all other steps are completed and all tenants show configured, click the "S
 
 {% @storylane/embed subdomain="app" linkValue="gykd6vk1y7kr" url="https://app.storylane.io/share/gykd6vk1y7kr" %}
 
+{% hint style="info" %}
+If you want to see how to combine Custom Variables and Tenant Groups to provide a way to "graduate" tenants through standards, see [#using-custom-variables-to-manage-standards-templates](../../../demos/tutorials.md#using-custom-variables-to-manage-standards-templates "mention")
+{% endhint %}
+
 ## Standards Filtering
 
 On both the add and edit standards template page, you will see options for how to filter the standards list added to the template. This is helpful for those templates that contain a lot of standards.

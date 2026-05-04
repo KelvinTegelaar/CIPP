@@ -39,3 +39,7 @@
 ### Adding a Direct Tenant via the Setup Wizard
 
 {% @storylane/embed subdomain="app" linkValue="kcszcpgdcg6m" url="https://app.storylane.io/share/kcszcpgdcg6m" %}
+
+### Using Custom Variables to Manage Standards Templates
+
+{% @storylane/embed subdomain="app" linkValue="st9ulut6rls4" url="https://app.storylane.io/share/st9ulut6rls4" %}

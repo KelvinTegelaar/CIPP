@@ -40,6 +40,10 @@ The following variables are reserved and will not be used:
 * `%userprofile%`
 * `%windir%`
 
+{% hint style="info" %}
+If you want to see how to combine Custom Variables and Tenant Groups to provide a way to "graduate" tenants through standards, see [#using-custom-variables-to-manage-standards-templates](../../../../demos/tutorials.md#using-custom-variables-to-manage-standards-templates "mention")
+{% endhint %}
+
 ***
 
 {% include "../../../../.gitbook/includes/feature-request.md" %}

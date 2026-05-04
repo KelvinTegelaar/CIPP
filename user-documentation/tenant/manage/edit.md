@@ -20,6 +20,10 @@ Here you can configure default offboarding settings that will specifically apply
 
 This section presents a way to manage [global-variables.md](../administration/tenants/global-variables.md "mention")on a per-tenant basis. For example, you need to set a client's RMM site ID.
 
+{% hint style="info" %}
+If you want to see how to combine Custom Variables and Tenant Groups to provide a way to "graduate" tenants through standards, see [#using-custom-variables-to-manage-standards-templates](../../../demos/tutorials.md#using-custom-variables-to-manage-standards-templates "mention")
+{% endhint %}
+
 ***
 
 {% include "../../../.gitbook/includes/feature-request.md" %}
