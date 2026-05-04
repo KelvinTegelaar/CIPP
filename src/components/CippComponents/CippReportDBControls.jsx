@@ -19,6 +19,7 @@ import { CippQueueTracker } from '../CippTable/CippQueueTracker'
  * @param {Object} [config.syncData]      - Extra data to pass to ExecCIPPDBCache. Merged with { Name: cacheName }.
  * @param {boolean} [config.allowToggle=true] - Whether the user can toggle between cached and live. False = always cached.
  * @param {boolean} [config.defaultCached=true] - Initial cached state (when toggle is allowed).
+ * @param {boolean} [config.allowAllTenantSync=false] - Allow syncing when AllTenants is selected (fans out to all tenants).
  * @param {string[]} [config.cacheColumns=["CacheTimestamp"]] - Extra columns to show when in cached mode.
  * @param {string} [config.tenantColumn="Tenant"] - Column name for tenant (shown in AllTenants mode).
  * @param {Object} [config.apiData]       - Additional static API data to merge (e.g. extra params).
@@ -44,6 +45,7 @@ export function useCippReportDB(config) {
     syncData,
     allowToggle = true,
     defaultCached = true,
+    allowAllTenantSync = false,
     cacheColumns = ['CacheTimestamp'],
     tenantColumn = 'Tenant',
     apiData: extraApiData,
@@ -123,11 +125,7 @@ export function useCippReportDB(config) {
     <Stack direction="row" spacing={1} alignItems="center">
       {useReportDB && (
         <>
-          <CippQueueTracker
-            queueId={syncQueueId}
-            queryKey={resolvedQueryKey}
-            title={syncTitle}
-          />
+          <CippQueueTracker queueId={syncQueueId} queryKey={resolvedQueryKey} title={syncTitle} />
           <Button
             startIcon={
               <SvgIcon fontSize="small">
@@ -136,7 +134,7 @@ export function useCippReportDB(config) {
             }
             size="xs"
             onClick={dialog.handleOpen}
-            disabled={isAllTenants}
+            disabled={isAllTenants && !allowAllTenantSync}
           >
             Sync
           </Button>
