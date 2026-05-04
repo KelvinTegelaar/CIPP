@@ -20,14 +20,13 @@ For User and Device information a Rich Text field called "Microsoft 365" is used
 2. Browse to **Admin -> Account Administration -> API Keys**
 3. Select **+ New API Key** at the top right.
 4. Fill out the details for the API Application:
-   * Enter a Name such as '**CIPP Integration**'.
-   * Optional: Get a list of potential IP addresses from your function app to limit the API scope to just the function app.
+   * **Name:** Enter a Name such as '**CIPP Integration**'.
+   * **Limit scope to:** Full Access
+   * **Company:** Leave blank
+   * **Allowed IP Addresses** (Optional): Get a list of potential IP addresses from your function app to limit the API scope to just the function app.
+   * **Key can perform the following actions:** None of these are necessary
 5. Click **Create New Key**.
 6. Copy the API key to a secure place.
-
-{% hint style="warning" %}
-In order for CIPP to access your Hudu asset layouts, a **global** API key must be created. The Company Scope field should be left blank.
-{% endhint %}
 
 #### Step 2 - CIPP Settings
 
