@@ -23,7 +23,7 @@ For User and Device information a Rich Text field called "Microsoft 365" is used
    * **Name:** Enter a Name such as '**CIPP Integration**'.
    * **Limit scope to:** Full Access
    * **Company:** Leave blank
-   * **Allowed IP Addresses** (Optional): Get a list of potential IP addresses from your function app to limit the API scope to just the function app.
+   * **Allowed IP Addresses** (Optional): Get a list of potential IP addresses from your function app to limit the API scope to just the function app. CyberDrain hosted clients can find these on [https://management.cipp.app](https://management.cipp.app/).
    * **Key can perform the following actions:** None of these are necessary
 5. Click **Create New Key**.
 6. Copy the API key to a secure place.
