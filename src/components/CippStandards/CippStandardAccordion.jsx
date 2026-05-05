@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import {
   Card,
   Stack,
+  Alert,
   Avatar,
   Box,
   Typography,
@@ -53,8 +54,9 @@ const getAvailableActions = (disabledFeatures) => {
   return allActions.filter((action) => !disabledFeatures?.[action.value.toLowerCase()]);
 };
 
-const CippAddedComponent = React.memo(({ standardName, component, formControl }) => {
+const CippAddedComponent = React.memo(({ standardName, component, formControl, currentValue }) => {
   const updatedComponent = { ...component };
+  const fieldName = `${standardName}.${updatedComponent.name}`;
 
   if (component.type === "AdminRolesMultiSelect") {
     updatedComponent.type = "autoComplete";
@@ -73,15 +75,30 @@ const CippAddedComponent = React.memo(({ standardName, component, formControl })
     updatedComponent.type = component.type;
   }
 
+  const warningThreshold = Number(updatedComponent.warningThreshold);
+  const numericValue = Number(currentValue);
+  const showThresholdWarning =
+    Number.isFinite(warningThreshold) &&
+    !Number.isNaN(numericValue) &&
+    `${currentValue}`.trim() !== "" &&
+    numericValue > warningThreshold;
+
+  const warningMessage =
+    updatedComponent.warningMessage ||
+    `Values above ${warningThreshold} can match unrelated policies. Use with caution.`;
+
   return (
     <Grid size={12}>
-      <CippFormComponent
-        type={updatedComponent.type}
-        label={updatedComponent.label}
-        formControl={formControl}
-        {...updatedComponent}
-        name={`${standardName}.${updatedComponent.name}`}
-      />
+      <Stack spacing={1}>
+        <CippFormComponent
+          type={updatedComponent.type}
+          label={updatedComponent.label}
+          formControl={formControl}
+          {...updatedComponent}
+          name={fieldName}
+        />
+        {showThresholdWarning && <Alert severity="warning">{warningMessage}</Alert>}
+      </Stack>
     </Grid>
   );
 });
@@ -937,6 +954,10 @@ const CippStandardAccordion = ({
                                     standardName={standardName}
                                     component={component}
                                     formControl={formControl}
+                                    currentValue={_.get(
+                                      watchedValues,
+                                      `${standardName}.${component.name}`,
+                                    )}
                                   />
                                 </CippFormCondition>
                               ) : (
@@ -945,6 +966,10 @@ const CippStandardAccordion = ({
                                   standardName={standardName}
                                   component={component}
                                   formControl={formControl}
+                                  currentValue={_.get(
+                                    watchedValues,
+                                    `${standardName}.${component.name}`,
+                                  )}
                                 />
                               ),
                             )}
@@ -995,6 +1020,10 @@ const CippStandardAccordion = ({
                                       standardName={standardName}
                                       component={component}
                                       formControl={formControl}
+                                      currentValue={_.get(
+                                        watchedValues,
+                                        `${standardName}.${component.name}`,
+                                      )}
                                     />
                                   </CippFormCondition>
                                 ) : (
@@ -1003,6 +1032,10 @@ const CippStandardAccordion = ({
                                     standardName={standardName}
                                     component={component}
                                     formControl={formControl}
+                                    currentValue={_.get(
+                                      watchedValues,
+                                      `${standardName}.${component.name}`,
+                                    )}
                                   />
                                 ),
                               )}
