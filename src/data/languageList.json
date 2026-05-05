@@ -139,6 +139,12 @@
   },
   {
     "language": "Dutch",
+    "Geographic area": "Belgium",
+    "tag": "nl-BE",
+    "LCID": "2067"
+  },
+  {
+    "language": "Dutch",
     "Geographic area": "Netherlands",
     "tag": "nl-NL",
     "LCID": "1043"

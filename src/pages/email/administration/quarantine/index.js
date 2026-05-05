@@ -1,6 +1,6 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { useEffect, useState } from "react";
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -9,166 +9,172 @@ import {
   Skeleton,
   Typography,
   CircularProgress,
-} from "@mui/material";
-import { Block, Close, Done, DoneAll } from "@mui/icons-material";
-import { CippMessageViewer } from "../../../../components/CippComponents/CippMessageViewer.jsx";
-import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
-import { useSettings } from "../../../../hooks/use-settings";
-import { EyeIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
-import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
+} from '@mui/material'
+import { Block, Close, Done, DoneAll } from '@mui/icons-material'
+import { CippMessageViewer } from '../../../../components/CippComponents/CippMessageViewer.jsx'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { useSettings } from '../../../../hooks/use-settings'
+import { EyeIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 
 const simpleColumns = [
-  "ReceivedTime",
-  "ReleaseStatus",
-  "Subject",
-  "SenderAddress",
-  "RecipientAddress",
-  "Type",
-  "PolicyName",
-  "Tenant",
-];
-const detailColumns = ["Received", "Status", "SenderAddress", "RecipientAddress"];
-const pageTitle = "Quarantine Management";
+  'ReceivedTime',
+  'ReleaseStatus',
+  'Subject',
+  'SenderAddress',
+  'RecipientAddress',
+  'Type',
+  'PolicyName',
+  'Tenant',
+]
+const detailColumns = ['Received', 'Status', 'SenderAddress', 'RecipientAddress']
+const pageTitle = 'Quarantine Management'
 
 const Page = () => {
-  const tenantFilter = useSettings().currentTenant;
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogContent, setDialogContent] = useState(null);
-  const [messageId, setMessageId] = useState(null);
-  const [traceDialogOpen, setTraceDialogOpen] = useState(false);
-  const [traceDetails, setTraceDetails] = useState([]);
-  const [traceMessageId, setTraceMessageId] = useState(null);
-  const [messageSubject, setMessageSubject] = useState(null);
-  const [messageContentsWaiting, setMessageContentsWaiting] = useState(false);
+  const tenantFilter = useSettings().currentTenant
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogContent, setDialogContent] = useState(null)
+  const [messageId, setMessageId] = useState(null)
+  const [traceDialogOpen, setTraceDialogOpen] = useState(false)
+  const [traceDetails, setTraceDetails] = useState([])
+  const [traceMessageId, setTraceMessageId] = useState(null)
+  const [messageSubject, setMessageSubject] = useState(null)
+  const [messageContentsWaiting, setMessageContentsWaiting] = useState(false)
 
   const getMessageContents = ApiGetCall({
-    url: "/api/ListMailQuarantineMessage",
+    url: '/api/ListMailQuarantineMessage',
     data: {
       tenantFilter: tenantFilter,
       Identity: messageId,
     },
     waiting: messageContentsWaiting,
     queryKey: `ListMailQuarantineMessage-${messageId}`,
-  });
+  })
 
   const getMessageTraceDetails = ApiPostCall({
     urlFromData: true,
     queryKey: `MessageTraceDetail-${traceMessageId}`,
     onResult: (result) => {
-      setTraceDetails(result);
+      setTraceDetails(result)
     },
-  });
+  })
 
   const viewMessage = (row) => {
-    const id = row.Identity;
-    setMessageId(id);
+    const id = row.Identity
+    setMessageId(id)
     if (!messageContentsWaiting) {
-      setMessageContentsWaiting(true);
+      setMessageContentsWaiting(true)
     }
-    getMessageContents.refetch();
-    setDialogOpen(true);
-  };
+    getMessageContents.refetch()
+    setDialogOpen(true)
+  }
 
   const viewMessageTrace = (row) => {
-    setTraceMessageId(row.MessageId);
+    setTraceMessageId(row.MessageId)
     getMessageTraceDetails.mutate({
-      url: "/api/ListMessageTrace",
+      url: '/api/ListMessageTrace',
       data: {
         tenantFilter: tenantFilter,
         messageId: row.MessageId,
       },
-    });
-    setMessageSubject(row.Subject);
-    setTraceDialogOpen(true);
-  };
+    })
+    setMessageSubject(row.Subject)
+    setTraceDialogOpen(true)
+  }
 
   useEffect(() => {
     if (getMessageContents.isSuccess) {
-      setDialogContent(<CippMessageViewer emailSource={getMessageContents?.data?.Message} />);
+      setDialogContent(<CippMessageViewer emailSource={getMessageContents?.data?.Message} />)
     } else {
-      setDialogContent(<Skeleton variant="rectangular" height={400} />);
+      setDialogContent(<Skeleton variant="rectangular" height={400} />)
     }
-  }, [getMessageContents.isSuccess, getMessageContents.data]);
+  }, [getMessageContents.isSuccess, getMessageContents.data])
 
   const actions = [
     {
-      label: "View Message",
+      label: 'View Message',
       noConfirm: true,
       customFunction: viewMessage,
       icon: <EyeIcon />,
+      hideBulk: true,
     },
     {
-      label: "View Message Trace",
+      label: 'View Message Trace',
       noConfirm: true,
       customFunction: viewMessageTrace,
       icon: <DocumentTextIcon />,
+      hideBulk: true,
     },
     {
-      label: "Release",
-      type: "POST",
-      url: "/api/ExecQuarantineManagement",
+      label: 'Release',
+      type: 'POST',
+      url: '/api/ExecQuarantineManagement',
       multiPost: true,
       data: {
-        Identity: "Identity",
-        Type: "!Release",
+        Identity: 'Identity',
+        Type: '!Release',
       },
-      confirmText: "Are you sure you want to release this message?",
+      confirmText: 'Are you sure you want to release this message?',
       icon: <Done />,
-      condition: (row) => row.ReleaseStatus !== "RELEASED",
+      condition: (row) => row.ReleaseStatus !== 'RELEASED',
     },
     {
-      label: "Deny",
-      type: "POST",
-      url: "/api/ExecQuarantineManagement",
+      label: 'Deny',
+      type: 'POST',
+      url: '/api/ExecQuarantineManagement',
+      multiPost: true,
       data: {
-        Identity: "Identity",
-        Type: "!Deny",
+        Identity: 'Identity',
+        Type: '!Deny',
       },
-      confirmText: "Are you sure you want to deny this message?",
+      confirmText: 'Are you sure you want to deny this message?',
       icon: <Block />,
-      condition: (row) => row.ReleaseStatus !== "DENIED",
+      condition: (row) => row.ReleaseStatus === 'REQUESTED',
     },
     {
-      label: "Release & Allow Sender",
-      type: "POST",
-      url: "/api/ExecQuarantineManagement",
+      label: 'Release & Allow Sender',
+      type: 'POST',
+      url: '/api/ExecQuarantineManagement',
+      multiPost: true,
       data: {
-        Identity: "Identity",
-        Type: "!Release",
+        Identity: 'Identity',
+        Type: '!Release',
         AllowSender: true,
+        SenderAddress: 'SenderAddress',
+        PolicyName: 'PolicyName',
       },
       confirmText:
-        "Are you sure you want to release this email and add the sender to the whitelist?",
+        'Are you sure you want to release this email and add the sender to the whitelist?',
       icon: <DoneAll />,
-      condition: (row) => row.ReleaseStatus !== "RELEASED",
+      condition: (row) => row.ReleaseStatus !== 'RELEASED',
     },
-  ];
+  ]
 
   const offCanvas = {
-    extendedInfoFields: ["MessageId", "RecipientAddress", "Type"],
+    extendedInfoFields: ['MessageId', 'RecipientAddress', 'Type'],
     actions: actions,
-  };
+  }
 
   const filterList = [
     {
-      filterName: "Not Released",
-      value: [{ id: "ReleaseStatus", value: "NOTRELEASED" }],
-      type: "column",
-      filterType: "equal",
+      filterName: 'Not Released',
+      value: [{ id: 'ReleaseStatus', value: 'NOTRELEASED' }],
+      type: 'column',
+      filterType: 'equal',
     },
     {
-      filterName: "Released",
-      value: [{ id: "ReleaseStatus", value: "RELEASED" }],
-      type: "column",
-      filterType: "equal",
+      filterName: 'Released',
+      value: [{ id: 'ReleaseStatus', value: 'RELEASED' }],
+      type: 'column',
+      filterType: 'equal',
     },
     {
-      filterName: "Requested",
-      value: [{ id: "ReleaseStatus", value: "REQUESTED" }],
-      type: "column",
-      filterType: "equal",
+      filterName: 'Requested',
+      value: [{ id: 'ReleaseStatus', value: 'REQUESTED' }],
+      type: 'column',
+      filterType: 'equal',
     },
-  ];
+  ]
 
   return (
     <>
@@ -187,7 +193,7 @@ const Page = () => {
           <IconButton
             aria-label="close"
             onClick={() => setDialogOpen(false)}
-            sx={{ position: "absolute", right: 8, top: 8 }}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
           >
             <Close />
           </IconButton>
@@ -205,7 +211,7 @@ const Page = () => {
           <IconButton
             aria-label="close"
             onClick={() => setTraceDialogOpen(false)}
-            sx={{ position: "absolute", right: 8, top: 8 }}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
           >
             <Close />
           </IconButton>
@@ -225,7 +231,7 @@ const Page = () => {
               data={traceDetails ?? []}
               refreshFunction={() =>
                 getMessageTraceDetails.mutate({
-                  url: "/api/ListMessageTrace",
+                  url: '/api/ListMessageTrace',
                   data: {
                     tenantFilter: tenantFilter,
                     messageId: traceMessageId,
@@ -238,9 +244,9 @@ const Page = () => {
         </DialogContent>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default Page;
+export default Page

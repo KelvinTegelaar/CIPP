@@ -18,9 +18,9 @@ const Page = () => {
 
   const apiData = ApiGetCallWithPagination({
     url: apiFilter.endpoint ? "/api/ListGraphRequest" : "/api/ListEmptyResults",
-    data: apiFilter,
+    data: { tenantFilter, ...apiFilter },
     queryKey: queryKey,
-    waiting: !!apiFilter.endpoint,
+    waiting: !!apiFilter.endpoint && viewMode === "json",
   });
 
   const jsonData = apiData?.data?.pages?.[0]?.Results || apiData?.data || {};

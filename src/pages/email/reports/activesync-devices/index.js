@@ -76,6 +76,7 @@ const Page = () => {
           'firstSyncTime',
           'lastSyncAttemptTime',
           'lastSuccessSync',
+          'syncInfoNote',
           'deviceID',
         ],
         actions: actions,

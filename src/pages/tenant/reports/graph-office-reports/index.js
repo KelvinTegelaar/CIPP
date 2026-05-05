@@ -64,7 +64,7 @@ const Page = () => {
     waiting: !!currentTenant,
   })
 
-  const reportOptions = (reportListApi.data ?? []).map((r) => ({
+  const reportOptions = (Array.isArray(reportListApi.data) ? reportListApi.data : []).map((r) => ({
     label: prettifyReportName(r.name),
     value: r.name,
     type: r.type ?? null,
@@ -156,7 +156,7 @@ const Page = () => {
                 ) : (
                   <CippDataTable
                     title={`${prettifyReportName(report)}${showPeriod ? ` (${period})` : ''}`}
-                    data={reportDataApi.data ?? []}
+                    data={Array.isArray(reportDataApi.data) ? reportDataApi.data : []}
                     isFetching={reportDataApi.isFetching}
                     simple={false}
                     reportTitle={`${source}-${report}`}

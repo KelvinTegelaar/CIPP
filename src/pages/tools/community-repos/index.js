@@ -82,6 +82,7 @@ const Page = () => {
       icon: <TrashIcon />,
       multiPost: false,
       queryKey: "CommunityRepos",
+      condition: (row) => row.BuiltIn !== true,
     },
     {
       label: "Set Upload Branch",

@@ -22,60 +22,46 @@ const Page = () => {
       return vendor.vendorTenantId;
     })
     .join(",");
-  const vendorGraphFilter = `appOwnerOrganizationId in (${vendorFilter})`;
   const tenantId = useWatch({
     control: formControl.control,
     name: "tenantFilter",
   });
 
   const gdapRelationships = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    data: {
-      Endpoint: "tenantRelationships/delegatedAdminRelationships",
-      tenantFilter: "",
-      $top: 300,
-    },
+    url: "/api/ListGDAPRelationships",
     queryKey: "ListGDAPRelationship",
   });
 
   const cspContracts = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    data: {
-      Endpoint: "contracts",
-      tenantFilter: "",
-      $top: 300,
-    },
+    url: "/api/ListGDAPContracts",
     queryKey: "ListContracts",
   });
 
   const mspApps = ApiGetCall({
-    url: "/api/ListGraphRequest",
+    url: "/api/ListGDAPServicePrincipals",
     data: {
-      Endpoint: "servicePrincipals",
-      TenantFilter: tenantId?.value,
-      $filter: `appOwnerOrganizationId eq %partnertenantid%`,
-      $select: "id,displayName,appId,appOwnerOrganizationId",
-      $count: true,
+      tenantFilter: tenantId?.value,
+      ownerType: "partner",
     },
     queryKey: "ListMSPApps-" + tenantId?.value,
+    waiting: Boolean(tenantId?.value),
   });
 
   const vendorApps = ApiGetCallWithPagination({
-    url: "/api/ListGraphRequest",
+    url: "/api/ListGDAPServicePrincipals",
     data: {
-      Endpoint: "servicePrincipals",
-      TenantFilter: tenantId?.value,
-      $filter: vendorGraphFilter,
-      $select: "id,displayName,appId,appOwnerOrganizationId",
-      $count: true,
+      tenantFilter: tenantId?.value,
+      ownerType: "vendor",
+      vendorTenantIds: vendorFilter,
     },
     queryKey: "ListVendorApps-" + tenantId?.value,
+    waiting: Boolean(tenantId?.value),
   });
 
   return (
     <>
       <CippFormPage
-        queryKey={["ListAllTenants", "TenantSelector"]}
+        queryKey={["ListOffboardTenants", "TenantSelector"]}
         formControl={formControl}
         title="Tenant Offboarding"
         hideBackButton={true}
@@ -98,11 +84,8 @@ const Page = () => {
               label="Select Tenant to Offboard"
               type="autoComplete"
               api={{
-                url: "/api/ExecExcludeTenant",
-                data: {
-                  ListAll: true,
-                },
-                queryKey: "ListAllTenants",
+                url: "/api/ListOffboardTenants",
+                queryKey: "ListOffboardTenants",
                 labelField: (tenant) => {
                   return `${tenant.displayName} (${tenant.defaultDomainName})`;
                 },
@@ -205,13 +188,11 @@ const Page = () => {
                     label="Vendor Applications to Remove"
                     type="autoComplete"
                     api={{
-                      url: "/api/ListGraphRequest",
+                      url: "/api/ListGDAPServicePrincipals",
                       data: {
-                        Endpoint: "servicePrincipals",
-                        TenantFilter: tenantId.value,
-                        $filter: vendorGraphFilter,
-                        $select: "id,displayName,appId,appOwnerOrganizationId",
-                        $count: true,
+                        tenantFilter: tenantId.value,
+                        ownerType: "vendor",
+                        vendorTenantIds: vendorFilter,
                       },
                       dataKey: "Results",
                       queryKey: "ListVendorApps-" + tenantId.value,

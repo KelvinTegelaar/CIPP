@@ -4,18 +4,40 @@ import { ApiGetCall, ApiPostCall } from "../api/ApiCall";
 
 const SETTINGS_STORAGE_KEY = "app.settings";
 
-const normalizeBookmarks = (value) => {
-  if (Array.isArray(value)) {
-    return value;
+const sanitizeBookmark = (bookmark) => {
+  if (!bookmark || typeof bookmark !== "object") {
+    return null;
   }
 
-  if (
-    value &&
-    typeof value === "object" &&
-    typeof value.path === "string" &&
-    typeof value.label === "string"
-  ) {
-    return [value];
+  if (typeof bookmark.path !== "string") {
+    return null;
+  }
+
+  const path = bookmark.path.trim();
+  if (!path) {
+    return null;
+  }
+
+  const label =
+    typeof bookmark.label === "string" && bookmark.label.trim()
+      ? bookmark.label.trim()
+      : path;
+
+  return {
+    ...bookmark,
+    path,
+    label,
+  };
+};
+
+const normalizeBookmarks = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(sanitizeBookmark).filter(Boolean);
+  }
+
+  const singleBookmark = sanitizeBookmark(value);
+  if (singleBookmark) {
+    return [singleBookmark];
   }
 
   return [];
@@ -103,7 +125,7 @@ export const useUserBookmarks = () => {
 
   const persistBookmarks = useCallback(
     (nextBookmarks, callbacks = {}) => {
-      const safeBookmarks = Array.isArray(nextBookmarks) ? nextBookmarks : [];
+      const safeBookmarks = normalizeBookmarks(nextBookmarks);
 
       queryClient.setQueryData(["userSettings"], (previous) => ({
         ...(previous || {}),

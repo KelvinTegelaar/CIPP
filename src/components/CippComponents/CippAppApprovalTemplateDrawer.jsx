@@ -144,7 +144,7 @@ export const CippAppApprovalTemplateDrawer = ({
               variant="contained"
               color="primary"
               onClick={formControl.handleSubmit(handleSubmit)}
-              disabled={updatePermissions.isPending}
+              disabled={updatePermissions.isPending || !formControl.formState.isValid}
             >
               {updatePermissions.isPending
                 ? isEditMode

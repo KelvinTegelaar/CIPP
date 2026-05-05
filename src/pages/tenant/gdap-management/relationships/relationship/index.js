@@ -24,7 +24,7 @@ const Page = () => {
   const [relationshipData, setRelationshipData] = useState({});
 
   const relationshipRequest = ApiGetCall({
-    url: `/api/ListGraphRequest?Endpoint=tenantRelationships/delegatedAdminRelationships/${id}`,
+    url: `/api/ListGDAPRelationships?id=${id}`,
     queryKey: `ListRelationships-${id}`,
   });
 

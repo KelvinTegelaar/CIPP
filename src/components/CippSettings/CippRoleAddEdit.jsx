@@ -103,6 +103,24 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
     return regex.test(value);
   };
 
+  const getFunctionDescriptionText = (description) => {
+    if (!description) return null;
+
+    if (Array.isArray(description)) {
+      return description?.[0]?.Text || description?.[0]?.text || null;
+    }
+
+    if (typeof description === "string") {
+      return description;
+    }
+
+    if (typeof description === "object") {
+      return description?.Text || description?.text || null;
+    }
+
+    return null;
+  };
+
   const getBaseRolePermissions = (role) => {
     const roleConfig = cippRoles[role];
     if (!roleConfig) return {};
@@ -434,7 +452,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                 const apiFunction = apiPermissions[cat][obj][type][api];
                 items.push({
                   name: apiFunction.Name,
-                  description: apiFunction.Description?.[0]?.Text || null,
+                  description: getFunctionDescriptionText(apiFunction.Description),
                 });
               }
               return (
@@ -593,7 +611,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                                     Object.keys(apiPermissions[cat][obj][type]).forEach(
                                       (apiKey) => {
                                         const apiFunction = apiPermissions[cat][obj][type][apiKey];
-                                        const descriptionText = apiFunction.Description?.[0]?.Text;
+                                        const descriptionText = getFunctionDescriptionText(
+                                          apiFunction.Description
+                                        );
                                         allEndpoints.push({
                                           label: descriptionText
                                             ? `${apiFunction.Name} - ${descriptionText}`

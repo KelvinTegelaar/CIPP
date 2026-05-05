@@ -173,7 +173,10 @@ const Page = () => {
     };
 
     // Set all template-driven fields
+    formControl.setValue("useRoles", template.defaultUseRoles ?? true, { shouldDirty: true });
+    formControl.setValue("useGroups", template.defaultUseGroups ?? false, { shouldDirty: true });
     formControl.setValue("adminRoles", template.defaultRoles || [], { shouldDirty: true });
+    formControl.setValue("groupMemberships", template.defaultGroups || [], { shouldDirty: true });
     formControl.setValue("expireAction", template.defaultExpireAction || null, {
       shouldDirty: true,
     });
