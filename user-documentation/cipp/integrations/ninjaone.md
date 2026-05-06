@@ -106,4 +106,32 @@ After the API settings are set you can now map NinjaOne items to Microsoft 365 /
 
 ***
 
+#### Step 5 - Automatically Sync CVEs from CIPP to NinjaOne
+
+If enabled, CIPP will automatically attempt to send CVE information from CIPP to NinjaOne.
+This requires that scan groups are allready set up in NinjaOne and that 
+
+**Configuring Defender CVE Sync**
+
+1. Inside CIPP browse to **Security & Compliance -> Defender -> CVE Management.**
+2. Click on **Schedule CVE Sync.**
+3. Select the appropriate tenant or "*All Tenants", set a frequency and click **Create Schedule.**
+
+**Configure CVE Sync**
+
+1. Toggle **Enable Automated CVE Sync** to on.
+2. Specify the CVE Sync Scan Group Prefix - This is used to identify the CIPP maintained scan groups.
+3. Set the Sync frequency in hours then click **Submit.**
+
+**Create Scan Groups in NinjaOne**
+
+1. Inside CIPP browse to **Security & Compliance -> Defender -> Vulnerabilities**
+2. Select the tenant for the scan group and click **Export** then **Export to CSV** and dave the file.
+3. Inside NinjaOne browse to **Administration -> Apps -> Microsoft Defender.**
+4. Click on the **Scan Groups** tab then **+ Create scan group.**
+5. Enter the name as the prefix specified in the previous step.
+6. Upload the CSV file created earlier and select the correct mappings.
+
+
+
 {% include "../../../.gitbook/includes/feature-request.md" %}
