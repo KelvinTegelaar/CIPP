@@ -1,3 +1,16 @@
+ ## ⚠️ ISOutsource fork — do not modify directly
+
+ This is the ISOutsource operational fork of [KelvinTegelaar/CIPP](https://github.com/KelvinTegelaar/CIPP).
+ It powers the **ISO Tenant Manager** platform deployed in our Azure tenant.
+
+ **Updates flow from upstream via the Pull GitHub App.** Do not commit, push, or
+ open PRs directly to this fork outside of approved deployment workflow changes.
+
+ - **Operational documentation:** [iso-tenant-manager-docs](https://github.com/isoutsource/iso-tenant-manager-docs)
+ - **Update procedure:** see `runbooks/01-update-procedure.md` in the docs repo
+ - **Owner:** IT Operations
+
+ ---
 ![CyberDrain Light](github_assets/img/CIPP.png#gh-dark-mode-only)
 ![CyberDrain Dark](github_assets/img/CIPP-Light.png#gh-light-mode-only)
 
