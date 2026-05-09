@@ -432,7 +432,10 @@ const CippStandardAccordion = ({
           (standard.cat && standard.cat.toLowerCase().includes(searchLower)) ||
           (standard.tag &&
             Array.isArray(standard.tag) &&
-            standard.tag.some((tag) => tag.toLowerCase().includes(searchLower)));
+            standard.tag.some((tag) => tag.toLowerCase().includes(searchLower))) ||
+          (standard.appliesToTest &&
+            Array.isArray(standard.appliesToTest) &&
+            standard.appliesToTest.some((testId) => testId.toLowerCase().includes(searchLower)));
 
         const isConfigured = _.get(configuredState, standardName);
         const matchesFilter =

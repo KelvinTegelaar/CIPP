@@ -207,7 +207,11 @@ const Page = () => {
         standard.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
         standard.helpText.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (standard.tag &&
-          standard.tag.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))),
+          standard.tag.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))) ||
+        (standard.appliesToTest &&
+          standard.appliesToTest.some((testId) =>
+            testId.toLowerCase().includes(searchQuery.toLowerCase())
+          )),
     );
 
   const handleToggleStandard = (standardName) => {

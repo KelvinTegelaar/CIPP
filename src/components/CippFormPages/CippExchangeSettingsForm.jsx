@@ -124,6 +124,15 @@ const CippExchangeSettingsForm = (props) => {
       ...values[type],
     };
 
+    // Include browser timezone for OOO so the API can display local times in the response
+    if (type === "ooo") {
+      try {
+        data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      } catch {
+        // Fallback: leave timezone unset; API will display UTC
+      }
+    }
+
     // Format data for recipient limits
     if (type === "recipientLimits") {
       data.Identity = currentSettings.Mailbox[0].Identity;

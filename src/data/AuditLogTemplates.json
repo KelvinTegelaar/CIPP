@@ -420,5 +420,39 @@
         }
       ]
     }
+  },
+  {
+    "value": "TAPCreated",
+    "name": "A Temporary Access Pass has been created for a user",
+    "template": {
+      "preset": {
+        "value": "TAPCreated",
+        "label": "A Temporary Access Pass has been created for a user"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Update user.",
+            "label": "updated user"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "SecuredAccessPassData" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": {
+            "value": "[]",
+            "label": "[]"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "SecuredAccessPassData" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*" }
+        }
+      ]
+    }
   }
 ]

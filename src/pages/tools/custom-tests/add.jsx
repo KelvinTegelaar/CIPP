@@ -311,6 +311,7 @@ const Page = () => {
     { value: 'Auto', label: 'Auto' },
     { value: 'AlwaysPass', label: 'Always Pass' },
     { value: 'AlwaysInfo', label: 'Always Info' },
+    { value: 'AlwaysInvestigate', label: 'Always Investigate' },
   ]
 
   const scriptNameField = {
@@ -739,7 +740,8 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Return a hashtable with <code>CIPPStatus</code> (<code>Passed</code>/
-                    <code>Failed</code>/<code>Info</code>), <code>CIPPResults</code>, and optional{' '}
+                    <code>Failed</code>/<code>Info</code>/<code>Investigate</code>),{' '}
+                    <code>CIPPResults</code>, and optional{' '}
                     <code>CIPPResultMarkdown</code> to control status and rendering directly (Auto
                     result mode only)
                   </Typography>
