@@ -179,6 +179,15 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
 
 // Separate component for Out of Office form to avoid hook issues
 const OutOfOfficeForm = ({ formControl }) => {
+  // Send the browser's IANA timezone so the API can display local times in the response
+  useEffect(() => {
+    try {
+      formControl.setValue('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone)
+    } catch {
+      // Fallback: leave timezone unset; API will display UTC
+    }
+  }, [])
+
   // Watch the Auto Reply State value
   const autoReplyState = useWatch({
     control: formControl.control,

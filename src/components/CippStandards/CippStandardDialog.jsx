@@ -788,7 +788,11 @@ const CippStandardDialog = ({
           standard.label.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
           standard.helpText.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
           (standard.tag &&
-            standard.tag.some((tag) => tag.toLowerCase().includes(localSearchQuery.toLowerCase())));
+            standard.tag.some((tag) => tag.toLowerCase().includes(localSearchQuery.toLowerCase()))) ||
+          (standard.appliesToTest &&
+            standard.appliesToTest.some((testId) =>
+              testId.toLowerCase().includes(localSearchQuery.toLowerCase())
+            ));
 
         // Category filter
         const matchesCategory =

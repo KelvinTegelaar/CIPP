@@ -15,11 +15,13 @@ import {
   Switch,
   FormControlLabel,
   Autocomplete,
+  Alert,
 } from '@mui/material'
 import { CippWizardStepButtons } from '../../../../components/CippWizard/CippWizardStepButtons'
 import { ApiPostCall, ApiGetCall } from '../../../../api/ApiCall'
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
 import { Delete } from '@mui/icons-material'
 
 // User properties that can be patched
@@ -55,6 +57,11 @@ const PATCHABLE_PROPERTIES = [
     type: 'string',
   },
   {
+    property: 'manager',
+    label: 'Manager',
+    type: 'userSelector',
+  },
+  {
     property: 'officeLocation',
     label: 'Office Location',
     type: 'string',
@@ -78,6 +85,11 @@ const PATCHABLE_PROPERTIES = [
     property: 'showInAddressList',
     label: 'Show in Address List',
     type: 'boolean',
+  },
+  {
+    property: 'sponsor',
+    label: 'Sponsor',
+    type: 'userSelector',
   },
   {
     property: 'state',
@@ -182,6 +194,21 @@ const PropertySelectionStep = (props) => {
   // Get unique tenant domains from users
   const tenantDomains =
     [...new Set(users?.map((user) => user.Tenant || user.tenantFilter).filter(Boolean))] || []
+  const firstTenantDomain = tenantDomains[0]
+  const hasManagerSelected = selectedProperties.includes('manager')
+  const hasSponsorSelected = selectedProperties.includes('sponsor')
+  const hasRelationshipSelected = hasManagerSelected || hasSponsorSelected
+
+  useEffect(() => {
+    if (!hasRelationshipSelected || !firstTenantDomain) {
+      return
+    }
+
+    const currentTenantFilter = formControl.getValues('tenantFilter')
+    if (currentTenantFilter?.value !== firstTenantDomain) {
+      formControl.setValue('tenantFilter', { value: firstTenantDomain })
+    }
+  }, [firstTenantDomain, formControl, hasRelationshipSelected])
 
   // Fetch custom data mappings for all tenants
   const customDataMappings = ApiGetCall({
@@ -244,6 +271,21 @@ const PropertySelectionStep = (props) => {
           }
           label={property.label}
           key={propertyName}
+        />
+      )
+    }
+
+    if (property?.type === 'userSelector') {
+      return (
+        <CippFormUserSelector
+          key={propertyName}
+          formControl={formControl}
+          name={`propertyValues.${propertyName}`}
+          label={property?.label || propertyName}
+          valueField="userPrincipalName"
+          select="id,userPrincipalName,displayName"
+          multiple={false}
+          showRefresh={true}
         />
       )
     }
@@ -414,6 +456,12 @@ const PropertySelectionStep = (props) => {
             <Typography variant="h6" sx={{ mb: 2 }}>
               Properties to update
             </Typography>
+            {hasRelationshipSelected && tenantDomains.length > 1 && (
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                The user picker is scoped to {firstTenantDomain}. Cross-tenant manager or sponsor
+                assignment is not supported, so the selected user must exist in each target tenant.
+              </Alert>
+            )}
             <Stack spacing={2}>{selectedProperties.map(renderPropertyInput)}</Stack>
           </CardContent>
         </Card>
@@ -455,7 +503,14 @@ const ConfirmationStep = (props) => {
       }
 
       selectedProperties.forEach((propName) => {
-        if (propertyValues[propName] !== undefined && propertyValues[propName] !== '') {
+        const propertyValue = propertyValues[propName]
+
+        if (propertyValue !== undefined && propertyValue !== '' && propertyValue !== null) {
+          if (propName === 'manager' || propName === 'sponsor') {
+            if (propertyValue?.value) userData[propName] = propertyValue.value
+            return
+          }
+
           // Handle dot notation properties (e.g., "extension_abc123.customField")
           if (propName.includes('.')) {
             const parts = propName.split('.')
@@ -470,10 +525,10 @@ const ConfirmationStep = (props) => {
             }
 
             // Set the final property value
-            current[parts[parts.length - 1]] = propertyValues[propName]
+            current[parts[parts.length - 1]] = propertyValue
           } else {
             // Handle regular properties
-            userData[propName] = propertyValues[propName]
+            userData[propName] = propertyValue
           }
         }
       })
@@ -522,8 +577,13 @@ const ConfirmationStep = (props) => {
               {selectedProperties.map((propName) => {
                 const property = allProperties.find((p) => p.property === propName)
                 const value = propertyValues[propName]
-                const displayValue =
-                  property?.type === 'boolean' ? (value ? 'Yes' : 'No') : value || 'Not set'
+                let displayValue = value || 'Not set'
+
+                if (propName === 'manager' || propName === 'sponsor') {
+                  displayValue = value?.label || value?.value || 'Not set'
+                } else if (property?.type === 'boolean') {
+                  displayValue = value ? 'Yes' : 'No'
+                }
 
                 return (
                   <Box key={propName} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

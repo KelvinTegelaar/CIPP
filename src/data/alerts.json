@@ -600,7 +600,7 @@
   {
     "name": "CheckExtension",
     "label": "Alert on new Check phishing extension detections",
-    "recommendedRunInterval": "15m",
+    "recommendedRunInterval": "30m",
     "description": "Monitors for new phishing site detections reported by the Check browser extension. Alerts when a user visits a page that the extension flags as a potential credential phishing or AiTM attack. Requires the Check browser extension to be deployed to users."
   }
 ]

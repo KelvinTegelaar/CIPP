@@ -9,6 +9,7 @@ import { CippFormDomainSelector } from "../../../../components/CippComponents/Ci
 import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 import { CippFormGroupSelector } from "../../../../components/CippComponents/CippFormGroupSelector";
 import gdaproles from "../../../../data/GDAPRoles.json";
+import countryList from "../../../../data/countryList.json";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
@@ -375,6 +376,19 @@ const Page = () => {
                   />
                 </Grid>
               )}
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Default Usage Location"
+                  name="defaultUsageLocation"
+                  multiple={false}
+                  options={countryList.map(({ Code, Name }) => ({
+                    label: Name,
+                    value: Code,
+                  }))}
+                  formControl={formControl}
+                />
+              </Grid>
             </CippFormCondition>
 
             <CippFormCondition

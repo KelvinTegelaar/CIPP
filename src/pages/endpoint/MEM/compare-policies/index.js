@@ -4,7 +4,7 @@ import { ApiPostCall } from "../../../../api/ApiCall";
 import { CippFormComponent } from "../../../../components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
 import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
-import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
+import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import {
   Box,
   Button,
@@ -19,16 +19,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Alert,
   Stack,
   Chip,
   Skeleton,
 } from "@mui/material";
 import {
-  ExpandMore as ExpandMoreIcon,
   CompareArrows as CompareArrowsIcon,
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
@@ -359,14 +355,10 @@ const Page = () => {
     return errData?.Results || compareApi.error?.message || "An error occurred";
   }, [compareApi.isError, compareApi.error]);
 
-  const sourceAJson = useMemo(
-    () => (results?.sourceAData ? JSON.stringify(results.sourceAData, null, 2) : ""),
-    [results?.sourceAData],
-  );
-  const sourceBJson = useMemo(
-    () => (results?.sourceBData ? JSON.stringify(results.sourceBData, null, 2) : ""),
-    [results?.sourceBData],
-  );
+  const comparisonRows = useMemo(() => {
+    if (!Array.isArray(results?.Results)) return [];
+    return results.Results.filter(Boolean);
+  }, [results?.Results]);
 
   return (
     <CippPageCard title="Compare Intune Policies" backButtonTitle="Back to Policies">
@@ -418,14 +410,14 @@ const Page = () => {
               >
                 {results.identical
                   ? "Policies are identical - no differences found."
-                  : `${results.Results?.length || 0} difference${results.Results?.length === 1 ? "" : "s"} found between policies.`}
+                  : `${comparisonRows.length} difference${comparisonRows.length === 1 ? "" : "s"} found between policies.`}
                 <Box component="span" sx={{ display: "block", mt: 0.5 }}>
                   <strong>A:</strong> {results.sourceALabel} &mdash; <strong>B:</strong>{" "}
                   {results.sourceBLabel}
                 </Box>
               </Alert>
 
-              {!results.identical && results.Results?.length > 0 && (
+              {!results.identical && comparisonRows.length > 0 && (
                 <TableContainer component={Paper} variant="outlined">
                   <Table size="small">
                     <TableHead>
@@ -437,7 +429,7 @@ const Page = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {results.Results.map((row, index) => (
+                      {comparisonRows.map((row, index) => (
                         <TableRow
                           key={index}
                           sx={(theme) => ({
@@ -457,23 +449,17 @@ const Page = () => {
                 </TableContainer>
               )}
 
-              <Accordion variant="outlined">
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>Source A Raw JSON — {results.sourceALabel}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <CippCodeBlock code={sourceAJson} language="json" type="editor" readOnly />
-                </AccordionDetails>
-              </Accordion>
+              <CippJsonView
+                object={results.sourceAData}
+                type="intune"
+                title={`Source A Settings — ${results.sourceALabel}`}
+              />
 
-              <Accordion variant="outlined">
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>Source B Raw JSON — {results.sourceBLabel}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <CippCodeBlock code={sourceBJson} language="json" type="editor" readOnly />
-                </AccordionDetails>
-              </Accordion>
+              <CippJsonView
+                object={results.sourceBData}
+                type="intune"
+                title={`Source B Settings — ${results.sourceBLabel}`}
+              />
             </Stack>
           )}
         </Stack>
