@@ -60,5 +60,5 @@ export const CippIntunePolicyDetails = ({ row, tenant }) => {
     )
   }
 
-  return <CippJsonView object={settingsObject} type="intune" defaultOpen title="Policy Settings" />
+  return <CippJsonView object={settingsObject} type="intune" defaultOpen title="Policy Settings" tenant={tenantFilter} />
 }
