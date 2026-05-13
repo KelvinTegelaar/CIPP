@@ -2051,6 +2051,11 @@
   dependencies:
     remove-accents "0.5.0"
 
+"@tanstack/query-core@5.100.10":
+  version "5.100.10"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.100.10.tgz#aeb34d301fd4ff9762e67dfa018adc33b7a18be4"
+  integrity sha512-8UR0yJR+GiQ40m3lPhUr0xbfAupe6GSQiksSBSa9SM2NjezFyxXCIA69/lz8cSoNKZLrw1/PktIyQBJcVeMi3w==
+
 "@tanstack/query-core@5.91.2":
   version "5.91.2"
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.91.2.tgz#d83825a928aa49ded38d3910f05284178cce89d3"
@@ -2102,12 +2107,12 @@
   dependencies:
     "@tanstack/query-persist-client-core" "5.96.2"
 
-"@tanstack/react-query@^5.96.2":
-  version "5.96.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.96.2.tgz#a164abfb80eb5e7772bbcddfa7240f3fd8d0d7be"
-  integrity sha512-sYyzzJT4G0g02azzJ8o55VFFV31XvFpdUpG+unxS0vSaYsJnSPKGoI6WdPwUucJL1wpgGfwfmntNX/Ub1uOViA==
+"@tanstack/react-query@^5.100.10":
+  version "5.100.10"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.100.10.tgz#3bf1844efd76f5f68f9f39da2917fc4c6023e726"
+  integrity sha512-FLaZf2RCrA/Zgp4aiu5tG3TyasTRO7aZ99skxQpr3Hg/zXOhu6yq5FZCYQ/tRaJtM9ylnoK8tFK7PolXQadv6Q==
   dependencies:
-    "@tanstack/query-core" "5.96.2"
+    "@tanstack/query-core" "5.100.10"
 
 "@tanstack/react-table@8.20.6":
   version "8.20.6"
