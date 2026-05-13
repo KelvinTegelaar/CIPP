@@ -296,6 +296,18 @@
         }
       },
       {
+        "type": "switch",
+        "name": "HaloPSA.LinkTicketsToUsers",
+        "label": "Link tickets to affected users",
+        "placeholder": "When an alert targets specific users, create one ticket per user and link it to the matching HaloPSA contact (matched by Azure Object ID, falling back to email). Users with no matching HaloPSA contact fall back to the client's General User with the UPN noted in the ticket body.",
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
         "type": "textField",
         "name": "HaloPSA.ResourceURL",
         "label": "HaloPSA Resource Server URL",
