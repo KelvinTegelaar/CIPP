@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Alert, Button, Card, CardContent, CardHeader, Chip, Divider, Stack, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
@@ -28,11 +29,7 @@ export const CippWizardVacationConfirmation = (props) => {
     forwardingVacation.isSuccess ||
     oooVacation.isSuccess;
 
-    const toLocalDateStr = (epoch) => {
-  if (!epoch) return null;
-  const d = new Date(epoch * 1000);
-  return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
-};
+    const toLocalDateStr = (epoch) => epoch ? dayjs.unix(epoch).format('YYYYMMDD') : null
   const handleSubmit = () => {
 
     if (values.enableTravelPolicy) {
@@ -130,10 +127,7 @@ export const CippWizardVacationConfirmation = (props) => {
     }
   };
 
-  const formatDate = (epoch) => {
-    if (!epoch) return "Not set";
-    return new Date(epoch * 1000).toLocaleString();
-  };
+  const formatDate = (epoch) => epoch ? dayjs.unix(epoch).format('DD.MM.YYYY HH:mm') : 'Not set'
 
   const formatUsers = (users) => {
     if (!users || users.length === 0) return "None";
