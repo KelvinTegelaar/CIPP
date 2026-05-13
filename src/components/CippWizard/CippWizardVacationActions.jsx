@@ -17,7 +17,8 @@ import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippValidator } from '../../utils/get-cipp-validator'
-import { countryCodes } from '../../data/countryCodes'
+import countryListRaw from '../../data/countryList.json'
+const countryCodes = countryListRaw.map((c) => ({ value: c.Code, label: c.Name }))
 
 export const CippWizardVacationActions = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep, lastStep } = props
