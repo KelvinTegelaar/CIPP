@@ -35,7 +35,7 @@ export const CippWizardVacationConfirmation = (props) => {
 };
   const handleSubmit = () => {
 
-    if (values.enableCAExclusion) {
+    if (values.enableTravelPolicy) {
       caExclusion.mutate({
   url: "/api/ExecTravelCAPolicy",
   data: {
@@ -201,7 +201,7 @@ export const CippWizardVacationConfirmation = (props) => {
       {/* Enabled Actions */}
       {(() => {
         const enabledCount = [
-          values.enableCAExclusion,
+          values.enableTravelPolicy,
           values.enableMailboxPermissions,
           values.enableForwarding,
           values.enableOOO,
@@ -209,7 +209,7 @@ export const CippWizardVacationConfirmation = (props) => {
         const mdSize = enabledCount >= 4 ? 3 : enabledCount === 3 ? 4 : enabledCount === 2 ? 6 : 12;
         return (
           <Grid container spacing={3}>
-            {values.enableCAExclusion && (
+            {values.enableTravelPolicy && (
               <Grid size={{ md: mdSize, xs: 12 }}>
                 <Card variant="outlined" sx={{ height: "100%" }}>
                   <CardHeader
@@ -397,7 +397,7 @@ export const CippWizardVacationConfirmation = (props) => {
       })()}
 
       {/* API Results */}
-      {values.enableCAExclusion && <CippApiResults apiObject={caExclusion} />}
+      {values.enableTravelPolicy && <CippApiResults apiObject={caExclusion} />}
       {values.enableMailboxPermissions && <CippApiResults apiObject={mailboxVacation} />}
       {values.enableForwarding && <CippApiResults apiObject={forwardingVacation} />}
       {values.enableOOO && <CippApiResults apiObject={oooVacation} />}

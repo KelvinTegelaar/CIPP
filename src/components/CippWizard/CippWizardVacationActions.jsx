@@ -17,7 +17,8 @@ import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippValidator } from '../../utils/get-cipp-validator'
-import { countryCodes } from '../../data/countryCodes'
+import countryListRaw from '../../data/countryList.json'
+const countryCodes = countryListRaw.map((c) => ({ value: c.Code, label: c.Name }))
 
 export const CippWizardVacationActions = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep, lastStep } = props
@@ -29,6 +30,7 @@ export const CippWizardVacationActions = (props) => {
   const enableMailbox = useWatch({ control: formControl.control, name: 'enableMailboxPermissions' })
   const enableForwarding = useWatch({ control: formControl.control, name: 'enableForwarding' })
   const enableOOO = useWatch({ control: formControl.control, name: 'enableOOO' })
+  const enableTravelPolicy = useWatch({ control: formControl.control, name: 'enableTravelPolicy' })
   const atLeastOneEnabled = enableCA || enableMailbox || enableForwarding || enableOOO
 
   const users = useWatch({ control: formControl.control, name: 'Users' })
@@ -90,6 +92,7 @@ export const CippWizardVacationActions = (props) => {
       if (!currentExternal) {
         formControl.setValue('oooExternalMessage', oooData.data.ExternalMessage || '')
       }
+      // Pre-populate calendar options from existing config
       if (oooData.data.CreateOOFEvent != null) {
         formControl.setValue('oooCreateOOFEvent', !!oooData.data.CreateOOFEvent)
       }
@@ -119,11 +122,11 @@ export const CippWizardVacationActions = (props) => {
 
   return (
     <Stack spacing={4}>
-      {/* Travel CA Policy Section */}
+      {/* CA Policy Exclusion Section */}
       <Card variant="outlined">
         <CardHeader
-          title="Conditional Access Travel Policy"
-          subheader="Creates a temporary CA policy allowing login only from selected travel destinations"
+          title="Conditional Access Policy Exclusion"
+          subheader="Temporarily exclude users from a CA policy during their vacation"
         />
         <Divider />
         <CardContent>
@@ -131,9 +134,10 @@ export const CippWizardVacationActions = (props) => {
             <CippFormComponent
               type="switch"
               name="enableCAExclusion"
-              label="Enable Travel CA Policy"
+              label="Enable CA Policy Exclusion"
               formControl={formControl}
             />
+
             <CippFormCondition
               formControl={formControl}
               field="enableCAExclusion"
@@ -144,24 +148,19 @@ export const CippWizardVacationActions = (props) => {
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12 }}>
                   <Alert severity="info" sx={{ mb: 1 }}>
-                    This will create a security group <strong>CIPP_TravelingUsers</strong> (if it
-                    does not exist), exclude it from the selected blocking policies, and create a
-                    temporary CA policy <strong>CIPP_TravelPolicy_[start]_[end]</strong> that
-                    allows login only from the selected locations. The policy and group membership
-                    are automatically cleaned up on the end date.
+                    Vacation mode uses group-based exclusions for reliability. The exclusion group
+                    follows the format: &apos;Vacation Exclusion - $Policy.displayName&apos;
                   </Alert>
                 </Grid>
-
-                {/* Blocking CA policies - group will be excluded from these */}
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="autoComplete"
                     label={
                       tenantDomain
-                        ? `Blocking CA Policies to exclude travelers from (${tenantDomain})`
+                        ? `Conditional Access Policies in ${tenantDomain}`
                         : 'Select a tenant first'
                     }
-                    name="BlockPolicies"
+                    name="PolicyId"
                     api={
                       tenantDomain
                         ? {
@@ -183,8 +182,9 @@ export const CippWizardVacationActions = (props) => {
                     formControl={formControl}
                     validators={{
                       validate: (option) => {
-                        if (!Array.isArray(option) || option.length === 0) {
-                          return 'At least one blocking policy must be selected'
+                        //check if option is an array, if so, ensure at least one is selected
+                        if (Array.isArray(option) && option.length === 0) {
+                          return 'At least one policy must be selected'
                         }
                         return true
                       },
@@ -193,42 +193,88 @@ export const CippWizardVacationActions = (props) => {
                     disabled={!tenantDomain}
                   />
                 </Grid>
-
-                {/* Existing Named Locations from tenant */}
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    label="Exclude from location-based audit log alerts"
+                    name="excludeLocationAuditAlerts"
+                    formControl={formControl}
+                  />
+                </Grid>
+              </Grid>
+            </CippFormCondition>
+          </Stack>
+        </CardContent>
+      </Card>
+      {/* Travel CA Policy Section */}
+      <Card variant="outlined">
+        <CardHeader
+          title="Conditional Access Travel Policy"
+          subheader="Optionally restrict traveling users to login only from selected destinations"
+        />
+        <Divider />
+        <CardContent>
+          <Stack spacing={2}>
+            <CippFormComponent
+              type="switch"
+              name="enableTravelPolicy"
+              label="Enable Travel CA Policy (country-scoped access)"
+              formControl={formControl}
+            />
+            <CippFormCondition
+              formControl={formControl}
+              field="enableTravelPolicy"
+              compareType="is"
+              compareValue={true}
+              clearOnHide={false}
+            >
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12 }}>
+                  <Alert severity="info" sx={{ mb: 1 }}>
+                    Creates a temporary CA policy restricting login to selected travel destinations.
+                    MFA is always required. Policy and group membership are automatically cleaned up
+                    on the end date.
+                  </Alert>
+                </Grid>
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="autoComplete"
-                    label={
-                      tenantDomain
-                        ? `Named Locations in ${tenantDomain} (optional)`
-                        : 'Select a tenant first'
-                    }
+                    label={tenantDomain ? `Blocking CA Policies to exclude travelers from (${tenantDomain})` : 'Select a tenant first'}
+                    name="BlockPolicies"
+                    api={tenantDomain ? {
+                      queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
+                      url: '/api/ListGraphRequest',
+                      data: { tenantFilter: tenantDomain, Endpoint: 'conditionalAccess/policies', AsApp: true },
+                      dataKey: 'Results',
+                      labelField: (option) => `${option.displayName}`,
+                      valueField: 'id',
+                      showRefresh: true,
+                    } : null}
+                    multiple={true}
+                    formControl={formControl}
+                    required={true}
+                    disabled={!tenantDomain}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    label={tenantDomain ? `Named Locations in ${tenantDomain} (optional)` : 'Select a tenant first'}
                     name="NamedLocations"
-                    api={
-                      tenantDomain
-                        ? {
-                            queryKey: `ListNamedLocations-${tenantDomain}`,
-                            url: '/api/ListGraphRequest',
-                            data: {
-                              tenantFilter: tenantDomain,
-                              Endpoint: 'identity/conditionalAccess/namedLocations',
-                              AsApp: true,
-                            },
-                            dataKey: 'Results',
-                            labelField: (option) =>
-                              `${option.displayName}${option.isTrusted ? ' (Trusted)' : ''}`,
-                            valueField: 'id',
-                            showRefresh: true,
-                          }
-                        : null
-                    }
+                    api={tenantDomain ? {
+                      queryKey: `ListNamedLocations-${tenantDomain}`,
+                      url: '/api/ListGraphRequest',
+                      data: { tenantFilter: tenantDomain, Endpoint: 'identity/conditionalAccess/namedLocations', AsApp: true },
+                      dataKey: 'Results',
+                      labelField: (option) => `${option.displayName}${option.isTrusted ? ' (Trusted)' : ''}`,
+                      valueField: 'id',
+                      showRefresh: true,
+                    } : null}
                     multiple={true}
                     formControl={formControl}
                     disabled={!tenantDomain}
                   />
                 </Grid>
-
-                {/* Include all Trusted Locations automatically */}
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
@@ -237,8 +283,6 @@ export const CippWizardVacationActions = (props) => {
                     formControl={formControl}
                   />
                 </Grid>
-
-                {/* Country selector - countries not covered by Named Locations */}
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="autoComplete"
@@ -250,7 +294,6 @@ export const CippWizardVacationActions = (props) => {
                     formControl={formControl}
                   />
                 </Grid>
-
                 <Grid size={{ xs: 12 }}>
                   <Alert severity="warning">
                     At least one Named Location or country must be selected, otherwise the travel
@@ -278,6 +321,7 @@ export const CippWizardVacationActions = (props) => {
               label="Enable Mailbox Permissions"
               formControl={formControl}
             />
+
             <CippFormCondition
               formControl={formControl}
               field="enableMailboxPermissions"
@@ -293,6 +337,8 @@ export const CippWizardVacationActions = (props) => {
                     the start date and removed at the end date.
                   </Alert>
                 </Grid>
+
+                {/* Delegate(s) */}
                 <Grid size={{ xs: 12 }}>
                   <CippFormUserSelector
                     label={
@@ -301,13 +347,17 @@ export const CippWizardVacationActions = (props) => {
                     formControl={formControl}
                     name="delegates"
                     multiple={true}
-                    addedField={{ userPrincipalName: 'userPrincipalName' }}
+                    addedField={{
+                      userPrincipalName: 'userPrincipalName',
+                    }}
                     validators={{ required: 'At least one delegate is required' }}
                     required={true}
                     disabled={!tenantDomain}
                     showRefresh={true}
                   />
                 </Grid>
+
+                {/* Permission Types */}
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="autoComplete"
@@ -325,6 +375,8 @@ export const CippWizardVacationActions = (props) => {
                     required={true}
                   />
                 </Grid>
+
+                {/* AutoMap (visible when FullAccess is selected) */}
                 <CippFormCondition
                   formControl={formControl}
                   field="permissionTypes"
@@ -341,6 +393,8 @@ export const CippWizardVacationActions = (props) => {
                     />
                   </Grid>
                 </CippFormCondition>
+
+                {/* Include Calendar Permissions */}
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
@@ -349,6 +403,8 @@ export const CippWizardVacationActions = (props) => {
                     formControl={formControl}
                   />
                 </Grid>
+
+                {/* Calendar permission details */}
                 <CippFormCondition
                   formControl={formControl}
                   field="includeCalendar"
@@ -423,6 +479,7 @@ export const CippWizardVacationActions = (props) => {
               label="Enable Mail Forwarding"
               formControl={formControl}
             />
+
             <CippFormCondition
               formControl={formControl}
               field="enableForwarding"
@@ -452,6 +509,7 @@ export const CippWizardVacationActions = (props) => {
                     ]}
                   />
                 </Grid>
+
                 <CippFormCondition
                   formControl={formControl}
                   field="forwardOption"
@@ -484,6 +542,7 @@ export const CippWizardVacationActions = (props) => {
                     />
                   </Grid>
                 </CippFormCondition>
+
                 <CippFormCondition
                   formControl={formControl}
                   field="forwardOption"
@@ -504,6 +563,7 @@ export const CippWizardVacationActions = (props) => {
                     />
                   </Grid>
                 </CippFormCondition>
+
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
@@ -533,6 +593,7 @@ export const CippWizardVacationActions = (props) => {
               label="Enable Out of Office"
               formControl={formControl}
             />
+
             <CippFormCondition
               formControl={formControl}
               field="enableOOO"
@@ -586,6 +647,8 @@ export const CippWizardVacationActions = (props) => {
                     />
                   )}
                 </Grid>
+
+                {/* Calendar Options */}
                 <Grid size={{ xs: 12 }}>
                   <Divider sx={{ my: 1 }} />
                   <Typography variant="subtitle2" sx={{ mt: 1 }}>
