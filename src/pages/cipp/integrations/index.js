@@ -68,45 +68,83 @@ const Page = () => {
             status = 'Enabled'
           }
 
-          return (
-            <Grid size={{ md: 6, sm: 12, xl: 3 }} key={extension.id}>
-              <CardActionArea
-                component={Link}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                }}
-                href={`/cipp/integrations/configure?id=${extension.id}`}
-              >
-                <Card
-                  align="center"
+          const cardContent = (
+            <Card
+              align="center"
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                position: 'relative',
+                overflow: 'hidden',
+                ...(extension.comingSoon && { opacity: 0.75 }),
+              }}
+            >
+              {extension.comingSoon && (
+                <Box
                   sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
+                    position: 'absolute',
+                    top: 28,
+                    right: -40,
+                    backgroundColor: 'primary.main',
+                    color: 'primary.contrastText',
+                    padding: '4px 48px',
+                    transform: 'rotate(45deg)',
+                    fontSize: '0.7rem',
+                    fontWeight: 'bold',
+                    zIndex: 1,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    boxShadow: 1,
                   }}
                 >
-                  <CardContent>
-                    {extension?.logo && (
+                  Coming Soon
+                </Box>
+              )}
+              <CardContent>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 80,
+                    mb: 1,
+                  }}
+                >
+                  {extension?.logo && (
+                    <Box
+                      component="img"
+                      src={logo}
+                      alt={extension.name}
+                      sx={{
+                        maxWidth: '90%',
+                        maxHeight: '100%',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  )}
+                </Box>
+                <Typography variant="body2" color="textSecondary" paragraph>
+                  {extension.description}
+                </Typography>
+              </CardContent>
+              <div style={{ flexGrow: 1 }} />
+              <CardActions>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  {extension.comingSoon ? (
+                    <>
                       <Box
-                        component="img"
-                        src={logo}
-                        alt={extension.name}
-                        width="90%"
-                        height={'auto'}
-                        sx={{ objectFit: 'contain' }}
-                        marginBottom={1}
-                        flex={1}
+                        sx={{
+                          backgroundColor: 'info.main',
+                          borderRadius: '50%',
+                          width: 8,
+                          height: 8,
+                        }}
                       />
-                    )}
-                    <Typography variant="body2" color="textSecondary" paragraph>
-                      {extension.description}
-                    </Typography>
-                  </CardContent>
-                  <div style={{ flexGrow: 1 }} />
-                  <CardActions>
-                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <Typography variant="body2">Coming Soon</Typography>
+                    </>
+                  ) : (
+                    <>
                       {integrations.isSuccess ? (
                         <Box
                           sx={{
@@ -123,10 +161,30 @@ const Page = () => {
                       <Typography variant="body2">
                         {integrations.isSuccess ? status : 'Loading'}
                       </Typography>
-                    </Stack>
-                  </CardActions>
-                </Card>
-              </CardActionArea>
+                    </>
+                  )}
+                </Stack>
+              </CardActions>
+            </Card>
+          )
+
+          return (
+            <Grid size={{ md: 6, sm: 12, xl: 3 }} key={extension.id}>
+              {extension.comingSoon ? (
+                cardContent
+              ) : (
+                <CardActionArea
+                  component={Link}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                  }}
+                  href={`/cipp/integrations/configure?id=${extension.id}`}
+                >
+                  {cardContent}
+                </CardActionArea>
+              )}
             </Grid>
           )
         })}

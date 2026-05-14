@@ -1109,6 +1109,13 @@ export const nativeMenuItems = [
             permissions: ['CIPP.SuperAdmin.*'],
             scope: 'global',
           },
+          {
+            title: 'Container Logs',
+            path: '/cipp/advanced/container-logs',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
         ],
       },
     ],
