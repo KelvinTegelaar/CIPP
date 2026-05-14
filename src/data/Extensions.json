@@ -354,6 +354,7 @@
         "label": "HaloPSA Ticket Type",
         "placeholder": "Select your HaloPSA Ticket Type, leave blank for default",
         "helperText": "The HaloPSA ticket type that CIPP-generated alert tickets will be created against. Determines the workflow, default fields and which Outcomes are available below. Save the page after changing this so the Outcome dropdown can refresh.",
+        "fullRow": true,
         "multiple": false,
         "api": {
           "url": "/api/ExecExtensionMapping",
@@ -379,6 +380,7 @@
         "label": "HaloPSA Outcome",
         "placeholder": "Select your HaloPSA Outcome, leave blank for default",
         "helperText": "Used only when Consolidate Tickets is enabled - this is the HaloPSA Action template applied when a duplicate alert is appended as a note to an existing ticket. Pick a private/internal note action that the HaloPSA API user has permission to perform. The list is restricted to outcomes that exist in the selected Ticket Type's workflow, so set the Ticket Type first and save before choosing one here.",
+        "fullRow": true,
         "multiple": false,
         "api": {
           "url": "/api/ExecExtensionMapping",
