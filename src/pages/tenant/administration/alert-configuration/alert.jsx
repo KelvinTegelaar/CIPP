@@ -203,6 +203,14 @@ const AlertWizard = () => {
           const desiredStartEpoch = parseInt(alert.RawAlert.DesiredStartTime)
           startDateTimeForForm = desiredStartEpoch
         }
+        const psaStrategyOptions = [
+          { value: '', label: 'Use HaloPSA integration default' },
+          { value: 'split', label: 'One ticket per affected user' },
+          { value: 'consolidated', label: 'One consolidated ticket per tenant' },
+        ]
+        const psaStrategyValue =
+          psaStrategyOptions.find((opt) => opt.value === (alert.RawAlert.PsaTicketStrategy || '')) ||
+          psaStrategyOptions[0]
         const resetObject = {
           tenantFilter: tenantFilterForForm,
           excludedTenants: excludedTenantsFormatted,
@@ -212,6 +220,7 @@ const AlertWizard = () => {
           startDateTime: startDateTimeForForm,
           CustomSubject: alert.RawAlert.CustomSubject || '',
           AlertComment: alert.RawAlert.AlertComment || '',
+          PsaTicketStrategy: psaStrategyValue,
         }
         if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
           try {
@@ -519,6 +528,7 @@ const AlertWizard = () => {
       PostExecution: values.postExecution,
       AlertComment: values.AlertComment,
       CustomSubject: values.CustomSubject,
+      PsaTicketStrategy: values.PsaTicketStrategy?.value ?? values.PsaTicketStrategy ?? '',
     }
     apiRequest.mutate(
       { url: '/api/AddScriptedAlert', data: postObject },
@@ -1115,6 +1125,30 @@ const AlertWizard = () => {
                                 placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
                               />
                             </Grid>
+
+                            <CippFormCondition
+                              field="postExecution"
+                              compareType="valueEq"
+                              compareValue="generatePSA"
+                              formControl={formControl}
+                            >
+                              <Grid size={12}>
+                                <CippFormComponent
+                                  type="autoComplete"
+                                  name="PsaTicketStrategy"
+                                  label="PSA Ticket Strategy"
+                                  formControl={formControl}
+                                  multiple={false}
+                                  creatable={false}
+                                  helperText="Overrides the HaloPSA integration's Link Tickets to affected Users toggle for this alert. Useful for wide alerts (e.g. users without MFA) where some MSPs want one ticket per affected user and others prefer one consolidated ticket per tenant."
+                                  options={[
+                                    { value: '', label: 'Use HaloPSA integration default' },
+                                    { value: 'split', label: 'One ticket per affected user' },
+                                    { value: 'consolidated', label: 'One consolidated ticket per tenant' },
+                                  ]}
+                                />
+                              </Grid>
+                            </CippFormCondition>
 
                             <Grid size={12}>
                               <CippApiResults apiObject={apiRequest} />
