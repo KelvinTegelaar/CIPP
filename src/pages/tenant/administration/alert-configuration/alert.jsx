@@ -1105,26 +1105,6 @@ const AlertWizard = () => {
                                 options={postExecutionOptions}
                               />
                             </Grid>
-                            <Grid size={12}>
-                              <CippFormComponent
-                                type="textField"
-                                name="CustomSubject"
-                                label="Custom Subject"
-                                formControl={formControl}
-                                helperText="This text will be prefixed with the Tenant default domain name for easier filtering (e.g. $TenantDomain - $CustomSubject). Leave blank to use default subject format."
-                              />
-                            </Grid>
-                            <Grid size={12}>
-                              <CippFormComponent
-                                type="textField"
-                                name="AlertComment"
-                                label="Alert Comment"
-                                formControl={formControl}
-                                multiline={true}
-                                rows={3}
-                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
-                              />
-                            </Grid>
 
                             <CippFormCondition
                               field="postExecution"
@@ -1149,6 +1129,27 @@ const AlertWizard = () => {
                                 />
                               </Grid>
                             </CippFormCondition>
+
+                            <Grid size={12}>
+                              <CippFormComponent
+                                type="textField"
+                                name="CustomSubject"
+                                label="Custom Subject"
+                                formControl={formControl}
+                                helperText="This text will be prefixed with the Tenant default domain name for easier filtering (e.g. $TenantDomain - $CustomSubject). Leave blank to use default subject format."
+                              />
+                            </Grid>
+                            <Grid size={12}>
+                              <CippFormComponent
+                                type="textField"
+                                name="AlertComment"
+                                label="Alert Comment"
+                                formControl={formControl}
+                                multiline={true}
+                                rows={3}
+                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
+                              />
+                            </Grid>
 
                             <Grid size={12}>
                               <CippApiResults apiObject={apiRequest} />
