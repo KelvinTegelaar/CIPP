@@ -6,6 +6,7 @@ import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
+import { CippFormUserAndGroupSelector } from "../../../../components/CippComponents/CippFormUserAndGroupSelector";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -245,10 +246,10 @@ const EditGroup = () => {
               </Grid>
 
               <Grid size={{ xs: 12 }}>
-                <CippFormUserSelector
+                <CippFormUserAndGroupSelector
                   formControl={formControl}
                   name="AddMember"
-                  label="Add Members"
+                  label="Add Members (Users or Groups)"
                   multiple={true}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
@@ -320,15 +321,24 @@ const EditGroup = () => {
                   options={
                     groupInfo.data?.members
                       ?.filter((m) => m?.["@odata.type"] !== "#microsoft.graph.orgContact")
-                      ?.map((m) => ({
-                        label: `${m.displayName} (${m.userPrincipalName})`,
-                        value: m.id,
-                        addedFields: {
-                          userPrincipalName: m.userPrincipalName,
-                          displayName: m.displayName,
-                          id: m.id,
-                        },
-                      })) || []
+                      ?.map((m) => {
+                        const groupType = m.mailEnabled && !m.securityEnabled
+                          ? "Distribution Group"
+                          : m.mailEnabled && m.securityEnabled
+                          ? "Mail-Enabled Security Group"
+                          : "Security Group";
+                        return {
+                          label: m.userPrincipalName
+                            ? `${m.displayName} (${m.userPrincipalName})`
+                            : `${m.displayName} (${groupType})`,
+                          value: m.id,
+                          addedFields: {
+                            userPrincipalName: m.userPrincipalName,
+                            displayName: m.displayName,
+                            id: m.id,
+                          },
+                        };
+                      }) || []
                   }
                   sortOptions={true}
                 />
