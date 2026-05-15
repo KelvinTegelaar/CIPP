@@ -1129,7 +1129,7 @@ const AlertWizard = () => {
                             <CippFormCondition
                               field="postExecution"
                               compareType="valueEq"
-                              compareValue="generatePSA"
+                              compareValue="PSA"
                               formControl={formControl}
                             >
                               <Grid size={12}>
