@@ -102,9 +102,9 @@ const Page = () => {
                     name="ipAddress"
                     type="textField"
                     validators={{
-                      validate: (value) => getCippValidator(value, "ip"),
+                      validate: (value) => getCippValidator(value, "ipAny"),
                     }}
-                    placeholder="Enter IP Address"
+                    placeholder="Enter IP Address (IPv4 or IPv6)"
                     required
                   />
                 </Grid>

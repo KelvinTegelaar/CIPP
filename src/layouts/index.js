@@ -27,6 +27,8 @@ import { CippImageCard } from '../components/CippCards/CippImageCard'
 import { useDialog } from '../hooks/use-dialog'
 import { nativeMenuItems } from './config'
 import { CippBreadcrumbNav } from '../components/CippComponents/CippBreadcrumbNav'
+import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDialog'
+import { ForcedSsoMigrationDialog } from '../components/CippComponents/ForcedSsoMigrationDialog'
 
 const OnboardingWizardPage = dynamic(
   () => import('../components/CippWizard/OnboardingWizardPage.jsx'),
@@ -335,6 +337,8 @@ export const Layout = (props) => {
               <OnboardingWizardPage />
             </DialogContent>
           </Dialog>
+          <SsoMigrationDialog />
+          <ForcedSsoMigrationDialog />
           {!setupCompleted && (
             <Box sx={{ flexGrow: 1, py: 2 }}>
               <Container maxWidth={false}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Box, Typography } from "@mui/material";
+import { Alert, Box, Typography, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
@@ -7,14 +7,28 @@ import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import CippTemplateFieldRenderer from "../../../../components/CippComponents/CippTemplateFieldRenderer";
+import CippCAPolicyBuilder, {
+  extractCAPolicyJSON,
+} from "../../../../components/CippComponents/CippCAPolicyBuilder";
 
 const EditCATemplate = () => {
   const router = useRouter();
   const { GUID } = router.query;
   const [templateData, setTemplateData] = useState(null);
   const [originalData, setOriginalData] = useState(null);
+  const [editorMode, setEditorMode] = useState("builder");
 
   const formControl = useForm({ mode: "onChange" });
+
+  // When switching to builder mode, reset the form to clear any empty []
+  // values that CippTemplateFieldRenderer may have injected
+  const handleEditorModeChange = (e, val) => {
+    if (!val) return;
+    if (val === "builder" && editorMode !== "builder") {
+      formControl.reset({});
+    }
+    setEditorMode(val);
+  };
 
   // Fetch the template data
   const templateQuery = ApiGetCall({
@@ -110,6 +124,14 @@ const EditCATemplate = () => {
     };
   };
 
+  // Build a data formatter that works for both editor modes
+  const builderDataFormatter = (values) => {
+    const cleaned = extractCAPolicyJSON(values);
+    return { GUID, ...cleaned };
+  };
+
+  const activeFormatter = editorMode === "builder" ? builderDataFormatter : customDataFormatter;
+
   return (
     <CippFormPage
       title={` ${templateData?.displayName || "Unnamed Template"}`}
@@ -117,14 +139,30 @@ const EditCATemplate = () => {
       queryKey={[`CATemplate-${GUID}`, "CATemplates"]}
       backButtonTitle="Conditional Access Templates"
       postUrl="/api/ExecEditTemplate?type=CATemplate"
-      customDataformatter={customDataFormatter}
+      customDataformatter={activeFormatter}
       formPageType="Edit"
+      titleButton={
+        <ToggleButtonGroup
+          value={editorMode}
+          exclusive
+          onChange={handleEditorModeChange}
+          size="small"
+        >
+          <ToggleButton value="builder">Policy Builder</ToggleButton>
+          <ToggleButton value="fields">Field Editor</ToggleButton>
+        </ToggleButtonGroup>
+      }
     >
       <Box sx={{ my: 2 }}>
         {templateQuery.isLoading ? (
           <CippFormSkeleton layout={[2, 1, 2, 2]} />
         ) : templateQuery.isError || !templateData ? (
           <Alert severity="error">Error loading template or template not found.</Alert>
+        ) : editorMode === "builder" ? (
+          <CippCAPolicyBuilder
+            formControl={formControl}
+            existingPolicy={templateData}
+          />
         ) : (
           <CippTemplateFieldRenderer
             templateData={templateData}

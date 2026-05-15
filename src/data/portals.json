@@ -81,9 +81,18 @@
     "icon": "ShieldMoon"
   },
   {
-    "label": "Power Platform",
-    "name": "Power_Platform_Portal",
+    "label": "Power Platform (Admin)",
+    "name": "Power_Platform_Portal_Admin",
     "url": "https://admin.powerplatform.microsoft.com/account/login/customerId",
+    "variable": "customerId",
+    "target": "_blank",
+    "external": true,
+    "icon": "PrecisionManufacturing"
+  },
+  {
+    "label": "Power Platform (Maker)",
+    "name": "Power_Platform_Portal_Maker",
+    "url": "https://make.powerapps.com/home?tenant=customerId",
     "variable": "customerId",
     "target": "_blank",
     "external": true,

@@ -206,6 +206,13 @@ export const CippWizardOffboarding = (props) => {
                 disabled={!!deleteUser}
               />
               <CippFormComponent
+                name="DisableOneDriveSharing"
+                label="Disable OneDrive Sharing Links"
+                type="switch"
+                formControl={formControl}
+                disabled={!!deleteUser}
+              />
+              <CippFormComponent
                 name="DeleteUser"
                 label="Delete user"
                 type="switch"
@@ -283,7 +290,8 @@ export const CippWizardOffboarding = (props) => {
               />
               {deleteUser && (
                 <Alert severity="info" sx={{ mb: 1 }}>
-                  When a user is deleted, their OneDrive is retained for 30 days by default unless otherwise configured.
+                  When a user is deleted, their OneDrive is retained for 30 days by default unless
+                  otherwise configured.
                 </Alert>
               )}
               <CippFormComponent
@@ -311,7 +319,6 @@ export const CippWizardOffboarding = (props) => {
                   },
                 }}
               />
-
               <Typography variant="subtitle2" sx={{ mt: 3 }} gutterBottom>
                 Email Forwarding
               </Typography>

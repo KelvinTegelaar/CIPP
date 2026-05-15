@@ -1430,6 +1430,12 @@ const Page = () => {
         templateDetails.refetch()
       },
       currentTenant,
+      templateTenants: Array.isArray(selectedTemplate?.tenantFilter)
+        ? selectedTemplate.tenantFilter
+        : [],
+      excludedTenants: Array.isArray(selectedTemplate?.excludedTenants)
+        ? selectedTemplate.excludedTenants
+        : [],
     }),
   ]
 

@@ -1,0 +1,664 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "microsoft.graph.conditionalAccessPolicy",
+  "title": "Conditional Access Policy",
+  "description": "Schema derived from the Microsoft Graph v1.0 conditionalAccessPolicy resource type. Reference: https://learn.microsoft.com/en-us/graph/api/resources/conditionalaccesspolicy?view=graph-rest-1.0",
+  "type": "object",
+  "required": ["displayName", "state", "conditions"],
+  "properties": {
+    "displayName": {
+      "type": "string",
+      "title": "Display Name",
+      "description": "A display name for the policy.",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "state": {
+      "type": "string",
+      "title": "Policy State",
+      "description": "The state of the policy.",
+      "enum": ["enabled", "disabled", "enabledForReportingButNotEnforced"],
+      "enumLabels": {
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "enabledForReportingButNotEnforced": "Report-only"
+      }
+    },
+    "conditions": {
+      "$ref": "#/$defs/conditionalAccessConditionSet"
+    },
+    "grantControls": {
+      "$ref": "#/$defs/conditionalAccessGrantControls"
+    },
+    "sessionControls": {
+      "$ref": "#/$defs/conditionalAccessSessionControls"
+    }
+  },
+  "$defs": {
+    "conditionalAccessConditionSet": {
+      "type": "object",
+      "title": "Conditions",
+      "description": "Rules that must be met for the policy to apply.",
+      "required": ["users", "applications", "clientAppTypes"],
+      "properties": {
+        "users": {
+          "$ref": "#/$defs/conditionalAccessUsers"
+        },
+        "applications": {
+          "$ref": "#/$defs/conditionalAccessApplications"
+        },
+        "clientAppTypes": {
+          "type": "array",
+          "title": "Client App Types",
+          "description": "Client application types included in the policy.",
+          "items": {
+            "type": "string",
+            "enum": ["all", "browser", "mobileAppsAndDesktopClients", "exchangeActiveSync", "easSupported", "other"]
+          },
+          "enumLabels": {
+            "all": "All",
+            "browser": "Browser",
+            "mobileAppsAndDesktopClients": "Mobile apps and desktop clients",
+            "exchangeActiveSync": "Exchange ActiveSync",
+            "easSupported": "EAS supported",
+            "other": "Other clients"
+          }
+        },
+        "platforms": {
+          "$ref": "#/$defs/conditionalAccessPlatforms"
+        },
+        "locations": {
+          "$ref": "#/$defs/conditionalAccessLocations"
+        },
+        "devices": {
+          "$ref": "#/$defs/conditionalAccessDevices"
+        },
+        "clientApplications": {
+          "$ref": "#/$defs/conditionalAccessClientApplications"
+        },
+        "signInRiskLevels": {
+          "type": "array",
+          "title": "Sign-in Risk Levels",
+          "description": "Sign-in risk levels included in the policy. Requires Entra ID P2.",
+          "items": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "hidden", "none"]
+          },
+          "enumLabels": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High",
+            "hidden": "Hidden",
+            "none": "No risk"
+          },
+          "requiresLicense": "AAD_PREMIUM_P2"
+        },
+        "userRiskLevels": {
+          "type": "array",
+          "title": "User Risk Levels",
+          "description": "User risk levels included in the policy. Requires Entra ID P2.",
+          "items": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "hidden", "none"]
+          },
+          "enumLabels": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High",
+            "hidden": "Hidden",
+            "none": "No risk"
+          },
+          "requiresLicense": "AAD_PREMIUM_P2"
+        },
+        "servicePrincipalRiskLevels": {
+          "type": "array",
+          "title": "Service Principal Risk Levels",
+          "description": "Service principal risk levels included in the policy.",
+          "items": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "none"]
+          },
+          "enumLabels": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High",
+            "none": "No risk"
+          }
+        },
+        "insiderRiskLevels": {
+          "type": "string",
+          "title": "Insider Risk Levels",
+          "description": "Insider risk levels included in the policy.",
+          "enum": ["minor", "moderate", "elevated"],
+          "enumLabels": {
+            "minor": "Minor",
+            "moderate": "Moderate",
+            "elevated": "Elevated"
+          }
+        },
+        "authenticationFlows": {
+          "$ref": "#/$defs/conditionalAccessAuthenticationFlows"
+        }
+      }
+    },
+    "conditionalAccessUsers": {
+      "type": "object",
+      "title": "Users and Groups",
+      "description": "Users, groups, and roles included in and excluded from the policy.",
+      "properties": {
+        "includeUsers": {
+          "type": "array",
+          "title": "Include Users",
+          "description": "User IDs in scope, or 'All', 'None', 'GuestsOrExternalUsers'.",
+          "items": { "type": "string" },
+          "specialValues": ["All", "None", "GuestsOrExternalUsers"],
+          "graphLookup": "users"
+        },
+        "excludeUsers": {
+          "type": "array",
+          "title": "Exclude Users",
+          "description": "User IDs excluded from scope.",
+          "items": { "type": "string" },
+          "specialValues": ["GuestsOrExternalUsers"],
+          "graphLookup": "users"
+        },
+        "includeGroups": {
+          "type": "array",
+          "title": "Include Groups",
+          "description": "Group IDs in scope of the policy.",
+          "items": { "type": "string" },
+          "graphLookup": "groups"
+        },
+        "excludeGroups": {
+          "type": "array",
+          "title": "Exclude Groups",
+          "description": "Group IDs excluded from the policy.",
+          "items": { "type": "string" },
+          "graphLookup": "groups"
+        },
+        "includeRoles": {
+          "type": "array",
+          "title": "Include Roles",
+          "description": "Directory role IDs in scope of the policy.",
+          "items": { "type": "string" },
+          "graphLookup": "directoryRoles"
+        },
+        "excludeRoles": {
+          "type": "array",
+          "title": "Exclude Roles",
+          "description": "Directory role IDs excluded from the policy.",
+          "items": { "type": "string" },
+          "graphLookup": "directoryRoles"
+        },
+        "includeGuestsOrExternalUsers": {
+          "$ref": "#/$defs/conditionalAccessGuestsOrExternalUsers"
+        },
+        "excludeGuestsOrExternalUsers": {
+          "$ref": "#/$defs/conditionalAccessGuestsOrExternalUsers"
+        }
+      }
+    },
+    "conditionalAccessGuestsOrExternalUsers": {
+      "type": "object",
+      "title": "Guests or External Users",
+      "description": "Internal guests or external user types.",
+      "properties": {
+        "guestOrExternalUserTypes": {
+          "type": "string",
+          "title": "Guest or External User Types",
+          "description": "Multi-valued flags. Combine with commas.",
+          "flagEnum": ["none", "internalGuest", "b2bCollaborationGuest", "b2bCollaborationMember", "b2bDirectConnectUser", "otherExternalUser", "serviceProvider"],
+          "flagEnumLabels": {
+            "none": "None",
+            "internalGuest": "Internal guest",
+            "b2bCollaborationGuest": "B2B collaboration guest",
+            "b2bCollaborationMember": "B2B collaboration member",
+            "b2bDirectConnectUser": "B2B direct connect user",
+            "otherExternalUser": "Other external user",
+            "serviceProvider": "Service provider"
+          }
+        },
+        "externalTenants": {
+          "$ref": "#/$defs/conditionalAccessExternalTenants"
+        }
+      }
+    },
+    "conditionalAccessExternalTenants": {
+      "type": "object",
+      "title": "External Tenants",
+      "description": "External tenant scope.",
+      "properties": {
+        "@odata.type": {
+          "type": "string",
+          "title": "Membership Kind",
+          "description": "Whether to enumerate or specify all tenants.",
+          "enum": [
+            "#microsoft.graph.conditionalAccessAllExternalTenants",
+            "#microsoft.graph.conditionalAccessEnumeratedExternalTenants"
+          ],
+          "enumLabels": {
+            "#microsoft.graph.conditionalAccessAllExternalTenants": "All external tenants",
+            "#microsoft.graph.conditionalAccessEnumeratedExternalTenants": "Specific tenants"
+          }
+        },
+        "members": {
+          "type": "array",
+          "title": "Tenant IDs",
+          "description": "List of tenant IDs when using enumerated membership.",
+          "items": { "type": "string" },
+          "visibleWhen": {
+            "field": "@odata.type",
+            "value": "#microsoft.graph.conditionalAccessEnumeratedExternalTenants"
+          }
+        }
+      }
+    },
+    "conditionalAccessApplications": {
+      "type": "object",
+      "title": "Cloud Apps or Actions",
+      "description": "Applications and user actions included in and excluded from the policy.",
+      "properties": {
+        "includeApplications": {
+          "type": "array",
+          "title": "Include Applications",
+          "description": "Application client IDs the policy applies to, or 'All', 'Office365', 'MicrosoftAdminPortals'.",
+          "items": { "type": "string" },
+          "specialValues": ["All", "Office365", "MicrosoftAdminPortals"],
+          "specialValueLabels": {
+            "All": "All cloud apps",
+            "Office365": "Office 365",
+            "MicrosoftAdminPortals": "Microsoft Admin Portals"
+          },
+          "graphLookup": "servicePrincipals"
+        },
+        "excludeApplications": {
+          "type": "array",
+          "title": "Exclude Applications",
+          "description": "Application client IDs explicitly excluded.",
+          "items": { "type": "string" },
+          "graphLookup": "servicePrincipals"
+        },
+        "includeUserActions": {
+          "type": "array",
+          "title": "User Actions",
+          "description": "User actions to include instead of cloud apps.",
+          "items": {
+            "type": "string",
+            "enum": ["urn:user:registersecurityinfo", "urn:user:registerdevice"]
+          },
+          "enumLabels": {
+            "urn:user:registersecurityinfo": "Register security information",
+            "urn:user:registerdevice": "Register or join devices"
+          }
+        },
+        "includeAuthenticationContextClassReferences": {
+          "type": "array",
+          "title": "Authentication Context",
+          "description": "Authentication context class references included.",
+          "items": { "type": "string" }
+        },
+        "applicationFilter": {
+          "$ref": "#/$defs/conditionalAccessFilter",
+          "title": "Application Filter",
+          "description": "Dynamic filter rule for applications."
+        }
+      }
+    },
+    "conditionalAccessPlatforms": {
+      "type": "object",
+      "title": "Device Platforms",
+      "description": "Device platforms included in and excluded from the policy.",
+      "properties": {
+        "includePlatforms": {
+          "type": "array",
+          "title": "Include Platforms",
+          "description": "Platforms the policy applies to.",
+          "items": {
+            "type": "string",
+            "enum": ["android", "iOS", "windows", "windowsPhone", "macOS", "linux", "all"]
+          },
+          "enumLabels": {
+            "android": "Android",
+            "iOS": "iOS",
+            "windows": "Windows",
+            "windowsPhone": "Windows Phone",
+            "macOS": "macOS",
+            "linux": "Linux",
+            "all": "All platforms"
+          }
+        },
+        "excludePlatforms": {
+          "type": "array",
+          "title": "Exclude Platforms",
+          "description": "Platforms excluded from the policy.",
+          "items": {
+            "type": "string",
+            "enum": ["android", "iOS", "windows", "windowsPhone", "macOS", "linux"]
+          },
+          "enumLabels": {
+            "android": "Android",
+            "iOS": "iOS",
+            "windows": "Windows",
+            "windowsPhone": "Windows Phone",
+            "macOS": "macOS",
+            "linux": "Linux"
+          }
+        }
+      }
+    },
+    "conditionalAccessLocations": {
+      "type": "object",
+      "title": "Locations",
+      "description": "Locations included in and excluded from the policy.",
+      "properties": {
+        "includeLocations": {
+          "type": "array",
+          "title": "Include Locations",
+          "description": "Named location IDs or 'All', 'AllTrusted'.",
+          "items": { "type": "string" },
+          "specialValues": ["All", "AllTrusted"],
+          "specialValueLabels": {
+            "All": "Any location",
+            "AllTrusted": "All trusted locations"
+          },
+          "graphLookup": "namedLocations"
+        },
+        "excludeLocations": {
+          "type": "array",
+          "title": "Exclude Locations",
+          "description": "Named location IDs excluded.",
+          "items": { "type": "string" },
+          "specialValues": ["AllTrusted"],
+          "specialValueLabels": {
+            "AllTrusted": "All trusted locations"
+          },
+          "graphLookup": "namedLocations"
+        }
+      }
+    },
+    "conditionalAccessDevices": {
+      "type": "object",
+      "title": "Devices",
+      "description": "Device filter for the policy.",
+      "properties": {
+        "deviceFilter": {
+          "$ref": "#/$defs/conditionalAccessFilter",
+          "title": "Device Filter",
+          "description": "Dynamic filter rule for devices using device properties."
+        }
+      }
+    },
+    "conditionalAccessFilter": {
+      "type": "object",
+      "title": "Filter",
+      "description": "Dynamic filter with rule syntax.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "title": "Filter Mode",
+          "description": "Whether to include or exclude matching items.",
+          "enum": ["include", "exclude"],
+          "enumLabels": {
+            "include": "Include filtered items",
+            "exclude": "Exclude filtered items"
+          }
+        },
+        "rule": {
+          "type": "string",
+          "title": "Filter Rule",
+          "description": "Dynamic membership rule expression. Syntax matches Entra ID dynamic group rules."
+        }
+      },
+      "required": ["mode", "rule"]
+    },
+    "conditionalAccessClientApplications": {
+      "type": "object",
+      "title": "Workload Identities",
+      "description": "Service principals and workload identities included in and excluded from the policy.",
+      "properties": {
+        "includeServicePrincipals": {
+          "type": "array",
+          "title": "Include Service Principals",
+          "description": "Service principal IDs, or 'ServicePrincipalsInMyTenant'.",
+          "items": { "type": "string" },
+          "specialValues": ["ServicePrincipalsInMyTenant"],
+          "specialValueLabels": {
+            "ServicePrincipalsInMyTenant": "All service principals"
+          }
+        },
+        "excludeServicePrincipals": {
+          "type": "array",
+          "title": "Exclude Service Principals",
+          "description": "Service principal IDs excluded.",
+          "items": { "type": "string" }
+        },
+        "servicePrincipalFilter": {
+          "$ref": "#/$defs/conditionalAccessFilter",
+          "title": "Service Principal Filter",
+          "description": "Dynamic filter rule for service principals."
+        }
+      }
+    },
+    "conditionalAccessAuthenticationFlows": {
+      "type": "object",
+      "title": "Authentication Flows",
+      "description": "Authentication flow types in scope.",
+      "properties": {
+        "transferMethods": {
+          "type": "string",
+          "title": "Transfer Methods",
+          "description": "Transfer methods in scope for the policy.",
+          "enum": ["none", "deviceCodeFlow", "authenticationTransfer"],
+          "enumLabels": {
+            "none": "None",
+            "deviceCodeFlow": "Device code flow",
+            "authenticationTransfer": "Authentication transfer"
+          }
+        }
+      }
+    },
+    "conditionalAccessGrantControls": {
+      "type": "object",
+      "title": "Grant Controls",
+      "description": "Grant controls that must be fulfilled to pass the policy.",
+      "properties": {
+        "operator": {
+          "type": "string",
+          "title": "Control Operator",
+          "description": "How multiple controls relate to each other.",
+          "enum": ["AND", "OR"],
+          "enumLabels": {
+            "AND": "Require all selected controls",
+            "OR": "Require one of the selected controls"
+          }
+        },
+        "builtInControls": {
+          "type": "array",
+          "title": "Built-in Controls",
+          "description": "Built-in grant controls required by the policy.",
+          "items": {
+            "type": "string",
+            "enum": ["block", "mfa", "compliantDevice", "domainJoinedDevice", "approvedApplication", "compliantApplication", "passwordChange", "riskRemediation"]
+          },
+          "enumLabels": {
+            "block": "Block access",
+            "mfa": "Require multifactor authentication",
+            "compliantDevice": "Require device to be marked as compliant",
+            "domainJoinedDevice": "Require Microsoft Entra hybrid joined device",
+            "approvedApplication": "Require approved client app",
+            "compliantApplication": "Require app protection policy",
+            "passwordChange": "Require password change",
+            "riskRemediation": "Require risk remediation"
+          },
+          "constraints": {
+            "mutuallyExclusive": [["block"], ["mfa", "compliantDevice", "domainJoinedDevice", "approvedApplication", "compliantApplication", "passwordChange", "riskRemediation"]],
+            "passwordChangeRequires": ["mfa"],
+            "riskRemediationExcludes": ["passwordChange"]
+          }
+        },
+        "customAuthenticationFactors": {
+          "type": "array",
+          "title": "Custom Controls",
+          "description": "Custom control IDs required by the policy.",
+          "items": { "type": "string" }
+        },
+        "termsOfUse": {
+          "type": "array",
+          "title": "Terms of Use",
+          "description": "Terms of use IDs required by the policy.",
+          "items": { "type": "string" }
+        },
+        "authenticationStrength": {
+          "$ref": "#/$defs/authenticationStrengthPolicy"
+        }
+      }
+    },
+    "authenticationStrengthPolicy": {
+      "type": "object",
+      "title": "Authentication Strength",
+      "description": "Authentication strength policy required. Use instead of or alongside builtInControls.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Authentication Strength Policy",
+          "description": "ID of the authentication strength policy.",
+          "graphLookup": "authenticationStrengthPolicies",
+          "wellKnownValues": {
+            "00000000-0000-0000-0000-000000000002": "Multifactor authentication",
+            "00000000-0000-0000-0000-000000000003": "Passwordless MFA",
+            "00000000-0000-0000-0000-000000000004": "Phishing-resistant MFA"
+          }
+        }
+      }
+    },
+    "conditionalAccessSessionControls": {
+      "type": "object",
+      "title": "Session Controls",
+      "description": "Session controls enforced after sign-in.",
+      "properties": {
+        "applicationEnforcedRestrictions": {
+          "$ref": "#/$defs/applicationEnforcedRestrictionsSessionControl"
+        },
+        "cloudAppSecurity": {
+          "$ref": "#/$defs/cloudAppSecuritySessionControl"
+        },
+        "signInFrequency": {
+          "$ref": "#/$defs/signInFrequencySessionControl"
+        },
+        "persistentBrowser": {
+          "$ref": "#/$defs/persistentBrowserSessionControl"
+        },
+        "disableResilienceDefaults": {
+          "type": "boolean",
+          "title": "Disable Resilience Defaults",
+          "description": "When true, Entra ID will not extend existing sessions based on information collected prior to an outage."
+        }
+      }
+    },
+    "applicationEnforcedRestrictionsSessionControl": {
+      "type": "object",
+      "title": "App Enforced Restrictions",
+      "description": "Enforce application restrictions. Only Exchange Online and SharePoint Online support this.",
+      "properties": {
+        "isEnabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "description": "Whether application enforced restrictions are enabled."
+        }
+      }
+    },
+    "cloudAppSecuritySessionControl": {
+      "type": "object",
+      "title": "Conditional Access App Control",
+      "description": "Apply Defender for Cloud Apps controls.",
+      "properties": {
+        "isEnabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "description": "Whether cloud app security control is enabled."
+        },
+        "cloudAppSecurityType": {
+          "type": "string",
+          "title": "Control Type",
+          "description": "Type of cloud app security enforcement.",
+          "enum": ["mcasConfigured", "monitorOnly", "blockDownloads"],
+          "enumLabels": {
+            "mcasConfigured": "Use custom policy",
+            "monitorOnly": "Monitor only",
+            "blockDownloads": "Block downloads"
+          }
+        }
+      }
+    },
+    "signInFrequencySessionControl": {
+      "type": "object",
+      "title": "Sign-in Frequency",
+      "description": "Enforce periodic reauthentication.",
+      "properties": {
+        "isEnabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "description": "Whether sign-in frequency control is enabled."
+        },
+        "value": {
+          "type": "integer",
+          "title": "Frequency Value",
+          "description": "Number of hours or days.",
+          "minimum": 1
+        },
+        "type": {
+          "type": "string",
+          "title": "Frequency Unit",
+          "description": "Unit of the sign-in frequency.",
+          "enum": ["hours", "days"],
+          "enumLabels": {
+            "hours": "Hours",
+            "days": "Days"
+          }
+        },
+        "frequencyInterval": {
+          "type": "string",
+          "title": "Frequency Interval",
+          "description": "Whether frequency is time-based or every sign-in.",
+          "enum": ["timeBased", "everyTime"],
+          "enumLabels": {
+            "timeBased": "Time-based (use value/type above)",
+            "everyTime": "Every time"
+          }
+        },
+        "authenticationType": {
+          "type": "string",
+          "title": "Authentication Type",
+          "description": "Which authentication types this applies to.",
+          "enum": ["primaryAndSecondaryAuthentication", "secondaryAuthentication"],
+          "enumLabels": {
+            "primaryAndSecondaryAuthentication": "Primary and secondary authentication",
+            "secondaryAuthentication": "Secondary authentication only"
+          }
+        }
+      }
+    },
+    "persistentBrowserSessionControl": {
+      "type": "object",
+      "title": "Persistent Browser Session",
+      "description": "Whether to persist cookies after browser close.",
+      "properties": {
+        "isEnabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "description": "Whether persistent browser session control is enabled."
+        },
+        "mode": {
+          "type": "string",
+          "title": "Mode",
+          "description": "Whether browser sessions should always or never persist.",
+          "enum": ["always", "never"],
+          "enumLabels": {
+            "always": "Always persistent",
+            "never": "Never persistent"
+          }
+        }
+      }
+    }
+  }
+}

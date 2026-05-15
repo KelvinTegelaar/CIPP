@@ -20,6 +20,7 @@ import {
   Shortcut,
   EditAttributes,
   CloudSync,
+  Share,
 } from '@mui/icons-material'
 import { getCippLicenseTranslation } from '../../utils/get-cipp-license-translation'
 import { useSettings } from '../../hooks/use-settings.js'
@@ -179,6 +180,15 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
 
 // Separate component for Out of Office form to avoid hook issues
 const OutOfOfficeForm = ({ formControl }) => {
+  // Send the browser's IANA timezone so the API can display local times in the response
+  useEffect(() => {
+    try {
+      formControl.setValue('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone)
+    } catch {
+      // Fallback: leave timezone unset; API will display UTC
+    }
+  }, [])
+
   // Watch the Auto Reply State value
   const autoReplyState = useWatch({
     control: formControl.control,
@@ -642,6 +652,41 @@ export const useCippUserActions = () => {
       url: '/api/ExecOneDriveProvision',
       data: { UserPrincipalName: 'userPrincipalName' },
       confirmText: 'Are you sure you want to pre-provision OneDrive for [userPrincipalName]?',
+      multiPost: false,
+      condition: () => canWriteUser,
+    },
+    {
+      label: 'Set OneDrive External Sharing',
+      type: 'POST',
+      icon: <Share />,
+      url: '/api/ExecSetOneDriveSharing',
+      data: { UPN: 'userPrincipalName' },
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'SharingCapability',
+          label: 'Sharing Level',
+          multiple: false,
+          creatable: false,
+          validators: { required: 'Please select a sharing level' },
+          options: [
+            { label: 'Disabled - No external sharing allowed', value: 'Disabled' },
+            {
+              label: 'External User Sharing Only - Guests must sign in',
+              value: 'ExternalUserSharingOnly',
+            },
+            {
+              label: 'External User and Guest Sharing - Anyone links allowed',
+              value: 'ExternalUserAndGuestSharing',
+            },
+            {
+              label: 'Existing External User Sharing Only - Existing guests only',
+              value: 'ExistingExternalUserSharingOnly',
+            },
+          ],
+        },
+      ],
+      confirmText: "Select the sharing level for [userPrincipalName]'s OneDrive:",
       multiPost: false,
       condition: () => canWriteUser,
     },

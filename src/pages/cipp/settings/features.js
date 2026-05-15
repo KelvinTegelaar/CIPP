@@ -59,6 +59,7 @@ const Page = () => {
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       tenantInTitle={false}
+      dataFilter={(row) => !row.Hidden}
     />
   );
 };

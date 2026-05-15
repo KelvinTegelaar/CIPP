@@ -348,6 +348,16 @@ export const CippUniversalSearchV2 = React.forwardRef(
         router.push(
           `/identity/administration/groups/group?groupId=${itemData.id}&tenantFilter=${tenantDomain}`,
         );
+      } else if (searchType === "Applications") {
+        if (match.Type === "Apps") {
+          router.push(
+            `/tenant/administration/applications/app-registration?appId=${itemData.appId || itemData.id}&tenantFilter=${tenantDomain}`,
+          );
+        } else {
+          router.push(
+            `/tenant/administration/applications/enterprise-app?spId=${itemData.id}&tenantFilter=${tenantDomain}`,
+          );
+        }
       } else if (searchType === "Pages") {
         router.push(match.path, undefined, { shallow: true });
       }
@@ -388,6 +398,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
         label: "Groups",
         icon: "Group",
         onClick: () => handleTypeChange("Groups"),
+      },
+      {
+        label: "Applications",
+        icon: "Apps",
+        onClick: () => handleTypeChange("Applications"),
       },
       {
         label: "BitLocker",
@@ -726,6 +741,20 @@ const Results = ({
                       {itemData.description && (
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                           {highlightMatch(itemData.description || "")}
+                        </Typography>
+                      )}
+                    </>
+                  )}
+                  {searchType === "Applications" && (
+                    <>
+                      {itemData.appId && (
+                        <Typography variant="body2" color="text.secondary">
+                          {highlightMatch(itemData.appId || "")}
+                        </Typography>
+                      )}
+                      {itemData.publisherName && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          {highlightMatch(itemData.publisherName || "")}
                         </Typography>
                       )}
                     </>

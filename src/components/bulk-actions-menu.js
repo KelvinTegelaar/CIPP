@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { Button, Link, ListItemText, Menu, MenuItem, SvgIcon } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
-import { FilePresent, Laptop, Mail, Share, Shield, ShieldMoon, PrecisionManufacturing, BarChart, Group } from "@mui/icons-material";
+import { FilePresent, Laptop, Mail, Share, Shield, ShieldMoon, PrecisionManufacturing, BarChart, Group, Apps } from "@mui/icons-material";
 import { GlobeAltIcon, UsersIcon, ServerIcon } from "@heroicons/react/24/outline";
 
 function getIconByName(iconName) {
@@ -31,6 +31,8 @@ function getIconByName(iconName) {
       return <BarChart />;
     case "Group":
       return <Group />;
+    case "Apps":
+      return <Apps />;
     default:
       return null;
   }

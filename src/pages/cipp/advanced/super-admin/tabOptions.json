@@ -22,5 +22,17 @@
   {
     "label": "SAM App Permissions",
     "path": "/cipp/advanced/super-admin/sam-app-permissions"
+  },
+  {
+    "label": "CIPP Users",
+    "path": "/cipp/advanced/super-admin/cipp-users"
+  },
+  {
+    "label": "SSO",
+    "path": "/cipp/advanced/super-admin/sso"
+  },
+  {
+    "label": "Container Management",
+    "path": "/cipp/advanced/super-admin/container"
   }
 ]

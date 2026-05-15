@@ -938,5 +938,35 @@
       }
     ],
     "mappingRequired": false
+  },
+  {
+    "name": "ConnectWise PSA",
+    "id": "ConnectWisePSA",
+    "type": "ConnectWisePSA",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/connectwise.png",
+    "comingSoon": true,
+    "description": "Enable the ConnectWise PSA integration to send alerts to your ticketing system.",
+    "mappingRequired": false
+  },
+  {
+    "name": "Autotask PSA",
+    "id": "AutotaskPSA",
+    "type": "AutotaskPSA",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/autotask.png",
+    "comingSoon": true,
+    "description": "Enable the Autotask PSA integration to send alerts to your ticketing system.",
+    "mappingRequired": false
+  },
+  {
+    "name": "Kaseya BMS",
+    "id": "KaseyaBMS",
+    "type": "KaseyaBMS",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/kaseya.svg",
+    "comingSoon": true,
+    "description": "Enable the Kaseya BMS integration to send alerts to your ticketing system.",
+    "mappingRequired": false
   }
 ]

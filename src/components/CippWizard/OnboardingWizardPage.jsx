@@ -10,6 +10,7 @@ import { CippAlertsStep } from './CippAlertsStep.jsx'
 import { CippAddTenantTypeSelection } from './CippAddTenantTypeSelection.jsx'
 import { CippDirectTenantDeploy } from './CippDirectTenantDeploy.jsx'
 import { CippGDAPTenantSetup } from './CippGDAPTenantSetup.jsx'
+import { CippIndirectResellerLink } from './CippIndirectResellerLink.jsx'
 import { CippGDAPTenantOnboarding } from './CippGDAPTenantOnboarding.jsx'
 import { BuildingOfficeIcon, CloudIcon, CpuChipIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/router'
@@ -102,6 +103,12 @@ const OnboardingWizardPage = () => {
       component: CippGDAPTenantSetup,
       showStepWhen: (values) =>
         values?.selectedOption === 'AddTenant' && values?.tenantType === 'GDAP',
+    },
+    {
+      description: 'Reseller Link',
+      component: CippIndirectResellerLink,
+      showStepWhen: (values) =>
+        values?.selectedOption === 'AddTenant' && values?.tenantType === 'IndirectReseller',
     },
     {
       description: 'GDAP Onboarding',

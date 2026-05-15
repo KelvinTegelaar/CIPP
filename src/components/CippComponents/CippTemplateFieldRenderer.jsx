@@ -244,11 +244,43 @@ const CippTemplateFieldRenderer = ({
   React.useEffect(() => {
     if (templateData && formControl) {
       const processedData = parseIntuneRawJson(templateData);
-      const formValues = {};
 
+      // Recursively strip null values, empty arrays, empty strings,
+      // and @odata / Graph metadata keys so they don't create blank
+      // form fields or phantom sections in the builder.
+      const stripEmpty = (obj) => {
+        if (obj === null || obj === undefined) return undefined;
+        if (typeof obj === "string" && obj.trim() === "") return undefined;
+        if (Array.isArray(obj)) {
+          const filtered = obj
+            .map(stripEmpty)
+            .filter((v) => v !== undefined && v !== null);
+          return filtered.length > 0 ? filtered : undefined;
+        }
+        if (typeof obj === "object") {
+          const result = {};
+          let hasContent = false;
+          for (const [k, v] of Object.entries(obj)) {
+            // Drop @odata annotations and Graph metadata
+            if (k.includes("@odata") || k.startsWith("#")) continue;
+            const cleaned = stripEmpty(v);
+            if (cleaned !== undefined) {
+              result[k] = cleaned;
+              hasContent = true;
+            }
+          }
+          return hasContent ? result : undefined;
+        }
+        return obj;
+      };
+
+      const formValues = {};
       Object.keys(processedData).forEach((key) => {
         if (!isFieldBlacklisted(key)) {
-          formValues[key] = processedData[key];
+          const cleaned = stripEmpty(processedData[key]);
+          if (cleaned !== undefined) {
+            formValues[key] = cleaned;
+          }
         }
       });
       formControl.reset(formValues);
@@ -257,6 +289,10 @@ const CippTemplateFieldRenderer = ({
 
   const renderFormField = (key, value, path = "") => {
     const fieldPath = path ? `${path}.${key}` : key;
+
+    // Skip null/undefined values and @odata / metadata keys
+    if (value === null || value === undefined) return null;
+    if (key.includes("@odata") || key.startsWith("#")) return null;
 
     if (isFieldBlacklisted(key)) {
       return null;
@@ -776,12 +812,16 @@ const CippTemplateFieldRenderer = ({
       {priorityFields.map(
         (fieldName) =>
           processedData[fieldName] !== undefined &&
+          processedData[fieldName] !== null &&
           renderFormField(fieldName, processedData[fieldName])
       )}
 
       {/* Render all other fields except priority fields */}
       {Object.entries(processedData)
-        .filter(([key]) => !priorityFields.includes(key))
+        .filter(
+          ([key, value]) =>
+            !priorityFields.includes(key) && value !== null && value !== undefined
+        )
         .map(([key, value]) => renderFormField(key, value))}
     </Grid>
   );

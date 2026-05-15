@@ -22,10 +22,12 @@ const Page = () => {
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListSites?type=SharePointSiteUsage',
     queryKey: 'ListSites-SharePointSiteUsage',
-    cacheName: 'SharePointSiteUsage',
-    syncTitle: 'Sync SharePoint Site Usage',
+    cacheName: 'Sites',
+    syncTitle: 'Sync SharePoint Sites Report',
+    syncData: { Types: 'SharePointSiteUsage' },
     allowToggle: true,
-    defaultCached: false,
+    defaultCached: true,
+    allowAllTenantSync: true,
   })
 
   const actions = [
@@ -270,6 +272,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 
 export default Page

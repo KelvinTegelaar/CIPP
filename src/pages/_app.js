@@ -80,6 +80,11 @@ const App = (props) => {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
+    // Register minimal service worker for Chrome installability
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {})
+    }
+
     const language = navigator.language || navigator.userLanguage || 'en-US'
     const baseLang = language.split('-')[0]
 

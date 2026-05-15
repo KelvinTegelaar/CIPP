@@ -301,6 +301,10 @@ export const nativeMenuItems = [
       'Security.Alert.*',
       'Tenant.DeviceCompliance.*',
       'Security.SafeLinksPolicy.*',
+      'Security.DlpCompliancePolicy.*',
+      'Security.RetentionCompliancePolicy.*',
+      'Security.SensitivityLabel.*',
+      'Security.SensitiveInfoType.*',
     ],
     items: [
       {
@@ -379,6 +383,61 @@ export const nativeMenuItems = [
             title: 'Safe Links Templates',
             path: '/security/safelinks/safelinks-template',
             permissions: ['Security.SafeLinksPolicy.*'],
+            scope: 'global',
+          },
+        ],
+      },
+      {
+        title: 'Purview Compliance',
+        permissions: [
+          'Security.DlpCompliancePolicy.*',
+          'Security.RetentionCompliancePolicy.*',
+          'Security.SensitivityLabel.*',
+          'Security.SensitiveInfoType.*',
+        ],
+        items: [
+          {
+            title: 'DLP Policies',
+            path: '/security/compliance/dlp',
+            permissions: ['Security.DlpCompliancePolicy.*'],
+          },
+          {
+            title: 'DLP Policy Templates',
+            path: '/security/compliance/dlp-templates',
+            permissions: ['Security.DlpCompliancePolicy.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Retention Policies',
+            path: '/security/compliance/retention',
+            permissions: ['Security.RetentionCompliancePolicy.*'],
+          },
+          {
+            title: 'Retention Policy Templates',
+            path: '/security/compliance/retention-templates',
+            permissions: ['Security.RetentionCompliancePolicy.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Sensitivity Labels',
+            path: '/security/compliance/labels',
+            permissions: ['Security.SensitivityLabel.*'],
+          },
+          {
+            title: 'Sensitivity Label Templates',
+            path: '/security/compliance/labels-templates',
+            permissions: ['Security.SensitivityLabel.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Sensitive Information Types',
+            path: '/security/compliance/sit',
+            permissions: ['Security.SensitiveInfoType.*'],
+          },
+          {
+            title: 'Sensitive Info Type Templates',
+            path: '/security/compliance/sit-templates',
+            permissions: ['Security.SensitiveInfoType.*'],
             scope: 'global',
           },
         ],
@@ -613,6 +672,11 @@ export const nativeMenuItems = [
           {
             title: 'Mailboxes',
             path: '/email/administration/mailboxes',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'HVE Accounts',
+            path: '/email/administration/hve-accounts',
             permissions: ['Exchange.Mailbox.*'],
           },
           {
@@ -1041,6 +1105,13 @@ export const nativeMenuItems = [
           {
             title: 'Diagnostics',
             path: '/cipp/advanced/diagnostics',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Container Logs',
+            path: '/cipp/advanced/container-logs',
             roles: ['superadmin'],
             permissions: ['CIPP.SuperAdmin.*'],
             scope: 'global',
