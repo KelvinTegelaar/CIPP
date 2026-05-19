@@ -51,6 +51,34 @@ const AlertWizard = () => {
     data: { tenantFilter },
     waiting: !!tenantFilter,
   })
+
+  // Fetch the HaloPSA integration config so the PSA Ticket Strategy dropdown can show which
+  // option is the current integration default.
+  const integrationsConfig = ApiGetCall({
+    url: '/api/ListExtensionsConfig',
+    queryKey: 'Integrations',
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  })
+  const haloDefaultStrategy = integrationsConfig?.data?.HaloPSA?.LinkTicketsToUsers
+    ? 'split'
+    : 'consolidated'
+  const psaStrategyDropdownOptions = [
+    {
+      value: 'split',
+      label:
+        haloDefaultStrategy === 'split'
+          ? 'One ticket per affected user (HaloPSA integration default)'
+          : 'One ticket per affected user',
+    },
+    {
+      value: 'consolidated',
+      label:
+        haloDefaultStrategy === 'consolidated'
+          ? 'One consolidated ticket per tenant (HaloPSA integration default)'
+          : 'One consolidated ticket per tenant',
+    },
+  ]
   const [recurrenceOptions, setRecurrenceOptions] = useState([
     { value: '30m', label: 'Every 30 minutes' },
     { value: '1h', label: 'Every hour' },
@@ -203,6 +231,13 @@ const AlertWizard = () => {
           const desiredStartEpoch = parseInt(alert.RawAlert.DesiredStartTime)
           startDateTimeForForm = desiredStartEpoch
         }
+        // Resolve the stored strategy ('split' / 'consolidated' / '' for legacy/inherit) to the
+        // matching dynamic option. When empty, fall back to the current integration default so
+        // the dropdown always shows a meaningful selection.
+        const storedStrategy = alert.RawAlert.PsaTicketStrategy || haloDefaultStrategy
+        const psaStrategyValue =
+          psaStrategyDropdownOptions.find((opt) => opt.value === storedStrategy) ||
+          psaStrategyDropdownOptions[0]
         const resetObject = {
           tenantFilter: tenantFilterForForm,
           excludedTenants: excludedTenantsFormatted,
@@ -212,6 +247,7 @@ const AlertWizard = () => {
           startDateTime: startDateTimeForForm,
           CustomSubject: alert.RawAlert.CustomSubject || '',
           AlertComment: alert.RawAlert.AlertComment || '',
+          PsaTicketStrategy: psaStrategyValue,
         }
         if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
           try {
@@ -519,6 +555,7 @@ const AlertWizard = () => {
       PostExecution: values.postExecution,
       AlertComment: values.AlertComment,
       CustomSubject: values.CustomSubject,
+      PsaTicketStrategy: values.PsaTicketStrategy?.value ?? values.PsaTicketStrategy ?? '',
     }
     apiRequest.mutate(
       { url: '/api/AddScriptedAlert', data: postObject },
@@ -1095,6 +1132,27 @@ const AlertWizard = () => {
                                 options={postExecutionOptions}
                               />
                             </Grid>
+
+                            <CippFormCondition
+                              field="postExecution"
+                              compareType="valueEq"
+                              compareValue="PSA"
+                              formControl={formControl}
+                            >
+                              <Grid size={12}>
+                                <CippFormComponent
+                                  type="autoComplete"
+                                  name="PsaTicketStrategy"
+                                  label="PSA Ticket Strategy"
+                                  formControl={formControl}
+                                  multiple={false}
+                                  creatable={false}
+                                  helperText="Overrides the HaloPSA integration's Link Tickets to affected Users toggle for this alert. Useful for wide alerts (e.g. users without MFA) where some MSPs want one ticket per affected user and others prefer one consolidated ticket per tenant."
+                                  options={psaStrategyDropdownOptions}
+                                />
+                              </Grid>
+                            </CippFormCondition>
+
                             <Grid size={12}>
                               <CippFormComponent
                                 type="textField"
