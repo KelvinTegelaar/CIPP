@@ -4100,7 +4100,7 @@
         "type": "number",
         "name": "standards.IntuneComplianceSettings.deviceComplianceCheckinThresholdDays",
         "label": "Compliance status validity period (days)",
-        "defaultValue": 130,
+        "defaultValue": 120,
         "validators": {
           "min": { "value": 1, "message": "Minimum value is 1" },
           "max": { "value": 120, "message": "Maximum value is 120" }
