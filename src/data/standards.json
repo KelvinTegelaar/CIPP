@@ -4432,11 +4432,8 @@
   {
     "name": "standards.intuneRestrictUserDeviceRegistration",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (5.1.4.1)", "SMB1001 (2.8)"],
-    "appliesToTest": [
-      "CIS_5_1_4_1",
-      "SMB1001_2_8"
-    ],
+    "tag": [],
+    "appliesToTest": [],
     "helpText": "Controls whether users can register devices with Entra.",
     "docsDescription": "Configures whether users can register devices with Entra. When disabled, users are unable to register devices with Entra.",
     "executiveText": "Controls whether employees can register their devices for corporate access. Disabling user device registration prevents unauthorized or unmanaged devices from connecting to company resources, enhancing overall security posture.",
@@ -4452,6 +4449,32 @@
     "impact": "High Impact",
     "impactColour": "warning",
     "addedDate": "2026-02-23",
+    "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.intuneRestrictUserDeviceJoin",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["CIS M365 6.0.1 (5.1.4.1)", "SMB1001 (2.8)"],
+    "appliesToTest": [
+      "CIS_5_1_4_1",
+      "SMB1001_2_8"
+    ],
+    "helpText": "Controls whether users can join devices to Entra.",
+    "docsDescription": "Configures whether users can join devices to Entra. When disabled, users are unable to Entra-join devices, which prevents them from creating new Entra-joined (cloud-managed) device identities.",
+    "executiveText": "Controls whether employees can join their devices to the corporate Entra directory. Disabling user device join prevents unauthorized or unmanaged devices from becoming corporate-managed identities, enhancing overall security posture.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.intuneRestrictUserDeviceJoin.disableUserDeviceJoin",
+        "label": "Disable users from joining devices",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure user restriction for Entra device join",
+    "impact": "High Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-15",
     "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
     "recommendedBy": []
   },
