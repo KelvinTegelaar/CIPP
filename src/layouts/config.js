@@ -564,6 +564,11 @@ export const nativeMenuItems = [
             path: '/endpoint/MEM/list-scripts',
             permissions: ['Endpoint.MEM.*'],
           },
+          {
+            title: 'Enrollment Profiles',
+            path: '/endpoint/MEM/enrollment-profiles',
+            permissions: ['Endpoint.MEM.*'],
+          },
         ],
       },
       {

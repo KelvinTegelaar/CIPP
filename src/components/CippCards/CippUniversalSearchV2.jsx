@@ -40,6 +40,7 @@ async function loadTabOptions() {
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
     "/cipp/advanced/super-admin",
+    "/endpoint/MEM/enrollment-profiles",
     "/tenant/standards",
     "/tenant/manage",
     "/tenant/administration/applications",
@@ -391,7 +392,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const typeMenuActions = [
       {
         label: "Users",
-        icon: "UsersIcon",
+        icon: "Groups",
         onClick: () => handleTypeChange("Users"),
       },
       {
@@ -411,7 +412,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
       },
       {
         label: "Pages",
-        icon: "GlobeAltIcon",
+        icon: "Public",
         onClick: () => handleTypeChange("Pages"),
       },
     ];
