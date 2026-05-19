@@ -17,6 +17,8 @@ import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippValidator } from '../../utils/get-cipp-validator'
+import countryListRaw from '../../data/countryList.json'
+const countryCodes = countryListRaw.map((c) => ({ value: c.Code, label: c.Name }))
 
 export const CippWizardVacationActions = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep, lastStep } = props
@@ -28,6 +30,7 @@ export const CippWizardVacationActions = (props) => {
   const enableMailbox = useWatch({ control: formControl.control, name: 'enableMailboxPermissions' })
   const enableForwarding = useWatch({ control: formControl.control, name: 'enableForwarding' })
   const enableOOO = useWatch({ control: formControl.control, name: 'enableOOO' })
+  const enableTravelPolicy = useWatch({ control: formControl.control, name: 'enableTravelPolicy' })
   const atLeastOneEnabled = enableCA || enableMailbox || enableForwarding || enableOOO
 
   const users = useWatch({ control: formControl.control, name: 'Users' })
@@ -197,6 +200,105 @@ export const CippWizardVacationActions = (props) => {
                     name="excludeLocationAuditAlerts"
                     formControl={formControl}
                   />
+                </Grid>
+              </Grid>
+            </CippFormCondition>
+          </Stack>
+        </CardContent>
+      </Card>
+      {/* Travel CA Policy Section */}
+      <Card variant="outlined">
+        <CardHeader
+          title="Conditional Access Travel Policy"
+          subheader="Optionally restrict traveling users to login only from selected destinations"
+        />
+        <Divider />
+        <CardContent>
+          <Stack spacing={2}>
+            <CippFormComponent
+              type="switch"
+              name="enableTravelPolicy"
+              label="Enable Travel CA Policy (country-scoped access)"
+              formControl={formControl}
+            />
+            <CippFormCondition
+              formControl={formControl}
+              field="enableTravelPolicy"
+              compareType="is"
+              compareValue={true}
+              clearOnHide={false}
+            >
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12 }}>
+                  <Alert severity="info" sx={{ mb: 1 }}>
+                    Creates a temporary CA policy restricting login to selected travel destinations.
+                    MFA is always required. Policy and group membership are automatically cleaned up
+                    on the end date.
+                  </Alert>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    label={tenantDomain ? `Blocking CA Policies to exclude travelers from (${tenantDomain})` : 'Select a tenant first'}
+                    name="BlockPolicies"
+                    api={tenantDomain ? {
+                      queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
+                      url: '/api/ListGraphRequest',
+                      data: { tenantFilter: tenantDomain, Endpoint: 'conditionalAccess/policies', AsApp: true },
+                      dataKey: 'Results',
+                      labelField: (option) => `${option.displayName}`,
+                      valueField: 'id',
+                      showRefresh: true,
+                    } : null}
+                    multiple={true}
+                    formControl={formControl}
+                    required={true}
+                    disabled={!tenantDomain}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    label={tenantDomain ? `Named Locations in ${tenantDomain} (optional)` : 'Select a tenant first'}
+                    name="NamedLocations"
+                    api={tenantDomain ? {
+                      queryKey: `ListNamedLocations-${tenantDomain}`,
+                      url: '/api/ListGraphRequest',
+                      data: { tenantFilter: tenantDomain, Endpoint: 'identity/conditionalAccess/namedLocations', AsApp: true },
+                      dataKey: 'Results',
+                      labelField: (option) => `${option.displayName}${option.isTrusted ? ' (Trusted)' : ''}`,
+                      valueField: 'id',
+                      showRefresh: true,
+                    } : null}
+                    multiple={true}
+                    formControl={formControl}
+                    disabled={!tenantDomain}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    label="Include all Trusted Locations automatically"
+                    name="IncludeTrusted"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    label="Additional countries to allow (ISO codes)"
+                    name="CountryCodes"
+                    multiple={true}
+                    creatable={false}
+                    options={countryCodes}
+                    formControl={formControl}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Alert severity="warning">
+                    At least one Named Location or country must be selected, otherwise the travel
+                    policy will allow login from anywhere.
+                  </Alert>
                 </Grid>
               </Grid>
             </CippFormCondition>
