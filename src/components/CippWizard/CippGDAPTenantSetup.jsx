@@ -48,6 +48,11 @@ export const CippGDAPTenantSetup = (props) => {
     name: "gdapTemplate",
   });
 
+  const reference = useWatch({
+    control: formControl.control,
+    name: "Reference",
+  });
+
   const templateList = ApiGetCall({
     url: "/api/ExecGDAPRoleTemplate",
     queryKey: "ListGDAPRoleTemplates-wizard",
@@ -72,7 +77,7 @@ export const CippGDAPTenantSetup = (props) => {
 
     const inviteData = {
       roleMappings: selectedTemplate.value,
-      Reference: "Created via Setup Wizard",
+      Reference: reference || "Created via Setup Wizard",
     };
 
     generateInvite.mutate({
@@ -159,6 +164,16 @@ export const CippGDAPTenantSetup = (props) => {
               multiple={false}
               creatable={false}
               required={true}
+            />
+          </Box>
+
+          <Box>
+            <CippFormComponent
+              type="textField"
+              name="Reference"
+              label="Internal Reference Message"
+              formControl={formControl}
+              required={false}
             />
           </Box>
 
