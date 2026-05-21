@@ -248,27 +248,29 @@ function CippJsonView({
   type,
   defaultOpen = false,
   title = 'Policy Details',
+  tenant = null,
 }) {
   const [viewJson, setViewJson] = useState(false)
   const [accordionOpen, setAccordionOpen] = useState(defaultOpen)
   const [drilldownData, setDrilldownData] = useState([]) // Array of { data, title }
 
+  const objectTenant =
+    tenant || object?.Tenant || object?.tenant || object?.TenantFilter || object?.tenantFilter || null
+
   // Use the GUID resolver hook
-  const { guidMapping, isLoadingGuids, resolveGuids, isGuid } = useGuidResolver()
+  const { guidMapping, isLoadingGuids, resolveGuids, isGuid } = useGuidResolver(objectTenant)
   const resolvedType =
     type ||
     (object?.omaSettings || object?.settings || object?.definitionValues || object?.added
       ? 'intune'
       : undefined)
-  const adminTemplateTenant =
-    object?.Tenant || object?.tenant || object?.TenantFilter || object?.tenantFilter || null
   const {
     definitionsMap: addedDefinitionsMap,
     isLoadingDefinitions,
     isDefinitionsError,
   } = useAdminTemplateDefinitions({
     added: object?.added,
-    manualTenant: adminTemplateTenant,
+    manualTenant: objectTenant,
     waiting: resolvedType === 'intune',
   })
 
