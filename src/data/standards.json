@@ -4358,6 +4358,28 @@
         "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.remotePassportEnabled",
         "label": "Allow phone sign-in",
         "default": true
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.enhancedSignInSecurity",
+        "label": "Enable enhanced sign-in security",
+        "multiple": false,
+        "options": [
+          { "label": "Not configured", "value": "0" },
+          { "label": "Enabled on capable hardware", "value": "1" },
+          { "label": "Disabled on all systems", "value": "2" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.securityKeyForSignIn",
+        "label": "Use security keys for sign-in",
+        "multiple": false,
+        "options": [
+          { "label": "Not configured", "value": "notConfigured" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ]
       }
     ],
     "label": "Windows Hello for Business enrollment configuration",
