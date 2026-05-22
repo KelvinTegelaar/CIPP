@@ -35,7 +35,7 @@ const OnboardingWizardPage = dynamic(
   { ssr: false }
 )
 
-const SIDE_NAV_WIDTH = 270
+const SIDE_NAV_WIDTH = 290
 const SIDE_NAV_PINNED_WIDTH = 50
 const TOP_NAV_HEIGHT = 50
 
@@ -111,7 +111,7 @@ export const Layout = (props) => {
   const currentRole = ApiGetCall({
     url: '/api/me',
     queryKey: 'authmecipp',
-    waiting: !swaStatus.isSuccess || swaStatus.data?.clientPrincipal === null,
+    waiting: swaStatus.isSuccess && swaStatus.data?.clientPrincipal !== null,
   })
 
   const featureFlags = ApiGetCall({

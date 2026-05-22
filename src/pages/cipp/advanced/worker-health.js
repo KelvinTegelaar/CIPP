@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import {
   Box,
@@ -9,6 +9,7 @@ import {
   Chip,
   CircularProgress,
   Container,
+  IconButton,
   LinearProgress,
   Stack,
   Table,
@@ -17,6 +18,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  ToggleButton,
+  ToggleButtonGroup,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -30,11 +34,33 @@ import {
   Delete,
   LowPriority,
   DeleteSweep,
+  Timeline,
+  RocketLaunch,
+  Pause,
+  FileDownload,
+  FileUpload,
+  Refresh,
+  Close,
 } from "@mui/icons-material";
 import { Grid } from "@mui/system";
+import { useTheme } from "@mui/material/styles";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  AreaChart,
+  Area,
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  Legend,
+} from "recharts";
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
-import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
 import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 
@@ -142,19 +168,376 @@ const WorkerTable = ({ workers, title }) => {
   );
 };
 
+const TIME_RANGES = [
+  { label: "1h", minutes: 60 },
+  { label: "6h", minutes: 360 },
+  { label: "24h", minutes: 1440 },
+  { label: "3d", minutes: 4320 },
+  { label: "7d", minutes: 10080 },
+];
+
+const formatChartTime = (timestamp, rangeMinutes) => {
+  const d = new Date(timestamp);
+  if (rangeMinutes <= 1440) {
+    return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+  }
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const STARTUP_PHASES = [
+  { key: "BaseWorkerMs", label: "Base Worker", fkey: "BaseFunctionCount", color: "#7c4dff" },
+  { key: "WarmupMs", label: "Warmup", fkey: null, color: "#ffc107" },
+  { key: "HttpReadyMs", label: "HTTP Ready", fkey: "HttpFunctionCount", color: "#00c853" },
+  { key: "HttpPoolFullMs", label: "HTTP Pool Full", fkey: null, color: "#69f0ae" },
+  { key: "BgReadyMs", label: "BG Ready", fkey: "BgFunctionCount", color: "#29b6f6" },
+  { key: "FullyReadyMs", label: "Fully Ready", fkey: null, color: "#66bb6a" },
+];
+
+const StartupTimingBar = ({ startup }) => {
+  if (!startup) return null;
+
+  // Build segments as incremental durations between phases
+  const phases = STARTUP_PHASES.filter((p) => startup[p.key] > 0);
+  const totalMs = startup.FullyReadyMs || Math.max(...phases.map((p) => startup[p.key]), 1);
+
+  // Compute incremental segments (each phase = cumulative time to that point)
+  const segments = phases.map((phase, i) => {
+    const cumMs = startup[phase.key];
+    const prevMs = i > 0 ? startup[phases[i - 1].key] : 0;
+    const deltaMs = Math.max(cumMs - prevMs, 0);
+    return {
+      ...phase,
+      cumMs,
+      deltaMs,
+      pct: totalMs > 0 ? (deltaMs / totalMs) * 100 : 0,
+      functions: phase.fkey ? startup[phase.fkey] : null,
+    };
+  });
+
+  return (
+    <Card>
+      <CardHeader
+        title="Startup Timing"
+        titleTypographyProps={{ variant: "subtitle1" }}
+        avatar={<RocketLaunch fontSize="small" color="primary" />}
+        subheader={`${startup.ReadinessMode} / ${startup.WarmupMode} — ${startup.CpuCount} CPUs, ${startup.HttpPoolSize}H + ${startup.BgPoolSize}BG — Total: ${formatDuration(totalMs)}`}
+        subheaderTypographyProps={{ variant: "caption" }}
+        sx={{ pb: 0 }}
+      />
+      <CardContent sx={{ pt: 1.5, pb: "12px !important" }}>
+        {/* Single horizontal stacked bar */}
+        <Box sx={{ display: "flex", height: 28, borderRadius: 1, overflow: "hidden", mb: 1.5 }}>
+          {segments.map((seg) => (
+            <Tooltip
+              key={seg.key}
+              arrow
+              title={
+                <Box>
+                  <Typography variant="body2" fontWeight={600}>
+                    {seg.label}
+                  </Typography>
+                  <Typography variant="caption">
+                    {formatDuration(seg.deltaMs)} (cumulative: {formatDuration(seg.cumMs)})
+                  </Typography>
+                  {seg.functions != null && (
+                    <Typography variant="caption" display="block">
+                      {seg.functions} functions loaded
+                    </Typography>
+                  )}
+                </Box>
+              }
+            >
+              <Box
+                sx={{
+                  width: `${Math.max(seg.pct, 1)}%`,
+                  backgroundColor: seg.color,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: seg.pct > 8 ? 0 : 4,
+                  cursor: "pointer",
+                  transition: "filter 0.15s",
+                  "&:hover": { filter: "brightness(1.2)" },
+                }}
+              >
+                {seg.pct > 12 && (
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "#fff", fontWeight: 600, fontSize: 10, textShadow: "0 1px 2px rgba(0,0,0,.4)" }}
+                  >
+                    {formatDuration(seg.deltaMs)}
+                  </Typography>
+                )}
+              </Box>
+            </Tooltip>
+          ))}
+        </Box>
+        {/* Legend */}
+        <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+          {segments.map((seg) => (
+            <Stack key={seg.key} direction="row" alignItems="center" spacing={0.5}>
+              <Box sx={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: seg.color, flexShrink: 0 }} />
+              <Typography variant="caption" color="text.secondary">
+                {seg.label}
+                {seg.functions != null && ` (${seg.functions})`}
+              </Typography>
+            </Stack>
+          ))}
+          <Typography variant="caption" color="text.secondary" sx={{ ml: "auto !important" }}>
+            Modules: {startup.SharedModuleCount} shared
+            {startup.HttpOnlyModuleCount > 0 && `, ${startup.HttpOnlyModuleCount} HTTP`}
+            {startup.BgOnlyModuleCount > 0 && `, ${startup.BgOnlyModuleCount} BG`}
+          </Typography>
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+};
+
+const CompactStatsRow = ({ snapshot }) => {
+  if (!snapshot) return null;
+
+  const http = snapshot.HttpPool || {};
+  const bg = snapshot.BgPool || {};
+  const jobs = snapshot.Jobs || {};
+  const limiter = snapshot.Limiter || {};
+
+  const sections = [
+    {
+      label: "HTTP Pool",
+      color: "primary",
+      stats: [
+        { k: "Size", v: http.PoolSize ?? 0 },
+        { k: "Busy", v: http.BusyCount ?? 0, w: http.BusyCount >= http.PoolSize },
+        { k: "Invocations", v: http.TotalInvocations?.toLocaleString() ?? 0 },
+        { k: "Util", v: `${http.AvgUtilizationPct ?? 0}%`, w: http.AvgUtilizationPct > 80 },
+        { k: "Avg", v: formatDuration(http.AvgDurationMs) },
+        { k: "Faults", v: http.TotalFaults ?? 0, w: http.TotalFaults > 0 },
+      ],
+    },
+    {
+      label: "BG Pool",
+      color: "warning",
+      stats: [
+        { k: "Size", v: bg.PoolSize ?? 0 },
+        { k: "Busy", v: bg.BusyCount ?? 0, w: bg.BusyCount >= bg.PoolSize },
+        { k: "Invocations", v: bg.TotalInvocations?.toLocaleString() ?? 0 },
+        { k: "Util", v: `${bg.AvgUtilizationPct ?? 0}%`, w: bg.AvgUtilizationPct > 80 },
+        { k: "Avg", v: formatDuration(bg.AvgDurationMs) },
+        { k: "Faults", v: bg.TotalFaults ?? 0, w: bg.TotalFaults > 0 },
+      ],
+    },
+    {
+      label: "Jobs",
+      color: "info",
+      stats: [
+        { k: "Running", v: jobs.Running ?? 0 },
+        { k: "Queued", v: jobs.Queued ?? 0, w: jobs.Queued > 10 },
+        { k: "Done", v: jobs.Completed?.toLocaleString() ?? 0 },
+        { k: "Failed", v: jobs.Failed ?? 0, w: jobs.Failed > 0 },
+      ],
+    },
+    {
+      label: "Limiter",
+      color: "default",
+      stats: [
+        { k: "Active", v: `${limiter.Active ?? 0} / ${limiter.CurrentMax ?? 0}` },
+        { k: "Waiting", v: limiter.Waiting ?? 0 },
+        ...(limiter.IsHttpThrottled ? [{ k: "Status", v: "Throttled", w: true }] : []),
+      ],
+    },
+  ];
+
+  return (
+    <Card>
+      <CardContent sx={{ py: 1, px: 0, "&:last-child": { pb: 1 } }}>
+        <TableContainer>
+          <Table size="small" sx={{ "& td, & th": { borderBottom: "none", py: 0.25, px: 1 } }}>
+            <TableBody>
+              {sections.map((sec) => (
+                <TableRow key={sec.label}>
+                  <TableCell sx={{ width: 100 }}>
+                    <Chip label={sec.label} size="small" color={sec.color} variant="outlined" sx={{ fontWeight: 600 }} />
+                  </TableCell>
+                  {sec.stats.map((s) => (
+                    <TableCell key={s.k} align="center">
+                      <Typography variant="caption" color="text.secondary" display="block" lineHeight={1.2}>
+                        {s.k}
+                      </Typography>
+                      <Typography variant="body2" fontWeight={600} color={s.w ? "error.main" : "text.primary"} lineHeight={1.3}>
+                        {s.v}
+                      </Typography>
+                    </TableCell>
+                  ))}
+                  {/* Pad empty cells so columns stay aligned */}
+                  {Array.from({ length: Math.max(0, 6 - sec.stats.length) }).map((_, i) => (
+                    <TableCell key={`pad-${i}`} />
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CardContent>
+    </Card>
+  );
+};
+
+const HistoryChart = ({ data, rangeMinutes, title, icon, children }) => {
+  const theme = useTheme();
+
+  if (!data || data.length === 0) {
+    return (
+      <Card>
+        <CardHeader title={title} titleTypographyProps={{ variant: "h6" }} avatar={icon} />
+        <CardContent>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: 200 }}>
+            <Typography variant="body2" color="text.secondary">
+              No historical data available yet — data collection starts after 60 seconds
+            </Typography>
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader title={title} titleTypographyProps={{ variant: "h6" }} avatar={icon} />
+      <CardContent sx={{ pt: 0 }}>
+        <Box sx={{ height: 250 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            {children(data, theme)}
+          </ResponsiveContainer>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+};
+
 const Page = () => {
+  const theme = useTheme();
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef(null);
+  const [historyRange, setHistoryRange] = useState(60);
+  const [paused, setPaused] = useState(false);
+  const [importedData, setImportedData] = useState(null);
+
+  const isImported = importedData !== null;
+  const effectivePaused = paused || isImported;
+
   const healthQuery = ApiGetCall({
     url: "/api/ListWorkerHealth",
     data: { Action: "Snapshot" },
     queryKey: "WorkerHealth",
-    refetchInterval: 5000,
+    refetchInterval: effectivePaused ? false : 5000,
+  });
+
+  const startupQuery = ApiGetCall({
+    url: "/api/ListWorkerHealth",
+    data: { Action: "Startup" },
+    queryKey: "WorkerStartup",
+  });
+
+  const historyQuery = ApiGetCall({
+    url: "/api/ListWorkerHealth",
+    data: { Action: "History", Minutes: String(historyRange), MaxPoints: "500" },
+    queryKey: `WorkerHistory-${historyRange}`,
+    refetchInterval: effectivePaused ? false : 60000,
   });
 
   const jobAction = ApiPostCall({
     relatedQueryKeys: ["WorkerHealthJobs", "WorkerHealth"],
   });
 
-  const snapshot = healthQuery.data?.Results;
+  // Resolve data: imported overrides live
+  const snapshot = isImported ? importedData.snapshot : healthQuery.data?.Results;
+  const startupInfo = isImported ? importedData.startup : startupQuery.data?.Results;
+  const importedJobs = useMemo(() => {
+    if (!isImported || !importedData.jobs) return null;
+    // Handle both array and { Results: [...] } shapes from query cache
+    if (Array.isArray(importedData.jobs)) return importedData.jobs;
+    if (Array.isArray(importedData.jobs?.Results)) return importedData.jobs.Results;
+    if (Array.isArray(importedData.jobs?.data?.Results)) return importedData.jobs.data.Results;
+    if (Array.isArray(importedData.jobs?.data)) return importedData.jobs.data;
+    return [];
+  }, [isImported, importedData]);
+
+  const historyData = useMemo(() => {
+    const raw = isImported
+      ? importedData.history?.Data ?? importedData.history
+      : historyQuery.data?.Results?.Data;
+    if (!raw || !Array.isArray(raw)) return [];
+    return raw.map((p) => ({
+      ...p,
+      time: formatChartTime(p.TimestampUtc, isImported ? importedData.historyRange ?? 60 : historyRange),
+    }));
+  }, [historyQuery.data, historyRange, importedData, isImported]);
+
+  // ── Export ──
+  const handleExport = useCallback(() => {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      historyRange,
+      snapshot: healthQuery.data?.Results ?? null,
+      startup: startupQuery.data?.Results ?? null,
+      history: historyQuery.data?.Results ?? null,
+      jobs: null,
+    };
+    // Try to grab current job data from query cache
+    // CippDataTable may store the key with extra params, so search by prefix
+    const allQueries = queryClient.getQueriesData({ queryKey: ["WorkerHealthJobs"] });
+    for (const [, data] of allQueries) {
+      if (data) {
+        const rows = data?.Results ?? data?.data?.Results ?? data;
+        if (Array.isArray(rows)) {
+          payload.jobs = rows;
+          break;
+        }
+      }
+    }
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `worker-health-${new Date().toISOString().slice(0, 16).replace(/:/g, "")}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [healthQuery.data, startupQuery.data, historyQuery.data, historyRange, queryClient]);
+
+  // ── Import ──
+  const handleImport = useCallback((event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        setImportedData(data);
+        setPaused(true);
+      } catch {
+        // invalid JSON — ignore
+      }
+    };
+    reader.readAsText(file);
+    // Reset input so same file can be re-imported
+    event.target.value = "";
+  }, []);
+
+  const handleClearImport = useCallback(() => {
+    setImportedData(null);
+    setPaused(false);
+  }, []);
+
+  const handleRefreshHistory = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: [`WorkerHistory-${historyRange}`] });
+  }, [queryClient, historyRange]);
 
   const infoBarData = useMemo(() => {
     if (!snapshot) return [];
@@ -190,66 +573,6 @@ const Page = () => {
           : `${limiter.Active ?? 0} / ${limiter.CurrentMax ?? 0} active`,
         color: limiter.IsHttpThrottled ? "error" : "primary",
       },
-    ];
-  }, [snapshot]);
-
-  const httpPoolItems = useMemo(() => {
-    if (!snapshot?.HttpPool) return [];
-    const p = snapshot.HttpPool;
-    return [
-      { label: "Pool Size", value: p.PoolSize },
-      { label: "Available", value: p.Available },
-      { label: "Busy", value: p.BusyCount },
-      { label: "Total Invocations", value: p.TotalInvocations?.toLocaleString() ?? 0 },
-      { label: "Total Busy Time", value: formatDuration(p.TotalBusyMs) },
-      { label: "Avg Utilization", value: `${p.AvgUtilizationPct ?? 0}%` },
-      { label: "Avg Duration", value: formatDuration(p.AvgDurationMs) },
-      { label: "Total Faults", value: p.TotalFaults ?? 0 },
-    ];
-  }, [snapshot]);
-
-  const bgPoolItems = useMemo(() => {
-    if (!snapshot?.BgPool) return [];
-    const p = snapshot.BgPool;
-    return [
-      { label: "Pool Size", value: p.PoolSize },
-      { label: "Available", value: p.Available },
-      { label: "Busy", value: p.BusyCount },
-      { label: "Total Invocations", value: p.TotalInvocations?.toLocaleString() ?? 0 },
-      { label: "Total Busy Time", value: formatDuration(p.TotalBusyMs) },
-      { label: "Avg Utilization", value: `${p.AvgUtilizationPct ?? 0}%` },
-      { label: "Avg Duration", value: formatDuration(p.AvgDurationMs) },
-      { label: "Total Faults", value: p.TotalFaults ?? 0 },
-    ];
-  }, [snapshot]);
-
-  const limiterItems = useMemo(() => {
-    if (!snapshot?.Limiter) return [];
-    const l = snapshot.Limiter;
-    return [
-      { label: "Base Concurrency", value: l.BaseConcurrency },
-      { label: "Ceiling Concurrency", value: l.CeilingConcurrency },
-      { label: "Current Max", value: l.CurrentMax },
-      { label: "Active", value: l.Active },
-      { label: "Waiting", value: l.Waiting },
-      {
-        label: "HTTP Throttled",
-        value: l.IsHttpThrottled ? "Yes" : "No",
-      },
-    ];
-  }, [snapshot]);
-
-  const jobItems = useMemo(() => {
-    if (!snapshot?.Jobs) return [];
-    const j = snapshot.Jobs;
-    return [
-      { label: "Running", value: j.Running },
-      { label: "Queued", value: j.Queued },
-      { label: "Completed", value: j.Completed?.toLocaleString() ?? 0 },
-      { label: "Failed", value: j.Failed },
-      { label: "Total Processed", value: j.TotalProcessed?.toLocaleString() ?? 0 },
-      { label: "Max Concurrency", value: j.MaxConcurrency },
-      { label: "Active Concurrency", value: j.ActiveConcurrency },
     ];
   }, [snapshot]);
 
@@ -324,18 +647,9 @@ const Page = () => {
 
   const jobFilters = useMemo(
     () => [
-      {
-        filterName: "Queued",
-        value: [{ id: "Status", value: "Queued" }],
-      },
-      {
-        filterName: "Running",
-        value: [{ id: "Status", value: "Running" }],
-      },
-      {
-        filterName: "Failed",
-        value: [{ id: "Status", value: "Failed" }],
-      },
+      { filterName: "Queued", value: [{ id: "Status", value: "Queued" }] },
+      { filterName: "Running", value: [{ id: "Status", value: "Running" }] },
+      { filterName: "Failed", value: [{ id: "Status", value: "Failed" }] },
     ],
     []
   );
@@ -347,89 +661,282 @@ const Page = () => {
       </Head>
       <Box sx={{ flexGrow: 1, py: 4 }}>
         <Container maxWidth="xl">
-          <Stack spacing={3}>
+          <Stack spacing={2}>
+            {/* ── Header toolbar ── */}
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="h4">Worker Health</Typography>
               <Stack direction="row" alignItems="center" spacing={1}>
-                {healthQuery.isFetching && <CircularProgress size={18} />}
-                {snapshot && (
-                  <Typography variant="body2" color="text.secondary">
-                    Uptime: {formatUptime(snapshot.UptimeSeconds)} | Auto-refreshing every 5s
+                {isImported && (
+                  <Chip
+                    label={`Viewing imported data (${importedData.exportedAt ? new Date(importedData.exportedAt).toLocaleString() : "unknown"})`}
+                    color="info"
+                    size="small"
+                    onDelete={handleClearImport}
+                    deleteIcon={<Close />}
+                  />
+                )}
+                {!isImported && healthQuery.isFetching && <CircularProgress size={16} />}
+                {!isImported && snapshot && (
+                  <Typography variant="caption" color="text.secondary">
+                    Uptime: {formatUptime(snapshot.UptimeSeconds)}
                   </Typography>
                 )}
+                <Tooltip title={effectivePaused ? "Resume auto-refresh" : "Pause auto-refresh"}>
+                  <IconButton
+                    size="small"
+                    onClick={() => setPaused((p) => !p)}
+                    color={effectivePaused ? "warning" : "default"}
+                    disabled={isImported}
+                  >
+                    {effectivePaused ? <PlayArrow fontSize="small" /> : <Pause fontSize="small" />}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Export page data as JSON">
+                  <IconButton size="small" onClick={handleExport}>
+                    <FileDownload fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Import page data from JSON">
+                  <IconButton size="small" onClick={() => fileInputRef.current?.click()}>
+                    <FileUpload fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".json"
+                  style={{ display: "none" }}
+                  onChange={handleImport}
+                />
               </Stack>
             </Stack>
 
+            {/* ── KPI bar ── */}
             <CippInfoBar isFetching={false} data={infoBarData} />
 
-            <Grid container spacing={2}>
-              <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
-                <CippPropertyListCard
-                  title="HTTP Pool"
-                  propertyItems={httpPoolItems}
-                  isFetching={false}
-                  layout="two"
-                />
-              </Grid>
-              <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
-                <CippPropertyListCard
-                  title="Background Pool"
-                  propertyItems={bgPoolItems}
-                  isFetching={false}
-                  layout="two"
-                />
-              </Grid>
-            </Grid>
+            {/* ── Compact pool / jobs / limiter stats ── */}
+            <CompactStatsRow snapshot={snapshot} />
 
-            <Grid container spacing={2}>
-              <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
-                <CippPropertyListCard
-                  title="Background Task Limiter"
-                  propertyItems={limiterItems}
-                  isFetching={false}
-                />
-              </Grid>
-              <Grid size={{ lg: 6, md: 6, sm: 12, xs: 12 }}>
-                <CippPropertyListCard
-                  title="Job Manager"
-                  propertyItems={jobItems}
-                  isFetching={false}
-                  layout="two"
-                />
-              </Grid>
-            </Grid>
-
+            {/* ── Worker tables ── */}
             <WorkerTable workers={snapshot?.HttpPool?.Workers} title="HTTP Workers" />
             <WorkerTable workers={snapshot?.BgPool?.Workers} title="Background Workers" />
 
-            <CippDataTable
-              title="Job Queue"
-              queryKey="WorkerHealthJobs"
-              api={{
-                url: "/api/ListWorkerHealth",
-                data: { Action: "Jobs", Limit: "500" },
-                dataKey: "Results",
-              }}
-              simpleColumns={jobSimpleColumns}
-              actions={jobActions}
-              filters={jobFilters}
-              defaultSorting={[{ id: "Priority", desc: false }]}
-              cardButton={
-                <Button
-                  size="small"
-                  startIcon={<DeleteSweep />}
-                  color="warning"
-                  onClick={() =>
-                    jobAction.mutate({
-                      url: "/api/ListWorkerHealth",
-                      data: { Action: "PurgeCompleted" },
-                    })
-                  }
+            {/* ── Job Queue ── */}
+            {isImported && importedJobs ? (
+              <Card>
+                <CardHeader title="Job Queue (imported)" titleTypographyProps={{ variant: "h6" }} />
+                <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+                  {importedJobs.length === 0 ? (
+                    <Box sx={{ p: 3, textAlign: "center" }}>
+                      <Typography variant="body2" color="text.secondary">
+                        No job data was captured in this export
+                      </Typography>
+                    </Box>
+                  ) : (
+                  <TableContainer>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          {jobSimpleColumns.map((col) => (
+                            <TableCell key={col}>{col}</TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {importedJobs.slice(0, 200).map((row, i) => (
+                          <TableRow key={row.Id ?? i}>
+                            {jobSimpleColumns.map((col) => (
+                              <TableCell key={col}>
+                                {row[col] != null ? String(row[col]) : "—"}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  )}
+                </CardContent>
+              </Card>
+            ) : (
+              <CippDataTable
+                title="Job Queue"
+                queryKey="WorkerHealthJobs"
+                api={{
+                  url: "/api/ListWorkerHealth",
+                  data: { Action: "Jobs", Limit: "500" },
+                  dataKey: "Results",
+                }}
+                simpleColumns={jobSimpleColumns}
+                actions={jobActions}
+                filters={jobFilters}
+                defaultSorting={[{ id: "Priority", desc: false }]}
+                cardButton={
+                  <Button
+                    size="small"
+                    startIcon={<DeleteSweep />}
+                    color="warning"
+                    onClick={() =>
+                      jobAction.mutate({
+                        url: "/api/ListWorkerHealth",
+                        data: { Action: "PurgeCompleted" },
+                      })
+                    }
+                  >
+                    Purge Completed
+                  </Button>
+                }
+              />
+            )}
+
+            {/* ── Historical Trends header with controls ── */}
+            <Card>
+              <CardHeader
+                title="Historical Trends"
+                titleTypographyProps={{ variant: "h6" }}
+                avatar={<Timeline color="primary" />}
+                action={
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    {!isImported && (
+                      <Tooltip title="Refresh history data">
+                        <IconButton size="small" onClick={handleRefreshHistory}>
+                          <Refresh fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    <ToggleButtonGroup
+                      value={isImported ? (importedData.historyRange ?? 60) : historyRange}
+                      exclusive
+                      onChange={(_, val) => val !== null && setHistoryRange(val)}
+                      size="small"
+                      disabled={isImported}
+                    >
+                      {TIME_RANGES.map((r) => (
+                        <ToggleButton key={r.minutes} value={r.minutes}>
+                          {r.label}
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
+                  </Stack>
+                }
+              />
+            </Card>
+
+            <Grid container spacing={2}>
+              <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
+                <HistoryChart
+                  data={historyData}
+                  rangeMinutes={historyRange}
+                  title="Worker Utilization %"
+                  icon={<Speed color="primary" />}
                 >
-                  Purge Completed
-                </Button>
-              }
-            />
+                  {(data, t) => (
+                    <LineChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
+                      <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} tickMargin={4} unit="%" />
+                      <RechartsTooltip
+                        contentStyle={{
+                          backgroundColor: t.palette.background.paper,
+                          border: `1px solid ${t.palette.divider}`,
+                          borderRadius: 4,
+                        }}
+                      />
+                      <Legend />
+                      <Line type="monotone" dataKey="HttpUtilizationPct" name="HTTP" stroke={t.palette.primary.main} strokeWidth={2} dot={false} />
+                      <Line type="monotone" dataKey="BgUtilizationPct" name="Background" stroke={t.palette.warning.main} strokeWidth={2} dot={false} />
+                    </LineChart>
+                  )}
+                </HistoryChart>
+              </Grid>
+              <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
+                <HistoryChart
+                  data={historyData}
+                  rangeMinutes={historyRange}
+                  title="Invocations / Interval"
+                  icon={<PlayArrow color="primary" />}
+                >
+                  {(data, t) => (
+                    <BarChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
+                      <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+                      <YAxis tick={{ fontSize: 11 }} tickMargin={4} />
+                      <RechartsTooltip
+                        contentStyle={{
+                          backgroundColor: t.palette.background.paper,
+                          border: `1px solid ${t.palette.divider}`,
+                          borderRadius: 4,
+                        }}
+                      />
+                      <Legend />
+                      <Bar dataKey="HttpInvocations" name="HTTP" fill={t.palette.primary.main} />
+                      <Bar dataKey="BgInvocations" name="Background" fill={t.palette.warning.main} />
+                    </BarChart>
+                  )}
+                </HistoryChart>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2}>
+              <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
+                <HistoryChart
+                  data={historyData}
+                  rangeMinutes={historyRange}
+                  title="Job Queue Depth"
+                  icon={<HourglassEmpty color="primary" />}
+                >
+                  {(data, t) => (
+                    <AreaChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
+                      <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+                      <YAxis tick={{ fontSize: 11 }} tickMargin={4} />
+                      <RechartsTooltip
+                        contentStyle={{
+                          backgroundColor: t.palette.background.paper,
+                          border: `1px solid ${t.palette.divider}`,
+                          borderRadius: 4,
+                        }}
+                      />
+                      <Legend />
+                      <Area type="monotone" dataKey="JobsQueued" name="Queued" fill={t.palette.info.light} stroke={t.palette.info.main} fillOpacity={0.3} />
+                      <Area type="monotone" dataKey="JobsRunning" name="Running" fill={t.palette.success.light} stroke={t.palette.success.main} fillOpacity={0.3} />
+                    </AreaChart>
+                  )}
+                </HistoryChart>
+              </Grid>
+              <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
+                <HistoryChart
+                  data={historyData}
+                  rangeMinutes={historyRange}
+                  title="Faults & Avg Duration"
+                  icon={<Warning color="primary" />}
+                >
+                  {(data, t) => (
+                    <LineChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
+                      <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+                      <YAxis yAxisId="faults" tick={{ fontSize: 11 }} tickMargin={4} />
+                      <YAxis yAxisId="duration" orientation="right" tick={{ fontSize: 11 }} tickMargin={4} unit="ms" />
+                      <RechartsTooltip
+                        contentStyle={{
+                          backgroundColor: t.palette.background.paper,
+                          border: `1px solid ${t.palette.divider}`,
+                          borderRadius: 4,
+                        }}
+                      />
+                      <Legend />
+                      <Line yAxisId="faults" type="monotone" dataKey="HttpFaults" name="HTTP Faults" stroke={t.palette.error.main} strokeWidth={2} dot={false} />
+                      <Line yAxisId="faults" type="monotone" dataKey="BgFaults" name="BG Faults" stroke={t.palette.error.light} strokeWidth={2} dot={false} />
+                      <Line yAxisId="duration" type="monotone" dataKey="HttpAvgDurationMs" name="HTTP Avg Duration" stroke={t.palette.primary.light} strokeWidth={1} strokeDasharray="5 5" dot={false} />
+                      <Line yAxisId="duration" type="monotone" dataKey="BgAvgDurationMs" name="BG Avg Duration" stroke={t.palette.warning.light} strokeWidth={1} strokeDasharray="5 5" dot={false} />
+                    </LineChart>
+                  )}
+                </HistoryChart>
+              </Grid>
+            </Grid>
+
+            {/* ── Startup Timing (bottom) ── */}
+            <StartupTimingBar startup={startupInfo} />
           </Stack>
         </Container>
       </Box>
