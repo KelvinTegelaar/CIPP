@@ -29,6 +29,8 @@ import { nativeMenuItems } from './config'
 import { CippBreadcrumbNav } from '../components/CippComponents/CippBreadcrumbNav'
 import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDialog'
 import { ForcedSsoMigrationDialog } from '../components/CippComponents/ForcedSsoMigrationDialog'
+import { SubscriptionEndedDialog } from '../components/CippComponents/SubscriptionEndedDialog'
+import { FailedPaymentDialog } from '../components/CippComponents/FailedPaymentDialog'
 
 const OnboardingWizardPage = dynamic(
   () => import('../components/CippWizard/OnboardingWizardPage.jsx'),
@@ -337,6 +339,8 @@ export const Layout = (props) => {
               <OnboardingWizardPage />
             </DialogContent>
           </Dialog>
+          <SubscriptionEndedDialog hostedSubscriptionEnded={currentRole.data?.hostedSubscriptionEnded} />
+          <FailedPaymentDialog hostedFailedPayments={currentRole.data?.hostedFailedPayments} />
           <SsoMigrationDialog />
           <ForcedSsoMigrationDialog />
           {!setupCompleted && (
