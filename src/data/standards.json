@@ -7096,5 +7096,64 @@
     "addedDate": "2026-05-23",
     "powershellEquivalent": "Graph API - /deviceAppManagement/mobileApps",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.FIDO2PasskeyProfiles",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Configures FIDO2 passkey profiles including AAGUID allowlists, attestation enforcement, and passkey types for the tenant.",
+    "docsDescription": "Manages FIDO2 passkey profiles on the tenant authentication methods policy. Allows defining passkey profiles that control which authenticators (hardware keys, password managers, Microsoft Authenticator) are permitted via AAGUID allowlists, whether attestation is enforced, and which passkey types (device-bound, synced, or both) are allowed. This enables MSPs to centrally deploy phishing-resistant MFA configurations across tenants.",
+    "executiveText": "Configures passkey (FIDO2) profiles that control which authenticators users can register for phishing-resistant MFA. Supports allowlisting specific hardware keys (e.g., YubiKey models), password managers (e.g., 1Password), and Microsoft Authenticator by AAGUID, with control over attestation enforcement and passkey types.",
+    "addedComponent": [
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.FIDO2PasskeyProfiles.PasskeyTypes",
+        "label": "Allowed Passkey Types",
+        "options": [
+          { "label": "Device-bound only", "value": "deviceBound" },
+          { "label": "Synced only", "value": "synced" },
+          { "label": "Both device-bound and synced", "value": "deviceBound,synced" }
+        ],
+        "required": true
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.FIDO2PasskeyProfiles.AttestationEnforcement",
+        "label": "Attestation Enforcement",
+        "options": [
+          { "label": "Disabled (required for synced passkeys)", "value": "disabled" },
+          { "label": "Registration only", "value": "registrationOnly" }
+        ],
+        "required": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.FIDO2PasskeyProfiles.EnforceKeyRestrictions",
+        "label": "Enforce AAGUID Key Restrictions"
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.FIDO2PasskeyProfiles.EnforcementType",
+        "label": "Key Restriction Type",
+        "options": [
+          { "label": "Allow listed AAGUIDs only", "value": "allow" },
+          { "label": "Block listed AAGUIDs", "value": "block" }
+        ]
+      },
+      {
+        "type": "textField",
+        "name": "standards.FIDO2PasskeyProfiles.AAGUIDs",
+        "label": "AAGUIDs (comma-separated list of authenticator AAGUIDs)"
+      }
+    ],
+    "label": "Configure FIDO2 Passkey Profile",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-25",
+    "powershellEquivalent": "Graph API PATCH /policies/authenticationMethodsPolicy/authenticationMethodConfigurations/fido2",
+    "recommendedBy": ["CIPP"]
   }
 ]
