@@ -31,7 +31,12 @@ export const CippWizardVacationActions = (props) => {
   const enableForwarding = useWatch({ control: formControl.control, name: 'enableForwarding' })
   const enableOOO = useWatch({ control: formControl.control, name: 'enableOOO' })
   const enableTravelPolicy = useWatch({ control: formControl.control, name: 'enableTravelPolicy' })
-  const atLeastOneEnabled = enableCA || enableMailbox || enableForwarding || enableOOO
+  const travelNamedLocations = useWatch({ control: formControl.control, name: 'NamedLocations' })
+  const travelIncludeTrusted = useWatch({ control: formControl.control, name: 'IncludeTrusted' })
+  const travelCountryCodes = useWatch({ control: formControl.control, name: 'CountryCodes' })
+  const travelBlockPolicies = useWatch({ control: formControl.control, name: 'BlockPolicies' })
+  const travelLocationSelected = !!(travelIncludeTrusted || (travelNamedLocations?.length > 0) || (travelCountryCodes?.length > 0)) && (travelBlockPolicies?.length > 0)
+  const atLeastOneEnabled = enableCA || enableMailbox || enableForwarding || enableOOO || (enableTravelPolicy && travelLocationSelected)
 
   const users = useWatch({ control: formControl.control, name: 'Users' })
   const firstUser = Array.isArray(users) && users.length > 0 ? users[0] : null

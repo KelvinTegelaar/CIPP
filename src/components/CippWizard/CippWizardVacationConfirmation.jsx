@@ -1,8 +1,8 @@
-import dayjs from 'dayjs'
 import { Alert, Button, Card, CardContent, CardHeader, Chip, Divider, Stack, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 import { ApiPostCall } from "../../api/ApiCall";
 import { useWatch } from "react-hook-form";
 import Link from "next/link";
@@ -29,7 +29,7 @@ export const CippWizardVacationConfirmation = (props) => {
     forwardingVacation.isSuccess ||
     oooVacation.isSuccess;
 
-    const toLocalDateStr = (epoch) => epoch ? dayjs.unix(epoch).format('YYYYMMDD') : null
+    const toLocalDateStr = (epoch) => epoch ? new Date(epoch * 1000).toISOString().slice(0, 10).replace(/-/g, '') : null
   const handleSubmit = () => {
 
     if (values.enableTravelPolicy) {
@@ -127,7 +127,6 @@ export const CippWizardVacationConfirmation = (props) => {
     }
   };
 
-  const formatDate = (epoch) => epoch ? dayjs.unix(epoch).format('DD.MM.YYYY HH:mm') : 'Not set'
 
   const formatUsers = (users) => {
     if (!users || users.length === 0) return "None";
@@ -170,14 +169,14 @@ export const CippWizardVacationConfirmation = (props) => {
               <Typography variant="subtitle2" color="text.secondary">
                 Start Date
               </Typography>
-              <Typography variant="body1">{formatDate(values.startDate)}</Typography>
+              <Typography variant="body1">{values.startDate ? <CippTimeAgo data={values.startDate} /> : "Not set"}</Typography>
             </Grid>
 
             <Grid size={{ md: 6, xs: 12 }}>
               <Typography variant="subtitle2" color="text.secondary">
                 End Date
               </Typography>
-              <Typography variant="body1">{formatDate(values.endDate)}</Typography>
+              <Typography variant="body1">{values.endDate ? <CippTimeAgo data={values.endDate} /> : "Not set"}</Typography>
             </Grid>
 
             {values.reference && (
