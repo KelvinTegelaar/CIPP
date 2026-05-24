@@ -91,7 +91,8 @@ const Page = () => {
         labelField: 'id',
         valueField: 'id',
         queryKey: `ListGraphRequest-domains-${userSettings.currentTenant}`,
-        dataFilter: (options) => options.filter((option) => option?.addedFields?.isVerified === true), // Only include verified domains
+        dataFilter: (options) =>
+          options.filter((option) => option?.addedFields?.isVerified === true), // Only include verified domains
       },
       multiple: false,
       creatable: false,
