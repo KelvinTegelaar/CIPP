@@ -194,6 +194,13 @@ const Page = () => {
       name: 'businessPhones[0]',
       type: 'textField',
     },
+    ...(userSettings?.userAttributes
+      ?.filter((attribute) => attribute.value !== 'sponsor')
+      .map((attribute) => ({
+        label: attribute.label,
+        name: `defaultAttributes.${attribute.label}.Value`,
+        type: 'textField',
+      })) || []),
   ]
 
   const actions = [
@@ -241,6 +248,9 @@ const Page = () => {
       'department',
       'mobilePhone',
       'businessPhones',
+      ...(userSettings?.userAttributes
+        ?.filter((attribute) => attribute.value !== 'sponsor')
+        .map((attribute) => `defaultAttributes.${attribute.label}.Value`) || []),
     ],
     actions: actions,
   }
