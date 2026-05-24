@@ -141,7 +141,7 @@ const Page = () => {
                           height: 8,
                         }}
                       />
-                      <Typography variant="body2">Coming Soon through Third-Party</Typography>
+                      <Typography variant="body2">Coming Soon Through Third-Party</Typography>
                     </>
                   ) : (
                     <>
