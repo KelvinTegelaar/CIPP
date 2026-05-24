@@ -60,6 +60,7 @@ const CippCustomVariables = ({ id }) => {
       confirmText: "Update the custom variable '[RowKey]'?",
       hideBulk: true,
       setDefaultValues: true,
+      condition: (row) => row.Scope !== "Global" || id === "AllTenants",
       fields: [
         {
           type: "textField",
@@ -74,7 +75,6 @@ const CippCustomVariables = ({ id }) => {
           type: "textField",
           name: "Value",
           label: "Value",
-          disableVariables: true,
           placeholder: "Enter the value for the custom variable.",
           required: true,
         },
@@ -99,6 +99,7 @@ const CippCustomVariables = ({ id }) => {
       label: "Delete",
       icon: <TrashIcon />,
       confirmText: "Are you sure you want to delete [RowKey]?",
+      condition: (row) => row.Scope !== "Global" || id === "AllTenants",
       type: "POST",
       url: "/api/ExecCippReplacemap",
       data: {
@@ -127,10 +128,17 @@ const CippCustomVariables = ({ id }) => {
         title={id === "AllTenants" ? "Global Variables" : "Custom Variables"}
         actions={actions}
         api={{
-          url: `/api/ExecCippReplacemap?Action=List&tenantId=${id}`,
+          url:
+            id === "AllTenants"
+              ? `/api/ExecCippReplacemap?Action=List&tenantId=${id}`
+              : `/api/ExecCippReplacemap?Action=List&tenantId=${id}&includeGlobal=true`,
           dataKey: "Results",
         }}
-        simpleColumns={["RowKey", "Value", "Description"]}
+        simpleColumns={
+          id === "AllTenants"
+            ? ["RowKey", "Value", "Description"]
+            : ["RowKey", "Value", "Description", "Scope"]
+        }
         cardButton={
           <Button
             variant="contained"
@@ -168,7 +176,6 @@ const CippCustomVariables = ({ id }) => {
             type: "textField",
             name: "Value",
             label: "Value",
-            disableVariables: true,
             placeholder: "Enter the value for the custom variable.",
             required: true,
           },
