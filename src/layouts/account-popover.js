@@ -65,7 +65,7 @@ export const AccountPopover = (props) => {
       // delete query cache and persisted data
       queryClient.clear();
 
-      router.push("/.auth/logout?prompt=select_account&post_logout_redirect_uri=" + encodeURIComponent(paths.index));
+      router.push("/.auth/logout?post_logout_redirect_uri=" + encodeURIComponent(paths.index));
     } catch (err) {
       console.error(err);
       console.log(orgData);
