@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
-import { AppleADEEnrollmentProfiles } from './EnrollmentProfileTabs.jsx'
+import { AppleADEEnrollmentProfiles } from '../../../../components/EnrollmentProfileTabs.jsx'
 import tabOptions from './tabOptions.json'
 
 const Page = () => <AppleADEEnrollmentProfiles />
