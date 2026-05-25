@@ -1,17 +1,17 @@
 [
   {
-    "label": "Apple ADE",
+    "label": "Windows Autopilot",
     "path": "/endpoint/MEM/enrollment-profiles",
+    "icon": "Window"
+  },
+  {
+    "label": "Apple ADE",
+    "path": "/endpoint/MEM/enrollment-profiles/apple-ade",
     "icon": "Apple"
   },
   {
     "label": "Android Enterprise",
     "path": "/endpoint/MEM/enrollment-profiles/android-enterprise",
     "icon": "Android"
-  },
-  {
-    "label": "Windows Autopilot",
-    "path": "/endpoint/MEM/enrollment-profiles/windows-autopilot",
-    "icon": "Window"
   }
 ]
