@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -17,54 +17,52 @@ import {
   Divider,
   IconButton,
   Tooltip,
-} from "@mui/material";
+} from '@mui/material'
 import {
   PlayArrow as PlayIcon,
   CheckCircle as CompletedIcon,
   School as TutorialIcon,
   Search as SearchIcon,
   Replay as ResetIcon,
-} from "@mui/icons-material";
-import { useTutorials } from "../../contexts/tutorial-context";
-import { useRouter } from "next/router";
+} from '@mui/icons-material'
+import { useTutorials } from '../../contexts/tutorial-context'
+import { useRouter } from 'next/router'
 
 const CippTutorialDialog = ({ open, onClose }) => {
-  const { tutorials, completedIds, startTutorial, resetProgress } = useTutorials();
-  const [search, setSearch] = useState("");
-  const router = useRouter();
+  const { tutorials, completedIds, startTutorial, resetProgress } = useTutorials()
+  const [search, setSearch] = useState('')
+  const router = useRouter()
 
   const grouped = useMemo(() => {
     const filtered = tutorials.filter((t) => {
-      const q = search.toLowerCase();
+      const q = search.toLowerCase()
       return (
         t.title.toLowerCase().includes(q) ||
         t.description?.toLowerCase().includes(q) ||
         t.category?.toLowerCase().includes(q)
-      );
-    });
+      )
+    })
 
     return filtered.reduce((acc, tutorial) => {
-      const cat = tutorial.category || "General";
-      if (!acc[cat]) acc[cat] = [];
-      acc[cat].push(tutorial);
-      return acc;
-    }, {});
-  }, [tutorials, search]);
+      const cat = tutorial.category || 'General'
+      if (!acc[cat]) acc[cat] = []
+      acc[cat].push(tutorial)
+      return acc
+    }, {})
+  }, [tutorials, search])
 
   const handleStart = (tutorial) => {
-    onClose();
+    onClose()
     // Small delay to let dialog close animation finish
-    setTimeout(() => startTutorial(tutorial), 300);
-  };
+    setTimeout(() => startTutorial(tutorial), 300)
+  }
 
-  const categoryKeys = Object.keys(grouped).sort();
+  const categoryKeys = Object.keys(grouped).sort()
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle
-        sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <TutorialIcon color="primary" />
           <Typography variant="h6">Tutorials</Typography>
         </Box>
@@ -94,7 +92,7 @@ const CippTutorialDialog = ({ open, onClose }) => {
         />
 
         {categoryKeys.length === 0 && (
-          <Typography color="text.secondary" sx={{ textAlign: "center", py: 4 }}>
+          <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
             No tutorials found.
           </Typography>
         )}
@@ -106,9 +104,8 @@ const CippTutorialDialog = ({ open, onClose }) => {
             </Typography>
             <List dense disablePadding>
               {grouped[category].map((tutorial) => {
-                const isCompleted = completedIds.includes(tutorial.id);
-                const isOnPage =
-                  !tutorial.pages?.length || tutorial.pages.includes(router.pathname);
+                const isCompleted = completedIds.includes(tutorial.id)
+                const isOnPage = !tutorial.pages?.length || tutorial.pages.includes(router.pathname)
 
                 return (
                   <ListItemButton
@@ -127,15 +124,15 @@ const CippTutorialDialog = ({ open, onClose }) => {
                       primary={tutorial.title}
                       secondary={tutorial.description}
                       slotProps={{
-                        primary: { variant: "body2", fontWeight: 500 },
-                        secondary: { variant: "caption" },
+                        primary: { variant: 'body2', fontWeight: 500 },
+                        secondary: { variant: 'caption' },
                       }}
                     />
-                    <Box sx={{ display: "flex", gap: 0.5, ml: 1, flexShrink: 0 }}>
-                      {isCompleted && <Chip label="Done" size="small" color="success" variant="outlined" />}
-                      {!isOnPage && (
-                        <Chip label="Navigates away" size="small" variant="outlined" />
+                    <Box sx={{ display: 'flex', gap: 0.5, ml: 1, flexShrink: 0 }}>
+                      {isCompleted && (
+                        <Chip label="Done" size="small" color="success" variant="outlined" />
                       )}
+                      {!isOnPage && <Chip label="Navigates away" size="small" variant="outlined" />}
                       <Chip
                         label={`${tutorial.steps?.length || 0} steps`}
                         size="small"
@@ -143,7 +140,7 @@ const CippTutorialDialog = ({ open, onClose }) => {
                       />
                     </Box>
                   </ListItemButton>
-                );
+                )
               })}
             </List>
             <Divider sx={{ mt: 1 }} />
@@ -151,13 +148,13 @@ const CippTutorialDialog = ({ open, onClose }) => {
         ))}
       </DialogContent>
       <DialogActions>
-        <Typography variant="caption" color="text.secondary" sx={{ mr: "auto", pl: 2 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ mr: 'auto', pl: 2 }}>
           {completedIds.length} of {tutorials.length} completed
         </Typography>
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default CippTutorialDialog;
+export default CippTutorialDialog

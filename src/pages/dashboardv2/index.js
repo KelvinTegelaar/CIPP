@@ -194,7 +194,10 @@ const Page = () => {
       <Box sx={{ width: '100%', mx: 'auto' }}>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box data-tutorial="dashboard-toolbar" sx={{ display: 'flex', alignItems: 'stretch', gap: 1.5}}>
+            <Box
+              data-tutorial="dashboard-toolbar"
+              sx={{ display: 'flex', alignItems: 'stretch', gap: 1.5 }}
+            >
               <Box
                 data-tutorial="dashboard-portals"
                 sx={{

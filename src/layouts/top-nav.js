@@ -279,7 +279,11 @@ export const TopNav = (props) => {
           </Box>
           {!mdDown && (
             <Box data-tutorial="tenant-selector">
-              <CippTenantSelector ref={tenantSelectorRef} refreshButton={true} tenantButton={true} />
+              <CippTenantSelector
+                ref={tenantSelectorRef}
+                refreshButton={true}
+                tenantButton={true}
+              />
             </Box>
           )}
           {mdDown && (
