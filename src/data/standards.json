@@ -2573,6 +2573,40 @@
     ]
   },
   {
+    "name": "standards.DlpViaDcsEnabled",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets whether Outlook on the web uses Data Classification Services for DLP evaluation. See [Microsoft's policy tip reference](https://learn.microsoft.com/en-us/purview/dlp-ol365-win32-policy-tips#sensitive-information-types-that-support-policy-tips-for-outlook-perpetual-users).",
+    "docsDescription": "Configures whether Outlook on the web uses Data Classification Services (DCS)-based Data Loss Prevention (DLP) policy evaluation instead of Exchange-based evaluation. Review DLP policies before enabling this setting, as some legacy Exchange-based predicates are not supported with DCS-based evaluation. See [Microsoft's policy tip reference](https://learn.microsoft.com/en-us/purview/dlp-ol365-win32-policy-tips#sensitive-information-types-that-support-policy-tips-for-outlook-perpetual-users).",
+    "executiveText": "Improves how Outlook on the web applies Data Loss Prevention policies, giving users clearer guidance when sensitive information may be shared and helping reduce accidental data exposure.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.DlpViaDcsEnabled.state",
+        "options": [
+          { "label": "Enabled", "value": "true" },
+          { "label": "Disabled", "value": "false" }
+        ]
+      }
+    ],
+    "label": "Set OWA DLP evaluation via DCS",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-20",
+    "powershellEquivalent": "Set-OrganizationConfig -DlpViaDcsEnabled",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
     "name": "standards.UserSubmissions",
     "cat": "Exchange Standards",
     "tag": ["CIS M365 6.0.1 (8.6.1)"],
