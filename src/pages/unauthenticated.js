@@ -65,7 +65,7 @@ const Page = () => {
                     link={
                       swaStatus?.data?.clientPrincipal !== null && userRoles.length > 0
                         ? "/"
-                        : `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(
+                        : `/.auth/login/aad?prompt=select_account&post_login_redirect_uri=${encodeURIComponent(
                             window.location.href
                           )}`
                     }
