@@ -341,7 +341,7 @@ export const Layout = (props) => {
           </Dialog>
           <SubscriptionEndedDialog hostedSubscriptionEnded={currentRole.data?.hostedSubscriptionEnded} />
           <FailedPaymentDialog hostedFailedPayments={currentRole.data?.hostedFailedPayments} />
-          <SsoMigrationDialog />
+          <SsoMigrationDialog meData={currentRole.data} />
           <ForcedSsoMigrationDialog />
           {!setupCompleted && (
             <Box sx={{ flexGrow: 1, py: 2 }}>
