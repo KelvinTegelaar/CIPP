@@ -48,7 +48,7 @@
     "@tanstack/react-table": "^8.19.2",
     "@tiptap/core": "^3.22.3",
     "@tiptap/extension-heading": "^3.4.1",
-    "@tiptap/extension-table": "^3.19.0",
+    "@tiptap/extension-table": "^3.20.5",
     "@tiptap/pm": "^3.22.3",
     "@tiptap/react": "^3.20.5",
     "@tiptap/starter-kit": "^3.20.5",
