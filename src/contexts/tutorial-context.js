@@ -73,6 +73,16 @@ export const TutorialProvider = ({ children }) => {
 
     // Strip the query param so it doesn't re-trigger
     const { tutorial: _, ...rest } = router.query
+
+    // If the tutorial has a target page and we're not on it, navigate there first
+    const targetPage = match.pages?.[0]
+    if (targetPage && router.pathname !== targetPage) {
+      router.replace({ pathname: targetPage, query: rest }, undefined).then(() => {
+        setTimeout(() => runDriver(match), 600)
+      })
+      return
+    }
+
     router.replace({ pathname: router.pathname, query: rest }, undefined, { shallow: true })
 
     // Delay to let the page fully render
