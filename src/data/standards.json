@@ -5655,6 +5655,110 @@
     "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
   },
   {
+    "name": "standards.DevicePrepProfile",
+    "cat": "Device Management Standards",
+    "tag": ["autopilot", "device_prep", "enrollment"],
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
+    "helpText": "Creates and manages a Windows Autopilot Device Preparation profile for streamlined device enrollment.",
+    "docsDescription": "Deploys a Windows Autopilot Device Preparation profile through Intune configuration policies. This standard manages deployment mode, join type, account type, timeout, error messages, and optional device security group assignment. Optionally creates a new security group with the Intune Provisioning Client as owner.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.DevicePrepProfile.ProfileName",
+        "label": "Profile Display Name",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DevicePrepProfile.ProfileDescription",
+        "label": "Profile Description",
+        "required": false
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.DevicePrepProfile.DeploymentType",
+        "label": "Deployment Type",
+        "options": [
+          { "label": "Single user", "value": "0" },
+          { "label": "Shared", "value": "1" }
+        ]
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.DevicePrepProfile.JoinType",
+        "label": "Join Type",
+        "options": [
+          { "label": "Microsoft Entra join", "value": "0" },
+          { "label": "Microsoft Entra hybrid join", "value": "1" }
+        ]
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.DevicePrepProfile.AccountType",
+        "label": "Account Type",
+        "options": [
+          { "label": "Standard user", "value": "0" },
+          { "label": "Administrator", "value": "1" }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.DevicePrepProfile.Timeout",
+        "label": "Timeout (minutes)",
+        "defaultValue": 60
+      },
+      {
+        "type": "textField",
+        "name": "standards.DevicePrepProfile.CustomErrorMessage",
+        "label": "Custom Error Message",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DevicePrepProfile.AllowSkip",
+        "label": "Allow users to skip setup after failure",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DevicePrepProfile.AllowDiagnostics",
+        "label": "Allow users to collect diagnostics",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DevicePrepProfile.DeviceGroupName",
+        "label": "Device Security Group Name (wildcard match)",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DevicePrepProfile.CreateNewGroup",
+        "label": "Create new group if group is not found",
+        "defaultValue": false
+      },
+      {
+        "type": "radio",
+        "name": "standards.DevicePrepProfile.AssignTo",
+        "label": "Policy Assignment",
+        "options": [
+          { "label": "Do not assign", "value": "none" },
+          { "label": "All devices", "value": "AllDevices" },
+          { "label": "All users and devices", "value": "AllDevicesAndUsers" }
+        ]
+      }
+    ],
+    "label": "Deploy Device Prep Profile",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-05-25",
+    "recommendedBy": [],
+    "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
+  },
+  {
     "name": "standards.IntuneTemplate",
     "cat": "Templates",
     "label": "Intune Template",
