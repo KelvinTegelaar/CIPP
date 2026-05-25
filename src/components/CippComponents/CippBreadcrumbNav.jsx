@@ -608,7 +608,7 @@ export const CippBreadcrumbNav = () => {
     }
 
     return (
-      <Box sx={{ mb: 1, width: "100%", display: "flex", alignItems: "center", gap: 1 }}>
+      <Box data-tutorial="breadcrumb-nav" sx={{ mb: 1, width: "100%", display: "flex", alignItems: "center", gap: 1 }}>
         <Tooltip title="Switch to history mode">
           <IconButton size="small" onClick={toggleMode} sx={{ p: 0.5 }}>
             <AccountTree fontSize="small" />
@@ -690,7 +690,7 @@ export const CippBreadcrumbNav = () => {
   const visibleHistory = history.slice(-MAX_BREADCRUMB_DISPLAY);
 
   return (
-    <Box sx={{ mb: 1, width: "100%", display: "flex", alignItems: "center", gap: 1 }}>
+    <Box data-tutorial="breadcrumb-nav" sx={{ mb: 1, width: "100%", display: "flex", alignItems: "center", gap: 1 }}>
       <Tooltip title="Switch to hierarchy mode">
         <IconButton size="small" onClick={toggleMode} sx={{ p: 0.5 }}>
           <History fontSize="small" />

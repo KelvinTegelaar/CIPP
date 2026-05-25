@@ -113,6 +113,7 @@ const CippSpeedDial = ({
     <>
       <SpeedDial
         ariaLabel="Navigation SpeedDial"
+        data-tutorial="speed-dial"
         sx={{
           position: "fixed",
           ...position,

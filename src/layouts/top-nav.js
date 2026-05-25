@@ -278,7 +278,9 @@ export const TopNav = (props) => {
             <Logo />
           </Box>
           {!mdDown && (
-            <CippTenantSelector ref={tenantSelectorRef} refreshButton={true} tenantButton={true} />
+            <Box data-tutorial="tenant-selector">
+              <CippTenantSelector ref={tenantSelectorRef} refreshButton={true} tenantButton={true} />
+            </Box>
           )}
           {mdDown && (
             <IconButton color="inherit" onClick={onNavOpen}>

@@ -169,6 +169,7 @@ export const SideNav = (props) => {
         <Drawer
           open
           variant="permanent"
+          data-tutorial="side-nav"
           PaperProps={{
             ref: paperRef,
             onMouseEnter: () => setHovered(true),
