@@ -441,16 +441,8 @@
         },
         {
           "Property": { "value": "String", "label": "SecuredAccessPassData" },
-          "Operator": { "value": "ne", "label": "Not Equals to" },
-          "Input": {
-            "value": "[]",
-            "label": "[]"
-          }
-        },
-        {
-          "Property": { "value": "String", "label": "SecuredAccessPassData" },
           "Operator": { "value": "like", "label": "Like" },
-          "Input": { "value": "[*]" }
+          "Input": { "value": "*PassId*" }
         }
       ]
     }
