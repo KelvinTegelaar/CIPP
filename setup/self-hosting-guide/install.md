@@ -39,7 +39,7 @@ After you have completed the prerequisites in, select the button below to run th
 [![](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fdev%2Fdeployment%2FAzureDeploymentTemplate.json)
 
 {% hint style="warning" %}
-You **must replace** the preset "Github Repository" and "Github API Repository" fields with the URL's of **your own Github fork** of the CIPP repository.
+You **must replace** the preset "Github Repository" fields with the URL of **your own Github fork** of the CIPP repository.
 {% endhint %}
 
 {% hint style="danger" %}
