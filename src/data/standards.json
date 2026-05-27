@@ -7236,6 +7236,244 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.AutopatchGroup",
+    "cat": "Intune Standards",
+    "tag": [],
+    "beta": true,
+    "deprecated": true,
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
+    "helpText": "Deploys a Windows Autopatch group with configurable deployment ring settings for quality updates, feature updates, Edge, and Office.",
+    "docsDescription": "Creates or updates a Windows Autopatch deployment group with Test and Last deployment rings. Configures quality update deferrals, feature update targeting, Edge and Office update channels per ring. Uses the Autopatch API proxy to manage the group configuration.",
+    "executiveText": "Configures Windows Autopatch deployment groups to manage update delivery across devices. Autopatch automates Windows quality updates, feature updates, Edge, and Office updates using deployment rings with configurable deferrals and deadlines.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.AutopatchGroup.GroupName",
+        "label": "Group Name",
+        "required": true,
+        "defaultValue": "Autopatch default group"
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.TargetOSVersion",
+        "label": "Target OS Version",
+        "required": true,
+        "options": [
+          { "label": "Windows 11, version 24H2", "value": "Windows 11, version 24H2" },
+          { "label": "Windows 11, version 25H2", "value": "Windows 11, version 25H2" }
+        ],
+        "defaultValue": "Windows 11, version 25H2"
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopatchGroup.EnableDriverUpdate",
+        "label": "Enable Driver Updates",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopatchGroup.InstallWin10OnWin11Ineligible",
+        "label": "Install latest Windows 10 on Windows 11 ineligible devices",
+        "defaultValue": false
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestQualityDeferral",
+        "label": "Test Ring - Quality Update Deferral (days)",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestQualityDeadline",
+        "label": "Test Ring - Quality Update Deadline (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestQualityGracePeriod",
+        "label": "Test Ring - Quality Update Grace Period (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 7, "message": "Maximum value is 7" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestFeatureDeferral",
+        "label": "Test Ring - Feature Update Deferral (days)",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 365, "message": "Maximum value is 365" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestFeatureDeadline",
+        "label": "Test Ring - Feature Update Deadline (days)",
+        "defaultValue": 5,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.TestEdgeChannel",
+        "label": "Test Ring - Edge Update Channel",
+        "options": [
+          { "label": "Stable", "value": "Stable" },
+          { "label": "Beta", "value": "Beta" },
+          { "label": "Dev", "value": "Dev" }
+        ],
+        "defaultValue": "Beta"
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.TestOfficeChannel",
+        "label": "Test Ring - Office Update Channel",
+        "options": [
+          { "label": "Current", "value": "Current" },
+          { "label": "Monthly Enterprise", "value": "MonthlyEnterprise" },
+          { "label": "Semi-Annual Enterprise", "value": "SemiAnnual" }
+        ],
+        "defaultValue": "MonthlyEnterprise"
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestDnfDeferral",
+        "label": "Test Ring - Driver & Firmware Deferral (days)",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastQualityDeferral",
+        "label": "Last Ring - Quality Update Deferral (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastQualityDeadline",
+        "label": "Last Ring - Quality Update Deadline (days)",
+        "defaultValue": 2,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastQualityGracePeriod",
+        "label": "Last Ring - Quality Update Grace Period (days)",
+        "defaultValue": 2,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 7, "message": "Maximum value is 7" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastFeatureDeferral",
+        "label": "Last Ring - Feature Update Deferral (days)",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 365, "message": "Maximum value is 365" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastFeatureDeadline",
+        "label": "Last Ring - Feature Update Deadline (days)",
+        "defaultValue": 5,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.LastEdgeChannel",
+        "label": "Last Ring - Edge Update Channel",
+        "options": [
+          { "label": "Stable", "value": "Stable" },
+          { "label": "Beta", "value": "Beta" },
+          { "label": "Dev", "value": "Dev" }
+        ],
+        "defaultValue": "Stable"
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.LastOfficeChannel",
+        "label": "Last Ring - Office Update Channel",
+        "options": [
+          { "label": "Current", "value": "Current" },
+          { "label": "Monthly Enterprise", "value": "MonthlyEnterprise" },
+          { "label": "Semi-Annual Enterprise", "value": "SemiAnnual" }
+        ],
+        "defaultValue": "MonthlyEnterprise"
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastOfficeDeferral",
+        "label": "Last Ring - Office Update Deferral (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastOfficeDeadline",
+        "label": "Last Ring - Office Update Deadline (days)",
+        "defaultValue": 2,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastDnfDeferral",
+        "label": "Last Ring - Driver & Firmware Deferral (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      }
+    ],
+    "label": "Deploy Windows Autopatch Group",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-05-27",
+    "powershellEquivalent": "Autopatch API - POST /api/autoPatch",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.FIDO2PasskeyProfiles",
     "cat": "Entra (AAD) Standards",
     "tag": [],
