@@ -7337,5 +7337,48 @@
     "powershellEquivalent": "Get-MgBetaDirectorySetting, New-MgBetaDirectorySetting, Update-MgBetaDirectorySetting",
     "recommendedBy": ["CIS"],
     "requiredCapabilities": ["AAD_PREMIUM", "AAD_PREMIUM_P2"]
+  },
+  {
+    "name": "standards.SPOVersionControl",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Configures SharePoint Online file versioning to either use automatic version trimming managed by Microsoft, or enforce a fixed major version limit with optional version expiration.",
+    "docsDescription": "Configures the SharePoint Online tenant-level file versioning policy. When automatic version trimming is enabled, Microsoft intelligently manages version cleanup. When disabled, you can set a fixed maximum number of major versions to retain and optionally expire versions after a specified number of days. This helps manage storage consumption while preserving version history as needed.",
+    "executiveText": "Controls how SharePoint Online manages file version history at the tenant level. Automatic trimming lets Microsoft optimize storage by cleaning up old versions intelligently. Manual limits give administrators precise control over the maximum number of versions retained and their expiration, ensuring predictable storage usage and compliance with data retention policies.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.SPOVersionControl.EnableAutoTrim",
+        "label": "Enable Automatic Version Trimming (Microsoft managed)"
+      },
+      {
+        "type": "number",
+        "name": "standards.SPOVersionControl.MajorVersionLimit",
+        "label": "Maximum Major Versions (when auto trim is off)",
+        "default": 50
+      },
+      {
+        "type": "number",
+        "name": "standards.SPOVersionControl.ExpireVersionsAfterDays",
+        "label": "Expire Versions After Days (0 = never, when auto trim is off)",
+        "default": 0
+      },
+      {
+        "type": "switch",
+        "name": "standards.SPOVersionControl.ApplyToExistingSites",
+        "label": "Apply to all existing sites and document libraries"
+      }
+    ],
+    "label": "Set SharePoint File Version Limits",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-27",
+    "powershellEquivalent": "Set-SPOTenant -EnableAutoExpirationVersionTrim $true or Set-SPOTenant -EnableAutoExpirationVersionTrim $false -MajorVersionLimit 50 -ExpireVersionsAfterDays 365",
+    "recommendedBy": [],
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    }
   }
 ]
