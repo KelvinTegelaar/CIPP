@@ -44,6 +44,11 @@ const Page = () => {
       value: [{ id: 'recipientTypeDetails', value: 'EquipmentMailbox' }],
       type: 'column',
     },
+    {
+      filterName: 'View Archive-Enabled Mailboxes',
+      value: [{ id: 'ArchiveEnabled', value: true }],
+      type: 'column',
+    },
   ]
 
   // Simplified columns for the table
@@ -54,6 +59,9 @@ const Page = () => {
     'UPN',
     'primarySmtpAddress',
     'AdditionalEmailAddresses',
+    ...(reportDB.useReportDB ? ['storageUsedInBytes'] : []),
+    'ArchiveEnabled',
+    ...(reportDB.useReportDB ? ['ArchiveSize'] : []),
     ...reportDB.cacheColumns.filter((c) => c !== 'Tenant'),
   ]
 

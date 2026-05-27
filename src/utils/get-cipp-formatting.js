@@ -152,7 +152,11 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     )
   }
 
-  if (cellName === 'prohibitSendReceiveQuotaInBytes' || cellName === 'storageUsedInBytes') {
+  if (
+    cellName === 'prohibitSendReceiveQuotaInBytes' ||
+    cellName === 'storageUsedInBytes' ||
+    cellName === 'ArchiveSize'
+  ) {
     //convert bytes to GB
     const bytes = data
     if (bytes === null || bytes === undefined) {
@@ -1022,7 +1026,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   }
 
   // Internal CIPP navigation links
-  if ((cellName === 'cippLink') && typeof data === 'string') {
+  if (cellName === 'cippLink' && typeof data === 'string') {
     return isText ? (
       data
     ) : (
