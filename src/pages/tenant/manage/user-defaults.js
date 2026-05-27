@@ -124,7 +124,7 @@ const Page = () => {
         labelField: (option) =>
           `${option.License || option.skuPartNumber} (${option.AvailableUnits || 0} available)`,
         valueField: 'skuId',
-        queryKey: 'ListLicenses',
+        queryKey: `ListLicenses-${userSettings.currentTenant}`,
       },
       multiple: true,
       creatable: false,
@@ -137,7 +137,7 @@ const Page = () => {
         url: '/api/ListGroups',
         labelField: 'displayName',
         valueField: 'id',
-        queryKey: 'ListGroups',
+        queryKey: `ListGroups-${userSettings.currentTenant}`,
         addedField: {
           groupType: 'calculatedGroupType',
         },
