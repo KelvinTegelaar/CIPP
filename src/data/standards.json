@@ -6822,7 +6822,7 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectWindows",
-        "label": "Connect Windows 10.0.15063+ to MDE",
+        "label": "Connect Windows 10.0.15063+ to MDE (Note: enabling this forces 'Block Windows if partner data unavailable' to on)",
         "defaultValue": false
       },
       {
@@ -6834,7 +6834,7 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.windowsDeviceBlockedOnMissingPartnerData",
-        "label": "Block Windows if partner data unavailable",
+        "label": "Block Windows if partner data unavailable (Note: Microsoft enforces this to on when Connect Windows 10.0.15063+ to MDE is on)",
         "defaultValue": false
       },
       {
