@@ -7293,5 +7293,49 @@
     "addedDate": "2026-05-25",
     "powershellEquivalent": "Graph API PATCH /policies/authenticationMethodsPolicy/authenticationMethodConfigurations/fido2",
     "recommendedBy": ["CIPP"]
+  },
+  {
+    "name": "standards.SmartLockout",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "**Requires Entra ID P1.** Configures the Entra ID Smart Lockout settings including lockout duration, lockout threshold, and on-premises integration mode.",
+    "docsDescription": "Configures the Entra ID Smart Lockout policy which protects against brute-force password attacks. Smart Lockout locks out bad actors who try to guess user passwords or use brute-force methods. It recognizes sign-ins from valid users and treats them differently from attackers. Settings include lockout duration (seconds), lockout threshold (failed attempts before lockout), and on-premises password protection mode (Audit or Enforced).",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.SmartLockout.LockoutDurationInSeconds",
+        "label": "Lockout Duration (seconds)",
+        "default": 60,
+        "required": true
+      },
+      {
+        "type": "number",
+        "name": "standards.SmartLockout.LockoutThreshold",
+        "label": "Lockout Threshold (failed attempts)",
+        "default": 10,
+        "required": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.SmartLockout.EnableBannedPasswordCheckOnPremises",
+        "label": "Enable On-Premises Password Protection"
+      },
+      {
+        "type": "radio",
+        "name": "standards.SmartLockout.BannedPasswordCheckOnPremisesMode",
+        "label": "On-Premises Mode",
+        "options": [
+          { "label": "Audit", "value": "Audit" },
+          { "label": "Enforced", "value": "Enforced" }
+        ]
+      }
+    ],
+    "label": "Configure Entra ID Smart Lockout",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-05-27",
+    "powershellEquivalent": "Get-MgBetaDirectorySetting, New-MgBetaDirectorySetting, Update-MgBetaDirectorySetting",
+    "recommendedBy": ["CIS"],
+    "requiredCapabilities": ["AAD_PREMIUM", "AAD_PREMIUM_P2"]
   }
 ]
