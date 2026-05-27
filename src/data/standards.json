@@ -753,8 +753,8 @@
     "tag": [],
     "appliesToTest": ["EIDSCAAT01", "EIDSCAAT02", "ZTNA21845", "ZTNA21846"],
     "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select if a TAP is single use or multi-logon.",
-    "docsDescription": "Enables Temporary Password generation for the tenant.",
-    "executiveText": "Enables temporary access passwords that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passwords provide a secure way to restore access without compromising long-term security policies.",
+    "docsDescription": "Enables Temporary Access Pass generation for the tenant.",
+    "executiveText": "Enables temporary access passes that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passs provide a secure way to restore access without compromising long-term security policies.",
     "addedComponent": [
       {
         "type": "autoComplete",
@@ -768,7 +768,7 @@
         ]
       }
     ],
-    "label": "Enable Temporary Access Passwords",
+    "label": "Enable Temporary Access Passes (TAP)",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2022-03-15",
