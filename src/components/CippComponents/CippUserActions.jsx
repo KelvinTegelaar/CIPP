@@ -418,7 +418,7 @@ export const useCippUserActions = () => {
     },
     {
       //tested
-      label: 'Create Temporary Access Password',
+      label: 'Create Temporary Access Pass',
       type: 'POST',
       icon: <Password />,
       url: '/api/ExecCreateTAP',
@@ -443,7 +443,7 @@ export const useCippUserActions = () => {
         },
       ],
       confirmText:
-        'Are you sure you want to create a Temporary Access Password for [userPrincipalName]?',
+        'Are you sure you want to create a Temporary Access Pass for [userPrincipalName]?',
       multiPost: false,
       condition: () => canWriteUser,
     },
