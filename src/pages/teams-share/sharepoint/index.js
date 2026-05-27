@@ -224,7 +224,10 @@ const Page = () => {
             formControl={formHook}
             options={[
               { label: 'Sync Policy — apply site version policy to existing versions', value: '2' },
-              { label: 'Delete Older Than Days — remove versions older than a set number of days', value: '0' },
+              {
+                label: 'Delete Older Than Days — remove versions older than a set number of days',
+                value: '0',
+              },
               { label: 'Count Limits — keep a maximum number of major versions', value: '1' },
             ]}
           />
@@ -265,8 +268,10 @@ const Page = () => {
         tenantFilter: row.Tenant ?? tenantFilter,
         SiteUrl: row.webUrl,
         BatchDeleteMode: parseInt(formData.BatchDeleteMode, 10),
-        DeleteOlderThanDays: formData.BatchDeleteMode === '0' ? parseInt(formData.DeleteOlderThanDays, 10) : -1,
-        MajorVersionLimit: formData.BatchDeleteMode === '1' ? parseInt(formData.MajorVersionLimit, 10) : -1,
+        DeleteOlderThanDays:
+          formData.BatchDeleteMode === '0' ? parseInt(formData.DeleteOlderThanDays, 10) : -1,
+        MajorVersionLimit:
+          formData.BatchDeleteMode === '1' ? parseInt(formData.MajorVersionLimit, 10) : -1,
       }),
       multiPost: false,
     },
