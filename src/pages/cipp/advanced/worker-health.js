@@ -359,9 +359,11 @@ const CompactStatsRow = ({ snapshot }) => {
         { k: "RSS", v: `${mem.RssMB ?? 0}MB`, w: mem.UsagePct > 85 },
         { k: "Committed", v: `${mem.CommittedMB ?? 0}MB` },
         { k: "Limit", v: `${mem.ContainerLimitMB ?? 0}MB` },
+        { k: "GC Limit", v: `${mem.GCHeapLimitMB ?? 0}MB` },
         { k: "Usage", v: `${mem.UsagePct ?? 0}%`, w: mem.UsagePct > 85 },
         { k: "CPU", v: `${mem.CpuPct ?? 0}%`, w: mem.CpuPct > 80 },
         { k: "GC", v: `${mem.GC0 ?? 0}/${mem.GC1 ?? 0}/${mem.GC2 ?? 0}` },
+        ...(mem.TestDataCacheCount != null ? [{ k: "Cache", v: `${mem.TestDataCacheCount} entries` }] : []),
       ],
     },
   ];
@@ -467,6 +469,13 @@ const Page = () => {
 
   const jobAction = ApiPostCall({
     relatedQueryKeys: ["WorkerHealthJobs", "WorkerHealth"],
+  });
+
+  const cacheDiagQuery = ApiGetCall({
+    url: "/api/ListWorkerHealth",
+    data: { Action: "CacheDiag" },
+    queryKey: "WorkerCacheDiag",
+    refetchInterval: effectivePaused ? false : 30000,
   });
 
   // Resolve data: imported overrides live
@@ -1014,6 +1023,55 @@ const Page = () => {
                 </HistoryChart>
               </Grid>
             </Grid>
+
+            {/* ── TestData Cache Diagnostics ── */}
+            {(() => {
+              const diag = cacheDiagQuery.data?.Results;
+              if (!diag) return null;
+              const types = diag.TypeBreakdown ?? [];
+              return (
+                <Card>
+                  <CardHeader
+                    title="TestData Cache"
+                    titleTypographyProps={{ variant: "h6" }}
+                    subheader={`${diag.ActiveEntries ?? 0} active / ${diag.ExpiredEntries ?? 0} expired — ${diag.EstimatedTotalMB ?? 0} MB est. — ${diag.AccessCount ?? 0} accesses`}
+                    action={
+                      <Chip
+                        label={`${diag.TotalEntries ?? 0} entries`}
+                        color={diag.TotalEntries > 5000 ? "error" : diag.TotalEntries > 1000 ? "warning" : "success"}
+                        size="small"
+                      />
+                    }
+                  />
+                  {types.length > 0 && (
+                    <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+                      <TableContainer sx={{ maxHeight: 300 }}>
+                        <Table size="small" stickyHeader>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Data Type</TableCell>
+                              <TableCell align="right">Tenants</TableCell>
+                              <TableCell align="right">Items</TableCell>
+                              <TableCell align="right">Est. MB</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {types.map((t) => (
+                              <TableRow key={t.Type}>
+                                <TableCell sx={{ fontFamily: "monospace", fontSize: 12 }}>{t.Type}</TableCell>
+                                <TableCell align="right">{t.EntryCount}</TableCell>
+                                <TableCell align="right">{t.TotalItems?.toLocaleString()}</TableCell>
+                                <TableCell align="right">{t.TotalMB}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </CardContent>
+                  )}
+                </Card>
+              );
+            })()}
 
             {/* ── Startup Timing (bottom) ── */}
             <StartupTimingBar startup={startupInfo} />
