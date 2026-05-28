@@ -54,7 +54,7 @@
     "@tiptap/starter-kit": "^3.20.5",
     "@vvo/tzdb": "^6.198.0",
     "apexcharts": "5.10.4",
-    "axios": "1.15.0",
+    "axios": "1.16.1",
     "date-fns": "4.1.0",
     "diff": "^8.0.3",
     "dompurify": "^3.4.3",
