@@ -33,7 +33,6 @@ import {
   Cancel,
   Delete,
   LowPriority,
-  DeleteSweep,
   Timeline,
   RocketLaunch,
   Pause,
@@ -306,6 +305,7 @@ const CompactStatsRow = ({ snapshot }) => {
   const bg = snapshot.BgPool || {};
   const jobs = snapshot.Jobs || {};
   const limiter = snapshot.Limiter || {};
+  const mem = snapshot.Memory || {};
 
   const sections = [
     {
@@ -349,6 +349,18 @@ const CompactStatsRow = ({ snapshot }) => {
         { k: "Active", v: `${limiter.Active ?? 0} / ${limiter.CurrentMax ?? 0}` },
         { k: "Waiting", v: limiter.Waiting ?? 0 },
         ...(limiter.IsHttpThrottled ? [{ k: "Status", v: "Throttled", w: true }] : []),
+      ],
+    },
+    {
+      label: "Memory",
+      color: "secondary",
+      stats: [
+        { k: "Heap", v: `${mem.HeapMB ?? 0}MB` },
+        { k: "RSS", v: `${mem.RssMB ?? 0}MB`, w: mem.UsagePct > 85 },
+        { k: "Committed", v: `${mem.CommittedMB ?? 0}MB` },
+        { k: "Limit", v: `${mem.ContainerLimitMB ?? 0}MB` },
+        { k: "Usage", v: `${mem.UsagePct ?? 0}%`, w: mem.UsagePct > 85 },
+        { k: "GC", v: `${mem.GC0 ?? 0}/${mem.GC1 ?? 0}/${mem.GC2 ?? 0}` },
       ],
     },
   ];
@@ -427,6 +439,7 @@ const Page = () => {
   const [historyRange, setHistoryRange] = useState(60);
   const [paused, setPaused] = useState(false);
   const [importedData, setImportedData] = useState(null);
+  const [jobLimit, setJobLimit] = useState(2000);
 
   const isImported = importedData !== null;
   const effectivePaused = paused || isImported;
@@ -573,10 +586,16 @@ const Page = () => {
           : `${limiter.Active ?? 0} / ${limiter.CurrentMax ?? 0} active`,
         color: limiter.IsHttpThrottled ? "error" : "primary",
       },
+      {
+        icon: <Memory />,
+        name: "Memory",
+        data: `${snapshot.Memory?.RssMB ?? 0}MB / ${snapshot.Memory?.ContainerLimitMB ?? 0}MB (${snapshot.Memory?.UsagePct ?? 0}%)`,
+        color: (snapshot.Memory?.UsagePct ?? 0) > 85 ? "error" : (snapshot.Memory?.UsagePct ?? 0) > 70 ? "warning" : "primary",
+      },
     ];
   }, [snapshot]);
 
-  const jobSimpleColumns = ["Name", "RunName", "Priority", "Status", "WaitSeconds", "DurationSeconds"];
+  const jobSimpleColumns = ["Name", "RunName", "Priority", "Status", "QueuedUtc", "WaitSeconds", "DurationSeconds"];
 
   const jobActions = useMemo(
     () => [
@@ -761,30 +780,29 @@ const Page = () => {
             ) : (
               <CippDataTable
                 title="Job Queue"
-                queryKey="WorkerHealthJobs"
+                queryKey={`WorkerHealthJobs-${jobLimit}`}
                 api={{
                   url: "/api/ListWorkerHealth",
-                  data: { Action: "Jobs", Limit: "500" },
+                  data: { Action: "Jobs", Limit: String(jobLimit) },
                   dataKey: "Results",
                 }}
                 simpleColumns={jobSimpleColumns}
                 actions={jobActions}
                 filters={jobFilters}
-                defaultSorting={[{ id: "Priority", desc: false }]}
+                defaultSorting={[{ id: "QueuedUtc", desc: true }]}
                 cardButton={
-                  <Button
+                  <ToggleButtonGroup
+                    value={jobLimit}
+                    exclusive
+                    onChange={(_, val) => val !== null && setJobLimit(val)}
                     size="small"
-                    startIcon={<DeleteSweep />}
-                    color="warning"
-                    onClick={() =>
-                      jobAction.mutate({
-                        url: "/api/ListWorkerHealth",
-                        data: { Action: "PurgeCompleted" },
-                      })
-                    }
                   >
-                    Purge Completed
-                  </Button>
+                    {[500, 2000, 5000, 10000].map((n) => (
+                      <ToggleButton key={n} value={n}>
+                        {n >= 1000 ? `${n / 1000}k` : n}
+                      </ToggleButton>
+                    ))}
+                  </ToggleButtonGroup>
                 }
               />
             )}
@@ -878,6 +896,33 @@ const Page = () => {
             </Grid>
 
             <Grid container spacing={2}>
+              <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
+                <HistoryChart
+                  data={historyData}
+                  rangeMinutes={historyRange}
+                  title="Memory Usage (MB)"
+                  icon={<Memory color="primary" />}
+                >
+                  {(data, t) => (
+                    <AreaChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
+                      <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+                      <YAxis tick={{ fontSize: 11 }} tickMargin={4} unit="MB" />
+                      <RechartsTooltip
+                        contentStyle={{
+                          backgroundColor: t.palette.background.paper,
+                          border: `1px solid ${t.palette.divider}`,
+                          borderRadius: 4,
+                        }}
+                      />
+                      <Legend />
+                      <Area type="monotone" dataKey="RssMB" name="RSS (Working Set)" fill={t.palette.error.light} stroke={t.palette.error.main} fillOpacity={0.2} />
+                      <Area type="monotone" dataKey="HeapMB" name="GC Heap" fill={t.palette.primary.light} stroke={t.palette.primary.main} fillOpacity={0.3} />
+                      <Area type="monotone" dataKey="CommittedMB" name="Committed" fill={t.palette.warning.light} stroke={t.palette.warning.main} fillOpacity={0.15} />
+                    </AreaChart>
+                  )}
+                </HistoryChart>
+              </Grid>
               <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
                 <HistoryChart
                   data={historyData}
