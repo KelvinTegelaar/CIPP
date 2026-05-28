@@ -1,4 +1,9 @@
 import {
+  AccessTime,
+  AutoMode,
+  History,
+  Label,
+  Webhook,
   AdminPanelSettings,
   Android,
   Apple,
@@ -44,6 +49,7 @@ import {
 } from '@mui/icons-material'
 
 export const iconRegistry = {
+  AccessTime,
   AdminPanelSettings,
   Android,
   Apple,
@@ -82,8 +88,12 @@ export const iconRegistry = {
   Shield,
   ShieldMoon,
   Storage,
+  AutoMode,
+  History,
+  Label,
   Sync,
   Timeline,
+  Webhook,
   Window,
   Warning,
 }
