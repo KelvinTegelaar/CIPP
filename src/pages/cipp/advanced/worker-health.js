@@ -360,6 +360,7 @@ const CompactStatsRow = ({ snapshot }) => {
         { k: "Committed", v: `${mem.CommittedMB ?? 0}MB` },
         { k: "Limit", v: `${mem.ContainerLimitMB ?? 0}MB` },
         { k: "Usage", v: `${mem.UsagePct ?? 0}%`, w: mem.UsagePct > 85 },
+        { k: "CPU", v: `${mem.CpuPct ?? 0}%`, w: mem.CpuPct > 80 },
         { k: "GC", v: `${mem.GC0 ?? 0}/${mem.GC1 ?? 0}/${mem.GC2 ?? 0}` },
       ],
     },
@@ -591,6 +592,12 @@ const Page = () => {
         name: "Memory",
         data: `${snapshot.Memory?.RssMB ?? 0}MB / ${snapshot.Memory?.ContainerLimitMB ?? 0}MB (${snapshot.Memory?.UsagePct ?? 0}%)`,
         color: (snapshot.Memory?.UsagePct ?? 0) > 85 ? "error" : (snapshot.Memory?.UsagePct ?? 0) > 70 ? "warning" : "primary",
+      },
+      {
+        icon: <Speed />,
+        name: "CPU",
+        data: `${snapshot.Memory?.CpuPct ?? 0}%`,
+        color: (snapshot.Memory?.CpuPct ?? 0) > 80 ? "error" : (snapshot.Memory?.CpuPct ?? 0) > 50 ? "warning" : "primary",
       },
     ];
   }, [snapshot]);
@@ -923,6 +930,34 @@ const Page = () => {
                   )}
                 </HistoryChart>
               </Grid>
+              <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
+                <HistoryChart
+                  data={historyData}
+                  rangeMinutes={historyRange}
+                  title="CPU Usage %"
+                  icon={<Speed color="primary" />}
+                >
+                  {(data, t) => (
+                    <LineChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
+                      <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} tickMargin={4} unit="%" />
+                      <RechartsTooltip
+                        contentStyle={{
+                          backgroundColor: t.palette.background.paper,
+                          border: `1px solid ${t.palette.divider}`,
+                          borderRadius: 4,
+                        }}
+                      />
+                      <Legend />
+                      <Line type="monotone" dataKey="CpuPct" name="Process CPU" stroke={t.palette.secondary.main} strokeWidth={2} dot={false} />
+                    </LineChart>
+                  )}
+                </HistoryChart>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2}>
               <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
                 <HistoryChart
                   data={historyData}
