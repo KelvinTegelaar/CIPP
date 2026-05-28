@@ -466,6 +466,353 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.AuthenticationMethods",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Configures all authentication methods for the tenant including Microsoft Authenticator, FIDO2, SMS, Voice, Email OTP, Temporary Access Pass, Software OATH, Hardware OATH, Certificate-based, and QR Code Pin. Enable or disable each method and optionally target specific groups.",
+    "docsDescription": "Unified standard to configure all authentication method policies in a single place. Each method can be independently enabled or disabled, targeted to all users or specific groups using group name wildcards, and configured with method-specific settings such as TAP lifetime, QR code pin length, and Authenticator software OTP.",
+    "executiveText": "Provides centralized control over all tenant authentication methods from a single standard. Administrators can enable phishing-resistant methods like FIDO2 and Microsoft Authenticator while disabling less secure options like SMS and Voice. Each method supports group-level targeting using wildcard group names, allowing staged rollouts and granular control.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+        "label": "Microsoft Authenticator",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorSoftwareOath",
+        "label": "Enable Software OTP in Authenticator",
+        "defaultValue": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Number Matching",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorNumberMatching",
+        "options": [
+          { "label": "Microsoft managed", "value": "default" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Show Application Name in Push Notifications",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorDisplayAppInfo",
+        "options": [
+          { "label": "Microsoft managed", "value": "default" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Show Geographic Location in Push Notifications",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorDisplayLocation",
+        "options": [
+          { "label": "Microsoft managed", "value": "default" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Companion App (Authenticator Lite)",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorCompanionApp",
+        "options": [
+          { "label": "Microsoft managed", "value": "default" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.FIDO2Enabled",
+        "label": "FIDO2 Security Keys",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.FIDO2Group",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.FIDO2Enabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.TAPEnabled",
+        "label": "Temporary Access Pass",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.TAPGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "TAP Usage Mode",
+        "name": "standards.AuthenticationMethods.TAPUsableOnce",
+        "options": [
+          { "label": "Only Once", "value": "true" },
+          { "label": "Multiple Logons", "value": "false" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.TAPDefaultLifetime",
+        "label": "TAP Default Lifetime (minutes)",
+        "defaultValue": 60,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.TAPMinLifetime",
+        "label": "TAP Minimum Lifetime (minutes)",
+        "defaultValue": 60,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.TAPMaxLifetime",
+        "label": "TAP Maximum Lifetime (minutes)",
+        "defaultValue": 480,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.TAPDefaultLength",
+        "label": "TAP Length (characters)",
+        "defaultValue": 8,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.SoftwareOathEnabled",
+        "label": "Third-Party Software OATH Tokens",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.SoftwareOathGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.SoftwareOathEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.HardwareOathEnabled",
+        "label": "Hardware OATH Tokens",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.HardwareOathGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.HardwareOathEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.SMSEnabled",
+        "label": "SMS",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.SMSGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.SMSEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.VoiceEnabled",
+        "label": "Voice Call",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.VoiceGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.VoiceEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.EmailEnabled",
+        "label": "Email OTP",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.EmailGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.EmailEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.x509CertificateEnabled",
+        "label": "Certificate-Based Authentication",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.x509CertificateGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.x509CertificateEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.QRCodePinEnabled",
+        "label": "QR Code Pin",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.QRCodePinGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.QRCodePinEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.QRCodeLifetimeInDays",
+        "label": "QR Code Lifetime (days, 1-395)",
+        "defaultValue": 365,
+        "condition": {
+          "field": "standards.AuthenticationMethods.QRCodePinEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.QRCodePinLength",
+        "label": "QR Code PIN Length (8-20)",
+        "defaultValue": 8,
+        "condition": {
+          "field": "standards.AuthenticationMethods.QRCodePinEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      }
+    ],
+    "label": "Configure Authentication Methods",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-05-28",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.AdminSSPR",
     "cat": "Entra (AAD) Standards",
     "tag": ["EIDSCA.AP01"],
