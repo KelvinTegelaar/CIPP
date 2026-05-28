@@ -497,7 +497,7 @@ export const nativeMenuItems = [
           },
           {
             title: 'Enrollment Profiles',
-            path: '/endpoint/MEM/enrollment-profiles',
+            path: '/endpoint/autopilot/enrollment-profiles',
             permissions: ['Endpoint.Autopilot.*'],
           },
           {
