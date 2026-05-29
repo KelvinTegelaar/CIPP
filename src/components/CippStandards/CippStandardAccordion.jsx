@@ -28,6 +28,7 @@ import {
   NotificationImportant,
   Assignment,
   Construction,
+  Warning,
 } from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
@@ -401,7 +402,23 @@ const CippStandardAccordion = ({
     Object.keys(selectedStandards).forEach((standardName) => {
       const baseStandardName = standardName.split("[")[0];
       const standard = providedStandards.find((s) => s.name === baseStandardName);
-      if (!standard) return;
+
+      if (!standard) {
+        // Unknown/deprecated standard — surface it so the user can remove it
+        const unknownCategory = "Unknown Standards";
+        if (!result[unknownCategory]) {
+          result[unknownCategory] = [];
+        }
+        result[unknownCategory].push({
+          standardName,
+          standard: {
+            _unknown: true,
+            name: baseStandardName,
+            label: baseStandardName,
+          },
+        });
+        return;
+      }
 
       const standardInfo = standards.find((s) => s.name === baseStandardName);
       const category = standardInfo?.cat || "Other Standards";
@@ -613,6 +630,69 @@ const CippStandardAccordion = ({
           </Typography>
 
           {filteredGroupedStandards[category].map(({ standardName, standard }) => {
+            if (standard._unknown) {
+              const isExpanded = expanded === standardName;
+              const rawData = get(watchedValues, standardName);
+              return (
+                <Card key={standardName} sx={{ mb: 2, borderLeft: "4px solid", borderColor: "warning.main" }}>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    sx={{ p: 2 }}
+                  >
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <Avatar sx={{ bgcolor: "warning.main" }}>
+                        <Warning />
+                      </Avatar>
+                      <Stack>
+                        <Typography variant="h6">{standard.label}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          This standard no longer exists and should be removed.
+                        </Typography>
+                      </Stack>
+                    </Stack>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <Tooltip title="Remove Unknown Standard">
+                        <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                      <IconButton onClick={() => handleAccordionToggle(standardName)}>
+                        <SvgIcon
+                          component={ExpandMoreIcon}
+                          sx={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0)" }}
+                        />
+                      </IconButton>
+                    </Stack>
+                  </Stack>
+                  <Collapse in={isExpanded} unmountOnExit>
+                    <Divider />
+                    <Box sx={{ p: 2 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        Stored Configuration
+                      </Typography>
+                      <Box
+                        component="pre"
+                        sx={{
+                          p: 2,
+                          borderRadius: 1,
+                          bgcolor: "background.default",
+                          overflow: "auto",
+                          maxHeight: 300,
+                          fontSize: "0.8rem",
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {JSON.stringify(rawData, null, 2)}
+                      </Box>
+                    </Box>
+                  </Collapse>
+                </Card>
+              );
+            }
+
             const isExpanded = expanded === standardName;
             const hasAddedComponents =
               standard.addedComponent && standard.addedComponent.length > 0;
