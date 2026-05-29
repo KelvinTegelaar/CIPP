@@ -6917,13 +6917,6 @@
       },
       {
         "type": "textField",
-        "name": "standards.DeployCheckChromeExtension.companyURL",
-        "label": "Company URL",
-        "placeholder": "https://yourcompany.com",
-        "required": false
-      },
-      {
-        "type": "textField",
         "name": "standards.DeployCheckChromeExtension.productName",
         "label": "Product Name",
         "placeholder": "YOUR-PRODUCT-NAME",
