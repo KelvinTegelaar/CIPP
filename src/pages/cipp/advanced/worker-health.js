@@ -128,6 +128,7 @@ const WorkerTable = ({ workers, title }) => {
                 <TableCell align="right">Min</TableCell>
                 <TableCell align="right">Max</TableCell>
                 <TableCell align="right">Last</TableCell>
+                <TableCell align="right">Alloc</TableCell>
                 <TableCell align="right">Faults</TableCell>
               </TableRow>
             </TableHead>
@@ -150,6 +151,13 @@ const WorkerTable = ({ workers, title }) => {
                   <TableCell align="right">{formatDuration(w.MinDurationMs)}</TableCell>
                   <TableCell align="right">{formatDuration(w.MaxDurationMs)}</TableCell>
                   <TableCell align="right">{formatDuration(w.LastDurationMs)}</TableCell>
+                  <TableCell align="right">
+                    <Tooltip title={`Total ${w.TotalAllocMB ?? 0} MB • last ${w.LastAllocMB ?? 0} MB • avg ${w.AvgAllocMB ?? 0} MB / call`} arrow>
+                      <Typography variant="body2" fontWeight={500}>
+                        {w.TotalAllocMB != null ? `${w.TotalAllocMB} MB` : "—"}
+                      </Typography>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell align="right">
                     {w.TotalFaults > 0 ? (
                       <Chip label={w.TotalFaults} color="error" size="small" />
@@ -355,15 +363,24 @@ const CompactStatsRow = ({ snapshot }) => {
       label: "Memory",
       color: "secondary",
       stats: [
-        { k: "Heap", v: `${mem.HeapMB ?? 0}MB` },
-        { k: "RSS", v: `${mem.RssMB ?? 0}MB`, w: mem.UsagePct > 85 },
+        { k: "Container", v: `${mem.ContainerUsedMB ?? mem.RssMB ?? 0} / ${mem.ContainerLimitMB ?? 0}MB`, w: mem.UsagePct > 85 },
+        { k: "App RSS", v: `${mem.RssMB ?? 0}MB` },
+        { k: "Other", v: `${mem.OtherRssMB ?? 0}MB` },
+        { k: "GC Heap", v: `${mem.HeapMB ?? 0}MB` },
         { k: "Committed", v: `${mem.CommittedMB ?? 0}MB` },
-        { k: "Limit", v: `${mem.ContainerLimitMB ?? 0}MB` },
         { k: "GC Limit", v: `${mem.GCHeapLimitMB ?? 0}MB` },
         { k: "Usage", v: `${mem.UsagePct ?? 0}%`, w: mem.UsagePct > 85 },
-        { k: "CPU", v: `${mem.CpuPct ?? 0}%`, w: mem.CpuPct > 80 },
         { k: "GC", v: `${mem.GC0 ?? 0}/${mem.GC1 ?? 0}/${mem.GC2 ?? 0}` },
         ...(mem.TestDataCacheCount != null ? [{ k: "Cache", v: `${mem.TestDataCacheCount} entries` }] : []),
+      ],
+    },
+    {
+      label: "CPU",
+      color: "warning",
+      stats: [
+        { k: "Container", v: `${mem.ContainerCpuPct ?? mem.CpuPct ?? 0}%`, w: (mem.ContainerCpuPct ?? 0) > 80 },
+        { k: "App", v: `${mem.CpuPct ?? 0}%`, w: mem.CpuPct > 80 },
+        { k: "Other", v: `${mem.OtherCpuPct ?? 0}%` },
       ],
     },
   ];
@@ -599,14 +616,14 @@ const Page = () => {
       {
         icon: <Memory />,
         name: "Memory",
-        data: `${snapshot.Memory?.RssMB ?? 0}MB / ${snapshot.Memory?.ContainerLimitMB ?? 0}MB (${snapshot.Memory?.UsagePct ?? 0}%)`,
+        data: `${snapshot.Memory?.ContainerUsedMB ?? snapshot.Memory?.RssMB ?? 0}MB / ${snapshot.Memory?.ContainerLimitMB ?? 0}MB (${snapshot.Memory?.UsagePct ?? 0}%)`,
         color: (snapshot.Memory?.UsagePct ?? 0) > 85 ? "error" : (snapshot.Memory?.UsagePct ?? 0) > 70 ? "warning" : "primary",
       },
       {
         icon: <Speed />,
         name: "CPU",
-        data: `${snapshot.Memory?.CpuPct ?? 0}%`,
-        color: (snapshot.Memory?.CpuPct ?? 0) > 80 ? "error" : (snapshot.Memory?.CpuPct ?? 0) > 50 ? "warning" : "primary",
+        data: `${snapshot.Memory?.ContainerCpuPct ?? snapshot.Memory?.CpuPct ?? 0}% container / ${snapshot.Memory?.CpuPct ?? 0}% app`,
+        color: (snapshot.Memory?.ContainerCpuPct ?? snapshot.Memory?.CpuPct ?? 0) > 80 ? "error" : (snapshot.Memory?.ContainerCpuPct ?? snapshot.Memory?.CpuPct ?? 0) > 50 ? "warning" : "primary",
       },
     ];
   }, [snapshot]);
@@ -932,9 +949,11 @@ const Page = () => {
                         }}
                       />
                       <Legend />
-                      <Area type="monotone" dataKey="RssMB" name="RSS (Working Set)" fill={t.palette.error.light} stroke={t.palette.error.main} fillOpacity={0.2} />
+                      <Area type="monotone" dataKey="ContainerUsedMB" name="Container Total" fill={t.palette.error.light} stroke={t.palette.error.main} fillOpacity={0.15} />
+                      <Area type="monotone" dataKey="RssMB" name="App RSS" fill={t.palette.warning.light} stroke={t.palette.warning.main} fillOpacity={0.2} />
+                      <Area type="monotone" dataKey="OtherRssMB" name="Other (sshd, sidecar...)" fill={t.palette.info.light} stroke={t.palette.info.main} fillOpacity={0.2} />
                       <Area type="monotone" dataKey="HeapMB" name="GC Heap" fill={t.palette.primary.light} stroke={t.palette.primary.main} fillOpacity={0.3} />
-                      <Area type="monotone" dataKey="CommittedMB" name="Committed" fill={t.palette.warning.light} stroke={t.palette.warning.main} fillOpacity={0.15} />
+                      <Area type="monotone" dataKey="CommittedMB" name="Committed" fill={t.palette.success.light} stroke={t.palette.success.main} fillOpacity={0.1} />
                     </AreaChart>
                   )}
                 </HistoryChart>
@@ -959,7 +978,9 @@ const Page = () => {
                         }}
                       />
                       <Legend />
-                      <Line type="monotone" dataKey="CpuPct" name="Process CPU" stroke={t.palette.secondary.main} strokeWidth={2} dot={false} />
+                      <Line type="monotone" dataKey="ContainerCpuPct" name="Container CPU" stroke={t.palette.error.main} strokeWidth={2} dot={false} />
+                      <Line type="monotone" dataKey="CpuPct" name="App CPU" stroke={t.palette.secondary.main} strokeWidth={2} dot={false} />
+                      <Line type="monotone" dataKey="OtherCpuPct" name="Other CPU" stroke={t.palette.info.main} strokeWidth={2} strokeDasharray="4 2" dot={false} />
                     </LineChart>
                   )}
                 </HistoryChart>
