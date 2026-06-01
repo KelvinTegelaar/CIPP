@@ -1,38 +1,47 @@
 [
   {
     "label": "Tenant Mode",
-    "path": "/cipp/advanced/super-admin/tenant-mode"
+    "path": "/cipp/advanced/super-admin/tenant-mode",
+    "icon": "Domain"
   },
   {
     "label": "Function Offloading",
-    "path": "/cipp/advanced/super-admin/function-offloading"
+    "path": "/cipp/advanced/super-admin/function-offloading",
+    "icon": "Cloud"
   },
   {
     "label": "Time Settings",
-    "path": "/cipp/advanced/super-admin/time-settings"
+    "path": "/cipp/advanced/super-admin/time-settings",
+    "icon": "AccessTime"
   },
   {
     "label": "CIPP Roles",
-    "path": "/cipp/advanced/super-admin/cipp-roles"
+    "path": "/cipp/advanced/super-admin/cipp-roles",
+    "icon": "AdminPanelSettings"
   },
   {
     "label": "SAM App Roles",
-    "path": "/cipp/advanced/super-admin/sam-app-roles"
+    "path": "/cipp/advanced/super-admin/sam-app-roles",
+    "icon": "Key"
   },
   {
     "label": "SAM App Permissions",
-    "path": "/cipp/advanced/super-admin/sam-app-permissions"
+    "path": "/cipp/advanced/super-admin/sam-app-permissions",
+    "icon": "Lock"
   },
   {
     "label": "CIPP Users",
-    "path": "/cipp/advanced/super-admin/cipp-users"
+    "path": "/cipp/advanced/super-admin/cipp-users",
+    "icon": "Group"
   },
   {
     "label": "SSO",
-    "path": "/cipp/advanced/super-admin/sso"
+    "path": "/cipp/advanced/super-admin/sso",
+    "icon": "Shield"
   },
   {
     "label": "Container Management",
-    "path": "/cipp/advanced/super-admin/container"
+    "path": "/cipp/advanced/super-admin/container",
+    "icon": "Storage"
   }
 ]

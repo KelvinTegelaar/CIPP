@@ -1,10 +1,12 @@
 [
   {
     "label": "Generated Reports",
-    "path": "/tools/report-builder/generated"
+    "path": "/tools/report-builder/generated",
+    "icon": "BarChart"
   },
   {
     "label": "Templates",
-    "path": "/tools/report-builder/templates"
+    "path": "/tools/report-builder/templates",
+    "icon": "Description"
   }
 ]
