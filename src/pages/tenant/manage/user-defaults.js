@@ -122,7 +122,7 @@ const Page = () => {
       api: {
         url: '/api/ListLicenses',
         labelField: (option) =>
-          `${option.License || option.skuPartNumber} (${option.AvailableUnits || 0} available)`,
+          `${option.License || option.skuPartNumber} (${option.availableUnits || 0} available)`,
         valueField: 'skuId',
         queryKey: `ListLicenses-${userSettings.currentTenant}`,
       },
