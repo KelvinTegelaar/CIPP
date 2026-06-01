@@ -41,6 +41,7 @@ import {
   Timeline,
   Window,
   Warning,
+  VpnKey,
 } from '@mui/icons-material'
 
 export const iconRegistry = {
@@ -86,6 +87,7 @@ export const iconRegistry = {
   Timeline,
   Window,
   Warning,
+  VpnKey,
 }
 
 export const getIconComponentByName = (iconName) => iconRegistry[iconName] ?? null

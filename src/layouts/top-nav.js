@@ -41,6 +41,8 @@ import { CippTenantSelector } from '../components/CippComponents/CippTenantSelec
 import { NotificationsPopover } from './notifications-popover'
 import { useDialog } from '../hooks/use-dialog'
 import { CippUniversalSearchV2 } from '../components/CippCards/CippUniversalSearchV2'
+import { CippOffCanvas } from '../components/CippComponents/CippOffCanvas'
+import { CippLicenseDetailsDrawer } from '../components/CippComponents/CippLicenseDetailsDrawer'
 
 const TOP_NAV_HEIGHT = 64
 
@@ -69,6 +71,8 @@ export const TopNav = (props) => {
   const [flashSort, setFlashSort] = useState(false)
   const [flashLock, setFlashLock] = useState(false)
   const [universalSearchKey, setUniversalSearchKey] = useState(0)
+  const [licenseDrawerVisible, setLicenseDrawerVisible] = useState(false)
+  const [licenseDrawerData, setLicenseDrawerData] = useState(null)
   const [universalSearchDefaultType, setUniversalSearchDefaultType] = useState('Users')
   const itemRefs = useRef({})
   const touchDragRef = useRef({ startIdx: null, overIdx: null })
@@ -633,10 +637,23 @@ export const TopNav = (props) => {
                   autoFocus={true}
                   defaultSearchType={universalSearchDefaultType}
                   onConfirm={closeUniversalSearch}
+                  onLicenseSelect={(licenseData) => {
+                    setLicenseDrawerData(licenseData)
+                    setLicenseDrawerVisible(true)
+                  }}
                 />
               </Box>
             </DialogContent>
           </Dialog>
+          <CippOffCanvas
+            title="License Details"
+            visible={licenseDrawerVisible}
+            onClose={() => setLicenseDrawerVisible(false)}
+            size="xl"
+            contentPadding={0}
+          >
+            <CippLicenseDetailsDrawer data={licenseDrawerData} />
+          </CippOffCanvas>
           <NotificationsPopover />
           <AccountPopover
             onThemeSwitch={handleThemeSwitch}

@@ -11155,14 +11155,6 @@
     "Product_Display_Name": "Microsoft 365 Business Premium",
     "String_Id": "SPB",
     "GUID": "cbdc14ab-d96c-4c30-b9f4-6ada7cdc1d46",
-    "Service_Plan_Name": "SHAREPOINTSTANDARD",
-    "Service_Plan_Id": "c7699d2e-19aa-44de-8edf-1736da088ca1",
-    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 1)"
-  },
-  {
-    "Product_Display_Name": "Microsoft 365 Business Premium",
-    "String_Id": "SPB",
-    "GUID": "cbdc14ab-d96c-4c30-b9f4-6ada7cdc1d46",
     "Service_Plan_Name": "PURVIEW_DISCOVERY",
     "Service_Plan_Id": "c948ea65-2053-4a5a-8a62-9eaaaf11b522",
     "Service_Plans_Included_Friendly_Names": "Purview Discovery"
