@@ -1,9 +1,9 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
-import { TabbedLayout } from '../../../../layouts/TabbedLayout'
-import { AppleADEEnrollmentProfiles } from '../../../../components/CippComponents/EnrollmentProfileTabs.jsx'
+import { TabbedLayout } from '../../../../layouts/TabbedLayout.jsx'
+import { WindowsAutopilotEnrollmentProfiles } from '../../../../components/CippComponents/EnrollmentProfileTabs.jsx'
 import tabOptions from './tabOptions.json'
 
-const Page = () => <AppleADEEnrollmentProfiles />
+const Page = () => <WindowsAutopilotEnrollmentProfiles />
 
 Page.getLayout = (page) => (
   <DashboardLayout>
