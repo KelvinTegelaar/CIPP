@@ -184,6 +184,13 @@ const CippApiClientManagement = () => {
           name: "MCPAllowed",
           label: "MCP Access Allowed",
         },
+        {
+          type: "alert",
+          name: "mcpAccessWarning",
+          severity: "warning",
+          label:
+            "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
+        },
       ],
       type: "POST",
       url: "/api/ExecApiClient",
@@ -427,6 +434,13 @@ const CippApiClientManagement = () => {
             name: "MCPAllowed",
             label: "MCP Access Allowed",
           },
+          {
+            type: "alert",
+            name: "mcpAccessWarning",
+            severity: "warning",
+            label:
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
+          },
         ]}
         api={{
           type: "POST",
@@ -500,6 +514,13 @@ const CippApiClientManagement = () => {
             type: "switch",
             name: "MCPAllowed",
             label: "MCP Access Allowed",
+          },
+          {
+            type: "alert",
+            name: "mcpAccessWarning",
+            severity: "warning",
+            label:
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
           },
         ]}
         api={{
