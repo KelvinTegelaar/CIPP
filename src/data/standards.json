@@ -1681,6 +1681,28 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.EmailAsAlternateLoginId",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Configures the tenant-wide Email as alternate login ID setting in Home Realm Discovery policy. Enabling this can help during migrations, if users are changing UPN.",
+    "docsDescription": "Sets the Home Realm Discovery policy AlternateIdLogin setting to enable or disable using email as an alternate sign-in ID.",
+    "executiveText": "Controls whether users can sign in with email as an alternate identifier, allowing organizations to align sign-in behavior with their identity strategy and reduce authentication ambiguity.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.EmailAsAlternateLoginId.Enabled",
+        "label": "Enable Email as Alternate Login ID",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure Email as alternate login ID",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-06-03",
+    "powershellEquivalent": "Invoke-MgGraphRequest https://graph.microsoft.com/v1.0/policies/homeRealmDiscoveryPolicies/",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.Disablex509Certificate",
     "cat": "Entra (AAD) Standards",
     "tag": [],
