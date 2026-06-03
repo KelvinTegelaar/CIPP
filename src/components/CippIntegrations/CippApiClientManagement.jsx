@@ -179,6 +179,11 @@ const CippApiClientManagement = () => {
           name: "Enabled",
           label: "Enable this client",
         },
+        {
+          type: "switch",
+          name: "MCPAllowed",
+          label: "MCP Access Allowed",
+        },
       ],
       type: "POST",
       url: "/api/ExecApiClient",
@@ -363,7 +368,7 @@ const CippApiClientManagement = () => {
             data: { Action: "List" },
             dataKey: "Results",
           }}
-          simpleColumns={["Enabled", "AppName", "ClientId", "Role", "IPRange"]}
+          simpleColumns={["Enabled", "MCPAllowed", "AppName", "ClientId", "Role", "IPRange"]}
           queryKey={`ApiClients`}
         />
       </Stack>
@@ -416,6 +421,11 @@ const CippApiClientManagement = () => {
             type: "switch",
             name: "Enabled",
             label: "Enable this client",
+          },
+          {
+            type: "switch",
+            name: "MCPAllowed",
+            label: "MCP Access Allowed",
           },
         ]}
         api={{
@@ -485,6 +495,11 @@ const CippApiClientManagement = () => {
             type: "switch",
             name: "Enabled",
             label: "Enable this client",
+          },
+          {
+            type: "switch",
+            name: "MCPAllowed",
+            label: "MCP Access Allowed",
           },
         ]}
         api={{
