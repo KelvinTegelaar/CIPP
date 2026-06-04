@@ -9,17 +9,14 @@ const Page = () => {
     const error = params.get('error')
     const errorDescription = params.get('error_description')
 
-    if (window.opener) {
-      if (code && state) {
-        window.opener.postMessage({ type: 'auth_code', code, state }, window.location.origin)
-      } else if (error) {
-        window.opener.postMessage(
-          { type: 'auth_error', error, errorDescription },
-          window.location.origin
-        )
-      }
-      window.close()
+    const channel = new BroadcastChannel('cipp_auth')
+    if (code && state) {
+      channel.postMessage({ type: 'auth_code', code, state })
+    } else if (error) {
+      channel.postMessage({ type: 'auth_error', error, errorDescription })
     }
+    channel.close()
+    window.close()
   }, [])
 
   return (

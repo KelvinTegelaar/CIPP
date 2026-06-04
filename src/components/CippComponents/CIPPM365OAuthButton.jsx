@@ -333,11 +333,7 @@ export const CIPPM365OAuthButton = ({
     const left = window.screen.width / 2 - width / 2
     const top = window.screen.height / 2 - height / 2
 
-    const popup = window.open(
-      authUrl,
-      'msalAuthPopup',
-      `width=${width},height=${height},left=${left},top=${top}`
-    )
+    window.open(authUrl, 'msalAuthPopup', `width=${width},height=${height},left=${left},top=${top}`)
 
     // Function to actually exchange the authorization code for tokens
     const handleAuthorizationCode = async (code, receivedState) => {
@@ -470,28 +466,41 @@ export const CIPPM365OAuthButton = ({
         setAuthError(errorObj)
         if (onAuthError) onAuthError(errorObj)
       } finally {
-        // Close the popup window if it's still open
-        if (popup && !popup.closed) {
-          popup.close()
-        }
-
         // Update UI state
         setAuthInProgress(false)
       }
     }
 
-    // Listen for postMessage from the authredirect page
-    let codeReceived = false
+    // Listen for auth result via BroadcastChannel (works regardless of COOP)
+    const channel = new BroadcastChannel('cipp_auth')
 
-    const handleMessage = (event) => {
-      if (event.origin !== window.location.origin) return
+    const authTimeout = setTimeout(() => {
+      // If no response after 10 minutes, treat as cancelled
+      cleanup()
+      const error = {
+        errorCode: 'timeout',
+        errorMessage: 'Authentication timed out. Please try again.',
+        timestamp: new Date().toISOString(),
+      }
+      setAuthError(error)
+      if (onAuthError) onAuthError(error)
+      setTokens({
+        accessToken: null,
+        refreshToken: null,
+        accessTokenExpiresOn: null,
+        refreshTokenExpiresOn: null,
+        username: null,
+        tenantId: null,
+        onmicrosoftDomain: null,
+      })
+      setAuthInProgress(false)
+    }, 600000)
 
+    channel.onmessage = (event) => {
       if (event.data?.type === 'auth_code') {
-        codeReceived = true
         cleanup()
         handleAuthorizationCode(event.data.code, event.data.state)
       } else if (event.data?.type === 'auth_error') {
-        codeReceived = true
         cleanup()
 
         // Check if it's the AADSTS650051 error (service principal already exists during consent)
@@ -500,7 +509,6 @@ export const CIPPM365OAuthButton = ({
           event.data.errorDescription?.includes('AADSTS650051') &&
           retryCount < maxRetries
         ) {
-          if (popup && !popup.closed) popup.close()
           setAuthInProgress(false)
           setTimeout(() => handleMsalAuthentication(retryCount + 1), 2000 * (retryCount + 1))
           return
@@ -513,43 +521,14 @@ export const CIPPM365OAuthButton = ({
         }
         setAuthError(error)
         if (onAuthError) onAuthError(error)
-        if (popup && !popup.closed) popup.close()
         setAuthInProgress(false)
       }
     }
 
-    // Check if popup was closed before we received the code
-    const popupClosedCheck = setInterval(() => {
-      if (!popup || popup.closed) {
-        if (!codeReceived) {
-          cleanup()
-          const error = {
-            errorCode: 'user_cancelled',
-            errorMessage: 'Authentication was cancelled. Please try again.',
-            timestamp: new Date().toISOString(),
-          }
-          setAuthError(error)
-          if (onAuthError) onAuthError(error)
-          setTokens({
-            accessToken: null,
-            refreshToken: null,
-            accessTokenExpiresOn: null,
-            refreshTokenExpiresOn: null,
-            username: null,
-            tenantId: null,
-            onmicrosoftDomain: null,
-          })
-          setAuthInProgress(false)
-        }
-      }
-    }, 500)
-
     const cleanup = () => {
-      window.removeEventListener('message', handleMessage)
-      clearInterval(popupClosedCheck)
+      channel.close()
+      clearTimeout(authTimeout)
     }
-
-    window.addEventListener('message', handleMessage)
   }
 
   // Auto-start device code retrieval if requested
