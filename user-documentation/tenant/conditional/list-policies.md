@@ -12,11 +12,27 @@ This page lists all the Conditional Access Policies on the selected tenant. This
 
 <summary>Deploy CA Policy</summary>
 
-Deploying Conditional Access is possible in two ways; using the deploy conditional access wizard to deploy a single policy or using the CIPP standards to deploy a template that will automatically redeploy if any changes are made.
+Conditional Access policies reference users, groups, and named locations by GUID, and those GUIDs are tenant-specific — a template built in tenant A will not resolve correctly when deployed to tenant B unless the references are translated.
 
-Using the Deploy Conditional Access Policy Wizard you can change several settings in the policy such as the way usernames are replaced, the method used to deploy the state, and which exclusions are in place. When using templates from other tenants into a new tenant, make sure you select the correct replacement method, e.g. "Replace IDs with Display Names".
+CIPP supports two ways to deploy:
 
-When using a Standard, you also are able to select these options; however, the replacement mode used will always be "Replace IDs with Display Names" to prevent the policy from not working on other tenants.
+* **Deploy Conditional Access Policy Wizard** — single-tenant, one-shot deployment with options for state, exclusions, and how user/group references are translated.
+* **CIPP Standards** — template-based deployment that auto-redeploys whenever drift is detected. Standards always use the **Replace IDs with Display Names** translation mode so templates remain portable across tenants.
+
+### Replacement modes
+
+<table><thead><tr><th>Mode</th><th>Behavior</th></tr></thead><tbody><tr><td><strong>Replace IDs with Display Names</strong> (recommended)</td><td>Before deployment, CIPP enumerates all users and groups in the target tenant and substitutes any display-name reference in the template's <code>includeUsers</code> / <code>excludeUsers</code> / <code>includeGroups</code> / <code>excludeGroups</code> with the matching object's GUID in the target tenant. Special tokens (<code>All</code>, <code>None</code>, <code>GuestOrExternalUsers</code>) are left alone. Existing GUIDs in the template pass through unchanged.</td></tr><tr><td><strong>All Users</strong></td><td>Strips all user and group includes/exclusions and scopes the policy to <strong>All Users</strong>. Use for tenant-wide baseline policies that should not be limited by group membership.</td></tr><tr><td><strong>None</strong></td><td>Deploys the template verbatim. The original tenant's GUIDs are sent as-is, so this only works if those exact IDs already exist in the target tenant.</td></tr></tbody></table>
+
+### "Create groups if missing"
+
+When combined with **Replace IDs with Display Names**, if a group named in the template does not exist in the target tenant, CIPP creates it automatically:
+
+* If a CIPP Group Template with the same display name exists, the group is created from that template (preserving group type, membership rules, etc.).
+* Otherwise, a basic security group is created with the template's display name.
+
+If this option is disabled and a referenced group is missing, deployment fails with an error so you can create or rename the group manually before retrying.
+
+When deploying any template that originated from a different tenant, you almost always want **Replace IDs with Display Names** plus **Create groups if missing** enabled. This is also what CIPP Standards/Drift use internally, which is why standard deployments are portable across tenants without additional configuration.
 
 </details>
 
