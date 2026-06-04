@@ -133,6 +133,7 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             valueField: 'skuId',
             data: { IncludeExcluded: true },
             queryKey: `ListLicenses-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -152,6 +153,7 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             valueField: 'skuId',
             data: { IncludeExcluded: true },
             queryKey: `ListLicenses-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -174,6 +176,7 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             valueField: 'skuId',
             data: { IncludeExcluded: true },
             queryKey: `ListLicenses-Available-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
