@@ -25,6 +25,7 @@ export const CippFormLicenseSelector = ({
         addedField: addedField,
         tenantFilter: userSettingsDefaults.currentTenant ?? undefined,
         url: "/api/ListLicenses",
+        dataKey: "Results",
         labelField: (option) =>
           `${getCippLicenseTranslation([option])} (${option?.availableUnits} available)`,
         valueField: "skuId",
