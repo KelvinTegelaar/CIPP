@@ -327,17 +327,30 @@ export const CIPPM365OAuthButton = ({
       `&state=${state}` +
       `&prompt=select_account`
 
-    // Open popup for authentication
+    // Open a blank popup first, then navigate it. This keeps the window reference stable and
+    // avoids treating slow Microsoft page loads as an immediate user cancellation.
     const width = 500
     const height = 600
     const left = window.screen.width / 2 - width / 2
     const top = window.screen.height / 2 - height / 2
 
     const popup = window.open(
-      authUrl,
+      'about:blank',
       'msalAuthPopup',
       `width=${width},height=${height},left=${left},top=${top}`
     )
+
+    if (!popup) {
+      setAuthError({
+        errorCode: 'popup_blocked',
+        errorMessage: 'Authentication popup was blocked by the browser. Please allow popups and try again.',
+        timestamp: new Date().toISOString(),
+      })
+      setAuthInProgress(false)
+      return
+    }
+
+    popup.location.href = authUrl
 
     // Function to actually exchange the authorization code for tokens
     const handleAuthorizationCode = async (code, receivedState) => {
@@ -482,6 +495,8 @@ export const CIPPM365OAuthButton = ({
 
     // Listen for postMessage from the authredirect page
     let codeReceived = false
+    const popupGracePeriodMs = 5000
+    const popupOpenedAt = Date.now()
 
     const handleMessage = (event) => {
       if (event.origin !== window.location.origin) return
@@ -520,6 +535,10 @@ export const CIPPM365OAuthButton = ({
 
     // Check if popup was closed before we received the code
     const popupClosedCheck = setInterval(() => {
+      if (Date.now() - popupOpenedAt < popupGracePeriodMs) {
+        return
+      }
+
       if (!popup || popup.closed) {
         if (!codeReceived) {
           cleanup()
