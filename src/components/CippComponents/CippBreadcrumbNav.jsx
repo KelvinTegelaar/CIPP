@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { Breadcrumbs, Link, Typography, Box, IconButton, Tooltip } from '@mui/material'
-import { NavigateNext, History, AccountTree } from '@mui/icons-material'
+import { History, AccountTree } from '@mui/icons-material'
 import { nativeMenuItems } from '../../layouts/config'
 import { useSettings } from '../../hooks/use-settings'
 
@@ -618,9 +618,14 @@ export const CippBreadcrumbNav = () => {
           </IconButton>
         </Tooltip>
         <Breadcrumbs
-          separator={<NavigateNext fontSize="small" />}
+          separator=">"
           aria-label="page hierarchy"
-          sx={{ fontSize: '0.875rem', flexGrow: 1 }}
+          sx={{
+            fontSize: '0.875rem',
+            flexGrow: 1,
+            userSelect: 'text',
+            '& .MuiBreadcrumbs-separator': { userSelect: 'text' },
+          }}
         >
           {breadcrumbs.map((crumb, index) => {
             const isLast = index === breadcrumbs.length - 1
@@ -648,13 +653,23 @@ export const CippBreadcrumbNav = () => {
               return (
                 <Link
                   key={index}
-                  component="button"
+                  component="span"
+                  role="button"
+                  tabIndex={0}
                   variant="subtitle2"
                   onClick={() => handleHierarchicalClick(crumb.path, crumb.query)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleHierarchicalClick(crumb.path, crumb.query)
+                    }
+                  }}
                   sx={{
                     textDecoration: 'none',
                     color: isLast ? 'text.primary' : 'text.secondary',
                     fontWeight: isLast ? 500 : 400,
+                    cursor: 'pointer',
+                    userSelect: 'text',
                     '&:hover': {
                       textDecoration: 'underline',
                       color: 'primary.main',
@@ -704,9 +719,14 @@ export const CippBreadcrumbNav = () => {
       </Tooltip>
       <Breadcrumbs
         maxItems={MAX_BREADCRUMB_DISPLAY}
-        separator={<NavigateNext fontSize="small" />}
+        separator=">"
         aria-label="navigation history"
-        sx={{ fontSize: '0.875rem', flexGrow: 1 }}
+        sx={{
+          fontSize: '0.875rem',
+          flexGrow: 1,
+          userSelect: 'text',
+          '& .MuiBreadcrumbs-separator': { userSelect: 'text' },
+        }}
       >
         {visibleHistory.map((page, index) => {
           const isLast = index === visibleHistory.length - 1
@@ -729,12 +749,22 @@ export const CippBreadcrumbNav = () => {
           return (
             <Link
               key={actualIndex}
-              component="button"
+              component="span"
+              role="button"
+              tabIndex={0}
               variant="subtitle2"
               onClick={() => handleBreadcrumbClick(actualIndex)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  handleBreadcrumbClick(actualIndex)
+                }
+              }}
               sx={{
                 textDecoration: 'none',
                 color: 'text.secondary',
+                cursor: 'pointer',
+                userSelect: 'text',
                 '&:hover': {
                   textDecoration: 'underline',
                   color: 'primary.main',
