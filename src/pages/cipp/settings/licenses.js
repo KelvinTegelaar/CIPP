@@ -4,7 +4,7 @@ import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Button, SvgIcon, Stack, Box } from "@mui/material";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { Add, RestartAlt } from "@mui/icons-material";
+import { Add, RestartAlt, NotificationsOff } from "@mui/icons-material";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { useDialog } from "../../../hooks/use-dialog";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
@@ -18,7 +18,7 @@ const Page = () => {
   const apiUrl = "/api/ListExcludedLicenses";
   const createDialog = useDialog();
   const resetDialog = useDialog();
-  const simpleColumns = ["Product_Display_Name", "GUID"];
+  const simpleColumns = ["Product_Display_Name", "GUID", "ExclusionType"];
 
   const allLicenseOptions = useMemo(() => {
     const allLicenses = [...M365LicensesDefault, ...M365LicensesAdditional];
@@ -49,6 +49,15 @@ const Page = () => {
   }, []);
 
   const actions = [
+    {
+      label: "Only Exclude from Alerts",
+      type: "POST",
+      url: "/api/ExecExcludeLicenses",
+      data: { Action: "!AlertOnly", GUID: "GUID", SKUName: "Product_Display_Name" },
+      confirmText:
+        "This license will remain visible in CIPP but will be excluded from alerts. Continue?",
+      icon: <NotificationsOff fontSize="small" />,
+    },
     {
       label: "Delete Exclusion",
       type: "POST",
@@ -94,7 +103,7 @@ const Page = () => {
   };
 
   const offCanvas = {
-    extendedInfoFields: ["Product_Display_Name", "GUID"],
+    extendedInfoFields: ["Product_Display_Name", "GUID", "ExclusionType"],
     actions: actions,
   };
 
