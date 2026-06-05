@@ -163,7 +163,7 @@ const Page = () => {
                   templateItem['TemplateList-Tags']?.addedFields?.templates ||
                   templateItem['TemplateList-Tags']?.rawData?.templates
 
-                if (templateItem['TemplateList-Tags']?.value && tagTemplates) {
+                if (templateItem['TemplateList-Tags']?.value && tagTemplates?.length > 0) {
                   tagTemplates.forEach((expandedTemplate) => {
                     const itemTemplateId = expandedTemplate.GUID
                     const standardId = `standards.IntuneTemplate.${itemTemplateId}`
@@ -430,7 +430,7 @@ const Page = () => {
                   templateItem['TemplateList-Tags']?.rawData?.templates
 
                 // Check if this item has TemplateList-Tags and expand them
-                if (templateItem['TemplateList-Tags']?.value && tagTemplates) {
+                if (templateItem['TemplateList-Tags']?.value && tagTemplates?.length > 0) {
                   tagTemplates.forEach((expandedTemplate) => {
                     const itemTemplateId = expandedTemplate.GUID
                     const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`
