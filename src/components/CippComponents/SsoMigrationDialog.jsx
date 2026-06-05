@@ -75,7 +75,7 @@ export const SsoMigrationDialog = ({ meData }) => {
             </Typography>
             <Typography sx={{ mb: 2 }}>
               To get ready, CIPP needs to create an app registration in your tenant called{' '}
-              <strong>CIPP-SSO</strong> with minimal permissions (OpenID, Profile, Email only).
+              <strong>CIPP-SSO</strong>  with minimal permissions (OpenID, Profile, Email only).
               This won&apos;t change how you log in today — it just prepares your tenant for when
               the update rolls out.
             </Typography>
