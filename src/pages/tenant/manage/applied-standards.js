@@ -1286,6 +1286,14 @@ const Page = () => {
   const filteredGroupedStandards = useMemo(() => {
     if (!groupedStandards) return {}
 
+    const isLicenseMissingStandard = (standard) => {
+      const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue
+      return (
+        standard.currentTenantValue?.LicenseAvailable === false ||
+        (typeof tenantValue === 'string' && tenantValue.startsWith('License Missing:'))
+      )
+    }
+
     if (!searchQuery && filter === 'all') {
       return groupedStandards
     }
@@ -1297,9 +1305,7 @@ const Page = () => {
       const categoryMatchesSearch = !searchQuery || category.toLowerCase().includes(searchLower)
 
       const filteredStandards = groupedStandards[category].filter((standard) => {
-        const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue
-        const hasLicenseMissing =
-          typeof tenantValue === 'string' && tenantValue.startsWith('License Missing:')
+        const hasLicenseMissing = isLicenseMissingStandard(standard)
 
         const matchesFilter =
           filter === 'all' ||
@@ -1312,9 +1318,7 @@ const Page = () => {
           (filter === 'nonCompliantWithLicense' &&
             standard.complianceStatus === 'Non-Compliant' &&
             !hasLicenseMissing) ||
-          (filter === 'nonCompliantWithoutLicense' &&
-            standard.complianceStatus === 'Non-Compliant' &&
-            hasLicenseMissing)
+          (filter === 'nonCompliantWithoutLicense' && hasLicenseMissing)
 
         const matchesSearch =
           !searchQuery ||
@@ -1350,51 +1354,58 @@ const Page = () => {
   const overriddenCount =
     comparisonData?.filter((standard) => standard.complianceStatus === 'Overridden').length || 0
 
+  const isIncludedInScoring = (standard) =>
+    standard.complianceStatus !== 'Reporting Disabled' && standard.complianceStatus !== 'Overridden'
+
+  const isLicenseMissingStandard = (standard) => {
+    const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue
+    return (
+      standard.currentTenantValue?.LicenseAvailable === false ||
+      (typeof tenantValue === 'string' && tenantValue.startsWith('License Missing:'))
+    )
+  }
+
   // Calculate license-related metrics
   const missingLicenseCount =
-    comparisonData?.filter((standard) => {
-      const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue
-      return typeof tenantValue === 'string' && tenantValue.startsWith('License Missing:')
-    }).length || 0
+    comparisonData?.filter(
+      (standard) => isIncludedInScoring(standard) && isLicenseMissingStandard(standard)
+    ).length || 0
 
   const nonCompliantWithLicenseCount =
     comparisonData?.filter((standard) => {
-      const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue
-      return (
-        standard.complianceStatus === 'Non-Compliant' &&
-        !(typeof tenantValue === 'string' && tenantValue.startsWith('License Missing:'))
-      )
+      return standard.complianceStatus === 'Non-Compliant' && !isLicenseMissingStandard(standard)
     }).length || 0
 
   const nonCompliantWithoutLicenseCount =
-    comparisonData?.filter((standard) => {
-      const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue
-      return (
-        standard.complianceStatus === 'Non-Compliant' &&
-        typeof tenantValue === 'string' &&
-        tenantValue.startsWith('License Missing:')
-      )
-    }).length || 0
+    comparisonData?.filter((standard) => isLicenseMissingStandard(standard)).length || 0
+
+  const compliantWithAvailableLicenseCount =
+    comparisonData?.filter(
+      (standard) =>
+        isIncludedInScoring(standard) &&
+        (standard.complianceStatus === 'Compliant' ||
+          standard.complianceStatus === 'Accepted Deviation' ||
+          standard.complianceStatus === 'Customer Specific') &&
+        !isLicenseMissingStandard(standard)
+    ).length || 0
+
+  const scoredStandardsCount = Math.max(allCount - reportingDisabledCount - overriddenCount, 0)
 
   const compliancePercentage =
-    allCount > 0
-      ? Math.round(
-          ((compliantCount + acceptedDeviationCount) /
-            (allCount - reportingDisabledCount - overriddenCount || 1)) *
-            100
-        )
+    scoredStandardsCount > 0
+      ? Math.round((compliantWithAvailableLicenseCount / scoredStandardsCount) * 100)
       : 0
 
   const missingLicensePercentage =
-    allCount > 0
+    scoredStandardsCount > 0 ? Math.round((missingLicenseCount / scoredStandardsCount) * 100) : 0
+
+  // Combined score: standards either compliant with available licensing or blocked by missing license.
+  const combinedScore =
+    scoredStandardsCount > 0
       ? Math.round(
-          (missingLicenseCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100
+          ((compliantWithAvailableLicenseCount + missingLicenseCount) / scoredStandardsCount) * 100
         )
       : 0
-
-  // Combined score: compliance percentage + missing license percentage
-  // This represents the total "addressable" compliance (compliant + could be compliant if licensed)
-  const combinedScore = compliancePercentage + missingLicensePercentage
 
   // Simple filter for all templates (no type filtering)
   const templateOptions = templates
