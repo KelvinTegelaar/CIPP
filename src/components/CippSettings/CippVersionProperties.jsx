@@ -11,7 +11,7 @@ const CippVersionProperties = () => {
   });
 
   const cippVersion = ApiGetCall({
-    url: `/api/GetVersion?LocalVersion=${version?.data?.version}`,
+    url: `/api/GetVersion?LocalVersion=${encodeURIComponent(version?.data?.version ?? "")}`,
     queryKey: "CippVersion",
     waiting: false,
   });
