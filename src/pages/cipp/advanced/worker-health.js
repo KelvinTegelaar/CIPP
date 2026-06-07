@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import {
   Box,
@@ -1050,12 +1050,45 @@ const Page = () => {
               const diag = cacheDiagQuery.data?.Results;
               if (!diag) return null;
               const types = diag.TypeBreakdown ?? [];
+              const trackedMB = diag.TrackedTotalMB ?? 0;
+              const maxMB = diag.MaxMB ?? 0;
+              const memPct = maxMB > 0 ? (trackedMB / maxMB) * 100 : 0;
+              const totalReads = (diag.Hits ?? 0) + (diag.Misses ?? 0);
+              const fmtUtc = (s) => (s ? new Date(s).toLocaleString() : "—");
+
+              const cacheStats = [
+                { k: "Hits", v: (diag.Hits ?? 0).toLocaleString() },
+                { k: "Misses", v: (diag.Misses ?? 0).toLocaleString() },
+                {
+                  k: "Hit Rate",
+                  v: `${diag.HitRate ?? 0}%`,
+                  w: totalReads > 100 && diag.HitRate < 50,
+                },
+                {
+                  k: "Evictions",
+                  v: (diag.Evictions ?? 0).toLocaleString(),
+                  w: (diag.Evictions ?? 0) > 0,
+                },
+                {
+                  k: "Oversized",
+                  v: (diag.Oversized ?? 0).toLocaleString(),
+                  w: (diag.Oversized ?? 0) > 0,
+                  tip: "Values that exceeded the per-entry size cap and were silently dropped — they were never cached.",
+                },
+                { k: "Accesses", v: (diag.AccessCount ?? 0).toLocaleString() },
+                {
+                  k: "TTL",
+                  v: `${diag.TtlSeconds ?? 0}s`,
+                  tip: `Earliest expiry: ${fmtUtc(diag.EarliestExpiryUtc)} • Latest expiry: ${fmtUtc(diag.LatestExpiryUtc)}`,
+                },
+              ];
+
               return (
                 <Card>
                   <CardHeader
                     title="TestData Cache"
                     titleTypographyProps={{ variant: "h6" }}
-                    subheader={`${diag.ActiveEntries ?? 0} active / ${diag.ExpiredEntries ?? 0} expired — ${diag.EstimatedTotalMB ?? 0} MB est. — ${diag.AccessCount ?? 0} accesses`}
+                    subheader={`${diag.ActiveEntries ?? 0} active / ${diag.ExpiredEntries ?? 0} expired — ${diag.EstimatedTotalMB ?? 0} MB estimated`}
                     action={
                       <Chip
                         label={`${diag.TotalEntries ?? 0} entries`}
@@ -1064,6 +1097,53 @@ const Page = () => {
                       />
                     }
                   />
+                  <CardContent sx={{ pt: 0, pb: types.length > 0 ? 2 : "12px !important" }}>
+                    {/* Capacity bar */}
+                    <Box sx={{ mb: 2 }}>
+                      <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Capacity
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {trackedMB} / {maxMB} MB ({Math.round(memPct)}%)
+                        </Typography>
+                      </Stack>
+                      <LinearProgress
+                        variant="determinate"
+                        value={Math.min(memPct, 100)}
+                        color={memPct > 85 ? "error" : memPct > 70 ? "warning" : "primary"}
+                        sx={{ height: 6, borderRadius: 3 }}
+                      />
+                    </Box>
+                    {/* Stats row */}
+                    <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap", gap: 2, rowGap: 1 }}>
+                      {cacheStats.map((s) => {
+                        const cell = (
+                          <Box sx={{ minWidth: 80 }}>
+                            <Typography variant="caption" color="text.secondary" display="block" lineHeight={1.2}>
+                              {s.k}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              fontWeight={600}
+                              color={s.w ? "error.main" : "text.primary"}
+                              lineHeight={1.3}
+                            >
+                              {s.v}
+                            </Typography>
+                          </Box>
+                        );
+                        if (s.tip) {
+                          return (
+                            <Tooltip key={s.k} title={s.tip} arrow>
+                              {cell}
+                            </Tooltip>
+                          );
+                        }
+                        return <Fragment key={s.k}>{cell}</Fragment>;
+                      })}
+                    </Stack>
+                  </CardContent>
                   {types.length > 0 && (
                     <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
                       <TableContainer sx={{ maxHeight: 300 }}>
