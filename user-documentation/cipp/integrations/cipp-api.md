@@ -18,7 +18,7 @@ If you're using a **hosted CIPP instance**, you can follow the instructions belo
       2. Select the API Client from the list.
    3. Ensure that you Enable the client in order to save it to the Function App authentication settings.
    4. Optionally set the [#custom-roles](../../../setup/self-hosting-guide/roles.md#custom-roles "mention") and Allowed IP Ranges for additional security.
-   5. Select if you want MCP Access Allowed for this client. Enabling MCP Access converts this client into the MCP resource app and it can no longer be used as a normal API client. Only one client per tenant can hold this role. MCP is currently in Beta and has to be enabled in [features.md](../settings/features.md "mention").
+   5. Select if you want MCP Access Allowed for this client. Enabling MCP Access converts this client into the MCP resource app and it can no longer be used as a normal API client. Only one client per tenant can hold this role. See [#enable-the-mcp-feature](cipp-api.md#enable-the-mcp-feature "mention") for more information.
    6. Submit the form to create the client. Remember to copy the Application secret to a secure location.
 3. Once you have the API Client(s) configured, click Actions > Save Azure Configuration, this updates the Function App authentication settings with the new Client IDs.
 
@@ -64,15 +64,19 @@ For full authentication examples, usage patterns, and endpoint information, see 
 
 ## CIPP MCP
 
-The CIPP MCP allows you to add CIPP to any AI you use and immediately talk to it in natural language. For example you can ask "List all tenants with unassigned licenses" or "list all users for tenant MySpecialTenant.com". To setup the MCP, follow these instructions.
+The CIPP MCP allows you to add CIPP to any AI you use and immediately talk to it in natural language. For example, you can ask "List all tenants with unassigned licenses" or "list all users for tenant MySpecialTenant.com". To setup the MCP, follow these instructions:
 
-#### 1. Enable the MCP feature
+{% stepper %}
+{% step %}
+### Enable the MCP Feature
 
-In CIPP: **Settings → Configuration → Features** → turn on **MCP Server**.
+In CIPP: **CIPP → Application Settings → Features** → turn on **MCP Server**.
+{% endstep %}
 
-#### 2. Create the MCP API client
+{% step %}
+### Create the MCP API Client
 
-Open the **CIPP-API integration → API client management** page and **Create New Client** (or edit an existing one). Set:
+Open the [cipp-api.md](cipp-api.md "mention") page and **Create New Client** (or edit an existing one). Set:
 
 | Field                  | Value                                                                                            |
 | ---------------------- | ------------------------------------------------------------------------------------------------ |
@@ -80,10 +84,12 @@ Open the **CIPP-API integration → API client management** page and **Create Ne
 | **IP range**           | `Any` — the connector calls in from Anthropic's servers, so you can't pin it to your office IPs. |
 | **Enable this client** | On                                                                                               |
 | **MCP Access Allowed** | **On**                                                                                           |
+{% endstep %}
 
-#### 3. Save to Azure
+{% step %}
+### Save to Azure
 
-Click **Actions → Save to Azure**. This does all the Entra/Azure configuration for you automatically, however you might need to add your specific MCP providers authentication URL to your app. do that as follows:
+Click **Actions → Save to Azure**. This does all the Entra/Azure configuration for you automatically; however you might need to add your specific MCP providers authentication URL to your app. do that as follows:
 
 1. Open the [Azure portal](https://portal.azure.com/) → **Microsoft Entra ID** → **App registrations**.
 2. Select **All applications** and open your MCP client app — the one you flagged _MCP Access Allowed_ (search by its name, or by its Application/Client ID).
@@ -92,20 +98,26 @@ Click **Actions → Save to Azure**. This does all the Entra/Azure configuration
 5. Under **Redirect URIs**, add your provider's callback URL (for Claude: `https://claude.ai/api/mcp/auth_callback`), then **Configure / Save**.
 
 The instance restarts — give it up to \~60 seconds before connecting.
+{% endstep %}
 
-#### 4. Add the connector in your LLM
+{% step %}
+### Add the Connector in Your LLM
 
 To add the MCP to your LLM follow the instructions provided by the LLM provider, in most cases you'll need to enter your **CIPP API URL and OAUTH credentials.** These credentials are the ID and secret returned to you by the setup.
 
-Click **Connect**. You'll be redirected to your normal Microsoft / CIPP sign-in — log in and approve. Claude completes the connection and CIPP's read tools appear.
+Click **Connect**. You'll be redirected to your normal Microsoft / CIPP sign-in — log in and approve. Your LLM completes the connection and CIPP's read tools appear.
+{% endstep %}
 
-#### 5. Verify
+{% step %}
+### Verify
 
-Ask Claude something like:
+Ask your AI something like:
 
 > _Using CIPP, list all my tenants._
 
 If tools show up and return data, you're done.
+{% endstep %}
+{% endstepper %}
 
 ***
 
