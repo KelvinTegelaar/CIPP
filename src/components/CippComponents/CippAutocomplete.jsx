@@ -418,7 +418,11 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
             })
             newValue = newValue.filter(
               (item) =>
-                item.value && item.value !== '' && item.value !== 'error' && item.value !== -1
+                item.value !== null &&
+                item.value !== undefined &&
+                item.value !== '' &&
+                item.value !== 'error' &&
+                item.value !== -1
             )
           } else {
             if (newValue?.manual || !newValue?.label) {
@@ -430,7 +434,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
                 newValue = onCreateOption(newValue, newValue?.addedFields)
               }
             }
-            if (!newValue?.value || newValue.value === 'error') {
+            if (newValue?.value === null || newValue?.value === undefined || newValue?.value === '' || newValue.value === 'error') {
               newValue = null
             }
           }

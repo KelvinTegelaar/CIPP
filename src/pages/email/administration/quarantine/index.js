@@ -126,6 +126,7 @@ const Page = () => {
       data: {
         Identity: 'Identity',
         Type: '!Deny',
+        RecipientAddress: 'RecipientAddress',
       },
       confirmText: 'Are you sure you want to deny this message?',
       icon: <Block />,

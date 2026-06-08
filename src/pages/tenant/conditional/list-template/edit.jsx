@@ -162,6 +162,7 @@ const EditCATemplate = () => {
           <CippCAPolicyBuilder
             formControl={formControl}
             existingPolicy={templateData}
+            showNamedLocations={true}
           />
         ) : (
           <CippTemplateFieldRenderer

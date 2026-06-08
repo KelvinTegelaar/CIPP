@@ -28,7 +28,7 @@ const CreateCATemplate = () => {
       formPageType="Add"
     >
       <Box sx={{ my: 2 }}>
-        <CippCAPolicyBuilder formControl={formControl} />
+        <CippCAPolicyBuilder formControl={formControl} showNamedLocations={true} />
       </Box>
     </CippFormPage>
   );

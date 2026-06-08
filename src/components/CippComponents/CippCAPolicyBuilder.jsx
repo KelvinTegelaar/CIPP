@@ -11,16 +11,22 @@ import {
   Tooltip,
   IconButton,
   Paper,
+  Button,
+  Box,
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import { useWatch } from "react-hook-form";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import PublicIcon from "@mui/icons-material/Public";
+import { useWatch, useFieldArray } from "react-hook-form";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormCondition } from "./CippFormCondition";
 import caSchema from "../../data/conditionalAccessSchema.json";
 import gdapRoles from "../../data/GDAPRoles.json";
+import countryList from "../../data/countryList.json";
 
 /**
  * CippCAPolicyBuilder — A schema-driven Conditional Access policy builder.
@@ -841,9 +847,289 @@ function SessionControlsSection({ formControl, disabled }) {
 }
 
 // ---------------------------------------------------------------------------
+// Named Locations (template-embedded) section
+// ---------------------------------------------------------------------------
+//
+// CIPP CA templates persist the named locations referenced by a policy under
+// the top-level `LocationInfo` array (one entry per named location). Each
+// entry uses Microsoft Graph shape:
+//   - country: { "@odata.type": "#microsoft.graph.countryNamedLocation",
+//                displayName, countriesAndRegions: [iso2…],
+//                includeUnknownCountriesAndRegions, countryLookupMethod }
+//   - ip:      { "@odata.type": "#microsoft.graph.ipNamedLocation",
+//                displayName, isTrusted,
+//                ipRanges: [{ "@odata.type": "#microsoft.graph.iPv4CidrRange"
+//                             | "#microsoft.graph.iPv6CidrRange",
+//                             cidrAddress }] }
+//
+// We can't bind react-hook-form directly to keys containing dots
+// (`@odata.type`), so the form uses a sanitised shape with `_type` and
+// `_ipRangesText` fields that we map back on save.
+
+const COUNTRY_TYPE = "#microsoft.graph.countryNamedLocation";
+const IP_TYPE = "#microsoft.graph.ipNamedLocation";
+const IPV4_RANGE_TYPE = "#microsoft.graph.iPv4CidrRange";
+const IPV6_RANGE_TYPE = "#microsoft.graph.iPv6CidrRange";
+
+const countryOptions = countryList.map(({ Code, Name }) => ({ value: Code, label: Name }));
+
+/** Convert one Graph-shape named location to form-shape. */
+function namedLocationToForm(loc) {
+  if (!loc || typeof loc !== "object") return null;
+  const type = loc["@odata.type"] === IP_TYPE ? "ip" : "country";
+  if (type === "ip") {
+    const ipRangesText = Array.isArray(loc.ipRanges)
+      ? loc.ipRanges
+          .map((r) => r?.cidrAddress)
+          .filter((v) => typeof v === "string" && v.trim() !== "")
+          .join("\n")
+      : "";
+    return {
+      _type: { label: "IP Ranges", value: "ip" },
+      displayName: loc.displayName ?? "",
+      isTrusted: !!loc.isTrusted,
+      _ipRangesText: ipRangesText,
+    };
+  }
+  const countries = Array.isArray(loc.countriesAndRegions) ? loc.countriesAndRegions : [];
+  const lookup = loc.countryLookupMethod ?? "clientIpAddress";
+  return {
+    _type: { label: "Countries / Regions", value: "country" },
+    displayName: loc.displayName ?? "",
+    countriesAndRegions: countries.map((code) => {
+      const match = countryOptions.find((o) => o.value === code);
+      return match ?? { label: code, value: code };
+    }),
+    includeUnknownCountriesAndRegions: !!loc.includeUnknownCountriesAndRegions,
+    countryLookupMethod: {
+      label: lookup === "authenticatorAppGps" ? "Authenticator app GPS" : "Client IP address",
+      value: lookup,
+    },
+  };
+}
+
+/** Unwrap an autoComplete `{label,value}` object to its underlying value. */
+function unwrapAC(v) {
+  if (v && typeof v === "object" && !Array.isArray(v) && "value" in v) return v.value;
+  return v;
+}
+
+/** Convert one form-shape named location back to Graph shape. */
+function namedLocationToGraph(item) {
+  if (!item || !item.displayName || !item.displayName.trim()) return null;
+  const typeRaw = unwrapAC(item._type);
+  if (!typeRaw) return null;
+  const type = typeRaw === "ip" ? "ip" : "country";
+  if (type === "ip") {
+    const lines = String(item._ipRangesText ?? "")
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .filter((s) => s !== "");
+    if (lines.length === 0) return null;
+    return {
+      "@odata.type": IP_TYPE,
+      displayName: item.displayName.trim(),
+      isTrusted: !!item.isTrusted,
+      ipRanges: lines.map((cidr) => ({
+        "@odata.type": cidr.includes(":") ? IPV6_RANGE_TYPE : IPV4_RANGE_TYPE,
+        cidrAddress: cidr,
+      })),
+    };
+  }
+  // Country shape — unwrap autoComplete {label,value} objects if present
+  const countries = Array.isArray(item.countriesAndRegions)
+    ? item.countriesAndRegions
+        .map((c) => unwrapAC(c))
+        .filter((v) => typeof v === "string" && v !== "")
+    : [];
+  if (countries.length === 0) return null;
+  const lookup = unwrapAC(item.countryLookupMethod);
+  return {
+    "@odata.type": COUNTRY_TYPE,
+    displayName: item.displayName.trim(),
+    countriesAndRegions: countries,
+    includeUnknownCountriesAndRegions: !!item.includeUnknownCountriesAndRegions,
+    countryLookupMethod: lookup || "clientIpAddress",
+  };
+}
+
+function NamedLocationsSection({ formControl, disabled }) {
+  const { fields, append, remove } = useFieldArray({
+    control: formControl.control,
+    name: "LocationInfo",
+  });
+
+  return (
+    <Stack spacing={2}>
+      <Alert severity="info" icon={<PublicIcon fontSize="small" />}>
+        Named locations defined here are stored inside the template and recreated (or matched by
+        display name) in the target tenant when the template is deployed. Reference them by name
+        in the <strong>Include Locations</strong> / <strong>Exclude Locations</strong> fields
+        under <em>Conditions</em>.
+      </Alert>
+
+      {fields.length === 0 && (
+        <Typography variant="body2" color="text.secondary">
+          No named locations embedded in this template.
+        </Typography>
+      )}
+
+      {fields.map((field, index) => (
+        <Paper key={field.id} variant="outlined" sx={{ p: 2 }}>
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
+              Named Location #{index + 1}
+            </Typography>
+            <Tooltip title="Remove named location">
+              <span>
+                <IconButton
+                  size="small"
+                  onClick={() => remove(index)}
+                  disabled={disabled}
+                  aria-label="remove named location"
+                >
+                  <DeleteOutlineIcon fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Stack>
+
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <CippFormComponent
+                type="textField"
+                name={`LocationInfo.${index}.displayName`}
+                label="Display Name"
+                formControl={formControl}
+                disabled={disabled}
+                validators={{ required: "Display name is required" }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <CippFormComponent
+                type="autoComplete"
+                name={`LocationInfo.${index}._type`}
+                label="Location Type"
+                formControl={formControl}
+                multiple={false}
+                creatable={false}
+                disabled={disabled}
+                options={[
+                  { label: "Countries / Regions", value: "country" },
+                  { label: "IP Ranges", value: "ip" },
+                ]}
+                validators={{ required: "Location type is required" }}
+              />
+            </Grid>
+
+            {/* IP fields */}
+            <CippFormCondition
+              field={`LocationInfo.${index}._type`}
+              compareType="valueEq"
+              compareValue="ip"
+              formControl={formControl}
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  name={`LocationInfo.${index}._ipRangesText`}
+                  label="IP Ranges (CIDR, one per line)"
+                  formControl={formControl}
+                  multiline
+                  rows={4}
+                  disabled={disabled}
+                  placeholder="e.g. 203.0.113.0/24"
+                  validators={{ required: "At least one CIDR range is required" }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <CippFormComponent
+                  type="switch"
+                  name={`LocationInfo.${index}.isTrusted`}
+                  label="Mark as Trusted Location"
+                  formControl={formControl}
+                  disabled={disabled}
+                />
+              </Grid>
+            </CippFormCondition>
+
+            {/* Country fields */}
+            <CippFormCondition
+              field={`LocationInfo.${index}._type`}
+              compareType="valueEq"
+              compareValue="country"
+              formControl={formControl}
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  name={`LocationInfo.${index}.countriesAndRegions`}
+                  label="Countries / Regions"
+                  formControl={formControl}
+                  multiple
+                  disabled={disabled}
+                  options={countryOptions}
+                  validators={{ required: "At least one country must be selected" }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  name={`LocationInfo.${index}.countryLookupMethod`}
+                  label="Country Lookup Method"
+                  formControl={formControl}
+                  multiple={false}
+                  creatable={false}
+                  disabled={disabled}
+                  options={[
+                    { label: "Client IP address", value: "clientIpAddress" },
+                    { label: "Authenticator app GPS", value: "authenticatorAppGps" },
+                  ]}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <CippFormComponent
+                  type="switch"
+                  name={`LocationInfo.${index}.includeUnknownCountriesAndRegions`}
+                  label="Include Unknown Countries / Regions"
+                  formControl={formControl}
+                  disabled={disabled}
+                />
+              </Grid>
+            </CippFormCondition>
+          </Grid>
+        </Paper>
+      ))}
+
+      <Box>
+        <Button
+          startIcon={<AddIcon />}
+          variant="outlined"
+          size="small"
+          disabled={disabled}
+          onClick={() =>
+            append({
+              _type: null,
+              displayName: "",
+            })
+          }
+        >
+          Add Named Location
+        </Button>
+      </Box>
+    </Stack>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
-const CippCAPolicyBuilder = ({ formControl, existingPolicy, disabled = false }) => {
+const CippCAPolicyBuilder = ({
+  formControl,
+  existingPolicy,
+  disabled = false,
+  showNamedLocations = false,
+}) => {
   const policySchema = caSchema;
 
   // Pre-populate form from existing policy when editing
@@ -875,6 +1161,20 @@ const CippCAPolicyBuilder = ({ formControl, existingPolicy, disabled = false }) 
           if (typeof value === "string" && value.trim() === "") return;
 
           const path = prefix ? `${prefix}.${key}` : key;
+
+          // Special handling for LocationInfo (template-embedded named locations).
+          // Graph-shape entries contain `@odata.type` keys that react-hook-form
+          // would interpret as nested paths, so we map them onto a form-friendly
+          // shape (`_type`, `_ipRangesText`, …) that NamedLocationsSection consumes.
+          if (key === "LocationInfo" && Array.isArray(value) && !prefix) {
+            const formItems = value
+              .map((item) => namedLocationToForm(item))
+              .filter((v) => v !== null);
+            if (formItems.length > 0) {
+              formControl.setValue("LocationInfo", formItems);
+            }
+            return;
+          }
 
           // Special handling for authenticationStrength — only extract the policy ID,
           // not the full expanded object (displayName, description, allowedCombinations, etc.)
@@ -1013,6 +1313,23 @@ const CippCAPolicyBuilder = ({ formControl, existingPolicy, disabled = false }) 
           <SessionControlsSection formControl={formControl} disabled={disabled} />
         </AccordionDetails>
       </Accordion>
+
+      {/* Named Locations (template only) */}
+      {showNamedLocations && (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant="subtitle1" fontWeight={600}>
+                Named Locations
+              </Typography>
+              <Chip label="Template" size="small" variant="outlined" />
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails>
+            <NamedLocationsSection formControl={formControl} disabled={disabled} />
+          </AccordionDetails>
+        </Accordion>
+      )}
     </Stack>
   );
 };
@@ -1134,6 +1451,20 @@ export function extractCAPolicyJSON(formValues) {
     // If sessionControls is now empty, remove it too
     if (Object.keys(cleaned.sessionControls).length === 0) {
       delete cleaned.sessionControls;
+    }
+  }
+
+  // Post-process: convert template-embedded named locations from form-shape
+  // back to Graph shape. We read from the raw form values (not `cleaned`)
+  // because `clean()` strips internal keys prefixed with `_` (e.g. `_type`,
+  // `_ipRangesText`) that the conversion needs.
+  delete cleaned.LocationInfo;
+  if (Array.isArray(formValues?.LocationInfo)) {
+    const graphLocations = formValues.LocationInfo
+      .map((item) => namedLocationToGraph(item))
+      .filter((v) => v !== null);
+    if (graphLocations.length > 0) {
+      cleaned.LocationInfo = graphLocations;
     }
   }
 

@@ -126,16 +126,8 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
-    "tag": [
-      "CIS M365 6.0.1 (3.1.1)",
-      "mip_search_auditlog",
-      "NIST CSF 2.0 (DE.CM-09)"
-    ],
-    "appliesToTest": [
-      "CISAMSEXO171",
-      "CISAMSEXO173",
-      "CIS_3_1_1"
-    ],
+    "tag": ["CIS M365 7.0.0 (3.1.1)", "mip_search_auditlog", "NIST CSF 2.0 (DE.CM-09)"],
+    "appliesToTest": ["CISAMSEXO171", "CISAMSEXO173", "CIS_3_1_1"],
     "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
     "executiveText": "Activates comprehensive activity logging across Microsoft 365 services to track user actions, system changes, and security events. This provides essential audit trails for compliance requirements, security investigations, and regulatory reporting.",
     "addedComponent": [],
@@ -156,7 +148,7 @@
   {
     "name": "standards.RestrictThirdPartyStorageServices",
     "cat": "Global Standards",
-    "tag": ["CIS M365 6.0.1 (1.3.7)"],
+    "tag": ["CIS M365 7.0.0 (1.3.7)"],
     "appliesToTest": ["CIS_1_3_7"],
     "helpText": "Restricts third-party storage services in Microsoft 365 on the web by managing the Microsoft 365 on the web service principal. This disables integrations with services like Dropbox, Google Drive, Box, and other third-party storage providers.",
     "docsDescription": "Third-party storage can be enabled for users in Microsoft 365, allowing them to store and share documents using services such as Dropbox, alongside OneDrive and team sites. This standard ensures Microsoft 365 on the web third-party storage services are restricted by creating and disabling the Microsoft 365 on the web service principal (appId: c1f33bc0-bdb4-4248-ba9b-096807ddb43e). By using external storage services an organization may increase the risk of data breaches and unauthorized access to confidential information. Additionally, third-party services may not adhere to the same security standards as the organization, making it difficult to maintain data privacy and security. Impact is highly dependent upon current practices - if users do not use other storage providers, then minimal impact is likely. However, if users regularly utilize providers outside of the tenant this will affect their ability to continue to do so.",
@@ -275,7 +267,7 @@
   {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
-    "tag": ["CIS M365 6.0.1 (1.3.6)", "CustomerLockBoxEnabled"],
+    "tag": ["CIS M365 7.0.0 (1.3.6)", "CustomerLockBoxEnabled"],
     "appliesToTest": ["CIS_1_3_6"],
     "helpText": "**Requires Entra ID P2.** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
     "docsDescription": "**Requires Entra ID P2.** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
@@ -336,7 +328,7 @@
     "name": "standards.DisableGuestDirectory",
     "cat": "Global Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.1.6.2)",
+      "CIS M365 7.0.0 (5.1.6.2)",
       "CISA (MS.AAD.5.1v1)",
       "EIDSCA.AP14",
       "EIDSCA.ST08",
@@ -367,12 +359,8 @@
   {
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
-    "tag": ["CIS M365 6.0.1 (6.5.4)", "NIST CSF 2.0 (PR.IR-01)"],
-    "appliesToTest": [
-      "CISAMSEXO51",
-      "CIS_6_5_4",
-      "ZTNA21799"
-    ],
+    "tag": ["CIS M365 7.0.0 (6.5.4)", "NIST CSF 2.0 (PR.IR-01)"],
+    "appliesToTest": ["CISAMSEXO51", "CIS_6_5_4", "ZTNA21799"],
     "helpText": "Disables SMTP AUTH organization-wide, impacting POP and IMAP clients that rely on SMTP for sending emails. Default for new tenants. For more information, see the [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission)",
     "docsDescription": "Disables tenant-wide SMTP basic authentication, including for all explicitly enabled users, impacting POP and IMAP clients that rely on SMTP for sending emails. For more information, see the [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission).",
     "executiveText": "Disables outdated email authentication methods that are vulnerable to security attacks, forcing applications and devices to use modern, more secure authentication protocols. This reduces the risk of email-based security breaches and credential theft.",
@@ -394,17 +382,8 @@
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "Global Standards",
-    "tag": [
-      "CIS M365 6.0.1 (1.3.2)",
-      "spo_idle_session_timeout",
-      "NIST CSF 2.0 (PR.AA-03)"
-    ],
-    "appliesToTest": [
-      "CIS_1_3_2",
-      "ZTNA21813",
-      "ZTNA21814",
-      "ZTNA21815"
-    ],
+    "tag": ["CIS M365 7.0.0 (1.3.2)", "spo_idle_session_timeout", "NIST CSF 2.0 (PR.AA-03)"],
+    "appliesToTest": ["CIS_1_3_2", "ZTNA21813", "ZTNA21814", "ZTNA21815"],
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "executiveText": "Automatically logs out inactive users from Microsoft 365 applications after a specified time period to prevent unauthorized access to company data on unattended devices. This security measure protects against data breaches when employees leave workstations unlocked.",
     "addedComponent": [
@@ -434,7 +413,7 @@
     "name": "standards.AuthMethodsSettings",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.2.3.6)",
+      "CIS M365 7.0.0 (5.2.3.6)",
       "EIDSCA.AG01",
       "EIDSCA.AG02",
       "EIDSCA.AG03",
@@ -487,13 +466,357 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.AuthenticationMethods",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Configures all authentication methods for the tenant including Microsoft Authenticator, FIDO2, SMS, Voice, Email OTP, Temporary Access Pass, Software OATH, Hardware OATH, Certificate-based, and QR Code Pin. Enable or disable each method and optionally target specific groups.",
+    "docsDescription": "Unified standard to configure all authentication method policies in a single place. Each method can be independently enabled or disabled, targeted to all users or specific groups using group name wildcards, and configured with method-specific settings such as TAP lifetime, QR code pin length, and Authenticator software OTP.",
+    "executiveText": "Provides centralized control over all tenant authentication methods from a single standard. Administrators can enable phishing-resistant methods like FIDO2 and Microsoft Authenticator while disabling less secure options like SMS and Voice. Each method supports group-level targeting using wildcard group names, allowing staged rollouts and granular control.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+        "label": "Microsoft Authenticator",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorSoftwareOath",
+        "label": "Enable Software OTP in Authenticator",
+        "defaultValue": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Number Matching",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorNumberMatching",
+        "options": [
+          { "label": "Microsoft managed", "value": "default" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Show Application Name in Push Notifications",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorDisplayAppInfo",
+        "options": [
+          { "label": "Microsoft managed", "value": "default" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Show Geographic Location in Push Notifications",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorDisplayLocation",
+        "options": [
+          { "label": "Microsoft managed", "value": "default" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Companion App (Authenticator Lite)",
+        "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorCompanionApp",
+        "options": [
+          { "label": "Microsoft managed", "value": "default" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.FIDO2Enabled",
+        "label": "FIDO2 Security Keys",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.FIDO2Group",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.FIDO2Enabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.TAPEnabled",
+        "label": "Temporary Access Pass",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.TAPGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "TAP Usage Mode",
+        "name": "standards.AuthenticationMethods.TAPUsableOnce",
+        "options": [
+          { "label": "Only Once", "value": "true" },
+          { "label": "Multiple Logons", "value": "false" }
+        ],
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.TAPDefaultLifetime",
+        "label": "TAP Default Lifetime (minutes)",
+        "defaultValue": 60,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.TAPMinLifetime",
+        "label": "TAP Minimum Lifetime (minutes)",
+        "defaultValue": 60,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.TAPMaxLifetime",
+        "label": "TAP Maximum Lifetime (minutes)",
+        "defaultValue": 480,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.TAPDefaultLength",
+        "label": "TAP Length (characters)",
+        "defaultValue": 8,
+        "condition": {
+          "field": "standards.AuthenticationMethods.TAPEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.SoftwareOathEnabled",
+        "label": "Third-Party Software OATH Tokens",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.SoftwareOathGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.SoftwareOathEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.HardwareOathEnabled",
+        "label": "Hardware OATH Tokens",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.HardwareOathGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.HardwareOathEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.SMSEnabled",
+        "label": "SMS",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.SMSGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.SMSEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.VoiceEnabled",
+        "label": "Voice Call",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.VoiceGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.VoiceEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.EmailEnabled",
+        "label": "Email OTP",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.EmailGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.EmailEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.x509CertificateEnabled",
+        "label": "Certificate-Based Authentication",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.x509CertificateGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.x509CertificateEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AuthenticationMethods.QRCodePinEnabled",
+        "label": "QR Code Pin",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.AuthenticationMethods.QRCodePinGroup",
+        "label": "Target Group Name (wildcard supported, blank = All Users)",
+        "required": false,
+        "condition": {
+          "field": "standards.AuthenticationMethods.QRCodePinEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.QRCodeLifetimeInDays",
+        "label": "QR Code Lifetime (days, 1-395)",
+        "defaultValue": 365,
+        "condition": {
+          "field": "standards.AuthenticationMethods.QRCodePinEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AuthenticationMethods.QRCodePinLength",
+        "label": "QR Code PIN Length (8-20)",
+        "defaultValue": 8,
+        "condition": {
+          "field": "standards.AuthenticationMethods.QRCodePinEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      }
+    ],
+    "label": "Configure Authentication Methods",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-05-28",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.AdminSSPR",
     "cat": "Entra (AAD) Standards",
     "tag": ["EIDSCA.AP01"],
-    "appliesToTest": [
-      "EIDSCAAP01",
-      "ZTNA21842"
-    ],
+    "appliesToTest": ["EIDSCAAP01", "ZTNA21842"],
     "helpText": "Controls whether administrators are allowed to use Self-Service Password Reset through the Microsoft Entra authorization policy.",
     "docsDescription": "Configures the allowedToUseSSPR property on the Microsoft Entra authorization policy. Microsoft documents this property as controlling whether administrators of the tenant can use Self-Service Password Reset. Use this standard to explicitly enable or disable administrator SSPR based on your security policy.",
     "executiveText": "Controls whether tenant administrators can reset their own passwords through Self-Service Password Reset. Disabling this capability forces privileged accounts through more controlled recovery processes and reduces the risk of self-service recovery being misused on administrative identities.",
@@ -592,14 +915,8 @@
   {
     "name": "standards.laps",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (5.1.4.5)", "SMB1001 (2.2)"],
-    "appliesToTest": [
-      "CIS_5_1_4_5",
-      "SMB1001_2_2",
-      "ZTNA21953",
-      "ZTNA21955",
-      "ZTNA24560"
-    ],
+    "tag": ["CIS M365 7.0.0 (5.1.4.5)", "SMB1001 (2.2)"],
+    "appliesToTest": ["CIS_5_1_4_5", "SMB1001_2_2", "ZTNA21953", "ZTNA21955", "ZTNA24560"],
     "helpText": "Enables the tenant to use LAPS. You must still create a policy for LAPS to be active on all devices. Use the template standards to deploy this by default.",
     "docsDescription": "Enables the LAPS functionality on the tenant. Prerequisite for using Windows LAPS via Azure AD.",
     "executiveText": "Enables Local Administrator Password Solution (LAPS) capability, which automatically manages and rotates local administrator passwords on company computers. This significantly improves security by preventing the use of shared or static administrator passwords that could be exploited by attackers.",
@@ -615,7 +932,7 @@
     "name": "standards.PWdisplayAppInformationRequiredState",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.2.3.1)",
+      "CIS M365 7.0.0 (5.2.3.1)",
       "EIDSCA.AM03",
       "EIDSCA.AM04",
       "EIDSCA.AM06",
@@ -664,8 +981,8 @@
   {
     "name": "standards.PWcompanionAppAllowedState",
     "cat": "Entra (AAD) Standards",
-    "tag": ["EIDSCA.AM01"],
-    "appliesToTest": ["EIDSCAAM01"],
+    "tag": ["CIS M365 7.0.0 (5.2.3.10)", "EIDSCA.AM01"],
+    "appliesToTest": ["CIS_5_2_3_10", "EIDSCAAM01"],
     "helpText": "Sets the state of Authenticator Lite, Authenticator lite is a companion app for passwordless authentication.",
     "docsDescription": "Sets the Authenticator Lite state to enabled. This allows users to use the Authenticator Lite built into the Outlook app instead of the full Authenticator app.",
     "executiveText": "Enables a simplified authentication experience by allowing users to authenticate directly through Outlook without requiring a separate authenticator app. This improves user convenience while maintaining security standards for passwordless authentication.",
@@ -733,11 +1050,7 @@
     "name": "standards.EnableHardwareOAuth",
     "cat": "Entra (AAD) Standards",
     "tag": ["SMB1001 (2.5)", "SMB1001 (2.6)", "SMB1001 (2.9)"],
-    "appliesToTest": [
-      "SMB1001_2_5",
-      "SMB1001_2_6",
-      "SMB1001_2_9"
-    ],
+    "appliesToTest": ["SMB1001_2_5", "SMB1001_2_6", "SMB1001_2_9"],
     "helpText": "Enables the HardwareOath authenticationMethod for the tenant. This allows you to use hardware tokens for generating 6 digit MFA codes.",
     "docsDescription": "Enables Hardware OAuth tokens for the tenant. This allows users to use hardware tokens like a Yubikey for authentication.",
     "executiveText": "Enables physical hardware tokens that generate secure authentication codes, providing an alternative to smartphone-based authentication. This is particularly valuable for employees who cannot use mobile devices or require the highest security standards for accessing sensitive systems.",
@@ -753,10 +1066,7 @@
     "name": "standards.allowOAuthTokens",
     "cat": "Entra (AAD) Standards",
     "tag": ["EIDSCA.AT01", "EIDSCA.AT02"],
-    "appliesToTest": [
-      "EIDSCAAT01",
-      "EIDSCAAT02"
-    ],
+    "appliesToTest": ["EIDSCAAT01", "EIDSCAAT02"],
     "helpText": "Allows you to use any software OAuth token generator",
     "docsDescription": "Enables OTP Software OAuth tokens for the tenant. This allows users to use OTP codes generated via software, like a password manager to be used as an authentication method.",
     "executiveText": "Allows employees to use third-party authentication apps and password managers to generate secure login codes, providing flexibility in authentication methods while maintaining security standards. This accommodates diverse user preferences and existing security tools.",
@@ -771,7 +1081,7 @@
   {
     "name": "standards.FormsPhishingProtection",
     "cat": "Global Standards",
-    "tag": ["CIS M365 6.0.1 (1.3.5)", "Security", "PhishingProtection"],
+    "tag": ["CIS M365 7.0.0 (1.3.5)", "Security", "PhishingProtection"],
     "appliesToTest": ["CIS_1_3_5"],
     "helpText": "Enables internal phishing protection for Microsoft Forms to help prevent malicious forms from being created and shared within the organization. This feature scans forms created by internal users for potential phishing content and suspicious patterns.",
     "docsDescription": "Enables internal phishing protection for Microsoft Forms by setting the isInOrgFormsPhishingScanEnabled property to true. This security feature helps protect organizations from internal phishing attacks through Microsoft Forms by automatically scanning forms created by internal users for potential malicious content, suspicious links, and phishing patterns. When enabled, Forms will analyze form content and block or flag potentially dangerous forms before they can be shared within the organization.",
@@ -788,15 +1098,10 @@
     "name": "standards.TAP",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "appliesToTest": [
-      "EIDSCAAT01",
-      "EIDSCAAT02",
-      "ZTNA21845",
-      "ZTNA21846"
-    ],
+    "appliesToTest": ["EIDSCAAT01", "EIDSCAAT02", "ZTNA21845", "ZTNA21846"],
     "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select if a TAP is single use or multi-logon.",
-    "docsDescription": "Enables Temporary Password generation for the tenant.",
-    "executiveText": "Enables temporary access passwords that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passwords provide a secure way to restore access without compromising long-term security policies.",
+    "docsDescription": "Enables Temporary Access Pass generation for the tenant.",
+    "executiveText": "Enables temporary access passes that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passs provide a secure way to restore access without compromising long-term security policies.",
     "addedComponent": [
       {
         "type": "autoComplete",
@@ -810,7 +1115,7 @@
         ]
       }
     ],
-    "label": "Enable Temporary Access Passwords",
+    "label": "Enable Temporary Access Passes (TAP)",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2022-03-15",
@@ -820,7 +1125,7 @@
   {
     "name": "standards.PasswordExpireDisabled",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (1.3.1)", "PWAgePolicyNew"],
+    "tag": ["CIS M365 7.0.0 (1.3.1)", "PWAgePolicyNew"],
     "appliesToTest": ["CIS_1_3_1", "ZTNA21811"],
     "helpText": "Disables the expiration of passwords for the tenant by setting the password expiration policy to never expire for any user.",
     "docsDescription": "Sets passwords to never expire for tenant, recommended to use in conjunction with secure password requirements.",
@@ -836,10 +1141,7 @@
   {
     "name": "standards.CustomBannedPasswordList",
     "cat": "Entra (AAD) Standards",
-    "tag": [
-      "CIS M365 6.0.1 (5.2.3.2)",
-      "SMB1001 (2.1)"
-    ],
+    "tag": ["CIS M365 7.0.0 (5.2.3.2)", "SMB1001 (2.1)"],
     "appliesToTest": [
       "CIS_5_2_3_2",
       "EIDSCAPR01",
@@ -875,10 +1177,7 @@
     "name": "standards.ExternalMFATrusted",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "appliesToTest": [
-      "ZTNA21803",
-      "ZTNA21804"
-    ],
+    "appliesToTest": ["ZTNA21803", "ZTNA21804"],
     "helpText": "Sets the state of the Cross-tenant access setting to trust external MFA. This allows guest users to use their home tenant MFA to access your tenant.",
     "executiveText": "Allows external partners and vendors to use their own organization's multi-factor authentication when accessing company resources, streamlining collaboration while maintaining security standards. This reduces friction for external users while ensuring they still meet authentication requirements.",
     "addedComponent": [
@@ -904,17 +1203,8 @@
   {
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
-    "tag": [
-      "CIS M365 6.0.1 (5.1.2.3)",
-      "CISA (MS.AAD.6.1v1)",
-      "SMB1001 (2.8)"
-    ],
-    "appliesToTest": [
-      "CIS_5_1_2_3",
-      "SMB1001_2_8",
-      "ZTNA21772",
-      "ZTNA21787"
-    ],
+    "tag": ["CIS M365 7.0.0 (5.1.2.3)", "CISA (MS.AAD.6.1v1)", "SMB1001 (2.8)"],
+    "appliesToTest": ["CIS_5_1_2_3", "SMB1001_2_8", "ZTNA21772", "ZTNA21787"],
     "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles.",
     "docsDescription": "Users by default are allowed to create M365 tenants. This disables that so only admins can create new M365 tenants.",
     "executiveText": "Prevents regular employees from creating new Microsoft 365 organizations, ensuring all new tenants are properly managed and controlled by IT administrators. This prevents unauthorized shadow IT environments and maintains centralized governance over Microsoft 365 resources.",
@@ -930,7 +1220,7 @@
     "name": "standards.EnableAppConsentRequests",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.1.5.2)",
+      "CIS M365 7.0.0 (5.1.5.2)",
       "CISA (MS.AAD.9.1v1)",
       "EIDSCA.CP04",
       "EIDSCA.CR01",
@@ -971,10 +1261,7 @@
     "name": "standards.NudgeMFA",
     "cat": "Entra (AAD) Standards",
     "tag": ["SMB1001 (2.5)"],
-    "appliesToTest": [
-      "SMB1001_2_5",
-      "ZTNA21889"
-    ],
+    "appliesToTest": ["SMB1001_2_5", "ZTNA21889"],
     "helpText": "Sets the state of the registration campaign for the tenant",
     "docsDescription": "Sets the state of the registration campaign for the tenant. If enabled nudges users to set up the Microsoft Authenticator during sign-in.",
     "executiveText": "Prompts employees to set up multi-factor authentication during login, gradually improving the organization's security posture by encouraging adoption of stronger authentication methods. This helps achieve better security compliance without forcing immediate mandatory changes.",
@@ -1012,10 +1299,7 @@
     "name": "standards.DisableM365GroupUsers",
     "cat": "Entra (AAD) Standards",
     "tag": ["CISA (MS.AAD.21.1v1)", "SMB1001 (2.8)"],
-    "appliesToTest": [
-      "SMB1001_2_8",
-      "ZTNA21868"
-    ],
+    "appliesToTest": ["SMB1001_2_8", "ZTNA21868"],
     "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
     "docsDescription": "Users by default are allowed to create M365 groups. This restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
     "executiveText": "Restricts the creation of Microsoft 365 groups, Teams, and SharePoint sites to authorized administrators, preventing uncontrolled proliferation of collaboration spaces. This ensures proper governance, naming conventions, and resource management while maintaining oversight of all collaborative environments.",
@@ -1039,18 +1323,14 @@
     "name": "standards.DisableAppCreation",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.1.2.2)",
+      "CIS M365 7.0.0 (5.1.2.2)",
       "CISA (MS.AAD.4.1v1)",
       "EIDSCA.AP10",
       "Essential 8 (1175)",
       "NIST CSF 2.0 (PR.AA-05)",
       "SMB1001 (2.8)"
     ],
-    "appliesToTest": [
-      "CIS_5_1_2_2",
-      "EIDSCAAP10",
-      "SMB1001_2_8"
-    ],
+    "appliesToTest": ["CIS_5_1_2_2", "EIDSCAAP10", "SMB1001_2_8"],
     "helpText": "Disables the ability for users to create App registrations in the tenant.",
     "docsDescription": "Disables the ability for users to create applications in Entra. Done to prevent breached accounts from creating an app to maintain access to the tenant, even after the breached account has been secured.",
     "executiveText": "Prevents regular employees from creating application registrations that could be used to maintain unauthorized access to company systems. This security measure ensures that only authorized IT personnel can create applications, reducing the risk of persistent security breaches through malicious applications.",
@@ -1065,11 +1345,8 @@
   {
     "name": "standards.BitLockerKeysForOwnedDevice",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (5.1.4.6)"],
-    "appliesToTest": [
-      "CIS_5_1_4_6",
-      "ZTNA21954"
-    ],
+    "tag": ["CIS M365 7.0.0 (5.1.4.6)"],
+    "appliesToTest": ["CIS_5_1_4_6", "ZTNA21954"],
     "helpText": "Controls whether standard users can recover BitLocker keys for devices they own.",
     "docsDescription": "Updates the Microsoft Entra authorization policy that controls whether standard users can read BitLocker recovery keys for devices they own. Choose to restrict access for tighter security or allow self-service recovery when operational needs require it.",
     "executiveText": "Gives administrators centralized control over BitLocker recovery secrets—restrict access to ensure IT-assisted recovery flows, or allow self-service when rapid device unlocks are a priority.",
@@ -1097,16 +1374,12 @@
     "name": "standards.DisableSecurityGroupUsers",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.1.3.2)",
+      "CIS M365 7.0.0 (5.1.3.1)",
       "CISA (MS.AAD.20.1v1)",
       "NIST CSF 2.0 (PR.AA-05)",
       "SMB1001 (2.8)"
     ],
-    "appliesToTest": [
-      "CIS_5_1_3_2",
-      "SMB1001_2_8",
-      "ZTNA21868"
-    ],
+    "appliesToTest": ["CIS_5_1_3_1", "SMB1001_2_8", "ZTNA21868"],
     "helpText": "Completely disables the creation of security groups by users. This also breaks the ability to manage groups themselves, or create Teams",
     "executiveText": "Restricts the creation of security groups to IT administrators only, preventing employees from creating unauthorized access groups that could bypass security controls. This ensures proper governance of access permissions and maintains centralized control over who can access what resources.",
     "addedComponent": [],
@@ -1134,12 +1407,8 @@
   {
     "name": "standards.DisableSelfServiceLicenses",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (1.3.4)", "SMB1001 (2.8)"],
-    "appliesToTest": [
-      "CIS_1_3_4",
-      "EIDSCAAP05",
-      "SMB1001_2_8"
-    ],
+    "tag": ["CIS M365 7.0.0 (1.3.4)", "SMB1001 (2.8)"],
+    "appliesToTest": ["CIS_1_3_4", "EIDSCAAP05", "SMB1001_2_8"],
     "helpText": "**Requires 'Billing Administrator' GDAP role.** This standard disables all self service licenses and enables all exclusions",
     "executiveText": "Prevents employees from purchasing Microsoft 365 licenses independently, ensuring all software acquisitions go through proper procurement channels. This maintains budget control, prevents unauthorized spending, and ensures compliance with corporate licensing agreements.",
     "addedComponent": [
@@ -1166,10 +1435,7 @@
     "name": "standards.DisableGuests",
     "cat": "Entra (AAD) Standards",
     "tag": ["SMB1001 (2.8)"],
-    "appliesToTest": [
-      "SMB1001_2_8",
-      "ZTNA21858"
-    ],
+    "appliesToTest": ["SMB1001_2_8", "ZTNA21858"],
     "helpText": "Blocks login for guest users that have not logged in for a number of days",
     "executiveText": "Automatically disables external guest accounts that haven't been used for a number of days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
     "addedComponent": [
@@ -1193,7 +1459,7 @@
     "name": "standards.OauthConsent",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.1.5.1)",
+      "CIS M365 7.0.0 (5.1.5.1)",
       "CISA (MS.AAD.4.2v1)",
       "EIDSCA.AP08",
       "EIDSCA.AP09",
@@ -1247,19 +1513,8 @@
   {
     "name": "standards.GuestInvite",
     "cat": "Entra (AAD) Standards",
-    "tag": [
-      "CISA (MS.AAD.18.1v1)",
-      "EIDSCA.AP04",
-      "EIDSCA.AP07",
-      "SMB1001 (2.8)"
-    ],
-    "appliesToTest": [
-      "CIS_5_1_6_3",
-      "EIDSCAAP04",
-      "EIDSCAAP07",
-      "SMB1001_2_8",
-      "ZTNA21791"
-    ],
+    "tag": ["CISA (MS.AAD.18.1v1)", "EIDSCA.AP04", "EIDSCA.AP07", "SMB1001 (2.8)"],
+    "appliesToTest": ["CIS_5_1_6_3", "EIDSCAAP04", "EIDSCAAP07", "SMB1001_2_8", "ZTNA21791"],
     "helpText": "This setting controls who can invite guests to your directory to collaborate on resources secured by your company, such as SharePoint sites or Azure resources.",
     "executiveText": "Controls who within the organization can invite external partners and vendors to access company resources, ensuring proper oversight of external access while enabling necessary business collaboration. This helps maintain security while supporting partnership and vendor relationships.",
     "addedComponent": [
@@ -1332,12 +1587,7 @@
     "name": "standards.SecurityDefaults",
     "cat": "Entra (AAD) Standards",
     "tag": ["CISA (MS.AAD.11.1v1)", "SMB1001 (2.5)", "SMB1001 (2.6)", "SMB1001 (2.9)"],
-    "appliesToTest": [
-      "SMB1001_2_5",
-      "SMB1001_2_6",
-      "SMB1001_2_9",
-      "ZTNA21843"
-    ],
+    "appliesToTest": ["SMB1001_2_5", "SMB1001_2_6", "SMB1001_2_9", "ZTNA21843"],
     "helpText": "Enables security defaults for the tenant, for newer tenants this is enabled by default. Do not enable this feature if you use Conditional Access.",
     "docsDescription": "Enables SD for the tenant, which disables all forms of basic authentication and enforces users to configure MFA. Users are only prompted for MFA when a logon is considered 'suspect' by Microsoft.",
     "executiveText": "Activates Microsoft's baseline security configuration that requires multi-factor authentication and blocks legacy authentication methods. This provides essential security protection for organizations without complex conditional access policies, significantly improving security posture with minimal configuration.",
@@ -1353,7 +1603,7 @@
     "name": "standards.DisableSMS",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.2.3.5)",
+      "CIS M365 7.0.0 (5.2.3.5)",
       "EIDSCA.AS04",
       "NIST CSF 2.0 (PR.AA-03)",
       "SMB1001 (2.5)",
@@ -1383,7 +1633,7 @@
     "name": "standards.DisableVoice",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.2.3.5)",
+      "CIS M365 7.0.0 (5.2.3.5)",
       "EIDSCA.AV01",
       "NIST CSF 2.0 (PR.AA-03)",
       "SMB1001 (2.5)",
@@ -1413,19 +1663,13 @@
     "name": "standards.DisableEmail",
     "cat": "Entra (AAD) Standards",
     "tag": [
-      "CIS M365 6.0.1 (5.2.3.7)",
+      "CIS M365 7.0.0 (5.2.3.7)",
       "NIST CSF 2.0 (PR.AA-03)",
       "SMB1001 (2.5)",
       "SMB1001 (2.6)",
       "SMB1001 (2.9)"
     ],
-    "appliesToTest": [
-      "CIS_5_2_3_7",
-      "SMB1001_2_5",
-      "SMB1001_2_5_L4",
-      "SMB1001_2_6",
-      "SMB1001_2_9"
-    ],
+    "appliesToTest": ["CIS_5_2_3_7", "SMB1001_2_5", "SMB1001_2_5_L4", "SMB1001_2_6", "SMB1001_2_9"],
     "helpText": "This blocks users from using email as an MFA method. This disables the email OTP option for guest users, and instead prompts them to create a Microsoft account.",
     "executiveText": "Disables email-based authentication codes due to security concerns with email interception and account compromise. This forces users to adopt more secure authentication methods, particularly affecting guest users who must use stronger verification methods.",
     "addedComponent": [],
@@ -1435,6 +1679,28 @@
     "addedDate": "2023-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.EmailAsAlternateLoginId",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Configures the tenant-wide Email as alternate login ID setting in Home Realm Discovery policy. Enabling this can help during migrations, if users are changing UPN.",
+    "docsDescription": "Sets the Home Realm Discovery policy AlternateIdLogin setting to enable or disable using email as an alternate sign-in ID.",
+    "executiveText": "Controls whether users can sign in with email as an alternate identifier, allowing organizations to align sign-in behavior with their identity strategy and reduce authentication ambiguity.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.EmailAsAlternateLoginId.Enabled",
+        "label": "Enable Email as Alternate Login ID",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure Email as alternate login ID",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-06-03",
+    "powershellEquivalent": "Invoke-MgGraphRequest https://graph.microsoft.com/v1.0/policies/homeRealmDiscoveryPolicies/",
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.Disablex509Certificate",
@@ -1524,7 +1790,8 @@
   {
     "name": "standards.AppManagementPolicy",
     "cat": "Entra (AAD) Standards",
-    "tag": [],
+    "tag": ["CIS M365 7.0.0 (5.1.5.3)", "CIS M365 7.0.0 (5.1.5.4)", "CIS M365 7.0.0 (5.1.5.5)", "CIS M365 7.0.0 (5.1.5.6)"],
+    "appliesToTest": ["CIS_5_1_5_3", "CIS_5_1_5_4", "CIS_5_1_5_5", "CIS_5_1_5_6"],
     "helpText": "Configures the default app management policy to control application and service principal credential restrictions such as password and key credential lifetimes.",
     "docsDescription": "Configures the default app management policy to control application and service principal credential restrictions. This includes password addition restrictions, custom password addition, symmetric key addition, and credential lifetime limits for both applications and service principals.",
     "executiveText": "Enforces credential restrictions on application registrations and service principals to limit how secrets and certificates are created and how long they remain valid. This reduces the risk of long-lived or unmanaged credentials being used to access your tenant.",
@@ -1577,7 +1844,7 @@
   {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (2.1.6)"],
+    "tag": ["CIS M365 7.0.0 (2.1.6)"],
     "appliesToTest": ["CIS_2_1_6"],
     "helpText": "Set the Outbound Spam Alert e-mail address",
     "docsDescription": "Sets the e-mail address to which outbound spam alerts are sent.",
@@ -1855,13 +2122,8 @@
   {
     "name": "standards.SpoofWarn",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (6.2.3)"],
-    "appliesToTest": [
-      "CISAMSEXO71",
-      "CIS_6_2_3",
-      "ORCA111",
-      "ORCA240"
-    ],
+    "tag": ["CIS M365 7.0.0 (6.2.3)"],
+    "appliesToTest": ["CISAMSEXO71", "CIS_6_2_3", "ORCA111", "ORCA240"],
     "helpText": "Adds or removes indicators to e-mail messages received from external senders in Outlook. Works on all Outlook clients/OWA",
     "docsDescription": "Adds or removes indicators to e-mail messages received from external senders in Outlook. You can read more about this feature on [Microsoft's Exchange Team Blog.](https://techcommunity.microsoft.com/t5/exchange-team-blog/native-external-sender-callouts-on-email-in-outlook/ba-p/2250098)",
     "executiveText": "Displays visual warnings in Outlook when emails come from external senders, helping employees identify potentially suspicious messages and reducing the risk of phishing attacks. This security feature makes it easier for staff to distinguish between internal and external communications.",
@@ -1902,7 +2164,7 @@
   {
     "name": "standards.EnableMailTips",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (6.5.2)", "exo_mailtipsenabled"],
+    "tag": ["CIS M365 7.0.0 (6.5.2)", "exo_mailtipsenabled"],
     "appliesToTest": ["CIS_6_5_2"],
     "helpText": "Enables all MailTips in Outlook. MailTips are the notifications Outlook and Outlook on the web shows when an email you create, meets some requirements",
     "executiveText": "Enables helpful notifications in Outlook that warn users about potential email issues, such as sending to large groups, external recipients, or invalid addresses. This reduces email mistakes and improves communication efficiency by providing real-time guidance to employees.",
@@ -1980,11 +2242,8 @@
   {
     "name": "standards.RotateDKIM",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (2.1.9)", "SMB1001 (2.12)"],
-    "appliesToTest": [
-      "CIS_2_1_9",
-      "SMB1001_2_12"
-    ],
+    "tag": ["CIS M365 7.0.0 (2.1.9)", "SMB1001 (2.12)"],
+    "appliesToTest": ["CIS_2_1_9", "SMB1001_2_12"],
     "helpText": "Rotate DKIM keys that are 1024 bit to 2048 bit",
     "executiveText": "Upgrades email security by replacing older 1024-bit encryption keys with stronger 2048-bit keys for email authentication. This improves the organization's email security posture and helps prevent email spoofing and tampering, maintaining trust with email recipients.",
     "addedComponent": [],
@@ -2037,14 +2296,8 @@
   {
     "name": "standards.AddDKIM",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (2.1.9)", "SMB1001 (2.12)"],
-    "appliesToTest": [
-      "CISAMSEXO31",
-      "CIS_2_1_9",
-      "ORCA108",
-      "ORCA108_1",
-      "SMB1001_2_12"
-    ],
+    "tag": ["CIS M365 7.0.0 (2.1.9)", "SMB1001 (2.12)"],
+    "appliesToTest": ["CISAMSEXO31", "CIS_2_1_9", "ORCA108", "ORCA108_1", "SMB1001_2_12"],
     "helpText": "Enables DKIM for all domains that currently support it",
     "executiveText": "Enables email authentication technology that digitally signs outgoing emails to verify they actually came from your organization. This prevents email spoofing, improves email deliverability, and protects the company's reputation by ensuring recipients can trust emails from your domains.",
     "addedComponent": [],
@@ -2065,11 +2318,8 @@
   {
     "name": "standards.AddDMARCToMOERA",
     "cat": "Global Standards",
-    "tag": ["CIS M365 6.0.1 (2.1.10)", "Security", "PhishingProtection", "SMB1001 (2.12)"],
-    "appliesToTest": [
-      "CIS_2_1_10",
-      "SMB1001_2_12"
-    ],
+    "tag": ["CIS M365 7.0.0 (2.1.10)", "Security", "PhishingProtection", "SMB1001 (2.12)"],
+    "appliesToTest": ["CIS_2_1_10", "SMB1001_2_12"],
     "helpText": "** Remediation is not available ** Note: requires 'Domain Name Administrator' GDAP role. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default value is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
     "docsDescription": "** Remediation is not available ** Note: requires 'Domain Name Administrator' GDAP role. Adds a DMARC record to MOERA (onmicrosoft.com) domains. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default record is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
     "executiveText": "Implements advanced email security for Microsoft's default domain names (onmicrosoft.com) to prevent criminals from impersonating your organization. This blocks fraudulent emails that could damage your company's reputation and protects partners and customers from phishing attacks using your domain names.",
@@ -2099,20 +2349,15 @@
     "name": "standards.EnableMailboxAuditing",
     "cat": "Exchange Standards",
     "tag": [
-      "CIS M365 6.0.1 (6.1.1)",
-      "CIS M365 6.0.1 (6.1.2)",
-      "CIS M365 6.0.1 (6.1.3)",
+      "CIS M365 7.0.0 (6.1.1)",
+      "CIS M365 7.0.0 (6.1.2)",
+      "CIS M365 7.0.0 (6.1.3)",
       "exo_mailboxaudit",
       "Essential 8 (1509)",
       "Essential 8 (1683)",
       "NIST CSF 2.0 (DE.CM-09)"
     ],
-    "appliesToTest": [
-      "CISAMSEXO131",
-      "CIS_6_1_1",
-      "CIS_6_1_2",
-      "CIS_6_1_3"
-    ],
+    "appliesToTest": ["CISAMSEXO131", "CIS_6_1_1", "CIS_6_1_2", "CIS_6_1_3"],
     "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. Disables audit bypass on all mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "docsDescription": "Enables mailbox auditing on tenant level and for all mailboxes. Disables audit bypass on all mailboxes. By default Microsoft does not enable mailbox auditing for Resource Mailboxes, Public Folder Mailboxes and DiscoverySearch Mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "executiveText": "Enables comprehensive logging of all email access and modifications across all employee mailboxes, providing detailed audit trails for security investigations and compliance requirements. This helps detect unauthorized access, data breaches, and supports regulatory compliance efforts.",
@@ -2313,7 +2558,7 @@
   {
     "name": "standards.EXOOutboundSpamLimits",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (2.1.15)"],
+    "tag": ["CIS M365 7.0.0 (2.1.15)"],
     "appliesToTest": ["CIS_2_1_15"],
     "helpText": "Configures the outbound spam recipient limits (external per hour, internal per hour, per day) and the action to take when a limit is reached. The 'Set Outbound Spam Alert e-mail' standard is recommended to configure together with this one. ",
     "docsDescription": "Configures the Exchange Online outbound spam recipient limits for external per hour, internal per hour, and per day, along with the action to take (e.g., BlockUser, Alert) when these limits are exceeded. This helps prevent abuse and manage email flow. Microsoft's recommendations can be found [here.](https://learn.microsoft.com/en-us/defender-office-365/recommended-settings-for-eop-and-office365#eop-outbound-spam-policy-settings) The 'Set Outbound Spam Alert e-mail' standard is recommended to configure together with this one.",
@@ -2382,12 +2627,8 @@
   {
     "name": "standards.DisableExternalCalendarSharing",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (1.3.3)", "exo_individualsharing"],
-    "appliesToTest": [
-      "CISAMSEXO62",
-      "CIS_1_3_3",
-      "ZTNA21803"
-    ],
+    "tag": ["CIS M365 7.0.0 (1.3.3)", "exo_individualsharing"],
+    "appliesToTest": ["CISAMSEXO62", "CIS_1_3_3", "ZTNA21803"],
     "helpText": "Disables the ability for users to share their calendar with external users. Only for the default policy, so exclusions can be made if needed.",
     "docsDescription": "Disables external calendar sharing for the entire tenant. This is not a widely used feature, and it's therefore unlikely that this will impact users. Only for the default policy, so exclusions can be made if needed by making a new policy and assigning it to users.",
     "executiveText": "Prevents employees from sharing their calendars with external parties, protecting sensitive meeting information and internal schedules from unauthorized access. This security measure helps maintain confidentiality of business activities while still allowing internal collaboration.",
@@ -2425,11 +2666,8 @@
   {
     "name": "standards.DisableAdditionalStorageProviders",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (6.5.3)", "exo_storageproviderrestricted"],
-    "appliesToTest": [
-      "CIS_6_5_3",
-      "ZTNA21817"
-    ],
+    "tag": ["CIS M365 7.0.0 (6.5.3)", "exo_storageproviderrestricted"],
+    "appliesToTest": ["CIS_6_5_3", "ZTNA21817"],
     "helpText": "Disables the ability for users to open files in Outlook on the Web, from other providers such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.",
     "docsDescription": "Disables additional storage providers in OWA. This is to prevent users from using personal storage providers like Dropbox, Google Drive, etc. Usually this has little user impact.",
     "executiveText": "Prevents employees from accessing personal cloud storage services like Dropbox or Google Drive through Outlook on the web, reducing data security risks and ensuring company information stays within approved corporate systems. This helps maintain data governance and prevents accidental data leaks.",
@@ -2451,7 +2689,7 @@
   {
     "name": "standards.AntiSpamSafeList",
     "cat": "Defender Standards",
-    "tag": ["CIS M365 6.0.1 (2.1.13)"],
+    "tag": ["CIS M365 7.0.0 (2.1.13)"],
     "appliesToTest": ["CIS_2_1_13"],
     "helpText": "Sets the anti-spam connection filter policy option 'safe list' in Defender.",
     "docsDescription": "Sets [Microsoft's built-in 'safe list'](https://learn.microsoft.com/en-us/powershell/module/exchange/set-hostedconnectionfilterpolicy?view=exchange-ps#-enablesafelist) in the anti-spam connection filter policy, rather than setting a custom safe/block list of IPs.",
@@ -2533,7 +2771,7 @@
   {
     "name": "standards.Bookings",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (1.3.9)"],
+    "tag": ["CIS M365 7.0.0 (1.3.9)"],
     "appliesToTest": ["CIS_1_3_9"],
     "helpText": "Sets the state of Bookings on the tenant. Bookings is a scheduling tool that allows users to book appointments with others both internal and external.",
     "docsDescription": "",
@@ -2567,7 +2805,7 @@
   {
     "name": "standards.EXODirectSend",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (6.5.5)"],
+    "tag": ["CIS M365 7.0.0 (6.5.5)"],
     "appliesToTest": ["CIS_6_5_5"],
     "helpText": "Sets the state of Direct Send in Exchange Online. Direct Send allows applications to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication.",
     "docsDescription": "Controls whether applications can use Direct Send to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication. A detailed explanation from Microsoft can be found [here.](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365)",
@@ -2596,15 +2834,12 @@
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
     "tag": [
-      "CIS M365 6.0.1 (6.3.1)",
+      "CIS M365 7.0.0 (6.3.1)",
       "exo_outlookaddins",
       "NIST CSF 2.0 (PR.AA-05)",
       "NIST CSF 2.0 (PR.PS-05)"
     ],
-    "appliesToTest": [
-      "CIS_6_3_1",
-      "ZTNA21817"
-    ],
+    "appliesToTest": ["CIS_6_3_1", "ZTNA21817"],
     "helpText": "Disables the ability for users to install add-ins in Outlook. This is to prevent users from installing malicious add-ins.",
     "docsDescription": "Disables users from being able to install add-ins in Outlook. Only admins are able to approve add-ins for the users. This is done to reduce the threat surface for data exfiltration.",
     "executiveText": "Prevents employees from installing third-party add-ins in Outlook without administrative approval, reducing security risks from potentially malicious extensions. This ensures only vetted and approved tools can access company email data while maintaining centralized control over email functionality.",
@@ -2708,9 +2943,43 @@
     ]
   },
   {
+    "name": "standards.DlpViaDcsEnabled",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets whether Outlook on the web uses Data Classification Services for DLP evaluation. See [Microsoft's policy tip reference](https://learn.microsoft.com/en-us/purview/dlp-ol365-win32-policy-tips#sensitive-information-types-that-support-policy-tips-for-outlook-perpetual-users).",
+    "docsDescription": "Configures whether Outlook on the web uses Data Classification Services (DCS)-based Data Loss Prevention (DLP) policy evaluation instead of Exchange-based evaluation. Review DLP policies before enabling this setting, as some legacy Exchange-based predicates are not supported with DCS-based evaluation. See [Microsoft's policy tip reference](https://learn.microsoft.com/en-us/purview/dlp-ol365-win32-policy-tips#sensitive-information-types-that-support-policy-tips-for-outlook-perpetual-users).",
+    "executiveText": "Improves how Outlook on the web applies Data Loss Prevention policies, giving users clearer guidance when sensitive information may be shared and helping reduce accidental data exposure.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.DlpViaDcsEnabled.state",
+        "options": [
+          { "label": "Enabled", "value": "true" },
+          { "label": "Disabled", "value": "false" }
+        ]
+      }
+    ],
+    "label": "Set OWA DLP evaluation via DCS",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-20",
+    "powershellEquivalent": "Set-OrganizationConfig -DlpViaDcsEnabled",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
     "name": "standards.UserSubmissions",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 6.0.1 (8.6.1)"],
+    "tag": ["CIS M365 7.0.0 (8.6.1)"],
     "appliesToTest": ["CIS_8_6_1"],
     "helpText": "Set the state of the spam submission button in Outlook",
     "docsDescription": "Set the state of the built-in Report button in Outlook. This gives the users the ability to report emails as spam or phish.",
@@ -2751,15 +3020,12 @@
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
     "tag": [
-      "CIS M365 6.0.1 (1.2.2)",
+      "CIS M365 7.0.0 (1.2.2)",
       "CISA (MS.AAD.10.1v1)",
       "NIST CSF 2.0 (PR.AA-01)",
       "SMB1001 (2.3)"
     ],
-    "appliesToTest": [
-      "CIS_1_2_2",
-      "SMB1001_2_3"
-    ],
+    "appliesToTest": ["CIS_1_2_2", "SMB1001_2_3"],
     "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "docsDescription": "Shared mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for shared mailboxes. It would be a good idea to review the sign-in reports to establish potential impact.",
     "executiveText": "Prevents direct login to shared mailbox accounts (like info@company.com), ensuring they can only be accessed through authorized users' accounts. This security measure eliminates the risk of shared passwords and unauthorized access while maintaining proper access control and audit trails.",
@@ -2798,7 +3064,7 @@
     "name": "standards.EXODisableAutoForwarding",
     "cat": "Exchange Standards",
     "tag": [
-      "CIS M365 6.0.1 (6.2.1)",
+      "CIS M365 7.0.0 (6.2.1)",
       "mdo_autoforwardingmode",
       "mdo_blockmailforward",
       "CISA (MS.EXO.4.1v1)",
@@ -2955,7 +3221,7 @@
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
     "tag": [
-      "CIS M365 6.0.1 (2.1.1)",
+      "CIS M365 7.0.0 (2.1.1)",
       "mdo_safelinksforemail",
       "mdo_safelinksforOfficeApps",
       "NIST CSF 2.0 (DE.CM-09)"
@@ -3039,7 +3305,7 @@
       "mdo_spam_notifications_only_for_admins",
       "mdo_antiphishingpolicies",
       "mdo_phishthresholdlevel",
-      "CIS M365 6.0.1 (2.1.7)",
+      "CIS M365 7.0.0 (2.1.7)",
       "NIST CSF 2.0 (DE.CM-09)"
     ],
     "appliesToTest": [
@@ -3233,18 +3499,13 @@
     "name": "standards.SafeAttachmentPolicy",
     "cat": "Defender Standards",
     "tag": [
-      "CIS M365 6.0.1 (2.1.4)",
+      "CIS M365 7.0.0 (2.1.4)",
       "mdo_safedocuments",
       "mdo_commonattachmentsfilter",
       "mdo_safeattachmentpolicy",
       "NIST CSF 2.0 (DE.CM-09)"
     ],
-    "appliesToTest": [
-      "CIS_2_1_4",
-      "ORCA158",
-      "ORCA189",
-      "ORCA227"
-    ],
+    "appliesToTest": ["CIS_2_1_4", "ORCA158", "ORCA189", "ORCA227"],
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
@@ -3310,7 +3571,7 @@
   {
     "name": "standards.AtpPolicyForO365",
     "cat": "Defender Standards",
-    "tag": ["CIS M365 6.0.1 (2.1.5)", "NIST CSF 2.0 (DE.CM-09)"],
+    "tag": ["CIS M365 7.0.0 (2.1.5)", "NIST CSF 2.0 (DE.CM-09)"],
     "appliesToTest": ["CIS_2_1_5", "ORCA225"],
     "helpText": "This creates a Atp policy that enables Defender for Office 365 for SharePoint, OneDrive and Microsoft Teams.",
     "addedComponent": [
@@ -3341,10 +3602,7 @@
     "name": "standards.PhishingSimulations",
     "cat": "Defender Standards",
     "tag": ["SMB1001 (1.11)", "SMB1001 (5.1)"],
-    "appliesToTest": [
-      "SMB1001_1_11",
-      "SMB1001_5_1"
-    ],
+    "appliesToTest": ["SMB1001_1_11", "SMB1001_5_1"],
     "helpText": "This creates a phishing simulation policy that enables phishing simulations for the entire tenant.",
     "addedComponent": [
       {
@@ -3397,9 +3655,9 @@
     "name": "standards.MalwareFilterPolicy",
     "cat": "Defender Standards",
     "tag": [
-      "CIS M365 6.0.1 (2.1.2)",
-      "CIS M365 6.0.1 (2.1.3)",
-      "CIS M365 6.0.1 (2.1.11)",
+      "CIS M365 7.0.0 (2.1.2)",
+      "CIS M365 7.0.0 (2.1.3)",
+      "CIS M365 7.0.0 (2.1.11)",
       "mdo_zapspam",
       "mdo_zapphish",
       "mdo_zapmalware",
@@ -4079,7 +4337,7 @@
   {
     "name": "standards.IntuneComplianceSettings",
     "cat": "Intune Standards",
-    "tag": ["CIS M365 6.0.1 (4.1)"],
+    "tag": ["CIS M365 7.0.0 (4.1)"],
     "appliesToTest": ["CIS_4_1"],
     "helpText": "Sets the mark devices with no compliance policy assigned as compliance/non compliant and Compliance status validity period.",
     "executiveText": "Configures how the system treats devices that don't have specific compliance policies and sets how often devices must check in to maintain their compliance status. This ensures proper security oversight of all corporate devices and maintains current compliance information.",
@@ -4100,7 +4358,7 @@
         "type": "number",
         "name": "standards.IntuneComplianceSettings.deviceComplianceCheckinThresholdDays",
         "label": "Compliance status validity period (days)",
-        "defaultValue": 130,
+        "defaultValue": 120,
         "validators": {
           "min": { "value": 1, "message": "Minimum value is 1" },
           "max": { "value": 120, "message": "Maximum value is 120" }
@@ -4151,7 +4409,7 @@
   {
     "name": "standards.DefaultPlatformRestrictions",
     "cat": "Intune Standards",
-    "tag": ["CIS M365 6.0.1 (4.2)", "CISA (MS.AAD.19.1v1)"],
+    "tag": ["CIS M365 7.0.0 (4.2)", "CISA (MS.AAD.19.1v1)"],
     "appliesToTest": ["CIS_4_2"],
     "helpText": "Sets the default platform restrictions for enrolling devices into Intune. Note: Do not block personally owned if platform is blocked.",
     "executiveText": "Controls which types of devices (iOS, Android, Windows, macOS) and ownership models (corporate vs. personal) can be enrolled in the company's device management system. This helps maintain security standards while supporting necessary business device types and usage scenarios.",
@@ -4358,6 +4616,28 @@
         "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.remotePassportEnabled",
         "label": "Allow phone sign-in",
         "default": true
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.enhancedSignInSecurity",
+        "label": "Enable enhanced sign-in security",
+        "multiple": false,
+        "options": [
+          { "label": "Not configured", "value": "0" },
+          { "label": "Enabled on capable hardware", "value": "1" },
+          { "label": "Disabled on all systems", "value": "2" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.securityKeyForSignIn",
+        "label": "Use security keys for sign-in",
+        "multiple": false,
+        "options": [
+          { "label": "Not configured", "value": "notConfigured" },
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Disabled", "value": "disabled" }
+        ]
       }
     ],
     "label": "Windows Hello for Business enrollment configuration",
@@ -4371,13 +4651,8 @@
   {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
-    "tag": ["CIS M365 6.0.1 (5.1.4.2)", "CISA (MS.AAD.17.1v1)"],
-    "appliesToTest": [
-      "CIS_5_1_4_2",
-      "ZTNA21801",
-      "ZTNA21802",
-      "ZTNA21837"
-    ],
+    "tag": ["CIS M365 7.0.0 (5.1.4.2)", "CISA (MS.AAD.17.1v1)"],
+    "appliesToTest": ["CIS_5_1_4_2", "ZTNA21801", "ZTNA21802", "ZTNA21837"],
     "helpText": "Sets the maximum number of devices that can be registered by a user. A value of 0 disables device registration by users",
     "executiveText": "Limits how many devices each employee can register for corporate access, preventing excessive device proliferation while accommodating legitimate business needs. This helps maintain security oversight and prevents potential abuse of device registration privileges.",
     "addedComponent": [
@@ -4399,12 +4674,8 @@
   {
     "name": "standards.intuneDeviceRegLocalAdmins",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (5.1.4.3)", "CIS M365 6.0.1 (5.1.4.4)", "SMB1001 (2.2)"],
-    "appliesToTest": [
-      "CIS_5_1_4_3",
-      "CIS_5_1_4_4",
-      "SMB1001_2_2"
-    ],
+    "tag": ["CIS M365 7.0.0 (5.1.4.3)", "CIS M365 7.0.0 (5.1.4.4)", "SMB1001 (2.2)"],
+    "appliesToTest": ["CIS_5_1_4_3", "CIS_5_1_4_4", "SMB1001_2_2"],
     "helpText": "Controls whether users who register Microsoft Entra joined devices are granted local administrator rights on those devices and if Global Administrators are added as local admins.",
     "docsDescription": "Configures the Device Registration Policy local administrator behavior for registering users. When enabled, users who register devices are not granted local administrator rights, you can also configure if Global Administrators are added as local admins.",
     "executiveText": "Controls whether employees who enroll devices automatically receive local administrator access. Disabling registering-user admin rights follows least-privilege principles and reduces security risk from over-privileged endpoints.",
@@ -4432,11 +4703,8 @@
   {
     "name": "standards.intuneRestrictUserDeviceRegistration",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (5.1.4.1)", "SMB1001 (2.8)"],
-    "appliesToTest": [
-      "CIS_5_1_4_1",
-      "SMB1001_2_8"
-    ],
+    "tag": [],
+    "appliesToTest": [],
     "helpText": "Controls whether users can register devices with Entra.",
     "docsDescription": "Configures whether users can register devices with Entra. When disabled, users are unable to register devices with Entra.",
     "executiveText": "Controls whether employees can register their devices for corporate access. Disabling user device registration prevents unauthorized or unmanaged devices from connecting to company resources, enhancing overall security posture.",
@@ -4456,14 +4724,33 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.intuneRestrictUserDeviceJoin",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["CIS M365 7.0.0 (5.1.4.1)", "SMB1001 (2.8)"],
+    "appliesToTest": ["CIS_5_1_4_1", "SMB1001_2_8"],
+    "helpText": "Controls whether users can join devices to Entra.",
+    "docsDescription": "Configures whether users can join devices to Entra. When disabled, users are unable to Entra-join devices, which prevents them from creating new Entra-joined (cloud-managed) device identities.",
+    "executiveText": "Controls whether employees can join their devices to the corporate Entra directory. Disabling user device join prevents unauthorized or unmanaged devices from becoming corporate-managed identities, enhancing overall security posture.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.intuneRestrictUserDeviceJoin.disableUserDeviceJoin",
+        "label": "Disable users from joining devices",
+        "defaultValue": true
+      }
+    ],
+    "label": "Configure user restriction for Entra device join",
+    "impact": "High Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-15",
+    "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneRequireMFA",
     "cat": "Intune Standards",
     "tag": [],
-    "appliesToTest": [
-      "ZTNA21782",
-      "ZTNA21796",
-      "ZTNA21872"
-    ],
+    "appliesToTest": ["ZTNA21782", "ZTNA21796", "ZTNA21872"],
     "helpText": "Requires MFA for all users to register devices with Intune. This is useful when not using Conditional Access.",
     "executiveText": "Requires employees to use multi-factor authentication when registering devices for corporate access, adding an extra security layer to prevent unauthorized device enrollment. This helps ensure only legitimate users can connect their devices to company systems.",
     "label": "Require Multi-factor Authentication to register or join devices with Microsoft Entra",
@@ -4588,7 +4875,7 @@
   {
     "name": "standards.SPAzureB2B",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 6.0.1 (7.2.2)"],
+    "tag": ["CIS M365 7.0.0 (7.2.2)"],
     "appliesToTest": ["CIS_7_2_2"],
     "helpText": "Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
     "executiveText": "Enables secure collaboration with external partners through SharePoint and OneDrive by integrating with Azure B2B guest access. This allows controlled sharing with external organizations while maintaining security oversight and proper access management.",
@@ -4611,15 +4898,8 @@
   {
     "name": "standards.SPDisallowInfectedFiles",
     "cat": "SharePoint Standards",
-    "tag": [
-      "CIS M365 6.0.1 (7.3.1)",
-      "CISA (MS.SPO.3.1v1)",
-      "NIST CSF 2.0 (DE.CM-09)"
-    ],
-    "appliesToTest": [
-      "CIS_7_3_1",
-      "ZTNA21817"
-    ],
+    "tag": ["CIS M365 7.0.0 (7.3.1)", "CISA (MS.SPO.3.1v1)", "NIST CSF 2.0 (DE.CM-09)"],
+    "appliesToTest": ["CIS_7_3_1", "ZTNA21817"],
     "helpText": "Ensure Office 365 SharePoint infected files are disallowed for download",
     "executiveText": "Prevents employees from downloading files that have been identified as containing malware or viruses from SharePoint and OneDrive. This security measure protects against malware distribution through file sharing while maintaining access to clean, safe documents.",
     "addedComponent": [],
@@ -4685,13 +4965,8 @@
   {
     "name": "standards.SPExternalUserExpiration",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 6.0.1 (7.2.9)", "CISA (MS.SPO.1.5v1)"],
-    "appliesToTest": [
-      "CIS_7_2_9",
-      "ZTNA21803",
-      "ZTNA21804",
-      "ZTNA21858"
-    ],
+    "tag": ["CIS M365 7.0.0 (7.2.9)", "CISA (MS.SPO.1.5v1)"],
+    "appliesToTest": ["CIS_7_2_9", "ZTNA21803", "ZTNA21804", "ZTNA21858"],
     "helpText": "Ensure guest access to a site or OneDrive will expire automatically",
     "executiveText": "Automatically expires external user access to SharePoint sites and OneDrive after a specified period, reducing security risks from forgotten or unnecessary guest accounts. This ensures external access is regularly reviewed and maintained only when actively needed.",
     "addedComponent": [
@@ -4724,12 +4999,8 @@
   {
     "name": "standards.SPEmailAttestation",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 6.0.1 (7.2.10)", "CISA (MS.SPO.1.6v1)"],
-    "appliesToTest": [
-      "CIS_7_2_10",
-      "ZTNA21803",
-      "ZTNA21804"
-    ],
+    "tag": ["CIS M365 7.0.0 (7.2.10)", "CISA (MS.SPO.1.6v1)"],
+    "appliesToTest": ["CIS_7_2_10", "ZTNA21803", "ZTNA21804"],
     "helpText": "Ensure re-authentication with verification code is restricted",
     "executiveText": "Requires external users to periodically re-verify their identity through email verification codes when accessing SharePoint resources, adding an extra security layer for external collaboration. This helps ensure continued legitimacy of external access over time.",
     "addedComponent": [
@@ -4762,17 +5033,8 @@
   {
     "name": "standards.DefaultSharingLink",
     "cat": "SharePoint Standards",
-    "tag": [
-      "CIS M365 6.0.1 (7.2.7)",
-      "CIS M365 6.0.1 (7.2.11)",
-      "CISA (MS.SPO.1.4v1)"
-    ],
-    "appliesToTest": [
-      "CIS_7_2_11",
-      "CIS_7_2_7",
-      "ZTNA21803",
-      "ZTNA21804"
-    ],
+    "tag": ["CIS M365 7.0.0 (7.2.7)", "CIS M365 7.0.0 (7.2.11)", "CISA (MS.SPO.1.4v1)"],
+    "appliesToTest": ["CIS_7_2_11", "CIS_7_2_7", "ZTNA21803", "ZTNA21804"],
     "helpText": "Configure the SharePoint default sharing link type and permission. This setting controls both the type of sharing link created by default and the permission level assigned to those links.",
     "docsDescription": "Sets the default sharing link type (Direct or Internal) and permission (View) in SharePoint and OneDrive. Direct sharing means links only work for specific people, while Internal sharing means links work for anyone in the organization. Setting the view permission as the default ensures that users must deliberately select the edit permission when sharing a link, reducing the risk of unintentionally granting edit privileges.",
     "executiveText": "Configures SharePoint default sharing links to implement the principle of least privilege for document sharing. This security measure reduces the risk of accidental data modification while maintaining collaboration functionality, requiring users to explicitly select Edit permissions when necessary. The sharing type setting controls whether links are restricted to specific recipients or available to the entire organization. This reduces the risk of accidental data exposure through link sharing.",
@@ -4877,16 +5139,12 @@
     "name": "standards.DisableSharePointLegacyAuth",
     "cat": "SharePoint Standards",
     "tag": [
-      "CIS M365 6.0.1 (7.2.1)",
+      "CIS M365 7.0.0 (7.2.1)",
       "spo_legacy_auth",
       "CISA (MS.AAD.3.1v1)",
       "NIST CSF 2.0 (PR.IR-01)"
     ],
-    "appliesToTest": [
-      "CIS_7_2_1",
-      "ZTNA21776",
-      "ZTNA21797"
-    ],
+    "appliesToTest": ["CIS_7_2_1", "ZTNA21776", "ZTNA21797"],
     "helpText": "Disables the ability to authenticate with SharePoint using legacy authentication methods. Any applications that use legacy authentication will need to be updated to use modern authentication.",
     "docsDescription": "Disables the ability for users and applications to access SharePoint via legacy basic authentication. This will likely not have any user impact, but will block systems/applications depending on basic auth or the SharePointOnlineCredentials class.",
     "executiveText": "Disables outdated authentication methods for SharePoint access, forcing applications and users to use modern, more secure authentication protocols. This significantly improves security by eliminating vulnerable authentication pathways while requiring updates to older applications.",
@@ -4910,17 +5168,12 @@
     "name": "standards.sharingCapability",
     "cat": "SharePoint Standards",
     "tag": [
-      "CIS M365 6.0.1 (7.2.3)",
-      "CIS M365 6.0.1 (7.2.4)",
+      "CIS M365 7.0.0 (7.2.3)",
+      "CIS M365 7.0.0 (7.2.4)",
       "CISA (MS.AAD.14.1v1)",
       "CISA (MS.SPO.1.1v1)"
     ],
-    "appliesToTest": [
-      "CIS_7_2_3",
-      "CIS_7_2_4",
-      "ZTNA21803",
-      "ZTNA21804"
-    ],
+    "appliesToTest": ["CIS_7_2_3", "CIS_7_2_4", "ZTNA21803", "ZTNA21804"],
     "helpText": "Sets the default sharing level for OneDrive and SharePoint. This is a tenant wide setting and overrules any settings set on the site level",
     "executiveText": "Defines the organization's default policy for sharing files and folders in SharePoint and OneDrive, balancing collaboration needs with security requirements. This fundamental setting determines whether employees can share with external users, anonymous links, or only internal colleagues.",
     "addedComponent": [
@@ -4967,16 +5220,8 @@
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint Standards",
-    "tag": [
-      "CIS M365 6.0.1 (7.2.5)",
-      "CISA (MS.AAD.14.2v1)",
-      "CISA (MS.SPO.1.2v1)"
-    ],
-    "appliesToTest": [
-      "CIS_7_2_5",
-      "ZTNA21803",
-      "ZTNA21804"
-    ],
+    "tag": ["CIS M365 7.0.0 (7.2.5)", "CISA (MS.AAD.14.2v1)", "CISA (MS.SPO.1.2v1)"],
+    "appliesToTest": ["CIS_7_2_5", "ZTNA21803", "ZTNA21804"],
     "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "docsDescription": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access. This is a tenant wide setting and overrules any settings set on the site level",
     "executiveText": "Prevents external users from sharing company documents with additional people, maintaining control over document distribution and preventing unauthorized access expansion. This security measure ensures that external sharing remains within intended boundaries set by internal employees.",
@@ -5073,15 +5318,8 @@
   {
     "name": "standards.unmanagedSync",
     "cat": "SharePoint Standards",
-    "tag": [
-      "CIS M365 6.0.1 (7.3.2)",
-      "CISA (MS.SPO.2.1v1)",
-      "NIST CSF 2.0 (PR.AA-05)"
-    ],
-    "appliesToTest": [
-      "CIS_7_3_2",
-      "ZTNA24824"
-    ],
+    "tag": ["CISA (MS.SPO.2.1v1)", "NIST CSF 2.0 (PR.AA-05)"],
+    "appliesToTest": ["ZTNA24824"],
     "helpText": "Entra P1 required. Block or limit access to SharePoint and OneDrive content from unmanaged devices (those not hybrid AD joined or compliant in Intune). These controls rely on Microsoft Entra Conditional Access policies and can take up to 24 hours to take effect.",
     "docsDescription": "Entra P1 required. Block or limit access to SharePoint and OneDrive content from unmanaged devices (those not hybrid AD joined or compliant in Intune). These controls rely on Microsoft Entra Conditional Access policies and can take up to 24 hours to take effect. 0 = Allow Access, 1 = Allow limited, web-only access, 2 = Block access. All information about this can be found in Microsofts documentation [here.](https://learn.microsoft.com/en-us/sharepoint/control-access-from-unmanaged-devices)",
     "executiveText": "Restricts access to company files from personal or unmanaged devices, ensuring corporate data can only be accessed from properly secured and monitored devices. This critical security control prevents data leaks while allowing controlled access through web browsers when necessary.",
@@ -5110,16 +5348,8 @@
   {
     "name": "standards.sharingDomainRestriction",
     "cat": "SharePoint Standards",
-    "tag": [
-      "CIS M365 6.0.1 (7.2.6)",
-      "CISA (MS.AAD.14.3v1)",
-      "CISA (MS.SPO.1.3v1)"
-    ],
-    "appliesToTest": [
-      "CIS_7_2_6",
-      "ZTNA21803",
-      "ZTNA21804"
-    ],
+    "tag": ["CIS M365 7.0.0 (7.2.6)", "CISA (MS.AAD.14.3v1)", "CISA (MS.SPO.1.3v1)"],
+    "appliesToTest": ["CIS_7_2_6", "ZTNA21803", "ZTNA21804"],
     "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
     "executiveText": "Controls which external domains employees can share files with, enabling secure collaboration with trusted partners while blocking sharing with unauthorized organizations. This targeted approach maintains necessary business relationships while preventing data exposure to unknown entities.",
     "addedComponent": [
@@ -5160,15 +5390,15 @@
     "name": "standards.TeamsGlobalMeetingPolicy",
     "cat": "Teams Standards",
     "tag": [
-      "CIS M365 6.0.1 (8.5.1)",
-      "CIS M365 6.0.1 (8.5.2)",
-      "CIS M365 6.0.1 (8.5.3)",
-      "CIS M365 6.0.1 (8.5.4)",
-      "CIS M365 6.0.1 (8.5.5)",
-      "CIS M365 6.0.1 (8.5.6)",
-      "CIS M365 6.0.1 (8.5.7)",
-      "CIS M365 6.0.1 (8.5.8)",
-      "CIS M365 6.0.1 (8.5.9)"
+      "CIS M365 7.0.0 (8.5.1)",
+      "CIS M365 7.0.0 (8.5.2)",
+      "CIS M365 7.0.0 (8.5.3)",
+      "CIS M365 7.0.0 (8.5.4)",
+      "CIS M365 7.0.0 (8.5.5)",
+      "CIS M365 7.0.0 (8.5.6)",
+      "CIS M365 7.0.0 (8.5.7)",
+      "CIS M365 7.0.0 (8.5.8)",
+      "CIS M365 7.0.0 (8.5.9)"
     ],
     "appliesToTest": [
       "CIS_8_5_1",
@@ -5302,7 +5532,7 @@
   {
     "name": "standards.TeamsExternalChatWithAnyone",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 6.0.1 (8.2.3)"],
+    "tag": ["CIS M365 7.0.0 (8.2.3)"],
     "appliesToTest": ["CIS_8_2_3"],
     "helpText": "Controls whether users can start Teams chats with any email address, inviting external recipients as guests via email.",
     "docsDescription": "Manages the Teams messaging policy setting UseB2BInvitesToAddExternalUsers. When enabled, users can start chats with any email address and recipients receive an invitation to join the chat as guests. Disabling the setting prevents these external email chats from being created, keeping conversations limited to internal users and approved guests.",
@@ -5346,7 +5576,7 @@
     "addedDate": "2024-07-30",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false",
     "recommendedBy": ["CIS"],
-    "tag": ["CIS M365 6.0.1 (8.1.2)"],
+    "tag": ["CIS M365 7.0.0 (8.1.2)"],
     "appliesToTest": ["CIS_8_1_2"],
     "requiredCapabilities": ["MCOSTANDARD", "MCOEV", "MCOIMP", "TEAMS1", "Teams_Room_Standard"]
   },
@@ -5406,7 +5636,7 @@
   {
     "name": "standards.TeamsExternalFileSharing",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 6.0.1 (8.1.1)"],
+    "tag": ["CIS M365 7.0.0 (8.1.1)"],
     "appliesToTest": ["CIS_8_1_1"],
     "helpText": "Ensure external file sharing in Teams is enabled for only approved cloud storage services.",
     "executiveText": "Controls which external cloud storage services (like Google Drive, Dropbox, Box) employees can access through Teams, ensuring file sharing occurs only through approved and secure platforms. This helps maintain data governance while supporting necessary business integrations.",
@@ -5477,11 +5707,8 @@
   {
     "name": "standards.TeamsExternalAccessPolicy",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 6.0.1 (8.2.1)", "CIS M365 6.0.1 (8.2.2)"],
-    "appliesToTest": [
-      "CIS_8_2_1",
-      "CIS_8_2_2"
-    ],
+    "tag": ["CIS M365 7.0.0 (8.2.1)", "CIS M365 7.0.0 (8.2.2)"],
+    "appliesToTest": ["CIS_8_2_1", "CIS_8_2_2"],
     "helpText": "Sets the properties of the Global external access policy.",
     "docsDescription": "Sets the properties of the Global external access policy. External access policies determine whether or not your users can: 1) communicate with users who have Session Initiation Protocol (SIP) accounts with a federated organization; 2) communicate with users who are using custom applications built with Azure Communication Services; 3) access Skype for Business Server over the Internet, without having to log on to your internal network; 4) communicate with users who have SIP accounts with a public instant messaging (IM) provider such as Skype; and, 5) communicate with people who are using Teams with an account that's not managed by an organization.",
     "executiveText": "Defines the organization's policy for communicating with external users through Teams, including other organizations, Skype users, and unmanaged accounts. This fundamental setting determines the scope of external collaboration while maintaining security boundaries for business communications.",
@@ -5508,7 +5735,7 @@
   {
     "name": "standards.TeamsFederationConfiguration",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 6.0.1 (8.2.1)"],
+    "tag": ["CIS M365 7.0.0 (8.2.1)"],
     "appliesToTest": ["CIS_8_2_1", "CIS_8_2_4"],
     "helpText": "Sets the properties of the Global federation configuration.",
     "docsDescription": "Sets the properties of the Global federation configuration. Federation configuration settings determine whether or not your users can communicate with users who have SIP accounts with a federated organization.",
@@ -5584,7 +5811,7 @@
   {
     "name": "standards.TeamsMessagingPolicy",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 6.0.1 (8.6.1)"],
+    "tag": ["CIS M365 7.0.0 (8.6.1)"],
     "appliesToTest": ["CIS_8_6_1"],
     "helpText": "Sets the properties of the Global messaging policy.",
     "docsDescription": "Sets the properties of the Global messaging policy. Messaging policies control which chat and channel messaging features are available to users in Teams.",
@@ -5832,6 +6059,110 @@
     "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
   },
   {
+    "name": "standards.DevicePrepProfile",
+    "cat": "Device Management Standards",
+    "tag": ["autopilot", "device_prep", "enrollment"],
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
+    "helpText": "Creates and manages a Windows Autopilot Device Preparation profile for streamlined device enrollment.",
+    "docsDescription": "Deploys a Windows Autopilot Device Preparation profile through Intune configuration policies. This standard manages deployment mode, join type, account type, timeout, error messages, and optional device security group assignment. Optionally creates a new security group with the Intune Provisioning Client as owner.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.DevicePrepProfile.ProfileName",
+        "label": "Profile Display Name",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DevicePrepProfile.ProfileDescription",
+        "label": "Profile Description",
+        "required": false
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.DevicePrepProfile.DeploymentType",
+        "label": "Deployment Type",
+        "options": [
+          { "label": "Single user", "value": "0" },
+          { "label": "Shared", "value": "1" }
+        ]
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.DevicePrepProfile.JoinType",
+        "label": "Join Type",
+        "options": [
+          { "label": "Microsoft Entra join", "value": "0" },
+          { "label": "Microsoft Entra hybrid join", "value": "1" }
+        ]
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.DevicePrepProfile.AccountType",
+        "label": "Account Type",
+        "options": [
+          { "label": "Standard user", "value": "0" },
+          { "label": "Administrator", "value": "1" }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.DevicePrepProfile.Timeout",
+        "label": "Timeout (minutes)",
+        "defaultValue": 60
+      },
+      {
+        "type": "textField",
+        "name": "standards.DevicePrepProfile.CustomErrorMessage",
+        "label": "Custom Error Message",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DevicePrepProfile.AllowSkip",
+        "label": "Allow users to skip setup after failure",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DevicePrepProfile.AllowDiagnostics",
+        "label": "Allow users to collect diagnostics",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DevicePrepProfile.DeviceGroupName",
+        "label": "Device Security Group Name (wildcard match)",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DevicePrepProfile.CreateNewGroup",
+        "label": "Create new group if group is not found",
+        "defaultValue": false
+      },
+      {
+        "type": "radio",
+        "name": "standards.DevicePrepProfile.AssignTo",
+        "label": "Policy Assignment",
+        "options": [
+          { "label": "Do not assign", "value": "none" },
+          { "label": "All devices", "value": "AllDevices" },
+          { "label": "All users and devices", "value": "AllDevicesAndUsers" }
+        ]
+      }
+    ],
+    "label": "Deploy Device Prep Profile",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-05-25",
+    "recommendedBy": [],
+    "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
+  },
+  {
     "name": "standards.IntuneTemplate",
     "cat": "Templates",
     "label": "Intune Template",
@@ -6075,18 +6406,18 @@
     "impact": "High Impact",
     "addedDate": "2023-12-30",
     "tag": [
-      "CIS M365 6.0.1 (5.2.2.1)",
-      "CIS M365 6.0.1 (5.2.2.2)",
-      "CIS M365 6.0.1 (5.2.2.3)",
-      "CIS M365 6.0.1 (5.2.2.4)",
-      "CIS M365 6.0.1 (5.2.2.5)",
-      "CIS M365 6.0.1 (5.2.2.6)",
-      "CIS M365 6.0.1 (5.2.2.7)",
-      "CIS M365 6.0.1 (5.2.2.8)",
-      "CIS M365 6.0.1 (5.2.2.9)",
-      "CIS M365 6.0.1 (5.2.2.10)",
-      "CIS M365 6.0.1 (5.2.2.11)",
-      "CIS M365 6.0.1 (5.2.2.12)",
+      "CIS M365 7.0.0 (5.2.2.1)",
+      "CIS M365 7.0.0 (5.2.2.2)",
+      "CIS M365 7.0.0 (5.2.2.3)",
+      "CIS M365 7.0.0 (5.2.2.4)",
+      "CIS M365 7.0.0 (5.2.2.5)",
+      "CIS M365 7.0.0 (5.2.2.6)",
+      "CIS M365 7.0.0 (5.2.2.7)",
+      "CIS M365 7.0.0 (5.2.2.8)",
+      "CIS M365 7.0.0 (5.2.2.9)",
+      "CIS M365 7.0.0 (5.2.2.10)",
+      "CIS M365 7.0.0 (5.2.2.11)",
+      "CIS M365 7.0.0 (5.2.2.12)",
       "SMB1001 (2.5)",
       "SMB1001 (2.6)",
       "SMB1001 (2.8)",
@@ -6213,8 +6544,8 @@
     "label": "Group Template",
     "multi": true,
     "cat": "Templates",
-    "tag": ["CIS M365 6.0.1 (5.1.3.1)"],
-    "appliesToTest": ["CIS_5_1_3_1"],
+    "tag": [],
+    "appliesToTest": [],
     "disabledFeatures": { "report": true, "warn": true, "remediate": false },
     "impact": "Medium Impact",
     "addedDate": "2023-12-30",
@@ -6609,13 +6940,6 @@
       },
       {
         "type": "textField",
-        "name": "standards.DeployCheckChromeExtension.companyURL",
-        "label": "Company URL",
-        "placeholder": "https://yourcompany.com",
-        "required": false
-      },
-      {
-        "type": "textField",
         "name": "standards.DeployCheckChromeExtension.productName",
         "label": "Product Name",
         "placeholder": "YOUR-PRODUCT-NAME",
@@ -6861,7 +7185,7 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectWindows",
-        "label": "Connect Windows 10.0.15063+ to MDE",
+        "label": "Connect Windows 10.0.15063+ to MDE (Note: enabling this forces 'Block Windows if partner data unavailable' to on)",
         "defaultValue": false
       },
       {
@@ -6873,7 +7197,7 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.windowsDeviceBlockedOnMissingPartnerData",
-        "label": "Block Windows if partner data unavailable",
+        "label": "Block Windows if partner data unavailable (Note: Microsoft enforces this to on when Connect Windows 10.0.15063+ to MDE is on)",
         "defaultValue": false
       },
       {
@@ -7144,10 +7468,10 @@
   {
     "name": "standards.EnforcePrivateGroups",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (1.2.1)"],
+    "tag": ["CIS M365 7.0.0 (1.2.1)"],
     "appliesToTest": ["CIS_1_2_1"],
     "helpText": "Sets all public Microsoft 365 groups to private automatically. Groups can be excluded by display name keyword.",
-    "docsDescription": "Ensures only organisation-managed or approved public groups exist by automatically switching public Microsoft 365 (Unified) groups to private visibility. Groups whose display name matches any of the configured exclusion keywords are left unchanged. This aligns with CIS M365 6.0.1 benchmark control 1.2.1.",
+    "docsDescription": "Ensures only organisation-managed or approved public groups exist by automatically switching public Microsoft 365 (Unified) groups to private visibility. Groups whose display name matches any of the configured exclusion keywords are left unchanged. This aligns with CIS M365 7.0.0 benchmark control 1.2.1.",
     "executiveText": "Enforces private visibility on all Microsoft 365 groups to prevent unauthorised external access to group resources such as Teams, SharePoint sites, and Planner boards. Approved public groups can be excluded by name, ensuring governance while retaining flexibility for intentionally public collaboration spaces.",
     "addedComponent": [
       {
@@ -7178,7 +7502,7 @@
   {
     "name": "standards.EmptyFilterIPAllowList",
     "cat": "Defender Standards",
-    "tag": ["CIS M365 6.0.1 (2.1.12)"],
+    "tag": ["CIS M365 7.0.0 (2.1.12)"],
     "appliesToTest": ["CIS_2_1_12"],
     "helpText": "Ensures the connection filter IP allow list is not used. IPs on this list bypass spam, spoof, and authentication checks.",
     "docsDescription": "IPs on the connection filter allow list bypass spam, spoof, and authentication checks. CIS recommends keeping this list empty to ensure all inbound email is properly scanned. This standard checks that the IPAllowList on the Default hosted connection filter policy is empty and can remediate by clearing it.",
@@ -7201,10 +7525,10 @@
   {
     "name": "standards.TeamsZAP",
     "cat": "Defender Standards",
-    "tag": ["CIS M365 6.0.1 (2.4.4)"],
+    "tag": ["CIS M365 7.0.0 (2.4.4)"],
     "appliesToTest": ["CIS_2_4_4"],
     "helpText": "Ensures Zero-hour auto purge (ZAP) is enabled for Microsoft Teams, automatically removing malicious messages after delivery.",
-    "docsDescription": "Zero-hour auto purge (ZAP) for Microsoft Teams retroactively detects and neutralises malicious messages that have already been delivered in Teams chats. Enabling ZAP ensures that phishing, malware, and high confidence phishing messages are automatically purged even after initial delivery, aligning with CIS M365 6.0.1 benchmark control 2.4.4.",
+    "docsDescription": "Zero-hour auto purge (ZAP) for Microsoft Teams retroactively detects and neutralises malicious messages that have already been delivered in Teams chats. Enabling ZAP ensures that phishing, malware, and high confidence phishing messages are automatically purged even after initial delivery, aligning with CIS M365 7.0.0 benchmark control 2.4.4.",
     "executiveText": "Enables Zero-hour auto purge for Microsoft Teams to automatically detect and remove malicious messages after delivery. This provides an additional layer of protection against phishing and malware that may bypass initial scanning, ensuring threats are neutralised even after they reach users.",
     "addedComponent": [],
     "label": "Ensure Zero-hour auto purge for Microsoft Teams is on",
@@ -7224,7 +7548,7 @@
   {
     "name": "standards.CollaborationDomainRestriction",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 6.0.1 (5.1.6.1)"],
+    "tag": ["CIS M365 7.0.0 (5.1.6.1)"],
     "appliesToTest": ["CIS_5_1_6_1"],
     "helpText": "Restricts B2B collaboration invitations to a specified list of allowed domains. If no domains are provided, the standard will alert and report on whether any domain restrictions are currently configured.",
     "docsDescription": "By default, Microsoft Entra ID allows collaboration invitations to be sent to any external domain. CIS recommends restricting B2B collaboration invitations to only approved domains to reduce the risk of data exfiltration and unauthorized access. This standard checks the B2B management policy for an allow list of domains and can remediate by setting the allowed domains list.",
@@ -7244,5 +7568,419 @@
     "addedDate": "2026-05-06",
     "powershellEquivalent": "Graph API PATCH https://graph.microsoft.com/beta/policies/b2bManagementPolicies/default",
     "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.IntuneAppTemplateDeploy",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Deploys selected Intune application templates to the tenant. Supports WinGet/Store apps, Office apps, Chocolatey apps, Win32 script apps, and MSP apps.",
+    "docsDescription": "Uses CIPP Intune Application Templates to deploy applications across tenants as a standard. Each template can contain multiple applications of different types which will be queued for deployment.",
+    "executiveText": "Automatically deploys approved Intune applications across all managed tenants, ensuring consistent software availability and reducing manual deployment overhead. Supports WinGet, Office, Chocolatey, Win32, and MSP application types.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "label": "Select Application Templates",
+        "name": "standards.IntuneAppTemplateDeploy.templateIds",
+        "api": {
+          "url": "/api/ListAppTemplates",
+          "labelField": "displayName",
+          "valueField": "GUID",
+          "queryKey": "StdIntuneAppTemplateList"
+        }
+      }
+    ],
+    "label": "Deploy Intune Application Template",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-23",
+    "powershellEquivalent": "Graph API - /deviceAppManagement/mobileApps",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.AutopatchGroup",
+    "cat": "Intune Standards",
+    "tag": [],
+    "beta": true,
+    "deprecated": true,
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
+    "helpText": "Deploys a Windows Autopatch group with configurable deployment ring settings for quality updates, feature updates, Edge, and Office.",
+    "docsDescription": "Creates or updates a Windows Autopatch deployment group with Test and Last deployment rings. Configures quality update deferrals, feature update targeting, Edge and Office update channels per ring. Uses the Autopatch API proxy to manage the group configuration.",
+    "executiveText": "Configures Windows Autopatch deployment groups to manage update delivery across devices. Autopatch automates Windows quality updates, feature updates, Edge, and Office updates using deployment rings with configurable deferrals and deadlines.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.AutopatchGroup.GroupName",
+        "label": "Group Name",
+        "required": true,
+        "defaultValue": "Autopatch default group"
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.TargetOSVersion",
+        "label": "Target OS Version",
+        "required": true,
+        "options": [
+          { "label": "Windows 11, version 24H2", "value": "Windows 11, version 24H2" },
+          { "label": "Windows 11, version 25H2", "value": "Windows 11, version 25H2" }
+        ],
+        "defaultValue": "Windows 11, version 25H2"
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopatchGroup.EnableDriverUpdate",
+        "label": "Enable Driver Updates",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopatchGroup.InstallWin10OnWin11Ineligible",
+        "label": "Install latest Windows 10 on Windows 11 ineligible devices",
+        "defaultValue": false
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestQualityDeferral",
+        "label": "Test Ring - Quality Update Deferral (days)",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestQualityDeadline",
+        "label": "Test Ring - Quality Update Deadline (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestQualityGracePeriod",
+        "label": "Test Ring - Quality Update Grace Period (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 7, "message": "Maximum value is 7" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestFeatureDeferral",
+        "label": "Test Ring - Feature Update Deferral (days)",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 365, "message": "Maximum value is 365" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestFeatureDeadline",
+        "label": "Test Ring - Feature Update Deadline (days)",
+        "defaultValue": 5,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.TestEdgeChannel",
+        "label": "Test Ring - Edge Update Channel",
+        "options": [
+          { "label": "Stable", "value": "Stable" },
+          { "label": "Beta", "value": "Beta" },
+          { "label": "Dev", "value": "Dev" }
+        ],
+        "defaultValue": "Beta"
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.TestOfficeChannel",
+        "label": "Test Ring - Office Update Channel",
+        "options": [
+          { "label": "Current", "value": "Current" },
+          { "label": "Monthly Enterprise", "value": "MonthlyEnterprise" },
+          { "label": "Semi-Annual Enterprise", "value": "SemiAnnual" }
+        ],
+        "defaultValue": "MonthlyEnterprise"
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.TestDnfDeferral",
+        "label": "Test Ring - Driver & Firmware Deferral (days)",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastQualityDeferral",
+        "label": "Last Ring - Quality Update Deferral (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastQualityDeadline",
+        "label": "Last Ring - Quality Update Deadline (days)",
+        "defaultValue": 2,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastQualityGracePeriod",
+        "label": "Last Ring - Quality Update Grace Period (days)",
+        "defaultValue": 2,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 7, "message": "Maximum value is 7" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastFeatureDeferral",
+        "label": "Last Ring - Feature Update Deferral (days)",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 365, "message": "Maximum value is 365" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastFeatureDeadline",
+        "label": "Last Ring - Feature Update Deadline (days)",
+        "defaultValue": 5,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.LastEdgeChannel",
+        "label": "Last Ring - Edge Update Channel",
+        "options": [
+          { "label": "Stable", "value": "Stable" },
+          { "label": "Beta", "value": "Beta" },
+          { "label": "Dev", "value": "Dev" }
+        ],
+        "defaultValue": "Stable"
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.AutopatchGroup.LastOfficeChannel",
+        "label": "Last Ring - Office Update Channel",
+        "options": [
+          { "label": "Current", "value": "Current" },
+          { "label": "Monthly Enterprise", "value": "MonthlyEnterprise" },
+          { "label": "Semi-Annual Enterprise", "value": "SemiAnnual" }
+        ],
+        "defaultValue": "MonthlyEnterprise"
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastOfficeDeferral",
+        "label": "Last Ring - Office Update Deferral (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastOfficeDeadline",
+        "label": "Last Ring - Office Update Deadline (days)",
+        "defaultValue": 2,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.AutopatchGroup.LastDnfDeferral",
+        "label": "Last Ring - Driver & Firmware Deferral (days)",
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 30, "message": "Maximum value is 30" }
+        }
+      }
+    ],
+    "label": "Deploy Windows Autopatch Group",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-05-27",
+    "powershellEquivalent": "Autopatch API - POST /api/autoPatch",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.FIDO2PasskeyProfiles",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Configures FIDO2 passkey profiles including AAGUID allowlists, attestation enforcement, and passkey types for the tenant.",
+    "docsDescription": "Manages FIDO2 passkey profiles on the tenant authentication methods policy. Allows defining passkey profiles that control which authenticators (hardware keys, password managers, Microsoft Authenticator) are permitted via AAGUID allowlists, whether attestation is enforced, and which passkey types (device-bound, synced, or both) are allowed. This enables MSPs to centrally deploy phishing-resistant MFA configurations across tenants.",
+    "executiveText": "Configures passkey (FIDO2) profiles that control which authenticators users can register for phishing-resistant MFA. Supports allowlisting specific hardware keys (e.g., YubiKey models), password managers (e.g., 1Password), and Microsoft Authenticator by AAGUID, with control over attestation enforcement and passkey types.",
+    "addedComponent": [
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.FIDO2PasskeyProfiles.PasskeyTypes",
+        "label": "Allowed Passkey Types",
+        "options": [
+          { "label": "Device-bound only", "value": "deviceBound" },
+          { "label": "Synced only", "value": "synced" },
+          { "label": "Both device-bound and synced", "value": "deviceBound,synced" }
+        ],
+        "required": true
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.FIDO2PasskeyProfiles.AttestationEnforcement",
+        "label": "Attestation Enforcement",
+        "options": [
+          { "label": "Disabled (required for synced passkeys)", "value": "disabled" },
+          { "label": "Registration only", "value": "registrationOnly" }
+        ],
+        "required": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.FIDO2PasskeyProfiles.EnforceKeyRestrictions",
+        "label": "Enforce AAGUID Key Restrictions"
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "name": "standards.FIDO2PasskeyProfiles.EnforcementType",
+        "label": "Key Restriction Type",
+        "options": [
+          { "label": "Allow listed AAGUIDs only", "value": "allow" },
+          { "label": "Block listed AAGUIDs", "value": "block" }
+        ]
+      },
+      {
+        "type": "textField",
+        "name": "standards.FIDO2PasskeyProfiles.AAGUIDs",
+        "label": "AAGUIDs (comma-separated list of authenticator AAGUIDs)"
+      }
+    ],
+    "label": "Configure FIDO2 Passkey Profile",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-25",
+    "powershellEquivalent": "Graph API PATCH /policies/authenticationMethodsPolicy/authenticationMethodConfigurations/fido2",
+    "recommendedBy": ["CIPP"]
+  },
+  {
+    "name": "standards.SmartLockout",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["CIS M365 7.0.0 (5.2.3.8)", "CIS M365 7.0.0 (5.2.3.9)"],
+    "appliesToTest": ["CIS_5_2_3_8", "CIS_5_2_3_9"],
+    "helpText": "**Requires Entra ID P1.** Configures the Entra ID Smart Lockout settings including lockout duration, lockout threshold, and on-premises integration mode.",
+    "docsDescription": "Configures the Entra ID Smart Lockout policy which protects against brute-force password attacks. Smart Lockout locks out bad actors who try to guess user passwords or use brute-force methods. It recognizes sign-ins from valid users and treats them differently from attackers. Settings include lockout duration (seconds), lockout threshold (failed attempts before lockout), and on-premises password protection mode (Audit or Enforced).",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.SmartLockout.LockoutDurationInSeconds",
+        "label": "Lockout Duration (seconds)",
+        "default": 60,
+        "required": true
+      },
+      {
+        "type": "number",
+        "name": "standards.SmartLockout.LockoutThreshold",
+        "label": "Lockout Threshold (failed attempts)",
+        "default": 10,
+        "required": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.SmartLockout.EnableBannedPasswordCheckOnPremises",
+        "label": "Enable On-Premises Password Protection"
+      },
+      {
+        "type": "radio",
+        "name": "standards.SmartLockout.BannedPasswordCheckOnPremisesMode",
+        "label": "On-Premises Mode",
+        "options": [
+          { "label": "Audit", "value": "Audit" },
+          { "label": "Enforced", "value": "Enforced" }
+        ]
+      }
+    ],
+    "label": "Configure Entra ID Smart Lockout",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-05-27",
+    "powershellEquivalent": "Get-MgBetaDirectorySetting, New-MgBetaDirectorySetting, Update-MgBetaDirectorySetting",
+    "recommendedBy": ["CIS"],
+    "requiredCapabilities": ["AAD_PREMIUM", "AAD_PREMIUM_P2"]
+  },
+  {
+    "name": "standards.SPOVersionControl",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Configures SharePoint Online file versioning to either use automatic version trimming managed by Microsoft, or enforce a fixed major version limit with optional version expiration.",
+    "docsDescription": "Configures the SharePoint Online tenant-level file versioning policy. When automatic version trimming is enabled, Microsoft intelligently manages version cleanup. When disabled, you can set a fixed maximum number of major versions to retain and optionally expire versions after a specified number of days. This helps manage storage consumption while preserving version history as needed.",
+    "executiveText": "Controls how SharePoint Online manages file version history at the tenant level. Automatic trimming lets Microsoft optimize storage by cleaning up old versions intelligently. Manual limits give administrators precise control over the maximum number of versions retained and their expiration, ensuring predictable storage usage and compliance with data retention policies.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.SPOVersionControl.EnableAutoTrim",
+        "label": "Enable Automatic Version Trimming (Microsoft managed)"
+      },
+      {
+        "type": "number",
+        "name": "standards.SPOVersionControl.MajorVersionLimit",
+        "label": "Maximum Major Versions (when auto trim is off)",
+        "default": 50
+      },
+      {
+        "type": "number",
+        "name": "standards.SPOVersionControl.ExpireVersionsAfterDays",
+        "label": "Expire Versions After Days (0 = never, when auto trim is off)",
+        "default": 0
+      },
+      {
+        "type": "switch",
+        "name": "standards.SPOVersionControl.ApplyToExistingSites",
+        "label": "Apply to all existing sites and document libraries"
+      }
+    ],
+    "label": "Set SharePoint File Version Limits",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-05-27",
+    "powershellEquivalent": "Set-SPOTenant -EnableAutoExpirationVersionTrim $true or Set-SPOTenant -EnableAutoExpirationVersionTrim $false -MajorVersionLimit 50 -ExpireVersionsAfterDays 365",
+    "recommendedBy": [],
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    }
   }
 ]

@@ -14,29 +14,29 @@ import { CippFormContactSelector } from "../../../../components/CippComponents/C
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 
 const EditGroup = () => {
-  const router = useRouter();
-  const { groupId, groupType } = router.query;
-  const [groupIdReady, setGroupIdReady] = useState(false);
-  const [showMembershipTable, setShowMembershipTable] = useState(false);
-  const [combinedData, setCombinedData] = useState([]);
-  const [initialValues, setInitialValues] = useState({});
-  const tenantFilter = useSettings().currentTenant;
+  const router = useRouter()
+  const { groupId, groupType } = router.query
+  const [groupIdReady, setGroupIdReady] = useState(false)
+  const [showMembershipTable, setShowMembershipTable] = useState(false)
+  const [combinedData, setCombinedData] = useState([])
+  const [initialValues, setInitialValues] = useState({})
+  const tenantFilter = useSettings().currentTenant
 
   const groupInfo = ApiGetCall({
     url: `/api/ListGroups?groupID=${groupId}&tenantFilter=${tenantFilter}&members=true&owners=true&groupType=${groupType}`,
     queryKey: `ListGroups-${groupId}`,
     waiting: groupIdReady,
-  });
+  })
 
   useEffect(() => {
     if (groupId) {
-      setGroupIdReady(true);
-      groupInfo.refetch();
+      setGroupIdReady(true)
+      groupInfo.refetch()
     }
-  }, [router.query, groupId, tenantFilter]);
+  }, [router.query, groupId, tenantFilter])
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
       tenantFilter: tenantFilter,
       AddMember: [],
@@ -45,51 +45,53 @@ const EditGroup = () => {
       RemoveOwner: [],
       AddContact: [],
       RemoveContact: [],
-      visibility: "Public",
+      AddLicenses: [],
+      RemoveLicenses: [],
+      visibility: 'Public',
     },
-  });
+  })
 
   useEffect(() => {
     if (groupInfo.isSuccess) {
-      const group = groupInfo.data?.groupInfo;
+      const group = groupInfo.data?.groupInfo
       if (group) {
         // Create combined data for the table
         const combinedData = [
           ...(groupInfo.data?.owners?.map((o) => ({
-            type: "Owner",
+            type: 'Owner',
             userPrincipalName: o.userPrincipalName,
             displayName: o.displayName,
           })) || []),
           ...(groupInfo.data?.members?.map((m) => ({
-            type: m?.["@odata.type"] === "#microsoft.graph.orgContact" ? "Contact" : "Member",
+            type: m?.['@odata.type'] === '#microsoft.graph.orgContact' ? 'Contact' : 'Member',
             userPrincipalName: m.userPrincipalName ?? m.mail,
             displayName: m.displayName,
           })) || []),
-        ];
-        setCombinedData(combinedData);
+        ]
+        setCombinedData(combinedData)
 
         // Create initial values object
         const formValues = {
           tenantFilter: tenantFilter,
           mail: group.mail,
-          mailNickname: group.mailNickname || "",
+          mailNickname: group.mailNickname || '',
           allowExternal: groupInfo?.data?.allowExternal,
           sendCopies: groupInfo?.data?.sendCopies,
           hideFromOutlookClients: groupInfo?.data?.hideFromOutlookClients,
-          visibility: group?.visibility ?? "Public",
+          visibility: group?.visibility ?? 'Public',
           displayName: group.displayName,
-          description: group.description || "",
-          membershipRules: group.membershipRule || "",
+          description: group.description || '',
+          membershipRules: group.membershipRule || '',
           groupId: group.id,
           groupType: (() => {
-            if (group.groupTypes?.includes("Unified")) {
-              return "Microsoft 365";
+            if (group.groupTypes?.includes('Unified')) {
+              return 'Microsoft 365'
             }
             if (!group.mailEnabled && group.securityEnabled) {
-              return "Security";
+              return 'Security'
             }
             if (group.mailEnabled && group.securityEnabled) {
-              return "Mail-Enabled Security";
+              return 'Mail-Enabled Security'
             }
 
             if (
@@ -97,9 +99,9 @@ const EditGroup = () => {
               group.mailEnabled &&
               !group.securityEnabled
             ) {
-              return "Distribution List";
+              return 'Distribution List'
             }
-            return null;
+            return null
           })(),
           securityEnabled: group.securityEnabled,
           // Initialize empty arrays for add/remove actions
@@ -109,7 +111,9 @@ const EditGroup = () => {
           RemoveOwner: [],
           AddContact: [],
           RemoveContact: [],
-        };
+          AddLicenses: [],
+          RemoveLicenses: [],
+        }
 
         // Store initial values for comparison
         setInitialValues({
@@ -117,43 +121,43 @@ const EditGroup = () => {
           sendCopies: groupInfo?.data?.sendCopies,
           hideFromOutlookClients: groupInfo?.data?.hideFromOutlookClients,
           securityEnabled: group.securityEnabled,
-          visibility: group.visibility ?? "Public",
-        });
+          visibility: group.visibility ?? 'Public',
+        })
 
         // Reset the form with all values
-        formControl.reset(formValues);
+        formControl.reset(formValues)
       }
     }
-  }, [groupInfo.isSuccess, router.query, groupInfo.isFetching]);
+  }, [groupInfo.isSuccess, router.query, groupInfo.isFetching])
 
   // Custom data formatter to only send changed values
   const customDataFormatter = (formData) => {
-    const cleanedData = { ...formData };
+    const cleanedData = { ...formData }
 
     // Properties that should only be sent if they've changed from initial values
     const changeDetectionProperties = [
-      "allowExternal",
-      "sendCopies",
-      "hideFromOutlookClients",
-      "securityEnabled",
-      "visibility",
-    ];
+      'allowExternal',
+      'sendCopies',
+      'hideFromOutlookClients',
+      'securityEnabled',
+      'visibility',
+    ]
 
     changeDetectionProperties.forEach((property) => {
       if (formData[property] === initialValues[property]) {
-        delete cleanedData[property];
+        delete cleanedData[property]
       }
-    });
+    })
 
-    return cleanedData;
-  };
+    return cleanedData
+  }
 
   return (
     <>
       <CippFormPage
         formControl={formControl}
-        queryKey={[`ListGroups-${groupId}`]}
-        title={`Group - ${groupInfo.data?.groupInfo?.displayName || ""}`}
+        queryKey={[`ListGroups-${groupId}`, `Licenses-${tenantFilter}`]}
+        title={`Group - ${groupInfo.data?.groupInfo?.displayName || ''}`}
         formPageType="Edit"
         backButtonTitle="Group Overview"
         postUrl="/api/EditGroup"
@@ -166,7 +170,7 @@ const EditGroup = () => {
               onClick={() => setShowMembershipTable(!showMembershipTable)}
               sx={{ mb: 2 }}
             >
-              {showMembershipTable ? "Edit Membership" : "View members"}
+              {showMembershipTable ? 'Edit Membership' : 'View members'}
             </Button>
           </>
         }
@@ -182,7 +186,7 @@ const EditGroup = () => {
             <CippDataTable
               data={combinedData}
               isFetching={groupInfo.isFetching}
-              simpleColumns={["type", "userPrincipalName", "displayName"]}
+              simpleColumns={['type', 'userPrincipalName', 'displayName']}
               refreshFunction={groupInfo.refetch}
             />
           </Box>
@@ -226,7 +230,7 @@ const EditGroup = () => {
                 />
               </Grid>
 
-              {groupInfo.data?.groupInfo?.groupTypes?.includes("DynamicMembership") && (
+              {groupInfo.data?.groupInfo?.groupTypes?.includes('DynamicMembership') && (
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="textField"
@@ -254,9 +258,9 @@ const EditGroup = () => {
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   addedField={{
-                    id: "id",
-                    displayName: "displayName",
-                    userPrincipalName: "userPrincipalName",
+                    id: 'id',
+                    displayName: 'displayName',
+                    userPrincipalName: 'userPrincipalName',
                   }}
                   dataFilter={(option) =>
                     !groupInfo.data?.members?.some((m) => m.id === option.value)
@@ -273,9 +277,9 @@ const EditGroup = () => {
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   addedField={{
-                    id: "id",
-                    displayName: "displayName",
-                    userPrincipalName: "userPrincipalName",
+                    id: 'id',
+                    displayName: 'displayName',
+                    userPrincipalName: 'userPrincipalName',
                   }}
                   dataFilter={(option) =>
                     !groupInfo.data?.owners?.some((o) => o.id === option.value)
@@ -290,15 +294,15 @@ const EditGroup = () => {
                   label="Add Contacts"
                   multiple={true}
                   addedField={{
-                    id: "Guid",
-                    displayName: "displayName",
-                    WindowsEmailAddress: "WindowsEmailAddress",
+                    id: 'Guid',
+                    displayName: 'displayName',
+                    WindowsEmailAddress: 'WindowsEmailAddress',
                   }}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   dataFilter={(option) =>
                     !groupInfo.data?.members
-                      ?.filter((m) => m?.["@odata.type"] === "#microsoft.graph.orgContact")
+                      ?.filter((m) => m?.['@odata.type'] === '#microsoft.graph.orgContact')
                       ?.some((c) => c.id === option.value)
                   }
                 />
@@ -379,7 +383,7 @@ const EditGroup = () => {
                   disabled={groupInfo.isFetching}
                   options={
                     groupInfo.data?.members
-                      ?.filter((m) => m?.["@odata.type"] === "#microsoft.graph.orgContact")
+                      ?.filter((m) => m?.['@odata.type'] === '#microsoft.graph.orgContact')
                       ?.map((m) => ({
                         label: `${m.displayName} (${m.mail})`,
                         value: m.mail,
@@ -395,7 +399,7 @@ const EditGroup = () => {
                 <Typography variant="h6">Group Settings</Typography>
               </Grid>
 
-              {groupType === "Microsoft 365" && (
+              {groupType === 'Microsoft 365' && (
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="radio"
@@ -405,14 +409,14 @@ const EditGroup = () => {
                     isFetching={groupInfo.isFetching}
                     disabled={groupInfo.isFetching}
                     options={[
-                      { label: "Public", value: "Public" },
-                      { label: "Private", value: "Private" },
+                      { label: 'Public', value: 'Public' },
+                      { label: 'Private', value: 'Private' },
                     ]}
                   />
                 </Grid>
               )}
 
-              {(groupType === "Microsoft 365" || groupType === "Distribution List") && (
+              {(groupType === 'Microsoft 365' || groupType === 'Distribution List') && (
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
@@ -425,7 +429,7 @@ const EditGroup = () => {
                 </Grid>
               )}
 
-              {groupType === "Microsoft 365" && (
+              {groupType === 'Microsoft 365' && (
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
@@ -438,7 +442,7 @@ const EditGroup = () => {
                 </Grid>
               )}
 
-              {groupType === "Microsoft 365" && (
+              {groupType === 'Microsoft 365' && (
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
@@ -450,7 +454,7 @@ const EditGroup = () => {
                   />
                 </Grid>
               )}
-              {groupType === "Microsoft 365" && (
+              {groupType === 'Microsoft 365' && (
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
@@ -462,14 +466,70 @@ const EditGroup = () => {
                   />
                 </Grid>
               )}
+
+              {groupType === 'Security' && !groupInfo.data?.groupInfo?.onPremisesSyncEnabled && (
+                <>
+                  <Grid size={{ xs: 12 }}>
+                    <Typography variant="h6">Licenses</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      Licenses assigned to this group are automatically applied to all members.
+                      Changes can take 2-5 minutes to propagate.
+                    </Typography>
+                  </Grid>
+
+                  {groupInfo.data?.groupInfo?.assignedLicenses?.length > 0 && (
+                    <Grid size={{ xs: 12 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        Currently assigned licenses:
+                      </Typography>
+                      {groupInfo.data.groupInfo.assignedLicenses.map((lic) => (
+                        <Typography key={lic.skuId} variant="body2">
+                          - {getCippLicenseTranslation([lic])}
+                        </Typography>
+                      ))}
+                    </Grid>
+                  )}
+
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormLicenseSelector
+                      formControl={formControl}
+                      name="AddLicenses"
+                      label="Add Licenses"
+                      multiple={true}
+                      isFetching={groupInfo.isFetching}
+                      disabled={groupInfo.isFetching}
+                    />
+                  </Grid>
+
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      name="RemoveLicenses"
+                      label="Remove Licenses"
+                      formControl={formControl}
+                      multiple={true}
+                      creatable={false}
+                      isFetching={groupInfo.isFetching}
+                      disabled={groupInfo.isFetching}
+                      options={
+                        groupInfo.data?.groupInfo?.assignedLicenses?.map((lic) => ({
+                          label: getCippLicenseTranslation([lic]),
+                          value: lic.skuId,
+                        })) || []
+                      }
+                      sortOptions={true}
+                    />
+                  </Grid>
+                </>
+              )}
             </Grid>
           </Box>
         )}
       </CippFormPage>
     </>
-  );
-};
+  )
+}
 
-EditGroup.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditGroup.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default EditGroup;
+export default EditGroup

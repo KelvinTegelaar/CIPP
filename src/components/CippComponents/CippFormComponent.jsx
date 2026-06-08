@@ -12,6 +12,7 @@ import {
   Box,
   Input,
   Tooltip,
+  Alert,
 } from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { CippTextFieldWithVariables } from "./CippTextFieldWithVariables";
@@ -92,6 +93,13 @@ export const CippFormComponent = (props) => {
         <Typography variant="h6" sx={{ mt: 2 }}>
           {label}
         </Typography>
+      );
+
+    case "alert":
+      return (
+        <Alert severity={other.severity || "info"} sx={{ my: 1 }}>
+          {label}
+        </Alert>
       );
 
     case "hidden":

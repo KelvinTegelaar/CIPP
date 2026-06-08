@@ -11,11 +11,12 @@ const Page = () => {
       <CardContent>
         <Stack spacing={2}>
           <Alert severity="info">
-            Manage users who can access CIPP. Add users by their email address (UPN) and assign
-            them built-in or custom roles. Users not in this list will still be able to log in if
-            &quot;Allow All Tenant Users&quot; is enabled, but they will only receive default
-            (authenticated) permissions. Role resolution also considers Entra group mappings
-            configured on the CIPP Roles page.
+            Manage users who can access CIPP. Users are automatically synced from your partner
+            tenant every 15 minutes based on Entra group memberships configured on the CIPP Roles
+            page. You can also manually add users or assign additional roles — manual assignments
+            are preserved independently and will not be overwritten by the sync. Users not in this
+            list can still log in if &quot;Allow All Tenant Users&quot; is enabled, but they will
+            only receive default (authenticated) permissions.
           </Alert>
           <CippUserManagement />
         </Stack>

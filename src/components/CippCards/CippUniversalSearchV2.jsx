@@ -20,6 +20,7 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippBitlockerKeySearch } from "../CippComponents/CippBitlockerKeySearch";
 import { nativeMenuItems } from "../../layouts/config";
 import { usePermissions } from "../../hooks/use-permissions";
+import { searchLocalLicenseCatalog } from "../../utils/get-cipp-license-catalog";
 
 function getLeafItems(items = []) {
   let result = [];
@@ -40,6 +41,7 @@ async function loadTabOptions() {
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
     "/cipp/advanced/super-admin",
+    "/endpoint/MEM/enrollment-profiles",
     "/tenant/standards",
     "/tenant/manage",
     "/tenant/administration/applications",
@@ -110,6 +112,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
     {
       onConfirm = () => {},
       onChange = () => {},
+      onLicenseSelect,
       maxResults = 10,
       value = "",
       autoFocus = false,
@@ -146,6 +149,14 @@ export const CippUniversalSearchV2 = React.forwardRef(
       queryKey: `searchV2-${searchType}-${searchValue}`,
       waiting: false,
     });
+
+    // Local-first license lookup. The frontend ships the full Microsoft SKU
+    // catalog in M365Licenses.json, so for the Licenses type we match locally
+    // and only fall back to the API when the catalog has no hit.
+    const localLicenseResults = useMemo(() => {
+      if (searchType !== "Licenses") return [];
+      return searchLocalLicenseCatalog(searchValue, maxResults);
+    }, [searchType, searchValue, maxResults]);
 
     const bitlockerSearch = ApiGetCall({
       url: "/api/ExecBitlockerSearch",
@@ -271,6 +282,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
       } else if (searchType === "Pages") {
         updateDropdownPosition();
         setShowDropdown(true);
+      } else if (searchType === "Licenses") {
+        // Local catalog is in-memory, so reveal results as the user types.
+        // The API fallback still requires the Search button (handleSearch).
+        updateDropdownPosition();
+        setShowDropdown(true);
       }
     };
 
@@ -330,7 +346,12 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const handleSearch = () => {
       if (searchValue.length > 0) {
         updateDropdownPosition();
-        if (searchType !== "Pages") {
+        if (searchType === "Licenses") {
+          // Only hit the API when the local catalog produced nothing.
+          if (localLicenseResults.length === 0) {
+            activeSearch?.refetch();
+          }
+        } else if (searchType !== "Pages") {
           activeSearch?.refetch();
         }
         setShowDropdown(true);
@@ -360,6 +381,10 @@ export const CippUniversalSearchV2 = React.forwardRef(
         }
       } else if (searchType === "Pages") {
         router.push(match.path, undefined, { shallow: true });
+      } else if (searchType === "Licenses") {
+        if (typeof onLicenseSelect === "function") {
+          onLicenseSelect(itemData);
+        }
       }
       setSearchValue("");
       setShowDropdown(false);
@@ -391,7 +416,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const typeMenuActions = [
       {
         label: "Users",
-        icon: "UsersIcon",
+        icon: "Groups",
         onClick: () => handleTypeChange("Users"),
       },
       {
@@ -405,13 +430,18 @@ export const CippUniversalSearchV2 = React.forwardRef(
         onClick: () => handleTypeChange("Applications"),
       },
       {
+        label: "Licenses",
+        icon: "VpnKey",
+        onClick: () => handleTypeChange("Licenses"),
+      },
+      {
         label: "BitLocker",
         icon: "FilePresent",
         onClick: () => handleTypeChange("BitLocker"),
       },
       {
         label: "Pages",
-        icon: "GlobeAltIcon",
+        icon: "Public",
         onClick: () => handleTypeChange("Pages"),
       },
     ];
@@ -497,18 +527,28 @@ export const CippUniversalSearchV2 = React.forwardRef(
       ? bitlockerSearch.data.Results
       : [];
     const universalResults = Array.isArray(universalSearch?.data) ? universalSearch.data : [];
+    const licenseResults =
+      searchType === "Licenses"
+        ? localLicenseResults.length > 0
+          ? localLicenseResults
+          : universalResults
+        : universalResults;
     const activeResults =
       searchType === "BitLocker"
         ? bitlockerResults
         : searchType === "Pages"
           ? pageResults
-          : universalResults;
+          : searchType === "Licenses"
+            ? licenseResults
+            : universalResults;
     const hasResults =
       searchType === "BitLocker"
         ? bitlockerResults.length > 0
         : searchType === "Pages"
           ? pageResults.length > 0
-          : universalResults.length > 0;
+          : searchType === "Licenses"
+            ? licenseResults.length > 0
+            : universalResults.length > 0;
     const shouldShowDropdown = showDropdown && searchValue.length > 0;
 
     const getLabel = () => {
@@ -522,6 +562,8 @@ export const CippUniversalSearchV2 = React.forwardRef(
           : "Search BitLocker by Recovery Key ID";
       } else if (searchType === "Pages") {
         return "Search pages, tabs, paths, or scope";
+      } else if (searchType === "Licenses") {
+        return "Search licenses by SKU ID, part number, name, or service plan";
       }
       return "Search";
     };
@@ -632,7 +674,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
                   />
                 ) : (
                   <Results
-                    items={universalResults}
+                    items={searchType === "Licenses" ? licenseResults : universalResults}
                     searchValue={searchValue}
                     onResultClick={handleResultClick}
                     searchType={searchType}
@@ -699,6 +741,85 @@ const Results = ({
       {items.map((match, index) => {
         const itemData = match.Data || {};
         const tenantDomain = match.Tenant || "";
+
+        if (searchType === "Licenses") {
+          const servicePlans = Array.isArray(itemData.servicePlans) ? itemData.servicePlans : [];
+          const planNames = servicePlans
+            .map((p) => p?.servicePlanName)
+            .filter(Boolean)
+            .join(", ");
+          return (
+            <MenuItem
+              key={match.RowKey || index}
+              data-result-index={index}
+              onClick={() => onResultClick(match)}
+              onMouseEnter={() => setHighlightedIndex(index)}
+              selected={highlightedIndex === index}
+              sx={{
+                py: 1.5,
+                px: 2,
+                borderBottom: index < items.length - 1 ? "1px solid" : "none",
+                borderColor: "divider",
+                alignItems: "flex-start",
+                whiteSpace: "normal",
+                backgroundColor: highlightedIndex === index ? "action.selected" : "transparent",
+                "&:hover": { backgroundColor: "action.hover" },
+              }}
+            >
+              <ListItemText
+                primary={
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+                    <Typography variant="body1" fontWeight="medium">
+                      {highlightMatch(itemData.displayName || itemData.skuPartNumber || "Unknown SKU")}
+                    </Typography>
+                    {itemData.skuPartNumber && (
+                      <Typography
+                        variant="caption"
+                        sx={{ fontFamily: "monospace", color: "text.secondary" }}
+                      >
+                        {highlightMatch(itemData.skuPartNumber)}
+                      </Typography>
+                    )}
+                  </Box>
+                }
+                secondary={
+                  <Box>
+                    {itemData.skuId && (
+                      <Typography
+                        variant="body2"
+                        sx={{ fontFamily: "monospace", color: "text.secondary" }}
+                      >
+                        {highlightMatch(itemData.skuId)}
+                      </Typography>
+                    )}
+                    <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                      {itemData.tenantCount || 0} tenant{itemData.tenantCount === 1 ? "" : "s"}
+                      {" · "}
+                      {itemData.totalAssigned || 0}/{itemData.totalAvailable || 0} assigned
+                      {servicePlans.length > 0 && ` · ${servicePlans.length} service plan${servicePlans.length === 1 ? "" : "s"}`}
+                    </Typography>
+                    {planNames && (
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{
+                          display: "-webkit-box",
+                          mt: 0.5,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {highlightMatch(planNames)}
+                      </Typography>
+                    )}
+                  </Box>
+                }
+              />
+            </MenuItem>
+          );
+        }
 
         return (
           <MenuItem

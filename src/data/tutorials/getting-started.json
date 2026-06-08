@@ -1,0 +1,48 @@
+{
+  "id": "getting-started",
+  "title": "Getting Started with CIPP",
+  "description": "Learn the basics of navigating CIPP and managing your tenants.",
+  "category": "General",
+  "pages": ["/"],
+  "steps": [
+    {
+      "popover": {
+        "title": "Welcome to CIPP! 👋",
+        "description": "This quick tour will show you the key features of the CIPP dashboard. Let's get started!"
+      }
+    },
+    {
+      "element": "[data-tutorial='tenant-selector']",
+      "popover": {
+        "title": "Tenant Selector",
+        "description": "Use the tenant selector to switch between your managed tenants. You can search by name or select 'All Tenants' for a global view.",
+        "side": "bottom",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='side-nav']",
+      "popover": {
+        "title": "Navigation Menu",
+        "description": "The sidebar gives you access to all CIPP modules — Identity, Endpoint, Security, Email, Teams & SharePoint, and more.",
+        "side": "right",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='speed-dial']",
+      "popover": {
+        "title": "Quick Actions",
+        "description": "Use the help button in the bottom-right corner to report bugs, request features, join Discord, or access the documentation.",
+        "side": "left",
+        "align": "end"
+      }
+    },
+    {
+      "popover": {
+        "title": "You're all set! 🎉",
+        "description": "You now know the basics. Explore the sidebar to discover all the tools CIPP offers. You can replay this tour anytime from the Tutorials menu."
+      }
+    }
+  ]
+}

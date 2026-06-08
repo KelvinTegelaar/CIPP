@@ -1,112 +1,111 @@
-import { Box, Divider } from "@mui/material";
-import { Grid } from "@mui/system";
-import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
-import { useForm, useWatch } from "react-hook-form";
-import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
-import gdaproles from "../../../../data/GDAPRoles.json";
-import countryList from "../../../../data/countryList.json";
-import { CippFormDomainSelector } from "../../../../components/CippComponents/CippFormDomainSelector";
-import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
-import { CippFormGroupSelector } from "../../../../components/CippComponents/CippFormGroupSelector";
-import { ApiGetCall } from "../../../../api/ApiCall";
-import { useEffect, useState } from "react";
+import { Box, Divider } from '@mui/material'
+import { Grid } from '@mui/system'
+import CippFormPage from '../../../../components/CippFormPages/CippFormPage'
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { CippFormTenantSelector } from '../../../../components/CippComponents/CippFormTenantSelector'
+import { useForm, useWatch } from 'react-hook-form'
+import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
+import { CippFormCondition } from '../../../../components/CippComponents/CippFormCondition'
+import gdaproles from '../../../../data/GDAPRoles.json'
+import countryList from '../../../../data/countryList.json'
+import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
+import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
+import { CippFormGroupSelector } from '../../../../components/CippComponents/CippFormGroupSelector'
+import { ApiGetCall } from '../../../../api/ApiCall'
+import { useEffect, useState } from 'react'
 
 const Page = () => {
-  const formControl = useForm({ mode: "onChange" });
-  const selectedTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const formControl = useForm({ mode: 'onChange' })
+  const selectedTenant = useWatch({ control: formControl.control, name: 'tenantFilter' })
+  const [selectedTemplate, setSelectedTemplate] = useState(null)
 
   const jitAdminTemplates = ApiGetCall({
     url: selectedTenant
       ? `/api/ListJITAdminTemplates?TenantFilter=${selectedTenant.value}`
       : undefined,
-    queryKey: selectedTenant ? `JITAdminTemplates-${selectedTenant.value}` : "JITAdminTemplates",
+    queryKey: selectedTenant ? `JITAdminTemplates-${selectedTenant.value}` : 'JITAdminTemplates',
     refetchOnMount: false,
     refetchOnReconnect: false,
     waiting: !!selectedTenant,
-  });
+  })
 
-  const watcher = useWatch({ control: formControl.control });
-  const useTAP = useWatch({ control: formControl.control, name: "UseTAP" });
-  const startDate = useWatch({ control: formControl.control, name: "startDate" });
-  const endDate = useWatch({ control: formControl.control, name: "endDate" });
+  const watcher = useWatch({ control: formControl.control })
+  const useTAP = useWatch({ control: formControl.control, name: 'UseTAP' })
+  const startDate = useWatch({ control: formControl.control, name: 'startDate' })
+  const endDate = useWatch({ control: formControl.control, name: 'endDate' })
   const tapLifetimeInMinutes = useWatch({
     control: formControl.control,
-    name: "tapLifetimeInMinutes",
-  });
+    name: 'tapLifetimeInMinutes',
+  })
 
   const tapPolicy = ApiGetCall({
-    url: selectedTenant
-      ? `/api/ListGraphRequest`
-      : undefined,
+    url: selectedTenant ? `/api/ListGraphRequest` : undefined,
     data: {
-      Endpoint: "policies/authenticationMethodsPolicy/authenticationMethodConfigurations/TemporaryAccessPass",
+      Endpoint:
+        'policies/authenticationMethodsPolicy/authenticationMethodConfigurations/TemporaryAccessPass',
       tenantFilter: selectedTenant?.value,
     },
-    queryKey: selectedTenant ? `TAPPolicy-${selectedTenant.value}` : "TAPPolicy",
+    queryKey: selectedTenant ? `TAPPolicy-${selectedTenant.value}` : 'TAPPolicy',
     waiting: !!selectedTenant,
-  });
-  const tapEnabled = tapPolicy.isSuccess && tapPolicy.data?.Results?.[0]?.state === "enabled";
-  const useRoles = useWatch({ control: formControl.control, name: "useRoles" });
-  const useGroups = useWatch({ control: formControl.control, name: "useGroups" });
+  })
+  const tapEnabled = tapPolicy.isSuccess && tapPolicy.data?.Results?.[0]?.state === 'enabled'
+  const useRoles = useWatch({ control: formControl.control, name: 'useRoles' })
+  const useGroups = useWatch({ control: formControl.control, name: 'useGroups' })
 
   useEffect(() => {
     if (!useTAP || !startDate || !endDate) {
-      formControl.setValue("tapLifetimeInMinutes", null);
-      return;
+      formControl.setValue('tapLifetimeInMinutes', null)
+      return
     }
 
-    const requestedMinutes = Math.max(1, Math.round((endDate - startDate) / 60));
-    const tapPolicyConfig = tapPolicy.data?.Results?.[0];
-    const policyMax = tapPolicyConfig?.maximumLifetimeInMinutes ?? 1440;
-    const policyMin = Math.min(tapPolicyConfig?.minimumLifetimeInMinutes ?? 1, policyMax);
+    const requestedMinutes = Math.max(1, Math.round((endDate - startDate) / 60))
+    const tapPolicyConfig = tapPolicy.data?.Results?.[0]
+    const policyMax = tapPolicyConfig?.maximumLifetimeInMinutes ?? 1440
+    const policyMin = Math.min(tapPolicyConfig?.minimumLifetimeInMinutes ?? 1, policyMax)
     formControl.setValue(
-      "tapLifetimeInMinutes",
+      'tapLifetimeInMinutes',
       Math.min(Math.max(requestedMinutes, policyMin), policyMax)
-    );
-  }, [useTAP, startDate, endDate, tapPolicy.data, formControl]);
+    )
+  }, [useTAP, startDate, endDate, tapPolicy.data, formControl])
 
   // Clear fields when switches are toggled off
   useEffect(() => {
     if (!useRoles) {
-      formControl.setValue("adminRoles", []);
+      formControl.setValue('adminRoles', [])
     }
-  }, [useRoles]);
+  }, [useRoles])
 
   useEffect(() => {
     if (!useGroups) {
-      formControl.setValue("groupMemberships", []);
+      formControl.setValue('groupMemberships', [])
     }
-  }, [useGroups]);
+  }, [useGroups])
 
   // Reset expiration action when switches change
   useEffect(() => {
-    const currentAction = formControl.getValues("expireAction");
-    if (!currentAction?.value) return;
+    const currentAction = formControl.getValues('expireAction')
+    if (!currentAction?.value) return
 
-    if (!useRoles && currentAction.value === "RemoveRoles") {
-      formControl.setValue("expireAction", null);
-    } else if (!useGroups && currentAction.value === "RemoveGroups") {
-      formControl.setValue("expireAction", null);
-    } else if ((!useRoles || !useGroups) && currentAction.value === "RemoveRolesAndGroups") {
-      formControl.setValue("expireAction", null);
-    } else if (useRoles && useGroups && currentAction.value === "RemoveRoles") {
-      formControl.setValue("expireAction", null);
-    } else if (useRoles && useGroups && currentAction.value === "RemoveGroups") {
-      formControl.setValue("expireAction", null);
+    if (!useRoles && currentAction.value === 'RemoveRoles') {
+      formControl.setValue('expireAction', null)
+    } else if (!useGroups && currentAction.value === 'RemoveGroups') {
+      formControl.setValue('expireAction', null)
+    } else if ((!useRoles || !useGroups) && currentAction.value === 'RemoveRolesAndGroups') {
+      formControl.setValue('expireAction', null)
+    } else if (useRoles && useGroups && currentAction.value === 'RemoveRoles') {
+      formControl.setValue('expireAction', null)
+    } else if (useRoles && useGroups && currentAction.value === 'RemoveGroups') {
+      formControl.setValue('expireAction', null)
     }
-  }, [useRoles, useGroups]);
+  }, [useRoles, useGroups])
 
   // Simple duration parser for basic ISO 8601 durations
   const parseDuration = (duration) => {
-    if (!duration) return null;
+    if (!duration) return null
     const matches = duration.match(
       /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
-    );
-    if (!matches) return null;
+    )
+    if (!matches) return null
     return {
       years: parseInt(matches[1] || 0),
       months: parseInt(matches[2] || 0),
@@ -115,159 +114,159 @@ const Page = () => {
       hours: parseInt(matches[5] || 0),
       minutes: parseInt(matches[6] || 0),
       seconds: parseInt(matches[7] || 0),
-    };
-  };
+    }
+  }
 
   const addDurationToDate = (date, duration) => {
-    if (!date || !duration) return null;
-    const parsed = parseDuration(duration);
-    if (!parsed) return null;
+    if (!date || !duration) return null
+    const parsed = parseDuration(duration)
+    if (!parsed) return null
 
-    const result = new Date(date);
-    result.setFullYear(result.getFullYear() + parsed.years);
-    result.setMonth(result.getMonth() + parsed.months);
-    result.setDate(result.getDate() + parsed.weeks * 7);
-    result.setDate(result.getDate() + parsed.days);
-    result.setHours(result.getHours() + parsed.hours);
-    result.setMinutes(result.getMinutes() + parsed.minutes);
-    result.setSeconds(result.getSeconds() + parsed.seconds);
-    return result;
-  };
+    const result = new Date(date)
+    result.setFullYear(result.getFullYear() + parsed.years)
+    result.setMonth(result.getMonth() + parsed.months)
+    result.setDate(result.getDate() + parsed.weeks * 7)
+    result.setDate(result.getDate() + parsed.days)
+    result.setHours(result.getHours() + parsed.hours)
+    result.setMinutes(result.getMinutes() + parsed.minutes)
+    result.setSeconds(result.getSeconds() + parsed.seconds)
+    return result
+  }
 
   // Auto-select default template for tenant
   // Priority: tenant-specific default > AllTenants default
   useEffect(() => {
     if (jitAdminTemplates.isSuccess && !watcher.jitAdminTemplate) {
-      const templates = jitAdminTemplates.data || [];
+      const templates = jitAdminTemplates.data || []
 
       // First, try to find a tenant-specific default template
       let defaultTemplate = templates.find(
         (template) =>
           template.defaultForTenant === true &&
-          template.tenantFilter !== "AllTenants" &&
+          template.tenantFilter !== 'AllTenants' &&
           template.tenantFilter === selectedTenant?.value
-      );
+      )
 
       // If not found, fall back to AllTenants default template
       if (!defaultTemplate) {
         defaultTemplate = templates.find(
-          (template) => template.defaultForTenant === true && template.tenantFilter === "AllTenants"
-        );
+          (template) => template.defaultForTenant === true && template.tenantFilter === 'AllTenants'
+        )
       }
 
       if (defaultTemplate) {
-        formControl.setValue("jitAdminTemplate", {
+        formControl.setValue('jitAdminTemplate', {
           label: defaultTemplate.templateName,
           value: defaultTemplate.GUID,
           addedFields: defaultTemplate,
-        });
-        setSelectedTemplate(defaultTemplate);
+        })
+        setSelectedTemplate(defaultTemplate)
       }
     }
-  }, [jitAdminTemplates.isSuccess, selectedTenant]);
+  }, [jitAdminTemplates.isSuccess, selectedTenant])
 
   // Only set template-driven fields when the template actually changes
-  const [lastTemplate, setLastTemplate] = useState(null);
+  const [lastTemplate, setLastTemplate] = useState(null)
   useEffect(() => {
-    const template = watcher.jitAdminTemplate?.addedFields;
-    if (!template || template.GUID === lastTemplate) return;
-    setSelectedTemplate(template);
-    setLastTemplate(template.GUID);
+    const template = watcher.jitAdminTemplate?.addedFields
+    if (!template || template.GUID === lastTemplate) return
+    setSelectedTemplate(template)
+    setLastTemplate(template.GUID)
 
     // Helpers
     const roundDown15 = (date) => {
-      const d = new Date(date);
-      d.setMilliseconds(0);
-      d.setSeconds(0);
-      d.setMinutes(Math.floor(d.getMinutes() / 15) * 15);
-      return d;
-    };
+      const d = new Date(date)
+      d.setMilliseconds(0)
+      d.setSeconds(0)
+      d.setMinutes(Math.floor(d.getMinutes() / 15) * 15)
+      return d
+    }
     const roundUp15 = (date) => {
-      const d = new Date(date);
-      d.setMilliseconds(0);
-      d.setSeconds(0);
-      let min = d.getMinutes();
-      d.setMinutes(min % 15 === 0 ? min : Math.ceil(min / 15) * 15);
+      const d = new Date(date)
+      d.setMilliseconds(0)
+      d.setSeconds(0)
+      let min = d.getMinutes()
+      d.setMinutes(min % 15 === 0 ? min : Math.ceil(min / 15) * 15)
       if (d.getMinutes() === 60) {
-        d.setHours(d.getHours() + 1);
-        d.setMinutes(0);
+        d.setHours(d.getHours() + 1)
+        d.setMinutes(0)
       }
-      return d;
-    };
+      return d
+    }
 
     // Set all template-driven fields
-    formControl.setValue("useRoles", template.defaultUseRoles ?? true, { shouldDirty: true });
-    formControl.setValue("useGroups", template.defaultUseGroups ?? false, { shouldDirty: true });
-    formControl.setValue("adminRoles", template.defaultRoles || [], { shouldDirty: true });
-    formControl.setValue("groupMemberships", template.defaultGroups || [], { shouldDirty: true });
-    formControl.setValue("expireAction", template.defaultExpireAction || null, {
+    formControl.setValue('useRoles', template.defaultUseRoles ?? true, { shouldDirty: true })
+    formControl.setValue('useGroups', template.defaultUseGroups ?? false, { shouldDirty: true })
+    formControl.setValue('adminRoles', template.defaultRoles || [], { shouldDirty: true })
+    formControl.setValue('groupMemberships', template.defaultGroups || [], { shouldDirty: true })
+    formControl.setValue('expireAction', template.defaultExpireAction || null, {
       shouldDirty: true,
-    });
-    formControl.setValue("postExecution", template.defaultNotificationActions || [], {
+    })
+    formControl.setValue('postExecution', template.defaultNotificationActions || [], {
       shouldDirty: true,
-    });
-    formControl.setValue("UseTAP", template.generateTAPByDefault ?? false, { shouldDirty: true });
-    formControl.setValue("reason", template.reasonTemplate || "", { shouldDirty: true });
+    })
+    formControl.setValue('UseTAP', template.generateTAPByDefault ?? false, { shouldDirty: true })
+    formControl.setValue('reason', template.reasonTemplate || '', { shouldDirty: true })
 
     // User action and user details
     if (template.defaultUserAction) {
-      formControl.setValue("userAction", template.defaultUserAction, { shouldDirty: true });
+      formControl.setValue('userAction', template.defaultUserAction, { shouldDirty: true })
     }
     if (template.defaultFirstName) {
-      formControl.setValue("firstName", template.defaultFirstName, { shouldDirty: true });
+      formControl.setValue('firstName', template.defaultFirstName, { shouldDirty: true })
     }
     if (template.defaultLastName) {
-      formControl.setValue("lastName", template.defaultLastName, { shouldDirty: true });
+      formControl.setValue('lastName', template.defaultLastName, { shouldDirty: true })
     }
     if (template.defaultUserName) {
-      formControl.setValue("userName", template.defaultUserName, { shouldDirty: true });
+      formControl.setValue('userName', template.defaultUserName, { shouldDirty: true })
     }
     if (template.defaultDomain) {
-      formControl.setValue("domain", template.defaultDomain, { shouldDirty: true });
+      formControl.setValue('domain', template.defaultDomain, { shouldDirty: true })
     }
     if (template.defaultExistingUser) {
-      formControl.setValue("existingUser", template.defaultExistingUser, { shouldDirty: true });
+      formControl.setValue('existingUser', template.defaultExistingUser, { shouldDirty: true })
     }
     if (template.defaultUsageLocation) {
-      formControl.setValue("usageLocation", template.defaultUsageLocation, { shouldDirty: true });
+      formControl.setValue('usageLocation', template.defaultUsageLocation, { shouldDirty: true })
     }
 
     // Dates
     if (template.defaultDuration) {
       const duration =
-        typeof template.defaultDuration === "object" && template.defaultDuration !== null
+        typeof template.defaultDuration === 'object' && template.defaultDuration !== null
           ? template.defaultDuration.value
-          : template.defaultDuration;
-      const start = roundDown15(new Date());
-      const unixStart = Math.floor(start.getTime() / 1000);
-      formControl.setValue("startDate", unixStart, { shouldDirty: true });
-      const end = roundUp15(addDurationToDate(start, duration));
-      const unixEnd = Math.floor(end.getTime() / 1000);
-      formControl.setValue("endDate", unixEnd, { shouldDirty: true });
+          : template.defaultDuration
+      const start = roundDown15(new Date())
+      const unixStart = Math.floor(start.getTime() / 1000)
+      formControl.setValue('startDate', unixStart, { shouldDirty: true })
+      const end = roundUp15(addDurationToDate(start, duration))
+      const unixEnd = Math.floor(end.getTime() / 1000)
+      formControl.setValue('endDate', unixEnd, { shouldDirty: true })
     }
-  }, [watcher.jitAdminTemplate, lastTemplate]);
+  }, [watcher.jitAdminTemplate, lastTemplate])
 
   // Recalculate end date when start date changes and template has default duration
   useEffect(() => {
     if (watcher.startDate && selectedTemplate?.defaultDuration) {
       const durationValue =
-        typeof selectedTemplate.defaultDuration === "object" &&
+        typeof selectedTemplate.defaultDuration === 'object' &&
         selectedTemplate.defaultDuration !== null
           ? selectedTemplate.defaultDuration.value
-          : selectedTemplate.defaultDuration;
-      const startDateDate = new Date(watcher.startDate * 1000);
-      const endDateObj = addDurationToDate(startDateDate, durationValue);
+          : selectedTemplate.defaultDuration
+      const startDateDate = new Date(watcher.startDate * 1000)
+      const endDateObj = addDurationToDate(startDateDate, durationValue)
       if (endDateObj) {
-        const unixEnd = Math.floor(endDateObj.getTime() / 1000);
-        formControl.setValue("endDate", unixEnd);
+        const unixEnd = Math.floor(endDateObj.getTime() / 1000)
+        formControl.setValue('endDate', unixEnd)
       }
     }
-  }, [watcher.startDate]);
+  }, [watcher.startDate])
 
   return (
     <>
       <CippFormPage
-        queryKey={"JIT Admin Table"}
+        queryKey={'JIT Admin Table'}
         formControl={formControl}
         title="JIT Admin"
         backButtonTitle="JIT Admin"
@@ -277,12 +276,12 @@ const Page = () => {
           <Grid container spacing={2}>
             <Grid size={{ md: 12, xs: 12 }}>
               <CippFormTenantSelector
-                label={"Select a tenant to create the JIT Admin in"}
+                label={'Select a tenant to create the JIT Admin in'}
                 formControl={formControl}
                 type="single"
                 allTenants={false}
                 preselectedEnabled={true}
-                validators={{ required: "A tenant must be selected" }}
+                validators={{ required: 'A tenant must be selected' }}
               />
             </Grid>
             <Grid size={{ md: 12, xs: 12 }}>
@@ -313,11 +312,11 @@ const Page = () => {
                 row
                 formControl={formControl}
                 options={[
-                  { label: "New User", value: "create" },
-                  { label: "Existing User", value: "select" },
+                  { label: 'New User', value: 'create' },
+                  { label: 'Existing User', value: 'select' },
                 ]}
                 required={true}
-                validators={{ required: "You must select an option" }}
+                validators={{ required: 'You must select an option' }}
               />
               <Divider sx={{ my: 2 }} />
             </Grid>
@@ -335,7 +334,7 @@ const Page = () => {
                   name="firstName"
                   formControl={formControl}
                   required={true}
-                  validators={{ required: "First Name is required" }}
+                  validators={{ required: 'First Name is required' }}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -346,7 +345,7 @@ const Page = () => {
                   name="lastName"
                   formControl={formControl}
                   required={true}
-                  validators={{ required: "Last Name is required" }}
+                  validators={{ required: 'Last Name is required' }}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -357,7 +356,7 @@ const Page = () => {
                   name="userName"
                   formControl={formControl}
                   required={true}
-                  validators={{ required: "Username is required" }}
+                  validators={{ required: 'Username is required' }}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -366,7 +365,7 @@ const Page = () => {
                   name="domain"
                   label="Domain Name"
                   required={true}
-                  validators={{ required: "Domain is required" }}
+                  validators={{ required: 'Domain is required' }}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -380,6 +379,7 @@ const Page = () => {
                     value: Code,
                   }))}
                   formControl={formControl}
+                  creatable={false}
                 />
               </Grid>
               <Grid size={{ md: 12, xs: 12 }}>
@@ -400,7 +400,7 @@ const Page = () => {
                     name="existingUser"
                     label="User"
                     required={true}
-                    validators={{ required: "User is required" }}
+                    validators={{ required: 'User is required' }}
                   />
                 </Grid>
               </Grid>
@@ -413,7 +413,7 @@ const Page = () => {
                 name="startDate"
                 formControl={formControl}
                 required={true}
-                validators={{ required: "Start date is required" }}
+                validators={{ required: 'Start date is required' }}
               />
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
@@ -425,13 +425,13 @@ const Page = () => {
                 formControl={formControl}
                 required={true}
                 validators={{
-                  required: "End date is required",
+                  required: 'End date is required',
                   validate: (value) => {
-                    const startDate = formControl.getValues("startDate");
+                    const startDate = formControl.getValues('startDate')
                     if (value && startDate && new Date(value) < new Date(startDate)) {
-                      return "End date must be after start date";
+                      return 'End date must be after start date'
                     }
-                    return true;
+                    return true
                   },
                 }}
               />
@@ -452,7 +452,7 @@ const Page = () => {
             </Grid>
             {!useRoles && !useGroups && (
               <Grid size={{ md: 12, xs: 12 }}>
-                <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>
+                <Box sx={{ color: 'error.main', fontSize: '0.875rem' }}>
                   Please select at least "Admin Roles" or "Group Membership"
                 </Box>
               </Grid>
@@ -462,7 +462,7 @@ const Page = () => {
               field="useRoles"
               compareType="is"
               compareValue={true}
-              >
+            >
               <Grid size={{ md: 12, xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
@@ -473,14 +473,15 @@ const Page = () => {
                   formControl={formControl}
                   required={true}
                   validators={{
-                    required: "At least one role is required",
+                    required: 'At least one role is required',
                     validate: (options) => {
                       if (!options?.length) {
-                        return "At least one role is required";
+                        return 'At least one role is required'
                       }
-                      return true;
+                      return true
                     },
                   }}
+                  creatable={false}
                 />
               </Grid>
             </CippFormCondition>
@@ -498,12 +499,12 @@ const Page = () => {
                   multiple={true}
                   required={true}
                   validators={{
-                    required: "At least one group is required",
+                    required: 'At least one group is required',
                     validate: (options) => {
                       if (!options?.length) {
-                        return "At least one group is required";
+                        return 'At least one group is required'
                       }
-                      return true;
+                      return true
                     },
                   }}
                 />
@@ -519,7 +520,7 @@ const Page = () => {
                 rows={3}
                 formControl={formControl}
                 required={true}
-                validators={{ required: "A reason is required" }}
+                validators={{ required: 'A reason is required' }}
               />
             </Grid>
             <Grid size={{ md: 12, xs: 12 }}>
@@ -535,12 +536,12 @@ const Page = () => {
                 formControl={formControl}
               />
               {useTAP && tapPolicy.isSuccess && !tapEnabled && (
-                <Box sx={{ color: "error.main", fontSize: "0.875rem", mt: 0.5 }}>
+                <Box sx={{ color: 'error.main', fontSize: '0.875rem', mt: 0.5 }}>
                   TAP is not enabled in this tenant. TAP generation will fail.
                 </Box>
               )}
               {useTAP && tapLifetimeInMinutes && (
-                <Box sx={{ color: "text.secondary", fontSize: "0.875rem", mt: 0.5 }}>
+                <Box sx={{ color: 'text.secondary', fontSize: '0.875rem', mt: 0.5 }}>
                   TAP will be valid for {tapLifetimeInMinutes} minutes.
                 </Box>
               )}
@@ -556,20 +557,20 @@ const Page = () => {
                 required={true}
                 options={(() => {
                   const opts = [
-                    { label: "Delete User", value: "DeleteUser" },
-                    { label: "Disable User", value: "DisableUser" },
-                  ];
+                    { label: 'Delete User', value: 'DeleteUser' },
+                    { label: 'Disable User', value: 'DisableUser' },
+                  ]
                   if (useRoles && useGroups) {
-                    opts.push({ label: "Remove Roles and Groups", value: "RemoveRolesAndGroups" });
+                    opts.push({ label: 'Remove Roles and Groups', value: 'RemoveRolesAndGroups' })
                   } else if (useRoles) {
-                    opts.push({ label: "Remove Roles", value: "RemoveRoles" });
+                    opts.push({ label: 'Remove Roles', value: 'RemoveRoles' })
                   } else if (useGroups) {
-                    opts.push({ label: "Remove Groups", value: "RemoveGroups" });
+                    opts.push({ label: 'Remove Groups', value: 'RemoveGroups' })
                   }
-                  return opts;
+                  return opts
                 })()}
                 formControl={formControl}
-                validators={{ required: "Expiration action is required" }}
+                validators={{ required: 'Expiration action is required' }}
               />
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
@@ -581,9 +582,9 @@ const Page = () => {
                 multiple={true}
                 creatable={false}
                 options={[
-                  { label: "Webhook", value: "Webhook" },
-                  { label: "Email", value: "email" },
-                  { label: "PSA", value: "PSA" },
+                  { label: 'Webhook', value: 'Webhook' },
+                  { label: 'Email', value: 'email' },
+                  { label: 'PSA', value: 'PSA' },
                 ]}
                 formControl={formControl}
               />
@@ -592,9 +593,9 @@ const Page = () => {
         </Box>
       </CippFormPage>
     </>
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default Page;
+export default Page

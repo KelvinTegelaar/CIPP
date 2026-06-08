@@ -61,7 +61,7 @@ export const ForcedSsoMigrationDialog = () => {
         {!submitted ? (
           <>
             <Typography sx={{ mb: 2 }}>
-              Your CIPP instance requires a dedicated <strong>CIPP-SSO</strong> app registration in
+              Your CIPP instance requires a dedicated <strong> CIPP-SSO </strong> app registration in
               your tenant for authentication. This gives you full control over Conditional Access
               policies, MFA requirements, and session management for your CIPP users.
             </Typography>
@@ -99,7 +99,9 @@ export const ForcedSsoMigrationDialog = () => {
                 'SSO migration failed. Please try again.'}
             </Alert>
             <Typography variant="body2" color="text.secondary">
-              If this error persists, contact your CIPP administrator.
+              The app registration may have been created already — clicking <strong>Try Again</strong>{' '}
+              will pick up where it left off rather than starting over. If the error persists,
+              contact your CIPP administrator.
             </Typography>
           </>
         ) : null}

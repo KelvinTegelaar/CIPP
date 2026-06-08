@@ -29,13 +29,15 @@ import { nativeMenuItems } from './config'
 import { CippBreadcrumbNav } from '../components/CippComponents/CippBreadcrumbNav'
 import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDialog'
 import { ForcedSsoMigrationDialog } from '../components/CippComponents/ForcedSsoMigrationDialog'
+import { SubscriptionEndedDialog } from '../components/CippComponents/SubscriptionEndedDialog'
+import { FailedPaymentDialog } from '../components/CippComponents/FailedPaymentDialog'
 
 const OnboardingWizardPage = dynamic(
   () => import('../components/CippWizard/OnboardingWizardPage.jsx'),
   { ssr: false }
 )
 
-const SIDE_NAV_WIDTH = 270
+const SIDE_NAV_WIDTH = 290
 const SIDE_NAV_PINNED_WIDTH = 50
 const TOP_NAV_HEIGHT = 50
 
@@ -111,7 +113,7 @@ export const Layout = (props) => {
   const currentRole = ApiGetCall({
     url: '/api/me',
     queryKey: 'authmecipp',
-    waiting: !swaStatus.isSuccess || swaStatus.data?.clientPrincipal === null,
+    waiting: swaStatus.isSuccess && swaStatus.data?.clientPrincipal !== null,
   })
 
   const featureFlags = ApiGetCall({
@@ -337,7 +339,9 @@ export const Layout = (props) => {
               <OnboardingWizardPage />
             </DialogContent>
           </Dialog>
-          <SsoMigrationDialog />
+          <SubscriptionEndedDialog hostedSubscriptionEnded={currentRole.data?.hostedSubscriptionEnded} />
+          <FailedPaymentDialog hostedFailedPayments={currentRole.data?.hostedFailedPayments} />
+          <SsoMigrationDialog meData={currentRole.data} />
           <ForcedSsoMigrationDialog />
           {!setupCompleted && (
             <Box sx={{ flexGrow: 1, py: 2 }}>

@@ -9,12 +9,15 @@ import {
   AdminPanelSettings,
   NoAccounts,
   Delete,
+  CleaningServices,
 } from '@mui/icons-material'
 import Link from 'next/link'
 import { Stack } from '@mui/system'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { useSettings } from '../../../hooks/use-settings'
 import { useCippReportDB } from '../../../components/CippComponents/CippReportDBControls'
+import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
+import { CippFormCondition } from '../../../components/CippComponents/CippFormCondition'
 
 const Page = () => {
   const pageTitle = 'SharePoint Sites'
@@ -200,6 +203,76 @@ const Page = () => {
       confirmText:
         'Are you sure you want to delete this SharePoint site? This action cannot be undone.',
       color: 'error',
+      multiPost: false,
+    },
+    {
+      label: 'Start Version Cleanup Job',
+      type: 'POST',
+      icon: <CleaningServices />,
+      url: '/api/ExecSPOVersionCleanup',
+      data: {
+        SiteUrl: 'webUrl',
+      },
+      confirmText:
+        'Start a file version cleanup job for [displayName]. This will trim old file versions based on the selected mode.',
+      children: ({ formHook }) => (
+        <>
+          <CippFormComponent
+            type="radio"
+            name="BatchDeleteMode"
+            label="Cleanup Mode"
+            formControl={formHook}
+            options={[
+              { label: 'Sync Policy — apply site version policy to existing versions', value: '2' },
+              {
+                label: 'Delete Older Than Days — remove versions older than a set number of days',
+                value: '0',
+              },
+              { label: 'Count Limits — keep a maximum number of major versions', value: '1' },
+            ]}
+          />
+          <CippFormCondition
+            field="BatchDeleteMode"
+            compareType="is"
+            compareValue="0"
+            formControl={formHook}
+          >
+            <CippFormComponent
+              type="number"
+              name="DeleteOlderThanDays"
+              label="Delete Versions Older Than (days)"
+              formControl={formHook}
+              validators={{ required: 'Please enter the number of days' }}
+            />
+          </CippFormCondition>
+          <CippFormCondition
+            field="BatchDeleteMode"
+            compareType="is"
+            compareValue="1"
+            formControl={formHook}
+          >
+            <CippFormComponent
+              type="number"
+              name="MajorVersionLimit"
+              label="Maximum Major Versions to Keep"
+              formControl={formHook}
+              validators={{ required: 'Please enter the version limit' }}
+            />
+          </CippFormCondition>
+        </>
+      ),
+      defaultvalues: {
+        BatchDeleteMode: '2',
+      },
+      customDataformatter: (row, action, formData) => ({
+        tenantFilter: row.Tenant ?? tenantFilter,
+        SiteUrl: row.webUrl,
+        BatchDeleteMode: parseInt(formData.BatchDeleteMode, 10),
+        DeleteOlderThanDays:
+          formData.BatchDeleteMode === '0' ? parseInt(formData.DeleteOlderThanDays, 10) : -1,
+        MajorVersionLimit:
+          formData.BatchDeleteMode === '1' ? parseInt(formData.MajorVersionLimit, 10) : -1,
+      }),
       multiPost: false,
     },
   ]

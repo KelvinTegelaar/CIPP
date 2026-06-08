@@ -5,7 +5,7 @@ import CippFormComponent from '../../../../components/CippComponents/CippFormCom
 
 const Page = () => {
   const pageTitle = 'Licences Report'
-  const apiUrl = '/api/ListLicenses'
+  const apiUrl = '/api/ListLicensesReport'
 
   const simpleColumns = [
     'Tenant',

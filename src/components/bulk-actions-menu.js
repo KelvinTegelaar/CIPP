@@ -1,46 +1,12 @@
-import PropTypes from "prop-types";
-import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
-import { Button, Link, ListItemText, Menu, MenuItem, SvgIcon } from "@mui/material";
-import { usePopover } from "../hooks/use-popover";
-import { FilePresent, Laptop, Mail, Share, Shield, ShieldMoon, PrecisionManufacturing, BarChart, Group, Apps } from "@mui/icons-material";
-import { GlobeAltIcon, UsersIcon, ServerIcon } from "@heroicons/react/24/outline";
-
-function getIconByName(iconName) {
-  switch (iconName) {
-    case "GlobeAltIcon":
-      return <GlobeAltIcon />;
-    case "Mail":
-      return <Mail />;
-    case "UsersIcon":
-      return <UsersIcon />;
-    case "FilePresent":
-      return <FilePresent />;
-    case "ServerIcon":
-      return <ServerIcon />;
-    case "Laptop":
-      return <Laptop />;
-    case "Share":
-      return <Share />;
-    case "Shield":
-      return <Shield />;
-    case "ShieldMoon":
-      return <ShieldMoon />;
-    case "PrecisionManufacturing":
-      return <PrecisionManufacturing />;
-    case "BarChart":
-      return <BarChart />;
-    case "Group":
-      return <Group />;
-    case "Apps":
-      return <Apps />;
-    default:
-      return null;
-  }
-}
+import PropTypes from 'prop-types'
+import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon'
+import { Button, Link, ListItemText, Menu, MenuItem, SvgIcon } from '@mui/material'
+import { usePopover } from '../hooks/use-popover'
+import { getIconByName } from '../utils/icon-registry'
 
 export const BulkActionsMenu = (props) => {
-  const { buttonName, sx, row, actions = [], ...other } = props;
-  const popover = usePopover();
+  const { buttonName, sx, row, actions = [], ...other } = props
+  const popover = usePopover()
 
   return (
     <>
@@ -55,7 +21,7 @@ export const BulkActionsMenu = (props) => {
         variant="outlined"
         sx={{
           flexShrink: 0,
-          whiteSpace: "nowrap",
+          whiteSpace: 'nowrap',
           ...sx,
         }}
         {...other}
@@ -65,8 +31,8 @@ export const BulkActionsMenu = (props) => {
       <Menu
         anchorEl={popover.anchorRef.current}
         anchorOrigin={{
-          horizontal: "right",
-          vertical: "bottom",
+          horizontal: 'right',
+          vertical: 'bottom',
         }}
         MenuListProps={{
           dense: true,
@@ -75,11 +41,13 @@ export const BulkActionsMenu = (props) => {
         onClose={popover.handleClose}
         open={popover.open}
         transformOrigin={{
-          horizontal: "right",
-          vertical: "top",
+          horizontal: 'right',
+          vertical: 'top',
         }}
       >
         {actions.map((action, index) => {
+          const icon = getIconByName(action.icon, { sx: { mr: 1 } })
+
           if (action.link) {
             return (
               <MenuItem
@@ -90,34 +58,34 @@ export const BulkActionsMenu = (props) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <SvgIcon sx={{ mr: 1 }}>{getIconByName(action.icon)}</SvgIcon>
+                {icon}
                 <ListItemText primary={action.label} />
               </MenuItem>
-            );
+            )
           } else {
             return (
               <MenuItem
                 key={index}
                 onClick={() => {
                   if (action.onClick) {
-                    action.onClick();
+                    action.onClick()
                   }
-                  popover.handleClose();
+                  popover.handleClose()
                 }}
               >
-                <SvgIcon sx={{ mr: 1 }}>{getIconByName(action.icon)}</SvgIcon>
+                {icon}
                 <ListItemText primary={action.label} />
               </MenuItem>
-            );
+            )
           }
         })}
       </Menu>
     </>
-  );
-};
+  )
+}
 
 BulkActionsMenu.propTypes = {
   onArchive: PropTypes.func,
   onDelete: PropTypes.func,
   selectedCount: PropTypes.number,
-};
+}

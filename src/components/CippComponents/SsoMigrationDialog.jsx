@@ -11,37 +11,32 @@ import {
   Switch,
   Typography,
 } from '@mui/material'
-import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
+import { ApiPostCall } from '../../api/ApiCall'
 
 const DISMISS_KEY = 'cipp_sso_migration_dismissed'
 
-export const SsoMigrationDialog = () => {
+export const SsoMigrationDialog = ({ meData }) => {
   const [open, setOpen] = useState(false)
   const [multiTenant, setMultiTenant] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-
-  const currentRole = ApiGetCall({
-    url: '/api/me',
-    queryKey: 'authmecipp',
-  })
 
   const ssoSetup = ApiPostCall({
     relatedQueryKeys: 'authmecipp',
   })
 
-  const permissions = currentRole.data?.permissions || []
-  const ssoMigration = currentRole.data?.ssoMigration
+  const permissions = meData?.permissions || []
+  const ssoMigration = meData?.ssoMigration
   const hasPermission = permissions.includes('CIPP.AppSettings.ReadWrite')
 
   useEffect(() => {
-    if (!currentRole.isSuccess || !hasPermission || !ssoMigration) return
+    if (!meData || !ssoMigration) return
     if (ssoMigration.status !== 'none') return
 
-    const dismissed = localStorage.getItem(DISMISS_KEY)
-    if (dismissed === 'true') return
+    const dismissedAt = localStorage.getItem(DISMISS_KEY)
+    if (dismissedAt && Date.now() - Number(dismissedAt) < 24 * 60 * 60 * 1000) return
 
     setOpen(true)
-  }, [currentRole.isSuccess, hasPermission, ssoMigration])
+  }, [meData, ssoMigration])
 
   const handleApprove = useCallback(() => {
     setSubmitted(true)
@@ -55,7 +50,7 @@ export const SsoMigrationDialog = () => {
   }, [multiTenant, ssoSetup])
 
   const handleDismiss = useCallback(() => {
-    localStorage.setItem(DISMISS_KEY, 'true')
+    localStorage.setItem(DISMISS_KEY, String(Date.now()))
     setOpen(false)
   }, [])
 
@@ -65,7 +60,8 @@ export const SsoMigrationDialog = () => {
 
   const result = ssoSetup.data?.data?.Results ?? ssoSetup.data?.Results
   const isSuccess = result?.severity === 'success'
-  const isError = ssoSetup.isError || result?.severity === 'failed'
+  const isPartial = result?.severity === 'warning' && result?.canRepair
+  const isError = ssoSetup.isError || result?.severity === 'failed' || (result?.severity === 'warning' && !result?.canRepair)
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -79,8 +75,8 @@ export const SsoMigrationDialog = () => {
               CIPP users.
             </Typography>
             <Typography sx={{ mb: 2 }}>
-              To get ready, CIPP needs to create an app registration in your tenant called{' '}
-              <strong>CIPP-SSO</strong> with minimal permissions (OpenID, Profile, Email only).
+              To get ready, CIPP needs to create an app registration in your tenant called
+              <strong> CIPP-SSO </strong> with minimal permissions (OpenID, Profile, Email only).
               This won&apos;t change how you log in today — it just prepares your tenant for when
               the update rolls out.
             </Typography>
@@ -89,7 +85,15 @@ export const SsoMigrationDialog = () => {
               ahead of time.
             </Typography>
 
+            {!hasPermission && (
+              <Alert severity="info" sx={{ mb: 2 }}>
+                Only users with App Settings permissions can create the SSO app registration.
+                Please ask an administrator to complete this step.
+              </Alert>
+            )}
+
             <FormControlLabel
+              disabled={!hasPermission}
               control={
                 <Switch checked={multiTenant} onChange={(e) => setMultiTenant(e.target.checked)} />
               }
@@ -106,6 +110,20 @@ export const SsoMigrationDialog = () => {
           <Alert severity="success" sx={{ mb: 1 }}>
             {result.message}
           </Alert>
+        ) : isPartial ? (
+          <Alert severity="warning" sx={{ mb: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+              App created — secret creation failed
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              The CIPP-SSO app registration ({result.appId}) was created successfully, but the
+              client secret could not be generated. The app ID is saved.
+            </Typography>
+            <Typography variant="body2">
+              Open <strong>Advanced &rarr; Super Admin &rarr; SSO</strong> and click{' '}
+              <strong>Repair</strong> to finish setup.
+            </Typography>
+          </Alert>
         ) : isError ? (
           <Alert severity="error" sx={{ mb: 1 }}>
             {result?.message || ssoSetup.error?.message || 'SSO setup failed. It will be retried automatically.'}
@@ -118,7 +136,7 @@ export const SsoMigrationDialog = () => {
             <Button onClick={handleDismiss} color="inherit">
               Remind Me Later
             </Button>
-            <Button onClick={handleApprove} variant="contained" color="primary">
+            <Button onClick={handleApprove} variant="contained" color="primary" disabled={!hasPermission}>
               Create App Registration
             </Button>
           </>

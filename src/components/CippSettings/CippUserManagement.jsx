@@ -26,26 +26,30 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 export const CippUserManagement = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [bulkEditUsers, setBulkEditUsers] = useState(null);
 
   const formControl = useForm({
     mode: "onChange",
     defaultValues: { UPN: "", Roles: [] },
   });
 
-  const rolesQuery = ApiGetCall({
-    url: "/api/ListCustomRole",
-    queryKey: "customRoleList",
+  const usersQuery = ApiGetCall({
+    url: "/api/ListCIPPUsers",
+    queryKey: "cippUsersList",
   });
 
   const userAction = ApiPostCall({
     relatedQueryKeys: ["cippUsersList"],
   });
 
-  const allRoles = Array.isArray(rolesQuery.data) ? rolesQuery.data : [];
+  const pageData = usersQuery.data?.pages?.[0] ?? usersQuery.data ?? {};
+  const allRoles = Array.isArray(pageData.AvailableRoles) ? pageData.AvailableRoles : [];
   const roleOptions = allRoles.map((r) => ({
     label: `${r.RoleName} (${r.Type})`,
     value: r.RoleName,
   }));
+  const existingUsers = Array.isArray(pageData.Users) ? pageData.Users : [];
+  const existingUpns = new Set(existingUsers.map((u) => u.UPN.toLowerCase()));
 
   const openAddDialog = () => {
     setEditingUser(null);
@@ -55,33 +59,36 @@ export const CippUserManagement = () => {
 
   const openEditDialog = (row) => {
     setEditingUser(row);
-    const currentRoles = (row.Roles ?? []).map((r) => {
+    // Show only manual roles for editing — auto roles are managed by sync
+    const editableRoles = (row.ManualRoles ?? row.Roles ?? []).map((r) => {
       const match = roleOptions.find((opt) => opt.value === r);
       return match ?? { label: r, value: r };
     });
-    formControl.reset({ UPN: row.UPN, Roles: currentRoles });
+    formControl.reset({ UPN: row.UPN, Roles: editableRoles });
     setDialogOpen(true);
   };
 
   const handleSaveUser = (data) => {
     const roles = Array.isArray(data.Roles) ? data.Roles.map((r) => r.value ?? r) : [data.Roles];
-    userAction.mutate(
-      {
+
+    // Bulk edit: apply same roles to all selected users
+    const upns = bulkEditUsers ? bulkEditUsers.map((u) => u.UPN) : [data.UPN];
+
+    upns.forEach((upn) => {
+      userAction.mutate({
         url: "/api/ExecCIPPUsers",
         data: {
           Action: "AddUpdate",
-          UPN: data.UPN,
+          UPN: upn,
           Roles: roles,
         },
-      },
-      {
-        onSuccess: () => {
-          formControl.reset({ UPN: "", Roles: [] });
-          setEditingUser(null);
-          setDialogOpen(false);
-        },
-      }
-    );
+      });
+    });
+
+    formControl.reset({ UPN: "", Roles: [] });
+    setEditingUser(null);
+    setBulkEditUsers(null);
+    setDialogOpen(false);
   };
 
   const actions = [
@@ -94,6 +101,12 @@ export const CippUserManagement = () => {
       ),
       noConfirm: true,
       customFunction: (row) => openEditDialog(row),
+      customBulkHandler: ({ data, clearSelection }) => {
+        setBulkEditUsers(data);
+        setEditingUser(null);
+        formControl.reset({ UPN: "", Roles: [] });
+        setDialogOpen(true);
+      },
     },
     {
       label: "Delete User",
@@ -113,6 +126,19 @@ export const CippUserManagement = () => {
     },
   ];
 
+  const sourceLabel = (source) => {
+    switch (source) {
+      case "Auto":
+        return "Auto-synced from Entra groups";
+      case "Both":
+        return "Auto-synced + Manual";
+      case "Manual":
+        return "Manually assigned";
+      default:
+        return source || "—";
+    }
+  };
+
   const offCanvas = {
     children: (row) => (
       <Stack spacing={2} sx={{ p: 2 }}>
@@ -124,8 +150,15 @@ export const CippUserManagement = () => {
         </Box>
         <Divider />
         <Box>
+          <Typography variant="subtitle2" color="text.secondary">
+            Source
+          </Typography>
+          <Typography variant="body2">{sourceLabel(row.Source)}</Typography>
+        </Box>
+        <Divider />
+        <Box>
           <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-            Assigned Roles
+            Effective Roles
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             {(row.Roles ?? []).map((role, idx) => (
@@ -133,6 +166,49 @@ export const CippUserManagement = () => {
             ))}
           </Stack>
         </Box>
+        {(row.ManualRoles ?? []).length > 0 && (
+          <>
+            <Divider />
+            <Box>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                Manual Roles
+              </Typography>
+              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                {row.ManualRoles.map((role, idx) => (
+                  <Chip key={idx} label={role} size="small" color="info" variant="outlined" />
+                ))}
+              </Stack>
+            </Box>
+          </>
+        )}
+        {(row.AutoRoles ?? []).length > 0 && (
+          <>
+            <Divider />
+            <Box>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                Auto Roles (from Entra groups)
+              </Typography>
+              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                {row.AutoRoles.map((role, idx) => (
+                  <Chip key={idx} label={role} size="small" color="success" variant="outlined" />
+                ))}
+              </Stack>
+            </Box>
+          </>
+        )}
+        {row.LastSync && (
+          <>
+            <Divider />
+            <Box>
+              <Typography variant="subtitle2" color="text.secondary">
+                Last Synced
+              </Typography>
+              <Typography variant="body2">
+                {new Date(row.LastSync).toLocaleString()}
+              </Typography>
+            </Box>
+          </>
+        )}
       </Stack>
     ),
   };
@@ -161,7 +237,7 @@ export const CippUserManagement = () => {
           dataKey: "Users",
         }}
         queryKey="cippUsersList"
-        simpleColumns={["UPN", "Roles"]}
+        simpleColumns={["UPN", "Roles", "Source"]}
         offCanvas={offCanvas}
       />
 
@@ -169,26 +245,57 @@ export const CippUserManagement = () => {
 
       <Dialog
         open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        onClose={() => {
+          setDialogOpen(false);
+          setBulkEditUsers(null);
+        }}
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>{editingUser ? `Edit Roles — ${editingUser.UPN}` : "Add CIPP User"}</DialogTitle>
+        <DialogTitle>
+          {bulkEditUsers
+            ? `Bulk Edit Roles — ${bulkEditUsers.length} users`
+            : editingUser
+              ? `Edit Roles — ${editingUser.UPN}`
+              : "Add CIPP User"}
+        </DialogTitle>
         <DialogContent>
           <Stack spacing={3} sx={{ pt: 1 }}>
             <Alert severity="info">
-              {editingUser
-                ? "Update the roles assigned to this user."
-                : "Add a user by their email address (UPN) and assign one or more roles. If the user already exists, their roles will be updated."}
+              {bulkEditUsers
+                ? `Set the manual roles for ${bulkEditUsers.length} selected users. This will replace their existing manual roles. Auto-synced roles from Entra groups will not be affected.`
+                : editingUser
+                  ? "Update the manually assigned roles for this user. Auto-synced roles from Entra groups are managed separately and will not be affected."
+                  : "Add a user by their email address (UPN) and assign one or more roles. These are stored as manual assignments and won't be overwritten by the automatic Entra group sync."}
             </Alert>
-            {!editingUser && (
+            {bulkEditUsers && (
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                  Selected Users
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                  {bulkEditUsers.map((u, idx) => (
+                    <Chip key={idx} label={u.UPN} size="small" variant="outlined" />
+                  ))}
+                </Stack>
+              </Box>
+            )}
+            {!editingUser && !bulkEditUsers && (
               <CippFormComponent
                 type="textField"
                 name="UPN"
                 label="User Email (UPN)"
                 placeholder="user@contoso.com"
                 formControl={formControl}
-                validators={{ required: "Email is required" }}
+                validators={{
+                  required: "Email is required",
+                  validate: (value) => {
+                    if (existingUpns.has(value?.trim()?.toLowerCase())) {
+                      return "This user already exists. Use Edit Roles to update their permissions.";
+                    }
+                    return true;
+                  },
+                }}
               />
             )}
             <CippFormComponent
@@ -204,7 +311,7 @@ export const CippUserManagement = () => {
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={() => { setDialogOpen(false); setBulkEditUsers(null); }}>Cancel</Button>
           <Button
             variant="contained"
             onClick={formControl.handleSubmit(handleSaveUser)}

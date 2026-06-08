@@ -144,7 +144,7 @@
         ],
         "multiple": false,
         "condition": {
-          "field": "Sherweb.migrationMethods",
+          "field": "Sherweb.migrationMethods.value",
           "compareType": "is",
           "compareValue": "buyAndCancel"
         }
@@ -181,7 +181,7 @@
         "placeholder": "Enter your Pax8 Client ID",
         "required": true,
         "condition": {
-          "field": "Sherweb.migrateFrom",
+          "field": "Sherweb.migrateFrom.value",
           "compareType": "is",
           "compareValue": "Pax8"
         }
@@ -193,7 +193,7 @@
         "placeholder": "Enter your Pax Client Secret",
         "required": true,
         "condition": {
-          "field": "Sherweb.migrateFrom",
+          "field": "Sherweb.migrateFrom.value",
           "compareType": "is",
           "compareValue": "Pax8"
         }
@@ -607,6 +607,50 @@
         "type": "switch",
         "name": "Hudu.MonitorDomains",
         "label": "Monitor domains in Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.HideEmptyRoles",
+        "label": "Hide Empty Roles in Magic Dash",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.IncludeParterCenterLink",
+        "label": "Include link to Partner Center Service management page (partner.microsoft.com)",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.IncludeDefenderLink",
+        "label": "Include link to Defender Portal (security.microsoft.com)",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.IncludeComplianceLink",
+        "label": "Include link to Compliance Portal (compliance.microsoft.com)",
         "condition": {
           "field": "Hudu.Enabled",
           "compareType": "is",

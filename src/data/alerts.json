@@ -122,10 +122,20 @@
     "name": "QuotaUsed",
     "label": "Alert on % mailbox quota used",
     "requiresInput": true,
-    "inputType": "textField",
-    "inputLabel": "Enter quota percentage",
-    "inputName": "QuotaUsedQuota",
-    "recommendedRunInterval": "4h"
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Quota percentage threshold (default: 90)",
+        "inputName": "QuotaUsedQuota"
+      },
+      {
+        "inputType": "textField",
+        "inputLabel": "Excluded mailbox UPNs (comma-separated). Supports custom variables like %excludefrommailboxalert% defined under CIPP > Settings > Custom Variables at tenant or AllTenants scope.",
+        "inputName": "QuotaUsedExcludedMailboxes"
+      }
+    ],
+    "recommendedRunInterval": "1d"
   },
   {
     "name": "SharePointQuota",
@@ -134,7 +144,7 @@
     "inputType": "textField",
     "inputLabel": "Enter quota percentage",
     "inputName": "SharePointQuota",
-    "recommendedRunInterval": "4h"
+    "recommendedRunInterval": "1d"
   },
   {
     "name": "OneDriveQuota",
@@ -143,7 +153,7 @@
     "inputType": "textField",
     "inputLabel": "Enter quota percentage (default: 90)",
     "inputName": "OneDriveQuota",
-    "recommendedRunInterval": "4h"
+    "recommendedRunInterval": "1d"
   },
   {
     "name": "ExpiringLicenses",
