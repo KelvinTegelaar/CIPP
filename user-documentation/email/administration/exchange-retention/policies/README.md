@@ -2,7 +2,9 @@
 
 ## Page Actions
 
-[Add Policy](policy.md)
+{% content-ref url="policy.md" %}
+[policy.md](policy.md)
+{% endcontent-ref %}
 
 ## Table Details
 

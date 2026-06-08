@@ -6,8 +6,6 @@ description: View information on all mailboxes in your Microsoft 365 tenants.
 
 This page provides information on Exchange mailboxes, with the ability to view detailed information, edit the mailbox, view connected mobile devices and access more information / actions.
 
-{% include "../../../.gitbook/includes/cached-data-report.md" %}
-
 ## Action Buttons
 
 <details>
@@ -17,16 +15,6 @@ This page provides information on Exchange mailboxes, with the ability to view d
 This wizard allows you to create a shared mailbox on the selected tenant. Set the Display Name, username, and select the domain from the dropdown.
 
 </details>
-
-<details>
-
-<summary>Add HVE User</summary>
-
-This wizard allows you to create a new HVE user.
-
-</details>
-
-{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
 
 ## Table Details
 

@@ -2,7 +2,9 @@
 
 ## Page Actions
 
-[Add Tag](tag.md)
+{% content-ref url="tag.md" %}
+[tag.md](tag.md)
+{% endcontent-ref %}
 
 ## Table Details
 

@@ -12,7 +12,7 @@ The properties returned are for the Graph resource type `directoryRole`. For mor
 
 ## Table Actions
 
-<table><thead><tr><th>Action / Feature</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>More Info</td><td>Displays the Extended Info flyout</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action / Feature</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Remove Members</td><td>When a role has assigned members, this will enable you to remove them from the role</td><td>false</td></tr><tr><td>More Info</td><td>Displays the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ## Considerations
 

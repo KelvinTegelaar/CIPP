@@ -1,9 +1,5 @@
 # Mailbox Rules
 
-## Page Actions
-
-{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
-
 ## Table Details
 
 | Column              | Description                                                                  |

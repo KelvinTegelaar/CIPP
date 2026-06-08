@@ -10,8 +10,6 @@ By default, the "Group by User" toggle will be enabled, but you can disable this
 
 </details>
 
-{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
-
 ## Table Details
 
 This report will display the mailbox permissions for the selected tenant.

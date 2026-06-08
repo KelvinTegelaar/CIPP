@@ -8,12 +8,11 @@ This page and the other tabs are a way for you to manage your tenants and their 
 
 ## Page Actions
 
-| Action                                            | Description                                                                                    |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Refresh Data                                      | Pulls in the latest settings from the tenant to compare against the Drift Management template. |
-| Generate Report                                   | Opens the ability to generate an Executive Summary for the tenant.                             |
-| Run Standard Now (Currently Selected Tenant only) | Runs the template on the tenant selected in the top menu bar                                   |
-| Run Standard Now (All Tenants in Template)        | Runs the template for all configured tenants                                                   |
+| Action           | Description                                                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Refresh Data     | Pulls in the latest settings from the tenant to compare against the Drift Management template.                                                        |
+| Generate Report  | Opens the ability to generate an Executive Summary for the tenant.                                                                                    |
+| Run Standard Now | Opens a modal to select the tenant(s) you want to run the standard against. The drop down will only show tenants and groups assigned to the template. |
 
 ## Page Details
 

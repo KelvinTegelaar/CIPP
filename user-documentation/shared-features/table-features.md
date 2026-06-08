@@ -1,8 +1,10 @@
 # Table Features
 
-{% hint style="info" %}
-With the launch of CIPP v7, there are now new, more powerful tables at your disposal.
-{% endhint %}
+## Live/Cached Data
+
+Some tables can display either live data (directly pulled from Microsoft Graph, Exchange, etc.) or a cached version of the data stored and updated periodically in CIPP's data tables. This button will toggle the table between live data and cached data.&#x20;
+
+When toggled to cached, the Sync button will appear allowing you to queue a task to run a fresh database sync.
 
 ## Top Row Features
 

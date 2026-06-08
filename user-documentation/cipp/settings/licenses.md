@@ -28,7 +28,7 @@ The table will display the product name and GUID for any license that you've glo
 
 ## Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Delete Exclusion</td><td>Deletes the selected exclusions(s)</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Only Exclude from Alerts</td><td>This will allow the selected exclusions(s) to only apply to alerts. The license will be available on other reports, for user assignment, etc.</td><td>true</td></tr><tr><td>Delete Exclusion</td><td>Deletes the selected exclusions(s)</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

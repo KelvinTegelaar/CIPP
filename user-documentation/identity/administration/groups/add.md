@@ -15,15 +15,15 @@ On this page you will enter all of the necessary information to create a group.
 
 ## Group Types
 
-| Type                        | Additional Settings                                                                                                                       |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Azure Role Group            | None                                                                                                                                      |
-| Security Group              | None                                                                                                                                      |
-| Microsoft 365 Group         | None                                                                                                                                      |
-| Dynamic Group               | Dynamic Group Parameters (see below)                                                                                                      |
-| Dynamic Distribution Group  | Dynamic Group Parameters (see below)                                                                                                      |
-| Distribution List           | Let people outside the organization email the group - Allows the group to receive messages from both inside and outside the organization. |
-| Mail Enabled Security Group | None                                                                                                                                      |
+| Type                        | Additional Settings                                                                                                                                                        |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Azure Role Group            | None                                                                                                                                                                       |
+| Security Group              | Licenses - You can select the licenses assigned to the group. Note that to be compliant with Microsoft licensing, the tenant should be licensed for Entra ID P1 or higher. |
+| Microsoft 365 Group         | None                                                                                                                                                                       |
+| Dynamic Group               | Dynamic Group Parameters (see below)                                                                                                                                       |
+| Dynamic Distribution Group  | Dynamic Group Parameters (see below)                                                                                                                                       |
+| Distribution List           | Let people outside the organization email the group - Allows the group to receive messages from both inside and outside the organization.                                  |
+| Mail Enabled Security Group | None                                                                                                                                                                       |
 
 ### Dynamic Group Parameters
 

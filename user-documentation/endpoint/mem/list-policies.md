@@ -12,8 +12,6 @@ This will open a draw that allows you to select a policy to deploy to selected t
 
 </details>
 
-{% include "../../../.gitbook/includes/live-cached-page-action.md" %}
-
 ## Table Details <a href="#listmempolicies-details" id="listmempolicies-details"></a>
 
 | Field         | Description                            |

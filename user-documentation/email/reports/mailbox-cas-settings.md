@@ -11,6 +11,10 @@ This report lists all users and the status of various Client Access Settings on 
 
 The properties returned are for the Exchange PowerShell command Get-`Get-CASMailbox`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/get-casmailbox?view=exchange-ps).&#x20;
 
+## Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Set Client Access Protocols</td><td>Allows you to Enable/Disable selected client access protocols.</td><td>true</td></tr></tbody></table>
+
 ***
 
 ### Feature Requests / Ideas

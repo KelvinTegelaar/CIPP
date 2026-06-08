@@ -4,4 +4,4 @@ This page will allow you to create a new safe links policy and select the approp
 
 ***
 
-{% include "../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../.gitbook/includes/feature-request.md" %}

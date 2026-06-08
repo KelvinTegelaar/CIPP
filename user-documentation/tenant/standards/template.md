@@ -56,6 +56,11 @@ For each standard:
 
 * Set the desired Action(s). For assistance on selecting which action, review [#actions](./#actions "mention"). Drift configuration standards will instead have an optional toggle to allow you to automatically remediate when drift is detected.
 * Each standard will then have the potential for additional fields that need to be set. Please review those fields and configure as desired.
+
+{% hint style="info" %}
+Fuzzy Match Distance(Available on Some Standards): Sets how closely a policy name must match before it's treated as the same policy. The value is the Levenshtein distance, which is the number of single-character changes (add, remove, or swap a character) needed to turn one name into another. 0 requires an exact match. 1 tolerates a single character difference, 2 tolerates two, and so on. Higher values match more loosely but risk matching unrelated policies.
+{% endhint %}
+
 * Click Save to store the configured settings. Click Cancel to clear out your changes.
 {% endstep %}
 

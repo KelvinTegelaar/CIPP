@@ -29,21 +29,21 @@ description: This page displays information about the user's Exchange settings.
 
 ## Exchange Details
 
-| Detail                    | Description                                                                                      |
-| ------------------------- | ------------------------------------------------------------------------------------------------ |
-| Mailbox Type              | Displays the type of mailbox assigned to this user. "UserMailbox" or "ShareMailbox"              |
-| Mailbox Usage             | Shows percentage of mailbox quota used.                                                          |
-| Hidden From Address Lists | A Boolean value indicating if this user has been hidden from the Global Address List.            |
-| Forward and Deliver       | A Boolean value indicating if this user's mailbox has been set to forward email to another user. |
-| Forwarding Address        | If set, the e-mail address of the person email is forwarded to.                                  |
-| Archive Mailbox Enabled   | A Boolean value indicating if the archive mailbox has been enabled.                              |
-| Auto Expanding Archive    | A Boolean value indicating if the archive mailbox has been set to auto expand.                   |
-| Total Archive Item Size   | The value, in GB, of the size of the archive.                                                    |
-| Total Archive Item Count  | The value, in total number of items, of the size of the archive.                                 |
-| Litigation Hold           | A Boolean value indicating if the account has been placed in litigation hold.                    |
-| Mailbox Protocols         | A listing of the protocols this mailbox has enabled.                                             |
-| Blocked For Spam          | A Boolean value indicating if this account has been blocked by Microsoft due to spam activity.   |
-| Current Mailbox Rules     | Displays any currently configured mailbox rules.                                                 |
+| Detail                    | Description                                                                                                                                                                        |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mailbox Type              | Displays the type of mailbox assigned to this user. "UserMailbox" or "ShareMailbox"                                                                                                |
+| Mailbox Usage             | Shows percentage of mailbox quota used.                                                                                                                                            |
+| Hidden From Address Lists | A Boolean value indicating if this user has been hidden from the Global Address List.                                                                                              |
+| Forward and Deliver       | A Boolean value indicating if this user's mailbox has been set to forward email to another user.                                                                                   |
+| Forwarding Address        | If set, the e-mail address of the person email is forwarded to.                                                                                                                    |
+| Archive Mailbox Enabled   | A Boolean value indicating if the archive mailbox has been enabled.                                                                                                                |
+| Auto Expanding Archive    | A Boolean value indicating if the archive mailbox has been set to auto expand. If this setting is controlled at the Organization level, then the label will be appended with (org) |
+| Total Archive Item Size   | The value, in GB, of the size of the archive.                                                                                                                                      |
+| Total Archive Item Count  | The value, in total number of items, of the size of the archive.                                                                                                                   |
+| Litigation Hold           | A Boolean value indicating if the account has been placed in litigation hold.                                                                                                      |
+| Mailbox Protocols         | A listing of the protocols this mailbox has enabled.                                                                                                                               |
+| Blocked For Spam          | A Boolean value indicating if this account has been blocked by Microsoft due to spam activity.                                                                                     |
+| Current Mailbox Rules     | Displays any currently configured mailbox rules.                                                                                                                                   |
 
 ## Expandable Actions in Info Area
 

@@ -24,4 +24,4 @@ Select a template from the dropdown
 
 ***
 
-{% include "../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../.gitbook/includes/feature-request.md" %}

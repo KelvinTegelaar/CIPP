@@ -24,7 +24,7 @@ Review the Test Guidance section for additional information on how to craft a cu
 | Result Display Type   | Options: `JSON` or `Markdown`. Controls how test failure output is rendered in CIPP test details.                                                                                                                                                                                    |
 | Result Mode           | Options: `Auto`, `Always Pass`, `Always Info`, or `Always Investigate`. For `Auto` the script output determines pass/fail.                                                                                                                                                           |
 | Enable Script         | Whether the test runs during scheduled test execution.                                                                                                                                                                                                                               |
-| Notify on Alert       | Whether a notification fires when the test fails.                                                                                                                                                                                                                                    |
+| Notify on Alert       | When enabled, a failed test triggers an alert routed to your configured notification channels (email, webhook, or PSA). Select the statuses you would like to have alert.                                                                                                            |
 
 ## Markdown/PowerShell
 

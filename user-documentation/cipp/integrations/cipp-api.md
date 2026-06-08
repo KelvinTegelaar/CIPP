@@ -18,7 +18,8 @@ If you're using a **hosted CIPP instance**, you can follow the instructions belo
       2. Select the API Client from the list.
    3. Ensure that you Enable the client in order to save it to the Function App authentication settings.
    4. Optionally set the [#custom-roles](../../../setup/self-hosting-guide/roles.md#custom-roles "mention") and Allowed IP Ranges for additional security.
-   5. Submit the form to create the client. Remember to copy the Application secret to a secure location.
+   5. Select if you want MCP Access Allowed for this client. Enabling MCP Access converts this client into the MCP resource app and it can no longer be used as a normal API client. Only one client per tenant can hold this role.
+   6. Submit the form to create the client. Remember to copy the Application secret to a secure location.
 3. Once you have the API Client(s) configured, click Actions > Save Azure Configuration, this updates the Function App authentication settings with the new Client IDs.
 
 {% hint style="info" %}
@@ -64,6 +65,3 @@ For full authentication examples, usage patterns, and endpoint information, see 
 ***
 
 {% include "../../../.gitbook/includes/feature-request.md" %}
-
-
-

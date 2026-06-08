@@ -8,7 +8,7 @@ This table will display the tenant's Purview retention policies. Microsoft Purvi
 
 <summary>Deploy Retention Policy</summary>
 
-
+This will open an action drawer that will allow you deploy a retention policy either by template or by pasting the JSON into the Parameters block. Select the tenant(s) you want to deploy the policy to, select the template or paste the JSON, and click Deploy.
 
 </details>
 
@@ -20,3 +20,6 @@ The properties returned are for the Exchange PowerShell command `Get-RetentionCo
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Create template based on policy</td><td>This will create a template for reuse from the selected policy(ies)</td><td>true</td></tr><tr><td>Enable Policy</td><td>This will enable the selected policy(ies). This will only be selectable if the selected policy(ies) are disabled.</td><td>true</td></tr><tr><td>Disable Policy</td><td>This will disable the selected policy(ies). This will only be selectable if the selected policy(ies) are currently enabled.</td><td>true</td></tr><tr><td>Delete Policy</td><td>This will delete the selected policy(ies).</td><td>true</td></tr><tr><td>More Info</td><td>Opens the extended info flyout</td><td>false</td></tr></tbody></table>
 
+***
+
+{% include "../../../../.gitbook/includes/feature-request.md" %}

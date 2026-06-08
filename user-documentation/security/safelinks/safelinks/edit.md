@@ -4,4 +4,4 @@ Opens the selected Safe Links Policy to allow you to review and modify the polic
 
 ***
 
-{% include "../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../.gitbook/includes/feature-request.md" %}

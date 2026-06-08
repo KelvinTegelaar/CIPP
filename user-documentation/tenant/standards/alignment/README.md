@@ -37,6 +37,25 @@ This view breaks out the compliance review to a per standard basis to get an ove
 | Standard Type          | The type of template. One of `Drift Standard` or `Classic Standard`                            |
 | Latest Data Collection | The relative time since the last data collection                                               |
 
+### By Standard View
+
+Each standard row shows the total tenants it applies to, counts and percentages for each compliance status (compliant, non-compliant, accepted deviation, customer specific, license missing, reporting disabled), an alignment score, and the standard type(s) in use across tenants.
+
+| Column                     | Description                                                                                                                                                                                     |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Standard Name              | The name of the standard being evaluated                                                                                                                                                        |
+| Category                   | The catagory of standards the standard belongs to                                                                                                                                               |
+| Standard Type              | The type of template. One of `Drift Standard` or `Classic Standard`                                                                                                                             |
+| Total Tenants              | The number of tenants this standard applies to                                                                                                                                                  |
+| Tenants                    | A list of the tenants this standard applies to                                                                                                                                                  |
+| Compliance Percentage      | This shows the percentage of tenants who are in compliance with the standard                                                                                                                    |
+| License Missing Percentage | This shows the percentage of standards in the standard template that the tenant is not licensed for. 0% indicates that the tenant carries licenses necessary for all standards in the template. |
+| Aligned Count              | The total of tenants who are Compliant, Accepted Deviation, or Customer Specific                                                                                                                |
+| Compliant Count            | The count of tenants that are compliant                                                                                                                                                         |
+| Non Compliant Count        | The count of tenants that are non compliant                                                                                                                                                     |
+| License Missing Count      | The count of tenants that have missing licensing for the standard                                                                                                                               |
+| Accepted Deviation Count   | The count of tenants that have accepted a deviation from the standard's settings.                                                                                                               |
+
 ## Table Actions
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Tenant Report</td><td>Opens <a data-mention href="../../manage/applied-standards.md">applied-standards.md</a> for the selected standards template.</td><td>false</td></tr><tr><td>Edit Template</td><td>Opens the selected standard to edit.</td><td>false</td></tr><tr><td>Manage Drift</td><td>Opens the <a data-mention href="../../manage/drift.md">drift.md</a> page to the selected drift standard.</td><td>false</td></tr><tr><td>Remove Drift Customization</td><td>Removes all global and client level overrides from the standard and resets it to the template settings</td><td>true</td></tr></tbody></table>

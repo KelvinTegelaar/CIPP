@@ -12,9 +12,9 @@ Data is synchronized automatically once every 24 hours from Microsoft 365 / CIPP
 For User and Device information a Rich Text field called "Microsoft 365" is used. This field is created after the first sync once you've set your Field Mappings to the appropriate asset layout.
 {% endhint %}
 
-### Configuring the integration
+## Configuring the integration
 
-#### Step 1 - Obtain API Credentials
+### Step 1 - Obtain API Credentials
 
 1. First login to your Hudu instance as an Administrator.
 2. Browse to **Admin -> Account Administration -> API Keys**
@@ -28,7 +28,7 @@ For User and Device information a Rich Text field called "Microsoft 365" is used
 5. Click **Create New Key**.
 6. Copy the API key to a secure place.
 
-#### Step 2 - CIPP Settings
+### Step 2 - CIPP Settings
 
 You should now be ready to configure settings inside CIPP
 
@@ -42,11 +42,11 @@ You should now be ready to configure settings inside CIPP
 7. Click the Submit button.
 8. Once the settings are saved click the '**Test Extension**' you should see a message at the top of the page saying '**Successfully Connected to Hudu Version: current version**', if you do not see this please check your API Key and FQDN.
 
-#### Step 4 - Mapping CIPP to Hudu
+### Step 4 - Mapping CIPP to Hudu
 
 After the API settings are set you can now map Hudu Assets to Microsoft 365 / CIPP Items.
 
-**Organization Mapping**
+#### **Organization Mapping**
 
 1. Go to the **Tenant Mapping Table.**
 2. You have two options for mapping organizations
@@ -55,13 +55,13 @@ After the API settings are set you can now map Hudu Assets to Microsoft 365 / CI
      * This will try to match Microsoft 365 tenants where the name exactly matches in both.
 3. Click Save Mappings.
 
-**Field Mapping**
+#### **Field Mapping**
 
 1. Scroll down to the **Field Mapping Table.**
 2. For each field you wish to populate in Hudu select the asset layout from the dropdown menu. For users it is recommended to use the "People" template to prevent synchronisation issues.
 3. Click Save Mappings
 
-#### Custom CSS
+## Custom CSS
 
 In some cases the information provided in the M365 Rich Text Field is cut off or formatted incorrectly, use this custom CSS code in your Hudu settings to help format it:
 

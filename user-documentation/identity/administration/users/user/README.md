@@ -65,7 +65,7 @@ The actions dropdown carries forward the same [#table-actions](../#table-actions
 | Field             | Description                                                                                                                                                                                          |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Group Memberships | <p>Table of all group associations<br>• Includes per-row actions<br>• Direct link to <a data-mention href="../../groups/edit.md">edit.md</a> page for the associated group to manage membership.</p> |
-| Admin Roles       | Table of assigned administrative roles                                                                                                                                                               |
+| Admin Roles       | Table of assigned administrative roles. The Actions column will allow you to remove the user from the assigned role.                                                                                 |
 
 ### Managed Devices
 

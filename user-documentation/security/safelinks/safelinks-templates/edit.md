@@ -4,4 +4,4 @@ This page will allow you to review and update the attributes of the selected tem
 
 ***
 
-{% include "../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../.gitbook/includes/feature-request.md" %}

@@ -20,11 +20,14 @@ This flyout wizard will allow you to browse the policy catalog. Select one of yo
 
 ## Table Details <a href="#listmempolicytemplates-details" id="listmempolicytemplates-details"></a>
 
-| Field        | Description                                       |
-| ------------ | ------------------------------------------------- |
-| Display Name | The name of the template.                         |
-| Description  | The description for the template.                 |
-| Type         | The template type, for example Catalog or Device. |
+| Field        | Description                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Display Name | The name of the template.                                                                                           |
+| Is Synced    | If the template is synced to GitHub.                                                                                |
+| Package      | Information on if the policy template has been added to a package.                                                  |
+| Description  | The description for the template.                                                                                   |
+| Type         | The template type, for example Catalog or Device.                                                                   |
+| Usage        | Includes information on if the template is used by direct addition or package tag in a standards or drift template. |
 
 ## Table Actions <a href="#listmempolicytemplates-actions" id="listmempolicytemplates-actions"></a>
 

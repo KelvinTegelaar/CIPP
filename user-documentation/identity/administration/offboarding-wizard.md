@@ -60,6 +60,8 @@ The Offboarding Wizard offers a range of settings that can be performed during t
 | Clear Immutable ID                 | Clears the Immutable ID for a user synced from on-premises Active Directory. Note: This only works after the link is broken from AD                                                                             |
 | Reset Password                     | Resets the user's password to a randomly generated value, preventing the user from signing in after offboarding                                                                                                 |
 | Remove all MFA Devices             | Removes all MFA devices associated with the user                                                                                                                                                                |
+| Remove Teams Phone DID             | Removes the user's assigned Teams Phone DID                                                                                                                                                                     |
+| Disable OneDrive Sharing Links     | Disables all previously generated OneDrive sharing links.                                                                                                                                                       |
 | Delete User                        | Deletes the user from the tenant. <mark style="color:$primary;">Selecting this will disable most of the other settings since deleting the user is a destructive action for things like the mailbox, etc.</mark> |
 
 ## Permissions and forwarding
