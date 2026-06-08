@@ -1,0 +1,111 @@
+{
+  "id": "dashboard-overview",
+  "title": "Dashboard Overview",
+  "description": "A guided tour of the CIPP Dashboard — learn what each card, chart, and control does.",
+  "category": "General",
+  "pages": ["/dashboardv2"],
+  "steps": [
+    {
+      "popover": {
+        "title": "Welcome to the Dashboard 👋",
+        "description": "This tour will walk you through every section of the CIPP Dashboard so you know exactly where to find the information you need."
+      }
+    },
+    {
+      "element": "[data-tutorial='tenant-selector']",
+      "popover": {
+        "title": "Select a Tenant",
+        "description": "Start here. Pick the customer tenant you want to inspect. The entire dashboard updates to show data for the selected tenant.",
+        "side": "bottom",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-portals']",
+      "popover": {
+        "title": "Quick Portal Access",
+        "description": "Jump straight into the Microsoft admin portals (M365, Exchange, Entra, Intune, Azure, etc.) for the selected tenant — no need to look up URLs.",
+        "side": "bottom",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-test-suite']",
+      "popover": {
+        "title": "Test Suite Selector",
+        "description": "Choose which test suite to run against the tenant. You can create custom test suites, refresh results, or edit existing ones from here.",
+        "side": "bottom",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-tenant-info']",
+      "popover": {
+        "title": "Tenant Information",
+        "description": "Quick-reference card showing the tenant's display name, tenant ID, and primary domain. Click the chips to copy values to your clipboard.",
+        "side": "bottom",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-tenant-metrics']",
+      "popover": {
+        "title": "Tenant Metrics",
+        "description": "At-a-glance counts for Users, Guests, Groups, Service Principals, Devices, and Managed Devices. Click any metric to drill into the full list.",
+        "side": "bottom",
+        "align": "center"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-assessment']",
+      "popover": {
+        "title": "Assessment Results",
+        "description": "A summary of the selected test suite results broken down by category (Identity, Devices, Custom). Green = passed, Red = failed, Orange = skipped.",
+        "side": "bottom",
+        "align": "end"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-secure-score']",
+      "popover": {
+        "title": "Secure Score Trend",
+        "description": "A line chart tracking the tenant's Microsoft Secure Score over time. The reference line shows the maximum possible score, so you can gauge progress.",
+        "side": "right",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-mfa']",
+      "popover": {
+        "title": "User Authentication (MFA)",
+        "description": "This Sankey diagram shows how many enabled users are MFA-registered vs. not, and what enforcement method protects them (Conditional Access, Security Defaults, Per-user MFA, or none). Click any node to jump to the MFA report.",
+        "side": "left",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-auth-methods']",
+      "popover": {
+        "title": "Auth Methods Breakdown",
+        "description": "See how users authenticate — single-factor vs. multi-factor, phishable vs. phish-resistant — and which methods (Phone, Authenticator, Passkey, WHfB) they use. Click a node to filter the MFA report.",
+        "side": "right",
+        "align": "start"
+      }
+    },
+    {
+      "element": "[data-tutorial='dashboard-licenses']",
+      "popover": {
+        "title": "License Overview",
+        "description": "Shows the top licenses in the tenant with assigned vs. available counts. Use this to spot unused or over-provisioned licenses at a glance.",
+        "side": "left",
+        "align": "start"
+      }
+    },
+    {
+      "popover": {
+        "title": "You're all set! 🎉",
+        "description": "That covers the Dashboard. Explore the other tabs at the top for more views, or check the sidebar for all CIPP modules. You can replay this tour anytime from the Tutorials menu."
+      }
+    }
+  ]
+}

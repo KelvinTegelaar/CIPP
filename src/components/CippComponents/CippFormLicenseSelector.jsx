@@ -1,6 +1,6 @@
-import { CippFormComponent } from "./CippFormComponent";
-import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
-import { useSettings } from "../../hooks/use-settings";
+import { CippFormComponent } from './CippFormComponent'
+import { getCippLicenseTranslation } from '../../utils/get-cipp-license-translation'
+import { useSettings } from '../../hooks/use-settings'
 
 export const CippFormLicenseSelector = ({
   formControl,
@@ -12,7 +12,7 @@ export const CippFormLicenseSelector = ({
   showRefresh = false,
   ...other
 }) => {
-  const userSettingsDefaults = useSettings();
+  const userSettingsDefaults = useSettings()
   return (
     <CippFormComponent
       name={name}
@@ -24,17 +24,17 @@ export const CippFormLicenseSelector = ({
       api={{
         addedField: addedField,
         tenantFilter: userSettingsDefaults.currentTenant ?? undefined,
-        url: "/api/ListLicenses",
+        url: '/api/ListLicenses',
         labelField: (option) =>
           `${getCippLicenseTranslation([option])} (${option?.availableUnits} available)`,
-        valueField: "skuId",
+        valueField: 'skuId',
         queryKey: `ListLicenses-${userSettingsDefaults?.currentTenant ?? undefined}`,
         data: {
-          Endpoint: "subscribedSkus",
+          Endpoint: 'subscribedSkus',
           $count: true,
         },
         showRefresh,
       }}
     />
-  );
-};
+  )
+}

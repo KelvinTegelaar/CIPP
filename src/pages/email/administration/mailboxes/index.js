@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import CippExchangeActions from '../../../../components/CippComponents/CippExchangeActions'
-import { CippHVEUserDrawer } from '../../../../components/CippComponents/CippHVEUserDrawer.jsx'
 import { CippSharedMailboxDrawer } from '../../../../components/CippComponents/CippSharedMailboxDrawer.jsx'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import { Stack } from '@mui/system'
@@ -45,6 +44,11 @@ const Page = () => {
       value: [{ id: 'recipientTypeDetails', value: 'EquipmentMailbox' }],
       type: 'column',
     },
+    {
+      filterName: 'View Archive-Enabled Mailboxes',
+      value: [{ id: 'ArchiveEnabled', value: true }],
+      type: 'column',
+    },
   ]
 
   // Simplified columns for the table
@@ -55,6 +59,9 @@ const Page = () => {
     'UPN',
     'primarySmtpAddress',
     'AdditionalEmailAddresses',
+    ...(reportDB.useReportDB ? ['storageUsedInBytes'] : []),
+    'ArchiveEnabled',
+    ...(reportDB.useReportDB ? ['ArchiveSize'] : []),
     ...reportDB.cacheColumns.filter((c) => c !== 'Tenant'),
   ]
 
@@ -71,7 +78,6 @@ const Page = () => {
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             <CippSharedMailboxDrawer />
-            <CippHVEUserDrawer />
             {reportDB.controls}
           </Stack>
         }

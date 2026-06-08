@@ -8,10 +8,12 @@ const Page = () => {
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListSites?type=OneDriveUsageAccount',
     queryKey: 'ListSites-OneDriveUsageAccount',
-    cacheName: 'OneDriveUsage',
-    syncTitle: 'Sync OneDrive Usage',
+    cacheName: 'Sites',
+    syncTitle: 'Sync OneDrive Report',
+    syncData: { Types: 'OneDriveUsageAccount' },
     allowToggle: true,
     defaultCached: false,
+    allowAllTenantSync: true,
   })
 
   const actions = [
@@ -115,6 +117,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 
 export default Page

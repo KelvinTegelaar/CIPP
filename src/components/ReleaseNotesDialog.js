@@ -31,6 +31,7 @@ import { GitHub } from '@mui/icons-material'
 import { CippAutoComplete } from './CippComponents/CippAutocomplete'
 
 const RELEASE_COOKIE_KEY = 'cipp_release_notice'
+const RELEASE_PERMANENT_HIDE_KEY = 'cipp_release_notice_permanently_hidden'
 const RELEASE_OWNER = 'KelvinTegelaar'
 const RELEASE_REPO = 'CIPP'
 
@@ -68,6 +69,14 @@ const setCookie = (name, value, days = 365) => {
   document.cookie = `${name}=${encodeURIComponent(
     value
   )}; expires=${expires}; path=/; SameSite=Lax;${secureFlag()}`
+}
+
+const deleteCookie = (name) => {
+  if (typeof document === 'undefined') {
+    return
+  }
+
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax;${secureFlag()}`
 }
 
 const buildReleaseMetadata = (version) => {
@@ -142,8 +151,15 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
     }
 
     const storedValue = getCookie(RELEASE_COOKIE_KEY)
+    if (storedValue === 'permanently_dismissed') {
+      window.localStorage.setItem(RELEASE_PERMANENT_HIDE_KEY, 'true')
+      deleteCookie(RELEASE_COOKIE_KEY)
+      return
+    }
 
-    if (storedValue !== releaseMeta.releaseTag) {
+    const permanentlyHidden = window.localStorage.getItem(RELEASE_PERMANENT_HIDE_KEY) === 'true'
+
+    if (!permanentlyHidden && storedValue !== releaseMeta.releaseTag) {
       setIsEligible(true)
     }
   }, [releaseMeta.releaseTag])
@@ -262,6 +278,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
   const handleDismissUntilNextRelease = () => {
     const newestRelease = releaseCatalog[0]
     const tagToStore = newestRelease?.releaseTag ?? newestRelease?.tagName ?? releaseMeta.releaseTag
+    window.localStorage.removeItem(RELEASE_PERMANENT_HIDE_KEY)
     setCookie(RELEASE_COOKIE_KEY, tagToStore)
     setOpen(false)
     setIsExpanded(false)
@@ -269,7 +286,17 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
     setIsEligible(false)
   }
 
+  const handleDismissPermanently = () => {
+    window.localStorage.setItem(RELEASE_PERMANENT_HIDE_KEY, 'true')
+    deleteCookie(RELEASE_COOKIE_KEY)
+    setOpen(false)
+    setIsExpanded(false)
+    setManualOpenRequested(false)
+    setIsEligible(false)
+  }
+
   const handleRemindLater = () => {
+    window.localStorage.removeItem(RELEASE_PERMANENT_HIDE_KEY)
     setOpen(false)
     setIsExpanded(false)
     setManualOpenRequested(false)
@@ -457,7 +484,15 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
         >
           View release notes on GitHub
         </Button>
-        <Stack direction="row" spacing={1}>
+        <Stack alignItems="center" direction="row" flexWrap="wrap" gap={1} justifyContent="flex-end">
+          <Button
+            onClick={handleDismissPermanently}
+            size="small"
+            sx={{ color: 'text.secondary', minWidth: 'auto', px: 1 }}
+            variant="text"
+          >
+            Don't show again
+          </Button>
           <Button onClick={handleRemindLater} variant="outlined">
             Remind me next time
           </Button>

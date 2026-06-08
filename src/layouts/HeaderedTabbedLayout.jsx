@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { ActionsMenu } from "../components/actions-menu";
 import { useMediaQuery } from "@mui/material";
+import { getIconByName } from "../utils/icon-registry";
 
 export const HeaderedTabbedLayout = (props) => {
   const {
@@ -102,10 +103,32 @@ export const HeaderedTabbedLayout = (props) => {
               )}
             </Stack>
             <div>
-              <Tabs onChange={handleTabsChange} value={currentTab?.path} variant="scrollable">
-                {tabOptions.map((option) => (
-                  <Tab key={option.path} label={option.label} value={option.path} />
-                ))}
+              <Tabs
+                onChange={handleTabsChange}
+                value={currentTab?.path}
+                variant="scrollable"
+                sx={{
+                  "& .MuiTab-root:first-of-type": {
+                    ml: 2,
+                  },
+                }}
+              >
+                {tabOptions.map((option) => {
+                  const icon = getIconByName(option.icon, { fontSize: "small" });
+                  const iconPosition = option.iconPosition ?? "start";
+                  const compactIcon = icon && ["end", "start"].includes(iconPosition);
+
+                  return (
+                    <Tab
+                      key={option.path}
+                      label={option.label}
+                      value={option.path}
+                      icon={icon ?? undefined}
+                      iconPosition={icon ? iconPosition : undefined}
+                      sx={compactIcon ? { minHeight: 48, py: 1.5 } : undefined}
+                    />
+                  );
+                })}
               </Tabs>
               <Divider />
             </div>
@@ -133,6 +156,8 @@ HeaderedTabbedLayout.propTypes = {
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
+      icon: PropTypes.string,
+      iconPosition: PropTypes.oneOf(["bottom", "end", "start", "top"]),
     })
   ).isRequired,
   title: PropTypes.string.isRequired,

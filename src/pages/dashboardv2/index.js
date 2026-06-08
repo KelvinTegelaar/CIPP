@@ -194,8 +194,12 @@ const Page = () => {
       <Box sx={{ width: '100%', mx: 'auto' }}>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 1.5}}>
+            <Box
+              data-tutorial="dashboard-toolbar"
+              sx={{ display: 'flex', alignItems: 'stretch', gap: 1.5 }}
+            >
               <Box
+                data-tutorial="dashboard-portals"
                 sx={{
                   flex: '0.7 1 0',
                   minWidth: 0,
@@ -311,7 +315,7 @@ const Page = () => {
               )}
             </Box>
           </Grid>
-          <Grid size={{ xs: 12, md: 8 }}>
+          <Grid size={{ xs: 12, md: 8 }} data-tutorial="dashboard-test-suite">
             <CippReportToolbar />
           </Grid>
         </Grid>
@@ -319,12 +323,12 @@ const Page = () => {
         {/* Tenant Overview Section - 3 Column Layout */}
         <Grid container spacing={2} sx={{ mb: 2 }}>
           {/* Column 1: Tenant Information */}
-          <Grid size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }} data-tutorial="dashboard-tenant-info">
             <TenantInfoCard data={organizationRecord} isLoading={organization.isFetching} />
           </Grid>
 
           {/* Column 2: Tenant Metrics - 2x3 Grid */}
-          <Grid size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }} data-tutorial="dashboard-tenant-metrics">
             <TenantMetricsGrid
               data={reportData.TenantInfo.TenantOverview}
               isLoading={testsApi.isFetching}
@@ -332,7 +336,7 @@ const Page = () => {
           </Grid>
 
           {/* Column 3: Assessment Results */}
-          <Grid size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }} data-tutorial="dashboard-assessment">
             <AssessmentCard
               data={reportData}
               isLoading={testsApi.isFetching}
@@ -348,14 +352,14 @@ const Page = () => {
             {/* Left Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
-                <Box sx={{ height: 450 }}>
+                <Box sx={{ height: 450 }} data-tutorial="dashboard-secure-score">
                   <SecureScoreCard
                     data={testsApi.data?.SecureScore}
                     isLoading={testsApi.isFetching}
                     sx={{ height: '100%' }}
                   />
                 </Box>
-                <Box sx={{ height: 450 }}>
+                <Box sx={{ height: 450 }} data-tutorial="dashboard-auth-methods">
                   <AuthMethodCard
                     data={testsApi.data?.MFAState}
                     isLoading={testsApi.isFetching}
@@ -368,14 +372,14 @@ const Page = () => {
             {/* Right Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
-                <Box sx={{ height: 450 }}>
+                <Box sx={{ height: 450 }} data-tutorial="dashboard-mfa">
                   <MFACard
                     data={testsApi.data?.MFAState}
                     isLoading={testsApi.isFetching}
                     sx={{ height: '100%' }}
                   />
                 </Box>
-                <Box sx={{ height: 450 }}>
+                <Box sx={{ height: 450 }} data-tutorial="dashboard-licenses">
                   <LicenseCard
                     data={testsApi.data?.LicenseData}
                     isLoading={testsApi.isFetching}

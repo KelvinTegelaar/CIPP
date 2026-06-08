@@ -1,10 +1,12 @@
 [
   {
     "label": "Overview",
-    "path": "/tenant/gdap-management/relationships/relationship"
+    "path": "/tenant/gdap-management/relationships/relationship",
+    "icon": "Dashboard"
   },
   {
     "label": "Mappings",
-    "path": "/tenant/gdap-management/relationships/relationship/mappings"
+    "path": "/tenant/gdap-management/relationships/relationship/mappings",
+    "icon": "Share"
   }
 ]
