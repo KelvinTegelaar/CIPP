@@ -4,9 +4,10 @@ This page is used to manage the visibility of features that are still in beta or
 
 ## Current Feature Flags
 
-| Feature                | Status      | Description                                                                                              |
-| ---------------------- | ----------- | -------------------------------------------------------------------------------------------------------- |
-| Best Practice Analyser | Deprecation | This feature is being deprecated in favor of the new reporting database cache being used by Dashboard v2 |
+| Feature                | Status      | Description                                                                                                                                                      |
+| ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Best Practice Analyser | Deprecation | This feature is being deprecated in favor of the new reporting database cache being used by Dashboard v2                                                         |
+| MCP Server             | Beta        | Model Context Protocol (MCP) server endpoint that exposes CIPP's read-only API surface as tools for AI clients. Disabled by default; enable to allow MCP access. |
 
 ***
 
