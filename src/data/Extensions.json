@@ -144,7 +144,7 @@
         ],
         "multiple": false,
         "condition": {
-          "field": "Sherweb.migrationMethods",
+          "field": "Sherweb.migrationMethods.value",
           "compareType": "is",
           "compareValue": "buyAndCancel"
         }
@@ -181,7 +181,7 @@
         "placeholder": "Enter your Pax8 Client ID",
         "required": true,
         "condition": {
-          "field": "Sherweb.migrateFrom",
+          "field": "Sherweb.migrateFrom.value",
           "compareType": "is",
           "compareValue": "Pax8"
         }
@@ -193,7 +193,7 @@
         "placeholder": "Enter your Pax Client Secret",
         "required": true,
         "condition": {
-          "field": "Sherweb.migrateFrom",
+          "field": "Sherweb.migrateFrom.value",
           "compareType": "is",
           "compareValue": "Pax8"
         }
@@ -615,6 +615,50 @@
         }
       },
       {
+        "type": "switch",
+        "name": "Hudu.HideEmptyRoles",
+        "label": "Hide Empty Roles in Magic Dash",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.IncludeParterCenterLink",
+        "label": "Include link to Partner Center Service management page (partner.microsoft.com)",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.IncludeDefenderLink",
+        "label": "Include link to Defender Portal (security.microsoft.com)",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.IncludeComplianceLink",
+        "label": "Include link to Compliance Portal (compliance.microsoft.com)",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
         "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance via Connect-HuduAPI.ps1",
         "type": "switch",
         "name": "Hudu.CFEnabled",
@@ -937,6 +981,36 @@
         }
       }
     ],
+    "mappingRequired": false
+  },
+  {
+    "name": "ConnectWise PSA",
+    "id": "ConnectWisePSA",
+    "type": "ConnectWisePSA",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/connectwise.png",
+    "comingSoon": true,
+    "description": "Enable the ConnectWise PSA integration to send alerts to your ticketing system.",
+    "mappingRequired": false
+  },
+  {
+    "name": "Autotask PSA",
+    "id": "AutotaskPSA",
+    "type": "AutotaskPSA",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/autotask.png",
+    "comingSoon": true,
+    "description": "Enable the Autotask PSA integration to send alerts to your ticketing system.",
+    "mappingRequired": false
+  },
+  {
+    "name": "Kaseya BMS",
+    "id": "KaseyaBMS",
+    "type": "KaseyaBMS",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/kaseya.svg",
+    "comingSoon": true,
+    "description": "Enable the Kaseya BMS integration to send alerts to your ticketing system.",
     "mappingRequired": false
   }
 ]

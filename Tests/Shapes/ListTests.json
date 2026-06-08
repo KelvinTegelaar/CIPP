@@ -119,6 +119,7 @@
       "ExoSafeLinksRules": "number",
       "ExoSharingPolicy": "number",
       "ExoTenantAllowBlockList": "number",
+      "ExoTransportConfig": "number",
       "ExoTransportRules": "number",
       "Groups": "number",
       "Guests": "number",

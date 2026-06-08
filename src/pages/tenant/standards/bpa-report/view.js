@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { CippImageCard } from "../../../../components/CippCards/CippImageCard";
-import _ from "lodash";
+import { get } from "lodash";
 const Page = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -52,8 +52,8 @@ const Page = () => {
             const tenantData = bpaData?.data?.Data?.find((data) => data.GUID === tenantId);
             const cards = frontendFields.map((field) => {
               //instead of this, use lodash to get the data for blockData
-              const blockData = _.get(tenantData, field.value)
-                ? _.get(tenantData, field.value)
+              const blockData = get(tenantData, field.value)
+                ? get(tenantData, field.value)
                 : undefined;
               return {
                 name: field.name,

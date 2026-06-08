@@ -1,10 +1,12 @@
 [
   {
     "label": "Alert Configuration",
-    "path": "/tenant/administration/alert-configuration"
+    "path": "/tenant/administration/alert-configuration",
+    "icon": "Notifications"
   },
   {
     "label": "Snoozed Alerts",
-    "path": "/tenant/administration/alert-configuration/snoozed-alerts"
+    "path": "/tenant/administration/alert-configuration/snoozed-alerts",
+    "icon": "ShieldMoon"
   }
 ]

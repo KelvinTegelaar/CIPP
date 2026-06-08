@@ -41,6 +41,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
   const formControl = useForm({
     mode: "onChange",
+    defaultValues: {
+      allowedTenants: [],
+      blockedTenants: [],
+      BlockedEndpoints: [],
+      IPRange: [],
+      Permissions: {},
+    },
   });
 
   const formState = useFormState({ control: formControl.control });

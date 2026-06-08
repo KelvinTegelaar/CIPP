@@ -88,6 +88,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListSensitivityLabelTemplates"
+      queryKey="ListSensitivityLabelTemplates"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

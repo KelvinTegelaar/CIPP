@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import _ from 'lodash'
+import { get } from 'lodash'
 import {
   Dialog,
   DialogTitle,
@@ -311,7 +311,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                       </Typography>
                                       <Stack spacing={0.5}>
                                         {info.addedComponent.map((component, componentIndex) => {
-                                          const value = _.get(templateItem, component.name)
+                                          const value = get(templateItem, component.name)
                                           let displayValue = 'N/A'
 
                                           if (value) {
@@ -427,7 +427,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                         let extractedValue = null
 
                                         // Try direct access first
-                                        componentValue = _.get(config, component.name)
+                                        componentValue = get(config, component.name)
 
                                         // If direct access fails and component name contains dots (nested structure)
                                         if (
@@ -441,7 +441,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                           if (pathParts[0] === 'standards' && config.standards) {
                                             // Remove 'standards.' prefix and try to find the value in config.standards
                                             const nestedPath = pathParts.slice(1).join('.')
-                                            extractedValue = _.get(config.standards, nestedPath)
+                                            extractedValue = get(config.standards, nestedPath)
 
                                             // If still not found, try alternative nested structures
                                             // Some standards have double nesting like: config.standards.StandardName.fieldName
@@ -452,7 +452,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                             ) {
                                               const standardName = pathParts[1]
                                               const fieldPath = pathParts.slice(2).join('.')
-                                              extractedValue = _.get(
+                                              extractedValue = get(
                                                 config.standards,
                                                 `${standardName}.${fieldPath}`
                                               )
