@@ -355,7 +355,7 @@
   * [Setup Wizard](user-documentation/cipp/sam-setup-wizard.md)
   * [Integrations](user-documentation/cipp/integrations/README.md)
     * [Integration Sync](user-documentation/cipp/integrations/integration-sync.md)
-    * [CIPP-API](user-documentation/cipp/integrations/cipp-api.md)
+    * [CIPP-API & MCP](user-documentation/cipp/integrations/cipp-api.md)
     * [Sherweb](user-documentation/cipp/integrations/sherweb.md)
     * [Gradient](user-documentation/cipp/integrations/gradient.md)
     * [Halo PSA](user-documentation/cipp/integrations/halopsa.md)
