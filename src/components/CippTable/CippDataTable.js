@@ -341,6 +341,7 @@ export const CippDataTable = (props) => {
     },
     exportEnabled = true,
     simpleColumns = [],
+    dataFilter,
     actions,
     title = 'Report',
     simple = false,
@@ -476,7 +477,7 @@ export const CippDataTable = (props) => {
         const nestedData = getNestedValue(page, api.dataKey)
         return nestedData !== undefined ? nestedData : []
       })
-      setUsedData(combinedResults)
+      setUsedData(dataFilter ? combinedResults.filter(dataFilter) : combinedResults)
     }
   }, [
     getRequestData.isSuccess,
@@ -579,6 +580,9 @@ export const CippDataTable = (props) => {
   }, [columns.length, usedData, queryKey, settings?.currentTenant, filterTypeMap])
 
   const createDialog = useDialog()
+  const hasActions = !!actions
+  const hasOffCanvas = !!offCanvas
+  const hasOnChange = !!onChange
 
   // Compute modeInfo via useMemo so it stays stable but updates when relevant inputs change.
   const modeInfo = useMemo(
@@ -593,7 +597,7 @@ export const CippDataTable = (props) => {
         maxHeightOffset,
         settings
       ),
-    [simple, !!actions, !!offCanvas, !!onChange, maxHeightOffset, settings?.tablePageSize?.value]
+    [simple, hasActions, hasOffCanvas, hasOnChange, maxHeightOffset, settings?.tablePageSize?.value]
   )
 
   // Include updateTrigger in data memo to force re-render when license backfill completes
@@ -651,7 +655,15 @@ export const CippDataTable = (props) => {
   const muiTableBodyRowProps = useMemo(() => {
     if (offCanvasOnRowClick && offCanvas) {
       return ({ row }) => ({
-        onClick: () => {
+        onClick: (event) => {
+          if (
+            event.target?.closest?.(
+              'button, a, input, textarea, select, [role="button"], [role="menuitem"], [data-no-row-click="true"]'
+            )
+          ) {
+            return
+          }
+
           setOffCanvasData(row.original)
           const filteredRowsArray = table?.getFilteredRowModel?.()?.rows
           if (filteredRowsArray) {

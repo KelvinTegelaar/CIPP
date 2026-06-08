@@ -1,6 +1,7 @@
 import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
@@ -19,6 +20,7 @@ import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { Box } from "@mui/system";
 
 const CippApiClientManagement = () => {
+  const router = useRouter();
   const [openAddClientDialog, setOpenAddClientDialog] = useState(false);
   const [openAddExistingAppDialog, setOpenAddExistingAppDialog] = useState(false);
   const [addClientRetryPayload, setAddClientRetryPayload] = useState(null);
@@ -45,6 +47,46 @@ const CippApiClientManagement = () => {
     queryKey: "ApiClients",
   });
 
+  const hasUnsavedChanges = useMemo(() => {
+    if (!azureConfig.isSuccess || !apiClients.isSuccess) return false;
+    return !isEqual(
+      (apiClients.data?.pages?.[0]?.Results || [])
+        .filter((c) => c.Enabled)
+        .map((c) => c.ClientId)
+        .sort(),
+      (azureConfig.data?.Results?.ClientIDs || []).sort()
+    );
+  }, [azureConfig.isSuccess, azureConfig.data, apiClients.isSuccess, apiClients.data]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    const handleRouteChange = (url) => {
+      if (
+        hasUnsavedChanges &&
+        !window.confirm(
+          "You have unsaved API client changes. Are you sure you want to leave this page?"
+        )
+      ) {
+        router.events.emit("routeChangeError");
+        throw "Route change aborted due to unsaved changes.";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    router.events.on("routeChangeStart", handleRouteChange);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, [hasUnsavedChanges, router.events]);
+
   const handleMenuOpen = (event) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -54,11 +96,18 @@ const CippApiClientManagement = () => {
   };
 
   const handleSaveToAzure = () => {
+    handleMenuClose();
+    if (
+      !window.confirm(
+        "Saving to Azure will restart the CIPP instance. Changes may take up to 60 seconds to reflect. Do you want to continue?"
+      )
+    ) {
+      return;
+    }
     postCall.mutate({
       url: `/api/ExecApiClient?action=SaveToAzure`,
       data: {},
     });
-    handleMenuClose();
   };
 
   const getRetryPayload = (result) => {
@@ -129,6 +178,18 @@ const CippApiClientManagement = () => {
           type: "switch",
           name: "Enabled",
           label: "Enable this client",
+        },
+        {
+          type: "switch",
+          name: "MCPAllowed",
+          label: "MCP Access Allowed",
+        },
+        {
+          type: "alert",
+          name: "mcpAccessWarning",
+          severity: "warning",
+          label:
+            "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
         },
       ],
       type: "POST",
@@ -284,13 +345,7 @@ const CippApiClientManagement = () => {
         />
         {azureConfig.isSuccess && apiClients.isSuccess && (
           <>
-            {!isEqual(
-              (apiClients.data?.pages?.[0]?.Results || [])
-                .filter((c) => c.Enabled)
-                .map((c) => c.ClientId)
-                .sort(),
-              (azureConfig.data?.Results?.ClientIDs || []).sort()
-            ) && (
+            {hasUnsavedChanges && (
               <Box sx={{ px: 3 }}>
                 <Alert severity="warning">
                   You have unsaved changes. Click Actions &gt; Save Azure Configuration to update
@@ -320,7 +375,7 @@ const CippApiClientManagement = () => {
             data: { Action: "List" },
             dataKey: "Results",
           }}
-          simpleColumns={["Enabled", "AppName", "ClientId", "Role", "IPRange"]}
+          simpleColumns={["Enabled", "MCPAllowed", "AppName", "ClientId", "Role", "IPRange"]}
           queryKey={`ApiClients`}
         />
       </Stack>
@@ -373,6 +428,18 @@ const CippApiClientManagement = () => {
             type: "switch",
             name: "Enabled",
             label: "Enable this client",
+          },
+          {
+            type: "switch",
+            name: "MCPAllowed",
+            label: "MCP Access Allowed",
+          },
+          {
+            type: "alert",
+            name: "mcpAccessWarning",
+            severity: "warning",
+            label:
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
           },
         ]}
         api={{
@@ -442,6 +509,18 @@ const CippApiClientManagement = () => {
             type: "switch",
             name: "Enabled",
             label: "Enable this client",
+          },
+          {
+            type: "switch",
+            name: "MCPAllowed",
+            label: "MCP Access Allowed",
+          },
+          {
+            type: "alert",
+            name: "mcpAccessWarning",
+            severity: "warning",
+            label:
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
           },
         ]}
         api={{

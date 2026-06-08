@@ -1,22 +1,27 @@
 [
   {
     "label": "View User",
-    "path": "/identity/administration/users/user"
+    "path": "/identity/administration/users/user",
+    "icon": "Person"
   },
   {
     "label": "Edit User",
-    "path": "/identity/administration/users/user/edit"
+    "path": "/identity/administration/users/user/edit",
+    "icon": "ManageAccounts"
   },
   {
     "label": "Exchange Settings",
-    "path": "/identity/administration/users/user/exchange"
+    "path": "/identity/administration/users/user/exchange",
+    "icon": "Mail"
   },
   {
     "label": "Compromise Remediation",
-    "path": "/identity/administration/users/user/bec"
+    "path": "/identity/administration/users/user/bec",
+    "icon": "Shield"
   },
   {
     "label": "Conditional Access",
-    "path": "/identity/administration/users/user/conditional-access"
+    "path": "/identity/administration/users/user/conditional-access",
+    "icon": "Lock"
   }
 ]

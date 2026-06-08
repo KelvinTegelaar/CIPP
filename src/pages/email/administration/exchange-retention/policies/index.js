@@ -64,6 +64,7 @@ const Page = () => {
   return (
     <HeaderedTabbedLayout tabOptions={tabOptions} title={pageTitle}>
       <CippTablePage
+        title={pageTitle}
         apiUrl="/api/ExecManageRetentionPolicies"
         queryKey={`RetentionPolicies-${tenant}`}
         actions={actions}

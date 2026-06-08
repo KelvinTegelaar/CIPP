@@ -1,6 +1,7 @@
 [
   {
     "label": "View Group",
-    "path": "/identity/administration/groups/group"
+    "path": "/identity/administration/groups/group",
+    "icon": "Group"
   }
 ]

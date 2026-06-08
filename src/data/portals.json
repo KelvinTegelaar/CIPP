@@ -6,7 +6,7 @@
     "variable": "initialDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "GlobeAltIcon"
+    "icon": "Public"
   },
   {
     "label": "Exchange",
@@ -24,7 +24,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "UsersIcon"
+    "icon": "Groups"
   },
   {
     "label": "Teams",
@@ -42,7 +42,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "ServerIcon"
+    "icon": "Dns"
   },
   {
     "label": "Intune",

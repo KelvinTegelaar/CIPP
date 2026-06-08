@@ -26,6 +26,13 @@ const Page = () => {
   // Actions configuration
   const actions = [
     {
+      label: "Edit Policy",
+      link: "/tenant/conditional/list-policies/edit?id=[id]",
+      icon: <Edit />,
+      color: "info",
+      hideBulk: true,
+    },
+    {
       label: "Create template based on policy",
       type: "POST",
       url: "/api/AddCATemplate",

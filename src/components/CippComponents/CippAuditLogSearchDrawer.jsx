@@ -28,15 +28,28 @@ export const CippAuditLogSearchDrawer = ({
     (tenant) => tenant.defaultDomainName === currentTenantDomain
   );
 
+  // Keep array defaults for all multi-select fields to avoid Autocomplete receiving undefined.
+  const baseDefaultValues = {
+    RecordTypeFilters: [],
+    KeywordFilter: [],
+    OperationsFilters: [],
+    UserPrincipalNameFilters: [],
+    IPAddressFilters: [],
+    ObjectIdFilters: [],
+    AdministrativeUnitFilters: [],
+    ProcessLogs: false,
+  }
+
   // Create default values with current tenant prefilled
   const defaultValues = {
+    ...baseDefaultValues,
     TenantFilter: currentTenant
       ? {
           label: `${currentTenant.displayName} (${currentTenant.defaultDomainName})`,
           value: currentTenant.defaultDomainName,
         }
       : null,
-  };
+  }
 
   const formControl = useForm({
     defaultValues,
@@ -46,14 +59,15 @@ export const CippAuditLogSearchDrawer = ({
   useEffect(() => {
     if (currentTenant) {
       const newDefaultValues = {
+        ...baseDefaultValues,
         TenantFilter: {
           label: `${currentTenant.displayName} (${currentTenant.defaultDomainName})`,
           value: currentTenant.defaultDomainName,
         },
-      };
-      formControl.reset(newDefaultValues);
+      }
+      formControl.reset(newDefaultValues)
     }
-  }, [currentTenant, formControl]);
+  }, [currentTenant, formControl])
 
   const createSearchApi = ApiPostCall({
     datafromUrl: false,
@@ -64,16 +78,17 @@ export const CippAuditLogSearchDrawer = ({
     setDrawerVisible(false);
     if (currentTenant) {
       const resetValues = {
+        ...baseDefaultValues,
         TenantFilter: {
           label: `${currentTenant.displayName} (${currentTenant.defaultDomainName})`,
           value: currentTenant.defaultDomainName,
         },
-      };
-      formControl.reset(resetValues);
+      }
+      formControl.reset(resetValues)
     } else {
-      formControl.reset();
+      formControl.reset(baseDefaultValues)
     }
-  };
+  }
 
   const handleCreateSearch = async (data) => {
     const formattedData = { ...data };

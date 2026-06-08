@@ -41,6 +41,9 @@ export const CippWizardGroupTemplates = (props) => {
         formControl.setValue("membershipRules", watcher.addedFields.membershipRules, {
           shouldValidate: true,
         });
+        formControl.setValue("licenses", watcher.addedFields.licenses || [], {
+          shouldValidate: true,
+        });
 
         console.log("Set membershipRules to:", watcher.addedFields.membershipRules);
       }, 100);
@@ -71,6 +74,7 @@ export const CippWizardGroupTemplates = (props) => {
                 username: "username",
                 allowExternal: "allowExternal",
                 membershipRules: "membershipRules",
+                licenses: "licenses",
               },
               showRefresh: true,
             }}

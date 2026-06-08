@@ -37,6 +37,7 @@ import { renderCustomScriptMarkdownTemplate } from '../../../utils/customScriptT
 import { useSettings } from '../../../hooks/use-settings'
 import CippFormPage from '../../../components/CippFormPages/CippFormPage'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
+import { CippFormCondition } from '../../../components/CippComponents/CippFormCondition'
 import { CippApiResults } from '../../../components/CippComponents/CippApiResults'
 import { CippCodeBlock } from '../../../components/CippComponents/CippCodeBlock'
 import { markdownStyles } from '../../../components/CippTestDetail/CippTestDetailOffCanvas'
@@ -117,6 +118,7 @@ const Page = () => {
       ScriptContent: '',
       Enabled: false,
       AlertOnFailure: false,
+      AlertStatuses: [{ value: 'Failed', label: 'Failed' }],
       ReturnType: 'JSON',
       ResultMode: { value: 'Auto', label: 'Auto' },
       MarkdownTemplate: '',
@@ -146,6 +148,12 @@ const Page = () => {
         ScriptContent: script.ScriptContent || '',
         Enabled: script.Enabled || false,
         AlertOnFailure: script.AlertOnFailure || false,
+        AlertStatuses: script.AlertStatuses
+          ? (typeof script.AlertStatuses === 'string'
+              ? JSON.parse(script.AlertStatuses)
+              : script.AlertStatuses
+            ).map((s) => ({ value: s, label: s }))
+          : [{ value: 'Failed', label: 'Failed' }],
         ReturnType: script.ReturnType || 'JSON',
         ResultMode: toSelectOption(script.ResultMode, 'Auto'),
         MarkdownTemplate: script.MarkdownTemplate || '',
@@ -253,6 +261,9 @@ const Page = () => {
       ScriptContent: data.ScriptContent,
       Enabled: data.Enabled,
       AlertOnFailure: data.AlertOnFailure,
+      AlertStatuses: data.AlertOnFailure
+        ? (data.AlertStatuses?.map(s => s.value) || ['Failed'])
+        : [],
       ReturnType: data.ReturnType,
       ResultMode: data.ResultMode?.value ?? data.ResultMode,
       MarkdownTemplate: data.MarkdownTemplate,
@@ -399,6 +410,20 @@ const Page = () => {
     defaultValue: false,
     helperText:
       'When enabled, a failed test triggers an alert routed to your configured notification channels (email, webhook, or PSA).',
+  }
+
+  const alertStatusesField = {
+    name: 'AlertStatuses',
+    label: 'Alert on Status',
+    type: 'autoComplete',
+    multiple: true,
+    options: [
+      { label: 'Failed', value: 'Failed' },
+      { label: 'Passed', value: 'Passed' },
+      { label: 'Info', value: 'Info' },
+      { label: 'Investigate', value: 'Investigate' },
+    ],
+    helperText: 'Choose which test result statuses trigger an alert.',
   }
 
   const returnTypeField = {
@@ -1293,6 +1318,20 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
                 disabled={isScriptLoading}
               />
             </Grid>
+            <CippFormCondition
+              field="AlertOnFailure"
+              formControl={formControl}
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid size={{ xs: 12, md: 6 }}>
+                <CippFormComponent
+                  formControl={formControl}
+                  {...alertStatusesField}
+                  disabled={isScriptLoading}
+                />
+              </Grid>
+            </CippFormCondition>
           </Grid>
         </AccordionDetails>
       </Accordion>

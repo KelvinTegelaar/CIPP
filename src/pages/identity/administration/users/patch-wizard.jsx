@@ -21,11 +21,17 @@ import { CippWizardStepButtons } from '../../../../components/CippWizard/CippWiz
 import { ApiPostCall, ApiGetCall } from '../../../../api/ApiCall'
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
 import { Delete } from '@mui/icons-material'
 
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
+  {
+    property: 'businessPhones',
+    label: 'Business Phone',
+    type: 'string',
+  },
   {
     property: 'city',
     label: 'City',
@@ -52,6 +58,11 @@ const PATCHABLE_PROPERTIES = [
     type: 'string',
   },
   {
+    property: 'faxNumber',
+    label: 'Fax Number',
+    type: 'string',
+  },
+  {
     property: 'jobTitle',
     label: 'Job Title',
     type: 'string',
@@ -60,6 +71,11 @@ const PATCHABLE_PROPERTIES = [
     property: 'manager',
     label: 'Manager',
     type: 'userSelector',
+  },
+  {
+    property: 'mobilePhone',
+    label: 'Mobile Phone',
+    type: 'string',
   },
   {
     property: 'officeLocation',
@@ -105,6 +121,11 @@ const PATCHABLE_PROPERTIES = [
     property: 'usageLocation',
     label: 'Usage Location',
     type: 'string',
+  },
+  {
+    property: 'userPrincipalName',
+    label: 'UPN Domain Suffix',
+    type: 'domainPicker',
   },
 ]
 
@@ -195,12 +216,15 @@ const PropertySelectionStep = (props) => {
   const tenantDomains =
     [...new Set(users?.map((user) => user.Tenant || user.tenantFilter).filter(Boolean))] || []
   const firstTenantDomain = tenantDomains[0]
+  const isSingleTenant = tenantDomains.length <= 1
   const hasManagerSelected = selectedProperties.includes('manager')
   const hasSponsorSelected = selectedProperties.includes('sponsor')
   const hasRelationshipSelected = hasManagerSelected || hasSponsorSelected
+  const hasUPNSelected = selectedProperties.includes('userPrincipalName')
+  const hasTenantScopedSelectorSelected = hasRelationshipSelected || hasUPNSelected
 
   useEffect(() => {
-    if (!hasRelationshipSelected || !firstTenantDomain) {
+    if (!hasTenantScopedSelectorSelected || !firstTenantDomain) {
       return
     }
 
@@ -208,7 +232,7 @@ const PropertySelectionStep = (props) => {
     if (currentTenantFilter?.value !== firstTenantDomain) {
       formControl.setValue('tenantFilter', { value: firstTenantDomain })
     }
-  }, [firstTenantDomain, formControl, hasRelationshipSelected])
+  }, [firstTenantDomain, formControl, hasTenantScopedSelectorSelected])
 
   // Fetch custom data mappings for all tenants
   const customDataMappings = ApiGetCall({
@@ -242,8 +266,13 @@ const PropertySelectionStep = (props) => {
 
   // Combine standard properties with custom data properties
   const allProperties = useMemo(() => {
-    return [...PATCHABLE_PROPERTIES, ...customDataProperties]
-  }, [customDataProperties])
+    return [
+      ...PATCHABLE_PROPERTIES.filter(
+        (property) => isSingleTenant || property.property !== 'userPrincipalName'
+      ),
+      ...customDataProperties,
+    ]
+  }, [customDataProperties, isSingleTenant])
 
   // Register form fields
   formControl.register('selectedProperties', { required: true })
@@ -290,6 +319,24 @@ const PropertySelectionStep = (props) => {
       )
     }
 
+    if (property?.type === 'domainPicker') {
+      return (
+        <Stack key={propertyName} spacing={2}>
+          <Alert severity="warning">
+            Changes the domain after @ only. Users will be logged out and must sign in with the new
+            UPN.
+          </Alert>
+          <CippFormDomainSelector
+            formControl={formControl}
+            name={`propertyValues.${propertyName}`}
+            label={property?.label || propertyName}
+            preselectDefaultDomain={false}
+            showRefresh={true}
+          />
+        </Stack>
+      )
+    }
+
     // Default to text input for string types with consistent styling
     return (
       <TextField
@@ -330,6 +377,12 @@ const PropertySelectionStep = (props) => {
           <Typography color="text.secondary" variant="body2" sx={{ fontStyle: 'italic' }}>
             Loading custom data mappings...
           </Typography>
+        )}
+        {!isSingleTenant && (
+          <Alert severity="info">
+            UPN domain suffix changes are only available when all selected users are from the same
+            tenant.
+          </Alert>
         )}
       </Stack>
 
@@ -511,6 +564,23 @@ const ConfirmationStep = (props) => {
             return
           }
 
+          if (propName === 'businessPhones') {
+            userData[propName] = [propertyValue]
+            return
+          }
+
+          if (propName === 'userPrincipalName') {
+            const selectedDomain = propertyValue?.value || propertyValue?.label || propertyValue
+            const currentUPN = user.userPrincipalName || ''
+            const upnPrefix = currentUPN.includes('@') ? currentUPN.split('@')[0] : currentUPN
+
+            if (selectedDomain && upnPrefix) {
+              userData[propName] = `${upnPrefix}@${selectedDomain}`
+            }
+
+            return
+          }
+
           // Handle dot notation properties (e.g., "extension_abc123.customField")
           if (propName.includes('.')) {
             const parts = propName.split('.')
@@ -581,6 +651,9 @@ const ConfirmationStep = (props) => {
 
                 if (propName === 'manager' || propName === 'sponsor') {
                   displayValue = value?.label || value?.value || 'Not set'
+                } else if (propName === 'userPrincipalName') {
+                  const selectedDomain = value?.label || value?.value || value
+                  displayValue = selectedDomain ? `Change domain to: ${selectedDomain}` : 'Not set'
                 } else if (property?.type === 'boolean') {
                   displayValue = value ? 'Yes' : 'No'
                 }
