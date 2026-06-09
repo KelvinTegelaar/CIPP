@@ -29,7 +29,11 @@ After the invite link is sent to the user, they must click on it to accept the i
 
 ### Additional User Setup
 
-Once you have your initial `admin` user added, you are now ready to finish the first setup. After completing the setup, you can return here to set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
+Once you have your initial `admin` user added, you are now ready to finish the first setup. After completing the setup, you can return here to set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention"). Recall that this requires your user to have `superadmin` to manage CIPP Roles. Assign that role to the user in the management portal (hosted) or Azure (self-hosted) and then wait for permissions to replicate. This can take quite some time. We've seen this take up to 24 hours on the extreme end.
+
+{% hint style="danger" %}
+Given the extreme delays in permissions syncing if using the management portal (hosted) or Azure role management (self-hosted), we strongly recommend using Entra ID mapped CIPP Roles to manage user permissions. These permission changes are nearly instant. See below on how to map CIPP Roles to Entra ID groups.
+{% endhint %}
 
 ### Built-In Roles
 
@@ -54,6 +58,8 @@ While CIPP only supplies the above roles by default, you can create your own cus
 
 {% hint style="info" %}
 Custom role permissions can only grant the highest level of the base permission. You cannot grant edit permissions to the `readonly` role. Assigning the `editor` role and then using a custom role to remove permissions will provide you with the functionality you're looking for there.
+
+In the same way, assigning multiple custom roles is restrictive and not additive. The user will only have the lowest granted permission included in the combined set. A missing permission in the set is implied as no permission.
 {% endhint %}
 
 Set up Custom Roles by following these steps:
