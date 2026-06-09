@@ -824,7 +824,7 @@ const CippAddEditUser = (props) => {
               label: group.displayName,
               value: group.id,
               addedFields: {
-                groupType: group.calculatedGroupType || group.groupType,
+                groupType: group.groupType,
               },
             })) || []
           }

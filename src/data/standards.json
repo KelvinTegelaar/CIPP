@@ -1791,7 +1791,7 @@
     "name": "standards.AppManagementPolicy",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS M365 7.0.0 (5.1.5.3)", "CIS M365 7.0.0 (5.1.5.4)", "CIS M365 7.0.0 (5.1.5.5)", "CIS M365 7.0.0 (5.1.5.6)"],
-    "appliesToTest": ["CIS_5_1_5_3", "CIS_5_1_5_4", "CIS_5_1_5_5", "CIS_5_1_5_6"],
+    "appliesToTest": ["CIS_5_1_5_3", "CIS_5_1_5_4", "CIS_5_1_5_5", "CIS_5_1_5_6", "ZTNA21773", "ZTNA21896", "ZTNA21992"],
     "helpText": "Configures the default app management policy to control application and service principal credential restrictions such as password and key credential lifetimes.",
     "docsDescription": "Configures the default app management policy to control application and service principal credential restrictions. This includes password addition restrictions, custom password addition, symmetric key addition, and credential lifetime limits for both applications and service principals.",
     "executiveText": "Enforces credential restrictions on application registrations and service principals to limit how secrets and certificates are created and how long they remain valid. This reduces the risk of long-lived or unmanaged credentials being used to access your tenant.",
@@ -1838,8 +1838,7 @@
     "impactColour": "warning",
     "addedDate": "2026-03-13",
     "powershellEquivalent": "Graph API",
-    "recommendedBy": [],
-    "appliesToTest": ["ZTNA21773", "ZTNA21896", "ZTNA21992"]
+    "recommendedBy": []
   },
   {
     "name": "standards.OutBoundSpamAlert",

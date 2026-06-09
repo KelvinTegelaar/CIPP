@@ -99,7 +99,9 @@ export const ForcedSsoMigrationDialog = () => {
                 'SSO migration failed. Please try again.'}
             </Alert>
             <Typography variant="body2" color="text.secondary">
-              If this error persists, contact your CIPP administrator.
+              The app registration may have been created already — clicking <strong>Try Again</strong>{' '}
+              will pick up where it left off rather than starting over. If the error persists,
+              contact your CIPP administrator.
             </Typography>
           </>
         ) : null}
