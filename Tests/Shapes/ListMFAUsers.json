@@ -1,0 +1,35 @@
+{
+  "_metadata": {
+    "endpoint": "ListMFAUsers",
+    "generatedAt": "2026-04-03T23:43:36.4955495+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AccountEnabled": "bool",
+    "CAPolicies": {
+      "_type": "array",
+      "_element": {
+        "AllApps": "truncated",
+        "DisplayName": "truncated",
+        "PolicyState": "truncated",
+        "UserIncluded": "truncated"
+      }
+    },
+    "CoveredByCA": "string",
+    "CoveredBySD": "bool",
+    "DisplayName": "string",
+    "ID": "string",
+    "IsAdmin": "bool",
+    "isLicensed": "bool",
+    "MFACapable": "null",
+    "MFAMethods": "null",
+    "MFARegistration": "null",
+    "PartitionKey": "string",
+    "PerUser": "string",
+    "RowKey": "string",
+    "Tenant": "string",
+    "UPN": "string",
+    "UserType": "string"
+  }
+}

@@ -120,6 +120,7 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
       filterVariant: "select",
       sortingFn: "boolean",
       filterFn: "equals",
+      filterSelectOptions: ["Yes", "No"],
     };
   }
 

@@ -1,0 +1,14 @@
+{
+  "_metadata": {
+    "endpoint": "ListSharepointQuota",
+    "generatedAt": "2026-04-03T23:46:44.2810324+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "Dashboard": "string",
+    "GeoUsedStorageMB": "string",
+    "Percentage": "number",
+    "TenantStorageMB": "string"
+  }
+}

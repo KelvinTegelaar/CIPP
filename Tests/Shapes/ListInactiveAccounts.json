@@ -1,0 +1,23 @@
+{
+  "_metadata": {
+    "endpoint": "ListInactiveAccounts",
+    "generatedAt": "2026-04-03T23:43:00.5847314+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "accountEnabled": "bool",
+    "azureAdUserId": "string",
+    "createdDateTime": "datetime",
+    "daysSinceLastSignIn": "null",
+    "displayName": "string",
+    "lastNonInteractiveSignInDateTime": "null",
+    "lastRefreshedDateTime": "datetime",
+    "lastSignInDateTime": "null",
+    "numberOfAssignedLicenses": "number",
+    "tenantDisplayName": "string",
+    "tenantId": "string",
+    "userPrincipalName": "string",
+    "userType": "string"
+  }
+}

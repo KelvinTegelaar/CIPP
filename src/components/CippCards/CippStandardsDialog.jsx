@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import _ from "lodash";
+import React, { useState } from 'react'
+import { get } from 'lodash'
 import {
   Dialog,
   DialogTitle,
@@ -19,7 +19,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-} from "@mui/material";
+} from '@mui/material'
 import {
   Close as CloseIcon,
   Info as InfoIcon,
@@ -34,132 +34,132 @@ import {
   Security as SecurityIcon,
   PhoneAndroid as PhoneAndroidIcon,
   ExpandMore as ExpandMoreIcon,
-} from "@mui/icons-material";
-import { SvgIcon } from "@mui/material";
-import standards from "../../data/standards.json";
+} from '@mui/icons-material'
+import { SvgIcon } from '@mui/material'
+import standards from '../../data/standards.json'
 
 const getCategoryIcon = (category) => {
   switch (category) {
-    case "Global Standards":
-      return <PublicIcon fontSize="small" />;
-    case "Entra (AAD) Standards":
-      return <CloudIcon fontSize="small" />;
-    case "Exchange Standards":
-      return <EmailIcon fontSize="small" />;
-    case "Defender Standards":
-      return <SecurityIcon fontSize="small" />;
-    case "Intune Standards":
-      return <PhoneAndroidIcon fontSize="small" />;
-    case "Templates":
-      return <ConstructionIcon fontSize="small" />;
+    case 'Global Standards':
+      return <PublicIcon fontSize="small" />
+    case 'Entra (AAD) Standards':
+      return <CloudIcon fontSize="small" />
+    case 'Exchange Standards':
+      return <EmailIcon fontSize="small" />
+    case 'Defender Standards':
+      return <SecurityIcon fontSize="small" />
+    case 'Intune Standards':
+      return <PhoneAndroidIcon fontSize="small" />
+    case 'Templates':
+      return <ConstructionIcon fontSize="small" />
     default:
-      return <PublicIcon fontSize="small" />;
+      return <PublicIcon fontSize="small" />
   }
-};
+}
 
 const getActionIcon = (action) => {
   switch (action?.toLowerCase()) {
-    case "report":
-      return <AssignmentIcon fontSize="small" />;
-    case "alert":
-    case "warn":
-      return <NotificationsIcon fontSize="small" />;
-    case "remediate":
-      return <ConstructionIcon fontSize="small" />;
+    case 'report':
+      return <AssignmentIcon fontSize="small" />
+    case 'alert':
+    case 'warn':
+      return <NotificationsIcon fontSize="small" />
+    case 'remediate':
+      return <ConstructionIcon fontSize="small" />
     default:
-      return <InfoIcon fontSize="small" />;
+      return <InfoIcon fontSize="small" />
   }
-};
+}
 
 const getImpactColor = (impact) => {
   switch (impact?.toLowerCase()) {
-    case "low impact":
-      return "info";
-    case "medium impact":
-      return "warning";
-    case "high impact":
-      return "error";
+    case 'low impact':
+      return 'info'
+    case 'medium impact':
+      return 'warning'
+    case 'high impact':
+      return 'error'
     default:
-      return "default";
+      return 'default'
   }
-};
+}
 
 export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenant }) => {
-  const [expanded, setExpanded] = useState(false);
-  if (!standardsData) return null;
+  const [expanded, setExpanded] = useState(false)
+  if (!standardsData) return null
 
   // Get applicable templates for the current tenant
   const applicableTemplates = standardsData.filter((template) => {
-    const tenantFilterArr = Array.isArray(template?.tenantFilter) ? template.tenantFilter : [];
+    const tenantFilterArr = Array.isArray(template?.tenantFilter) ? template.tenantFilter : []
     const excludedTenantsArr = Array.isArray(template?.excludedTenants)
       ? template.excludedTenants
-      : [];
+      : []
 
     const tenantInFilter =
-      tenantFilterArr.length > 0 && tenantFilterArr.some((tf) => tf.value === currentTenant);
+      tenantFilterArr.length > 0 && tenantFilterArr.some((tf) => tf.value === currentTenant)
 
     const allTenantsTemplate =
-      tenantFilterArr.some((tf) => tf.value === "AllTenants") &&
+      tenantFilterArr.some((tf) => tf.value === 'AllTenants') &&
       (excludedTenantsArr.length === 0 ||
-        !excludedTenantsArr.some((et) => et.value === currentTenant));
+        !excludedTenantsArr.some((et) => et.value === currentTenant))
 
-    const isApplicable = tenantInFilter || allTenantsTemplate;
+    const isApplicable = tenantInFilter || allTenantsTemplate
 
-    return isApplicable;
-  });
+    return isApplicable
+  })
 
   // Combine standards from all applicable templates
-  const combinedStandards = {};
+  const combinedStandards = {}
   for (const template of applicableTemplates) {
     for (const [standardKey, standardValue] of Object.entries(template.standards)) {
       if (combinedStandards[standardKey]) {
         // If the standard already exists, we need to merge it
-        const existing = combinedStandards[standardKey];
-        const incoming = standardValue;
+        const existing = combinedStandards[standardKey]
+        const incoming = standardValue
 
         // If both are arrays (like IntuneTemplate, ConditionalAccessTemplate), concatenate them
         if (Array.isArray(existing) && Array.isArray(incoming)) {
-          combinedStandards[standardKey] = [...existing, ...incoming];
+          combinedStandards[standardKey] = [...existing, ...incoming]
         }
         // If one is array and other is not, or both are objects, keep the last one (existing behavior)
         else {
-          combinedStandards[standardKey] = standardValue;
+          combinedStandards[standardKey] = standardValue
         }
       } else {
-        combinedStandards[standardKey] = standardValue;
+        combinedStandards[standardKey] = standardValue
       }
     }
   }
 
   // Group standards by category
-  const standardsByCategory = {};
-  let totalStandardsCount = 0;
+  const standardsByCategory = {}
+  let totalStandardsCount = 0
 
   Object.entries(combinedStandards).forEach(([standardKey, standardConfig]) => {
-    const standardInfo = standards.find((s) => s.name === `standards.${standardKey}`);
+    const standardInfo = standards.find((s) => s.name === `standards.${standardKey}`)
     if (standardInfo) {
-      const category = standardInfo.cat;
+      const category = standardInfo.cat
       if (!standardsByCategory[category]) {
-        standardsByCategory[category] = [];
+        standardsByCategory[category] = []
       }
       standardsByCategory[category].push({
         key: standardKey,
         config: standardConfig,
         info: standardInfo,
-      });
+      })
 
       // Count template instances separately
       if (Array.isArray(standardConfig) && standardConfig.length > 0) {
-        totalStandardsCount += standardConfig.length;
+        totalStandardsCount += standardConfig.length
       } else {
-        totalStandardsCount += 1;
+        totalStandardsCount += 1
       }
     }
-  });
+  })
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+    setExpanded(isExpanded ? panel : false)
+  }
 
   return (
     <Dialog
@@ -169,14 +169,16 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
       fullWidth
       PaperProps={{
         sx: {
-          maxHeight: "90vh",
+          maxHeight: '90vh',
         },
       }}
     >
       <DialogTitle
-        sx={{ m: 0, p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}
+        sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <Typography variant="h6">Standards Configuration</Typography>
+        <Typography variant="h6" component="div">
+          Standards Configuration
+        </Typography>
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -203,10 +205,10 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
             // Calculate the actual count of standards in this category (counting template instances)
             const categoryCount = categoryStandards.reduce((count, { config }) => {
               if (Array.isArray(config) && config.length > 0) {
-                return count + config.length;
+                return count + config.length
               }
-              return count + 1;
-            }, 0);
+              return count + 1
+            }, 0)
 
             return (
               <Accordion
@@ -216,9 +218,9 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                 sx={{
                   mb: 1,
                   borderRadius: 2,
-                  boxShadow: "none",
+                  boxShadow: 'none',
                   border: (theme) => `1px solid ${theme.palette.divider}`,
-                  "&:before": { display: "none" },
+                  '&:before': { display: 'none' },
                 }}
               >
                 <AccordionSummary
@@ -227,7 +229,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                   id={`${category}-header`}
                   sx={{
                     minHeight: 48,
-                    "& .MuiAccordionSummary-content": { alignItems: "center", m: 0 },
+                    '& .MuiAccordionSummary-content': { alignItems: 'center', m: 0 },
                   }}
                 >
                   <Stack direction="row" alignItems="center" spacing={1}>
@@ -245,8 +247,8 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                       if (Array.isArray(config) && config.length > 0) {
                         return config.map((templateItem, templateIndex) => (
                           <Grid item xs={12} md={6} key={`${key}-${templateIndex}`}>
-                            <Card variant="outlined" sx={{ height: "100%", mb: 1, p: 0 }}>
-                              <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
+                            <Card variant="outlined" sx={{ height: '100%', mb: 1, p: 0 }}>
+                              <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                                 <Stack spacing={1}>
                                   <Box>
                                     <Typography variant="subtitle2" fontWeight="bold">
@@ -285,12 +287,12 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                             size="small"
                                             variant="outlined"
                                             color={
-                                              action.value?.toLowerCase() === "remediate"
-                                                ? "error"
-                                                : action.value?.toLowerCase() === "alert" ||
-                                                  action.value?.toLowerCase() === "warn"
-                                                ? "warning"
-                                                : "info"
+                                              action.value?.toLowerCase() === 'remediate'
+                                                ? 'error'
+                                                : action.value?.toLowerCase() === 'alert' ||
+                                                    action.value?.toLowerCase() === 'warn'
+                                                  ? 'warning'
+                                                  : 'info'
                                             }
                                           />
                                         ))
@@ -309,15 +311,15 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                       </Typography>
                                       <Stack spacing={0.5}>
                                         {info.addedComponent.map((component, componentIndex) => {
-                                          const value = _.get(templateItem, component.name);
-                                          let displayValue = "N/A";
+                                          const value = get(templateItem, component.name)
+                                          let displayValue = 'N/A'
 
                                           if (value) {
-                                            if (typeof value === "object" && value !== null) {
+                                            if (typeof value === 'object' && value !== null) {
                                               displayValue =
-                                                value.label || value.value || JSON.stringify(value);
+                                                value.label || value.value || JSON.stringify(value)
                                             } else {
-                                              displayValue = String(value);
+                                              displayValue = String(value)
                                             }
                                           }
 
@@ -325,8 +327,8 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                             <Box
                                               key={componentIndex}
                                               sx={{
-                                                display: "flex",
-                                                flexDirection: "column",
+                                                display: 'flex',
+                                                flexDirection: 'column',
                                                 gap: 0.5,
                                               }}
                                             >
@@ -339,7 +341,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                                 variant="outlined"
                                               />
                                             </Box>
-                                          );
+                                          )
                                         })}
                                       </Stack>
                                     </Box>
@@ -348,14 +350,14 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                               </CardContent>
                             </Card>
                           </Grid>
-                        ));
+                        ))
                       }
 
                       // Handle regular standards (non-template arrays)
                       return (
                         <Grid item xs={12} md={6} key={key}>
-                          <Card variant="outlined" sx={{ height: "100%", mb: 1, p: 0 }}>
-                            <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
+                          <Card variant="outlined" sx={{ height: '100%', mb: 1, p: 0 }}>
+                            <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                               <Stack spacing={1}>
                                 <Box>
                                   <Typography variant="subtitle2" fontWeight="bold">
@@ -394,12 +396,12 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                           size="small"
                                           variant="outlined"
                                           color={
-                                            action.value?.toLowerCase() === "remediate"
-                                              ? "error"
-                                              : action.value?.toLowerCase() === "alert" ||
-                                                action.value?.toLowerCase() === "warn"
-                                              ? "warning"
-                                              : "info"
+                                            action.value?.toLowerCase() === 'remediate'
+                                              ? 'error'
+                                              : action.value?.toLowerCase() === 'alert' ||
+                                                  action.value?.toLowerCase() === 'warn'
+                                                ? 'warning'
+                                                : 'info'
                                           }
                                         />
                                       ))
@@ -418,28 +420,28 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                     </Typography>
                                     <Stack spacing={0.5}>
                                       {info.addedComponent.map((component, index) => {
-                                        let componentValue;
-                                        let displayValue = "N/A";
+                                        let componentValue
+                                        let displayValue = 'N/A'
 
                                         // Handle regular standards and nested standards structures
-                                        let extractedValue = null;
+                                        let extractedValue = null
 
                                         // Try direct access first
-                                        componentValue = _.get(config, component.name);
+                                        componentValue = get(config, component.name)
 
                                         // If direct access fails and component name contains dots (nested structure)
                                         if (
                                           (componentValue === undefined ||
                                             componentValue === null) &&
-                                          component.name.includes(".")
+                                          component.name.includes('.')
                                         ) {
-                                          const pathParts = component.name.split(".");
+                                          const pathParts = component.name.split('.')
 
                                           // Handle structures like: standards.AuthMethodsSettings.ReportSuspiciousActivity
-                                          if (pathParts[0] === "standards" && config.standards) {
+                                          if (pathParts[0] === 'standards' && config.standards) {
                                             // Remove 'standards.' prefix and try to find the value in config.standards
-                                            const nestedPath = pathParts.slice(1).join(".");
-                                            extractedValue = _.get(config.standards, nestedPath);
+                                            const nestedPath = pathParts.slice(1).join('.')
+                                            extractedValue = get(config.standards, nestedPath)
 
                                             // If still not found, try alternative nested structures
                                             // Some standards have double nesting like: config.standards.StandardName.fieldName
@@ -448,43 +450,43 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                                 extractedValue === null) &&
                                               pathParts.length >= 3
                                             ) {
-                                              const standardName = pathParts[1];
-                                              const fieldPath = pathParts.slice(2).join(".");
-                                              extractedValue = _.get(
+                                              const standardName = pathParts[1]
+                                              const fieldPath = pathParts.slice(2).join('.')
+                                              extractedValue = get(
                                                 config.standards,
                                                 `${standardName}.${fieldPath}`
-                                              );
+                                              )
                                             }
                                           }
                                         } else {
-                                          extractedValue = componentValue;
+                                          extractedValue = componentValue
                                         }
 
                                         if (extractedValue) {
                                           if (Array.isArray(extractedValue)) {
                                             // Handle array of objects
                                             const arrayValues = extractedValue.map((item) => {
-                                              if (typeof item === "object" && item !== null) {
+                                              if (typeof item === 'object' && item !== null) {
                                                 return (
                                                   item.label || item.value || JSON.stringify(item)
-                                                );
+                                                )
                                               }
-                                              return String(item);
-                                            });
-                                            displayValue = arrayValues.join(", ");
+                                              return String(item)
+                                            })
+                                            displayValue = arrayValues.join(', ')
                                           } else if (
-                                            typeof extractedValue === "object" &&
+                                            typeof extractedValue === 'object' &&
                                             extractedValue !== null
                                           ) {
                                             if (extractedValue.label) {
-                                              displayValue = extractedValue.label;
+                                              displayValue = extractedValue.label
                                             } else if (extractedValue.value) {
-                                              displayValue = extractedValue.value;
+                                              displayValue = extractedValue.value
                                             } else {
-                                              displayValue = JSON.stringify(extractedValue);
+                                              displayValue = JSON.stringify(extractedValue)
                                             }
                                           } else {
-                                            displayValue = String(extractedValue);
+                                            displayValue = String(extractedValue)
                                           }
                                         }
 
@@ -492,8 +494,8 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                           <Box
                                             key={index}
                                             sx={{
-                                              display: "flex",
-                                              flexDirection: "column",
+                                              display: 'flex',
+                                              flexDirection: 'column',
                                               gap: 0.5,
                                             }}
                                           >
@@ -506,7 +508,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                               variant="outlined"
                                             />
                                           </Box>
-                                        );
+                                        )
                                       })}
                                     </Stack>
                                   </Box>
@@ -515,12 +517,12 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                             </CardContent>
                           </Card>
                         </Grid>
-                      );
+                      )
                     })}
                   </Grid>
                 </AccordionDetails>
               </Accordion>
-            );
+            )
           })}
 
           {Object.keys(standardsByCategory).length === 0 && (
@@ -540,5 +542,5 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}

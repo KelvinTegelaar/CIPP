@@ -1,0 +1,9 @@
+{
+  "_metadata": {
+    "endpoint": "ListSharepointAdminUrl",
+    "generatedAt": "2026-04-03T23:46:41.1736512+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": "string"
+}

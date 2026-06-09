@@ -5,6 +5,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
 import standardsData from "../../data/standards.json";
+import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
+import { renderCustomScriptMarkdownTemplate } from "../../utils/customScriptTemplate";
 
 const getStatusColor = (status) => {
   switch (status?.toLowerCase()) {
@@ -47,25 +49,19 @@ const getImpactColor = (impact) => {
   }
 };
 
-const checkCIPPStandardAvailable = (testName) => {
-  if (!testName) return "No";
-  console.log(testName);
-  // Check if any standard's tag array contains a reference to this test
-  const hasStandard = standardsData.some((standard) => {
-    if (!standard.tag || !Array.isArray(standard.tag)) return false;
-    // Check if any tag matches the test name or contains it
-    return standard.tag.some((tag) => {
-      const tagLower = tag.toLowerCase();
-      const testLower = testName.toLowerCase();
-      return tagLower.includes(testLower) || testLower.includes(tagLower);
-    });
-  });
-
-  return hasStandard ? "Yes" : "No";
+// Find every CIPP standard whose appliesToTest array includes this test's RowKey.
+// appliesToTest stores TestIds (e.g. "CIS_1_1_1", "ZTNA21772", "SMB1001_2_5"); the
+// row's RowKey is the same TestId, so this is an exact lookup.
+const getMatchingStandards = (testName) => {
+  if (!testName) return [];
+  return standardsData.filter(
+    (standard) =>
+      Array.isArray(standard.appliesToTest) && standard.appliesToTest.includes(testName)
+  );
 };
 
 // Shared markdown styling for consistent rendering
-const markdownStyles = {
+export const markdownStyles = {
   "& a": {
     color: (theme) => theme.palette.primary.main,
     textDecoration: "underline",
@@ -122,6 +118,25 @@ const markdownStyles = {
 };
 
 export const CippTestDetailOffCanvas = ({ row }) => {
+  const hasRawCustomData = row.TestType === "Custom" && !!row.ResultDataJson;
+  let parsedCustomResult = null;
+  if (hasRawCustomData) {
+    try {
+      parsedCustomResult = JSON.parse(row.ResultDataJson);
+    } catch {
+      parsedCustomResult = null;
+    }
+  }
+
+  const computedCustomMarkdown =
+    hasRawCustomData && parsedCustomResult !== null && !row.ResultMarkdown
+      ? renderCustomScriptMarkdownTemplate(parsedCustomResult, row.MarkdownTemplate || "")
+      : null;
+  const shouldRenderCustomJson = hasRawCustomData && row.ReturnType === "JSON" && !row.ResultMarkdown;
+  const shouldRenderCustomMarkdown = hasRawCustomData && !shouldRenderCustomJson && !row.ResultMarkdown;
+
+  const matchingStandards = getMatchingStandards(row.RowKey);
+
   return (
     <Stack spacing={3}>
       <Card>
@@ -216,8 +231,8 @@ export const CippTestDetailOffCanvas = ({ row }) => {
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
                   <Chip
-                    label={checkCIPPStandardAvailable(row.RowKey)}
-                    color={checkCIPPStandardAvailable(row.RowKey) === "Yes" ? "success" : "default"}
+                    label={matchingStandards.length > 0 ? `Yes (${matchingStandards.length})` : "No"}
+                    color={matchingStandards.length > 0 ? "success" : "default"}
                     size="small"
                   />
                 </Box>
@@ -227,7 +242,31 @@ export const CippTestDetailOffCanvas = ({ row }) => {
         </Grid>
       </Card>
 
-      {row.ResultMarkdown && (
+      {matchingStandards.length > 0 && (
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              CIPP Standards that satisfy this test
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              The following CIPP standards can be deployed to remediate or enforce this test.
+            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+              {matchingStandards.map((standard) => (
+                <Chip
+                  key={standard.name}
+                  label={standard.label || standard.name}
+                  color="primary"
+                  variant="outlined"
+                  size="small"
+                />
+              ))}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
+      {(row.ResultMarkdown || shouldRenderCustomJson || shouldRenderCustomMarkdown) && (
         <Card variant="outlined">
           <CardContent>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -238,20 +277,28 @@ export const CippTestDetailOffCanvas = ({ row }) => {
                 size="small"
               />
             </Box>
-            <Box sx={markdownStyles}>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  a: ({ href, children, ...props }) => (
-                    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
-                      {children}
-                    </a>
-                  ),
-                }}
-              >
-                {row.ResultMarkdown}
-              </ReactMarkdown>
-            </Box>
+            {shouldRenderCustomJson && parsedCustomResult !== null ? (
+              <CippCodeBlock
+                code={JSON.stringify(parsedCustomResult, null, 2)}
+                language="json"
+                showLineNumbers={false}
+              />
+            ) : (
+              <Box sx={markdownStyles}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({ href, children, ...props }) => (
+                      <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                        {children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {shouldRenderCustomMarkdown ? computedCustomMarkdown : row.ResultMarkdown}
+                </ReactMarkdown>
+              </Box>
+            )}
           </CardContent>
         </Card>
       )}

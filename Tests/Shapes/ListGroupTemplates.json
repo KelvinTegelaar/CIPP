@@ -1,0 +1,19 @@
+{
+  "_metadata": {
+    "endpoint": "ListGroupTemplates",
+    "generatedAt": "2026-04-03T23:40:16.9564752+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "allowExternal": "null",
+    "description": "null",
+    "displayName": "string",
+    "groupType": "string",
+    "GUID": "string",
+    "isSynced": "bool",
+    "membershipRules": "null",
+    "source": "string",
+    "username": "string"
+  }
+}

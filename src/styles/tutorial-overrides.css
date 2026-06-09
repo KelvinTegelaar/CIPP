@@ -1,0 +1,76 @@
+.cipp-tutorial-popover {
+  --driver-theme-bg: #fff;
+  --driver-theme-text: #1a1a2e;
+  --driver-theme-secondary: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  .cipp-tutorial-popover {
+    --driver-theme-bg: #1e1e2f;
+    --driver-theme-text: #e0e0e0;
+    --driver-theme-secondary: #9ca3af;
+  }
+}
+
+.cipp-tutorial-popover.driver-popover {
+  background-color: var(--driver-theme-bg);
+  color: var(--driver-theme-text);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 380px;
+}
+
+.cipp-tutorial-popover .driver-popover-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--driver-theme-text);
+}
+
+.cipp-tutorial-popover .driver-popover-description {
+  font-size: 0.875rem;
+  color: var(--driver-theme-secondary);
+  line-height: 1.5;
+}
+
+.cipp-tutorial-popover .driver-popover-progress-text {
+  font-size: 0.75rem;
+  color: var(--driver-theme-secondary);
+}
+
+.cipp-tutorial-popover .driver-popover-prev-btn,
+.cipp-tutorial-popover .driver-popover-next-btn {
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 6px 16px;
+  text-shadow: none;
+}
+
+.cipp-tutorial-popover .driver-popover-next-btn,
+.cipp-tutorial-popover .driver-popover-close-btn {
+  background-color: #f77f00;
+  color: #fff;
+  border: none;
+}
+
+.cipp-tutorial-popover .driver-popover-next-btn:hover,
+.cipp-tutorial-popover .driver-popover-close-btn:hover {
+  background-color: #e06f00;
+}
+
+.cipp-tutorial-popover .driver-popover-prev-btn {
+  background-color: transparent;
+  color: var(--driver-theme-text);
+  border: 1px solid #d1d5db;
+}
+
+.cipp-tutorial-popover .driver-popover-prev-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.cipp-tutorial-popover .driver-popover-arrow-side-left.driver-popover-arrow,
+.cipp-tutorial-popover .driver-popover-arrow-side-right.driver-popover-arrow,
+.cipp-tutorial-popover .driver-popover-arrow-side-top.driver-popover-arrow,
+.cipp-tutorial-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-color: var(--driver-theme-bg);
+}

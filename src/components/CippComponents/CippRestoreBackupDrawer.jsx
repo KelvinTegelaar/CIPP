@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { Button, Box, Typography, Alert, AlertTitle, Divider, Chip, Stack } from "@mui/material";
-import { Grid } from "@mui/system";
-import { useForm, useFormState } from "react-hook-form";
-import { SettingsBackupRestore } from "@mui/icons-material";
-import { CippOffCanvas } from "./CippOffCanvas";
-import CippFormComponent from "./CippFormComponent";
-import { CippFormCondition } from "./CippFormCondition";
-import { CippApiResults } from "./CippApiResults";
-import { useSettings } from "../../hooks/use-settings";
-import { ApiPostCall } from "../../api/ApiCall";
+import React, { useState, useEffect } from 'react'
+import { Button, Box, Typography, Alert, AlertTitle, Divider, Chip, Stack } from '@mui/material'
+import { Grid } from '@mui/system'
+import { useForm, useFormState } from 'react-hook-form'
+import { SettingsBackupRestore } from '@mui/icons-material'
+import { CippOffCanvas } from './CippOffCanvas'
+import CippFormComponent from './CippFormComponent'
+import { CippFormCondition } from './CippFormCondition'
+import { CippApiResults } from './CippApiResults'
+import { useSettings } from '../../hooks/use-settings'
+import { ApiPostCall } from '../../api/ApiCall'
 
 export const CippRestoreBackupDrawer = ({
-  buttonText = "Restore Backup",
+  buttonText = 'Restore Backup',
   backupName = null,
   backupData = null,
   requiredPermissions = [],
   PermissionButton = Button,
   ...props
 }) => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const userSettingsDefaults = useSettings();
-  const tenantFilter = userSettingsDefaults.currentTenant || "";
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  const userSettingsDefaults = useSettings()
+  const tenantFilter = userSettingsDefaults.currentTenant || ''
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
       tenantFilter: tenantFilter,
       users: true,
@@ -44,14 +44,14 @@ export const CippRestoreBackupDrawer = ({
       psa: false,
       backup: backupName ? { value: backupName, label: backupName } : null,
     },
-  });
+  })
 
   const restoreBackup = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: [`BackupTasks-${tenantFilter}`],
-  });
+  })
 
-  const { isValid, isDirty } = useFormState({ control: formControl.control });
+  const { isValid, isDirty } = useFormState({ control: formControl.control })
 
   useEffect(() => {
     if (restoreBackup.isSuccess) {
@@ -74,23 +74,23 @@ export const CippRestoreBackupDrawer = ({
         email: false,
         psa: false,
         backup: backupName ? { value: backupName, label: backupName } : null,
-      });
+      })
     }
-  }, [restoreBackup.isSuccess]);
+  }, [restoreBackup.isSuccess])
 
   const handleSubmit = () => {
-    formControl.trigger();
+    formControl.trigger()
     if (!isValid) {
-      return;
+      return
     }
-    const values = formControl.getValues();
-    const startDate = new Date();
-    const unixTime = Math.floor(startDate.getTime() / 1000) - 45;
+    const values = formControl.getValues()
+    const startDate = new Date()
+    const unixTime = Math.floor(startDate.getTime() / 1000) - 45
 
     // If in AllTenants context, use the tenant from the backup data
-    let tenantFilterValue = tenantFilter;
-    if (tenantFilter === "AllTenants" && backupData?.tenantSource) {
-      tenantFilterValue = backupData.tenantSource;
+    let tenantFilterValue = tenantFilter
+    if (tenantFilter === 'AllTenants' && backupData?.tenantSource) {
+      tenantFilterValue = backupData.tenantSource
     }
 
     const shippedValues = {
@@ -98,7 +98,7 @@ export const CippRestoreBackupDrawer = ({
       Name: `CIPP Restore ${tenantFilterValue}`,
       Command: { value: `New-CIPPRestore` },
       Parameters: {
-        Type: "Scheduled",
+        Type: 'Scheduled',
         RestoreValues: {
           backup: values.backup?.value || values.backup,
           users: values.users,
@@ -122,16 +122,16 @@ export const CippRestoreBackupDrawer = ({
         PSA: values.psa,
       },
       DisallowDuplicateName: true,
-    };
+    }
 
     restoreBackup.mutate({
-      url: "/api/AddScheduledItem",
+      url: '/api/AddScheduledItem',
       data: shippedValues,
-    });
-  };
+    })
+  }
 
   const handleCloseDrawer = () => {
-    setDrawerVisible(false);
+    setDrawerVisible(false)
     formControl.reset({
       tenantFilter: tenantFilter,
       users: true,
@@ -151,13 +151,13 @@ export const CippRestoreBackupDrawer = ({
       email: false,
       psa: false,
       backup: backupName ? { value: backupName, label: backupName } : null,
-    });
-  };
+    })
+  }
 
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
         startIcon={<SettingsBackupRestore />}
         {...props}
@@ -170,7 +170,7 @@ export const CippRestoreBackupDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
             <Button
               variant="contained"
               color="primary"
@@ -178,10 +178,10 @@ export const CippRestoreBackupDrawer = ({
               disabled={restoreBackup.isPending || !isValid}
             >
               {restoreBackup.isPending
-                ? "Creating Restore Task..."
+                ? 'Creating Restore Task...'
                 : restoreBackup.isSuccess
-                ? "Create Another Restore Task"
-                : "Restore Backup"}
+                  ? 'Create Another Restore Task'
+                  : 'Restore Backup'}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
@@ -204,20 +204,20 @@ export const CippRestoreBackupDrawer = ({
                 name="backup"
                 multiple={false}
                 api={{
-                  url: "/api/ExecListBackup",
+                  url: '/api/ExecListBackup',
                   queryKey: `BackupList-${tenantFilter}-autocomplete`,
                   labelField: (option) => {
-                    const match = option.BackupName.match(/.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/);
+                    const match = option.BackupName.match(/.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/)
                     const dateTime = match
                       ? `${match[1]} @ ${match[2]}:${match[3]}`
-                      : option.BackupName;
+                      : option.BackupName
                     const tenantDisplay =
-                      tenantFilter === "AllTenants" ? ` (${option.TenantFilter})` : "";
-                    return `${dateTime}${tenantDisplay}`;
+                      tenantFilter === 'AllTenants' ? ` (${option.TenantFilter})` : ''
+                    return `${dateTime}${tenantDisplay}`
                   },
-                  valueField: "BackupName",
+                  valueField: 'BackupName',
                   data: {
-                    Type: "Scheduled",
+                    Type: 'Scheduled',
                     NameOnly: true,
                     tenantFilter: tenantFilter,
                   },
@@ -225,7 +225,7 @@ export const CippRestoreBackupDrawer = ({
                 formControl={formControl}
                 required={true}
                 validators={{
-                  validate: (value) => !!value || "Please select a backup",
+                  validate: (value) => !!value || 'Please select a backup',
                 }}
               />
             </Grid>
@@ -380,5 +380,5 @@ export const CippRestoreBackupDrawer = ({
         <CippApiResults apiObject={restoreBackup} />
       </CippOffCanvas>
     </>
-  );
-};
+  )
+}
