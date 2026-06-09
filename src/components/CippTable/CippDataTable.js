@@ -732,7 +732,9 @@ export const CippDataTable = (props) => {
   // (SettingsProvider hydrates from localStorage in an effect), so we derive the order during
   // render instead of applying it from an effect: the first render that has both columns and a
   // hydrated saved order already carries that order, eliminating the post-paint reorder flash.
-  const savedColumnOrder = settings?.columnOrderDefaults?.[pageName]
+  // Dialog/popout tables share the parent's route (same pageName); they must NOT inherit the
+  // page's saved column order, which is built for the parent's columns and breaks popout layout.
+  const savedColumnOrder = isInDialog ? undefined : settings?.columnOrderDefaults?.[pageName]
   const effectiveColumnOrder = useMemo(() => {
     // A user-driven order (drag, or the toolbar's restore/reset handlers) wins once present.
     if (columnOrder.length > 0) return columnOrder
@@ -915,7 +917,7 @@ export const CippDataTable = (props) => {
     enableRowVirtualization: true,
     enableColumnVirtualization: true,
     enableColumnResizing: true,
-    enableColumnOrdering: true,
+    enableColumnOrdering: !isInDialog,
     columnResizeMode: 'onChange',
     rowVirtualizerOptions: {
       overscan: 5,
