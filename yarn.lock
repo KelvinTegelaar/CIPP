@@ -6776,10 +6776,10 @@ react-virtualized-auto-sizer@^1.0.26:
   resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.26.tgz#e9470ef6a778dc4f1d5fd76305fa2d8b610c357a"
   integrity sha512-CblNyiNVw2o+hsa5/49NH2ogGxZ+t+3aweRvNSq7TVjDIlwk7ir4lencEg5HxHeSzwNarSkNkiu0qJSOXtxm5A==
 
-react-virtuoso@^4.18.5:
-  version "4.18.5"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.18.5.tgz#450108e585c7a1124b995c7ea3cf367ed4857631"
-  integrity sha512-QDyNjyNEuurZG67SOmzYyxEkQYSyGmAMixOI6M15L/Q4CF39EgG+88y6DgZRo0q7rmy0HPx3Fj90I8/tPdnRCQ==
+react-virtuoso@^4.18.7:
+  version "4.18.7"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.18.7.tgz#e5b0497ac76526cd661d71cd11f86c398784b905"
+  integrity sha512-xNF5zDGEEIMB7cKwcen/pLig0YDf6OnfFrVgKFa7sHPf9fRem0CaLshyObbBcP88jzn0enavL39EgplgdyT21g==
 
 react@19.2.6:
   version "19.2.6"
