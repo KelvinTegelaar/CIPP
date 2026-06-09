@@ -66,7 +66,12 @@ export const utilTableMode = (
         },
       },
       initialState: {
-        columnOrder: [...simpleColumns],
+        // Include the leading/trailing display columns (selection checkbox + row actions)
+        // around the data columns. MRT's column-drag handler re-derives columnPinning by
+        // filtering it against columnOrder, dropping any pinned id not present — so an
+        // order missing these (e.g. the post-reset fallback) would unpin the checkbox
+        // column and let it drift right. The ids are harmless when those columns are off.
+        columnOrder: ['mrt-row-select', ...simpleColumns, 'mrt-row-actions'],
         columnVisibility: { ...columnVisibility },
         showGlobalFilter: true,
         density: 'compact',

@@ -26,6 +26,7 @@ import { Box } from '@mui/system'
 import { useSettings } from '../../hooks/use-settings'
 import { isEqual } from 'lodash' // Import lodash for deep comparison
 import { useLicenseBackfill } from '../../hooks/use-license-backfill'
+import { useRouter } from 'next/router'
 
 // Resolve dot-delimited property paths against arbitrary data objects.
 const getNestedValue = (source, path) => {
@@ -380,6 +381,7 @@ export const CippDataTable = (props) => {
   const previousFiltersRef = useRef(null)
 
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility)
+  const [columnOrder, setColumnOrder] = useState([])
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns)
   const [usedData, setUsedData] = useState(data)
   const [usedColumns, setUsedColumns] = useState([])
@@ -396,6 +398,9 @@ export const CippDataTable = (props) => {
   const waitingBool = api?.url ? true : false
 
   const settings = useSettings()
+  const router = useRouter()
+  // Per-page key for saved column prefs — must match the toolbar's derivation exactly.
+  const pageName = router.pathname.split('/').slice(1).join('/')
 
   // Hook to trigger re-render when license backfill completes
   const { updateTrigger } = useLicenseBackfill()
@@ -489,6 +494,13 @@ export const CippDataTable = (props) => {
 
   // Derive columns from data — only when the data schema actually changes.
   useEffect(() => {
+    // Wait for persisted settings (incl. the saved column order) to hydrate from localStorage
+    // before building columns, so columns never paint before their saved order is known —
+    // otherwise cached data races ahead of hydration and the order flashes on load. Pairs with
+    // effectiveColumnOrder below, which applies the resolved order during render.
+    if (!settings?.isInitialized) {
+      return
+    }
     if (
       !Array.isArray(usedData) ||
       usedData.length === 0 ||
@@ -577,7 +589,14 @@ export const CippDataTable = (props) => {
     }
     setUsedColumns(finalColumns)
     setColumnVisibility(newVisibility)
-  }, [columns.length, usedData, queryKey, settings?.currentTenant, filterTypeMap])
+  }, [
+    columns.length,
+    usedData,
+    queryKey,
+    settings?.currentTenant,
+    settings?.isInitialized,
+    filterTypeMap,
+  ])
 
   const createDialog = useDialog()
   const hasActions = !!actions
@@ -709,15 +728,34 @@ export const CippDataTable = (props) => {
       ? getRequestData.isFetching
       : isFetching
 
+  // Resolve which column order to control. The saved per-page order isn't known at mount
+  // (SettingsProvider hydrates from localStorage in an effect), so we derive the order during
+  // render instead of applying it from an effect: the first render that has both columns and a
+  // hydrated saved order already carries that order, eliminating the post-paint reorder flash.
+  const savedColumnOrder = settings?.columnOrderDefaults?.[pageName]
+  const effectiveColumnOrder = useMemo(() => {
+    // A user-driven order (drag, or the toolbar's restore/reset handlers) wins once present.
+    if (columnOrder.length > 0) return columnOrder
+    // Otherwise fall back to the saved per-page order when one exists.
+    return savedColumnOrder?.length > 0 ? savedColumnOrder : []
+  }, [columnOrder, savedColumnOrder])
+
   // Memoize state object to avoid creating a new reference every render when values haven't changed.
   const tableState = useMemo(
     () => ({
       columnVisibility: sanitizedColumnVisibility,
+      // Control columnOrder with the resolved order (user-driven, else the saved per-page order).
+      // Omit the key entirely when empty so MRT keeps its internal order, seeded from
+      // initialState.columnOrder ([...simpleColumns] via util-tablemode); its
+      // useMRT_Effects then rebuilds a full order that preserves the simpleColumns
+      // sequence. Do NOT pass `[]` (MRT rebuilds from scratch in raw API order) or
+      // `undefined` (crashes the MRT effect that reads columnOrder.length).
+      ...(effectiveColumnOrder.length > 0 ? { columnOrder: effectiveColumnOrder } : {}),
       sorting,
       columnFilters,
       showSkeletons,
     }),
-    [sanitizedColumnVisibility, sorting, columnFilters, showSkeletons]
+    [sanitizedColumnVisibility, effectiveColumnOrder, sorting, columnFilters, showSkeletons]
   )
 
   // Memoize renderRowActionMenuItems to avoid re-creating on each render.
@@ -827,6 +865,7 @@ export const CippDataTable = (props) => {
               simpleColumns={simpleColumns}
               data={data}
               columnVisibility={columnVisibility}
+              columnOrder={columnOrder}
               getRequestData={getRequestData}
               usedColumns={usedColumns}
               usedData={memoizedData ?? []}
@@ -835,6 +874,7 @@ export const CippDataTable = (props) => {
               exportEnabled={exportEnabled}
               refreshFunction={refreshFunction}
               setColumnVisibility={setColumnVisibility}
+              setColumnOrder={setColumnOrder}
               filters={filters}
               queryKeys={queryKey ? queryKey : title}
               graphFilterData={graphFilterData}
@@ -855,6 +895,7 @@ export const CippDataTable = (props) => {
       simpleColumns,
       data,
       columnVisibility,
+      columnOrder,
       getRequestData,
       usedColumns,
       memoizedData,
@@ -874,6 +915,7 @@ export const CippDataTable = (props) => {
     enableRowVirtualization: true,
     enableColumnVirtualization: true,
     enableColumnResizing: true,
+    enableColumnOrdering: true,
     columnResizeMode: 'onChange',
     rowVirtualizerOptions: {
       overscan: 5,
@@ -895,6 +937,7 @@ export const CippDataTable = (props) => {
     onColumnFiltersChange: setColumnFilters,
     renderEmptyRowsFallback,
     onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
     ...modeInfo,
     renderRowActionMenuItems,
     renderTopToolbar,
