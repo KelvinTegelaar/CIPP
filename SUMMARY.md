@@ -382,6 +382,7 @@
         * [Add Role](user-documentation/cipp/advanced/super-admin/custom-roles/add.md)
       * [SAM App Roles](user-documentation/cipp/advanced/super-admin/sam-app-roles.md)
       * [SAM App Permissions](user-documentation/cipp/advanced/super-admin/sam-app-permissions.md)
+      * [SSO](user-documentation/cipp/advanced/super-admin/sso.md)
     * [Exchange Cmdlets](user-documentation/cipp/advanced/exchange-cmdlets.md)
     * [Timers](user-documentation/cipp/advanced/timers.md)
     * [Table Maintenance](user-documentation/cipp/advanced/table-maintenance.md)
