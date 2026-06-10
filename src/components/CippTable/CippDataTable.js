@@ -600,8 +600,13 @@ export const CippDataTable = (props) => {
     [simple, hasActions, hasOffCanvas, hasOnChange, maxHeightOffset, settings?.tablePageSize?.value]
   )
 
-  // Include updateTrigger in data memo to force re-render when license backfill completes
-  const memoizedData = useMemo(() => usedData, [usedData, updateTrigger])
+  // Include updateTrigger in data memo to force re-render when license backfill completes.
+  // Also refresh data identity when derived columns change so TanStack re-runs filtering
+  // for searches entered before columns are available.
+  const memoizedData = useMemo(
+    () => (Array.isArray(usedData) ? usedData.slice() : usedData),
+    [usedData, updateTrigger, usedColumns]
+  )
 
   // Sanitize columnVisibility to remove any undefined/invalid keys before passing to MRT
   const sanitizedColumnVisibility = useMemo(() => {
