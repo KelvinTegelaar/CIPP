@@ -1,16 +1,18 @@
 import {
   Box,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useForm, useFormState } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
@@ -120,6 +122,23 @@ export const CippApiDialog = (props) => {
   };
 
   const tenantFilter = useSettings().currentTenant;
+
+  // Mirrors getRowTenantFilter: in AllTenants mode a row's own Tenant property wins,
+  // so the chips show exactly the tenant(s) the API payload will target.
+  const affectedTenants = useMemo(() => {
+    const rows = Array.isArray(row) ? row : [row];
+    const tenants = new Set();
+    rows.forEach((rowData) => {
+      if (tenantFilter === "AllTenants" && rowData?.Tenant) {
+        tenants.add(rowData.Tenant);
+      } else if (tenantFilter) {
+        tenants.add(tenantFilter);
+      }
+    });
+    return [...tenants];
+  }, [row, tenantFilter]);
+  const maxTenantChips = 5;
+
   const handleActionClick = (row, action, formData) => {
     setIsFormSubmitted(true);
     let finalData = {};
@@ -290,11 +309,24 @@ export const CippApiDialog = (props) => {
       !linkOpenedRef.current
     ) {
       linkOpenedRef.current = true;
-      const linkWithData = api.link.replace(
+      let linkWithData = api.link.replace(
         /\[([^\]]+)\]/g,
         (_, key) => getRawNestedValue(row, key) || `[${key}]`,
       );
       if (linkWithData.startsWith("/") && !api?.external) {
+        // In AllTenants mode internal links need the row's tenant in the URL,
+        // since the global tenant is no longer switched for link actions.
+        if (
+          tenantFilter === "AllTenants" &&
+          !Array.isArray(row) &&
+          row?.Tenant &&
+          !linkWithData.includes("tenantFilter=")
+        ) {
+          const separator = linkWithData.includes("?") ? "&" : "?";
+          linkWithData = `${linkWithData}${separator}tenantFilter=${encodeURIComponent(
+            row.Tenant,
+          )}`;
+        }
         router.push(linkWithData, undefined, { shallow: true });
       } else {
         window.open(linkWithData, api.target || "_blank");
@@ -330,7 +362,7 @@ export const CippApiDialog = (props) => {
         (_, key) => getNestedValue(row, key) || `[${key}]`,
       );
     } else if (row.length > 1) {
-      confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, "the selected rows");
+      confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, `the ${row.length} selected rows`);
     } else if (row.length === 1) {
       confirmText = api.confirmText.replace(
         /\[([^\]]+)\]/g,
@@ -366,6 +398,25 @@ export const CippApiDialog = (props) => {
         <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={createDialog.open} {...other}>
           <form onSubmit={formHook.handleSubmit(onSubmit)}>
             <DialogTitle>{title}</DialogTitle>
+            {affectedTenants.length > 0 && (
+              <DialogContent sx={{ pb: 0 }}>
+                <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+                  <Typography variant="caption" color="text.secondary">
+                    {affectedTenants.length === 1 ? "Affected tenant:" : "Affected tenants:"}
+                  </Typography>
+                  {affectedTenants.slice(0, maxTenantChips).map((tenant) => (
+                    <Chip key={tenant} size="small" variant="outlined" color="info" label={tenant} />
+                  ))}
+                  {affectedTenants.length > maxTenantChips && (
+                    <Chip
+                      size="small"
+                      variant="outlined"
+                      label={`+${affectedTenants.length - maxTenantChips} more`}
+                    />
+                  )}
+                </Stack>
+              </DialogContent>
+            )}
             <DialogContent>
               <Stack spacing={2}>{confirmText}</Stack>
             </DialogContent>
