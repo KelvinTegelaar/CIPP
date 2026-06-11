@@ -1,4 +1,10 @@
-import { BuildingOfficeIcon, HomeIcon, UsersIcon, WrenchIcon } from '@heroicons/react/24/outline'
+import {
+  BuildingOfficeIcon,
+  HomeIcon,
+  SparklesIcon,
+  UsersIcon,
+  WrenchIcon,
+} from '@heroicons/react/24/outline'
 import {
   CloudOutlined,
   HomeRepairService,
@@ -439,6 +445,60 @@ export const nativeMenuItems = [
             path: '/security/compliance/sit-templates',
             permissions: ['Security.SensitiveInfoType.*'],
             scope: 'global',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Copilot & AI',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <SparklesIcon />
+      </SvgIcon>
+    ),
+    permissions: ['Tenant.Standards.*'],
+    items: [
+      {
+        title: 'Shadow AI Discovery',
+        path: '/copilot/shadow-ai',
+        permissions: ['Tenant.Standards.*'],
+      },
+      {
+        title: 'Copilot Settings',
+        path: '/copilot/settings',
+        permissions: ['Tenant.Standards.*'],
+      },
+      {
+        title: 'Agent365',
+        permissions: ['Tenant.Standards.*'],
+        items: [
+          {
+            title: 'Packages',
+            path: '/copilot/agent365/packages',
+            permissions: ['Tenant.Standards.*'],
+          },
+        ],
+      },
+      {
+        title: 'Reports',
+        permissions: ['Tenant.Standards.*'],
+        items: [
+          {
+            title: 'Copilot Adoption',
+            path: '/copilot/reports/copilot-adoption',
+            permissions: ['Tenant.Standards.*'],
+          },
+          {
+            title: 'Copilot Usage Trend',
+            path: '/copilot/reports/copilot-trend',
+            permissions: ['Tenant.Standards.*'],
+          },
+          {
+            title: 'Copilot User Activity',
+            path: '/copilot/reports/copilot-usage',
+            permissions: ['Tenant.Standards.*'],
           },
         ],
       },
