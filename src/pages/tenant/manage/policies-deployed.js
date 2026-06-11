@@ -255,7 +255,7 @@ const PoliciesDeployedPage = () => {
     const templateListTags = template['TemplateList-Tags'] || template.TemplateListTags
 
     // Check if this template has TemplateList-Tags and expand them
-    if (templateListTags?.value && templateListTags?.addedFields?.templates) {
+    if (templateListTags?.value && templateListTags?.addedFields?.templates?.length > 0) {
       console.log(
         'Found TemplateList-Tags for IntuneTemplate in policies-deployed:',
         templateListTags
@@ -359,7 +359,7 @@ const PoliciesDeployedPage = () => {
     const templateListTags = template['TemplateList-Tags'] || template.TemplateListTags
 
     // Check if this template has TemplateList-Tags and expand them
-    if (templateListTags?.value && templateListTags?.addedFields?.templates) {
+    if (templateListTags?.value && templateListTags?.addedFields?.templates?.length > 0) {
       console.log(
         'Found TemplateList-Tags for ConditionalAccessTemplate in policies-deployed:',
         templateListTags

@@ -144,7 +144,7 @@
         ],
         "multiple": false,
         "condition": {
-          "field": "Sherweb.migrationMethods",
+          "field": "Sherweb.migrationMethods.value",
           "compareType": "is",
           "compareValue": "buyAndCancel"
         }
@@ -181,7 +181,7 @@
         "placeholder": "Enter your Pax8 Client ID",
         "required": true,
         "condition": {
-          "field": "Sherweb.migrateFrom",
+          "field": "Sherweb.migrateFrom.value",
           "compareType": "is",
           "compareValue": "Pax8"
         }
@@ -193,7 +193,7 @@
         "placeholder": "Enter your Pax Client Secret",
         "required": true,
         "condition": {
-          "field": "Sherweb.migrateFrom",
+          "field": "Sherweb.migrateFrom.value",
           "compareType": "is",
           "compareValue": "Pax8"
         }

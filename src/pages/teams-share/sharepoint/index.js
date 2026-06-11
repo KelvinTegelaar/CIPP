@@ -25,7 +25,7 @@ const Page = () => {
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListSites?type=SharePointSiteUsage',
     queryKey: 'ListSites-SharePointSiteUsage',
-    cacheName: 'Sites',
+    cacheName: 'SharePointSiteUsage',
     syncTitle: 'Sync SharePoint Sites Report',
     syncData: { Types: 'SharePointSiteUsage' },
     allowToggle: true,

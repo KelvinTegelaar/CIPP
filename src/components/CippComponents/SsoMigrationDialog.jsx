@@ -60,7 +60,8 @@ export const SsoMigrationDialog = ({ meData }) => {
 
   const result = ssoSetup.data?.data?.Results ?? ssoSetup.data?.Results
   const isSuccess = result?.severity === 'success'
-  const isError = ssoSetup.isError || result?.severity === 'failed'
+  const isPartial = result?.severity === 'warning' && result?.canRepair
+  const isError = ssoSetup.isError || result?.severity === 'failed' || (result?.severity === 'warning' && !result?.canRepair)
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -74,8 +75,8 @@ export const SsoMigrationDialog = ({ meData }) => {
               CIPP users.
             </Typography>
             <Typography sx={{ mb: 2 }}>
-              To get ready, CIPP needs to create an app registration in your tenant called{' '}
-              <strong>CIPP-SSO</strong> with minimal permissions (OpenID, Profile, Email only).
+              To get ready, CIPP needs to create an app registration in your tenant called
+              <strong> CIPP-SSO </strong> with minimal permissions (OpenID, Profile, Email only).
               This won&apos;t change how you log in today — it just prepares your tenant for when
               the update rolls out.
             </Typography>
@@ -108,6 +109,20 @@ export const SsoMigrationDialog = ({ meData }) => {
         ) : isSuccess ? (
           <Alert severity="success" sx={{ mb: 1 }}>
             {result.message}
+          </Alert>
+        ) : isPartial ? (
+          <Alert severity="warning" sx={{ mb: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+              App created — secret creation failed
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              The CIPP-SSO app registration ({result.appId}) was created successfully, but the
+              client secret could not be generated. The app ID is saved.
+            </Typography>
+            <Typography variant="body2">
+              Open <strong>Advanced &rarr; Super Admin &rarr; SSO</strong> and click{' '}
+              <strong>Repair</strong> to finish setup.
+            </Typography>
           </Alert>
         ) : isError ? (
           <Alert severity="error" sx={{ mb: 1 }}>
