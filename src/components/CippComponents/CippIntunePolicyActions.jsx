@@ -1,5 +1,11 @@
 import { Book, LaptopChromebook } from '@mui/icons-material'
-import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from '@heroicons/react/24/outline'
+import {
+  DocumentDuplicateIcon,
+  GlobeAltIcon,
+  TrashIcon,
+  UserIcon,
+  UserGroupIcon,
+} from '@heroicons/react/24/outline'
 
 const assignmentModeOptions = [
   { label: 'Replace existing assignments', value: 'replace' },
@@ -18,6 +24,7 @@ const assignmentFilterTypeOptions = [
  * @param {object} options - Additional options
  * @param {string} options.platformType - Platform type for app protection policies (deviceAppManagement)
  * @param {boolean} options.includeCreateTemplate - Whether to include create template action (default: true)
+ * @param {boolean} options.includeClone - Whether to include the clone policy action (default: true)
  * @param {boolean} options.includeDelete - Whether to include delete action (default: true)
  * @param {string} options.deleteUrlName - URLName for delete action (default: same as policyType)
  * @param {object} options.templateData - Data for template creation
@@ -27,6 +34,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
   const {
     platformType = null,
     includeCreateTemplate = true,
+    includeClone = true,
     includeDelete = true,
     deleteUrlName = policyType,
     templateData = null,
@@ -122,6 +130,41 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       icon: <Book />,
       color: 'info',
       multiPost: false,
+    })
+  }
+
+  // Clone policy action
+  if (includeClone) {
+    actions.push({
+      label: 'Clone Policy',
+      type: 'POST',
+      url: '/api/AddIntunePolicyClone',
+      multiPost: false,
+      icon: <DocumentDuplicateIcon />,
+      color: 'info',
+      data: templateData || {
+        ID: 'id',
+        URLName: policyType === 'URLName' ? 'URLName' : policyType,
+      },
+      fields: [
+        {
+          type: 'textField',
+          name: 'newDisplayName',
+          label: 'New Display Name',
+          validators: { required: 'Please enter a name for the cloned policy' },
+        },
+        {
+          type: 'textField',
+          name: 'newDescription',
+          label: 'Description',
+        },
+      ],
+      defaultvalues: (row) => ({
+        newDisplayName: row?.displayName ? `${row.displayName} - Copy` : '',
+        newDescription: row?.description ?? '',
+      }),
+      confirmText:
+        'Enter a name for the cloned policy. The name must be different from the original policy and assignments are not copied to the clone.',
     })
   }
 
