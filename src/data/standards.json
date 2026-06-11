@@ -8001,12 +8001,14 @@
         "options": [
           { "label": "Allow listed AAGUIDs only", "value": "allow" },
           { "label": "Block listed AAGUIDs", "value": "block" }
-        ]
+        ],
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.FIDO2PasskeyProfiles.AAGUIDs",
-        "label": "AAGUIDs (comma-separated list of authenticator AAGUIDs)"
+        "label": "AAGUIDs (comma-separated list of authenticator AAGUIDs)",
+        "required": false
       }
     ],
     "label": "Configure FIDO2 Passkey Profile",
