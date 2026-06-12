@@ -1,63 +1,63 @@
-import { Stack } from "@mui/material";
-import { Grid } from "@mui/system";
-import { CippWizardStepButtons } from "./CippWizardStepButtons";
-import CippJsonView from "../CippFormPages/CippJSONView";
-import CippFormComponent from "../CippComponents/CippFormComponent";
-import { ApiGetCall } from "../../api/ApiCall";
-import { useEffect, useState } from "react";
-import { useWatch } from "react-hook-form";
-import { CippFormCondition } from "../CippComponents/CippFormCondition";
-import { useSettings } from "../../hooks/use-settings";
+import { Stack } from '@mui/material'
+import { Grid } from '@mui/system'
+import { CippWizardStepButtons } from './CippWizardStepButtons'
+import CippJsonView from '../CippFormPages/CippJSONView'
+import CippFormComponent from '../CippComponents/CippFormComponent'
+import { ApiGetCall } from '../../api/ApiCall'
+import { useEffect, useState } from 'react'
+import { useWatch } from 'react-hook-form'
+import { CippFormCondition } from '../CippComponents/CippFormCondition'
+import { useSettings } from '../../hooks/use-settings'
 
 const assignmentFilterTypeOptions = [
-  { label: "Include - Apply policy to devices matching filter", value: "include" },
-  { label: "Exclude - Apply policy to devices NOT matching filter", value: "exclude" },
-];
+  { label: 'Include - Apply policy to devices matching filter', value: 'include' },
+  { label: 'Exclude - Apply policy to devices NOT matching filter', value: 'exclude' },
+]
 
 export const CippIntunePolicy = (props) => {
-  const { formControl, onPreviousStep, onNextStep, currentStep } = props;
-  const values = formControl.getValues();
-  const tenantFilter = useSettings()?.currentTenant;
-  const CATemplates = ApiGetCall({ url: "/api/ListIntuneTemplates", queryKey: "IntuneTemplates" });
-  const [JSONData, setJSONData] = useState();
-  const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
-  const jsonWatch = useWatch({ control: formControl.control, name: "RAWJson" });
-  const selectedTenants = useWatch({ control: formControl.control, name: "tenantFilter" });
+  const { formControl, onPreviousStep, onNextStep, currentStep } = props
+  const values = formControl.getValues()
+  const tenantFilter = useSettings()?.currentTenant
+  const CATemplates = ApiGetCall({ url: '/api/ListIntuneTemplates', queryKey: 'IntuneTemplates' })
+  const [JSONData, setJSONData] = useState()
+  const watcher = useWatch({ control: formControl.control, name: 'TemplateList' })
+  const jsonWatch = useWatch({ control: formControl.control, name: 'RAWJson' })
+  const selectedTenants = useWatch({ control: formControl.control, name: 'tenantFilter' })
 
   // do not provide inputs for reserved placeholders
   const reservedPlaceholders = [
-    "%serial%",
-    "%systemroot%",
-    "%systemdrive%",
-    "%temp%",
-    "%tenantid%",
-    "%tenantfilter%",
-    "%initialdomain%",
-    "%tenantname%",
-    "%partnertenantid%",
-    "%samappid%",
-    "%userprofile%",
-    "%username%",
-    "%userdomain%",
-    "%windir%",
-    "%programfiles%",
-    "%programfiles(x86)%",
-    "%programdata%",
-  ];
+    '%serial%',
+    '%systemroot%',
+    '%systemdrive%',
+    '%temp%',
+    '%tenantid%',
+    '%tenantfilter%',
+    '%initialdomain%',
+    '%tenantname%',
+    '%partnertenantid%',
+    '%samappid%',
+    '%userprofile%',
+    '%username%',
+    '%userdomain%',
+    '%windir%',
+    '%programfiles%',
+    '%programfiles(x86)%',
+    '%programdata%',
+  ]
 
   useEffect(() => {
     if (CATemplates.isSuccess && watcher?.value) {
-      const template = CATemplates.data.find((template) => template.GUID === watcher.value);
+      const template = CATemplates.data.find((template) => template.GUID === watcher.value)
       if (template) {
-        const jsonTemplate = template.RAWJson ? JSON.parse(template.RAWJson) : null;
-        setJSONData(jsonTemplate);
-        formControl.setValue("RAWJson", template.RAWJson);
-        formControl.setValue("displayName", template.Displayname);
-        formControl.setValue("description", template.Description);
-        formControl.setValue("TemplateType", template.Type);
+        const jsonTemplate = template.RAWJson ? JSON.parse(template.RAWJson) : null
+        setJSONData(jsonTemplate)
+        formControl.setValue('RAWJson', template.RAWJson)
+        formControl.setValue('displayName', template.Displayname)
+        formControl.setValue('description', template.Description)
+        formControl.setValue('TemplateType', template.Type)
       }
     }
-  }, [watcher]);
+  }, [watcher])
 
   return (
     <Stack spacing={3}>
@@ -93,11 +93,11 @@ export const CippIntunePolicy = (props) => {
             type="radio"
             name="AssignTo"
             options={[
-              { label: "Do not assign", value: "On" },
-              { label: "Assign to all users", value: "allLicensedUsers" },
-              { label: "Assign to all devices", value: "AllDevices" },
-              { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
-              { label: "Assign to Custom Group", value: "customGroup" },
+              { label: 'Do not assign', value: 'On' },
+              { label: 'Assign to all users', value: 'allLicensedUsers' },
+              { label: 'Assign to all devices', value: 'AllDevices' },
+              { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+              { label: 'Assign to Custom Group', value: 'customGroup' },
             ]}
             formControl={formControl}
           />
@@ -114,7 +114,22 @@ export const CippIntunePolicy = (props) => {
               label="Custom Group Names separated by comma. Wildcards (*) are allowed"
               name="customGroup"
               formControl={formControl}
-              validators={{ required: "Please specify custom group names" }}
+              validators={{ required: 'Please specify custom group names' }}
+            />
+          </Grid>
+        </CippFormCondition>
+        <CippFormCondition
+          formControl={formControl}
+          field="AssignTo"
+          compareType="isNot"
+          compareValue="On"
+        >
+          <Grid size={{ xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+              name="excludeGroup"
+              formControl={formControl}
             />
           </Grid>
         </CippFormCondition>
@@ -122,7 +137,7 @@ export const CippIntunePolicy = (props) => {
           formControl={formControl}
           field="AssignTo"
           compareType="isOneOf"
-          compareValue={["allLicensedUsers", "AllDevices", "AllDevicesAndUsers", "customGroup"]}
+          compareValue={['allLicensedUsers', 'AllDevices', 'AllDevicesAndUsers', 'customGroup']}
         >
           <Grid size={{ xs: 12 }}>
             <CippFormComponent
@@ -133,10 +148,10 @@ export const CippIntunePolicy = (props) => {
               creatable={false}
               formControl={formControl}
               api={{
-                url: "/api/ListAssignmentFilters",
+                url: '/api/ListAssignmentFilters',
                 queryKey: `ListAssignmentFilters-${tenantFilter}`,
                 labelField: (filter) => filter.displayName,
-                valueField: "displayName",
+                valueField: 'displayName',
               }}
             />
           </Grid>
@@ -159,15 +174,15 @@ export const CippIntunePolicy = (props) => {
           compareValue={/%(\w+)%/}
         >
           {(() => {
-            const rawJson = jsonWatch ? jsonWatch : "";
-            const placeholderMatches = [...rawJson.matchAll(/%(\w+)%/g)].map((m) => m[1]);
-            const uniquePlaceholders = Array.from(new Set(placeholderMatches));
+            const rawJson = jsonWatch ? jsonWatch : ''
+            const placeholderMatches = [...rawJson.matchAll(/%(\w+)%/g)].map((m) => m[1])
+            const uniquePlaceholders = Array.from(new Set(placeholderMatches))
             // Filter out reserved placeholders
             const filteredPlaceholders = uniquePlaceholders.filter(
               (placeholder) => !reservedPlaceholders.includes(`%${placeholder.toLowerCase()}%`)
-            );
+            )
             if (filteredPlaceholders.length === 0 || selectedTenants.length === 0) {
-              return null;
+              return null
             }
             return filteredPlaceholders.map((placeholder) => (
               <Grid key={placeholder} size={{ xs: 6 }}>
@@ -177,11 +192,11 @@ export const CippIntunePolicy = (props) => {
                     type="textField"
                     defaultValue={
                       //if the placeholder is tenantid then replace it with tenant.addedFields.customerId, if the placeholder is tenantdomain then replace it with tenant.addedFields.defaultDomainName.
-                      placeholder === "tenantid"
+                      placeholder === 'tenantid'
                         ? tenant?.addedFields?.customerId
-                        : placeholder === "tenantdomain"
-                        ? tenant?.addedFields?.defaultDomainName
-                        : ""
+                        : placeholder === 'tenantdomain'
+                          ? tenant?.addedFields?.defaultDomainName
+                          : ''
                     }
                     name={`replacemap.${tenant.value}.%${placeholder}%`}
                     label={`Value for '${placeholder}' in Tenant '${tenant.addedFields.defaultDomainName}'`}
@@ -190,7 +205,7 @@ export const CippIntunePolicy = (props) => {
                   />
                 ))}
               </Grid>
-            ));
+            ))
           })()}
         </CippFormCondition>
       </Stack>
@@ -198,10 +213,10 @@ export const CippIntunePolicy = (props) => {
         currentStep={currentStep}
         onPreviousStep={onPreviousStep}
         onNextStep={onNextStep}
-        noNextButton={values.selectedOption === "UpdateTokens"}
+        noNextButton={values.selectedOption === 'UpdateTokens'}
         formControl={formControl}
         noSubmitButton={true}
       />
     </Stack>
-  );
-};
+  )
+}

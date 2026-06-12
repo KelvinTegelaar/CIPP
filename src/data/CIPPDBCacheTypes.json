@@ -245,6 +245,11 @@
     "description": "All Exchange Online mailboxes"
   },
   {
+    "type": "HVEAccounts",
+    "friendlyName": "HVE Accounts",
+    "description": "High Volume Email accounts"
+  },
+  {
     "type": "CASMailboxes",
     "friendlyName": "CAS Mailboxes",
     "description": "Client Access Server mailbox settings"

@@ -81,6 +81,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListSensitiveInfoTypeTemplates"
+      queryKey="ListSensitiveInfoTypeTemplates"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

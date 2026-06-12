@@ -1,152 +1,151 @@
-import { Alert, Button } from "@mui/material";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
-import { TabbedLayout } from "../../../../layouts/TabbedLayout";
-import Link from "next/link";
-import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub, ContentCopy } from "@mui/icons-material";
-import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
-import { Grid } from "@mui/system";
-import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import tabOptions from "../tabOptions.json";
-import { useSettings } from "../../../../hooks/use-settings.js";
-import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
-import { PermissionButton } from "../../../../utils/permissions.js";
+import { Alert, Button } from '@mui/material'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { Layout as DashboardLayout } from '../../../../layouts/index.js' // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
+import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import Link from 'next/link'
+import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub, ContentCopy } from '@mui/icons-material'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { Grid } from '@mui/system'
+import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
+import { EyeIcon } from '@heroicons/react/24/outline'
+import tabOptions from '../tabOptions.json'
+import { CippPolicyImportDrawer } from '../../../../components/CippComponents/CippPolicyImportDrawer.jsx'
+import { PermissionButton } from '../../../../utils/permissions.js'
+import { CippFormTemplateTenantSelector } from '../../../../components/CippComponents/CippFormTemplateTenantSelector.jsx'
 
 const Page = () => {
-  const oldStandards = ApiGetCall({ url: "/api/ListStandards", queryKey: "ListStandards-legacy" });
+  const oldStandards = ApiGetCall({ url: '/api/ListStandards', queryKey: 'ListStandards-legacy' })
   const integrations = ApiGetCall({
-    url: "/api/ListExtensionsConfig",
-    queryKey: "Integrations",
+    url: '/api/ListExtensionsConfig',
+    queryKey: 'Integrations',
     refetchOnMount: false,
     refetchOnReconnect: false,
-  });
+  })
 
-  const currentTenant = useSettings().currentTenant;
-  const pageTitle = "Templates";
-  const cardButtonPermissions = ["Tenant.Standards.ReadWrite"];
+  const pageTitle = 'Templates'
+  const cardButtonPermissions = ['Tenant.Standards.ReadWrite']
   const actions = [
     {
-      label: "View Tenant Report",
-      link: "/tenant/manage/applied-standards/?templateId=[GUID]",
+      label: 'View Tenant Report',
+      link: '/tenant/manage/applied-standards/?templateId=[GUID]',
       icon: <EyeIcon />,
-      color: "info",
-      target: "_self",
+      color: 'info',
+      target: '_self',
     },
     {
-      label: "Edit Template",
+      label: 'Edit Template',
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
-      link: "/tenant/standards/templates/template?id=[GUID]&type=[type]",
+      link: '/tenant/standards/templates/template?id=[GUID]&type=[type]',
       icon: <Edit />,
-      color: "success",
-      target: "_self",
+      color: 'success',
+      target: '_self',
     },
     {
-      label: "Clone & Edit Template",
-      link: "/tenant/standards/templates/template?id=[GUID]&clone=true&type=[type]",
+      label: 'Clone & Edit Template',
+      link: '/tenant/standards/templates/template?id=[GUID]&clone=true&type=[type]',
       icon: <CopyAll />,
-      color: "success",
-      target: "_self",
+      color: 'success',
+      target: '_self',
     },
     {
-      label: "Create Drift Clone",
-      type: "POST",
-      url: "/api/ExecDriftClone",
+      label: 'Create Drift Clone',
+      type: 'POST',
+      url: '/api/ExecDriftClone',
       icon: <ContentCopy />,
-      color: "warning",
+      color: 'warning',
       data: {
-        id: "GUID",
+        id: 'GUID',
       },
       confirmText:
-        "Are you sure you want to create a drift clone of [templateName]? This will create a new drift template based on this template.",
+        'Are you sure you want to create a drift clone of [templateName]? This will create a new drift template based on this template.',
       multiPost: false,
     },
     {
-      label: `Run Template Now (${currentTenant || "Currently Selected Tenant"})`,
-      type: "GET",
-      url: "/api/ExecStandardsRun",
+      label: 'Run Template Now',
+      type: 'GET',
+      url: '/api/ExecStandardsRun',
       icon: <PlayArrow />,
       data: {
-        TemplateId: "GUID",
+        TemplateId: 'GUID',
       },
-      confirmText: "Are you sure you want to force a run of this template?",
+      allowResubmit: true,
+      customDataformatter: (row, action, formData) => ({
+        TemplateId: row.GUID,
+        tenantFilter: formData.tenantFilter?.value ?? formData.tenantFilter,
+      }),
+      children: ({ formHook, row }) => (
+        <CippFormTemplateTenantSelector
+          formControl={formHook}
+          templateTenants={Array.isArray(row?.tenantFilter) ? row.tenantFilter : []}
+          excludedTenants={Array.isArray(row?.excludedTenants) ? row.excludedTenants : []}
+        />
+      ),
+      confirmText: 'Are you sure you want to force a run of this template?',
       multiPost: false,
     },
     {
-      label: "Run Template Now (All Tenants in Template)",
-      type: "GET",
-      url: "/api/ExecStandardsRun",
-      icon: <PlayArrow />,
-      data: {
-        TemplateId: "GUID",
-        tenantFilter: "allTenants",
-      },
-      confirmText: "Are you sure you want to force a run of this template?",
-      multiPost: false,
-    },
-    {
-      label: "Save to GitHub",
-      type: "POST",
-      url: "/api/ExecCommunityRepo",
+      label: 'Save to GitHub',
+      type: 'POST',
+      url: '/api/ExecCommunityRepo',
       icon: <GitHub />,
       data: {
-        Action: "UploadTemplate",
-        GUID: "GUID",
+        Action: 'UploadTemplate',
+        GUID: 'GUID',
       },
       fields: [
         {
-          label: "Repository",
-          name: "FullName",
-          type: "select",
+          label: 'Repository',
+          name: 'FullName',
+          type: 'select',
           api: {
-            url: "/api/ListCommunityRepos",
+            url: '/api/ListCommunityRepos',
             data: {
               WriteAccess: true,
             },
-            queryKey: "CommunityRepos-Write",
-            dataKey: "Results",
-            valueField: "FullName",
-            labelField: "FullName",
+            queryKey: 'CommunityRepos-Write',
+            dataKey: 'Results',
+            valueField: 'FullName',
+            labelField: 'FullName',
           },
           multiple: false,
           creatable: false,
           required: true,
           validators: {
-            required: { value: true, message: "This field is required" },
+            required: { value: true, message: 'This field is required' },
           },
         },
         {
-          label: "Commit Message",
-          placeholder: "Enter a commit message for adding this file to GitHub",
-          name: "Message",
-          type: "textField",
+          label: 'Commit Message',
+          placeholder: 'Enter a commit message for adding this file to GitHub',
+          name: 'Message',
+          type: 'textField',
           multiline: true,
           required: true,
           rows: 4,
         },
       ],
-      confirmText: "Are you sure you want to save this template to the selected repository?",
+      confirmText: 'Are you sure you want to save this template to the selected repository?',
       condition: () => integrations.isSuccess && integrations?.data?.GitHub?.Enabled,
     },
     {
-      label: "Delete Template",
-      type: "POST",
-      url: "/api/RemoveStandardTemplate",
+      label: 'Delete Template',
+      type: 'POST',
+      url: '/api/RemoveStandardTemplate',
       icon: <Delete />,
       data: {
-        ID: "GUID",
+        ID: 'GUID',
       },
-      confirmText: "Are you sure you want to delete [templateName]?",
+      confirmText: 'Are you sure you want to delete [templateName]?',
       multiPost: false,
     },
-  ];
-  const conversionApi = ApiPostCall({ relatedQueryKeys: "listStandardTemplates" });
+  ]
+  const conversionApi = ApiPostCall({ relatedQueryKeys: 'listStandardTemplates' })
   const handleConversion = () => {
     conversionApi.mutate({
-      url: "/api/execStandardConvert",
+      url: '/api/execStandardConvert',
       data: {},
-    });
-  };
+    })
+  }
   const tableFilter = (
     <div>
       {oldStandards.isSuccess && oldStandards.data.length !== 0 && (
@@ -154,7 +153,7 @@ const Page = () => {
           <Grid container spacing={2}>
             <Alert
               severity="warning"
-              style={{ display: "flex", alignItems: "center", width: "100%" }}
+              style={{ display: 'flex', alignItems: 'center', width: '100%' }}
             >
               <Grid size={12}>
                 You have legacy standards available. Press the button to convert these standards to
@@ -163,7 +162,7 @@ const Page = () => {
                 they are correct and re-enable the schedule.
               </Grid>
               <Grid size={2}>
-                <Button onClick={() => handleConversion()} variant={"contained"}>
+                <Button onClick={() => handleConversion()} variant={'contained'}>
                   Convert Legacy Standards
                 </Button>
               </Grid>
@@ -175,7 +174,7 @@ const Page = () => {
         </Grid>
       )}
     </div>
-  );
+  )
   return (
     <CippTablePage
       title={pageTitle}
@@ -210,24 +209,24 @@ const Page = () => {
       actions={actions}
       tableFilter={tableFilter}
       simpleColumns={[
-        "templateName",
-        "type",
-        "tenantFilter",
-        "excludedTenants",
-        "updatedAt",
-        "updatedBy",
-        "runManually",
-        "standards",
+        'templateName',
+        'type',
+        'tenantFilter',
+        'excludedTenants',
+        'updatedAt',
+        'updatedBy',
+        'runManually',
+        'standards',
       ]}
       queryKey="listStandardTemplates"
     />
-  );
-};
+  )
+}
 
 Page.getLayout = (page) => (
   <DashboardLayout>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
-);
+)
 
-export default Page;
+export default Page

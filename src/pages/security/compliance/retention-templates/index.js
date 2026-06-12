@@ -81,6 +81,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListRetentionCompliancePolicyTemplates"
+      queryKey="ListRetentionCompliancePolicyTemplates"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

@@ -2,8 +2,11 @@ import { ApiGetCall } from "../api/ApiCall.jsx";
 import UnauthenticatedPage from "../pages/unauthenticated.js";
 import LoadingPage from "../pages/loading.js";
 import ApiOfflinePage from "../pages/api-offline.js";
+import { useState, useEffect } from "react";
 
 export const PrivateRoute = ({ children, routeType }) => {
+  const [unauthLatched, setUnauthLatched] = useState(false);
+
   const session = ApiGetCall({
     url: "/.auth/me",
     queryKey: "authmeswa",
@@ -11,12 +14,33 @@ export const PrivateRoute = ({ children, routeType }) => {
     staleTime: 120000, // 2 minutes
   });
 
+  // Latch the unauthenticated state so refetches from child components
+  // don't flip us back to loading. Clear the latch when session succeeds (after login).
+  useEffect(() => {
+    if (
+      !session.isLoading &&
+      !session.isFetching &&
+      (session.isError ||
+        null === session?.data?.clientPrincipal ||
+        session?.data === undefined)
+    ) {
+      setUnauthLatched(true);
+    } else if (session.isSuccess && session.data?.clientPrincipal) {
+      setUnauthLatched(false);
+    }
+  }, [session.isLoading, session.isFetching, session.isError, session.isSuccess, session.data]);
+
   const apiRoles = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
-    retry: 2, // Reduced retry count to show offline message sooner
-    waiting: !session.isSuccess || session.data?.clientPrincipal === null,
+    retry: 2,
+    waiting: session.isSuccess && session.data?.clientPrincipal !== null,
   });
+
+  // If latched as unauthenticated, always show unauthenticated page
+  if (unauthLatched) {
+    return <UnauthenticatedPage />;
+  }
 
   // Check if the session is still loading before determining authentication status
   if (
@@ -36,11 +60,6 @@ export const PrivateRoute = ({ children, routeType }) => {
     (apiRoles?.isSuccess && !apiRoles?.data) // No client principal data, indicating API might be offline
   ) {
     return <ApiOfflinePage />;
-  }
-
-  // if not logged into swa
-  if (null === session?.data?.clientPrincipal || session?.data === undefined) {
-    return <UnauthenticatedPage />;
   }
 
   let roles = null;

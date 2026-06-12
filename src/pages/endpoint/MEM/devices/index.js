@@ -4,7 +4,8 @@ import { CippApiDialog } from "../../../../components/CippComponents/CippApiDial
 import { useSettings } from "../../../../hooks/use-settings";
 import { useDialog } from "../../../../hooks/use-dialog.js";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { Box, Button } from "@mui/material";
+import { Button } from "@mui/material";
+import { Stack } from "@mui/system";
 import {
   Sync,
   RestartAlt,
@@ -412,11 +413,11 @@ const Page = () => {
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         cardButton={
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Stack direction="row" spacing={1} alignItems="center">
             <Button onClick={depSyncDialog.handleOpen} startIcon={<Sync />}>
               Sync DEP
             </Button>
-          </Box>
+          </Stack>
         }
       />
       <CippApiDialog

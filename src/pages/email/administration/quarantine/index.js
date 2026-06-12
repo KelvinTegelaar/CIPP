@@ -126,6 +126,7 @@ const Page = () => {
       data: {
         Identity: 'Identity',
         Type: '!Deny',
+        RecipientAddress: 'RecipientAddress',
       },
       confirmText: 'Are you sure you want to deny this message?',
       icon: <Block />,
@@ -181,6 +182,7 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl="/api/ListMailQuarantine"
+        apiData={{ manualPagination: true }}
         apiDataKey="Results"
         actions={actions}
         offCanvas={offCanvas}
