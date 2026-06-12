@@ -28,6 +28,32 @@ This is ultimately going to be a decision based on how you want to operate your 
 
 Standards apply specific settings. Drift monitors the full tenant state.
 
+### Do I Need Both a Classic Template and a Drift Template With the Same Settings?
+
+No. A Drift Management template with **auto-remediate enabled** on a setting behaves the same as a Classic standard set to **Remediate** for that setting — it will bring the tenant back into alignment with the template value every twelve hours. With auto-remediate **disabled**, the setting reports as a deviation in [Manage Drift](../../user-documentation/tenant/manage/drift.md) for review.
+
+The auto-remediate toggle is per-setting inside the drift template, so you can mix-and-match: auto-remediate the non-negotiables (audit log, anonymous reporting), and just report on settings you want eyes on first (Conditional Access changes).
+
+You only need a separate Classic template alongside Drift when you want to override a single setting for a specific tenant (see "Mixing All-Tenants, Groups, and Tenant Overrides" below) — and remember each tenant can only be assigned to **one** Drift template.
+
+### Mixing All-Tenants, Groups, and Tenant Overrides
+
+A common pattern that works well for MSPs with a mixed-license customer base:
+
+1. **One Classic standard, assigned to All Tenants**, containing the settings you want enforced everywhere regardless of license — enable audit log, anonymous reporting, helpdesk email as a security contact, etc.
+2. **One Drift template per license tier or customer segment**, assigned via tenant groups. For example:
+   * An *Education* tenant group → Drift template with Entra P1-dependent settings (Conditional Access, App Protection policies).
+   * A *Business Standard* tenant group → Drift template with the Security Defaults standard and other settings appropriate for tenants without Entra P1.
+
+   Tenant groups can be **static** (you add tenants manually) or **dynamic** (membership based on a license SKU or a tenant custom variable), letting group membership follow tenant state automatically. See [Tenant Groups](../../user-documentation/tenant/administration/tenants/groups/README.md) for setup.
+3. **Tenant-specific Classic templates for one-off variances.** If one client needs `Set SharePoint File Version Limits` set to 200 but your group-level drift template has 100, create a Classic template containing **only** that one standard set to 200 and assign it directly to that tenant. Per the [precedence rules](../../user-documentation/tenant/standards/#precedence-of-standards), the tenant-specific Classic will win for that setting.
+
+This pattern keeps your group-level templates clean and your exceptions visible and named, without duplicating the rest of the configuration.
+
+{% hint style="info" %}
+Because license-incompatible settings are automatically skipped, you _can_ lump everything into one big template — but the group-based pattern above gives you cleaner alignment reporting and makes "why is this tenant non-compliant?" easier to answer.
+{% endhint %}
+
 ***
 
 {% include "../../.gitbook/includes/feature-request.md" %}
