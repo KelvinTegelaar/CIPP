@@ -125,6 +125,35 @@ If tools show up and return data, you're done.
 {% endstep %}
 {% endstepper %}
 
+## Scoping Copilot Tool Imports
+
+Copilot limits the number of tools that you can import to 70. If you don't do any additional configuration, it wiill randomly select 70 from the list. The way to limit this is by the use of query parameters added to your CIPP API URL.
+
+### By Tag
+
+`<cipp url>/api/ExecMCP?tags=Identity,Exchange`
+
+The list of tags available is:
+
+* Identity
+* Tenant
+* Security
+* Endpoint
+* Teams-Sharepoint
+* Email-Exchange
+* Tools
+* CIPP
+
+### By Tool
+
+You can also use the actual API endpoint name to limit just the explicit number of tools that you want to import:
+
+`<cipp url>/api/ExecMCP?tools=ListUsers,ListGroups`
+
+### By Limit
+
+`<cipp url>/api/ExecMCP?first=70` or \``<cipp url>/api/ExecMCP?limit=70`
+
 ***
 
 {% include "../../../.gitbook/includes/feature-request.md" %}
