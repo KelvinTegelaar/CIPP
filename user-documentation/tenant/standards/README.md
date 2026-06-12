@@ -97,6 +97,7 @@ Each standard is labeled based on the level of change it introduces and its impa
 * **Deselecting Standards:** Deselecting a standard prevents it from being enforced in future cycles, but it does not undo its current configuration.
   * **Example:** If you deselect `"Enable FIDO2 capabilities`," the standard will stop enforcing this policy. However, if FIDO2 was already enabled, it will remain enabled.
 * **Application Cadence:** Standards reapply **every twelve hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle. Drift Management are evaluated **every twelve hours**.
+* **License-Aware Skipping:** If a tenant is not licensed for a setting included in a template (e.g., a Conditional Access standard applied to a tenant with no Entra P1), that standard is skipped for that tenant — not failed. This is reflected in the **License Missing Percentage** and **Combined Alignment Score** columns on the [Standards & Drift Alignment](alignment/) page. This means it is safe to apply a mixed-license template across tenants; un-licensed settings will not be attempted.
 {% endhint %}
 
 {% hint style="info" %}
