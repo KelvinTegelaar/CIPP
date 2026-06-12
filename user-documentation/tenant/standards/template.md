@@ -75,7 +75,7 @@ Once all other steps are completed and all tenants show configured, click the "S
 
 ### About Drift Management Templates
 
-Drift Management templates provide continuous monitoring of tenant configurations to detect unauthorized changes. Each tenant can only have one drift template applied at a time.
+Drift Management templates provide continuous monitoring of tenant configurations to detect unauthorized changes. Each tenant can only have one drift template applied at a time. A drift template with auto-remediate enabled per-setting functions as a superset of a Classic Remediate standard for those settings, so you typically do not need to maintain parallel Classic + Drift templates with the same payloads.
 
 {% hint style="warning" %}
 Drift Management Timing & Alerts
