@@ -152,7 +152,7 @@ You can also use the actual API endpoint name to limit just the explicit number 
 
 ### By Limit
 
-`<cipp url>/api/ExecMCP?first=70` or \``<cipp url>/api/ExecMCP?limit=70`
+`<cipp url>/api/ExecMCP?first=70` or `<cipp url>/api/ExecMCP?limit=70`
 
 ***
 
