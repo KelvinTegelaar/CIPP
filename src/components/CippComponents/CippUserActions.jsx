@@ -131,7 +131,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             url: '/api/ListLicenses',
             labelField: (option) => option.displayName || option.skuPartNumber,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -149,7 +151,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             url: '/api/ListLicenses',
             labelField: (option) => option.displayName || option.skuPartNumber,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -170,7 +174,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
                 option.availableUnits || 0
               } available)`,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-Available-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
