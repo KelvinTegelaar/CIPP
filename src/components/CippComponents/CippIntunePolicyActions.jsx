@@ -2,6 +2,7 @@ import { Book, LaptopChromebook } from '@mui/icons-material'
 import {
   DocumentDuplicateIcon,
   GlobeAltIcon,
+  PencilIcon,
   TrashIcon,
   UserIcon,
   UserGroupIcon,
@@ -24,6 +25,7 @@ const assignmentFilterTypeOptions = [
  * @param {object} options - Additional options
  * @param {string} options.platformType - Platform type for app protection policies (deviceAppManagement)
  * @param {boolean} options.includeCreateTemplate - Whether to include create template action (default: true)
+ * @param {boolean} options.includeRename - Whether to include the edit name/description action (default: true)
  * @param {boolean} options.includeClone - Whether to include the clone policy action (default: true)
  * @param {boolean} options.includeDelete - Whether to include delete action (default: true)
  * @param {string} options.deleteUrlName - URLName for delete action (default: same as policyType)
@@ -34,6 +36,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
   const {
     platformType = null,
     includeCreateTemplate = true,
+    includeRename = true,
     includeClone = true,
     includeDelete = true,
     deleteUrlName = policyType,
@@ -130,6 +133,40 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       icon: <Book />,
       color: 'info',
       multiPost: false,
+    })
+  }
+
+  // Edit name and description action
+  if (includeRename) {
+    actions.push({
+      label: 'Edit Name & Description',
+      type: 'POST',
+      url: '/api/EditIntunePolicy',
+      multiPost: false,
+      icon: <PencilIcon />,
+      color: 'info',
+      data: {
+        ID: 'id',
+        policyType: policyType === 'URLName' ? 'URLName' : policyType,
+        ...(platformType && { platformType: '!deviceAppManagement' }),
+      },
+      fields: [
+        {
+          type: 'textField',
+          name: 'newDisplayName',
+          label: 'Display Name',
+        },
+        {
+          type: 'textField',
+          name: 'description',
+          label: 'Description',
+        },
+      ],
+      defaultvalues: (row) => ({
+        newDisplayName: row.displayName,
+        description: row.description,
+      }),
+      confirmText: 'Enter the new name and description for this policy.',
     })
   }
 
