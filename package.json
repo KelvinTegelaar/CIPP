@@ -57,7 +57,7 @@
     "axios": "1.16.1",
     "date-fns": "4.1.0",
     "diff": "^8.0.3",
-    "dompurify": "^3.4.3",
+    "dompurify": "^3.4.9",
     "driver.js": "^1.4.0",
     "eml-parse-js": "^1.2.0-beta.0",
     "export-to-csv": "^1.3.0",
