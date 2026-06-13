@@ -584,6 +584,21 @@ export const CippDataTable = (props) => {
   const hasOffCanvas = !!offCanvas
   const hasOnChange = !!onChange
 
+  // When a row action in AllTenants mode temporarily switches the global
+  // tenant (dialog fields need it), restore AllTenants once the dialog closes
+  // so the technician's tenant context doesn't silently stick to the last row
+  // they acted on. Restore only if the tenant is still the one we switched to.
+  const restoreTenantRef = useRef(null)
+  useEffect(() => {
+    if (!createDialog.open && restoreTenantRef.current) {
+      const { previous, switchedTo } = restoreTenantRef.current
+      restoreTenantRef.current = null
+      if (settings.currentTenant === switchedTo) {
+        settings.handleUpdate({ currentTenant: previous })
+      }
+    }
+  }, [createDialog.open])
+
   // Compute modeInfo via useMemo so it stays stable but updates when relevant inputs change.
   const modeInfo = useMemo(
     () =>
@@ -729,7 +744,25 @@ export const CippDataTable = (props) => {
             sx={{ color: action.color }}
             key={`actions-list-row-${index}`}
             onClick={() => {
-              if (settings.currentTenant === 'AllTenants' && row.original?.Tenant) {
+              // Link actions carry the row tenant in the URL (CippApiDialog
+              // injects it), so they don't need the global switch. Custom
+              // function/component paths keep the permanent switch since they
+              // open their own UI that reads the global tenant. The standard
+              // dialog flow switches temporarily and restores on dialog close.
+              const isCustomPath =
+                (action.noConfirm && action.customFunction) ||
+                typeof action.customComponent === 'function'
+              if (
+                settings.currentTenant === 'AllTenants' &&
+                row.original?.Tenant &&
+                !action.link
+              ) {
+                if (!isCustomPath) {
+                  restoreTenantRef.current = {
+                    previous: settings.currentTenant,
+                    switchedTo: row.original.Tenant,
+                  }
+                }
                 settings.handleUpdate({
                   currentTenant: row.original.Tenant,
                 })

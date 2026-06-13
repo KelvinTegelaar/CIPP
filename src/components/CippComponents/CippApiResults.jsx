@@ -157,14 +157,28 @@ export const CippApiResults = (props) => {
   }, [apiObject]);
 
   const allResults = useMemo(() => {
-    const apiResults = extractAllResults(correctResultObj);
+    // Tag each extracted line with the top-level result item it came from, so
+    // the rollup can count actions instead of result lines (one action may
+    // return several result objects, e.g. a TAP returns the UPN and the pass).
+    const sourceItems = Array.isArray(correctResultObj) ? correctResultObj : [correctResultObj];
+    const apiResults = sourceItems.flatMap((item, groupIndex) =>
+      extractAllResults(item).map((r) => ({ ...r, groupIndex })),
+    );
 
     // Also extract error results if there's an error
     if (apiObject.isError && apiObject.error) {
-      const errorResults = extractAllResults(apiObject.error.response.data);
+      const errorData = apiObject.error.response?.data;
+      const errorItems = Array.isArray(errorData) ? errorData : [errorData];
+      const errorResults = errorItems.flatMap((item, index) =>
+        extractAllResults(item).map((r) => ({
+          ...r,
+          severity: "error",
+          groupIndex: sourceItems.length + index,
+        })),
+      );
       if (errorResults.length > 0) {
         // Mark all error results with error severity and merge with success results
-        return [...apiResults, ...errorResults.map((r) => ({ ...r, severity: "error" }))];
+        return [...apiResults, ...errorResults];
       }
 
       // Fallback to getCippError if extraction didn't work
@@ -172,7 +186,12 @@ export const CippApiResults = (props) => {
       if (typeof processedError === "string") {
         return [
           ...apiResults,
-          { text: processedError, copyField: processedError, severity: "error" },
+          {
+            text: processedError,
+            copyField: processedError,
+            severity: "error",
+            groupIndex: sourceItems.length,
+          },
         ];
       }
     }
@@ -245,6 +264,15 @@ export const CippApiResults = (props) => {
   }, [finalResults, apiObject]);
 
   const hasVisibleResults = finalResults.some((r) => r.visible);
+  // Count actions (top-level result items), not individual result lines: a
+  // single action can produce multiple lines. An action counts as failed when
+  // any of its lines has error severity.
+  const actionGroups = [...new Set(finalResults.map((r) => r.groupIndex ?? r.id))];
+  const actionCount = actionGroups.length;
+  const failedActionCount = actionGroups.filter((group) =>
+    finalResults.some((r) => (r.groupIndex ?? r.id) === group && r.severity === "error"),
+  ).length;
+  const successActionCount = actionCount - failedActionCount;
   return (
     <Stack spacing={2} sx={{ minWidth: 0 }}>
       {/* Loading alert */}
@@ -270,6 +298,24 @@ export const CippApiResults = (props) => {
             </Typography>
           </Alert>
         </Collapse>
+      )}
+      {/* Summary rollup for bulk results */}
+      {!errorsOnly && hasVisibleResults && actionCount > 1 && (
+        <Alert
+          sx={alertSx}
+          variant="outlined"
+          severity={
+            failedActionCount === 0 ? "success" : successActionCount === 0 ? "error" : "warning"
+          }
+        >
+          <Typography variant="body2">
+            {failedActionCount === 0
+              ? `All ${actionCount} actions completed successfully`
+              : `${failedActionCount} of ${actionCount} actions failed${
+                  successActionCount > 0 ? `, ${successActionCount} succeeded` : ""
+                }`}
+          </Typography>
+        </Alert>
       )}
       {/* Individual result alerts */}
       {hasVisibleResults && (
