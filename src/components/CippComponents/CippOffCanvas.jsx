@@ -25,6 +25,7 @@ export const CippOffCanvas = (props) => {
     canNavigateDown = false,
     contentPadding = 2,
     keepMounted = false,
+    actionsPosition = "top",
   } = props;
 
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -54,6 +55,19 @@ export const CippOffCanvas = (props) => {
       };
     }
   });
+
+  const infoCard = (extendedInfo.length > 0 || actions?.length > 0) && (
+    <Grid size={{ xs: 12 }}>
+      <CippPropertyListCard
+        isFetching={isFetching}
+        align="vertical"
+        propertyItems={extendedInfo}
+        copyItems={true}
+        actionItems={actions}
+        data={extendedData}
+      />
+    </Grid>
+  );
 
   if (mdDown) {
     drawerWidth = "100%";
@@ -137,18 +151,7 @@ export const CippOffCanvas = (props) => {
             }}
           >
             <Grid container spacing={1} sx={{ flexGrow: 1 }}>
-              {extendedInfo.length > 0 && (
-                <Grid size={{ xs: 12 }}>
-                  <CippPropertyListCard
-                    isFetching={isFetching}
-                    align="vertical"
-                    propertyItems={extendedInfo}
-                    copyItems={true}
-                    actionItems={actions}
-                    data={extendedData}
-                  />
-                </Grid>
-              )}
+              {actionsPosition !== "bottom" && infoCard}
               <Grid
                 size={{ xs: 12 }}
                 sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
@@ -166,6 +169,7 @@ export const CippOffCanvas = (props) => {
                   {typeof children === "function" ? children(extendedData) : children}
                 </Box>
               </Grid>
+              {actionsPosition === "bottom" && infoCard}
             </Grid>
           </Box>
 
