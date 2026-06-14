@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react'
 import {
   Box,
   Button,
@@ -52,6 +52,11 @@ import { ApiGetCall } from '../../api/ApiCall'
 import GraphExplorerPresets from '../../data/GraphExplorerPresets.json'
 import CippGraphExplorerFilter from './CippGraphExplorerFilter'
 import { Stack } from '@mui/system'
+
+// Run a layout effect on the client (where it flushes before paint, preventing a flash of
+// the wrong column order) but fall back to useEffect during SSR to avoid React's
+// "useLayoutEffect does nothing on the server" warning.
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 // Styled components for modern design
 const ModernSearchContainer = styled(Paper)(({ theme }) => ({
@@ -148,7 +153,9 @@ export const CIPPTableToptoolbar = React.memo(
     usedColumns,
     usedData,
     columnVisibility,
+    columnOrder,
     setColumnVisibility,
+    setColumnOrder,
     title,
     actions,
     filters = [],
@@ -270,6 +277,23 @@ export const CIPPTableToptoolbar = React.memo(
         setColumnVisibility(settings?.columnDefaults?.[pageName])
       }
     }, [settings?.columnDefaults?.[pageName], router, usedColumns])
+
+    // Re-apply the saved column order whenever the real columns arrive, BEFORE the browser
+    // paints. usedColumns is a REQUIRED dependency: MRT rebuilds the column order when the
+    // leaf-column count changes (its reconciliation effect compares columnOrder.length to
+    // table.options.columns.length), and that rebuild falls back to API/definition order
+    // unless our saved order is the winning write in the same commit. Using a layout effect
+    // (vs useEffect) flushes this reorder synchronously before paint, so the brief
+    // default-order frame is committed but never shown — eliminating the visible reflow on
+    // load. Mirrors the columnVisibility effect above.
+    useIsomorphicLayoutEffect(() => {
+      // Skip in dialogs: a popout shares the parent's pageName, so applying the saved order
+      // here would push the parent table's column order onto the popout. See savedColumnOrder
+      // in CippDataTable.js.
+      if (!isInDialog && settings?.columnOrderDefaults?.[pageName]?.length > 0) {
+        setColumnOrder(settings.columnOrderDefaults[pageName])
+      }
+    }, [settings?.columnOrderDefaults?.[pageName], router, usedColumns, isInDialog])
 
     useEffect(() => {
       setOriginalSimpleColumns(simpleColumns)
@@ -480,10 +504,15 @@ export const CIPPTableToptoolbar = React.memo(
         }
         return updatedVisibility
       })
+      setColumnOrder([])
       settings.handleUpdate({
         columnDefaults: {
           ...settings?.columnDefaults,
           [pageName]: {},
+        },
+        columnOrderDefaults: {
+          ...settings?.columnOrderDefaults,
+          [pageName]: [],
         },
       })
       setColumnsAnchor(null)
@@ -506,6 +535,11 @@ export const CIPPTableToptoolbar = React.memo(
           return updatedVisibility
         })
       }
+      if (settings?.columnOrderDefaults?.[pageName]?.length > 0) {
+        setColumnOrder(settings.columnOrderDefaults[pageName])
+      } else {
+        setColumnOrder([])
+      }
       setColumnsAnchor(null)
     }
 
@@ -514,6 +548,10 @@ export const CIPPTableToptoolbar = React.memo(
         columnDefaults: {
           ...settings?.columnDefaults,
           [pageName]: columnVisibility,
+        },
+        columnOrderDefaults: {
+          ...settings?.columnOrderDefaults,
+          [pageName]: columnOrder,
         },
       })
       setColumnsAnchor(null)
@@ -878,15 +916,21 @@ export const CIPPTableToptoolbar = React.memo(
                     },
                   }}
                 >
-                  <MenuItem onClick={resetToPreferedVisibility}>
-                    <ListItemText primary="Reset to preferred columns" />
-                  </MenuItem>
-                  <MenuItem onClick={saveAsPreferedColumns}>
-                    <ListItemText primary="Save as preferred columns" />
-                  </MenuItem>
-                  <MenuItem onClick={resetToDefaultVisibility}>
-                    <ListItemText primary="Delete preferred columns" />
-                  </MenuItem>
+                  {!isInDialog && (
+                    <MenuItem onClick={resetToPreferedVisibility}>
+                      <ListItemText primary="Reset to preferred columns" />
+                    </MenuItem>
+                  )}
+                  {!isInDialog && (
+                    <MenuItem onClick={saveAsPreferedColumns}>
+                      <ListItemText primary="Save as preferred columns" />
+                    </MenuItem>
+                  )}
+                  {!isInDialog && (
+                    <MenuItem onClick={resetToDefaultVisibility}>
+                      <ListItemText primary="Delete preferred columns" />
+                    </MenuItem>
+                  )}
                   <Divider />
                   {table
                     .getAllColumns()
@@ -1069,15 +1113,21 @@ export const CIPPTableToptoolbar = React.memo(
                 },
               }}
             >
-              <MenuItem onClick={resetToPreferedVisibility}>
-                <ListItemText primary="Reset to preferred columns" />
-              </MenuItem>
-              <MenuItem onClick={saveAsPreferedColumns}>
-                <ListItemText primary="Save as preferred columns" />
-              </MenuItem>
-              <MenuItem onClick={resetToDefaultVisibility}>
-                <ListItemText primary="Delete preferred columns" />
-              </MenuItem>
+              {!isInDialog && (
+                <MenuItem onClick={resetToPreferedVisibility}>
+                  <ListItemText primary="Reset to preferred columns" />
+                </MenuItem>
+              )}
+              {!isInDialog && (
+                <MenuItem onClick={saveAsPreferedColumns}>
+                  <ListItemText primary="Save as preferred columns" />
+                </MenuItem>
+              )}
+              {!isInDialog && (
+                <MenuItem onClick={resetToDefaultVisibility}>
+                  <ListItemText primary="Delete preferred columns" />
+                </MenuItem>
+              )}
               <Divider />
               {table
                 .getAllColumns()
