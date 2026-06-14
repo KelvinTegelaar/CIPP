@@ -3,7 +3,7 @@ import { TabbedLayout } from '../../../../layouts/TabbedLayout.jsx'
 import { CippQuarantineTable } from '../../../../components/CippComponents/CippQuarantineTable.jsx'
 import tabOptions from './tabOptions.json'
 
-const Page = () => <CippQuarantineTable entityType="Email" />
+const Page = () => <CippQuarantineTable entityType="SharePointOnline" />
 
 Page.getLayout = (page) => (
   <DashboardLayout>
