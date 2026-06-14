@@ -6,7 +6,7 @@ This page provides an overview of the Secure Score of the tenant. The default pa
 
 | Filter                | Description                                                                                                            |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| All Recommentations   | Shows all Secure Score recommendations regardless of status.                                                           |
+| All Recommendations   | Shows all Secure Score recommendations regardless of status.                                                           |
 | Completed (100%)      | Shows all Secure Score recommendations that have been completed.                                                       |
 | Not Started (0%)      | Shows all Secure Score recommendations that have not been started.                                                     |
 | In Progress (Started) | Shows all secure score recommendations that have been started but not completed. This is anything from 1-99% complete. |

@@ -22,7 +22,7 @@ If a backup has been scheduled, this button will display to allow you to delete 
 
 ## Backup Schedule Details
 
-This section will display the details of the configured backup schedule, including the recurrance, last run, and next scheduled run.
+This section will display the details of the configured backup schedule, including the recurrence, last run, and next scheduled run.
 
 ## Backup Components
 

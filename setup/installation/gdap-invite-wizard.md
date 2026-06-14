@@ -18,7 +18,7 @@ To get started, we click the "Add a Tenant" button and "Next Step".&#x20;
 {% step %}
 ### Select Tenant Add Method of "Add GDAP Template"
 
-Select "Add GDAP Tennant" and click "Next Step"
+Select "Add GDAP Tenant" and click "Next Step"
 {% endstep %}
 
 {% step %}

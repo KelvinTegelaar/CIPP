@@ -120,7 +120,7 @@ To have the new tenant's name show up in CIPP, you have two options
 
 1. After renaming the tenant, create a new GDAP relationship. You can use the [gdap-invite-wizard.md](../../setup/installation/gdap-invite-wizard.md "mention")wizard to expedite this process.
 2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the GDAP [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention")page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
-3. Cleare your tenant cache from [settings](../../user-documentation/cipp/settings/ "mention").
+3. Clear your tenant cache from [settings](../../user-documentation/cipp/settings/ "mention").
 
 #### Utilize the Tenant Alias Functionality
 

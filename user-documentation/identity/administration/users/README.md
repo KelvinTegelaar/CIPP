@@ -158,7 +158,7 @@ Note that clicking one of these actions will present a confirmation modal dialog
 Create a temporary access pass for a user to enroll in [passwordless for Entra ID](https://learn.microsoft.com/en-us/azure/active-directory/authentication/concept-authentication-passwordless).
 
 {% hint style="info" %}
-Both passwordless authentication and the temporary access passw function must be enabled on the tenant. See [Configure Temporary Access Pass to register passwordless authentication methods](https://learn.microsoft.com/en-us/azure/active-directory/authentication/howto-authentication-temporary-access-pass)
+Both passwordless authentication and the temporary access pass function must be enabled on the tenant. See [Configure Temporary Access Pass to register passwordless authentication methods](https://learn.microsoft.com/en-us/azure/active-directory/authentication/howto-authentication-temporary-access-pass)
 {% endhint %}
 
 ## Add User Query String Support
@@ -178,7 +178,7 @@ The Add User has the ability to be form filled via URL query strings. This table
 | jobTitle       | Job Title                                                 |
 | mailNickname   | Username before the email address part(User<@domain.com>) |
 | mobilePhone    | Mobile Phone Number                                       |
-| addedAliasses  | Added Aliasses, Multiple allowed via linebreak(%0A)       |
+| addedAliasses  | Added Aliases, Multiple allowed via linebreak(%0A)       |
 | postalCode     | Zip or post code                                          |
 | streetAddress  | Address information                                       |
 | surname        | Last Name                                                 |

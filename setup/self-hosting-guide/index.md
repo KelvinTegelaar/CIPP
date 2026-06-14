@@ -62,7 +62,7 @@ For the installation and maintenance of CIPP, we assume you’re comfortable wit
 {% hint style="warning" %}
 The linked resources above will help you understand the Azure services CIPP depends on that you will be required to configure and maintain. If you’re missing any of these skills, we suggest reviewing these before proceeding. Proper knowledge ensures a smooth deployment and ongoing maintenance.
 
-Failing to understand proper deployment and maintenence of an application deployed to Azure can lead to ballooning costs.
+Failing to understand proper deployment and maintenance of an application deployed to Azure can lead to ballooning costs.
 {% endhint %}
 {% endstep %}
 

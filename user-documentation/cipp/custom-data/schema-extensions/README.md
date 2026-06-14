@@ -19,7 +19,7 @@
 | ----------- | ---------------------------------------------------------------- |
 | ID          | The calculated ID of the extension                               |
 | Status      |                                                                  |
-| Description | The descirption set on the                                       |
+| Description | The description set on the                                       |
 | Target Type |                                                                  |
 | Properties  | Opens a new table with the properties configured for the schema. |
 

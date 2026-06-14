@@ -22,7 +22,7 @@ This page is powered by the GitHub integration. CIPP will be able to populate so
 | Column                      | Description                                                                                           |
 | --------------------------- | ----------------------------------------------------------------------------------------------------- |
 | Name                        | The name of the GitHub repo                                                                           |
-| Owner                       | The owner (user or org) of the GitHub repor                                                           |
+| Owner                       | The owner (user or org) of the GitHub repo                                                            |
 | URL                         | A URL with a copy button to take you directly to the repo in GitHub                                   |
 | Visibility                  | Public or Private                                                                                     |
 | Write Access                | A Boolean field indicating if CIPP has write access to the repo.                                      |

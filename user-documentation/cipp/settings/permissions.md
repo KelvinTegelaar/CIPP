@@ -17,7 +17,7 @@ This section will display the results of a permission check. The checks are buil
 * Service Account: This test will validate if a service account was used to authenticate CIPP. Note that this is specifically looking for "CIPP" or "service" in the account's display name. If you have set up a service account and are not using this naming convention, then you can ignore the warnings. If the account presented is not the one you expect, please run the [sam-setup-wizard.md](../sam-setup-wizard.md "mention") option "Refresh Tokens for existing application registration" and use your CIPP service account.
 * MFA Claim: This will test to ensure the access token contains the MFA claim. If you are presented with a failure here, please review the documentation on [creating-the-cipp-service-account-gdap-ready.md](../../../setup/installation/creating-the-cipp-service-account-gdap-ready.md "mention") and [conditionalaccess.md](../../../setup/installation/conditionalaccess.md "mention") to ensure the service account is appropriately targeted to always prompt for MFA during setup. Please run the [sam-setup-wizard.md](../sam-setup-wizard.md "mention") option "Refresh Tokens for existing application registration" and use your CIPP service account after correcting any errors.
 * Permissions Check: This will test that the CIPP application registration has the required permissions to take the various actions within CIPP. If you see that you are missing permissions, click the `Details` button. You will be presented with the option to repair any missing permissions.
-* CPV Check: This will test if any tenants require a CPV refresh. This is common to see if permisions have just changed as CIPP needs to push the new permissions to the client tenants. If this continues to fail, click the `Details` button and review the tenants having trouble refreshing. Those tenants may be having depeer connection issues, such as a Microsoft managed Conditional Access policy blocking CIPP.
+* CPV Check: This will test if any tenants require a CPV refresh. This is common to see if permissions have just changed as CIPP needs to push the new permissions to the client tenants. If this continues to fail, click the `Details` button and review the tenants having trouble refreshing. Those tenants may be having deeper connection issues, such as a Microsoft managed Conditional Access policy blocking CIPP.
 
 ### Refresh
 
@@ -25,7 +25,7 @@ Use this button to have CIPP run the permissions check tests again.
 
 ### Details
 
-This will open a window that will display the output of the tests. Any warnings or errors, like missing permisions, will be displayed for you to investigate further.
+This will open a window that will display the output of the tests. Any warnings or errors, like missing permissions, will be displayed for you to investigate further.
 
 ## GDAP Check
 

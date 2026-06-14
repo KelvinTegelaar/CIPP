@@ -51,7 +51,7 @@ To get started, head to the Microsoft Entra Portal's user overview at [entra.mic
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FhLEJyFsy7Dxs69tcJkYt4p_doc.png?alt=media\&token=216ec97e-b904-4dcb-8a4c-1f359ae5fc91\&time=Fri%20Jul%2026%202024%2021:57:47%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
 {% hint style="info" %}
-It is recommended to use these values since the Permissions Check in [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention") will look to ensure "CIPP" or "Service" exists in the Display Name or User Principal Name of the account. The permisisons check is a often used tool when troubleshooting CIPP errors.
+It is recommended to use these values since the Permissions Check in [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention") will look to ensure "CIPP" or "Service" exists in the Display Name or User Principal Name of the account. The permissions check is a often used tool when troubleshooting CIPP errors.
 {% endhint %}
 
 5. Click on "Next: Properties".

@@ -91,7 +91,7 @@ Our inaugural Sip & CIPP event offered a deep dive into Conditional Access, emph
 
 **Q: Where can I find more information on the compliant network locations preview?**
 
-**A:** Microsoft's documentation is the best place to start, though it might not be fully updated. A recommended resource is the blog by Meryl Fernando, a Microsoft employee with expertise in conditional access, available at merrill.net​​.
+**A:** Microsoft's documentation is the best place to start, though it might not be fully updated. A recommended resource is the blog by Merill Fernando, a Microsoft employee with expertise in conditional access, available at merill.net​​.
 
 **Q: What's the ETA for full GDAP vs GA account?**
 

@@ -20,7 +20,7 @@ This will force a refresh of your tenants list. NOTE: Your tenants list may temp
 
 ## Table Details
 
-The main table on this page displays information relating to all tenants that you have added to CIPP. There is a column for how the tenant was added (GDAP or Direct) along with columns regarding if the tenant has been exluded from CIPP, by whom, and when.
+The main table on this page displays information relating to all tenants that you have added to CIPP. There is a column for how the tenant was added (GDAP or Direct) along with columns regarding if the tenant has been excluded from CIPP, by whom, and when.
 
 ## Table Actions
 
