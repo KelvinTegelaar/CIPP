@@ -4,7 +4,7 @@ After a new update, when you first load CIPP you will have the release notes sho
 
 * View release notes on GitHub - takes you to GitHub to view the release notes
 * Remind me next time - Will open again the next time you load CIPP
-* Don't show untle next release - Will suppress the notification until CIPP gets a version update
+* Don't show until next release - Will suppress the notification until CIPP gets a version update
 
 ***
 

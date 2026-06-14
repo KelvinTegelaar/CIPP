@@ -6,7 +6,7 @@ The Apply Policy wizard provides the ability for you to select one or more tenan
 {% step %}
 ### Tenant Selection
 
-Selct the tenant(s) or All Tenants that you want to apply a policy to
+Select the tenant(s) or All Tenants that you want to apply a policy to
 {% endstep %}
 
 {% step %}
@@ -18,7 +18,7 @@ Select the policy template and the assignment level
 {% step %}
 ### Confirmation
 
-Review the selected options and if you are ready to procede click `Submit`. If you have any changes that need to be made, click `Back` and edit what's needed.
+Review the selected options and if you are ready to proceed click `Submit`. If you have any changes that need to be made, click `Back` and edit what's needed.
 {% endstep %}
 {% endstepper %}
 

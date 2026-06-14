@@ -24,7 +24,7 @@ You can select between "Enterprise Application", "Gallery Template", or "Applica
 
 ### Enterprise Application
 
-* Select the Enteprise Application from the dropdown
+* Select the Enterprise Application from the dropdown
 
 {% hint style="warning" %}
 This dropdown will only display applications with a sign in audience set to multi-tenancy.

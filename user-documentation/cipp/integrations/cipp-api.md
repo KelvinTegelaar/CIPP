@@ -35,7 +35,7 @@ Custom Roles will limit which API endpoints each API Client can access. This can
 After creating your first API client, the page will update to include additional information that is necessary for your automation:
 
 * Token URL: This URL is what you will need when authenticating your automation to your CIPP instance. See [setup-and-authentication.md](../../../api-documentation/setup-and-authentication.md "mention") for more information.
-* Tenant ID: This is the tenant ID for the tenant used to authenticate CIPP where your CIPP service account lives, this may take 5-15 minutes before it updates fromn when you create your first API client and press save.
+* Tenant ID: This is the tenant ID for the tenant used to authenticate CIPP where your CIPP service account lives, this may take 5-15 minutes before it updates from when you create your first API client and press save.
 * API URL: This will be the base URL required for all post-authenticated calls. Note that most automation tools will require you to append `/api` to this base URL for successful responses.
 
 ## **Disabling an API Client**
@@ -127,7 +127,7 @@ If tools show up and return data, you're done.
 
 ## Scoping Copilot Tool Imports
 
-Copilot limits the number of tools that you can import to 70. If you don't do any additional configuration, it wiill randomly select 70 from the list. The way to limit this is by the use of query parameters added to your CIPP API URL.
+Copilot limits the number of tools that you can import to 70. If you don't do any additional configuration, it will randomly select 70 from the list. The way to limit this is by the use of query parameters added to your CIPP API URL.
 
 ### By Tag
 

@@ -116,7 +116,7 @@ Matching is currently done based on subscription and SKUIds, these will be impro
    * Pax8 Client Secret
 
 {% hint style="danger" %}
-We recommend to only enable automated migrations after extensive testing - please set your automated migration strategy to "Notify" for atleast one month before executing automated buys. Neither Sherweb nor CyberDrain is responsible for purchaces made through the API.
+We recommend to only enable automated migrations after extensive testing - please set your automated migration strategy to "Notify" for atleast one month before executing automated buys. Neither Sherweb nor CyberDrain is responsible for purchases made through the API.
 {% endhint %}
 
 ***

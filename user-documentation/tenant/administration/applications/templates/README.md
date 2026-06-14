@@ -1,6 +1,6 @@
 # Application Templates
 
-This page will contain your application appoval templates.
+This page will contain your application approval templates.
 
 ## Action Buttons
 

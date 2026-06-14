@@ -1,6 +1,6 @@
 # Application Approval
 
-This page is for the quick admin aproval of applications in your customer tenants.
+This page is for the quick admin approval of applications in your customer tenants.
 
 {% hint style="info" %}
 This is best utilized for applications that are also in your partner tenant. This allows CIPP to copy the permissions that need to be granted for the application to work without the end user having to submit an application consent request.
