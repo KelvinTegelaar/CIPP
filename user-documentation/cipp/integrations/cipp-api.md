@@ -127,7 +127,7 @@ If tools show up and return data, you're done.
 
 ## Scoping Copilot Tool Imports
 
-Copilot limits the number of tools that you can import to 70. If you don't do any additional configuration, it wiill randomly select 70 from the list. The way to limit this is by the use of query parameters added to your CIPP API URL.
+Copilot limits the number of tools that you can import to 70. If you don't do any additional configuration, it will randomly select 70 from the list. The way to limit this is by the use of query parameters added to your CIPP API URL.
 
 ### By Tag
 
