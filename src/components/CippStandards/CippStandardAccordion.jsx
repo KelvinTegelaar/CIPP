@@ -41,7 +41,7 @@ import Defender from "../../icons/iconly/bulk/defender";
 import Intune from "../../icons/iconly/bulk/intune";
 import GDAPRoles from "../../data/GDAPRoles";
 import timezoneList from "../../data/timezoneList";
-import standards from "../../data/standards.json";
+import { getStandards } from "../../utils/standards-data";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippPolicyImportDrawer } from "../CippComponents/CippPolicyImportDrawer";
 import ReactMarkdown from "react-markdown";
@@ -420,7 +420,7 @@ const CippStandardAccordion = ({
         return;
       }
 
-      const standardInfo = standards.find((s) => s.name === baseStandardName);
+      const standardInfo = getStandards().find((s) => s.name === baseStandardName);
       const category = standardInfo?.cat || "Other Standards";
 
       if (!result[category]) {

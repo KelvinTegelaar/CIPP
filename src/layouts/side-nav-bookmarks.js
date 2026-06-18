@@ -522,16 +522,18 @@ export const SideNavBookmarks = ({ collapse = false }) => {
                         </IconButton>
                       </>
                     )}
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        removeBookmark(bookmark.path);
-                      }}
-                      sx={{ p: "2px" }}
-                    >
-                      <CloseIcon sx={{ fontSize: 16 }} />
-                    </IconButton>
+                    {!locked && (
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          removeBookmark(bookmark.path);
+                        }}
+                        sx={{ p: "2px" }}
+                      >
+                        <CloseIcon sx={{ fontSize: 16 }} />
+                      </IconButton>
+                    )}
                   </Stack>
                 </Stack>
               </li>

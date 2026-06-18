@@ -180,6 +180,7 @@ export const Layout = (props) => {
             // check sub-items
             if (item.items && item.items.length > 0) {
               const filteredSubItems = filterItemsByRole(item.items).filter(Boolean)
+              if (filteredSubItems.length === 0) return null
               return { ...item, items: filteredSubItems }
             }
 

@@ -146,7 +146,10 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
   const currentTenant = api?.tenantFilter ? api.tenantFilter : useSettings().currentTenant
   useEffect(() => {
     if (actionGetRequest.isSuccess && !actionGetRequest.isFetching) {
-      const lastPage = actionGetRequest.data?.pages[actionGetRequest.data.pages.length - 1]
+      // Guard against a non-paginated cache shape (e.g. when a queryKey is accidentally shared
+      // with a useQuery/ApiGetCall consumer that stores a plain array instead of { pages }).
+      const pages = actionGetRequest.data?.pages
+      const lastPage = Array.isArray(pages) ? pages[pages.length - 1] : undefined
       const nextLinkExists = lastPage?.Metadata?.nextLink
       if (nextLinkExists) {
         actionGetRequest.fetchNextPage()

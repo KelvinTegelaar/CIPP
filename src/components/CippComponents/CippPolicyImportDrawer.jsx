@@ -32,10 +32,11 @@ export const CippPolicyImportDrawer = ({
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
   const [viewingPolicy, setViewingPolicy] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
-  const formControl = useForm()
+  const formControl = useForm({ defaultValues: { forceImport: true } })
 
   const selectedSource = useWatch({ control: formControl.control, name: 'policySource' })
   const tenantFilter = useWatch({ control: formControl.control, name: 'tenantFilter' })
+  const forceImport = useWatch({ control: formControl.control, name: 'forceImport' })
 
   // API calls
   const communityRepos = ApiGetCall({
@@ -161,6 +162,7 @@ export const CippPolicyImportDrawer = ({
             Path: policy.path,
             Branch: 'main',
             Type: mode,
+            Force: !!forceImport,
           },
         })
       }
@@ -343,6 +345,17 @@ export const CippPolicyImportDrawer = ({
                   disableClearable={false}
                   allTenants={false}
                   type="single"
+                />
+              </Box>
+            )}
+
+            {selectedSource?.value && selectedSource?.value !== 'tenant' && (
+              <Box sx={{ mt: 2 }}>
+                <CippFormComponent
+                  type="switch"
+                  name="forceImport"
+                  label="Force re-import (overwrite existing template even if SHA matches)"
+                  formControl={formControl}
                 />
               </Box>
             )}

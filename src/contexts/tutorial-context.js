@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { driver } from 'driver.js'
 import { useRouter } from 'next/router'
 
 const STORAGE_KEY = 'cipp.tutorials.completed'
@@ -119,8 +118,11 @@ export const TutorialProvider = ({ children }) => {
     [router]
   )
 
-  const runDriver = useCallback((tutorial) => {
+  const runDriver = useCallback(async (tutorial) => {
     setActiveTutorial(tutorial)
+
+    // driver.js is loaded on demand so its ~70 modules stay out of the shared bundle; tours are rare.
+    const { driver } = await import('driver.js')
 
     const driverObj = driver({
       showProgress: true,

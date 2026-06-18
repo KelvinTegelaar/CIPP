@@ -4,7 +4,7 @@ import { KeyboardArrowRight } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
-import standardsData from "../../data/standards.json";
+import { getStandards } from "../../utils/standards-data";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { renderCustomScriptMarkdownTemplate } from "../../utils/customScriptTemplate";
 
@@ -54,7 +54,7 @@ const getImpactColor = (impact) => {
 // row's RowKey is the same TestId, so this is an exact lookup.
 const getMatchingStandards = (testName) => {
   if (!testName) return [];
-  return standardsData.filter(
+  return getStandards().filter(
     (standard) =>
       Array.isArray(standard.appliesToTest) && standard.appliesToTest.includes(testName)
   );

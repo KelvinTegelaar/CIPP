@@ -1,5 +1,12 @@
 export const CippTranslations = {
   userPrincipalName: 'User Principal Name',
+  aiTool: 'AI Tool',
+  applicationId: 'Application ID',
+  signInsLast7Days: 'Sign-ins (7 Days)',
+  signIns: 'Sign-ins',
+  activeUsersLast7Days: 'Active Users (7 Days)',
+  firstConsentedDateTime: 'First Consented',
+  deviceCount: 'Devices',
   displayName: 'Display Name',
   mail: 'Mail',
   mobilePhone: 'Mobile Phone',

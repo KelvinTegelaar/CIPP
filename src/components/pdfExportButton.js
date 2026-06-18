@@ -1,7 +1,5 @@
 import { IconButton, Tooltip } from '@mui/material'
 import { PictureAsPdf } from '@mui/icons-material'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
 import { useSettings } from '../hooks/use-settings'
 
@@ -22,7 +20,7 @@ const flattenObject = (obj, parentKey = '') => {
 }
 
 // Shared helper so the toolbar buttons and bulk export path share the same PDF logic.
-export const exportRowsToPdf = ({
+export const exportRowsToPdf = async ({
   rows = [],
   columns = [],
   reportName = 'Export',
@@ -32,6 +30,12 @@ export const exportRowsToPdf = ({
   if (!rows.length || !columns.length) {
     return
   }
+
+  // Lazy-load jsPDF (+autotable) so ~1MB of PDF code stays out of the common bundle until an export.
+  const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+    import('jspdf'),
+    import('jspdf-autotable'),
+  ])
 
   const unit = 'pt'
   const size = 'A3'
