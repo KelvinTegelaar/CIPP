@@ -168,11 +168,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
 
   const releaseListQuery = ApiGetCall({
     url: '/api/ListGitHubReleaseNotes',
-    queryKey: 'list-github-release-options',
-    data: {
-      Owner: RELEASE_OWNER,
-      Repository: RELEASE_REPO,
-    },
+    queryKey: `list-github-release-options`,
     waiting: shouldFetchReleaseList,
     staleTime: 300000,
   })
@@ -484,7 +480,13 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
         >
           View release notes on GitHub
         </Button>
-        <Stack alignItems="center" direction="row" flexWrap="wrap" gap={1} justifyContent="flex-end">
+        <Stack
+          alignItems="center"
+          direction="row"
+          flexWrap="wrap"
+          gap={1}
+          justifyContent="flex-end"
+        >
           <Button
             onClick={handleDismissPermanently}
             size="small"

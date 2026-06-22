@@ -391,7 +391,7 @@
   {
     "name": "IntunePolicyConflicts",
     "label": "Alert on Intune policy or app conflicts/errors",
-    "recommendedRunInterval": "4h",
+    "recommendedRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
