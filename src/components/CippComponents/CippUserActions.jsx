@@ -20,6 +20,7 @@ import {
   Shortcut,
   EditAttributes,
   CloudSync,
+  Share,
 } from '@mui/icons-material'
 import { getCippLicenseTranslation } from '../../utils/get-cipp-license-translation'
 import { useSettings } from '../../hooks/use-settings.js'
@@ -130,7 +131,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             url: '/api/ListLicenses',
             labelField: (option) => option.displayName || option.skuPartNumber,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -148,7 +151,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             url: '/api/ListLicenses',
             labelField: (option) => option.displayName || option.skuPartNumber,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -169,7 +174,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
                 option.availableUnits || 0
               } available)`,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-Available-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -179,6 +186,15 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
 
 // Separate component for Out of Office form to avoid hook issues
 const OutOfOfficeForm = ({ formControl }) => {
+  // Send the browser's IANA timezone so the API can display local times in the response
+  useEffect(() => {
+    try {
+      formControl.setValue('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone)
+    } catch {
+      // Fallback: leave timezone unset; API will display UTC
+    }
+  }, [])
+
   // Watch the Auto Reply State value
   const autoReplyState = useWatch({
     control: formControl.control,
@@ -408,7 +424,7 @@ export const useCippUserActions = () => {
     },
     {
       //tested
-      label: 'Create Temporary Access Password',
+      label: 'Create Temporary Access Pass',
       type: 'POST',
       icon: <Password />,
       url: '/api/ExecCreateTAP',
@@ -433,7 +449,7 @@ export const useCippUserActions = () => {
         },
       ],
       confirmText:
-        'Are you sure you want to create a Temporary Access Password for [userPrincipalName]?',
+        'Are you sure you want to create a Temporary Access Pass for [userPrincipalName]?',
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -642,6 +658,41 @@ export const useCippUserActions = () => {
       url: '/api/ExecOneDriveProvision',
       data: { UserPrincipalName: 'userPrincipalName' },
       confirmText: 'Are you sure you want to pre-provision OneDrive for [userPrincipalName]?',
+      multiPost: false,
+      condition: () => canWriteUser,
+    },
+    {
+      label: 'Set OneDrive External Sharing',
+      type: 'POST',
+      icon: <Share />,
+      url: '/api/ExecSetOneDriveSharing',
+      data: { UPN: 'userPrincipalName' },
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'SharingCapability',
+          label: 'Sharing Level',
+          multiple: false,
+          creatable: false,
+          validators: { required: 'Please select a sharing level' },
+          options: [
+            { label: 'Disabled - No external sharing allowed', value: 'Disabled' },
+            {
+              label: 'External User Sharing Only - Guests must sign in',
+              value: 'ExternalUserSharingOnly',
+            },
+            {
+              label: 'External User and Guest Sharing - Anyone links allowed',
+              value: 'ExternalUserAndGuestSharing',
+            },
+            {
+              label: 'Existing External User Sharing Only - Existing guests only',
+              value: 'ExistingExternalUserSharingOnly',
+            },
+          ],
+        },
+      ],
+      confirmText: "Select the sharing level for [userPrincipalName]'s OneDrive:",
       multiPost: false,
       condition: () => canWriteUser,
     },

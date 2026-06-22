@@ -52,7 +52,7 @@ const Page = () => {
   const filterList = [
     {
       filterName: "Users at Risk",
-      value: [{ id: "riskState", value: "atRisk" }],
+      value: [{ id: "riskState", value: "at Risk" }],
       type: "column",
     },
     {

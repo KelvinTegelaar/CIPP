@@ -947,13 +947,15 @@ const Page = () => {
       icon: <PlayArrow />,
       url: "/api/ExecSetMailboxRule",
       customDataformatter: (row, action, formData) => {
-        return {
-          ruleId: row?.Identity,
+        const rows = Array.isArray(row) ? row : [row];
+        const result = rows.map((r) => ({
+          ruleId: r?.Identity,
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-          ruleName: row?.Name,
+          ruleName: r?.Name,
           Enable: true,
           tenantFilter: userSettingsDefaults.currentTenant,
-        };
+        }));
+        return Array.isArray(row) ? result : result[0];
       },
       condition: (row) => row && !row.Enabled,
       confirmText: "Are you sure you want to enable this mailbox rule?",
@@ -965,13 +967,15 @@ const Page = () => {
       icon: <Block />,
       url: "/api/ExecSetMailboxRule",
       customDataformatter: (row, action, formData) => {
-        return {
-          ruleId: row?.Identity,
+        const rows = Array.isArray(row) ? row : [row];
+        const result = rows.map((r) => ({
+          ruleId: r?.Identity,
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-          ruleName: row?.Name,
+          ruleName: r?.Name,
           Disable: true,
           tenantFilter: userSettingsDefaults.currentTenant,
-        };
+        }));
+        return Array.isArray(row) ? result : result[0];
       },
       condition: (row) => row && row.Enabled,
       confirmText: "Are you sure you want to disable this mailbox rule?",
@@ -983,12 +987,14 @@ const Page = () => {
       icon: <Delete />,
       url: "/api/ExecRemoveMailboxRule",
       customDataformatter: (row, action, formData) => {
-        return {
-          ruleId: row?.Identity,
-          ruleName: row?.Name,
+        const rows = Array.isArray(row) ? row : [row];
+        const result = rows.map((r) => ({
+          ruleId: r?.Identity,
+          ruleName: r?.Name,
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
           tenantFilter: userSettingsDefaults.currentTenant,
-        };
+        }));
+        return Array.isArray(row) ? result : result[0];
       },
       confirmText: "Are you sure you want to remove this mailbox rule?",
       multiPost: false,

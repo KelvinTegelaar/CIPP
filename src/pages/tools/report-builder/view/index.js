@@ -32,7 +32,7 @@ const Page = () => {
   }, [router.isReady, router.query.id])
 
   const reportApi = ApiGetCall({
-    url: '/api/ListGeneratedReports',
+    url: '/api/ListGeneratedReports?tenantFilter=' + settings.currentTenant,
     data: { ReportGUID: reportId },
     queryKey: `ListGeneratedReports-${reportId}`,
     waiting: !!reportId,

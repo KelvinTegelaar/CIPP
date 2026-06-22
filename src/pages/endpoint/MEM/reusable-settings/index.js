@@ -4,15 +4,29 @@ import { CippTablePage } from "../../../../components/CippComponents/CippTablePa
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useSettings } from "../../../../hooks/use-settings";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
+import { Stack } from "@mui/system";
+import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const Page = () => {
   const { currentTenant } = useSettings();
   const pageTitle = "Reusable Settings";
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListIntuneReusableSettings",
+    queryKey: "ListIntuneReusableSettings",
+    cacheName: "IntuneReusableSettings",
+    syncTitle: "Sync Reusable Settings Report",
+    allowToggle: true,
+    defaultCached: false,
+  });
+  const isAllTenants = reportDB.isAllTenants;
+
 
   const actions = [
     {
       label: "Edit Reusable Setting",
-      link: `/endpoint/MEM/reusable-settings/edit?id=[id]&tenant=${currentTenant}&tenantFilter=${currentTenant}`,
+      link: isAllTenants
+        ? "/endpoint/MEM/reusable-settings/edit?id=[id]&tenant=[Tenant]&tenantFilter=[Tenant]"
+        : `/endpoint/MEM/reusable-settings/edit?id=[id]&tenant=${currentTenant}&tenantFilter=${currentTenant}`,
     },
     {
       label: "Delete Reusable Setting",
@@ -47,18 +61,32 @@ const Page = () => {
     size: "lg",
   };
 
+  const simpleColumns = [
+    ...reportDB.cacheColumns,
+    "displayName",
+    "description",
+    "id",
+    "version",
+  ];
+
   return (
-    <CippTablePage
-      title={pageTitle}
-      cardButton={
-        <CippReusableSettingsDeployDrawer requiredPermissions={["Endpoint.MEM.ReadWrite"]} />
-      }
-      apiUrl="/api/ListIntuneReusableSettings"
-      queryKey={`ListIntuneReusableSettings-${currentTenant}`}
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={["displayName", "description", "id", "version"]}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        cardButton={
+          <Stack direction="row" spacing={1} alignItems="center">
+            <CippReusableSettingsDeployDrawer requiredPermissions={["Endpoint.MEM.ReadWrite"]} />
+            {reportDB.controls}
+          </Stack>
+        }
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={reportDB.resolvedQueryKey}
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={simpleColumns}
+      />
+      {reportDB.syncDialog}
+    </>
   );
 };
 

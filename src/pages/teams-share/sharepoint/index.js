@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from '../../../layouts/index.js'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
-import { Button } from '@mui/material'
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import {
   Add,
   AddToPhotos,
@@ -9,12 +9,120 @@ import {
   AdminPanelSettings,
   NoAccounts,
   Delete,
+  CleaningServices,
+  Assessment,
 } from '@mui/icons-material'
 import Link from 'next/link'
 import { Stack } from '@mui/system'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { useSettings } from '../../../hooks/use-settings'
 import { useCippReportDB } from '../../../components/CippComponents/CippReportDBControls'
+import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
+import { CippFormCondition } from '../../../components/CippComponents/CippFormCondition'
+import { CippPropertyList } from '../../../components/CippComponents/CippPropertyList'
+import { ApiGetCall } from '../../../api/ApiCall'
+
+// Friendly labels for the SharePoint version cleanup (trim) job progress fields.
+const VERSION_CLEANUP_LABELS = {
+  Status: 'Status',
+  BatchDeleteMode: 'Cleanup Mode',
+  RequestTimeInUTC: 'Requested (UTC)',
+  LastProcessTimeInUTC: 'Last Processed (UTC)',
+  CompleteTimeInUTC: 'Completed (UTC)',
+  ListsProcessed: 'Lists Processed',
+  ListsUpdated: 'Lists Updated',
+  ListsFailed: 'Lists Failed',
+  FilesProcessed: 'Files Processed',
+  VersionsProcessed: 'Versions Processed',
+  VersionsDeleted: 'Versions Deleted',
+  VersionsFailed: 'Versions Failed',
+  StorageReleased: 'Storage Released (bytes)',
+  ErrorMessage: 'Error Message',
+  WorkItemId: 'Work Item ID',
+}
+// Order in which the fields are shown.
+const VERSION_CLEANUP_FIELDS = Object.keys(VERSION_CLEANUP_LABELS)
+
+// Renders the body of the status modal based on the fetched job progress.
+const VersionCleanupStatusBody = ({ statusApi }) => {
+  const progress = statusApi.data?.Results
+
+  if (statusApi.isError) {
+    return <Alert severity="error">Failed to load cleanup job status.</Alert>
+  }
+
+  // No job: either an empty/blank response, or the API's explicit "NoRequestFound" status.
+  if (
+    !statusApi.isFetching &&
+    (progress === undefined ||
+      progress === null ||
+      (typeof progress === 'string' && progress.trim() === '') ||
+      progress?.Status === 'NoRequestFound')
+  ) {
+    return <Alert severity="info">No cleanup job found for this site.</Alert>
+  }
+
+  // Backend couldn't parse the payload and returned the raw string.
+  if (!statusApi.isFetching && typeof progress === 'string') {
+    return <Alert severity="info">{progress}</Alert>
+  }
+
+  const propertyItems = VERSION_CLEANUP_FIELDS.filter(
+    (key) => progress?.[key] !== undefined && progress?.[key] !== '',
+  ).map((key) => ({
+    label: VERSION_CLEANUP_LABELS[key],
+    value: String(progress[key]),
+  }))
+
+  return (
+    <CippPropertyList
+      isFetching={statusApi.isFetching}
+      layout="two"
+      propertyItems={
+        propertyItems.length
+          ? propertyItems
+          : VERSION_CLEANUP_FIELDS.map((key) => ({ label: VERSION_CLEANUP_LABELS[key], value: '' }))
+      }
+    />
+  )
+}
+
+// Custom-component action modal: opens directly (no confirmation step) and fetches the trim
+// job status for the selected site, rendering it as a property list.
+const VersionCleanupStatusModal = ({ row, tenantFilter, drawerVisible, setDrawerVisible }) => {
+  const siteRow = Array.isArray(row) ? row[0] : row
+  const siteUrl = siteRow?.webUrl
+  const statusApi = ApiGetCall({
+    url: '/api/ListSPOVersionCleanup',
+    data: {
+      tenantFilter: siteRow?.Tenant ?? tenantFilter,
+      SiteUrl: siteUrl,
+    },
+    queryKey: `SPOVersionCleanupStatus-${siteUrl}`,
+    waiting: !!drawerVisible && !!siteUrl,
+  })
+
+  return (
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={!!drawerVisible}
+      onClose={() => setDrawerVisible(false)}
+    >
+      <DialogTitle>
+        Cleanup Job Status{siteRow?.displayName ? ` — ${siteRow.displayName}` : ''}
+      </DialogTitle>
+      <DialogContent dividers>
+        <VersionCleanupStatusBody statusApi={statusApi} />
+      </DialogContent>
+      <DialogActions>
+        <Button color="inherit" onClick={() => setDrawerVisible(false)}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
 
 const Page = () => {
   const pageTitle = 'SharePoint Sites'
@@ -23,9 +131,11 @@ const Page = () => {
     apiUrl: '/api/ListSites?type=SharePointSiteUsage',
     queryKey: 'ListSites-SharePointSiteUsage',
     cacheName: 'SharePointSiteUsage',
-    syncTitle: 'Sync SharePoint Site Usage',
+    syncTitle: 'Sync SharePoint Sites Report',
+    syncData: { Types: 'SharePointSiteUsage' },
     allowToggle: true,
-    defaultCached: false,
+    defaultCached: true,
+    allowAllTenantSync: true,
   })
 
   const actions = [
@@ -200,6 +310,108 @@ const Page = () => {
       color: 'error',
       multiPost: false,
     },
+    {
+      label: 'Start Version Cleanup Job',
+      type: 'POST',
+      icon: <CleaningServices />,
+      url: '/api/ExecSPOVersionCleanup',
+      data: {
+        SiteUrl: 'webUrl',
+      },
+      confirmText:
+        'Start a file version cleanup job for [displayName]. This will trim old file versions based on the selected mode.',
+      children: ({ formHook }) => (
+        <>
+          <CippFormComponent
+            type="radio"
+            name="BatchDeleteMode"
+            label="Cleanup Mode"
+            formControl={formHook}
+            options={[
+              { label: 'Sync Policy — apply site version policy to existing versions', value: '2' },
+              {
+                label: 'Delete Older Than Days — remove versions older than a set number of days',
+                value: '0',
+              },
+              { label: 'Count Limits — keep a maximum number of major versions', value: '1' },
+            ]}
+          />
+          <CippFormCondition
+            field="BatchDeleteMode"
+            compareType="is"
+            compareValue="0"
+            formControl={formHook}
+          >
+            <CippFormComponent
+              type="number"
+              name="DeleteOlderThanDays"
+              label="Delete Versions Older Than (days)"
+              formControl={formHook}
+              validators={{
+                required: 'Please enter the number of days',
+                min: { value: 30, message: 'SharePoint requires at least 30 days' },
+              }}
+            />
+          </CippFormCondition>
+          <CippFormCondition
+            field="BatchDeleteMode"
+            compareType="is"
+            compareValue="1"
+            formControl={formHook}
+          >
+            <CippFormComponent
+              type="number"
+              name="MajorVersionLimit"
+              label="Maximum Major Versions to Keep"
+              formControl={formHook}
+              validators={{ required: 'Please enter the version limit' }}
+            />
+            <CippFormComponent
+              type="number"
+              name="MajorWithMinorVersionsLimit"
+              label="Major Versions That Keep Their Minor Versions"
+              formControl={formHook}
+              validators={{ required: 'Please enter the major-with-minor version limit' }}
+            />
+          </CippFormCondition>
+        </>
+      ),
+      defaultvalues: {
+        BatchDeleteMode: '2',
+      },
+      customDataformatter: (row, action, formData) => {
+        const formatRow = (singleRow) => ({
+          tenantFilter: singleRow.Tenant ?? tenantFilter,
+          SiteUrl: singleRow.webUrl,
+          BatchDeleteMode: parseInt(formData.BatchDeleteMode, 10),
+          DeleteOlderThanDays:
+            formData.BatchDeleteMode === '0' ? parseInt(formData.DeleteOlderThanDays, 10) : -1,
+          MajorVersionLimit:
+            formData.BatchDeleteMode === '1' ? parseInt(formData.MajorVersionLimit, 10) : -1,
+          MajorWithMinorVersionsLimit:
+            formData.BatchDeleteMode === '1'
+              ? parseInt(formData.MajorWithMinorVersionsLimit, 10)
+              : -1,
+        })
+        // When multiple rows are selected, row is an array. Returning an array
+        // makes CippApiDialog send one request per row (bulk request mode).
+        return Array.isArray(row) ? row.map(formatRow) : formatRow(row)
+      },
+      multiPost: false,
+    },
+    {
+      label: 'Check Cleanup Job Status',
+      icon: <Assessment />,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <VersionCleanupStatusModal
+          row={row}
+          tenantFilter={tenantFilter}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
+      multiPost: false,
+    },
   ]
 
   const offCanvas = {
@@ -270,6 +482,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 
 export default Page

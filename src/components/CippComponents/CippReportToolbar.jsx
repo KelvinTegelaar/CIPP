@@ -109,13 +109,6 @@ export const CippReportToolbar = () => {
           onClick={() => {
             setRefreshDialog({
               open: true,
-              title: 'Refresh Test Data',
-              message: `Are you sure you want to refresh the test data for ${currentTenant}? This might take up to 2 hours to update.`,
-              api: {
-                url: '/api/ExecTestRun',
-                data: { tenantFilter: currentTenant },
-                method: 'POST',
-              },
               handleClose: () => setRefreshDialog({ open: false }),
             })
           }}
@@ -187,13 +180,26 @@ export const CippReportToolbar = () => {
 
       <CippApiDialog
         createDialog={refreshDialog}
-        title={refreshDialog.title}
-        fields={[]}
+        title="Refresh Test Data"
+        fields={[
+          {
+            type: 'radio',
+            name: 'mode',
+            label: 'What would you like to refresh?',
+            defaultValue: 'both',
+            options: [
+              { label: 'Cache & Tests (full refresh)', value: 'both' },
+              { label: 'Cache only (collect tenant data)', value: 'cache' },
+              { label: 'Tests only (re-run against existing cache)', value: 'tests' },
+            ],
+            validators: { required: 'Please select a refresh mode' },
+          },
+        ]}
         api={{
-          url: refreshDialog.api?.url,
+          url: '/api/ExecTestRun',
           type: 'POST',
-          data: refreshDialog.api?.data,
-          confirmText: refreshDialog.message,
+          data: { tenantFilter: currentTenant },
+          confirmText: `Choose what to refresh for ${currentTenant}. A full refresh can take up to 2 hours; tests-only is much faster when the cache is already populated.`,
           relatedQueryKeys: [`${currentTenant}-ListTests-${selectedReport}`],
         }}
       />

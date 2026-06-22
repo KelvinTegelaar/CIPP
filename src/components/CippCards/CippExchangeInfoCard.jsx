@@ -247,7 +247,9 @@ export const CippExchangeInfoCard = (props) => {
                   <>
                     <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="inherit" color="text.primary" gutterBottom>
-                        Auto Expanding Archive:
+                        {exchangeData?.AutoExpandingArchiveScope === 'Organization'
+                          ? 'Auto Expanding Archive: (org)'
+                          : 'Auto Expanding Archive:'}
                       </Typography>
                       <Typography variant="inherit">
                         {getCippFormatting(

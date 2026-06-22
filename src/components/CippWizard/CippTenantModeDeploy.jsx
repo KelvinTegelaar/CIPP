@@ -47,6 +47,13 @@ export const CippTenantModeDeploy = (props) => {
     }
   }, [updateRefreshToken.isSuccess, formControl, addTenant.isSuccess]);
 
+  useEffect(() => {
+    if (partnerTenantInfo?.data?.authenticatedUserPrincipalName) {
+      formControl.setValue("GDAPAuth", true);
+      formControl.trigger("GDAPAuth");
+    }
+  }, [partnerTenantInfo?.data?.authenticatedUserPrincipalName, formControl]);
+
   return (
     <Stack spacing={2}>
       {/* Partner Tenant (GDAP) */}

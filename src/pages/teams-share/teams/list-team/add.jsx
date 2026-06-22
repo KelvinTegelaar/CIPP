@@ -17,7 +17,7 @@ const TeamsAddTeamForm = () => {
       displayName: "",
       description: "",
       owner: null,
-      visibility: "public",
+      visibility: "private",
     },
   });
 

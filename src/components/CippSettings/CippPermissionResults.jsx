@@ -133,7 +133,7 @@ export const CippPermissionResults = (props) => {
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
                     <XMarkIcon />
                   </SvgIcon>
-                  There are new permissions to apply.
+                  There are new permissions to apply. Please click "Details" to review and apply the new permissions.
                 </Typography>
               </ListItem>
             )}

@@ -122,10 +122,20 @@
     "name": "QuotaUsed",
     "label": "Alert on % mailbox quota used",
     "requiresInput": true,
-    "inputType": "textField",
-    "inputLabel": "Enter quota percentage",
-    "inputName": "QuotaUsedQuota",
-    "recommendedRunInterval": "4h"
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Quota percentage threshold (default: 90)",
+        "inputName": "QuotaUsedQuota"
+      },
+      {
+        "inputType": "textField",
+        "inputLabel": "Excluded mailbox UPNs (comma-separated). Supports custom variables like %excludefrommailboxalert% defined under CIPP > Settings > Custom Variables at tenant or AllTenants scope.",
+        "inputName": "QuotaUsedExcludedMailboxes"
+      }
+    ],
+    "recommendedRunInterval": "1d"
   },
   {
     "name": "SharePointQuota",
@@ -134,7 +144,7 @@
     "inputType": "textField",
     "inputLabel": "Enter quota percentage",
     "inputName": "SharePointQuota",
-    "recommendedRunInterval": "4h"
+    "recommendedRunInterval": "1d"
   },
   {
     "name": "OneDriveQuota",
@@ -143,7 +153,7 @@
     "inputType": "textField",
     "inputLabel": "Enter quota percentage (default: 90)",
     "inputName": "OneDriveQuota",
-    "recommendedRunInterval": "4h"
+    "recommendedRunInterval": "1d"
   },
   {
     "name": "ExpiringLicenses",
@@ -600,7 +610,22 @@
   {
     "name": "CheckExtension",
     "label": "Alert on new Check phishing extension detections",
-    "recommendedRunInterval": "15m",
+    "recommendedRunInterval": "30m",
     "description": "Monitors for new phishing site detections reported by the Check browser extension. Alerts when a user visits a page that the extension flags as a potential credential phishing or AiTM attack. Requires the Check browser extension to be deployed to users."
+  },
+  {
+    "name": "UserReportedPhishing",
+    "label": "Alert on emails reported by users via Outlook Report Phishing",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Hours to look back (default: 24)",
+        "inputName": "HoursBack"
+      }
+    ],
+    "description": "Monitors for emails reported by users through Outlook's built-in Report Phishing feature. Alerts when new user-reported email threat submissions are found in Microsoft Defender. Requires ThreatSubmission.ReadWrite.All permission."
   }
 ]

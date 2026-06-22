@@ -1,22 +1,27 @@
 [
   {
     "label": "Overview",
-    "path": "/dashboardv2"
+    "path": "/dashboardv2",
+    "icon": "Dashboard"
   },
   {
     "label": "Identity",
-    "path": "/dashboardv2/identity"
+    "path": "/dashboardv2/identity",
+    "icon": "Person"
   },
   {
     "label": "Devices",
-    "path": "/dashboardv2/devices"
+    "path": "/dashboardv2/devices",
+    "icon": "Devices"
   },
   {
     "label": "Custom",
-    "path": "/dashboardv2/custom"
+    "path": "/dashboardv2/custom",
+    "icon": "Apps"
   },
   {
     "label": "Previous Dashboard Experience",
-    "path": "/dashboardv1"
+    "path": "/dashboardv1",
+    "icon": "History"
   }
 ]

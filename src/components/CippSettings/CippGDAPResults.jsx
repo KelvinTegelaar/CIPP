@@ -1,14 +1,33 @@
-import { Alert, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
+import { Alert, Button, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { Cancel, CheckCircle, Warning } from "@mui/icons-material";
 import { CippPropertyList } from "../CippComponents/CippPropertyList";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippDataTable } from "../CippTable/CippDataTable";
+import { ApiPostCall } from "../../api/ApiCall";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect, useState } from "react";
 
 export const CippGDAPResults = (props) => {
   const { executeCheck, offcanvasVisible, setOffcanvasVisible, importReport, setCardIcon } = props;
   const [results, setResults] = useState({});
+
+  const repairRoleMappings = ApiPostCall({
+    urlFromData: true,
+    relatedQueryKeys: ["ExecAccessChecks-GDAP"],
+  });
+
+  const handleRepairRoleMappings = () => {
+    repairRoleMappings.mutate({
+      url: "/api/ExecGDAPRepairRoleMappings",
+      data: {},
+      queryKey: "RepairGDAPRoleMappings",
+    });
+  };
+
+  const hasRoleMappingIssues = results?.Results?.RoleMappingResults?.some(
+    (item) => item?.Status === "Stale" || item?.Status === "Missing",
+  );
 
   useEffect(() => {
     if (importReport) {
@@ -19,7 +38,11 @@ export const CippGDAPResults = (props) => {
   }, [executeCheck, importReport]);
 
   useEffect(() => {
-    if (results?.Results?.GDAPIssues?.length > 0 || results?.Results?.MissingGroups?.length > 0) {
+    if (
+      results?.Results?.GDAPIssues?.length > 0 ||
+      results?.Results?.MissingGroups?.length > 0 ||
+      hasRoleMappingIssues
+    ) {
       setCardIcon(<Cancel />);
     } else {
       setCardIcon(<CheckCircle />);
@@ -76,6 +99,15 @@ export const CippGDAPResults = (props) => {
       count: 0,
       successMessage: "No Global Admin relationships found",
       failureMessage: "Global Admin relationships found",
+    },
+    {
+      resultProperty: "RoleMappingResults",
+      matchProperty: "Status",
+      match: "^(Stale|Missing)$",
+      count: 0,
+      successMessage: "All GDAP role mappings reference existing security groups",
+      failureMessage:
+        "One or more GDAP role mappings reference stale or missing security groups. Click Details to repair.",
     },
   ];
 
@@ -154,13 +186,16 @@ export const CippGDAPResults = (props) => {
             }}
             extendedInfo={[]}
           >
-            {results?.Results?.GDAPIssues?.length > 0 && (
+            {results?.Results?.GDAPIssues?.filter((issue) => issue.Category !== "RoleMapping")
+              .length > 0 && (
               <>
                 <CippDataTable
                   title="GDAP Issues"
                   isFetching={!importReport && executeCheck?.isFetching}
                   refreshFunction={executeCheck}
-                  data={results?.Results?.GDAPIssues}
+                  data={results?.Results?.GDAPIssues?.filter(
+                    (issue) => issue.Category !== "RoleMapping",
+                  )}
                   simpleColumns={["Tenant", "Type", "Issue", "Link"]}
                 />
               </>
@@ -174,6 +209,37 @@ export const CippGDAPResults = (props) => {
                   refreshFunction={executeCheck}
                   data={results?.Results?.MissingGroups}
                   simpleColumns={["Name", "Type"]}
+                />
+              </>
+            )}
+
+            {results?.Results?.RoleMappingResults?.length > 0 && (
+              <>
+                <CippApiResults apiObject={repairRoleMappings} />
+                <CippDataTable
+                  title="Role Mapping Group Check"
+                  isFetching={!importReport && executeCheck?.isFetching}
+                  refreshFunction={executeCheck}
+                  cardButton={
+                    !importReport &&
+                    hasRoleMappingIssues && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={handleRepairRoleMappings}
+                        startIcon={
+                          <SvgIcon fontSize="sm">
+                            <WrenchIcon />
+                          </SvgIcon>
+                        }
+                      >
+                        Repair Role Mappings
+                      </Button>
+                    )
+                  }
+                  data={results?.Results?.RoleMappingResults}
+                  simpleColumns={["RoleName", "GroupName", "GroupId", "Status", "Message"]}
                 />
               </>
             )}

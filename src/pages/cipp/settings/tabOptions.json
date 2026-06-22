@@ -1,38 +1,47 @@
 [
   {
     "label": "General",
-    "path": "/cipp/settings"
+    "path": "/cipp/settings",
+    "icon": "Settings"
   },
   {
     "label": "Permissions",
-    "path": "/cipp/settings/permissions"
+    "path": "/cipp/settings/permissions",
+    "icon": "Key"
   },
   {
     "label": "Tenants",
-    "path": "/cipp/settings/tenants"
+    "path": "/cipp/settings/tenants",
+    "icon": "Domain"
   },
   {
     "label": "Backend",
-    "path": "/cipp/settings/backend"
+    "path": "/cipp/settings/backend",
+    "icon": "Cloud"
   },
   {
     "label": "Notifications",
-    "path": "/cipp/settings/notifications"
+    "path": "/cipp/settings/notifications",
+    "icon": "Notifications"
   },
   {
     "label": "Automated Onboarding",
-    "path": "/cipp/settings/partner-webhooks"
+    "path": "/cipp/settings/partner-webhooks",
+    "icon": "AutoMode"
   },
   {
     "label": "Licenses",
-    "path": "/cipp/settings/licenses"
+    "path": "/cipp/settings/licenses",
+    "icon": "Assignment"
   },
   {
     "label": "Features",
-    "path": "/cipp/settings/features"
+    "path": "/cipp/settings/features",
+    "icon": "Apps"
   },
   {
     "label": "SIEM",
-    "path": "/cipp/settings/siem"
+    "path": "/cipp/settings/siem",
+    "icon": "Security"
   }
 ]

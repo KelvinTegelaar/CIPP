@@ -91,7 +91,8 @@ const Page = () => {
         labelField: 'id',
         valueField: 'id',
         queryKey: `ListGraphRequest-domains-${userSettings.currentTenant}`,
-        dataFilter: (options) => options.filter((option) => option?.addedFields?.isVerified === true), // Only include verified domains
+        dataFilter: (options) =>
+          options.filter((option) => option?.addedFields?.isVerified === true), // Only include verified domains
       },
       multiple: false,
       creatable: false,
@@ -121,9 +122,10 @@ const Page = () => {
       api: {
         url: '/api/ListLicenses',
         labelField: (option) =>
-          `${option.License || option.skuPartNumber} (${option.AvailableUnits || 0} available)`,
+          `${option.License || option.skuPartNumber} (${option.availableUnits || 0} available)`,
         valueField: 'skuId',
-        queryKey: 'ListLicenses',
+        data: { IncludeExcluded: true },
+        queryKey: `ListLicenses-${userSettings.currentTenant}`,
       },
       multiple: true,
       creatable: false,
@@ -136,7 +138,7 @@ const Page = () => {
         url: '/api/ListGroups',
         labelField: 'displayName',
         valueField: 'id',
-        queryKey: 'ListGroups',
+        queryKey: `ListGroups-${userSettings.currentTenant}`,
         addedField: {
           groupType: 'calculatedGroupType',
         },
@@ -194,6 +196,13 @@ const Page = () => {
       name: 'businessPhones[0]',
       type: 'textField',
     },
+    ...(userSettings?.userAttributes
+      ?.filter((attribute) => attribute.value !== 'sponsor')
+      .map((attribute) => ({
+        label: attribute.label,
+        name: `defaultAttributes.${attribute.label}.Value`,
+        type: 'textField',
+      })) || []),
   ]
 
   const actions = [
@@ -241,6 +250,9 @@ const Page = () => {
       'department',
       'mobilePhone',
       'businessPhones',
+      ...(userSettings?.userAttributes
+        ?.filter((attribute) => attribute.value !== 'sponsor')
+        .map((attribute) => `defaultAttributes.${attribute.label}.Value`) || []),
     ],
     actions: actions,
   }

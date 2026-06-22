@@ -44,6 +44,7 @@ const Page = () => {
           groupType: templateData.groupType,
           membershipRules: templateData.membershipRules,
           allowExternal: templateData.allowExternal,
+          licenses: templateData.licenses || [],
           tenantFilter: userSettingsDefaults.currentTenant,
         });
         formControl.trigger();

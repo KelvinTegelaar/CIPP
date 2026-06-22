@@ -1,13 +1,13 @@
-import { Button, Typography, List, ListItem, SvgIcon } from "@mui/material";
-import CippButtonCard from "./CippButtonCard"; // Adjust the import path as needed
-import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { useDialog } from "../../hooks/use-dialog";
-import { Sync } from "@mui/icons-material";
-import { ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { Button, Typography, List, ListItem, SvgIcon } from '@mui/material'
+import CippButtonCard from './CippButtonCard' // Adjust the import path as needed
+import { CippApiDialog } from '../CippComponents/CippApiDialog'
+import { useDialog } from '../../hooks/use-dialog'
+import { Sync } from '@mui/icons-material'
+import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 export default function CippRemediationCard(props) {
-  const { userPrincipalName, isFetching, userId, tenantFilter, restartProcess } = props;
-  const createDialog = useDialog();
+  const { userPrincipalName, isFetching, userId, tenantFilter, restartProcess } = props
+  const createDialog = useDialog()
   return (
     <CippButtonCard
       title={
@@ -60,20 +60,21 @@ export default function CippRemediationCard(props) {
         <ListItem>Disconnect all current sessions</ListItem>
         <ListItem>Remove all MFA methods for the user</ListItem>
         <ListItem>Disable all inbox rules for the user</ListItem>
+        <ListItem>Disable OneDrive sharing</ListItem>
       </List>
       <CippApiDialog
         title="Remediate User"
         createDialog={createDialog}
         api={{
-          url: "/api/execBecRemediate",
+          url: '/api/execBecRemediate',
           confirmText:
-            "This will remediate this user, blocking their signin, resetting their password, disconnecting their sessions, and disabling all their inbox rules. Are you sure you want to continue?",
-          type: "POST",
-          data: { tenantFilter: tenantFilter, userId: "userId", username: "userPrincipalName" },
-          replacementBehaviour: "removeNulls",
+            'This will remediate this user, blocking their signin, resetting their password, disconnecting their sessions, and disabling all their inbox rules. Are you sure you want to continue?',
+          type: 'POST',
+          data: { tenantFilter: tenantFilter, userId: 'userId', username: 'userPrincipalName' },
+          replacementBehaviour: 'removeNulls',
         }}
         row={props}
       />
     </CippButtonCard>
-  );
+  )
 }

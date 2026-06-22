@@ -12,9 +12,13 @@ import CippWizardStepButtons from './CippWizardStepButtons'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import { useWatch } from 'react-hook-form'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Grid } from '@mui/system'
 import { useSettings } from '../../hooks/use-settings'
+import { ApiGetCall } from '../../api/ApiCall'
+
+// Shared mailboxes are capped at 50 GiB without a license; warn at 49 GiB.
+const SHARED_MAILBOX_WARN_BYTES = 49 * 1024 ** 3
 
 export const CippWizardOffboarding = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props
@@ -24,6 +28,40 @@ export const CippWizardOffboarding = (props) => {
   const userSettingsDefaults = useSettings().userSettingsDefaults
   const disableForwarding = useWatch({ control: formControl.control, name: 'disableForwarding' })
   const deleteUser = useWatch({ control: formControl.control, name: 'DeleteUser' })
+  const convertToShared = useWatch({ control: formControl.control, name: 'ConvertToShared' })
+
+  // Pull cached mailbox sizes (storageUsedInBytes, keyed by UPN) only when relevant
+  const mailboxUsage = ApiGetCall({
+    url: '/api/ListMailboxes',
+    data: { tenantFilter: currentTenant?.value, UseReportDB: true },
+    queryKey: `OffboardingMailboxUsage-${currentTenant?.value}`,
+    waiting: !!convertToShared && !!currentTenant?.value && selectedUsers?.length > 0,
+  })
+
+  // Selected mailboxes whose cached size would exceed the shared-mailbox limit
+  const oversizedMailboxes = useMemo(() => {
+    if (!convertToShared || !mailboxUsage.isSuccess || !Array.isArray(mailboxUsage.data)) {
+      return []
+    }
+    const selectedUpns = (selectedUsers || []).map((u) =>
+      (u?.value ?? u)?.toString().toLowerCase(),
+    )
+    return mailboxUsage.data
+      .filter((mb) => {
+        const upn = mb?.UPN?.toString().toLowerCase()
+        const bytes = Number(mb?.storageUsedInBytes)
+        return (
+          upn &&
+          selectedUpns.includes(upn) &&
+          Number.isFinite(bytes) &&
+          bytes >= SHARED_MAILBOX_WARN_BYTES
+        )
+      })
+      .map((mb) => ({
+        upn: mb.UPN,
+        sizeGB: (Number(mb.storageUsedInBytes) / 1024 ** 3).toFixed(1),
+      }))
+  }, [convertToShared, mailboxUsage.isSuccess, mailboxUsage.data, selectedUsers])
 
   useEffect(() => {
     if (selectedUsers.length >= 3) {
@@ -206,6 +244,13 @@ export const CippWizardOffboarding = (props) => {
                 disabled={!!deleteUser}
               />
               <CippFormComponent
+                name="DisableOneDriveSharing"
+                label="Disable OneDrive Sharing Links"
+                type="switch"
+                formControl={formControl}
+                disabled={!!deleteUser}
+              />
+              <CippFormComponent
                 name="DeleteUser"
                 label="Delete user"
                 type="switch"
@@ -283,7 +328,8 @@ export const CippWizardOffboarding = (props) => {
               />
               {deleteUser && (
                 <Alert severity="info" sx={{ mb: 1 }}>
-                  When a user is deleted, their OneDrive is retained for 30 days by default unless otherwise configured.
+                  When a user is deleted, their OneDrive is retained for 30 days by default unless
+                  otherwise configured.
                 </Alert>
               )}
               <CippFormComponent
@@ -311,7 +357,6 @@ export const CippWizardOffboarding = (props) => {
                   },
                 }}
               />
-
               <Typography variant="subtitle2" sx={{ mt: 3 }} gutterBottom>
                 Email Forwarding
               </Typography>
@@ -376,6 +421,21 @@ export const CippWizardOffboarding = (props) => {
                   formControl={formControl}
                 />
               </Box>
+              {convertToShared && oversizedMailboxes.length > 0 && (
+                <Alert severity="warning" sx={{ mt: 2 }}>
+                  The following mailbox{oversizedMailboxes.length > 1 ? 'es' : ''} exceed or are near
+                  the 50 GB shared mailbox limit. Converting to shared may fail, or the mailbox may
+                  stop receiving mail once unlicensed, unless an Exchange Online Plan 2 license is
+                  retained:
+                  <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2.5 }}>
+                    {oversizedMailboxes.map((mb) => (
+                      <li key={mb.upn}>
+                        {mb.upn} ({mb.sizeGB} GB)
+                      </li>
+                    ))}
+                  </Box>
+                </Alert>
+              )}
             </CardContent>
           </Card>
         </Grid>

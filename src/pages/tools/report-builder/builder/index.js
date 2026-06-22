@@ -764,7 +764,7 @@ const Page = () => {
 
   /* ── API hooks ── */
   const templatesApi = ApiGetCall({
-    url: '/api/ListReportBuilderTemplates',
+    url: '/api/ListReportBuilderTemplates?tenantFilter=' + currentTenant,
     queryKey: `ListReportBuilderTemplates-builder-${templateId}`,
     waiting: !!templateId,
   })
@@ -1065,7 +1065,7 @@ const Page = () => {
     const name = saveForm.getValues('templateName')
     if (!name?.trim()) return
     saveTemplateCall.mutate({
-      url: '/api/ExecReportBuilderTemplate',
+      url: '/api/ExecReportBuilderTemplate?tenantFilter=' + currentTenant,
       data: {
         Action: 'save',
         GUID: templateGUID || undefined,
