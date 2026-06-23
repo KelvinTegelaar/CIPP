@@ -1,4 +1,5 @@
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import { CippTableErrorBoundary } from './CippTableErrorBoundary'
 import {
   Card,
   CardContent,
@@ -977,7 +978,11 @@ export const CippDataTable = (props) => {
                 <>
                   {(getRequestData.isSuccess ||
                     getRequestData.data?.pages.length >= 0 ||
-                    (data && !getRequestData.isError)) && <MaterialReactTable table={table} />}
+                    (data && !getRequestData.isError)) && (
+                    <CippTableErrorBoundary onReset={() => getRequestData.refetch()}>
+                      <MaterialReactTable table={table} />
+                    </CippTableErrorBoundary>
+                  )}
                 </>
               )}
               {getRequestData.isError && !getRequestData.isFetchNextPageError && (

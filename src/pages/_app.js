@@ -165,20 +165,19 @@ const App = (props) => {
         buster: 'v1',
         dehydrateOptions: {
           shouldDehydrateQuery: (query) => {
-            const queryIsReadyForPersistence = query.state.status === 'success'
-            if (queryIsReadyForPersistence) {
-              const { queryKey } = query
-              // Check if queryKey exists and has elements before accessing index 0
-              if (!queryKey || !queryKey.length) {
-                return false
-              }
-              const queryKeyString = String(queryKey[0] || '')
-              const excludeFromPersisting = excludeQueryKeys.some((key) =>
-                queryKeyString.includes(key)
-              )
-              return !excludeFromPersisting
+            if (query.state.status !== 'success') return false
+            const { queryKey } = query
+            if (!queryKey || !queryKey.length) return false
+            const queryKeyString = String(queryKey[0] || '')
+            if (excludeQueryKeys.some((key) => queryKeyString.includes(key))) return false
+            // Skip caching large payloads to avoid bloating localStorage (5 MB cap)
+            try {
+              const serialized = JSON.stringify(query.state.data)
+              if (serialized && serialized.length > 5 * 1024 * 1024) return false
+            } catch {
+              return false
             }
-            return queryIsReadyForPersistence
+            return true
           },
         },
       })

@@ -34,6 +34,14 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
+      # Lint
+      - name: Lint
+        run: npm run lint
+
+      # Security audit (fail on high/critical)
+      - name: Security Audit
+        run: npm audit --audit-level=high
+
       # Build the project
       - name: Build Project
         run: npm run build

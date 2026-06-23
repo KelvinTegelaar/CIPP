@@ -200,7 +200,6 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
         const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
         setTimeout(() => {
           if (relatedQueryKeys === "*") {
-            console.log("Invalidating all queries");
             queryClient.invalidateQueries();
           } else {
             // Separate wildcard patterns from exact keys
@@ -213,22 +212,9 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
                 predicate: (query) => {
                   if (!query.queryKey || !query.queryKey[0]) return false;
                   const queryKeyStr = String(query.queryKey[0]);
-                  const matches = wildcardPatterns.some((pattern) =>
+                  return wildcardPatterns.some((pattern) =>
                     matchesWildcardPattern(queryKeyStr, pattern),
                   );
-
-                  // Debug logging for each query check
-                  if (matches) {
-                    console.log("Invalidating query:", {
-                      queryKey: query.queryKey,
-                      queryKeyStr,
-                      matchedPattern: wildcardPatterns.find((pattern) =>
-                        matchesWildcardPattern(queryKeyStr, pattern),
-                      ),
-                    });
-                  }
-
-                  return matches;
                 },
               });
             }
