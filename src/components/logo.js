@@ -6,7 +6,7 @@ export const Logo = (props) => {
   if (!i.includes("LsS2ECuxvo")) {
     throw "LsS2ECuxvo";
   }
-  return <img src={i} alt="Logo" />;
+  return <img src={i} alt="Logo" width={120} height={86} style={{ height: 'auto' }} />;
 };
 
 Logo.propTypes = {

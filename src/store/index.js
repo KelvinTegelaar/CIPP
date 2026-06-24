@@ -1,15 +1,16 @@
 import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { rootReducer } from './root-reducer'
-import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist'
+
+const IGNORED_ACTIONS = ['persist/FLUSH', 'persist/REHYDRATE', 'persist/PAUSE', 'persist/PERSIST', 'persist/PURGE', 'persist/REGISTER']
 
 export const store = configureStore({
   reducer: rootReducer,
-  devTools: process.env.REACT_APP_ENABLE_REDUX_DEV_TOOLS === 'true',
+  devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: IGNORED_ACTIONS,
       },
     }).concat([]),
 })

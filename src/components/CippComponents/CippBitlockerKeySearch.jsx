@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import {
   Button,
   Box,
@@ -58,7 +59,7 @@ export const CippBitlockerKeySearch = ({
         setRecoveryKeys((prev) => ({ ...prev, [keyId]: response.data.Results.copyField }));
       }
     } catch (error) {
-      console.error("Failed to retrieve key:", error);
+      toast.error("Failed to retrieve BitLocker key. Please try again.");
     } finally {
       setLoadingKeys((prev) => ({ ...prev, [keyId]: false }));
     }

@@ -85,7 +85,6 @@ const CippSpeedDial = ({
       setSnackbarMessage(result.message)
       setShowSnackbar(true)
     } catch (error) {
-      console.error(`Error submitting ${actionId}:`, error)
       setSnackbarMessage('An error occurred while submitting')
       setShowSnackbar(true)
     } finally {

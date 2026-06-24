@@ -11,6 +11,7 @@ import {
   TextField,
   Alert,
 } from '@mui/material'
+import toast from 'react-hot-toast'
 import { CippWizardStepButtons } from './CippWizardStepButtons'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { useWatch } from 'react-hook-form'
@@ -111,7 +112,7 @@ export const CippWizardAutopilotImport = (props) => {
                 return `"${formats.join('" or "')}"`
               })
               .join(', ')
-            console.error(`CSV is missing required columns: ${missingFormats}`)
+            toast.error(`CSV is missing required columns: ${missingFormats}`)
             return
           }
         } else {
@@ -126,7 +127,7 @@ export const CippWizardAutopilotImport = (props) => {
 
           // Check if we have at least 3 columns for the expected order
           if (firstLine.length < 3) {
-            console.error(
+            toast.error(
               'Headerless CSV must have at least 3 columns in order: Serial Number, Product ID, Hardware Hash (optional: Group Tag)'
             )
             return

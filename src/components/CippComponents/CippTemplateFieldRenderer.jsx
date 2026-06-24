@@ -175,9 +175,9 @@ const CippTemplateFieldRenderer = ({
           options: [
             { label: "Not Configured", value: "notConfigured" },
             { label: "Disabled", value: "disabled" },
-            { label: "Enabled for Azure AD Joined", value: "enabledForAzureAd" },
+            { label: "Enabled for Entra ID Joined", value: "enabledForAzureAd" },
             {
-              label: "Enabled for Azure AD and Hybrid Joined",
+              label: "Enabled for Entra ID and Hybrid Joined",
               value: "enabledForAzureAdAndHybrid",
             },
           ],

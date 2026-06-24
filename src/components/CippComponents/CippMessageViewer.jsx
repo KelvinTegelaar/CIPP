@@ -42,7 +42,6 @@ import {
 import { CippTimeAgo } from "./CippTimeAgo";
 import { CippCodeBlock } from "./CippCodeBlock";
 import DOMPurify from "dompurify";
-import ReactHtmlParser from "react-html-parser";
 import { FileDropzone } from "../file-dropzone.js";
 import CippPageCard from "../CippCards/CippPageCard";
 import {
@@ -265,35 +264,23 @@ export const CippMessageViewer = ({ emailSource }) => {
         setEmlContent(ReadEmlJson);
         setEmlError(false);
         if (ReadEmlJson.html) {
-          var sanitizedHtml = DOMPurify.sanitize(ReadEmlJson.html);
-          var parsedHtml = ReactHtmlParser(sanitizedHtml);
+          // Replace CID inline image references with base64 data URIs before sanitizing
+          let rawHtml = ReadEmlJson.html;
           if (ReadEmlJson.attachments) {
             ReadEmlJson.attachments.forEach((attachment) => {
-              if (attachment.id) {
-                var cid = attachment.id.match(/<(.*)>/)[1];
-                var base64 = attachment.data64;
-                if (base64) {
-                  const replaceCidWithBase64 = (element) => {
-                    if (typeof element === "object" && element !== null) {
-                      if (element.props.src === "cid:" + cid) {
-                        return <img src={"data:image/png;base64," + base64} alt={cid} />;
-                      } else if (element.props.children) {
-                        return React.cloneElement(element, {
-                          children: React.Children.map(
-                            element.props.children,
-                            replaceCidWithBase64,
-                          ),
-                        });
-                      }
-                    }
-                    return element;
-                  };
-                  parsedHtml = parsedHtml.map(replaceCidWithBase64);
+              if (attachment.id && attachment.data64) {
+                const cidMatch = attachment.id.match(/<(.*)>/);
+                if (cidMatch) {
+                  const cid = cidMatch[1];
+                  rawHtml = rawHtml.replace(
+                    new RegExp(`src="cid:${cid.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`, "g"),
+                    `src="data:image/png;base64,${attachment.data64}"`,
+                  );
                 }
               }
             });
           }
-          setMessageHtml(parsedHtml);
+          setMessageHtml(DOMPurify.sanitize(rawHtml));
         } else {
           setMessageHtml(null);
         }
@@ -500,7 +487,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                                 <SvgIcon>{darkMode ? <SunIcon /> : <MoonIcon />}</SvgIcon>
                               </IconButton>
                             </Box>
-                            {messageHtml}
+                            <div dangerouslySetInnerHTML={{ __html: messageHtml }} />
                           </CardContent>
                         </Card>
                       </ThemeProvider>

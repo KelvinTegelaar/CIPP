@@ -11,6 +11,9 @@ jobs:
     if: github.event.repository.fork == false
     name: Build and Upload CIPP Frontend
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       # Checkout the repository
@@ -60,12 +63,20 @@ jobs:
           cp staticwebapp.config.json out/
           zip -r build/latest.zip out
 
-      # Upload to Azure Blob Storage
-      - name: Azure Blob Upload
-        uses: LanceMcCarthy/Action-AzureBlobUpload@v3.12.0
+      # Authenticate via Workload Identity Federation (no long-lived secrets)
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
         with:
-          connection_string: ${{ secrets.AZURE_CONNECTION_STRING }}
-          container_name: cipp
-          source_folder: build/
-          destination_folder: /
-          delete_if_exists: true
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Upload to Azure Blob Storage using Azure CLI
+      - name: Upload to Azure Blob Storage
+        run: |
+          az storage blob upload-batch \
+            --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
+            --auth-mode login \
+            --destination cipp \
+            --source build/ \
+            --overwrite true

@@ -124,7 +124,7 @@ export const nativeMenuItems = [
             permissions: ['Identity.User.*'],
           },
           {
-            title: 'AAD Connect Report',
+            title: 'Entra Connect Report',
             path: '/identity/reports/azure-ad-connect-report',
             permissions: ['Identity.User.*'],
           },

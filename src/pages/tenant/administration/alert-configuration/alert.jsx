@@ -79,7 +79,7 @@ const AlertWizard = () => {
   ]
 
   const logbookOptions = [
-    { value: 'Audit.AzureActiveDirectory', label: 'Azure AD' },
+    { value: 'Audit.AzureActiveDirectory', label: 'Microsoft Entra ID' },
     { value: 'Audit.Exchange', label: 'Exchange' },
   ]
 

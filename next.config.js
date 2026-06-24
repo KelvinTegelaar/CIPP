@@ -2,7 +2,7 @@ const disableOptimizePackageImports = process.env.NEXT_DISABLE_OPTIMIZE_PACKAGE_
 
 /** @type {import('next').NextConfig} */
 const config = {
-  reactStrictMode: false,
+  reactStrictMode: true,
   experimental: {
     optimizePackageImports: disableOptimizePackageImports
       ? []

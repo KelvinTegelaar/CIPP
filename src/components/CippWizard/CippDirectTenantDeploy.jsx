@@ -4,6 +4,7 @@ import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
+import { TENANT_DEPLOY_SCOPES } from "../../config/auth-scopes";
 
 export const CippDirectTenantDeploy = (props) => {
   const { formControl, currentStep, onPreviousStep, onNextStep } = props;
@@ -59,7 +60,7 @@ export const CippDirectTenantDeploy = (props) => {
               }}
               buttonText="Connect to Tenant"
               showSuccessAlert={false}
-              scope="https://graph.microsoft.com/DelegatedPermissionGrant.ReadWrite.All https://graph.microsoft.com/Directory.ReadWrite.All https://graph.microsoft.com/AppRoleAssignment.ReadWrite.All offline_access profile openid"
+              scope={TENANT_DEPLOY_SCOPES}
             />
           </Stack>
         </Box>

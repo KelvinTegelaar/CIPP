@@ -86,7 +86,7 @@ export const CippImageCard = ({
         },
       }}
     >
-      <img src={imageUrl} />
+      <img src={imageUrl} alt="" width={350} height={350} style={{ height: 'auto' }} />
     </Box>
   </Stack>
 );

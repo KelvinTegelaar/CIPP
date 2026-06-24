@@ -8,10 +8,10 @@ const eslintConfig = defineConfig([
   eslintConfigPrettier,
   {
     rules: {
-      'no-unused-vars': 'off',
+      'no-unused-vars': 'warn',
       // this rule is annoying on strings with quotes in them
       'react/no-unescaped-entities': 'off',
-      'jsx-a11y/alt-text': 'off',
+      'jsx-a11y/alt-text': 'warn',
       '@next/next/no-img-element': 'off',
       '@next/next/no-page-custom-font': 'off',
       'react/display-name': 'off',

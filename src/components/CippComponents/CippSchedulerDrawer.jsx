@@ -80,7 +80,7 @@ export const CippSchedulerDrawer = ({
               ? "Clone this task with the same configuration. Modify the settings as needed and save to create a new task."
               : taskId
               ? "Edit the task configuration. Changes will be applied when you save."
-              : "Create a scheduled task or event-triggered task. Scheduled tasks run PowerShell commands at specified times, while triggered tasks respond to events like Azure AD changes."}
+              : "Create a scheduled task or event-triggered task. Scheduled tasks run PowerShell commands at specified times, while triggered tasks respond to events like Microsoft Entra changes."}
           </Alert>
 
           <CippSchedulerForm

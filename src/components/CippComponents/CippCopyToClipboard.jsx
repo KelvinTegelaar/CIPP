@@ -1,6 +1,7 @@
 import { CopyAll, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Chip, IconButton, SvgIcon, Tooltip } from "@mui/material";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export const CippCopyToClipBoard = (props) => {
   const { text, type = "button", visible = true, onClick, ...other } = props;
@@ -14,7 +15,6 @@ export const CippCopyToClipBoard = (props) => {
       setTimeout(() => setCopied(false), 2000);
       if (onClick) onClick();
     } catch (err) {
-      console.error("Failed to copy text: ", err);
       // Fallback for older browsers
       try {
         const textArea = document.createElement("textarea");
@@ -31,7 +31,7 @@ export const CippCopyToClipBoard = (props) => {
         setTimeout(() => setCopied(false), 2000);
         if (onClick) onClick();
       } catch (fallbackErr) {
-        console.error("Fallback copy failed: ", fallbackErr);
+        toast.error("Failed to copy to clipboard");
       }
     }
   };

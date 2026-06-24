@@ -1,6 +1,7 @@
 import { BackupTableTwoTone } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { mkConfig, generateCsv, download } from "export-to-csv";
+import toast from "react-hot-toast";
 
 // Utility to flatten nested objects
 const flattenObject = (obj, parent = "", res = {}) => {
@@ -18,7 +19,7 @@ const flattenObject = (obj, parent = "", res = {}) => {
 export const CippCsvExportButton = ({ rawData, reportName = "Export", includeFields = [] }) => {
   const handleExport = () => {
     if (!rawData || rawData.length === 0) {
-      console.warn("No raw data available for export.");
+      toast.error("No data available to export.");
       return;
     }
 

@@ -17,6 +17,7 @@ import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { CippTenantTable } from "./CippTenantTable";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
+import { TENANT_DEPLOY_SCOPES } from "../../config/auth-scopes";
 
 export const CippTenantModeDeploy = (props) => {
   const { formControl, currentStep, onPreviousStep, onNextStep } = props;
@@ -222,7 +223,7 @@ export const CippTenantModeDeploy = (props) => {
                 ? `Are you sure you want to change the partner tenant from '${partnerTenantInfo?.data?.orgName}'? If you are trying to add another tenant, use the per-tenant authentication below.`
                 : false
             }
-            scope="https://graph.microsoft.com/DelegatedPermissionGrant.ReadWrite.All https://graph.microsoft.com/Directory.ReadWrite.All https://graph.microsoft.com/AppRoleAssignment.ReadWrite.All offline_access profile openid"
+            scope={TENANT_DEPLOY_SCOPES}
           />
         </Box>
       </Box>
@@ -283,7 +284,7 @@ export const CippTenantModeDeploy = (props) => {
                   }}
                   buttonText="Connect to Separate Tenants"
                   showSuccessAlert={false}
-                  scope="https://graph.microsoft.com/DelegatedPermissionGrant.ReadWrite.All https://graph.microsoft.com/Directory.ReadWrite.All https://graph.microsoft.com/AppRoleAssignment.ReadWrite.All offline_access profile openid"
+                  scope={TENANT_DEPLOY_SCOPES}
                 />
               </Box>
             </Box>

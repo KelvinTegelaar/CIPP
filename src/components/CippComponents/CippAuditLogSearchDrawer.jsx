@@ -221,9 +221,9 @@ export const CippAuditLogSearchDrawer = ({
       multiple: true,
       creatable: false,
       options: [
-        { label: "Azure Active Directory", value: "azureActiveDirectory" },
-        { label: "Azure AD Account Logon", value: "azureActiveDirectoryAccountLogon" },
-        { label: "Azure AD STS Logon", value: "azureActiveDirectoryStsLogon" },
+        { label: "Microsoft Entra ID", value: "azureActiveDirectory" },
+        { label: "Microsoft Entra Account Logon", value: "azureActiveDirectoryAccountLogon" },
+        { label: "Microsoft Entra STS Logon", value: "azureActiveDirectoryStsLogon" },
         { label: "Compliance DLP Endpoint", value: "complianceDLPEndpoint" },
         { label: "Compliance DLP Exchange", value: "complianceDLPExchange" },
         { label: "Compliance DLP SharePoint", value: "complianceDLPSharePoint" },
