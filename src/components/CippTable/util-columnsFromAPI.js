@@ -2,8 +2,7 @@ import { getCippFilterVariant } from '../../utils/get-cipp-filter-variant'
 import { getCippFormatting } from '../../utils/get-cipp-formatting'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
 import { getCippColumnSize } from '../../utils/get-cipp-column-size'
-
-const skipRecursion = ['location', 'ScheduledBackupValues', 'Tenant']
+import { SKIP_RECURSION_KEYS as skipRecursion } from '../../utils/skip-recursion-keys'
 
 // Number of rows to sample when measuring column content width.
 const MAX_SIZE_SAMPLE = 30
