@@ -118,7 +118,7 @@ const Page = () => {
       ScriptContent: '',
       Enabled: false,
       AlertOnFailure: false,
-      AlertStatuses: [{ value: 'Failed', label: 'Failed' }],
+      AlertStatuses: { value: 'Failed', label: 'Failed' },
       ReturnType: 'JSON',
       ResultMode: { value: 'Auto', label: 'Auto' },
       MarkdownTemplate: '',
@@ -148,12 +148,7 @@ const Page = () => {
         ScriptContent: script.ScriptContent || '',
         Enabled: script.Enabled || false,
         AlertOnFailure: script.AlertOnFailure || false,
-        AlertStatuses: script.AlertStatuses
-          ? (typeof script.AlertStatuses === 'string'
-              ? JSON.parse(script.AlertStatuses)
-              : script.AlertStatuses
-            ).map((s) => ({ value: s, label: s }))
-          : [{ value: 'Failed', label: 'Failed' }],
+        AlertStatuses: toSelectOption(script.AlertStatuses, 'Failed'),
         ReturnType: script.ReturnType || 'JSON',
         ResultMode: toSelectOption(script.ResultMode, 'Auto'),
         MarkdownTemplate: script.MarkdownTemplate || '',
@@ -261,9 +256,7 @@ const Page = () => {
       ScriptContent: data.ScriptContent,
       Enabled: data.Enabled,
       AlertOnFailure: data.AlertOnFailure,
-      AlertStatuses: data.AlertOnFailure
-        ? (data.AlertStatuses?.map(s => s.value) || ['Failed'])
-        : [],
+      AlertStatuses: data.AlertStatuses?.value ?? data.AlertStatuses,
       ReturnType: data.ReturnType,
       ResultMode: data.ResultMode?.value ?? data.ResultMode,
       MarkdownTemplate: data.MarkdownTemplate,
@@ -323,6 +316,14 @@ const Page = () => {
     { value: 'AlwaysPass', label: 'Always Pass' },
     { value: 'AlwaysInfo', label: 'Always Info' },
     { value: 'AlwaysInvestigate', label: 'Always Investigate' },
+  ]
+
+  const AlertStatuses = [
+    { value: 'Failed', label: 'Failed' },
+    { value: 'Passed', label: 'Passed' },
+    { value: 'Info', label: 'Info' },
+    { value: 'Investigate', label: 'Investigate' },
+    { value: 'All', label: 'All' },
   ]
 
   const scriptNameField = {
@@ -415,14 +416,8 @@ const Page = () => {
   const alertStatusesField = {
     name: 'AlertStatuses',
     label: 'Alert on Status',
-    type: 'autoComplete',
-    multiple: true,
-    options: [
-      { label: 'Failed', value: 'Failed' },
-      { label: 'Passed', value: 'Passed' },
-      { label: 'Info', value: 'Info' },
-      { label: 'Investigate', value: 'Investigate' },
-    ],
+    type: 'select',
+    options: AlertStatuses,
     helperText: 'Choose which test result statuses trigger an alert.',
   }
 
@@ -1297,6 +1292,7 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
               formControl={formControl}
               compareType="is"
               compareValue={true}
+              clearOnHide={false}
             >
               <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormComponent

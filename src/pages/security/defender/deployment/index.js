@@ -138,6 +138,12 @@ const DeployDefenderForm = () => {
                             formControl={formControl}
                           />
                         </CippFormCondition>
+                        <CippFormComponent
+                          type="switch"
+                          label="Grant MTD role permissions to Microsoft Defender for Endpoint on enrolled Android COBO and COPE devices"
+                          name="Compliance.grantMobileThreatDefensePartnerRole"
+                          formControl={formControl}
+                        />
                       </CippFormCondition>
                     </CardContent>
                   </Card>
@@ -249,7 +255,7 @@ const DeployDefenderForm = () => {
                         >
                           <CippFormComponent
                             type="switch"
-                            label="Connect iOS/iPadOS devices version 13.0 and above to Microsoft Defender for Endpoint (Compliance)"
+                            label="Connect iOS/iPadOS devices for app protection policy evaluation (MAM)"
                             name="Compliance.ConnectIosCompliance"
                             formControl={formControl}
                           />
@@ -259,6 +265,20 @@ const DeployDefenderForm = () => {
                             name="Compliance.AppSync"
                             formControl={formControl}
                           />
+                          <CippFormCondition
+                            formControl={formControl}
+                            field="Compliance.AppSync"
+                            compareType="is"
+                            compareValue={true}
+                            action="disable"
+                          >
+                            <CippFormComponent
+                              type="switch"
+                              label="Send full application inventory data on personally-owned iOS/iPadOS devices"
+                              name="Compliance.allowPartnerToCollectIosPersonalApplicationMetadata"
+                              formControl={formControl}
+                            />
+                          </CippFormCondition>
                           <CippFormComponent
                             type="switch"
                             label="Block iOS device access when Microsoft Defender for Endpoint is unavailable"
@@ -267,16 +287,24 @@ const DeployDefenderForm = () => {
                           />
                           <CippFormComponent
                             type="switch"
-                            label="Allow partner to collect iOS certificate metadata"
+                            label="Enable Certificate Sync for iOS/iPadOS devices"
                             name="Compliance.allowPartnerToCollectIosCertificateMetadata"
                             formControl={formControl}
                           />
-                          <CippFormComponent
-                            type="switch"
-                            label="Allow partner to collect iOS personal certificate metadata"
-                            name="Compliance.allowPartnerToCollectIosPersonalCertificateMetadata"
+                          <CippFormCondition
                             formControl={formControl}
-                          />
+                            field="Compliance.allowPartnerToCollectIosCertificateMetadata"
+                            compareType="is"
+                            compareValue={true}
+                            action="disable"
+                          >
+                            <CippFormComponent
+                              type="switch"
+                              label="Send full certificate inventory data on personally-owned iOS/iPadOS devices"
+                              name="Compliance.allowPartnerToCollectIosPersonalCertificateMetadata"
+                              formControl={formControl}
+                            />
+                          </CippFormCondition>
                         </CippFormCondition>
                       </CippFormCondition>
                     </CardContent>

@@ -35,7 +35,16 @@ const Page = () => {
           multiple: false,
           creatable: false,
           api: {
-            url: "/api/listUsers",
+            url: "/api/ListGraphRequest",
+            dataKey: "Results",
+            data: {
+              Endpoint: "users",
+              manualPagination: true,
+              $select: "id,userPrincipalName,displayName",
+              $count: true,
+              $orderby: "displayName",
+              $top: 999,
+            },
             labelField: (input) => `${input.displayName} (${input.userPrincipalName})`,
             valueField: "userPrincipalName",
           },

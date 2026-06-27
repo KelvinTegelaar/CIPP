@@ -265,7 +265,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
       finalOptions = finalOptions.filter((o) => !removeOptions.includes(o.value))
     }
     if (sortOptions) {
-      finalOptions.sort((a, b) => a.label?.localeCompare(b.label))
+      finalOptions.sort((a, b) => String(a.label ?? "").localeCompare(String(b.label ?? "")))
     }
     return finalOptions
   }, [api, usedOptions, options, removeOptions, sortOptions])

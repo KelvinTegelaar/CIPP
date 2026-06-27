@@ -46,6 +46,9 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
       ne: "not equals",
       in: "in",
       notIn: "not in",
+      notin: "not in",
+      like: "contains",
+      notlike: "does not contain",
       contains: "contains",
       startsWith: "starts with",
       endsWith: "ends with",
@@ -53,6 +56,54 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
 
     // Handle both single rule object and array of rules
     const rules = Array.isArray(data.DynamicRules) ? data.DynamicRules : [data.DynamicRules];
+
+    // Resolve a value that may be a string, a {label, value} option, or a raw object
+    const resolveOptionLabel = (item) => {
+      if (item === null || item === undefined) return "";
+      if (typeof item === "object") return item.label ?? item.value ?? JSON.stringify(item);
+      return item;
+    };
+
+    const renderRuleValue = (rule) => {
+      // Custom Variable rules store a nested { variableName, value } object
+      if (rule.property === "customVariable" || rule.value?.variableName !== undefined) {
+        const variableName = resolveOptionLabel(rule.value?.variableName);
+        const expectedValue = resolveOptionLabel(rule.value?.value);
+        return (
+          <Chip
+            label={`${variableName || "Variable"} = ${expectedValue}`}
+            size="small"
+            variant="outlined"
+            color="primary"
+          />
+        );
+      }
+
+      if (Array.isArray(rule.value)) {
+        return (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+            {rule.value.map((item, valueIndex) => (
+              <Chip
+                key={valueIndex}
+                label={resolveOptionLabel(item)}
+                size="small"
+                variant="outlined"
+                color="primary"
+              />
+            ))}
+          </Box>
+        );
+      }
+
+      return (
+        <Chip
+          label={resolveOptionLabel(rule.value)}
+          size="small"
+          variant="outlined"
+          color="primary"
+        />
+      );
+    };
 
     const renderRule = (rule, index) => (
       <Box
@@ -75,26 +126,7 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
         <Typography variant="body1" sx={{ mb: 1 }}>
           <strong>Value(s):</strong>
         </Typography>
-        {Array.isArray(rule.value) ? (
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-            {rule.value.map((item, valueIndex) => (
-              <Chip
-                key={valueIndex}
-                label={item.label || item.value || item}
-                size="small"
-                variant="outlined"
-                color="primary"
-              />
-            ))}
-          </Box>
-        ) : (
-          <Chip
-            label={rule.value?.label || rule.value}
-            size="small"
-            variant="outlined"
-            color="primary"
-          />
-        )}
+        {renderRuleValue(rule)}
       </Box>
     );
 

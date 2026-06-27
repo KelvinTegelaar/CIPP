@@ -378,8 +378,8 @@
     "cat": "Global Standards",
     "tag": ["CIS M365 7.0.0 (1.3.6)", "CustomerLockBoxEnabled"],
     "appliesToTest": ["CIS_1_3_6"],
-    "helpText": "**Requires Entra ID P2.** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
-    "docsDescription": "**Requires Entra ID P2.** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
+    "helpText": "**Requires CustomerLockbox (E5, E7, A5, Purview Addon for BP, EDU or FL)** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
+    "docsDescription": "**Requires CustomerLockbox (E5, E7, A5, Purview Addon for BP, EDU or FL)** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
     "executiveText": "Requires explicit organizational approval before Microsoft support staff can access company data for service operations. This provides an additional layer of data protection and ensures the organization maintains control over who can access sensitive business information, even during technical support scenarios.",
     "addedComponent": [],
     "label": "Enable Customer Lockbox",
@@ -4157,12 +4157,10 @@
         "defaultValue": false
       },
       {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
+        "type": "LanguageCodeMultiSelect",
         "required": false,
         "name": "standards.SpamFilterPolicy.LanguageBlockList",
-        "label": "Languages to block (uppercase ISO 639-1 two-letter)",
+        "label": "Languages to block (ISO 639-1 two-letter)",
         "condition": {
           "field": "standards.SpamFilterPolicy.EnableLanguageBlockList",
           "compareType": "is",
@@ -4176,12 +4174,10 @@
         "defaultValue": false
       },
       {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
+        "type": "CountryCodeMultiSelect",
         "required": false,
         "name": "standards.SpamFilterPolicy.RegionBlockList",
-        "label": "Regions to block (uppercase ISO 3166-1 two-letter)",
+        "label": "Regions to block (ISO 3166-1 two-letter)",
         "condition": {
           "field": "standards.SpamFilterPolicy.EnableRegionBlockList",
           "compareType": "is",
@@ -5865,7 +5861,7 @@
       {
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
-        "label": "Allow users to communicate with other organizations"
+        "label": "Allow users to communicate with consumer Teams accounts"
       },
       {
         "type": "autoComplete",
@@ -7257,6 +7253,12 @@
       },
       {
         "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.grantMobileThreatDefensePartnerRole",
+        "label": "Grant MTD role to MDE on enrolled Android COBO/COPE devices",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectIos",
         "label": "Connect iOS/iPadOS devices to MDE",
         "defaultValue": false
@@ -7264,13 +7266,19 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectIosCompliance",
-        "label": "Connect iOS 13.0+ (App-based MAM)",
+        "label": "Connect iOS/iPadOS devices for app protection policy evaluation (MAM)",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.appSync",
-        "label": "Enable App Sync for iOS",
+        "label": "Enable App Sync (sending application inventory) for iOS/iPadOS devices",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalApplicationMetadata",
+        "label": "Send full application inventory data on personally-owned iOS/iPadOS devices",
         "defaultValue": false
       },
       {
@@ -7282,13 +7290,13 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosCertificateMetadata",
-        "label": "Collect certificate metadata from iOS",
+        "label": "Enable Certificate Sync for iOS/iPadOS devices",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalCertificateMetadata",
-        "label": "Collect personal certificate metadata from iOS",
+        "label": "Send full certificate inventory data on personally-owned iOS/iPadOS devices",
         "defaultValue": false
       },
       {

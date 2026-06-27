@@ -46846,5 +46846,989 @@
     "Service_Plan_Name": "AAD_WRKLDID_P1",
     "Service_Plan_Id": "84c289f0-efcb-486f-8581-07f44fc9efad",
     "Service_Plans_Included_Friendly_Names": "Azure Active Directory workload identities P1"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "ENTRA_NETWORK_CONTROLS_FOR_ASSISTIVE_AGENTS",
+    "Service_Plan_Id": "27e196a4-8b80-4930-bd65-53fd28581878",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra Network Controls for Assistive Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "ENTRA_ID_GOV_FOR_ASSISTIVE_AGENTS",
+    "Service_Plan_Id": "a9e85e05-1687-4958-8a4c-bdacda2943db",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID Governance for Assistive Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INSIDER_RISK_MANAGEMENT_FOR_AGENTS",
+    "Service_Plan_Id": "004ddfc0-c92f-4b0a-90c5-c60646299d71",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Insider Risk Management for Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INFORMATION_PROTECTION_FOR_AGENTS",
+    "Service_Plan_Id": "48478b49-91a1-4ded-94f0-066db80035ca",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Information Protection for Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "EDISCOVERY_FOR_AGENTS",
+    "Service_Plan_Id": "92cedcb2-3fb2-40b4-9df4-f9a5603d9631",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview eDiscovery for Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "DEFENDER_FOR_AI",
+    "Service_Plan_Id": "a1c15058-5559-4c1a-ba05-8040847f91bb",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for AI"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "DATA_LOSS_PREVENTION_FOR_AGENTS",
+    "Service_Plan_Id": "46d3c309-0ba7-461f-9d0e-eaca165794c2",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Data Loss Prevention for Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "DATA_LIFECYCLE_MANAGEMENT_FOR_AGENTS",
+    "Service_Plan_Id": "30d56d35-9be2-41c1-b4b8-7a8d6f073152",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Data Lifecycle Management for Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "COMPLIANCE_MANAGER_FOR_AGENTS",
+    "Service_Plan_Id": "d1f65d05-a302-4861-bd35-da8933ba7655",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Compliance Manager for Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "COMMUNICATION_COMPLIANCE_FOR_AGENTS",
+    "Service_Plan_Id": "135fe762-031a-4e79-bd3c-ac376addddec",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Communication Compliance for Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "AUDIT_FOR_AGENTS",
+    "Service_Plan_Id": "6d9b0ae5-e6a0-4f04-991a-e5700fd84930",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Audit for Agents"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "AGENT_365",
+    "Service_Plan_Id": "d0ce5ebb-9db0-491f-b780-8973a1d815fe",
+    "Service_Plans_Included_Friendly_Names": "Agent 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Defender_for_Iot_Enterprise",
+    "Service_Plan_Id": "99cd49a9-0e54-4e07-aea1-d8d9f5f704f5",
+    "Service_Plans_Included_Friendly_Names": "Defender for IoT - Enterprise IoT Security"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "DYN365_CDS_O365_P3",
+    "Service_Plan_Id": "28b0fa46-c39a-4188-89e2-58e979a6b014",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "RMS_S_PREMIUM2",
+    "Service_Plan_Id": "5689bec4-755d-4753-8b61-40975025187c",
+    "Service_Plans_Included_Friendly_Names": "AZURE INFORMATION PROTECTION PREMIUM P2"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "RMS_S_PREMIUM",
+    "Service_Plan_Id": "6c57d4b6-3b23-47a5-9bc9-69f17b4947b3",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra RIGHTS"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Verifiable_Credentials_Service_Request",
+    "Service_Plan_Id": "aae826b7-14cd-4691-8178-2b312f7072ea",
+    "Service_Plans_Included_Friendly_Names": "Verifiable Credentials Service Request"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_O365_P3",
+    "Service_Plan_Id": "ded3d325-1bdc-453e-8432-5bac26d7a014",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Office 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_COPILOT_CONNECTORS",
+    "Service_Plan_Id": "89f1c4c8-0878-40f7-804d-869c9128ab5d",
+    "Service_Plans_Included_Friendly_Names": "Power Platform Connectors in Microsoft 365 Copilot"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "FLOW_O365_P3",
+    "Service_Plan_Id": "07699545-9485-468e-95b6-2fca3738be01",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_BACKEND",
+    "Service_Plan_Id": "ff7b261f-d98b-415b-827c-42a3fdf015af",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Viva Insights Backend"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_USER",
+    "Service_Plan_Id": "b622badb-1b45-48d5-920f-4b27a2c0996c",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Viva Insights"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INTUNE_A",
+    "Service_Plan_Id": "c1ec4a95-1f05-45b3-a911-aa3fa01094f5",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Intune"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Entra_Premium_Private_Access",
+    "Service_Plan_Id": "f057aab1-b184-49b2-85c0-881b02a405c5",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra Private Access"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Entra_Premium_Internet_Access",
+    "Service_Plan_Id": "8d23cb83-ab07-418f-8517-d7aca77307dc",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra Internet Access"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "AAD_PREMIUM_P2",
+    "Service_Plan_Id": "eec0eb4f-6444-4f95-aba0-50c24d67f998",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P2"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "AAD_PREMIUM",
+    "Service_Plan_Id": "41781fb2-bc02-4b7c-bd55-b576c07bb09d",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P1"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "ATA",
+    "Service_Plan_Id": "14ab5db5-e6c4-4b20-b4bc-13e36fd2227f",
+    "Service_Plans_Included_Friendly_Names": "MICROSOFT DEFENDER FOR IDENTITY"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "ADALLOM_S_STANDALONE",
+    "Service_Plan_Id": "2e2ddb96-6af9-4b1d-a3f0-d6ecfd22edb2",
+    "Service_Plans_Included_Friendly_Names": "MICROSOFT CLOUD APP SECURITY"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_COPILOT_BUSINESS_CHAT",
+    "Service_Plan_Id": "3f30311c-6b1e-48a4-ab79-725b469da960",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot with Graph-grounded chat"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MFA_PREMIUM",
+    "Service_Plan_Id": "8a256a2b-b617-496d-b51b-e76466e88db0",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Azure Multi-Factor Authentication"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_COPILOT_APPS",
+    "Service_Plan_Id": "a62f8878-de10-42f3-b68f-6149a25ceb97",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot in Productivity Apps"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_COPILOT_TEAMS",
+    "Service_Plan_Id": "b95945de-b3bd-46db-8437-f2beb6ea2347",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot in Microsoft Teams"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_COPILOT_SHAREPOINT",
+    "Service_Plan_Id": "0aedf20c-091d-420b-aadf-30c042609612",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot for SharePoint"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_COPILOT_INTELLIGENT_SEARCH",
+    "Service_Plan_Id": "931e4a88-a67f-48b5-814f-16a5f1e6028d",
+    "Service_Plans_Included_Friendly_Names": "Intelligent Search"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "GRAPH_CONNECTORS_COPILOT",
+    "Service_Plan_Id": "82d30987-df9b-4486-b146-198b21d164c7",
+    "Service_Plans_Included_Friendly_Names": "Graph Connectors in Microsoft 365 Copilot"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Entra_Identity_Governance",
+    "Service_Plan_Id": "e866a266-3cff-43a3-acca-0c90a7e00c8b",
+    "Service_Plans_Included_Friendly_Names": "Entra Identity Governance"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "COPILOT_STUDIO_IN_COPILOT_FOR_M365",
+    "Service_Plan_Id": "fe6c28b3-d468-44ea-bbd0-a10a5167435c",
+    "Service_Plans_Included_Friendly_Names": "Copilot Studio in Copilot for M365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "WINDOWSUPDATEFORBUSINESS_DEPLOYMENTSERVICE",
+    "Service_Plan_Id": "7bf960f6-2cd9-443a-8046-5dbff9558365",
+    "Service_Plans_Included_Friendly_Names": "Windows Update for Business Deployment Service"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Windows_Autopatch",
+    "Service_Plan_Id": "9a6eeb79-0b4b-4bf0-9808-39d99a2cd5a3",
+    "Service_Plans_Included_Friendly_Names": "Windows Autopatch"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "WIN10_PRO_ENT_SUB",
+    "Service_Plan_Id": "21b439ba-a0ca-424f-a6cc-52f954a5b111",
+    "Service_Plans_Included_Friendly_Names": "Windows 10/11 Enterprise (Original)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "UNIVERSAL_PRINT_01",
+    "Service_Plan_Id": "795f6fe0-cc4d-4773-b050-5dde4dc704c9",
+    "Service_Plans_Included_Friendly_Names": "Universal Print"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MICROSOFTENDPOINTDLP",
+    "Service_Plan_Id": "64bfac92-2b17-4482-b5e5-a0304429de3e",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Endpoint DLP"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "WINDEFATP",
+    "Service_Plan_Id": "871d91ec-ec1a-452b-a83f-bd76c7d770ef",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Endpoint"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "YAMMER_ENTERPRISE",
+    "Service_Plan_Id": "7547a3fe-08ee-4ccb-b430-5077c5041653",
+    "Service_Plans_Included_Friendly_Names": "YAMMER_ENTERPRISE"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "WHITEBOARD_PLAN3",
+    "Service_Plan_Id": "4a51bca5-1eff-43f5-878c-177680f191af",
+    "Service_Plans_Included_Friendly_Names": "Whiteboard (Plan 3)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "VIVA_LEARNING_SEEDED",
+    "Service_Plan_Id": "b76fb638-6ba6-402a-b9f9-83d28acb3d86",
+    "Service_Plans_Included_Friendly_Names": "Viva Learning Seeded"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "VIVAENGAGE_CORE",
+    "Service_Plan_Id": "a82fbf69-b4d7-49f4-83a6-915b2cf354f4",
+    "Service_Plans_Included_Friendly_Names": "Viva Engage Core"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "BPOS_S_TODO_3",
+    "Service_Plan_Id": "3fb82609-8c27-4f7b-bd51-30634711ee67",
+    "Service_Plans_Included_Friendly_Names": "To-Do (Plan 3)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "SWAY",
+    "Service_Plan_Id": "a23b959c-7ce8-4e57-9140-b90eb88a9e97",
+    "Service_Plans_Included_Friendly_Names": "Sway"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MCOSTANDARD",
+    "Service_Plan_Id": "0feaeb32-d00e-4d66-bd5a-43b5b83db82c",
+    "Service_Plans_Included_Friendly_Names": "Skype for Business Online (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "SHAREPOINTENTERPRISE",
+    "Service_Plan_Id": "5dbe027f-2339-4123-9542-606e4d348a72",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "PURVIEW_DISCOVERY",
+    "Service_Plan_Id": "c948ea65-2053-4a5a-8a62-9eaaaf11b522",
+    "Service_Plans_Included_Friendly_Names": "Purview Discovery"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "PROJECT_O365_P3",
+    "Service_Plan_Id": "b21a6b06-1988-436e-a07b-51ec6d9f52ad",
+    "Service_Plans_Included_Friendly_Names": "Project for Office (Plan E5)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "PREMIUM_ENCRYPTION",
+    "Service_Plan_Id": "617b097b-4b93-4ede-83de-5f075bb5fb2f",
+    "Service_Plans_Included_Friendly_Names": "Premium Encryption in Office 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "BI_AZURE_P2",
+    "Service_Plan_Id": "70d33638-9c74-4d01-bfd3-562de28bd4ba",
+    "Service_Plans_Included_Friendly_Names": "Power BI Pro"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "POWERAPPS_O365_P3",
+    "Service_Plan_Id": "9c0dab89-a30c-4117-86e7-97bda240acd2",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Office 365 (Plan 3)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "PEOPLE_SKILLS_FOUNDATION",
+    "Service_Plan_Id": "13b6da2c-0d84-450e-9f69-a33e221387ca",
+    "Service_Plans_Included_Friendly_Names": "People Skills - Foundation"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "SHAREPOINTWAC",
+    "Service_Plan_Id": "e95bec33-7c88-4a70-8e19-b10bd9d0c014",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "SAFEDOCS",
+    "Service_Plan_Id": "bf6f5520-59e3-4f82-974b-7dbbc4fd27c7",
+    "Service_Plans_Included_Friendly_Names": "Office 365 SafeDocs"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "PAM_ENTERPRISE",
+    "Service_Plan_Id": "b1188c4c-1b36-4018-b48b-ee07604f6feb",
+    "Service_Plans_Included_Friendly_Names": "Office 365 Privileged Access Management"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "ADALLOM_S_O365",
+    "Service_Plan_Id": "8c098270-9dd4-4350-9b30-ba4703f3b36b",
+    "Service_Plans_Included_Friendly_Names": "Office 365 Cloud App Security"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "EQUIVIO_ANALYTICS",
+    "Service_Plan_Id": "4de31727-a228-4ec3-a5bf-8e45b5ca48cc",
+    "Service_Plans_Included_Friendly_Names": "Office 365 Advanced eDiscovery"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Nucleus",
+    "Service_Plan_Id": "db4d623d-b514-490b-b7ef-8885eee514de",
+    "Service_Plans_Included_Friendly_Names": "Nucleus"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INTUNE_O365",
+    "Service_Plan_Id": "882e1d05-acd1-4ccb-8708-6ee03664b117",
+    "Service_Plans_Included_Friendly_Names": "Mobile Device Management for Office 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "TEAMS1",
+    "Service_Plan_Id": "57ff2da0-773e-42df-b2af-ffb7a2317929",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "STREAM_O365_E5",
+    "Service_Plan_Id": "6c6042f5-6f01-4d67-b8c1-eb99d36eed3e",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Stream for Office 365 E5"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Deskless",
+    "Service_Plan_Id": "8c7d2df8-86f0-4902-b2ed-a0458298f3b3",
+    "Service_Plans_Included_Friendly_Names": "Microsoft StaffHub"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MICROSOFT_SEARCH",
+    "Service_Plan_Id": "94065c59-bc8e-4e8b-89e5-5138d471eaff",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Search"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "RECORDS_MANAGEMENT",
+    "Service_Plan_Id": "65cc641f-cccd-4643-97e0-a17e3045e541",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Records Management"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "PROJECTWORKMANAGEMENT",
+    "Service_Plan_Id": "b737dad2-2f6c-4c65-90e3-ca563267e8b9",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Planner"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "EXCHANGE_ANALYTICS",
+    "Service_Plan_Id": "34c0d7a0-a70f-4668-9238-47f9fc208882",
+    "Service_Plans_Included_Friendly_Names": "Microsoft MyAnalytics (Full)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "ML_CLASSIFICATION",
+    "Service_Plan_Id": "d2d51368-76c9-4317-ada2-a12c004c432f",
+    "Service_Plans_Included_Friendly_Names": "Microsoft ML-Based Classification"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MICROSOFT_LOOP",
+    "Service_Plan_Id": "c4b8c31a-fb44-4c65-9837-a21f55fcabda",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Loop"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INSIDER_RISK_MANAGEMENT",
+    "Service_Plan_Id": "9d0c4ee5-e4a1-4625-ab39-d82b619b1a34",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Insider Risk Management - Exchange"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INSIDER_RISK",
+    "Service_Plan_Id": "d587c7a3-bda9-4f99-8776-9bcf59c84f75",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Insider Risk Management"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INFO_GOVERNANCE",
+    "Service_Plan_Id": "e26c2fcc-ab91-4a61-b35c-03cdc8dddf66",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Information Governance"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "FORMS_PLAN_E5",
+    "Service_Plan_Id": "e212cbc7-0961-4c40-9825-01117710dcb1",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Forms (Plan E5)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "EXCEL_PREMIUM",
+    "Service_Plan_Id": "531ee2f8-b1cb-453b-9c21-d2180d014ca5",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Excel Advanced Analytics"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "THREAT_INTELLIGENCE",
+    "Service_Plan_Id": "8e0c0a52-6a6c-4d40-8370-dd62790dcd70",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "CUSTOMER_KEY",
+    "Service_Plan_Id": "6db1f1db-2b46-403f-be40-e39395f08dbb",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Customer Key"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "COMMUNICATIONS_DLP",
+    "Service_Plan_Id": "6dc145d6-95dd-4191-b9c3-185575ee6f6b",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Communications DLP"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "CLIPCHAMP",
+    "Service_Plan_Id": "a1ace008-72f3-4ea0-8dac-33b3a23a2472",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Clipchamp"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MICROSOFTBOOKINGS",
+    "Service_Plan_Id": "199a5c09-e0ca-4e37-8f7c-b05d533e1ea2",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Bookings"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MCOEV",
+    "Service_Plan_Id": "4828c8ec-dc2e-4779-b502-87ac9ce28ab7",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Phone System"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_LIGHTHOUSE_CUSTOMER_PLAN1",
+    "Service_Plan_Id": "6f23d6a9-adbf-481c-8538-b4c095654487",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Lighthouse (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MTP",
+    "Service_Plan_Id": "bf28f719-7844-4079-9c78-c1307898e192",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Defender"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MICROSOFT_COMMUNICATION_COMPLIANCE",
+    "Service_Plan_Id": "a413a9ff-720c-4822-98ef-2f37c2a21f4c",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Communication Compliance"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_AUDIT_PLATFORM",
+    "Service_Plan_Id": "f6de4823-28fa-440b-b886-4783fa86ddba",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Audit Platform"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MCOMEETADV",
+    "Service_Plan_Id": "3e26ee1f-8a5f-4d52-aee2-b81ce45c8f40",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Audio Conferencing"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "OFFICESUBSCRIPTION",
+    "Service_Plan_Id": "43de0ff5-c92c-492b-9116-175376d08c38",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Apps for enterprise"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "M365_ADVANCED_AUDITING",
+    "Service_Plan_Id": "2f442157-a11c-46b9-ae5b-6e39ff4e5849",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Advanced Auditing"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INSIGHTS_BY_MYANALYTICS",
+    "Service_Plan_Id": "b088306e-925b-44ab-baa0-63291c629a91",
+    "Service_Plans_Included_Friendly_Names": "Insights by MyAnalytics Backend"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MYANALYTICS_P2",
+    "Service_Plan_Id": "33c4f319-9bdd-48d6-9c4d-410b750a4a5a",
+    "Service_Plans_Included_Friendly_Names": "Insights by MyAnalytics"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MIP_S_CLP1",
+    "Service_Plan_Id": "5136a095-5cf0-4aff-bec3-e84448b38ea5",
+    "Service_Plans_Included_Friendly_Names": "Information Protection for Office 365 - Standard"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MIP_S_CLP2",
+    "Service_Plan_Id": "efb0351d-3b08-4503-993d-383af8de41e3",
+    "Service_Plans_Included_Friendly_Names": "Information Protection for Office 365 - Premium"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "ContentExplorer_Standard",
+    "Service_Plan_Id": "2b815d45-56e4-4e3a-b65c-66cb9175b560",
+    "Service_Plans_Included_Friendly_Names": "Information Protection and Governance Analytics – Standard"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "Content_Explorer",
+    "Service_Plan_Id": "d9fa6af4-e046-4c89-9226-729a0786685d",
+    "Service_Plans_Included_Friendly_Names": "Information Protection and Governance Analytics - Premium"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "INFORMATION_BARRIERS",
+    "Service_Plan_Id": "c4801e8a-cb58-4c35-aca6-f2dcc106f287",
+    "Service_Plans_Included_Friendly_Names": "Information Barriers"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MESH_IMMERSIVE_FOR_TEAMS",
+    "Service_Plan_Id": "f0ff6ac6-297d-49cd-be34-6dfef97f0c28",
+    "Service_Plans_Included_Friendly_Names": "Immersive spaces for Teams"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "GRAPH_CONNECTORS_SEARCH_INDEX",
+    "Service_Plan_Id": "a6520331-d7d4-4276-95f5-15c0933bc757",
+    "Service_Plans_Included_Friendly_Names": "Graph Connectors Search with Index"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "EXCHANGE_S_ENTERPRISE",
+    "Service_Plan_Id": "efb87545-963c-4e0d-99df-69c6916d9eb0",
+    "Service_Plans_Included_Friendly_Names": "EXCHANGE ONLINE (PLAN 2)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "COMMON_DEFENDER_PLATFORM_FOR_OFFICE",
+    "Service_Plan_Id": "a312bdeb-1e21-40d0-84b1-0e73f128144f",
+    "Service_Plans_Included_Friendly_Names": "Defender Platform for Office 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MIP_S_Exchange",
+    "Service_Plan_Id": "cd31b152-6326-4d1b-ae1b-997b625182e6",
+    "Service_Plans_Included_Friendly_Names": "Data Classification in Microsoft 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "CustomerLockboxA_Enterprise",
+    "Service_Plan_Id": "3ec18638-bd4c-4d3b-8905-479ed636b83e",
+    "Service_Plans_Included_Friendly_Names": "Customer Lockbox (A)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "LOCKBOX_ENTERPRISE",
+    "Service_Plan_Id": "9f431833-0334-42de-a7dc-70aa40db46db",
+    "Service_Plans_Included_Friendly_Names": "Customer Lockbox"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "CDS_O365_P3",
+    "Service_Plan_Id": "afa73018-811e-46e9-988f-f75d2b1b8430",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service for Teams"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "RMS_S_ENTERPRISE",
+    "Service_Plan_Id": "bea4c11e-220a-4e6d-8eb8-8ea15d019f90",
+    "Service_Plans_Included_Friendly_Names": "Azure Rights Management"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MESH_AVATARS_ADDITIONAL_FOR_TEAMS",
+    "Service_Plan_Id": "3efbd4ed-8958-4824-8389-1321f8730af8",
+    "Service_Plans_Included_Friendly_Names": "Avatars for Teams (additional)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E7",
+    "String_Id": "MICROSOFT_365_E7",
+    "GUID": "9a18296a-025f-4e37-9ffa-30bf8d1ce775",
+    "Service_Plan_Name": "MESH_AVATARS_FOR_TEAMS",
+    "Service_Plan_Id": "dcf9d2f4-772e-4434-b757-77a453cfbc02",
+    "Service_Plans_Included_Friendly_Names": "Avatars for Teams"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "AGENT_365",
+    "Service_Plan_Id": "d0ce5ebb-9db0-491f-b780-8973a1d815fe",
+    "Service_Plans_Included_Friendly_Names": "Agent 365"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "AUDIT_FOR_AGENTS",
+    "Service_Plan_Id": "6d9b0ae5-e6a0-4f04-991a-e5700fd84930",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Audit for Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "COMMUNICATION_COMPLIANCE_FOR_AGENTS",
+    "Service_Plan_Id": "135fe762-031a-4e79-bd3c-ac376addddec",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Communication Compliance for Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "COMPLIANCE_MANAGER_FOR_AGENTS",
+    "Service_Plan_Id": "d1f65d05-a302-4861-bd35-da8933ba7655",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Compliance Manager for Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "DATA_LIFECYCLE_MANAGEMENT_FOR_AGENTS",
+    "Service_Plan_Id": "30d56d35-9be2-41c1-b4b8-7a8d6f073152",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Data Lifecycle Management for Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "DATA_LOSS_PREVENTION_FOR_AGENTS",
+    "Service_Plan_Id": "46d3c309-0ba7-461f-9d0e-eaca165794c2",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Data Loss Prevention for Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "DEFENDER_FOR_AI",
+    "Service_Plan_Id": "a1c15058-5559-4c1a-ba05-8040847f91bb",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for AI"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "EDISCOVERY_FOR_AGENTS",
+    "Service_Plan_Id": "92cedcb2-3fb2-40b4-9df4-f9a5603d9631",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview eDiscovery for Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "ENTRA_ID_GOV_FOR_ASSISTIVE_AGENTS",
+    "Service_Plan_Id": "a9e85e05-1687-4958-8a4c-bdacda2943db",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID Governance for Assistive Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "ENTRA_NETWORK_CONTROLS_FOR_ASSISTIVE_AGENTS",
+    "Service_Plan_Id": "27e196a4-8b80-4930-bd65-53fd28581878",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra Network Controls for Assistive Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "INFORMATION_PROTECTION_FOR_AGENTS",
+    "Service_Plan_Id": "48478b49-91a1-4ded-94f0-066db80035ca",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Information Protection for Agents"
+  },
+  {
+    "Product_Display_Name": "Agent 365",
+    "String_Id": "AGENT_365",
+    "GUID": "796a6fb4-740b-4d36-bf56-9c12ca7fa069",
+    "Service_Plan_Name": "INSIDER_RISK_MANAGEMENT_FOR_AGENTS",
+    "Service_Plan_Id": "004ddfc0-c92f-4b0a-90c5-c60646299d71",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Purview Insider Risk Management for Agents"
   }
 ]

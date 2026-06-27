@@ -263,7 +263,7 @@ export const Layout = (props) => {
   })
 
   const alertsAPI = ApiGetCall({
-    url: `/api/GetCippAlerts?localversion=${version?.data?.version}`,
+    url: `/api/GetCippAlerts?localversion=${encodeURIComponent(version?.data?.version)}`,
     queryKey: 'alertsDashboard',
     waiting: false,
     refetchOnMount: false,
