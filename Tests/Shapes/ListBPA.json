@@ -1,0 +1,46 @@
+{
+  "_metadata": {
+    "endpoint": "ListBPA",
+    "generatedAt": "2026-04-03T23:41:35.3945829+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "Columns": {
+      "_type": "array",
+      "_element": {
+        "formatter": "truncated",
+        "name": "truncated",
+        "value": "truncated"
+      }
+    },
+    "Data": {
+      "_type": "array",
+      "_element": {
+        "AnonymousPrivacyReports": "truncated",
+        "CurrentSecureScore": "truncated",
+        "ETag": "truncated",
+        "GUID": "truncated",
+        "LastRefresh": "truncated",
+        "MessageCopyforSentAsDisabled": "truncated",
+        "MFANudgeState": "truncated",
+        "OAuthAppConsent": "truncated",
+        "PartitionKey": "truncated",
+        "PasswordNeverExpires": "truncated",
+        "RowKey": "truncated",
+        "SecureDefaultState": "truncated",
+        "SharedMailboxeswithenabledusers": "truncated",
+        "TAPEnabled": "truncated",
+        "Tenant": "truncated",
+        "Timestamp": "truncated",
+        "UnifiedAuditLog": "truncated",
+        "Unusedlicenses": "truncated"
+      }
+    },
+    "Keys": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "Style": "string"
+  }
+}

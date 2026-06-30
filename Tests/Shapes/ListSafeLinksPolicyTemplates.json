@@ -1,0 +1,32 @@
+{
+  "_metadata": {
+    "endpoint": "ListSafeLinksPolicyTemplates",
+    "generatedAt": "2026-04-03T23:40:21.0615923+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "AdminDisplayName": "string",
+    "AllowClickThrough": "bool",
+    "DeliverMessageAfterScan": "bool",
+    "DisableUrlRewrite": "bool",
+    "DoNotRewriteUrls": "null",
+    "EnableForInternalSenders": "bool",
+    "EnableOrganizationBranding": "bool",
+    "EnableSafeLinksForEmail": "bool",
+    "EnableSafeLinksForOffice": "bool",
+    "EnableSafeLinksForTeams": "bool",
+    "ExceptIfRecipientDomainIs": "null",
+    "ExceptIfSentToMemberOf": "null",
+    "GUID": "string",
+    "PolicyName": "string",
+    "RecipientDomainIs": "null",
+    "RuleName": "string",
+    "ScanUrls": "bool",
+    "SentToMemberOf": "null",
+    "State": "bool",
+    "TemplateDescription": "string",
+    "TemplateName": "string",
+    "TrackClicks": "bool"
+  }
+}

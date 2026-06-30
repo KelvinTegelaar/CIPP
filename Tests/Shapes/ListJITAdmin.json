@@ -1,0 +1,26 @@
+{
+  "_metadata": {
+    "endpoint": "ListJITAdmin",
+    "generatedAt": "2026-04-03T23:43:12.6934036+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "accountEnabled": "bool",
+    "displayName": "string",
+    "id": "string",
+    "jitAdminCreatedBy": "null",
+    "jitAdminEnabled": "bool",
+    "jitAdminExpiration": "datetime",
+    "jitAdminReason": "null",
+    "jitAdminStartDate": "null",
+    "memberOf": {
+      "_type": "array",
+      "_element": {
+        "displayName": "truncated",
+        "id": "truncated"
+      }
+    },
+    "userPrincipalName": "string"
+  }
+}

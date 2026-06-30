@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react'
 import {
   SpeedDial,
   SpeedDialAction,
@@ -11,10 +11,10 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
-} from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
-import { useForm } from "react-hook-form";
-import { CippFormComponent } from "../../components/CippComponents/CippFormComponent";
+} from '@mui/material'
+import { Close as CloseIcon } from '@mui/icons-material'
+import { useForm } from 'react-hook-form'
+import { CippFormComponent } from '../../components/CippComponents/CippFormComponent'
 
 const CippSpeedDial = ({
   actions = [],
@@ -22,100 +22,106 @@ const CippSpeedDial = ({
   icon,
   openIcon = <CloseIcon />,
 }) => {
-  const [openDialogs, setOpenDialogs] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [speedDialOpen, setSpeedDialOpen] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [openDialogs, setOpenDialogs] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [speedDialOpen, setSpeedDialOpen] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
 
   const formControls = actions.reduce((acc, action) => {
     if (action.form) {
       acc[action.id] = useForm({
-        mode: "onChange",
+        mode: 'onChange',
         defaultValues: action.form.defaultValues || {},
-      });
+      })
     }
-    return acc;
-  }, {});
+    return acc
+  }, {})
 
-  const handleSpeedDialClose = () => {
+  const handleSpeedDialClose = (event, reason) => {
+    if (reason === 'toggle') {
+      setSpeedDialOpen(false)
+      setIsHovering(false)
+      return
+    }
     if (!isHovering) {
       setTimeout(() => {
-        setSpeedDialOpen(false);
-      }, 200);
+        setSpeedDialOpen(false)
+      }, 200)
     }
-  };
+  }
 
   const handleMouseEnter = () => {
-    setIsHovering(true);
-    setSpeedDialOpen(true);
-  };
+    setIsHovering(true)
+    setSpeedDialOpen(true)
+  }
 
   const handleMouseLeave = () => {
-    setIsHovering(false);
-    handleSpeedDialClose();
-  };
+    setIsHovering(false)
+    handleSpeedDialClose()
+  }
 
   const handleDialogOpen = (actionId) => {
-    setOpenDialogs((prev) => ({ ...prev, [actionId]: true }));
-  };
+    setOpenDialogs((prev) => ({ ...prev, [actionId]: true }))
+  }
 
   const handleDialogClose = (actionId) => {
-    setOpenDialogs((prev) => ({ ...prev, [actionId]: false }));
-  };
+    setOpenDialogs((prev) => ({ ...prev, [actionId]: false }))
+  }
 
   const handleSubmit = async (actionId, data) => {
-    if (!actions.find((a) => a.id === actionId)?.onSubmit) return;
+    if (!actions.find((a) => a.id === actionId)?.onSubmit) return
 
-    setLoading(true);
+    setLoading(true)
     try {
-      const action = actions.find((a) => a.id === actionId);
-      const result = await action.onSubmit(data);
+      const action = actions.find((a) => a.id === actionId)
+      const result = await action.onSubmit(data)
 
       if (result.success) {
-        formControls[actionId]?.reset();
-        handleDialogClose(actionId);
+        formControls[actionId]?.reset()
+        handleDialogClose(actionId)
       }
-      setSnackbarMessage(result.message);
-      setShowSnackbar(true);
+      setSnackbarMessage(result.message)
+      setShowSnackbar(true)
     } catch (error) {
-      console.error(`Error submitting ${actionId}:`, error);
-      setSnackbarMessage("An error occurred while submitting");
-      setShowSnackbar(true);
+      console.error(`Error submitting ${actionId}:`, error)
+      setSnackbarMessage('An error occurred while submitting')
+      setShowSnackbar(true)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (speedDialOpen) {
-        const speedDial = document.querySelector('[aria-label="Navigation SpeedDial"]');
+        const speedDial = document.querySelector('[aria-label="Navigation SpeedDial"]')
         if (speedDial && !speedDial.contains(event.target)) {
-          setSpeedDialOpen(false);
+          setSpeedDialOpen(false)
         }
       }
-    };
+    }
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener('click', handleClickOutside)
     return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [speedDialOpen]);
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [speedDialOpen])
 
   return (
     <>
       <SpeedDial
         ariaLabel="Navigation SpeedDial"
+        data-tutorial="speed-dial"
         sx={{
-          position: "fixed",
+          position: 'fixed',
           ...position,
-          "& .MuiFab-primary": {
+          '& .MuiFab-primary': {
             width: 46,
             height: 46,
-            "&:hover": {
-              backgroundColor: "primary.dark",
+            '&:hover': {
+              backgroundColor: 'primary.dark',
             },
           },
         }}
@@ -133,27 +139,27 @@ const CippSpeedDial = ({
             tooltipTitle={action.name}
             onClick={() => {
               if (action.form) {
-                handleDialogOpen(action.id);
+                handleDialogOpen(action.id)
               } else if (action.onClick) {
-                action.onClick();
+                action.onClick()
               }
-              setSpeedDialOpen(false);
+              setSpeedDialOpen(false)
             }}
             tooltipOpen
             sx={{
-              "&.MuiSpeedDialAction-fab": {
-                backgroundColor: "background.paper",
-                "&:hover": {
-                  backgroundColor: "action.hover",
+              '&.MuiSpeedDialAction-fab': {
+                backgroundColor: 'background.paper',
+                '&:hover': {
+                  backgroundColor: 'action.hover',
                 },
               },
-              "& .MuiSpeedDialAction-staticTooltipLabel": {
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                marginRight: "10px",
-                padding: "6px 10px",
-                "&:hover": {
-                  backgroundColor: "action.hover",
+              '& .MuiSpeedDialAction-staticTooltipLabel': {
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                marginRight: '10px',
+                padding: '6px 10px',
+                '&:hover': {
+                  backgroundColor: 'action.hover',
                 },
               },
             }}
@@ -178,10 +184,10 @@ const CippSpeedDial = ({
                 name={action.form.fieldName}
                 required
                 formControl={formControls[action.id]}
-                style={{ minHeight: "150px" }}
+                style={{ minHeight: '150px' }}
                 editorProps={{
                   attributes: {
-                    style: "min-height: 150px; font-size: 1.1rem; padding: 1rem;",
+                    style: 'min-height: 150px; font-size: 1.1rem; padding: 1rem;',
                   },
                 }}
               />
@@ -199,7 +205,7 @@ const CippSpeedDial = ({
                 disabled={loading}
                 startIcon={loading ? <CircularProgress size={20} /> : null}
               >
-                {loading ? "Submitting..." : action.form.submitText || "Submit"}
+                {loading ? 'Submitting...' : action.form.submitText || 'Submit'}
               </Button>
             </DialogActions>
           </Dialog>
@@ -209,14 +215,14 @@ const CippSpeedDial = ({
         open={showSnackbar}
         autoHideDuration={6000}
         onClose={() => setShowSnackbar(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setShowSnackbar(false)} severity="success" sx={{ width: "100%" }}>
+        <Alert onClose={() => setShowSnackbar(false)} severity="success" sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
     </>
-  );
-};
+  )
+}
 
-export default CippSpeedDial;
+export default CippSpeedDial

@@ -1,4 +1,4 @@
-import { ArrowDropDown, Visibility } from "@mui/icons-material";
+import { ArrowDropDown, Visibility } from '@mui/icons-material'
 import {
   Autocomplete,
   CircularProgress,
@@ -8,28 +8,36 @@ import {
   Tooltip,
   Box,
   Typography,
-} from "@mui/material";
-import Link from "next/link";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
-import { useSettings } from "../../hooks/use-settings";
-import { getCippError } from "../../utils/get-cipp-error";
-import { ApiGetCallWithPagination } from "../../api/ApiCall";
-import { Sync } from "@mui/icons-material";
-import { Stack } from "@mui/system";
-import React from "react";
-import { CippOffCanvas } from "./CippOffCanvas";
-import CippJsonView from "../CippFormPages/CippJSONView";
+} from '@mui/material'
+import Link from 'next/link'
+import { useEffect, useState, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
+import { useSettings } from '../../hooks/use-settings'
+import { getCippError } from '../../utils/get-cipp-error'
+import { ApiGetCallWithPagination } from '../../api/ApiCall'
+import { Sync } from '@mui/icons-material'
+import { Stack } from '@mui/system'
+import React from 'react'
+import { CippOffCanvas } from './CippOffCanvas'
+import CippJsonView from '../CippFormPages/CippJSONView'
 
 const MemoTextField = React.memo(function MemoTextField({
   params,
   label,
   placeholder,
+  // Autocomplete-specific props that must not be forwarded to TextField/DOM
+  getOptionLabel,
+  isOptionEqualToValue,
+  filterOptions,
+  getOptionDisabled,
+  groupBy,
+  renderGroup,
+  renderOption,
   ...otherProps
 }) {
-  const { InputProps, ...otherParams } = params;
+  const { InputProps, ...otherParams } = params
 
   return (
-    <Tooltip title={label || ""} placement="top" arrow>
+    <Tooltip title={label || ''} placement="top" arrow>
       <TextField
         {...otherParams}
         label={label}
@@ -38,26 +46,25 @@ const MemoTextField = React.memo(function MemoTextField({
         slotProps={{
           inputLabel: {
             shrink: true,
-            sx: { transition: "none" },
+            sx: { transition: 'none' },
             required: otherProps.required,
           },
           input: {
             ...InputProps,
-            notched: true,
             sx: {
-              transition: "none",
-              "& .MuiOutlinedInput-notchedOutline": {
-                transition: "none",
+              transition: 'none',
+              '& .MuiOutlinedInput-notchedOutline': {
+                transition: 'none',
               },
             },
           },
         }}
       />
     </Tooltip>
-  );
-});
+  )
+})
 
-export const CippAutoComplete = (props) => {
+export const CippAutoComplete = React.forwardRef((props, ref) => {
   const {
     size,
     api,
@@ -82,195 +89,218 @@ export const CippAutoComplete = (props) => {
     groupBy,
     renderGroup,
     customAction,
+    handleHomeEndKeys = false,
     ...other
-  } = props;
+  } = props
 
-  const [usedOptions, setUsedOptions] = useState(options);
-  const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
-  const hasPreselectedRef = useRef(false);
-  const autocompleteRef = useRef(null); // Ref for focusing input after selection
-  const listboxRef = useRef(null); // Ref for the listbox to preserve scroll position
-  const scrollPositionRef = useRef(0); // Store scroll position
+  const [usedOptions, setUsedOptions] = useState(options)
+  const [getRequestInfo, setGetRequestInfo] = useState({ url: '', waiting: false, queryKey: '' })
+  const hasPreselectedRef = useRef(false)
+  const autocompleteRef = useRef(null) // Ref for focusing input after selection
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus() {
+        const input = autocompleteRef.current?.querySelector('input')
+        input?.focus()
+        input?.select()
+      },
+    }),
+    []
+  )
+  const listboxRef = useRef(null) // Ref for the listbox to preserve scroll position
+  const scrollPositionRef = useRef(0) // Store scroll position
   const filter = createFilterOptions({
     stringify: (option) => JSON.stringify(option),
-  });
+  })
 
-  const [offCanvasVisible, setOffCanvasVisible] = useState(false);
-  const [fullObject, setFullObject] = useState(null);
-  const [internalValue, setInternalValue] = useState(null); // Track selected value internally
-  const [open, setOpen] = useState(false); // Control popover open state
+  const [offCanvasVisible, setOffCanvasVisible] = useState(false)
+  const [fullObject, setFullObject] = useState(null)
+  const [internalValue, setInternalValue] = useState(null) // Track selected value internally
+  const [open, setOpen] = useState(false) // Control popover open state
 
   // Sync internalValue when external value or defaultValue prop changes (e.g., when editing a form)
   useEffect(() => {
-    const currentValue = value !== undefined && value !== null ? value : defaultValue;
+    const currentValue = value !== undefined && value !== null ? value : defaultValue
     if (currentValue !== undefined && currentValue !== null) {
-      setInternalValue(currentValue);
+      setInternalValue((prev) => {
+        // Compare by value to avoid infinite re-render loops when the parent
+        // passes an object with the same contents but a new reference.
+        if (prev && typeof prev === 'object' && typeof currentValue === 'object') {
+          if (prev.value === currentValue.value && prev.label === currentValue.label) {
+            return prev
+          }
+        }
+        if (prev === currentValue) return prev
+        return currentValue
+      })
     }
-  }, [value, defaultValue]);
+  }, [value, defaultValue])
 
   // This is our paginated call
   const actionGetRequest = ApiGetCallWithPagination({
     ...getRequestInfo,
-  });
+  })
 
-  const currentTenant = api?.tenantFilter ? api.tenantFilter : useSettings().currentTenant;
+  const currentTenant = api?.tenantFilter ? api.tenantFilter : useSettings().currentTenant
   useEffect(() => {
     if (actionGetRequest.isSuccess && !actionGetRequest.isFetching) {
-      const lastPage = actionGetRequest.data?.pages[actionGetRequest.data.pages.length - 1];
-      const nextLinkExists = lastPage?.Metadata?.nextLink;
+      // Guard against a non-paginated cache shape (e.g. when a queryKey is accidentally shared
+      // with a useQuery/ApiGetCall consumer that stores a plain array instead of { pages }).
+      const pages = actionGetRequest.data?.pages
+      const lastPage = Array.isArray(pages) ? pages[pages.length - 1] : undefined
+      const nextLinkExists = lastPage?.Metadata?.nextLink
       if (nextLinkExists) {
-        actionGetRequest.fetchNextPage();
+        actionGetRequest.fetchNextPage()
       }
     }
-  }, [actionGetRequest.data?.pages?.length, actionGetRequest.isFetching, api?.queryKey]);
+  }, [actionGetRequest.data?.pages?.length, actionGetRequest.isFetching, api?.queryKey])
 
+  const apiRef = useRef(api)
+  apiRef.current = api
+
+  const apiUrl = api?.url
+  const apiQueryKey = api?.queryKey
   useEffect(() => {
-    if (api) {
+    const currentApi = apiRef.current
+    if (currentApi) {
       setGetRequestInfo({
-        url: api.url,
+        url: currentApi.url,
         data: {
-          ...(!api.excludeTenantFilter ? { tenantFilter: currentTenant } : null),
-          ...api.data,
+          ...(!currentApi.excludeTenantFilter ? { tenantFilter: currentTenant } : null),
+          ...currentApi.data,
         },
         waiting: true,
-        queryKey: api.queryKey,
-      });
+        queryKey: currentApi.queryKey,
+      })
     }
-  }, [api, currentTenant]);
+  }, [apiUrl, apiQueryKey, currentTenant])
 
   // After the data is fetched, combine and map it
   useEffect(() => {
     if (actionGetRequest.isSuccess) {
+      const currentApi = apiRef.current
       // E.g., allPages is an array of pages returned by the pagination
-      const allPages = actionGetRequest.data?.pages || [];
+      const allPages = actionGetRequest.data?.pages || []
 
       // Helper to get nested data if you have something like "response.data.items"
       const getNestedValue = (obj, path) => {
-        if (!path) return obj;
-        const keys = path.split(".");
-        let result = obj;
+        if (!path) return obj
+        const keys = path.split('.')
+        let result = obj
         for (const key of keys) {
-          if (result && typeof result === "object" && key in result) {
-            result = result[key];
+          if (result && typeof result === 'object' && key in result) {
+            result = result[key]
           } else {
-            return undefined;
+            return undefined
           }
         }
-        return result;
-      };
+        return result
+      }
 
       // Flatten the results from all pages
       const combinedResults = allPages.flatMap((page) => {
-        const nestedData = getNestedValue(page, api?.dataKey);
-        return nestedData !== undefined ? nestedData : [];
-      });
+        const nestedData = getNestedValue(page, currentApi?.dataKey)
+        return nestedData !== undefined ? nestedData : []
+      })
 
       if (!Array.isArray(combinedResults)) {
         setUsedOptions([
           {
-            label: "Error: The API returned data we cannot map to this field",
-            value: "Error",
+            label: 'Error: The API returned data we cannot map to this field',
+            value: 'Error',
           },
-        ]);
+        ])
       } else {
         // Convert each item into your { label, value, addedFields, rawData } shape
         const convertedOptions = combinedResults.map((option) => {
-          const addedFields = {};
-          if (api?.addedField) {
-            Object.keys(api.addedField).forEach((key) => {
-              addedFields[key] = option[api.addedField[key]];
-            });
+          const addedFields = {}
+          if (currentApi?.addedField) {
+            Object.keys(currentApi.addedField).forEach((key) => {
+              addedFields[key] = option[currentApi.addedField[key]]
+            })
           }
 
           return {
             label:
-              typeof api?.labelField === "function"
-                ? api.labelField(option)
-                : option[api?.labelField]
-                  ? option[api?.labelField]
-                  : option[api?.altLabelField] ||
-                    option[api?.valueField] ||
-                    "No label found - Are you missing a labelField?",
+              typeof currentApi?.labelField === 'function'
+                ? currentApi.labelField(option)
+                : option[currentApi?.labelField]
+                  ? option[currentApi?.labelField]
+                  : option[currentApi?.altLabelField] ||
+                    option[currentApi?.valueField] ||
+                    'No label found - Are you missing a labelField?',
             value:
-              typeof api?.valueField === "function"
-                ? api.valueField(option)
-                : option[api?.valueField],
+              typeof currentApi?.valueField === 'function'
+                ? currentApi.valueField(option)
+                : option[currentApi?.valueField],
             description:
-              typeof api?.descriptionField === "function"
-                ? api.descriptionField(option)
-                : api?.descriptionField
-                  ? option[api?.descriptionField]
+              typeof currentApi?.descriptionField === 'function'
+                ? currentApi.descriptionField(option)
+                : currentApi?.descriptionField
+                  ? option[currentApi?.descriptionField]
                   : undefined,
             addedFields,
             rawData: option, // Store the full original object
-          };
-        });
+          }
+        })
 
-        if (api?.dataFilter) {
-          setUsedOptions(api.dataFilter(convertedOptions));
+        if (currentApi?.dataFilter) {
+          setUsedOptions(currentApi.dataFilter(convertedOptions))
         } else {
-          setUsedOptions(convertedOptions);
+          setUsedOptions(convertedOptions)
         }
       }
     }
 
     if (actionGetRequest.isError) {
-      setUsedOptions([{ label: getCippError(actionGetRequest.error), value: "error" }]);
+      setUsedOptions([{ label: getCippError(actionGetRequest.error), value: 'error' }])
     }
-  }, [
-    api,
-    actionGetRequest.data,
-    actionGetRequest.isSuccess,
-    actionGetRequest.isError,
-    preselectedValue,
-    defaultValue,
-    value,
-    multiple,
-    onChange,
-  ]);
+  }, [actionGetRequest.data, actionGetRequest.isSuccess, actionGetRequest.isError, actionGetRequest.error, apiRef])
 
   const memoizedOptions = useMemo(() => {
-    let finalOptions = api ? usedOptions : options;
+    let finalOptions = api ? usedOptions : options
     if (removeOptions && removeOptions.length) {
-      finalOptions = finalOptions.filter((o) => !removeOptions.includes(o.value));
+      finalOptions = finalOptions.filter((o) => !removeOptions.includes(o.value))
     }
     if (sortOptions) {
-      finalOptions.sort((a, b) => a.label?.localeCompare(b.label));
+      finalOptions.sort((a, b) => String(a.label ?? "").localeCompare(String(b.label ?? "")))
     }
-    return finalOptions;
-  }, [api, usedOptions, options, removeOptions, sortOptions]);
+    return finalOptions
+  }, [api, usedOptions, options, removeOptions, sortOptions])
 
   // Dedicated effect for handling preselected value or auto-select first item - only runs once
   useEffect(() => {
     if (memoizedOptions.length > 0 && !hasPreselectedRef.current) {
       // Check if we should skip preselection due to existing defaultValue
       const hasDefaultValue =
-        defaultValue && (Array.isArray(defaultValue) ? defaultValue.length > 0 : true);
+        defaultValue && (Array.isArray(defaultValue) ? defaultValue.length > 0 : true)
 
       if (!hasDefaultValue) {
         // For multiple mode, check if value is empty array or null/undefined
         // For single mode, check if value is null/undefined
         const shouldPreselect = multiple
           ? !value || (Array.isArray(value) && value.length === 0)
-          : !value;
+          : !value
 
         if (shouldPreselect) {
-          let preselectedOption;
+          let preselectedOption
 
           // Handle explicit preselected value
           if (preselectedValue) {
-            preselectedOption = memoizedOptions.find((option) => option.value === preselectedValue);
+            preselectedOption = memoizedOptions.find((option) => option.value === preselectedValue)
           }
           // Handle auto-select first item from API
           else if (api?.autoSelectFirstItem && memoizedOptions.length > 0) {
-            preselectedOption = memoizedOptions[0];
+            preselectedOption = memoizedOptions[0]
           }
 
           if (preselectedOption) {
-            const newValue = multiple ? [preselectedOption] : preselectedOption;
-            hasPreselectedRef.current = true; // Mark that we've preselected
+            const newValue = multiple ? [preselectedOption] : preselectedOption
+            hasPreselectedRef.current = true // Mark that we've preselected
             if (onChange) {
-              onChange(newValue, newValue?.addedFields);
+              onChange(newValue, newValue?.addedFields)
             }
           }
         }
@@ -284,7 +314,7 @@ export const CippAutoComplete = (props) => {
     multiple,
     onChange,
     api?.autoSelectFirstItem,
-  ]);
+  ])
 
   // Create a stable key that only changes when necessary inputs change
   const stableKey = useMemo(() => {
@@ -294,31 +324,32 @@ export const CippAutoComplete = (props) => {
       JSON.stringify(preselectedValue),
       api?.url,
       currentTenant,
-    ];
-    return keyParts.join("-");
-  }, [defaultValue, preselectedValue, api?.url, currentTenant]);
+    ]
+    return keyParts.join('-')
+  }, [defaultValue, preselectedValue, api?.url, currentTenant])
 
   const lookupOptionByValue = useCallback(
     (value) => {
-      const foundOption = memoizedOptions.find((option) => option.value === value);
-      return foundOption || { label: value, value: value };
+      const foundOption = memoizedOptions.find((option) => option.value === value)
+      return foundOption || { label: value, value: value }
     },
-    [memoizedOptions],
-  );
+    [memoizedOptions]
+  )
 
   return (
     <>
       <Autocomplete
         ref={autocompleteRef}
         key={stableKey}
+        handleHomeEndKeys={handleHomeEndKeys}
         open={open}
         onOpen={() => setOpen(true)}
         onClose={(event, reason) => {
           // Keep open if Tab was used in multiple mode
-          if (reason === "selectOption" && multiple && event?.type === "click") {
-            return;
+          if (reason === 'selectOption' && multiple && event?.type === 'click') {
+            return
           }
-          setOpen(false);
+          setOpen(false)
         }}
         disabled={disabled || actionGetRequest.isFetching || isFetching}
         popupIcon={
@@ -329,41 +360,41 @@ export const CippAutoComplete = (props) => {
           )
         }
         isOptionEqualToValue={(option, val) => option.value === val.value}
-        value={typeof value === "string" ? { label: value, value: value } : value}
+        value={typeof value === 'string' ? { label: value, value: value } : value}
         filterSelectedOptions
         disableClearable={disableClearable}
         multiple={multiple}
         fullWidth
         placeholder={placeholder}
         filterOptions={(options, params) => {
-          const filtered = filter(options, params);
+          const filtered = filter(options, params)
           const isExisting =
             options?.length > 0 &&
             options.some(
-              (option) => params.inputValue === option.value || params.inputValue === option.label,
-            );
-          if (params.inputValue !== "" && creatable && !isExisting) {
+              (option) => params.inputValue === option.value || params.inputValue === option.label
+            )
+          if (params.inputValue !== '' && creatable && !isExisting) {
             const newOption = {
               label: `Add option: "${params.inputValue}"`,
               value: params.inputValue,
               manual: true,
-            };
+            }
             if (!filtered.some((option) => option.value === newOption.value)) {
-              filtered.push(newOption);
+              filtered.push(newOption)
             }
           }
 
-          return filtered;
+          return filtered
         }}
         size="small"
         defaultValue={
           Array.isArray(defaultValue)
             ? defaultValue.map((item) =>
-                typeof item === "string" ? lookupOptionByValue(item) : item,
+                typeof item === 'string' ? lookupOptionByValue(item) : item
               )
-            : typeof defaultValue === "object" && multiple
+            : typeof defaultValue === 'object' && multiple
               ? [defaultValue]
-              : typeof defaultValue === "string"
+              : typeof defaultValue === 'string'
                 ? lookupOptionByValue(defaultValue)
                 : defaultValue
         }
@@ -371,7 +402,7 @@ export const CippAutoComplete = (props) => {
         onChange={(event, newValue) => {
           // Store scroll position before processing the change
           if (multiple && listboxRef.current) {
-            scrollPositionRef.current = listboxRef.current.scrollTop;
+            scrollPositionRef.current = listboxRef.current.scrollTop
           }
 
           if (Array.isArray(newValue)) {
@@ -381,95 +412,104 @@ export const CippAutoComplete = (props) => {
                 item = {
                   label: item?.label ? item.value : item,
                   value: item?.label ? item.value : item,
-                };
+                }
                 if (onCreateOption) {
-                  item = onCreateOption(item, item?.addedFields);
+                  item = onCreateOption(item, item?.addedFields)
                 }
               }
-              return item;
-            });
+              return item
+            })
             newValue = newValue.filter(
               (item) =>
-                item.value && item.value !== "" && item.value !== "error" && item.value !== -1,
-            );
+                item.value !== null &&
+                item.value !== undefined &&
+                item.value !== '' &&
+                item.value !== 'error' &&
+                item.value !== -1
+            )
           } else {
             if (newValue?.manual || !newValue?.label) {
               newValue = {
                 label: newValue?.label ? newValue.value : newValue,
                 value: newValue?.label ? newValue.value : newValue,
-              };
+              }
               if (onCreateOption) {
-                newValue = onCreateOption(newValue, newValue?.addedFields);
+                newValue = onCreateOption(newValue, newValue?.addedFields)
               }
             }
-            if (!newValue?.value || newValue.value === "error") {
-              newValue = null;
+            if (newValue?.value === null || newValue?.value === undefined || newValue?.value === '' || newValue.value === 'error') {
+              newValue = null
             }
           }
 
           // Track the internal value for the template view
-          setInternalValue(newValue);
+          setInternalValue(newValue)
 
           if (onChange) {
-            onChange(newValue, newValue?.addedFields);
+            onChange(newValue, newValue?.addedFields)
           }
 
           // In multiple mode, refocus the input and restore scroll position
           if (multiple && newValue && autocompleteRef.current) {
             // Use setTimeout to ensure the selection is processed first
             setTimeout(() => {
-              const input = autocompleteRef.current?.querySelector("input");
+              const input = autocompleteRef.current?.querySelector('input')
               if (input) {
-                input.focus();
+                input.focus()
               }
-              
+
               // Restore the scroll position
               if (listboxRef.current && scrollPositionRef.current > 0) {
-                listboxRef.current.scrollTop = scrollPositionRef.current;
+                listboxRef.current.scrollTop = scrollPositionRef.current
               }
-            }, 0);
+            }, 0)
           }
         }}
         options={memoizedOptions}
         getOptionLabel={useCallback(
           (option) => {
-            if (!option) return "";
+            if (!option) return ''
             // For static options (non-API), the option should already have a label
             if (!api && option.label !== undefined) {
-              return option.label === null ? "" : String(option.label);
+              return option.label === null ? '' : String(option.label)
             }
             // For API options, use the existing logic
             if (api) {
               return option.label === null
-                ? ""
-                : option.label || "Label not found - Are you missing a labelField?";
+                ? ''
+                : option.label || 'Label not found - Are you missing a labelField?'
             }
-            // Fallback for any edge cases
-            return option.label || option.value || "";
+            // Fallback for any edge cases (e.g. preset filter objects with filterName)
+            return (
+              option.label ||
+              option.filterName ||
+              (typeof option.value === 'string' ? option.value : '') ||
+              ''
+            )
           },
-          [api],
+          [api]
         )}
         onKeyDown={(event) => {
           // Handle Tab key to select highlighted option
-          if (event.key === "Tab" && !event.shiftKey) {
+          if (event.key === 'Tab' && !event.shiftKey) {
             // Check if there's a highlighted option
-            const listbox = document.querySelector('[role="listbox"]');
-            const highlightedOption = listbox?.querySelector('[data-focus="true"], .Mui-focused');
+            const listbox = document.querySelector('[role="listbox"]')
+            const highlightedOption = listbox?.querySelector('[data-focus="true"], .Mui-focused')
 
-            if (highlightedOption && listbox?.style.display !== "none") {
-              event.preventDefault();
+            if (highlightedOption && listbox?.style.display !== 'none') {
+              event.preventDefault()
               // Trigger a click on the highlighted option
-              highlightedOption.click();
+              highlightedOption.click()
 
               // In multiple mode, keep the popover open and refocus
               if (multiple) {
                 setTimeout(() => {
-                  setOpen(true);
-                  const input = autocompleteRef.current?.querySelector("input");
+                  setOpen(true)
+                  const input = autocompleteRef.current?.querySelector('input')
                   if (input) {
-                    input.focus();
+                    input.focus()
                   }
-                }, 50);
+                }, 50)
               }
             }
           }
@@ -477,46 +517,46 @@ export const CippAutoComplete = (props) => {
         sx={sx}
         renderInput={(params) => {
           // Handle custom action button inside the TextField
-          const { InputProps, ...otherParams } = params;
+          const { InputProps, ...otherParams } = params
           const modifiedInputProps =
-            customAction && customAction.position === "inside"
+            customAction && customAction.position === 'inside'
               ? {
                   ...InputProps,
                   endAdornment: (
                     <>
                       {customAction && (
-                        <Tooltip title={customAction.tooltip || ""} placement="bottom" arrow>
+                        <Tooltip title={customAction.tooltip || ''} placement="bottom" arrow>
                           <IconButton
-                            component={customAction.link ? Link : "button"}
+                            component={customAction.link ? Link : 'button'}
                             href={customAction.link || undefined}
                             size="small"
                             onClick={
                               customAction.onClick && !customAction.link
                                 ? (e) => {
-                                    e.stopPropagation();
-                                    customAction.onClick(value || internalValue);
+                                    e.stopPropagation()
+                                    customAction.onClick(value || internalValue)
                                   }
                                 : (e) => e.stopPropagation()
                             }
                             sx={{
                               opacity: 0,
-                              transition: "all 0.2s",
-                              p: "4px",
-                              mr: "-4px",
+                              transition: 'all 0.2s',
+                              p: '4px',
+                              mr: '-4px',
                               mt: -1,
-                              cursor: "pointer",
-                              color: "inherit",
-                              textDecoration: "none",
-                              "&:hover": {
+                              cursor: 'pointer',
+                              color: 'inherit',
+                              textDecoration: 'none',
+                              '&:hover': {
                                 opacity: 1,
-                                backgroundColor: "action.hover",
+                                backgroundColor: 'action.hover',
                               },
-                              ".MuiAutocomplete-root:hover &": {
+                              '.MuiAutocomplete-root:hover &': {
                                 opacity: 0.6,
                               },
-                              ".MuiAutocomplete-root:hover &:hover": {
+                              '.MuiAutocomplete-root:hover &:hover': {
                                 opacity: 1,
-                                backgroundColor: "action.hover",
+                                backgroundColor: 'action.hover',
                               },
                             }}
                           >
@@ -528,7 +568,7 @@ export const CippAutoComplete = (props) => {
                     </>
                   ),
                 }
-              : InputProps;
+              : InputProps
 
           return (
             <Stack direction="row" spacing={1}>
@@ -544,7 +584,7 @@ export const CippAutoComplete = (props) => {
                   <IconButton
                     size="small"
                     onClick={() => {
-                      actionGetRequest.refetch();
+                      actionGetRequest.refetch()
                     }}
                   >
                     <Sync />
@@ -552,88 +592,90 @@ export const CippAutoComplete = (props) => {
                 </Tooltip>
               )}
               {api?.templateView && (
-                <Tooltip title={`View ${api?.templateView.title}` || "View details"}>
+                <Tooltip title={`View ${api?.templateView.title}` || 'View details'}>
                   <IconButton
                     size="small"
                     onClick={() => {
                       // Use internalValue if value prop is not available
-                      const currentValue = value || internalValue;
+                      const currentValue = value || internalValue
 
                       // Get the full object from the selected value
                       if (multiple) {
                         // For multiple selection, get all full objects
                         const fullObjects = currentValue
                           .map((v) => {
-                            const valueToFind = v?.value || v;
-                            const found = usedOptions.find((opt) => opt.value === valueToFind);
-                            let rawData = found?.rawData;
+                            const valueToFind = v?.value || v
+                            const found = usedOptions.find((opt) => opt.value === valueToFind)
+                            let rawData = found?.rawData
 
                             // If property is specified, extract and parse JSON from that property
                             if (rawData && api?.templateView?.property) {
                               try {
-                                const propertyValue = rawData[api.templateView.property];
-                                if (typeof propertyValue === "string") {
-                                  rawData = JSON.parse(propertyValue);
+                                const propertyValue = rawData[api.templateView.property]
+                                if (typeof propertyValue === 'string') {
+                                  rawData = JSON.parse(propertyValue)
                                 } else {
-                                  rawData = propertyValue;
+                                  rawData = propertyValue
                                 }
                               } catch (e) {
-                                console.error("Failed to parse JSON from property:", e);
+                                console.error('Failed to parse JSON from property:', e)
                                 // Keep original rawData if parsing fails
                               }
                             }
 
-                            return rawData;
+                            return rawData
                           })
-                          .filter(Boolean);
-                        setFullObject(fullObjects);
+                          .filter(Boolean)
+                        setFullObject(fullObjects)
                       } else {
                         // For single selection, get the full object
-                        const valueToFind = currentValue?.value || currentValue;
-                        const selectedOption = usedOptions.find((opt) => opt.value === valueToFind);
-                        let rawData = selectedOption?.rawData || null;
+                        const valueToFind = currentValue?.value || currentValue
+                        const selectedOption = usedOptions.find((opt) => opt.value === valueToFind)
+                        let rawData = selectedOption?.rawData || null
 
                         // If property is specified, extract and parse JSON from that property
                         if (rawData && api?.templateView?.property) {
                           try {
-                            const propertyValue = rawData[api.templateView.property];
-                            if (typeof propertyValue === "string") {
-                              rawData = JSON.parse(propertyValue);
+                            const propertyValue = rawData[api.templateView.property]
+                            if (typeof propertyValue === 'string') {
+                              rawData = JSON.parse(propertyValue)
                             } else {
-                              rawData = propertyValue;
+                              rawData = propertyValue
                             }
                           } catch (e) {
-                            console.error("Failed to parse JSON from property:", e);
+                            console.error('Failed to parse JSON from property:', e)
                             // Keep original rawData if parsing fails
                           }
                         }
 
-                        setFullObject(rawData);
+                        setFullObject(rawData)
                       }
-                      setOffCanvasVisible(true);
+                      setOffCanvasVisible(true)
                     }}
-                    title={api?.templateView.title || "View details"}
+                    title={api?.templateView.title || 'View details'}
                   >
                     <Visibility />
                   </IconButton>
                 </Tooltip>
               )}
-              {customAction && customAction.position === "outside" && (
-                <IconButton
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (customAction.onClick) {
-                      customAction.onClick(value || internalValue);
-                    }
-                  }}
-                  title={customAction.tooltip || ""}
-                >
-                  {customAction.icon}
-                </IconButton>
+              {customAction && customAction.position === 'outside' && (
+                <Tooltip title={customAction.tooltip || ''} placement="bottom" arrow>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (customAction.onClick) {
+                        customAction.onClick(value || internalValue)
+                      }
+                    }}
+                    {...customAction.buttonProps}
+                  >
+                    {customAction.icon}
+                  </IconButton>
+                </Tooltip>
               )}
             </Stack>
-          );
+          )
         }}
         groupBy={groupBy}
         renderGroup={renderGroup}
@@ -642,25 +684,25 @@ export const CippAutoComplete = (props) => {
             ref: listboxRef,
             onScroll: (e) => {
               if (listboxRef.current) {
-                scrollPositionRef.current = e.target.scrollTop;
+                scrollPositionRef.current = e.target.scrollTop
               }
             },
           },
         }}
-        renderOption={(props, option) => {
-          const { key, ...optionProps } = props;
+        renderOption={(props, option, { index }) => {
+          const { key, ...optionProps } = props
           return (
-            <Box component="li" key={key} {...optionProps}>
+            <Box component="li" key={`${option.value}-${index}`} {...optionProps}>
               <Box>
                 <Typography variant="body1">{option.label}</Typography>
                 {option.description && (
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                     {option.description}
                   </Typography>
                 )}
               </Box>
             </Box>
-          );
+          )
         }}
         {...other}
       />
@@ -668,16 +710,17 @@ export const CippAutoComplete = (props) => {
         <CippOffCanvas
           visible={offCanvasVisible}
           onClose={() => setOffCanvasVisible(false)}
-          title={api?.templateView?.title || "Details"}
+          title={api?.templateView?.title || 'Details'}
           size="xl"
         >
           <CippJsonView
             object={fullObject}
             defaultOpen={true}
-            type={api?.templateView?.type ?? "default"}
+            type={api?.templateView?.type ?? 'default'}
           />
         </CippOffCanvas>
       )}
     </>
-  );
-};
+  )
+})
+CippAutoComplete.displayName = 'CippAutoComplete'

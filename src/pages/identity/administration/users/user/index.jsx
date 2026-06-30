@@ -1,33 +1,43 @@
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
-import { useSettings } from "../../../../../hooks/use-settings";
-import { useRouter } from "next/router";
-import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
-import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
-import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { AdminPanelSettings, Check, Group, Mail, Fingerprint, Launch, Devices } from "@mui/icons-material";
-import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
-import tabOptions from "./tabOptions";
-import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
-import { Box, Stack } from "@mui/system";
-import { Grid } from "@mui/system";
-import { CippUserInfoCard } from "../../../../../components/CippCards/CippUserInfoCard";
-import { SvgIcon, Typography } from "@mui/material";
-import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
-import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
-import { useEffect, useState } from "react";
-import { useCippUserActions } from "../../../../../components/CippComponents/CippUserActions";
-import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
-import dynamic from "next/dynamic";
-const CippMap = dynamic(() => import("../../../../../components/CippComponents/CippMap"), {
+import { Layout as DashboardLayout } from '../../../../../layouts/index.js'
+import { useSettings } from '../../../../../hooks/use-settings'
+import { useRouter } from 'next/router'
+import { ApiGetCall, ApiPostCall } from '../../../../../api/ApiCall'
+import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSkeleton'
+import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
+import {
+  AdminPanelSettings,
+  Check,
+  Group,
+  Mail,
+  Fingerprint,
+  Launch,
+  Devices,
+  PersonRemove,
+} from '@mui/icons-material'
+import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
+import tabOptions from './tabOptions'
+import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
+import { Box, Stack } from '@mui/system'
+import { Grid } from '@mui/system'
+import { CippUserInfoCard } from '../../../../../components/CippCards/CippUserInfoCard'
+import { SvgIcon, Typography } from '@mui/material'
+import { CippBannerListCard } from '../../../../../components/CippCards/CippBannerListCard'
+import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
+import { useEffect, useState } from 'react'
+import { useCippUserActions } from '../../../../../components/CippComponents/CippUserActions'
+import { EyeIcon, PencilIcon } from '@heroicons/react/24/outline'
+import { CippDataTable } from '../../../../../components/CippTable/CippDataTable'
+import dynamic from 'next/dynamic'
+const CippMap = dynamic(() => import('../../../../../components/CippComponents/CippMap'), {
   ssr: false,
-});
+})
 
-import { Button, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
-import { Close } from "@mui/icons-material";
-import { CippPropertyList } from "../../../../../components/CippComponents/CippPropertyList";
-import { CippCodeBlock } from "../../../../../components/CippComponents/CippCodeBlock";
-import { CippHead } from "../../../../../components/CippComponents/CippHead";
+import { Button, Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material'
+import { Close } from '@mui/icons-material'
+import { CippPropertyList } from '../../../../../components/CippComponents/CippPropertyList'
+import { CippCodeBlock } from '../../../../../components/CippComponents/CippCodeBlock'
+import { CippHead } from '../../../../../components/CippComponents/CippHead'
+import { usePermissions } from '../../../../../hooks/use-permissions'
 
 const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
   return (
@@ -37,7 +47,7 @@ const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
         <IconButton
           aria-label="close"
           onClick={onClose}
-          sx={{ position: "absolute", right: 8, top: 8 }}
+          sx={{ position: 'absolute', right: 8, top: 8 }}
         >
           <Close />
         </IconButton>
@@ -47,16 +57,16 @@ const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
           noCard={true}
           title="Sign-In Logs"
           simpleColumns={[
-            "createdDateTime",
-            "status",
-            "ipAddress",
-            "clientAppUsed",
-            "resourceDisplayName",
-            "status.errorCode",
-            "location",
+            'createdDateTime',
+            'status',
+            'ipAddress',
+            'clientAppUsed',
+            'resourceDisplayName',
+            'status.errorCode',
+            'location',
           ]}
           api={{
-            url: "/api/ListUserSigninLogs",
+            url: '/api/ListUserSigninLogs',
             data: {
               UserId: userId,
               tenantFilter: tenantFilter,
@@ -67,22 +77,24 @@ const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
         />
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
 const Page = () => {
-  const userSettingsDefaults = useSettings();
-  const router = useRouter();
-  const { userId } = router.query;
-  const [waiting, setWaiting] = useState(false);
-  const [signInLogsDialogOpen, setSignInLogsDialogOpen] = useState(false);
-  const userActions = useCippUserActions();
+  const userSettingsDefaults = useSettings()
+  const router = useRouter()
+  const { userId } = router.query
+  const [waiting, setWaiting] = useState(false)
+  const [signInLogsDialogOpen, setSignInLogsDialogOpen] = useState(false)
+  const userActions = useCippUserActions()
+  const { checkPermissions } = usePermissions()
+  const canWriteRole = checkPermissions(['Identity.Role.ReadWrite'])
 
   useEffect(() => {
     if (userId) {
-      setWaiting(true);
+      setWaiting(true)
     }
-  }, [userId]);
+  }, [userId])
 
   const userRequest = ApiGetCall({
     url: `/api/ListUsers?UserId=${userId}&tenantFilter=${
@@ -90,70 +102,75 @@ const Page = () => {
     }`,
     queryKey: `ListUsers-${userId}`,
     waiting: waiting,
-  });
+  })
 
   const userBulkRequest = ApiPostCall({
     urlFromData: true,
-  });
+  })
 
   function refreshFunction() {
-    const userPrincipalName = userRequest.data?.[0]?.userPrincipalName;
+    const userPrincipalName = userRequest.data?.[0]?.userPrincipalName
     const requests = [
       {
-        id: "userMemberOf",
+        id: 'userMemberOf',
         url: `/users/${userId}/memberOf`,
-        method: "GET",
+        method: 'GET',
       },
       {
-        id: "mfaDevices",
+        id: 'mfaDevices',
         url: `/users/${userId}/authentication/methods?$top=99`,
-        method: "GET",
+        method: 'GET',
       },
       {
-        id: "signInLogs",
+        id: 'signInLogs',
         url: `/auditLogs/signIns?$filter=(userId eq '${userId}')&$top=1`,
-        method: "GET",
+        method: 'GET',
       },
-    ];
+    ]
 
     // Only add managedDevices request if we have the userPrincipalName
     if (userPrincipalName) {
       requests.push({
-        id: "managedDevices",
+        id: 'managedDevices',
         url: `/deviceManagement/managedDevices?$filter=userPrincipalName eq '${userPrincipalName}'`,
-        method: "GET",
-      });
+        method: 'GET',
+      })
     }
 
     userBulkRequest.mutate({
-      url: "/api/ListGraphBulkRequest",
+      url: '/api/ListGraphBulkRequest',
       data: {
         Requests: requests,
         tenantFilter: userSettingsDefaults.currentTenant,
-        noPaginateIds: ["signInLogs"],
+        noPaginateIds: ['signInLogs'],
       },
-    });
+    })
   }
 
   useEffect(() => {
-    if (userId && userSettingsDefaults.currentTenant && userRequest.isSuccess && !userBulkRequest.isSuccess) {
-      refreshFunction();
+    if (
+      userId &&
+      userSettingsDefaults.currentTenant &&
+      userRequest.isSuccess &&
+      !userBulkRequest.isSuccess
+    ) {
+      refreshFunction()
     }
-  }, [userId, userSettingsDefaults.currentTenant, userRequest.isSuccess, userBulkRequest.isSuccess]);
+  }, [userId, userSettingsDefaults.currentTenant, userRequest.isSuccess, userBulkRequest.isSuccess])
 
-  const bulkData = userBulkRequest?.data?.data ?? [];
-  const signInLogsData = bulkData?.find((item) => item.id === "signInLogs");
-  const userMemberOfData = bulkData?.find((item) => item.id === "userMemberOf");
-  const mfaDevicesData = bulkData?.find((item) => item.id === "mfaDevices");
-  const managedDevicesData = bulkData?.find((item) => item.id === "managedDevices");
+  const bulkData = userBulkRequest?.data?.data ?? []
+  const signInLogsData = bulkData?.find((item) => item.id === 'signInLogs')
+  const userMemberOfData = bulkData?.find((item) => item.id === 'userMemberOf')
+  const mfaDevicesData = bulkData?.find((item) => item.id === 'mfaDevices')
+  const managedDevicesData = bulkData?.find((item) => item.id === 'managedDevices')
 
-  const signInLogs = signInLogsData?.body?.value || [];
-  const userMemberOf = userMemberOfData?.body?.value || [];
-  const mfaDevices = mfaDevicesData?.body?.value || [];
-  const managedDevices = managedDevicesData?.body?.value || [];
+  const signInLogs = signInLogsData?.body?.value || []
+  const userMemberOf = userMemberOfData?.body?.value || []
+  const mfaDevices = mfaDevicesData?.body?.value || []
+  const managedDevices = managedDevicesData?.body?.value || []
 
   // Set the title and subtitle for the layout
-  const title = userRequest.isSuccess ? userRequest.data?.[0]?.displayName : "Loading...";
+  const title = userRequest.isSuccess ? userRequest.data?.[0]?.displayName : 'Loading...'
 
   const subtitle = userRequest.isSuccess
     ? [
@@ -174,7 +191,7 @@ const Page = () => {
           ),
         },
         {
-          icon: <Launch style={{ color: "#667085" }} />,
+          icon: <Launch style={{ color: '#667085' }} />,
           text: (
             <Button
               color="muted"
@@ -189,33 +206,33 @@ const Page = () => {
           ),
         },
       ]
-    : [];
+    : []
 
-  const data = userRequest.data?.[0];
+  const data = userRequest.data?.[0]
 
   // Prepare the sign-in log item
-  let signInLogItem = null;
-  let conditionalAccessPoliciesItems = [];
-  let mfaDevicesItems = [];
+  let signInLogItem = null
+  let conditionalAccessPoliciesItems = []
+  let mfaDevicesItems = []
 
   if (signInLogs.length > 0) {
-    const signInData = signInLogs[0];
+    const signInData = signInLogs[0]
 
     signInLogItem = {
       id: 1,
       cardLabelBox: {
         cardLabelBoxHeader: new Date(signInData.createdDateTime).getDate().toString(),
-        cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString("default", {
-          month: "short",
-          year: "numeric",
+        cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString('default', {
+          month: 'short',
+          year: 'numeric',
         }),
       },
-      text: `Login ${signInData.status.errorCode === 0 ? "successful" : "failed"} from ${
-        signInData.ipAddress || "unknown location"
+      text: `Login ${signInData.status.errorCode === 0 ? 'successful' : 'failed'} from ${
+        signInData.ipAddress || 'unknown location'
       }`,
-      subtext: `Logged into application ${signInData.resourceDisplayName || "Unknown Application"}`,
-      statusColor: signInData.status.errorCode === 0 ? "success.main" : "error.main",
-      statusText: signInData.status.errorCode === 0 ? "Success" : "Failed",
+      subtext: `Logged into application ${signInData.resourceDisplayName || 'Unknown Application'}`,
+      statusColor: signInData.status.errorCode === 0 ? 'success.main' : 'error.main',
+      statusText: signInData.status.errorCode === 0 ? 'Success' : 'Failed',
       actionButton: (
         <Button
           variant="contained"
@@ -232,21 +249,21 @@ const Page = () => {
       ),
       propertyItems: [
         {
-          label: "Client App Used",
-          value: signInData.clientAppUsed || "N/A",
+          label: 'Client App Used',
+          value: signInData.clientAppUsed || 'N/A',
         },
         {
-          label: "Device Detail",
+          label: 'Device Detail',
           value:
-            signInData.deviceDetail?.operatingSystem || signInData.deviceDetail?.browser || "N/A",
+            signInData.deviceDetail?.operatingSystem || signInData.deviceDetail?.browser || 'N/A',
         },
         {
-          label: "MFA Type used",
-          value: signInData.mfaDetail?.authMethod || "N/A",
+          label: 'MFA Type used',
+          value: signInData.mfaDetail?.authMethod || 'N/A',
         },
         {
-          label: "Additional Details",
-          value: signInData.status?.additionalDetails || "N/A",
+          label: 'Additional Details',
+          value: signInData.status?.additionalDetails || 'N/A',
         },
       ],
       children: (
@@ -271,9 +288,9 @@ const Page = () => {
                 <Grid size={4}>
                   <CippPropertyList
                     propertyItems={[
-                      { label: "City", value: signInData.location.city },
-                      { label: "State", value: signInData.location.state },
-                      { label: "Country/Region", value: signInData.location.countryOrRegion },
+                      { label: 'City', value: signInData.location.city },
+                      { label: 'State', value: signInData.location.state },
+                      { label: 'Country/Region', value: signInData.location.countryOrRegion },
                     ]}
                   />
                 </Grid>
@@ -282,7 +299,7 @@ const Page = () => {
           )}
         </>
       ),
-    };
+    }
 
     // Prepare the conditional access policies items
     if (
@@ -291,44 +308,44 @@ const Page = () => {
     ) {
       // Filter policies where result is "success"
       const appliedPolicies = signInData.appliedConditionalAccessPolicies.filter(
-        (policy) => policy.result === "success",
-      );
+        (policy) => policy.result === 'success'
+      )
 
       if (appliedPolicies.length > 0) {
         conditionalAccessPoliciesItems = appliedPolicies.map((policy) => ({
           id: policy.id,
           cardLabelBox: {
             cardLabelBoxHeader: new Date(signInData.createdDateTime).getDate().toString(),
-            cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString("default", {
-              month: "short",
-              year: "numeric",
+            cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString('default', {
+              month: 'short',
+              year: 'numeric',
             }),
           },
           text: policy.displayName,
           subtext: `Policy applied: ${policy.result}`,
-          statusColor: "success.main",
-          statusText: "Applied",
+          statusColor: 'success.main',
+          statusText: 'Applied',
           propertyItems: [
             {
-              label: "Grant Controls",
+              label: 'Grant Controls',
               value:
                 policy.enforcedGrantControls.length > 0
-                  ? policy.enforcedGrantControls.join(", ")
-                  : "None",
+                  ? policy.enforcedGrantControls.join(', ')
+                  : 'None',
             },
             {
-              label: "Session Controls",
+              label: 'Session Controls',
               value:
                 policy.enforcedSessionControls.length > 0
-                  ? policy.enforcedSessionControls.join(", ")
-                  : "None",
+                  ? policy.enforcedSessionControls.join(', ')
+                  : 'None',
             },
             {
-              label: "Conditions Satisfied",
-              value: policy.conditionsSatisfied || "N/A",
+              label: 'Conditions Satisfied',
+              value: policy.conditionsSatisfied || 'N/A',
             },
           ],
-        }));
+        }))
       } else {
         // No applied policies
         conditionalAccessPoliciesItems = [
@@ -336,18 +353,18 @@ const Page = () => {
             id: 1,
             cardLabelBox: {
               cardLabelBoxHeader: new Date(signInData.createdDateTime).getDate().toString(),
-              cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString("default", {
-                month: "short",
-                year: "numeric",
+              cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString('default', {
+                month: 'short',
+                year: 'numeric',
               }),
             },
-            text: "No conditional access policies applied",
-            subtext: "No conditional access policies were applied during this sign-in.",
-            statusColor: "warning.main",
-            statusText: "No Policies Applied",
+            text: 'No conditional access policies applied',
+            subtext: 'No conditional access policies were applied during this sign-in.',
+            statusColor: 'warning.main',
+            statusText: 'No Policies Applied',
             propertyItems: [],
           },
-        ];
+        ]
       }
     } else {
       // appliedConditionalAccessPolicies is missing or not an array
@@ -356,88 +373,88 @@ const Page = () => {
           id: 1,
           cardLabelBox: {
             cardLabelBoxHeader: new Date(signInData.createdDateTime).getDate().toString(),
-            cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString("default", {
-              month: "short",
-              year: "numeric",
+            cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString('default', {
+              month: 'short',
+              year: 'numeric',
             }),
           },
-          text: "No conditional access policies available",
-          subtext: "No conditional access policies data is available for this sign-in.",
-          statusColor: "warning.main",
-          statusText: "No Data",
+          text: 'No conditional access policies available',
+          subtext: 'No conditional access policies data is available for this sign-in.',
+          statusColor: 'warning.main',
+          statusText: 'No Data',
           propertyItems: [],
         },
-      ];
+      ]
     }
   } else if (signInLogsData?.status !== 200) {
     signInLogItem = {
       id: 1,
-      cardLabelBox: "!",
-      text: "Error loading sign-in logs. Do you have a P1 license?",
-      subtext: signInLogsData?.error?.message || "Unknown error",
-      statusColor: "error.main",
-      statusText: "Error",
+      cardLabelBox: '!',
+      text: 'Error loading sign-in logs. Do you have a P1 license?',
+      subtext: signInLogsData?.error?.message || 'Unknown error',
+      statusColor: 'error.main',
+      statusText: 'Error',
       propertyItems: [],
-    };
+    }
 
     // Handle error for conditional access policies
     conditionalAccessPoliciesItems = [
       {
         id: 1,
-        cardLabelBox: "!",
-        text: "Error loading conditional access policies. Do you have a P1 license?",
-        subtext: signInLogsData?.error?.message || "Unknown error",
-        statusColor: "error.main",
-        statusText: "Error",
+        cardLabelBox: '!',
+        text: 'Error loading conditional access policies. Do you have a P1 license?',
+        subtext: signInLogsData?.error?.message || 'Unknown error',
+        statusColor: 'error.main',
+        statusText: 'Error',
         propertyItems: [],
       },
-    ];
+    ]
   } else if (signInLogs.length === 0) {
     signInLogItem = {
       id: 1,
-      cardLabelBox: "-",
-      text: "No sign-in logs available",
+      cardLabelBox: '-',
+      text: 'No sign-in logs available',
       subtext:
-        "There are no sign-in logs for this user, or you do not have a P1 license to detect this data.",
-      statusColor: "warning.main",
-      statusText: "No Data",
+        'There are no sign-in logs for this user, or you do not have a P1 license to detect this data.',
+      statusColor: 'warning.main',
+      statusText: 'No Data',
       propertyItems: [
         {
-          label: "Error",
-          value: signInLogsData?.error?.message || "Unknown error",
+          label: 'Error',
+          value: signInLogsData?.error?.message || 'Unknown error',
         },
         {
-          label: "Inner Error",
+          label: 'Inner Error',
           value: (
             <CippCodeBlock
               language="json"
-              code={JSON.stringify(signInLogsData?.error?.innerError, null, 2) || "Unknown error"}
+              code={JSON.stringify(signInLogsData?.error?.innerError, null, 2) || 'Unknown error'}
             />
           ),
         },
       ],
-    };
+    }
 
     conditionalAccessPoliciesItems = [
       {
         id: 1,
-        cardLabelBox: "-",
-        text: "No conditional access policies available",
+        cardLabelBox: '-',
+        text: 'No conditional access policies available',
         subtext:
-          "There are no conditional access policies for this user, or you do not have a P1 license to detect this data.",
-        statusColor: "warning.main",
-        statusText: "No Data",
+          'There are no conditional access policies for this user, or you do not have a P1 license to detect this data.',
+        statusColor: 'warning.main',
+        statusText: 'No Data',
         propertyItems: [],
       },
-    ];
+    ]
   }
 
   // Prepare MFA devices items
   if (mfaDevices.length > 0) {
     // Exclude password authentication method
     const mfaDevicesFiltered = mfaDevices.filter(
-      (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod",
-    );
+      (method) => method['@odata.type'] !== '#microsoft.graph.passwordAuthenticationMethod'
+    )
 
     if (mfaDevicesFiltered.length > 0) {
       mfaDevicesItems = mfaDevicesFiltered.map((device, index) => ({
@@ -445,88 +462,88 @@ const Page = () => {
         cardLabelBox: {
           cardLabelBoxHeader: <Check />,
         },
-        text: device.displayName || "MFA Device",
-        subtext: device.deviceTag || device.clientAppName || "Unknown device",
-        statusColor: "success.main",
-        statusText: "Enabled",
+        text: device.displayName || 'MFA Device',
+        subtext: device.deviceTag || device.clientAppName || 'Unknown device',
+        statusColor: 'success.main',
+        statusText: 'Enabled',
         propertyItems: [
           {
-            label: "Device Name",
-            value: device.displayName || "N/A",
+            label: 'Device Name',
+            value: device.displayName || 'N/A',
           },
           {
-            label: "App Version",
-            value: device.phoneAppVersion || "N/A",
+            label: 'App Version',
+            value: device.phoneAppVersion || 'N/A',
           },
           {
-            label: "Created Date",
+            label: 'Created Date',
             value: device.createdDateTime
               ? new Date(device.createdDateTime).toLocaleString()
-              : "N/A",
+              : 'N/A',
           },
           {
-            label: "Authentication Method",
-            value: device["@odata.type"]?.split(".").pop() || "N/A",
+            label: 'Authentication Method',
+            value: device['@odata.type']?.split('.').pop() || 'N/A',
           },
         ],
-      }));
+      }))
     } else {
       // No MFA devices other than password
       mfaDevicesItems = [
         {
           id: 1,
-          cardLabelBox: "-",
-          text: "No MFA devices available",
-          subtext: "The user does not have any MFA devices registered.",
-          statusColor: "warning.main",
-          statusText: "No Devices",
+          cardLabelBox: '-',
+          text: 'No MFA devices available',
+          subtext: 'The user does not have any MFA devices registered.',
+          statusColor: 'warning.main',
+          statusText: 'No Devices',
           propertyItems: [],
         },
-      ];
+      ]
     }
   } else if (mfaDevicesData?.status !== 200) {
     // Error fetching MFA devices
     mfaDevicesItems = [
       {
         id: 1,
-        cardLabelBox: "!",
-        text: "Error loading MFA devices",
+        cardLabelBox: '!',
+        text: 'Error loading MFA devices',
         subtext: `Status code: ${mfaDevicesData?.status}`,
-        statusColor: "error.main",
-        statusText: "Error",
+        statusColor: 'error.main',
+        statusText: 'Error',
         propertyItems: [
           {
-            label: "Error",
-            value: mfaDevicesData?.body?.error?.message || "Unknown Error",
+            label: 'Error',
+            value: mfaDevicesData?.body?.error?.message || 'Unknown Error',
           },
           {
-            label: "Inner Error",
+            label: 'Inner Error',
             value: (
               <CippCodeBlock
                 language="json"
                 code={
                   JSON.stringify(mfaDevicesData?.body?.error?.innerError, null, 2) ||
-                  "Unknown Error"
+                  'Unknown Error'
                 }
               />
             ),
           },
         ],
       },
-    ];
+    ]
   } else if (mfaDevices.length === 0) {
     // No MFA devices data available
     mfaDevicesItems = [
       {
         id: 1,
-        cardLabelBox: "-",
-        text: "No MFA devices available",
-        subtext: "The user does not have any MFA devices registered.",
-        statusColor: "warning.main",
-        statusText: "No Devices",
+        cardLabelBox: '-',
+        text: 'No MFA devices available',
+        subtext: 'The user does not have any MFA devices registered.',
+        statusColor: 'warning.main',
+        statusText: 'No Devices',
         propertyItems: [],
       },
-    ];
+    ]
   }
 
   const groupMembershipItems = userMemberOf
@@ -536,32 +553,32 @@ const Page = () => {
           cardLabelBox: {
             cardLabelBoxHeader: <Group />,
           },
-          text: "Groups",
-          subtext: "List of groups the user is a member of",
+          text: 'Groups',
+          subtext: 'List of groups the user is a member of',
           statusText: ` ${
-            userMemberOf?.filter((item) => item?.["@odata.type"] === "#microsoft.graph.group")
+            userMemberOf?.filter((item) => item?.['@odata.type'] === '#microsoft.graph.group')
               .length
           } Group(s)`,
-          statusColor: "info.main",
+          statusColor: 'info.main',
           table: {
-            title: "Group Memberships",
+            title: 'Group Memberships',
             hideTitle: true,
             actions: [
               {
                 icon: <PencilIcon />,
-                label: "Edit Group",
-                link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
+                label: 'Edit Group',
+                link: '/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]',
               },
             ],
             data: userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.group",
+              (item) => item?.['@odata.type'] === '#microsoft.graph.group'
             ),
             refreshFunction: refreshFunction,
-            simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
+            simpleColumns: ['displayName', 'groupTypes', 'securityEnabled', 'mailEnabled'],
           },
         },
       ]
-    : [];
+    : []
 
   const roleMembershipItems = userMemberOf
     ? [
@@ -570,77 +587,106 @@ const Page = () => {
           cardLabelBox: {
             cardLabelBoxHeader: <AdminPanelSettings />,
           },
-          text: "Admin Roles",
-          subtext: "List of roles the user is a member of",
+          text: 'Admin Roles',
+          subtext: 'List of roles the user is a member of',
           statusText: ` ${
             userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole",
+              (item) => item?.['@odata.type'] === '#microsoft.graph.directoryRole'
             ).length
           } Role(s)`,
-          statusColor: "info.main",
+          statusColor: 'info.main',
           table: {
-            title: "Admin Roles",
+            title: 'Admin Roles',
             hideTitle: true,
-            data: userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole",
-            ),
-            simpleColumns: ["displayName", "description"],
-            refreshFunction: refreshFunction,
-          },
-        },
-      ]
-    : [];
-
-  const ownedDevicesItems = managedDevices.length > 0
-    ? [
-        {
-          id: 1,
-          cardLabelBox: {
-            cardLabelBoxHeader: <Devices />,
-          },
-          text: "Managed Devices",
-          subtext: "List of devices managed for this user",
-          statusText: `${managedDevices.length} Device(s)`,
-          statusColor: "info.main",
-          table: {
-            title: "Managed Devices",
-            hideTitle: true,
-            data: managedDevices,
-            refreshFunction: refreshFunction,
-            simpleColumns: ["deviceName", "operatingSystem", "osVersion", "managementType"],
             actions: [
               {
-                icon: <EyeIcon />,
-                label: "View Device",
-                link: `/endpoint/MEM/devices/device?deviceId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
+                label: 'Remove from Role',
+                type: 'POST',
+                icon: <PersonRemove />,
+                url: '/api/ExecRemoveAdminRole',
+                data: {
+                  RoleId: 'id',
+                  RoleName: 'displayName',
+                  Users: 'Users',
+                },
+                confirmText: 'Are you sure you want to remove this user from [displayName]?',
+                allowResubmit: true,
+                onSuccess: refreshFunction,
+                condition: (row) => canWriteRole && !!row?.id,
               },
             ],
+            data: userMemberOf
+              ?.filter((item) => item?.['@odata.type'] === '#microsoft.graph.directoryRole')
+              .map((role) => ({
+                ...role,
+                Users: [
+                  {
+                    value: userRequest.data?.[0]?.id ?? userId,
+                    label:
+                      userRequest.data?.[0]?.userPrincipalName ??
+                      userRequest.data?.[0]?.displayName ??
+                      userId,
+                  },
+                ],
+              })),
+            simpleColumns: ['displayName', 'description'],
+            refreshFunction: refreshFunction,
           },
         },
       ]
-    : managedDevicesData?.status !== 200
-    ? [
-        {
-          id: 1,
-          cardLabelBox: "!",
-          text: "Error loading devices",
-          subtext: managedDevicesData?.error?.message || "Unknown error",
-          statusColor: "error.main",
-          statusText: "Error",
-          propertyItems: [],
-        },
-      ]
-    : [
-        {
-          id: 1,
-          cardLabelBox: "-",
-          text: "No devices",
-          subtext: "This user does not have any managed devices.",
-          statusColor: "warning.main",
-          statusText: "No Devices",
-          propertyItems: [],
-        },
-      ];
+    : []
+
+  const ownedDevicesItems =
+    managedDevices.length > 0
+      ? [
+          {
+            id: 1,
+            cardLabelBox: {
+              cardLabelBoxHeader: <Devices />,
+            },
+            text: 'Managed Devices',
+            subtext: 'List of devices managed for this user',
+            statusText: `${managedDevices.length} Device(s)`,
+            statusColor: 'info.main',
+            table: {
+              title: 'Managed Devices',
+              hideTitle: true,
+              data: managedDevices,
+              refreshFunction: refreshFunction,
+              simpleColumns: ['deviceName', 'operatingSystem', 'osVersion', 'managementType'],
+              actions: [
+                {
+                  icon: <EyeIcon />,
+                  label: 'View Device',
+                  link: `/endpoint/MEM/devices/device?deviceId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
+                },
+              ],
+            },
+          },
+        ]
+      : managedDevicesData?.status !== 200
+        ? [
+            {
+              id: 1,
+              cardLabelBox: '!',
+              text: 'Error loading devices',
+              subtext: managedDevicesData?.error?.message || 'Unknown error',
+              statusColor: 'error.main',
+              statusText: 'Error',
+              propertyItems: [],
+            },
+          ]
+        : [
+            {
+              id: 1,
+              cardLabelBox: '-',
+              text: 'No devices',
+              subtext: 'This user does not have any managed devices.',
+              statusColor: 'warning.main',
+              statusText: 'No Devices',
+              propertyItems: [],
+            },
+          ]
 
   return (
     <HeaderedTabbedLayout
@@ -717,9 +763,9 @@ const Page = () => {
         tenantFilter={userSettingsDefaults.currentTenant}
       />
     </HeaderedTabbedLayout>
-  );
-};
+  )
+}
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
-export default Page;
+export default Page

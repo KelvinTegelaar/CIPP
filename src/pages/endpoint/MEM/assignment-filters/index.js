@@ -5,11 +5,19 @@ import Link from "next/link";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Edit, Add, Book } from "@mui/icons-material";
 import { Stack } from "@mui/system";
-import { useSettings } from "../../../../hooks/use-settings";
+import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const Page = () => {
   const pageTitle = "Assignment Filters";
-  const { currentTenant } = useSettings();
+
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListAssignmentFilters",
+    queryKey: "assignment-filters",
+    cacheName: "IntuneAssignmentFilters",
+    syncTitle: "Sync Assignment Filters Report",
+    allowToggle: true,
+    defaultCached: false,
+  });
 
   const actions = [
     {
@@ -62,28 +70,35 @@ const Page = () => {
     actions: actions,
   };
 
+  const simpleColumns = [
+    ...reportDB.cacheColumns,
+    "displayName",
+    "description",
+    "platform",
+    "assignmentFilterManagementType",
+    "rule",
+  ];
+
   return (
-    <CippTablePage
-      title={pageTitle}
-      cardButton={
-        <Stack direction="row" spacing={1}>
-          <Button component={Link} href="assignment-filters/add" startIcon={<Add />}>
-            Add Assignment Filter
-          </Button>
-        </Stack>
-      }
-      apiUrl="/api/ListAssignmentFilters"
-      queryKey={`assignment-filters-${currentTenant}`}
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={[
-        "displayName",
-        "description",
-        "platform",
-        "assignmentFilterManagementType",
-        "rule",
-      ]}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        cardButton={
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Button component={Link} href="assignment-filters/add" startIcon={<Add />}>
+              Add Assignment Filter
+            </Button>
+            {reportDB.controls}
+          </Stack>
+        }
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={reportDB.resolvedQueryKey}
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={simpleColumns}
+      />
+      {reportDB.syncDialog}
+    </>
   );
 };
 

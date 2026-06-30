@@ -1,0 +1,18 @@
+{
+  "_metadata": {
+    "endpoint": "ListTenantAllowBlockListTemplates",
+    "generatedAt": "2026-04-03T23:40:33.8106968+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "entries": "string",
+    "GUID": "string",
+    "listMethod": "string",
+    "listType": "string",
+    "NoExpiration": "bool",
+    "notes": "string",
+    "RemoveAfter": "bool",
+    "templateName": "string"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_metadata": {
+    "endpoint": "ListExcludedLicenses",
+    "generatedAt": "2026-04-03T23:40:12.7414555+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "ETag": "string",
+    "GUID": "string",
+    "PartitionKey": "string",
+    "Product_Display_Name": "string",
+    "RowKey": "string",
+    "table": "string",
+    "Timestamp": "datetime"
+  }
+}

@@ -188,21 +188,23 @@ export const CippApiResults = (props) => {
     } else {
       setFetchingVisible(false);
     }
-    if (!errorsOnly) {
-      if (allResults.length > 0) {
-        setFinalResults(
-          allResults.map((res, index) => ({
-            id: index,
-            text: res.text,
-            copyField: res.copyField,
-            severity: res.severity,
-            visible: true,
-            ...res,
-          }))
-        );
-      } else {
-        setFinalResults([]);
-      }
+    const resultsToShow = errorsOnly
+      ? allResults.filter((r) => r.severity === "error")
+      : allResults;
+
+    if (resultsToShow.length > 0) {
+      setFinalResults(
+        resultsToShow.map((res, index) => ({
+          id: index,
+          text: res.text,
+          copyField: res.copyField,
+          severity: res.severity,
+          visible: true,
+          ...res,
+        })),
+      );
+    } else {
+      setFinalResults([]);
     }
   }, [
     apiObject.isError,
@@ -229,7 +231,7 @@ export const CippApiResults = (props) => {
 
     const headers = Object.keys(finalResults[0]);
     const rows = finalResults.map((item) =>
-      headers.map((header) => `"${item[header] || ""}"`).join(",")
+      headers.map((header) => `"${item[header] || ""}"`).join(","),
     );
     const csvContent = [headers.join(","), ...rows].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -244,7 +246,7 @@ export const CippApiResults = (props) => {
 
   const hasVisibleResults = finalResults.some((r) => r.visible);
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{ minWidth: 0 }}>
       {/* Loading alert */}
       {!errorsOnly && (
         <Collapse in={fetchingVisible} unmountOnExit>
@@ -303,7 +305,7 @@ export const CippApiResults = (props) => {
                           startIcon={<Help />}
                           onClick={() => {
                             const searchUrl = `https://docs.cipp.app/?q=Help+with:+${encodeURIComponent(
-                              resultObj.copyField || resultObj.text
+                              resultObj.copyField || resultObj.text,
                             )}&ask=true`;
                             window.open(searchUrl, "_blank");
                           }}
@@ -374,6 +376,7 @@ export const CippApiResults = (props) => {
                             language={typeof resultObj.details === "object" ? "json" : "text"}
                             showLineNumbers={false}
                             type="syntax"
+                            readOnly={true}
                           />
                         </Box>
                       </Collapse>

@@ -1,0 +1,15 @@
+{
+  "_metadata": {
+    "endpoint": "ListPerUserMFA",
+    "generatedAt": "2026-04-03T23:44:29.9939591+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "PerUserMFAState": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "UserPrincipalName": "null"
+  }
+}

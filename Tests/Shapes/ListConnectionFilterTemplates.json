@@ -1,0 +1,16 @@
+{
+  "_metadata": {
+    "endpoint": "ListConnectionFilterTemplates",
+    "generatedAt": "2026-04-03T23:40:08.2680466+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "comments": "null",
+    "EnableSafeList": "bool",
+    "GUID": "string",
+    "IPAllowList": "null",
+    "IPBlockList": "null",
+    "name": "string"
+  }
+}

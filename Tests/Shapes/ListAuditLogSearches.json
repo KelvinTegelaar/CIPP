@@ -1,0 +1,36 @@
+{
+  "_metadata": {
+    "endpoint": "ListAuditLogSearches",
+    "generatedAt": "2026-04-03T23:41:18.3933214+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "CippStatus": "string",
+    "EndTime": "datetime",
+    "MatchedLogs": "null",
+    "MatchedRules": "null",
+    "Query": {
+      "@odata.context": "string",
+      "administrativeUnitIdFilters": "null",
+      "displayName": "string",
+      "filterEndDateTime": "datetime",
+      "filterStartDateTime": "datetime",
+      "id": "string",
+      "ipAddressFilters": "null",
+      "keywordFilter": "null",
+      "objectIdFilters": "null",
+      "operationFilters": "null",
+      "recordTypeFilters": {
+        "_type": "array",
+        "_element": "truncated"
+      },
+      "serviceFilters": "string",
+      "status": "string",
+      "userPrincipalNameFilters": "null"
+    },
+    "SearchId": "string",
+    "StartTime": "datetime",
+    "TotalLogs": "null"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "_metadata": {
+    "endpoint": "ListAdminPortalLicenses",
+    "generatedAt": "2026-04-03T23:40:50.5295175+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "aadSkuId": "string",
+    "aadSkuPartNumber": "string",
+    "allotments": "null",
+    "allotmentsMetadata": {
+      "allotmentsCount": "number",
+      "catalogIdsCount": {},
+      "consumedUnits": "number",
+      "licenseCount": "number"
+    },
+    "appliesTo": "string",
+    "capabilityStatus": "string",
+    "consumedUnits": "number",
+    "displayName": "string",
+    "prepaidUnits": {
+      "enabled": "number",
+      "suspended": "number",
+      "warning": "number"
+    },
+    "services": {
+      "_type": "array",
+      "_element": {
+        "appliesTo": "truncated",
+        "displayName": "truncated",
+        "provisioningStatus": "truncated",
+        "serviceId": "truncated",
+        "serviceName": "truncated"
+      }
+    }
+  }
+}

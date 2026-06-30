@@ -2,13 +2,13 @@ import { Box } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
-import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useEffect } from "react";
 
 import CippAddEditUser from "../../../../components/CippFormPages/CippAddEditUser";
 const Page = () => {
   const userSettingsDefaults = useSettings();
+  const tenantDomain = useSettings().currentTenant;
 
   const formControl = useForm({
     mode: "onBlur",
@@ -54,6 +54,7 @@ const Page = () => {
         title="User"
         backButtonTitle="User Overview"
         postUrl="/api/AddUser"
+        relatedQueryKeys={`Users - ${tenantDomain}`}
       >
         <Box sx={{ my: 2 }}>
           <CippAddEditUser formControl={formControl} userSettingsDefaults={userSettingsDefaults} />

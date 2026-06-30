@@ -1,0 +1,52 @@
+{
+  "_metadata": {
+    "endpoint": "ListTenantOnboarding",
+    "generatedAt": "2026-04-03T23:40:35.0233147+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "CustomerId": "string",
+    "ETag": "string",
+    "Exception": "string",
+    "Logs": {
+      "_type": "array",
+      "_element": {
+        "Date": "truncated",
+        "Log": "truncated"
+      }
+    },
+    "OnboardingSteps": {
+      "_type": "array",
+      "_element": {
+        "Message": "truncated",
+        "Status": "truncated",
+        "Title": "truncated"
+      }
+    },
+    "PartitionKey": "string",
+    "Relationship": {
+      "@odata.context": "string",
+      "@odata.etag": "string",
+      "accessDetails": {
+        "unifiedRoles": "truncated"
+      },
+      "activatedDateTime": "datetime",
+      "autoExtendDuration": "string",
+      "createdDateTime": "datetime",
+      "customer": {
+        "displayName": "truncated",
+        "tenantId": "truncated"
+      },
+      "displayName": "string",
+      "duration": "string",
+      "endDateTime": "datetime",
+      "id": "string",
+      "lastModifiedDateTime": "datetime",
+      "status": "string"
+    },
+    "RowKey": "string",
+    "Status": "string",
+    "Timestamp": "datetime"
+  }
+}

@@ -50,6 +50,12 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
         }));
       }
 
+      // Add "No Licenses Assigned" option at beginning
+      filterSelectOptions.unshift({
+        label: "No Licenses Assigned",
+        value: "__no_license__",
+      });
+
       return {
         filterVariant: "multi-select",
         sortingFn: "alphanumeric",
@@ -58,11 +64,28 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
           if (!filterValue || !Array.isArray(filterValue) || filterValue.length === 0) {
             return true;
           }
-          if (!userLicenses || !Array.isArray(userLicenses) || userLicenses.length === 0) {
+
+          const hasNoLicenseFilter = filterValue.includes("__no_license__");
+          const otherFilters = filterValue.filter((v) => v !== "__no_license__");
+          const isUnlicensed = !userLicenses || !Array.isArray(userLicenses) || userLicenses.length === 0;
+
+          // If user selected "No Licenses Assigned" and this user is unlicensed → match
+          if (hasNoLicenseFilter && isUnlicensed) {
+            return true;
+          }
+
+          // If only "No Licenses Assigned" is selected and user has licenses → no match
+          if (hasNoLicenseFilter && otherFilters.length === 0 && !isUnlicensed) {
             return false;
           }
+
+          // Check other license filters
+          if (isUnlicensed) {
+            return false;
+          }
+
           const userSkuIds = userLicenses.map((license) => license.skuId).filter(Boolean);
-          return filterValue.some((selectedSkuId) => userSkuIds.includes(selectedSkuId));
+          return otherFilters.some((selectedSkuId) => userSkuIds.includes(selectedSkuId));
         },
         filterSelectOptions: filterSelectOptions,
       };
@@ -97,6 +120,7 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
       filterVariant: "select",
       sortingFn: "boolean",
       filterFn: "equals",
+      filterSelectOptions: ["Yes", "No"],
     };
   }
 

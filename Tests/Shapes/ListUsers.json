@@ -1,0 +1,139 @@
+{
+  "_metadata": {
+    "endpoint": "ListUsers",
+    "generatedAt": "2026-04-03T23:48:27.4825432+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "accountEnabled": "bool",
+    "ageGroup": "null",
+    "agentIdentityBlueprintId": "null",
+    "Aliases": "string",
+    "assignedLicenses": {
+      "disabledPlans": "null",
+      "skuId": "string"
+    },
+    "assignedPlans": {
+      "_type": "array",
+      "_element": {
+        "assignedDateTime": "truncated",
+        "capabilityStatus": "truncated",
+        "service": "truncated",
+        "servicePlanId": "truncated"
+      }
+    },
+    "authorizationInfo": {
+      "certificateUserIds": "null"
+    },
+    "businessPhones": "null",
+    "city": "null",
+    "cloudRealtimeCommunicationInfo": {
+      "isSipEnabled": "bool"
+    },
+    "companyName": "null",
+    "consentProvidedForMinor": "null",
+    "country": "null",
+    "createdDateTime": "datetime",
+    "creationType": "null",
+    "deletedDateTime": "null",
+    "department": "null",
+    "deviceKeys": "null",
+    "displayName": "string",
+    "employeeHireDate": "null",
+    "employeeId": "null",
+    "employeeLeaveDateTime": "null",
+    "employeeOrgData": "null",
+    "employeeType": "null",
+    "externalUserConvertedOn": "null",
+    "externalUserState": "null",
+    "externalUserStateChangeDateTime": "null",
+    "faxNumber": "null",
+    "givenName": "null",
+    "id": "string",
+    "identities": {
+      "issuer": "string",
+      "issuerAssignedId": "string",
+      "signInType": "string"
+    },
+    "identityParentId": "null",
+    "imAddresses": "string",
+    "infoCatalogs": "null",
+    "isLicenseReconciliationNeeded": "bool",
+    "isManagementRestricted": "null",
+    "isResourceAccount": "null",
+    "jobTitle": "null",
+    "legalAgeGroupClassification": "null",
+    "LicJoined": "string",
+    "mail": "string",
+    "mailNickname": "string",
+    "mobilePhone": "null",
+    "officeLocation": "null",
+    "onPremisesDistinguishedName": "null",
+    "onPremisesDomainName": "null",
+    "onPremisesExtensionAttributes": {
+      "extensionAttribute1": "null",
+      "extensionAttribute10": "null",
+      "extensionAttribute11": "null",
+      "extensionAttribute12": "null",
+      "extensionAttribute13": "null",
+      "extensionAttribute14": "null",
+      "extensionAttribute15": "null",
+      "extensionAttribute2": "null",
+      "extensionAttribute3": "null",
+      "extensionAttribute4": "null",
+      "extensionAttribute5": "null",
+      "extensionAttribute6": "null",
+      "extensionAttribute7": "null",
+      "extensionAttribute8": "null",
+      "extensionAttribute9": "null"
+    },
+    "onPremisesImmutableId": "null",
+    "onPremisesLastSyncDateTime": "null",
+    "onPremisesObjectIdentifier": "null",
+    "onPremisesProvisioningErrors": "null",
+    "onPremisesSamAccountName": "null",
+    "onPremisesSecurityIdentifier": "null",
+    "onPremisesSipInfo": {
+      "isSipEnabled": "bool",
+      "sipDeploymentLocation": "null",
+      "sipPrimaryAddress": "null"
+    },
+    "onPremisesSyncEnabled": "bool",
+    "onPremisesUserPrincipalName": "null",
+    "otherMails": "null",
+    "passwordPolicies": "null",
+    "passwordProfile": "null",
+    "postalCode": "null",
+    "preferredDataLocation": "null",
+    "preferredLanguage": "string",
+    "primDomain": {
+      "label": "string",
+      "value": "string"
+    },
+    "provisionedPlans": {
+      "_type": "array",
+      "_element": {
+        "capabilityStatus": "truncated",
+        "provisioningStatus": "truncated",
+        "service": "truncated"
+      }
+    },
+    "proxyAddresses": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "refreshTokensValidFromDateTime": "datetime",
+    "securityIdentifier": "string",
+    "serviceProvisioningErrors": "null",
+    "showInAddressList": "bool",
+    "signInSessionsValidFromDateTime": "datetime",
+    "state": "null",
+    "streetAddress": "null",
+    "surname": "string",
+    "usageLocation": "string",
+    "username": "string",
+    "userPrincipalName": "string",
+    "userType": "string"
+  }
+}

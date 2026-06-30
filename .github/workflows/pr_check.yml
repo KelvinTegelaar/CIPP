@@ -22,16 +22,40 @@ jobs:
         # Only process fork PRs with specific branch conditions
         # Must be a fork AND (source is main/master OR target is main/master)
         if: |
-          github.event.pull_request.head.repo.fork == true && 
+          github.event.pull_request.head.repo.fork == true &&
           ((github.event.pull_request.head.ref == 'main' || github.event.pull_request.head.ref == 'master') ||
           (github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'master'))
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             let message = '';
 
+            // Check if the fork has open PRs (indicates pull bot or similar is active)
+            const forkOwner = context.payload.pull_request.head.repo.owner.login;
+            const forkRepo = context.payload.pull_request.head.repo.name;
+            const forkPullsUrl = context.payload.pull_request.head.repo.html_url + '/pulls';
+
+            let openPRs = [];
+            try {
+              const { data: prs } = await github.rest.pulls.list({
+                owner: forkOwner,
+                repo: forkRepo,
+                state: 'open',
+                per_page: 5
+              });
+              openPRs = prs;
+            } catch (e) {
+              // Can't read fork PRs — skip
+            }
+
             message += '🔄 If you are attempting to update your CIPP repo please follow the instructions at: https://docs.cipp.app/setup/self-hosting-guide/updating. Are you a sponsor? Contact the helpdesk for direct assistance with updating to the latest version.';
+
+            if (openPRs.length > 0) {
+              message += ` It looks like you may already have a pending update PR on your fork — check your [open pull requests](${forkPullsUrl}) to accept it.`;
+            } else {
+              message += ` You can enable [Pull Bot](https://github.com/apps/pull) or [Repo Sync](https://github.com/apps/repo-sync) to automatically keep your fork up to date.`;
+            }
             message += '\n\n';
 
             // Check if PR is targeting main/master
@@ -40,7 +64,7 @@ jobs:
             }
 
             // Check if PR is from a fork's main/master branch
-            if (context.payload.pull_request.head.repo.fork && 
+            if (context.payload.pull_request.head.repo.fork &&
                 (context.payload.pull_request.head.ref === 'main' || context.payload.pull_request.head.ref === 'master')) {
               message += '⚠️ This PR cannot be merged because it originates from your fork\'s main/master branch. If you are attempting to contribute code please PR from your dev branch or another non-main/master branch.\n\n';
             }

@@ -7,7 +7,9 @@ import CippFormComponent from "../../../../components/CippComponents/CippFormCom
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "../../../../components/CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
+import { CippFormGroupSelector } from "../../../../components/CippComponents/CippFormGroupSelector";
 import gdaproles from "../../../../data/GDAPRoles.json";
+import countryList from "../../../../data/countryList.json";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
@@ -27,6 +29,39 @@ const Page = () => {
 
   const watchedTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
   const isAllTenants = watchedTenant?.value === "AllTenants" || watchedTenant === "AllTenants";
+  const useRoles = useWatch({ control: formControl.control, name: "defaultUseRoles" });
+  const useGroups = useWatch({ control: formControl.control, name: "defaultUseGroups" });
+
+  // Clear fields when switches are toggled off
+  useEffect(() => {
+    if (!useRoles) {
+      formControl.setValue("defaultRoles", []);
+    }
+  }, [useRoles]);
+
+  useEffect(() => {
+    if (!useGroups) {
+      formControl.setValue("defaultGroups", []);
+    }
+  }, [useGroups]);
+
+  // Reset expiration action when switches change
+  useEffect(() => {
+    const currentAction = formControl.getValues("defaultExpireAction");
+    if (!currentAction?.value) return;
+
+    if (!useRoles && currentAction.value === "RemoveRoles") {
+      formControl.setValue("defaultExpireAction", null);
+    } else if (!useGroups && currentAction.value === "RemoveGroups") {
+      formControl.setValue("defaultExpireAction", null);
+    } else if ((!useRoles || !useGroups) && currentAction.value === "RemoveRolesAndGroups") {
+      formControl.setValue("defaultExpireAction", null);
+    } else if (useRoles && useGroups && currentAction.value === "RemoveRoles") {
+      formControl.setValue("defaultExpireAction", null);
+    } else if (useRoles && useGroups && currentAction.value === "RemoveGroups") {
+      formControl.setValue("defaultExpireAction", null);
+    }
+  }, [useRoles, useGroups]);
 
   // Get the template data
   const template = ApiGetCall({
@@ -50,7 +85,7 @@ const Page = () => {
     <>
       <CippFormPage
         resetForm={false}
-        queryKey={`JITAdminTemplate-${id}`}
+        queryKey="*JITAdminTemplate*"
         formControl={formControl}
         title="Edit JIT Admin Template"
         backButtonTitle="JIT Admin Templates"
@@ -88,25 +123,82 @@ const Page = () => {
 
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
-                type="autoComplete"
-                fullWidth
-                label="Default Roles"
-                name="defaultRoles"
-                creatable={false}
-                options={gdaproles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                type="switch"
+                label="Admin Roles"
+                name="defaultUseRoles"
                 formControl={formControl}
-                required={true}
-                validators={{
-                  required: "At least one default role is required",
-                  validate: (options) => {
-                    if (!options?.length) {
-                      return "At least one default role is required";
-                    }
-                    return true;
-                  },
-                }}
               />
+              {!isAllTenants && (
+                <CippFormComponent
+                  type="switch"
+                  label="Group Membership"
+                  name="defaultUseGroups"
+                  formControl={formControl}
+                />
+              )}
+              {!useRoles && !useGroups && (
+                <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>
+                  Please select at least &quot;Admin Roles&quot; or &quot;Group Membership&quot;
+                </Box>
+              )}
             </Grid>
+
+            <CippFormCondition
+              formControl={formControl}
+              field="defaultUseRoles"
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  fullWidth
+                  label="Default Roles"
+                  name="defaultRoles"
+                  creatable={false}
+                  options={gdaproles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                  formControl={formControl}
+                  required={true}
+                  validators={{
+                    required: "At least one default role is required",
+                    validate: (options) => {
+                      if (!options?.length) {
+                        return "At least one default role is required";
+                      }
+                      return true;
+                    },
+                  }}
+                />
+              </Grid>
+            </CippFormCondition>
+
+            {!isAllTenants && (
+              <CippFormCondition
+                formControl={formControl}
+                field="defaultUseGroups"
+                compareType="is"
+                compareValue={true}
+              >
+                <Grid size={{ xs: 12 }}>
+                  <CippFormGroupSelector
+                    formControl={formControl}
+                    name="defaultGroups"
+                    label="Default Groups"
+                    multiple={true}
+                    required={true}
+                    validators={{
+                      required: "At least one group is required",
+                      validate: (options) => {
+                        if (!options?.length) {
+                          return "At least one group is required";
+                        }
+                        return true;
+                      },
+                    }}
+                  />
+                </Grid>
+              </CippFormCondition>
+            )}
 
             <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
@@ -149,12 +241,23 @@ const Page = () => {
                 name="defaultExpireAction"
                 multiple={false}
                 creatable={false}
-                options={[
-                  { label: "Delete User", value: "DeleteUser" },
-                  { label: "Disable User", value: "DisableUser" },
-                  { label: "Remove Roles", value: "RemoveRoles" },
-                ]}
+                options={(() => {
+                  const opts = [
+                    { label: "Delete User", value: "DeleteUser" },
+                    { label: "Disable User", value: "DisableUser" },
+                  ];
+                  if (useRoles && useGroups) {
+                    opts.push({ label: "Remove Roles and Groups", value: "RemoveRolesAndGroups" });
+                  } else if (useRoles) {
+                    opts.push({ label: "Remove Roles", value: "RemoveRoles" });
+                  } else if (useGroups) {
+                    opts.push({ label: "Remove Groups", value: "RemoveGroups" });
+                  }
+                  return opts;
+                })()}
                 formControl={formControl}
+                required={true}
+                validators={{ required: "Expiration action is required" }}
               />
             </Grid>
 
@@ -273,6 +376,19 @@ const Page = () => {
                   />
                 </Grid>
               )}
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Default Usage Location"
+                  name="defaultUsageLocation"
+                  multiple={false}
+                  options={countryList.map(({ Code, Name }) => ({
+                    label: Name,
+                    value: Code,
+                  }))}
+                  formControl={formControl}
+                />
+              </Grid>
             </CippFormCondition>
 
             <CippFormCondition

@@ -1,0 +1,18 @@
+{
+  "_metadata": {
+    "endpoint": "ListCustomRole",
+    "generatedAt": "2026-04-03T23:40:09.5302498+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "AllowedTenants": "string",
+    "BlockedTenants": "null",
+    "EntraGroup": "null",
+    "EntraGroupId": "null",
+    "IPRange": "null",
+    "Permissions": "string",
+    "RoleName": "string",
+    "Type": "string"
+  }
+}

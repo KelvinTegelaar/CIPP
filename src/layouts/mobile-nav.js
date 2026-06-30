@@ -1,12 +1,14 @@
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import { Box, Drawer, Stack } from "@mui/material";
+import { Box, Divider, Drawer, Stack } from "@mui/material";
 import { Logo } from "../components/logo";
 import { Scrollbar } from "../components/scrollbar";
 import { paths } from "../paths";
 import { MobileNavItem } from "./mobile-nav-item";
+import { SideNavBookmarks } from "./side-nav-bookmarks";
 import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
+import { useSettings } from "../hooks/use-settings";
 
 const MOBILE_NAV_WIDTH = "80%";
 
@@ -38,6 +40,7 @@ const reduceChildRoutes = ({ acc, depth, item, pathname }) => {
         key={item.title}
         openImmediately={partialMatch}
         path={item.path}
+        scope={item.scope}
         title={item.title}
       >
         <Stack
@@ -66,6 +69,7 @@ const reduceChildRoutes = ({ acc, depth, item, pathname }) => {
         icon={item.icon}
         key={item.title}
         path={item.path}
+        scope={item.scope}
         title={item.title}
       />
     );
@@ -77,6 +81,8 @@ const reduceChildRoutes = ({ acc, depth, item, pathname }) => {
 export const MobileNav = (props) => {
   const { open, onClose, items } = props;
   const pathname = usePathname();
+  const settings = useSettings();
+  const showSidebarBookmarks = settings.bookmarkSidebar !== false;
 
   return (
     <Drawer
@@ -137,6 +143,14 @@ export const MobileNav = (props) => {
               p: 0,
             }}
           >
+            {/* Bookmarks section above Dashboard */}
+            {showSidebarBookmarks && (
+              <>
+                <SideNavBookmarks collapse={false} />
+                <Divider sx={{ my: 1 }} />
+              </>
+            )}
+            {/* Render all menu items */}
             {renderItems({
               depth: 0,
               items,

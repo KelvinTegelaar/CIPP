@@ -1,0 +1,21 @@
+{
+  "_metadata": {
+    "endpoint": "ListAppTemplates",
+    "generatedAt": "2026-04-03T23:40:03.1471998+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "appCount": "number",
+    "appNames": "string",
+    "Apps": {
+      "appName": "string",
+      "appType": "string",
+      "config": "string"
+    },
+    "appTypes": "string",
+    "description": "string",
+    "displayName": "string",
+    "GUID": "string"
+  }
+}

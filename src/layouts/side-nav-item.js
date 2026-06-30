@@ -7,11 +7,14 @@ import ArrowTopRightOnSquareIcon from "@heroicons/react/24/outline/ArrowTopRight
 import { Box, ButtonBase, Collapse, SvgIcon, Stack } from "@mui/material";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import LanguageIcon from "@mui/icons-material/Language";
+import { useUserBookmarks } from "../hooks/use-user-bookmarks";
 import { useSettings } from "../hooks/use-settings";
 
 export const SideNavItem = (props) => {
   const {
     active = false,
+    category = "",
     children,
     collapse = false,
     depth = 0,
@@ -19,12 +22,17 @@ export const SideNavItem = (props) => {
     icon,
     openImmediately = false,
     path,
+    scope,
     title,
   } = props;
 
+  const isGlobal = scope === "global";
+
   const [open, setOpen] = useState(openImmediately);
   const [hovered, setHovered] = useState(false);
-  const { handleUpdate, bookmarks = [] } = useSettings();
+  const { bookmarks, setBookmarks } = useUserBookmarks();
+  const settings = useSettings();
+  const compactNav = settings.compactNav ?? false;
   const isBookmarked = bookmarks.some((bookmark) => bookmark.path === path);
 
   const handleToggle = useCallback(() => {
@@ -34,18 +42,21 @@ export const SideNavItem = (props) => {
   const handleBookmarkToggle = useCallback(
     (event) => {
       event.stopPropagation();
-      handleUpdate({
-        bookmarks: isBookmarked
+      setBookmarks(
+        isBookmarked
           ? bookmarks.filter((bookmark) => bookmark.path !== path)
-          : [...bookmarks, { label: title, path }],
-      });
+          : bookmarks.length >= 50
+            ? bookmarks
+            : [...bookmarks, { label: title, path, category: category || "" }]
+      );
     },
-    [isBookmarked, bookmarks, handleUpdate, path, title]
+    [isBookmarked, bookmarks, setBookmarks, path, title, category]
   );
 
   // Dynamic spacing and font sizing based on depth
   const indent = depth > 0 ? depth * 1.5 : 1; // adjust multiplication factor as needed
   const fontSize = depth === 0 ? 14 : 13; // top-level 14, nested 13
+  const navItemPy = compactNav ? "6px" : "12px";
 
   if (children) {
     return (
@@ -67,7 +78,7 @@ export const SideNavItem = (props) => {
               fontWeight: 500,
               justifyContent: "flex-start",
               px: `${indent * 6}px`,
-              py: "12px",
+              py: navItemPy,
               textAlign: "left",
               whiteSpace: "nowrap",
               width: "100%",
@@ -166,9 +177,10 @@ export const SideNavItem = (props) => {
             textAlign: "left",
             whiteSpace: "nowrap",
             width: "calc(100% - 20px)", // Adjust the width to leave space for the bookmark icon
-            py: "12px",
+            py: navItemPy,
           }}
           {...linkProps}
+          onClick={(e) => e.currentTarget.blur()}
         >
           <Box
             component="span"
@@ -208,6 +220,24 @@ export const SideNavItem = (props) => {
           >
             {title}
           </Box>
+          {isGlobal && (
+            <Box
+              component="span"
+              title="Global - not tied to selected tenant"
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                flexShrink: 0,
+                ml: 0.5,
+                transition: "opacity 250ms ease-in-out",
+                ...(collapse && { opacity: 0 }),
+              }}
+            >
+              <SvgIcon sx={{ color: "neutral.400", fontSize: 14 }}>
+                <LanguageIcon />
+              </SvgIcon>
+            </Box>
+          )}
           {external && (
             <SvgIcon
               sx={{
@@ -250,5 +280,6 @@ SideNavItem.propTypes = {
   icon: PropTypes.any,
   openImmediately: PropTypes.bool,
   path: PropTypes.string,
+  scope: PropTypes.string,
   title: PropTypes.string.isRequired,
 };

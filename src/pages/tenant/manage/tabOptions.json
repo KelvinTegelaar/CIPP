@@ -1,30 +1,37 @@
 [
   {
     "label": "Edit Tenant",
-    "path": "/tenant/manage/edit"
+    "path": "/tenant/manage/edit",
+    "icon": "Settings"
   },
   {
     "label": "Manage Drift",
-    "path": "/tenant/manage/drift"
+    "path": "/tenant/manage/drift",
+    "icon": "Sync"
   },
   {
     "label": "Configuration Backup",
-    "path": "/tenant/manage/configuration-backup"
+    "path": "/tenant/manage/configuration-backup",
+    "icon": "Storage"
   },
   {
     "label": "Applied Standards Report",
-    "path": "/tenant/manage/applied-standards"
+    "path": "/tenant/manage/applied-standards",
+    "icon": "FactCheck"
   },
   {
     "label": "Policies and Settings Deployed",
-    "path": "/tenant/manage/policies-deployed"
+    "path": "/tenant/manage/policies-deployed",
+    "icon": "Policy"
   },
   {
     "label": "User Defaults",
-    "path": "/tenant/manage/user-defaults"
+    "path": "/tenant/manage/user-defaults",
+    "icon": "Person"
   },
   {
     "label": "History",
-    "path": "/tenant/manage/history"
+    "path": "/tenant/manage/history",
+    "icon": "Timeline"
   }
 ]

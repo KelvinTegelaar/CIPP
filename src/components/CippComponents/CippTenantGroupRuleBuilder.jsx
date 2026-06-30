@@ -40,9 +40,11 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
       // Flatten all pages and extract Results
       const allGroups = tenantGroupsQuery.data.pages.flatMap((page) => page?.Results || []);
       return allGroups
-        .filter((group) => group.GroupType === "static")
         .map((group) => ({
-          label: group.Name || group.displayName,
+          label:
+            group.GroupType === "dynamic"
+              ? `${group.Name || group.displayName} (dynamic)`
+              : group.Name || group.displayName,
           value: group.Id || group.RowKey,
           type: group.GroupType,
         }))

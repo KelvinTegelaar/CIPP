@@ -1,15 +1,43 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
-const simpleColumns = ["Tenant", "Name", "ApplicationID", "ObjectID", "Scope", "StartTime"];
-
-const apiUrl = "/api/ListOAuthApps";
 const pageTitle = "Consented Applications";
 
 const Page = () => {
-  return <CippTablePage title={pageTitle} apiUrl={apiUrl} simpleColumns={simpleColumns} />;
+  const reportDB = useCippReportDB({
+    apiUrl: "/api/ListOAuthApps",
+    queryKey: "ListOAuthApps",
+    cacheName: "OAuth2PermissionGrants",
+    syncTitle: "Sync Consented Applications",
+    allowToggle: true,
+    defaultCached: true,
+  });
+
+  const simpleColumns = [
+    ...reportDB.cacheColumns.filter((c) => c === "Tenant"),
+    "Name",
+    "ApplicationID",
+    "ObjectID",
+    "Scope",
+    "StartTime",
+    ...reportDB.cacheColumns.filter((c) => c !== "Tenant"),
+  ];
+
+  return (
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={reportDB.resolvedQueryKey}
+        simpleColumns={simpleColumns}
+        cardButton={reportDB.controls}
+      />
+      {reportDB.syncDialog}
+    </>
+  );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
 
 export default Page;

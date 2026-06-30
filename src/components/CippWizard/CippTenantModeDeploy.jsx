@@ -47,6 +47,13 @@ export const CippTenantModeDeploy = (props) => {
     }
   }, [updateRefreshToken.isSuccess, formControl, addTenant.isSuccess]);
 
+  useEffect(() => {
+    if (partnerTenantInfo?.data?.authenticatedUserPrincipalName) {
+      formControl.setValue("GDAPAuth", true);
+      formControl.trigger("GDAPAuth");
+    }
+  }, [partnerTenantInfo?.data?.authenticatedUserPrincipalName, formControl]);
+
   return (
     <Stack spacing={2}>
       {/* Partner Tenant (GDAP) */}
@@ -77,7 +84,7 @@ export const CippTenantModeDeploy = (props) => {
         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
           Please remember to log onto a service account dedicated for CIPP. More info? Check out the{" "}
           <Link
-            href="https://docs.cipp.app/setup/gdap/creating-the-cipp-service-account-gdap-ready"
+            href="https://docs.cipp.app/setup/installation/creating-the-cipp-service-account-gdap-ready"
             target="_blank"
             rel="noopener noreferrer"
           >

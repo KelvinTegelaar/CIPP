@@ -1,0 +1,12 @@
+{
+  "_metadata": {
+    "endpoint": "ListMDEOnboarding",
+    "generatedAt": "2026-04-03T23:43:23.0049911+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "partnerState": "string",
+    "Tenant": "string"
+  }
+}

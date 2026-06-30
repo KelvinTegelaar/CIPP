@@ -3,6 +3,7 @@ import "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import { CippFormLicenseSelector } from "../CippComponents/CippFormLicenseSelector";
 
 const CippAddGroupTemplateForm = (props) => {
   const { formControl } = props;
@@ -66,6 +67,21 @@ const CippAddGroupTemplateForm = (props) => {
         {/* Debug output */}
         <div style={{ display: "none" }}>Current groupType: {formControl.watch("groupType")}</div>
       </Grid>
+      <CippFormCondition
+        formControl={formControl}
+        field="groupType"
+        compareType="is"
+        compareValue="generic"
+      >
+        <Grid size={{ xs: 12 }}>
+          <CippFormLicenseSelector
+            formControl={formControl}
+            name="licenses"
+            label="Licenses (optional)"
+            multiple={true}
+          />
+        </Grid>
+      </CippFormCondition>
       <CippFormCondition
         formControl={formControl}
         field="groupType"

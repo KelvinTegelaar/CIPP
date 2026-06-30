@@ -8,8 +8,6 @@ import { ApiGetCall } from "../../../../api/ApiCall";
 import countryList from "../../../../data/countryList.json";
 import { useRouter } from "next/router";
 
-const countryLookup = new Map(countryList.map((country) => [country.Name, country.Code]));
-
 const EditContactTemplate = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -57,32 +55,33 @@ const EditContactTemplate = () => {
     const contact = Array.isArray(contactTemplateInfo.data)
       ? contactTemplateInfo.data[0]
       : contactTemplateInfo.data;
-    const address = contact.addresses?.[0] || {};
-    const phones = contact.phones || [];
 
-    // Use Map for O(1) phone lookup
-    const phoneMap = new Map(phones.map((p) => [p.type, p.number]));
+    // The template is stored as a flat object (see Invoke-AddContactTemplates), so read the
+    // fields directly rather than treating it as a Microsoft Graph contact.
+    const countryEntry = contact.country
+      ? countryList.find((c) => c.Code === contact.country || c.Name === contact.country)
+      : null;
 
     return {
       ContactTemplateID: id || "",
       displayName: contact.displayName || "",
-      firstName: contact.givenName || "",
-      lastName: contact.surname || "",
+      firstName: contact.firstName || "",
+      lastName: contact.lastName || "",
       email: contact.email || "",
       hidefromGAL: contact.hidefromGAL || false,
-      streetAddress: address.street || "",
-      postalCode: address.postalCode || "",
-      city: address.city || "",
-      state: address.state || "",
-      country: address.countryOrRegion ? countryLookup.get(address.countryOrRegion) || "" : "",
+      streetAddress: contact.streetAddress || "",
+      postalCode: contact.postalCode || "",
+      city: contact.city || "",
+      state: contact.state || "",
+      country: countryEntry ? { label: countryEntry.Name, value: countryEntry.Code } : "",
       companyName: contact.companyName || "",
-      mobilePhone: phoneMap.get("mobile") || "",
-      businessPhone: phoneMap.get("business") || "",
+      mobilePhone: contact.mobilePhone || "",
+      businessPhone: contact.businessPhone || "",
       jobTitle: contact.jobTitle || "",
       website: contact.website || "",
       mailTip: contact.mailTip || "",
     };
-  }, [contactTemplateInfo.isSuccess, contactTemplateInfo.data]);
+  }, [contactTemplateInfo.isSuccess, contactTemplateInfo.data, id]);
 
   // Use callback to prevent unnecessary re-renders
   const resetForm = useCallback(() => {
@@ -96,27 +95,30 @@ const EditContactTemplate = () => {
   }, [resetForm]);
 
   // Memoize custom data formatter
-  const customDataFormatter = useCallback((values) => {
-    return {
-      ContactTemplateID: id,
-      DisplayName: values.displayName,
-      hidefromGAL: values.hidefromGAL,
-      email: values.email,
-      FirstName: values.firstName,
-      LastName: values.lastName,
-      Title: values.jobTitle,
-      StreetAddress: values.streetAddress,
-      PostalCode: values.postalCode,
-      City: values.city,
-      State: values.state,
-      CountryOrRegion: values.country?.value || values.country,
-      Company: values.companyName,
-      mobilePhone: values.mobilePhone,
-      phone: values.businessPhone,
-      website: values.website,
-      mailTip: values.mailTip,
-    };
-  });
+  const customDataFormatter = useCallback(
+    (values) => {
+      return {
+        ContactTemplateID: id,
+        displayName: values.displayName,
+        hidefromGAL: values.hidefromGAL,
+        email: values.email,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        jobTitle: values.jobTitle,
+        streetAddress: values.streetAddress,
+        postalCode: values.postalCode,
+        city: values.city,
+        state: values.state,
+        country: values.country?.value || values.country,
+        companyName: values.companyName,
+        mobilePhone: values.mobilePhone,
+        businessPhone: values.businessPhone,
+        website: values.website,
+        mailTip: values.mailTip,
+      };
+    },
+    [id]
+  );
 
   const contactTemplate = Array.isArray(contactTemplateInfo.data)
     ? contactTemplateInfo.data[0]

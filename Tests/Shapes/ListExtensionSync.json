@@ -1,0 +1,21 @@
+{
+  "_metadata": {
+    "endpoint": "ListExtensionSync",
+    "generatedAt": "2026-04-03T23:40:13.8303124+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "ExecutedTime": "string",
+    "Name": "string",
+    "PartitionKey": "string",
+    "RepeatsEvery": "string",
+    "Results": {
+      "Results": "string"
+    },
+    "RowKey": "string",
+    "ScheduledTime": "string",
+    "SyncType": "string",
+    "Tenant": "string"
+  }
+}
