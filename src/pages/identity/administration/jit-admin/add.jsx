@@ -6,7 +6,7 @@ import { CippFormTenantSelector } from '../../../../components/CippComponents/Ci
 import { useForm, useWatch } from 'react-hook-form'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
 import { CippFormCondition } from '../../../../components/CippComponents/CippFormCondition'
-import gdaproles from '../../../../data/GDAPRoles.json'
+import jitAdminRoles from '../../../../data/JitAdminRoles.json'
 import countryList from '../../../../data/countryList.json'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
@@ -469,7 +469,7 @@ const Page = () => {
                   fullWidth
                   label="Roles"
                   name="adminRoles"
-                  options={gdaproles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                  options={jitAdminRoles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
                   formControl={formControl}
                   required={true}
                   validators={{

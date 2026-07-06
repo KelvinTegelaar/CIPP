@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
   Accordion,
   AccordionSummary,
@@ -22,7 +22,7 @@ import { PropertyList } from '../property-list'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
 import { getCippFormatting } from '../../utils/get-cipp-formatting'
 import { CippCodeBlock } from '../CippComponents/CippCodeBlock'
-import intuneCollection from '../../data/intuneCollection.json'
+import { useIntuneCollection } from '../../hooks/use-intune-collection'
 import { useGuidResolver } from '../../hooks/use-guid-resolver'
 import { useAdminTemplateDefinitions } from '../../hooks/use-admin-template-definitions'
 import {
@@ -30,10 +30,6 @@ import {
   presentationBindPattern,
   extractBindGuid,
 } from '../../utils/intune-bind-helpers'
-
-const intuneCollectionMap = new Map(
-  (intuneCollection || []).filter((item) => item?.id).map((item) => [item.id, item])
-)
 
 const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>)]+)/g
 
@@ -273,6 +269,12 @@ function CippJsonView({
     manualTenant: objectTenant,
     waiting: resolvedType === 'intune',
   })
+
+  const intuneCollection = useIntuneCollection()
+  const intuneCollectionMap = useMemo(
+    () => new Map((intuneCollection || []).filter((item) => item?.id).map((item) => [item.id, item])),
+    [intuneCollection]
+  )
 
   const renderIntuneItems = (data) => {
     const items = []

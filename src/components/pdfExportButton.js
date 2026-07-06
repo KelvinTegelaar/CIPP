@@ -1,8 +1,7 @@
 import { IconButton, Tooltip } from '@mui/material'
 import { PictureAsPdf } from '@mui/icons-material'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
+import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
 import { useSettings } from '../hooks/use-settings'
 
 // Flatten nested objects so deeply nested properties export properly.
@@ -11,7 +10,12 @@ const flattenObject = (obj, parentKey = '') => {
   const flattened = {}
   Object.keys(obj).forEach((key) => {
     const fullKey = parentKey ? `${parentKey}.${key}` : key
-    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+    if (
+      typeof obj[key] === 'object' &&
+      obj[key] !== null &&
+      !Array.isArray(obj[key]) &&
+      !SKIP_RECURSION_KEYS.includes(key)
+    ) {
       Object.assign(flattened, flattenObject(obj[key], fullKey))
     } else {
       // Store the raw value - formatting will happen in a single pass later
@@ -22,7 +26,7 @@ const flattenObject = (obj, parentKey = '') => {
 }
 
 // Shared helper so the toolbar buttons and bulk export path share the same PDF logic.
-export const exportRowsToPdf = ({
+export const exportRowsToPdf = async ({
   rows = [],
   columns = [],
   reportName = 'Export',
@@ -32,6 +36,12 @@ export const exportRowsToPdf = ({
   if (!rows.length || !columns.length) {
     return
   }
+
+  // Lazy-load jsPDF (+autotable) so ~1MB of PDF code stays out of the common bundle until an export.
+  const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+    import('jspdf'),
+    import('jspdf-autotable'),
+  ])
 
   const unit = 'pt'
   const size = 'A3'

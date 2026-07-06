@@ -3,7 +3,7 @@ import { Button, Stack, Box } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
-import { ApiPostCall, ApiGetCallWithPagination } from "../../api/ApiCall";
+import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
@@ -15,15 +15,15 @@ export const CippAuditLogSearchDrawer = ({
   const [drawerVisible, setDrawerVisible] = useState(false);
   const currentTenantDomain = useSettings().currentTenant;
 
-  // Fetch tenant list to get full tenant details
-  const tenantList = ApiGetCallWithPagination({
+  // Fetch tenant list to get full tenant details.
+  const tenantList = ApiGetCall({
     url: "/api/ListTenants",
     queryKey: "ListTenants-FormnotAllTenants",
     data: { AllTenantSelector: false },
   });
 
-  // Find the current tenant from the list using the domain name - handle pagination data structure
-  const allTenants = tenantList.data?.pages?.flatMap((page) => page.Results || page) || [];
+  // Find the current tenant from the list using the domain name
+  const allTenants = Array.isArray(tenantList.data) ? tenantList.data : [];
   const currentTenant = allTenants.find(
     (tenant) => tenant.defaultDomainName === currentTenantDomain
   );
@@ -192,7 +192,7 @@ export const CippAuditLogSearchDrawer = ({
         url: "/api/ListTenants?AllTenantSelector=false",
         labelField: (option) => `${option.displayName} (${option.defaultDomainName})`,
         valueField: "defaultDomainName",
-        queryKey: "ListTenants-FormnotAllTenants",
+        queryKey: "ListTenants-AuditDrawer",
         excludeTenantFilter: true,
       },
       validators: { validate: (value) => !!value?.value || "Please select a tenant" },

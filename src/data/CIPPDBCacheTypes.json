@@ -328,5 +328,15 @@
     "type": "DetectedApps",
     "friendlyName": "Detected Apps",
     "description": "All detected applications with devices where each app is installed"
+  },
+  {
+    "type": "DefenderCVEs",
+    "friendlyName": "Defender CVEs",
+    "description": "All Defender CVEs for Devices"
+  },
+  {
+    "type": "IntuneAppInstallStatus",
+    "friendlyName": "Intune App Install Status",
+    "description": "Per-application install status rollup (failed/installed/pending device counts) from the AppInstallStatusAggregate report"
   }
 ]

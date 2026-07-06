@@ -124,6 +124,7 @@ const Page = () => {
         labelField: (option) =>
           `${option.License || option.skuPartNumber} (${option.availableUnits || 0} available)`,
         valueField: 'skuId',
+        data: { IncludeExcluded: true },
         queryKey: `ListLicenses-${userSettings.currentTenant}`,
       },
       multiple: true,

@@ -1,4 +1,4 @@
-import { Close, Download, Help, ExpandMore, ExpandLess } from "@mui/icons-material";
+import { Close, Download, Help, ExpandMore, ExpandLess } from '@mui/icons-material'
 import {
   Alert,
   CircularProgress,
@@ -11,40 +11,40 @@ import {
   Tooltip,
   Button,
   keyframes,
-} from "@mui/material";
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { getCippError } from "../../utils/get-cipp-error";
-import { CippCopyToClipBoard } from "./CippCopyToClipboard";
-import { CippDocsLookup } from "./CippDocsLookup";
-import { CippCodeBlock } from "./CippCodeBlock";
-import React from "react";
-import { CippTableDialog } from "./CippTableDialog";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { useDialog } from "../../hooks/use-dialog";
+} from '@mui/material'
+import { useEffect, useState, useMemo, useCallback } from 'react'
+import { getCippError } from '../../utils/get-cipp-error'
+import { CippCopyToClipBoard } from './CippCopyToClipboard'
+import { CippDocsLookup } from './CippDocsLookup'
+import { CippCodeBlock } from './CippCodeBlock'
+import React from 'react'
+import { CippTableDialog } from './CippTableDialog'
+import { EyeIcon } from '@heroicons/react/24/outline'
+import { useDialog } from '../../hooks/use-dialog'
 
 const extractAllResults = (data) => {
-  const results = [];
+  const results = []
 
   const getSeverity = (text) => {
-    if (typeof text !== "string") return "success";
-    return /error|failed|exception|not found|invalid_grant/i.test(text) ? "error" : "success";
-  };
+    if (typeof text !== 'string') return 'success'
+    return /error|failed|exception|not found|invalid_grant/i.test(text) ? 'error' : 'success'
+  }
 
   const processResultItem = (item) => {
-    if (typeof item === "string") {
+    if (typeof item === 'string') {
       return {
         text: item,
         copyField: item,
         severity: getSeverity(item),
-      };
+      }
     }
 
-    if (item && typeof item === "object") {
-      const text = item.resultText || "";
-      const copyField = item.copyField || "";
+    if (item && typeof item === 'object') {
+      const text = item.resultText || ''
+      const copyField = item.copyField || ''
       const severity =
-        typeof item.state === "string" ? item.state : getSeverity(item) ? "error" : "success";
-      const details = item.details || null;
+        typeof item.state === 'string' ? item.state : getSeverity(item) ? 'error' : 'success'
+      const details = item.details || null
 
       if (text) {
         return {
@@ -53,144 +53,158 @@ const extractAllResults = (data) => {
           severity,
           details,
           ...item,
-        };
+        }
       }
     }
-    return null;
-  };
+    return null
+  }
 
   const extractFrom = (obj) => {
-    if (!obj) return;
+    if (!obj) return
 
     if (Array.isArray(obj)) {
-      obj.forEach((item) => extractFrom(item));
-      return;
+      obj.forEach((item) => extractFrom(item))
+      return
     }
 
-    if (typeof obj === "string") {
-      results.push({ text: obj, copyField: obj, severity: getSeverity(obj) });
-      return;
+    if (typeof obj === 'string') {
+      results.push({ text: obj, copyField: obj, severity: getSeverity(obj) })
+      return
     }
 
     if (obj?.resultText) {
-      const processed = processResultItem(obj);
+      const processed = processResultItem(obj)
       if (processed) {
-        results.push(processed);
+        results.push(processed)
       }
     } else {
-      const ignoreKeys = ["metadata", "Metadata", "severity"];
+      const ignoreKeys = ['metadata', 'Metadata', 'severity']
 
-      if (typeof obj === "object") {
+      if (typeof obj === 'object') {
         Object.keys(obj).forEach((key) => {
-          const value = obj[key];
-          if (ignoreKeys.includes(key)) return;
-          if (["Results", "Result", "results", "result"].includes(key)) {
+          const value = obj[key]
+          if (ignoreKeys.includes(key)) return
+          if (['Results', 'Result', 'results', 'result'].includes(key)) {
             if (Array.isArray(value)) {
               value.forEach((valItem) => {
-                const processed = processResultItem(valItem);
+                const processed = processResultItem(valItem)
                 if (processed) {
-                  results.push(processed);
+                  results.push(processed)
                 } else {
-                  extractFrom(valItem);
+                  extractFrom(valItem)
                 }
-              });
-            } else if (typeof value === "object") {
-              const processed = processResultItem(value);
+              })
+            } else if (typeof value === 'object') {
+              const processed = processResultItem(value)
               if (processed) {
-                results.push(processed);
+                results.push(processed)
               } else {
-                extractFrom(value);
+                extractFrom(value)
               }
-            } else if (typeof value === "string") {
+            } else if (typeof value === 'string') {
               results.push({
                 text: value,
                 copyField: value,
                 severity: getSeverity(value),
-              });
+              })
             }
           } else {
-            extractFrom(value);
+            extractFrom(value)
           }
-        });
+        })
       }
     }
-  };
+  }
 
-  extractFrom(data);
-  return results;
-};
+  extractFrom(data)
+  return results
+}
 
 export const CippApiResults = (props) => {
-  const { apiObject, errorsOnly = false, alertSx = {} } = props;
+  const { apiObject, errorsOnly = false, alertSx = {} } = props
 
-  const [errorVisible, setErrorVisible] = useState(false);
-  const [fetchingVisible, setFetchingVisible] = useState(false);
-  const [finalResults, setFinalResults] = useState([]);
-  const [showDetails, setShowDetails] = useState({});
-  const tableDialog = useDialog();
-  const pageTitle = `${document.title} - Results`;
+  const [errorVisible, setErrorVisible] = useState(false)
+  const [fetchingVisible, setFetchingVisible] = useState(false)
+  const [finalResults, setFinalResults] = useState([])
+  const [showDetails, setShowDetails] = useState({})
+  const tableDialog = useDialog()
+  const pageTitle = `${document.title} - Results`
   const correctResultObj = useMemo(() => {
-    if (!apiObject.isSuccess) return;
+    if (!apiObject.isSuccess) return
 
-    const data = apiObject?.data;
-    const dataData = data?.data;
+    const data = apiObject?.data
+    const dataData = data?.data
     if (dataData !== undefined && dataData !== null) {
       if (dataData?.Results) {
-        return dataData.Results;
-      } else if (typeof dataData === "object" && dataData !== null && !("metadata" in dataData)) {
-        return dataData;
-      } else if (typeof dataData === "string") {
-        return dataData;
+        return dataData.Results
+      } else if (typeof dataData === 'object' && dataData !== null && !('metadata' in dataData)) {
+        return dataData
+      } else if (typeof dataData === 'string') {
+        return dataData
       } else {
-        return "This API has not sent the correct output format.";
+        return 'This API has not sent the correct output format.'
       }
     }
     if (data?.Results) {
-      return data.Results;
-    } else if (typeof data === "object" && data !== null && !("metadata" in data)) {
-      return data;
-    } else if (typeof data === "string") {
-      return data;
+      return data.Results
+    } else if (typeof data === 'object' && data !== null && !('metadata' in data)) {
+      return data
+    } else if (typeof data === 'string') {
+      return data
     }
 
-    return "This API has not sent the correct output format.";
-  }, [apiObject]);
+    return 'This API has not sent the correct output format.'
+  }, [apiObject])
 
   const allResults = useMemo(() => {
-    const apiResults = extractAllResults(correctResultObj);
+    const sourceItems = Array.isArray(correctResultObj) ? correctResultObj : [correctResultObj]
+    const apiResults = sourceItems.flatMap((item, groupIndex) =>
+      extractAllResults(item).map((r) => ({ ...r, groupIndex }))
+    )
 
     // Also extract error results if there's an error
     if (apiObject.isError && apiObject.error) {
-      const errorResults = extractAllResults(apiObject.error.response.data);
+      const errorData = apiObject.error.response?.data
+      const errorItems = Array.isArray(errorData) ? errorData : [errorData]
+      const errorResults = errorItems.flatMap((item, index) =>
+        extractAllResults(item).map((r) => ({
+          ...r,
+          severity: 'error',
+          groupIndex: sourceItems.length + index,
+        }))
+      )
       if (errorResults.length > 0) {
         // Mark all error results with error severity and merge with success results
-        return [...apiResults, ...errorResults.map((r) => ({ ...r, severity: "error" }))];
+        return [...apiResults, ...errorResults]
       }
 
       // Fallback to getCippError if extraction didn't work
-      const processedError = getCippError(apiObject.error);
-      if (typeof processedError === "string") {
+      const processedError = getCippError(apiObject.error)
+      if (typeof processedError === 'string') {
         return [
           ...apiResults,
-          { text: processedError, copyField: processedError, severity: "error" },
-        ];
+          {
+            text: processedError,
+            copyField: processedError,
+            severity: 'error',
+            groupIndex: sourceItems.length,
+          },
+        ]
       }
     }
 
-    return apiResults;
-  }, [correctResultObj, apiObject.isError, apiObject.error]);
+    return apiResults
+  }, [correctResultObj, apiObject.isError, apiObject.error])
 
   useEffect(() => {
-    setErrorVisible(!!apiObject.isError);
+    setErrorVisible(!!apiObject.isError)
 
     if (apiObject.isFetching || (apiObject.isIdle === false && apiObject.isPending === true)) {
-      setFetchingVisible(true);
+      setFetchingVisible(true)
     } else {
-      setFetchingVisible(false);
+      setFetchingVisible(false)
     }
-    const resultsToShow = errorsOnly
-      ? allResults.filter((r) => r.severity === "error")
-      : allResults;
+    const resultsToShow = errorsOnly ? allResults.filter((r) => r.severity === 'error') : allResults
 
     if (resultsToShow.length > 0) {
       setFinalResults(
@@ -201,10 +215,10 @@ export const CippApiResults = (props) => {
           severity: res.severity,
           visible: true,
           ...res,
-        })),
-      );
+        }))
+      )
     } else {
-      setFinalResults([]);
+      setFinalResults([])
     }
   }, [
     apiObject.isError,
@@ -213,38 +227,44 @@ export const CippApiResults = (props) => {
     apiObject.isIdle,
     allResults,
     errorsOnly,
-  ]);
+  ])
 
   const handleCloseResult = useCallback((id) => {
-    setFinalResults((prev) => prev.map((r) => (r.id === id ? { ...r, visible: false } : r)));
-  }, []);
+    setFinalResults((prev) => prev.map((r) => (r.id === id ? { ...r, visible: false } : r)))
+  }, [])
 
   const toggleDetails = useCallback((id) => {
-    setShowDetails((prev) => ({ ...prev, [id]: !prev[id] }));
-  }, []);
+    setShowDetails((prev) => ({ ...prev, [id]: !prev[id] }))
+  }, [])
 
   const handleDownloadCsv = useCallback(() => {
-    if (!finalResults?.length) return;
+    if (!finalResults?.length) return
 
-    const baseName = document.title.toLowerCase().replace(/[^a-z0-9]/g, "-");
-    const fileName = `${baseName}-results.csv`;
+    const baseName = document.title.toLowerCase().replace(/[^a-z0-9]/g, '-')
+    const fileName = `${baseName}-results.csv`
 
-    const headers = Object.keys(finalResults[0]);
+    const headers = Object.keys(finalResults[0])
     const rows = finalResults.map((item) =>
-      headers.map((header) => `"${item[header] || ""}"`).join(","),
-    );
-    const csvContent = [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", fileName);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }, [finalResults, apiObject]);
+      headers.map((header) => `"${item[header] || ''}"`).join(',')
+    )
+    const csvContent = [headers.join(','), ...rows].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', fileName)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }, [finalResults, apiObject])
 
-  const hasVisibleResults = finalResults.some((r) => r.visible);
+  const hasVisibleResults = finalResults.some((r) => r.visible)
+  const actionGroups = [...new Set(finalResults.map((r) => r.groupIndex ?? r.id))]
+  const actionCount = actionGroups.length
+  const failedActionCount = actionGroups.filter((group) =>
+    finalResults.some((r) => (r.groupIndex ?? r.id) === group && r.severity === 'error')
+  ).length
+  const successActionCount = actionCount - failedActionCount
   return (
     <Stack spacing={2} sx={{ minWidth: 0 }}>
       {/* Loading alert */}
@@ -271,6 +291,24 @@ export const CippApiResults = (props) => {
           </Alert>
         </Collapse>
       )}
+      {/* Summary rollup for bulk results */}
+      {!errorsOnly && hasVisibleResults && actionCount > 1 && (
+        <Alert
+          sx={alertSx}
+          variant="outlined"
+          severity={
+            failedActionCount === 0 ? 'success' : successActionCount === 0 ? 'error' : 'warning'
+          }
+        >
+          <Typography variant="body2">
+            {failedActionCount === 0
+              ? `All ${actionCount} actions completed successfully`
+              : `${failedActionCount} of ${actionCount} actions failed${
+                  successActionCount > 0 ? `, ${successActionCount} succeeded` : ''
+                }`}
+          </Typography>
+        </Alert>
+      )}
       {/* Individual result alerts */}
       {hasVisibleResults && (
         <>
@@ -280,24 +318,24 @@ export const CippApiResults = (props) => {
                 <Alert
                   sx={{
                     ...alertSx,
-                    display: "flex",
-                    width: "100%",
-                    "& .MuiAlert-message": {
-                      width: "100%",
-                      flex: "1 1 auto",
+                    display: 'flex',
+                    width: '100%',
+                    '& .MuiAlert-message': {
+                      width: '100%',
+                      flex: '1 1 auto',
                       minWidth: 0, // Allows content to shrink
                     },
-                    "& .MuiAlert-action": {
-                      flex: "0 0 auto",
-                      alignSelf: "flex-start",
-                      marginLeft: "auto",
+                    '& .MuiAlert-action': {
+                      flex: '0 0 auto',
+                      alignSelf: 'flex-start',
+                      marginLeft: 'auto',
                     },
                   }}
                   variant="filled"
-                  severity={resultObj.severity || "success"}
+                  severity={resultObj.severity || 'success'}
                   action={
                     <>
-                      {resultObj.severity === "error" && (
+                      {resultObj.severity === 'error' && (
                         <Button
                           size="small"
                           variant="contained"
@@ -305,23 +343,23 @@ export const CippApiResults = (props) => {
                           startIcon={<Help />}
                           onClick={() => {
                             const searchUrl = `https://docs.cipp.app/?q=Help+with:+${encodeURIComponent(
-                              resultObj.copyField || resultObj.text,
-                            )}&ask=true`;
-                            window.open(searchUrl, "_blank");
+                              resultObj.copyField || resultObj.text
+                            )}&ask=true`
+                            window.open(searchUrl, '_blank')
                           }}
                           sx={{
                             ml: 1,
                             mr: 1,
-                            backgroundColor: "white",
-                            color: "error.main",
-                            "&:hover": {
-                              backgroundColor: "grey.100",
+                            backgroundColor: 'white',
+                            color: 'error.main',
+                            '&:hover': {
+                              backgroundColor: 'grey.100',
                             },
                             py: 0.5,
                             px: 1,
-                            minWidth: "auto",
-                            fontSize: "0.875rem",
-                            whiteSpace: "nowrap",
+                            minWidth: 'auto',
+                            fontSize: '0.875rem',
+                            whiteSpace: 'nowrap',
                           }}
                         >
                           Get Help
@@ -334,13 +372,13 @@ export const CippApiResults = (props) => {
 
                       {resultObj.details && (
                         <Tooltip
-                          title={showDetails[resultObj.id] ? "Hide Details" : "Show Details"}
+                          title={showDetails[resultObj.id] ? 'Hide Details' : 'Show Details'}
                         >
                           <IconButton
                             size="small"
                             color="inherit"
                             onClick={() => toggleDetails(resultObj.id)}
-                            aria-label={showDetails[resultObj.id] ? "Hide Details" : "Show Details"}
+                            aria-label={showDetails[resultObj.id] ? 'Hide Details' : 'Show Details'}
                           >
                             {showDetails[resultObj.id] ? (
                               <ExpandLess fontSize="inherit" />
@@ -362,18 +400,18 @@ export const CippApiResults = (props) => {
                     </>
                   }
                 >
-                  <Box sx={{ width: "100%" }}>
+                  <Box sx={{ width: '100%' }}>
                     <Typography variant="body2">{resultObj.text}</Typography>
                     {resultObj.details && (
                       <Collapse in={showDetails[resultObj.id]}>
-                        <Box mt={2} sx={{ width: "100%" }}>
+                        <Box mt={2} sx={{ width: '100%' }}>
                           <CippCodeBlock
                             code={
-                              typeof resultObj.details === "string"
+                              typeof resultObj.details === 'string'
                                 ? resultObj.details
                                 : JSON.stringify(resultObj.details, null, 2)
                             }
-                            language={typeof resultObj.details === "object" ? "json" : "text"}
+                            language={typeof resultObj.details === 'object' ? 'json' : 'text'}
                             showLineNumbers={false}
                             type="syntax"
                             readOnly={true}
@@ -412,9 +450,9 @@ export const CippApiResults = (props) => {
           title={pageTitle}
           data={finalResults}
           noCard={true}
-          simpleColumns={["severity", "text", "copyField"]}
+          simpleColumns={['severity', 'text', 'copyField']}
         />
       )}
     </Stack>
-  );
-};
+  )
+}

@@ -25,6 +25,7 @@ import {
   IconButton,
   Stack,
   SvgIcon,
+  Tooltip,
   useMediaQuery,
   Popover,
   List,
@@ -54,7 +55,7 @@ export const TopNav = (props) => {
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
   const showPopoverBookmarks = settings.bookmarkPopover === true
   const reorderMode = settings.bookmarkReorderMode || 'arrows'
-  const locked = settings.bookmarkLocked ?? false
+  const locked = settings.bookmarkLocked ?? true
   const handleThemeSwitch = useCallback(() => {
     const themeName = settings.currentTheme?.value === 'light' ? 'dark' : 'light'
     settings.handleUpdate({
@@ -300,13 +301,15 @@ export const TopNav = (props) => {
         </Stack>
         <Stack alignItems="center" direction="row" spacing={1.5}>
           {!mdDown && (
-            <IconButton
-              color="inherit"
-              onClick={() => openUniversalSearch('Users')}
-              title="Open Universal Search (Ctrl/Cmd+Shift+F)"
-            >
-              <TravelExploreIcon color="action" fontSize="small" />
-            </IconButton>
+            <Tooltip title="Search users & entities (Ctrl/Cmd+Shift+F)">
+              <IconButton
+                color="inherit"
+                onClick={() => openUniversalSearch('Users')}
+                aria-label="Open universal search (Ctrl/Cmd+Shift+F)"
+              >
+                <TravelExploreIcon color="action" fontSize="small" />
+              </IconButton>
+            </Tooltip>
           )}
           {!mdDown && (
             <IconButton color="inherit" onClick={handleThemeSwitch}>
@@ -316,15 +319,17 @@ export const TopNav = (props) => {
             </IconButton>
           )}
           {!mdDown && (
-            <IconButton
-              color="inherit"
-              onClick={() => openUniversalSearch('Pages')}
-              title="Open Page Search (Ctrl/Cmd+K)"
-            >
-              <SvgIcon color="action" fontSize="small">
-                <MagnifyingGlassIcon />
-              </SvgIcon>
-            </IconButton>
+            <Tooltip title="Search pages (Ctrl/Cmd+K)">
+              <IconButton
+                color="inherit"
+                onClick={() => openUniversalSearch('Pages')}
+                aria-label="Open page search (Ctrl/Cmd+K)"
+              >
+                <SvgIcon color="action" fontSize="small">
+                  <MagnifyingGlassIcon />
+                </SvgIcon>
+              </IconButton>
+            </Tooltip>
           )}
           {showPopoverBookmarks && (
             <>
@@ -590,18 +595,13 @@ export const TopNav = (props) => {
                               </IconButton>
                             </>
                           )}
-                          {!(reorderMode === 'drag' && locked) && (
+                          {!locked && (
                             <IconButton
                               size="small"
                               onClick={(e) => {
                                 e.preventDefault()
-                                if (locked) {
-                                  triggerLockFlash()
-                                  return
-                                }
                                 removeBookmark(bookmark.path)
                               }}
-                              sx={{ ...(locked && { opacity: 0.4 }) }}
                             >
                               <CloseIcon fontSize="small" />
                             </IconButton>
@@ -628,7 +628,21 @@ export const TopNav = (props) => {
               },
             }}
           >
-            <DialogTitle sx={{ px: 3, pt: 2, pb: 1 }}>Universal Search</DialogTitle>
+            <DialogTitle sx={{ px: 3, pt: 2, pb: 1 }}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                flexWrap="wrap"
+                useFlexGap
+                spacing={1}
+              >
+                <span>Universal Search</span>
+                <Typography variant="caption" color="text.secondary">
+                  Pages: Ctrl/Cmd+K · Users: Ctrl/Cmd+Shift+F · Tenant: Ctrl/Cmd+Alt+K
+                </Typography>
+              </Stack>
+            </DialogTitle>
             <DialogContent sx={{ px: 3, pt: 1, pb: 3 }}>
               <Box>
                 <CippUniversalSearchV2

@@ -38,7 +38,7 @@ import {
   Check,
   Warning,
 } from '@mui/icons-material'
-import standards from '../../../data/standards.json'
+import { getStandards } from '../../../utils/standards-data'
 import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
 import { SvgIcon } from '@mui/material'
 import { useForm } from 'react-hook-form'
@@ -151,6 +151,7 @@ const Page = () => {
           return template?.displayName || template?.templateName || template?.name || guid
         }
 
+        const templateExists = (guid) => !!guid && templateDetails.data.some((t) => t.GUID === guid)
         const allStandards = []
         if (selectedTemplate.standards) {
           Object.entries(selectedTemplate.standards).forEach(([standardKey, standardConfig]) => {
@@ -167,7 +168,7 @@ const Page = () => {
                   tagTemplates.forEach((expandedTemplate) => {
                     const itemTemplateId = expandedTemplate.GUID
                     const standardId = `standards.IntuneTemplate.${itemTemplateId}`
-                    const standardInfo = standards.find(
+                    const standardInfo = getStandards().find(
                       (s) => s.name === `standards.IntuneTemplate`
                     )
 
@@ -231,7 +232,7 @@ const Page = () => {
 
                     // Check if this standard is overridden by another template
                     const tenantTemplateId = standardObject?.TemplateId
-                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                     const overridingTemplateName = isOverridden
                       ? getTemplateDisplayName(tenantTemplateId)
                       : null
@@ -293,7 +294,7 @@ const Page = () => {
                   const itemTemplateId = templateItem.TemplateList?.value
                   if (itemTemplateId) {
                     const standardId = `standards.IntuneTemplate.${itemTemplateId}`
-                    const standardInfo = standards.find(
+                    const standardInfo = getStandards().find(
                       (s) => s.name === `standards.IntuneTemplate`
                     )
 
@@ -356,7 +357,7 @@ const Page = () => {
 
                     // Check if this standard is overridden by another template
                     const tenantTemplateId = standardObject?.TemplateId
-                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                     const overridingTemplateName = isOverridden
                       ? getTemplateDisplayName(tenantTemplateId)
                       : null
@@ -434,7 +435,7 @@ const Page = () => {
                   tagTemplates.forEach((expandedTemplate) => {
                     const itemTemplateId = expandedTemplate.GUID
                     const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`
-                    const standardInfo = standards.find(
+                    const standardInfo = getStandards().find(
                       (s) => s.name === `standards.ConditionalAccessTemplate`
                     )
 
@@ -445,7 +446,7 @@ const Page = () => {
                     const standardObject = currentTenantObj?.[standardId]
                     const directStandardValue = standardObject?.Value
                     const tenantTemplateId = standardObject?.TemplateId
-                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                     const overridingTemplateName = isOverridden
                       ? getTemplateDisplayName(tenantTemplateId)
                       : null
@@ -551,7 +552,7 @@ const Page = () => {
                   const itemTemplateId = templateItem.TemplateList?.value
                   if (itemTemplateId) {
                     const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`
-                    const standardInfo = standards.find(
+                    const standardInfo = getStandards().find(
                       (s) => s.name === `standards.ConditionalAccessTemplate`
                     )
 
@@ -562,7 +563,7 @@ const Page = () => {
                     const standardObject = currentTenantObj?.[standardId]
                     const directStandardValue = standardObject?.Value
                     const tenantTemplateId = standardObject?.TemplateId
-                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                     const overridingTemplateName = isOverridden
                       ? getTemplateDisplayName(tenantTemplateId)
                       : null
@@ -674,7 +675,7 @@ const Page = () => {
                 if (!displayName) return
 
                 const standardId = `standards.QuarantineTemplate.${displayName}`
-                const standardInfo = standards.find(
+                const standardInfo = getStandards().find(
                   (s) => s.name === 'standards.QuarantineTemplate'
                 )
 
@@ -684,7 +685,7 @@ const Page = () => {
                 const standardObject = currentTenantObj?.[standardId]
                 const directStandardValue = standardObject?.Value
                 const tenantTemplateId = standardObject?.TemplateId
-                const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                 const overridingTemplateName = isOverridden
                   ? getTemplateDisplayName(tenantTemplateId)
                   : null
@@ -770,7 +771,7 @@ const Page = () => {
               const groupTemplates = standardConfig.groupTemplate || []
               const actions = standardConfig.action || []
               const standardId = `standards.GroupTemplate`
-              const standardInfo = standards.find((s) => s.name === standardId)
+              const standardInfo = getStandards().find((s) => s.name === standardId)
 
               // Find the tenant's value for this template
               const currentTenantStandard = currentTenantData.find(
@@ -779,7 +780,7 @@ const Page = () => {
               const standardObject = currentTenantObj?.[standardId]
               const directStandardValue = standardObject?.Value
               const tenantTemplateId = standardObject?.TemplateId
-              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
               const overridingTemplateName = isOverridden
                 ? getTemplateDisplayName(tenantTemplateId)
                 : null
@@ -909,7 +910,7 @@ const Page = () => {
             } else {
               // Regular handling for other standards
               const standardId = `standards.${standardKey}`
-              const standardInfo = standards.find((s) => s.name === standardId)
+              const standardInfo = getStandards().find((s) => s.name === standardId)
               const standardSettings = standardConfig.standards?.[standardKey] || {}
               //console.log(standardInfo);
 
@@ -1056,7 +1057,7 @@ const Page = () => {
 
               // Check if this standard is overridden by another template
               const tenantTemplateId = standardObject?.TemplateId
-              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
               const overridingTemplateName = isOverridden
                 ? getTemplateDisplayName(tenantTemplateId)
                 : null
@@ -1121,7 +1122,7 @@ const Page = () => {
               if (standardObject?.TemplateId !== templateId) return
 
               const itemTemplateId = key.replace('standards.IntuneTemplate.', '')
-              const standardInfo = standards.find((s) => s.name === 'standards.IntuneTemplate')
+              const standardInfo = getStandards().find((s) => s.name === 'standards.IntuneTemplate')
               const directStandardValue = standardObject?.Value
 
               let isCompliant = false
@@ -1263,7 +1264,7 @@ const Page = () => {
 
     comparisonData.forEach((standard) => {
       // Find the standard info in the standards.json data
-      const standardInfo = standards.find((s) => standard.standardId.includes(s.name))
+      const standardInfo = getStandards().find((s) => standard.standardId.includes(s.name))
 
       // Use the category from standards.json, or default to "Other Standards"
       const category = standardInfo?.cat || 'Other Standards'
@@ -1718,6 +1719,14 @@ const Page = () => {
                   color={isDriftTemplate ? 'info' : 'default'}
                   variant="outlined"
                 />
+                {isDriftTemplate && (
+                <Chip
+                  label={'Alignment Score May Be Inaccurate For Drift Templates'}
+                  size="small"
+                  color={'warning'}
+                  variant="outlined"
+                />
+                )}
               </Stack>
             )}
             <Menu

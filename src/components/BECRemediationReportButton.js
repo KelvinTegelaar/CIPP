@@ -437,6 +437,7 @@ const BECRemediationReportDocument = ({
   // Calculate statistics
   const stats = {
     newRules: becData?.NewRules?.length || 0,
+    ruleChanges: becData?.InboxRuleChanges?.length || 0,
     newUsers: becData?.NewUsers?.length || 0,
     newApps: becData?.AddedApps?.length || 0,
     permissionChanges: becData?.MailboxPermissionChanges?.length || 0,
@@ -448,6 +449,7 @@ const BECRemediationReportDocument = ({
   const calculateThreatLevel = () => {
     let threatScore = 0
     if (stats.newRules > 0) threatScore += 3
+    if (stats.ruleChanges > 0) threatScore += 3
     if (stats.permissionChanges > 0) threatScore += 2
     if (stats.newApps > 0) threatScore += 2
     if (stats.newUsers > 5) threatScore += 1
@@ -738,7 +740,7 @@ const BECRemediationReportDocument = ({
             </Text>
           </View>
 
-          {stats.newRules > 0 ? (
+          {stats.newRules > 0 && (
             <>
               <View style={styles.alertBox}>
                 <Text style={styles.alertTitle}>⚠ {stats.newRules} Mailbox Rule(s) Found</Text>
@@ -758,6 +760,7 @@ const BECRemediationReportDocument = ({
                     {rule.MoveToFolder && `Moves to: ${rule.MoveToFolder}`}
                     {rule.ForwardTo && `\nForwards to: ${rule.ForwardTo}`}
                     {rule.DeleteMessage && '\nDeletes messages'}
+                    {rule.RecentlyChanged && '\nCreated or changed in the last 7 days'}
                   </Text>
                 </View>
               ))}
@@ -767,7 +770,42 @@ const BECRemediationReportDocument = ({
                 </Text>
               )}
             </>
-          ) : (
+          )}
+          {stats.ruleChanges > 0 && (
+            <>
+              <View style={styles.alertBox}>
+                <Text style={styles.alertTitle}>
+                  ⚠ {stats.ruleChanges} Rule Change(s) in the Last 7 Days
+                </Text>
+                <Text style={styles.alertText}>
+                  The audit log recorded inbox rules being created, changed or removed on this
+                  mailbox. Rules that were removed after use are a common way for attackers to cover
+                  their tracks.
+                </Text>
+              </View>
+
+              {becData.InboxRuleChanges.slice(0, 10).map((change, index) => (
+                <View key={index} style={styles.infoBox}>
+                  <Text style={styles.infoTitle}>
+                    {change.Operation || 'Rule Change'}: {change.RuleName || 'Unnamed Rule'}
+                  </Text>
+                  <Text style={styles.infoText}>
+                    Date: {change.Date || 'Unknown'}
+                    {'\n'}
+                    By: {change.UserKey || 'Unknown'}
+                    {change.Parameters && `\nParameters: ${change.Parameters}`}
+                  </Text>
+                </View>
+              ))}
+              {becData.InboxRuleChanges.length > 10 && (
+                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
+                  ... and {becData.InboxRuleChanges.length - 10} more changes (see JSON export for
+                  full list)
+                </Text>
+              )}
+            </>
+          )}
+          {stats.newRules === 0 && stats.ruleChanges === 0 && (
             <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
               <Text style={[styles.infoTitle, { color: '#22543D' }]}>
                 ✓ No Suspicious Rules Found
@@ -1343,6 +1381,8 @@ const BECRemediationReportDocument = ({
               Threat Level: {threatLevel.level}
               {'\n'}
               Mailbox Rules Found: {stats.newRules}
+              {'\n'}
+              Rule Changes: {stats.ruleChanges}
               {'\n'}
               Permission Changes: {stats.permissionChanges}
               {'\n'}

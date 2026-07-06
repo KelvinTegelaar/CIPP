@@ -39,7 +39,7 @@ import { useSettings } from '../../../hooks/use-settings'
 import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
 import { useDialog } from '../../../hooks/use-dialog'
 import tabOptions from './tabOptions.json'
-import standardsData from '../../../data/standards.json'
+import { getStandards } from '../../../utils/standards-data'
 import { createDriftManagementActions } from './driftManagementActions'
 import { ExecutiveReportButton } from '../../../components/ExecutiveReportButton'
 import { CippAutoComplete } from '../../../components/CippComponents/CippAutocomplete'
@@ -151,9 +151,9 @@ const ManageDriftPage = () => {
     const settingName = getDriftTaskSettingName(standardName)
     if (!settingName || !tenantFilter) return false
 
-    const expectedTaskName =
+    const expectedPrefix =
       `Persistent Drift Remediation: ${settingName} - ${tenantFilter}`.toLowerCase()
-    return persistentTaskNameSet.has(expectedTaskName)
+    return [...persistentTaskNameSet].some((name) => name.startsWith(expectedPrefix))
   }
 
   // Process drift data for chart - filter by current tenant and aggregate
@@ -384,7 +384,7 @@ const ManageDriftPage = () => {
     if (!standardName) return 'Unknown Standard'
 
     // Find the standard in standards.json by name
-    const standard = standardsData.find((s) => s.name === standardName)
+    const standard = getStandards().find((s) => s.name === standardName)
     if (standard && standard.label) {
       return standard.label
     }
@@ -399,7 +399,7 @@ const ManageDriftPage = () => {
     if (!standardName) return null
 
     // Find the standard in standards.json by name
-    const standard = standardsData.find((s) => s.name === standardName)
+    const standard = getStandards().find((s) => s.name === standardName)
     if (standard) {
       return standard.helpText || standard.docsDescription || standard.executiveText || null
     }
@@ -1550,7 +1550,7 @@ const ManageDriftPage = () => {
     if (standardName.includes('QuarantineTemplate')) return 'Defender Standards'
 
     // For other standards, look up category in standards.json
-    const standard = standardsData.find((s) => s.name === standardName)
+    const standard = getStandards().find((s) => s.name === standardName)
     if (standard && standard.cat) {
       return standard.cat
     }
@@ -1948,11 +1948,11 @@ const ManageDriftPage = () => {
                               onClick={() => handleBulkAction('accept-all-customer-specific')}
                             >
                               <CheckBox sx={{ mr: 1, color: 'success.main' }} />
-                              Accept All Deviations - Customer Specific
+                              Accept Selected Deviations - Customer Specific
                             </MenuItem>
                             <MenuItem onClick={() => handleBulkAction('accept-all')}>
                               <Check sx={{ mr: 1, color: 'info.main' }} />
-                              Accept All Deviations
+                              Accept Selected Deviations
                             </MenuItem>
                             {/* Only show delete option if there are template deviations that support deletion */}
                             {processedDriftData.currentDeviations.some(
@@ -1965,12 +1965,12 @@ const ManageDriftPage = () => {
                             ) && (
                               <MenuItem onClick={() => handleBulkAction('deny-all-delete')}>
                                 <Block sx={{ mr: 1, color: 'error.main' }} />
-                                Deny All Deviations - Delete
+                                Deny Selected Deviations - Delete
                               </MenuItem>
                             )}
                             <MenuItem onClick={() => handleBulkAction('deny-all-remediate')}>
                               <Cancel sx={{ mr: 1, color: 'error.main' }} />
-                              Deny All Deviations - Remediate to align with template
+                              Deny Selected Deviations - Remediate to align with template
                             </MenuItem>
                             <MenuItem onClick={handleRemoveDriftCustomization}>
                               <Block sx={{ mr: 1, color: 'warning.main' }} />
@@ -2068,6 +2068,7 @@ const ManageDriftPage = () => {
               type: 'textField',
               name: 'reason',
               label: 'Reason for change (Mandatory)',
+              required: true,
             },
             ...(actionData.data?.deviations?.some((d) => d.status === 'DeniedRemediate')
               ? [

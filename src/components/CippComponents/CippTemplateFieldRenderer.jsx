@@ -3,13 +3,14 @@ import { Typography, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "./CippFormComponent";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
-import intuneCollection from "../../data/intuneCollection.json";
+import { useIntuneCollection } from "../../hooks/use-intune-collection";
 
 const CippTemplateFieldRenderer = ({
   templateData,
   formControl,
   templateType = "conditionalAccess",
 }) => {
+  const intuneCollection = useIntuneCollection();
   const intuneDefinitionMap = useMemo(() => {
     const map = new Map();
     (intuneCollection || []).forEach((def) => {
@@ -18,7 +19,7 @@ const CippTemplateFieldRenderer = ({
       }
     });
     return map;
-  }, []);
+  }, [intuneCollection]);
   // Default blacklisted fields with wildcard support
   const defaultBlacklistedFields = [
     "id",
@@ -174,9 +175,9 @@ const CippTemplateFieldRenderer = ({
           options: [
             { label: "Not Configured", value: "notConfigured" },
             { label: "Disabled", value: "disabled" },
-            { label: "Enabled for Azure AD Joined", value: "enabledForAzureAd" },
+            { label: "Enabled for Microsoft Entra Joined", value: "enabledForAzureAd" },
             {
-              label: "Enabled for Azure AD and Hybrid Joined",
+              label: "Enabled for Microsoft Entra and Hybrid Joined",
               value: "enabledForAzureAdAndHybrid",
             },
           ],

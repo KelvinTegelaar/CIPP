@@ -68,6 +68,11 @@
         "inputType": "switch",
         "inputLabel": "Exclude disabled users?",
         "inputName": "ExcludeDisabled"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include users who have never signed in (e.g. sign-in blocked)?",
+        "inputName": "IncludeNeverSignedIn"
       }
     ]
   },
@@ -391,7 +396,7 @@
   {
     "name": "IntunePolicyConflicts",
     "label": "Alert on Intune policy or app conflicts/errors",
-    "recommendedRunInterval": "4h",
+    "recommendedRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -441,9 +446,9 @@
   },
   {
     "name": "HuntressRogueApps",
-    "label": "Alert on Huntress Rogue Apps detected",
+    "label": "Alert on Huntress or CIPP Rogue Apps detected",
     "recommendedRunInterval": "4h",
-    "description": "Huntress has provided a repository of known rogue apps that are commonly used in BEC, data exfiltration and other Microsoft 365 attacks. This alert will notify you if any of these apps are detected in the selected tenant(s). For more information, see <a href='https://huntresslabs.github.io/rogueapps/' target='_blank'>https://huntresslabs.github.io/rogueapps/</a>.",
+    "description": "Huntress has provided a repository of known rogue apps that are commonly used in BEC, data exfiltration and other Microsoft 365 attacks. This alert will notify you if any of these apps are detected in the selected tenant(s). For more information, see <a href='https://huntresslabs.github.io/rogueapps/' target='_blank'>https://huntresslabs.github.io/rogueapps/</a>. CIPP also has a list of community collected rogue apps.",
     "requiresInput": true,
     "inputType": "switch",
     "inputLabel": "Ignore Disabled Apps?",

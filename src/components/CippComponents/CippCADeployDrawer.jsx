@@ -1,92 +1,92 @@
-import { useEffect, useState, useCallback } from "react";
-import { Button, Stack } from "@mui/material";
-import { RocketLaunch } from "@mui/icons-material";
-import { useForm, useWatch } from "react-hook-form";
-import { CippOffCanvas } from "./CippOffCanvas";
-import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-import CippFormComponent from "./CippFormComponent";
-import CippJsonView from "../CippFormPages/CippJSONView";
-import { CippApiResults } from "./CippApiResults";
-import { useSettings } from "../../hooks/use-settings";
-import { CippFormTenantSelector } from "./CippFormTenantSelector";
-import { CippFormCondition } from "./CippFormCondition";
+import { useEffect, useState, useCallback } from 'react'
+import { Button, Stack } from '@mui/material'
+import { RocketLaunch } from '@mui/icons-material'
+import { useForm, useWatch } from 'react-hook-form'
+import { CippOffCanvas } from './CippOffCanvas'
+import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
+import CippFormComponent from './CippFormComponent'
+import CippJsonView from '../CippFormPages/CippJSONView'
+import { CippApiResults } from './CippApiResults'
+import { useSettings } from '../../hooks/use-settings'
+import { CippFormTenantSelector } from './CippFormTenantSelector'
+import { CippFormCondition } from './CippFormCondition'
 
 export const CippCADeployDrawer = ({
-  buttonText = "Deploy CA Policy",
+  buttonText = 'Deploy CA Policy',
   requiredPermissions = [],
   PermissionButton = Button,
   templateId = null, // New prop for pre-supplying template ID
   open = null, // External control for drawer visibility
   onClose = null, // External close handler
 }) => {
-  const [internalDrawerVisible, setInternalDrawerVisible] = useState(false);
-  const formControl = useForm();
-  const tenantFilter = useSettings()?.tenantFilter;
-  const CATemplates = ApiGetCall({ url: "/api/ListCATemplates", queryKey: "CATemplates" });
-  const [JSONData, setJSONData] = useState();
-  const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
+  const [internalDrawerVisible, setInternalDrawerVisible] = useState(false)
+  const formControl = useForm()
+  const tenantFilter = useSettings()?.tenantFilter
+  const CATemplates = ApiGetCall({ url: '/api/ListCATemplates', queryKey: 'CATemplates' })
+  const [JSONData, setJSONData] = useState()
+  const watcher = useWatch({ control: formControl.control, name: 'TemplateList' })
   const selectedReplaceMode = useWatch({
     control: formControl.control,
-    name: "replacename",
-  });
+    name: 'replacename',
+  })
 
   // Use external open state if provided, otherwise use internal state
-  const drawerVisible = open !== null ? open : internalDrawerVisible;
-  const isExternallyControlled = open !== null && onClose !== null;
+  const drawerVisible = open !== null ? open : internalDrawerVisible
+  const isExternallyControlled = open !== null && onClose !== null
 
   const updateTemplate = useCallback(
     (templateGuid) => {
       if (CATemplates.isSuccess && templateGuid) {
-        const template = CATemplates.data.find((template) => template.GUID === templateGuid);
+        const template = CATemplates.data.find((template) => template.GUID === templateGuid)
         if (template) {
-          setJSONData(template);
-          formControl.setValue("rawjson", JSON.stringify(template, null));
+          setJSONData(template)
+          formControl.setValue('rawjson', JSON.stringify(template, null))
         }
       }
     },
     [CATemplates.isSuccess, CATemplates.data, formControl.setValue]
-  );
+  )
 
   // Effect to set template when templateId prop is provided
   useEffect(() => {
     if (templateId && CATemplates.isSuccess) {
       // Find the template to get the display name
-      const template = CATemplates.data.find((template) => template.GUID === templateId);
+      const template = CATemplates.data.find((template) => template.GUID === templateId)
       if (template) {
         // Pre-select the template when drawer opens
-        formControl.setValue("TemplateList", { value: templateId, label: template.displayName });
-        updateTemplate(templateId);
+        formControl.setValue('TemplateList', { value: templateId, label: template.displayName })
+        updateTemplate(templateId)
       }
     }
-  }, [templateId, CATemplates.isSuccess, formControl, updateTemplate]);
+  }, [templateId, CATemplates.isSuccess, formControl, updateTemplate])
 
   useEffect(() => {
-    updateTemplate(watcher?.value);
-  }, [updateTemplate, watcher?.value]);
+    updateTemplate(watcher?.value)
+  }, [updateTemplate, watcher?.value])
 
   const deployPolicy = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["CATemplates", `Conditional Access Policies - ${tenantFilter}`],
-  });
+    relatedQueryKeys: ['CATemplates', `Conditional Access Policies - ${tenantFilter}`],
+  })
 
   const handleSubmit = () => {
-    const formData = formControl.getValues();
-    console.log("Submitting CA form data:", formData);
+    const formData = formControl.getValues()
+    console.log('Submitting CA form data:', formData)
     deployPolicy.mutate({
-      url: "/api/AddCAPolicy",
-      relatedQueryKeys: ["CATemplates", "Conditional Access Policies"],
+      url: '/api/AddCAPolicy',
+      relatedQueryKeys: ['CATemplates', 'Conditional Access Policies'],
       data: { ...formData },
-    });
-  };
+    })
+  }
 
   const handleCloseDrawer = () => {
     if (isExternallyControlled) {
-      onClose();
+      onClose()
     } else {
-      setInternalDrawerVisible(false);
+      setInternalDrawerVisible(false)
     }
-    formControl.reset();
-  };
+    formControl.reset()
+  }
 
   return (
     <>
@@ -115,10 +115,10 @@ export const CippCADeployDrawer = ({
                 disabled={deployPolicy.isLoading}
               >
                 {deployPolicy.isLoading
-                  ? "Deploying..."
+                  ? 'Deploying...'
                   : deployPolicy.isSuccess
-                  ? "Redeploy Policy"
-                  : "Deploy Policy"}
+                    ? 'Redeploy Policy'
+                    : 'Deploy Policy'}
               </Button>
               <Button variant="outlined" onClick={handleCloseDrawer}>
                 Close
@@ -141,9 +141,10 @@ export const CippCADeployDrawer = ({
           <CippFormComponent
             type="autoComplete"
             name="TemplateList"
-            label={templateId ? "Selected Template" : "Please choose a template to apply."}
+            label={templateId ? 'Selected Template' : 'Please choose a template to apply.'}
             isFetching={CATemplates.isLoading}
             multiple={false}
+            creatable={false}
             formControl={formControl}
             disabled={!!templateId} // Disable if templateId is provided
             options={
@@ -172,9 +173,9 @@ export const CippCADeployDrawer = ({
             label="How should groups and users be handled?"
             formControl={formControl}
             options={[
-              { value: "leave", label: "Leave the groups and users as is" },
-              { value: "displayName", label: "Replace by display name" },
-              { value: "AllUsers", label: "Remove all exclusions, apply to all users" },
+              { value: 'leave', label: 'Leave the groups and users as is' },
+              { value: 'displayName', label: 'Replace by display name' },
+              { value: 'AllUsers', label: 'Remove all exclusions, apply to all users' },
             ]}
           />
 
@@ -184,10 +185,10 @@ export const CippCADeployDrawer = ({
             label="Policy State"
             formControl={formControl}
             options={[
-              { value: "donotchange", label: "Do not change state" },
-              { value: "Enabled", label: "Set to enabled" },
-              { value: "Disabled", label: "Set to disabled" },
-              { value: "enabledForReportingButNotEnforced", label: "Set to report only" },
+              { value: 'donotchange', label: 'Do not change state' },
+              { value: 'Enabled', label: 'Set to enabled' },
+              { value: 'Disabled', label: 'Set to disabled' },
+              { value: 'enabledForReportingButNotEnforced', label: 'Set to report only' },
             ]}
           />
 
@@ -217,14 +218,14 @@ export const CippCADeployDrawer = ({
               label="Create groups if they do not exist"
               formControl={formControl}
               helperText={
-                selectedReplaceMode !== "displayName"
+                selectedReplaceMode !== 'displayName'
                   ? "Select 'Replace by display name' to create groups specified in the template."
-                  : "Enable this option to create groups that do not exist in the tenant."
+                  : 'Enable this option to create groups that do not exist in the tenant.'
               }
             />
           </CippFormCondition>
         </Stack>
       </CippOffCanvas>
     </>
-  );
-};
+  )
+}

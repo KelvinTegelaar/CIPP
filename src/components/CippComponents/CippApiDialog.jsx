@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { useForm, useFormState } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
+import { CippFormCondition } from "./CippFormCondition";
 
 export const CippApiDialog = (props) => {
   const {
@@ -84,6 +85,18 @@ export const CippApiDialog = (props) => {
       api?.onSuccess?.(result);
     },
   });
+
+  // Whenever the dialog is (re)opened, discard any results from a previous run
+  // so a freshly created window never shows stale output from an earlier action.
+  // The POST mutation and GET query retain their last result while this component
+  // stays mounted, so clear both alongside the streamed partial results.
+  useEffect(() => {
+    if (createDialog.open) {
+      setPartialResults([]);
+      actionPostRequest.reset();
+      setGetRequestInfo((prev) => ({ ...prev, waiting: false, queryKey: "" }));
+    }
+  }, [createDialog.open]);
 
   const processActionData = (dataObject, row, replacementBehaviour) => {
     if (typeof api?.dataFunction === "function") return api.dataFunction(row, dataObject);
@@ -231,12 +244,15 @@ export const CippApiDialog = (props) => {
   useEffect(() => {
     if (api?.setDefaultValues && createDialog.open) {
       fields.forEach((field) => {
-        const val = row[field.name];
+        const targetName = field.name.replace(/\[(\w+)\]/g, ".$1");
+        const val = targetName
+          .split(".")
+          .reduce((acc, key) => (acc != null ? acc[key] : undefined), row);
         if (
           (typeof val === "string" && field.type === "textField") ||
           (typeof val === "boolean" && field.type === "switch")
         ) {
-          formHook.setValue(field.name, val);
+          formHook.setValue(targetName, val);
         } else if (Array.isArray(val) && field.type === "autoComplete") {
           const values = val
             .map((el) =>
@@ -247,10 +263,10 @@ export const CippApiDialog = (props) => {
                   : null,
             )
             .filter(Boolean);
-          formHook.setValue(field.name, values);
+          formHook.setValue(targetName, values);
         } else if (field.type === "autoComplete" && val) {
           formHook.setValue(
-            field.name,
+            targetName,
             typeof val === "string"
               ? { label: val, value: val }
               : val.label && val.value
@@ -330,7 +346,7 @@ export const CippApiDialog = (props) => {
         (_, key) => getNestedValue(row, key) || `[${key}]`,
       );
     } else if (row.length > 1) {
-      confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, "the selected rows");
+      confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, `the ${row.length} selected rows`);
     } else if (row.length === 1) {
       confirmText = api.confirmText.replace(
         /\[([^\]]+)\]/g,
@@ -343,7 +359,7 @@ export const CippApiDialog = (props) => {
       if (typeof element === "string") {
         if (Array.isArray(row)) {
           return row.length > 1
-            ? element.replace(/\[([^\]]+)\]/g, "the selected rows")
+            ? element.replace(/\[([^\]]+)\]/g, `the ${row.length} selected rows`)
             : element.replace(
                 /\[([^\]]+)\]/g,
                 (_, key) => getNestedValue(row[0], key) || `[${key}]`,
@@ -382,17 +398,29 @@ export const CippApiDialog = (props) => {
                   )
                 ) : (
                   <>
-                    {fields?.map((fieldProps, i) => (
-                      <Box key={i} sx={{ width: "100%" }}>
+                    {fields?.map((fieldProps, i) => {
+                      const { condition, ...rest } = fieldProps;
+                      const fieldElement = (
                         <CippFormComponent
                           formControl={formHook}
                           addedFieldData={addedFieldData}
                           setAddedFieldData={setAddedFieldData}
                           row={row}
-                          {...fieldProps}
+                          {...rest}
                         />
-                      </Box>
-                    ))}
+                      );
+                      return (
+                        <Box key={i} sx={{ width: "100%" }}>
+                          {condition ? (
+                            <CippFormCondition {...condition} formControl={formHook}>
+                              {fieldElement}
+                            </CippFormCondition>
+                          ) : (
+                            fieldElement
+                          )}
+                        </Box>
+                      );
+                    })}
                   </>
                 )}
               </Stack>

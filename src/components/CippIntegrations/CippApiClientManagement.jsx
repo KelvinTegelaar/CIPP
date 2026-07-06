@@ -1,4 +1,4 @@
-import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert } from "@mui/material";
+import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert, Tooltip } from "@mui/material";
 import { useState, useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
 import { useRouter } from "next/router";
@@ -14,7 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { Create, Key, Save, Sync } from "@mui/icons-material";
+import { Create, InfoOutlined, Key, Save, Sync } from "@mui/icons-material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { Box } from "@mui/system";
@@ -315,6 +315,22 @@ const CippApiClientManagement = () => {
               label: "API Url",
               value: azureConfig.data?.Results?.ApiUrl ? (
                 <CippCopyToClipBoard type="chip" text={azureConfig.data?.Results?.ApiUrl} />
+              ) : (
+                "Not Available"
+              ),
+            },
+            {
+              label: "MCP API URL",
+              value: azureConfig.data?.Results?.ApiUrl ? (
+                <>
+                  <CippCopyToClipBoard
+                    type="chip"
+                    text={`${azureConfig.data.Results.ApiUrl.replace(/\/+$/, "")}/api/ExecMcp`}
+                  />
+                  <Tooltip title="Use this full URL when adding CIPP as an MCP connector in an AI client (e.g. Claude custom connectors).">
+                    <InfoOutlined color="action" sx={{ fontSize: 16, verticalAlign: "middle" }} />
+                  </Tooltip>
+                </>
               ) : (
                 "Not Available"
               ),

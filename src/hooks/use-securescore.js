@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ApiGetCall } from "../api/ApiCall";
 import { useSettings } from "./use-settings";
-import standards from "../data/standards.json";
+import { getStandards } from "../utils/standards-data";
 
 export function useSecureScore({ waiting = true } = {}) {
   const currentTenant = useSettings().currentTenant;
@@ -57,7 +57,7 @@ export function useSecureScore({ waiting = true } = {}) {
         const translation = controlScore.data.Results?.find(
           (controlTranslation) => controlTranslation.id === control.controlName,
         );
-        const remediation = standards.find((standard) =>
+        const remediation = getStandards().find((standard) =>
           standard.tag?.includes(control.controlName),
         );
         return {

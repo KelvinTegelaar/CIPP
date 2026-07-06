@@ -62,8 +62,12 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
       },
     ],
     confirmText:
-      "Create a deployment template from '[displayName]'? This will copy all permissions and create a reusable template. If you run this from a customer tenant, the App Registration will first be copied to the partner tenant as a multi-tenant app.",
-    condition: (row) => canWriteApplication && !row?.applicationTemplateId,
+      "'[displayName]' is a multi-tenant app, so a multi-tenant Enterprise App template will be created. This copies all permissions into a reusable template. If you run this from a customer tenant, the App Registration will first be copied to the partner tenant as a multi-tenant app.",
+    condition: (row) =>
+      canWriteApplication &&
+      !row?.applicationTemplateId &&
+      (row?.signInAudience === 'AzureADMultipleOrgs' ||
+        row?.signInAudience === 'AzureADandPersonalMicrosoftAccount'),
   },
   {
     icon: <ContentCopy />,
@@ -72,8 +76,6 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
     color: 'success',
     multiPost: false,
     url: '/api/ExecAppApprovalTemplate',
-    confirmText:
-      "Create a manifest template from '[displayName]'? This will create a reusable template that can be deployed as a single-tenant app in any tenant.",
     fields: [
       {
         label: 'Template Name',
@@ -115,7 +117,8 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
         ApplicationManifest: cleanManifest,
       }
     },
-    confirmText: 'Are you sure you want to create a template from this app registration?',
+    confirmText:
+      "'[displayName]' is a single-tenant app, so a single-tenant Application Manifest template will be created. This captures the app manifest into a reusable template that can be deployed to any tenant.",
     condition: (row) =>
       canWriteApplication && row.signInAudience === 'AzureADMyOrg' && !row?.applicationTemplateId,
   },

@@ -72,6 +72,15 @@ const Page = () => {
     waiting: waiting && !!graphUserRequest.data?.[0]?.userPrincipalName,
   });
 
+  const mailboxAccessRequest = ApiGetCall({
+    // Encode the UPN - guest UPNs contain #EXT#, which would truncate the query string
+    url: `/api/ListMailboxPermissions?tenantFilter=${userSettingsDefaults.currentTenant}&UseReportDB=true&ByUser=true&User=${encodeURIComponent(
+      graphUserRequest.data?.[0]?.userPrincipalName ?? "",
+    )}`,
+    queryKey: `MailboxAccess-${userId}`,
+    waiting: waiting && !!graphUserRequest.data?.[0]?.userPrincipalName,
+  });
+
   const usersList = ApiGetCall({
     url: "/api/ListGraphRequest",
     data: {
@@ -649,6 +658,67 @@ const Page = () => {
             );
           },
         },
+      },
+    },
+  ];
+
+  const mailboxAccessActions = [
+    {
+      label: "Remove Permission",
+      type: "POST",
+      icon: <Delete />,
+      url: "/api/ExecModifyMBPerms",
+      customDataformatter: (row, action, formData) => {
+        const rowArray = Array.isArray(row) ? row : [row];
+        return {
+          mailboxRequests: rowArray.map((r) => ({
+            userID: r.MailboxUPN,
+            permissions: [
+              {
+                UserID: graphUserRequest.data?.[0]?.userPrincipalName,
+                PermissionLevel: r.AccessRights,
+                Modification: "Remove",
+              },
+            ],
+          })),
+          tenantFilter: userSettingsDefaults.currentTenant,
+        };
+      },
+      confirmText: "Are you sure you want to remove this user's access to the selected mailboxes?",
+      multiPost: false,
+      relatedQueryKeys: [`MailboxAccess-${userId}`],
+    },
+  ];
+
+  const mailboxAccessData = mailboxAccessRequest.data?.[0]?.Permissions ?? [];
+
+  const mailboxAccessCard = [
+    {
+      id: 1,
+      cardLabelBox: {
+        cardLabelBoxHeader: mailboxAccessRequest.isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : mailboxAccessData.length !== 0 ? (
+          <Check />
+        ) : (
+          <Error />
+        ),
+      },
+      text: "Mailbox Access",
+      subtext: mailboxAccessRequest.isError
+        ? "Could not load the cached permission report - sync the mailbox permissions cache and try again"
+        : mailboxAccessData.length !== 0
+          ? "This user has access to other mailboxes (from the cached permission report)"
+          : "This user has no access to other mailboxes (from the cached permission report)",
+      statusColor: "green.main",
+      table: {
+        title: "Mailbox Access",
+        hideTitle: true,
+        data: mailboxAccessData,
+        refreshFunction: () => mailboxAccessRequest.refetch(),
+        isFetching: mailboxAccessRequest.isFetching,
+        simpleColumns: ["Mailbox", "MailboxUPN", "AccessRights"],
+        actions: mailboxAccessActions,
       },
     },
   ];
@@ -1341,6 +1411,11 @@ const Page = () => {
                     <CippBannerListCard
                       isFetching={userRequest.isLoading}
                       items={permissions}
+                      isCollapsible={true}
+                    />
+                    <CippBannerListCard
+                      isFetching={mailboxAccessRequest.isLoading}
+                      items={mailboxAccessCard}
                       isCollapsible={true}
                     />
                     <CippBannerListCard

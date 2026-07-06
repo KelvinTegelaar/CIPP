@@ -1,0 +1,28 @@
+# SCA: Fails PRs that introduce dependencies with known vulnerabilities
+# ISO 27001:2022 A.8.28/8.29 evidence — Software Composition Analysis at merge time
+name: Dependency Review
+on:
+  pull_request:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    if: github.repository_owner == 'KelvinTegelaar'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Block merge on known vulnerabilities of moderate severity or higher
+          fail-on-severity: moderate
+          # Surface results as a PR comment for contributor visibility
+          comment-summary-in-pr: on-failure
+          # Optional: block copyleft-incompatible licenses (adjust for AGPL-3.0 project policy)
+          # deny-licenses: GPL-1.0-only

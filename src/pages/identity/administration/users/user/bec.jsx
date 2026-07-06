@@ -108,7 +108,14 @@ const Page = () => {
       if (hasPotentialBreach) {
         return "Potential Breach found. The rules for this user contain classic signs of a breach.";
       }
+      const recentCount = becPollingCall.data.NewRules.filter((rule) => rule.RecentlyChanged).length;
+      if (recentCount > 0) {
+        return `Rules have been found, ${recentCount} of which were created or changed in the last 7 days. Please review the list below and take action as needed.`;
+      }
       return "Rules have been found. Please review the list below and take action as needed.";
+    }
+    if (becPollingCall.data.InboxRuleChanges && becPollingCall.data.InboxRuleChanges.length > 0) {
+      return "No rules currently exist on the mailbox, but rules were created, changed or removed in the last 7 days. Please review the changes below.";
     }
     return "No new rules found.";
   };
@@ -145,6 +152,14 @@ const Page = () => {
       return "Mailbox permission changes have been found.";
     }
     return "No mailbox permission changes found.";
+  };
+
+  const getSentMessagesMessage = () => {
+    if (!becPollingCall.data) return null;
+    if (becPollingCall.data.SentMessages && becPollingCall.data.SentMessages.length > 0) {
+      return "Sent messages have been found. Please review the list below for any suspicious activity.";
+    }
+    return "No sent messages found in the specified time range.";
   };
 
   const subtitle = userRequest.isSuccess
@@ -292,8 +307,8 @@ const Page = () => {
                       <Box>Check 1: Mailbox Rules</Box>
                       <Stack direction="row" spacing={2}>
                         {becPollingCall.data &&
-                        becPollingCall.data.NewRules &&
-                        becPollingCall.data.NewRules.length > 0 ? (
+                        (becPollingCall.data.NewRules?.length > 0 ||
+                          becPollingCall.data.InboxRuleChanges?.length > 0) ? (
                           <SvgIcon color="success">
                             <CheckCircle />
                           </SvgIcon>
@@ -315,11 +330,40 @@ const Page = () => {
                     becPollingCall.data.NewRules.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.NewRules.map((rule, index) => (
+                          {[...becPollingCall.data.NewRules]
+                            .sort(
+                              (a, b) =>
+                                (b?.RecentlyChanged === true) - (a?.RecentlyChanged === true),
+                            )
+                            .map((rule, index) => (
+                              <PropertyListItem
+                                key={index}
+                                label={
+                                  rule?.RecentlyChanged
+                                    ? `${rule?.Name} - changed in last 7 days`
+                                    : rule?.Name
+                                }
+                                value={rule?.Description}
+                              />
+                            ))}
+                        </PropertyList>
+                      </Box>
+                    )}
+                  {becPollingCall.data &&
+                    becPollingCall.data.InboxRuleChanges &&
+                    becPollingCall.data.InboxRuleChanges.length > 0 && (
+                      <Box mt={2}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Rule changes in the last 7 days
+                        </Typography>
+                        <PropertyList>
+                          {becPollingCall.data.InboxRuleChanges.map((change, index) => (
                             <PropertyListItem
                               key={index}
-                              label={rule?.Name}
-                              value={rule?.Description}
+                              label={`${change?.Operation} - ${change?.RuleName}`}
+                              value={`${change?.Date} by ${change?.UserKey}${
+                                change?.Parameters ? ` | ${change.Parameters}` : ""
+                              }`}
                             />
                           ))}
                         </PropertyList>
@@ -459,12 +503,56 @@ const Page = () => {
                     )}
                 </CippButtonCard>
 
+                {/* Check 5: Sent Messages */}
                 <CippButtonCard
                   variant="outlined"
                   isFetching={false}
                   title={
                     <Stack direction="row" justifyContent={"space-between"}>
-                      <Box>Check 5: MFA Devices</Box>
+                      <Box>Check 5: Sent Messages</Box>
+                      <Stack direction="row" spacing={2}>
+                        {becPollingCall.data &&
+                        becPollingCall.data.SentMessages &&
+                        becPollingCall.data.SentMessages.length > 0 ? (
+                          <SvgIcon color="success">
+                            <CheckCircle />
+                          </SvgIcon>
+                        ) : (
+                          <SvgIcon color="disabled">
+                            <CheckCircle />
+                          </SvgIcon>
+                        )}
+                      </Stack>
+                    </Stack>
+                  }
+                >
+                  <Typography variant="body2" gutterBottom>
+                    {getSentMessagesMessage()}
+                  </Typography>
+                  {/* Display sent messages */}
+                  {becPollingCall.data &&
+                    becPollingCall.data.SentMessages &&
+                    becPollingCall.data.SentMessages.length > 0 && (
+                      <Box mt={2}>
+                        <PropertyList>
+                          {becPollingCall.data.SentMessages.map((message, index) => (
+                            <PropertyListItem
+                              key={index}
+                              label={`${message?.Subject} to ${message?.RecipientAddress}`}
+                              value={`Status: ${message?.Status} | Sent: ${message?.Received} | From IP: ${message?.FromIP}`}
+                            />
+                          ))}
+                        </PropertyList>
+                      </Box>
+                    )}
+                </CippButtonCard>
+
+                <CippButtonCard
+                  variant="outlined"
+                  isFetching={false}
+                  title={
+                    <Stack direction="row" justifyContent={"space-between"}>
+                      <Box>Check 6: MFA Devices</Box>
                       <Stack direction="row" spacing={2}>
                         {becPollingCall.data &&
                         becPollingCall.data.MFADevices &&
@@ -508,7 +596,7 @@ const Page = () => {
                   isFetching={false}
                   title={
                     <Stack direction="row" justifyContent={"space-between"}>
-                      <Box>Check 6: Password Changes</Box>
+                      <Box>Check 7: Password Changes</Box>
                       <Stack direction="row" spacing={2}>
                         {becPollingCall.data &&
                         becPollingCall.data.ChangedPasswords &&
@@ -546,7 +634,7 @@ const Page = () => {
                     )}
                 </CippButtonCard>
 
-                {/* Check 6: Report Data */}
+                {/* Check 8: Report Data */}
                 <CippButtonCard
                   variant="outlined"
                   isFetching={false}

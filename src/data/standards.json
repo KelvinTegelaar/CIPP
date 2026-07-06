@@ -378,8 +378,8 @@
     "cat": "Global Standards",
     "tag": ["CIS M365 7.0.0 (1.3.6)", "CustomerLockBoxEnabled"],
     "appliesToTest": ["CIS_1_3_6"],
-    "helpText": "**Requires Entra ID P2.** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
-    "docsDescription": "**Requires Entra ID P2.** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
+    "helpText": "**Requires CustomerLockbox (E5, E7, A5, Purview Addon for BP, EDU or FL)** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
+    "docsDescription": "**Requires CustomerLockbox (E5, E7, A5, Purview Addon for BP, EDU or FL)** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
     "executiveText": "Requires explicit organizational approval before Microsoft support staff can access company data for service operations. This provides an additional layer of data protection and ensures the organization maintains control over who can access sensitive business information, even during technical support scenarios.",
     "addedComponent": [],
     "label": "Enable Customer Lockbox",
@@ -1587,8 +1587,8 @@
       "ZTNA21807",
       "ZTNA21810"
     ],
-    "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
-    "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
+    "helpText": "Disables users from being able to consent to applications, except for those specified in the field below. This standard conflicts with the \"Allow users to consent to applications with low security risk\" standard; only one of the two should be assigned per tenant.",
+    "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications. This standard conflicts with the \"Allow users to consent to applications with low security risk\" (OauthConsentLowSec) standard. Enabling both on the same tenant causes a remediation conflict, so only assign one.",
     "executiveText": "Requires administrative approval before employees can grant applications access to company data, preventing unauthorized data sharing and potential security breaches. This protects against malicious applications while allowing approved business tools to function normally.",
     "addedComponent": [
       {
@@ -1609,8 +1609,8 @@
     "name": "standards.OauthConsentLowSec",
     "cat": "Entra (AAD) Standards",
     "tag": ["IntegratedApps"],
-    "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
-    "docsDescription": "Allows users to consent to applications with low assigned risk.",
+    "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks. This standard conflicts with the \"Require admin consent for applications\" standard; only one of the two should be assigned per tenant.",
+    "docsDescription": "Allows users to consent to applications with low assigned risk. This standard conflicts with the \"Require admin consent for applications (Prevent OAuth phishing)\" (OauthConsent) standard. Enabling both on the same tenant causes a remediation conflict, so only assign one.",
     "executiveText": "Allows employees to approve low-risk applications without administrative intervention, balancing security with productivity. This provides a middle ground between complete restriction and open access, enabling business agility while maintaining protection against high-risk applications.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
     "impact": "Medium Impact",
@@ -1656,27 +1656,38 @@
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
     "tag": ["Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
-    "helpText": "**Remediate is currently not available**. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
-    "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
+    "helpText": "Cleans up Entra devices that have not connected/signed in for the specified number of days. Remediation first disables stale enabled devices and, on a later run, deletes stale devices that are already disabled. Hybrid-joined, Intune-managed and Autopilot devices are skipped. Deleting a device permanently removes any BitLocker recovery keys stored on it.",
+    "docsDescription": "Cleans up Entra devices that have not connected/signed in for the specified number of days. Remediation first disables stale enabled devices once they pass the disable threshold, and later deletes devices that are already disabled once they have been inactive for the disable threshold plus the configured grace delta (deletion age = disable threshold + grace days). The disable-before-delete grace period is further guaranteed by never deleting a device in the same pass it was disabled. Hybrid-joined (on-premises synced), Intune-managed/compliant, and system-managed Autopilot devices are excluded, in line with the [Microsoft guidance](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices). **Warning:** deleting a device permanently removes any BitLocker recovery keys stored on that device object.",
     "executiveText": "Automatically identifies and removes inactive devices that haven't connected to company systems for a specified period, reducing security risks from abandoned or lost devices. This maintains a clean device inventory and prevents potential unauthorized access through dormant device registrations.",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.StaleEntraDevices.deviceAgeThreshold",
-        "label": "Days before stale(Do not set below 30)",
+        "required": true,
+        "defaultValue": 90,
+        "label": "Days before stale (disables the device after this many days of inactivity, minimum 30)",
         "validators": {
           "min": { "value": 30, "message": "Minimum value is 30" }
         }
+      },
+      {
+        "type": "number",
+        "name": "standards.StaleEntraDevices.deviceDeleteThreshold",
+        "defaultValue": 0,
+        "label": "Grace days after disable before deletion (0 = never delete). Devices are deleted once inactive for the disable threshold plus this many additional days.",
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" }
+        }
       }
     ],
-    "disabledFeatures": { "report": false, "warn": false, "remediate": true },
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
     "label": "Cleanup stale Entra devices",
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2025-01-19",
     "powershellEquivalent": "Remove-MgDevice, Update-MgDevice or Graph API",
     "recommendedBy": [],
-    "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
+    "requiredCapabilities": []
   },
   {
     "name": "standards.UndoOauth",
@@ -4157,12 +4168,10 @@
         "defaultValue": false
       },
       {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
+        "type": "LanguageCodeMultiSelect",
         "required": false,
         "name": "standards.SpamFilterPolicy.LanguageBlockList",
-        "label": "Languages to block (uppercase ISO 639-1 two-letter)",
+        "label": "Languages to block (ISO 639-1 two-letter)",
         "condition": {
           "field": "standards.SpamFilterPolicy.EnableLanguageBlockList",
           "compareType": "is",
@@ -4176,12 +4185,10 @@
         "defaultValue": false
       },
       {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
+        "type": "CountryCodeMultiSelect",
         "required": false,
         "name": "standards.SpamFilterPolicy.RegionBlockList",
-        "label": "Regions to block (uppercase ISO 3166-1 two-letter)",
+        "label": "Regions to block (ISO 3166-1 two-letter)",
         "condition": {
           "field": "standards.SpamFilterPolicy.EnableRegionBlockList",
           "compareType": "is",
@@ -5865,7 +5872,7 @@
       {
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
-        "label": "Allow users to communicate with other organizations"
+        "label": "Allow users to communicate with consumer Teams accounts"
       },
       {
         "type": "autoComplete",
@@ -7257,6 +7264,12 @@
       },
       {
         "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.grantMobileThreatDefensePartnerRole",
+        "label": "Grant MTD role to MDE on enrolled Android COBO/COPE devices",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectIos",
         "label": "Connect iOS/iPadOS devices to MDE",
         "defaultValue": false
@@ -7264,13 +7277,19 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectIosCompliance",
-        "label": "Connect iOS 13.0+ (App-based MAM)",
+        "label": "Connect iOS/iPadOS devices for app protection policy evaluation (MAM)",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.appSync",
-        "label": "Enable App Sync for iOS",
+        "label": "Enable App Sync (sending application inventory) for iOS/iPadOS devices",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalApplicationMetadata",
+        "label": "Send full application inventory data on personally-owned iOS/iPadOS devices",
         "defaultValue": false
       },
       {
@@ -7282,13 +7301,13 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosCertificateMetadata",
-        "label": "Collect certificate metadata from iOS",
+        "label": "Enable Certificate Sync for iOS/iPadOS devices",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalCertificateMetadata",
-        "label": "Collect personal certificate metadata from iOS",
+        "label": "Send full certificate inventory data on personally-owned iOS/iPadOS devices",
         "defaultValue": false
       },
       {
@@ -8085,8 +8104,12 @@
       {
         "type": "number",
         "name": "standards.SPOVersionControl.ExpireVersionsAfterDays",
-        "label": "Expire Versions After Days (0 = never, when auto trim is off)",
-        "default": 0
+        "label": "Expire Versions After Days (0 = never, otherwise 30-36500, when auto trim is off)",
+        "default": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Use 0 for never, or 30 or more days" },
+          "max": { "value": 36500, "message": "Maximum value is 36500" }
+        }
       },
       {
         "type": "switch",
