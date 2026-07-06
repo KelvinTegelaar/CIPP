@@ -32,10 +32,11 @@ export const CippPolicyImportDrawer = ({
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
   const [viewingPolicy, setViewingPolicy] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
-  const formControl = useForm()
+  const formControl = useForm({ defaultValues: { forceImport: true } })
 
   const selectedSource = useWatch({ control: formControl.control, name: 'policySource' })
   const tenantFilter = useWatch({ control: formControl.control, name: 'tenantFilter' })
+  const forceImport = useWatch({ control: formControl.control, name: 'forceImport' })
 
   // API calls
   const communityRepos = ApiGetCall({
@@ -46,7 +47,7 @@ export const CippPolicyImportDrawer = ({
   const tenantPolicies = ApiGetCall({
     url:
       mode === 'ConditionalAccess'
-        ? `/api/ListCATemplates?TenantFilter=${tenantFilter?.value || ''}`
+        ? `/api/ListConditionalAccessPolicies?TenantFilter=${tenantFilter?.value || ''}`
         : mode === 'Standards'
           ? `/api/listStandardTemplates?TenantFilter=${tenantFilter?.value || ''}`
           : `/api/ListIntunePolicy?type=ESP&TenantFilter=${tenantFilter?.value || ''}`,
@@ -109,12 +110,14 @@ export const CippPolicyImportDrawer = ({
           // For Conditional Access, convert RawJSON to object and send the contents
           let policyData = policy
 
-          // If the policy has RawJSON, parse it and use that as the data
-          if (policy.RawJSON) {
+          // If the policy has rawjson, parse it and use that as the data.
+          // ListConditionalAccessPolicies returns the raw Graph policy as lowercase `rawjson`.
+          const rawJson = policy.rawjson ?? policy.RawJSON
+          if (rawJson) {
             try {
-              policyData = JSON.parse(policy.RawJSON)
+              policyData = JSON.parse(rawJson)
             } catch (e) {
-              console.error('Failed to parse RawJSON:', e)
+              console.error('Failed to parse rawjson:', e)
               policyData = policy
             }
           }
@@ -161,6 +164,7 @@ export const CippPolicyImportDrawer = ({
             Path: policy.path,
             Branch: 'main',
             Type: mode,
+            Force: !!forceImport,
           },
         })
       }
@@ -185,8 +189,19 @@ export const CippPolicyImportDrawer = ({
           },
         })
       } else {
-        // For tenant policies, use the policy object directly
-        setViewingPolicy(policy || {})
+        // For tenant policies, show the raw policy JSON when available
+        // (ConditionalAccess returns the Graph policy as lowercase `rawjson`).
+        const rawJson = policy?.rawjson ?? policy?.RawJSON
+        if (mode === 'ConditionalAccess' && rawJson) {
+          try {
+            setViewingPolicy(JSON.parse(rawJson))
+          } catch (e) {
+            console.error('Failed to parse rawjson for view:', e)
+            setViewingPolicy(policy || {})
+          }
+        } else {
+          setViewingPolicy(policy || {})
+        }
       }
       setViewDialogOpen(true)
     } catch (error) {
@@ -343,6 +358,17 @@ export const CippPolicyImportDrawer = ({
                   disableClearable={false}
                   allTenants={false}
                   type="single"
+                />
+              </Box>
+            )}
+
+            {selectedSource?.value && selectedSource?.value !== 'tenant' && (
+              <Box sx={{ mt: 2 }}>
+                <CippFormComponent
+                  type="switch"
+                  name="forceImport"
+                  label="Force re-import (overwrite existing template even if SHA matches)"
+                  formControl={formControl}
                 />
               </Box>
             )}

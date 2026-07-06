@@ -180,6 +180,7 @@ export const Layout = (props) => {
             // check sub-items
             if (item.items && item.items.length > 0) {
               const filteredSubItems = filterItemsByRole(item.items).filter(Boolean)
+              if (filteredSubItems.length === 0) return null
               return { ...item, items: filteredSubItems }
             }
 
@@ -262,7 +263,7 @@ export const Layout = (props) => {
   })
 
   const alertsAPI = ApiGetCall({
-    url: `/api/GetCippAlerts?localversion=${version?.data?.version}`,
+    url: `/api/GetCippAlerts?localversion=${encodeURIComponent(version?.data?.version)}`,
     queryKey: 'alertsDashboard',
     waiting: false,
     refetchOnMount: false,

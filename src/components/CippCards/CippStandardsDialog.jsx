@@ -36,7 +36,7 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
 import { SvgIcon } from '@mui/material'
-import standards from '../../data/standards.json'
+import { getStandards } from '../../utils/standards-data'
 
 const getCategoryIcon = (category) => {
   switch (category) {
@@ -136,7 +136,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
   let totalStandardsCount = 0
 
   Object.entries(combinedStandards).forEach(([standardKey, standardConfig]) => {
-    const standardInfo = standards.find((s) => s.name === `standards.${standardKey}`)
+    const standardInfo = getStandards().find((s) => s.name === `standards.${standardKey}`)
     if (standardInfo) {
       const category = standardInfo.cat
       if (!standardsByCategory[category]) {

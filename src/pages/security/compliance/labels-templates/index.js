@@ -72,9 +72,9 @@ const Page = () => {
 
   const offCanvas = {
     extendedInfoFields: [
-      "name",
       "DisplayName",
-      "comments",
+      "Name",
+      "Comment",
       "ContentType",
       "EncryptionEnabled",
       "GUID",
@@ -82,7 +82,7 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = ["name", "DisplayName", "comments", "ContentType", "EncryptionEnabled", "GUID"];
+  const simpleColumns = ["DisplayName", "Name", "Comment", "ContentType", "EncryptionEnabled", "GUID"];
 
   return (
     <CippTablePage

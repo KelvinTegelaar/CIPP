@@ -54,7 +54,7 @@ export const TopNav = (props) => {
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
   const showPopoverBookmarks = settings.bookmarkPopover === true
   const reorderMode = settings.bookmarkReorderMode || 'arrows'
-  const locked = settings.bookmarkLocked ?? false
+  const locked = settings.bookmarkLocked ?? true
   const handleThemeSwitch = useCallback(() => {
     const themeName = settings.currentTheme?.value === 'light' ? 'dark' : 'light'
     settings.handleUpdate({
@@ -590,18 +590,13 @@ export const TopNav = (props) => {
                               </IconButton>
                             </>
                           )}
-                          {!(reorderMode === 'drag' && locked) && (
+                          {!locked && (
                             <IconButton
                               size="small"
                               onClick={(e) => {
                                 e.preventDefault()
-                                if (locked) {
-                                  triggerLockFlash()
-                                  return
-                                }
                                 removeBookmark(bookmark.path)
                               }}
-                              sx={{ ...(locked && { opacity: 0.4 }) }}
                             >
                               <CloseIcon fontSize="small" />
                             </IconButton>

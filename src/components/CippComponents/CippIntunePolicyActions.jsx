@@ -1,5 +1,12 @@
 import { Book, LaptopChromebook } from '@mui/icons-material'
-import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from '@heroicons/react/24/outline'
+import {
+  DocumentDuplicateIcon,
+  GlobeAltIcon,
+  PencilIcon,
+  TrashIcon,
+  UserIcon,
+  UserGroupIcon,
+} from '@heroicons/react/24/outline'
 
 const assignmentModeOptions = [
   { label: 'Replace existing assignments', value: 'replace' },
@@ -18,6 +25,8 @@ const assignmentFilterTypeOptions = [
  * @param {object} options - Additional options
  * @param {string} options.platformType - Platform type for app protection policies (deviceAppManagement)
  * @param {boolean} options.includeCreateTemplate - Whether to include create template action (default: true)
+ * @param {boolean} options.includeRename - Whether to include the edit name/description action (default: true)
+ * @param {boolean} options.includeClone - Whether to include the clone policy action (default: true)
  * @param {boolean} options.includeDelete - Whether to include delete action (default: true)
  * @param {string} options.deleteUrlName - URLName for delete action (default: same as policyType)
  * @param {object} options.templateData - Data for template creation
@@ -27,6 +36,8 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
   const {
     platformType = null,
     includeCreateTemplate = true,
+    includeRename = true,
+    includeClone = true,
     includeDelete = true,
     deleteUrlName = policyType,
     templateData = null,
@@ -122,6 +133,75 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       icon: <Book />,
       color: 'info',
       multiPost: false,
+    })
+  }
+
+  // Edit name and description action
+  if (includeRename) {
+    actions.push({
+      label: 'Edit Name & Description',
+      type: 'POST',
+      url: '/api/EditIntunePolicy',
+      multiPost: false,
+      icon: <PencilIcon />,
+      color: 'info',
+      data: {
+        ID: 'id',
+        policyType: policyType === 'URLName' ? 'URLName' : policyType,
+        ...(platformType && { platformType: '!deviceAppManagement' }),
+      },
+      fields: [
+        {
+          type: 'textField',
+          name: 'newDisplayName',
+          label: 'Display Name',
+        },
+        {
+          type: 'textField',
+          name: 'description',
+          label: 'Description',
+        },
+      ],
+      defaultvalues: (row) => ({
+        newDisplayName: row.displayName,
+        description: row.description,
+      }),
+      confirmText: 'Enter the new name and description for this policy.',
+    })
+  }
+
+  // Clone policy action
+  if (includeClone) {
+    actions.push({
+      label: 'Clone Policy',
+      type: 'POST',
+      url: '/api/AddIntunePolicyClone',
+      multiPost: false,
+      icon: <DocumentDuplicateIcon />,
+      color: 'info',
+      data: templateData || {
+        ID: 'id',
+        URLName: policyType === 'URLName' ? 'URLName' : policyType,
+      },
+      fields: [
+        {
+          type: 'textField',
+          name: 'newDisplayName',
+          label: 'New Display Name',
+          validators: { required: 'Please enter a name for the cloned policy' },
+        },
+        {
+          type: 'textField',
+          name: 'newDescription',
+          label: 'Description',
+        },
+      ],
+      defaultvalues: (row) => ({
+        newDisplayName: row?.displayName ? `${row.displayName} - Copy` : '',
+        newDescription: row?.description ?? '',
+      }),
+      confirmText:
+        'Enter a name for the cloned policy. The name must be different from the original policy and assignments are not copied to the clone.',
     })
   }
 

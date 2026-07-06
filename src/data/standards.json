@@ -1,5 +1,114 @@
 [
   {
+    "name": "standards.CopilotSettings",
+    "cat": "Copilot (M365) Standards",
+    "tag": [],
+    "helpText": "Configures Microsoft 365 Copilot tenant policy settings: Copilot Chat pinning, blocking Copilot access to open content, Designer image generation, web search, and admin-center Copilot. Each setting can be left unconfigured, enabled, or disabled. These settings are managed through the Copilot policy service (Cloud Policy / Intune) and are applied at the tenant level.",
+    "docsDescription": "Manages Microsoft 365 Copilot admin policy settings via the `/copilot/admin/policySettings` Microsoft Graph API (beta). Each of the five supported settings can be independently set or left unmanaged using the \"Do not configure\" option. NOTE: this API currently requires delegated authentication and supports only tenant-level policies; settings scoped to group-level policies return an error and are skipped. The exact accepted value per setting is a string (commonly \"1\"/\"0\") and should be validated against a Copilot-licensed tenant.",
+    "executiveText": "Provides centralized governance of Microsoft 365 Copilot capabilities across the organization. Administrators can control whether Copilot Chat is pinned for users, whether Copilot can access open files, and whether features such as image generation and web search are available, helping balance employee productivity with data governance and compliance requirements.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Pin Microsoft 365 Copilot Chat",
+        "name": "standards.CopilotSettings.copilotChatPinning",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "1" },
+          { "label": "Disabled", "value": "0" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Copilot Access to Open Content",
+        "name": "standards.CopilotSettings.blockAccessToOpenFiles",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Block open content", "value": "1" },
+          { "label": "Allow open content", "value": "0" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Designer Image Generation",
+        "name": "standards.CopilotSettings.imageGeneration",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "1" },
+          { "label": "Disabled", "value": "0" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Web Search in Copilot",
+        "name": "standards.CopilotSettings.allowWebSearch",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "1" },
+          { "label": "Disabled", "value": "0" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Admin Copilot in Microsoft 365 Admin Center",
+        "name": "standards.CopilotSettings.allowInAdminCenters",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "1" },
+          { "label": "Disabled", "value": "0" }
+        ]
+      }
+    ],
+    "label": "Configure Microsoft 365 Copilot policy settings",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-06-09",
+    "powershellEquivalent": "Graph API: PATCH /beta/copilot/admin/policySettings/{id}",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.CopilotLimitedMode",
+    "cat": "Copilot (M365) Standards",
+    "tag": [],
+    "helpText": "Controls Microsoft 365 Copilot Limited Mode for Teams meetings. When enabled for a group, Copilot in Teams meetings does not respond to sentiment-related prompts (inferring emotions, behavior, or judgments) for members of the selected group. A target group is required when enabling. Managed via the Copilot admin settings Graph API.",
+    "docsDescription": "Configures the `copilotAdminLimitedMode` setting through the `/copilot/admin/settings/limitedMode` Microsoft Graph API (beta). When enabled, `isEnabledForGroup` is set to true and applied to the resolved target group; when disabled, `isEnabledForGroup` is set to false. NOTE: this API currently requires delegated authentication and the acting identity must be Global Administrator to write the setting.",
+    "executiveText": "Limits Microsoft 365 Copilot in Teams meetings so it does not provide opinions on sentiment, emotions, or judgments for a selected group of users. This helps organizations meet workplace policy, privacy, and works-council requirements while still allowing Copilot to summarize and answer factual questions grounded in the meeting.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.CopilotLimitedMode.LimitedModeEnabled",
+        "label": "Enable Copilot Limited Mode for a group (Teams meetings)",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.CopilotLimitedMode.GroupName",
+        "label": "Target Group Name (wildcard match; required when enabled)",
+        "required": false,
+        "condition": {
+          "field": "standards.CopilotLimitedMode.LimitedModeEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      }
+    ],
+    "label": "Configure Microsoft 365 Copilot Limited Mode (Teams meetings)",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-06-09",
+    "powershellEquivalent": "Graph API: PATCH /beta/copilot/admin/settings/limitedMode",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.MailContacts",
     "cat": "Global Standards",
     "tag": [],
@@ -269,8 +378,8 @@
     "cat": "Global Standards",
     "tag": ["CIS M365 7.0.0 (1.3.6)", "CustomerLockBoxEnabled"],
     "appliesToTest": ["CIS_1_3_6"],
-    "helpText": "**Requires Entra ID P2.** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
-    "docsDescription": "**Requires Entra ID P2.** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
+    "helpText": "**Requires CustomerLockbox (E5, E7, A5, Purview Addon for BP, EDU or FL)** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
+    "docsDescription": "**Requires CustomerLockbox (E5, E7, A5, Purview Addon for BP, EDU or FL)** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
     "executiveText": "Requires explicit organizational approval before Microsoft support staff can access company data for service operations. This provides an additional layer of data protection and ensures the organization maintains control over who can access sensitive business information, even during technical support scenarios.",
     "addedComponent": [],
     "label": "Enable Customer Lockbox",
@@ -1790,8 +1899,21 @@
   {
     "name": "standards.AppManagementPolicy",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 7.0.0 (5.1.5.3)", "CIS M365 7.0.0 (5.1.5.4)", "CIS M365 7.0.0 (5.1.5.5)", "CIS M365 7.0.0 (5.1.5.6)"],
-    "appliesToTest": ["CIS_5_1_5_3", "CIS_5_1_5_4", "CIS_5_1_5_5", "CIS_5_1_5_6", "ZTNA21773", "ZTNA21896", "ZTNA21992"],
+    "tag": [
+      "CIS M365 7.0.0 (5.1.5.3)",
+      "CIS M365 7.0.0 (5.1.5.4)",
+      "CIS M365 7.0.0 (5.1.5.5)",
+      "CIS M365 7.0.0 (5.1.5.6)"
+    ],
+    "appliesToTest": [
+      "CIS_5_1_5_3",
+      "CIS_5_1_5_4",
+      "CIS_5_1_5_5",
+      "CIS_5_1_5_6",
+      "ZTNA21773",
+      "ZTNA21896",
+      "ZTNA21992"
+    ],
     "helpText": "Configures the default app management policy to control application and service principal credential restrictions such as password and key credential lifetimes.",
     "docsDescription": "Configures the default app management policy to control application and service principal credential restrictions. This includes password addition restrictions, custom password addition, symmetric key addition, and credential lifetime limits for both applications and service principals.",
     "executiveText": "Enforces credential restrictions on application registrations and service principals to limit how secrets and certificates are created and how long they remain valid. This reduces the risk of long-lived or unmanaged credentials being used to access your tenant.",
@@ -4035,12 +4157,10 @@
         "defaultValue": false
       },
       {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
+        "type": "LanguageCodeMultiSelect",
         "required": false,
         "name": "standards.SpamFilterPolicy.LanguageBlockList",
-        "label": "Languages to block (uppercase ISO 639-1 two-letter)",
+        "label": "Languages to block (ISO 639-1 two-letter)",
         "condition": {
           "field": "standards.SpamFilterPolicy.EnableLanguageBlockList",
           "compareType": "is",
@@ -4054,12 +4174,10 @@
         "defaultValue": false
       },
       {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
+        "type": "CountryCodeMultiSelect",
         "required": false,
         "name": "standards.SpamFilterPolicy.RegionBlockList",
-        "label": "Regions to block (uppercase ISO 3166-1 two-letter)",
+        "label": "Regions to block (ISO 3166-1 two-letter)",
         "condition": {
           "field": "standards.SpamFilterPolicy.EnableRegionBlockList",
           "compareType": "is",
@@ -5743,7 +5861,7 @@
       {
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
-        "label": "Allow users to communicate with other organizations"
+        "label": "Allow users to communicate with consumer Teams accounts"
       },
       {
         "type": "autoComplete",
@@ -7135,6 +7253,12 @@
       },
       {
         "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.grantMobileThreatDefensePartnerRole",
+        "label": "Grant MTD role to MDE on enrolled Android COBO/COPE devices",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectIos",
         "label": "Connect iOS/iPadOS devices to MDE",
         "defaultValue": false
@@ -7142,13 +7266,19 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectIosCompliance",
-        "label": "Connect iOS 13.0+ (App-based MAM)",
+        "label": "Connect iOS/iPadOS devices for app protection policy evaluation (MAM)",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.appSync",
-        "label": "Enable App Sync for iOS",
+        "label": "Enable App Sync (sending application inventory) for iOS/iPadOS devices",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalApplicationMetadata",
+        "label": "Send full application inventory data on personally-owned iOS/iPadOS devices",
         "defaultValue": false
       },
       {
@@ -7160,13 +7290,13 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosCertificateMetadata",
-        "label": "Collect certificate metadata from iOS",
+        "label": "Enable Certificate Sync for iOS/iPadOS devices",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalCertificateMetadata",
-        "label": "Collect personal certificate metadata from iOS",
+        "label": "Send full certificate inventory data on personally-owned iOS/iPadOS devices",
         "defaultValue": false
       },
       {
@@ -7879,12 +8009,14 @@
         "options": [
           { "label": "Allow listed AAGUIDs only", "value": "allow" },
           { "label": "Block listed AAGUIDs", "value": "block" }
-        ]
+        ],
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.FIDO2PasskeyProfiles.AAGUIDs",
-        "label": "AAGUIDs (comma-separated list of authenticator AAGUIDs)"
+        "label": "AAGUIDs (comma-separated list of authenticator AAGUIDs)",
+        "required": false
       }
     ],
     "label": "Configure FIDO2 Passkey Profile",
@@ -7961,8 +8093,12 @@
       {
         "type": "number",
         "name": "standards.SPOVersionControl.ExpireVersionsAfterDays",
-        "label": "Expire Versions After Days (0 = never, when auto trim is off)",
-        "default": 0
+        "label": "Expire Versions After Days (0 = never, otherwise 30-36500, when auto trim is off)",
+        "default": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Use 0 for never, or 30 or more days" },
+          "max": { "value": 36500, "message": "Maximum value is 36500" }
+        }
       },
       {
         "type": "switch",

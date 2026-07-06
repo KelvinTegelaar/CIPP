@@ -57,9 +57,17 @@ const EditContact = () => {
       return null;
     }
 
-    const contact = contactInfo.data;
+    const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
+    if (!contact) {
+      return null;
+    }
     const address = contact.addresses?.[0] || {};
-    const phones = contact.phones || [];
+    // A single phone may be serialized as a bare object rather than an array
+    const phones = Array.isArray(contact.phones)
+      ? contact.phones
+      : contact.phones
+        ? [contact.phones]
+        : [];
 
     // Use Map for O(1) phone lookup
     const phoneMap = new Map(phones.map((p) => [p.type, p.number]));
@@ -114,8 +122,8 @@ const EditContact = () => {
         State: values.state,
         CountryOrRegion: values.country?.value || values.country,
         Company: values.companyName,
-        mobilePhone: values.mobilePhone,
-        phone: values.businessPhone,
+        mobilePhone: values.mobilePhone || null,
+        phone: values.businessPhone || null,
         website: values.website,
         mailTip: values.mailTip,
       };
@@ -135,6 +143,7 @@ const EditContact = () => {
       postUrl="/api/EditContact"
       data={contact}
       customDataformatter={customDataFormatter}
+      preserveNullValues
     >
       {contactInfo.isLoading && <CippFormSkeleton layout={[2, 2, 1, 2, 1, 2, 2, 2, 4]} />}
       {!contactInfo.isLoading && (

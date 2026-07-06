@@ -37,27 +37,27 @@ const AddContactTemplates = () => {
       resetForm={true}
       customDataformatter={(values) => {
         return {
-          DisplayName: values.displayName,
+          displayName: values.displayName,
           hidefromGAL: values.hidefromGAL,
           email: values.email,
-          FirstName: values.firstName,
-          LastName: values.lastName,
-          Title: values.jobTitle,
-          StreetAddress: values.streetAddress,
-          PostalCode: values.postalCode,
-          City: values.city,
-          State: values.state,
-          CountryOrRegion: values.country?.value || values.country,
-          Company: values.companyName,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          jobTitle: values.jobTitle,
+          streetAddress: values.streetAddress,
+          postalCode: values.postalCode,
+          city: values.city,
+          state: values.state,
+          country: values.country?.value || values.country,
+          companyName: values.companyName,
           mobilePhone: values.mobilePhone,
-          phone: values.businessPhone,
+          businessPhone: values.businessPhone,
           website: values.website,
           mailTip: values.mailTip,
         };
       }}
     >
-      <ContactFormLayout 
-        formControl={formControl} 
+      <ContactFormLayout
+        formControl={formControl}
       />
     </CippFormPage>
   );

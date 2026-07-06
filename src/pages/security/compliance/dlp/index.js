@@ -22,6 +22,7 @@ const Page = () => {
         return { ...data }
       },
       confirmText: 'Are you sure you want to create a template based on this DLP policy?',
+      hideBulk: true,
     },
     {
       label: 'Enable Policy',

@@ -50,7 +50,7 @@ const CippAddEditUser = (props) => {
   // Get all groups for the tenant
   const tenantGroups = ApiGetCall({
     url: `/api/ListGroups?tenantFilter=${tenantDomain}`,
-    queryKey: `ListGroups-${tenantDomain}`,
+    queryKey: `TenantGroupsList-${tenantDomain}`,
     refetchOnMount: false,
     refetchOnReconnect: false,
   })

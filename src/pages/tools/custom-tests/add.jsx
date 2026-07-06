@@ -118,7 +118,7 @@ const Page = () => {
       ScriptContent: '',
       Enabled: false,
       AlertOnFailure: false,
-      AlertStatuses: [{ value: 'Failed', label: 'Failed' }],
+      AlertStatuses: { value: 'Failed', label: 'Failed' },
       ReturnType: 'JSON',
       ResultMode: { value: 'Auto', label: 'Auto' },
       MarkdownTemplate: '',
@@ -148,12 +148,7 @@ const Page = () => {
         ScriptContent: script.ScriptContent || '',
         Enabled: script.Enabled || false,
         AlertOnFailure: script.AlertOnFailure || false,
-        AlertStatuses: script.AlertStatuses
-          ? (typeof script.AlertStatuses === 'string'
-              ? JSON.parse(script.AlertStatuses)
-              : script.AlertStatuses
-            ).map((s) => ({ value: s, label: s }))
-          : [{ value: 'Failed', label: 'Failed' }],
+        AlertStatuses: toSelectOption(script.AlertStatuses, 'Failed'),
         ReturnType: script.ReturnType || 'JSON',
         ResultMode: toSelectOption(script.ResultMode, 'Auto'),
         MarkdownTemplate: script.MarkdownTemplate || '',
@@ -261,9 +256,7 @@ const Page = () => {
       ScriptContent: data.ScriptContent,
       Enabled: data.Enabled,
       AlertOnFailure: data.AlertOnFailure,
-      AlertStatuses: data.AlertOnFailure
-        ? (data.AlertStatuses?.map(s => s.value) || ['Failed'])
-        : [],
+      AlertStatuses: data.AlertStatuses?.value ?? data.AlertStatuses,
       ReturnType: data.ReturnType,
       ResultMode: data.ResultMode?.value ?? data.ResultMode,
       MarkdownTemplate: data.MarkdownTemplate,
@@ -323,6 +316,14 @@ const Page = () => {
     { value: 'AlwaysPass', label: 'Always Pass' },
     { value: 'AlwaysInfo', label: 'Always Info' },
     { value: 'AlwaysInvestigate', label: 'Always Investigate' },
+  ]
+
+  const AlertStatuses = [
+    { value: 'Failed', label: 'Failed' },
+    { value: 'Passed', label: 'Passed' },
+    { value: 'Info', label: 'Info' },
+    { value: 'Investigate', label: 'Investigate' },
+    { value: 'All', label: 'All' },
   ]
 
   const scriptNameField = {
@@ -415,14 +416,8 @@ const Page = () => {
   const alertStatusesField = {
     name: 'AlertStatuses',
     label: 'Alert on Status',
-    type: 'autoComplete',
-    multiple: true,
-    options: [
-      { label: 'Failed', value: 'Failed' },
-      { label: 'Passed', value: 'Passed' },
-      { label: 'Info', value: 'Info' },
-      { label: 'Investigate', value: 'Investigate' },
-    ],
+    type: 'select',
+    options: AlertStatuses,
     helperText: 'Choose which test result statuses trigger an alert.',
   }
 
@@ -814,10 +809,12 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                     </Typography>
                   </Stack>
                   <Typography variant="caption" color="text.secondary">
-                    AST allowlist — approved cmdlets only. <code>+=</code> is blocked. Data access
-                    is automatically tenant-locked — do not pass{' '}
-                    <code>-TenantFilter</code>. Type <code>%</code> in the editor for replacement
-                    variables.
+                    Runs in PowerShell <strong>ConstrainedLanguage</strong> — approved cmdlets
+                    only. <code>New-Object</code>, <code>{'[pscustomobject]@{}'}</code> casts, and
+                    .NET/reflection are blocked. Build rows with{' '}
+                    <code>{'Select-Object @{Name;Expression}'}</code> and return a plain{' '}
+                    <code>{'@{}'}</code> hashtable. Data access is tenant-locked — do not pass{' '}
+                    <code>-TenantFilter</code>. Type <code>%</code> for replacement variables.
                   </Typography>
                 </Box>
               </Grid>
@@ -907,20 +904,11 @@ $Licenses | ForEach-Object {
 # Build results - users with their resolved license names
 $results = $Users | Where-Object {
     $_.assignedLicenses.Count -gt 0
-} | ForEach-Object {
-    $user = $_
-    $licenseNames = @($user.assignedLicenses | ForEach-Object {
-        $name = $SkuLookup[$_.skuId]
-        if ($name) { $name } else { $_.skuId }
-    })
-    [PSCustomObject]@{
-        UserPrincipalName = $user.userPrincipalName
-        DisplayName       = $user.displayName
-        AccountEnabled    = $user.accountEnabled
-        LicenseCount      = $licenseNames.Count
-        Licenses          = $licenseNames -join ', '
-    }
-}
+} | Select-Object @{Name='UserPrincipalName'; Expression={ $_.userPrincipalName }},
+    @{Name='DisplayName'; Expression={ $_.displayName }},
+    @{Name='AccountEnabled'; Expression={ $_.accountEnabled }},
+    @{Name='LicenseCount'; Expression={ @($_.assignedLicenses).Count }},
+    @{Name='Licenses'; Expression={ (@($_.assignedLicenses | ForEach-Object { $n = $SkuLookup[$_.skuId]; if ($n) { $n } else { $_.skuId } }) -join ', ') }}
 
 # Build markdown table
 $header = "### Licensed Users: $($results.Count)\\n\\n| User | Display Name | Enabled | Licenses |\\n|---|---|---|---|"
@@ -968,14 +956,10 @@ $Users = Get-CIPPTestData -Type 'Users'
 $Users | Where-Object {
     $_.accountEnabled -eq $false -and
     $_.assignedLicenses.Count -gt 0
-} | ForEach-Object {
-    [PSCustomObject]@{
-        UserPrincipalName = $_.userPrincipalName
-        DisplayName       = $_.displayName
-        LicenseCount      = $_.assignedLicenses.Count
-        Message           = 'Disabled account with active license(s)'
-    }
-}`}
+} | Select-Object @{Name='UserPrincipalName'; Expression={ $_.userPrincipalName }},
+    @{Name='DisplayName'; Expression={ $_.displayName }},
+    @{Name='LicenseCount'; Expression={ @($_.assignedLicenses).Count }},
+    @{Name='Message'; Expression={ 'Disabled account with active license(s)' }}`}
                   language="powershell"
                   showLineNumbers={true}
                 />
@@ -1008,14 +992,10 @@ $RegDetails = Get-CIPPTestData -Type 'UserRegistrationDetails'
 $noMfa = $RegDetails | Where-Object {
     $_.methodsRegistered.Count -eq 0 -and
     $_.userType -ne 'guest'
-} | ForEach-Object {
-    [PSCustomObject]@{
-        UserPrincipalName = $_.userPrincipalName
-        UserDisplayName   = $_.userDisplayName
-        IsAdmin           = $_.isAdmin
-        Message           = 'No MFA methods registered'
-    }
-}
+} | Select-Object @{Name='UserPrincipalName'; Expression={ $_.userPrincipalName }},
+    @{Name='UserDisplayName'; Expression={ $_.userDisplayName }},
+    @{Name='IsAdmin'; Expression={ $_.isAdmin }},
+    @{Name='Message'; Expression={ 'No MFA methods registered' }}
 
 $count = @($noMfa).Count
 if ($count -gt 0) {
@@ -1068,18 +1048,11 @@ $cutoff = (Get-Date).AddDays(-$DaysThreshold)
 $Guests | Where-Object {
     -not $_.signInActivity.lastSignInDateTime -or
     [datetime]$_.signInActivity.lastSignInDateTime -lt $cutoff
-} | ForEach-Object {
-    $lastSign = if ($_.signInActivity.lastSignInDateTime) {
-        $_.signInActivity.lastSignInDateTime
-    } else { 'Never' }
-    [PSCustomObject]@{
-        UserPrincipalName = $_.userPrincipalName
-        DisplayName       = $_.displayName
-        CreatedDateTime   = $_.createdDateTime
-        LastSignIn        = $lastSign
-        Message           = "No sign-in within $DaysThreshold days"
-    }
-}`}
+} | Select-Object @{Name='UserPrincipalName'; Expression={ $_.userPrincipalName }},
+    @{Name='DisplayName'; Expression={ $_.displayName }},
+    @{Name='CreatedDateTime'; Expression={ $_.createdDateTime }},
+    @{Name='LastSignIn'; Expression={ if ($_.signInActivity.lastSignInDateTime) { $_.signInActivity.lastSignInDateTime } else { 'Never' } }},
+    @{Name='Message'; Expression={ "No sign-in within $DaysThreshold days" }}`}
                   language="powershell"
                   showLineNumbers={true}
                 />
@@ -1111,12 +1084,8 @@ $Guests | Where-Object {
 $Policies = Get-CIPPTestData -Type 'ConditionalAccessPolicies'
 $grouped = $Policies | Group-Object -Property state
 
-$counts = $grouped | ForEach-Object {
-    [PSCustomObject]@{
-        State = $_.Name
-        Count = $_.Count
-    }
-}
+$counts = $grouped | Select-Object @{Name='State'; Expression={ $_.Name }},
+    @{Name='Count'; Expression={ $_.Count }}
 
 # Build markdown summary — %tenantname% is replaced at runtime
 $header = "### %tenantname% — CA Policies: $(@($Policies).Count) total\n\n| State | Count |\n|---|---|"
@@ -1323,6 +1292,7 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
               formControl={formControl}
               compareType="is"
               compareValue={true}
+              clearOnHide={false}
             >
               <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormComponent
@@ -1428,6 +1398,13 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
                       Type <code>%</code> to insert replacement variables (e.g.{' '}
                       <code>%tenantid%</code>, <code>%defaultdomain%</code>, or custom variables).
                     </Typography>
+                    <Alert severity="info" sx={{ mt: 1 }}>
+                      Scripts run in <strong>ConstrainedLanguage</strong>. Build output rows with{' '}
+                      <code>{'Select-Object @{Name;Expression}'}</code> (not{' '}
+                      <code>{'[pscustomobject]@{}'}</code>) and return a{' '}
+                      <code>{'@{ CIPPStatus = ... }'}</code> hashtable. <code>New-Object</code> and
+                      .NET reflection are blocked.
+                    </Alert>
                     {hasTenantFilterParam && (
                       <Alert severity="warning" sx={{ mt: 1 }}>
                         <code>-TenantFilter</code> is not needed — data access functions are

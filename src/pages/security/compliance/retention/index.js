@@ -20,6 +20,7 @@ const Page = () => {
       url: '/api/AddRetentionCompliancePolicyTemplate',
       data: { Identity: 'Name' },
       confirmText: 'Are you sure you want to create a template based on this retention policy?',
+      hideBulk: true,
     },
     {
       label: 'Enable Policy',

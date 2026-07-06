@@ -16,8 +16,23 @@ export const AuthMethodCard = ({ data, isLoading }) => {
       return null;
     }
 
-    const phishableMethods = ["mobilePhone", "email", "microsoftAuthenticatorPush"];
-    const phishResistantMethods = ["fido2", "windowsHelloForBusiness", "x509Certificate"];
+    const phishableMethods = [
+      "mobilePhone",
+      "alternateMobilePhone",
+      "officePhone",
+      "email",
+      "microsoftAuthenticatorPush",
+      "softwareOneTimePasscode",
+      "hardwareOneTimePasscode",
+    ];
+    const passkeyMethods = [
+      "fido2SecurityKey",
+      "passKeyDeviceBound",
+      "passKeyDeviceBoundAuthenticator",
+      "passKeyDeviceBoundWindowsHello",
+      "x509Certificate",
+    ];
+    const phishResistantMethods = [...passkeyMethods, "windowsHelloForBusiness"];
 
     let singleFactor = 0;
     let phishableCount = 0;
@@ -48,7 +63,7 @@ export const AuthMethodCard = ({ data, isLoading }) => {
 
       if (hasPhishResistant) {
         phishResistantCount++;
-        if (methods.includes("fido2") || methods.includes("x509Certificate")) {
+        if (methods.some((m) => passkeyMethods.includes(m))) {
           passkeyCount++;
         }
         if (methods.includes("windowsHelloForBusiness")) {
@@ -56,12 +71,18 @@ export const AuthMethodCard = ({ data, isLoading }) => {
         }
       } else if (hasPhishable) {
         phishableCount++;
-        if (methods.includes("mobilePhone") || methods.includes("email")) {
+        if (
+          methods.includes("mobilePhone") ||
+          methods.includes("alternateMobilePhone") ||
+          methods.includes("officePhone") ||
+          methods.includes("email")
+        ) {
           phoneCount++;
         }
         if (
           methods.includes("microsoftAuthenticatorPush") ||
-          methods.includes("softwareOneTimePasscode")
+          methods.includes("softwareOneTimePasscode") ||
+          methods.includes("hardwareOneTimePasscode")
         ) {
           authenticatorCount++;
         }

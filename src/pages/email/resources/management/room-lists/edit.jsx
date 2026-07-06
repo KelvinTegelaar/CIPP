@@ -234,7 +234,16 @@ const EditRoomList = () => {
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   api={{
-                    url: "/api/ListUsers",
+                    url: "/api/ListGraphRequest",
+                    dataKey: "Results",
+                    data: {
+                      Endpoint: "users",
+                      manualPagination: true,
+                      $select: "id,userPrincipalName,displayName,mail",
+                      $count: true,
+                      $orderby: "displayName",
+                      $top: 999,
+                    },
                     labelField: (user) =>
                       `${user.displayName || "Unknown"} (${
                         user.userPrincipalName || user.mail || "No email"
