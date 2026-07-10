@@ -139,6 +139,54 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return <Chip variant="outlined" label={label} size="small" color={color} />
   }
 
+  // Microsoft Entra device trust type (Graph device.trustType)
+  if (cellName === 'trustType' && typeof data === 'string' && data) {
+    const trustTypeMap = {
+      workplace: 'Microsoft Entra registered',
+      azuread: 'Microsoft Entra joined',
+      serverad: 'Microsoft Entra hybrid joined',
+    }
+    return trustTypeMap[data.toLowerCase()] ?? data
+  }
+
+  // Microsoft Entra device join type (Intune managedDevice.joinType)
+  if (cellName === 'joinType' && typeof data === 'string' && data) {
+    const joinTypeMap = {
+      azureadregistered: 'Microsoft Entra registered',
+      azureadjoined: 'Microsoft Entra joined',
+      hybridazureadjoined: 'Microsoft Entra hybrid joined',
+      unknown: 'Unknown',
+    }
+    return joinTypeMap[data.toLowerCase()] ?? data
+  }
+
+  // Hex color values (a sensitivity label's custom color, content-marking font colors, ...) render
+  // as a swatch chip. Matches any column named Color or *Color, guarded on the value shape so
+  // non-hex data in a matching column falls through untouched.
+  if (cellNameLower.endsWith('color') && typeof data === 'string' && /^#[0-9A-Fa-f]{6}$/.test(data)) {
+    return isText ? (
+      data
+    ) : (
+      <Chip
+        variant="outlined"
+        size="small"
+        label={data.toUpperCase()}
+        icon={
+          <Box
+            component="span"
+            sx={{
+              width: 14,
+              height: 14,
+              borderRadius: '50%',
+              backgroundColor: data,
+              border: '1px solid rgba(0, 0, 0, 0.2)',
+            }}
+          />
+        }
+      />
+    )
+  }
+
   //if the cellName starts with portal_, return text, or a link with an icon
   if (cellName.startsWith('portal_')) {
     const IconComponent = portalIcons[cellName]
@@ -179,6 +227,32 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     ) : (
       ''
     )
+  }
+
+  // Audit-log coverage timestamps: render as an ABSOLUTE date in the browser's local timezone
+  // (long format) rather than relative "x ago". The UTC ISO values carry a Z so they're
+  // unambiguous; parseCippDate also handles epoch. Checked before the relative timeAgoArray below.
+  const absoluteDateArray = [
+    'WindowStart',
+    'WindowEnd',
+    'CreatedUtc',
+    'DownloadedUtc',
+    'ProcessedUtc',
+    'NextAttemptUtc',
+    'LastErrorUtc',
+    'LastPolledUtc',
+  ]
+  if (absoluteDateArray.includes(cellName)) {
+    if (data === null || data === undefined || data === '') {
+      return isText ? '' : ''
+    }
+    const dt = parseCippDate(data)
+    if (isNaN(dt.getTime())) return isText ? '' : ''
+    if (dt.getTime() === 0) return isText ? '' : 'Never'
+    // text mode: Date object so MRT sorts chronologically (toLocaleString for CSV export);
+    // cell mode: long absolute string in the browser's locale + timezone.
+    if (isText) return canReceive === false ? dt.toLocaleString() : dt
+    return dt.toLocaleString()
   }
 
   const timeAgoArray = [
@@ -1037,15 +1111,31 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     )
   }
 
-  //if string starts with http, return a link
+  //if string starts with http, return a link - but only when it parses as a real
+  //absolute http(s) URL. Defanged URLs (e.g. https[:]//bad.com from Check) fail to
+  //parse and would otherwise render as a link relative to the CIPP instance, so
+  //those are shown as plain text with only the copy button.
   if (typeof data === 'string' && data.toLowerCase().startsWith('http')) {
-    return isText ? (
-      data
-    ) : (
+    let isValidUrl = false
+    try {
+      const parsedUrl = new URL(data)
+      isValidUrl = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+    } catch {
+      isValidUrl = false
+    }
+    if (isText) {
+      return data
+    }
+    return isValidUrl ? (
       <>
         <Link href={data} target="_blank" rel="noreferrer">
           URL
         </Link>
+        <CippCopyToClipBoard text={data} />
+      </>
+    ) : (
+      <>
+        {data}
         <CippCopyToClipBoard text={data} />
       </>
     )

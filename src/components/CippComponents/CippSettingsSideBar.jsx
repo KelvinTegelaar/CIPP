@@ -104,6 +104,8 @@ export const CippSettingsSideBar = (props) => {
         RemoveMFADevices: formValues.offboardingDefaults?.RemoveMFADevices,
         RemoveTeamsPhoneDID: formValues.offboardingDefaults?.RemoveTeamsPhoneDID,
         ClearImmutableId: formValues.offboardingDefaults?.ClearImmutableId,
+        removeCalendarPermissions: formValues.offboardingDefaults?.removeCalendarPermissions,
+        DisableOneDriveSharing: formValues.offboardingDefaults?.DisableOneDriveSharing,
       },
     };
 

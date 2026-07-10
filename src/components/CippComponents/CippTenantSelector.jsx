@@ -97,7 +97,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
       },
       {
         key: "Compliance_Portal",
-        label: "Compliance Portal",
+        label: "Purview Portal",
         link: `https://purview.microsoft.com/?tid=${currentTenant?.addedFields?.customerId}`,
         icon: "ShieldMoon",
       },

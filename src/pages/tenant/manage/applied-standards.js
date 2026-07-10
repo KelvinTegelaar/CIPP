@@ -151,6 +151,7 @@ const Page = () => {
           return template?.displayName || template?.templateName || template?.name || guid
         }
 
+        const templateExists = (guid) => !!guid && templateDetails.data.some((t) => t.GUID === guid)
         const allStandards = []
         if (selectedTemplate.standards) {
           Object.entries(selectedTemplate.standards).forEach(([standardKey, standardConfig]) => {
@@ -231,7 +232,7 @@ const Page = () => {
 
                     // Check if this standard is overridden by another template
                     const tenantTemplateId = standardObject?.TemplateId
-                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                     const overridingTemplateName = isOverridden
                       ? getTemplateDisplayName(tenantTemplateId)
                       : null
@@ -356,7 +357,7 @@ const Page = () => {
 
                     // Check if this standard is overridden by another template
                     const tenantTemplateId = standardObject?.TemplateId
-                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                     const overridingTemplateName = isOverridden
                       ? getTemplateDisplayName(tenantTemplateId)
                       : null
@@ -445,7 +446,7 @@ const Page = () => {
                     const standardObject = currentTenantObj?.[standardId]
                     const directStandardValue = standardObject?.Value
                     const tenantTemplateId = standardObject?.TemplateId
-                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                     const overridingTemplateName = isOverridden
                       ? getTemplateDisplayName(tenantTemplateId)
                       : null
@@ -562,7 +563,7 @@ const Page = () => {
                     const standardObject = currentTenantObj?.[standardId]
                     const directStandardValue = standardObject?.Value
                     const tenantTemplateId = standardObject?.TemplateId
-                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                     const overridingTemplateName = isOverridden
                       ? getTemplateDisplayName(tenantTemplateId)
                       : null
@@ -684,7 +685,7 @@ const Page = () => {
                 const standardObject = currentTenantObj?.[standardId]
                 const directStandardValue = standardObject?.Value
                 const tenantTemplateId = standardObject?.TemplateId
-                const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+                const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
                 const overridingTemplateName = isOverridden
                   ? getTemplateDisplayName(tenantTemplateId)
                   : null
@@ -765,6 +766,120 @@ const Page = () => {
                   overridingTemplateName,
                 })
               })
+            } else if (standardKey === 'ReusableSettingsTemplate' && Array.isArray(standardConfig)) {
+              standardConfig.forEach((templateItem) => {
+                if (!templateItem) return
+
+                // TemplateList is multi-select for this standard, so each entry holds an array
+                const templateList = Array.isArray(templateItem.TemplateList)
+                  ? templateItem.TemplateList
+                  : [templateItem.TemplateList].filter(Boolean)
+
+                templateList.forEach((templateEntry) => {
+                  const itemTemplateId = templateEntry?.value
+                  if (!itemTemplateId) return
+
+                  const standardId = `standards.ReusableSettingsTemplate.${itemTemplateId}`
+                  const standardInfo = getStandards().find(
+                    (s) => s.name === 'standards.ReusableSettingsTemplate'
+                  )
+
+                  const currentTenantStandard = currentTenantData.find(
+                    (s) => s.standardId === standardId
+                  )
+                  const standardObject = currentTenantObj?.[standardId]
+                  const directStandardValue = standardObject?.Value
+                  const tenantTemplateId = standardObject?.TemplateId
+                  const isOverridden =
+                    tenantTemplateId &&
+                    tenantTemplateId !== templateId &&
+                    templateExists(tenantTemplateId)
+                  const overridingTemplateName = isOverridden
+                    ? getTemplateDisplayName(tenantTemplateId)
+                    : null
+
+                  let isCompliant = false
+                  // Empty-string Current/Expected means the standard only wrote a FieldValue
+                  // (legacy row shape) — comparing them would always match, so fall through.
+                  if (
+                    standardObject?.CurrentValue !== undefined &&
+                    standardObject?.ExpectedValue !== undefined &&
+                    standardObject?.CurrentValue !== '' &&
+                    standardObject?.ExpectedValue !== ''
+                  ) {
+                    const sortedCurrent =
+                      typeof standardObject.CurrentValue === 'object' &&
+                      standardObject.CurrentValue !== null
+                        ? Object.keys(standardObject.CurrentValue)
+                            .sort()
+                            .reduce((obj, key) => {
+                              obj[key] = standardObject.CurrentValue[key]
+                              return obj
+                            }, {})
+                        : standardObject.CurrentValue
+                    const sortedExpected =
+                      typeof standardObject.ExpectedValue === 'object' &&
+                      standardObject.ExpectedValue !== null
+                        ? Object.keys(standardObject.ExpectedValue)
+                            .sort()
+                            .reduce((obj, key) => {
+                              obj[key] = standardObject.ExpectedValue[key]
+                              return obj
+                            }, {})
+                        : standardObject.ExpectedValue
+                    isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected)
+                  } else if (directStandardValue === true) {
+                    isCompliant = true
+                  } else if (currentTenantStandard) {
+                    isCompliant = currentTenantStandard.value === true
+                  }
+
+                  allStandards.push({
+                    standardId,
+                    standardName: `Reusable Setting: ${templateEntry?.label || itemTemplateId}`,
+                    currentTenantValue:
+                      standardObject !== undefined
+                        ? {
+                            Value: directStandardValue,
+                            LastRefresh: standardObject?.LastRefresh,
+                            TemplateId: tenantTemplateId,
+                            CurrentValue: standardObject?.CurrentValue,
+                            ExpectedValue: standardObject?.ExpectedValue,
+                            LicenseAvailable: standardObject?.LicenseAvailable,
+                          }
+                        : currentTenantStandard?.value,
+                    standardValue: { displayName: templateEntry?.label || itemTemplateId },
+                    complianceStatus: isOverridden
+                      ? 'Overridden'
+                      : isCompliant
+                        ? 'Compliant'
+                        : 'Non-Compliant',
+                    complianceDetails:
+                      standardInfo?.docsDescription || standardInfo?.helpText || '',
+                    standardDescription: standardInfo?.helpText || '',
+                    standardImpact: standardInfo?.impact || 'Low Impact',
+                    standardImpactColour: standardInfo?.impactColour || 'info',
+                    templateName: selectedTemplate?.templateName || 'Standard Template',
+                    templateActions: (() => {
+                      const actions = templateItem.action || []
+                      const hasRemediate = actions.some((a) => {
+                        const label = typeof a === 'object' ? a?.label || a?.value : a
+                        return label === 'Remediate' || label === 'remediate'
+                      })
+                      const hasReport = actions.some((a) => {
+                        const label = typeof a === 'object' ? a?.label || a?.value : a
+                        return label === 'Report' || label === 'report'
+                      })
+                      if (hasRemediate && !hasReport) return [...actions, 'Report']
+                      return actions
+                    })(),
+                    autoRemediate: templateItem.autoRemediate || false,
+                    isOverridden,
+                    overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                    overridingTemplateName,
+                  })
+                })
+              })
             } else if (standardKey === 'GroupTemplate') {
               // GroupTemplate structure has groupTemplate array and action array at the top level
               const groupTemplates = standardConfig.groupTemplate || []
@@ -779,7 +894,7 @@ const Page = () => {
               const standardObject = currentTenantObj?.[standardId]
               const directStandardValue = standardObject?.Value
               const tenantTemplateId = standardObject?.TemplateId
-              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
               const overridingTemplateName = isOverridden
                 ? getTemplateDisplayName(tenantTemplateId)
                 : null
@@ -1056,7 +1171,7 @@ const Page = () => {
 
               // Check if this standard is overridden by another template
               const tenantTemplateId = standardObject?.TemplateId
-              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId
+              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId && templateExists(tenantTemplateId)
               const overridingTemplateName = isOverridden
                 ? getTemplateDisplayName(tenantTemplateId)
                 : null
@@ -1718,6 +1833,14 @@ const Page = () => {
                   color={isDriftTemplate ? 'info' : 'default'}
                   variant="outlined"
                 />
+                {isDriftTemplate && (
+                <Chip
+                  label={'Alignment Score May Be Inaccurate For Drift Templates'}
+                  size="small"
+                  color={'warning'}
+                  variant="outlined"
+                />
+                )}
               </Stack>
             )}
             <Menu

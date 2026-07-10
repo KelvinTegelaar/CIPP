@@ -414,10 +414,130 @@ export const CippAppTemplateDrawer = ({
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Alert severity="info">
-                MSP App templates save the app type and name. Tenant-specific parameters (keys,
-                URLs) must be provided during deployment.
+                Enter tenant-specific parameters (keys, URLs, IDs) below. You can enter a literal
+                value that is the same for every tenant, or reference a CIPP custom variable like{' '}
+                <code>%DattoSiteID%</code> (type <code>%</code> to browse). Variables are resolved
+                per tenant at deployment, so define the value once per tenant in your CIPP custom
+                variables and reuse this template everywhere.
               </Alert>
             </Grid>
+
+            {/* Datto RMM */}
+            <CippFormCondition
+              formControl={formControl}
+              field="rmmname.value"
+              compareType="is"
+              compareValue="datto"
+            >
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Server URL (e.g., https://pinotage.rmm.datto.com or %DattoURL%)"
+                  name="params.DattoURL"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Site ID / GUID (e.g., %DattoSiteID%)"
+                  name="params.DattoGUID"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+
+            {/* Syncro RMM */}
+            <CippFormCondition
+              formControl={formControl}
+              field="rmmname.value"
+              compareType="is"
+              compareValue="syncro"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Client URL (e.g., %SyncroClientURL%)"
+                  name="params.ClientURL"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+
+            {/* Huntress */}
+            <CippFormCondition
+              formControl={formControl}
+              field="rmmname.value"
+              compareType="is"
+              compareValue="huntress"
+            >
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Organization Key (e.g., %HuntressOrgKey%)"
+                  name="params.Orgkey"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Account Key (e.g., %HuntressAccountKey%)"
+                  name="params.AccountKey"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+
+            {/* CW Automate */}
+            <CippFormCondition
+              formControl={formControl}
+              field="rmmname.value"
+              compareType="is"
+              compareValue="automate"
+            >
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Automate Server incl. HTTPS (e.g., %AutomateServer%)"
+                  name="params.Server"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Installer Token (e.g., %AutomateInstallerToken%)"
+                  name="params.InstallerToken"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Location ID (e.g., %AutomateLocationID%)"
+                  name="params.LocationID"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+
+            {/* CW Command */}
+            <CippFormCondition
+              formControl={formControl}
+              field="rmmname.value"
+              compareType="is"
+              compareValue="cwcommand"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Client URL (e.g., %CWCommandClientURL%)"
+                  name="params.ClientURL"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
           </CippFormCondition>
 
           {/* Store/WinGet App Fields */}

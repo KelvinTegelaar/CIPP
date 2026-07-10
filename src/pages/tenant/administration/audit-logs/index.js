@@ -1,21 +1,9 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import {
-  Box,
-  Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useForm } from "react-hook-form";
-import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { CippDateRangeFilter } from "../../../../components/CippComponents/CippDateRangeFilter";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { Grid } from "@mui/system";
 import tabOptions from "./tabOptions.json";
 
 // Saved Logs Configuration
@@ -31,131 +19,24 @@ const savedLogsActions = [
 ];
 
 const Page = () => {
-  const router = useRouter();
+  // Preserves the previous behaviour: RelativeTime defaults to "7d" and is always sent.
+  const [apiParams, setApiParams] = useState({ RelativeTime: "7d" });
 
-  const formControl = useForm({
-    mode: "onChange",
-    defaultValues: {
-      dateFilter: "relative",
-      Time: 7,
-      Interval: { label: "Days", value: "d" },
-    },
-  });
-
-  const [expanded, setExpanded] = useState(false);
-  const [relativeTime, setRelativeTime] = useState("7d");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-
-  const onSubmit = (data) => {
-    if (data.dateFilter === "relative") {
-      setRelativeTime(`${data.Time}${data.Interval.value}`);
-      setStartDate(null);
-      setEndDate(null);
-    } else if (data.dateFilter === "startEnd") {
-      setRelativeTime(null);
-      setStartDate(data.startDate);
-      setEndDate(data.endDate);
-    }
-  };
-
-  // API parameters for saved logs
-  const apiParams = {
-    RelativeTime: relativeTime ? relativeTime : "7d",
-    ...(startDate && { StartDate: startDate }),
-    ...(endDate && { EndDate: endDate }),
+  const handleApply = ({ RelativeTime, StartDate, EndDate }) => {
+    setApiParams({
+      RelativeTime: RelativeTime ? RelativeTime : "7d",
+      ...(StartDate && { StartDate }),
+      ...(EndDate && { EndDate }),
+    });
   };
 
   const searchFilter = (
-    <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography>Search Options</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <form onSubmit={formControl.handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            {/* Date Filter Type */}
-            <Grid size={12}>
-              <CippFormComponent
-                type="radio"
-                row
-                name="dateFilter"
-                label="Date Filter Type"
-                options={[
-                  { label: "Relative", value: "relative" },
-                  { label: "Start / End", value: "startEnd" },
-                ]}
-                formControl={formControl}
-              />
-            </Grid>
-
-            {/* Relative Time Filter */}
-            {formControl.watch("dateFilter") === "relative" && (
-              <>
-                <Grid size={{ xs: 12, md: 8 }}>
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 2 }}>
-                      <CippFormComponent
-                        fullWidth
-                        type="number"
-                        name="Time"
-                        label="Last"
-                        formControl={formControl}
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 4 }}>
-                      <CippFormComponent
-                        fullWidth
-                        type="autoComplete"
-                        name="Interval"
-                        label="Interval"
-                        multiple={false}
-                        options={[
-                          { label: "Hours", value: "h" },
-                          { label: "Days", value: "d" },
-                        ]}
-                        formControl={formControl}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </>
-            )}
-
-            {/* Start and End Date Filters */}
-            {formControl.watch("dateFilter") === "startEnd" && (
-              <>
-                <Grid size={{ xs: 6, md: 3 }}>
-                  <CippFormComponent
-                    type="datePicker"
-                    name="startDate"
-                    label="Start Date"
-                    dateTimeType="date"
-                    formControl={formControl}
-                  />
-                </Grid>
-                <Grid size={{ xs: 6, md: 3 }}>
-                  <CippFormComponent
-                    type="datePicker"
-                    name="endDate"
-                    label="End Date"
-                    dateTimeType="date"
-                    formControl={formControl}
-                  />
-                </Grid>
-              </>
-            )}
-
-            {/* Submit Button */}
-            <Grid size={12}>
-              <Button type="submit" variant="contained" color="primary">
-                Apply Filters
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </AccordionDetails>
-    </Accordion>
+    <CippDateRangeFilter
+      title="Search Options"
+      defaultTime={7}
+      defaultInterval={{ label: "Days", value: "d" }}
+      onApply={handleApply}
+    />
   );
 
   return (
@@ -165,21 +46,14 @@ const Page = () => {
       apiUrl={savedLogsApiUrl}
       apiDataKey="Results"
       simpleColumns={savedLogsColumns}
-      queryKey={`SavedLogs-${relativeTime}-${startDate}-${endDate}`}
+      queryKey={`SavedLogs-${apiParams.RelativeTime ?? ""}-${apiParams.StartDate ?? ""}-${
+        apiParams.EndDate ?? ""
+      }`}
       apiData={apiParams}
       actions={savedLogsActions}
     />
   );
 };
-
-/* Comment to Developer:
- - This page displays saved audit logs with date filtering options.
- - The filter options are implemented within an Accordion for a collapsible UI.
- - DateFilter types are supported as 'Relative' and 'Start/End'.
- - Relative time is calculated based on Time and Interval inputs.
- - Form state is managed using react-hook-form for simplicity and reusability.
- - Filters are dynamically applied to the table query.
-*/
 
 Page.getLayout = (page) => (
   <DashboardLayout>

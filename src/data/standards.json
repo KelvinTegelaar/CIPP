@@ -1587,8 +1587,8 @@
       "ZTNA21807",
       "ZTNA21810"
     ],
-    "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
-    "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
+    "helpText": "Disables users from being able to consent to applications, except for those specified in the field below. This standard conflicts with the \"Allow users to consent to applications with low security risk\" standard; only one of the two should be assigned per tenant.",
+    "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications. This standard conflicts with the \"Allow users to consent to applications with low security risk\" (OauthConsentLowSec) standard. Enabling both on the same tenant causes a remediation conflict, so only assign one.",
     "executiveText": "Requires administrative approval before employees can grant applications access to company data, preventing unauthorized data sharing and potential security breaches. This protects against malicious applications while allowing approved business tools to function normally.",
     "addedComponent": [
       {
@@ -1609,8 +1609,8 @@
     "name": "standards.OauthConsentLowSec",
     "cat": "Entra (AAD) Standards",
     "tag": ["IntegratedApps"],
-    "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
-    "docsDescription": "Allows users to consent to applications with low assigned risk.",
+    "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks. This standard conflicts with the \"Require admin consent for applications\" standard; only one of the two should be assigned per tenant.",
+    "docsDescription": "Allows users to consent to applications with low assigned risk. This standard conflicts with the \"Require admin consent for applications (Prevent OAuth phishing)\" (OauthConsent) standard. Enabling both on the same tenant causes a remediation conflict, so only assign one.",
     "executiveText": "Allows employees to approve low-risk applications without administrative intervention, balancing security with productivity. This provides a middle ground between complete restriction and open access, enabling business agility while maintaining protection against high-risk applications.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
     "impact": "Medium Impact",
@@ -1656,27 +1656,38 @@
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
     "tag": ["Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
-    "helpText": "**Remediate is currently not available**. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
-    "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
+    "helpText": "Cleans up Entra devices that have not connected/signed in for the specified number of days. Remediation first disables stale enabled devices and, on a later run, deletes stale devices that are already disabled. Hybrid-joined, Intune-managed and Autopilot devices are skipped. Deleting a device permanently removes any BitLocker recovery keys stored on it.",
+    "docsDescription": "Cleans up Entra devices that have not connected/signed in for the specified number of days. Remediation first disables stale enabled devices once they pass the disable threshold, and later deletes devices that are already disabled once they have been inactive for the disable threshold plus the configured grace delta (deletion age = disable threshold + grace days). The disable-before-delete grace period is further guaranteed by never deleting a device in the same pass it was disabled. Hybrid-joined (on-premises synced), Intune-managed/compliant, and system-managed Autopilot devices are excluded, in line with the [Microsoft guidance](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices). **Warning:** deleting a device permanently removes any BitLocker recovery keys stored on that device object.",
     "executiveText": "Automatically identifies and removes inactive devices that haven't connected to company systems for a specified period, reducing security risks from abandoned or lost devices. This maintains a clean device inventory and prevents potential unauthorized access through dormant device registrations.",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.StaleEntraDevices.deviceAgeThreshold",
-        "label": "Days before stale(Do not set below 30)",
+        "required": true,
+        "defaultValue": 90,
+        "label": "Days before stale (disables the device after this many days of inactivity, minimum 30)",
         "validators": {
           "min": { "value": 30, "message": "Minimum value is 30" }
         }
+      },
+      {
+        "type": "number",
+        "name": "standards.StaleEntraDevices.deviceDeleteThreshold",
+        "defaultValue": 0,
+        "label": "Grace days after disable before deletion (0 = never delete). Devices are deleted once inactive for the disable threshold plus this many additional days.",
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" }
+        }
       }
     ],
-    "disabledFeatures": { "report": false, "warn": false, "remediate": true },
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
     "label": "Cleanup stale Entra devices",
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2025-01-19",
     "powershellEquivalent": "Remove-MgDevice, Update-MgDevice or Graph API",
     "recommendedBy": [],
-    "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
+    "requiredCapabilities": []
   },
   {
     "name": "standards.UndoOauth",
@@ -5059,6 +5070,7 @@
   },
   {
     "name": "standards.SPDirectSharing",
+    "deprecated": true,
     "cat": "SharePoint Standards",
     "tag": [],
     "helpText": "This standard has been deprecated in favor of the Default Sharing Link standard. ",

@@ -8,7 +8,7 @@ import { CippFormCondition } from "../../../../components/CippComponents/CippFor
 import { CippFormDomainSelector } from "../../../../components/CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 import { CippFormGroupSelector } from "../../../../components/CippComponents/CippFormGroupSelector";
-import gdaproles from "../../../../data/GDAPRoles.json";
+import jitAdminRoles from "../../../../data/JitAdminRoles.json";
 import countryList from "../../../../data/countryList.json";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useRouter } from "next/router";
@@ -156,7 +156,7 @@ const Page = () => {
                   label="Default Roles"
                   name="defaultRoles"
                   creatable={false}
-                  options={gdaproles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                  options={jitAdminRoles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
                   formControl={formControl}
                   required={true}
                   validators={{

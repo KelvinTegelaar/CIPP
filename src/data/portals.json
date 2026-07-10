@@ -72,7 +72,7 @@
     "icon": "Shield"
   },
   {
-    "label": "Compliance",
+    "label": "Purview",
     "name": "Compliance_Portal",
     "url": "https://purview.microsoft.com/?tid=customerId",
     "variable": "customerId",

@@ -15,7 +15,7 @@ const actions = [
     url: "/api/ExecOnboardTenant",
     data: { id: "RowKey", Cancel: true },
     confirmText: "Are you sure you want to cancel these onboardings?",
-    multiPost: true,
+    multiPost: false,
     icon: <Cancel />,
   },
   {
@@ -24,7 +24,7 @@ const actions = [
     url: "/api/ExecOnboardTenant",
     data: { id: "RowKey", Retry: true },
     confirmText: "Are you sure you want to retry these onboardings?",
-    multiPost: true,
+    multiPost: false,
     icon: <Replay />,
   },
 ];

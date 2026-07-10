@@ -2,10 +2,25 @@ import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { AssignmentInd } from '@mui/icons-material'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
+import { useRouter } from 'next/router'
+import { useMemo } from 'react'
 
 const Page = () => {
   const pageTitle = 'Licences Report'
   const apiUrl = '/api/ListLicensesReport'
+  const router = useRouter()
+
+  const urlFilters = useMemo(() => {
+    if (router.query.filters) {
+      try {
+        return JSON.parse(router.query.filters)
+      } catch (e) {
+        console.error('Failed to parse filters from URL:', e)
+        return null
+      }
+    }
+    return null
+  }, [router.query.filters])
 
   const simpleColumns = [
     'Tenant',
@@ -83,6 +98,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       actions={actions}
       offCanvas={offCanvas}
+      initialFilters={urlFilters}
     />
   )
 }

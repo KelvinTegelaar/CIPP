@@ -165,14 +165,18 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
   useEffect(() => {
     const currentApi = apiRef.current
     if (currentApi) {
+      const tenantScoped = !currentApi.excludeTenantFilter
       setGetRequestInfo({
         url: currentApi.url,
         data: {
-          ...(!currentApi.excludeTenantFilter ? { tenantFilter: currentTenant } : null),
+          ...(tenantScoped ? { tenantFilter: currentTenant } : null),
           ...currentApi.data,
         },
         waiting: true,
-        queryKey: currentApi.queryKey,
+        queryKey:
+          tenantScoped && currentApi.queryKey
+            ? `${currentApi.queryKey}-${currentTenant}`
+            : currentApi.queryKey,
       })
     }
   }, [apiUrl, apiQueryKey, currentTenant])
