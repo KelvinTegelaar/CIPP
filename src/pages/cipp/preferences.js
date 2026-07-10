@@ -215,7 +215,7 @@ const Page = () => {
     },
     {
       name: "portalLinks.Compliance_Portal",
-      label: "Compliance",
+      label: "Purview",
     },
     {
       name: "portalLinks.Power_Platform_Portal",
@@ -363,7 +363,10 @@ const Page = () => {
                         },
                       ]}
                     />
-                    <CippOffboardingDefaultSettings formControl={formcontrol} />
+                    <CippOffboardingDefaultSettings
+                      formControl={formcontrol}
+                      defaultsSource={cleanedSettings.offboardingDefaultsSource}
+                    />
                   </Stack>
                 </Grid>
                 <Grid size={{ xs: 12, lg: 4 }}>

@@ -71,6 +71,25 @@ const CippAddEditUser = (props) => {
     return []
   }, [manualEntryMappings.isSuccess, manualEntryMappings.data])
 
+  // Prefill manual entry custom data fields in edit mode. The fetched user's extension values sit
+  // at the top level of the form (edit.jsx resets with the spread user object), while these fields
+  // live under customData.*
+  const currentUserObjectId = useWatch({ control: formControl.control, name: 'id' })
+  useEffect(() => {
+    if (formType === 'add' || !currentUserObjectId || currentTenantManualMappings.length === 0)
+      return
+    currentTenantManualMappings.forEach((mapping) => {
+      const attribute = mapping.customDataAttribute?.value
+      if (!attribute) return
+      const existing = formControl.getValues(`customData.${attribute}`)
+      if (existing !== undefined && existing !== null && existing !== '') return
+      const value = formControl.getValues(attribute)
+      if (value !== undefined && value !== null) {
+        formControl.setValue(`customData.${attribute}`, value)
+      }
+    })
+  }, [formType, currentUserObjectId, currentTenantManualMappings])
+
   // Make new list of groups by removing userGroups from tenantGroups
   const filteredTenantGroups = useMemo(() => {
     if (tenantGroups.isSuccess && userGroups.isSuccess) {
@@ -318,7 +337,12 @@ const CippAddEditUser = (props) => {
       setFieldIfEmpty('companyName', template.companyName)
       setFieldIfEmpty('department', template.department)
       setFieldIfEmpty('mobilePhone', template.mobilePhone)
-      setFieldIfEmpty('businessPhones[0]', template.businessPhones)
+      const templateBusinessPhone = Array.isArray(template.businessPhones)
+        ? template.businessPhones[0]
+        : template.businessPhones
+      if (templateBusinessPhone) {
+        formControl.setValue('businessPhones', [templateBusinessPhone])
+      }
 
       // Handle licenses - need to match the format expected by CippFormLicenseSelector
       if (template.licenses && Array.isArray(template.licenses)) {
@@ -825,6 +849,7 @@ const CippAddEditUser = (props) => {
               value: group.id,
               addedFields: {
                 groupType: group.groupType,
+                calculatedGroupType: group.calculatedGroupType,
               },
             })) || []
           }
@@ -914,65 +939,59 @@ const CippAddEditUser = (props) => {
           })}
         </>
       )}
-      {/* Schedule User Creation */}
-      {formType === 'add' && (
-        <>
-          <Grid size={{ xs: 12 }}>
-            <Divider />
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <CippFormComponent
-              type="switch"
-              label="Schedule user creation"
-              name="Scheduled.enabled"
-              formControl={formControl}
-            />
-            <CippFormCondition
-              formControl={formControl}
-              field="Scheduled.enabled"
-              compareType="is"
-              compareValue={true}
-            >
-              <Grid size={{ xs: 12 }}>
-                <label>Scheduled creation Date</label>
-                <CippFormComponent
-                  type="datePicker"
-                  name="Scheduled.date"
-                  formControl={formControl}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="switch"
-                  label="Send results to Webhook"
-                  name="postExecution.webhook"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="Send results to E-mail"
-                  name="postExecution.email"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="Send results to PSA"
-                  name="postExecution.psa"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="textField"
-                  fullWidth
-                  label="Reference"
-                  name="reference"
-                  placeholder="Enter a reference that will be added to the notification title"
-                  formControl={formControl}
-                />
-              </Grid>
-            </CippFormCondition>
-          </Grid>
-        </>
-      )}
+      {/* Schedule User Creation / Edit */}
+      <>
+        <Grid size={{ xs: 12 }}>
+          <Divider />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            label={formType === 'add' ? 'Schedule user creation' : 'Schedule this user edit'}
+            name="Scheduled.enabled"
+            formControl={formControl}
+          />
+          <CippFormCondition
+            formControl={formControl}
+            field="Scheduled.enabled"
+            compareType="is"
+            compareValue={true}
+          >
+            <Grid size={{ xs: 12 }}>
+              <label>{formType === 'add' ? 'Scheduled creation Date' : 'Scheduled edit date'}</label>
+              <CippFormComponent type="datePicker" name="Scheduled.date" formControl={formControl} />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="switch"
+                label="Send results to Webhook"
+                name="postExecution.webhook"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Send results to E-mail"
+                name="postExecution.email"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Send results to PSA"
+                name="postExecution.psa"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="textField"
+                fullWidth
+                label="Reference"
+                name="reference"
+                placeholder="Enter a reference that will be added to the notification title"
+                formControl={formControl}
+              />
+            </Grid>
+          </CippFormCondition>
+        </Grid>
+      </>
     </Grid>
   )
 }

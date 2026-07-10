@@ -5,6 +5,7 @@ import { GitHub } from "@mui/icons-material";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
 import { CippDeployCompliancePolicyDrawer } from "../../../../components/CippComponents/CippDeployCompliancePolicyDrawer.jsx";
+import { CippSitTemplateDetails } from "../../../../components/CippComponents/CippSitTemplateDetails.jsx";
 import { PermissionButton } from "../../../../utils/permissions.js";
 
 const Page = () => {
@@ -71,11 +72,13 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["name", "comments", "Pattern", "Confidence", "Locale", "GUID"],
+    extendedInfoFields: ["name", "comments", "Description", "GUID"],
     actions: actions,
+    children: (row) => <CippSitTemplateDetails row={row} />,
+    size: "lg",
   };
 
-  const simpleColumns = ["name", "comments", "Pattern", "Confidence", "Locale", "GUID"];
+  const simpleColumns = ["name", "comments", "Description", "GUID"];
 
   return (
     <CippTablePage

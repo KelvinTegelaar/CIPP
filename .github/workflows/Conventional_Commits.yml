@@ -1,0 +1,65 @@
+name: Conventional Commits Check
+
+on:
+  # Using pull_request_target instead of pull_request for secure handling of fork PRs
+  pull_request_target:
+    # Re-run on title edits so a corrected title clears the check
+    types: [opened, synchronize, reopened, edited]
+    # Only check PRs targeting the dev branch
+    branches:
+      - dev
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  conventional-commits:
+    name: Validate Conventional Commits
+    runs-on: ubuntu-slim
+    steps:
+      - name: Validate PR title
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = context.payload.pull_request.title || '';
+            const pattern = /^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?!?: .+/;
+
+            if (pattern.test(title)) {
+              console.log(`✓ PR title follows Conventional Commits format: "${title}"`);
+              return;
+            }
+
+            console.log(`❌ PR title does not follow Conventional Commits format: "${title}"`);
+
+            const message = [
+              '❌ **This PR title does not follow the [Conventional Commits](https://www.conventionalcommits.org/) format.**',
+              '',
+              'Expected format: `type(scope)?: description`',
+              '',
+              'Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`, `build`, `revert`',
+              '',
+              'Examples:',
+              '- `feat: add tenant filter to the user table`',
+              '- `fix(auth): handle expired refresh tokens`',
+              '- `docs: update self-hosting guide`',
+              '',
+              `Received: \`${title}\``,
+              '',
+              '🔒 This PR has been automatically closed. Please update the title to match the format above and reopen the PR.'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: message
+            });
+
+            await github.rest.pulls.update({
+              ...context.repo,
+              pull_number: context.issue.number,
+              state: 'closed'
+            });
+
+            core.setFailed(`PR title does not follow Conventional Commits format: "${title}"`);

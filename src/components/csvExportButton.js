@@ -2,6 +2,7 @@ import { BackupTableTwoTone } from '@mui/icons-material'
 import { IconButton, Tooltip } from '@mui/material'
 import { mkConfig, generateCsv, download } from 'export-to-csv'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
+import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
 const csvConfig = mkConfig({
   fieldSeparator: ',',
   decimalSeparator: '.',
@@ -13,7 +14,12 @@ const flattenObject = (obj, parentKey = '') => {
   const flattened = {}
   Object.keys(obj).forEach((key) => {
     const fullKey = parentKey ? `${parentKey}.${key}` : key
-    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+    if (
+      typeof obj[key] === 'object' &&
+      obj[key] !== null &&
+      !Array.isArray(obj[key]) &&
+      !SKIP_RECURSION_KEYS.includes(key)
+    ) {
       Object.assign(flattened, flattenObject(obj[key], fullKey))
     } else if (Array.isArray(obj[key]) && typeof obj[key][0] === 'string') {
       flattened[fullKey] = obj[key]

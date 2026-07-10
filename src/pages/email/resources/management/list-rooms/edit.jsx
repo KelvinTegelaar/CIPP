@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
 import { Sync } from "@mui/icons-material";
 import { Grid } from "@mui/system";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
 import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
@@ -34,6 +34,34 @@ const automateProcessingOptions = [
   { value: "AutoAccept", label: "AutoAccept - Accept and delete" },
 ];
 
+const calendarPermissionOptions = [
+  { value: "Owner", label: "Owner" },
+  { value: "PublishingEditor", label: "Publishing Editor" },
+  { value: "Editor", label: "Editor" },
+  { value: "PublishingAuthor", label: "Publishing Author" },
+  { value: "Author", label: "Author" },
+  { value: "NonEditingAuthor", label: "Non Editing Author" },
+  { value: "Reviewer", label: "Reviewer" },
+  { value: "Contributor", label: "Contributor" },
+  { value: "LimitedDetails", label: "Limited Details" },
+  { value: "AvailabilityOnly", label: "Availability Only" },
+  { value: "None", label: "None" },
+];
+
+const getCalendarPermissionOption = (permission) => {
+  if (!permission) {
+    return null;
+  }
+
+  const value = Array.isArray(permission) ? permission.join(",") : permission;
+  return (
+    calendarPermissionOptions.find((option) => option.value === value) || {
+      value,
+      label: value,
+    }
+  );
+};
+
 const EditRoomMailbox = () => {
   const router = useRouter();
   const { roomId } = router.query;
@@ -41,6 +69,19 @@ const EditRoomMailbox = () => {
   const formControl = useForm({
     mode: "onChange",
   });
+  const addOrganizerToSubject = useWatch({
+    control: formControl.control,
+    name: "AddOrganizerToSubject",
+  });
+  const defaultCalendarPermission = useWatch({
+    control: formControl.control,
+    name: "DefaultCalendarPermission",
+  });
+  const defaultCalendarPermissionValue =
+    defaultCalendarPermission?.value || defaultCalendarPermission;
+  const showOrganizerVisibilityWarning =
+    Boolean(addOrganizerToSubject) &&
+    ["AvailabilityOnly", "None"].includes(defaultCalendarPermissionValue);
 
   const roomInfo = ApiGetCall({
     url: `/api/ListRooms?roomId=${roomId}&tenantFilter=${tenantDomain}`,
@@ -92,8 +133,12 @@ const EditRoomMailbox = () => {
         ScheduleOnlyDuringWorkHours: room.ScheduleOnlyDuringWorkHours,
         AutomateProcessing: room.AutomateProcessing,
         AddOrganizerToSubject: room.AddOrganizerToSubject,
+        DeleteComments: room.DeleteComments,
         DeleteSubject: room.DeleteSubject,
+        RemovePrivateProperty: room.RemovePrivateProperty,
         RemoveCanceledMeetings: room.RemoveCanceledMeetings,
+        RemoveOldMeetingMessages: room.RemoveOldMeetingMessages,
+        DefaultCalendarPermission: getCalendarPermissionOption(room.DefaultCalendarPermission),
 
         // Calendar Configuration
         WorkDays:
@@ -172,8 +217,13 @@ const EditRoomMailbox = () => {
         ScheduleOnlyDuringWorkHours: values.ScheduleOnlyDuringWorkHours,
         AutomateProcessing: values.AutomateProcessing?.value || values.AutomateProcessing,
         AddOrganizerToSubject: values.AddOrganizerToSubject,
+        DeleteComments: values.DeleteComments,
         DeleteSubject: values.DeleteSubject,
+        RemovePrivateProperty: values.RemovePrivateProperty,
         RemoveCanceledMeetings: values.RemoveCanceledMeetings,
+        RemoveOldMeetingMessages: values.RemoveOldMeetingMessages,
+        DefaultCalendarPermission:
+          values.DefaultCalendarPermission?.value || values.DefaultCalendarPermission,
 
         // Calendar Configuration
         WorkDays: values.WorkDays?.map((day) => day.value).join(","),
@@ -328,6 +378,26 @@ const EditRoomMailbox = () => {
           </Grid>
           <Grid size={{ md: 4, xs: 12 }}>
             <CippFormComponent
+              type="autoComplete"
+              label="Default Calendar Permission"
+              name="DefaultCalendarPermission"
+              multiple={false}
+              creatable={false}
+              options={calendarPermissionOptions}
+              formControl={formControl}
+            />
+          </Grid>
+          {showOrganizerVisibilityWarning && (
+            <Grid size={{ xs: 12 }}>
+              <Alert severity="warning">
+                Users will not be able to see the organizer while Default calendar permissions are
+                set to Availability Only or None. Set Default to at least Limited Details to show
+                the organizer.
+              </Alert>
+            </Grid>
+          )}
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
               type="switch"
               label="Delete Subject"
               name="DeleteSubject"
@@ -337,8 +407,32 @@ const EditRoomMailbox = () => {
           <Grid size={{ md: 4, xs: 12 }}>
             <CippFormComponent
               type="switch"
+              label="Delete Comments"
+              name="DeleteComments"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Remove Private Property"
+              name="RemovePrivateProperty"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
               label="Remove Canceled Meetings"
               name="RemoveCanceledMeetings"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Remove Old Meeting Messages"
+              name="RemoveOldMeetingMessages"
               formControl={formControl}
             />
           </Grid>

@@ -192,6 +192,14 @@ const Page = () => {
     setExpandedCacheType(expandedCacheType === cacheType ? null : cacheType)
   }
 
+  // Results may be an array of items or a single object (e.g. AuthenticationMethodsPolicy).
+  // Normalize to a single representative sample for the structure preview.
+  const cacheSampleResults = cacheExplorerApi.data?.Results
+  const cacheSample = Array.isArray(cacheSampleResults)
+    ? cacheSampleResults[0]
+    : cacheSampleResults
+  const hasCacheSample = cacheSample !== undefined && cacheSample !== null
+
   const testScriptApi = ApiPostCall({
     urlFromData: true,
     onResult: (result) => {
@@ -1170,9 +1178,9 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
                         <CircularProgress size={16} />
                         <Typography variant="caption">Loading sample data...</Typography>
                       </Stack>
-                    ) : cacheExplorerApi.data?.Results?.length > 0 ? (
+                    ) : hasCacheSample ? (
                       <CippCodeBlock
-                        code={JSON.stringify(cacheExplorerApi.data.Results[0], null, 2)}
+                        code={JSON.stringify(cacheSample, null, 2)}
                         language="json"
                         showLineNumbers={false}
                       />

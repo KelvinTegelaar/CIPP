@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { Book } from '@mui/icons-material'
+import { Book, Palette } from '@mui/icons-material'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { CippDeployCompliancePolicyDrawer } from '../../../../components/CippComponents/CippDeployCompliancePolicyDrawer.jsx'
 import { PermissionButton } from '../../../../utils/permissions.js'
@@ -25,6 +25,28 @@ const Page = () => {
       hideBulk: true,
     },
     {
+      label: 'Set Label Color',
+      type: 'POST',
+      icon: <Palette />,
+      url: '/api/EditSensitivityLabel',
+      data: {
+        Identity: 'Guid',
+      },
+      fields: [
+        {
+          label: 'Label Color',
+          // Dot notation so the value posts as parameters.AdvancedSettings.color, the shape
+          // EditSensitivityLabel passes straight to Set-Label. Submitting an empty value clears
+          // a previously set custom color.
+          name: 'parameters.AdvancedSettings.color',
+          type: 'colorPicker',
+        },
+      ],
+      confirmText:
+        'Pick a custom color for this sensitivity label. This supports any hex color, beyond the preset palette available in the Purview portal. Leave empty to clear the custom color.',
+      hideBulk: true,
+    },
+    {
       label: 'Delete Label',
       type: 'POST',
       icon: <TrashIcon />,
@@ -46,6 +68,7 @@ const Page = () => {
       'Tooltip',
       'ParentId',
       'ContentType',
+      'Color',
       'EncryptionEnabled',
       'EncryptionProtectionType',
       'ContentMarkingHeaderEnabled',
@@ -62,6 +85,7 @@ const Page = () => {
   const simpleColumns = [
     'DisplayName',
     'Name',
+    'Color',
     'ContentType',
     'EncryptionEnabled',
     'ContentMarkingHeaderEnabled',

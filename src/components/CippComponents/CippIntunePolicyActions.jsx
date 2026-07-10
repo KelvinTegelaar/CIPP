@@ -18,6 +18,11 @@ const assignmentFilterTypeOptions = [
   { label: 'Exclude - Apply policy to devices NOT matching filter', value: 'exclude' },
 ]
 
+const assignmentDirectionOptions = [
+  { label: 'Include these group(s)', value: 'include' },
+  { label: 'Exclude these group(s)', value: 'exclude' },
+]
+
 /**
  * Get assignment actions for Intune policies
  * @param {string} tenant - The tenant filter
@@ -43,15 +48,56 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
     templateData = null,
   } = options
 
-  const getAssignmentFields = () => [
+  // Group picker (by ID) reused for both include and exclude selection
+  const getGroupPickerField = (name, label, required) => ({
+    type: 'autoComplete',
+    name,
+    label,
+    multiple: true,
+    creatable: false,
+    allowResubmit: true,
+    ...(required && { validators: { required: 'Please select at least one group' } }),
+    api: {
+      url: '/api/ListGraphRequest',
+      dataKey: 'Results',
+      queryKey: `ListPolicyAssignmentGroups-${tenant}`,
+      labelField: (group) => (group.id ? `${group.displayName} (${group.id})` : group.displayName),
+      valueField: 'id',
+      addedField: {
+        description: 'description',
+      },
+      data: {
+        Endpoint: 'groups',
+        manualPagination: true,
+        $select: 'id,displayName,description',
+        $orderby: 'displayName',
+        $top: 999,
+        $count: true,
+      },
+    },
+  })
+
+  // Assignment mode + optional device filter, shared by every assign action.
+  const getOptionsAndFilterFields = (modeHelperText) => [
+    {
+      type: 'heading',
+      label: 'Assignment options',
+    },
     {
       type: 'radio',
       name: 'assignmentMode',
       label: 'Assignment mode',
       options: assignmentModeOptions,
       defaultValue: 'replace',
+      // Re-validate the Custom Group picker (no-op for broad actions, which have no groupTargets).
+      validators: { deps: ['groupTargets'] },
       helperText:
+        modeHelperText ||
         'Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups.',
+    },
+    {
+      type: 'heading',
+      label: 'Device filter (optional)',
     },
     {
       type: 'autoComplete',
@@ -73,12 +119,56 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       options: assignmentFilterTypeOptions,
       defaultValue: 'include',
       helperText: 'Choose whether to include or exclude devices matching the filter.',
+      condition: { field: 'assignmentFilter', compareType: 'hasValue', clearOnHide: false },
+    },
+  ]
+
+  // All Users / All Devices / Globally: fixed target, with an optional exclude-groups picker.
+  const getBroadAssignFields = () => [
+    {
+      type: 'heading',
+      label: 'Exclude groups (optional)',
+    },
+    getGroupPickerField('excludeGroupTargets', 'Exclude group(s)', false),
+    ...getOptionsAndFilterFields(),
+  ]
+
+  // Custom Group: one picker + a radio choosing whether those groups are included or excluded.
+  const getCustomGroupFields = () => [
+    {
+      type: 'heading',
+      label: 'Target groups',
     },
     {
-      type: 'textField',
-      name: 'excludeGroup',
-      label: 'Exclude Group Names separated by comma. Wildcards (*) are allowed',
+      ...getGroupPickerField('groupTargets', 'Group(s)', false),
+      helperText: 'Leave empty with Exclude + Replace to remove all exclusions (keeps includes).',
+      validators: {
+        // Required, except Exclude + Replace where an empty selection clears all exclusions.
+        validate: (value, formValues) => {
+          if (
+            formValues?.assignmentDirection === 'exclude' &&
+            (formValues?.assignmentMode || 'replace') === 'replace'
+          ) {
+            return true
+          }
+          return (Array.isArray(value) && value.length > 0) || 'Please select at least one group'
+        },
+      },
     },
+    {
+      type: 'radio',
+      name: 'assignmentDirection',
+      label: 'Assignment direction',
+      options: assignmentDirectionOptions,
+      defaultValue: 'include',
+      // Re-validate the picker so the empty-allowed rule updates when direction changes.
+      validators: { deps: ['groupTargets'] },
+      helperText:
+        'Include assigns to these groups; Exclude excludes them. Replace updates only this direction and keeps the other (and All Users/All Devices) intact.',
+    },
+    ...getOptionsAndFilterFields(
+      'Replace updates only the selected direction and keeps the other direction plus All Users/All Devices. Append adds the selected groups to existing assignments.'
+    ),
   ]
 
   const getCustomDataFormatter = (assignTo) => (row, action, formData) => {
@@ -90,7 +180,8 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       ...(platformType && { platformType }),
       AssignTo: assignTo,
       assignmentMode: formData?.assignmentMode || 'replace',
-      excludeGroup: formData?.excludeGroup || null,
+      ExcludeGroupIds: (formData?.excludeGroupTargets || []).map((g) => g.value).filter(Boolean),
+      ExcludeGroupNames: (formData?.excludeGroupTargets || []).map((g) => g.label).filter(Boolean),
       AssignmentFilterName: formData?.assignmentFilter?.value || null,
       AssignmentFilterType: formData?.assignmentFilter?.value
         ? formData?.assignmentFilterType || 'include'
@@ -101,15 +192,20 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
   const getCustomDataFormatterForGroups = () => (row, action, formData) => {
     const rows = Array.isArray(row) ? row : [row]
     const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : []
+    const isExclude = formData?.assignmentDirection === 'exclude'
+    const ids = selectedGroups.map((group) => group.value).filter(Boolean)
+    const names = selectedGroups.map((group) => group.label).filter(Boolean)
     return rows.map((item) => ({
       tenantFilter: tenant === 'AllTenants' && item?.Tenant ? item.Tenant : tenant,
       ID: item?.id,
       type: item?.URLName || policyType,
       ...(platformType && { platformType }),
-      GroupIds: selectedGroups.map((group) => group.value).filter(Boolean),
-      GroupNames: selectedGroups.map((group) => group.label).filter(Boolean),
+      GroupIds: isExclude ? [] : ids,
+      GroupNames: isExclude ? [] : names,
+      ExcludeGroupIds: isExclude ? ids : [],
+      ExcludeGroupNames: isExclude ? names : [],
+      assignmentDirection: formData?.assignmentDirection || 'include',
       assignmentMode: formData?.assignmentMode || 'replace',
-      excludeGroup: formData?.excludeGroup || null,
       AssignmentFilterName: formData?.assignmentFilter?.value || null,
       AssignmentFilterType: formData?.assignmentFilter?.value
         ? formData?.assignmentFilterType || 'include'
@@ -210,6 +306,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
     label: 'Assign to All Users',
     type: 'POST',
     url: '/api/ExecAssignPolicy',
+    allowResubmit: true,
     data: {
       AssignTo: 'allLicensedUsers',
       ID: 'id',
@@ -217,7 +314,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       ...(platformType && { platformType: '!deviceAppManagement' }),
     },
     multiPost: false,
-    fields: getAssignmentFields(),
+    fields: getBroadAssignFields(),
     customDataformatter: getCustomDataFormatter('allLicensedUsers'),
     confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
     icon: <UserIcon />,
@@ -229,6 +326,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
     label: 'Assign to All Devices',
     type: 'POST',
     url: '/api/ExecAssignPolicy',
+    allowResubmit: true,
     data: {
       AssignTo: 'AllDevices',
       ID: 'id',
@@ -236,7 +334,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       ...(platformType && { platformType: '!deviceAppManagement' }),
     },
     multiPost: false,
-    fields: getAssignmentFields(),
+    fields: getBroadAssignFields(),
     customDataformatter: getCustomDataFormatter('AllDevices'),
     confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
     icon: <LaptopChromebook />,
@@ -248,6 +346,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
     label: 'Assign Globally (All Users / All Devices)',
     type: 'POST',
     url: '/api/ExecAssignPolicy',
+    allowResubmit: true,
     data: {
       AssignTo: 'AllDevicesAndUsers',
       ID: 'id',
@@ -255,7 +354,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       ...(platformType && { platformType: '!deviceAppManagement' }),
     },
     multiPost: false,
-    fields: getAssignmentFields(),
+    fields: getBroadAssignFields(),
     customDataformatter: getCustomDataFormatter('AllDevicesAndUsers'),
     confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
     icon: <GlobeAltIcon />,
@@ -267,41 +366,12 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
     label: 'Assign to Custom Group',
     type: 'POST',
     url: '/api/ExecAssignPolicy',
+    allowResubmit: true,
     icon: <UserGroupIcon />,
     color: 'info',
     confirmText: 'Select the target groups for "[displayName]".',
     multiPost: false,
-    fields: [
-      {
-        type: 'autoComplete',
-        name: 'groupTargets',
-        label: 'Group(s)',
-        multiple: true,
-        creatable: false,
-        allowResubmit: true,
-        validators: { required: 'Please select at least one group' },
-        api: {
-          url: '/api/ListGraphRequest',
-          dataKey: 'Results',
-          queryKey: `ListPolicyAssignmentGroups-${tenant}`,
-          labelField: (group) =>
-            group.id ? `${group.displayName} (${group.id})` : group.displayName,
-          valueField: 'id',
-          addedField: {
-            description: 'description',
-          },
-          data: {
-            Endpoint: 'groups',
-            manualPagination: true,
-            $select: 'id,displayName,description',
-            $orderby: 'displayName',
-            $top: 999,
-            $count: true,
-          },
-        },
-      },
-      ...getAssignmentFields(),
-    ],
+    fields: getCustomGroupFields(),
     customDataformatter: getCustomDataFormatterForGroups(),
   })
 

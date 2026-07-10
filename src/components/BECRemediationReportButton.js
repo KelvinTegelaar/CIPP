@@ -434,23 +434,34 @@ const BECRemediationReportDocument = ({
     }
   }
 
+  const formatSafelistValue = (value) => {
+    if (!value) return 'unchanged'
+    return Array.isArray(value) ? value.join(', ') || 'unchanged' : String(value)
+  }
+
   // Calculate statistics
   const stats = {
     newRules: becData?.NewRules?.length || 0,
+    ruleChanges: becData?.InboxRuleChanges?.length || 0,
     newUsers: becData?.NewUsers?.length || 0,
     newApps: becData?.AddedApps?.length || 0,
     permissionChanges: becData?.MailboxPermissionChanges?.length || 0,
     mfaDevices: becData?.MFADevices?.length || 0,
     passwordChanges: becData?.ChangedPasswords?.length || 0,
+    trustedSenders: becData?.TrustedSenders?.length || 0,
+    blockedSenders: becData?.BlockedSenders?.length || 0,
+    safelistChanges: becData?.SafelistChanges?.length || 0,
   }
 
   // Determine threat level
   const calculateThreatLevel = () => {
     let threatScore = 0
     if (stats.newRules > 0) threatScore += 3
+    if (stats.ruleChanges > 0) threatScore += 3
     if (stats.permissionChanges > 0) threatScore += 2
     if (stats.newApps > 0) threatScore += 2
     if (stats.newUsers > 5) threatScore += 1
+    if (stats.safelistChanges > 0) threatScore += 2
 
     // Check for suspicious rules (RSS folder moves)
     const hasSuspiciousRules = becData?.NewRules?.some((rule) => rule.MoveToFolder?.includes('RSS'))
@@ -738,7 +749,7 @@ const BECRemediationReportDocument = ({
             </Text>
           </View>
 
-          {stats.newRules > 0 ? (
+          {stats.newRules > 0 && (
             <>
               <View style={styles.alertBox}>
                 <Text style={styles.alertTitle}>⚠ {stats.newRules} Mailbox Rule(s) Found</Text>
@@ -758,6 +769,7 @@ const BECRemediationReportDocument = ({
                     {rule.MoveToFolder && `Moves to: ${rule.MoveToFolder}`}
                     {rule.ForwardTo && `\nForwards to: ${rule.ForwardTo}`}
                     {rule.DeleteMessage && '\nDeletes messages'}
+                    {rule.RecentlyChanged && '\nCreated or changed in the last 7 days'}
                   </Text>
                 </View>
               ))}
@@ -767,7 +779,42 @@ const BECRemediationReportDocument = ({
                 </Text>
               )}
             </>
-          ) : (
+          )}
+          {stats.ruleChanges > 0 && (
+            <>
+              <View style={styles.alertBox}>
+                <Text style={styles.alertTitle}>
+                  ⚠ {stats.ruleChanges} Rule Change(s) in the Last 7 Days
+                </Text>
+                <Text style={styles.alertText}>
+                  The audit log recorded inbox rules being created, changed or removed on this
+                  mailbox. Rules that were removed after use are a common way for attackers to cover
+                  their tracks.
+                </Text>
+              </View>
+
+              {becData.InboxRuleChanges.slice(0, 10).map((change, index) => (
+                <View key={index} style={styles.infoBox}>
+                  <Text style={styles.infoTitle}>
+                    {change.Operation || 'Rule Change'}: {change.RuleName || 'Unnamed Rule'}
+                  </Text>
+                  <Text style={styles.infoText}>
+                    Date: {change.Date || 'Unknown'}
+                    {'\n'}
+                    By: {change.UserKey || 'Unknown'}
+                    {change.Parameters && `\nParameters: ${change.Parameters}`}
+                  </Text>
+                </View>
+              ))}
+              {becData.InboxRuleChanges.length > 10 && (
+                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
+                  ... and {becData.InboxRuleChanges.length - 10} more changes (see JSON export for
+                  full list)
+                </Text>
+              )}
+            </>
+          )}
+          {stats.newRules === 0 && stats.ruleChanges === 0 && (
             <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
               <Text style={[styles.infoTitle, { color: '#22543D' }]}>
                 ✓ No Suspicious Rules Found
@@ -1065,6 +1112,74 @@ const BECRemediationReportDocument = ({
           )}
         </View>
 
+        {/* Check 7: Trusted & Blocked Senders */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Check 7: Trusted &amp; Blocked Senders</Text>
+          <View style={styles.infoBox}>
+            <Text style={styles.infoTitle}>Why We Check This</Text>
+            <Text style={styles.infoText}>
+              Attackers may add their own domain to the Trusted Senders list so their fraudulent
+              messages bypass spam filtering, or add finance/security domains to the Blocked
+              Senders list so warnings and alerts are hidden from the victim in the Junk Email
+              folder.
+            </Text>
+          </View>
+
+          {stats.safelistChanges > 0 && (
+            <>
+              <View style={styles.alertBox}>
+                <Text style={styles.alertTitle}>
+                  ⚠ {stats.safelistChanges} Safelist Change(s) in the Last 7 Days
+                </Text>
+                <Text style={styles.alertText}>
+                  The audit log recorded changes to the Trusted/Blocked Senders and Domains list on
+                  this mailbox. Review each change carefully.
+                </Text>
+              </View>
+
+              {becData.SafelistChanges.slice(0, 10).map((change, index) => (
+                <View key={index} style={styles.infoBox}>
+                  <Text style={styles.infoTitle}>
+                    {change.Operation || 'Safelist Change'} by {change.UserKey || 'Unknown'}
+                  </Text>
+                  <Text style={styles.infoText}>
+                    Date: {formatDate(change.Date)}
+                    {'\n'}
+                    Trusted: {formatSafelistValue(change.Trusted)}
+                    {'\n'}
+                    Blocked: {formatSafelistValue(change.Blocked)}
+                  </Text>
+                </View>
+              ))}
+            </>
+          )}
+
+          {stats.trustedSenders > 0 && (
+            <View style={styles.infoBox}>
+              <Text style={styles.infoTitle}>Trusted Senders/Domains ({stats.trustedSenders})</Text>
+              <Text style={styles.infoText}>{becData.TrustedSenders.slice(0, 15).join(', ')}</Text>
+            </View>
+          )}
+
+          {stats.blockedSenders > 0 && (
+            <View style={styles.infoBox}>
+              <Text style={styles.infoTitle}>Blocked Senders/Domains ({stats.blockedSenders})</Text>
+              <Text style={styles.infoText}>{becData.BlockedSenders.slice(0, 15).join(', ')}</Text>
+            </View>
+          )}
+
+          {stats.trustedSenders === 0 && stats.blockedSenders === 0 && stats.safelistChanges === 0 && (
+            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
+              <Text style={[styles.infoTitle, { color: '#22543D' }]}>
+                ✓ No Trusted or Blocked Senders Found
+              </Text>
+              <Text style={styles.infoText}>
+                No trusted or blocked sender/domain entries were found on this mailbox.
+              </Text>
+            </View>
+          )}
+        </View>
+
         <View style={styles.footer}>
           <Text style={styles.footerText}>
             {tenantName} - BEC Analysis Report for {userData?.displayName}
@@ -1344,6 +1459,8 @@ const BECRemediationReportDocument = ({
               {'\n'}
               Mailbox Rules Found: {stats.newRules}
               {'\n'}
+              Rule Changes: {stats.ruleChanges}
+              {'\n'}
               Permission Changes: {stats.permissionChanges}
               {'\n'}
               New Applications: {stats.newApps}
@@ -1353,6 +1470,12 @@ const BECRemediationReportDocument = ({
               MFA Devices: {stats.mfaDevices}
               {'\n'}
               Password Changes: {stats.passwordChanges}
+              {'\n'}
+              Trusted Senders: {stats.trustedSenders}
+              {'\n'}
+              Blocked Senders: {stats.blockedSenders}
+              {'\n'}
+              Safelist Changes: {stats.safelistChanges}
             </Text>
           </View>
         </View>

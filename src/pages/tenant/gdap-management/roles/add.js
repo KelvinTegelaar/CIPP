@@ -205,7 +205,7 @@ const Page = () => {
               compareValue="62e90394-69f5-4237-9190-012177145e10"
             >
               <Alert severity="warning">
-                The Company Administrator role is a highly privileged role that should be used with
+                The Global Administrator role is a highly privileged role that should be used with
                 caution. GDAP Relationships with this role will not be eligible for auto-extend.
               </Alert>
             </CippFormCondition>

@@ -2,8 +2,14 @@ import {
   Alert,
   Box,
   Button,
+  Card,
   CardContent,
+  CardHeader,
+  Divider,
+  FormControlLabel,
   Stack,
+  Switch,
+  TextField,
   Typography,
   Skeleton,
   Input,
@@ -13,6 +19,7 @@ import {
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
+import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
 import {
   ArrowCircleRight,
@@ -30,10 +37,87 @@ import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { CippRestoreWizard } from "../../../components/CippComponents/CippRestoreWizard";
 import { BackupValidator } from "../../../utils/backupValidation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDialog } from "../../../hooks/use-dialog";
 
+const ReplicationScopeCard = ({ scope, label, description, config }) => {
+  const save = ApiPostCall({ relatedQueryKeys: "BackupReplicationConfig" });
+  const [sasUrl, setSasUrl] = useState("");
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    setEnabled(Boolean(config?.Enabled));
+    setSasUrl("");
+  }, [config?.Enabled, config?.IsSet]);
+
+  const isSet = Boolean(config?.IsSet);
+
+  const handleSave = () => {
+    const data = { BackupType: scope, Enabled: enabled };
+    if (sasUrl) {
+      data.SASUrl = sasUrl;
+    } else if (isSet) {
+      // Keep the existing stored SAS URL untouched.
+      data.SASUrl = "SentToKeyVault";
+    }
+    save.mutate({ url: "/api/ExecBackupReplicationConfig", data });
+  };
+
+  return (
+    <Card variant="outlined">
+      <CardContent>
+        <Stack spacing={2}>
+          <Box>
+            <Typography variant="subtitle2">{label}</Typography>
+            <Typography variant="caption" color="text.secondary">
+              {description}
+            </Typography>
+          </Box>
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={enabled}
+                onChange={(e) => setEnabled(e.target.checked)}
+              />
+            }
+            label={<Typography variant="body2">Enable replication</Typography>}
+          />
+          <TextField
+            label="Container SAS URL"
+            value={sasUrl}
+            onChange={(e) => setSasUrl(e.target.value)}
+            size="small"
+            fullWidth
+            type="password"
+            placeholder={
+              isSet ? "•••••••••• (stored — leave blank to keep)" : "https://account.blob.core.windows.net/container?sv=..."
+            }
+            helperText="Container-level SAS URL with write and create permissions."
+          />
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSave}
+              disabled={save.isPending}
+            >
+              {save.isPending ? "Saving..." : "Save"}
+            </Button>
+          </Box>
+          <CippApiResults apiObject={save} />
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+};
+
 const Page = () => {
+  const replicationConfig = ApiGetCall({
+    url: "/api/ExecBackupReplicationConfig",
+    data: { List: true },
+    queryKey: "BackupReplicationConfig",
+  });
   const [validationResult, setValidationResult] = useState(null);
   const wizardDialog = useDialog();
   const runBackupDialog = useDialog();
@@ -315,6 +399,43 @@ const Page = () => {
             </Box>
           )}
         </CardContent>
+      </CippPageCard>
+
+      <CippPageCard title="Backup Replication">
+        <Box sx={{ mt: 3 }}>
+          <Card>
+            <CardHeader
+              title="External Replication"
+              subheader="Replicate new backups to an external Azure Storage account."
+            />
+            <Divider />
+            <CardContent>
+              <Alert severity="info" sx={{ mb: 2 }}>
+                When enabled, each new backup is also uploaded to the external container described by the
+                SAS URL. The SAS URL is stored securely in Key Vault. This does not copy existing backups.
+                This will continue to push backups to the container without any consideration for storage costs, so please monitor your external storage usage.
+              </Alert>
+              <Stack spacing={2} direction={{ xs: "column", md: "row" }}>
+                <Box sx={{ flex: 1 }}>
+                  <ReplicationScopeCard
+                    scope="Core"
+                    label="CIPP Core Backups"
+                    description="Replicates CIPP configuration (Core) backups."
+                    config={replicationConfig.data?.Results?.Core}
+                  />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <ReplicationScopeCard
+                    scope="Tenant"
+                    label="Tenant Backups"
+                    description="Replicates all scheduled tenant backups."
+                    config={replicationConfig.data?.Results?.Tenant}
+                  />
+                </Box>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Box>
       </CippPageCard>
 
       <CippApiDialog

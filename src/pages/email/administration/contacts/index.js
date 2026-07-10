@@ -30,6 +30,14 @@ const Page = () => {
           displayName: "DisplayName",
           type: "!Contact",
         },
+        // Pre-select the current source of authority; leave unselected when the
+        // selected rows have mixed states
+        defaultvalues: (row) => {
+          const states = [
+            ...new Set((Array.isArray(row) ? row : [row]).map((r) => r?.IsDirSynced === true)),
+          ];
+          return states.length === 1 ? { isCloudManaged: String(!states[0]) } : {};
+        },
         fields: [
           {
             type: "radio",
@@ -39,12 +47,29 @@ const Page = () => {
               { label: "Cloud Managed", value: true },
               { label: "On-Premises Managed", value: false },
             ],
-            validators: { required: "Please select a source of authority" },
+            validators: {
+              required: "Please select a source of authority",
+              validate: (value, formValues, row) => {
+                const states = [
+                  ...new Set(
+                    (Array.isArray(row) ? row : [row]).map((r) => r?.IsDirSynced === true)
+                  ),
+                ];
+                if (states.length === 1 && String(value) === String(!states[0])) {
+                  return "Source of authority is unchanged";
+                }
+                return true;
+              },
+            },
           },
         ],
         confirmText:
           "Are you sure you want to change the source of authority for '[DisplayName]'? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
         multiPost: false,
+        // The SOA API targets the Graph org contact (graphId), which only exists for
+        // contacts that are or were directory-synced; cloud-native mail contacts have
+        // no Graph counterpart and the request would be meaningless
+        condition: (row) => !!row?.graphId,
       },
       {
         label: "Remove Contact",

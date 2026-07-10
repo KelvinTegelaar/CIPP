@@ -284,18 +284,6 @@
         "label": "Enable Integration"
       },
       {
-        "type": "switch",
-        "name": "HaloPSA.ConsolidateTickets",
-        "label": "Consolidate Tickets",
-        "placeholder": "Consolidate tickets for the same alert into one ticket.",
-        "condition": {
-          "field": "HaloPSA.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
-      },
-      {
         "type": "textField",
         "name": "HaloPSA.ResourceURL",
         "label": "HaloPSA Resource Server URL",
@@ -365,6 +353,8 @@
         "name": "HaloPSA.TicketType",
         "label": "HaloPSA Ticket Type",
         "placeholder": "Select your HaloPSA Ticket Type, leave blank for default",
+        "helperText": "The ticket type used for CIPP alert tickets. Sets the workflow and the Outcomes available below. Save after changing so the Outcome list refreshes.",
+        "fullRow": true,
         "multiple": false,
         "api": {
           "url": "/api/ExecExtensionMapping",
@@ -385,10 +375,24 @@
         }
       },
       {
+        "type": "switch",
+        "name": "HaloPSA.ConsolidateTickets",
+        "label": "Consolidate Tickets",
+        "helperText": "Adds repeat alerts (same title) as a note on the existing open ticket instead of raising a new one. Turns on the Outcome dropdown below, which needs a valid private note action.",
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
         "type": "autoComplete",
         "name": "HaloPSA.Outcome",
         "label": "HaloPSA Outcome",
         "placeholder": "Select your HaloPSA Outcome, leave blank for default",
+        "helperText": "The action applied when a duplicate alert is added to an existing ticket. Use a private note action your HaloPSA API user can run. Set the Ticket Type first and save - the list only shows outcomes from that type's workflow.",
+        "fullRow": true,
         "multiple": false,
         "api": {
           "url": "/api/ExecExtensionMapping",
@@ -403,6 +407,18 @@
         },
         "condition": {
           "field": "HaloPSA.ConsolidateTickets",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "hide"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "HaloPSA.LinkTicketsToUsers",
+        "label": "Link Tickets to affected Users",
+        "helperText": "Raises one ticket per affected user and links it to the matching HaloPSA contact (by Azure Object ID, then email/login). No match falls back to the client's General User, with the UPN in the ticket body.",
+        "condition": {
+          "field": "HaloPSA.Enabled",
           "compareType": "is",
           "compareValue": true,
           "action": "disable"
@@ -503,6 +519,29 @@
           "compareType": "is",
           "compareValue": true,
           "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.CveSyncEnabled",
+        "label": "Enable Automated CVE Sync",
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "NinjaOne.CveSyncPrefix",
+        "label": "CVE Sync Scan Group Prefix",
+        "placeholder": "CIPP-",
+        "helperText": "Scan groups will be named: [Prefix][tenant-domain] (e.g., CIPP-contoso.com)",
+        "condition": {
+          "field": "NinjaOne.CveSyncEnabled",
+          "compareType": "is",
+          "compareValue": true
         }
       }
     ],

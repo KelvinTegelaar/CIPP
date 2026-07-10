@@ -13,7 +13,7 @@ const apiUrl = "/api/ListAzureADConnectStatus";
 const Page = () => {
   return (
     <CippTablePage
-      title="Azure AD Connect Report"
+      title="Microsoft Entra Connect Report"
       apiUrl={apiUrl}
       apiData={{
         DataToReturn: "AzureADObjectsInError",
