@@ -187,14 +187,18 @@ export const CippAppTemplateDrawer = ({
         value: typeValue,
       }
     }
-    // Normalize "Save as Template" configs (IntuneBody format) to form fields
-    if (config.IntuneBody && !config.applicationName) {
+    // Normalize "Save as Template" configs to form fields, canonicalizing on the
+    // lowercase applicationName so deploy-time ConvertFrom-Json never sees both casings.
+    if (config.IntuneBody) {
       const body = config.IntuneBody
-      config.applicationName = config.ApplicationName || body.displayName || ''
-      config.description = body.description || ''
-      config.AssignTo = config.assignTo || 'On'
+      if (!config.applicationName) {
+        config.applicationName = config.ApplicationName || body.displayName || ''
+      }
+      delete config.ApplicationName
+      if (!config.description) config.description = body.description || ''
+      if (!config.AssignTo) config.AssignTo = config.assignTo || 'On'
       // WinGet/Store: packageIdentifier
-      if (body.packageIdentifier) {
+      if (!config.packagename && body.packageIdentifier) {
         config.packagename = body.packageIdentifier
       }
       // Chocolatey: extract package name from detection rules or install command
@@ -206,7 +210,7 @@ export const CippAppTemplateDrawer = ({
         if (match) config.packagename = match[1]
       }
       // Chocolatey: custom repo
-      if (body.installCommandLine) {
+      if (!config.customRepo && body.installCommandLine) {
         const repoMatch = body.installCommandLine.match(/-CustomRepo\s+(\S+)/i)
         if (repoMatch) config.customRepo = repoMatch[1]
       }
