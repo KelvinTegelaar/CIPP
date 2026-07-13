@@ -225,7 +225,7 @@ const Page = () => {
           name: 'assignmentMode',
           label: 'Assignment mode',
           options: assignmentModeOptions,
-          defaultValue: 'replace',
+          defaultValue: 'append',
           helperText:
             'Replace will overwrite existing assignments. Append keeps current assignments and adds the new ones.',
         },
@@ -236,7 +236,7 @@ const Page = () => {
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: 'allLicensedUsers',
-        assignmentMode: formData?.assignmentMode || 'replace',
+        assignmentMode: formData?.assignmentMode || 'append',
       }),
       category: 'edit',
     },
@@ -253,7 +253,7 @@ const Page = () => {
           name: 'assignmentMode',
           label: 'Assignment mode',
           options: assignmentModeOptions,
-          defaultValue: 'replace',
+          defaultValue: 'append',
           helperText:
             'Replace will overwrite existing assignments. Append keeps current assignments and adds the new ones.',
         },
@@ -264,7 +264,7 @@ const Page = () => {
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: 'AllDevices',
-        assignmentMode: formData?.assignmentMode || 'replace',
+        assignmentMode: formData?.assignmentMode || 'append',
       }),
       category: 'edit',
     },
@@ -281,7 +281,7 @@ const Page = () => {
           name: 'assignmentMode',
           label: 'Assignment mode',
           options: assignmentModeOptions,
-          defaultValue: 'replace',
+          defaultValue: 'append',
           helperText:
             'Replace will overwrite existing assignments. Append keeps current assignments and adds the new ones.',
         },
@@ -292,7 +292,7 @@ const Page = () => {
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: 'AllDevicesAndUsers',
-        assignmentMode: formData?.assignmentMode || 'replace',
+        assignmentMode: formData?.assignmentMode || 'append',
       }),
       category: 'edit',
     },
@@ -315,7 +315,7 @@ const Page = () => {
             validate: (value, formValues) => {
               if (
                 formValues?.assignmentDirection === 'exclude' &&
-                (formValues?.assignmentMode || 'replace') === 'replace'
+                (formValues?.assignmentMode || 'append') === 'replace'
               ) {
                 return true
               }
@@ -342,7 +342,7 @@ const Page = () => {
           name: 'assignmentMode',
           label: 'Assignment mode',
           options: assignmentModeOptions,
-          defaultValue: 'replace',
+          defaultValue: 'append',
           // Re-validate the picker so the empty-allowed rule updates when mode changes.
           validators: { deps: ['groupTargets'] },
           helperText:
@@ -363,7 +363,7 @@ const Page = () => {
           ExcludeGroupIds: isExclude ? ids : [],
           ExcludeGroupNames: isExclude ? names : [],
           assignmentDirection: formData?.assignmentDirection || 'include',
-          assignmentMode: formData?.assignmentMode || 'replace',
+          assignmentMode: formData?.assignmentMode || 'append',
         }
       },
       category: 'edit',
