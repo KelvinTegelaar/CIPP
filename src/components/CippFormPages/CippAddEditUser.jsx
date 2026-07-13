@@ -20,6 +20,9 @@ const CippAddEditUser = (props) => {
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const [displayNameManuallySet, setDisplayNameManuallySet] = useState(false)
   const [usernameManuallySet, setUsernameManuallySet] = useState(false)
+  // Tracks the template already applied to the form so we can tell a first
+  // apply (fill empty fields) apart from a switch (replace/clear stale values)
+  const appliedTemplateKeyRef = useRef(null)
   const router = useRouter()
   const { userId } = router.query
 
@@ -261,6 +264,7 @@ const CippAddEditUser = (props) => {
       // Only clear selected template if it's not the default template
       if (selectedTemplate && !selectedTemplate.defaultForTenant) {
         setSelectedTemplate(null)
+        appliedTemplateKeyRef.current = null
       }
     }
   }, [
@@ -290,100 +294,123 @@ const CippAddEditUser = (props) => {
 
   // Auto-populate fields when template selected
   useEffect(() => {
-    if (formType === 'add' && watchedFields.userTemplate?.addedFields) {
-      const template = watchedFields.userTemplate.addedFields
-      setSelectedTemplate(template)
+    if (formType !== 'add' || !watchedFields.userTemplate?.addedFields) return
+    const template = watchedFields.userTemplate.addedFields
+    const templateKey = watchedFields.userTemplate.value ?? template.GUID ?? template.templateName
 
-      // Reset manual edit flags when template changes
-      setDisplayNameManuallySet(false)
-      setUsernameManuallySet(false)
+    // Distinguish the first apply from a switch. On a switch we replace
+    // template-driven fields (and clear ones the new template doesn't define)
+    // so stale values from the previous template don't linger. On the first
+    // apply we only fill fields that have a template value, so we don't clobber
+    // input the user already entered or copied from another user.
+    const isSwitch =
+      appliedTemplateKeyRef.current !== null && appliedTemplateKeyRef.current !== templateKey
+    appliedTemplateKeyRef.current = templateKey
 
-      // Only set fields if they don't already have values (don't override user input)
-      const setFieldIfEmpty = (fieldName, value) => {
-        if (value) {
-          formControl.setValue(fieldName, value)
-        }
+    setSelectedTemplate(template)
+
+    // Reset manual edit flags when template changes
+    setDisplayNameManuallySet(false)
+    setUsernameManuallySet(false)
+
+    // Apply a template value to a field. When the template has a value we set
+    // it; when it doesn't and this is a switch we clear the field (emptyValue)
+    // so the previous template's value doesn't linger.
+    const applyField = (fieldName, value, emptyValue = '') => {
+      const hasValue = Array.isArray(value)
+        ? value.length > 0
+        : value !== undefined && value !== null && value !== ''
+      if (hasValue) {
+        formControl.setValue(fieldName, value, { shouldDirty: true })
+      } else if (isSwitch) {
+        formControl.setValue(fieldName, emptyValue, { shouldDirty: true })
       }
+    }
 
-      // Populate form fields from template
-      if (template.primDomain) {
-        // If primDomain is an object, use it as-is; if it's a string, convert to object
-        const primDomainValue =
-          typeof template.primDomain === 'string'
-            ? { label: template.primDomain, value: template.primDomain }
-            : template.primDomain
-        formControl.setValue('primDomain', primDomainValue)
+    // Primary domain - accept both object and string formats
+    const primDomainValue = template.primDomain
+      ? typeof template.primDomain === 'string'
+        ? { label: template.primDomain, value: template.primDomain }
+        : template.primDomain
+      : null
+    applyField('primDomain', primDomainValue, null)
+
+    // Usage location - accept both object and string formats
+    const usageLocationCode =
+      typeof template.usageLocation === 'string'
+        ? template.usageLocation
+        : template.usageLocation?.value
+    const country = usageLocationCode
+      ? countryList.find((c) => c.Code === usageLocationCode)
+      : null
+    applyField(
+      'usageLocation',
+      country ? { label: country.Name, value: country.Code } : null,
+      null
+    )
+
+    applyField('jobTitle', template.jobTitle)
+    applyField('streetAddress', template.streetAddress)
+    applyField('city', template.city)
+    applyField('state', template.state)
+    applyField('postalCode', template.postalCode)
+    applyField('country', template.country)
+    applyField('companyName', template.companyName)
+    applyField('department', template.department)
+    applyField('mobilePhone', template.mobilePhone)
+
+    const templateBusinessPhone = Array.isArray(template.businessPhones)
+      ? template.businessPhones[0]
+      : template.businessPhones
+    applyField('businessPhones', templateBusinessPhone ? [templateBusinessPhone] : [], [])
+
+    // Licenses - match the format expected by CippFormLicenseSelector
+    applyField(
+      'licenses',
+      Array.isArray(template.licenses) ? template.licenses : [],
+      []
+    )
+
+    // Groups from template
+    const templateGroups = template.addToGroups || template.groupMemberships
+    const rawGroups = templateGroups
+      ? Array.isArray(templateGroups)
+        ? templateGroups
+        : [templateGroups]
+      : []
+    const groups = rawGroups.map((g) => {
+      if (g.label && g.value) return g
+      const groupType = g.groupTypes?.includes('Unified')
+        ? 'Microsoft 365'
+        : g.mailEnabled && !g.groupTypes?.includes('Unified')
+          ? g.securityEnabled
+            ? 'Mail-Enabled Security'
+            : 'Distribution list'
+          : 'Security'
+      return {
+        label: g.displayName,
+        value: g.id,
+        addedFields: { groupType },
       }
-      if (template.usageLocation) {
-        // Handle both object and string formats
-        const usageLocationCode =
-          typeof template.usageLocation === 'string'
-            ? template.usageLocation
-            : template.usageLocation?.value
-        const country = countryList.find((c) => c.Code === usageLocationCode)
-        if (country) {
-          setFieldIfEmpty('usageLocation', {
-            label: country.Name,
-            value: country.Code,
+    })
+    applyField('AddToGroups', groups, [])
+
+    // Custom user attributes. On a switch, clear every known attribute field
+    // first so attributes the new template doesn't define don't linger, then
+    // apply the template's values.
+    if (isSwitch) {
+      userSettingsDefaults?.userAttributes
+        ?.filter((attribute) => attribute.value !== 'sponsor')
+        .forEach((attribute) => {
+          formControl.setValue(`defaultAttributes.${attribute.label}.Value`, '', {
+            shouldDirty: true,
           })
-        }
-      }
-      setFieldIfEmpty('jobTitle', template.jobTitle)
-      setFieldIfEmpty('streetAddress', template.streetAddress)
-      setFieldIfEmpty('city', template.city)
-      setFieldIfEmpty('state', template.state)
-      setFieldIfEmpty('postalCode', template.postalCode)
-      setFieldIfEmpty('country', template.country)
-      setFieldIfEmpty('companyName', template.companyName)
-      setFieldIfEmpty('department', template.department)
-      setFieldIfEmpty('mobilePhone', template.mobilePhone)
-      const templateBusinessPhone = Array.isArray(template.businessPhones)
-        ? template.businessPhones[0]
-        : template.businessPhones
-      if (templateBusinessPhone) {
-        formControl.setValue('businessPhones', [templateBusinessPhone])
-      }
-
-      // Handle licenses - need to match the format expected by CippFormLicenseSelector
-      if (template.licenses && Array.isArray(template.licenses)) {
-        setFieldIfEmpty('licenses', template.licenses)
-      }
-
-      // Handle groups from template
-      const templateGroups = template.addToGroups || template.groupMemberships
-      if (templateGroups) {
-        const rawGroups = Array.isArray(templateGroups) ? templateGroups : [templateGroups]
-        const groups = rawGroups.map((g) => {
-          if (g.label && g.value) return g
-          const groupType = g.groupTypes?.includes('Unified')
-            ? 'Microsoft 365'
-            : g.mailEnabled && !g.groupTypes?.includes('Unified')
-              ? g.securityEnabled
-                ? 'Mail-Enabled Security'
-                : 'Distribution list'
-              : 'Security'
-          return {
-            label: g.displayName,
-            value: g.id,
-            addedFields: { groupType },
-          }
         })
-        if (groups.length > 0) {
-          const currentGroups = watchedFields.AddToGroups
-          if (!currentGroups || (Array.isArray(currentGroups) && currentGroups.length === 0)) {
-            formControl.setValue('AddToGroups', groups, { shouldDirty: true })
-          }
-        }
-      }
-
-      // Populate custom user attributes from template
-      if (template.defaultAttributes) {
-        Object.entries(template.defaultAttributes).forEach(([key, attr]) => {
-          if (attr?.Value) {
-            setFieldIfEmpty(`defaultAttributes.${key}.Value`, attr.Value)
-          }
-        })
-      }
+    }
+    if (template.defaultAttributes) {
+      Object.entries(template.defaultAttributes).forEach(([key, attr]) => {
+        applyField(`defaultAttributes.${key}.Value`, attr?.Value)
+      })
     }
   }, [watchedFields.userTemplate, formType])
 

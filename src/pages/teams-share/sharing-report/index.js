@@ -248,7 +248,7 @@ const Page = () => {
               >
                 <Typography variant="body2" color="text.secondary">
                   {summary.lastDataRefresh
-                    ? `Last data refresh: ${new Date(summary.lastDataRefresh).toLocaleString()}`
+                    ? `Last data refresh: ${new Date(summary.lastDataRefresh.UtcDateTime).toLocaleString()}`
                     : ''}
                 </Typography>
                 <Button
