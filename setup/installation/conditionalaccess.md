@@ -1,5 +1,5 @@
 ---
-description: Setup your Conditional Access policies for CIPP.
+description: Set up your Conditional Access policies for CIPP.
 ---
 
 # Conditional Access Configuration

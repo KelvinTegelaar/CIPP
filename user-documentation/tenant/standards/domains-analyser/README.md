@@ -31,7 +31,7 @@ This will open [individual-domains.md](../../../tools/tenant-tools/individual-do
 
 <summary>Run Analysis Now</summary>
 
-This will add a task to the queue to update the analysis for the selected tenants. If you have offloading enable, this will begin at the next quarter hour. It can take several minutes for CIPP to check all the required tests.
+This will add a task to the queue to update the analysis for the selected tenants. If you have offloading enabled, this will begin at the next quarter hour. It can take several minutes for CIPP to check all the required tests.
 
 </details>
 

@@ -51,9 +51,9 @@ The API actions have a maximum timeout of 10 minutes. There are no active rate l
 [endpoints.md](endpoints.md)
 {% endcontent-ref %}
 
-## CIPP API Powershell Module
+## CIPP API PowerShell Module
 
-You can install the CIPP API Powershell module using PowerShell 7.x. The module takes care of all the authentication for you.
+You can install the CIPP API PowerShell module using PowerShell 7.x. The module takes care of all the authentication for you.
 
 ```powershell
 Install-Module -Name CIPPAPIModule

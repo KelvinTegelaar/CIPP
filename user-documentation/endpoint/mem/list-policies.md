@@ -8,7 +8,7 @@ This page lists all the configuration policies on the selected account and provi
 
 <summary>Deploy Policy</summary>
 
-This will open a draw that allows you to select a policy to deploy to selected tenant(s). Once you select the tenant(s), policy, and deployment target, click `Deploy Policy` to queue the deployment task.
+This will open a drawer that allows you to select a policy to deploy to selected tenant(s). Once you select the tenant(s), policy, and deployment target, click `Deploy Policy` to queue the deployment task.
 
 </details>
 

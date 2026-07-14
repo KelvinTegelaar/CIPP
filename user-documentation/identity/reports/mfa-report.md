@@ -26,7 +26,7 @@ The report lists every user in the tenant and provides detailed information abou
 * If the user is safeguarded by Security Defaults that enforce MFA.
 * Whether Conditional Access policies require MFA for the user.
 * If the user is capable of using MFA.
-* The MFA methods the user has setup.
+* The MFA methods the user has set up.
 
 ## Table Actions
 

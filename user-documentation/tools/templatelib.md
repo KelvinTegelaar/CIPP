@@ -2,7 +2,7 @@
 
 Template libraries are tenants set up to retrieve the latest version of a specific tenant's policies. These are then stored in CIPP's templates, allowing you to keep an up-to-date copy of the policies. Tenant-based template libraries sync every 4 hours, while community repository-based template libraries sync every 7 days.
 
-In the template library menu, you have two options; using a client tenant as a template library, or utilizing a Github community template repository.
+In the template library menu, you have two options; using a client tenant as a template library, or utilizing a GitHub community template repository.
 
 CyberDrain includes 3 GitHub repositories by default:
 

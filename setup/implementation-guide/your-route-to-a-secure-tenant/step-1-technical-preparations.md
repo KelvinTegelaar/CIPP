@@ -10,7 +10,7 @@ At this point, we won't be making any customer affecting changes. Everything we 
 
 ## Setting up Dynamic Tenant Groups
 
-To setup Dynamic Tenant groups go to **Tenant Administration** -> **Tenants** -> **Groups.**
+To set up Dynamic Tenant groups go to **Tenant Administration** -> **Tenants** -> **Groups.**
 
 Click the toolbar button "Import Tenant Groups" to Import the CyberDrain recommended tenant groups. These tenant groups are based on license capabilities. For our standardization process we'll use three of these dynamic groups
 
@@ -39,7 +39,7 @@ Next we'll head to **Tenant Administration** -> Standards & Drift -> Templates. 
 | CIPP - Baseline for tenants with Business Premium or up                                  | This baseline is applied to tenants that have all required licensing for a fully secure tenant, and configures all possible products                                                                                                                                                   |
 | CIPP - Baseline for tenants with Business Premium or up including workstation hardening. | This baseline configures the same as the other business premium baseline, but also includes workstation hardening. This has a higher user impact and is out of scope for this guide. If you'd like to implement this baseline, please check out "Your Route to workstation hardening". |
 
-Import the baselines that you are planning on using, each of these baselines will immediately be setup correctly after importing.
+Import the baselines that you are planning on using, each of these baselines will immediately be set up correctly after importing.
 
 As these baselines are currently not making any changes, but only reporting. We recommend to run them now for a tenant we're going to rest on so we have a report ready. Select your tenant that you wish to use for this test, and then clicking on the actions button for the baseline to test and selecting "Run Template now for the select tenant"
 

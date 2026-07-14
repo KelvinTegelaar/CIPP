@@ -23,7 +23,7 @@ This drop down contains the list of applications available for login scenarios
 {% step %}
 ### Select Optional Parameters
 
-See the [#optional-parameters](conditional-access.md#optional-parameters "mention")table below for more information
+See the [#optional-parameters](conditional-access.md#optional-parameters "mention") table below for more information
 {% endstep %}
 
 {% step %}

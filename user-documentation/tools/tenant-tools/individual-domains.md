@@ -4,7 +4,7 @@ description: Analyse external domain's mail-related DNS entries
 
 # Individual Domain Check
 
-The individual domain check lets you to check any domain enabling you to perform checks on vendors, potential customers, competitors - basically any domain. You are responsible for ensuring your use of this tool complies with applicable laws, registry terms and the terms of service for the Google and / or CloudFlare DNS APIs.
+The individual domain check lets you check any domain enabling you to perform checks on vendors, potential customers, competitors - basically any domain. You are responsible for ensuring your use of this tool complies with applicable laws, registry terms and the terms of service for the Google and / or Cloudflare DNS APIs.
 
 ## Options
 

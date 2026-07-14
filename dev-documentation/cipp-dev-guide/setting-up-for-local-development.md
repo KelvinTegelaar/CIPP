@@ -268,4 +268,4 @@ Opening both repositories as separate workspace folders ensures that:
 
 ## Next Steps
 
-That's it - we've got our repositories setup locally, on the dev branch, and properly opened in VSCode. Our local environment is setup and ready to develop the CIPP UI. Read on through the next section for further instructions.
+That's it - we've got our repositories set up locally, on the dev branch, and properly opened in VSCode. Our local environment is set up and ready to develop the CIPP UI. Read on through the next section for further instructions.

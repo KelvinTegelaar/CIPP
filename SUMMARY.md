@@ -18,7 +18,7 @@
 * [Maintaining CIPP](setup/maintaining-cipp/README.md)
   * [Self-hosted API Setup](setup/maintaining-cipp/self-hosted-api-setup.md)
   * [Updating Versions](setup/maintaining-cipp/updating.md)
-  * [Configuring Automatic Github Updates](setup/maintaining-cipp/configuring-automatic-updates.md)
+  * [Configuring Automatic GitHub Updates](setup/maintaining-cipp/configuring-automatic-updates.md)
   * [Configuring Automatic API Updates](setup/maintaining-cipp/runfrompackage.md)
   * [Recommended Roles](setup/maintaining-cipp/recommended-roles.md)
   * [Migrating to Hosted CIPP](setup/maintaining-cipp/migrating-to-hosted-cipp.md)

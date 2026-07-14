@@ -1,6 +1,6 @@
 # Automated Onboarding
 
-## Easy Mode to Setup
+## Easy Mode to Set Up
 
 {% stepper %}
 {% step %}

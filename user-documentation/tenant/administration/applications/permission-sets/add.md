@@ -47,7 +47,7 @@ Select both Application and Delegated permissions for any of the selected servic
 {% endstepper %}
 
 {% hint style="success" %}
-Now you can use [add.md](../templates/add.md "mention")to create a template to deploy this permissions set with the app you want to select.
+Now you can use [add.md](../templates/add.md "mention") to create a template to deploy this permissions set with the app you want to select.
 {% endhint %}
 
 ***

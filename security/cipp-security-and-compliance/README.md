@@ -17,7 +17,7 @@ CIPP was built with a security-first approach. Each CIPP instance is hosted in i
 
 ### Communication and Data Privacy.
 
-* **Modern Tech Stack:** CIPP is developed with PowerShell and React.js, leveraging Azure services like Static Web Apps, Storage Accounts, Azure Functions, and Key Vault for a secure environment..
+* **Modern Tech Stack:** CIPP is developed with PowerShell and React.js, leveraging Azure services like Static Web Apps, Storage Accounts, Azure Functions, and Key Vault for a secure environment.
 * **Encrypted Communication via Azure Static Web Apps:** All data interactions are routed through Azure Static Web Apps, providing secure, encrypted connections between services
 * **Data Privacy:** Your data is never sold or shared. Period.
 

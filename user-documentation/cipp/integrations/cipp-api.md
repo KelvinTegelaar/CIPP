@@ -1,7 +1,7 @@
 # CIPP-API & MCP
 
 {% hint style="warning" %}
-Self-hosted clients, please see the [self-hosted-api-setup.md](../../../setup/maintaining-cipp/self-hosted-api-setup.md "mention") for how to setup and configure your API for use before proceeding with this page.
+Self-hosted clients, please see the [self-hosted-api-setup.md](../../../setup/maintaining-cipp/self-hosted-api-setup.md "mention") for how to set up and configure your API for use before proceeding with this page.
 
 If you're using a **hosted CIPP instance**, you can follow the instructions below to set up and manage your API clients with no additional steps.
 {% endhint %}
@@ -64,7 +64,7 @@ For full authentication examples, usage patterns, and endpoint information, see 
 
 ## CIPP MCP
 
-The CIPP MCP allows you to add CIPP to any AI you use and immediately talk to it in natural language. For example, you can ask "List all tenants with unassigned licenses" or "list all users for tenant MySpecialTenant.com". To setup the MCP, follow these instructions:
+The CIPP MCP allows you to add CIPP to any AI you use and immediately talk to it in natural language. For example, you can ask "List all tenants with unassigned licenses" or "list all users for tenant MySpecialTenant.com". To set up the MCP, follow these instructions:
 
 {% stepper %}
 {% step %}

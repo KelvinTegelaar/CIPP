@@ -10,7 +10,7 @@ To use the LinkedIn Slideshow posts we recommend changing the colours and logo, 
 
 * Go to the **View** tab in PowerPoint, and click **Slide Master**
 * In the **Master Slide (top-most slide)**, go to **Insert → Pictures**.
-* Select your company logo and place it in one of the "Logo Spaces". These use safe margins to make sure you logo is in the correct place.
+* Select your company logo and place it in one of the "Logo Spaces". These use safe margins to make sure your logo is in the correct place.
 * Resize as needed. This ensures the logo appears on every slide automatically.
 * Still in **Slide Master**, select **Colors → Customize Colors** (found under the **Slide Master → Edit Theme** group).
 * Replace the default accent colors with your MSP’s brand palette (primary, secondary, neutral tones).

@@ -31,10 +31,10 @@ User management. Equal to and extending [Microsoft 365 admin center > Active Use
 **License Management**
 
 1. **License Assignment:** Allows you to select license(s) to assign & shows available license count
-2. **SherWeb Integration** (if enabled): Auto-purchase option appears when licenses unavailable, allows you to select license SKU for purchase for system to handle for you along with onboarding.
+2. **Sherweb Integration** (if enabled): Auto-purchase option appears when licenses unavailable, allows you to select license SKU for purchase for system to handle for you along with onboarding.
 
 {% hint style="info" %}
-When the [sherweb.md](../../../cipp/integrations/sherweb.md "mention")integration is enabled and a license shows "(0 available)", you'll see an alert stating: "_This will Purchase a new Sherweb License for the user, according to the terms and conditions with Sherweb. When the license becomes available, CIPP will assign the license to this user."_
+When the [sherweb.md](../../../cipp/integrations/sherweb.md "mention") integration is enabled and a license shows "(0 available)", you'll see an alert stating: "_This will Purchase a new Sherweb License for the user, according to the terms and conditions with Sherweb. When the license becomes available, CIPP will assign the license to this user."_
 {% endhint %}
 
 **Contact Information**
@@ -178,7 +178,7 @@ The Add User has the ability to be form filled via URL query strings. This table
 | jobTitle       | Job Title                                                 |
 | mailNickname   | Username before the email address part(User<@domain.com>) |
 | mobilePhone    | Mobile Phone Number                                       |
-| addedAliasses  | Added Aliases, Multiple allowed via linebreak(%0A)       |
+| addedAliases   | Added Aliases, Multiple allowed via linebreak(%0A)       |
 | postalCode     | Zip or post code                                          |
 | streetAddress  | Address information                                       |
 | surname        | Last Name                                                 |

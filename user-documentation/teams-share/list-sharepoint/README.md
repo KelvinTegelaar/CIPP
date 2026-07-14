@@ -1,5 +1,5 @@
 ---
-description: Review Sharepoint sites and usage
+description: Review SharePoint sites and usage
 ---
 
 # SharePoint

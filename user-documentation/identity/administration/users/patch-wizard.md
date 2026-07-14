@@ -12,7 +12,7 @@ Review the list of selected users from the previous page.
 {% step %}
 ### Select Properties
 
-Choose from the dropdown the properties that you would like to bulk edit and fill in the new values in the fields thar appear.
+Choose from the dropdown the properties that you would like to bulk edit and fill in the new values in the fields that appear.
 {% endstep %}
 
 {% step %}

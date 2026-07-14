@@ -12,7 +12,7 @@ Hosted clients can use the backend management system at [management.cipp.app](ht
 
 ### Adding a Custom Domain Name
 
-Why setup a custom domain?
+Why set up a custom domain?
 
 1. The automatically generated domain uses azurewebsites.net which is often blocked by web filtering products as it's often used by spammers and phishing sites due to the ease of obtaining an azurewebsites.net subdomain.
 2. Your bookmark stays the same if you redeploy.

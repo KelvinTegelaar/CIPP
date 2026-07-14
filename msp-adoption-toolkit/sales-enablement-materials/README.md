@@ -18,6 +18,6 @@ Think of the templates as jumping off points. Use them to:
 * Adapt content for customer-facing proposals, presentations, and onboarding.
 * Save time by customizing proven structures rather than starting from scratch.
 
-The guide has several implementation strategies available, including to assist you in upselling clients to M365 Business Premium if required, as MSPs its often difficult to handle objections clients can throw up.
+The guide has several implementation strategies available, including to assist you in upselling clients to M365 Business Premium if required, as MSPs it's often difficult to handle objections clients can throw up.
 
 This helps you use all the features in M365, and implementing more security for all your clients.
