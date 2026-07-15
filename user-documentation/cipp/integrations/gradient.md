@@ -16,10 +16,10 @@ For the latest version of this documentation, you can check out Gradient's docum
 
 * [Login](https://app.usegradient.com/login) to Synthesize, Navigate to **Integrations,** and click on **Custom**
 * Select the modules you want to integrate
-* Assign a Name and Description of Cyberdrain or CIPP to the custom integration.
+* Assign a Name and Description of CyberDrain or CIPP to the custom integration.
 * Agree to the Terms and Conditions
 * Generate API Keys
-* Note the details for use within Cyberdrain.
+* Note the details for use within CyberDrain.
 {% endstep %}
 
 {% step %}

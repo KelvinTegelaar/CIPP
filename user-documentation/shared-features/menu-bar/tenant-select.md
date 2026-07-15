@@ -4,7 +4,7 @@ icon: building
 
 # Tenant Select
 
-The tenant selector at the top of CIPP allows you to control the currently managed tenant. Any changes to the tenant selector will reload the currently shown data to the one of the selected tenant.
+The tenant selector at the top of CIPP allows you to control the currently managed tenant. Any changes to the tenant selector will reload the currently shown data for the selected tenant.
 
 ## Added functionality
 
@@ -33,7 +33,7 @@ You can also use this page to jump to the most common portals or actions
 * Azure Portal
 * Intune Portal
 * Security Portal
-* Sharepoint Admin
+* SharePoint Admin
 
 ***
 

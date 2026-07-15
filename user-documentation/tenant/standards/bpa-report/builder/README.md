@@ -70,7 +70,7 @@ Regardless of the type of report layout you choose, the fields will have the fol
 
 1. "Use information CIPP has previously gathered in another report" toggle: Toggle this to on to present you with options to populate the database name and card content from information from another report.
 2. Data Source:&#x20;
-   1. Graph: Use to enter a Graph Endpoint and PowerShell sytnax filter
+   1. Graph: Use to enter a Graph Endpoint and PowerShell syntax filter
    2. Exchange Online PowerShell: Use to enter the Exchange Command, PowerShell syntax Where object, and the data from the response that should be stored
    3. CIPP Function: Use of any CIPP Get- command to populate data for the report
 3. Store this data as

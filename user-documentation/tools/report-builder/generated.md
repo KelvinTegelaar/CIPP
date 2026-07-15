@@ -9,7 +9,7 @@ This page will display reports that you have generated from a template.
 | Template Name | The name of the template used to generate the report.                                                                       |
 | Tenant Filter | The tenant the report was generated for.                                                                                    |
 | Generated At  | The relative time since the report was generated.                                                                           |
-| Status        | The status of the generated report. The only available status is `Completed`. Any failed reports would note to the logbook. |
+| Status        | The status of the generated report. The only available status is `Completed`. Any failed reports would be noted in the logbook. |
 | Sections      | The number of sections on the report.                                                                                       |
 
 ## Table Actions

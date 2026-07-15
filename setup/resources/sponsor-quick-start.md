@@ -13,12 +13,12 @@ If you've started the sponsorship process and are ready to enhance your manageme
 ## **Initial Sponsorship Actions**
 
 1. **Subscription Activation**: Start by signing up for the $99 subscription using your GitHub account on the [GitHub Sponsorship](https://github.com/sponsors/KelvinTegelaar/sponsorships?tier_id=101398) page.
-2. **Welcome Email**: Upon subscription, you will receive an email with detailed instructions to kickstart your deployment. This email will guide you to the [CIPP management portal ](https://management.cipp.app)for deployment steps.
+2. **Welcome Email**: Upon subscription, you will receive an email with detailed instructions to kickstart your deployment. This email will guide you to the [CIPP management portal ](https://management.cipp.app) for deployment steps.
 
 ## Deployment & Service Account Creation
 
 3. **Configure CIPP Deployment:** Login to your [management portal](https://management.cipp.app) using the GitHub credentials you used to initiate the sponsorship. This is where you can kick off your deployment, add custom domain names, and begin inviting users into CIPP. <mark style="color:yellow;">NOTE: If you sponsor with an organization GitHub account, please send in a message to helpdesk@cyberdrain.com with your personal GitHub username so that we can manually add that user to the portal. You cannot log in to the management portal with organization accounts.</mark>
-4. **Service Account Creation**: Follow the instructions carefully on the [creating-the-cipp-service-account-gdap-ready.md](../installation/creating-the-cipp-service-account-gdap-ready.md "mention")page to ensure there are no permission issues when connecting your tenants within CIPP in the subsequent steps.
+4. **Service Account Creation**: Follow the instructions carefully on the [creating-the-cipp-service-account-gdap-ready.md](../installation/creating-the-cipp-service-account-gdap-ready.md "mention") page to ensure there are no permission issues when connecting your tenants within CIPP in the subsequent steps.
 
 ## Accessing CIPP & Executing Setup Wizard
 

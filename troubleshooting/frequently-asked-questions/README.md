@@ -14,7 +14,7 @@ CIPP heavily relies on caching. Because of this it is necessary to clear your br
 
 * Chrome/Edge - Open DevTools (F12), right click on the refresh button, select "Empty cache and hard reset"
 * Firefox - Click the padlock in the URL bar and select "Clear cookies and site data..."
-* Alternatively, you can use the [speed-dial.md](../../user-documentation/shared-features/speed-dial.md "mention")option to "Clear Cache and Reload"
+* Alternatively, you can use the [speed-dial.md](../../user-documentation/shared-features/speed-dial.md "mention") option to "Clear Cache and Reload"
 
 </details>
 
@@ -44,8 +44,8 @@ Here's a couple of options for emails that you can send to licensing provider ve
 ```
 Hi,
 
-I hope you're doing well! I'm reaching out to you today as I'm a user of a tool called CIPP(https://cipp.app). It has greatly enhanced my Microsoft 365 experience and is now our core tool when it comes to performing M365 management. 
-We understand you might be having discussions with their team already, but we just want to amplify that our choice of distributor is dependant on which one integrates with CIPP
+I hope you're doing well! I'm reaching out to you today as I'm a user of a tool called [CIPP](https://cipp.app). It has greatly enhanced my Microsoft 365 experience and is now our core tool when it comes to performing M365 management.
+We understand you might be having discussions with their team already, but we just want to amplify that our choice of distributor is dependent on which one integrates with CIPP
 
 Regards,
 ```
@@ -57,7 +57,7 @@ Regards,
 ```
 Hi,
 
-I hope you're doing well! I'm reaching out to you today as I'm a user of a tool called CIPP(https://cipp.app). It has greatly enhanced my Microsoft 365 experience and is now our core tool when it comes to performing M365 management. 
+I hope you're doing well! I'm reaching out to you today as I'm a user of a tool called [CIPP](https://cipp.app). It has greatly enhanced my Microsoft 365 experience and is now our core tool when it comes to performing M365 management.
 We understand you might be having discussions with their team already, but we just want to amplify that our preference is to use CIPP to transact licenses.
 
 Regards,
@@ -118,8 +118,8 @@ To have the new tenant's name show up in CIPP, you have two options
 
 #### Establish a New Relationship
 
-1. After renaming the tenant, create a new GDAP relationship. You can use the [gdap-invite-wizard.md](../../setup/installation/gdap-invite-wizard.md "mention")wizard to expedite this process.
-2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the GDAP [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention")page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
+1. After renaming the tenant, create a new GDAP relationship. You can use the [gdap-invite-wizard.md](../../setup/installation/gdap-invite-wizard.md "mention") wizard to expedite this process.
+2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the GDAP [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention") page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
 3. Clear your tenant cache from [settings](../../user-documentation/cipp/settings/ "mention").
 
 #### Utilize the Tenant Alias Functionality
@@ -188,7 +188,7 @@ To ensure full functionality of CIPP, follow these steps to add the necessary AP
 
 This error occurs because the user who authorized the CSP or Graph API connection has had their password changed, sessions revoked, or account disabled. Reauthorization is required.
 
-**To resolve this,** e**xecute the Setup Wizard with Option 4:**
+**To resolve this, execute the Setup Wizard with Option 4:**
 
 * Go to CIPP → Application Settings → [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention").
 * Select "Refresh Tokens for existing application registration"
@@ -239,7 +239,7 @@ If there are issues with the GDAP relationship, follow these steps:
    * Assign these groups to the CIPP service account.
 4. **Identify the CIPP Service Account:**
    * Go to CIPP -> Application Settings -> [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention") -> [#permissions-check](../../user-documentation/cipp/settings/permissions.md#permissions-check "mention").
-   * Review the results for the UserPrncipalName to identify the CIPP service account.
+   * Review the results for the UserPrincipalName to identify the CIPP service account.
 
 </details>
 
@@ -383,7 +383,7 @@ So if CIPP works but a technician can't use the portal links, refreshing CPV, re
 
 1. In your **partner tenant**, go to Entra (or the Microsoft 365 admin center) and locate the security groups named `M365 GDAP ...`.
 2. Add the technician's user account as a member of the relevant groups (add them to all of the role groups to mirror the access the service account has).
-3. Optionally you can nest groups under those roles such that you add staff to a group called `GDAP Technician Accounts` and add that group as a member of the `M365 GDAP ...` groups and then add the staff just to `GDAP Technician Accounts`, when new permissions are added just add the `GDAP Technician Accounts` group to the new `M365 GDAP ...` group and all staff in `GDAP Technician Accounts` with get the new permission
+3. Optionally you can nest groups under those roles such that you add staff to a group called `GDAP Technician Accounts` and add that group as a member of the `M365 GDAP ...` groups and then add the staff just to `GDAP Technician Accounts`, when new permissions are added just add the `GDAP Technician Accounts` group to the new `M365 GDAP ...` group and all staff in `GDAP Technician Accounts` will get the new permission
 4. Have the technician sign out of the Microsoft portals fully and sign back in so their token picks up the new group membership.
 
 {% hint style="warning" %}
@@ -425,7 +425,7 @@ Make sure you assign the correct groups to the CIPP service account. For more in
 
 <details>
 
-<summary>I've already setup my GDAP relationships and given them access to a Global Administrator role. Can I still auto-extend these after their expiration?</summary>
+<summary>I've already set up my GDAP relationships and given them access to a Global Administrator role. Can I still auto-extend these after their expiration?</summary>
 
 Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years. If your relationships contain at least the [recommended-roles.md](../../setup/maintaining-cipp/recommended-roles.md "mention") in addition to Global Administrator, you can go to [gdap-management](../../user-documentation/tenant/gdap-management/ "mention") -> [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention"), select one or more relationship and choose the action "Remove Global Administrator from Relationship". After waiting for changes to sync, you can then select the action "Enable automatic extension".
 
@@ -438,7 +438,7 @@ Auto Extend is only available for relationships without the Global Administrator
 If your CIPP-API isn't updating, start by checking the Actions tab in your repository for a workflow named `_master*.yml`.
 
 * **If the workflow is missing:**\
-  Your repository may not be fully configured. Follow the instructions provided in [#recreate-the-workflow-file](../../setup/maintaining-cipp/updating.md#recreate-the-workflow-file "mention")to restore the action workflow.
+  Your repository may not be fully configured. Follow the instructions provided in [#recreate-the-workflow-file](../../setup/maintaining-cipp/updating.md#recreate-the-workflow-file "mention") to restore the action workflow.
 
 </details>
 

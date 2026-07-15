@@ -8,7 +8,7 @@ A chart showing a high-level view of your GDAP statistics including number of re
 
 ### Add a Tenant Button
 
-Will launch the [sam-setup-wizard.md](../../cipp/sam-setup-wizard.md "mention")where you can select to "Add a tenant".
+Will launch the [sam-setup-wizard.md](../../cipp/sam-setup-wizard.md "mention") where you can select to "Add a tenant".
 
 ### GDAP Setup
 

@@ -21,7 +21,7 @@ When using Single Tenant Mode CIPP runs in a somewhat more limited state - You a
 
 ## Limitations of Partner Tenant Enabled
 
-When using Partner Tenant Enabled mode you can see your partner tenant inside of CIPP. There will be no permissions applied to whom can see this tenant and control it.
+When using Partner Tenant Enabled mode you can see your partner tenant inside of CIPP. There will be no permissions applied to who can see this tenant and control it.
 
 {% hint style="danger" %}
 It is highly recommended to use a custom role if multiple users have access to your CIPP instances. This can help ensure not all users have access to manage your partner tenant. If you do not, it's important to note that all your users will have access to edit/configure your partner tenant. Information on custom roles can be found [here](https://docs.cipp.app/setup/installation/roles#custom-roles).

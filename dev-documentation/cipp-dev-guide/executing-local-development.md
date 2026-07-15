@@ -1,7 +1,7 @@
 # Executing Local Development
 
 {% hint style="info" %}
-SAM Tokens for Development We **strongly** recommend that you setup an entirely separate SAM app for development purposes. You can use the script below to get the required RefreshToken.
+SAM Tokens for Development We **strongly** recommend that you set up an entirely separate SAM app for development purposes. You can use the script below to get the required RefreshToken.
 
 <details>
 
@@ -137,7 +137,7 @@ cd X:\Development\CIPP-Project\CIPP
 yarn run dev
 ```
 
-If you need the APIs to connect to Microsoft 365 and / or to test the Secure Application Model functionality itself you have to make a `local.settings.json` file in the `CIPP-API` folder. This file isn't detected by git (because of the `.gitignore` file) so it's not pushed with any changes/contributions you make. This file stores the Secure Application Model tokens, and a Azure Storage connection string for the durable function queues.
+If you need the APIs to connect to Microsoft 365 and / or to test the Secure Application Model functionality itself you have to make a `local.settings.json` file in the `CIPP-API` folder. This file isn't detected by git (because of the `.gitignore` file) so it's not pushed with any changes/contributions you make. This file stores the Secure Application Model tokens, and an Azure Storage connection string for the durable function queues.
 
 The contents of your `local.settings.json` file differs depending on whether you are using the Azurite storage emulator or Azure Storage itself.
 

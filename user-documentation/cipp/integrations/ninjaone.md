@@ -116,7 +116,7 @@ After the API settings are set you can now map NinjaOne items to Microsoft 365 /
 {% step %}
 ### Automatically Sync CVEs from CIPP to NinjaOne
 
-If enabled, CIPP will automatically attempt to send CVE information from CIPP to NinjaOne. This requires that scan groups are allready set up in NinjaOne and that
+If enabled, CIPP will automatically attempt to send CVE information from CIPP to NinjaOne. This requires that scan groups are already set up in NinjaOne and that
 
 **Configuring Defender CVE Sync**
 

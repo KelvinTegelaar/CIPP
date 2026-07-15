@@ -11,7 +11,7 @@ This guide is not meant to be exhaustive but rather point you towards other page
 {% endhint %}
 
 {% hint style="success" %}
-Select [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention")from CIPP settings for easy set up of several of the basics needed to operate CIPP.
+Select [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention") from CIPP settings for easy set up of several of the basics needed to operate CIPP.
 {% endhint %}
 
 ## Tenant Navigation
@@ -20,7 +20,7 @@ Using the [tenant-select.md](../../user-documentation/shared-features/menu-bar/t
 
 ## Personalization
 
-Let's setup some personal things first. The [user-settings.md](../../user-documentation/shared-features/menu-bar/user-settings.md "mention") section has your personal preferences and profile information. Let's start by setting up CIPP the way you like it.
+Let's set up some personal things first. The [user-settings.md](../../user-documentation/shared-features/menu-bar/user-settings.md "mention") section has your personal preferences and profile information. Let's start by setting up CIPP the way you like it.
 
 ### Change How CIPP Looks to You
 
@@ -42,23 +42,23 @@ You can choose the DNS resolver CIPP uses. By default, the resolver is Google.
 
 ### Access Checks
 
-CIPP can help you figure out why you can't access a tenant by executing an access check. These checks can help you detect issues with GDAP, access rights, or general M365 issues. These checks are done on the [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention")tab of CIPP Application Settings.
+CIPP can help you figure out why you can't access a tenant by executing an access check. These checks can help you detect issues with GDAP, access rights, or general M365 issues. These checks are done on the [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention") tab of CIPP Application Settings.
 
 ### Tenants Tab
 
-Talking about tenants, let's go check out our internal tenant list. We see all our tenants on the [tenants.md](../../user-documentation/cipp/settings/tenants.md "mention")tab of CIPP Application Settings.
+Talking about tenants, let's go check out our internal tenant list. We see all our tenants on the [tenants.md](../../user-documentation/cipp/settings/tenants.md "mention") tab of CIPP Application Settings.
 
 We can exclude a tenant from CIPP. This means the tenant will not be connected to CIPP, and we will not be able to make any changes to this tenant. This is done from the Actions column for individual tenants or the Bulk Actions button when multiple tenants are checked.
 
 ### Notifications Tab
 
-Navigate to the [notifications.md](../../user-documentation/cipp/settings/notifications.md "mention")tab.
+Navigate to the [notifications.md](../../user-documentation/cipp/settings/notifications.md "mention") tab.
 
 CIPP can send many types of notifications, in this screen we can do some of the basic setup of these notifications to filter them or select where they need to go.
 
 ## User Administration
 
-Let's see how CIPP works in action. We'll navigate to the Identity Management > Administration > [users](../../user-documentation/identity/administration/users/ "mention")section to start managing users.
+Let's see how CIPP works in action. We'll navigate to the Identity Management > Administration > [users](../../user-documentation/identity/administration/users/ "mention") section to start managing users.
 
 ## Bulk Actions
 
@@ -74,7 +74,7 @@ For users, we have a lot of actions we can take. We could reset passwords or eve
 
 ## Tools
 
-Navigate to the [tools](../../user-documentation/tools/ "mention")section.
+Navigate to the [tools](../../user-documentation/tools/ "mention") section.
 
 ### Graph Explorer
 
@@ -90,7 +90,7 @@ The report allows you to check this data as raw as it comes back from the API. y
 
 Let's go check out the standards next by navigating to Tenant Administration > [standards](../../user-documentation/tenant/standards/ "mention").
 
-Standards allow you to create a baseline for a tenant. This means you can easily deploy your wanted settings to any tenant. With how important Standards are to the function and power of CIPP, we'll take a deeper dive in [standards-setup.md](standards-setup.md "mention"), or you can review the full [standards](../../user-documentation/tenant/standards/ "mention")[ ](../../user-documentation/tenant/standards/)documentation.
+Standards allow you to create a baseline for a tenant. This means you can easily deploy your wanted settings to any tenant. With how important Standards are to the function and power of CIPP, we'll take a deeper dive in [standards-setup.md](standards-setup.md "mention"), or you can review the full [standards](../../user-documentation/tenant/standards/ "mention") documentation.
 
 ## Report Builder
 

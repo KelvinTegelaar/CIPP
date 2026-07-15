@@ -1,7 +1,7 @@
 # Sherweb
 
 {% hint style="info" %}
-New to Sherweb? Visit [SherWeb Cloud Services for MSPs](https://www.sherweb.com/partners/)
+New to Sherweb? Visit [Sherweb Cloud Services for MSPs](https://www.sherweb.com/partners/)
 {% endhint %}
 
 The Sherweb integration enables you to manage your Microsoft 365 licenses and subscriptions directly within CIPP. This means you can handle all your licensing needs from one place, making it easier to manage users and their licenses across your organization.
@@ -24,7 +24,7 @@ You should have **an active Sherweb partner account**, and access to the **Cumul
 
 ### Getting Your API Credentials
 
-1. Go to the SherWeb Cumulus Portal and log in to your account: [`https://cumulus.sherweb.com/partners/%3Cyour-account-name%3E/security/apis`](https://cumulus.sherweb.com/partners/%3Cyour-account-name%3E/security/apis)
+1. Go to the Sherweb Cumulus Portal and log in to your account: [`https://cumulus.sherweb.com/partners/%3Cyour-account-name%3E/security/apis`](https://cumulus.sherweb.com/partners/%3Cyour-account-name%3E/security/apis)
 2. Create a new application (you can name it "CIPP")
 3. Copy the below three keys and store them securely (password manager, IT documentation, etc.)
    * **Client ID:** This is a unique identifier for your application within Sherweb.
@@ -55,9 +55,9 @@ Always review the matches before saving to ensure accuracy.
 
 #### **Automated Mapping:**
 
-1. Click "Automap SherWeb Organizations" to automatically match tenants
+1. Click "Automap Sherweb Organizations" to automatically match tenants
 2. The system attempts to match based on:
-   * Exact name matches between CIPP tenants and SherWeb customers
+   * Exact name matches between CIPP tenants and Sherweb customers
    * Similar name patterns
    * Domain information when available
 3. Review the automated matches in the mapping table
@@ -67,7 +67,7 @@ Always review the matches before saving to ensure accuracy.
 #### **Manual Mapping:**
 
 1. Select a tenant from the dropdown
-2. Select the corresponding SherWeb organization
+2. Select the corresponding Sherweb organization
 3. Click the + button to add the mapping
 4. Repeat for additional tenants
 5. Click **Save Mappings** to finalize
@@ -116,7 +116,7 @@ Matching is currently done based on subscription and SKUIds, these will be impro
    * Pax8 Client Secret
 
 {% hint style="danger" %}
-We recommend to only enable automated migrations after extensive testing - please set your automated migration strategy to "Notify" for atleast one month before executing automated buys. Neither Sherweb nor CyberDrain is responsible for purchases made through the API.
+We recommend to only enable automated migrations after extensive testing - please set your automated migration strategy to "Notify" for at least one month before executing automated buys. Neither Sherweb nor CyberDrain is responsible for purchases made through the API.
 {% endhint %}
 
 ***

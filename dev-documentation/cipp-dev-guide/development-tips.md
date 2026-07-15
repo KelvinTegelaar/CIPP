@@ -6,7 +6,7 @@ description: Tips for local development
 
 ### Reusing Local Settings
 
-You can reuse your `local.settings.json` file to test direct calls to Microsoft's Graph API, first setup environment variables from the values in your `local.settings.json` file:
+You can reuse your `local.settings.json` file to test direct calls to Microsoft's Graph API. First, set up environment variables from the values in your `local.settings.json` file:
 
 ```powershell
 ### Read the local.settings.json file and convert to a PowerShell object.

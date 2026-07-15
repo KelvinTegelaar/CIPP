@@ -51,7 +51,7 @@ Configure password generation settings including type, length, character sets, a
 * **Classic:** This is the usual combination of letters and symbols to meet outdated complexity requirements
 * **Correct-Battery-Horse:** This sets a passphrase of four random words connected by hyphens. These can often be easier to remember and type for users.
 
-Click `Configure` to go to the  page to change to your desired settings.
+Click `Configure` to go to the Password Style page to change to your desired settings.
 
 </details>
 
