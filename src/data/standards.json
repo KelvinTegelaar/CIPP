@@ -7972,7 +7972,7 @@
     "tag": ["CIS M365 7.0.0 (5.2.3.8)", "CIS M365 7.0.0 (5.2.3.9)"],
     "appliesToTest": ["CIS_5_2_3_8", "CIS_5_2_3_9"],
     "helpText": "**Requires Entra ID P1.** Configures the Entra ID Smart Lockout settings including lockout duration, lockout threshold, and on-premises integration mode.",
-    "docsDescription": "Configures the Entra ID Smart Lockout policy which protects against brute-force password attacks. Smart Lockout locks out bad actors who try to guess user passwords or use brute-force methods. It recognizes sign-ins from valid users and treats them differently from attackers. Settings include lockout duration (seconds), lockout threshold (failed attempts before lockout), and on-premises password protection mode (Audit or Enforced).",
+    "docsDescription": "Configures the Entra ID Smart Lockout policy which protects against brute-force password attacks. Smart Lockout locks out bad actors who try to guess user passwords or use brute-force methods. It recognizes sign-ins from valid users and treats them differently from attackers. Settings include lockout duration (seconds), lockout threshold (failed attempts before lockout), and on-premises password protection mode (Audit or Enforce).",
     "addedComponent": [
       {
         "type": "number",
@@ -7999,7 +7999,7 @@
         "label": "On-Premises Mode",
         "options": [
           { "label": "Audit", "value": "Audit" },
-          { "label": "Enforced", "value": "Enforced" }
+          { "label": "Enforce", "value": "Enforce" }
         ]
       }
     ],
