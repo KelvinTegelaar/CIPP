@@ -115,6 +115,44 @@
     ]
   },
   {
+    "name": "InactiveSharePointSites",
+    "label": "Alert on SharePoint sites that have not been active for X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include never-active sites?",
+        "inputName": "IncludeNeverActive"
+      }
+    ]
+  },
+  {
+    "name": "InactiveTeamsSites",
+    "label": "Alert on Teams linked sites that have not been active for X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include never-active TeamsSite sites?",
+        "inputName": "IncludeNeverActive"
+      }
+    ]
+  },
+  {
     "name": "EntraConnectSyncStatus",
     "label": "Alert if Entra Connect sync is enabled and has not run in the last X hours",
     "requiresInput": true,
