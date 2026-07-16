@@ -176,6 +176,17 @@
         "inputType": "textField",
         "inputLabel": "Excluded mailbox UPNs (comma-separated). Supports custom variables like %excludefrommailboxalert% defined under CIPP > Settings > Custom Variables at tenant or AllTenants scope.",
         "inputName": "QuotaUsedExcludedMailboxes"
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Mailbox types to alert on (default: all)",
+        "inputName": "QuotaUsedMailboxTypes",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "User mailboxes", "value": "User" },
+          { "label": "Shared mailboxes", "value": "Shared" }
+        ]
       }
     ],
     "recommendedRunInterval": "1d"
