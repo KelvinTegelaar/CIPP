@@ -15,6 +15,10 @@ import { ExpandMore, Sort } from "@mui/icons-material";
 import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import {
+  CippAnonymizedReportAlert,
+  useReportAnonymized,
+} from "../../../../components/CippComponents/CippAnonymizedReportAlert";
 
 const Page = () => {
   const formControl = useForm({
@@ -53,6 +57,18 @@ const Page = () => {
     setSelectedPeriodLabel("30 days");
     setExpanded(false);
   };
+
+  const anonymized = useReportAnonymized({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: `reports/getEmailActivityUserDetail(period='${selectedPeriod}')`,
+      $format: "application/json",
+      Sort: "userPrincipalName",
+    },
+    queryKey: `MailboxActivity-${selectedPeriod}`,
+    dataKey: "Results",
+    fields: ["userPrincipalName", "displayName"],
+  });
 
   const tableFilter = (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
@@ -120,7 +136,12 @@ const Page = () => {
 
   return (
     <CippTablePage
-      tableFilter={tableFilter}
+      tableFilter={
+        <>
+          <CippAnonymizedReportAlert show={anonymized} />
+          {tableFilter}
+        </>
+      }
       title="Mailbox Activity"
       apiUrl="/api/ListGraphRequest"
       apiData={{

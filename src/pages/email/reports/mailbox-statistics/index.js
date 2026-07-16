@@ -1,16 +1,35 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import {
+  CippAnonymizedReportAlert,
+  useReportAnonymized,
+} from "../../../../components/CippComponents/CippAnonymizedReportAlert";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const Page = () => {
+  const tenant = useSettings().currentTenant;
+  const apiData = {
+    Endpoint: "reports/getMailboxUsageDetail(period='D7')",
+    $format: "application/json",
+  };
+  const queryKey = `MailboxStatistics-${tenant}`;
+
+  const anonymized = useReportAnonymized({
+    url: "/api/ListGraphRequest",
+    data: apiData,
+    queryKey: queryKey,
+    dataKey: "Results",
+    fields: ["userPrincipalName", "displayName"],
+  });
+
   return (
     <CippTablePage
       title="Mailbox Statistics"
       apiUrl="/api/ListGraphRequest"
-      apiData={{
-        Endpoint: "reports/getMailboxUsageDetail(period='D7')",
-        $format: "application/json",
-      }}
+      apiData={apiData}
       apiDataKey="Results"
+      queryKey={queryKey}
+      tableFilter={<CippAnonymizedReportAlert show={anonymized} />}
       simpleColumns={[
         /* Columns from the original component translated to simpleColumns */
         "tenant", // Original conditional column, included directly here as per simplified requirements
