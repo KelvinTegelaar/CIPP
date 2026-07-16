@@ -71,17 +71,21 @@ Click **Go to Keyvault**. This opens the Azure portal on your Key Vault's **Over
 {% step %}
 **Grant yourself permission to read the secrets.**
 
-By default, even the user who deployed CIPP does not have data plane access to the secret values; only management plane access to the vault itself. You need to add a role assignment.
+By default, even the user who deployed CIPP does not have data plane access to the secret values; only management plane access to the vault itself. Add yourself under **Access policies** — not under **Access control (IAM)**.
 
-1. In the Key Vault's left navigation, click **Access control (IAM)**.
-2. Click **+ Add** → **Add role assignment**.
-3. On the **Role** tab, search for and select **Key Vault Secrets User**, then click **Next**.
-4. On the **Members** tab, leave **Assign access to** set to **User, group, or service principal** and click **+ Select members**.
-5. Search for your own account, click it so it appears in the **Selected members** list, then click **Select** → **Next**.
-6. Click **Review + assign** twice to confirm.
+1. In the Key Vault's left navigation, click **Access policies**.
+2. Click **+ Create**.
+3. On the **Permissions** tab, under **Secret permissions**, tick: **List**, **Get**, **Set**, **Delete**, **Recover**, **Backup**, and **Restore**. Leave Key and Certificate permissions unticked. Click **Next**.
+4. On the **Principal** tab, search for your own account, select it, then click **Next**.
+5. Skip the **Application** tab by clicking **Next**.
+6. On the **Review + create** tab, click **Create**.
 
 {% hint style="info" %}
-Role assignment usually propagates within 30–60 seconds. If you get a "Caller is not authorized" error in the next step, wait a moment and refresh.
+If **Access policies** is missing from the left navigation, your Key Vault is using the Azure RBAC permission model rather than the vault access policy model. Switch it under **Settings** → **Access configuration**, or grant yourself the **Key Vault Secrets Officer** role under **Access control (IAM)** instead.
+{% endhint %}
+
+{% hint style="info" %}
+The policy usually takes effect within 30–60 seconds. If you get a "Caller is not authorized" error in the next step, wait a moment and refresh.
 {% endhint %}
 {% endstep %}
 
