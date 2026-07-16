@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material'
 import {
+  CheckCircleOutline as ResolveIcon,
   DeleteOutline as DeleteIcon,
   NotificationsActive as AlertIcon,
   Settings as SettingsIcon,
@@ -23,6 +24,7 @@ import Link from 'next/link'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippError } from '../../utils/get-cipp-error'
 import { useDialog } from '../../hooks/use-dialog'
+import { usePermissions } from '../../hooks/use-permissions'
 import { CippAlertSnoozeDialog } from './CippAlertSnoozeDialog'
 import { CippApiDialog } from './CippApiDialog'
 import { describeAlertItem, humanizeCmdlet } from '../../utils/format-alert-item'
@@ -73,6 +75,13 @@ const SnoozeStatusChip = ({ snooze }) => {
 export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
   const [snoozeTarget, setSnoozeTarget] = useState(null)
   const removeDialog = useDialog()
+  const resolveDialog = useDialog()
+
+  // Viewing only needs CIPP.Alert.Read / CIPP.AlertSnooze.Read - hide the write
+  // actions from users whose submission the API would reject anyway.
+  const { checkPermissions } = usePermissions()
+  const canResolve = checkPermissions(['CIPP.Alert.ReadWrite'])
+  const canSnooze = checkPermissions(['CIPP.AlertSnooze.ReadWrite'])
 
   const resultsQueryKey = `ListAlertResults-${tenantFilter}`
   // Dedicated key — must NOT be "ListSnoozedAlerts": that key is owned by the Snoozed
@@ -189,11 +198,22 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                         {secondary}
                       </Typography>
                     </Box>
-                    <Tooltip title="Snooze this alert">
-                      <IconButton size="small" onClick={() => setSnoozeTarget(item)}>
-                        <SnoozeIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                    <Stack direction="row" spacing={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
+                      {canResolve && (
+                        <Tooltip title="Resolve this alert">
+                          <IconButton size="small" onClick={() => resolveDialog.handleOpen(item)}>
+                            <ResolveIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {canSnooze && (
+                        <Tooltip title="Snooze this alert">
+                          <IconButton size="small" onClick={() => setSnoozeTarget(item)}>
+                            <SnoozeIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </Stack>
                   </Box>
                 )
               })}
@@ -240,11 +260,16 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                         sx={{ flexShrink: 0 }}
                       >
                         <SnoozeStatusChip snooze={snooze} />
-                        <Tooltip title="Remove snooze">
-                          <IconButton size="small" onClick={() => removeDialog.handleOpen(snooze)}>
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
+                        {canSnooze && (
+                          <Tooltip title="Remove snooze">
+                            <IconButton
+                              size="small"
+                              onClick={() => removeDialog.handleOpen(snooze)}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </Stack>
                     </Box>
                   )
@@ -288,6 +313,22 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
         cmdletName={snoozeTarget?.CmdletName}
         tenantFilter={tenantFilter}
         relatedQueryKeys={relatedQueryKeys}
+      />
+
+      <CippApiDialog
+        createDialog={resolveDialog}
+        title="Resolve alert"
+        fields={[]}
+        row={resolveDialog.data ?? {}}
+        api={{
+          type: 'POST',
+          url: '/api/ExecResolveAlert',
+          confirmText:
+            'Mark this alert as resolved? It is removed immediately, but unlike a snooze it will return on the next scheduled run if the underlying condition still exists.',
+          data: { CmdletName: 'CmdletName', TenantFilter: 'Tenant', AlertItem: 'AlertItem' },
+          relatedQueryKeys,
+          multiPost: false,
+        }}
       />
 
       <CippApiDialog
