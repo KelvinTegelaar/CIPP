@@ -88,7 +88,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       name: 'assignmentMode',
       label: 'Assignment mode',
       options: assignmentModeOptions,
-      defaultValue: 'replace',
+      defaultValue: 'append',
       // Re-validate the Custom Group picker (no-op for broad actions, which have no groupTargets).
       validators: { deps: ['groupTargets'] },
       helperText:
@@ -147,7 +147,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
         validate: (value, formValues) => {
           if (
             formValues?.assignmentDirection === 'exclude' &&
-            (formValues?.assignmentMode || 'replace') === 'replace'
+            (formValues?.assignmentMode || 'append') === 'replace'
           ) {
             return true
           }
@@ -179,7 +179,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       type: item?.URLName || policyType,
       ...(platformType && { platformType }),
       AssignTo: assignTo,
-      assignmentMode: formData?.assignmentMode || 'replace',
+      assignmentMode: formData?.assignmentMode || 'append',
       ExcludeGroupIds: (formData?.excludeGroupTargets || []).map((g) => g.value).filter(Boolean),
       ExcludeGroupNames: (formData?.excludeGroupTargets || []).map((g) => g.label).filter(Boolean),
       AssignmentFilterName: formData?.assignmentFilter?.value || null,
@@ -205,7 +205,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       ExcludeGroupIds: isExclude ? ids : [],
       ExcludeGroupNames: isExclude ? names : [],
       assignmentDirection: formData?.assignmentDirection || 'include',
-      assignmentMode: formData?.assignmentMode || 'replace',
+      assignmentMode: formData?.assignmentMode || 'append',
       AssignmentFilterName: formData?.assignmentFilter?.value || null,
       AssignmentFilterType: formData?.assignmentFilter?.value
         ? formData?.assignmentFilterType || 'include'

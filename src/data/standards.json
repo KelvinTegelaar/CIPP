@@ -1371,20 +1371,37 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["SMB1001 (2.5)"],
     "appliesToTest": ["SMB1001_2_5", "ZTNA21889"],
-    "helpText": "Sets the state of the registration campaign for the tenant",
-    "docsDescription": "Sets the state of the registration campaign for the tenant. If enabled nudges users to set up the Microsoft Authenticator during sign-in.",
+    "helpText": "Sets the state of the registration campaign for the tenant, including the targeted authentication method, snooze settings and include/exclude groups. Leave include/exclude blank to keep the groups currently configured in the tenant, or use 'AllUsers' to target all users.",
+    "docsDescription": "Sets the state of the registration campaign for the tenant. If enabled nudges users to set up the targeted authentication method (Microsoft Authenticator or a Passkey) during sign-in. Supports limiting the number of snoozes, and including or excluding specific groups (by display name).",
     "executiveText": "Prompts employees to set up multi-factor authentication during login, gradually improving the organization's security posture by encouraging adoption of stronger authentication methods. This helps achieve better security compliance without forcing immediate mandatory changes.",
     "addedComponent": [
       {
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
-        "label": "Select value",
+        "label": "Registration campaign state",
         "name": "standards.NudgeMFA.state",
         "options": [
           { "label": "Enabled", "value": "enabled" },
           { "label": "Disabled", "value": "disabled" }
         ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "label": "Authentication method to nudge users to register (default is Microsoft Authenticator)",
+        "name": "standards.NudgeMFA.targetedAuthenticationMethod",
+        "options": [
+          { "label": "Microsoft Authenticator", "value": "microsoftAuthenticator" },
+          { "label": "Passkey (FIDO2)", "value": "fido2" }
+        ],
+        "condition": {
+          "field": "standards.NudgeMFA.state",
+          "compareType": "valueEq",
+          "compareValue": "enabled"
+        }
       },
       {
         "type": "number",
@@ -1394,6 +1411,39 @@
         "validators": {
           "min": { "value": 0, "message": "Minimum value is 0" },
           "max": { "value": 14, "message": "Maximum value is 14" }
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.NudgeMFA.enforceRegistrationAfterAllowedSnoozes",
+        "label": "Limited number of snoozes (require registration after 3 snoozes)",
+        "defaultValue": true,
+        "condition": {
+          "field": "standards.NudgeMFA.state",
+          "compareType": "valueEq",
+          "compareValue": "enabled"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "standards.NudgeMFA.includeTargets",
+        "label": "Include groups (comma separated group names, 'AllUsers' for everyone, blank = keep current targets)",
+        "required": false,
+        "condition": {
+          "field": "standards.NudgeMFA.state",
+          "compareType": "valueEq",
+          "compareValue": "enabled"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "standards.NudgeMFA.excludeTargets",
+        "label": "Exclude groups (comma separated group names, blank = keep current exclusions)",
+        "required": false,
+        "condition": {
+          "field": "standards.NudgeMFA.state",
+          "compareType": "valueEq",
+          "compareValue": "enabled"
         }
       }
     ],
@@ -8044,7 +8094,7 @@
     "tag": ["CIS M365 7.0.0 (5.2.3.8)", "CIS M365 7.0.0 (5.2.3.9)"],
     "appliesToTest": ["CIS_5_2_3_8", "CIS_5_2_3_9"],
     "helpText": "**Requires Entra ID P1.** Configures the Entra ID Smart Lockout settings including lockout duration, lockout threshold, and on-premises integration mode.",
-    "docsDescription": "Configures the Entra ID Smart Lockout policy which protects against brute-force password attacks. Smart Lockout locks out bad actors who try to guess user passwords or use brute-force methods. It recognizes sign-ins from valid users and treats them differently from attackers. Settings include lockout duration (seconds), lockout threshold (failed attempts before lockout), and on-premises password protection mode (Audit or Enforced).",
+    "docsDescription": "Configures the Entra ID Smart Lockout policy which protects against brute-force password attacks. Smart Lockout locks out bad actors who try to guess user passwords or use brute-force methods. It recognizes sign-ins from valid users and treats them differently from attackers. Settings include lockout duration (seconds), lockout threshold (failed attempts before lockout), and on-premises password protection mode (Audit or Enforce).",
     "addedComponent": [
       {
         "type": "number",
@@ -8071,7 +8121,7 @@
         "label": "On-Premises Mode",
         "options": [
           { "label": "Audit", "value": "Audit" },
-          { "label": "Enforced", "value": "Enforced" }
+          { "label": "Enforce", "value": "Enforce" }
         ]
       }
     ],
