@@ -7,6 +7,7 @@ import { Grid } from "@mui/system";
 import CippPermissionPreview from "./CippPermissionPreview";
 import { useWatch } from "react-hook-form";
 import { CippPermissionSetDrawer } from "./CippPermissionSetDrawer";
+import { ApiGetCall } from "../../api/ApiCall";
 
 const AppApprovalTemplateForm = ({
   formControl,
@@ -24,6 +25,12 @@ const AppApprovalTemplateForm = ({
   const [permissionsLoaded, setPermissionsLoaded] = useState(false);
   const [permissionSetDrawerVisible, setPermissionSetDrawerVisible] = useState(false);
   const [manifestSanitizeMessage, setManifestSanitizeMessage] = useState(null);
+
+  // Shares its queryKey with the permission set autocomplete below, so this reuses that cache.
+  const permissionSets = ApiGetCall({
+    url: "/api/ExecAppPermissionTemplate",
+    queryKey: "execAppPermissionTemplate",
+  });
 
   const getManifestValidationError = (manifest) => {
     if (!manifest.displayName) {
@@ -272,6 +279,31 @@ const AppApprovalTemplateForm = ({
       }
     }
   }, [templateData, isCopy, isEditing, formControl]);
+
+  // A template stores a copy of the permission set taken when it was last saved, and that copy goes
+  // stale as soon as the set is edited. Re-seed from the linked set once it loads so the preview and
+  // the saved payload match the permissions deployment actually consents.
+  useEffect(() => {
+    if (!formControl || !(isEditing || isCopy)) return;
+
+    const template = templateData?.[0];
+    if (!template?.PermissionSetId) return;
+
+    const liveSet = permissionSets.data?.find((set) => set.TemplateId === template.PermissionSetId);
+    if (!liveSet) return;
+
+    const permissionSetValue = {
+      label: liveSet.TemplateName || template.PermissionSetName || "Custom Permissions",
+      value: template.PermissionSetId,
+      addedFields: {
+        Permissions: liveSet.Permissions || {},
+      },
+    };
+
+    formControl.setValue("permissionSetId", permissionSetValue, { shouldDirty: false });
+    setSelectedPermissionSet(permissionSetValue);
+    setPermissionsLoaded(true);
+  }, [permissionSets.data, templateData, isEditing, isCopy, formControl]);
 
   useEffect(() => {
     if (!formControl) return; // Early return if formControl is not available
