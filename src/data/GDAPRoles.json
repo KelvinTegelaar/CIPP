@@ -814,7 +814,7 @@
     "IsSystem": true,
     "Name": "AI Administrator",
     "ObjectId": "d2562ede-74db-457e-a7b6-544e236ebb61"
-  }
+  },
   {
     "ExtensionData": {},
     "Description": "Manage all aspects of the Microsoft Dragon admin center.",
@@ -822,7 +822,7 @@
     "IsSystem": true,
     "Name": "Dragon Administrator",
     "ObjectId": "e93e3737-fa85-474a-aee4-7d3fb86510f3"
-  }
+  },
   {
     "ExtensionData": {},
     "Description": "Manage all aspects of organizational branding in a tenant.",
@@ -830,7 +830,7 @@
     "IsSystem": true,
     "Name": "Organizational Branding Administrator",
     "ObjectId": "92ed04bf-c94a-4b82-9729-b799a7a4c178"
-  }
+  },
   {
     "ExtensionData": {},
     "Description": "Review, approve, or reject new organizational messages for delivery in the Microsoft 365 admin center before they are sent to users.",
