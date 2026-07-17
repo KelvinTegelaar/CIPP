@@ -20,7 +20,7 @@
     "CIPPUserId": "String",
     "CIPPUserKey": "String",
     "CIPPUsername": "String"
-  },
+  }
   "Audit.Exchange": {
     "Id": "Combination GUID",
     "RecordType": "List:AuditLogRecordType",
