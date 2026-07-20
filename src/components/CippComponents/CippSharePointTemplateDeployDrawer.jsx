@@ -121,6 +121,9 @@ export const CippSharePointTemplateDeployDrawer = ({
               helperText="Set as the owner of every site or Team this template creates. The owner must have a license."
               api={{
                 url: "/api/ListGraphRequest",
+                // CippAutocomplete appends the current tenant to this key, so switching
+                // tenants refetches the list.
+                queryKey: "SPTemplateDeployOwner",
                 data: {
                   Endpoint: "users",
                   $filter: "accountEnabled eq true and assignedLicenses/$count ne 0",
