@@ -51,6 +51,10 @@ Each card contains the following information:
 
 ## Card Actions
 
+{% hint style="info" %}
+Every card action opens a **Confirmation** window asking for a **Reason for change**. The reason is mandatory and is saved on the deviation along with the user that made the change, so you keep an audit trail of every drift decision.
+{% endhint %}
+
 ### New Deviations
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Accept Deviation — Customer Specific</td><td>Marks the deviation as intentional and unique to this tenant. Counts as compliant in the alignment score. Use when the tenant legitimately differs from the template by design.</td><td>true</td></tr><tr><td>Accept Deviation</td><td>Acknowledges the deviation as known/approved. Also counts as compliant in the alignment score. Use when you've reviewed it and it's fine as-is, but it's not a customer-specific exception.</td><td>true</td></tr><tr><td>Deny Deviation - Remediate to align with template</td><td>Queues a remediation job to bring the tenant back into alignment with the template. Includes the option to permanently deny the drift which will auto remediate future occurrences.</td><td>true</td></tr><tr><td>Deny Deviation — Delete Policy</td><td>Queues a deletion of the rogue policy.</td><td>true</td></tr><tr><td>Remove Drift Customization</td><td>Only available as a bulk action, this will remove all customization from drift management and reset to comparing to the standard</td><td>true</td></tr></tbody></table>
@@ -59,7 +63,15 @@ Each card contains the following information:
 
 <table><thead><tr><th></th><th></th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Deny — Delete Policy</td><td>Reverses the acceptance and queues a deletion of the rogue policy.</td><td>false</td></tr><tr><td>Deny — Remediate to align with template</td><td>Reverses acceptance and queues a remediation job to bring the tenant back into alignment with the template. Includes the option to permanently deny the drift which will auto remediate future occurrences.</td><td>false</td></tr><tr><td>Accept — Customer Specific</td><td>Re-categorizes from generic accepted to a customer specific deviation.</td><td>false</td></tr></tbody></table>
 
+### Denied Deviations & Compliant Standards
 
+Cards in the "Denied Deviations" and "Compliant Standards" sections have their own Actions menu. This is where you'll find the **Rerun** action:
+
+| Action                                                  | Description                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Rerun standard to align with template                   | Marks the standard as **Denied** again, flagging that this tenant must match the template for this standard. Use it on a previously denied or currently compliant standard that you want CIPP to treat as an open deviation once more: while the tenant deviates from the template, the card shows under "Denied Deviations", counts as non-compliant in the alignment score, and is included in drift alerts. This action only changes how CIPP tracks the standard — it does not make any change in the tenant. To push the template's value out immediately, use "Deny - Remediate to align with template" instead. |
+| Deny - Remediate to align with template                 | Queues a remediation job to bring the tenant back into alignment with the template. Includes the option to permanently deny the drift, which schedules a recurring task that re-applies the template value every 12 hours. Only shown for standards and policies that exist in the template.                                                                                                                               |
+| Accept Deviation / Accept Deviation — Customer Specific | Denied Deviations only. Re-categorizes the denied deviation as an accepted (or customer specific) deviation, which counts as compliant in the alignment score.                                                                                                                                                                                                                                                            |
 
 ***
 
