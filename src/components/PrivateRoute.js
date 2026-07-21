@@ -49,10 +49,12 @@ export const PrivateRoute = ({ children, routeType }) => {
   }
 
   // Check if the session is still loading before determining authentication status
+  // return loading page here when roles are loading to avoid showing 401
   if (
     session.isLoading ||
     apiRoles.isLoading ||
-    (apiRoles.isFetching && (apiRoles.data === null || apiRoles.data === undefined))
+    (hasAuthenticatedSession(session.data) && apiRoles.isPending) ||
+    (apiRoles.isFetching && !apiRoles.data?.clientPrincipal)
   ) {
     return <LoadingPage />;
   }

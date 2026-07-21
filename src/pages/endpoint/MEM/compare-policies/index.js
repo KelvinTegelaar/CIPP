@@ -356,8 +356,9 @@ const Page = () => {
   }, [compareApi.isError, compareApi.error]);
 
   const comparisonRows = useMemo(() => {
-    if (!Array.isArray(results?.Results)) return [];
-    return results.Results.filter(Boolean);
+    const raw = results?.Results;
+    const rows = Array.isArray(raw) ? raw : raw ? [raw] : [];
+    return rows.filter((row) => row && typeof row === "object");
   }, [results?.Results]);
 
   return (

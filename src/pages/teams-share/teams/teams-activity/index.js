@@ -1,6 +1,10 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
+import {
+  CippAnonymizedReportAlert,
+  useReportAnonymized,
+} from "../../../../components/CippComponents/CippAnonymizedReportAlert";
 
 const Page = () => {
   const pageTitle = "Teams Activity List";
@@ -14,12 +18,19 @@ const Page = () => {
     defaultCached: false,
   });
 
+  const anonymized = useReportAnonymized({
+    url: reportDB.resolvedApiUrl,
+    queryKey: reportDB.resolvedQueryKey,
+    fields: ["UPN"],
+  });
+
   return (
     <>
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
         queryKey={reportDB.resolvedQueryKey}
+        tableFilter={<CippAnonymizedReportAlert show={anonymized} />}
         simpleColumns={[
           ...reportDB.cacheColumns,
           "UPN",

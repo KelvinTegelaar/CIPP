@@ -190,6 +190,16 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
                     />
                   </Grid>
                 </Grid>
+              ) : watchedRules?.[ruleIndex]?.property?.type === "gdapAge" ? (
+                <CippFormComponent
+                  type="number"
+                  name={`${name}.${ruleIndex}.value.value`}
+                  label="Days"
+                  formControl={formControl}
+                  required
+                  placeholder="e.g. 14"
+                  fullWidth
+                />
               ) : (
                 <CippFormComponent
                   type="autoComplete"
@@ -235,6 +245,8 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
         "Member of Tenant Group equals 'Production Tenants'"
         {" | "}
         "Custom Variable: Environment equals Production"
+        {" | "}
+        "GDAP Relationship Age (days) Greater Than or Equal 14"
       </Alert>
 
       {/* Logic Operator Selection */}

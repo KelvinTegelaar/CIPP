@@ -1,5 +1,5 @@
 import { Layout as DashboardLayout } from '../../../layouts/index.js'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useFormState } from 'react-hook-form'
 import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
 import { useRouter } from 'next/router'
 import {
@@ -35,12 +35,34 @@ import {
 import cacheTypes from '../../../data/CIPPDBCacheTypes.json'
 import { renderCustomScriptMarkdownTemplate } from '../../../utils/customScriptTemplate'
 import { useSettings } from '../../../hooks/use-settings'
-import CippFormPage from '../../../components/CippFormPages/CippFormPage'
+import CippFormPage, {
+  useCippFormPageActions,
+} from '../../../components/CippFormPages/CippFormPage'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
 import { CippFormCondition } from '../../../components/CippComponents/CippFormCondition'
 import { CippApiResults } from '../../../components/CippComponents/CippApiResults'
 import { CippCodeBlock } from '../../../components/CippComponents/CippCodeBlock'
 import { markdownStyles } from '../../../components/CippTestDetail/CippTestDetailOffCanvas'
+
+// Renders CippFormPage's submit inside the tester panel so it sits next to Run Test
+// instead of below the test results.
+const CustomTestSaveButton = () => {
+  const formPage = useCippFormPageActions()
+  if (!formPage) {
+    return null
+  }
+  const { submit, isSubmitting, isValid, isDirty, allowResubmit } = formPage
+  return (
+    <Button
+      variant="outlined"
+      onClick={submit}
+      type="submit"
+      disabled={isSubmitting || !isValid || (!allowResubmit && !isDirty)}
+    >
+      Save
+    </Button>
+  )
+}
 
 const Page = () => {
   const getValueType = (value) => {
@@ -133,6 +155,8 @@ const Page = () => {
     },
   })
 
+  const { isDirty } = useFormState({ control: formControl.control })
+
   const existingScript = ApiGetCall({
     url: `/api/ListCustomScripts?ScriptGuid=${ScriptGuid}`,
     queryKey: `CustomScript-${ScriptGuid}`,
@@ -206,15 +230,37 @@ const Page = () => {
       setTestResults(result)
       if (result?.Results !== undefined) {
         const generatedSchema = buildResultSchema(result.Results)
-        formControl.setValue('ResultSchema', JSON.stringify(generatedSchema, null, 2), {
-          shouldDirty: true,
-        })
+        // Compare entries only — generatedAt is a fresh timestamp on every run. Without this
+        // an unchanged re-run would dirty the form and disable Run Test until a no-op save.
+        let currentEntries = null
+        try {
+          currentEntries = JSON.parse(formControl.getValues('ResultSchema'))?.entries
+        } catch {
+          currentEntries = null
+        }
+        const schemaUnchanged =
+          !!currentEntries &&
+          JSON.stringify(currentEntries) === JSON.stringify(generatedSchema.entries)
+        if (!schemaUnchanged) {
+          formControl.setValue('ResultSchema', JSON.stringify(generatedSchema, null, 2), {
+            shouldDirty: true,
+          })
+        }
       }
     },
   })
 
+  // Run Test executes the *saved* script, so unsaved edits must be committed first.
+  const runTestDisabledReason = !isEdit
+    ? 'Save the script before running a test'
+    : isScriptLoading
+      ? 'Loading script...'
+      : isDirty
+        ? 'Save your changes before running a test'
+        : null
+
   const handleRunTest = () => {
-    if (!isEdit || !ScriptGuid) {
+    if (!isEdit || !ScriptGuid || runTestDisabledReason) {
       return
     }
 
@@ -255,7 +301,11 @@ const Page = () => {
         undefined,
         { shallow: false }
       )
+      return
     }
+    // Rebaseline the dirty state so the saved values become the new "clean" form,
+    // which is what re-enables Run Test.
+    formControl.reset(formControl.getValues(), { keepValues: true })
   }
 
   const customDataformatter = (data) => {
@@ -678,6 +728,9 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
       postUrl="/api/AddCustomScript"
       customDataformatter={customDataformatter}
       onSubmitResult={handleSubmitResult}
+      // The tester panel owns Save whenever it is on screen, so results never push it
+      // to the bottom of the page. Fall back to the built-in footer button otherwise.
+      hideSubmit={testerExpanded}
     >
       <Accordion
         sx={{ mb: 2 }}
@@ -1445,7 +1498,10 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
         <AccordionDetails>
           {testerExpanded &&
             (!isEdit ? (
-              <Alert severity="info">Save the script first to test execution output.</Alert>
+              <Stack spacing={2} alignItems="flex-start">
+                <Alert severity="info">Save the script first to test execution output.</Alert>
+                <CustomTestSaveButton />
+              </Stack>
             ) : (
               <Stack spacing={2}>
                 <Typography variant="caption" color="text.secondary">
@@ -1465,15 +1521,28 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
   "ExcludeDisabled": true
 }`}
                 />
-                <Box>
-                  <Button
-                    variant="contained"
-                    onClick={handleRunTest}
-                    disabled={isScriptLoading || testScriptApi.isPending}
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Tooltip
+                    title={runTestDisabledReason || ''}
+                    disableHoverListener={!runTestDisabledReason}
                   >
-                    Run Test
-                  </Button>
-                </Box>
+                    <span>
+                      <Button
+                        variant="contained"
+                        onClick={handleRunTest}
+                        disabled={!!runTestDisabledReason || testScriptApi.isPending}
+                      >
+                        Run Test
+                      </Button>
+                    </span>
+                  </Tooltip>
+                  <CustomTestSaveButton />
+                  {isDirty && (
+                    <Typography variant="caption" color="text.secondary">
+                      Unsaved changes — tests run the saved version of the script.
+                    </Typography>
+                  )}
+                </Stack>
 
                 {testScriptApi.isPending && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

@@ -1,4 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import tabOptions from "./tabOptions.json";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent.jsx";
 import { Box } from "@mui/material";
@@ -7,7 +9,7 @@ import { UserGroupIcon } from "@heroicons/react/24/outline";
 import { useSettings } from "../../../../hooks/use-settings.js";
 
 const Page = () => {
-  const pageTitle = "Auth Methods";
+  const pageTitle = "Policies";
   const tenant = useSettings().currentTenant;
   const apiUrl = "/api/ListGraphRequest";
 
@@ -357,6 +359,10 @@ const Page = () => {
 };
 
 // Adding the layout for the dashboard
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;

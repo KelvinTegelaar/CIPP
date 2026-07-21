@@ -894,6 +894,8 @@ export const useCippUserActions = () => {
           type: 'switch',
           name: 'MustChange',
           label: 'Must Change Password at Next Logon',
+          helperText:
+            'Not supported for directory-synced (on-premises AD) accounts. Those resets go through password writeback, which always requires a change at next logon.',
         },
       ],
       confirmText: 'Are you sure you want to reset the password for [userPrincipalName]?',

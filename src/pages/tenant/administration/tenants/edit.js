@@ -71,6 +71,11 @@ const Page = () => {
         ClearImmutableId: false,
         DisableOneDriveSharing: false,
         removeCalendarPermissions: false,
+        postExecution: {
+          psa: false,
+          email: false,
+          webhook: false,
+        },
       };
 
       let offboardingDefaults = {};
@@ -117,6 +122,11 @@ const Page = () => {
       ClearImmutableId: false,
       DisableOneDriveSharing: false,
       removeCalendarPermissions: false,
+      postExecution: {
+        psa: false,
+        email: false,
+        webhook: false,
+      },
     };
 
     offboardingFormControl.reset({ offboardingDefaults: defaultOffboardingValues });

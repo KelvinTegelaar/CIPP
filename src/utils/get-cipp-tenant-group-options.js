@@ -134,6 +134,11 @@ export const getTenantGroupPropertyOptions = () => {
       value: "customVariable",
       type: "customVariable",
     },
+    {
+      label: "GDAP Relationship Age (days)",
+      value: "gdapRelationshipAge",
+      type: "gdapAge",
+    },
   ];
 };
 
@@ -175,9 +180,33 @@ export const getTenantGroupOperatorOptions = (propertyType) => {
     },
   ];
 
+  const numericOperators = [
+    {
+      label: "Greater Than",
+      value: "gt",
+    },
+    {
+      label: "Greater Than or Equal",
+      value: "ge",
+    },
+    {
+      label: "Less Than",
+      value: "lt",
+    },
+    {
+      label: "Less Than or Equal",
+      value: "le",
+    },
+  ];
+
   // Custom Variable supports text comparison
   if (propertyType === "customVariable") {
     return [...baseOperators, ...textOperators];
+  }
+
+  // GDAP relationship age is numeric
+  if (propertyType === "gdapAge") {
+    return [...numericOperators, ...baseOperators];
   }
 
   // Delegated Access Status only supports equals/not equals
@@ -212,6 +241,9 @@ export const getTenantGroupValueOptions = (propertyType) => {
       return [];
     case "customVariable":
       // Return empty array - uses free-text input with variable name
+      return [];
+    case "gdapAge":
+      // Return empty array - uses a plain number input
       return [];
     default:
       return [];
