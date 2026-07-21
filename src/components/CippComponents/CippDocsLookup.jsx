@@ -1,4 +1,4 @@
-import { Search } from "@mui/icons-material";
+import { Search, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Chip, IconButton, SvgIcon, Tooltip } from "@mui/material";
 import { useState } from "react";
 

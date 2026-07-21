@@ -33,8 +33,8 @@ async function loadTabOptions() {
 
   for (const basePath of tabOptionPaths) {
     try {
-      const module = await import(`../../pages${basePath}/tabOptions.json`)
-      const options = module.default || module
+      const tabModule = await import(`../../pages${basePath}/tabOptions.json`)
+      const options = tabModule.default || tabModule
 
       // Add each tab option with metadata
       options.forEach((option) => {
