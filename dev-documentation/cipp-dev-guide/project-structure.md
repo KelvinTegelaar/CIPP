@@ -1,10 +1,10 @@
 # Project Structure
 
-So you've got two repositories now (assuming you followed the setting up guide.) this page looks at what's in the `CIPP` folder so you know where to look when you start coding.
+this page looks at what's in the f`rontend` folder so you know where to look when you start coding.
 
 ### The Root
 
-In the `CIPP` directory itself there are a number of files and folders, the table below highlights the important ones:
+In the `frontend` directory itself there are a number of files and folders, the table below highlights the important ones:
 
 | Item                 | Description                                                                                                    |
 | -------------------- | -------------------------------------------------------------------------------------------------------------- |
