@@ -7,7 +7,7 @@ Contributions to CIPP are welcome by everyone. There's a couple of things to kee
 * You should understand the structure and technologies used in the CIPP and CIPP-API repositories.
 * Avoid adding your deploy workflow file to your development branch. They cause annoyance when they appear in PRs. If you want to both deploy and develop it's probably better to create two instances of the repository.
 
-When contributing, or planning to contribute, please create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues).
+When contributing, or planning to contribute, please create an issue [on GitHub](https://github.com/CyberDrain/CIPP/issues).
 
 * If you are fixing a bug, file a complete bug report and assign it to yourself. You can do this by commenting "I would like to work on this please!" on the issue.
 * If you are adding a feature, please add "Feature Request" to the title and assign it to yourself. You can do this by commenting "I would like to work on this please!" on the issue.
