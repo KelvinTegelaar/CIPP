@@ -8,7 +8,7 @@ This page allows you to view and manage your custom tenant groups. Groups can be
 
 <summary>Add Tenant Group</summary>
 
-This flyout will allow you to create a new tenant group. Set the Group Name, Group Description, and initial tenants to add to the group. When creating a dynamic tenant group, you have the option to exclude the partner tenant from the group if the membership rules would normally include it.
+This flyout will allow you to create a new tenant group. Set the Group Name, Group Description, and initial tenants to add to the group. When creating a dynamic tenant group, you have the option to exclude the partner tenant from the group if the membership rules would normally include it. Since the functions are the same, see [edit.md](edit.md "mention") for more details on how you can configure a tenant group.
 
 </details>
 
