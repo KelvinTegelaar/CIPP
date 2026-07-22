@@ -16,7 +16,7 @@ Everything is served same-origin through **http://localhost:5196.**
 
 * [Git](https://git-scm.com/)
 * **Docker** — [Docker Desktop](https://www.docker.com/products/docker-desktop/) on Windows, or Docker Engine with the compose plugin on Linux. Docker is required; the entire dev environment runs in containers.
-* **Windows only** (because the frontend dev server runs on the host):
+* **When developing on Windows:**&#x20;
   * [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows)
   * [Windows Terminal](https://aka.ms/terminal)
   * [Node.js 22](https://nodejs.org/) with Yarn enabled (`corepack enable`)
