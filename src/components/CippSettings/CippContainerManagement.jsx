@@ -45,7 +45,7 @@ export const CippContainerManagement = () => {
 
   const updateSettingsForm = useForm({
     mode: "onChange",
-    defaultValues: { CheckInterval: null, AutoUpdate: false, CheckTime: null },
+    defaultValues: { CheckInterval: null, AutoUpdate: true, CheckTime: null },
   });
 
   const containerStatus = ApiGetCall({
@@ -149,6 +149,13 @@ export const CippContainerManagement = () => {
     return digest.length > 20 ? `${digest.slice(0, 20)}…` : digest;
   };
 
+  const formatUtcDate = (value) => {
+    if (!value || value === "unknown") return "unknown";
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return value;
+    return `${date.toISOString().slice(0, 16).replace("T", " ")} UTC`;
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -207,6 +214,17 @@ export const CippContainerManagement = () => {
 
                 <Grid size={{ xs: 4 }}>
                   <Typography variant="body2" color="text.secondary">
+                    Image Built (UTC)
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 8 }}>
+                  <Typography variant="body2" sx={{ fontFamily: "monospace" }} title={data?.BuildDate}>
+                    {formatUtcDate(data?.BuildDate)}
+                  </Typography>
+                </Grid>
+
+                <Grid size={{ xs: 4 }}>
+                  <Typography variant="body2" color="text.secondary">
                     Commit SHA
                   </Typography>
                 </Grid>
@@ -215,25 +233,6 @@ export const CippContainerManagement = () => {
                     {data?.CommitSha ?? "unknown"}
                   </Typography>
                 </Grid>
-
-                {updateSettings?.RunningDigest && (
-                  <>
-                    <Grid size={{ xs: 4 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Container Digest
-                      </Typography>
-                    </Grid>
-                    <Grid size={{ xs: 8 }}>
-                      <Typography
-                        variant="body2"
-                        title={updateSettings.RunningDigest}
-                        sx={{ fontFamily: "monospace", cursor: "help" }}
-                      >
-                        {truncateDigest(updateSettings.RunningDigest)}
-                      </Typography>
-                    </Grid>
-                  </>
-                )}
 
                 {data?.CurrentImage && data.CurrentImage !== "unknown" && (
                   <>
@@ -278,7 +277,8 @@ export const CippContainerManagement = () => {
           <Stack spacing={2}>
             <Typography variant="body2" color="text.secondary">
               Configure automatic update checking. CIPP will query the container registry for a new
-              image digest and optionally restart the container to apply the update.
+              image digest and optionally restart the container to apply the update. By default,
+              CIPP checks every hour and auto-restarts at the preferred time of 23:00.
               NOTE: If the container restarts for any reason the latest image version for your update channel will be pulled regardless
             </Typography>
 
@@ -324,36 +324,64 @@ export const CippContainerManagement = () => {
               </Typography>
             )}
 
-            {updateSettings?.RunningDigest && updateSettings?.RemoteDigest && (
+            {(updateSettings?.RunningVersion || updateSettings?.RemoteVersion) && (
               <Grid container spacing={1}>
                 <Grid size={{ xs: 4 }}>
                   <Typography variant="caption" color="text.secondary">
-                    Running Digest
+                    Running Version
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 8 }}>
-                  <Typography
-                    variant="caption"
-                    title={updateSettings.RunningDigest}
-                    sx={{ fontFamily: "monospace", cursor: "help" }}
-                  >
-                    {truncateDigest(updateSettings.RunningDigest)}
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
+                    {updateSettings.RunningVersion || "unknown"}
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 4 }}>
                   <Typography variant="caption" color="text.secondary">
-                    Remote Digest
+                    Remote Version
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 8 }}>
-                  <Typography
-                    variant="caption"
-                    title={updateSettings.RemoteDigest}
-                    sx={{ fontFamily: "monospace", cursor: "help" }}
-                  >
-                    {truncateDigest(updateSettings.RemoteDigest)}
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
+                    {updateSettings.RemoteVersion || "unknown"}
                   </Typography>
                 </Grid>
+                {updateSettings?.RemoteBuildDate && (
+                  <>
+                    <Grid size={{ xs: 4 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        Remote Built (UTC)
+                      </Typography>
+                    </Grid>
+                    <Grid size={{ xs: 8 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontFamily: "monospace" }}
+                        title={updateSettings.RemoteBuildDate}
+                      >
+                        {formatUtcDate(updateSettings.RemoteBuildDate)}
+                      </Typography>
+                    </Grid>
+                  </>
+                )}
+                {updateSettings?.RemoteDigest && (
+                  <>
+                    <Grid size={{ xs: 4 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        Remote Digest
+                      </Typography>
+                    </Grid>
+                    <Grid size={{ xs: 8 }}>
+                      <Typography
+                        variant="caption"
+                        title={updateSettings.RemoteDigest}
+                        sx={{ fontFamily: "monospace", cursor: "help" }}
+                      >
+                        {truncateDigest(updateSettings.RemoteDigest)}
+                      </Typography>
+                    </Grid>
+                  </>
+                )}
               </Grid>
             )}
 

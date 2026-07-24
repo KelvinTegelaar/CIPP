@@ -44,6 +44,9 @@ const AddSiteForm = () => {
             type="autoComplete"
             api={{
               url: "/api/ListGraphRequest",
+              // CippAutocomplete appends the current tenant to this key, so switching
+              // tenants refetches the list.
+              queryKey: "AddSiteOwner",
               data: {
                 Endpoint: "users",
                 $filter: "accountEnabled eq true",

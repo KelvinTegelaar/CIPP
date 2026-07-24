@@ -1459,10 +1459,23 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["CISA (MS.AAD.21.1v1)", "SMB1001 (2.8)"],
     "appliesToTest": ["SMB1001_2_8", "ZTNA21868"],
-    "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
-    "docsDescription": "Users by default are allowed to create M365 groups. This restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
-    "executiveText": "Restricts the creation of Microsoft 365 groups, Teams, and SharePoint sites to authorized administrators, preventing uncontrolled proliferation of collaboration spaces. This ensures proper governance, naming conventions, and resource management while maintaining oversight of all collaborative environments.",
-    "addedComponent": [],
+    "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc. Optionally allows members of a specific security group to keep creating groups (GroupCreationAllowedGroupId).",
+    "docsDescription": "Users by default are allowed to create M365 groups. This restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc. Optionally, a security group can be named whose members remain allowed to create groups; the group is resolved by display name in each tenant and can be created automatically when it does not exist. When no group is named, the existing GroupCreationAllowedGroupId value in the tenant is left untouched.",
+    "executiveText": "Restricts the creation of Microsoft 365 groups, Teams, and SharePoint sites to authorized administrators, preventing uncontrolled proliferation of collaboration spaces. This ensures proper governance, naming conventions, and resource management while maintaining oversight of all collaborative environments. An approved group of designated users can optionally retain the ability to create groups.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.DisableM365GroupUsers.AllowedGroupName",
+        "label": "Optional: name of the group whose members may still create M365 groups",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DisableM365GroupUsers.CreateGroup",
+        "label": "Create the allowed group if it does not exist",
+        "required": false
+      }
+    ],
     "label": "Disable M365 Group creation by users",
     "impact": "Low Impact",
     "impactColour": "info",
@@ -3218,6 +3231,21 @@
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.TeamsDisableResourceAccounts",
+    "cat": "Teams Standards",
+    "tag": ["NIST CSF 2.0 (PR.AA-01)"],
+    "helpText": "Blocks sign-in for all Teams resource accounts used by Auto Attendants and Call Queues. Microsoft's guidance is to block sign-in for resource accounts as they do not require an interactive login to function.",
+    "docsDescription": "Teams resource accounts (the accounts backing Auto Attendants and Call Queues) do not require interactive sign-in to function. If sign-in is enabled and the password is reset, the account can be logged into directly, which presents a security risk. Microsoft's guidance is to block sign-in for these accounts. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
+    "executiveText": "Prevents direct login to the service accounts that power phone system features like Auto Attendants and Call Queues. These accounts work without anyone signing into them, so blocking sign-in removes an unnecessary attack surface while keeping the phone system fully functional.",
+    "addedComponent": [],
+    "label": "Block sign-in for Teams resource accounts",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-07-17",
+    "powershellEquivalent": "Get-CsOnlineApplicationInstance & Update-MgUser",
+    "recommendedBy": ["Microsoft", "CIPP"]
   },
   {
     "name": "standards.DisableResourceMailbox",

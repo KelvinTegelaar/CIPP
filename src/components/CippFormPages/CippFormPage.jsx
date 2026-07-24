@@ -13,9 +13,14 @@ import {
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
 import { ApiPostCall } from '../../api/ApiCall'
 import { CippApiResults } from '../CippComponents/CippApiResults'
-import { useEffect } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 import { useFormState } from 'react-hook-form'
 import { CippHead } from '../CippComponents/CippHead'
+
+// Lets a page render its own Save button somewhere inside `children` (e.g. next to a
+// Run Test button) while reusing this component's submit pipeline. Pair with hideSubmit.
+const CippFormPageContext = createContext(null)
+export const useCippFormPageActions = () => useContext(CippFormPageContext)
 
 const CippFormPage = (props) => {
   const {
@@ -114,8 +119,16 @@ const CippFormPage = (props) => {
       data: values,
     })
   }
+  const formPageActions = {
+    submit: formControl.handleSubmit(handleSubmit),
+    isSubmitting: postCall.isPending,
+    isValid,
+    isDirty,
+    allowResubmit,
+  }
+
   return (
-    <>
+    <CippFormPageContext.Provider value={formPageActions}>
       <CippHead title={title} />
       <Box
         sx={{
@@ -164,7 +177,7 @@ const CippFormPage = (props) => {
           </Stack>
         </Container>
       </Box>
-    </>
+    </CippFormPageContext.Provider>
   )
 }
 

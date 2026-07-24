@@ -1541,10 +1541,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
   // Check if we have the necessary data
   const hasData = userData && becData && !becData.Waiting
 
-  const brandingSettings = userSettings?.organizationSettings || {
-    logo: userSettings?.organizationSettings?.logo,
-    colour: userSettings?.organizationSettings?.colour || '#F77F00',
-  }
+  const brandingSettings = userSettings?.customBranding
 
   const handleOpenDialog = () => {
     setDialogOpen(true)

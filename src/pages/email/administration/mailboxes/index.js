@@ -3,6 +3,10 @@ import { CippTablePage } from '../../../../components/CippComponents/CippTablePa
 import CippExchangeActions from '../../../../components/CippComponents/CippExchangeActions'
 import { CippSharedMailboxDrawer } from '../../../../components/CippComponents/CippSharedMailboxDrawer.jsx'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
+import {
+  CippAnonymizedReportAlert,
+  useReportAnonymized,
+} from '../../../../components/CippComponents/CippAnonymizedReportAlert'
 import { Stack } from '@mui/system'
 
 const Page = () => {
@@ -15,6 +19,14 @@ const Page = () => {
     syncTitle: 'Sync Mailboxes',
     allowToggle: true,
     defaultCached: true,
+  })
+
+  // Anonymized report names break the usage merge in the Mailboxes cache sync, leaving
+  // storageUsedInBytes at 0 for every mailbox (cached mode only — live mode has no usage data).
+  const allZeroStorage = useReportAnonymized({
+    url: reportDB.resolvedApiUrl,
+    queryKey: reportDB.resolvedQueryKey,
+    check: (rows) => rows.every((mailbox) => !Number(mailbox?.storageUsedInBytes)),
   })
 
   // Define off-canvas details
@@ -75,6 +87,12 @@ const Page = () => {
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         filters={filterList}
+        tableFilter={
+          <CippAnonymizedReportAlert show={reportDB.useReportDB && allZeroStorage}>
+            All mailboxes report 0 storage used, which usually means Microsoft 365 report
+            anonymization is enabled for this tenant.
+          </CippAnonymizedReportAlert>
+        }
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             <CippSharedMailboxDrawer />

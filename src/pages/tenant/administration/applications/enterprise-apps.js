@@ -48,7 +48,7 @@ const Page = () => {
   const apiParams = {
     Endpoint: 'servicePrincipals',
     $select:
-      'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials',
+      'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,applicationTemplateId,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials',
     $count: true,
     $top: 999,
   }

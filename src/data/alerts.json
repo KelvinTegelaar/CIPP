@@ -115,6 +115,44 @@
     ]
   },
   {
+    "name": "InactiveSharePointSites",
+    "label": "Alert on SharePoint sites that have not been active for X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include never-active sites?",
+        "inputName": "IncludeNeverActive"
+      }
+    ]
+  },
+  {
+    "name": "InactiveTeamsSites",
+    "label": "Alert on Teams linked sites that have not been active for X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include never-active TeamsSite sites?",
+        "inputName": "IncludeNeverActive"
+      }
+    ]
+  },
+  {
     "name": "EntraConnectSyncStatus",
     "label": "Alert if Entra Connect sync is enabled and has not run in the last X hours",
     "requiresInput": true,
@@ -138,6 +176,17 @@
         "inputType": "textField",
         "inputLabel": "Excluded mailbox UPNs (comma-separated). Supports custom variables like %excludefrommailboxalert% defined under CIPP > Settings > Custom Variables at tenant or AllTenants scope.",
         "inputName": "QuotaUsedExcludedMailboxes"
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Mailbox types to alert on (default: all)",
+        "inputName": "QuotaUsedMailboxTypes",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "User mailboxes", "value": "User" },
+          { "label": "Shared mailboxes", "value": "Shared" }
+        ]
       }
     ],
     "recommendedRunInterval": "1d"
@@ -632,5 +681,15 @@
       }
     ],
     "description": "Monitors for emails reported by users through Outlook's built-in Report Phishing feature. Alerts when new user-reported email threat submissions are found in Microsoft Defender. Requires ThreatSubmission.ReadWrite.All permission."
+  },
+  {
+    "name": "NewShadowAITool",
+    "label": "Alert on new Shadow AI tools detected",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "switch",
+    "inputLabel": "Ignore sanctioned tools?",
+    "inputName": "IgnoreSanctionedTools",
+    "description": "Monitors the Shadow AI detection data (Intune detected apps and Entra consented applications) and alerts when an AI tool is seen in the tenant for the first time. The first run establishes a baseline without alerting. Uses the same cached data as the Shadow AI dashboard, so keep the Detected Apps and Service Principals caches syncing. Optionally ignores tools that have been marked as company sanctioned."
   }
 ]

@@ -280,6 +280,11 @@
     "description": "SharePoint site usage statistics"
   },
   {
+    "type": "SiteActivity",
+    "friendlyName": "Site Activity",
+    "description": "Per-site activity with siteType classification (SharePoint, SharePointAndTeams, OneDrive) and workload activity columns"
+  },
+  {
     "type": "ConditionalAccessPolicies",
     "friendlyName": "Conditional Access Policies",
     "description": "Azure AD Conditional Access policies"
