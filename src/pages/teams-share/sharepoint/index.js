@@ -12,6 +12,8 @@ import {
   CleaningServices,
   Assessment,
   FolderShared,
+  ManageAccounts,
+  PersonSearch,
   RestoreFromTrash,
   Settings,
 } from '@mui/icons-material'
@@ -27,6 +29,8 @@ import { CippPropertyList } from '../../../components/CippComponents/CippPropert
 import { ApiGetCall } from '../../../api/ApiCall'
 import { CippEditSitePropertiesForm } from '../../../components/CippComponents/CippEditSitePropertiesForm'
 import { CippSiteRecycleBinDialog } from '../../../components/CippComponents/CippSiteRecycleBinDialog'
+import { CippLibraryPermissionsDialog } from '../../../components/CippComponents/CippLibraryPermissionsDialog'
+import { CippCheckUserAccessDialog } from '../../../components/CippComponents/CippCheckUserAccessDialog'
 
 // Friendly labels for the SharePoint version cleanup (trim) job progress fields.
 const VERSION_CLEANUP_LABELS = {
@@ -480,122 +484,34 @@ const Page = () => {
       multiPost: false,
     },
     {
-      label: 'Set Library Permission',
-      type: 'POST',
-      icon: <FolderShared />,
-      url: '/api/ExecSetLibraryPermission',
-      confirmText:
-        'Grant users or groups a permission level on a document library of [displayName].',
-      condition: () => canWriteSite,
-      children: ({ formHook, row }) => {
-        const siteRow = Array.isArray(row) ? row[0] : row
-        return (
-          <>
-            <CippFormComponent
-              type="autoComplete"
-              name="library"
-              label="Document Library"
-              multiple={false}
-              creatable={false}
-              formControl={formHook}
-              validators={{ required: 'Please select a document library' }}
-              api={{
-                url: '/api/ListSiteLibraries',
-                data: {
-                  SiteId: siteRow?.siteId,
-                  SiteUrl: siteRow?.webUrl,
-                  tenantFilter: siteRow?.Tenant ?? tenantFilter,
-                },
-                queryKey: `SiteLibraries-${siteRow?.siteId}`,
-                dataKey: 'Results',
-                labelField: (library) => library.Title,
-                valueField: 'Id',
-                showRefresh: true,
-              }}
-            />
-            <CippFormComponent
-              type="autoComplete"
-              name="users"
-              label="Users"
-              multiple={true}
-              creatable={false}
-              formControl={formHook}
-              api={{
-                url: '/api/ListGraphRequest',
-                data: {
-                  Endpoint: 'users',
-                  $select: 'id,displayName,userPrincipalName',
-                  $top: 999,
-                  $count: true,
-                },
-                queryKey: 'ListUsersAutoComplete',
-                dataKey: 'Results',
-                labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
-                valueField: 'userPrincipalName',
-                addedField: {
-                  id: 'id',
-                },
-                showRefresh: true,
-              }}
-            />
-            <CippFormComponent
-              type="autoComplete"
-              name="groups"
-              label="Groups"
-              multiple={true}
-              creatable={false}
-              formControl={formHook}
-              api={{
-                url: '/api/ListGraphRequest',
-                data: {
-                  Endpoint: 'groups',
-                  $select: 'id,displayName,mail,securityEnabled,groupTypes',
-                  $top: 999,
-                  $count: true,
-                },
-                queryKey: 'ListGroupsAutoComplete',
-                dataKey: 'Results',
-                labelField: (group) =>
-                  group.mail ? `${group.displayName} (${group.mail})` : group.displayName,
-                valueField: 'id',
-                addedField: {
-                  securityEnabled: 'securityEnabled',
-                  groupTypes: 'groupTypes',
-                },
-                showRefresh: true,
-              }}
-            />
-            <CippFormComponent
-              type="radio"
-              name="PermissionLevel"
-              label="Permission Level"
-              formControl={formHook}
-              options={[
-                { label: 'Read', value: 'read' },
-                { label: 'Contribute', value: 'contribute' },
-                { label: 'Edit', value: 'edit' },
-                { label: 'Design', value: 'design' },
-                { label: 'Full Control', value: 'fullControl' },
-              ]}
-            />
-          </>
-        )
-      },
-      defaultvalues: {
-        PermissionLevel: 'read',
-      },
-      customDataformatter: (row, action, formData) => {
-        const siteRow = Array.isArray(row) ? row[0] : row
-        return {
-          tenantFilter: siteRow.Tenant ?? tenantFilter,
-          SiteUrl: siteRow.webUrl,
-          ListId: formData.library?.value,
-          LibraryName: formData.library?.label,
-          PermissionLevel: formData.PermissionLevel,
-          Users: formData.users ?? [],
-          Groups: formData.groups ?? [],
-        }
-      },
+      // Read access is enough to open this: the dialog gates every change on write access,
+      // so a read-only admin can still inspect who has what.
+      label: 'Manage Permissions',
+      icon: <ManageAccounts />,
+      condition: () => canReadSite,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <CippLibraryPermissionsDialog
+          row={row}
+          tenantFilter={tenantFilter}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
+      multiPost: false,
+    },
+    {
+      // Answers "does this person have access, and how" rather than "who holds permissions".
+      label: 'Check User Access',
+      icon: <PersonSearch />,
+      condition: () => canReadSite,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <CippCheckUserAccessDialog
+          row={row}
+          tenantFilter={tenantFilter}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
       multiPost: false,
     },
     {

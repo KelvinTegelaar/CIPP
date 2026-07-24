@@ -43,5 +43,10 @@
     "label": "Container Management",
     "path": "/cipp/advanced/super-admin/container",
     "icon": "Storage"
+  },
+  {
+    "label": "Custom Domains",
+    "path": "/cipp/advanced/super-admin/custom-domains",
+    "icon": "Dns"
   }
 ]

@@ -1,10 +1,10 @@
 {
   "name": "cipp",
-  "version": "10.6.4",
+  "version": "10.7.0",
   "author": "CIPP Contributors",
   "homepage": "https://cipp.app/",
   "bugs": {
-    "url": "https://github.com/KelvinTegelaar/CIPP/issues"
+    "url": "https://github.com/CyberDrain/CIPP/issues"
   },
   "license": "AGPL-3.0",
   "engines": {

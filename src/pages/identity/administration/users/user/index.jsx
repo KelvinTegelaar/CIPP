@@ -56,6 +56,7 @@ const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
         <CippDataTable
           noCard={true}
           title="Sign-In Logs"
+          queryKey={`ListSignIns-${userId}`}
           simpleColumns={[
             'createdDateTime',
             'status',
@@ -72,7 +73,6 @@ const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
               tenantFilter: tenantFilter,
               top: 50,
             },
-            queryKey: `ListSignIns-${userId}`,
           }}
         />
       </DialogContent>
