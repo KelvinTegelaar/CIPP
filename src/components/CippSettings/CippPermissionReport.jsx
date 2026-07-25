@@ -68,15 +68,17 @@ export const CippPermissionReport = (props) => {
       "DisplayName",
       "DefaultDomainName",
       "UserPrincipalName",
+      "ServiceAccount",
       "IPAddress",
-      "GDAPRoles",
+      "AssignedRoles",
+      "GDAPRoles", // reports exported before AssignedRoles was renamed
     ];
 
     if (formData.redactCustomerData) {
       report.Tenants.Results = report?.Tenants?.Results?.map((tenant) => {
         customerProps.forEach((prop) => {
           if (tenant?.[prop]) {
-            if (prop === "GDAPRoles") {
+            if (prop === "AssignedRoles" || prop === "GDAPRoles") {
               tenant[prop] = tenant[prop].map((role) => {
                 if (Array.isArray(role?.Group)) {
                   role.Group = role.Group.map((group) => group?.split("@")[0]);
