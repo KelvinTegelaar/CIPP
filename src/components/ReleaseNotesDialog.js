@@ -32,7 +32,7 @@ import { CippAutoComplete } from './CippComponents/CippAutocomplete'
 
 const RELEASE_COOKIE_KEY = 'cipp_release_notice'
 const RELEASE_PERMANENT_HIDE_KEY = 'cipp_release_notice_permanently_hidden'
-const RELEASE_OWNER = 'KelvinTegelaar'
+const RELEASE_OWNER = 'CyberDrain'
 const RELEASE_REPO = 'CIPP'
 
 const secureFlag = () => {

@@ -35,7 +35,9 @@ Font.registerHyphenationCallback((word) => [word])
 
 // Executive Shadow AI report following the same design system as the executive report:
 // full-bleed cover, branded page headers, black infographic chapter splitters, and data pages.
-const ShadowAIReportDocument = ({
+// Exported as a pages fragment so the executive report can embed the same pages in its own
+// document (see ExecutiveReportButton).
+export const ShadowAIReportPages = ({
   tenantName,
   data,
   brandingSettings,
@@ -633,7 +635,7 @@ const ShadowAIReportDocument = ({
   const sanctionedToolsList = Object.values(sanctionedMap).slice(0, 18)
 
   return (
-    <Document>
+    <>
       {/* COVER PAGE */}
       {sectionConfig.coverPage && (
         <Page size="A4" style={styles.coverPage}>
@@ -1108,9 +1110,15 @@ const ShadowAIReportDocument = ({
           <PageFooter />
         </Page>
       )}
-    </Document>
+    </>
   )
 }
+
+const ShadowAIReportDocument = (props) => (
+  <Document>
+    <ShadowAIReportPages {...props} />
+  </Document>
+)
 
 const sectionOptions = [
   {
