@@ -147,7 +147,10 @@ export const CippWizardVacationActions = (props) => {
                 <Grid size={{ xs: 12 }}>
                   <Alert severity="info" sx={{ mb: 1 }}>
                     Vacation mode uses group-based exclusions for reliability. The exclusion group
-                    follows the format: &apos;Vacation Exclusion - $Policy.displayName&apos;
+                    follows the format: &apos;Vacation Exclusion - $Policy.displayName&apos;. For
+                    longer policy names the name is shortened and suffixed with the start of the
+                    policy ID, e.g. &apos;Vacation Exclusion - CA005-RegisterSecurityInfo: Require...
+                    [a1b2c3d4]&apos;
                   </Alert>
                 </Grid>
                 <Grid size={{ xs: 12 }}>
