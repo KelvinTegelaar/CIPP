@@ -586,7 +586,7 @@ export const useCippSiteActions = () => {
           DisplayName: "displayName",
         },
         confirmText:
-          "Set the storage quota for '[displayName]'. Values are in GB. The warning level triggers a notification to site admins.",
+          "Set the storage quota for '[displayName]'. Values are in GB. The warning level triggers a notification to site admins. Note: per-site limits only apply when the tenant uses manual site storage limits (SharePoint admin center → Settings → Site storage limits).",
         fields: [
           {
             type: "textField",
@@ -654,6 +654,7 @@ export const useCippSiteActions = () => {
         ],
         defaultvalues: { Type: "StorageCritical" },
         condition: (row) => !!row.ownerPrincipalName,
+        relatedQueryKeys: ["SharePointSiteUsage-*"],
         multiPost: false,
         category: "edit",
       },
@@ -747,6 +748,7 @@ export const useCippSiteActions = () => {
           { type: "textField", name: "NewTitle", label: "New Site Title (optional)" },
           { type: "textField", name: "NewUrl", label: "New Site URL (optional, full URL e.g. https://contoso.sharepoint.com/sites/newname)" },
         ],
+        relatedQueryKeys: ["SharePointSiteUsage-*"],
         multiPost: false,
         category: "edit",
       },
@@ -767,8 +769,8 @@ export const useCippSiteActions = () => {
             name: "Disconnect",
             label: "Action",
             options: [
-              { label: "Join a hub site", value: false },
-              { label: "Disconnect from current hub", value: true },
+              { label: "Join a hub site", value: "false" },
+              { label: "Disconnect from current hub", value: "true" },
             ],
           },
           {
@@ -787,7 +789,8 @@ export const useCippSiteActions = () => {
             },
           },
         ],
-        defaultvalues: { Disconnect: false },
+        defaultvalues: { Disconnect: "false" },
+        relatedQueryKeys: ["SharePointSiteUsage-*"],
         multiPost: false,
         category: "edit",
       },

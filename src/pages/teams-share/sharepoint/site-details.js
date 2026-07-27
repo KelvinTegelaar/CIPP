@@ -183,7 +183,6 @@ const Page = () => {
 
   const typeInfo = getSiteTypeInfo(rootWebTemplate);
   const storagePct = getStoragePercentage(storageUsed, storageAllocated);
-  const storageColor = getStorageStatusColor(storagePct);
   const inactive = isInactiveSite(lastActivityDate);
 
   // Resolve associated M365 Group — always attempt the lookup so we have the
@@ -245,7 +244,17 @@ const Page = () => {
     ]
   );
   const detailPageActions = useMemo(
-    () => siteActions.filter((a) => !["View Details", "Open Site"].includes(a.label)),
+    () =>
+      siteActions.filter(
+        (a) =>
+          ![
+            "View Details",
+            "Open Site",
+            "Add Member",
+            "Add Site Admin",
+            "Create Team from Site",
+          ].includes(a.label)
+      ),
     [siteActions]
   );
 
@@ -255,6 +264,7 @@ const Page = () => {
     data: { SiteId: siteId, TenantFilter: tenantFilter },
     queryKey: `site-live-storage-${siteId}`,
     waiting: false,
+    toast: true,
   });
   const live = liveStorage.data;
   const shownUsed = live?.storageUsedInGigabytes ?? storageUsed;
@@ -409,7 +419,15 @@ const Page = () => {
             <Button component={Link} href="/teams-share/sharepoint" startIcon={<ArrowBack />}>
               Back to Sites
             </Button>
-            <ActionsMenu actions={detailPageActions} data={siteRow} />
+            <ActionsMenu
+              actions={detailPageActions}
+              data={siteRow}
+              queryKeys={[
+                `SharePointSiteUsage-${tenantFilter}`,
+                `site-live-storage-${siteId}`,
+                `site-members-${siteId}`,
+              ]}
+            />
           </Stack>
 
           {/* Hero + Stats row */}
@@ -782,6 +800,7 @@ const Page = () => {
           api={quotaAction}
           row={siteRow}
           relatedQueryKeys={[`site-live-storage-${siteId}`, `SharePointSiteUsage-${tenantFilter}`]}
+          onActionSuccess={() => liveStorage.refetch()}
         />
       )}
       {cleanupAction && (

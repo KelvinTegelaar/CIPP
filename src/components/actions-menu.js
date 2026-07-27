@@ -47,6 +47,8 @@ export const ActionsMenu = (props) => {
   const { actions = [], label = "Actions", data, queryKeys, ...other } = props;
   const popover = usePopover();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+  const [customComponentData, setCustomComponentData] = useState({ data: {}, action: {} });
+  const [customComponentVisible, setCustomComponentVisible] = useState(false);
   const createDialog = useDialog();
 
   const groupedActions = useMemo(() => {
@@ -181,19 +183,26 @@ export const ActionsMenu = (props) => {
                     disabled={handleActionDisabled(data, action)}
                     key={`${category}-${index}`}
                     onClick={() => {
+                      if (action?.noConfirm && action.customFunction) {
+                        action.customFunction(data, action, {});
+                        popover.handleClose();
+                        return;
+                      }
+
+                      if (typeof action?.customComponent === "function") {
+                        setCustomComponentData({ data: data, action: action });
+                        setCustomComponentVisible(true);
+                        popover.handleClose();
+                        return;
+                      }
+
                       setActionData({
                         data: data,
                         action: action,
                         ready: true,
                       });
-
-                      if (action?.noConfirm && action.customFunction) {
-                        action.customFunction(data, action, {});
-                        popover.handleClose();
-                      } else {
-                        createDialog.handleOpen();
-                        popover.handleClose();
-                      }
+                      createDialog.handleOpen();
+                      popover.handleClose();
                     }}
                   >
                     <SvgIcon fontSize="small" sx={iconSx}>
@@ -208,7 +217,14 @@ export const ActionsMenu = (props) => {
           );
         })}
       </Menu>
-      {actionData.ready && (
+      {customComponentVisible &&
+        customComponentData?.action &&
+        typeof customComponentData.action.customComponent === "function" &&
+        customComponentData.action.customComponent(customComponentData.data, {
+          drawerVisible: customComponentVisible,
+          setDrawerVisible: setCustomComponentVisible,
+        })}
+      {actionData.ready && typeof actionData.action?.customComponent !== "function" && (
         <CippApiDialog
           createDialog={createDialog}
           title="Confirmation"
