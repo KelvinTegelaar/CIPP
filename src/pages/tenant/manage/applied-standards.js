@@ -37,6 +37,7 @@ import {
   Schedule,
   Check,
   Warning,
+  CompareArrows,
 } from '@mui/icons-material'
 import { getStandards } from '../../../utils/standards-data'
 import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
@@ -54,6 +55,14 @@ import tabOptions from './tabOptions.json'
 import { createDriftManagementActions } from './driftManagementActions'
 import { CippApiLogsDrawer } from '../../../components/CippComponents/CippApiLogsDrawer'
 import { CippHead } from '../../../components/CippComponents/CippHead'
+import { CippPolicyCompareDialog } from '../../../components/CippComponents/CippPolicyCompareDialog'
+
+// Only Intune template standards can be compared live against their baseline. The standard records
+// compliance as a boolean and discards the diff, so it has to be recomputed on demand.
+const getCompareTemplateGuid = (standardId) =>
+  standardId?.startsWith('standards.IntuneTemplate.')
+    ? standardId.substring('standards.IntuneTemplate.'.length)
+    : null
 
 const Page = () => {
   const router = useRouter()
@@ -72,6 +81,7 @@ const Page = () => {
   const [filter, setFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [filterMenuAnchor, setFilterMenuAnchor] = useState(null)
+  const [compareTarget, setCompareTarget] = useState(null)
 
   const templateDetails = ApiGetCall({
     url: `/api/listStandardTemplates`,
@@ -2113,6 +2123,22 @@ const Page = () => {
                                   </Box>
                                 </Stack>
                               </Stack>
+                              {getCompareTemplateGuid(standard.standardId) && (
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  startIcon={<CompareArrows />}
+                                  sx={{ flexShrink: 0, ml: 2 }}
+                                  onClick={() =>
+                                    setCompareTarget({
+                                      templateGuid: getCompareTemplateGuid(standard.standardId),
+                                      templateName: standard.standardName,
+                                    })
+                                  }
+                                >
+                                  Compare
+                                </Button>
+                              )}
                             </Stack>
                           </Stack>
                           <Divider />
@@ -3222,6 +3248,15 @@ const Page = () => {
             },
           }}
           relatedQueryKeys={['ListStandardsCompare']}
+        />
+
+        <CippPolicyCompareDialog
+          open={Boolean(compareTarget)}
+          onClose={() => setCompareTarget(null)}
+          tenantFilter={currentTenant}
+          templateGuid={compareTarget?.templateGuid}
+          templateName={compareTarget?.templateName}
+          standardsTemplateId={templateId}
         />
       </Box>
     </HeaderedTabbedLayout>
