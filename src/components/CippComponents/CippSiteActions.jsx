@@ -501,6 +501,79 @@ export const useCippSiteActions = () => {
         quickAction: true,
       },
       {
+        label: "Set Default Sharing Link",
+        type: "POST",
+        icon: <Share />,
+        url: "/api/ExecSetSiteProperty",
+        data: {
+          SiteId: "siteId",
+          DisplayName: "displayName",
+        },
+        confirmText:
+          "Set the default sharing link type and permission for '[displayName]'. These control what kind of link the Share dialog creates by default on this site.",
+        fields: [
+          {
+            type: "autoComplete",
+            name: "DefaultSharingLinkType",
+            label: "Default Link Type",
+            multiple: false,
+            creatable: false,
+            options: [
+              { label: "Tenant default", value: 0 },
+              { label: "Direct — specific people", value: 1 },
+              { label: "Internal — people in the organization", value: 2 },
+              { label: "Anyone — anonymous access link", value: 3 },
+            ],
+            required: true,
+          },
+          {
+            type: "autoComplete",
+            name: "DefaultLinkPermission",
+            label: "Default Link Permission",
+            multiple: false,
+            creatable: false,
+            options: [
+              { label: "Tenant default", value: 0 },
+              { label: "View", value: 1 },
+              { label: "Edit", value: 2 },
+            ],
+          },
+          {
+            type: "number",
+            name: "AnonymousLinkExpirationInDays",
+            label: "Anonymous Link Expiration (days, optional — overrides tenant policy)",
+          },
+        ],
+        multiPost: false,
+        category: "security",
+      },
+      {
+        label: "Restrict Access to Members",
+        type: "POST",
+        icon: <Lock />,
+        url: "/api/ExecSetSiteProperty",
+        data: {
+          SiteId: "siteId",
+          DisplayName: "displayName",
+        },
+        confirmText:
+          "Toggle restricted access control for '[displayName]'. When enabled, only members of the site (or its Microsoft 365 group) can access content, even if items were shared more broadly. Requires SharePoint Advanced Management licensing.",
+        fields: [
+          {
+            type: "radio",
+            name: "RestrictedAccessControl",
+            label: "Restricted Access Control",
+            options: [
+              { label: "Enable (members only)", value: true },
+              { label: "Disable", value: false },
+            ],
+          },
+        ],
+        defaultvalues: { RestrictedAccessControl: true },
+        multiPost: false,
+        category: "security",
+      },
+      {
         label: "Set Storage Quota",
         type: "POST",
         icon: <DataUsage />,
