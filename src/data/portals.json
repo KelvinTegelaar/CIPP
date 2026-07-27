@@ -58,6 +58,7 @@
     "name": "SharePoint_Admin",
     "url": "/api/ListSharePointAdminUrl?tenantFilter=defaultDomainName",
     "variable": "defaultDomainName",
+    "field": "SharepointAdminUrl",
     "target": "_blank",
     "external": true,
     "icon": "Share"
