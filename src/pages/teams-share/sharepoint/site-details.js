@@ -42,10 +42,12 @@ import {
   Hub,
   Groups,
   Send,
+  Refresh,
+  CleaningServices,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { useSettings } from "../../../hooks/use-settings";
 import { ApiGetCall } from "../../../api/ApiCall";
@@ -56,6 +58,8 @@ import CippMemberAuditDialog from "../../../components/CippComponents/CippMember
 import { useDialog } from "../../../hooks/use-dialog";
 import { getCippFormatting } from "../../../utils/get-cipp-formatting";
 import CippAccessTypeGuide from "../../../components/CippComponents/CippAccessTypeGuide";
+import { ActionsMenu } from "../../../components/actions-menu";
+import { useCippSiteActions } from "../../../components/CippComponents/CippSiteActions";
 
 // Helpers
 const getSiteTypeInfo = (template) => {
@@ -207,6 +211,62 @@ const Page = () => {
 
   const groupIdForApi = associatedGroup?.id || ownerPrincipalName;
 
+  const siteActions = useCippSiteActions();
+  const siteRow = useMemo(
+    () => ({
+      siteId,
+      displayName,
+      webUrl,
+      rootWebTemplate,
+      ownerPrincipalName,
+      ownerDisplayName,
+      storageUsedInGigabytes: storageUsed,
+      storageAllocatedInGigabytes: storageAllocated,
+      fileCount,
+      lastActivityDate,
+      createdDateTime,
+      reportRefreshDate,
+      Tenant: tenantFilter,
+    }),
+    [
+      siteId,
+      displayName,
+      webUrl,
+      rootWebTemplate,
+      ownerPrincipalName,
+      ownerDisplayName,
+      storageUsed,
+      storageAllocated,
+      fileCount,
+      lastActivityDate,
+      createdDateTime,
+      reportRefreshDate,
+      tenantFilter,
+    ]
+  );
+  const detailPageActions = useMemo(
+    () => siteActions.filter((a) => !["View Details", "Open Site"].includes(a.label)),
+    [siteActions]
+  );
+
+  // Live storage fetch ("Refresh Live")
+  const liveStorage = ApiGetCall({
+    url: "/api/ListSiteLiveStorage",
+    data: { SiteId: siteId, TenantFilter: tenantFilter },
+    queryKey: `site-live-storage-${siteId}`,
+    waiting: false,
+  });
+  const live = liveStorage.data;
+  const shownUsed = live?.storageUsedInGigabytes ?? storageUsed;
+  const shownAllocated = live?.storageAllocatedInGigabytes ?? storageAllocated;
+  const shownPct = live ? Math.round(live.storagePercentage) : storagePct;
+  const shownColor = getStorageStatusColor(shownPct);
+
+  const quotaDialog = useDialog();
+  const quotaAction = siteActions.find((a) => a.label === "Set Storage Quota");
+  const cleanupDialog = useDialog();
+  const cleanupAction = siteActions.find((a) => a.label === "Start Version Cleanup Job");
+
   // Add Member dialog
   const addMemberDialog = useDialog();
   const addMemberApi = {
@@ -344,10 +404,13 @@ const Page = () => {
       <CippHead title={`${displayName} - Site Details`} />
       <Container maxWidth={false}>
         <Stack spacing={2} sx={{ py: 3 }}>
-          {/* Back */}
-          <Button component={Link} href="/teams-share/sharepoint" startIcon={<ArrowBack />} sx={{ alignSelf: "flex-start" }}>
-            Back to Sites
-          </Button>
+          {/* Back + Actions */}
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Button component={Link} href="/teams-share/sharepoint" startIcon={<ArrowBack />}>
+              Back to Sites
+            </Button>
+            <ActionsMenu actions={detailPageActions} data={siteRow} />
+          </Stack>
 
           {/* Hero + Stats row */}
           <Grid container spacing={2}>
@@ -461,8 +524,8 @@ const Page = () => {
               <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <Stack direction="row" spacing={0} divider={<Divider orientation="vertical" flexItem />} justifyContent="space-around" sx={{ width: "100%" }}>
                   <StatBox value={fileCount.toLocaleString()} label="Files" color="primary" />
-                  <StatBox value={`${storageUsed}`} label="GB Used" color={storageColor} sub={`of ${storageAllocated} GB`} />
-                  <StatBox value={`${storagePct}%`} label="Storage" color={storageColor} />
+                  <StatBox value={`${shownUsed}`} label="GB Used" color={shownColor} sub={`of ${shownAllocated} GB`} />
+                  <StatBox value={`${shownPct}%`} label="Storage" color={shownColor} />
                 </Stack>
               </Paper>
             </Grid>
@@ -528,33 +591,62 @@ const Page = () => {
             {/* Storage */}
             <Grid size={{ xs: 12, lg: 6 }}>
               <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, height: "100%" }}>
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>
-                  <Storage sx={{ fontSize: 16 }} color="action" />
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                    Storage
-                  </Typography>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <Storage sx={{ fontSize: 16 }} color="action" />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                      Storage
+                    </Typography>
+                    {live && (
+                      <Tooltip
+                        title={`Live data from SharePoint Admin API, retrieved ${new Date(
+                          live.retrievedAt
+                        ).toLocaleString()}`}
+                      >
+                        <Chip label="Live" size="small" color="success" variant="outlined" />
+                      </Tooltip>
+                    )}
+                  </Stack>
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      size="small"
+                      startIcon={<Refresh />}
+                      onClick={() => liveStorage.refetch()}
+                      disabled={liveStorage.isFetching}
+                    >
+                      {liveStorage.isFetching ? "Loading..." : "Refresh Live"}
+                    </Button>
+                    <Button size="small" startIcon={<DataUsage />} onClick={() => quotaDialog.handleOpen()}>
+                      Set Quota
+                    </Button>
+                    <Button size="small" startIcon={<CleaningServices />} onClick={() => cleanupDialog.handleOpen()}>
+                      Cleanup
+                    </Button>
+                  </Stack>
                 </Stack>
                 <Box sx={{ mb: 1.5 }}>
                   <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
                     <Typography variant="caption" color="text.secondary">
-                      {storageUsed} GB used
+                      {shownUsed} GB used
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {storagePct}%
+                      {shownPct}%
                     </Typography>
                   </Stack>
                   <LinearProgress
                     variant="determinate"
-                    value={storagePct}
-                    color={storageColor}
+                    value={shownPct}
+                    color={shownColor}
                     sx={{ height: 8, borderRadius: 4, bgcolor: (t) => alpha(t.palette.grey[500], 0.15) }}
                   />
                 </Box>
                 <Stack spacing={0.5}>
-                  <InfoRow label="Allocated" value={`${storageAllocated} GB`} />
-                  <InfoRow label="Used" value={`${storageUsed} GB`} />
-                  <InfoRow label="Available" value={`${(storageAllocated - storageUsed).toFixed(2)} GB`} />
+                  <InfoRow label="Allocated" value={`${shownAllocated} GB`} />
+                  <InfoRow label="Used" value={`${shownUsed} GB`} />
+                  <InfoRow label="Available" value={`${(shownAllocated - shownUsed).toFixed(2)} GB`} />
                   <InfoRow label="File Count" value={fileCount.toLocaleString()} />
+                  {live && <InfoRow label="Warning Level" value={`${live.storageWarningInGigabytes} GB`} />}
+                  {live && <InfoRow label="Lock State" value={live.lockState} />}
                 </Stack>
               </Paper>
             </Grid>
@@ -681,6 +773,26 @@ const Page = () => {
       />
       {isGroupConnected && (
         <CippApiDialog createDialog={createTeamDialog} title="Create Team from Site" fields={[]} api={createTeamApi} row={{}} />
+      )}
+      {quotaAction && (
+        <CippApiDialog
+          createDialog={quotaDialog}
+          title="Set Storage Quota"
+          fields={quotaAction.fields}
+          api={quotaAction}
+          row={siteRow}
+          relatedQueryKeys={[`site-live-storage-${siteId}`, `SharePointSiteUsage-${tenantFilter}`]}
+        />
+      )}
+      {cleanupAction && (
+        <CippApiDialog
+          createDialog={cleanupDialog}
+          title="Start Version Cleanup Job"
+          api={cleanupAction}
+          row={siteRow}
+          defaultvalues={cleanupAction.defaultvalues}
+          children={cleanupAction.children}
+        />
       )}
     </>
   );
