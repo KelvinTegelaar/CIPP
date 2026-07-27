@@ -32,7 +32,7 @@ export const CippTenantResults = (props) => {
                 "LastRun",
                 "GraphTest",
                 "ExchangeTest",
-                "OrgManagementRepairNeeeded",
+                "OrgManagementRepairNeeded",
                 "OrgManagementRoles",
                 "OrgManagementRolesMissing",
               ],
