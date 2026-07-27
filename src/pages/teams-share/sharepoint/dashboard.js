@@ -191,9 +191,9 @@ const Page = () => {
   };
 
   const suggestedQuota = useMemo(() => {
-    if (!actionSite) return {};
-    const current = actionSite.storageAllocatedInGigabytes || actionSite.storageUsedInGigabytes || 1;
-    const suggested = Math.ceil(current * 1.25);
+    const allocated = actionSite?.storageAllocatedInGigabytes;
+    if (!allocated) return {};
+    const suggested = Math.ceil(allocated * 1.25);
     return {
       StorageMaximumLevelGB: String(suggested),
       StorageWarningLevelGB: String(Math.floor(suggested * 0.9)),
