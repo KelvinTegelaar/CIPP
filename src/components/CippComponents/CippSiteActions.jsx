@@ -6,6 +6,7 @@ import {
   CleaningServices,
   DataUsage,
   Delete,
+  DriveFileRenameOutline,
   FolderShared,
   Groups,
   Info,
@@ -688,6 +689,25 @@ export const useCippSiteActions = () => {
         },
         multiPost: false,
         allowResubmit: true,
+        category: "edit",
+      },
+      {
+        label: "Rename Site",
+        type: "POST",
+        icon: <DriveFileRenameOutline />,
+        url: "/api/ExecSiteRename",
+        data: {
+          SiteId: "siteId",
+          SiteUrl: "webUrl",
+          DisplayName: "displayName",
+        },
+        confirmText:
+          "Rename '[displayName]'. Leave a field empty to keep it unchanged. Changing the URL queues a background rename job — SharePoint creates a redirect from the old URL. For group-connected sites, the display name follows the Microsoft 365 group.",
+        fields: [
+          { type: "textField", name: "NewTitle", label: "New Site Title (optional)" },
+          { type: "textField", name: "NewUrl", label: "New Site URL (optional, full URL e.g. https://contoso.sharepoint.com/sites/newname)" },
+        ],
+        multiPost: false,
         category: "edit",
       },
       {
