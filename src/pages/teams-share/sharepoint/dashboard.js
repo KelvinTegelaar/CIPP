@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import {
   Box,
@@ -14,6 +15,8 @@ import {
   Skeleton,
   Stack,
   Typography,
+  IconButton,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -32,6 +35,9 @@ import {
   Block,
   Public,
   PersonAdd,
+  DataUsage,
+  CleaningServices,
+  Launch,
 } from "@mui/icons-material";
 import { useSettings } from "../../../hooks/use-settings";
 import { ApiGetCall } from "../../../api/ApiCall.jsx";
@@ -175,6 +181,42 @@ const Page = () => {
   const smDown = useMediaQuery(theme.breakpoints.down("sm"));
   const currentTenant = useSettings().currentTenant;
   const refreshDialog = useDialog();
+  const [actionSite, setActionSite] = useState(null);
+  const quotaDialog = useDialog();
+  const cleanupDialog = useDialog();
+
+  const openSiteDialog = (site, dialog) => {
+    setActionSite(site);
+    dialog.handleOpen();
+  };
+
+  const suggestedQuota = useMemo(() => {
+    if (!actionSite) return {};
+    const current = actionSite.storageAllocatedInGigabytes || actionSite.storageUsedInGigabytes || 1;
+    const suggested = Math.ceil(current * 1.25);
+    return {
+      StorageMaximumLevelGB: String(suggested),
+      StorageWarningLevelGB: String(Math.floor(suggested * 0.9)),
+    };
+  }, [actionSite]);
+
+  const siteDetailsHref = (site) => {
+    const params = new URLSearchParams({
+      siteId: site.siteId || "",
+      displayName: site.displayName || "",
+      webUrl: site.webUrl || "",
+      rootWebTemplate: site.rootWebTemplate || "",
+      ownerPrincipalName: site.ownerPrincipalName || "",
+      ownerDisplayName: site.ownerDisplayName || "",
+      storageUsedInGigabytes: String(site.storageUsedInGigabytes || 0),
+      storageAllocatedInGigabytes: String(site.storageAllocatedInGigabytes || 0),
+      fileCount: String(site.fileCount || 0),
+      lastActivityDate: site.lastActivityDate || "",
+      createdDateTime: site.createdDateTime || "",
+      reportRefreshDate: site.reportRefreshDate || "",
+    });
+    return `/teams-share/sharepoint/site-details?${params.toString()}`;
+  };
 
   const siteUsage = ApiGetCall({
     url: "/api/ListDBCache",
@@ -477,6 +519,23 @@ const Page = () => {
                                     {formatGB(site.storageAllocatedInGigabytes)}
                                   </Typography>
                                 </Box>
+                                <Stack direction="row" spacing={0.5}>
+                                  <Tooltip title="Increase storage quota">
+                                    <IconButton size="small" onClick={() => openSiteDialog(site, quotaDialog)}>
+                                      <DataUsage fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="Run version cleanup">
+                                    <IconButton size="small" onClick={() => openSiteDialog(site, cleanupDialog)}>
+                                      <CleaningServices fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="View site details">
+                                    <IconButton size="small" component={Link} href={siteDetailsHref(site)}>
+                                      <Launch fontSize="small" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </Stack>
                               </Stack>
                             );
                           })}
@@ -761,6 +820,46 @@ const Page = () => {
             Types: "None",
           },
         }}
+      />
+      <CippApiDialog
+        createDialog={quotaDialog}
+        title={`Increase Storage Quota${actionSite ? ` — ${actionSite.displayName}` : ""}`}
+        fields={[
+          { type: "textField", name: "StorageMaximumLevelGB", label: "Maximum Storage (GB)", required: true },
+          { type: "textField", name: "StorageWarningLevelGB", label: "Warning Level (GB, optional — defaults to 90% of max)" },
+        ]}
+        defaultvalues={suggestedQuota}
+        api={{
+          type: "POST",
+          url: "/api/ExecSetSiteProperty",
+          data: {
+            SiteId: actionSite?.siteId,
+            DisplayName: actionSite?.displayName,
+            tenantFilter: currentTenant,
+          },
+          confirmText: `Set a new storage quota for '${actionSite?.displayName ?? "this site"}'. Values are in GB. The suggested value is 25% above the current allocation. Note: per-site limits only apply when the tenant uses manual site storage limits.`,
+          relatedQueryKeys: [`${currentTenant}-SPDashboard-SiteUsage`],
+        }}
+        row={actionSite ?? {}}
+      />
+      <CippApiDialog
+        createDialog={cleanupDialog}
+        title={`Version Cleanup${actionSite ? ` — ${actionSite.displayName}` : ""}`}
+        fields={[]}
+        api={{
+          type: "POST",
+          url: "/api/ExecSPOVersionCleanup",
+          data: {
+            SiteUrl: actionSite?.webUrl,
+            tenantFilter: currentTenant,
+            BatchDeleteMode: 2,
+            DeleteOlderThanDays: -1,
+            MajorVersionLimit: -1,
+            MajorWithMinorVersionsLimit: -1,
+          },
+          confirmText: `Start a file version cleanup job for '${actionSite?.displayName ?? "this site"}' using the site's version policy (Sync Policy mode). For other cleanup modes, use the action on the Sites page.`,
+        }}
+        row={actionSite ?? {}}
       />
     </>
   );
