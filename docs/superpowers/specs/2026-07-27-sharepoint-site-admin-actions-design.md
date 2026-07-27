@@ -61,11 +61,11 @@ Two new actions via the existing Admin REST PATCH `SPO.Tenant/sites('{id}')` (de
 | `Invoke-ExecSiteRename` | Change title and/or URL. Title-only → existing property PATCH; URL change → `SiteRenameJobs` Admin REST job with status reporting. | Admin REST, delegated |
 | `Invoke-ListHubSites` | List hub sites for the picker. | Admin/site REST |
 | `Invoke-ExecHubSiteAssociation` | Join a hub (`JoinHubSite`) or disconnect (empty GUID). | Site REST |
-| `Invoke-ExecNotifySiteOwner` | Email the owner a templated notice (storage critical / inactivity / custom) with current usage numbers, via Graph `sendMail`. | Graph, app-only |
+| `Invoke-ExecNotifySiteOwner` | Email the owner a templated notice (storage critical / inactivity / custom) with current usage numbers, sent from the CIPP notification mailbox via partner-tenant `me/sendMail` (same mechanism as `Send-CIPPAlert`). | Graph, partner-tenant delegated |
 
 Frontend actions: **Rename Site**, **Hub Association** (hub picker + disconnect option), **Notify Owner** (site-details + dashboard alert rows).
 
-Permissions: verify Graph `Mail.Send` (Role) in `SAMManifest.json`; add if missing and note CPV refresh requirement. Exact SPO REST endpoint versions pinned during implementation planning.
+Permissions: no SAM manifest changes required — `me/sendMail` on the partner tenant is already whitelisted in `Get-AuthorisedRequest` and used by `Send-CIPPAlert`. Exact SPO REST endpoint versions pinned in the implementation plan.
 
 ### 6. Error handling and units
 
