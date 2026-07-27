@@ -38,6 +38,7 @@ import {
   DataUsage,
   CleaningServices,
   Launch,
+  Send,
 } from "@mui/icons-material";
 import { useSettings } from "../../../hooks/use-settings";
 import { ApiGetCall } from "../../../api/ApiCall.jsx";
@@ -184,6 +185,7 @@ const Page = () => {
   const [actionSite, setActionSite] = useState(null);
   const quotaDialog = useDialog();
   const cleanupDialog = useDialog();
+  const notifyDialog = useDialog();
 
   const openSiteDialog = (site, dialog) => {
     setActionSite(site);
@@ -530,6 +532,13 @@ const Page = () => {
                                       <CleaningServices fontSize="small" />
                                     </IconButton>
                                   </Tooltip>
+                                  {site.ownerPrincipalName && (
+                                    <Tooltip title="Notify site owner">
+                                      <IconButton size="small" onClick={() => openSiteDialog(site, notifyDialog)}>
+                                        <Send fontSize="small" />
+                                      </IconButton>
+                                    </Tooltip>
+                                  )}
                                   <Tooltip title="View site details">
                                     <IconButton size="small" component={Link} href={siteDetailsHref(site)}>
                                       <Launch fontSize="small" />
@@ -858,6 +867,26 @@ const Page = () => {
             MajorWithMinorVersionsLimit: -1,
           },
           confirmText: `Start a file version cleanup job for '${actionSite?.displayName ?? "this site"}' using the site's version policy (Sync Policy mode). For other cleanup modes, use the action on the Sites page.`,
+        }}
+        row={actionSite ?? {}}
+      />
+      <CippApiDialog
+        createDialog={notifyDialog}
+        title={`Notify Owner${actionSite ? ` — ${actionSite.displayName}` : ""}`}
+        fields={[]}
+        api={{
+          type: "POST",
+          url: "/api/ExecNotifySiteOwner",
+          data: {
+            tenantFilter: currentTenant,
+            DisplayName: actionSite?.displayName,
+            SiteUrl: actionSite?.webUrl,
+            OwnerEmail: actionSite?.ownerPrincipalName,
+            Type: "StorageCritical",
+            StorageUsedGB: actionSite?.storageUsedInGigabytes,
+            StorageAllocatedGB: actionSite?.storageAllocatedInGigabytes,
+          },
+          confirmText: `Send a storage-critical notification email to ${actionSite?.ownerPrincipalName ?? "the site owner"} from the CIPP notification mailbox?`,
         }}
         row={actionSite ?? {}}
       />

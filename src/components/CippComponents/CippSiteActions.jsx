@@ -18,6 +18,7 @@ import {
   PersonRemove,
   QueryStats,
   RestoreFromTrash,
+  Send,
   Settings,
   Share,
 } from "@mui/icons-material";
@@ -617,6 +618,44 @@ export const useCippSiteActions = () => {
         multiPost: false,
         category: "view",
         quickAction: true,
+      },
+      {
+        label: "Notify Site Owner",
+        type: "POST",
+        icon: <Send />,
+        url: "/api/ExecNotifySiteOwner",
+        data: {
+          DisplayName: "displayName",
+          SiteUrl: "webUrl",
+          OwnerEmail: "ownerPrincipalName",
+          StorageUsedGB: "storageUsedInGigabytes",
+          StorageAllocatedGB: "storageAllocatedInGigabytes",
+        },
+        confirmText:
+          "Send a notification email to the owner of '[displayName]' ([ownerPrincipalName]) from the CIPP notification mailbox.",
+        fields: [
+          {
+            type: "radio",
+            name: "Type",
+            label: "Notification Type",
+            options: [
+              { label: "Storage critical — ask owner to clean up", value: "StorageCritical" },
+              { label: "Inactivity — ask if the site is still needed", value: "Inactivity" },
+              { label: "Custom message", value: "Custom" },
+            ],
+          },
+          {
+            type: "textField",
+            name: "CustomMessage",
+            label: "Custom Message (required for Custom type)",
+            multiline: true,
+            rows: 4,
+          },
+        ],
+        defaultvalues: { Type: "StorageCritical" },
+        condition: (row) => !!row.ownerPrincipalName,
+        multiPost: false,
+        category: "edit",
       },
       {
         label: "Create Team from Site",
