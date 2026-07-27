@@ -498,6 +498,7 @@ const Page = () => {
         />
       ),
       multiPost: false,
+      hideBulk: true,
     },
     {
       // Answers "does this person have access, and how" rather than "who holds permissions".
