@@ -56,8 +56,8 @@
     "@uiw/react-json-view": "^2.0.0-alpha.41",
     "@vvo/tzdb": "^6.198.0",
     "apexcharts": "5.16.0",
-    "axios": "1.16.1",
-    "dompurify": "^3.4.11",
+    "axios": "1.18.1",
+    "dompurify": "^3.4.12",
     "date-fns": "4.1.0",
     "diff": "^8.0.3",
     "eml-parse-js": "^1.2.0-beta.0",
@@ -75,7 +75,7 @@
     "material-react-table": "^3.0.1",
     "monaco-editor": "^0.55.1",
     "mui-tiptap": "^1.31.0",
-    "next": "^16.2.2",
+    "next": "^16.2.12",
     "nprogress": "0.2.0",
     "numeral": "2.0.6",
     "prop-types": "15.8.1",
@@ -116,12 +116,46 @@
     "yup": "1.7.1"
   },
   "resolutions": {
-    "dompurify": "^3.4.11",
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-modules-systemjs": "^7.29.7",
+    "brace-expansion": "^5.0.7",
+    "dompurify": "^3.4.12",
     "form-data": "^4.0.6",
-    "js-yaml": "^4.1.1",
-    "markdown-it": "^14.1.1",
+    "js-yaml": "^4.2.0",
+    "linkify-it": "^5.0.2",
+    "lodash": "^4.18.1",
+    "lodash-es": "^4.18.1",
+    "markdown-it": "^14.3.0",
+    "micromatch/picomatch": "^2.3.2",
     "minimatch": "^10.2.5",
-    "postcss": "^8.5.10"
+    "picomatch": "^4.0.5",
+    "postcss": "^8.5.10",
+    "sharp": "^0.35.3",
+    "svgo": "^3.3.4",
+    "cosmiconfig/yaml": "^1.10.3"
+  },
+  "overrides": {
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-modules-systemjs": "^7.29.7",
+    "brace-expansion": "^5.0.7",
+    "dompurify": "$dompurify",
+    "form-data": "^4.0.6",
+    "js-yaml": "^4.2.0",
+    "linkify-it": "^5.0.2",
+    "lodash": "^4.18.1",
+    "lodash-es": "^4.18.1",
+    "markdown-it": "^14.3.0",
+    "micromatch": {
+      "picomatch": "^2.3.2"
+    },
+    "minimatch": "^10.2.5",
+    "picomatch": "^4.0.5",
+    "postcss": "^8.5.10",
+    "sharp": "^0.35.3",
+    "svgo": "^3.3.4",
+    "cosmiconfig": {
+      "yaml": "^1.10.3"
+    }
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
