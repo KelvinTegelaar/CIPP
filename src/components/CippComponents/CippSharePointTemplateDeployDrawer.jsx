@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { RocketLaunch } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
@@ -9,8 +9,9 @@ import { CippFormTenantSelector } from "./CippFormTenantSelector";
 import { CippApiResults } from "./CippApiResults";
 import { ApiPostCall } from "../../api/ApiCall";
 
-// Deploy an existing SharePoint provisioning template to one or more tenants. Live progress
-// is rendered by CippApiResults via its jobProgress option.
+// Deploy an existing SharePoint provisioning template to one tenant. Live progress is
+// rendered by CippApiResults via its jobProgress option. Tenant is singular because the
+// Site/Team Owner picker is tied to a single tenant context.
 export const CippSharePointTemplateDeployDrawer = ({
   buttonText = "Deploy Template",
   requiredPermissions = [],
@@ -19,8 +20,19 @@ export const CippSharePointTemplateDeployDrawer = ({
   const [drawerVisible, setDrawerVisible] = useState(false);
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: { template: null, siteOwner: null, selectedTenants: [] },
+    defaultValues: { template: null, siteOwner: null, tenantFilter: null },
   });
+  const tenantFilter = useWatch({ control: formControl.control, name: "tenantFilter" });
+  const tenantFilterValue = tenantFilter?.value;
+
+  // Owner is tenant-scoped — clear it whenever the deploy target changes.
+  useEffect(() => {
+    formControl.setValue("siteOwner", null, {
+      shouldDirty: false,
+      shouldTouch: false,
+      shouldValidate: false,
+    });
+  }, [tenantFilterValue, formControl]);
 
   const deployTemplate = ApiPostCall({
     relatedQueryKeys: ["ListSharePointTemplates"],
@@ -33,10 +45,7 @@ export const CippSharePointTemplateDeployDrawer = ({
       data: {
         TemplateId: values.template?.value,
         SiteOwner: values.siteOwner?.value ?? values.siteOwner,
-        selectedTenants: (values.selectedTenants || []).map((tenant) => ({
-          defaultDomainName: tenant.value,
-          customerId: tenant.addedFields?.customerId,
-        })),
+        tenantFilter: values.tenantFilter?.value,
       },
     });
   };
@@ -101,13 +110,12 @@ export const CippSharePointTemplateDeployDrawer = ({
           </Grid>
           <Grid size={{ xs: 12 }}>
             <CippFormTenantSelector
-              label="Select Tenants"
+              label="Select Tenant"
               formControl={formControl}
-              name="selectedTenants"
-              type="multiple"
-              allTenants={true}
+              type="single"
+              allTenants={false}
               preselectedEnabled={true}
-              validators={{ required: "At least one tenant must be selected" }}
+              validators={{ required: "Please select a tenant" }}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
@@ -117,12 +125,12 @@ export const CippSharePointTemplateDeployDrawer = ({
               label="Site / Team Owner"
               formControl={formControl}
               multiple={false}
+              disabled={!tenantFilterValue}
               validators={{ required: "An owner is required to create sites and teams" }}
-              helperText="Set as the owner of every site or Team this template creates. The owner must have a license."
+              helperText="Set as the owner of every site or Team this template creates. The owner must have a license in the selected tenant."
               api={{
                 url: "/api/ListGraphRequest",
-                // CippAutocomplete appends the current tenant to this key, so switching
-                // tenants refetches the list.
+                tenantFilter: tenantFilterValue,
                 queryKey: "SPTemplateDeployOwner",
                 data: {
                   Endpoint: "users",
