@@ -258,7 +258,12 @@ const Page = () => {
       const menuItems = filteredPortals.map((portal) => ({
         label: portal.label,
         target: "_blank",
-        link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+        // A portal with a `field` has a URL the backend resolved for us (SharePoint's host cannot be
+        // derived from the tenant). Use it when it's there, otherwise fall back to the templated URL.
+        link:
+          portal.field && tenantLookup?.[portal.field]
+            ? tenantLookup[portal.field]
+            : portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
         icon: portal.icon,
       }));
       setPortalMenuItems(menuItems);

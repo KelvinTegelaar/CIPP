@@ -14,17 +14,21 @@ export const CippTenantResults = (props) => {
             actions={[]}
             simpleColumns={[
               "TenantName",
+              "TenantType",
               "LastRun",
               "GraphStatus",
               "ExchangeStatus",
               "MissingRoles",
-              "GDAPRoles",
+              "AssignedRoles",
             ]}
             offCanvas={{
               extendedInfoFields: [
                 "TenantName",
                 "TenantId",
+                "TenantType",
                 "DefaultDomainName",
+                "ServiceAccount",
+                "ServiceAccountLastAuth",
                 "LastRun",
                 "GraphTest",
                 "ExchangeTest",
@@ -69,17 +73,22 @@ export const CippTenantResults = (props) => {
           ]}
           simpleColumns={[
             "TenantName",
+            "TenantType",
+            "ServiceAccount",
             "LastRun",
             "GraphStatus",
             "ExchangeStatus",
             "MissingRoles",
-            "GDAPRoles",
+            "AssignedRoles",
           ]}
           offCanvas={{
             extendedInfoFields: [
               "TenantName",
               "TenantId",
+              "TenantType",
               "DefaultDomainName",
+              "ServiceAccount",
+              "ServiceAccountLastAuth",
               "LastRun",
               "GraphTest",
               "ExchangeTest",

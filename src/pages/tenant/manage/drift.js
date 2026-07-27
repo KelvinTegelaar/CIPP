@@ -14,6 +14,7 @@ import {
   FactCheck,
   Search,
   Edit,
+  CompareArrows,
 } from '@mui/icons-material'
 import {
   Box,
@@ -44,6 +45,7 @@ import { createDriftManagementActions } from './driftManagementActions'
 import { ExecutiveReportButton } from '../../../components/ExecutiveReportButton'
 import { CippAutoComplete } from '../../../components/CippComponents/CippAutocomplete'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
+import { CippPolicyCompareDialog } from '../../../components/CippComponents/CippPolicyCompareDialog'
 
 const ManageDriftPage = () => {
   const router = useRouter()
@@ -60,6 +62,7 @@ const ManageDriftPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('name')
   const [selectedItems, setSelectedItems] = useState([])
+  const [compareTarget, setCompareTarget] = useState(null)
 
   const filterForm = useForm({
     defaultValues: {
@@ -1466,101 +1469,80 @@ const ManageDriftPage = () => {
     setSelectedItems([])
   }, [tenantFilter])
 
-  // Add action buttons to each deviation item
-  const deviationItemsWithActions = actualDeviationItems.map((item) => {
-    return {
-      ...item,
-      cardLabelBoxActions: (
+  // Only Intune template standards can be compared live against their baseline. The standard
+  // records compliance as a boolean and discards the diff, so it has to be recomputed on demand.
+  // Note the singular prefix: "IntuneTemplates.<policyId>" is a tenant-only policy, which has no
+  // baseline in the template and so nothing to compare against.
+  const getCompareTemplateGuid = (item) => {
+    const name = item?.standardName
+    if (!name) return null
+    const withoutPrefix = name.startsWith('standards.') ? name.substring('standards.'.length) : name
+    return withoutPrefix.startsWith('IntuneTemplate.')
+      ? withoutPrefix.substring('IntuneTemplate.'.length)
+      : null
+  }
+
+  const buildCardActions = (item, menuKey) => {
+    const templateGuid = getCompareTemplateGuid(item)
+    return (
+      <Stack direction="row" spacing={1}>
+        {templateGuid && (
+          <Button
+            variant="outlined"
+            startIcon={<CompareArrows />}
+            onClick={(e) => {
+              e.stopPropagation()
+              setCompareTarget({ templateGuid, templateName: item.text })
+            }}
+            size="small"
+          >
+            Compare
+          </Button>
+        )}
         <Button
           variant="outlined"
           endIcon={<ExpandMore />}
           onClick={(e) => {
             e.stopPropagation()
-            handleMenuClick(e, item.id)
+            handleMenuClick(e, menuKey)
           }}
           size="small"
         >
           Actions
         </Button>
-      ),
-    }
-  })
+      </Stack>
+    )
+  }
+
+  // Add action buttons to each deviation item
+  const deviationItemsWithActions = actualDeviationItems.map((item) => ({
+    ...item,
+    cardLabelBoxActions: buildCardActions(item, item.id),
+  }))
 
   // Add action buttons to accepted deviation items
-  const acceptedDeviationItemsWithActions = acceptedDeviationItems.map((item) => {
-    return {
-      ...item,
-      cardLabelBoxActions: (
-        <Button
-          variant="outlined"
-          endIcon={<ExpandMore />}
-          onClick={(e) => {
-            e.stopPropagation()
-            handleMenuClick(e, `accepted-${item.id}`)
-          }}
-          size="small"
-        >
-          Actions
-        </Button>
-      ),
-    }
-  })
+  const acceptedDeviationItemsWithActions = acceptedDeviationItems.map((item) => ({
+    ...item,
+    cardLabelBoxActions: buildCardActions(item, `accepted-${item.id}`),
+  }))
 
   // Add action buttons to customer specific deviation items
-  const customerSpecificDeviationItemsWithActions = customerSpecificDeviationItems.map((item) => {
-    return {
-      ...item,
-      cardLabelBoxActions: (
-        <Button
-          variant="outlined"
-          endIcon={<ExpandMore />}
-          onClick={(e) => {
-            e.stopPropagation()
-            handleMenuClick(e, `customer-${item.id}`)
-          }}
-          size="small"
-        >
-          Actions
-        </Button>
-      ),
-    }
-  })
+  const customerSpecificDeviationItemsWithActions = customerSpecificDeviationItems.map((item) => ({
+    ...item,
+    cardLabelBoxActions: buildCardActions(item, `customer-${item.id}`),
+  }))
 
   // Add action buttons to denied deviation items
   const deniedDeviationItemsWithActions = deniedDeviationItems.map((item) => ({
     ...item,
-    cardLabelBoxActions: (
-      <Button
-        variant="outlined"
-        endIcon={<ExpandMore />}
-        onClick={(e) => {
-          e.stopPropagation()
-          handleMenuClick(e, `denied-${item.id}`)
-        }}
-        size="small"
-      >
-        Actions
-      </Button>
-    ),
+    cardLabelBoxActions: buildCardActions(item, `denied-${item.id}`),
   }))
 
   // Add action buttons to compliant/aligned items so previously denied and now compliant entries
   // can be denied again or denied with remediation persistence.
   const alignedItemsWithActions = allAlignedItems.map((item) => ({
     ...item,
-    cardLabelBoxActions: (
-      <Button
-        variant="outlined"
-        endIcon={<ExpandMore />}
-        onClick={(e) => {
-          e.stopPropagation()
-          handleMenuClick(e, `aligned-${item.id}`)
-        }}
-        size="small"
-      >
-        Actions
-      </Button>
-    ),
+    cardLabelBoxActions: buildCardActions(item, `aligned-${item.id}`),
   }))
 
   // Combined list used to resolve selected item IDs back to their deviation data
@@ -2164,6 +2146,15 @@ const ManageDriftPage = () => {
           relatedQueryKeys={[`TenantDrift-${tenantFilter}`, `PersistentDriftTasks-${tenantFilter}`]}
         />
       )}
+
+      <CippPolicyCompareDialog
+        open={Boolean(compareTarget)}
+        onClose={() => setCompareTarget(null)}
+        tenantFilter={tenantFilter}
+        templateGuid={compareTarget?.templateGuid}
+        templateName={compareTarget?.templateName}
+        standardsTemplateId={templateId}
+      />
 
       {/* Render all Menu components outside of card structure */}
       {deviationItemsWithActions.map((item) => {
