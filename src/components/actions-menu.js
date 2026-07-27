@@ -242,4 +242,5 @@ export const ActionsMenu = (props) => {
 ActionsMenu.propTypes = {
   actions: PropTypes.array,
   label: PropTypes.string,
+  queryKeys: PropTypes.array,
 };

@@ -253,6 +253,8 @@ const Page = () => {
             "Add Member",
             "Add Site Admin",
             "Create Team from Site",
+            "Set Storage Quota",
+            "Start Version Cleanup Job",
           ].includes(a.label)
       ),
     [siteActions]
