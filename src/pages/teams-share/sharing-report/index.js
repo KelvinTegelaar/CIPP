@@ -172,6 +172,7 @@ const Page = () => {
   const linkActions = [
     {
       label: 'Revoke Sharing Link',
+      category: "danger",
       type: 'POST',
       url: '/api/ExecRemoveSharingLink',
       icon: (
@@ -194,6 +195,7 @@ const Page = () => {
     },
     {
       label: 'Open File',
+      category: "view",
       link: '[itemUrl]',
       external: true,
       target: '_blank',

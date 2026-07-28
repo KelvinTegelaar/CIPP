@@ -18,6 +18,7 @@ import {
   GroupSharp,
   GroupAdd,
   PersonAdd,
+  PersonRemove,
   ContactMail,
 } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
@@ -39,6 +40,7 @@ import { CippApiDialog } from "../../../../../components/CippComponents/CippApiD
 import { useDialog } from "../../../../../hooks/use-dialog";
 import CippAliasDialog from "../../../../../components/CippComponents/CippAliasDialog";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
+import { groupSupportsContacts, isUnifiedGroup } from "../../../../../utils/group-types";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -215,8 +217,7 @@ const Page = () => {
     : null;
 
   const effectiveTenantFilter = router.query.tenantFilter ?? userSettingsDefaults.currentTenant;
-  const supportsContacts =
-    calculatedGroupType === "distribution" || calculatedGroupType === "mailenabledsecurity";
+  const supportsContacts = groupSupportsContacts(data);
 
   // --- Add Member / Add Contact ---
   const addMemberDialog = useDialog();
@@ -276,6 +277,64 @@ const Page = () => {
     },
   ];
 
+  const removeMemberPickerFields = [
+    {
+      type: "autoComplete",
+      name: "RemoveMemberID",
+      label: "Select Member",
+      multiple: false,
+      creatable: false,
+      validators: { required: "Please select a member to remove" },
+      api: {
+        url: "/api/ListGraphRequest",
+        // No $select: /members is a heterogeneous directoryObject collection,
+        // so Graph rejects selecting derived-type properties like userPrincipalName
+        data: {
+          Endpoint: "groups/[id]/members",
+          $top: 999,
+        },
+        queryKey: "ListGroupMembers",
+        dataKey: "Results",
+        labelField: (member) =>
+          member.userPrincipalName
+            ? `${member.displayName} (${member.userPrincipalName})`
+            : member.displayName,
+        valueField: "id",
+        addedField: {
+          id: "id",
+          userPrincipalName: "userPrincipalName",
+          displayName: "displayName",
+        },
+        showRefresh: true,
+      },
+    },
+  ];
+
+  const removeContactPickerFields = [
+    {
+      type: "autoComplete",
+      name: "RemoveContactID",
+      label: "Select Contact",
+      multiple: false,
+      creatable: false,
+      validators: { required: "Please select a contact to remove" },
+      api: {
+        url: "/api/ListGraphRequest",
+        data: {
+          Endpoint: "groups/[id]/members/microsoft.graph.orgContact",
+          $top: 999,
+          $select: "id,displayName,mail",
+        },
+        queryKey: "ListGroupContacts",
+        dataKey: "Results",
+        labelField: (contact) => `${contact.displayName} (${contact.mail})`,
+        valueField: "mail",
+        addedField: { id: "id", displayName: "displayName" },
+        showRefresh: true,
+      },
+    },
+  ];
+
   const addMemberApiConfig = {
     type: "POST",
     url: "/api/EditGroup",
@@ -314,6 +373,56 @@ const Page = () => {
       groupName: row.displayName,
     }),
     confirmText: "Select a contact to add to '[displayName]'.",
+    onSuccess: () => refreshFunction(),
+  };
+
+  const removeMemberApiConfig = {
+    type: "POST",
+    url: "/api/EditGroup",
+    customDataformatter: (row, action, formData) => {
+      const member = formData.RemoveMemberID;
+      return {
+        RemoveMember: [
+          {
+            label: member?.label,
+            value: member?.addedFields?.id ?? member?.value,
+            addedFields: {
+              id: member?.addedFields?.id,
+              userPrincipalName: member?.addedFields?.userPrincipalName,
+              displayName: member?.addedFields?.displayName,
+            },
+          },
+        ],
+        tenantFilter: effectiveTenantFilter,
+        groupId: row.id,
+        groupType: row.groupType,
+        groupName: row.displayName,
+      };
+    },
+    confirmText: "Select the member to remove from '[displayName]'.",
+    onSuccess: () => refreshFunction(),
+  };
+
+  const removeContactApiConfig = {
+    type: "POST",
+    url: "/api/EditGroup",
+    customDataformatter: (row, action, formData) => {
+      const contact = formData.RemoveContactID;
+      return {
+        RemoveContact: [
+          {
+            label: contact?.label,
+            value: contact?.value,
+            addedFields: { id: contact?.addedFields?.id },
+          },
+        ],
+        tenantFilter: effectiveTenantFilter,
+        groupId: row.id,
+        groupType: row.groupType,
+        groupName: row.displayName,
+      };
+    },
+    confirmText: "Select the contact to remove from '[displayName]'.",
     onSuccess: () => refreshFunction(),
   };
 
@@ -370,9 +479,28 @@ const Page = () => {
         multiPost: false,
         category: "edit",
         showInActionsMenu: true,
-        condition: (row) =>
-          row?.calculatedGroupType === "distribution" ||
-          row?.calculatedGroupType === "mailenabledsecurity",
+        condition: (row) => groupSupportsContacts(row),
+      },
+      {
+        label: "Remove Member",
+        icon: <PersonRemove />,
+        fields: removeMemberPickerFields,
+        ...removeMemberApiConfig,
+        multiPost: false,
+        color: "error",
+        category: "danger",
+        showInActionsMenu: true,
+      },
+      {
+        label: "Remove Contact",
+        icon: <PersonRemove />,
+        fields: removeContactPickerFields,
+        ...removeContactApiConfig,
+        multiPost: false,
+        color: "error",
+        category: "danger",
+        showInActionsMenu: true,
+        condition: (row) => groupSupportsContacts(row),
       },
       {
         label: "Set Global Address List Visibility",
@@ -635,7 +763,7 @@ const Page = () => {
             label: "Allow custom memes",
           },
         ],
-        condition: (row) => row?.calculatedGroupType === "m365",
+        condition: (row) => isUnifiedGroup(row),
         category: "manage",
       },
       {
@@ -650,7 +778,7 @@ const Page = () => {
         },
         confirmText: "Are you sure you want to delete this group.",
         multiPost: false,
-        color: "danger",
+        color: "error",
         category: "danger",
       },
     ];
@@ -946,7 +1074,7 @@ const Page = () => {
                 {
                   icon: <PencilIcon />,
                   label: "Edit Group",
-                  link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
+                  link: "/identity/administration/groups/edit?groupId=[id]&groupType=[groupType]",
                   condition: (row) => row["@odata.type"] === "#microsoft.graph.group",
                   category: "edit",
                 },

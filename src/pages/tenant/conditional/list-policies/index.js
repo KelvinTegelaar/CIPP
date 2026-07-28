@@ -148,7 +148,7 @@ const Page = () => {
       },
       confirmText: `Are you sure you want to delete "[displayName]"?`,
       icon: <Delete />,
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

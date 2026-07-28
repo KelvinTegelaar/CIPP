@@ -18,6 +18,7 @@ const Page = () => {
   const actions = [
     {
       label: 'Remove Guest Access',
+      category: "danger",
       type: 'POST',
       icon: <NoAccounts />,
       url: '/api/ExecRemoveSPOExternalUser',

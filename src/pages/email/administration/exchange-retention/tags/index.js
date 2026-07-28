@@ -30,7 +30,7 @@ const Page = () => {
         url: "/api/ExecManageRetentionTags",
         confirmText:
           "Are you sure you want to delete retention tag [Name]? This action cannot be undone and may affect retention policies that use this tag.",
-        color: "danger",
+        color: "error",
         icon: <TrashIcon />,
         customDataformatter: (rows) => {
           const tags = Array.isArray(rows) ? rows : [rows];

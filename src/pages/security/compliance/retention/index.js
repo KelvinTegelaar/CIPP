@@ -58,7 +58,7 @@ const Page = () => {
         Identity: "Name",
       },
       confirmText: "Are you sure you want to delete this retention policy?",
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

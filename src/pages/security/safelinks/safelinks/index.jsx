@@ -112,7 +112,7 @@ const Page = () => {
           PolicyName: "PolicyName",
         },
         confirmText: "Are you sure you want to delete this policy and rule?",
-        color: "danger",
+        color: "error",
         condition: (row) => !row.IsBuiltInProtection && !row.PolicyName.startsWith("Standard Preset Security Policy") && !row.PolicyName.startsWith("Strict Preset Security Policy")&& row.PolicyName !== "Built-In Protection Policy",
         category: "danger",
       }

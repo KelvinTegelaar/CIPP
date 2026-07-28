@@ -37,6 +37,7 @@ const Page = () => {
     /*
     {
       label: "Delete Rule",
+      category: "danger",
       type: "POST",
       url: "/api/RemoveAntiPhishingFilter",
       data: {

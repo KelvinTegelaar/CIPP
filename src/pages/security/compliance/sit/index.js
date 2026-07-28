@@ -33,7 +33,7 @@ const Page = () => {
       },
       confirmText:
         "Are you sure you want to delete this Sensitive Information Type? Built-in Microsoft types cannot be deleted.",
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

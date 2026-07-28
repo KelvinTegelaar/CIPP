@@ -17,7 +17,7 @@ const Page = () => {
         ListType: "ListType",
       },
       confirmText: "Are you sure you want to delete this entry?",
-      color: "danger",
+      color: "error",
       icon: <Delete />,
       category: "danger",
     },

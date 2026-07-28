@@ -29,6 +29,7 @@ const Page = () => {
   const byMailboxActions = [
     {
       label: 'Bulk Remove Mailbox Permissions',
+      category: "danger",
       type: 'POST',
       url: '/api/ExecModifyMBPerms',
       icon: <Delete />,
@@ -88,6 +89,7 @@ const Page = () => {
   const byUserActions = [
     {
       label: 'Bulk Remove Mailbox Permissions',
+      category: "danger",
       type: 'POST',
       url: '/api/ExecModifyMBPerms',
       icon: <Delete />,

@@ -45,7 +45,7 @@ const Page = () => {
         Action: "!Remove",
       },
       confirmText: "Are you sure you want to remove this restore request?",
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

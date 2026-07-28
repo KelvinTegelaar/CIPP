@@ -10,12 +10,14 @@ export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = []
   return [
     {
       label: "View Task Details",
+      category: "view",
       link: "/cipp/scheduler/task?id=[RowKey]",
       icon: <EyeIcon />,
       condition: () => canReadScheduler,
     },
     {
       label: "Run Now",
+      category: "manage",
       type: "POST",
       url: "/api/AddScheduledItem",
       data: { RowKey: "RowKey", RunNow: true },
@@ -66,6 +68,7 @@ export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = []
     },
     {
       label: "Delete Job",
+      category: "danger",
       icon: <TrashIcon />,
       type: "POST",
       url: "/api/RemoveScheduledItem",

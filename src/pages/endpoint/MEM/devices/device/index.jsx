@@ -31,6 +31,7 @@ import { CippDataTable } from "../../../../../components/CippTable/CippDataTable
 import { CippHead } from "../../../../../components/CippComponents/CippHead";
 import { Button } from "@mui/material";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
+import { getGroupTypeLabel } from "../../../../../utils/group-types";
 import { PencilIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { getIntuneDeviceActions } from "../../../../../components/CippComponents/CippIntuneDeviceActions.jsx";
 
@@ -434,13 +435,14 @@ const Page = () => {
               {
                 icon: <PencilIcon />,
                 label: "Edit Group",
-                link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
+                link: "/identity/administration/groups/edit?groupId=[id]&groupType=[groupType]",
                 category: "edit",
               },
             ],
-            data: deviceMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.group",
-            ),
+            // Raw Graph groups have no groupType field, but the edit page needs the label
+            data: deviceMemberOf
+              ?.filter((item) => item?.["@odata.type"] === "#microsoft.graph.group")
+              .map((group) => ({ ...group, groupType: getGroupTypeLabel(group) })),
             refreshFunction: refreshFunction,
             simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
           },

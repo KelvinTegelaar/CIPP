@@ -18,6 +18,7 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { getSafeInternalRoute, openSafeExternalUrl } from "../../utils/safe-navigation";
+import { isDangerAction } from "../../utils/action-categories";
 import { useForm, useFormState } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
@@ -323,15 +324,19 @@ export const CippApiDialog = (props) => {
       !linkOpenedRef.current
     ) {
       linkOpenedRef.current = true;
-      const linkWithData = api.link.replace(
-        /\[([^\]]+)\]/g,
-        (_, key) => getRawNestedValue(row, key) || `[${key}]`,
-      );
+      // Values are URL encoded on the way in: group types and display names
+      // contain spaces, which getSafeInternalRoute rejects as unsafe.
+      const linkWithData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
+        const value = getRawNestedValue(row, key);
+        return value || value === 0 ? encodeURIComponent(value) : `[${key}]`;
+      });
       const safeRoute = getSafeInternalRoute(linkWithData);
       if (safeRoute && !api?.external) {
         router.push(safeRoute, undefined, { shallow: true });
       } else if (api?.external || linkWithData.startsWith("//")) {
         openSafeExternalUrl(linkWithData, api.target || "_blank");
+      } else {
+        console.warn(`Refusing to navigate to unsafe or unresolved link: ${linkWithData}`);
       }
       createDialog.handleClose();
     }
@@ -395,7 +400,9 @@ export const CippApiDialog = (props) => {
   }
 
   const theme = useTheme();
-  const isDanger = api?.color === "error";
+  // Destructive actions are marked with category "danger" and/or colour
+  // "danger"/"error" depending on the page, so accept any of them here
+  const isDanger = isDangerAction(api);
 
   return (
     <>

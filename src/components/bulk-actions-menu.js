@@ -3,34 +3,15 @@ import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { Button, Divider, Link, ListItemText, ListSubheader, Menu, MenuItem, SvgIcon, Box, alpha } from "@mui/material";
 import { useMemo } from "react";
 import { usePopover } from "../hooks/use-popover";
-import {
-  Visibility,
-  Edit,
-  Security,
-  Settings,
-  Warning,
-  Circle,
-} from "@mui/icons-material";
 import { resolvePaletteMainColor } from "../theme/utils";
 import { getIconByName } from "../utils/icon-registry";
-
-// Get icon for category
-const getCategoryIcon = (category) => {
-  switch (category.toLowerCase()) {
-    case "view":
-      return <Visibility sx={{ fontSize: 14 }} />;
-    case "edit":
-      return <Edit sx={{ fontSize: 14 }} />;
-    case "security":
-      return <Security sx={{ fontSize: 14 }} />;
-    case "manage":
-      return <Settings sx={{ fontSize: 14 }} />;
-    case "danger":
-      return <Warning sx={{ fontSize: 14 }} />;
-    default:
-      return <Circle sx={{ fontSize: 8 }} />;
-  }
-};
+import {
+  getActionColor,
+  getCategoryColor,
+  getCategoryIcon,
+  getCategoryLabel,
+  sortCategoryEntries,
+} from "../utils/action-categories";
 
 export const BulkActionsMenu = (props) => {
   const { buttonName, sx, row, actions = [], ...other } = props;
@@ -47,35 +28,8 @@ export const BulkActionsMenu = (props) => {
       acc[category].push(action);
       return acc;
     }, {});
-    return Object.entries(grouped);
+    return sortCategoryEntries(Object.entries(grouped));
   }, [actions]);
-
-  const getCategoryLabel = (category) =>
-    category
-      .replace(/([a-z])([A-Z])/g, "$1 $2")
-      .replace(/^./, (match) => match.toUpperCase());
-
-  const getCategoryColor = (category) => {
-    switch (category.toLowerCase()) {
-      case "view":
-        return "success";
-      case "edit":
-        return "info";
-      case "security":
-        return "warning";
-      case "manage":
-        return "secondary";
-      case "danger":
-        return "error";
-      default:
-        return "text.secondary";
-    }
-  };
-
-  const getActionColor = (action, category) => {
-    if (action.color) return action.color;
-    return getCategoryColor(category);
-  };
 
   return (
     <>

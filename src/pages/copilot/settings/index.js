@@ -10,6 +10,7 @@ const Page = () => {
   const actions = [
     {
       label: 'Set Status',
+      category: "manage",
       type: 'POST',
       url: '/api/ExecCopilotSettings',
       icon: <Cog6ToothIcon />,
@@ -35,6 +36,7 @@ const Page = () => {
     {
       // Web search is a three-state policy; its values match the config.office.com options
       label: 'Set Status',
+      category: "manage",
       type: 'POST',
       url: '/api/ExecCopilotSettings',
       icon: <Cog6ToothIcon />,

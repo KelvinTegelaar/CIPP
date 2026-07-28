@@ -85,7 +85,7 @@ const Page = () => {
     {
       icon: <Delete />,
       label: "Delete Template",
-      color: "danger",
+      color: "error",
       url: "/api/ExecAppApprovalTemplate",
       data: {
         Action: "Delete",

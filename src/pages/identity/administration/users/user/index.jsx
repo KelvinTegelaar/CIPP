@@ -30,6 +30,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { useCippUserActions } from "../../../../../components/CippComponents/CippUserActions";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
+import { getGroupTypeLabel } from "../../../../../utils/group-types";
 import dynamic from "next/dynamic";
 const CippMap = dynamic(() => import("../../../../../components/CippComponents/CippMap"), {
   ssr: false,
@@ -670,7 +671,10 @@ const Page = () => {
   // Memoize group membership items
   const groupMembershipItems = useMemo(() => {
     if (!userMemberOf) return [];
-    const groups = userMemberOf.filter((item) => item?.["@odata.type"] === "#microsoft.graph.group");
+    // Raw Graph groups have no groupType field, but the edit page needs the label
+    const groups = userMemberOf
+      .filter((item) => item?.["@odata.type"] === "#microsoft.graph.group")
+      .map((group) => ({ ...group, groupType: getGroupTypeLabel(group) }));
     return [
       {
         id: 1,
@@ -688,7 +692,7 @@ const Page = () => {
             {
               icon: <PencilIcon />,
               label: "Edit Group",
-              link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
+              link: "/identity/administration/groups/edit?groupId=[id]&groupType=[groupType]",
               category: "edit",
             },
           ],

@@ -40,13 +40,14 @@ const Page = () => {
     /*
     {
       label: "Delete Rule",
+      category: "danger",
       type: "GET",
       url: "/api/RemoveSafeAttachmentsFilter",
       data: {
         RuleName: "RuleName",
       },
       confirmText: "Are you sure you want to delete this rule?",
-      color: "danger",
+      color: "error",
     },
     */
   ];

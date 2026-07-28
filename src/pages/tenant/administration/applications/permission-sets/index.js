@@ -47,7 +47,7 @@ const Page = () => {
     {
       icon: <Delete />,
       label: "Delete Permission Set",
-      color: "danger",
+      color: "error",
       url: apiUrl,
       data: {
         Action: "Delete",

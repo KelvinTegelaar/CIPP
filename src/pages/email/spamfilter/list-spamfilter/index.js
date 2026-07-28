@@ -79,7 +79,7 @@ const Page = () => {
         name: "Name",
       },
       confirmText: "Are you sure you want to delete this rule?",
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

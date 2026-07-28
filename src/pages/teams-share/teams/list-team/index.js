@@ -66,7 +66,7 @@ const Page = () => {
         label: "Edit Group",
         type: "link",
         icon: <Edit />,
-        link: "/identity/administration/groups/edit?groupId=[id]&groupType=Microsoft 365",
+        link: "/identity/administration/groups/edit?groupId=[id]&groupType=Microsoft%20365",
         category: "edit",
         quickAction: true,
       },

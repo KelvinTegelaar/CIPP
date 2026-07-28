@@ -53,6 +53,7 @@ const Page = () => {
           ? [
               {
                 label: "Close Case",
+                category: "manage",
                 type: "POST",
                 url: "/api/ExecEdiscoveryCase",
                 data: {
@@ -69,6 +70,7 @@ const Page = () => {
           ? [
               {
                 label: "Reopen Case",
+                category: "manage",
                 type: "POST",
                 url: "/api/ExecEdiscoveryCase",
                 data: {

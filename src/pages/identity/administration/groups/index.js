@@ -23,10 +23,17 @@ import {
   DynamicFeed,
   Description,
   ContactMail,
+  PersonRemove,
 } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { useState } from "react";
 import { useSettings } from "../../../../hooks/use-settings";
+import {
+  GROUP_TYPES,
+  groupSupportsContacts,
+  isUnifiedGroup,
+  resolveGroupType,
+} from "../../../../utils/group-types";
 
 const Page = () => {
   const pageTitle = "Groups";
@@ -159,9 +166,123 @@ const Page = () => {
       multiPost: false,
       category: "edit",
       quickAction: true,
-      condition: (row) =>
-        row?.calculatedGroupType === "distribution" ||
-        row?.calculatedGroupType === "mailenabledsecurity",
+      condition: (row) => groupSupportsContacts(row),
+    },
+    {
+      label: "Remove Member",
+      type: "POST",
+      icon: <PersonRemove />,
+      url: "/api/EditGroup",
+      customDataformatter: (row, action, formData) => {
+        const member = formData.RemoveMemberID;
+        return {
+          RemoveMember: [
+            {
+              label: member?.label,
+              value: member?.addedFields?.id ?? member?.value,
+              addedFields: {
+                id: member?.addedFields?.id,
+                userPrincipalName: member?.addedFields?.userPrincipalName,
+                displayName: member?.addedFields?.displayName,
+              },
+            },
+          ],
+          tenantFilter: currentTenant,
+          groupId: row.id,
+          groupType: row.groupType,
+          groupName: row.displayName,
+        };
+      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "RemoveMemberID",
+          label: "Select Member",
+          multiple: false,
+          creatable: false,
+          validators: { required: "Please select a member to remove" },
+          api: {
+            url: "/api/ListGraphRequest",
+            // No $select: /members is a heterogeneous directoryObject collection,
+            // so Graph rejects selecting derived-type properties like userPrincipalName
+            data: {
+              Endpoint: "groups/[id]/members",
+              $top: 999,
+            },
+            queryKey: "ListGroupMembers",
+            dataKey: "Results",
+            labelField: (member) =>
+              member.userPrincipalName
+                ? `${member.displayName} (${member.userPrincipalName})`
+                : member.displayName,
+            valueField: "id",
+            addedField: {
+              id: "id",
+              userPrincipalName: "userPrincipalName",
+              displayName: "displayName",
+            },
+            showRefresh: true,
+          },
+        },
+      ],
+      confirmText: "Select the member to remove from '[displayName]'.",
+      multiPost: false,
+      // The member list is specific to one group, so this can't be bulk applied
+      hideBulk: true,
+      color: "error",
+      category: "danger",
+    },
+    {
+      label: "Remove Contact",
+      type: "POST",
+      icon: <PersonRemove />,
+      url: "/api/EditGroup",
+      customDataformatter: (row, action, formData) => {
+        const contact = formData.RemoveContactID;
+        return {
+          RemoveContact: [
+            {
+              label: contact?.label,
+              value: contact?.value,
+              addedFields: { id: contact?.addedFields?.id },
+            },
+          ],
+          tenantFilter: currentTenant,
+          groupId: row.id,
+          groupType: row.groupType,
+          groupName: row.displayName,
+        };
+      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "RemoveContactID",
+          label: "Select Contact",
+          multiple: false,
+          creatable: false,
+          validators: { required: "Please select a contact to remove" },
+          api: {
+            url: "/api/ListGraphRequest",
+            data: {
+              Endpoint: "groups/[id]/members/microsoft.graph.orgContact",
+              $top: 999,
+              $select: "id,displayName,mail",
+            },
+            queryKey: "ListGroupContacts",
+            dataKey: "Results",
+            labelField: (contact) => `${contact.displayName} (${contact.mail})`,
+            valueField: "mail",
+            addedField: { id: "id", displayName: "displayName" },
+            showRefresh: true,
+          },
+        },
+      ],
+      confirmText: "Select the contact to remove from '[displayName]'.",
+      multiPost: false,
+      hideBulk: true,
+      color: "error",
+      category: "danger",
+      condition: (row) => groupSupportsContacts(row),
     },
     {
       label: "Set Global Address List Visibility",
@@ -425,7 +546,7 @@ const Page = () => {
           label: "Allow custom memes",
         },
       ],
-      condition: (row) => row?.calculatedGroupType === "m365",
+      condition: (row) => isUnifiedGroup(row),
     },
     {
       label: "Delete Group",
@@ -439,7 +560,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to delete this group.",
       multiPost: false,
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];
@@ -449,11 +570,10 @@ const Page = () => {
     avatar: {
       field: "displayName",
       icon: (item) => {
-        const gt = item.calculatedGroupType;
-        if (gt === "m365") return <Groups />;
-        if (gt === "security") return <Security />;
-        if (gt === "distribution") return <Mail />;
-        if (gt === "mailenabledsecurity") return <AdminPanelSettings />;
+        const gt = resolveGroupType(item);
+        if (gt === GROUP_TYPES.security) return <Security />;
+        if (gt === GROUP_TYPES.distributionList) return <Mail />;
+        if (gt === GROUP_TYPES.mailEnabledSecurity) return <AdminPanelSettings />;
         return <Groups />;
       },
     },

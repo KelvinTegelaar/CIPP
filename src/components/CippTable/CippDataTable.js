@@ -54,47 +54,14 @@ import { getCippTranslation } from "../../utils/get-cipp-translation";
 import CippUserAvatar from "../CippComponents/CippUserAvatar";
 import { useLicenseBackfill } from "../../hooks/use-license-backfill";
 import { resolvePaletteMainColor } from "../../theme/utils";
+import {
+  getCategoryColor,
+  getCategoryIcon,
+  getCategoryLabel,
+  sortCategoryEntries,
+} from "../../utils/action-categories";
 
 // Helper functions for row action category grouping and styling
-const getCategoryIcon = (category) => {
-  switch (category.toLowerCase()) {
-    case "view":
-      return <Visibility sx={{ fontSize: 14 }} />;
-    case "edit":
-      return <Edit sx={{ fontSize: 14 }} />;
-    case "security":
-      return <Security sx={{ fontSize: 14 }} />;
-    case "manage":
-      return <Settings sx={{ fontSize: 14 }} />;
-    case "danger":
-      return <Warning sx={{ fontSize: 14 }} />;
-    default:
-      return <Circle sx={{ fontSize: 8 }} />;
-  }
-};
-
-const getCategoryColor = (category) => {
-  switch (category.toLowerCase()) {
-    case "view":
-      return "success";
-    case "edit":
-      return "info";
-    case "security":
-      return "warning";
-    case "manage":
-      return "secondary";
-    case "danger":
-      return "error";
-    default:
-      return "text.secondary";
-  }
-};
-
-const getCategoryLabel = (category) =>
-  category
-    .replace(/([a-z])([A-Z])/g, "$1 $2")
-    .replace(/^./, (match) => match.toUpperCase());
-
 // Resolve dot-delimited property paths against arbitrary data objects.
 const getNestedValue = (source, path) => {
   if (!source) {
@@ -2608,7 +2575,7 @@ export const CippDataTable = (props) => {
             return acc;
           }, {});
           
-          const categoryEntries = Object.entries(groupedActions);
+          const categoryEntries = sortCategoryEntries(Object.entries(groupedActions));
           
           return [
             ...categoryEntries.flatMap(([category, categoryActions], groupIndex) => {

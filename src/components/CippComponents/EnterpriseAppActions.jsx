@@ -16,6 +16,7 @@ const headerLinkProps = { showInActionsMenu: true }
 const viewInEntraAction = {
   icon: <Launch />,
   label: 'View Application',
+  category: "view",
   link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/[id]/appId/[appId]`,
   color: 'info',
   target: '_blank',
@@ -27,6 +28,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
   {
     icon: <ContentCopy />,
     label: 'Create Template from App',
+    category: "manage",
     type: 'POST',
     color: 'info',
     multiPost: false,
@@ -50,6 +52,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
   {
     icon: <Key />,
     label: 'Remove Password Credentials',
+    category: "security",
     type: 'POST',
     color: 'warning',
     multiPost: false,
@@ -86,6 +89,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
   {
     icon: <Security />,
     label: 'Remove Certificate Credentials',
+    category: "security",
     type: 'POST',
     color: 'warning',
     multiPost: false,
@@ -104,6 +108,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
   {
     icon: <Block />,
     label: 'Disable Service Principal',
+    category: "manage",
     type: 'POST',
     color: 'warning',
     multiPost: false,
@@ -123,6 +128,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
   {
     icon: <CheckCircle />,
     label: 'Enable Service Principal',
+    category: "manage",
     type: 'POST',
     color: 'success',
     multiPost: false,
@@ -141,6 +147,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
   {
     icon: <Delete />,
     label: 'Delete Service Principal',
+    category: "danger",
     type: 'POST',
     color: 'error',
     multiPost: false,
@@ -160,6 +167,7 @@ export const getEnterpriseAppListActions = (canWriteApplication) => [
   {
     icon: <Visibility />,
     label: 'View in Manage365',
+    category: "view",
     link: '/tenant/administration/applications/enterprise-app?spId=[id]&tenantFilter=[Tenant]',
     color: 'info',
     multiPost: false,
