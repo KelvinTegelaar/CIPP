@@ -109,7 +109,9 @@ export const CippChartCard = ({
   const [barSeries, setBarSeries] = useState([]);
   const chartOptions = useChartOptions(labels, chartType);
   chartSeries = chartSeries.filter((item) => item !== null);
-  const calculatedTotal = chartSeries.reduce((acc, value) => acc + value, 0);
+  // Round to 2 decimals - summing fractional series values accumulates floating-point
+  // artifacts (e.g. 175.73000000000002). Integer series are unaffected.
+  const calculatedTotal = Math.round(chartSeries.reduce((acc, value) => acc + value, 0) * 100) / 100;
   const total = customTotal !== undefined ? customTotal : calculatedTotal;
   useEffect(() => {
     if (chartType === "bar") {

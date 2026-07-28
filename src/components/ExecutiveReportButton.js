@@ -34,6 +34,7 @@ import {
 import { useSettings } from '../hooks/use-settings'
 import { useSecureScore } from '../hooks/use-securescore'
 import { ApiGetCall } from '../api/ApiCall'
+import { ShadowAIReportPages } from './ShadowAIReportButton'
 
 // PRODUCTION-GRADE PDF SYSTEM WITH CONDITIONAL RENDERING
 const ExecutiveReportDocument = ({
@@ -47,6 +48,7 @@ const ExecutiveReportDocument = ({
   standardsCompareData,
   driftComplianceData,
   standardTemplatesData,
+  shadowAIData,
   sectionConfig = {
     executiveSummary: true,
     securityStandards: true,
@@ -56,6 +58,7 @@ const ExecutiveReportDocument = ({
     deviceManagement: true,
     conditionalAccess: true,
     infographics: true,
+    shadowAI: false,
   },
 }) => {
   const currentDate = new Date().toLocaleDateString('en-US', {
@@ -2684,6 +2687,27 @@ const ExecutiveReportDocument = ({
             </Page>
           </>
         )}
+
+      {/* SHADOW AI SECTION - the Shadow AI report pages appended to this document (no
+          separate cover page; the exec report already has one) */}
+      {sectionConfig.shadowAI && shadowAIData && (
+        <ShadowAIReportPages
+          tenantName={tenantName}
+          data={shadowAIData}
+          brandingSettings={brandingSettings}
+          sectionConfig={{
+            coverPage: false,
+            executiveSummary: true,
+            infographics: sectionConfig.infographics,
+            background: true,
+            riskLevels: true,
+            sanctionedTools: true,
+            detectedSoftware: true,
+            entraApplications: true,
+            recommendations: true,
+          }}
+        />
+      )}
     </Document>
   )
 }
@@ -2704,6 +2728,7 @@ export const ExecutiveReportButton = (props) => {
     deviceManagement: true,
     conditionalAccess: true,
     infographics: true,
+    shadowAI: false,
   })
 
   // Fetch organization data - only when preview is open
@@ -2786,6 +2811,16 @@ export const ExecutiveReportButton = (props) => {
     waiting: previewOpen,
   })
 
+  // Shadow AI data for the optional Shadow AI section - only fetched when that section is
+  // enabled. Requires a single tenant; the CIPPDb cache must have been synced for data to show.
+  const shadowAIEnabled = sectionConfig.shadowAI && settings.currentTenant !== 'AllTenants'
+  const shadowAIData = ApiGetCall({
+    url: '/api/ListShadowAI',
+    data: { tenantFilter: settings.currentTenant },
+    queryKey: `ListShadowAI-${settings.currentTenant}`,
+    waiting: previewOpen && shadowAIEnabled,
+  })
+
   // Check if all data is loaded (either successful or failed) - only relevant when preview is open
   const isDataLoading =
     previewOpen &&
@@ -2797,7 +2832,8 @@ export const ExecutiveReportButton = (props) => {
       conditionalAccessData.isFetching ||
       standardsCompareData.isFetching ||
       driftComplianceData.isFetching ||
-      standardTemplatesData.isFetching)
+      standardTemplatesData.isFetching ||
+      (shadowAIEnabled && shadowAIData.isFetching))
 
   const hasAllDataFinished =
     !previewOpen ||
@@ -2809,7 +2845,8 @@ export const ExecutiveReportButton = (props) => {
       (conditionalAccessData.isSuccess || conditionalAccessData.isError) &&
       (standardsCompareData.isSuccess || standardsCompareData.isError) &&
       (driftComplianceData.isSuccess || driftComplianceData.isError) &&
-      (standardTemplatesData.isSuccess || standardTemplatesData.isError))
+      (standardTemplatesData.isSuccess || standardTemplatesData.isError) &&
+      (!shadowAIEnabled || shadowAIData.isSuccess || shadowAIData.isError))
 
   // Button is always available now since we don't need to wait for data
   const shouldShowButton = true
@@ -2870,6 +2907,7 @@ export const ExecutiveReportButton = (props) => {
           standardTemplatesData={
             standardTemplatesData.isSuccess ? standardTemplatesData?.data : null
           }
+          shadowAIData={shadowAIEnabled && shadowAIData.isSuccess ? shadowAIData.data : null}
           sectionConfig={sectionConfig}
         />
       )
@@ -2900,6 +2938,7 @@ export const ExecutiveReportButton = (props) => {
     conditionalAccessData?.isSuccess,
     standardsCompareData?.isSuccess,
     driftComplianceData?.isSuccess,
+    shadowAIData?.isSuccess,
     JSON.stringify(sectionConfig), // Stringify to prevent reference issues
   ])
 
@@ -2986,6 +3025,11 @@ export const ExecutiveReportButton = (props) => {
       key: 'infographics',
       label: 'Infographic Pages',
       description: 'Statistical pages with visual elements between sections',
+    },
+    {
+      key: 'shadowAI',
+      label: 'Shadow AI Report',
+      description: 'AI usage discovery and risk pages from the Shadow AI report',
     },
   ]
 
@@ -3260,6 +3304,9 @@ export const ExecutiveReportButton = (props) => {
                   }
                   driftComplianceData={
                     driftComplianceData.isSuccess ? driftComplianceData?.data : null
+                  }
+                  shadowAIData={
+                    shadowAIEnabled && shadowAIData.isSuccess ? shadowAIData.data : null
                   }
                   sectionConfig={sectionConfig}
                 />

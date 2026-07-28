@@ -304,7 +304,7 @@ const Page = () => {
               >
                 <TextField
                   fullWidth
-                  label="Repository in 'owner/repo' format (e.g. KelvinTegelaar/CIPP)"
+                  label="Repository in 'owner/repo' format (e.g. CyberDrain/CIPP)"
                   value={repo}
                   onChange={(e) => setRepo(e.target.value)}
                   required={true}

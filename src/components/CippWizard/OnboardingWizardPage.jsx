@@ -22,6 +22,9 @@ const OnboardingWizardPage = () => {
     ? selectedOptionQuery[0]
     : selectedOptionQuery
 
+  const tenantTypeQuery = router.query?.tenantType
+  const deepLinkedTenantType = Array.isArray(tenantTypeQuery) ? tenantTypeQuery[0] : tenantTypeQuery
+
   const setupOptions = [
     {
       description:
@@ -62,6 +65,13 @@ const OnboardingWizardPage = () => {
     typeof deepLinkedOption === 'string' &&
     setupOptions.some((option) => option.value === deepLinkedOption)
 
+  // A deep link that already names the tenant type skips the type selection and lands the user
+  // straight on that type's step, e.g. re-authenticating a direct tenant from the tenants list.
+  const hasDeepLinkedTenantType =
+    hasDeepLinkedOption &&
+    deepLinkedOption === 'AddTenant' &&
+    ['GDAP', 'Direct', 'IndirectReseller'].includes(deepLinkedTenantType)
+
   const steps = [
     {
       description: 'Onboarding',
@@ -90,7 +100,7 @@ const OnboardingWizardPage = () => {
     {
       description: 'Tenant Type',
       component: CippAddTenantTypeSelection,
-      showStepWhen: (values) => values?.selectedOption === 'AddTenant',
+      showStepWhen: (values) => values?.selectedOption === 'AddTenant' && !hasDeepLinkedTenantType,
     },
     {
       description: 'Direct Tenant',
@@ -155,7 +165,14 @@ const OnboardingWizardPage = () => {
       steps={steps}
       wizardTitle="Setup Wizard"
       postUrl="/api/ExecCombinedSetup"
-      initialState={hasDeepLinkedOption ? { selectedOption: deepLinkedOption } : undefined}
+      initialState={
+        hasDeepLinkedOption
+          ? {
+              selectedOption: deepLinkedOption,
+              ...(hasDeepLinkedTenantType && { tenantType: deepLinkedTenantType }),
+            }
+          : undefined
+      }
     />
   )
 }
