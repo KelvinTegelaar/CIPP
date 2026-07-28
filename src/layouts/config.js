@@ -754,6 +754,11 @@ export const nativeMenuItems = [
             permissions: ["Sharepoint.Admin.*"],
           },
           {
+            title: "SharePoint Templates",
+            path: "/teams-share/sharepoint-templates",
+            permissions: ["Sharepoint.Admin.*"],
+          },
+          {
             title: "Sharing Settings",
             path: "/teams-share/sharepoint/sharing-settings",
             permissions: ["Sharepoint.Admin.*"],
@@ -761,6 +766,11 @@ export const nativeMenuItems = [
           {
             title: "Sharing Report",
             path: "/teams-share/sharing-report",
+            permissions: ["Sharepoint.Site.*"],
+          },
+          {
+            title: "Permissions Report",
+            path: "/teams-share/permissions-report",
             permissions: ["Sharepoint.Site.*"],
           },
           {

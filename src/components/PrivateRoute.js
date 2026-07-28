@@ -51,10 +51,12 @@ export const PrivateRoute = ({ children, routeType }) => {
   }
 
   // INITIAL LOAD PATH: Only show loading on first authentication
+  // return loading page here when roles are loading to avoid showing 401
   if (
     session.isLoading ||
     apiRoles.isLoading ||
-    (apiRoles.isFetching && !apiRoles.data)
+    (session.data?.clientPrincipal && apiRoles.isPending) ||
+    (apiRoles.isFetching && !apiRoles.data?.clientPrincipal)
   ) {
     return <LoadingPage />;
   }

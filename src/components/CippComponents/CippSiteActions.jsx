@@ -13,9 +13,11 @@ import {
   Info,
   Language,
   Lock,
+  ManageAccounts,
   NoAccounts,
   PersonAdd,
   PersonRemove,
+  PersonSearch,
   QueryStats,
   RestoreFromTrash,
   Send,
@@ -29,6 +31,8 @@ import { CippFormCondition } from "./CippFormCondition";
 import { CippPropertyList } from "./CippPropertyList";
 import { CippEditSitePropertiesForm } from "./CippEditSitePropertiesForm";
 import { CippSiteRecycleBinDialog } from "./CippSiteRecycleBinDialog";
+import { CippLibraryPermissionsDialog } from "./CippLibraryPermissionsDialog";
+import { CippCheckUserAccessDialog } from "./CippCheckUserAccessDialog";
 
 // Friendly labels for the SharePoint version cleanup (trim) job progress fields.
 const VERSION_CLEANUP_LABELS = {
@@ -1033,6 +1037,38 @@ export const useCippSiteActions = () => {
         ),
         multiPost: false,
         category: "view",
+      },
+      {
+        // Read access is enough to open this: the dialog gates every change on write access,
+        // so a read-only admin can still inspect who has what.
+        label: "Manage Permissions",
+        icon: <ManageAccounts />,
+        customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+          <CippLibraryPermissionsDialog
+            row={row}
+            tenantFilter={tenantFilter}
+            drawerVisible={drawerVisible}
+            setDrawerVisible={setDrawerVisible}
+          />
+        ),
+        multiPost: false,
+        hideBulk: true,
+        category: "security",
+      },
+      {
+        // Answers "does this person have access, and how" rather than "who holds permissions".
+        label: "Check User Access",
+        icon: <PersonSearch />,
+        customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+          <CippCheckUserAccessDialog
+            row={row}
+            tenantFilter={tenantFilter}
+            drawerVisible={drawerVisible}
+            setDrawerVisible={setDrawerVisible}
+          />
+        ),
+        multiPost: false,
+        category: "security",
       },
       {
         label: "Delete Site",

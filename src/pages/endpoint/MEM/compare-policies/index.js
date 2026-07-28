@@ -11,19 +11,11 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Alert,
   Stack,
-  Chip,
   Skeleton,
 } from "@mui/material";
+import { CippPolicyDiffTable } from "../../../../components/CippComponents/CippPolicyDiffTable";
 import {
   CompareArrows as CompareArrowsIcon,
   CheckCircle as CheckCircleIcon,
@@ -226,56 +218,6 @@ const SourceSelector = ({ prefix, formControl, label }) => {
   );
 };
 
-const hasValue = (val) => val !== null && val !== undefined && val !== "";
-
-const getDiffStatus = (row) => {
-  const a = hasValue(row.ExpectedValue);
-  const b = hasValue(row.ReceivedValue);
-  if (a && b) return "different";
-  if (a) return "onlyA";
-  if (b) return "onlyB";
-  return "equal";
-};
-
-const diffChipProps = {
-  different: { label: "Different", color: "error" },
-  onlyA: { label: "Only in A", color: "warning" },
-  onlyB: { label: "Only in B", color: "info" },
-  equal: { label: "Equal", color: "success" },
-};
-
-const DiffStatusChip = ({ row }) => {
-  const props = diffChipProps[getDiffStatus(row)];
-  return <Chip label={props.label} size="small" color={props.color} variant="outlined" />;
-};
-
-const diffRowColors = {
-  different: { dark: "rgba(244, 67, 54, 0.08)", light: "rgba(244, 67, 54, 0.04)" },
-  onlyA: { dark: "rgba(255, 152, 0, 0.08)", light: "rgba(255, 152, 0, 0.04)" },
-  onlyB: { dark: "rgba(33, 150, 243, 0.08)", light: "rgba(33, 150, 243, 0.04)" },
-  equal: { dark: "transparent", light: "transparent" },
-};
-
-const getRowColor = (row, theme) => {
-  const colors = diffRowColors[getDiffStatus(row)];
-  return theme.palette.mode === "dark" ? colors.dark : colors.light;
-};
-
-const formatValue = (val) => {
-  if (val === null || val === undefined) return <Typography color="text.disabled">N/A</Typography>;
-  if (typeof val === "object") {
-    return (
-      <Box
-        component="pre"
-        sx={{ m: 0, fontSize: "0.8rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-      >
-        {JSON.stringify(val, null, 2)}
-      </Box>
-    );
-  }
-  return String(val);
-};
-
 const Page = () => {
   const formControl = useForm({
     mode: "onChange",
@@ -356,8 +298,9 @@ const Page = () => {
   }, [compareApi.isError, compareApi.error]);
 
   const comparisonRows = useMemo(() => {
-    if (!Array.isArray(results?.Results)) return [];
-    return results.Results.filter(Boolean);
+    const raw = results?.Results;
+    const rows = Array.isArray(raw) ? raw : raw ? [raw] : [];
+    return rows.filter((row) => row && typeof row === "object");
   }, [results?.Results]);
 
   return (
@@ -418,35 +361,7 @@ const Page = () => {
               </Alert>
 
               {!results.identical && comparisonRows.length > 0 && (
-                <TableContainer component={Paper} variant="outlined">
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: "bold" }}>Property</TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>Source A</TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>Source B</TableCell>
-                        <TableCell sx={{ fontWeight: "bold", width: 120 }}>Status</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {comparisonRows.map((row, index) => (
-                        <TableRow
-                          key={index}
-                          sx={(theme) => ({
-                            backgroundColor: getRowColor(row, theme),
-                          })}
-                        >
-                          <TableCell sx={{ fontWeight: 500 }}>{row.Property}</TableCell>
-                          <TableCell>{formatValue(row.ExpectedValue)}</TableCell>
-                          <TableCell>{formatValue(row.ReceivedValue)}</TableCell>
-                          <TableCell>
-                            <DiffStatusChip row={row} />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                <CippPolicyDiffTable rows={comparisonRows} />
               )}
 
               <CippJsonView

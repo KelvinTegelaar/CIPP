@@ -1,4 +1,12 @@
-import { Close, Download, ExpandMore, ExpandLess } from "@mui/icons-material";
+import {
+  Close,
+  Download,
+  ExpandMore,
+  ExpandLess,
+  CheckCircle,
+  Error as ErrorIcon,
+  RadioButtonUnchecked,
+} from "@mui/icons-material";
 import {
   Alert,
   Button,
@@ -15,6 +23,7 @@ import {
 } from "@mui/material";
 import { OpenInNew } from "@mui/icons-material";
 import { useEffect, useState, useMemo, useCallback } from "react";
+import { ApiGetCall } from "../../api/ApiCall";
 import { getCippError } from "../../utils/get-cipp-error";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import { CippCodeBlock } from "./CippCodeBlock";
@@ -23,7 +32,7 @@ import { CippTableDialog } from "./CippTableDialog";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { useDialog } from "../../hooks/use-dialog";
 
-const extractAllResults = (data) => {
+const extractAllResults = (data, extraIgnoreKeys = []) => {
   const results = [];
 
   const getSeverity = (text) => {
@@ -78,7 +87,7 @@ const extractAllResults = (data) => {
         results.push(processed);
       }
     } else {
-      const ignoreKeys = ["metadata", "Metadata", "severity"];
+      const ignoreKeys = ["metadata", "Metadata", "severity", ...extraIgnoreKeys];
 
       if (typeof obj === "object") {
         Object.keys(obj).forEach((key) => {
@@ -474,14 +483,107 @@ const FormattedResultText = ({ text, severity }) => {
   );
 };
 
+const capitalize = (text) =>
+  typeof text === "string" && text.length > 0 ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+
+const JOB_STATUS_CHIP_COLORS = {
+  queued: "default",
+  running: "info",
+  succeeded: "success",
+  failed: "error",
+};
+
+// Status icon for a single job step.
+const JobStepIcon = ({ status }) => {
+  if (status === "succeeded") return <CheckCircle fontSize="small" color="success" />;
+  if (status === "failed") return <ErrorIcon fontSize="small" color="error" />;
+  if (status === "running") return <CircularProgress size={16} />;
+  return <RadioButtonUnchecked fontSize="small" color="disabled" />;
+};
+
+// Live job progress rows (GDAP-onboarding style): one block per row (usually a tenant) with
+// its steps, driven by the jobProgress polling in CippApiResults.
+const CippJobProgress = ({ rows }) => (
+  <Stack spacing={2}>
+    {rows.map((row, rowIndex) => (
+      <Box key={row.Tenant ?? row.Name ?? rowIndex}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+          <Typography variant="subtitle2">{row.Tenant ?? row.Name}</Typography>
+          <Chip
+            size="small"
+            label={capitalize(row.Status)}
+            color={JOB_STATUS_CHIP_COLORS[row.Status] || "default"}
+            variant={row.Status === "queued" ? "outlined" : "filled"}
+          />
+        </Stack>
+        <Stack spacing={1}>
+          {(row.Steps || []).map((step, index) => (
+            <Stack direction="row" spacing={1} alignItems="flex-start" key={index}>
+              <Box sx={{ pt: 0.25 }}>
+                <JobStepIcon status={step.Status} />
+              </Box>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography variant="body2">{step.Title}</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {step.Message}
+                </Typography>
+              </Box>
+            </Stack>
+          ))}
+        </Stack>
+      </Box>
+    ))}
+  </Stack>
+);
+
 export const CippApiResults = (props) => {
-  const { apiObject, errorsOnly = false, alertSx = {} } = props;
+  const { apiObject, errorsOnly = false, alertSx = {}, jobProgress = null } = props;
 
   const [errorVisible, setErrorVisible] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState(false);
   const [finalResults, setFinalResults] = useState([]);
   const [showDetails, setShowDetails] = useState({});
+  const [jobId, setJobId] = useState(null);
+  const [jobPollActive, setJobPollActive] = useState(false);
   const tableDialog = useDialog();
+
+  // Optional live job progress: when the mutation result carries jobProgress.idField, poll
+  // jobProgress.url(id) until every row reaches a terminal state.
+  const jobIdField = jobProgress?.idField ?? "JobId";
+  useEffect(() => {
+    if (!jobProgress) return;
+    if (apiObject.isPending) {
+      setJobId(null);
+      setJobPollActive(false);
+      return;
+    }
+    if (!apiObject.isSuccess) return;
+    const raw = apiObject?.data?.data ?? apiObject?.data;
+    const item = Array.isArray(raw) ? raw[0] : raw;
+    const id = item?.[jobIdField];
+    if (id) {
+      setJobId(id);
+      setJobPollActive(true);
+    }
+  }, [jobProgress, jobIdField, apiObject.isPending, apiObject.isSuccess, apiObject.data]);
+
+  const jobStatus = ApiGetCall({
+    url: jobProgress && jobId ? jobProgress.url(jobId) : null,
+    queryKey: `CippJobProgress-${jobId}`,
+    waiting: !!(jobProgress && jobId),
+    refetchInterval: jobPollActive ? (jobProgress?.interval ?? 5000) : false,
+    staleTime: 0,
+  });
+  const jobRows = Array.isArray(jobStatus.data) ? jobStatus.data : [];
+  useEffect(() => {
+    if (
+      jobPollActive &&
+      jobRows.length > 0 &&
+      jobRows.every((row) => row.Status === "succeeded" || row.Status === "failed")
+    ) {
+      setJobPollActive(false);
+    }
+  }, [jobPollActive, jobRows]);
   const pageTitle = `${document.title} - Results`;
   const correctResultObj = useMemo(() => {
     if (!apiObject.isSuccess) return;
@@ -514,8 +616,10 @@ export const CippApiResults = (props) => {
     // Tag every result with the index of the action (bulk request item) it came from,
     // so multi-action runs can be rolled up into a summary alert.
     const sourceItems = Array.isArray(correctResultObj) ? correctResultObj : [correctResultObj];
+    // Don't render the job id (e.g. DeploymentId) as a result alert of its own.
+    const jobIgnoreKeys = jobProgress ? [jobIdField] : [];
     const apiResults = sourceItems.flatMap((item, groupIndex) =>
-      extractAllResults(item).map((r) => ({ ...r, groupIndex })),
+      extractAllResults(item, jobIgnoreKeys).map((r) => ({ ...r, groupIndex })),
     );
 
     // Also extract error results if there's an error
@@ -549,7 +653,7 @@ export const CippApiResults = (props) => {
     }
 
     return apiResults;
-  }, [correctResultObj, apiObject.isError, apiObject.error]);
+  }, [correctResultObj, apiObject.isError, apiObject.error, jobProgress, jobIdField]);
 
   useEffect(() => {
     setErrorVisible(!!apiObject.isError);
@@ -774,6 +878,22 @@ export const CippApiResults = (props) => {
           </Tooltip>
         </Box>
       ) : null}
+      {/* Live job progress (opt-in via the jobProgress prop) */}
+      {jobProgress && jobId && (
+        <Box>
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+            <Typography variant="h6">{jobProgress.title ?? "Progress"}</Typography>
+            {jobPollActive && <CircularProgress size={16} />}
+          </Stack>
+          {jobRows.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              Waiting for the first status update...
+            </Typography>
+          ) : (
+            <CippJobProgress rows={jobRows} />
+          )}
+        </Box>
+      )}
       {tableDialog.open && (
         <CippTableDialog
           createDialog={tableDialog}

@@ -210,7 +210,7 @@ const Page = () => {
       name: 'assignmentMode',
       label: 'Assignment mode',
       options: assignmentModeOptions,
-      defaultValue: 'replace',
+      defaultValue: 'append',
       helperText:
         'Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.',
     },
@@ -228,7 +228,7 @@ const Page = () => {
       customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
         AssignTo: 'AllUsers',
         Intent: formData?.Intent || 'Required',
-        assignmentMode: formData?.assignmentMode || 'replace',
+        assignmentMode: formData?.assignmentMode || 'append',
       })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       icon: <UserIcon />,
@@ -245,7 +245,7 @@ const Page = () => {
       customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
         AssignTo: 'AllDevices',
         Intent: formData?.Intent || 'Required',
-        assignmentMode: formData?.assignmentMode || 'replace',
+        assignmentMode: formData?.assignmentMode || 'append',
       })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       icon: <LaptopMac />,
@@ -262,7 +262,7 @@ const Page = () => {
       customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
         AssignTo: 'AllDevicesAndUsers',
         Intent: formData?.Intent || 'Required',
-        assignmentMode: formData?.assignmentMode || 'replace',
+        assignmentMode: formData?.assignmentMode || 'append',
       })),
       confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
       icon: <GlobeAltIcon />,
@@ -289,7 +289,7 @@ const Page = () => {
             validate: (value, formValues) => {
               if (
                 formValues?.assignmentDirection === 'exclude' &&
-                (formValues?.assignmentMode || 'replace') === 'replace'
+                (formValues?.assignmentMode || 'append') === 'replace'
               ) {
                 return true
               }
@@ -326,7 +326,7 @@ const Page = () => {
           name: 'assignmentMode',
           label: 'Assignment mode',
           options: assignmentModeOptions,
-          defaultValue: 'replace',
+          defaultValue: 'append',
           // Re-validate the picker so the empty-allowed rule updates when mode changes.
           validators: { deps: ['groupTargets'] },
           helperText:
@@ -347,7 +347,7 @@ const Page = () => {
           ExcludeGroupNames: isExclude ? names : [],
           assignmentDirection: formData?.assignmentDirection || 'include',
           Intent: formData?.assignmentIntent || 'Required',
-          AssignmentMode: formData?.assignmentMode || 'replace',
+          AssignmentMode: formData?.assignmentMode || 'append',
         }
       }),
     },

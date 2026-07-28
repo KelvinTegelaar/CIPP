@@ -178,7 +178,9 @@ const App = (props) => {
     setDateLocale(resolvedLocale)
   }, [])
 
-  const excludeQueryKeys = ["authmeswa", "alertsDashboard"];
+  // authmecipp excluded: /api/me returns 200 with clientPrincipal null when logged out,
+  // persisting that flashes the 401 page on the post-login reload until the refetch lands
+  const excludeQueryKeys = ["authmeswa", "authmecipp", "alertsDashboard"];
 
   // 👇 Persist TanStack Query cache to localStorage
   useEffect(() => {

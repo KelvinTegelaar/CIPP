@@ -661,7 +661,7 @@
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "SharePoint Embedded Administrator",
-    "ObjectId": "1a7d78b6-429f-476b-8eb-35fb715fffd4"
+    "ObjectId": "1a7d78b6-429f-476b-b8eb-35fb715fffd4"
   },
   {
     "ExtensionData": {},
@@ -814,5 +814,29 @@
     "IsSystem": true,
     "Name": "AI Administrator",
     "ObjectId": "d2562ede-74db-457e-a7b6-544e236ebb61"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Manage all aspects of the Microsoft Dragon admin center.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Dragon Administrator",
+    "ObjectId": "e93e3737-fa85-474a-aee4-7d3fb86510f3"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Manage all aspects of organizational branding in a tenant.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Organizational Branding Administrator",
+    "ObjectId": "92ed04bf-c94a-4b82-9729-b799a7a4c178"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Review, approve, or reject new organizational messages for delivery in the Microsoft 365 admin center before they are sent to users.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Organizational Messages Approver",
+    "ObjectId": "e48398e2-f4bb-4074-8f31-4586725e205b"
   }
 ]
