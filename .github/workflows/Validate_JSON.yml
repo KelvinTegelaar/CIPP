@@ -1,10 +1,10 @@
 ---
 name: Validate JSON
 on:
-  # pull_request_target (not pull_request) so the token can comment on fork PRs.
-  # The PR's own code is never executed: it is checked out into ./pr as data only,
-  # and parsed by the validator script from the trusted base checkout.
-  pull_request_target:
+  # Plain pull_request (upstream uses pull_request_target to comment on external
+  # fork PRs — this fork only takes same-repo PRs, so the privileged trigger and
+  # the untrusted dual-checkout it requires are dropped).
+  pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
@@ -23,7 +23,7 @@ on:
       - ".github/workflows/Validate_JSON.yml"
       - ".github/scripts/validate-json.mjs"
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read
@@ -33,27 +33,16 @@ jobs:
     name: Parse JSON in public and src/data
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout base (trusted validator script)
+      - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Checkout PR head (untrusted, data only)
-        if: github.event_name == 'pull_request_target'
-        uses: actions/checkout@v6
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          path: pr
-          persist-credentials: false
 
       - name: Validate JSON files
         id: validate
         continue-on-error: true
-        env:
-          ROOT: ${{ github.event_name == 'pull_request_target' && 'pr/' || '' }}
-        run: node .github/scripts/validate-json.mjs --strip "$ROOT" "${ROOT}public" "${ROOT}src/data"
+        run: node .github/scripts/validate-json.mjs --strip "" "public" "src/data"
 
       - name: Comment on PR
-        if: github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
