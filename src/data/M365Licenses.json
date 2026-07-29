@@ -14920,6 +14920,14 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Search"
   },
   {
+    "Product_Display_Name": "Microsoft 365 E3",
+    "String_Id": "SPE_E3",
+    "GUID": "05e9a617-0261-4cee-bb44-138d3ef5d965",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
+  },
+  {
     "Product_Display_Name": "Microsoft 365 E3 - Unattended License",
     "String_Id": "SPE_E3_RPA1",
     "GUID": "c2ac2ee4-9bb1-47e4-8541-d689c7e83371",
@@ -17184,6 +17192,14 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Microsoft Entra Rights"
   },
   {
+    "Product_Display_Name": "Microsoft 365 E3_USGOV_DOD",
+    "String_Id": "SPE_E3_USGOV_DOD",
+    "GUID": "d61d61cc-f992-433f-a577-5bd016037eeb",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
+  },
+  {
     "Product_Display_Name": "Microsoft 365 E3_USGOV_GCCHIGH",
     "String_Id": "SPE_E3_USGOV_GCCHIGH",
     "GUID": "ca9d1dd9-dfe9-4fef-b97c-9bc1ea3c3658",
@@ -17294,6 +17310,14 @@
     "Service_Plan_Name": "ADALLOM_S_DISCOVERY",
     "Service_Plan_Id": "932ad362-64a8-4783-9106-97849a1a30b9",
     "Service_Plans_Included_Friendly_Names": "Cloud App Security Discovery"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E3_USGOV_GCCHIGH",
+    "String_Id": "SPE_E3_USGOV_GCCHIGH",
+    "GUID": "ca9d1dd9-dfe9-4fef-b97c-9bc1ea3c3658",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
   },
   {
     "Product_Display_Name": "Microsoft 365 E5",
@@ -23408,6 +23432,22 @@
     "Service_Plans_Included_Friendly_Names": "Avatars for Teams (additional)"
   },
   {
+    "Product_Display_Name": "Microsoft 365 E5 Suite features",
+    "String_Id": "M365_E5_SUITE_COMPONENTS",
+    "GUID": "99cc8282-2f74-4954-83b7-c6a9a1999067",
+    "Service_Plan_Name": "CLOUD_PKI",
+    "Service_Plan_Id": "795aec3a-93a2-45be-92c4-47b9a76340ca",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Cloud PKI"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 E5 Suite features",
+    "String_Id": "M365_E5_SUITE_COMPONENTS",
+    "GUID": "99cc8282-2f74-4954-83b7-c6a9a1999067",
+    "Service_Plan_Name": "3_PARTY_APP_PATCH",
+    "Service_Plan_Id": "3afa0b92-83ef-41c1-8d64-586ab882a951",
+    "Service_Plans_Included_Friendly_Names": "Intune Enterprise Application Management"
+  },
+  {
     "Product_Display_Name": "Microsoft 365 E5 with Calling Minutes",
     "String_Id": "SPE_E5_CALLINGMINUTES",
     "GUID": "a91fc4e0-65e5-4266-aa76-4037509c1626",
@@ -28286,6 +28326,14 @@
     "Service_Plan_Name": "FLOW_O365_P2_GOV",
     "Service_Plan_Id": "c537f360-6a00-4ace-a7f5-9128d0ac1e4b",
     "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365 for Government"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 G3 GCC",
+    "String_Id": "M365_G3_GOV",
+    "GUID": "e823ca47-49c4-46b3-b38d-ca11d5abe3d2",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
   },
   {
     "Product_Display_Name": "Microsoft 365 GCC G5",
@@ -36064,6 +36112,14 @@
     "Service_Plans_Included_Friendly_Names": "Office for the Web"
   },
   {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MDOLITE_ENTERPRISE",
+    "Service_Plan_Id": "c6675fa4-68fe-415f-aec1-a44520f0c3a3",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 built-in email and collaboration security"
+  },
+  {
     "Product_Display_Name": "Office 365 E1 EEA (no Teams)",
     "String_Id": "Office_365_w/o_Teams_Bundle_E1",
     "GUID": "b57282e3-65bd-4252-9502-c0eae1e5ab7f",
@@ -36832,6 +36888,14 @@
     "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Office 365"
   },
   {
+    "Product_Display_Name": "Office 365 E3",
+    "String_Id": "ENTERPRISEPACK",
+    "GUID": "6fd2c87f-b296-42f0-b197-1e91e994b900",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
+  },
+  {
     "Product_Display_Name": "Office 365 E3 (no Teams)",
     "String_Id": "Office_365_E3_(no_Teams)",
     "GUID": "46c3a859-c90d-40b3-9551-6178a48d5c18",
@@ -37552,6 +37616,14 @@
     "Service_Plans_Included_Friendly_Names": "Office 365 ProPlus"
   },
   {
+    "Product_Display_Name": "Office 365 E3_USGOV_DOD",
+    "String_Id": "ENTERPRISEPACK_USGOV_DOD",
+    "GUID": "b107e5a3-3e60-4c0d-a184-a7e4395eb44c",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
+  },
+  {
     "Product_Display_Name": "Office 365 E3_USGOV_GCCHIGH",
     "String_Id": "ENTERPRISEPACK_USGOV_GCCHIGH",
     "GUID": "aea38a85-9bd5-4981-aa00-616b411205bf",
@@ -37622,6 +37694,14 @@
     "Service_Plan_Name": "TEAMS_AR_GCCHIGH",
     "Service_Plan_Id": "9953b155-8aef-4c56-92f3-72b0487fce41",
     "Service_Plans_Included_Friendly_Names": "Microsoft Teams for GCCHigh (AR)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E3_USGOV_GCCHIGH",
+    "String_Id": "ENTERPRISEPACK_USGOV_GCCHIGH",
+    "GUID": "aea38a85-9bd5-4981-aa00-616b411205bf",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
   },
   {
     "Product_Display_Name": "Office 365 E4",
@@ -40470,6 +40550,14 @@
     "Service_Plan_Name": "MYANALYTICS_P2_GOV",
     "Service_Plan_Id": "6e5b7995-bd4f-4cbd-9d19-0e32010c72f0",
     "Service_Plans_Included_Friendly_Names": "Insights by MyAnalytics for Government"
+  },
+  {
+    "Product_Display_Name": "Office 365 G3 GCC",
+    "String_Id": "ENTERPRISEPACK_GOV",
+    "GUID": "535a3a29-c5f0-42fe-8215-d3b9e1f38c4a",
+    "Service_Plan_Name": "ATP_ENTERPRISE",
+    "Service_Plan_Id": "f20fedf3-f3c3-43c3-8267-2bfdd51c0939",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
   },
   {
     "Product_Display_Name": "Office 365 G3 without Microsoft 365 Apps GCC",
