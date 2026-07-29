@@ -11,6 +11,7 @@ const entraLinkActions = (forHeaderMenu) => {
     {
       icon: <Launch />,
       label: 'View App Registration',
+      category: "view",
       link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/[appId]/isMSAApp/`,
       color: 'info',
       target: '_blank',
@@ -21,6 +22,7 @@ const entraLinkActions = (forHeaderMenu) => {
     {
       icon: <Launch />,
       label: 'View API Permissions',
+      category: "view",
       link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/[appId]/isMSAApp/`,
       color: 'info',
       target: '_blank',
@@ -34,6 +36,7 @@ const entraLinkActions = (forHeaderMenu) => {
 const editInEntraAction = {
   icon: <Edit />,
   label: 'Edit App Registration',
+  category: "edit",
   link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/AppRegSettings/appId/[appId]/isMSAApp/`,
   color: 'success',
   target: '_blank',
@@ -79,6 +82,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
   {
     icon: <ContentCopy />,
     label: 'Create Enterprise App Template (Multi-Tenant)',
+    category: "manage",
     type: 'POST',
     color: 'info',
     multiPost: false,
@@ -106,6 +110,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
   {
     icon: <ContentCopy />,
     label: 'Create Manifest Template (Single-Tenant)',
+    category: "manage",
     type: 'POST',
     color: 'success',
     multiPost: false,
@@ -159,6 +164,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
   {
     icon: <Key />,
     label: 'Add Client Secret',
+    category: "security",
     type: 'POST',
     color: 'success',
     multiPost: false,
@@ -178,6 +184,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
   {
     icon: <Key />,
     label: 'Remove Password Credentials',
+    category: "security",
     type: 'POST',
     color: 'warning',
     multiPost: false,
@@ -214,6 +221,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
   {
     icon: <Security />,
     label: 'Remove Certificate Credentials',
+    category: "security",
     type: 'POST',
     color: 'warning',
     multiPost: false,
@@ -232,6 +240,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
   {
     icon: <Delete />,
     label: 'Delete App Registration',
+    category: "danger",
     type: 'POST',
     color: 'error',
     multiPost: false,
@@ -270,6 +279,7 @@ export const getAppRegistrationEditActions = (canWriteApplication) => [
   {
     icon: <Edit />,
     label: 'Edit Authentication',
+    category: "edit",
     type: 'POST',
     color: 'info',
     multiPost: false,
@@ -364,6 +374,7 @@ export const getAppRegistrationListActions = (canWriteApplication) => [
   {
     icon: <Visibility />,
     label: 'View in Manage365',
+    category: "view",
     link: '/tenant/administration/applications/app-registration?appId=[appId]&tenantFilter=[Tenant]',
     color: 'info',
     multiPost: false,

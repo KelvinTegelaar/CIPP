@@ -152,7 +152,7 @@ const Page = () => {
       confirmText: "Do you want to delete the template?",
       multiPost: false,
       icon: <TrashIcon />,
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

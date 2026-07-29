@@ -20,6 +20,7 @@ export const CippSiteRecycleBinDialog = ({
   const actions = [
     {
       label: 'Restore Item',
+      category: "manage",
       type: 'POST',
       icon: <RestoreFromTrash />,
       url: '/api/ExecRestoreRecycleBinItems',

@@ -12,12 +12,14 @@ import { Alert, Typography } from "@mui/material";
 export const CippGdapActions = () => [
   {
     label: "View Relationship",
+    category: "view",
     link: "/tenant/gdap-management/relationships/relationship?id=[id]",
     color: "primary",
     icon: <EyeIcon />,
   },
   {
     label: "Start Onboarding",
+    category: "manage",
     link: "/tenant/gdap-management/onboarding/start?id=[id]",
     color: "primary",
     icon: <PlayArrow />,
@@ -25,6 +27,7 @@ export const CippGdapActions = () => [
   },
   {
     label: "Open Relationship in Partner Center",
+    category: "view",
     link: "https://partner.microsoft.com/en-us/dashboard/commerce2/customers/[customer.tenantId]/adminrelationships/[id]",
     color: "info",
     icon: <OpenInNew />,
@@ -32,6 +35,7 @@ export const CippGdapActions = () => [
   },
   {
     label: "Enable automatic extension",
+    category: "manage",
     type: "GET",
     url: "/api/ExecAutoExtendGDAP",
     data: { ID: "id" },
@@ -41,15 +45,17 @@ export const CippGdapActions = () => [
   },
   {
     label: "Remove Global Administrator from Relationship",
+    category: "danger",
     type: "GET",
     url: "/api/ExecGDAPRemoveGArole",
     data: { GDAPID: "id" },
     confirmText: "Are you sure you want to remove Global Administrator from this relationship?",
-    color: "danger",
+    color: "error",
     icon: <AdminPanelSettings />,
   },
   {
     label: "Reset Role Mapping",
+    category: "manage",
     type: "POST",
     url: "/api/ExecGDAPAccessAssignment",
     icon: <LockReset />,
@@ -101,6 +107,7 @@ export const CippGdapActions = () => [
   },
   {
     label: "Terminate Relationship",
+    category: "danger",
     type: "GET",
     url: "/api/ExecDeleteGDAPRelationship",
     data: { GDAPID: "id" },

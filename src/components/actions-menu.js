@@ -15,33 +15,14 @@ import { useMemo, useState } from "react";
 import { usePopover } from "../hooks/use-popover";
 import { useDialog } from "../hooks/use-dialog";
 import { CippApiDialog } from "./CippComponents/CippApiDialog";
-import { 
-  Visibility, 
-  Edit, 
-  Security, 
-  Settings, 
-  Warning,
-  Circle,
-} from "@mui/icons-material";
 import { resolvePaletteMainColor } from "../theme/utils";
-
-// Get icon for category
-const getCategoryIcon = (category) => {
-  switch (category.toLowerCase()) {
-    case "view":
-      return <Visibility sx={{ fontSize: 14 }} />;
-    case "edit":
-      return <Edit sx={{ fontSize: 14 }} />;
-    case "security":
-      return <Security sx={{ fontSize: 14 }} />;
-    case "manage":
-      return <Settings sx={{ fontSize: 14 }} />;
-    case "danger":
-      return <Warning sx={{ fontSize: 14 }} />;
-    default:
-      return <Circle sx={{ fontSize: 8 }} />;
-  }
-};
+import {
+  getActionColor,
+  getCategoryColor,
+  getCategoryIcon,
+  getCategoryLabel,
+  sortCategoryEntries,
+} from "../utils/action-categories";
 
 export const ActionsMenu = (props) => {
   const { actions = [], label = "Actions", data, queryKeys, ...other } = props;
@@ -64,35 +45,8 @@ export const ActionsMenu = (props) => {
       acc[category].push(action);
       return acc;
     }, {});
-    return Object.entries(grouped);
+    return sortCategoryEntries(Object.entries(grouped));
   }, [actions]);
-
-  const getCategoryLabel = (category) =>
-    category
-      .replace(/([a-z])([A-Z])/g, "$1 $2")
-      .replace(/^./, (match) => match.toUpperCase());
-
-  const getCategoryColor = (category) => {
-    switch (category.toLowerCase()) {
-      case "view":
-        return "success";
-      case "edit":
-        return "info";
-      case "security":
-        return "warning";
-      case "manage":
-        return "secondary";
-      case "danger":
-        return "error";
-      default:
-        return "text.secondary";
-    }
-  };
-
-  const getActionColor = (action, category) => {
-    if (action.color) return action.color;
-    return getCategoryColor(category);
-  };
   const handleActionDisabled = (row, action) => {
     //add nullsaftey for row. It can sometimes be undefined(still loading) or null(no data)
     if (!row) {

@@ -23,7 +23,7 @@ const Page = () => {
         partnerTenantId: "tenantId",
       },
       confirmText: "Are you sure you want to remove this partner configuration?",
-      color: "danger",
+      color: "error",
       icon: "Delete",
       relatedQueryKeys: ["CrossTenantPartners"],
       category: "danger",

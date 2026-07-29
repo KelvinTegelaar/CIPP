@@ -16,6 +16,7 @@ const Page = () => {
   const actions = [
     {
       label: 'Edit Template',
+      category: "edit",
       icon: <Edit />,
       color: 'warning',
       link: '/teams-share/sharepoint-templates/add?template=[TemplateId]&name=[templateName]',
@@ -23,6 +24,7 @@ const Page = () => {
     },
     {
       label: 'Copy Template',
+      category: "edit",
       icon: <ContentCopy />,
       color: 'info',
       link: '/teams-share/sharepoint-templates/add?template=[TemplateId]&copy=true&name=[templateName]',
@@ -30,6 +32,7 @@ const Page = () => {
     },
     {
       label: 'Delete Template',
+      category: "danger",
       icon: <Delete />,
       color: 'danger',
       type: 'POST',

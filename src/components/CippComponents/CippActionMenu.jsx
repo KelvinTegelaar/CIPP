@@ -37,45 +37,25 @@ import { getSafeInternalRoute, openSafeExternalUrl } from "../../utils/safe-navi
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "./CippApiDialog";
 import { useSettings } from "../../hooks/use-settings";
+import { resolvePaletteMainColor } from "../../theme/utils";
+import {
+  getActionColor,
+  getActionPaletteColor,
+  getCategoryChipColor,
+  getCategoryColor,
+  getCategoryLabel,
+  getCategoryOrder,
+} from "../../utils/action-categories";
 
-// Default category icons and colors - matches bulk actions menu styling
-const categoryConfig = {
-  view: {
-    icon: <Visibility />,
-    label: "View",
-    color: "success",
-    order: 1,
-  },
-  edit: {
-    icon: <Edit />,
-    label: "Edit & Manage",
-    color: "info",
-    order: 2,
-  },
-  security: {
-    icon: <Security />,
-    label: "Security",
-    color: "warning",
-    order: 3,
-  },
-  manage: {
-    icon: <Settings />,
-    label: "Settings",
-    color: "secondary",
-    order: 4,
-  },
-  danger: {
-    icon: <Delete />,
-    label: "Danger Zone",
-    color: "error",
-    order: 99,
-  },
-  other: {
-    icon: <MoreHoriz />,
-    label: "Other Actions",
-    color: "default",
-    order: 50,
-  },
+// Larger icons for this menu style; headings, colours and ordering all come
+// from the shared action-categories util so every menu agrees.
+const categoryIcons = {
+  view: <Visibility />,
+  edit: <Edit />,
+  security: <Security />,
+  manage: <Settings />,
+  danger: <Delete />,
+  other: <MoreHoriz />,
 };
 
 // Helper to determine category from action
@@ -151,7 +131,7 @@ export const CippActionMenu = ({
     // Sort categories by order
     const sortedGrouped = {};
     Object.keys(grouped)
-      .sort((a, b) => (categoryConfig[a]?.order || 50) - (categoryConfig[b]?.order || 50))
+      .sort((a, b) => getCategoryOrder(a) - getCategoryOrder(b))
       .forEach((key) => {
         sortedGrouped[key] = grouped[key];
       });
@@ -244,15 +224,13 @@ export const CippActionMenu = ({
           <ListItemIcon
             sx={{
               minWidth: 40,
-              color: isDanger
-                ? "error.main"
-                : action.color === "success"
-                ? "success.main"
-                : action.color === "warning"
-                ? "warning.main"
-                : action.color === "info"
-                ? "info.main"
-                : "text.secondary",
+              // Inherit the category colour when the action doesn't set its own,
+              // otherwise every uncoloured action renders grey under a coloured header
+              color: (theme) =>
+                resolvePaletteMainColor(
+                  theme,
+                  getActionColor(action, getActionCategory(action))
+                ),
             }}
           >
             <SvgIcon fontSize={smDown ? "medium" : "small"}>{action.icon}</SvgIcon>
@@ -279,7 +257,7 @@ export const CippActionMenu = ({
   };
 
   const renderCategoryGroup = (category, categoryActions) => {
-    const config = categoryConfig[category] || categoryConfig.other;
+    const categoryIcon = categoryIcons[category] || categoryIcons.other;
     const isExpanded = expandedCategories[category] !== false; // Default expanded
     const isDanger = category === "danger";
 
@@ -301,11 +279,16 @@ export const CippActionMenu = ({
             },
           }}
         >
-          <ListItemIcon sx={{ minWidth: 32, color: `${config.color}.main` }}>
-            <SvgIcon fontSize="small">{config.icon}</SvgIcon>
+          <ListItemIcon
+            sx={{
+              minWidth: 32,
+              color: (theme) => resolvePaletteMainColor(theme, getCategoryColor(category)),
+            }}
+          >
+            <SvgIcon fontSize="small">{categoryIcon}</SvgIcon>
           </ListItemIcon>
           <ListItemText
-            primary={config.label}
+            primary={getCategoryLabel(category)}
             primaryTypographyProps={{
               variant: "subtitle2",
               fontWeight: 600,
@@ -315,7 +298,7 @@ export const CippActionMenu = ({
           <Chip
             label={categoryActions.length}
             size="small"
-            color={config.color}
+            color={getCategoryChipColor(category)}
             sx={{ height: 20, fontSize: "0.7rem", mr: 1 }}
           />
           {isExpanded ? <ExpandLess /> : <ExpandMore />}
@@ -534,20 +517,10 @@ export const CippQuickActions = ({
     >
       {quickActions.map((action, index) => {
         const category = getActionCategory(action);
-        const isDanger = category === "danger";
-        const isSecurity = category === "security";
-        const isView = category === "view";
-        const isEdit = category === "edit";
-
-        // Determine button color based on category
-        const getButtonColor = () => {
-          if (isDanger) return "error";
-          if (isSecurity) return "warning";
-          if (isView) return "info";
-          if (isEdit) return "success";
-          if (action.color) return action.color;
-          return "primary";
-        };
+        // Same category colours as the grouped menus, so a card's quick actions
+        // and its overflow menu agree on what "edit" or "danger" looks like
+        const buttonColor = getActionPaletteColor(action, category);
+        const mainColor = theme.palette[buttonColor].main;
 
         if (variant === "button") {
           return (
@@ -555,7 +528,7 @@ export const CippQuickActions = ({
               <Button
                 size={size}
                 variant="outlined"
-                color={getButtonColor()}
+                color={buttonColor}
                 startIcon={<SvgIcon fontSize="small">{action.icon}</SvgIcon>}
                 onClick={(e) => handleActionClick(action, e)}
                 sx={{
@@ -578,14 +551,14 @@ export const CippQuickActions = ({
               size={size}
               onClick={(e) => handleActionClick(action, e)}
               sx={{
-                bgcolor: alpha(theme.palette[getButtonColor()]?.main || theme.palette.primary.main, 0.08),
-                border: `1px solid ${alpha(theme.palette[getButtonColor()]?.main || theme.palette.primary.main, 0.3)}`,
-                color: `${getButtonColor()}.main`,
+                bgcolor: alpha(mainColor, 0.08),
+                border: `1px solid ${alpha(mainColor, 0.3)}`,
+                color: mainColor,
                 borderRadius: 1,
                 transition: "all 0.2s ease",
                 "&:hover": {
-                  bgcolor: alpha(theme.palette[getButtonColor()]?.main || theme.palette.primary.main, 0.15),
-                  borderColor: `${getButtonColor()}.main`,
+                  bgcolor: alpha(mainColor, 0.15),
+                  borderColor: mainColor,
                   transform: "scale(1.05)",
                 },
                 // Touch-friendly sizing

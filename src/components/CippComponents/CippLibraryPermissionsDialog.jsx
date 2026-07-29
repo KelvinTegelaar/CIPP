@@ -131,6 +131,7 @@ export const CippLibraryPermissionsDialog = ({
   const actions = [
     {
       label: 'Change Permission Level',
+      category: "edit",
       type: 'POST',
       icon: <Tune />,
       url: '/api/ExecSetLibraryPermission',
@@ -164,6 +165,7 @@ export const CippLibraryPermissionsDialog = ({
     },
     {
       label: 'Remove Permission',
+      category: "danger",
       type: 'POST',
       icon: <Delete />,
       url: '/api/ExecRemoveLibraryPermission',

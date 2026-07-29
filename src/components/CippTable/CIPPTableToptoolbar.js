@@ -52,6 +52,12 @@ import { styled, alpha } from "@mui/material/styles";
 import { PDFExportButton, exportRowsToPdf } from "../pdfExportButton";
 import { CSVExportButton, exportRowsToCsv } from "../csvExportButton";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
+import {
+  getCategoryColor,
+  getCategoryIcon,
+  getCategoryLabel,
+  sortCategoryEntries,
+} from "../../utils/action-categories";
 import { useMediaQuery } from "@mui/material";
 import { CippQueueTracker } from "./CippQueueTracker";
 import { usePopover } from "../../hooks/use-popover";
@@ -159,45 +165,6 @@ const ModernButton = styled(Button)(({ theme }) => ({
 const RefreshButton = styled(IconButton)(({ theme }) => ({}));
 
 // Helper functions for bulk action category grouping and styling
-const getCategoryIcon = (category) => {
-  switch (category.toLowerCase()) {
-    case "view":
-      return <Visibility sx={{ fontSize: 14 }} />;
-    case "edit":
-      return <Edit sx={{ fontSize: 14 }} />;
-    case "security":
-      return <Security sx={{ fontSize: 14 }} />;
-    case "manage":
-      return <Settings sx={{ fontSize: 14 }} />;
-    case "danger":
-      return <Warning sx={{ fontSize: 14 }} />;
-    default:
-      return <Circle sx={{ fontSize: 8 }} />;
-  }
-};
-
-const getCategoryColor = (category) => {
-  switch (category.toLowerCase()) {
-    case "view":
-      return "success";
-    case "edit":
-      return "info";
-    case "security":
-      return "warning";
-    case "manage":
-      return "secondary";
-    case "danger":
-      return "error";
-    default:
-      return "text.secondary";
-  }
-};
-
-const getCategoryLabel = (category) =>
-  category
-    .replace(/([a-z])([A-Z])/g, "$1 $2")
-    .replace(/^./, (match) => match.toUpperCase());
-
 export const CIPPTableToptoolbar = ({
   api,
   simpleColumns,
@@ -297,7 +264,7 @@ export const CIPPTableToptoolbar = ({
       acc[category].push(action);
       return acc;
     }, {});
-    return Object.entries(grouped);
+    return sortCategoryEntries(Object.entries(grouped));
   }, [customBulkActions]);
 
   const handleExportSelectedToCsv = () => {

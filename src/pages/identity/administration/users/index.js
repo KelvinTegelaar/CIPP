@@ -494,6 +494,7 @@ const Page = () => {
           // Custom action to open manager picker when empty
           emptyAction: {
             label: "Set Manager",
+            category: "edit",
             type: "POST",
             url: "/api/ExecSetManager",
             data: {

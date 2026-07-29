@@ -16,7 +16,7 @@ const Page = () => {
       data: { ID: "id", displayName: "displayName", assignments: "assignments" },
       confirmText:
         "Are you sure you want to delete this Autopilot profile? This action cannot be undone.",
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

@@ -284,6 +284,7 @@ const Page = () => {
     },
     {
       label: "Assign to All Users",
+      category: "security",
       type: "POST",
       icon: <Public />,
       url: "/api/SetAuthMethod",
@@ -299,6 +300,7 @@ const Page = () => {
     },
     {
       label: "Configure",
+      category: "security",
       type: "POST",
       icon: <Settings />,
       url: "/api/SetAuthMethod",

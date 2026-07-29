@@ -15,12 +15,14 @@ const pageTitle = "Manual Searches";
 const actions = [
   {
     label: "View Results",
+    category: "view",
     link: "/tenant/administration/audit-logs/search-results?id=[id]&name=[displayName]",
     color: "primary",
     icon: <EyeIcon />,
   },
   {
     label: "Process Logs",
+    category: "manage",
     url: "/api/ExecAuditLogSearch",
     confirmText:
       "Process these logs? Note: This will only alert on logs that match your Alert Configuration rules.",

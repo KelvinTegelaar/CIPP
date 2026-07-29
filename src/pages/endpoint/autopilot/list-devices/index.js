@@ -148,7 +148,7 @@ const Page = () => {
       url: "/api/RemoveAPDevice",
       data: { ID: "id" },
       confirmText: "Are you sure you want to delete this device?",
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

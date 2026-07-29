@@ -233,6 +233,7 @@ const Page = () => {
     )
     .map((table) => ({
       label: `${table}`,
+      category: "view",
       customFunction: () => {
         setTableData([]);
         handleTableSelect(table);

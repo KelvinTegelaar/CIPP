@@ -58,7 +58,7 @@ const Page = () => {
         Type: "cippconnectortype",
       },
       confirmText: "Are you sure you want to delete this connector?",
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

@@ -30,7 +30,7 @@ const Page = () => {
         url: "/api/ExecManageRetentionPolicies",
         confirmText:
           "Are you sure you want to delete retention policy [Name]? This action cannot be undone.",
-        color: "danger",
+        color: "error",
         icon: <TrashIcon />,
         customDataformatter: (rows) => {
           const policies = Array.isArray(rows) ? rows : [rows];

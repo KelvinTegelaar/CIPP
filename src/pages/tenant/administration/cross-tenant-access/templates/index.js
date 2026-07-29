@@ -37,7 +37,7 @@ const Page = () => {
         GUID: "GUID",
       },
       confirmText: "Are you sure you want to delete this security template?",
-      color: "danger",
+      color: "error",
       icon: "Delete",
       relatedQueryKeys: ["CrossTenantTemplates"],
       category: "danger",

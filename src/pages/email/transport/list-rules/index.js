@@ -106,7 +106,7 @@ const Page = () => {
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to delete this rule?",
-      color: "danger",
+      color: "error",
       icon: <TrashIcon />,
       category: "danger",
     },

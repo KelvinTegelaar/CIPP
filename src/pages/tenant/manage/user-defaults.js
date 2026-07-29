@@ -250,6 +250,7 @@ const Page = () => {
 
   const createTemplateAction = {
     label: 'Create User Default Template',
+    category: "manage",
     type: 'POST',
     url: '/api/AddUserDefaults',
 

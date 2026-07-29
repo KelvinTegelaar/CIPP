@@ -140,7 +140,7 @@ const Page = () => {
       data: { ID: "GUID" },
       confirmText: 'Delete the template "[displayName]"?',
       icon: <TrashIcon />,
-      color: "danger",
+      color: "error",
       category: "danger",
     },
   ];

@@ -106,6 +106,7 @@ const MailboxRestoreDetails = ({ data }) => {
           actionItems={[
             {
               label: "View Report",
+              category: "view",
               noConfirm: true,
               customFunction: () => setDialogOpen(true),
               icon: <DocumentTextIcon />,

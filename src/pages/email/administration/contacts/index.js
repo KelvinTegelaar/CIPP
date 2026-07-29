@@ -127,7 +127,7 @@ const Page = () => {
         },
         confirmText:
           "Are you sure you want to delete this contact? Remember this will not work if the contact is AD Synced.",
-        color: "danger",
+        color: "error",
         icon: <TrashIcon />,
         condition: (row) => !row.IsDirSynced,
         category: "danger",

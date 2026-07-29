@@ -687,6 +687,7 @@ const Page = () => {
   const mailboxAccessActions = [
     {
       label: "Remove Permission",
+      category: "danger",
       type: "POST",
       icon: <Delete />,
       url: "/api/ExecModifyMBPerms",

@@ -232,6 +232,7 @@ const Page = () => {
   const sanctionActions = [
     {
       label: 'Mark as Company Sanctioned',
+      category: "security",
       type: 'POST',
       url: '/api/ExecShadowAISanction',
       icon: (
@@ -248,6 +249,7 @@ const Page = () => {
     },
     {
       label: 'Remove Company Sanctioned Status',
+      category: "security",
       type: 'POST',
       url: '/api/ExecShadowAISanction',
       icon: (
@@ -447,6 +449,7 @@ const Page = () => {
                   ...sanctionActions,
                   {
                     label: 'Application Users',
+                    category: "view",
                     icon: <UserGroupIcon />,
                     customComponent: (row, { drawerVisible, setDrawerVisible }) => (
                       <ApplicationUsersDrawer
