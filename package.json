@@ -41,7 +41,7 @@
     "@nivo/sankey": "^0.99.0",
     "@react-pdf/renderer": "^4.5.1",
     "@reduxjs/toolkit": "^2.12.0",
-    "@tanstack/query-sync-storage-persister": "^5.90.25",
+    "@tanstack/query-sync-storage-persister": "^5.101.4",
     "@tanstack/react-query": "^5.101.2",
     "@tanstack/react-query-devtools": "^5.101.2",
     "@tanstack/react-query-persist-client": "^5.101.2",
