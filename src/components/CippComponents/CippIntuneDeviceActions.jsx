@@ -13,6 +13,7 @@ import {
   AutoMode,
   Recycling,
   ManageAccounts,
+  GroupAdd,
 } from '@mui/icons-material'
 
 // Shared between the MEM devices list page and the View Device detail page.
@@ -72,6 +73,61 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       },
     ],
     confirmText: 'Select the User to set as the primary user for [deviceName]',
+  },
+  {
+    label: 'Add to Group',
+    type: 'POST',
+    icon: <GroupAdd />,
+    url: '/api/EditGroup',
+    customDataformatter: (row, action, formData) => {
+      // Build the device list from selected devices - the backend resolves the Entra
+      // directory object id from azureADDeviceId
+      const rows = Array.isArray(row) ? row : [row]
+      const addDevice = rows.map((r) => ({
+        label: r.deviceName,
+        value: r.azureADDeviceId,
+        addedFields: {
+          azureADDeviceId: r.azureADDeviceId,
+          deviceName: r.deviceName,
+        },
+      }))
+
+      // Handle multiple groups - return an array of requests (one per group)
+      const selectedGroups = Array.isArray(formData.groupId) ? formData.groupId : [formData.groupId]
+
+      return selectedGroups.map((group) => ({
+        AddDevice: addDevice,
+        tenantFilter: tenantFilter,
+        groupId: group,
+      }))
+    },
+    fields: [
+      {
+        type: 'autoComplete',
+        name: 'groupId',
+        label: 'Select groups to add the device to',
+        multiple: true,
+        creatable: false,
+        validators: { required: 'Please select at least one group' },
+        api: {
+          url: '/api/ListGroups',
+          labelField: (option) =>
+            option?.calculatedGroupType
+              ? `${option.displayName} (${option.calculatedGroupType})`
+              : (option?.displayName ?? ''),
+          valueField: 'id',
+          addedField: {
+            groupType: 'groupType',
+            groupName: 'displayName',
+          },
+          queryKey: `groups-${tenantFilter}`,
+          showRefresh: true,
+        },
+      },
+    ],
+    confirmText: 'Are you sure you want to add [deviceName] to the selected groups?',
+    multiPost: false,
+    allowResubmit: true,
   },
   {
     label: 'Rename Device',
