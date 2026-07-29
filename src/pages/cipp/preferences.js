@@ -38,6 +38,12 @@ const Page = () => {
     queryKey: "authmecipp",
   });
 
+  // Test suites for the default Home page suite selector (shared cache with the dashboard)
+  const reportsApi = ApiGetCall({
+    url: "/api/ListTestReports",
+    queryKey: "ListTestReports",
+  });
+
   const cleanedSettings = { ...settings };
 
   if (cleanedSettings.offboardingDefaults?.keepCopy) {
@@ -284,6 +290,23 @@ const Page = () => {
                               validators={{
                                 required: { value: true, message: "This field is required" },
                               }}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Default test suite on the Home page",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              creatable={false}
+                              name="defaultTestSuite"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={(reportsApi.data || []).map((report) => ({
+                                value: report.id,
+                                label: report.name,
+                              }))}
+                              isFetching={reportsApi.isFetching}
                             />
                           ),
                         },
