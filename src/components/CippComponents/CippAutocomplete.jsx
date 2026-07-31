@@ -332,6 +332,13 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     return keyParts.join('-')
   }, [defaultValue, preselectedValue, api?.url, currentTenant])
 
+  // keyed remount orphans an open single-mode popup (input unfocused, no close path), multiple refocuses in onChange
+  useEffect(() => {
+    if (!multiple) {
+      setOpen(false)
+    }
+  }, [stableKey, multiple])
+
   const lookupOptionByValue = useCallback(
     (value) => {
       const foundOption = memoizedOptions.find((option) => option.value === value)
