@@ -75,6 +75,21 @@ const Page = () => {
   const actionSyncResults = ApiGetCall({
     ...syncQuery,
   });
+
+  const [haloTestTicketQuery, setHaloTestTicketQuery] = useState({ url: "", waiting: false, queryKey: "" });
+  const actionHaloTestTicketResults = ApiGetCall({
+    ...haloTestTicketQuery,
+  });
+  const handleHaloTestTicket = () => {
+    if (haloTestTicketQuery.waiting) {
+      actionHaloTestTicketResults.refetch();
+    }
+    setHaloTestTicketQuery({
+      url: "/api/ExecHaloPSATestTicket",
+      waiting: true,
+      queryKey: `ExecHaloPSATestTicket-${router.query.id}`,
+    });
+  };
   const clearHIBPKey = ApiPostCall({
     relatedQueryKeys: ["Integrations"],
   });
@@ -195,6 +210,24 @@ const Page = () => {
                   </Button>
                 </Box>
               )}
+              {extension?.id === "HaloPSA" && (
+                <Box>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleHaloTestTicket()}
+                    disabled={
+                      actionHaloTestTicketResults?.isLoading ||
+                      integrations?.data?.HaloPSA?.Enabled !== true
+                    }
+                  >
+                    <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
+                      <BeakerIcon />
+                    </SvgIcon>
+                    Create Test Ticket
+                  </Button>
+                </Box>
+              )}
               {extension?.id === "HIBP" && (
                 <Box>
                   <Button
@@ -229,6 +262,7 @@ const Page = () => {
             </Stack>
             <CippApiResults apiObject={actionTestResults} />
             <CippApiResults apiObject={actionSyncResults} />
+            <CippApiResults apiObject={actionHaloTestTicketResults} />
             <CippApiResults apiObject={clearHIBPKey} />
           </CardContent>
           <Box sx={{ width: "100%" }}>
