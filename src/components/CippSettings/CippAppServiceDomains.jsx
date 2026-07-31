@@ -27,14 +27,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import {
-  CheckCircle,
-  Cancel,
-  HelpOutline,
-  Lock,
-  LockOpen,
-  Refresh,
-} from "@mui/icons-material";
+import { CheckCircle, Cancel, HelpOutline, Lock, LockOpen, Refresh } from "@mui/icons-material";
 import { PlusIcon, TrashIcon, WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import CippButtonCard from "../CippCards/CippButtonCard";
@@ -65,21 +58,39 @@ const computeRecordPlan = (hostname, siteInfo) => {
   const isApex = !isWildcard && labels.length <= 2;
   const asuidHost = isWildcard ? `asuid.${base}` : `asuid.${host}`;
 
+  // A CNAME alias proves ownership on its own, so subdomains don't get a TXT row up front —
+  // the ownership TXT is only needed for apex/A and wildcard domains (and proxied CNAMEs,
+  // which CheckDns detects and surfaces after the fact).
   return {
     host,
     isWildcard,
     isApex,
     recommendedType: isApex ? "A" : "CNAME",
+    asuidHost,
     records: [
-      {
-        purpose: "Ownership",
-        type: "TXT",
-        host: asuidHost,
-        value: siteInfo?.CustomDomainVerificationId ?? "",
-      },
+      ...(isApex || isWildcard
+        ? [
+            {
+              purpose: "Ownership",
+              type: "TXT",
+              host: asuidHost,
+              value: siteInfo?.CustomDomainVerificationId ?? "",
+            },
+          ]
+        : []),
       isApex
-        ? { purpose: "Alias", type: "A", host, value: siteInfo?.InboundIpAddress ?? "" }
-        : { purpose: "Alias", type: "CNAME", host, value: siteInfo?.DefaultHostName ?? "" },
+        ? {
+            purpose: "Alias",
+            type: "A",
+            host,
+            value: siteInfo?.InboundIpAddress ?? "",
+          }
+        : {
+            purpose: "Alias",
+            type: "CNAME",
+            host,
+            value: siteInfo?.DefaultHostName ?? "",
+          },
     ],
   };
 };
@@ -137,7 +148,9 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
   const [certDone, setCertDone] = useState(false);
   const [dnsResult, setDnsResult] = useState(null);
 
-  const dnsCheck = ApiPostCall({ onResult: (body) => setDnsResult(body?.Results ?? null) });
+  const dnsCheck = ApiPostCall({
+    onResult: (body) => setDnsResult(body?.Results ?? null),
+  });
   const bindingAction = ApiPostCall({
     relatedQueryKeys: [LIST_QUERY_KEY],
     onResult: () => {
@@ -186,6 +199,24 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
 
   const ownershipVerified = dnsResult?.OwnershipVerified ?? false;
   const aliasVerified = dnsResult?.AliasVerified ?? false;
+  const staleAsuid = dnsResult?.StaleAsuid ?? false;
+  const canProceed = dnsResult?.CanProceed ?? false;
+
+  // CheckDns can promote the ownership TXT to required after the fact (proxied CNAME) —
+  // splice it in ahead of the alias row when the client-side plan didn't include it.
+  const visibleRecords = useMemo(() => {
+    const rows = [...plan.records];
+    const hasOwnershipRow = rows.some((r) => r.purpose === "Ownership");
+    if (!hasOwnershipRow && (dnsResult?.OwnershipRequired || staleAsuid)) {
+      rows.unshift({
+        purpose: "Ownership",
+        type: "TXT",
+        host: dnsResult?.AsuidHost ?? plan.asuidHost,
+        value: siteInfo?.CustomDomainVerificationId ?? "",
+      });
+    }
+    return rows;
+  }, [plan, dnsResult, staleAsuid, siteInfo]);
 
   const runDnsCheck = () => {
     dnsCheck.mutate({
@@ -220,7 +251,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
           {steps.map((label, idx) => (
             <Step
               key={label}
-              completed={idx === 0 ? ownershipVerified || bindingDone : idx === 1 ? bindingDone : certDone}
+              completed={idx === 0 ? canProceed || bindingDone : idx === 1 ? bindingDone : certDone}
             >
               <StepLabel>{label}</StepLabel>
             </Step>
@@ -251,8 +282,9 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
               <>
                 <Alert severity="info">
                   Create the following records at your DNS provider, then click{" "}
-                  <strong>Check DNS</strong>. The <strong>{plan.recommendedType}</strong> alias record
-                  is recommended for this domain type; Azure also accepts the other alias type.
+                  <strong>Check DNS</strong>. The <strong>{plan.recommendedType}</strong> alias
+                  record is recommended for this domain type; Azure also accepts the other alias
+                  type.
                 </Alert>
                 <Table size="small">
                   <TableHead>
@@ -265,7 +297,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {plan.records.map((r) => (
+                    {visibleRecords.map((r) => (
                       <TableRow key={r.purpose}>
                         <TableCell>{r.purpose}</TableCell>
                         <TableCell>
@@ -275,7 +307,12 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
                           {r.host}
                           <CippCopyToClipBoard text={r.host} />
                         </TableCell>
-                        <TableCell sx={{ fontFamily: "monospace", wordBreak: "break-all" }}>
+                        <TableCell
+                          sx={{
+                            fontFamily: "monospace",
+                            wordBreak: "break-all",
+                          }}
+                        >
                           {r.value}
                           {r.value ? <CippCopyToClipBoard text={r.value} /> : null}
                         </TableCell>
@@ -288,22 +325,32 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
                 </Table>
                 {isWildcard && (
                   <Alert severity="warning">
-                    Wildcard domains verify by ownership only; the alias is validated by Azure when the
-                    binding is created. Note: App Service Managed Certificates do not support wildcard
-                    domains — you will need to upload your own certificate for HTTPS.
+                    Wildcard domains verify by ownership only; the alias is validated by Azure when
+                    the binding is created. Note: App Service Managed Certificates do not support
+                    wildcard domains — you will need to upload your own certificate for HTTPS.
                   </Alert>
                 )}
-                {dnsResult && !ownershipVerified && (
+                {staleAsuid && (
+                  <Alert severity="error">
+                    A TXT record at <code>{dnsResult?.AsuidHost}</code> exists with an outdated
+                    verification ID. <strong>Remove it</strong> (or update it to the value shown
+                    above) — a stale domain-verification record blocks Azure's validation even when
+                    the alias record is correct.
+                  </Alert>
+                )}
+                {dnsResult && !staleAsuid && !canProceed && (
                   <Alert severity="warning">
-                    The ownership TXT record hasn't propagated yet. DNS changes can take a few minutes.{" "}
+                    {dnsResult.OwnershipRequired
+                      ? "The required DNS records haven't propagated yet — DNS changes can take a few minutes. If your alias record is proxied (e.g. Cloudflare orange-cloud), Azure can't see it: either set it to DNS-only, or create the ownership TXT record shown above. "
+                      : "The alias record hasn't propagated yet. DNS changes can take a few minutes. "}
                     {dnsResult.AliasDetail}
                   </Alert>
                 )}
-                {dnsResult && ownershipVerified && !aliasVerified && !isWildcard && (
+                {dnsResult && canProceed && !aliasVerified && !isWildcard && (
                   <Alert severity="info">
-                    Ownership is verified. The alias record isn't visible yet — this is expected if the
-                    record is proxied (e.g. Cloudflare orange-cloud). You can continue; Azure will make
-                    the final check when the binding is created.
+                    Ownership is verified. The alias record isn't visible yet — this is expected if
+                    the record is proxied (e.g. Cloudflare orange-cloud). You can continue; Azure
+                    will make the final check when the binding is created.
                   </Alert>
                 )}
                 {dnsCheck.isError && (
@@ -338,7 +385,8 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
           <Stack spacing={2}>
             {certDone ? (
               <Alert severity="success" icon={<Lock fontSize="inherit" />}>
-                <strong>{hostname}</strong> is fully configured and secured with a managed certificate.
+                <strong>{hostname}</strong> is fully configured and secured with a managed
+                certificate.
               </Alert>
             ) : isWildcard ? (
               <Alert severity="warning">
@@ -348,8 +396,8 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
             ) : (
               <>
                 <Alert severity="info">
-                  Provision a free App Service Managed Certificate for <strong>{hostname}</strong> and
-                  enable the SNI SSL binding. This can take a minute or two.
+                  Provision a free App Service Managed Certificate for <strong>{hostname}</strong>{" "}
+                  and enable the SNI SSL binding. This can take a minute or two.
                 </Alert>
                 <Alert severity="warning">
                   If the domain's alias is proxied through a CDN (e.g. Cloudflare orange-cloud),
@@ -366,7 +414,10 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
       <DialogActions sx={{ px: 3, pb: 2, justifyContent: "space-between" }}>
         <Box>
           {activeStep > 0 && !managing && (
-            <Button onClick={() => setActiveStep((s) => s - 1)} disabled={anyPending([dnsCheck, bindingAction, certAction])}>
+            <Button
+              onClick={() => setActiveStep((s) => s - 1)}
+              disabled={anyPending([dnsCheck, bindingAction, certAction])}
+            >
               Back
             </Button>
           )}
@@ -384,11 +435,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
               >
                 {dnsCheck.isPending ? "Checking..." : "Check DNS"}
               </Button>
-              <Button
-                variant="contained"
-                onClick={() => setActiveStep(1)}
-                disabled={!ownershipVerified}
-              >
+              <Button variant="contained" onClick={() => setActiveStep(1)} disabled={!canProceed}>
                 Next
               </Button>
             </>
@@ -499,7 +546,11 @@ export const CippAppServiceDomains = () => {
         </Box>
         <Divider />
         <Stack direction="row" spacing={1} alignItems="center">
-          {row.Secured ? <Lock color="success" fontSize="small" /> : <LockOpen color="disabled" fontSize="small" />}
+          {row.Secured ? (
+            <Lock color="success" fontSize="small" />
+          ) : (
+            <LockOpen color="disabled" fontSize="small" />
+          )}
           <Typography variant="body2">{sslStateLabel(row.SslState)}</Typography>
         </Stack>
         {row.HostNameType && (
@@ -533,11 +584,11 @@ export const CippAppServiceDomains = () => {
     <Grid container spacing={3}>
       <Grid size={{ xs: 12 }}>
         <Alert severity="info">
-          Map custom domains to the App Service that hosts this CIPP instance. Each domain needs a DNS
-          ownership record and an alias record, a hostname binding, and (optionally) a free managed
-          TLS certificate — the wizard walks through all three and can be reopened at any time to
-          finish or fix a domain. The default <code>*.azurewebsites.net</code> hostname always remains
-          available.
+          Map custom domains to the App Service that hosts this CIPP instance. Each domain needs a
+          DNS ownership record and an alias record, a hostname binding, and (optionally) a free
+          managed TLS certificate — the wizard walks through all three and can be reopened at any
+          time to finish or fix a domain. The default <code>*.azurewebsites.net</code> hostname
+          always remains available.
         </Alert>
       </Grid>
 
@@ -565,8 +616,11 @@ export const CippAppServiceDomains = () => {
                   value={siteInfo?.CustomDomainVerificationId}
                 />
                 <Typography variant="caption" color="text.secondary">
-                  Use the default hostname as the CNAME target for subdomains, the inbound IP as the A
-                  record for apex domains, and the verification ID as the <code>asuid</code> TXT value.
+                  Use the default hostname as the CNAME target for subdomains, and the inbound IP as
+                  the A record for apex domains. The verification ID is only needed as an{" "}
+                  <code>asuid</code> TXT value for apex, wildcard or proxied domains — a subdomain
+                  CNAME verifies on its own, and a stale <code>asuid</code> record should be
+                  removed.
                 </Typography>
               </Stack>
             )}

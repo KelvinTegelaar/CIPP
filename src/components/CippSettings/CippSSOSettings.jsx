@@ -84,6 +84,15 @@ export const CippSSOSettings = () => {
   // (the original "Failed to create client secret after 5 attempts" bug).
   const showCreate = !isProvisioned && !canRepair;
   const isOrphanedError = statusKey === "error" && !hasAppId;
+  // Three states on purpose: warmup may not have attempted the grant yet, which is not the
+  // same as the tenant refusing it. Failure is a soft one — sign-in still works, users just
+  // see the consent prompt they see today.
+  const preconsentInfo =
+    data?.preconsented === true
+      ? { label: "Granted", color: "success" }
+      : data?.preconsented === false
+        ? { label: "Not Granted", color: "warning" }
+        : { label: "Not Checked", color: "default" };
 
   const handleCreate = () => {
     ssoAction.mutate({
@@ -203,6 +212,34 @@ export const CippSSOSettings = () => {
               <Grid size={{ xs: 8 }}>
                 <Chip label={statusInfo.label} color={statusInfo.color} size="small" />
               </Grid>
+
+              {hasAppId && (
+                <>
+                  <Grid size={{ xs: 4 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Admin Consent
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 8 }}>
+                    <Chip
+                      label={preconsentInfo.label}
+                      color={preconsentInfo.color}
+                      size="small"
+                    />
+                    {data?.preconsented === false && (
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ display: "block", mt: 0.5 }}
+                      >
+                        {data?.preconsentError
+                          ? `Users will be prompted to consent at sign-in. ${data.preconsentError}`
+                          : "Users will be prompted to consent at sign-in."}
+                      </Typography>
+                    )}
+                  </Grid>
+                </>
+              )}
 
               {data?.appId && (
                 <>
