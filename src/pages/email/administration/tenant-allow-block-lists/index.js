@@ -30,6 +30,7 @@ const Page = () => {
     "LastUsedDate",
     "LastModifiedDateTime",
     "ExpirationDate",
+    "RemoveAfter",
   ];
 
   return (
