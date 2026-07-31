@@ -450,7 +450,8 @@
         }
       }
     ],
-    "mappingRequired": true
+    "mappingRequired": true,
+    "autoMapSyncApi": true
   },
   {
     "name": "NinjaOne",
