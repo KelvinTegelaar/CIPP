@@ -5662,10 +5662,6 @@
         "options": [
           { "label": "Everyone", "value": "EveryoneUserOverride" },
           { "label": "People in my organization", "value": "EveryoneInCompanyUserOverride" },
-          {
-            "label": "People in my organization and trusted organizations",
-            "value": "EveryoneInSameAndFederatedCompanyUserOverride"
-          },
           { "label": "Only organizer", "value": "OrganizerOnlyUserOverride" }
         ]
       },
