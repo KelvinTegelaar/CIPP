@@ -71,20 +71,49 @@ export const CippContainerManagement = () => {
   });
 
   const data = containerStatus.data?.Results;
-  const channelInfo = channelLabels[data?.CurrentChannel] ?? channelLabels.unknown;
   const updateSettings = data?.UpdateSettings;
 
-  const channelOptions = (data?.ValidChannels ?? ["latest", "dev", "nightly"]).map((c) => ({
-    label: channelLabels[c]?.label ?? c,
-    value: c,
-  }));
+  // Presentation for a channel value. Standard channels get their friendly name; a pinned
+  // branch build reads as "fix-sso-thing — pinned a1b2c3d" rather than one long tag. Kept here
+  // rather than server-side so channelLabels stays the single source of truth for both the
+  // picker and the running-channel chip.
+  const prettyChannelLabel = (option) => {
+    const value = option?.value ?? option;
+    if (channelLabels[value]) return channelLabels[value].label;
+    const pinned = /-([0-9a-f]{7})$/.exec(value ?? "");
+    if (pinned) return `${value.replace(/-[0-9a-f]{7}$/, "")} — pinned ${pinned[1]}`;
+    return value;
+  };
 
+  const buildChannelPattern = data?.BuildChannelPattern
+    ? new RegExp(data.BuildChannelPattern)
+    : null;
+  const isBuildChannel = (value) =>
+    Boolean(value) && !(data?.ValidChannels ?? []).includes(value) &&
+    (buildChannelPattern ? buildChannelPattern.test(value) : false);
+
+  const selectedChannel = channelForm.watch("Channel");
+  const selectedChannelValue = selectedChannel?.value ?? selectedChannel;
+  const buildChannelSelected = isBuildChannel(selectedChannelValue);
+
+  // A branch build has no entry in channelLabels — show the tag itself rather than "Unknown",
+  // so it's obvious at a glance that the instance is running something off the supported track.
+  const channelInfo =
+    channelLabels[data?.CurrentChannel] ??
+    (isBuildChannel(data?.CurrentChannel)
+      ? { label: prettyChannelLabel({ value: data.CurrentChannel }), color: "error" }
+      : channelLabels.unknown);
+
+  // The option list is loaded by the autocomplete itself (see the api prop below), so seed the
+  // field from the running channel directly rather than looking it up in a local options array.
   useEffect(() => {
     if (containerStatus.isSuccess && data?.CurrentChannel) {
-      const current = channelOptions.find((o) => o.value === data.CurrentChannel);
-      if (current) {
-        channelForm.reset({ Channel: current });
-      }
+      channelForm.reset({
+        Channel: {
+          label: prettyChannelLabel({ value: data.CurrentChannel }),
+          value: data.CurrentChannel,
+        },
+      });
     }
   }, [containerStatus.isSuccess, data?.CurrentChannel]);
 
@@ -416,15 +445,40 @@ export const CippContainerManagement = () => {
               pulled on the next container restart. Switching to &quot;Dev&quot; or
               &quot;Nightly&quot; may include unstable or untested changes.
             </Alert>
+            {/*
+              Options come from ListChannels rather than a static list so branch builds appear
+              as soon as their image is pushed. showRefresh gives the field a refresh button —
+              push a branch, wait for the build, refresh, select it, no page reload.
+              Free text stays enabled as a fallback if the registry lookup fails; the backend
+              validates both the tag pattern and that the image actually exists.
+            */}
             <CippFormComponent
               type="autoComplete"
               name="Channel"
               label="Release Channel"
-              options={channelOptions}
               formControl={channelForm}
-              creatable={false}
+              api={{
+                url: "/api/ExecContainerManagement",
+                data: { Action: "ListChannels" },
+                queryKey: "containerChannels",
+                dataKey: "Results",
+                labelField: prettyChannelLabel,
+                valueField: "value",
+                excludeTenantFilter: true,
+                showRefresh: true,
+              }}
+              groupBy={(option) => option.rawData?.group ?? "Standard channels"}
+              creatable={true}
               multiple={false}
             />
+            {buildChannelSelected && (
+              <Alert severity="error">
+                <strong>{selectedChannelValue}</strong> is an unsupported build from an unmerged
+                branch. It does not receive updates, and it is deleted when its branch is — after
+                which this instance cannot start until you switch back to a standard channel. Use
+                it for testing only.
+              </Alert>
+            )}
             <CippApiResults apiObject={channelAction} />
           </Stack>
         </CardContent>
