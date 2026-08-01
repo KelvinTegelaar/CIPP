@@ -87,6 +87,24 @@ export const CippSSOSettings = () => {
   // Three states on purpose: warmup may not have attempted the grant yet, which is not the
   // same as the tenant refusing it. Failure is a soft one — sign-in still works, users just
   // see the consent prompt they see today.
+  // A container can have several custom domains bound, and EasyAuth derives its redirect_uri
+  // from the incoming Host header — so each one needs its own callback on the app registration.
+  // Show the hostname rather than the full /.auth/login/aad/callback URL; that's what an admin
+  // actually recognises.
+  const hostFromUri = (uri) => {
+    try {
+      return new URL(uri).host;
+    } catch {
+      return uri;
+    }
+  };
+  const signInHosts = (data?.redirectUris ?? []).map(hostFromUri);
+  const missingSignInHosts = (data?.missingRedirectUris ?? []).map(hostFromUri);
+  // When the backend couldn't read the domains bound to this container, an empty
+  // missingRedirectUris means "we don't know", not "everything is fine" — say so rather than
+  // showing a clean list a customer would read as confirmation.
+  const domainsUnverified = hasAppId && data?.domainsVerified === false;
+
   const preconsentInfo =
     data?.preconsented === true
       ? { label: "Granted", color: "success" }
@@ -153,6 +171,13 @@ export const CippSSOSettings = () => {
         Action: "Update",
         multiTenant: formControl.getValues("multiTenant"),
       },
+    });
+  };
+
+  const handleRefreshSignInUrls = () => {
+    ssoAction.mutate({
+      url: "/api/ExecSSOSetup",
+      data: { Action: "RefreshRedirectUris" },
     });
   };
 
@@ -252,6 +277,53 @@ export const CippSSOSettings = () => {
                     <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
                       {data.appId}
                     </Typography>
+                  </Grid>
+                </>
+              )}
+
+              {signInHosts.length > 0 && (
+                <>
+                  <Grid size={{ xs: 4 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Sign-in URLs
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 8 }}>
+                    <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                      {signInHosts.map((host) => (
+                        <Chip
+                          key={host}
+                          label={host}
+                          size="small"
+                          color={missingSignInHosts.includes(host) ? "warning" : "default"}
+                        />
+                      ))}
+                    </Stack>
+                    {missingSignInHosts.length > 0 && (
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ display: "block", mt: 0.5 }}
+                      >
+                        {missingSignInHosts.join(", ")}{" "}
+                        {missingSignInHosts.length === 1 ? "is" : "are"} bound to this
+                        instance but not registered on the app. Click{" "}
+                        <strong>Refresh Sign-in URLs</strong> to add{" "}
+                        {missingSignInHosts.length === 1 ? "it" : "them"}.
+                      </Typography>
+                    )}
+                    {domainsUnverified && (
+                      <Typography
+                        variant="caption"
+                        color="warning.main"
+                        sx={{ display: "block", mt: 0.5 }}
+                      >
+                        This list may be incomplete — the custom domains bound to this
+                        instance could not be read, so a domain that cannot sign in would not
+                        show up here.
+                        {data?.domainsError ? ` (${data.domainsError})` : ""}
+                      </Typography>
+                    )}
                   </Grid>
                 </>
               )}
@@ -416,6 +488,14 @@ export const CippSSOSettings = () => {
 
             {isProvisioned && (
               <>
+                <Button
+                  variant="outlined"
+                  color={missingSignInHosts.length > 0 ? "warning" : "inherit"}
+                  onClick={handleRefreshSignInUrls}
+                  disabled={ssoAction.isPending}
+                >
+                  Refresh Sign-in URLs
+                </Button>
                 <Button
                   variant="outlined"
                   color="warning"
