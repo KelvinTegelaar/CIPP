@@ -73,10 +73,14 @@ export const CippContainerManagement = () => {
   const data = containerStatus.data?.Results;
   const updateSettings = data?.UpdateSettings;
 
-  // Presentation for a channel value. Standard channels get their friendly name; a pinned
-  // branch build reads as "fix-sso-thing — pinned a1b2c3d" rather than one long tag. Kept here
-  // rather than server-side so channelLabels stays the single source of truth for both the
-  // picker and the running-channel chip.
+  // Presentation for a channel value. Standard channels get their friendly name; a branch build
+  // shows its tag, which is the thing that matches the branch it came from. Kept here rather
+  // than server-side so channelLabels stays the single source of truth for both the picker and
+  // the running-channel chip.
+  //
+  // The "pinned" arm only exists for immutable -<shortsha> tags left over from an earlier
+  // version of preview-container.yml; it no longer creates them, and cleanup sweeps the
+  // stragglers. Remove this once none remain.
   const prettyChannelLabel = (option) => {
     const value = option?.value ?? option;
     if (channelLabels[value]) return channelLabels[value].label;
