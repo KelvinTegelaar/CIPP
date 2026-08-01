@@ -443,7 +443,8 @@ const HistoryChart = ({ data, rangeMinutes, title, icon, children }) => {
       <CardHeader title={title} titleTypographyProps={{ variant: "h6" }} avatar={icon} />
       <CardContent sx={{ pt: 0 }}>
         <Box sx={{ height: 250 }}>
-          <ResponsiveContainer width="100%" height="100%">
+          {/* numeric height, recharts warns before its first measure when both sizes are percentages */}
+          <ResponsiveContainer width="100%" height={250}>
             {children(data, theme)}
           </ResponsiveContainer>
         </Box>

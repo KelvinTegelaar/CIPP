@@ -70,7 +70,8 @@ export const SecureScoreCard = ({ data, isLoading }) => {
         ) : (
           <>
             <Box sx={{ height: 250 }}>
-              <ResponsiveContainer width="100%" height="100%">
+              {/* numeric height, recharts warns before its first measure when both sizes are percentages */}
+              <ResponsiveContainer width="100%" height="250">
                 {(() => {
                   const sortedData = [...data].sort(
                     (a, b) => new Date(a.createdDateTime) - new Date(b.createdDateTime)
