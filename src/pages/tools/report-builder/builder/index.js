@@ -495,17 +495,19 @@ const DatabaseBlock = ({
       cardActions={
         <Stack direction="row" spacing={0.5} alignItems="center">
           <Tooltip title="Refresh data">
-            <IconButton
-              size="small"
-              onClick={handleRefresh}
-              disabled={dbCacheApi.isFetching || !currentTenant}
-            >
-              {dbCacheApi.isFetching ? (
-                <CircularProgress size={16} />
-              ) : (
-                <Refresh fontSize="small" />
-              )}
-            </IconButton>
+            <span>
+              <IconButton
+                size="small"
+                onClick={handleRefresh}
+                disabled={dbCacheApi.isFetching || !currentTenant}
+              >
+                {dbCacheApi.isFetching ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  <Refresh fontSize="small" />
+                )}
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title="Move up">
             <span>

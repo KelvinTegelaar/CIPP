@@ -3051,46 +3051,48 @@ export const ExecutiveReportButton = (props) => {
         </MenuItem>
       ) : (
         <Tooltip title="Generate Executive Report with preview and configuration">
-          <Button
-            variant="contained"
-            startIcon={<PictureAsPdf />}
-            onClick={() => setPreviewOpen(true)}
-            sx={{
-              minWidth: 0,
-              width: '100%',
-              pl: 1,
-              pr: 1,
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              justifyContent: 'center',
-              '& .MuiButton-startIcon': {
-                marginLeft: 0,
-                marginRight: 0.75,
-                flexShrink: 0,
-              },
-              fontWeight: 'bold',
-              textTransform: 'none',
-              borderRadius: 2,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-              transition: 'all 0.2s ease-in-out',
-            }}
-            {...other}
-          >
-            <Box
-              component="span"
+          <Box component="span" sx={{ display: 'inline-flex', width: '100%', minWidth: 0 }}>
+            <Button
+              variant="contained"
+              startIcon={<PictureAsPdf />}
+              onClick={() => setPreviewOpen(true)}
               sx={{
                 minWidth: 0,
-                maxWidth: '100%',
+                width: '100%',
+                pl: 1,
+                pr: 1,
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
-                textAlign: 'center',
+                justifyContent: 'center',
+                '& .MuiButton-startIcon': {
+                  marginLeft: 0,
+                  marginRight: 0.75,
+                  flexShrink: 0,
+                },
+                fontWeight: 'bold',
+                textTransform: 'none',
+                borderRadius: 2,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                transition: 'all 0.2s ease-in-out',
               }}
+              {...other}
             >
-              Executive Summary
-            </Box>
-          </Button>
+              <Box
+                component="span"
+                sx={{
+                  minWidth: 0,
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  textAlign: 'center',
+                }}
+              >
+                Executive Summary
+              </Box>
+            </Button>
+          </Box>
         </Tooltip>
       )}
 

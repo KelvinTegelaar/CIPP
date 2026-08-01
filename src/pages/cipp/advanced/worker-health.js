@@ -735,14 +735,20 @@ const Page = () => {
                   </Typography>
                 )}
                 <Tooltip title={effectivePaused ? "Resume auto-refresh" : "Pause auto-refresh"}>
-                  <IconButton
-                    size="small"
-                    onClick={() => setPaused((p) => !p)}
-                    color={effectivePaused ? "warning" : "default"}
-                    disabled={isImported}
-                  >
-                    {effectivePaused ? <PlayArrow fontSize="small" /> : <Pause fontSize="small" />}
-                  </IconButton>
+                  <span>
+                    <IconButton
+                      size="small"
+                      onClick={() => setPaused((p) => !p)}
+                      color={effectivePaused ? "warning" : "default"}
+                      disabled={isImported}
+                    >
+                      {effectivePaused ? (
+                        <PlayArrow fontSize="small" />
+                      ) : (
+                        <Pause fontSize="small" />
+                      )}
+                    </IconButton>
+                  </span>
                 </Tooltip>
                 <Tooltip title="Export page data as JSON">
                   <IconButton size="small" onClick={handleExport}>

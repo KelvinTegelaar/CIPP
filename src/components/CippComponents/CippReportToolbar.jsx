@@ -128,12 +128,14 @@ export const CippReportToolbar = () => {
           }
           arrow
         >
-          <CippAddTestReportDrawer
-            buttonText="Edit"
-            mode="edit"
-            reportToEdit={selectedCustomReport}
-            disabled={!selectedCustomReport}
-          />
+          <Box component="span">
+            <CippAddTestReportDrawer
+              buttonText="Edit"
+              mode="edit"
+              reportToEdit={selectedCustomReport}
+              disabled={!selectedCustomReport}
+            />
+          </Box>
         </Tooltip>
         <Tooltip
           title={

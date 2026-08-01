@@ -89,26 +89,28 @@ const Page = () => {
         Edit Settings
       </Button>
       <Tooltip title="Refresh Data">
-        <IconButton
-          className="MuiIconButton"
-          disabled={GlobalQuarantinePolicy?.isLoading || GlobalQuarantinePolicy?.isFetching}
-          onClick={() => {
-            GlobalQuarantinePolicy.refetch();
-          }}
-        >
-          <SvgIcon
-            fontSize="small"
-            sx={{
-              animation: GlobalQuarantinePolicy?.isFetching ? "spin 1s linear infinite" : "none",
-              "@keyframes spin": {
-                "0%": { transform: "rotate(0deg)" },
-                "100%": { transform: "rotate(360deg)" },
-              },
+        <span>
+          <IconButton
+            className="MuiIconButton"
+            disabled={GlobalQuarantinePolicy?.isLoading || GlobalQuarantinePolicy?.isFetching}
+            onClick={() => {
+              GlobalQuarantinePolicy.refetch();
             }}
           >
-            <Sync />
-          </SvgIcon>
-        </IconButton>
+            <SvgIcon
+              fontSize="small"
+              sx={{
+                animation: GlobalQuarantinePolicy?.isFetching ? "spin 1s linear infinite" : "none",
+                "@keyframes spin": {
+                  "0%": { transform: "rotate(0deg)" },
+                  "100%": { transform: "rotate(360deg)" },
+                },
+              }}
+            >
+              <Sync />
+            </SvgIcon>
+          </IconButton>
+        </span>
       </Tooltip>
     </>,
   ];
