@@ -699,9 +699,9 @@ const Page = () => {
 
   const jobFilters = useMemo(
     () => [
-      { filterName: "Queued", value: [{ id: "Status", value: "Queued" }] },
-      { filterName: "Running", value: [{ id: "Status", value: "Running" }] },
-      { filterName: "Failed", value: [{ id: "Status", value: "Failed" }] },
+      { filterName: "Queued", value: [{ id: "Status", value: "Queued" }], type: "column" },
+      { filterName: "Running", value: [{ id: "Status", value: "Running" }], type: "column" },
+      { filterName: "Failed", value: [{ id: "Status", value: "Failed" }], type: "column" },
     ],
     []
   );
