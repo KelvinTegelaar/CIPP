@@ -1109,7 +1109,7 @@ export const nativeMenuItems = [
         scope: 'global',
       },
       {
-        title: 'Community Repositories',
+        title: 'Catalog',
         path: '/tools/community-repos',
         roles: ['editor', 'admin', 'superadmin'],
         permissions: ['CIPP.Core.*'],
