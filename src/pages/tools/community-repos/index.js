@@ -279,17 +279,37 @@ const Page = () => {
                         </Typography>
                       )}
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1.5 }}>
-                        {(Array.isArray(repo.TemplateTypes) ? repo.TemplateTypes : []).map(
-                          (type) => (
-                            <Chip
-                              key={type}
-                              label={getTemplateTypeLabel(type)}
-                              size="small"
-                              color="primary"
-                              variant="outlined"
-                            />
-                          ),
-                        )}
+                        {(() => {
+                          // Distinct labels, capped: the official repo is tagged with every type
+                          const typeLabels = [
+                            ...new Set(
+                              (Array.isArray(repo.TemplateTypes) ? repo.TemplateTypes : []).map(
+                                (type) => getTemplateTypeLabel(type),
+                              ),
+                            ),
+                          ];
+                          const shown = typeLabels.slice(0, 4);
+                          return (
+                            <>
+                              {shown.map((label) => (
+                                <Chip
+                                  key={label}
+                                  label={label}
+                                  size="small"
+                                  color="primary"
+                                  variant="outlined"
+                                />
+                              ))}
+                              {typeLabels.length > shown.length && (
+                                <Chip
+                                  label={`+${typeLabels.length - shown.length} more`}
+                                  size="small"
+                                  variant="outlined"
+                                />
+                              )}
+                            </>
+                          );
+                        })()}
                         {repo.BuiltIn === true && (
                           <Chip label="Built-in" size="small" color="info" variant="outlined" />
                         )}
