@@ -677,7 +677,7 @@ export const CIPPTableToptoolbar = React.memo(
         // update filters to include graph explorer presets
         setFilterList([...filters, ...graphPresetList])
       }
-    }, [presetList?.isSuccess, simpleColumns])
+    }, [presetList?.isSuccess, presetList?.data, simpleColumns])
 
     return (
       <>
