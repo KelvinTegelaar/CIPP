@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Overview",
+    "path": "/tenant/standards-v3",
+    "icon": "Dashboard"
+  },
+  {
+    "label": "Alignment",
+    "path": "/tenant/standards-v3/alignment",
+    "icon": "FactCheck"
+  },
+  {
+    "label": "Template Overview",
+    "path": "/tenant/standards-v3/templates",
+    "icon": "Description"
+  }
+]

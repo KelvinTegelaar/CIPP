@@ -220,6 +220,14 @@ export const nativeMenuItems = [
             permissions: ['Tenant.Standards.*'],
             scope: 'global',
           },
+          // Standards V3 mockup - hidden from the nav for now; reach it directly
+          // at /tenant/standards-v3
+          // {
+          //   title: 'Standards V3 (Preview)',
+          //   path: '/tenant/standards-v3',
+          //   permissions: ['Tenant.Standards.*'],
+          //   scope: 'global',
+          // },
           {
             title: 'Best Practice Analyser',
             path: '/tenant/standards/bpa-report',
