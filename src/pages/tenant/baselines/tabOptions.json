@@ -1,17 +1,17 @@
 [
   {
     "label": "Overview",
-    "path": "/tenant/standards-v3",
+    "path": "/tenant/baselines",
     "icon": "Dashboard"
   },
   {
     "label": "Alignment",
-    "path": "/tenant/standards-v3/alignment",
+    "path": "/tenant/baselines/alignment",
     "icon": "FactCheck"
   },
   {
     "label": "Baselines",
-    "path": "/tenant/standards-v3/templates",
+    "path": "/tenant/baselines/templates",
     "icon": "Description"
   }
 ]

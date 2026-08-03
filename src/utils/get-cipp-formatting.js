@@ -287,11 +287,11 @@ export const getCippFormatting = (
     'timestamp',
     'DateTime',
     'LastRun',
-    'lastRun', // Standards V3
-    'lastRemediated', // Standards V3
-    'deviationAt', // Standards V3
-    'deviationExpires', // Standards V3
-    'enteredStageAt', // Standards V3
+    'lastRun', // Baselines
+    'lastRemediated', // Baselines
+    'deviationAt', // Baselines
+    'deviationExpires', // Baselines
+    'enteredStageAt', // Baselines
     'LastRefresh',
     'createdDateTime',
     'activatedDateTime',
@@ -618,7 +618,7 @@ export const getCippFormatting = (
     }
   }
   if (cellName === 'deviationState') {
-    // Standards V3 deviation lifecycle states
+    // Baseline deviation lifecycle states
     if (isText) return data
     const deviationColors = {
       compliant: 'success',
@@ -632,7 +632,7 @@ export const getCippFormatting = (
   }
 
   if (cellName === 'lastOutcome') {
-    // Standards V3 run outcomes
+    // Baseline run outcomes
     if (isText) return data
     const outcomeColors = {
       compliant: 'success',
@@ -646,7 +646,7 @@ export const getCippFormatting = (
   }
 
   if (cellName === 'feedEvent') {
-    // Standards V3 deviation feed events
+    // Baseline deviation feed events
     if (isText) return data
     const eventColors = {
       detected: 'error',
@@ -660,14 +660,14 @@ export const getCippFormatting = (
   }
 
   if (cellName === 'sourceTemplate') {
-    // Standards V3: which template's configuration is effective for this row
+    // Baselines: which template's configuration is effective for this row
     if (isText) return data
     const color = data === 'Tenant Override' ? 'success' : 'info'
     return <Chip variant="outlined" label={data} size="small" color={color} />
   }
 
   if (cellName === 'remediationPosture') {
-    // Standards V3 template posture
+    // Baseline template posture
     if (isText) return data
     const postureColors = {
       remediate: 'success',

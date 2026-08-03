@@ -14,25 +14,22 @@ import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import tabOptions from '../tabOptions.json'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import {
-  getTemplateStageOccupancy,
-  standardsV3Templates,
-} from '../../../../data/standards-v3-mock-data'
+import { parseCippDate } from '../../../../utils/parse-cipp-date'
 
 const Page = () => {
-  const pageTitle = 'Standards V3 - Baselines'
+  const pageTitle = 'Baselines'
 
   const actions = [
     {
       label: 'Edit Baseline',
-      link: '/tenant/standards-v3/template?id=[GUID]',
+      link: '/tenant/baselines/template?id=[GUID]',
       icon: <Edit />,
       color: 'success',
       target: '_self',
     },
     {
       label: 'Clone & Edit Baseline',
-      link: '/tenant/standards-v3/template?id=[GUID]&clone=true',
+      link: '/tenant/baselines/template?id=[GUID]&clone=true',
       icon: <CopyAll />,
       color: 'success',
       target: '_self',
@@ -40,24 +37,26 @@ const Page = () => {
     {
       label: 'Run Baseline Now',
       type: 'POST',
-      url: '/api/standards/run',
+      url: '/api/ExecBaselineRun',
       icon: <PlayArrow />,
       color: 'info',
       data: { mode: '!run', templateId: 'GUID' },
       confirmText:
         'Force a run of [templateName] against its assigned tenants? Standards in report-only stages are compared without changes.',
       multiPost: false,
+      relatedQueryKeys: ['ListBaseline*'],
     },
     {
       label: 'Delete Baseline',
       type: 'POST',
-      url: '/api/standards/definitions',
+      url: '/api/RemoveBaseline',
       icon: <Delete />,
       color: 'error',
-      data: { action: '!deleteTemplate', templateId: 'GUID' },
+      data: { ID: 'GUID' },
       confirmText:
         'Delete [templateName]? Its standards stop being resolved for the assigned tenants on the next run.',
       multiPost: false,
+      relatedQueryKeys: ['ListBaseline*'],
     },
   ]
 
@@ -66,7 +65,7 @@ const Page = () => {
     title: 'Baseline Details',
     contentPadding: 0,
     children: (row) => {
-      const occupancy = getTemplateStageOccupancy(row.GUID)
+      const occupancy = row.occupancy ?? []
       const totalTenantsInRollout = occupancy.reduce(
         (acc, stage) => acc + stage.tenants.length,
         0
@@ -86,7 +85,7 @@ const Page = () => {
               {
                 label: 'Last Updated',
                 value: row.updatedAt
-                  ? new Date(row.updatedAt).toLocaleString()
+                  ? parseCippDate(row.updatedAt).toLocaleString()
                   : 'N/A',
               },
               { label: 'Updated By', value: row.updatedBy },
@@ -184,7 +183,7 @@ const Page = () => {
                     sx={{ display: 'block' }}
                   >
                     Next time-based advance out of this stage:{' '}
-                    {new Date(stage.nextAdvanceAt).toLocaleDateString()}
+                    {parseCippDate(stage.nextAdvanceAt).toLocaleDateString()}
                   </Typography>
                 )}
               </Box>
@@ -219,7 +218,7 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      data={standardsV3Templates}
+      apiUrl="/api/ListBaselines"
       tenantInTitle={false}
       actions={actions}
       offCanvas={offCanvas}
@@ -227,7 +226,7 @@ const Page = () => {
       cardButton={
         <Button
           component={Link}
-          href="/tenant/standards-v3/template"
+          href="/tenant/baselines/template"
           startIcon={
             <SvgIcon fontSize="small">
               <AddBox />
@@ -247,7 +246,7 @@ const Page = () => {
         'updatedAt',
         'updatedBy',
       ]}
-      queryKey="standardsV3-templates"
+      queryKey="ListBaselines-table"
     />
   )
 }

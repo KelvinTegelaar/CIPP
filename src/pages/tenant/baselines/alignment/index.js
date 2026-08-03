@@ -26,6 +26,7 @@ import {
   CheckCircle,
   Compare,
   Edit,
+  LayersClear,
   PlayArrow,
   RemoveCircle,
   TaskAlt,
@@ -42,25 +43,16 @@ import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
-import CippStandardV3WhatIfReport, {
+import CippBaselineWhatIfReport, {
   describeStageConditions,
-} from '../../../../components/CippStandardsV3/CippStandardV3WhatIfReport'
-import CippStandardV3Settings, {
+} from '../../../../components/CippBaselines/CippBaselineWhatIfReport'
+import CippBaselineStandardSettings, {
   variableValuesFromExpected,
-} from '../../../../components/CippStandardsV3/CippStandardV3Settings'
+} from '../../../../components/CippBaselines/CippBaselineStandardSettings'
 import { useDialog } from '../../../../hooks/use-dialog'
 import { useSettings } from '../../../../hooks/use-settings'
-import {
-  getStandardAggregates,
-  getTemplateTenantStates,
-  getTenantDeviationFeed,
-  getTenantSummaries,
-  scoreRows,
-  standardsV3Catalog,
-  standardsV3History,
-  standardsV3StageStates,
-  standardsV3Templates,
-} from '../../../../data/standards-v3-mock-data'
+import { ApiGetCall } from '../../../../api/ApiCall'
+import { parseCippDate } from '../../../../utils/parse-cipp-date'
 
 const deviationColors = {
   Compliant: 'success',
@@ -68,6 +60,7 @@ const deviationColors = {
   Detected: 'error',
   Suppressed: 'warning',
   'License Missing': 'default',
+  'No Data': 'default',
 }
 
 const propertyList = (properties) => (
@@ -137,7 +130,7 @@ const jsonBox = (value, isCompliant) => (
 )
 
 const Page = () => {
-  const pageTitle = 'Standards V3 - Alignment'
+  const pageTitle = 'Baseline Alignment'
   const currentTenant = useSettings().currentTenant
   const [viewMode, setViewMode] = useState('tenant')
   const [advanceTarget, setAdvanceTarget] = useState(null)
@@ -148,15 +141,59 @@ const Page = () => {
   const overrideDialog = useDialog()
   const [acceptPathTarget, setAcceptPathTarget] = useState(null)
   const acceptPathDialog = useDialog()
+  const [removeOverrideTarget, setRemoveOverrideTarget] = useState(null)
+  const removeOverrideDialog = useDialog()
   const isTenantView = viewMode === 'tenant'
   const isTemplateView = viewMode === 'template'
 
-  const tenantSummaries = getTenantSummaries()
-  // Mock data: fall back to the first mock tenant when the selected tenant is not in the set.
-  const tenant =
-    tenantSummaries.find((entry) => entry.tenantId === currentTenant) ??
-    tenantSummaries[0]
-  const standardAggregates = getStandardAggregates()
+  // Refetch everything baseline-related after any triage/run/override action:
+  // the wildcard invalidates every ListBaseline* query, including the '-table'
+  // keys the table instances register.
+  const relatedQueryKeys = ['ListBaseline*']
+
+  const resolvedApi = ApiGetCall({
+    url: '/api/ListBaselineAlignment',
+    data: { tenantFilter: currentTenant },
+    queryKey: `ListBaselineAlignment-${currentTenant}`,
+    waiting: isTenantView && !!currentTenant,
+  })
+  const aggregateApi = ApiGetCall({
+    url: '/api/ListBaselineAlignment',
+    data: { byStandard: true },
+    queryKey: 'ListBaselineAlignment-byStandard',
+    waiting: !isTenantView && !isTemplateView,
+  })
+  const baselinesApi = ApiGetCall({
+    url: '/api/ListBaselines',
+    queryKey: 'ListBaselines',
+  })
+  const definitionsApi = ApiGetCall({
+    url: '/api/ListBaselineStandards',
+    queryKey: 'ListBaselineStandards',
+  })
+
+  const catalog = definitionsApi.data ?? []
+  const baselines = baselinesApi.data ?? []
+  const standardAggregates = aggregateApi.data?.standards ?? []
+  const tenant = {
+    displayName: currentTenant,
+    tenantFilter: currentTenant,
+    tenantId: currentTenant,
+    total: 0,
+    applicable: 0,
+    licenseMissing: 0,
+    compliant: 0,
+    accepted: 0,
+    detected: 0,
+    suppressed: 0,
+    verifiedPercentage: 0,
+    alignedPercentage: 0,
+    acceptedPercentage: 0,
+    ...(resolvedApi.data?.summary ?? {}),
+    rows: resolvedApi.data?.rows ?? [],
+  }
+  const stageStates = resolvedApi.data?.stageStates ?? []
+  const deviationFeed = resolvedApi.data?.deviationFeed ?? []
 
   const triageFormFields = ({ formHook }) => (
     <Stack spacing={2} sx={{ mt: 2 }}>
@@ -187,7 +224,7 @@ const Page = () => {
     {
       label: 'Remediate Now',
       type: 'POST',
-      url: '/api/standards/run',
+      url: '/api/ExecBaselineRun',
       icon: <PlayArrow />,
       color: 'success',
       data: {
@@ -198,13 +235,14 @@ const Page = () => {
       confirmText:
         'Deploy the expected value of [standardLabel] to [tenantFilter]? This runs a one-off remediation from the configured expected value.',
       multiPost: false,
+      relatedQueryKeys,
       condition: (row) =>
         ['Detected', 'Suppressed'].includes(row.deviationState),
     },
     {
       label: 'Compare Now',
       type: 'POST',
-      url: '/api/standards/run',
+      url: '/api/ExecBaselineRun',
       icon: <Compare />,
       color: 'info',
       data: {
@@ -215,11 +253,12 @@ const Page = () => {
       confirmText:
         'Run a compare-only pass of [standardLabel] against [tenantFilter]? No changes will be made.',
       multiPost: false,
+      relatedQueryKeys,
     },
     {
       label: 'Accept Deviation',
       type: 'POST',
-      url: '/api/standards/deviation',
+      url: '/api/ExecUpdateBaselineDeviation',
       icon: <CheckCircle />,
       color: 'info',
       data: {
@@ -231,12 +270,13 @@ const Page = () => {
       confirmText:
         'Accept the current deviation on [standardLabel]? The tenant counts as aligned, and alerts are silenced until the acceptance expires.',
       multiPost: false,
+      relatedQueryKeys,
       condition: (row) => row.deviationState === 'Detected',
     },
     {
       label: 'Suppress Alerts',
       type: 'POST',
-      url: '/api/standards/deviation',
+      url: '/api/ExecUpdateBaselineDeviation',
       icon: <VolumeOff />,
       color: 'warning',
       data: {
@@ -248,12 +288,13 @@ const Page = () => {
       confirmText:
         'Suppress alerts for [standardLabel]? The tenant keeps counting as non-compliant, but alerts are muted.',
       multiPost: false,
+      relatedQueryKeys,
       condition: (row) => row.deviationState === 'Detected',
     },
     {
       label: 'Clear Deviation Status',
       type: 'POST',
-      url: '/api/standards/deviation',
+      url: '/api/ExecUpdateBaselineDeviation',
       icon: <RemoveCircle />,
       color: 'error',
       data: {
@@ -264,13 +305,14 @@ const Page = () => {
       confirmText:
         'Clear the Accept/Suppress status on [standardLabel]? The deviation re-surfaces as Detected on the next run.',
       multiPost: false,
+      relatedQueryKeys,
       condition: (row) =>
         ['Accepted', 'Suppressed'].includes(row.deviationState),
     },
     {
       label: 'Mark Task Complete',
       type: 'POST',
-      url: '/api/standards/deviation',
+      url: '/api/ExecUpdateBaselineDeviation',
       icon: <TaskAlt />,
       color: 'success',
       data: {
@@ -281,13 +323,14 @@ const Page = () => {
       confirmText:
         'Mark the manual task [standardLabel] as completed for [tenantFilter]? A new deviation is raised again on the configured recurrence.',
       multiPost: false,
+      relatedQueryKeys,
       condition: (row) =>
         row.standardName === 'ManualTask' && row.deviationState === 'Detected',
     },
     {
       label: 'Create Tenant Override',
       type: 'POST',
-      url: '/api/standards/definitions',
+      url: '/api/ExecBaselineOverride',
       icon: <Tune />,
       color: 'info',
       data: {
@@ -296,7 +339,7 @@ const Page = () => {
         standard: 'standardName',
       },
       children: ({ formHook, row }) => {
-        const standard = standardsV3Catalog.find(
+        const standard = catalog.find(
           (entry) => entry.name === row.standardName
         )
         if (!standard) return null
@@ -307,7 +350,7 @@ const Page = () => {
               currently applies to this tenant. Saving creates a tenant-specific
               override that replaces them.
             </Typography>
-            <CippStandardV3Settings
+            <CippBaselineStandardSettings
               standard={standard}
               formControl={formHook}
               namePrefix="variables"
@@ -322,12 +365,34 @@ const Page = () => {
       confirmText:
         'Create a tenant-specific override of [standardLabel] for [tenantFilter]?',
       multiPost: false,
+      relatedQueryKeys,
       condition: (row) => {
-        const standard = standardsV3Catalog.find(
+        const standard = catalog.find(
           (entry) => entry.name === row.standardName
         )
-        return Object.keys(standard?.variables ?? {}).length > 0
+        // An existing override is removed, not re-created.
+        return (
+          row.sourceTemplate !== 'Tenant Override' &&
+          Object.keys(standard?.variables ?? {}).length > 0
+        )
       },
+    },
+    {
+      label: 'Remove Tenant Override',
+      type: 'POST',
+      url: '/api/ExecBaselineOverride',
+      icon: <LayersClear />,
+      color: 'error',
+      data: {
+        action: '!deleteOverride',
+        tenantFilter: 'tenantFilter',
+        standard: 'standardName',
+      },
+      confirmText:
+        'Remove the tenant override on [standardLabel] for [tenantFilter]? The tenant falls back to the configuration inherited from the wider baseline on the next run.',
+      multiPost: false,
+      relatedQueryKeys,
+      condition: (row) => row.sourceTemplate === 'Tenant Override',
     },
   ]
 
@@ -335,7 +400,7 @@ const Page = () => {
     {
       label: 'Deploy To All Tenants',
       type: 'POST',
-      url: '/api/standards/run',
+      url: '/api/ExecBaselineRun',
       icon: <PlayArrow />,
       color: 'success',
       data: {
@@ -346,11 +411,12 @@ const Page = () => {
       confirmText:
         'Deploy [standardLabel] to every applicable tenant from its configured expected value? Accepted and suppressed deviations are left untouched.',
       multiPost: false,
+      relatedQueryKeys,
     },
     {
       label: 'Compare All Tenants',
       type: 'POST',
-      url: '/api/standards/run',
+      url: '/api/ExecBaselineRun',
       icon: <Compare />,
       color: 'info',
       data: {
@@ -361,10 +427,11 @@ const Page = () => {
       confirmText:
         'Run a compare-only pass of [standardLabel] on every tenant? No changes will be made.',
       multiPost: false,
+      relatedQueryKeys,
     },
     {
       label: 'Edit Baseline',
-      link: '/tenant/standards-v3/template?id=[templateId]',
+      link: '/tenant/baselines/template?id=[templateId]',
       icon: <Edit />,
       color: 'success',
       target: '_self',
@@ -376,12 +443,15 @@ const Page = () => {
     title: 'Standard Details',
     contentPadding: 0,
     children: (row) => {
-      // The offcanvas renders with an empty row until one is selected.
-      const differences = Object.keys(row.expectedValue ?? {}).filter(
-        (key) =>
-          JSON.stringify(row.expectedValue[key]) !==
-          JSON.stringify(row.currentValue?.[key])
-      )
+      // The offcanvas renders with an empty row until one is selected. Rows without
+      // collected data (No Data) have nothing to diff against.
+      const differences = row.currentValue
+        ? Object.keys(row.expectedValue ?? {}).filter(
+            (key) =>
+              JSON.stringify(row.expectedValue[key]) !==
+              JSON.stringify(row.currentValue?.[key])
+          )
+        : []
       const properties = [
         { label: 'Standard', value: row.standardLabel },
         {
@@ -393,7 +463,9 @@ const Page = () => {
         { label: 'Configured By', value: row.sourceTemplate },
         {
           label: 'Last Run',
-          value: row.lastRun ? new Date(row.lastRun).toLocaleString() : 'N/A',
+          value: row.lastRun
+            ? parseCippDate(row.lastRun).toLocaleString()
+            : 'N/A',
         },
         { label: 'Last Outcome', value: row.lastOutcome },
       ]
@@ -406,7 +478,7 @@ const Page = () => {
         properties.push({
           label: 'Expires',
           value: row.deviationExpires
-            ? new Date(row.deviationExpires).toLocaleDateString()
+            ? parseCippDate(row.deviationExpires).toLocaleDateString()
             : 'Never',
         })
       }
@@ -477,6 +549,21 @@ const Page = () => {
                 >
                   {JSON.stringify(tier.value)}
                 </Typography>
+                {tier.effective && tier.templateName === 'Tenant Override' && (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="error"
+                    startIcon={<LayersClear />}
+                    sx={{ mt: 1 }}
+                    onClick={() => {
+                      setRemoveOverrideTarget(row)
+                      removeOverrideDialog.handleOpen()
+                    }}
+                  >
+                    Remove Override
+                  </Button>
+                )}
               </Box>
             ))}
             <Typography variant="caption" color="text.secondary">
@@ -589,7 +676,13 @@ const Page = () => {
             ) : (
               <>
                 {jsonBox(row.expectedValue, true)}
-                {jsonBox(row.currentValue, true)}
+                {row.currentValue ? (
+                  jsonBox(row.currentValue, true)
+                ) : (
+                  <Typography variant="caption" color="text.secondary">
+                    No data has been collected for this standard yet.
+                  </Typography>
+                )}
               </>
             )}
             <Typography
@@ -603,7 +696,7 @@ const Page = () => {
             >
               Last Runs
             </Typography>
-            {standardsV3History.map((run) => (
+            {(row.history ?? []).map((run) => (
               <Box
                 key={run.runId}
                 sx={{
@@ -621,7 +714,7 @@ const Page = () => {
                   justifyContent="space-between"
                 >
                   <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                    {new Date(run.timestamp).toLocaleString()}
+                    {parseCippDate(run.timestamp).toLocaleString()}
                   </Typography>
                   <Chip
                     variant="outlined"
@@ -743,32 +836,53 @@ const Page = () => {
                   {tenantRow.deviationReason}
                 </Typography>
               )}
-              {['Detected', 'Suppressed'].includes(
-                tenantRow.deviationState
-              ) && (
+              {(['Detected', 'Suppressed'].includes(tenantRow.deviationState) ||
+                tenantRow.sourceTemplate === 'Tenant Override') && (
                 <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    startIcon={<CheckCircle />}
-                    onClick={() => {
-                      setTriageTarget(tenantRow)
-                      triageDialog.handleOpen()
-                    }}
-                  >
-                    Accept Deviation
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    startIcon={<Tune />}
-                    onClick={() => {
-                      setOverrideTarget(tenantRow)
-                      overrideDialog.handleOpen()
-                    }}
-                  >
-                    Tenant Override
-                  </Button>
+                  {['Detected', 'Suppressed'].includes(
+                    tenantRow.deviationState
+                  ) && (
+                    <>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<CheckCircle />}
+                        onClick={() => {
+                          setTriageTarget(tenantRow)
+                          triageDialog.handleOpen()
+                        }}
+                      >
+                        Accept Deviation
+                      </Button>
+                      {tenantRow.sourceTemplate !== 'Tenant Override' && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<Tune />}
+                          onClick={() => {
+                            setOverrideTarget(tenantRow)
+                            overrideDialog.handleOpen()
+                          }}
+                        >
+                          Tenant Override
+                        </Button>
+                      )}
+                    </>
+                  )}
+                  {tenantRow.sourceTemplate === 'Tenant Override' && (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="error"
+                      startIcon={<LayersClear />}
+                      onClick={() => {
+                        setRemoveOverrideTarget(tenantRow)
+                        removeOverrideDialog.handleOpen()
+                      }}
+                    >
+                      Remove Override
+                    </Button>
+                  )}
                 </Stack>
               )}
             </Box>
@@ -781,7 +895,7 @@ const Page = () => {
   const templateActions = [
     {
       label: 'Edit Baseline',
-      link: '/tenant/standards-v3/template?id=[GUID]',
+      link: '/tenant/baselines/template?id=[GUID]',
       icon: <Edit />,
       color: 'success',
       target: '_self',
@@ -789,13 +903,14 @@ const Page = () => {
     {
       label: 'Run Baseline Now',
       type: 'POST',
-      url: '/api/standards/run',
+      url: '/api/ExecBaselineRun',
       icon: <PlayArrow />,
       color: 'info',
       data: { mode: '!run', templateId: 'GUID' },
       confirmText:
         'Force a run of [templateName] against its assigned tenants? Standards in report-only stages are compared without changes.',
       multiPost: false,
+      relatedQueryKeys,
     },
   ]
 
@@ -805,7 +920,7 @@ const Page = () => {
     contentPadding: 0,
     children: (row) => {
       // The offcanvas renders with an empty row until one is selected.
-      const tenantStates = row.GUID ? getTemplateTenantStates(row.GUID) : []
+      const tenantStates = row.tenantStates ?? []
       return (
         <Stack spacing={0}>
           {propertyList([
@@ -863,7 +978,7 @@ const Page = () => {
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       Entered{' '}
-                      {new Date(state.enteredStageAt).toLocaleDateString()}
+                      {parseCippDate(state.enteredStageAt).toLocaleDateString()}
                     </Typography>
                   </Box>
                   <Stack direction="row" spacing={1} alignItems="center">
@@ -902,7 +1017,7 @@ const Page = () => {
                     Next: Stage {state.currentStage + 1} ({state.nextStageName})
                     - advances when {describeStageConditions(state.nextStage)}
                     {state.estimatedAdvanceAt
-                      ? `, estimated ${new Date(state.estimatedAdvanceAt).toLocaleDateString()}`
+                      ? `, estimated ${parseCippDate(state.estimatedAdvanceAt).toLocaleDateString()}`
                       : ''}
                   </Typography>
                 ) : (
@@ -1016,46 +1131,6 @@ const Page = () => {
     </ToggleButtonGroup>
   )
 
-  // Per-tenant rollout state: which stage of each assigned template this tenant is in.
-  const templateById = Object.fromEntries(
-    standardsV3Templates.map((template) => [template.GUID, template])
-  )
-  const stageStates = (standardsV3StageStates[tenant.tenantId] ?? [])
-    .map((state) => {
-      const template = templateById[state.templateId]
-      if (!template) return null
-      const nextStage = template.stages[state.currentStage]
-      return {
-        ...state,
-        templateName: template.templateName,
-        totalStages: template.stages.length,
-        stageName: template.stages[state.currentStage - 1]?.name,
-        nextStage,
-        nextStageName: nextStage?.name,
-        manualAdvance:
-          nextStage?.conditions?.some(
-            (condition) => condition.type === 'manual'
-          ) ?? false,
-      }
-    })
-    .filter(Boolean)
-
-  // Aligned % against the standards a template has rolled out to this tenant so far.
-  const templateAlignedPercentage = (state) => {
-    const template = templateById[state.templateId]
-    if (!template) return null
-    const activeStandards = new Set(
-      template.stages
-        .slice(0, state.currentStage)
-        .flatMap((stage) => stage.standards)
-    )
-    const rows = tenant.rows.filter((entry) =>
-      activeStandards.has(entry.standardName)
-    )
-    if (!rows.length) return null
-    return scoreRows(rows).alignedPercentage
-  }
-
   const rolloutCard = (
     <CippButtonCard title={`Staged Rollout - ${tenant.displayName}`}>
       <Stack spacing={1.5}>
@@ -1086,21 +1161,20 @@ const Page = () => {
                   {state.templateName}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Entered {new Date(state.enteredStageAt).toLocaleDateString()}
+                  Entered{' '}
+                  {parseCippDate(state.enteredStageAt).toLocaleDateString()}
                 </Typography>
               </Box>
               <Stack direction="row" spacing={1} alignItems="center">
-                {templateAlignedPercentage(state) !== null && (
+                {state.alignedPercentage !== null && (
                   <Tooltip title="Alignment against the standards this baseline has rolled out to this tenant so far">
                     <Chip
                       variant="outlined"
                       size="small"
                       color={
-                        templateAlignedPercentage(state) === 100
-                          ? 'success'
-                          : 'warning'
+                        state.alignedPercentage === 100 ? 'success' : 'warning'
                       }
-                      label={`${templateAlignedPercentage(state)}% aligned`}
+                      label={`${state.alignedPercentage}% aligned`}
                     />
                   </Tooltip>
                 )}
@@ -1202,12 +1276,8 @@ const Page = () => {
   )
 
   const overrideStandard = overrideTarget
-    ? standardsV3Catalog.find(
-        (entry) => entry.name === overrideTarget.standardName
-      )
+    ? catalog.find((entry) => entry.name === overrideTarget.standardName)
     : null
-
-  const deviationFeed = getTenantDeviationFeed(tenant.tenantId)
 
   // The triage/override/advance dialogs are shared between the tenant layout and the
   // table page for the other views.
@@ -1218,7 +1288,7 @@ const Page = () => {
           createDialog={advanceDialog}
           title="Move to Next Stage"
           api={{
-            url: '/api/standards/rollout',
+            url: '/api/ExecBaselineStage',
             type: 'POST',
             data: {
               action: '!advanceStage',
@@ -1227,6 +1297,7 @@ const Page = () => {
             },
             confirmText:
               'Move [tenantFilter] into stage [nextStageName] of [templateName]? The tenant receives all standards from that stage on the next run.',
+            relatedQueryKeys,
           }}
           row={advanceTarget}
         />
@@ -1250,7 +1321,7 @@ const Page = () => {
             },
           ]}
           api={{
-            url: '/api/standards/deviation',
+            url: '/api/ExecUpdateBaselineDeviation',
             type: 'POST',
             data: {
               action: '!Accept',
@@ -1259,6 +1330,7 @@ const Page = () => {
             },
             confirmText:
               'Accept the current deviation on [standardLabel] for [tenantFilter]? The tenant counts as aligned, and alerts are silenced until the acceptance expires.',
+            relatedQueryKeys,
           }}
           row={triageTarget}
         />
@@ -1275,7 +1347,7 @@ const Page = () => {
                 {overrideTarget.tenantName}. Saving creates a tenant-specific
                 override that replaces them.
               </Typography>
-              <CippStandardV3Settings
+              <CippBaselineStandardSettings
                 standard={overrideStandard}
                 formControl={formHook}
                 namePrefix="variables"
@@ -1287,7 +1359,7 @@ const Page = () => {
             </Stack>
           )}
           api={{
-            url: '/api/standards/definitions',
+            url: '/api/ExecBaselineOverride',
             type: 'POST',
             data: {
               action: '!createOverride',
@@ -1296,6 +1368,7 @@ const Page = () => {
             },
             confirmText:
               'Create a tenant-specific override of [standardLabel] for [tenantFilter]?',
+            relatedQueryKeys,
           }}
           row={overrideTarget}
         />
@@ -1306,7 +1379,7 @@ const Page = () => {
           title="Accept Property Deviation"
           fields={[{ type: 'textField', name: 'reason', label: 'Reason' }]}
           api={{
-            url: '/api/standards/deviation',
+            url: '/api/ExecUpdateBaselineDeviation',
             type: 'POST',
             data: {
               action: '!AcceptPath',
@@ -1316,8 +1389,28 @@ const Page = () => {
             },
             confirmText:
               'Accept the deviation on property [path] of [standardLabel]? Drift on any other property of this standard still raises a deviation.',
+            relatedQueryKeys,
           }}
           row={acceptPathTarget}
+        />
+      )}
+      {removeOverrideTarget && (
+        <CippApiDialog
+          createDialog={removeOverrideDialog}
+          title="Remove Tenant Override"
+          api={{
+            url: '/api/ExecBaselineOverride',
+            type: 'POST',
+            data: {
+              action: '!deleteOverride',
+              tenantFilter: 'tenantFilter',
+              standard: 'standardName',
+            },
+            confirmText:
+              'Remove the tenant override on [standardLabel] for [tenantFilter]? The tenant falls back to the configuration inherited from the wider baseline on the next run.',
+            relatedQueryKeys,
+          }}
+          row={removeOverrideTarget}
         />
       )}
     </>
@@ -1337,18 +1430,23 @@ const Page = () => {
               justifyContent="space-between"
             >
               {modeToggle}
-              <CippStandardV3WhatIfReport
+              <CippBaselineWhatIfReport
                 tenant={tenant}
                 stageStates={stageStates}
+                baselines={baselines}
+                catalog={catalog}
               />
             </Stack>
             {tenantScoreBar}
             {rolloutCard}
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12, lg: 8 }}>
+              <Grid size={{ xs: 12, lg: 6 }}>
                 <CippDataTable
+                  cardProps={{ style: { width: '100%', height: '100%' } }}
+                  queryKey={`ListBaselineAlignment-${currentTenant}-standards-table`}
                   title={`Applicable Standards - ${tenant.displayName}`}
                   data={tenant.rows}
+                  refreshFunction={resolvedApi}
                   actions={tenantActions}
                   offCanvas={tenantOffCanvas}
                   offCanvasOnRowClick={true}
@@ -1363,10 +1461,13 @@ const Page = () => {
                   ]}
                 />
               </Grid>
-              <Grid size={{ xs: 12, lg: 4 }}>
+              <Grid size={{ xs: 12, lg: 6 }}>
                 <CippDataTable
+                  cardProps={{ style: { width: '100%', height: '100%' } }}
+                  queryKey={`ListBaselineAlignment-${currentTenant}-feed-table`}
                   title="Deviations"
                   data={deviationFeed}
+                  refreshFunction={resolvedApi}
                   simpleColumns={[
                     'timestamp',
                     'feedEvent',
@@ -1387,7 +1488,8 @@ const Page = () => {
     <CippTablePage
       key={viewMode}
       title={pageTitle}
-      data={isTemplateView ? standardsV3Templates : standardAggregates}
+      data={isTemplateView ? baselines : standardAggregates}
+      refreshFunction={isTemplateView ? baselinesApi : aggregateApi}
       tenantInTitle={false}
       tableFilter={
         <Stack spacing={2}>
@@ -1427,7 +1529,7 @@ const Page = () => {
               'totalTenants',
             ]
       }
-      queryKey={`standardsV3-alignment-${viewMode}`}
+      queryKey={`ListBaselineAlignment-${viewMode}-table`}
     />
   )
 }

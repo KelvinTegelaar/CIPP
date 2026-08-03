@@ -7,9 +7,12 @@ import {
   Chip,
   Divider,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Stack,
+  SvgIcon,
   Tab,
   Tabs,
   TextField,
@@ -20,12 +23,14 @@ import { Grid } from '@mui/system'
 import {
   Add,
   CheckCircle,
+  ContentCopy,
   Delete,
   ExpandMore,
   RadioButtonUnchecked,
   SaveRounded,
 } from '@mui/icons-material'
-import { useCallback, useEffect, useState } from 'react'
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { get } from 'lodash'
@@ -35,15 +40,12 @@ import CippButtonCard from '../../../components/CippCards/CippButtonCard'
 import { CippPropertyListCard } from '../../../components/CippCards/CippPropertyListCard'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
 import { CippFormTenantSelector } from '../../../components/CippComponents/CippFormTenantSelector'
-import CippStandardV3Item from '../../../components/CippStandardsV3/CippStandardV3Item'
-import CippStandardV3Dialog from '../../../components/CippStandardsV3/CippStandardV3Dialog'
+import CippBaselineStandardItem from '../../../components/CippBaselines/CippBaselineStandardItem'
+import CippBaselineStandardDialog from '../../../components/CippBaselines/CippBaselineStandardDialog'
 import { PermissionButton } from '../../../utils/permissions.js'
-import {
-  getTemplateStageOccupancy,
-  standardsV3Catalog,
-  standardsV3Templates,
-  standardsV3Variables,
-} from '../../../data/standards-v3-mock-data'
+import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
+import { parseCippDate } from '../../../utils/parse-cipp-date'
+import { CippApiResults } from '../../../components/CippComponents/CippApiResults'
 
 const conditionTypeOptions = [
   { label: 'Time in previous stage', value: 'time' },
@@ -69,25 +71,17 @@ const logicOptions = [
   { label: 'Any condition may match (OR)', value: 'or' },
 ]
 
-const variableOptions = standardsV3Variables.map((variable) => ({
-  label: variable,
-  value: variable,
-}))
-
-const catalogByName = Object.fromEntries(
-  standardsV3Catalog.map((standard) => [standard.name, standard])
-)
-
-// Convert a stored condition into the option objects the form fields expect.
+// Convert a stored condition into the option objects the form fields expect. Stored
+// variables become their own option so prefill never depends on the variables list load.
 const toConditionDefaults = (condition) => ({
   type: conditionTypeOptions.find((option) => option.value === condition.type),
   days: condition.days,
   unit: unitOptions.find(
     (option) => option.value === (condition.unit ?? 'days')
   ),
-  variable: variableOptions.find(
-    (option) => option.value === condition.variable
-  ),
+  variable: condition.variable
+    ? { label: condition.variable, value: condition.variable }
+    : undefined,
   operator: operatorOptions.find(
     (option) => option.value === condition.operator
   ),
@@ -97,7 +91,7 @@ const toConditionDefaults = (condition) => ({
 const buildEditorStages = (templateDefinition) =>
   (
     templateDefinition?.stages ?? [
-      { name: 'Stage 1', standards: [], conditions: [], logic: 'and' },
+      { name: 'Baseline', standards: [], conditions: [], logic: 'and' },
     ]
   ).map((stage) => ({
     name: stage.name,
@@ -126,6 +120,9 @@ const StagePanel = ({
   onRemoveStandard,
   canRemoveStage,
   tenantsInStage,
+  catalogByName,
+  registerSerializer,
+  variableOptions,
 }) => {
   const formControl = useForm({
     mode: 'onBlur',
@@ -186,6 +183,49 @@ const StagePanel = ({
       standard: catalogByName[instanceKey.split('#')[0]],
     }))
     .filter((entry) => Boolean(entry.standard))
+
+  // Registered every render so the save handler always serializes the latest form values.
+  useEffect(() => {
+    const unwrapValue = (value) =>
+      value && typeof value === 'object' && 'value' in value
+        ? value.value
+        : value
+    registerSerializer(stageIndex, () => {
+      const values = formControl.getValues()
+      return {
+        name: stage.name,
+        logic: unwrapValue(values.conditionLogic) ?? 'and',
+        conditions: conditionIds.map((conditionId) => {
+          const condition = values.conditions?.[conditionId] ?? {}
+          return {
+            type: unwrapValue(condition.type),
+            days: condition.days,
+            unit: unwrapValue(condition.unit),
+            variable: unwrapValue(condition.variable),
+            operator: unwrapValue(condition.operator),
+            value: condition.value,
+          }
+        }),
+        standards: stage.standards.map((instanceKey) => {
+          const config = values[instanceKey] ?? {}
+          return {
+            standard: instanceKey.split('#')[0],
+            instance: instanceKey,
+            variables: Object.fromEntries(
+              Object.entries(config.variables ?? {}).map(([key, value]) => [
+                key,
+                unwrapValue(value),
+              ])
+            ),
+            remediateEnabled: config.remediateEnabled ?? true,
+            alertEnabled: config.alertEnabled ?? true,
+            alertOnRemediate: config.alertOnRemediate ?? false,
+          }
+        }),
+      }
+    })
+    return () => registerSerializer(stageIndex, null)
+  })
 
   return (
     <Box hidden={hidden}>
@@ -338,7 +378,7 @@ const StagePanel = ({
                               formControl={formControl}
                               options={variableOptions}
                               multiple={false}
-                              creatable={false}
+                              creatable={true}
                             />
                           </Box>
                           <Box sx={{ flex: 1 }}>
@@ -438,7 +478,7 @@ const StagePanel = ({
         )}
         <Stack spacing={1.5}>
           {stageStandards.map(({ instanceKey, standard }) => (
-            <CippStandardV3Item
+            <CippBaselineStandardItem
               key={instanceKey}
               standard={standard}
               instanceId={instanceKey}
@@ -465,10 +505,38 @@ const Page = () => {
   const [stages, setStages] = useState(() => buildEditorStages(undefined))
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dialogStageIndex, setDialogStageIndex] = useState(0)
-  const [saved, setSaved] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [addStageAnchor, setAddStageAnchor] = useState(null)
+  const stageSerializers = useRef({})
 
-  const template = standardsV3Templates.find(
+  const definitionsApi = ApiGetCall({
+    url: '/api/ListBaselineStandards',
+    queryKey: 'ListBaselineStandards',
+  })
+  const baselinesApi = ApiGetCall({
+    url: '/api/ListBaselines',
+    queryKey: 'ListBaselines',
+  })
+  // Saving a baseline invalidates every baseline-related query: the baselines list (direct
+  // and table), all alignment views for every tenant, and the standards catalog.
+  const saveBaseline = ApiPostCall({
+    relatedQueryKeys: ['ListBaseline*'],
+  })
+  const customVariablesApi = ApiGetCall({
+    url: '/api/ListCustomVariables',
+    queryKey: 'ListCustomVariables',
+  })
+  // Graduation conditions compare against CIPP custom variables; reserved tenant tokens
+  // are not useful graduation signals. Creatable, so any variable name can be typed.
+  const variableOptions = (customVariablesApi.data?.Results ?? [])
+    .filter((variable) => variable.Type !== 'reserved')
+    .map((variable) => ({ label: variable.Variable, value: variable.Variable }))
+
+  const catalog = definitionsApi.data ?? []
+  const catalogByName = Object.fromEntries(
+    catalog.map((standard) => [standard.name, standard])
+  )
+  const template = (baselinesApi.data ?? []).find(
     (entry) => entry.GUID === router.query.id
   )
   const formControl = useForm({
@@ -494,6 +562,17 @@ const Page = () => {
         ? `${template.templateName} (Clone)`
         : template.templateName,
       description: template.description,
+      alertEmails: template.alertEmails ?? '',
+      alertWebhookUrl: template.alertWebhookUrl ?? '',
+      // The selectors take option objects; stored assignment values are the raw values.
+      tenantFilter: (template.assignedTenants ?? []).map((value) => ({
+        label: value,
+        value,
+      })),
+      excludedTenants: (template.excludedTenants ?? []).map((value) => ({
+        label: value,
+        value,
+      })),
     })
   }
 
@@ -531,7 +610,6 @@ const Page = () => {
   }, [unsavedChanges, handleRouteChange, router.events])
 
   const markDirty = () => {
-    setSaved(false)
     setHasUnsavedChanges(true)
   }
 
@@ -566,6 +644,24 @@ const Page = () => {
   const handleRemoveStage = (stageIndex) => {
     mutateStages((prev) => prev.filter((_, index) => index !== stageIndex))
     setActiveStage((prev) => Math.max(0, prev - 1))
+  }
+
+  // Duplicate a stage (standards + graduation condition structure) as a new stage at the end.
+  const handleCopyStage = (stageIndex) => {
+    mutateStages((prev) => {
+      const source = prev[stageIndex]
+      return [
+        ...prev,
+        {
+          name: `${source.name} (Copy)`,
+          standards: [...source.standards],
+          conditionIds: [...source.conditionIds],
+          conditionDefaults: { ...source.conditionDefaults },
+          logic: source.logic,
+        },
+      ]
+    })
+    setActiveStage(stages.length)
   }
 
   const handleRemoveStandard = (stageIndex, standardName) =>
@@ -614,9 +710,15 @@ const Page = () => {
     setDialogOpen(true)
   }
 
-  const stageOccupancy = loadedTemplateId
-    ? getTemplateStageOccupancy(loadedTemplateId)
-    : []
+  const stageOccupancy = template?.occupancy ?? []
+
+  const registerSerializer = useCallback((index, serialize) => {
+    if (serialize) {
+      stageSerializers.current[index] = serialize
+    } else {
+      delete stageSerializers.current[index]
+    }
+  }, [])
 
   const uniqueStandards = [
     ...new Set(stages.flatMap((stage) => stage.standards)),
@@ -643,20 +745,56 @@ const Page = () => {
   const isSaveDisabled = steps.some((step) => !step.done)
 
   const handleSave = () => {
-    setSaved(true)
+    const values = formControl.getValues()
+    saveBaseline.mutate({
+      url: '/api/AddBaseline',
+      data: {
+        GUID: router.query.clone ? undefined : (loadedTemplateId ?? undefined),
+        templateName: values.templateName,
+        description: values.description,
+        assignedTenants: (values.tenantFilter ?? []).map(
+          (entry) => entry?.value ?? entry
+        ),
+        excludedTenants: (values.excludedTenants ?? []).map(
+          (entry) => entry?.value ?? entry
+        ),
+        alertEmails: values.alertEmails,
+        alertWebhookUrl: values.alertWebhookUrl,
+        stages: stages.map(
+          (stage, index) =>
+            stageSerializers.current[index]?.() ?? {
+              name: stage.name,
+              logic: 'and',
+              conditions: [],
+              standards: [],
+            }
+        ),
+      },
+    })
     setHasUnsavedChanges(false)
-    // Re-baseline the form so isDirty clears after the (mock) save.
+    // Re-baseline the form so isDirty clears after the save.
     formControl.reset(formControl.getValues())
   }
 
-  const pageTitle = template
-    ? 'Edit Standards V3 Baseline'
-    : 'Add Standards V3 Baseline'
+  const pageTitle = template ? 'Edit Baseline' : 'Add Baseline'
 
   return (
     <Box sx={{ flexGrow: 1, px: 3, maxWidth: '1900px' }}>
       <CippHead title={pageTitle} />
       <Stack spacing={2}>
+        <Box>
+          <Button
+            color="inherit"
+            onClick={() => router.back()}
+            startIcon={
+              <SvgIcon fontSize="small">
+                <ArrowLeftIcon />
+              </SvgIcon>
+            }
+          >
+            Back
+          </Button>
+        </Box>
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -680,19 +818,45 @@ const Page = () => {
               variant="outlined"
               color="primary"
               startIcon={<Add />}
-              onClick={handleAddStage}
+              endIcon={<ExpandMore />}
+              onClick={(event) => setAddStageAnchor(event.currentTarget)}
             >
               Add Stage
             </Button>
+            <Menu
+              anchorEl={addStageAnchor}
+              open={Boolean(addStageAnchor)}
+              onClose={() => setAddStageAnchor(null)}
+            >
+              <MenuItem
+                onClick={() => {
+                  handleAddStage()
+                  setAddStageAnchor(null)
+                }}
+              >
+                <ListItemIcon>
+                  <Add fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Add empty stage</ListItemText>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleCopyStage(activeStage)
+                  setAddStageAnchor(null)
+                }}
+              >
+                <ListItemIcon>
+                  <ContentCopy fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>
+                  Copy currently selected stage ({stages[activeStage]?.name})
+                </ListItemText>
+              </MenuItem>
+            </Menu>
           </Stack>
         </Stack>
 
-        {saved && (
-          <Alert severity="success" onClose={() => setSaved(false)}>
-            Mock save - in the real implementation this writes the baseline, its
-            stages, and the per-stage standard configuration.
-          </Alert>
-        )}
+        <CippApiResults apiObject={saveBaseline} />
 
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, lg: 4 }}>
@@ -794,7 +958,7 @@ const Page = () => {
                   {
                     label: 'Last updated',
                     value: template
-                      ? `${new Date(template.updatedAt).toLocaleString()} by ${template.updatedBy}`
+                      ? `${parseCippDate(template.updatedAt).toLocaleString()} by ${template.updatedBy}`
                       : 'Not saved yet',
                   },
                 ]}
@@ -831,6 +995,9 @@ const Page = () => {
                     onRemoveStandard={handleRemoveStandard}
                     canRemoveStage={index > 0}
                     tenantsInStage={stageOccupancy[index]?.tenants ?? null}
+                    catalogByName={catalogByName}
+                    registerSerializer={registerSerializer}
+                    variableOptions={variableOptions}
                   />
                 ))}
               </CardContent>
@@ -839,10 +1006,10 @@ const Page = () => {
         </Grid>
       </Stack>
 
-      <CippStandardV3Dialog
+      <CippBaselineStandardDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        catalog={standardsV3Catalog}
+        catalog={catalog}
         selectedStandards={stages[dialogStageIndex]?.standards ?? []}
         onToggle={handleToggleStandard}
       />

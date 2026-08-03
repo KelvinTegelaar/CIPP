@@ -27,7 +27,7 @@ const impactColors = {
 
 // Browse-and-add picker for V3 standard definitions: search, category filter chips, and one
 // card per standard with its metadata slice (impact, secure score, recommended-by).
-export const CippStandardV3Dialog = ({
+export const CippBaselineStandardDialog = ({
   open,
   onClose,
   catalog,
@@ -218,4 +218,4 @@ export const CippStandardV3Dialog = ({
   )
 }
 
-export default CippStandardV3Dialog
+export default CippBaselineStandardDialog

@@ -22,7 +22,7 @@ export const variableValuesFromExpected = (standard, expectedValue) => {
 // The configurable settings of a V3 standard, rendered as real form fields from the
 // definition's `variables`. Used by the template editor and the tenant-override dialog —
 // users always configure standards through the same fields, never raw JSON.
-export const CippStandardV3Settings = ({
+export const CippBaselineStandardSettings = ({
   standard,
   formControl,
   namePrefix,
@@ -84,4 +84,4 @@ export const CippStandardV3Settings = ({
   )
 }
 
-export default CippStandardV3Settings
+export default CippBaselineStandardSettings

@@ -1,5 +1,5 @@
 export const CippTranslations = {
-  // Standards V3
+  // Baselines
   deviationState: 'State',
   sourceTemplate: 'Configured By',
   standardLabel: 'Standard',

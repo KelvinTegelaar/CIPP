@@ -16,7 +16,7 @@ import { Grid } from '@mui/system'
 import { AutoFixHigh, Delete, ExpandMore } from '@mui/icons-material'
 import { useWatch } from 'react-hook-form'
 import CippFormComponent from '../CippComponents/CippFormComponent'
-import CippStandardV3Settings from './CippStandardV3Settings'
+import CippBaselineStandardSettings from './CippBaselineStandardSettings'
 
 const impactColors = {
   'Low Impact': 'info',
@@ -32,7 +32,7 @@ const resolveToken = (token, values) => unwrap(values?.[token])
 
 // Render a §5 `expected` template from the configured variable values. Type-preserving for
 // exact `%token%` strings, string-replacing for embedded tokens — mirrors the engine's
-// Invoke-CIPPStandardV3Render behaviour.
+// render step.
 export const renderExpectedValue = (template, values) => {
   if (typeof template === 'string') {
     const exact = template.match(/^%(\w+)%$/)
@@ -62,7 +62,7 @@ export const renderExpectedValue = (template, values) => {
 // One standard inside a stage: summary row with state chips, details with the standard's
 // configurable variables (from the V3 definition), the per-delta action posture, and a live
 // preview of the expected value the engine will enforce.
-export const CippStandardV3Item = ({
+export const CippBaselineStandardItem = ({
   standard,
   formControl,
   expanded,
@@ -79,7 +79,7 @@ export const CippStandardV3Item = ({
   const variableEntries = Object.entries(standard.variables ?? {})
 
   // Seed the action posture when the standard is first added; the settings fields seed
-  // themselves (recommended value first) inside CippStandardV3Settings.
+  // themselves (recommended value first) inside CippBaselineStandardSettings.
   useEffect(() => {
     if (formControl.getValues(`${fieldBase}.remediateEnabled`) === undefined) {
       formControl.setValue(`${fieldBase}.remediateEnabled`, true)
@@ -136,10 +136,10 @@ export const CippStandardV3Item = ({
           spacing={2}
           alignItems="center"
           justifyContent="space-between"
-          sx={{ width: '100%', pr: 1 }}
+          sx={{ width: '100%', pr: 1, minWidth: 0 }}
         >
-          <Box sx={{ minWidth: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
+          <Box sx={{ minWidth: 0, flexGrow: 1, flexBasis: '30%' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
               {standard.label}
               {instanceNumber ? ` (instance ${instanceNumber})` : ''}
             </Typography>
@@ -151,7 +151,10 @@ export const CippStandardV3Item = ({
             direction="row"
             spacing={1}
             alignItems="center"
-            sx={{ flexShrink: 0 }}
+            flexWrap="wrap"
+            useFlexGap
+            justifyContent="flex-end"
+            sx={{ minWidth: 0 }}
           >
             {differsFromRecommended && (
               <Chip
@@ -281,7 +284,7 @@ export const CippStandardV3Item = ({
                   </Button>
                 )}
               </Stack>
-              <CippStandardV3Settings
+              <CippBaselineStandardSettings
                 standard={standard}
                 formControl={formControl}
                 namePrefix={`${fieldBase}.variables`}
@@ -370,4 +373,4 @@ export const CippStandardV3Item = ({
   )
 }
 
-export default CippStandardV3Item
+export default CippBaselineStandardItem
