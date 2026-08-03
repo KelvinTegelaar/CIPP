@@ -22,7 +22,16 @@
     "lint": "npx eslint .",
     "lint-fix": "npx eslint . --fix",
     "prettier": "prettier --write '**/*.{js,jsx,json}'",
-    "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://127.0.0.1:7071 --verbose=silly"
+    "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://127.0.0.1:7071 --verbose=silly",
+    "storybook": "storybook dev -p 6006 --no-open",
+    "storybook-build": "npx storybook build -o build-storybook",
+    "storybook-serve": "npx http-server build-storybook -p 6006",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run --project unit",
+    "test:browser": "vitest run --project storybook --browser.headless=false",
+    "test:coverage": "vitest run --coverage --testTimeout=30000",
+    "test:storybook": "vitest run --project storybook"
   },
   "dependencies": {
     "@emotion/cache": "11.14.0",
@@ -110,11 +119,37 @@
     "yup": "1.7.1"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "10.3.5",
+    "@storybook/addon-docs": "10.3.5",
+    "@storybook/addon-themes": "10.3.5",
+    "@storybook/addon-vitest": "10.3.5",
+    "@storybook/react-vite": "10.3.5",
     "@svgr/webpack": "8.1.0",
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@vitest/browser-playwright": "4.1.10",
+    "@vitest/coverage-v8": "4.1.10",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.10",
     "eslint-config-prettier": "^10.1.8",
+    "jsdom": "29.0.1",
+    "msw": "2.12.14",
+    "msw-storybook-addon": "2.0.6",
+    "playwright": "1.59.1",
     "prettier": "^3.9.6",
-    "typescript": "5.9.3"
+    "storybook": "10.3.5",
+    "typescript": "5.9.3",
+    "vite": "7.3.6",
+    "vitest": "4.1.10"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  },
+  "resolutions": {
+    "vite": "7.3.6"
   }
 }
