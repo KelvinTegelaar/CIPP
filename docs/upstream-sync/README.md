@@ -8,11 +8,18 @@ Manage365 tracks upstream CIPP changes here. **Start with [PROCESS.md](./PROCESS
 |-----|-------------|
 | [PROCESS.md](./PROCESS.md) | **Master workflow** — cadence, phases, triage, version bump, deploy |
 
+## August 2026 cycles
+
+| Doc | Repo | Description |
+|-----|------|-------------|
+| [SYNC_20260803.md](./SYNC_20260803.md) | Both | **Latest** — 10.7.5 light/medium delta: AzBobbyTables 3.6.2, Intune drift, groups/devices, audit V2 |
+| [UPSTREAM_DELTA_CIPP_20260803.md](./UPSTREAM_DELTA_CIPP_20260803.md) | CIPP | Frontend triage for the 08-03 cycle |
+
 ## July 2026 cycles
 
 | Doc | Repo | Description |
 |-----|------|-------------|
-| [SYNC_20260728.md](./SYNC_20260728.md) | Both | **Latest** — 10.7.3 hotfix: cross-tenant cache leak (`Select-CippAllowedTenantData`) |
+| [SYNC_20260728.md](./SYNC_20260728.md) | Both | 10.7.3 hotfix: cross-tenant cache leak (`Select-CippAllowedTenantData`) |
 | [SYNC_20260727.md](./SYNC_20260727.md) | Both | 10.7.2 major delta — SharePoint permissions reports, templated deployments, policy compare |
 | [UPSTREAM_DELTA_CIPP_20260727.md](./UPSTREAM_DELTA_CIPP_20260727.md) | CIPP | Delta triage for the 07-27 cycle |
 | [SYNC_20260713.md](./SYNC_20260713.md) | Both | 10.6.1 baseline + feature intake series |
