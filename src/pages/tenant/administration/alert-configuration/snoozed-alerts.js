@@ -19,7 +19,6 @@ const Page = () => {
       confirmText:
         'Are you sure you want to remove this snooze? The alert will fire again on the next run.',
       multiPost: false,
-      category: 'edit',
     },
   ]
 
@@ -33,6 +32,7 @@ const Page = () => {
         'CmdletName',
         'Tenant',
         'ContentPreview',
+        'SnoozeReason',
         'SnoozedBy',
         'Status',
         'RemainingDays',
