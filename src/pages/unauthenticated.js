@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { useMemo } from 'react'
 import { Box, Stack, SvgIcon, Typography } from '@mui/material'
-import { PersonOutlineOutlined } from '@mui/icons-material'
+import { Microsoft, PersonOutlineOutlined } from '@mui/icons-material'
 import { CippAuthShell } from '../components/CippComponents/CippAuthShell'
 import { ApiGetCall } from '../api/ApiCall'
 import { hasSeenSession } from '../utils/auth-session'
@@ -60,6 +60,7 @@ const Page = ({ reason = 'session' }) => {
       ? 'Your session has expired. Sign in again to continue.'
       : 'Sign in with your Microsoft account to continue.',
     actionText: 'Sign in with Microsoft',
+    actionIcon: <Microsoft />,
     actionHref: loginUrl(),
   }
 
@@ -101,6 +102,7 @@ const Page = ({ reason = 'session' }) => {
     ),
     // switching account is only offerable once we know which account is signed in
     actionText: signedInAs ? 'Sign in with a different account' : 'Login',
+    actionIcon: <Microsoft />,
     actionHref: loginUrl(),
     secondaryText: canReturnHome ? 'Return to Home' : undefined,
     secondaryHref: canReturnHome ? '/' : undefined,
