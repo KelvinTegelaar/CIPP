@@ -34,6 +34,7 @@ import {
   Edit,
   Save,
   VpnKey,
+  DevicesOther,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -111,6 +112,7 @@ const EditGroup = () => {
   const isMailEnabledSecurity = computedGroupType === "Mail-Enabled Security";
   const isSecurityGroup = computedGroupType === "Security";
   const showContacts = isDistribution || isMailEnabledSecurity;
+  const showDevices = !isDistribution && !isMailEnabledSecurity;
   const hasSettings = isM365 || isDistribution || isMailEnabledSecurity;
   const showLicenseManagement = isSecurityGroup && !isOnPrem;
 
@@ -154,6 +156,7 @@ const EditGroup = () => {
   const addMemberDialog = useDialog();
   const addOwnerDialog = useDialog();
   const addContactDialog = useDialog();
+  const addDeviceDialog = useDialog();
 
   const userPickerField = [
     {
@@ -250,6 +253,44 @@ const EditGroup = () => {
     },
   ];
 
+  const devicePickerField = [
+    {
+      type: "autoComplete",
+      name: "DeviceID",
+      label: "Select Device",
+      multiple: false,
+      creatable: false,
+      api: {
+        url: "/api/ListGraphRequest",
+        dataKey: "Results",
+        data: {
+          Endpoint: "devices",
+          manualPagination: true,
+          $select: "id,displayName,operatingSystem",
+          $count: true,
+          $orderby: "displayName",
+          $top: 999,
+        },
+        labelField: (option) =>
+          option?.operatingSystem
+            ? `${option.displayName} (${option.operatingSystem})`
+            : (option?.displayName ?? ""),
+        valueField: "id",
+        addedField: {
+          displayName: "displayName",
+          deviceName: "displayName",
+        },
+        queryKey: `ListDevices-${tenantFilter}`,
+        dataFilter: (options) =>
+          options.filter((option) => !members.some((m) => m.id === option.value)),
+        showRefresh: true,
+      },
+      validators: {
+        validate: (value) => (!value ? "Please select a device" : true),
+      },
+    },
+  ];
+
   const addMemberApi = {
     url: "/api/EditGroup",
     type: "POST",
@@ -290,6 +331,20 @@ const EditGroup = () => {
       AddContact: [formData.ContactID],
     }),
     confirmText: "Select a contact to add to this group.",
+    relatedQueryKeys: [`ListGroups-${groupId}`],
+  };
+
+  const addDeviceApi = {
+    url: "/api/EditGroup",
+    type: "POST",
+    customDataformatter: (row, action, formData) => ({
+      tenantFilter,
+      groupId,
+      groupType: computedGroupType,
+      groupName,
+      AddDevice: [formData.DeviceID],
+    }),
+    confirmText: "Select a device to add as a member of this group.",
     relatedQueryKeys: [`ListGroups-${groupId}`],
   };
 
@@ -912,13 +967,24 @@ const EditGroup = () => {
                       Members ({members.length})
                     </Typography>
                   </Stack>
-                  <Button
-                    size="small"
-                    startIcon={<PersonAdd />}
-                    onClick={() => addMemberDialog.handleOpen()}
-                  >
-                    Add
-                  </Button>
+                  <Stack direction="row" spacing={1}>
+                    {showDevices && (
+                      <Button
+                        size="small"
+                        startIcon={<DevicesOther />}
+                        onClick={() => addDeviceDialog.handleOpen()}
+                      >
+                        Add Device
+                      </Button>
+                    )}
+                    <Button
+                      size="small"
+                      startIcon={<PersonAdd />}
+                      onClick={() => addMemberDialog.handleOpen()}
+                    >
+                      Add
+                    </Button>
+                  </Stack>
                 </Stack>
                 <Box sx={{ px: 0 }}>
                   <CippDataTable
@@ -1319,6 +1385,16 @@ const EditGroup = () => {
           title="Add Contact"
           fields={contactPickerField}
           api={addContactApi}
+          row={{}}
+          relatedQueryKeys={[`ListGroups-${groupId}`]}
+        />
+      )}
+      {showDevices && (
+        <CippApiDialog
+          createDialog={addDeviceDialog}
+          title="Add Device"
+          fields={devicePickerField}
+          api={addDeviceApi}
           row={{}}
           relatedQueryKeys={[`ListGroups-${groupId}`]}
         />
