@@ -9,7 +9,7 @@ Cycle type: **Feature intake** per [PROCESS.md](PROCESS.md).
 - Protected conflicts: Adapt `Set-CippApiAuth` / `CippApiClientManagement` — preserve SWA auth path and Manage365 branding (do not take CIPPNG/SSO EasyAuth rewrite)
 - Scope: **capability only** — `MCPServer` remains **Enabled: false** until ops validates; internal team use
 - Phases: backend → frontend → tab hygiene → verify → PR
-- Approval: [x] design [x] implement [ ] deploy (enable flag after smoke)
+- Approval: [x] design [x] implement [x] deploy (enable flag after smoke)
 
 ## Also in this intake
 
