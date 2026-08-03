@@ -25,6 +25,7 @@ import {
   StatRow,
   severityColour,
 } from './reportPdfPrimitives'
+import { resolveCoverImage } from './resolveCoverImage'
 import { useSettings } from '../../hooks/use-settings'
 
 const nz = (value) => Number(value ?? 0)
@@ -62,6 +63,7 @@ const PermissionsReportDocument = ({
   const brandColor = brandingSettings?.colour || DEFAULT_BRAND_COLOUR
   const styles = createReportStyles(brandColor)
   const logo = brandingSettings?.logo
+  const coverImage = resolveCoverImage(brandingSettings, '/reportImages/soc.jpg')
   const footerLabel = `${tenantName} — SharePoint Permissions`
 
   const summary = permissionsData?.summary ?? {}
@@ -90,6 +92,7 @@ const PermissionsReportDocument = ({
     <Document>
       {/* COVER */}
       <Page size="A4" style={styles.coverPage}>
+        {coverImage ? <Image style={styles.coverBackground} src={coverImage} /> : null}
         <View style={styles.coverHeader}>
           <View>{logo ? <Image style={styles.logo} src={logo} cache={false} /> : null}</View>
           <Text style={styles.dateStamp}>{generatedOn}</Text>

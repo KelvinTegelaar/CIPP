@@ -23,6 +23,7 @@ import {
   Image,
 } from '@react-pdf/renderer'
 import { useSettings } from '../hooks/use-settings'
+import { resolveCoverImage } from './CippPdf/resolveCoverImage'
 
 // BEC Remediation PDF Document Component
 const BECRemediationReportDocument = ({
@@ -38,6 +39,7 @@ const BECRemediationReportDocument = ({
     day: 'numeric',
   })
   const brandColor = brandingSettings?.colour || '#F77F00'
+  const coverImage = resolveCoverImage(brandingSettings, '/reportImages/soc.jpg')
 
   const styles = StyleSheet.create({
     page: {
@@ -58,6 +60,15 @@ const BECRemediationReportDocument = ({
       padding: 60,
       justifyContent: 'space-between',
       minHeight: '100%',
+    },
+
+    coverBackground: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      opacity: 0.5,
     },
 
     coverHeader: {
@@ -478,6 +489,7 @@ const BECRemediationReportDocument = ({
     <Document>
       {/* COVER PAGE */}
       <Page size="A4" style={styles.coverPage}>
+        {coverImage ? <Image style={styles.coverBackground} src={coverImage} /> : null}
         <View style={styles.coverHeader}>
           <View style={styles.logoSection}>
             {brandingSettings?.logo && (

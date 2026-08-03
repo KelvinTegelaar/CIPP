@@ -64,6 +64,14 @@ export const createReportStyles = (brandColor = DEFAULT_BRAND_COLOUR) =>
       textTransform: 'uppercase',
       letterSpacing: 0.5,
     },
+    coverBackground: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      opacity: 0.5,
+    },
     coverHero: { flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', paddingTop: 40 },
     coverLabel: {
       backgroundColor: brandColor,

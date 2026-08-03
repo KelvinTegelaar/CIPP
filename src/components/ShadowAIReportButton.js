@@ -28,6 +28,7 @@ import {
   View,
 } from '@react-pdf/renderer'
 import { useSettings } from '../hooks/use-settings'
+import { resolveCoverImage } from './CippPdf/resolveCoverImage'
 
 // react-pdf hyphenates words by default ("Detected" becomes "De-tected" in narrow stat cards);
 // keep words whole and let them wrap instead.
@@ -59,6 +60,7 @@ export const ShadowAIReportPages = ({
     day: 'numeric',
   })
   const brandColor = brandingSettings?.colour || '#F77F00'
+  const coverImage = resolveCoverImage(brandingSettings, '/reportImages/city.jpg')
 
   const summary = data?.summary ?? {}
   const detectedApps = data?.detectedApps ?? []
@@ -639,7 +641,7 @@ export const ShadowAIReportPages = ({
       {/* COVER PAGE */}
       {sectionConfig.coverPage && (
         <Page size="A4" style={styles.coverPage}>
-          <Image style={styles.statBackground} src="/reportImages/city.jpg" />
+          {coverImage ? <Image style={styles.statBackground} src={coverImage} /> : null}
           <View style={styles.coverHeader}>
             <View>
               {brandingSettings?.logo && (

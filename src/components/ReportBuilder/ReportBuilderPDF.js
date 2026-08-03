@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Document, Page, Text, View, StyleSheet, PDFViewer, Image, Font } from '@react-pdf/renderer'
+import { resolveCoverImage } from '../CippPdf/resolveCoverImage'
 
 /* ── Emoji support ─────────────────────────────────────────
  * Helvetica has no emoji glyphs.  react-pdf can render emojis
@@ -613,6 +614,7 @@ export const ReportBuilderDocument = ({
 }) => {
   const brandColor = brandingSettings?.colour || '#F77F00'
   const logo = brandingSettings?.logo || null
+  const coverImage = resolveCoverImage(brandingSettings, '/reportImages/working.jpg')
   const s = createStyles(brandColor)
 
   const dateObj = generatedDate ? new Date(generatedDate) : new Date()
@@ -633,7 +635,7 @@ export const ReportBuilderDocument = ({
     <Document>
       {/* ── Cover Page ── */}
       <Page size="A4" style={s.coverPage}>
-        <Image style={s.coverBackground} src="/reportImages/soc.jpg" />
+        {coverImage ? <Image style={s.coverBackground} src={coverImage} /> : null}
 
         <View style={s.coverHeader}>
           <View style={s.logoSection}>

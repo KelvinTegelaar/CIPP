@@ -35,6 +35,7 @@ import { useSettings } from '../hooks/use-settings'
 import { useSecureScore } from '../hooks/use-securescore'
 import { ApiGetCall } from '../api/ApiCall'
 import { ShadowAIReportPages } from './ShadowAIReportButton'
+import { resolveCoverImage } from './CippPdf/resolveCoverImage'
 
 // PRODUCTION-GRADE PDF SYSTEM WITH CONDITIONAL RENDERING
 const ExecutiveReportDocument = ({
@@ -67,6 +68,7 @@ const ExecutiveReportDocument = ({
     day: 'numeric',
   })
   const brandColor = brandingSettings?.colour || '#F77F00'
+  const coverImage = resolveCoverImage(brandingSettings)
 
   // ENTERPRISE DESIGN SYSTEM - JOBS/RAMS/IVE PRINCIPLES
   const styles = StyleSheet.create({
@@ -1037,7 +1039,7 @@ const ExecutiveReportDocument = ({
     <Document>
       {/* COVER PAGE - JOBS/RAMS/IVE PERFECTION */}
       <Page size="A4" style={styles.coverPage}>
-        <Image style={styles.statBackground} src="/reportImages/soc.jpg" />
+        {coverImage ? <Image style={styles.statBackground} src={coverImage} /> : null}
         <View style={styles.coverHeader}>
           <View style={styles.logoSection}>
             {brandingSettings?.logo && (
