@@ -141,7 +141,8 @@ Manage365 includes the complete CIPP feature set:
 - PWA support with Chrome install option for desktop app experience
 - Logbook with severity color mapping
 - Custom data / directory extensions
-- Super admin tools (tenant mode, exchange cmdlets, timers, table maintenance)
+- Super admin tools (tenant mode, function offloading, time settings, CIPP roles, SAM app roles/permissions)
+- API client management with optional MCP access (feature-flagged; see [MCP Server](#mcp-server-manage365-v5320) below)
 
 ---
 
@@ -483,6 +484,19 @@ A template-based system for creating app registrations in client tenants, design
 
 Located under Tenant Administration > Applications > Integration Templates.
 
+### MCP Server (Manage365 v5.32.0)
+
+Model Context Protocol (MCP) support for internal team use — expose CIPP's read-only API surface as tools for AI clients, without Craft/SSO hosting changes.
+
+- **API client toggle** -- enable **MCP Access Allowed** per API client; warning copy explains the blast radius; table column shows which clients are MCP-enabled
+- **MCP URL chip** -- Application Settings / API clients surface `…/api/ExecMcp` for connector configuration
+- **Backend** -- `Invoke-ExecMcp` (Streamable-HTTP JSON-RPC), OpenAPI-projected `.Read` tools, `MCPAllowed` check against the ApiClients table, per-call RBAC via `New-CippCoreRequest`
+- **Feature flag** -- `MCPServer` ships **disabled**; enable in Feature Flags only after deploy smoke (`tools/list` + one `.Read` tools/call)
+- **SWA-safe auth** -- MCP client IDs added as EasyAuth audiences on the Function App host path; CIPPNG/SSO EasyAuth rewrite not taken
+- **Tab hygiene** -- removed 404 Super Admin tabs (CIPP Users, SSO, Container Management); full container UI remains deferred (Craft bridges)
+
+Intake notes: [docs/upstream-sync/MCP_INTAKE_20260803.md](docs/upstream-sync/MCP_INTAKE_20260803.md).
+
 ### Backend Enhancements
 
 - **Stack overflow protection** in Intune policy comparison with depth-tracking recursion and O(1) index-based lookups
@@ -509,12 +523,21 @@ Manage365 tracks [KelvinTegelaar/CIPP](https://github.com/KelvinTegelaar/CIPP) a
 |---------|------|--------|
 | **Light delta** | Monthly | Low-risk bugfixes, JSON data, tests |
 | **Major cycle** | Quarterly | Full delta inventory + dependency review |
-| **Feature intake** | Backlog | New capabilities (e.g. SSO, MCP) — design first |
+| **Feature intake** | Backlog | New capabilities (e.g. SSO) — design first; MCP intaken in v5.32.0 |
 | **Hotfix** | As needed | Critical upstream security fixes |
 
 Start a cycle: `./Tools/Start-UpstreamSyncCycle.ps1 -Repo CIPP` (and the same script from CIPP-API with `-Repo CIPP-API`).
 
 All intakes are **selective** — upstream fixes and improvements are ported surgically rather than merging whole files, so fork-specific behavior stays intact.
+
+### Taken from upstream (v10.7.5 + MCP — August 2026)
+
+| Intake | What changed |
+|--------|----------------|
+| **Light delta 10.7.5** (v5.31.0) | AzBobbyTables 3.6.2 + large-entity table wrappers; Intune template drift helpers; group `disableNesting`; device Add-to-Group; snooze reason; partner webhook hostname warning; audit log V2; SAM `RoleManagement.Read.Exchange` |
+| **MCP feature intake** (v5.32.0) | ExecMcp stack + OpenAPI tool projection; API client `MCPAllowed` UI/API; SWA-safe EasyAuth audiences; Super Admin 404 tab removal. Flag off by default — see [MCP Server](#mcp-server-manage365-v5320) |
+
+**Still deferred:** Teams V2 module migration; container management / logs / worker health (Craft); instance SSO / CIPP Users pages (SWA-incompatible EasyAuth path). Checkpoint: [docs/upstream-sync/SYNC_20260803.md](docs/upstream-sync/SYNC_20260803.md), [docs/upstream-sync/MCP_INTAKE_20260803.md](docs/upstream-sync/MCP_INTAKE_20260803.md).
 
 ### Taken from upstream (v10.6.1 intake series — July 2026)
 
@@ -536,9 +559,9 @@ dedicated feature intakes (checkpoint docs in `docs/upstream-sync/`):
 **Deferred from this cycle:** the SSO/CIPP-users family (architecturally
 incompatible — upstream's implementation depends on a container runtime and
 EasyAuth migration that don't exist in the fork's Static Web Apps + Function App
-deployment), MCP support, Custom Test Alerting overhaul, Purview DLP standard,
+deployment), Custom Test Alerting overhaul, Purview DLP standard,
 Intune policy sync, Sherweb client changes, and assorted small items listed in
-the checkpoint docs.
+the checkpoint docs. (MCP was deferred here and later intaken in v5.32.0.)
 
 ### Taken from upstream (v10.5 / v10.5.1 — June 2026)
 
@@ -566,7 +589,7 @@ the checkpoint docs.
 
 ### Deferred (not merged)
 
-Full-file replacements for Applied Standards, CippDataTable, top-nav, and `package.json` were skipped where they would remove the items above. Worker health, MCP UI, and SSO migration repair were not taken (no fork UI or dependencies for those features).
+Full-file replacements for Applied Standards, CippDataTable, top-nav, and `package.json` were skipped where they would remove the items above. Worker health / container management UI and SSO migration repair remain deferred (Craft bridges / EasyAuth migration). MCP UI was intaken in v5.32.0 with the feature flag off.
 
 ### Version tracking and out-of-date alerts
 
@@ -581,7 +604,7 @@ After each upstream intake, bump both and redeploy:
 
 ```powershell
 # Frontend (CIPP repo)
-./Tools/Update-Version.ps1 -UpstreamVersion 10.6.1 -Manage365Version 5.25.0
+./Tools/Update-Version.ps1 -UpstreamVersion 10.7.5 -Manage365Version 5.32.0
 
 # Backend (CIPP-API repo) — set both copies to the same upstream baseline
 # version_latest.txt
@@ -590,7 +613,7 @@ After each upstream intake, bump both and redeploy:
 
 Then **redeploy the Static Web App and every Function App slot** (main API, processor, standards, audit log, user tasks). Until redeployed, the settings page may still show old versions and function apps may appear "out of sync" in the Version table.
 
-Out-of-date toast notifications compare your deployed `version.json` / `version_latest.txt` against [KelvinTegelaar/CIPP](https://github.com/KelvinTegelaar/CIPP) and [KelvinTegelaar/CIPP-API](https://github.com/KelvinTegelaar/CIPP-API) on GitHub. They clear once your deployed baseline matches upstream (currently **10.6.1**).
+Out-of-date toast notifications compare your deployed `version.json` / `version_latest.txt` against [KelvinTegelaar/CIPP](https://github.com/KelvinTegelaar/CIPP) and [KelvinTegelaar/CIPP-API](https://github.com/KelvinTegelaar/CIPP-API) on GitHub. They clear once your deployed baseline matches upstream (currently **10.7.5**).
 
 ### GitHub "Sync fork" button
 
