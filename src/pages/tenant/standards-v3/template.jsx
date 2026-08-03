@@ -630,7 +630,7 @@ const Page = () => {
   )
 
   const steps = [
-    { label: 'Set a template name', done: !!watchForm?.templateName },
+    { label: 'Set a baseline name', done: !!watchForm?.templateName },
     {
       label: 'Assign tenants or groups',
       done: (watchForm?.tenantFilter?.length ?? 0) > 0,
@@ -650,8 +650,8 @@ const Page = () => {
   }
 
   const pageTitle = template
-    ? 'Edit Standards V3 Template'
-    : 'Add Standards V3 Template'
+    ? 'Edit Standards V3 Baseline'
+    : 'Add Standards V3 Baseline'
 
   return (
     <Box sx={{ flexGrow: 1, px: 3, maxWidth: '1900px' }}>
@@ -674,7 +674,7 @@ const Page = () => {
               disabled={isSaveDisabled}
               onClick={handleSave}
             >
-              Save Template
+              Save Baseline
             </PermissionButton>
             <Button
               variant="outlined"
@@ -689,7 +689,7 @@ const Page = () => {
 
         {saved && (
           <Alert severity="success" onClose={() => setSaved(false)}>
-            Mock save - in the real implementation this writes the template, its
+            Mock save - in the real implementation this writes the baseline, its
             stages, and the per-stage standard configuration.
           </Alert>
         )}
@@ -697,12 +697,12 @@ const Page = () => {
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, lg: 4 }}>
             <Stack spacing={2}>
-              <CippButtonCard title="Template Details">
+              <CippButtonCard title="Baseline Details">
                 <Stack spacing={2}>
                   <CippFormComponent
                     type="textField"
                     name="templateName"
-                    label="Template Name"
+                    label="Baseline Name"
                     formControl={formControl}
                     required
                   />
@@ -778,7 +778,7 @@ const Page = () => {
                 </Stack>
               </CippButtonCard>
               <CippPropertyListCard
-                title="Template Summary"
+                title="Baseline Summary"
                 align="vertical"
                 showDivider={false}
                 propertyItems={[

@@ -363,7 +363,7 @@ const Page = () => {
       multiPost: false,
     },
     {
-      label: 'Edit Template',
+      label: 'Edit Baseline',
       link: '/tenant/standards-v3/template?id=[templateId]',
       icon: <Edit />,
       color: 'success',
@@ -480,7 +480,7 @@ const Page = () => {
               </Box>
             ))}
             <Typography variant="caption" color="text.secondary">
-              When multiple templates configure the same standard, the template
+              When multiple baselines configure the same standard, the baseline
               with the most specific assignment wins.
             </Typography>
             <Typography
@@ -780,14 +780,14 @@ const Page = () => {
 
   const templateActions = [
     {
-      label: 'Edit Template',
+      label: 'Edit Baseline',
       link: '/tenant/standards-v3/template?id=[GUID]',
       icon: <Edit />,
       color: 'success',
       target: '_self',
     },
     {
-      label: 'Run Template Now',
+      label: 'Run Baseline Now',
       type: 'POST',
       url: '/api/standards/run',
       icon: <PlayArrow />,
@@ -801,7 +801,7 @@ const Page = () => {
 
   const templateOffCanvas = {
     size: 'md',
-    title: 'Template Rollout',
+    title: 'Baseline Rollout',
     contentPadding: 0,
     children: (row) => {
       // The offcanvas renders with an empty row until one is selected.
@@ -809,7 +809,7 @@ const Page = () => {
       return (
         <Stack spacing={0}>
           {propertyList([
-            { label: 'Template', value: row.templateName },
+            { label: 'Baseline', value: row.templateName },
             { label: 'Description', value: row.description },
             { label: 'Standards', value: row.standardsCount },
             { label: 'Stages', value: (row.stageNames ?? []).join(' -> ') },
@@ -1002,14 +1002,14 @@ const Page = () => {
       </ToggleButton>
       <ToggleButton value="template" aria-label="template view">
         <Tooltip
-          title="Templates with their assigned tenants and stage progress"
+          title="Baselines with their assigned tenants and stage progress"
           placement="top"
         >
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
             <RectangleStackIcon
               style={{ width: 16, height: 16, marginRight: 6 }}
             />
-            Template View
+            Baseline View
           </Box>
         </Tooltip>
       </ToggleButton>
@@ -1061,7 +1061,7 @@ const Page = () => {
       <Stack spacing={1.5}>
         {stageStates.length === 0 && (
           <Typography variant="body2" color="text.secondary">
-            No staged templates are assigned to this tenant.
+            No staged baselines are assigned to this tenant.
           </Typography>
         )}
         {stageStates.map((state) => (
@@ -1091,7 +1091,7 @@ const Page = () => {
               </Box>
               <Stack direction="row" spacing={1} alignItems="center">
                 {templateAlignedPercentage(state) !== null && (
-                  <Tooltip title="Alignment against the standards this template has rolled out to this tenant so far">
+                  <Tooltip title="Alignment against the standards this baseline has rolled out to this tenant so far">
                     <Chip
                       variant="outlined"
                       size="small"
@@ -1119,22 +1119,14 @@ const Page = () => {
                   />
                 )}
                 {state.manualAdvance && (
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    startIcon={<ArrowForward />}
-                    onClick={() => {
-                      setAdvanceTarget({
-                        tenantFilter: tenant.tenantId,
-                        templateId: state.templateId,
-                        templateName: state.templateName,
-                        nextStageName: state.nextStageName,
-                      })
-                      advanceDialog.handleOpen()
-                    }}
-                  >
-                    Move to Next Stage
-                  </Button>
+                  <Tooltip title="The next stage requires manual approval">
+                    <Chip
+                      variant="outlined"
+                      size="small"
+                      color="warning"
+                      label="Awaiting approval"
+                    />
+                  </Tooltip>
                 )}
               </Stack>
             </Stack>
@@ -1147,6 +1139,29 @@ const Page = () => {
                 Next: Stage {state.currentStage + 1} ({state.nextStageName}) -
                 advances when {describeStageConditions(state.nextStage)}
               </Typography>
+            )}
+            {state.manualAdvance && (
+              <>
+                <Divider sx={{ my: 1 }} />
+                <Stack direction="row" justifyContent="flex-end">
+                  <Button
+                    size="small"
+                    variant="contained"
+                    startIcon={<ArrowForward />}
+                    onClick={() => {
+                      setAdvanceTarget({
+                        tenantFilter: tenant.tenantId,
+                        templateId: state.templateId,
+                        templateName: state.templateName,
+                        nextStageName: state.nextStageName,
+                      })
+                      advanceDialog.handleOpen()
+                    }}
+                  >
+                    Move to next stage ({state.nextStageName})
+                  </Button>
+                </Stack>
+              </>
             )}
           </Box>
         ))}
@@ -1393,7 +1408,7 @@ const Page = () => {
       simpleColumns={
         isTemplateView
           ? [
-              'templateName',
+              'baselineName',
               'standardsCount',
               'stageNames',
               'assignedTenants',

@@ -21,6 +21,7 @@ export const CippTranslations = {
   lastOutcome: 'Last Outcome',
   feedEvent: 'Event',
   detail: 'Detail',
+  baselineName: 'Baseline',
   secureScoreImpact: 'Secure Score Impact',
   userPrincipalName: 'User Principal Name',
   aadRegistered: 'Microsoft Entra Registered',

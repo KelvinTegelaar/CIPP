@@ -217,7 +217,7 @@ const WhatIfDocument = ({ tenant, stageStates, simulatedTemplate }) => {
         </Text>
         {plannedStages.length === 0 && (
           <Text style={styles.itemText}>
-            This tenant is in the final stage of every assigned template - no
+            This tenant is in the final stage of every assigned baseline - no
             further staged changes are planned.
           </Text>
         )}
@@ -277,10 +277,11 @@ const WhatIfDocument = ({ tenant, stageStates, simulatedTemplate }) => {
         {simulatedTemplate && (
           <>
             <Text style={styles.sectionTitle}>
-              What-if: additionally assigning {simulatedTemplate.templateName}
+              What-if: additionally assigning the{' '}
+              {simulatedTemplate.templateName} baseline
             </Text>
             <Text style={styles.itemText}>
-              {simulatedTemplate.description}. This template is not assigned to
+              {simulatedTemplate.description}. This baseline is not assigned to
               the tenant today - below is what assigning it would roll out,
               stage by stage.
             </Text>
@@ -353,7 +354,7 @@ export const CippStandardV3WhatIfReport = ({ tenant, stageStates }) => {
   const [open, setOpen] = useState(false)
   const [simulatedTemplate, setSimulatedTemplate] = useState(null)
 
-  // Templates not currently rolled out to this tenant can be simulated in the report.
+  // Baselines not currently rolled out to this tenant can be simulated in the report.
   const availableTemplates = standardsV3Templates.filter(
     (template) =>
       !stageStates.some((state) => state.templateId === template.GUID)
@@ -420,7 +421,7 @@ export const CippStandardV3WhatIfReport = ({ tenant, stageStates }) => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Simulate assigning an additional template"
+                  label="Simulate assigning an additional baseline"
                 />
               )}
               sx={{ maxWidth: 460 }}

@@ -1206,6 +1206,8 @@ const templateDefinitions = [
 
 export const standardsV3Templates = templateDefinitions.map((template) => ({
   ...template,
+  // The user-facing name for a template is "baseline"; baselineName drives table columns.
+  baselineName: template.templateName,
   stageNames: template.stages.map((stage) => stage.name),
 }))
 

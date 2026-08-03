@@ -20,25 +20,25 @@ import {
 } from '../../../../data/standards-v3-mock-data'
 
 const Page = () => {
-  const pageTitle = 'Standards V3 - Template Overview'
+  const pageTitle = 'Standards V3 - Baselines'
 
   const actions = [
     {
-      label: 'Edit Template',
+      label: 'Edit Baseline',
       link: '/tenant/standards-v3/template?id=[GUID]',
       icon: <Edit />,
       color: 'success',
       target: '_self',
     },
     {
-      label: 'Clone & Edit Template',
+      label: 'Clone & Edit Baseline',
       link: '/tenant/standards-v3/template?id=[GUID]&clone=true',
       icon: <CopyAll />,
       color: 'success',
       target: '_self',
     },
     {
-      label: 'Run Template Now',
+      label: 'Run Baseline Now',
       type: 'POST',
       url: '/api/standards/run',
       icon: <PlayArrow />,
@@ -49,7 +49,7 @@ const Page = () => {
       multiPost: false,
     },
     {
-      label: 'Delete Template',
+      label: 'Delete Baseline',
       type: 'POST',
       url: '/api/standards/definitions',
       icon: <Delete />,
@@ -63,7 +63,7 @@ const Page = () => {
 
   const offCanvas = {
     size: 'md',
-    title: 'Template Details',
+    title: 'Baseline Details',
     contentPadding: 0,
     children: (row) => {
       const occupancy = getTemplateStageOccupancy(row.GUID)
@@ -79,7 +79,7 @@ const Page = () => {
             sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
           >
             {[
-              { label: 'Template', value: row.templateName },
+              { label: 'Baseline', value: row.templateName },
               { label: 'Description', value: row.description },
               { label: 'Standards', value: row.standardsCount },
               { label: 'Remediation', value: row.remediationPosture },
@@ -234,11 +234,11 @@ const Page = () => {
             </SvgIcon>
           }
         >
-          Add Template
+          Add Baseline
         </Button>
       }
       simpleColumns={[
-        'templateName',
+        'baselineName',
         'description',
         'standardsCount',
         'stageNames',
