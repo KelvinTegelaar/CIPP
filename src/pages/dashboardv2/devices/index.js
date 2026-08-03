@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Box, Alert, useMediaQuery, useTheme } from '@mui/material'
+import { Container, Box, Alert } from '@mui/material'
 import { TabbedLayout } from '../../../layouts/TabbedLayout'
 import { Layout as DashboardLayout } from '../../../layouts/index.js'
 import tabOptions from '../tabOptions'
@@ -15,11 +15,15 @@ const Page = () => {
   const settings = useSettings()
   const { currentTenant } = settings
   const router = useRouter()
-  const theme = useTheme()
-  const smDown = useMediaQuery(theme.breakpoints.down("sm"))
   // Only use default if router is ready and reportId is still not present
+  const defaultReportId =
+    settings.UserSpecificSettings?.defaultTestSuite?.value ||
+    settings.defaultTestSuite?.value ||
+    'ztna'
   const selectedReport =
-    router.isReady && !router.query.reportId ? 'ztna' : router.query.reportId || 'ztna'
+    router.isReady && !router.query.reportId
+      ? defaultReportId
+      : router.query.reportId || defaultReportId
 
   const testsApi = ApiGetCall({
     url: '/api/ListTests',
@@ -100,7 +104,7 @@ const Page = () => {
         offCanvasOnRowClick={true}
         filters={filters}
         actions={[]}
-        maxHeightOffset={smDown ? "200px" : "380px"}
+        maxHeightOffset="600px"
         refreshFunction={testsApi}
       />
     </Container>

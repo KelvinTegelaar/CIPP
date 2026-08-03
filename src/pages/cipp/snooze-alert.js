@@ -15,7 +15,7 @@ const durationLabel = (d) => {
 
 const Page = () => {
   const router = useRouter()
-  const { cmdlet, tenant, data, duration } = router.query
+  const { cmdlet, tenant, data, duration, reason } = router.query
   const [submitted, setSubmitted] = useState(false)
   const [parseError, setParseError] = useState(null)
 
@@ -54,9 +54,10 @@ const Page = () => {
         TenantFilter: tenant,
         AlertItem: alertItem,
         Duration: durationNum,
+        Reason: reason || '',
       },
     })
-  }, [router.isReady, cmdlet, tenant, data, duration])
+  }, [router.isReady, cmdlet, tenant, data, duration, reason])
 
   const preview = (() => {
     if (!data) return null

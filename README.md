@@ -10,7 +10,7 @@
 
 ---
 
-> **Last synced with upstream:** July 2026 — v10.7.3 (v10.6.1 intake series of nine feature intakes, then the 10.7.x major delta — SharePoint permissions reports and templated deployments, policy compare, sharing risk analytics — plus the 10.7.3 tenant-isolation hotfix) (**Manage365 v5.30.0**, upstream baseline **10.7.3**)
+> **Last synced with upstream:** August 2026 — v10.7.5 (AzBobbyTables large-entity wrappers, Intune template drift fixes, device Add-to-Group, disableNesting, snooze reason, partner webhook hostname warning, audit log V2) (**Manage365 v5.31.0**, upstream baseline **10.7.5**)
 >
 > Manage365 is built on top of the [CyberDrain Improved Partner Portal (CIPP)](https://cipp.app). CIPP is actively developed and may implement similar features over time. Upstream changes are merged selectively to preserve Manage365-specific UI and workflows. See [Upstream Integration](#upstream-integration) below.
 

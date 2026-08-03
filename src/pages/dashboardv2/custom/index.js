@@ -14,8 +14,14 @@ const Page = () => {
   const settings = useSettings()
   const { currentTenant } = settings
   const router = useRouter()
+  const defaultReportId =
+    settings.UserSpecificSettings?.defaultTestSuite?.value ||
+    settings.defaultTestSuite?.value ||
+    'ztna'
   const selectedReport =
-    router.isReady && !router.query.reportId ? 'ztna' : router.query.reportId || 'ztna'
+    router.isReady && !router.query.reportId
+      ? defaultReportId
+      : router.query.reportId || defaultReportId
 
   const testsApi = ApiGetCall({
     url: '/api/ListTests',

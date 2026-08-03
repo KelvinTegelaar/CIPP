@@ -4,6 +4,7 @@ import tabOptions from "./tabOptions";
 import CippFormPage from "../../../components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -41,6 +42,15 @@ const Page = () => {
     data: { Action: "ListSubscription" },
     queryKey: "listSubscription",
   });
+
+  const subscription = listSubscription?.data?.Results;
+  const expectedWebhookUrl = subscription?.expectedWebhookUrl;
+  // Compared case-insensitively to match the backend, which uses PowerShell's -ne
+  const webhookUrlIsStale =
+    !!expectedWebhookUrl &&
+    !!subscription?.webhookUrl &&
+    subscription.webhookUrl !== "None" &&
+    subscription.webhookUrl.toLowerCase() !== expectedWebhookUrl.toLowerCase();
 
   const listEventTypes = ApiGetCall({
     url: "/api/ExecPartnerWebhook",
@@ -165,7 +175,18 @@ const Page = () => {
               },
               {
                 label: "Webhook URL",
-                value: <CippCodeBlock code={listSubscription?.data?.Results?.webhookUrl} />,
+                value: (
+                  <Stack spacing={1}>
+                    <CippCodeBlock code={subscription?.webhookUrl} />
+                    {webhookUrlIsStale && (
+                      <Alert severity="warning">
+                        This subscription points at a different URL than the one you are using now.
+                        Save the settings below to re-register it against{" "}
+                        <strong>{expectedWebhookUrl}</strong>.
+                      </Alert>
+                    )}
+                  </Stack>
+                ),
                 sx: { pl: 0 },
               },
               {

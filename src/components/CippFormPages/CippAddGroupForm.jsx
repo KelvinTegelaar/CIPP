@@ -537,6 +537,22 @@ const CippAddGroupForm = (props) => {
         </Grid>
       )}
 
+      <CippFormCondition
+        formControl={formControl}
+        field="groupType"
+        compareType="isOneOf"
+        compareValue={['generic', 'azurerole', 'm365', 'dynamic']}
+      >
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            label="Disable group nesting (prevent other groups from being members)"
+            name="disableNesting"
+            formControl={formControl}
+          />
+        </Grid>
+      </CippFormCondition>
+
       {/* Only show rest of form after group type is selected */}
       {selectedGroupType && (
         <>
