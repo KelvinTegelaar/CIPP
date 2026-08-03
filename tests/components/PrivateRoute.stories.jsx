@@ -36,7 +36,7 @@ export const Unauthenticated = {
     await step('null clientPrincipal blocks the app content', async () => {
       await waitFor(
         () => {
-          expect(canvas.getByText('Access Denied')).toBeInTheDocument()
+          expect(canvas.getByText('Sign in to CIPP')).toBeInTheDocument()
         })
       expect(canvas.queryByText('app content')).not.toBeInTheDocument()
     })

@@ -63,26 +63,28 @@ const renderRoute = (routeType) => {
 }
 
 describe('PrivateRoute', () => {
-  it('shows unauthenticated page when the session request errors', async () => {
-    // api reachable, session errored, unauthenticated page needs one settled query to render
+  it('shows the sign-in page when the session request errors', async () => {
+    // api reachable, session errored, sign-in page needs one settled query to render
     authState.swa = result({ isError: true, isSuccess: false, error: new Error('boom') })
     authState.me = result({ data: { message: 'Permission Denied' } })
     renderRoute()
 
     await waitFor(() => {
-      expect(screen.getByText('Access Denied')).toBeInTheDocument()
+      expect(screen.getByText('Sign in to CIPP')).toBeInTheDocument()
     })
+    // no identity means nothing was denied
+    expect(screen.queryByText('Access Denied')).not.toBeInTheDocument()
     expect(screen.queryByText('app content')).not.toBeInTheDocument()
   })
 
-  it('shows unauthenticated page when the session has no identity in either shape', async () => {
+  it('shows the sign-in page when the session has no identity in either shape', async () => {
     // settled /.auth/me with neither clientPrincipal nor easyauth array
     authState.swa = result({ data: {} })
     authState.me = result({ isPending: true, isSuccess: false })
     renderRoute()
 
     await waitFor(() => {
-      expect(screen.getByText('Access Denied')).toBeInTheDocument()
+      expect(screen.getByText('Sign in to CIPP')).toBeInTheDocument()
     })
   })
 
@@ -115,7 +117,7 @@ describe('PrivateRoute', () => {
     expect(screen.getByText('CIPP API Unreachable')).toBeInTheDocument()
   })
 
-  it('shows unauthenticated page when only blocked roles remain', async () => {
+  it('shows access denied, naming the account, when only blocked roles remain', async () => {
     authState.swa = result({ data: swaPrincipal() })
     authState.me = result({ data: cippPrincipal(['anonymous', 'authenticated']) })
     renderRoute()
@@ -123,6 +125,9 @@ describe('PrivateRoute', () => {
     await waitFor(() => {
       expect(screen.getByText('Access Denied')).toBeInTheDocument()
     })
+    // a real identity was denied, so say which one
+    expect(screen.getByText('john@contoso.com')).toBeInTheDocument()
+    expect(screen.queryByText('Sign in to CIPP')).not.toBeInTheDocument()
     expect(screen.queryByText('app content')).not.toBeInTheDocument()
   })
 
@@ -163,7 +168,7 @@ describe('PrivateRoute', () => {
     const { rerender } = renderRoute()
 
     await waitFor(() => {
-      expect(screen.getByText('Access Denied')).toBeInTheDocument()
+      expect(screen.getByText('Sign in to CIPP')).toBeInTheDocument()
     })
 
     // refetch in flight must not flip back to the loading page
@@ -180,7 +185,7 @@ describe('PrivateRoute', () => {
       </Provider>
     )
 
-    expect(screen.getByText('Access Denied')).toBeInTheDocument()
+    expect(screen.getByText('Sign in to CIPP')).toBeInTheDocument()
     expect(screen.queryByText('Logging into CIPP')).not.toBeInTheDocument()
   })
 })

@@ -29,7 +29,6 @@ import {
   Code as CodeIcon,
   PictureAsPdf as PdfIcon,
   TableChart as CsvIcon,
-  SevereCold,
   Sync,
   Check as CheckIcon,
   MoreVert as MoreVertIcon,
@@ -1281,13 +1280,6 @@ export const CIPPTableToptoolbar = React.memo(
               >
                 Bulk Actions
               </Button>
-            )}
-
-            {/* Cold start indicator */}
-            {getRequestData?.data?.pages?.[0]?.Metadata?.ColdStart === true && (
-              <Tooltip title="Function App cold start was detected, data takes a little longer to retrieve on first load.">
-                <SevereCold />
-              </Tooltip>
             )}
 
             {/* Queue tracker */}
