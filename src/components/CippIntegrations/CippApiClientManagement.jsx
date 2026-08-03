@@ -1,4 +1,4 @@
-import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert } from "@mui/material";
+import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert, Tooltip } from "@mui/material";
 import { useState } from "react";
 import isEqual from "lodash/isEqual";
 import { useForm } from "react-hook-form";
@@ -13,7 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { Create, Key, Save, Sync } from "@mui/icons-material";
+import { Create, InfoOutlined, Key, Save, Sync } from "@mui/icons-material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { Box } from "@mui/system";
@@ -129,6 +129,18 @@ const CippApiClientManagement = () => {
           type: "switch",
           name: "Enabled",
           label: "Enable this client",
+        },
+        {
+          type: "switch",
+          name: "MCPAllowed",
+          label: "MCP Access Allowed",
+        },
+        {
+          type: "alert",
+          name: "mcpAccessWarning",
+          severity: "warning",
+          label:
+            "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
         },
       ],
       type: "POST",
@@ -263,6 +275,22 @@ const CippApiClientManagement = () => {
               ),
             },
             {
+              label: "MCP API URL",
+              value: azureConfig.data?.Results?.ApiUrl ? (
+                <>
+                  <CippCopyToClipBoard
+                    type="chip"
+                    text={`${azureConfig.data.Results.ApiUrl.replace(/\/+$/, "")}/api/ExecMcp`}
+                  />
+                  <Tooltip title="Use this full URL when adding Manage365 as an MCP connector in an AI client (e.g. Claude custom connectors).">
+                    <InfoOutlined color="action" sx={{ fontSize: 16, verticalAlign: "middle" }} />
+                  </Tooltip>
+                </>
+              ) : (
+                "Not Available"
+              ),
+            },
+            {
               label: "Token URL",
               value: azureConfig.data?.Results?.TenantID ? (
                 <CippCopyToClipBoard
@@ -324,7 +352,7 @@ const CippApiClientManagement = () => {
             data: { Action: "List" },
             dataKey: "Results",
           }}
-          simpleColumns={["Enabled", "AppName", "ClientId", "Role", "IPRange"]}
+          simpleColumns={["Enabled", "MCPAllowed", "AppName", "ClientId", "Role", "IPRange"]}
           queryKey={`ApiClients`}
         />
       </Stack>
@@ -377,6 +405,18 @@ const CippApiClientManagement = () => {
             type: "switch",
             name: "Enabled",
             label: "Enable this client",
+          },
+          {
+            type: "switch",
+            name: "MCPAllowed",
+            label: "MCP Access Allowed",
+          },
+          {
+            type: "alert",
+            name: "mcpAccessWarning",
+            severity: "warning",
+            label:
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
           },
         ]}
         api={{
@@ -446,6 +486,18 @@ const CippApiClientManagement = () => {
             type: "switch",
             name: "Enabled",
             label: "Enable this client",
+          },
+          {
+            type: "switch",
+            name: "MCPAllowed",
+            label: "MCP Access Allowed",
+          },
+          {
+            type: "alert",
+            name: "mcpAccessWarning",
+            severity: "warning",
+            label:
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
           },
         ]}
         api={{

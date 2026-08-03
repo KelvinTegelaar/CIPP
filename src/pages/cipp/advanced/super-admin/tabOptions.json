@@ -28,20 +28,5 @@
     "label": "SAM App Permissions",
     "path": "/cipp/advanced/super-admin/sam-app-permissions",
     "icon": "Lock"
-  },
-  {
-    "label": "CIPP Users",
-    "path": "/cipp/advanced/super-admin/cipp-users",
-    "icon": "Group"
-  },
-  {
-    "label": "SSO",
-    "path": "/cipp/advanced/super-admin/sso",
-    "icon": "Shield"
-  },
-  {
-    "label": "Container Management",
-    "path": "/cipp/advanced/super-admin/container",
-    "icon": "Storage"
   }
 ]

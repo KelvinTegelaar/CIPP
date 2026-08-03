@@ -12,7 +12,8 @@ Manage365 tracks upstream CIPP changes here. **Start with [PROCESS.md](./PROCESS
 
 | Doc | Repo | Description |
 |-----|------|-------------|
-| [SYNC_20260803.md](./SYNC_20260803.md) | Both | **Latest** — 10.7.5 light/medium delta: AzBobbyTables 3.6.2, Intune drift, groups/devices, audit V2 |
+| [MCP_INTAKE_20260803.md](./MCP_INTAKE_20260803.md) | Both | **MCP feature intake** + super-admin tab hygiene (Manage365 5.32.0) |
+| [SYNC_20260803.md](./SYNC_20260803.md) | Both | 10.7.5 light/medium delta: AzBobbyTables 3.6.2, Intune drift, groups/devices, audit V2 |
 | [UPSTREAM_DELTA_CIPP_20260803.md](./UPSTREAM_DELTA_CIPP_20260803.md) | CIPP | Frontend triage for the 08-03 cycle |
 
 ## July 2026 cycles
