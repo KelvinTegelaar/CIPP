@@ -962,17 +962,16 @@ export const CippExchangeInfoCard = (props) => {
                   )}
                   <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap alignItems="center">
                     {legacyProtocols.map((protocol) => {
-                      // SMTP client auth can only be disabled through the API (not re-enabled),
-                      // and shows neutral when the mailbox follows the org-wide default.
+                      // SMTP uses inverted EXO semantics (SmtpClientAuthenticationDisabled) but
+                      // can still be toggled per mailbox — enable = Disabled $false.
+                      // null/unknown means inherit org TransportConfig; click sets an explicit override.
                       const isSmtp = protocol.name === "SMTP";
-                      const clickable = userPrincipalName && !protocol.unknown && (!isSmtp || protocol.enabled);
-                      const tooltipTitle = protocol.unknown
-                        ? `${protocol.fullName} - Follows the organization default`
-                        : !userPrincipalName
-                          ? `${protocol.fullName} - User info not available`
-                          : isSmtp && !protocol.enabled
-                            ? `${protocol.fullName} - Disabled (can only be re-enabled tenant-wide)`
-                            : `${protocol.fullName} - Click to ${protocol.enabled ? "disable" : "enable"}`;
+                      const clickable = Boolean(userPrincipalName);
+                      const tooltipTitle = !userPrincipalName
+                        ? `${protocol.fullName} - User info not available`
+                        : protocol.unknown
+                          ? `${protocol.fullName} - Follows the organization default (click to set an explicit override)`
+                          : `${protocol.fullName} - Click to ${protocol.enabled ? "disable" : "enable"}`;
                       return (
                         <Tooltip key={protocol.name} title={tooltipTitle}>
                           <Chip

@@ -60,7 +60,8 @@ const Page = () => {
         const protocolFlags = (formData.protocols ?? []).reduce((flags, selection) => {
           const param = typeof selection === 'object' ? selection.value : selection
           // "*Disabled" params are inverted: enabling the protocol means setting them false.
-          // SMTP client auth is disable-only; the API rejects an enable attempt with a message.
+          // Per-mailbox SMTP AUTH enable (SmtpClientAuthenticationDisabled=$false) is supported
+          // even when org TransportConfig has SMTP AUTH disabled.
           flags[param] = param.endsWith('Disabled') ? !enable : enable
           return flags
         }, {})
