@@ -1067,6 +1067,7 @@ export const useCippUserActions = () => {
           options: [
             { label: "IMAP (Legacy - Not Recommended)", value: "IMAP" },
             { label: "POP (Legacy - Not Recommended)", value: "POP" },
+            { label: "SMTP Auth (Basic Auth - Not Recommended)", value: "SMTP" },
             { label: "EWS (Exchange Web Services)", value: "EWS" },
             { label: "MAPI (Outlook Desktop)", value: "MAPI" },
             { label: "OWA (Outlook on the Web)", value: "OWA" },
