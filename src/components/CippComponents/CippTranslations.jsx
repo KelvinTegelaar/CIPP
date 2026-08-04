@@ -15,6 +15,7 @@ export const CippTranslations = {
   remediationPosture: 'Remediation',
   deviationReason: 'Reason',
   deviationBy: 'Set By',
+  deviationAt: 'Set At',
   deviationExpires: 'Expires',
   tenantName: 'Tenant',
   lastRun: 'Last Run',

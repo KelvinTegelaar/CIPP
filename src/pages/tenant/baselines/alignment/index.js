@@ -10,7 +10,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { Grid } from '@mui/system'
 import { useState } from 'react'
 import {
   BuildingOfficeIcon,
@@ -193,7 +192,6 @@ const Page = () => {
     rows: resolvedApi.data?.rows ?? [],
   }
   const stageStates = resolvedApi.data?.stageStates ?? []
-  const deviationFeed = resolvedApi.data?.deviationFeed ?? []
 
   const triageFormFields = ({ formHook }) => (
     <Stack spacing={2} sx={{ mt: 2 }}>
@@ -1439,44 +1437,27 @@ const Page = () => {
             </Stack>
             {tenantScoreBar}
             {rolloutCard}
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, lg: 6 }}>
-                <CippDataTable
-                  cardProps={{ style: { width: '100%', height: '100%' } }}
-                  queryKey={`ListBaselineAlignment-${currentTenant}-standards-table`}
-                  title={`Applicable Standards - ${tenant.displayName}`}
-                  data={tenant.rows}
-                  refreshFunction={resolvedApi}
-                  actions={tenantActions}
-                  offCanvas={tenantOffCanvas}
-                  offCanvasOnRowClick={true}
-                  filters={tenantFilterList}
-                  simpleColumns={[
-                    'standardLabel',
-                    'category',
-                    'deviationState',
-                    'sourceTemplate',
-                    'lastOutcome',
-                    'lastRun',
-                  ]}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, lg: 6 }}>
-                <CippDataTable
-                  cardProps={{ style: { width: '100%', height: '100%' } }}
-                  queryKey={`ListBaselineAlignment-${currentTenant}-feed-table`}
-                  title="Deviations"
-                  data={deviationFeed}
-                  refreshFunction={resolvedApi}
-                  simpleColumns={[
-                    'timestamp',
-                    'feedEvent',
-                    'standardLabel',
-                    'detail',
-                  ]}
-                />
-              </Grid>
-            </Grid>
+            <CippDataTable
+              queryKey={`ListBaselineAlignment-${currentTenant}-standards-table`}
+              title={`Applicable Standards - ${tenant.displayName}`}
+              data={tenant.rows}
+              refreshFunction={resolvedApi}
+              actions={tenantActions}
+              offCanvas={tenantOffCanvas}
+              offCanvasOnRowClick={true}
+              filters={tenantFilterList}
+              simpleColumns={[
+                'standardLabel',
+                'category',
+                'deviationState',
+                'deviationReason',
+                'deviationBy',
+                'deviationAt',
+                'sourceTemplate',
+                'lastOutcome',
+                'lastRun',
+              ]}
+            />
             {dialogs}
           </Stack>
         </Container>

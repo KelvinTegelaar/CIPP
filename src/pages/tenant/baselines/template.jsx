@@ -88,6 +88,16 @@ const toConditionDefaults = (condition) => ({
   value: condition.value,
 })
 
+// The API serializes single-element arrays as a bare object; normalize before handing
+// values to the (multiple) tenant selector. Returns null when there is nothing usable
+// so callers can fall back.
+const toOptionArray = (value) => {
+  const entries = (Array.isArray(value) ? value : value ? [value] : []).filter(
+    (entry) => entry && typeof entry === 'object' && entry.value
+  )
+  return entries.length > 0 ? entries : null
+}
+
 const buildEditorStages = (templateDefinition) =>
   (
     templateDefinition?.stages ?? [
@@ -564,15 +574,20 @@ const Page = () => {
       description: template.description,
       alertEmails: template.alertEmails ?? '',
       alertWebhookUrl: template.alertWebhookUrl ?? '',
-      // The selectors take option objects; stored assignment values are the raw values.
-      tenantFilter: (template.assignedTenants ?? []).map((value) => ({
-        label: value,
-        value,
-      })),
-      excludedTenants: (template.excludedTenants ?? []).map((value) => ({
-        label: value,
-        value,
-      })),
+      // The tenant selector's own option objects round-trip verbatim through the API
+      // (assignments/exclusions); older saves fall back to name-based options.
+      tenantFilter:
+        toOptionArray(template.assignments) ??
+        (template.assignedTenants ?? []).map((value) => ({
+          label: value,
+          value,
+        })),
+      excludedTenants:
+        toOptionArray(template.exclusions) ??
+        (template.excludedTenants ?? []).map((value) => ({
+          label: value,
+          value,
+        })),
     })
   }
 
@@ -731,11 +746,20 @@ const Page = () => {
     0
   )
 
+  // Read through to getValues: useWatch can miss the render-phase reset when the
+  // baseline was already cached, which left the save button disabled until an edit.
   const steps = [
-    { label: 'Set a baseline name', done: !!watchForm?.templateName },
+    {
+      label: 'Set a baseline name',
+      done: !!(
+        watchForm?.templateName || formControl.getValues('templateName')
+      ),
+    },
     {
       label: 'Assign tenants or groups',
-      done: (watchForm?.tenantFilter?.length ?? 0) > 0,
+      done:
+        (watchForm?.tenantFilter ?? formControl.getValues('tenantFilter') ?? [])
+          .length > 0,
     },
     {
       label: 'Add standards to at least one stage',
@@ -752,11 +776,17 @@ const Page = () => {
         GUID: router.query.clone ? undefined : (loadedTemplateId ?? undefined),
         templateName: values.templateName,
         description: values.description,
-        assignedTenants: (values.tenantFilter ?? []).map(
-          (entry) => entry?.value ?? entry
+        // Send the selector's option objects as-is (label/value/type) so they can be
+        // stored and restored verbatim; the API reads the value for scope resolution.
+        assignedTenants: (values.tenantFilter ?? []).map((entry) =>
+          entry && typeof entry === 'object'
+            ? { label: entry.label, value: entry.value, type: entry.type }
+            : entry
         ),
-        excludedTenants: (values.excludedTenants ?? []).map(
-          (entry) => entry?.value ?? entry
+        excludedTenants: (values.excludedTenants ?? []).map((entry) =>
+          entry && typeof entry === 'object'
+            ? { label: entry.label, value: entry.value, type: entry.type }
+            : entry
         ),
         alertEmails: values.alertEmails,
         alertWebhookUrl: values.alertWebhookUrl,
