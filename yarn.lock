@@ -3072,10 +3072,10 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-hard-break/-/extension-hard-break-3.20.5.tgz#79a4409e81a35c9f8b664616a9b2ecbd4cb81953"
   integrity sha512-+aILNDO7BsXf0IJ4/0BYh570usFK3Q1t/ZQd8zhHuO2ATeWeDVu1x2F+ouFS4X8fmoCcioMzw15aoz93GET6kQ==
 
-"@tiptap/extension-heading@^3.20.5", "@tiptap/extension-heading@^3.22.3":
-  version "3.22.3"
-  resolved "https://registry.yarnpkg.com/@tiptap/extension-heading/-/extension-heading-3.22.3.tgz#13a15da1ea93c577d9b0abc5341be64bee15a363"
-  integrity sha512-XBHuhiEV2EEhZHpOLcplLqAmBIhJciU3I6AtwmqeEqDC0P114uMEfAO7JGlbBZdCYotNer26PKnu44TBTeNtkw==
+"@tiptap/extension-heading@^3.20.5", "@tiptap/extension-heading@^3.27.3":
+  version "3.27.3"
+  resolved "https://registry.npmjs.org/@tiptap/extension-heading/-/extension-heading-3.27.3.tgz#8f3b0f0f0afd172b6879fad265d43761bc8caa4b"
+  integrity sha512-QHXnsNic6iId8pnsFZ8z4PkX5L+HCHa/D7rAi3nNWtPlSIAOxo4nKrALcB5/tHmY+XL8kEXKH3nsNLNEDLCYPg==
 
 "@tiptap/extension-horizontal-rule@^3.20.5":
   version "3.20.5"
