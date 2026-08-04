@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import {
@@ -31,15 +31,19 @@ import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDia
 import { ForcedSsoMigrationDialog } from '../components/CippComponents/ForcedSsoMigrationDialog'
 import { SubscriptionEndedDialog } from '../components/CippComponents/SubscriptionEndedDialog'
 import { FailedPaymentDialog } from '../components/CippComponents/FailedPaymentDialog'
+import { CippMaintenanceBanner } from '../components/CippComponents/CippMaintenanceBanner'
 
 const OnboardingWizardPage = dynamic(
   () => import('../components/CippWizard/OnboardingWizardPage.jsx'),
   { ssr: false }
 )
 
-const SIDE_NAV_WIDTH = 290
-const SIDE_NAV_PINNED_WIDTH = 50
-const TOP_NAV_HEIGHT = 50
+import {
+  BANNER_HEIGHT_VAR,
+  SIDE_NAV_PINNED_WIDTH,
+  SIDE_NAV_WIDTH,
+  TOP_NAV_HEIGHT,
+} from './constants'
 
 const useMobileNav = () => {
   const pathname = usePathname()
@@ -77,7 +81,7 @@ const LayoutRoot = styled('div')(({ theme }) => ({
   maxWidth: '100%',
   height: '100vh',
   overflow: 'hidden',
-  paddingTop: TOP_NAV_HEIGHT,
+  paddingTop: `calc(${TOP_NAV_HEIGHT}px + ${BANNER_HEIGHT_VAR})`,
   [theme.breakpoints.up('lg')]: {
     paddingLeft: SIDE_NAV_WIDTH,
   },
@@ -271,6 +275,13 @@ export const Layout = (props) => {
     keepPreviousData: true,
   })
 
+  // Hosted maintenance notice, if the instance has one set. Derived from the alerts already
+  // fetched above rather than a second request.
+  const maintenanceAlert = useMemo(
+    () => alertsAPI.data?.find((alert) => alert.maintenance === true) ?? null,
+    [alertsAPI.data]
+  )
+
   useEffect(() => {
     if (!hideSidebar && version.isFetched && !alertsAPI.isFetched) {
       alertsAPI.waiting = true
@@ -289,15 +300,19 @@ export const Layout = (props) => {
   useEffect(() => {
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
       if (alertsAPI.data.length > 0) {
-        alertsAPI.data.forEach((alert) => {
-          dispatch(
-            showToast({
-              message: alert.Alert,
-              title: alert.title,
-              toastError: alert,
-            })
-          )
-        })
+        // The maintenance notice renders as its own banner - toasting it too would surface the
+        // same message three times per page load (banner, snackbar, notification bell).
+        alertsAPI.data
+          .filter((alert) => !alert.maintenance)
+          .forEach((alert) => {
+            dispatch(
+              showToast({
+                message: alert.Alert,
+                title: alert.title,
+                toastError: alert,
+              })
+            )
+          })
       }
     }
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
@@ -312,6 +327,8 @@ export const Layout = (props) => {
 
   return (
     <>
+      {/* Rendered outside the hideSidebar check - maintenance applies to chrome-less pages too. */}
+      <CippMaintenanceBanner alert={maintenanceAlert} />
       {hideSidebar === false && (
         <>
           <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />

@@ -45,7 +45,7 @@ import { CippUniversalSearchV2 } from '../components/CippCards/CippUniversalSear
 import { CippOffCanvas } from '../components/CippComponents/CippOffCanvas'
 import { CippLicenseDetailsDrawer } from '../components/CippComponents/CippLicenseDetailsDrawer'
 
-const TOP_NAV_HEIGHT = 64
+import { BANNER_HEIGHT_VAR, TOP_NAV_HEIGHT } from './constants'
 
 export const TopNav = (props) => {
   const universalSearchDialog = useDialog()
@@ -244,6 +244,8 @@ export const TopNav = (props) => {
         backgroundColor: 'neutral.900',
         color: 'common.white',
         position: 'fixed',
+        // Pushed down by the maintenance banner when one is showing, 0px otherwise.
+        top: BANNER_HEIGHT_VAR,
         width: '100%',
         zIndex: (theme) => theme.zIndex.appBar,
       }}
