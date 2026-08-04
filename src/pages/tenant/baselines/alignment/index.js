@@ -374,6 +374,8 @@ const Page = () => {
       // value regardless of the current state, and a license bought after the last run
       // should not block trying. Manual tasks have nothing to deploy.
       condition: (row) => !row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      bulkFilterEligible: true,
     },
     {
       label: 'Compare Now',
@@ -391,6 +393,8 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
       condition: (row) => !row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      bulkFilterEligible: true,
     },
     {
       label: 'Accept Deviation',
@@ -412,6 +416,8 @@ const Page = () => {
       condition: (row) =>
         ['Drift', 'Partially Accepted'].includes(row.status) &&
         !row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      bulkFilterEligible: true,
     },
     {
       label: 'Deny Deviation',
@@ -442,6 +448,8 @@ const Page = () => {
       condition: (row) =>
         ['Drift', 'Partially Accepted'].includes(row.status) &&
         !row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      bulkFilterEligible: true,
     },
     {
       label: 'Clear Triage Status',
@@ -465,6 +473,8 @@ const Page = () => {
           row.status?.startsWith('Denied') ||
           Object.keys(row.acceptedPaths ?? {}).length > 0) &&
         !row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      bulkFilterEligible: true,
     },
     {
       label: 'Mark Task Complete',
@@ -481,8 +491,11 @@ const Page = () => {
         'Mark the manual task [standardLabel] as completed for [tenantFilter]? A new deviation is raised again on the configured recurrence.',
       multiPost: false,
       relatedQueryKeys,
+      // Instance keys are 'ManualTask#n' - an exact match missed every instance but the first.
       condition: (row) =>
-        row.standardName === 'ManualTask' && row.status === 'Drift',
+        row.standardName.startsWith('ManualTask') && row.status === 'Drift',
+      hideCondition: (row) => !row.standardName.startsWith('ManualTask'),
+      bulkFilterEligible: true,
     },
     {
       label: 'Create Tenant Override',
@@ -535,6 +548,7 @@ const Page = () => {
           Object.keys(standard?.variables ?? {}).length > 0
         )
       },
+      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
     },
     {
       label: 'Remove Tenant Override',
@@ -553,6 +567,7 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
       condition: (row) => row.sourceTemplate === 'Tenant Override',
+      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
     },
   ]
 

@@ -34,7 +34,10 @@ import {
   MoreVert as MoreVertIcon,
   Fullscreen as FullscreenIcon,
 } from '@mui/icons-material'
-import { ExclamationCircleIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
+import {
+  ExclamationCircleIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/24/outline'
 import { styled, alpha } from '@mui/material/styles'
 import { PDFExportButton, exportRowsToPdf } from '../pdfExportButton'
 import { CSVExportButton, exportRowsToCsv } from '../csvExportButton'
@@ -173,14 +176,24 @@ export const CIPPTableToptoolbar = React.memo(
     const settings = useSettings()
     const router = useRouter()
     const createDialog = useDialog()
-    const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false })
+    const [actionData, setActionData] = useState({
+      data: {},
+      action: {},
+      ready: false,
+    })
     const [offcanvasVisible, setOffcanvasVisible] = useState(false)
     const [jsonDialogOpen, setJsonDialogOpen] = useState(false) // For dialog-based JSON view
     const [filterList, setFilterList] = useState(filters)
-    const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(queryKey || title)
-    const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns)
+    const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(
+      queryKey || title
+    )
+    const [originalSimpleColumns, setOriginalSimpleColumns] =
+      useState(simpleColumns)
     const [filterCanvasVisible, setFilterCanvasVisible] = useState(false)
-    const [activeFilters, setActiveFilters] = useState({ graph: null, table: null })
+    const [activeFilters, setActiveFilters] = useState({
+      graph: null,
+      table: null,
+    })
     const presetKey = (filter) => filter?.id ?? filter?.filterName
     const pageName = router.pathname.split('/').slice(1).join('/')
     const currentTenant = settings?.currentTenant
@@ -195,15 +208,21 @@ export const CIPPTableToptoolbar = React.memo(
           ?.filter((action) => !action.link && !action?.hideBulk)
           ?.map((action) => ({
             ...action,
+            // bulkFilterEligible actions run against the eligible subset of the selection:
+            // available when ANY selected row qualifies, and dispatch filters the rest out.
+            // The default stays all-or-nothing (every selected row must qualify).
             disabled: action.condition
-              ? !selectedRows.every((row) => action.condition(row.original))
+              ? action.bulkFilterEligible
+                ? !selectedRows.some((row) => action.condition(row.original))
+                : !selectedRows.every((row) => action.condition(row.original))
               : false,
           })) || []
       )
     }
 
     const selectedRows = table.getSelectedRowModel().rows
-    const hasSelection = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()
+    const hasSelection =
+      table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()
     // Built-in export actions should only appear when the page opts in and rows are selected.
     const builtInBulkExportAvailable =
       showBulkExportAction && exportEnabled && selectedRows.length > 0
@@ -287,7 +306,9 @@ export const CIPPTableToptoolbar = React.memo(
         api?.url === '/api/ListGraphRequest' && // Only for graph requests
         !restoredFiltersRef.current.has(restorationKey) // Only if not already restored
       ) {
-        const last = normalizePersistedFilters(settings.lastUsedFilters[pageName]).graph
+        const last = normalizePersistedFilters(
+          settings.lastUsedFilters[pageName]
+        ).graph
         if (last) {
           // Mark as restored to prevent infinite loops
           restoredFiltersRef.current.add(restorationKey)
@@ -318,7 +339,10 @@ export const CIPPTableToptoolbar = React.memo(
             queryKey: newQueryKey,
           })
           setCurrentEffectiveQueryKey(newQueryKey)
-          setActiveFilters((prev) => ({ ...prev, graph: { id: last.id, name: last.name } }))
+          setActiveFilters((prev) => ({
+            ...prev,
+            graph: { id: last.id, name: last.name },
+          }))
 
           if (last.value?.$select) {
             let selectColumns = []
@@ -336,7 +360,14 @@ export const CIPPTableToptoolbar = React.memo(
           }
         }
       }
-    }, [settings.persistFilters, settings.lastUsedFilters, pageName, api?.url, queryKey, title])
+    }, [
+      settings.persistFilters,
+      settings.lastUsedFilters,
+      pageName,
+      api?.url,
+      queryKey,
+      title,
+    ])
 
     // Clear restoration tracking when page changes
     useEffect(() => {
@@ -354,7 +385,8 @@ export const CIPPTableToptoolbar = React.memo(
         const leftContainerScrollWidth = leftContainerRef.current.scrollWidth
         const actionsWidth = actionsContainerRef.current.scrollWidth
         const isOverflowing = leftContainerScrollWidth > leftContainerWidth
-        const shouldBeCompact = isOverflowing || actionsWidth > leftContainerWidth * 0.6 // Actions taking > 60% of left container
+        const shouldBeCompact =
+          isOverflowing || actionsWidth > leftContainerWidth * 0.6 // Actions taking > 60% of left container
 
         setUseCompactMode(shouldBeCompact)
       }
@@ -395,7 +427,9 @@ export const CIPPTableToptoolbar = React.memo(
       ) {
         // Use setTimeout to ensure the table is fully rendered
         const timeoutId = setTimeout(() => {
-          const last = normalizePersistedFilters(settings.lastUsedFilters[pageName]).table
+          const last = normalizePersistedFilters(
+            settings.lastUsedFilters[pageName]
+          ).table
           if (!last) {
             return
           }
@@ -409,8 +443,12 @@ export const CIPPTableToptoolbar = React.memo(
           } else if (last.type === 'column') {
             // Only apply if all filter columns exist in the current table
             const allColumns = table.getAllColumns().map((col) => col.id)
-            const filterColumns = Array.isArray(last.value) ? last.value.map((f) => f.id) : []
-            const allExist = filterColumns.every((colId) => allColumns.includes(colId))
+            const filterColumns = Array.isArray(last.value)
+              ? last.value.map((f) => f.id)
+              : []
+            const allExist = filterColumns.every((colId) =>
+              allColumns.includes(colId)
+            )
             if (allExist) {
               table.setShowColumnFilters(true)
               table.setColumnFilters(last.value)
@@ -533,7 +571,9 @@ export const CIPPTableToptoolbar = React.memo(
       const merged = { ...obj1 }
       for (const key in obj2) {
         const lowerCaseKey = key.toLowerCase()
-        const existingKey = Object.keys(merged).find((k) => k.toLowerCase() === lowerCaseKey)
+        const existingKey = Object.keys(merged).find(
+          (k) => k.toLowerCase() === lowerCaseKey
+        )
         if (existingKey) {
           merged[existingKey] = obj2[key]
         } else {
@@ -592,12 +632,23 @@ export const CIPPTableToptoolbar = React.memo(
       }
       // legacy single-slot {type, value, name}
       if (last.type === 'graph') {
-        return { graph: { id: last.name, name: last.name, value: last.value }, table: null }
+        return {
+          graph: { id: last.name, name: last.name, value: last.value },
+          table: null,
+        }
       }
-      if (last.type === 'column' || (last.type === 'global' && typeof last.value === 'string')) {
+      if (
+        last.type === 'column' ||
+        (last.type === 'global' && typeof last.value === 'string')
+      ) {
         return {
           graph: null,
-          table: { id: last.name, name: last.name, type: last.type, value: last.value },
+          table: {
+            id: last.name,
+            name: last.name,
+            type: last.type,
+            value: last.value,
+          },
         }
       }
       // reset marker or non-string global garbage
@@ -608,7 +659,9 @@ export const CIPPTableToptoolbar = React.memo(
       if (!settings.persistFilters || !settings.setLastUsedFilter) {
         return
       }
-      const current = normalizePersistedFilters(settings.lastUsedFilters?.[pageName])
+      const current = normalizePersistedFilters(
+        settings.lastUsedFilters?.[pageName]
+      )
       settings.setLastUsedFilter(pageName, updater(current))
     }
 
@@ -620,11 +673,20 @@ export const CIPPTableToptoolbar = React.memo(
         table.setGlobalFilter(filter)
         setActiveFilters((prev) => ({
           ...prev,
-          table: { id: presetId ?? filterName, name: filterName, type: 'global' },
+          table: {
+            id: presetId ?? filterName,
+            name: filterName,
+            type: 'global',
+          },
         }))
         persistFilterSlots((cur) => ({
           ...cur,
-          table: { id: presetId ?? filterName, name: filterName, type: 'global', value: filter },
+          table: {
+            id: presetId ?? filterName,
+            name: filterName,
+            type: 'global',
+            value: filter,
+          },
         }))
       }
       if (filterType === 'column') {
@@ -635,11 +697,20 @@ export const CIPPTableToptoolbar = React.memo(
         table.setColumnFilters(filter)
         setActiveFilters((prev) => ({
           ...prev,
-          table: { id: presetId ?? filterName, name: filterName, type: 'column' },
+          table: {
+            id: presetId ?? filterName,
+            name: filterName,
+            type: 'column',
+          },
         }))
         persistFilterSlots((cur) => ({
           ...cur,
-          table: { id: presetId ?? filterName, name: filterName, type: 'column', value: filter },
+          table: {
+            id: presetId ?? filterName,
+            name: filterName,
+            type: 'column',
+            value: filter,
+          },
         }))
       }
       if (filterType === 'reset') {
@@ -691,7 +762,11 @@ export const CIPPTableToptoolbar = React.memo(
         })) // Track active graph filter
         persistFilterSlots((cur) => ({
           ...cur,
-          graph: { id: presetId ?? filterName, name: filterName, value: filter },
+          graph: {
+            id: presetId ?? filterName,
+            name: filterName,
+            value: filter,
+          },
         }))
         if (filter?.$select) {
           let selectedColumns = []
@@ -756,7 +831,10 @@ export const CIPPTableToptoolbar = React.memo(
         })
 
         presetList?.data?.Results?.map((preset) => {
-          var customPresetEndpoint = preset?.params?.endpoint?.replace(/^\//, '')
+          var customPresetEndpoint = preset?.params?.endpoint?.replace(
+            /^\//,
+            ''
+          )
           if (customPresetEndpoint === endpoint) {
             graphPresetList.push({
               id: preset?.id,
@@ -774,8 +852,10 @@ export const CIPPTableToptoolbar = React.memo(
 
     const graphPresetItems = filterList?.filter((f) => f.type === 'graph') ?? []
     const tablePresetItems = filterList?.filter((f) => f.type !== 'graph') ?? []
-    const showFilterSections = graphPresetItems.length > 0 && tablePresetItems.length > 0
-    const activeSlotCount = (activeFilters.graph ? 1 : 0) + (activeFilters.table ? 1 : 0)
+    const showFilterSections =
+      graphPresetItems.length > 0 && tablePresetItems.length > 0
+    const activeSlotCount =
+      (activeFilters.graph ? 1 : 0) + (activeFilters.table ? 1 : 0)
 
     const renderPresetItem = (filter, layer) => (
       <MenuItem
@@ -858,7 +938,8 @@ export const CIPPTableToptoolbar = React.memo(
                     fontSize="small"
                     sx={{
                       animation:
-                        getRequestData?.isFetching || refreshFunction?.isFetching
+                        getRequestData?.isFetching ||
+                        refreshFunction?.isFetching
                           ? 'spin 1s linear infinite'
                           : 'none',
                       '@keyframes spin': {
@@ -909,11 +990,15 @@ export const CIPPTableToptoolbar = React.memo(
                   endIcon={<ArrowDownIcon />}
                   onClick={(event) => setFiltersAnchor(event.currentTarget)}
                   sx={{
-                    color: activeSlotCount > 0 ? 'primary.main' : 'text.primary',
-                    borderColor: activeSlotCount > 0 ? 'primary.main' : undefined,
+                    color:
+                      activeSlotCount > 0 ? 'primary.main' : 'text.primary',
+                    borderColor:
+                      activeSlotCount > 0 ? 'primary.main' : undefined,
                   }}
                 >
-                  {activeSlotCount > 0 ? `Filters (${activeSlotCount})` : 'Filters'}
+                  {activeSlotCount > 0
+                    ? `Filters (${activeSlotCount})`
+                    : 'Filters'}
                 </ModernButton>
 
                 {/* Columns Button */}
@@ -960,7 +1045,10 @@ export const CIPPTableToptoolbar = React.memo(
                           })
                         }
                       >
-                        <Checkbox checked={Boolean(column.getIsVisible())} size="small" />
+                        <Checkbox
+                          checked={Boolean(column.getIsVisible())}
+                          size="small"
+                        />
                         <ListItemText primary={getCippTranslation(column.id)} />
                       </MenuItem>
                     ))}
@@ -1047,7 +1135,9 @@ export const CIPPTableToptoolbar = React.memo(
                   <FullscreenIcon />
                 </ListItemIcon>
                 <ListItemText>
-                  {table.getState().isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
+                  {table.getState().isFullScreen
+                    ? 'Exit Fullscreen'
+                    : 'Fullscreen'}
                 </ListItemText>
               </MenuItem>
             </Menu>
@@ -1091,12 +1181,24 @@ export const CIPPTableToptoolbar = React.memo(
                   <ListItemText primary="Edit filters" />
                 </MenuItem>
               )}
-              {showFilterSections && <ListSubheader disableSticky>Graph filters</ListSubheader>}
-              {!showFilterSections && graphPresetItems.length > 0 && <Divider />}
-              {graphPresetItems.map((filter) => renderPresetItem(filter, 'graph'))}
-              {showFilterSections && <ListSubheader disableSticky>Table filters</ListSubheader>}
-              {!showFilterSections && tablePresetItems.length > 0 && <Divider />}
-              {tablePresetItems.map((filter) => renderPresetItem(filter, 'table'))}
+              {showFilterSections && (
+                <ListSubheader disableSticky>Graph filters</ListSubheader>
+              )}
+              {!showFilterSections && graphPresetItems.length > 0 && (
+                <Divider />
+              )}
+              {graphPresetItems.map((filter) =>
+                renderPresetItem(filter, 'graph')
+              )}
+              {showFilterSections && (
+                <ListSubheader disableSticky>Table filters</ListSubheader>
+              )}
+              {!showFilterSections && tablePresetItems.length > 0 && (
+                <Divider />
+              )}
+              {tablePresetItems.map((filter) =>
+                renderPresetItem(filter, 'table')
+              )}
             </Menu>
 
             {/* Columns Menu */}
@@ -1136,7 +1238,10 @@ export const CIPPTableToptoolbar = React.memo(
                       })
                     }
                   >
-                    <Checkbox checked={Boolean(column.getIsVisible())} size="small" />
+                    <Checkbox
+                      checked={Boolean(column.getIsVisible())}
+                      size="small"
+                    />
                     <ListItemText primary={getCippTranslation(column.id)} />
                   </MenuItem>
                 ))}
@@ -1159,7 +1264,9 @@ export const CIPPTableToptoolbar = React.memo(
                 <MenuItem
                   onClick={() => {
                     // Trigger CSV export
-                    const csvButton = document.querySelector(`[data-csv-export="${title}"]`)
+                    const csvButton = document.querySelector(
+                      `[data-csv-export="${title}"]`
+                    )
                     if (csvButton) csvButton.click()
                     setExportAnchor(null)
                   }}
@@ -1172,7 +1279,9 @@ export const CIPPTableToptoolbar = React.memo(
                 <MenuItem
                   onClick={() => {
                     // Trigger PDF export
-                    const pdfButton = document.querySelector(`[data-pdf-export="${title}"]`)
+                    const pdfButton = document.querySelector(
+                      `[data-pdf-export="${title}"]`
+                    )
                     if (pdfButton) pdfButton.click()
                     setExportAnchor(null)
                   }}
@@ -1243,7 +1352,8 @@ export const CIPPTableToptoolbar = React.memo(
             }}
           >
             {/* Selected rows indicator */}
-            {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+            {(table.getIsAllRowsSelected() ||
+              table.getIsSomeRowsSelected()) && (
               <Typography
                 variant="body2"
                 sx={{
@@ -1337,7 +1447,13 @@ export const CIPPTableToptoolbar = React.memo(
                     return
                   }
 
-                  const selectedRows = table.getSelectedRowModel().rows
+                  const allSelectedRows = table.getSelectedRowModel().rows
+                  const selectedRows =
+                    action.bulkFilterEligible && action.condition
+                      ? allSelectedRows.filter((row) =>
+                          action.condition(row.original)
+                        )
+                      : allSelectedRows
                   const selectedData = selectedRows.map((row) => row.original)
 
                   if (typeof action.customBulkHandler === 'function') {
@@ -1421,15 +1537,24 @@ export const CIPPTableToptoolbar = React.memo(
         >
           <CippGraphExplorerFilter
             endpointFilter={api?.data?.Endpoint}
-            relatedQueryKeys={[queryKey, currentEffectiveQueryKey].filter(Boolean)}
+            relatedQueryKeys={[queryKey, currentEffectiveQueryKey].filter(
+              Boolean
+            )}
             selectedPreset={
               activeFilters.graph
-                ? filterList.find((f) => presetKey(f) === activeFilters.graph.id) ?? null
+                ? (filterList.find(
+                    (f) => presetKey(f) === activeFilters.graph.id
+                  ) ?? null)
                 : null
             }
             onPresetSelect={(preset) => {
               if (preset?.value && preset?.type === 'graph') {
-                setTableFilter(preset.value, preset.type, preset.filterName, preset.id)
+                setTableFilter(
+                  preset.value,
+                  preset.type,
+                  preset.filterName,
+                  preset.id
+                )
               }
             }}
             onSubmitFilter={(filter) => {
