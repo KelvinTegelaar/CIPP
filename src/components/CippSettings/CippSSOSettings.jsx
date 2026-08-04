@@ -372,13 +372,22 @@ export const CippSSOSettings = () => {
                     <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
                       If your tenant blocks setup
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" sx={{ mb: 1 }}>
                       The most common blocker is a tenant app management policy that forbids adding
                       client secrets. <strong>Repair</strong> retries it, and CIPP will try to exempt
                       itself from the policy. If it still fails, an Entra administrator can create
                       the CIPP-SSO app registration by hand and you can store its credentials under{" "}
                       <strong>Manual configuration</strong> below — the documentation has the exact
                       settings to use.
+                    </Typography>
+                    <Typography variant="body2">
+                      If sign-in is broken badly enough that you cannot reach this page at all, use{" "}
+                      <strong>Reset SSO</strong> in the{" "}
+                      <Link href="https://management.cipp.app/" target="_blank" rel="noopener noreferrer">
+                        management portal
+                      </Link>
+                      . That returns the instance to its setup wizard, which is reachable without
+                      signing in.
                     </Typography>
                   </div>
 

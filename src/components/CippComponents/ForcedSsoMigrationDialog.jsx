@@ -76,8 +76,11 @@ export const ForcedSsoMigrationDialog = ({ setupCompleted = true }) => {
           <>
             <Typography sx={{ mb: 2 }}>
               Your CIPP instance requires a dedicated <strong> CIPP-SSO </strong> app registration in
-              your tenant for authentication. This gives you full control over Conditional Access
-              policies, MFA requirements, and session management for your CIPP users.
+              your tenant for authentication. Sign-in used to be handled by the hosting platform&apos;s
+              built-in Entra ID provider, which is why you are seeing this after the upgrade — your
+              instance now needs its own app registration to sign in against. This also gives you
+              full control over Conditional Access policies, MFA requirements, and session management
+              for your CIPP users.
             </Typography>
             <Alert severity="info" sx={{ mb: 2 }}>
               Clicking the button below is all that is needed. You do <strong>not</strong> need Entra
@@ -185,6 +188,22 @@ export const ForcedSsoMigrationDialog = ({ setupCompleted = true }) => {
                 An out-of-date <strong>CIPP-SAM consent</strong> that predates the permissions CIPP
                 needs to create the app. Re-consenting CIPP-SAM resolves it.
               </li>
+            </Typography>
+            {/* This dialog can't be dismissed, so a policy-blocked secret leaves the admin with
+                nowhere to go. Resetting from the management portal drops the instance back to its
+                setup wizard, which is the only route to entering a hand-made app's credentials. */}
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              If neither applies, or your administrator has to create the app registration by hand,
+              use <strong>Reset SSO</strong> in the{' '}
+              <Link
+                href="https://management.cipp.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                management portal
+              </Link>
+              . That returns this instance to its setup wizard, where you can supply an Application
+              ID and client secret directly.
             </Typography>
             <Link href={SSO_DOCS_URL} target="_blank" rel="noopener noreferrer" variant="body2">
               Troubleshooting steps and how to create the app registration manually
