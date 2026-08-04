@@ -29,6 +29,10 @@ export const CippApiDialog = (props) => {
     allowResubmit = false,
     children,
     defaultvalues,
+    // Optional. Supplying a form lets the caller watch and drive the dialog's fields while it is
+    // open - the custom variables page uses it to default a variable's type from how the same name
+    // is typed elsewhere. Omitted, the dialog owns its form exactly as before.
+    formHook: externalFormHook,
     ...other
   } = props
   const router = useRouter()
@@ -42,10 +46,11 @@ export const CippApiDialog = (props) => {
     other.fullScreen = true
   }
 
-  const formHook = useForm({
+  const internalFormHook = useForm({
     defaultValues: typeof defaultvalues === 'function' ? defaultvalues(row) : defaultvalues || {},
     mode: 'onChange', // Enable real-time validation
   })
+  const formHook = externalFormHook ?? internalFormHook
 
   // Get form state for validation
   const { isValid } = useFormState({ control: formHook.control })

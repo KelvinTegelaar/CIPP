@@ -28,23 +28,43 @@ function loadIntuneCollection() {
   return pending;
 }
 
-// Returns the Intune collection array — empty until the fetch resolves, then re-renders.
-export function useIntuneCollection() {
-  const [data, setData] = useState(cache || []);
+// One shared reference for the not-loaded case. Callers put `data` in dependency arrays, and a fresh
+// [] on every render would invalidate their memos continuously.
+const EMPTY = [];
+
+// Returns the collection along with its load state, so a screen that renders setting names can show
+// that it is still resolving them instead of briefly displaying raw setting definition IDs.
+// `enabled: false` skips the download entirely — worth passing for policy types whose fields are
+// self-describing and never need the catalog.
+export function useIntuneCollectionState({ enabled = true } = {}) {
+  // The result is derived from the module-level cache at render time; this only re-renders the
+  // component once the in-flight fetch settles.
+  const [, onSettled] = useState(0);
+  const [isError, setIsError] = useState(false);
+
   useEffect(() => {
-    if (cache) {
-      setData(cache);
-      return;
-    }
+    if (!enabled || cache) return undefined;
+
     let alive = true;
     loadIntuneCollection()
-      .then((d) => {
-        if (alive) setData(d);
+      .then(() => {
+        if (alive) onSettled((tick) => tick + 1);
       })
-      .catch(() => {});
+      .catch(() => {
+        // Not fatal: callers fall back to raw setting definition IDs rather than blocking.
+        if (alive) setIsError(true);
+      });
     return () => {
       alive = false;
     };
-  }, []);
-  return data;
+  }, [enabled]);
+
+  if (!enabled) return { data: EMPTY, isLoading: false, isError: false };
+  if (cache) return { data: cache, isLoading: false, isError: false };
+  return { data: EMPTY, isLoading: !isError, isError };
+}
+
+// Returns the Intune collection array — empty until the fetch resolves, then re-renders.
+export function useIntuneCollection() {
+  return useIntuneCollectionState().data;
 }
