@@ -33,11 +33,16 @@ import { CippReportToolbar } from '../../components/CippComponents/CippReportToo
 import { Assessment as AssessmentIcon } from '@mui/icons-material'
 import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
+import { AllTenantsDashboard } from '../../components/CippAllTenants/AllTenantsDashboard'
 
 const Page = () => {
   const settings = useSettings()
   const router = useRouter()
   const { currentTenant } = settings
+  // The per-tenant cards below are all scoped to a single tenant's Graph data. Under AllTenants —
+  // which is also the state on first login, before a tenant has been picked — swap in the
+  // cross-tenant view rather than letting the layout render "Not supported".
+  const isAllTenants = !currentTenant || currentTenant === 'AllTenants'
   const [portalMenuItems, setPortalMenuItems] = useState([])
   const isWide = useMediaQuery('(min-width:1513px)')
   const [reportsMenuAnchor, setReportsMenuAnchor] = useState(null)
@@ -64,6 +69,7 @@ const Page = () => {
     url: '/api/ListGraphRequest',
     queryKey: `${currentTenant}-ListGraphRequest-organization`,
     data: { tenantFilter: currentTenant, Endpoint: 'organization' },
+    waiting: !isAllTenants,
   })
 
   const organizationRecord = organization.data?.Results?.[0]
@@ -72,7 +78,7 @@ const Page = () => {
     url: '/api/ListTests',
     data: { tenantFilter: currentTenant, reportId: selectedReport },
     queryKey: `${currentTenant}-ListTests-${selectedReport}`,
-    waiting: !!currentTenant && !!selectedReport,
+    waiting: !isAllTenants && !!currentTenant && !!selectedReport,
   })
 
   const currentTenantInfo = ApiGetCall({
@@ -94,20 +100,26 @@ const Page = () => {
             IdentityPassed: testsApi.data.TestCounts?.Identity?.Passed || 0,
             IdentityFailed: testsApi.data.TestCounts?.Identity?.Failed || 0,
             IdentitySkipped: testsApi.data.TestCounts?.Identity?.Skipped || 0,
-            IdentityInformational: testsApi.data.TestCounts?.Identity?.Informational || 0,
-            IdentityNeedsAttention: testsApi.data.TestCounts?.Identity?.NeedsAttention || 0,
+            IdentityInformational:
+              testsApi.data.TestCounts?.Identity?.Informational || 0,
+            IdentityNeedsAttention:
+              testsApi.data.TestCounts?.Identity?.NeedsAttention || 0,
             IdentityTotal: testsApi.data.TestCounts?.Identity?.Total || 0,
             DevicesPassed: testsApi.data.TestCounts?.Devices?.Passed || 0,
             DevicesFailed: testsApi.data.TestCounts?.Devices?.Failed || 0,
             DevicesSkipped: testsApi.data.TestCounts?.Devices?.Skipped || 0,
-            DevicesInformational: testsApi.data.TestCounts?.Devices?.Informational || 0,
-            DevicesNeedsAttention: testsApi.data.TestCounts?.Devices?.NeedsAttention || 0,
+            DevicesInformational:
+              testsApi.data.TestCounts?.Devices?.Informational || 0,
+            DevicesNeedsAttention:
+              testsApi.data.TestCounts?.Devices?.NeedsAttention || 0,
             DevicesTotal: testsApi.data.TestCounts?.Devices?.Total || 0,
             CustomPassed: testsApi.data.TestCounts?.Custom?.Passed || 0,
             CustomFailed: testsApi.data.TestCounts?.Custom?.Failed || 0,
             CustomSkipped: testsApi.data.TestCounts?.Custom?.Skipped || 0,
-            CustomInformational: testsApi.data.TestCounts?.Custom?.Informational || 0,
-            CustomNeedsAttention: testsApi.data.TestCounts?.Custom?.NeedsAttention || 0,
+            CustomInformational:
+              testsApi.data.TestCounts?.Custom?.Informational || 0,
+            CustomNeedsAttention:
+              testsApi.data.TestCounts?.Custom?.NeedsAttention || 0,
             CustomTotal: testsApi.data.TestCounts?.Custom?.Total || 0,
             DataPassed: 0,
             DataTotal: 0,
@@ -118,12 +130,15 @@ const Page = () => {
               UserCount: testsApi.data.TenantCounts.Users || 0,
               GuestCount: testsApi.data.TenantCounts.Guests || 0,
               GroupCount: testsApi.data.TenantCounts.Groups || 0,
-              ApplicationCount: testsApi.data.TenantCounts.ServicePrincipals || 0,
+              ApplicationCount:
+                testsApi.data.TenantCounts.ServicePrincipals || 0,
               DeviceCount: testsApi.data.TenantCounts.Devices || 0,
-              ManagedDeviceCount: testsApi.data.TenantCounts.ManagedDevices || 0,
+              ManagedDeviceCount:
+                testsApi.data.TenantCounts.ManagedDevices || 0,
             },
             MFAState: testsApi.data.MFAState,
-            OverviewCaDevicesAllUsers: dashboardDemoData.TenantInfo.OverviewCaDevicesAllUsers,
+            OverviewCaDevicesAllUsers:
+              dashboardDemoData.TenantInfo.OverviewCaDevicesAllUsers,
             OverviewAuthMethodsPrivilegedUsers:
               dashboardDemoData.TenantInfo.OverviewAuthMethodsPrivilegedUsers,
             DeviceOverview: dashboardDemoData.TenantInfo.DeviceOverview,
@@ -149,7 +164,10 @@ const Page = () => {
 
     let portalLinks
     if (settings.UserSpecificSettings?.portalLinks) {
-      portalLinks = { ...defaultLinks, ...settings.UserSpecificSettings.portalLinks }
+      portalLinks = {
+        ...defaultLinks,
+        ...settings.UserSpecificSettings.portalLinks,
+      }
     } else if (settings.portalLinks) {
       portalLinks = { ...defaultLinks, ...settings.portalLinks }
     } else {
@@ -180,7 +198,10 @@ const Page = () => {
         link:
           portal.field && tenantLookup?.[portal.field]
             ? tenantLookup[portal.field]
-            : portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+            : portal.url.replace(
+                portal.variable,
+                tenantLookup?.[portal.variable]
+              ),
         icon: portal.icon,
       }))
       setPortalMenuItems(menuItems)
@@ -198,6 +219,18 @@ const Page = () => {
       return (num / 1000).toFixed(1) + 'K'
     }
     return num.toLocaleString()
+  }
+
+  if (isAllTenants) {
+    // No top margin, matching CippTablePage: the layout's breadcrumb Divider already carries mb: 2.
+    // The per-tenant view below needs mt: 12 only because it sits under the test-suite tab bar,
+    // which AllTenants does not render.
+    return (
+      <Container maxWidth={false} sx={{ mb: 6 }}>
+        <CippHead title="Dashboard" />
+        <AllTenantsDashboard />
+      </Container>
+    )
   }
 
   return (
@@ -228,7 +261,9 @@ const Page = () => {
                 <BulkActionsMenu
                   buttonName="Portals"
                   actions={portalMenuItems}
-                  disabled={!currentTenantInfo.isSuccess || portalMenuItems.length === 0}
+                  disabled={
+                    !currentTenantInfo.isSuccess || portalMenuItems.length === 0
+                  }
                 />
               </Box>
               {isWide ? (
@@ -268,7 +303,10 @@ const Page = () => {
                         transition: 'all 0.2s ease-in-out',
                       }}
                     >
-                      <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <Box
+                        component="span"
+                        sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                      >
                         Report Builder
                       </Box>
                     </Button>
@@ -293,7 +331,10 @@ const Page = () => {
                         textOverflow: 'ellipsis',
                       }}
                     >
-                      <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <Box
+                        component="span"
+                        sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                      >
                         Dashboard Reports
                       </Box>
                     </Button>
@@ -336,11 +377,17 @@ const Page = () => {
         <Grid container spacing={2} sx={{ mb: 2 }}>
           {/* Column 1: Tenant Information */}
           <Grid size={{ xs: 12, lg: 4 }} data-tutorial="dashboard-tenant-info">
-            <TenantInfoCard data={organizationRecord} isLoading={organization.isFetching} />
+            <TenantInfoCard
+              data={organizationRecord}
+              isLoading={organization.isFetching}
+            />
           </Grid>
 
           {/* Column 2: Tenant Metrics - 2x3 Grid */}
-          <Grid size={{ xs: 12, lg: 4 }} data-tutorial="dashboard-tenant-metrics">
+          <Grid
+            size={{ xs: 12, lg: 4 }}
+            data-tutorial="dashboard-tenant-metrics"
+          >
             <TenantMetricsGrid
               data={reportData.TenantInfo.TenantOverview}
               isLoading={testsApi.isFetching}
@@ -353,7 +400,9 @@ const Page = () => {
               data={reportData}
               isLoading={testsApi.isFetching}
               title={reports.find((r) => r.id === selectedReport)?.name}
-              description={reports.find((r) => r.id === selectedReport)?.description}
+              description={
+                reports.find((r) => r.id === selectedReport)?.description
+              }
             />
           </Grid>
         </Grid>
@@ -368,15 +417,28 @@ const Page = () => {
           <Grid container spacing={2}>
             {/* Left Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
-                <Box sx={{ height: 450 }} data-tutorial="dashboard-secure-score">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  height: '100%',
+                }}
+              >
+                <Box
+                  sx={{ height: 450 }}
+                  data-tutorial="dashboard-secure-score"
+                >
                   <SecureScoreCard
                     data={testsApi.data?.SecureScore}
                     isLoading={testsApi.isFetching}
                     sx={{ height: '100%' }}
                   />
                 </Box>
-                <Box sx={{ height: 450 }} data-tutorial="dashboard-auth-methods">
+                <Box
+                  sx={{ height: 450 }}
+                  data-tutorial="dashboard-auth-methods"
+                >
                   <AuthMethodCard
                     data={testsApi.data?.MFAState}
                     isLoading={testsApi.isFetching}
@@ -388,7 +450,14 @@ const Page = () => {
 
             {/* Right Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  height: '100%',
+                }}
+              >
                 <Box sx={{ height: 450 }} data-tutorial="dashboard-mfa">
                   <MFACard
                     data={testsApi.data?.MFAState}
@@ -412,9 +481,22 @@ const Page = () => {
   )
 }
 
+// The Identity / Devices / Custom tabs are all views onto a single tenant's ListTests run, which
+// returns nothing under AllTenants — so the tabs would just lead to empty pages. Drop them there
+// and show the cross-tenant dashboard on its own.
+const DashboardTabs = ({ children }) => {
+  const { currentTenant } = useSettings()
+  if (!currentTenant || currentTenant === 'AllTenants') {
+    return children
+  }
+  return <TabbedLayout tabOptions={tabOptions}>{children}</TabbedLayout>
+}
+
+// No allTenantsSupport={false} here: the page handles AllTenants itself (see isAllTenants above).
+// Leaving the opt-out in place would make the layout render "Not supported" and never mount this page.
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={false}>
-    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  <DashboardLayout>
+    <DashboardTabs>{page}</DashboardTabs>
   </DashboardLayout>
 )
 
