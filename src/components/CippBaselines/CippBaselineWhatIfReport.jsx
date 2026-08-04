@@ -144,18 +144,18 @@ const WhatIfDocument = ({
     day: 'numeric',
   })
   const changesNow = tenant.rows.filter((row) =>
-    ['Detected', 'Suppressed'].includes(row.deviationState)
+    ['Drift', 'Denied - Remediate Pending', 'Denied - Delete Pending'].includes(
+      row.status
+    )
   )
-  const acceptedRows = tenant.rows.filter(
-    (row) => row.deviationState === 'Accepted'
-  )
+  const acceptedRows = tenant.rows.filter((row) => row.status === 'Accepted')
   const plannedStages = stageStates.filter((state) => state.nextStage)
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.accentBar} />
-        <Text style={styles.title}>Standards What-If Report</Text>
+        <Text style={styles.title}>Baseline What-If Report</Text>
         <Text style={styles.subtitle}>
           {tenant.displayName} ({tenant.tenantFilter}) - generated {generatedAt}
           . No changes have been made; this report previews what applying the
@@ -166,11 +166,13 @@ const WhatIfDocument = ({
         <View style={styles.statRow}>
           <View style={styles.statBox}>
             <Text style={styles.statValue}>{tenant.alignedPercentage}%</Text>
-            <Text style={styles.statLabel}>Aligned</Text>
+            <Text style={styles.statLabel}>
+              Compliant incl. accepted deviations
+            </Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statValue}>{tenant.verifiedPercentage}%</Text>
-            <Text style={styles.statLabel}>Verified compliant</Text>
+            <Text style={styles.statLabel}>Compliant with baseline</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statValue}>{changesNow.length}</Text>
@@ -203,8 +205,8 @@ const WhatIfDocument = ({
               {row.secureScoreImpact > 0
                 ? ` - increases Secure Score by up to ${row.secureScoreImpact} points`
                 : ''}
-              {row.deviationState === 'Suppressed'
-                ? ' - alerts currently suppressed'
+              {row.status?.startsWith('Denied')
+                ? ' - deviation denied, fix pending'
                 : ''}
             </Text>
           </View>
@@ -299,8 +301,7 @@ const WhatIfDocument = ({
                   const currentRow = tenant.rows.find(
                     (row) => row.standardName === name
                   )
-                  const alreadyAligned =
-                    currentRow?.deviationState === 'Compliant'
+                  const alreadyAligned = currentRow?.status === 'Compliant'
                   return (
                     <View
                       key={name}

@@ -22,6 +22,7 @@ import {
 } from '@heroicons/react/24/outline'
 import {
   ArrowForward,
+  Cancel,
   CheckCircle,
   Compare,
   Edit,
@@ -30,7 +31,6 @@ import {
   RemoveCircle,
   TaskAlt,
   Tune,
-  VolumeOff,
 } from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
@@ -56,9 +56,10 @@ import { parseCippDate } from '../../../../utils/parse-cipp-date'
 const deviationColors = {
   Compliant: 'success',
   Accepted: 'info',
-  Detected: 'error',
-  Suppressed: 'warning',
-  'License Missing': 'default',
+  Drift: 'error',
+  'Denied - Remediate Pending': 'warning',
+  'Denied - Delete Pending': 'warning',
+  'Skipped - No License': 'default',
   'No Data': 'default',
 }
 
@@ -102,6 +103,47 @@ const propertyList = (properties) => (
     ))}
   </Stack>
 )
+
+const runModeLabels = {
+  run: 'Full run',
+  compare: 'Compare',
+  oneoff: 'One-off remediation',
+}
+
+// A run's diff can be long - hide it behind a toggle so the history list stays readable.
+const RunDetails = ({ diff }) => {
+  const [open, setOpen] = useState(false)
+  if (!diff) return null
+  const entries = Array.isArray(diff) ? diff : [diff]
+  return (
+    <>
+      <Button
+        size="small"
+        variant="outlined"
+        sx={{ mt: 1 }}
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        {open ? 'Hide run details' : 'View details of this run'}
+      </Button>
+      {open &&
+        entries.map((entry, index) => (
+          <Typography
+            key={entry?.Property ?? index}
+            variant="caption"
+            sx={{
+              fontFamily: 'monospace',
+              display: 'block',
+              mt: 0.5,
+              wordBreak: 'break-word',
+            }}
+          >
+            {entry?.Property}: expected {JSON.stringify(entry?.ExpectedValue)},
+            found {JSON.stringify(entry?.ReceivedValue)}
+          </Typography>
+        ))}
+    </>
+  )
+}
 
 const jsonBox = (value, isCompliant) => (
   <Box
@@ -183,8 +225,8 @@ const Page = () => {
     licenseMissing: 0,
     compliant: 0,
     accepted: 0,
-    detected: 0,
-    suppressed: 0,
+    drift: 0,
+    denied: 0,
     verifiedPercentage: 0,
     alignedPercentage: 0,
     acceptedPercentage: 0,
@@ -234,8 +276,10 @@ const Page = () => {
         'Deploy the expected value of [standardLabel] to [tenantFilter]? This runs a one-off remediation from the configured expected value.',
       multiPost: false,
       relatedQueryKeys,
-      condition: (row) =>
-        ['Detected', 'Suppressed'].includes(row.deviationState),
+      // Running remediation by hand is always possible - the engine deploys the expected
+      // value regardless of the current state, and a license bought after the last run
+      // should not block trying. Manual tasks have nothing to deploy.
+      condition: (row) => !row.standardName.startsWith('ManualTask'),
     },
     {
       label: 'Compare Now',
@@ -252,6 +296,7 @@ const Page = () => {
         'Run a compare-only pass of [standardLabel] against [tenantFilter]? No changes will be made.',
       multiPost: false,
       relatedQueryKeys,
+      condition: (row) => !row.standardName.startsWith('ManualTask'),
     },
     {
       label: 'Accept Deviation',
@@ -269,28 +314,41 @@ const Page = () => {
         'Accept the current deviation on [standardLabel]? The tenant counts as aligned, and alerts are silenced until the acceptance expires.',
       multiPost: false,
       relatedQueryKeys,
-      condition: (row) => row.deviationState === 'Detected',
+      // Manual tasks are completed, not triaged.
+      condition: (row) =>
+        row.status === 'Drift' && !row.standardName.startsWith('ManualTask'),
     },
     {
-      label: 'Suppress Alerts',
+      label: 'Deny Deviation',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
-      icon: <VolumeOff />,
+      icon: <Cancel />,
       color: 'warning',
       data: {
-        action: '!Suppress',
+        action: '!Deny',
+        method: '!remediate',
         tenantFilter: 'tenantFilter',
         standard: 'standardName',
       },
-      children: triageFormFields,
+      children: ({ formHook }) => (
+        <Stack spacing={2} sx={{ mt: 2 }}>
+          <CippFormComponent
+            type="textField"
+            name="reason"
+            label="Reason (optional)"
+            formControl={formHook}
+          />
+        </Stack>
+      ),
       confirmText:
-        'Suppress alerts for [standardLabel]? The tenant keeps counting as non-compliant, but alerts are muted.',
+        'Deny the deviation on [standardLabel]? The engine remediates it back to the baseline on the next run, regardless of the configured posture.',
       multiPost: false,
       relatedQueryKeys,
-      condition: (row) => row.deviationState === 'Detected',
+      condition: (row) =>
+        row.status === 'Drift' && !row.standardName.startsWith('ManualTask'),
     },
     {
-      label: 'Clear Deviation Status',
+      label: 'Clear Triage Status',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
       icon: <RemoveCircle />,
@@ -301,11 +359,12 @@ const Page = () => {
         standard: 'standardName',
       },
       confirmText:
-        'Clear the Accept/Suppress status on [standardLabel]? The deviation re-surfaces as Detected on the next run.',
+        'Clear the Accept/Deny status on [standardLabel]? The deviation re-surfaces as Drift on the next run.',
       multiPost: false,
       relatedQueryKeys,
       condition: (row) =>
-        ['Accepted', 'Suppressed'].includes(row.deviationState),
+        (row.status === 'Accepted' || row.status?.startsWith('Denied')) &&
+        !row.standardName.startsWith('ManualTask'),
     },
     {
       label: 'Mark Task Complete',
@@ -323,7 +382,7 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
       condition: (row) =>
-        row.standardName === 'ManualTask' && row.deviationState === 'Detected',
+        row.standardName === 'ManualTask' && row.status === 'Drift',
     },
     {
       label: 'Create Tenant Override',
@@ -331,6 +390,8 @@ const Page = () => {
       url: '/api/ExecBaselineOverride',
       icon: <Tune />,
       color: 'info',
+      // Overrides configure ONE tenant's settings in a dialog - meaningless as a bulk action.
+      hideBulk: true,
       data: {
         action: '!createOverride',
         tenantFilter: 'tenantFilter',
@@ -381,6 +442,7 @@ const Page = () => {
       url: '/api/ExecBaselineOverride',
       icon: <LayersClear />,
       color: 'error',
+      hideBulk: true,
       data: {
         action: '!deleteOverride',
         tenantFilter: 'tenantFilter',
@@ -454,10 +516,11 @@ const Page = () => {
         { label: 'Standard', value: row.standardLabel },
         {
           label: 'State',
-          value: row.deviationState,
-          color: deviationColors[row.deviationState],
+          value: row.status,
+          color: deviationColors[row.status],
         },
         { label: 'Impact', value: row.impact },
+        { label: 'Stage', value: row.stage },
         { label: 'Configured By', value: row.sourceTemplate },
         {
           label: 'Last Run',
@@ -465,7 +528,6 @@ const Page = () => {
             ? parseCippDate(row.lastRun).toLocaleString()
             : 'N/A',
         },
-        { label: 'Last Outcome', value: row.lastOutcome },
       ]
       if (row.deviationReason) {
         properties.push({
@@ -579,7 +641,7 @@ const Page = () => {
             >
               Expected vs Current
             </Typography>
-            {differences.length > 0 ? (
+            {row.currentValue ? (
               <>
                 {Object.keys(row.expectedValue ?? {}).map((key) => {
                   const drifted = differences.includes(key)
@@ -646,8 +708,17 @@ const Page = () => {
                         }}
                       >
                         Expected: {JSON.stringify(row.expectedValue[key])}
-                        {drifted &&
-                          ` - Current: ${JSON.stringify(row.currentValue?.[key])}`}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontFamily: 'monospace',
+                          display: 'block',
+                          wordBreak: 'break-word',
+                          color: drifted ? 'error.main' : 'text.secondary',
+                        }}
+                      >
+                        Current: {JSON.stringify(row.currentValue?.[key])}
                       </Typography>
                       {drifted && !acceptedPath && (
                         <Button
@@ -666,21 +737,20 @@ const Page = () => {
                     </Box>
                   )
                 })}
-                <Typography variant="caption" color="text.secondary">
-                  Accepting a single property tolerates only that value - drift
-                  on any other property still raises a deviation.
-                </Typography>
+                {differences.length > 0 && (
+                  <Typography variant="caption" color="text.secondary">
+                    Accepting a single property tolerates only that value -
+                    drift on any other property still raises a deviation.
+                  </Typography>
+                )}
               </>
             ) : (
               <>
                 {jsonBox(row.expectedValue, true)}
-                {row.currentValue ? (
-                  jsonBox(row.currentValue, true)
-                ) : (
-                  <Typography variant="caption" color="text.secondary">
-                    No data has been collected for this standard yet.
-                  </Typography>
-                )}
+                <Typography variant="caption" color="text.secondary">
+                  No data has been collected for this standard yet - this is the
+                  configuration that will apply.
+                </Typography>
               </>
             )}
             <Typography
@@ -732,17 +802,11 @@ const Page = () => {
                   color="text.secondary"
                   sx={{ display: 'block', mt: 0.5 }}
                 >
-                  {run.mode} run, triggered by {run.triggeredBy}
+                  {runModeLabels[run.mode] ?? run.mode}, triggered by{' '}
+                  {run.triggeredBy}
                   {run.remediated ? ', remediated' : ''}
                 </Typography>
-                {run.diff && (
-                  <Typography
-                    variant="caption"
-                    sx={{ fontFamily: 'monospace', display: 'block', mt: 0.5 }}
-                  >
-                    {JSON.stringify(run.diff)}
-                  </Typography>
-                )}
+                <RunDetails diff={run.diff} />
               </Box>
             ))}
           </Stack>
@@ -761,8 +825,14 @@ const Page = () => {
           { label: 'Standard', value: row.standardLabel },
           { label: 'Category', value: row.category },
           { label: 'Impact', value: row.impact },
-          { label: 'Aligned', value: `${row.alignedPercentage}%` },
-          { label: 'Verified', value: `${row.verifiedPercentage}%` },
+          {
+            label: 'Compliant with accepted deviations',
+            value: `${row.alignedPercentage}%`,
+          },
+          {
+            label: 'Compliant with baseline',
+            value: `${row.verifiedPercentage}%`,
+          },
           { label: 'Accepted Deviations', value: row.accepted },
           { label: 'License Missing', value: row.licenseMissing },
           {
@@ -820,9 +890,9 @@ const Page = () => {
                 </Box>
                 <Chip
                   variant="outlined"
-                  label={tenantRow.deviationState}
+                  label={tenantRow.status}
                   size="small"
-                  color={deviationColors[tenantRow.deviationState] ?? 'default'}
+                  color={deviationColors[tenantRow.status] ?? 'default'}
                 />
               </Stack>
               {tenantRow.deviationReason && (
@@ -834,11 +904,13 @@ const Page = () => {
                   {tenantRow.deviationReason}
                 </Typography>
               )}
-              {(['Detected', 'Suppressed'].includes(tenantRow.deviationState) ||
+              {(['Drift', 'Denied - Remediate Pending'].includes(
+                tenantRow.status
+              ) ||
                 tenantRow.sourceTemplate === 'Tenant Override') && (
                 <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                  {['Detected', 'Suppressed'].includes(
-                    tenantRow.deviationState
+                  {['Drift', 'Denied - Remediate Pending'].includes(
+                    tenantRow.status
                   ) && (
                     <>
                       <Button
@@ -1038,22 +1110,22 @@ const Page = () => {
   const tenantFilterList = [
     {
       filterName: 'Open Deviations',
-      value: [{ id: 'deviationState', value: 'Detected' }],
+      value: [{ id: 'status', value: 'Drift' }],
       type: 'column',
     },
     {
       filterName: 'Accepted',
-      value: [{ id: 'deviationState', value: 'Accepted' }],
+      value: [{ id: 'status', value: 'Accepted' }],
       type: 'column',
     },
     {
-      filterName: 'Suppressed',
-      value: [{ id: 'deviationState', value: 'Suppressed' }],
+      filterName: 'Denied',
+      value: [{ id: 'status', value: 'Denied - Remediate Pending' }],
       type: 'column',
     },
     {
       filterName: 'License Missing',
-      value: [{ id: 'deviationState', value: 'License Missing' }],
+      value: [{ id: 'status', value: 'Skipped - No License' }],
       type: 'column',
     },
   ]
@@ -1061,7 +1133,7 @@ const Page = () => {
   const standardFilterList = [
     {
       filterName: 'Has Open Deviations',
-      value: [{ id: 'detected', value: 1 }],
+      value: [{ id: 'drift', value: 1 }],
       type: 'column',
     },
     {
@@ -1246,20 +1318,20 @@ const Page = () => {
       data={[
         {
           icon: <CheckBadgeIcon />,
-          name: 'Aligned',
+          name: 'Compliant with accepted deviations',
           data: `${tenant.alignedPercentage}%`,
           color: 'success',
           toolTip: `${tenant.acceptedPercentage}% of this score comes from accepted deviations`,
         },
         {
           icon: <ShieldCheckIcon />,
-          name: 'Verified Compliant',
+          name: 'Compliant with baseline',
           data: `${tenant.verifiedPercentage}%`,
         },
         {
           icon: <ExclamationTriangleIcon />,
           name: 'Open Deviations',
-          data: tenant.detected,
+          data: tenant.drift,
           color: 'error',
         },
         {
@@ -1449,12 +1521,13 @@ const Page = () => {
               simpleColumns={[
                 'standardLabel',
                 'category',
-                'deviationState',
+                'stage',
+                'status',
                 'deviationReason',
                 'deviationBy',
                 'deviationAt',
+                'deviationExpires',
                 'sourceTemplate',
-                'lastOutcome',
                 'lastRun',
               ]}
             />
@@ -1505,7 +1578,7 @@ const Page = () => {
               'alignedPercentage',
               'verifiedPercentage',
               'accepted',
-              'detected',
+              'drift',
               'licenseMissing',
               'totalTenants',
             ]

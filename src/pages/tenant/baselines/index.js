@@ -54,25 +54,24 @@ const Page = () => {
             data={[
               {
                 icon: <CheckBadgeIcon />,
-                name: 'Fleet Aligned',
+                name: 'Compliant with accepted deviations',
                 data: `${fleetScore?.alignedPercentage ?? 0}%`,
                 color: 'success',
                 toolTip: `${fleetScore?.acceptedPercentage ?? 0}% of this score comes from accepted deviations`,
               },
               {
                 icon: <ShieldCheckIcon />,
-                name: 'Verified Compliant',
+                name: 'Compliant with baseline',
                 data: `${fleetScore?.verifiedPercentage ?? 0}%`,
                 toolTip:
-                  'Compliance verified against current tenant data, excluding accepted deviations',
+                  'Standards currently in their expected state, with accepted deviations NOT counted.',
               },
               {
                 icon: <ExclamationTriangleIcon />,
                 name: 'Open Deviations',
-                data: fleetScore?.detected ?? 0,
+                data: fleetScore?.drift ?? 0,
                 color: 'error',
-                toolTip:
-                  'Detected deviations awaiting triage (Accept / Remediate / Suppress)',
+                toolTip: 'Drift awaiting triage (Accept / Deny / Remediate)',
               },
               {
                 icon: <KeyIcon />,
@@ -100,14 +99,14 @@ const Page = () => {
                     trend.length > 0
                       ? [
                           {
-                            name: 'Aligned %',
+                            name: 'Compliant with accepted deviations',
                             data: trend.map((point) => ({
                               x: point.date,
                               y: point.aligned,
                             })),
                           },
                           {
-                            name: 'Verified %',
+                            name: 'Compliant with baseline',
                             data: trend.map((point) => ({
                               x: point.date,
                               y: point.verified,
@@ -136,12 +135,12 @@ const Page = () => {
                       ? [
                           fleetScore.compliant,
                           fleetScore.accepted,
-                          fleetScore.detected,
-                          fleetScore.suppressed,
+                          fleetScore.drift,
+                          fleetScore.denied,
                         ]
                       : []
                   }
-                  labels={['Compliant', 'Accepted', 'Detected', 'Suppressed']}
+                  labels={['Compliant', 'Accepted', 'Drift', 'Denied']}
                 />
               )}
             </Grid>
@@ -158,7 +157,7 @@ const Page = () => {
                   isFetching={aggregate.isFetching}
                   title="Tenants Needing Attention"
                   chartType="bar"
-                  totalLabel="Aligned %"
+                  totalLabel="Compliant"
                   onClick={() => router.push('/tenant/baselines/alignment')}
                   chartSeries={tenantsNeedingAttention.map(
                     (tenant) => tenant.alignedPercentage
@@ -172,13 +171,13 @@ const Page = () => {
             <Grid size={{ md: 8, xs: 12 }}>
               <CippDataTable
                 queryKey="ListBaselineAlignment-activeDeviations-table"
-                title="Accepted & Suppressed Deviations"
+                title="Accepted & Denied Deviations"
                 data={activeDeviations}
                 refreshFunction={aggregate}
                 simpleColumns={[
                   'tenantName',
                   'standardLabel',
-                  'deviationState',
+                  'status',
                   'deviationReason',
                   'deviationBy',
                   'deviationExpires',

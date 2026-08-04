@@ -617,32 +617,30 @@ export const getCippFormatting = (
           ))
     }
   }
-  if (cellName === 'deviationState') {
-    // Baseline deviation lifecycle states
-    if (isText) return data
-    const deviationColors = {
+  if (cellName === 'status') {
+    // Baseline statuses chip-render; any other page's 'status' values fall through to the
+    // generic rendering below so this stays scoped to the baseline vocabulary.
+    const baselineStatusColors = {
       compliant: 'success',
+      drift: 'error',
       accepted: 'info',
-      detected: 'error',
-      suppressed: 'warning',
-      'license missing': 'default',
+      'denied - remediate pending': 'warning',
+      'denied - delete pending': 'warning',
+      'skipped - no license': 'default',
+      'no data': 'default',
     }
-    const color = deviationColors[String(data).toLowerCase()] ?? 'default'
-    return <Chip variant="outlined" label={data} size="small" color={color} />
-  }
-
-  if (cellName === 'lastOutcome') {
-    // Baseline run outcomes
-    if (isText) return data
-    const outcomeColors = {
-      compliant: 'success',
-      remediated: 'info',
-      drifted: 'error',
-      'skipped-license': 'warning',
-      'skipped-nocache': 'default',
+    const baselineColor = baselineStatusColors[String(data).toLowerCase()]
+    if (baselineColor) {
+      if (isText) return data
+      return (
+        <Chip
+          variant="outlined"
+          label={data}
+          size="small"
+          color={baselineColor}
+        />
+      )
     }
-    const color = outcomeColors[String(data).toLowerCase()] ?? 'default'
-    return <Chip variant="outlined" label={data} size="small" color={color} />
   }
 
   if (cellName === 'feedEvent') {
