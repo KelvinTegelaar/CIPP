@@ -214,6 +214,25 @@ const Page = () => {
     };
   }, []);
 
+  // Prefer SMTP/object ID over display name for folder permission Remove/Add API calls
+  const getFolderPermissionUserId = useCallback((permission) => {
+    if (!permission) return undefined;
+    if (permission.UserEmail) return permission.UserEmail;
+    if (permission.UserId) return permission.UserId;
+    return permission.User;
+  }, []);
+
+  const getFolderPermissionEmailLabel = useCallback((permission) => {
+    if (!permission) return "";
+    if (permission.UserAmbiguous) {
+      const candidates = Array.isArray(permission.CandidateEmails)
+        ? permission.CandidateEmails.filter(Boolean)
+        : [];
+      return candidates.length > 0 ? `Multiple: ${candidates.join(", ")}` : "Multiple matches";
+    }
+    return permission.UserEmail || "";
+  }, []);
+
   // Define API configurations for the dialogs
   const aliasApiConfig = {
     type: "POST",
@@ -781,10 +800,10 @@ const Page = () => {
         hideTitle: true,
         data:
           calPermissions.data?.map((permission) => {
-            const userIdentifier = permission?.User;
             const permissionInfo = getPermissionInfo(permission.User, groupsList);
             return {
               User: permissionInfo.displayName,
+              Email: getFolderPermissionEmailLabel(permission),
               AccessRights: permission?.AccessRights?.join(", ") || "Unknown",
               FolderName: permission?.FolderName || "Unknown",
               Type: permissionInfo.type,
@@ -793,7 +812,7 @@ const Page = () => {
           }) || [],
         refreshFunction: () => calPermissions.refetch(),
         isFetching: calPermissions.isFetching,
-        simpleColumns: ["User", "AccessRights", "FolderName", "Type"],
+        simpleColumns: ["User", "Email", "AccessRights", "FolderName", "Type"],
         actions: [
           {
             label: "Remove Permission",
@@ -804,18 +823,18 @@ const Page = () => {
               var permissions = [];
               if (Array.isArray(row)) {
                 row.forEach((item) => {
-                  const originalUser = item._raw ? item._raw.User : item.User;
+                  const raw = item._raw || item;
                   permissions.push({
-                    UserID: originalUser, // Use original identifier for API calls
+                    UserID: getFolderPermissionUserId(raw),
                     PermissionLevel: item.AccessRights,
                     FolderName: item.FolderName,
                     Modification: "Remove",
                   });
                 });
               } else {
-                const originalUser = row._raw ? row._raw.User : row.User;
+                const raw = row._raw || row;
                 permissions.push({
-                  UserID: originalUser, // Use original identifier for API calls
+                  UserID: getFolderPermissionUserId(raw),
                   PermissionLevel: row.AccessRights,
                   FolderName: row.FolderName,
                   Modification: "Remove",
@@ -836,7 +855,8 @@ const Page = () => {
         ],
         offCanvas: {
           children: (data) => {
-            const originalUser = data._raw ? data._raw.User : data.User;
+            const raw = data._raw || data;
+            const originalUser = raw.User;
             const permissionInfo = getPermissionInfo(originalUser, groupsList);
             return (
               <CippPropertyListCard
@@ -846,6 +866,10 @@ const Page = () => {
                   {
                     label: "User/Group",
                     value: permissionInfo.displayName,
+                  },
+                  {
+                    label: "Email",
+                    value: getFolderPermissionEmailLabel(raw) || "—",
                   },
                   {
                     label: "Type",
@@ -871,7 +895,7 @@ const Page = () => {
                       tenantFilter: userSettingsDefaults.currentTenant,
                       permissions: [
                         {
-                          UserID: originalUser, // Use original identifier for API calls
+                          UserID: getFolderPermissionUserId(raw),
                           PermissionLevel: data.AccessRights,
                           FolderName: data.FolderName,
                           Modification: "Remove",
@@ -926,10 +950,10 @@ const Page = () => {
         hideTitle: true,
         data:
           contactPermissions.data?.map((permission) => {
-            const userIdentifier = permission?.User;
             const permissionInfo = getPermissionInfo(permission.User, groupsList);
             return {
               User: permissionInfo.displayName,
+              Email: getFolderPermissionEmailLabel(permission),
               AccessRights: permission?.AccessRights?.join(", ") || "Unknown",
               FolderName: permission?.FolderName || "Unknown",
               Type: permissionInfo.type,
@@ -938,7 +962,7 @@ const Page = () => {
           }) || [],
         refreshFunction: () => contactPermissions.refetch(),
         isFetching: contactPermissions.isFetching,
-        simpleColumns: ["User", "AccessRights", "FolderName", "Type"],
+        simpleColumns: ["User", "Email", "AccessRights", "FolderName", "Type"],
         actions: [
           {
             label: "Remove Permission",
@@ -949,18 +973,18 @@ const Page = () => {
               var permissions = [];
               if (Array.isArray(row)) {
                 row.forEach((item) => {
-                  const originalUser = item._raw ? item._raw.User : item.User;
+                  const raw = item._raw || item;
                   permissions.push({
-                    UserID: originalUser, // Use original identifier for API calls
+                    UserID: getFolderPermissionUserId(raw),
                     PermissionLevel: item.AccessRights,
                     FolderName: item.FolderName,
                     Modification: "Remove",
                   });
                 });
               } else {
-                const originalUser = row._raw ? row._raw.User : row.User;
+                const raw = row._raw || row;
                 permissions.push({
-                  UserID: originalUser, // Use original identifier for API calls
+                  UserID: getFolderPermissionUserId(raw),
                   PermissionLevel: row.AccessRights,
                   FolderName: row.FolderName,
                   Modification: "Remove",
@@ -981,7 +1005,8 @@ const Page = () => {
         ],
         offCanvas: {
           children: (data) => {
-            const originalUser = data._raw ? data._raw.User : data.User;
+            const raw = data._raw || data;
+            const originalUser = raw.User;
             const permissionInfo = getPermissionInfo(originalUser, groupsList);
             return (
               <CippPropertyListCard
@@ -991,6 +1016,10 @@ const Page = () => {
                   {
                     label: "User/Group",
                     value: permissionInfo.displayName,
+                  },
+                  {
+                    label: "Email",
+                    value: getFolderPermissionEmailLabel(raw) || "—",
                   },
                   {
                     label: "Type",
@@ -1016,7 +1045,7 @@ const Page = () => {
                       tenantFilter: userSettingsDefaults.currentTenant,
                       permissions: [
                         {
-                          UserID: originalUser, // Use original identifier for API calls
+                          UserID: getFolderPermissionUserId(raw),
                           PermissionLevel: data.AccessRights,
                           FolderName: data.FolderName,
                           Modification: "Remove",
