@@ -20,12 +20,14 @@ const valueTypeFromODataType = (odataType) => {
   return 'string'
 }
 
-const hasValue = (settingValue) =>
-  settingValue &&
-  typeof settingValue === 'object' &&
-  Object.prototype.hasOwnProperty.call(settingValue, 'value') &&
-  settingValue.value !== undefined &&
-  settingValue.value !== null
+// What kind of setting an instance is, is told by which value object it carries - not by whether
+// that object has a value yet. Intune emits an unset field as a value object with no `value` at
+// all: an ADMX text box left blank, or a setting whose sibling toggle is off, arrives as
+// { "@odata.type": "...StringSettingValue" }. Requiring a value here classified those as an
+// unknown type, which rendered them read-only and, because applyIntuneSettingEdits skips
+// unsupported leaves, left no way to ever fill them in.
+const hasSettingValue = (settingValue) =>
+  Boolean(settingValue) && typeof settingValue === 'object'
 
 const optionsFromDefinition = (definition) =>
   (Array.isArray(definition?.options) ? definition.options : []).map(
@@ -34,6 +36,53 @@ const optionsFromDefinition = (definition) =>
       value: option.id,
     })
   )
+
+// Settings with no category to sit under, and the label for classic policies whose properties are
+// not categorised at all.
+export const UNCATEGORISED = 'Other settings'
+
+// Intune presents settings under categories in its own console. The catalog carries the category
+// name once Update-IntuneCollection.ps1 has been run against a tenant that can read
+// deviceManagement/configurationCategories; until then the namespace inside the setting id is the
+// closest stand-in, since that is broadly what the category follows anyway. Grouping therefore
+// works before the catalog is regenerated and sharpens afterwards with no code change.
+const categoryFromDefinitionId = (definitionId) => {
+  if (typeof definitionId !== 'string' || !definitionId) return UNCATEGORISED
+
+  // Most specific first: the admx_ prefix would otherwise swallow every administrative template
+  // into one category.
+  const namespacePatterns = [
+    /^device_vendor_msft_policy_config_admx_([^_]+)_/,
+    /^device_vendor_msft_policy_config_([^_]+)_/,
+    /^device_vendor_msft_([^_]+)_/,
+    /^vendor_msft_([^_]+)_/,
+  ]
+
+  for (const pattern of namespacePatterns) {
+    const match = definitionId.match(pattern)
+    if (match) return match[1]
+  }
+
+  return UNCATEGORISED
+}
+
+// Resolved once per top-level setting: a nested child belongs in the same category as the setting
+// it hangs off, not in one of its own.
+export const categoryForSetting = (definition, definitionId) =>
+  definition?.categoryName || categoryFromDefinitionId(definitionId)
+
+// Category display names are not unique - Intune has thirteen categories called "Security" - so the
+// id is what settings are grouped by, and the name is only what the group is labelled with.
+//
+// The id is used only when there is a name to go with it. Some categories have an empty display
+// name, and some ids settings point at are missing from the category list entirely; grouping those
+// by id piles unrelated settings - printers, file explorer, connectivity - into one section under
+// whichever heading happened to come first. Without a name they fall back to the id namespace, so
+// they group the way they did before any category data existed.
+export const categoryKeyForSetting = (definition, definitionId) =>
+  definition?.categoryId && definition?.categoryName
+    ? definition.categoryId
+    : categoryForSetting(definition, definitionId)
 
 // Builds the ordered list of editable leaves. Order is stable for a given policy, which is what lets
 // the form address them by index instead of by a path containing '@odata.' - a string react-hook-form
@@ -46,7 +95,7 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
     leaves.push({ ...leaf, index: leaves.length })
   }
 
-  const walkInstance = (instance, path, depth, groupLabel) => {
+  const walkInstance = (instance, path, depth, groupLabel, category) => {
     if (!instance || typeof instance !== 'object') return
 
     const definitionId = instance.settingDefinitionId
@@ -57,6 +106,8 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
       definitionId,
       depth,
       groupLabel,
+      category: category?.name,
+      categoryKey: category?.key,
       helpText: definition?.helpText || definition?.description || null,
       infoUrls: Array.isArray(definition?.infoUrls) ? definition.infoUrls : [],
     }
@@ -78,14 +129,15 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
               childIndex,
             ],
             depth + 1,
-            label
+            label,
+            category
           )
         })
       })
       return
     }
 
-    if (hasValue(instance.simpleSettingValue)) {
+    if (hasSettingValue(instance.simpleSettingValue)) {
       pushLeaf({
         ...common,
         kind: 'simple',
@@ -96,7 +148,7 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
       return
     }
 
-    if (hasValue(instance.choiceSettingValue)) {
+    if (hasSettingValue(instance.choiceSettingValue)) {
       const children = Array.isArray(instance.choiceSettingValue.children)
         ? instance.choiceSettingValue.children
         : []
@@ -117,7 +169,8 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
           child,
           [...path, 'choiceSettingValue', 'children', childIndex],
           depth + 1,
-          label
+          label,
+          category
         )
       })
       return
@@ -156,12 +209,12 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
 
   if (Array.isArray(policy.settings)) {
     policy.settings.forEach((setting, index) => {
-      walkInstance(
-        setting?.settingInstance,
-        ['settings', index, 'settingInstance'],
-        0,
-        null
-      )
+      const instance = setting?.settingInstance
+      const definition = getDefinition(instance?.settingDefinitionId)
+      walkInstance(instance, ['settings', index, 'settingInstance'], 0, null, {
+        name: categoryForSetting(definition, instance?.settingDefinitionId),
+        key: categoryKeyForSetting(definition, instance?.settingDefinitionId),
+      })
     })
   }
 
@@ -175,7 +228,9 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
           `OMA setting ${index + 1}`,
         definitionId: omaSetting?.omaUri,
         depth: 0,
-        groupLabel: 'OMA-URI settings',
+        groupLabel: null,
+        category: 'OMA-URI settings',
+        categoryKey: 'OMA-URI settings',
         helpText: omaSetting?.description || null,
         infoUrls: [],
         path: ['omaSettings', index, 'value'],
@@ -242,6 +297,10 @@ export const buildIntunePropertyLeaves = (policy, translate = (key) => key) => {
         definitionId: nextPath.join('.'),
         depth,
         groupLabel,
+        // A classic policy has no setting catalog behind it, so the nested object a property sits
+        // under is the only grouping there is; top-level properties fall back to the shared label.
+        category: groupLabel || UNCATEGORISED,
+        categoryKey: groupLabel || UNCATEGORISED,
         helpText: null,
         infoUrls: [],
         path: nextPath,
@@ -310,7 +369,12 @@ export const defaultValueForLeaf = (leaf) => {
 
   switch (leaf.kind) {
     case 'choice':
-      return asOption(leaf.value, leaf.options)
+      // A choice that has never been set has no option selected, and Intune expects an option id
+      // rather than a blank. Handing back undefined keeps it out of applyIntuneSettingEdits, so it
+      // round-trips as imported instead of gaining a "value": "" the policy never had.
+      return leaf.value === undefined || leaf.value === null
+        ? undefined
+        : asOption(leaf.value, leaf.options)
     case 'choiceCollection':
       return (leaf.value || []).map((value) => asOption(value, leaf.options))
     case 'simpleCollection':

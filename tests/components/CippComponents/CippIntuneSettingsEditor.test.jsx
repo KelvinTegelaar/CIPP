@@ -2,8 +2,11 @@ import {
   applyIntuneSettingEdits,
   buildIntunePropertyLeaves,
   buildIntuneSettingLeaves,
+  categoryForSetting,
+  categoryKeyForSetting,
   containsVariable,
   defaultValueForLeaf,
+  UNCATEGORISED,
 } from '../../../src/utils/intune-template-leaves'
 
 // Definitions the editor would normally read from intuneCollection.json.
@@ -495,5 +498,267 @@ describe('numeric settings in a text field', () => {
 
     expect(edited.settings[0].settingInstance.simpleSettingValue.value).toBe(0)
     expect(edited).toEqual(original)
+  })
+})
+
+// Intune emits a field that has never been filled in as a value object with no `value` at all -
+// an ADMX text box left blank, or one whose sibling toggle is off. Point and Print Restrictions'
+// trusted-server list arrives exactly like this. Deciding the setting's type from whether it had
+// a value classified those as unknown, so they rendered read-only and could never be filled in.
+describe('settings with no value yet', () => {
+  const emptyPolicy = () => ({
+    name: 'Point and Print',
+    settings: [
+      {
+        '@odata.type': '#microsoft.graph.deviceManagementConfigurationSetting',
+        settingInstance: {
+          '@odata.type':
+            '#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance',
+          settingDefinitionId:
+            'device_vendor_msft_policy_config_localpoliciessecurityoptions_interactivelogon_machineinactivitylimit_v2',
+          simpleSettingValue: {
+            '@odata.type':
+              '#microsoft.graph.deviceManagementConfigurationStringSettingValue',
+          },
+        },
+      },
+    ],
+  })
+
+  it('treats a value-less string setting as editable rather than unsupported', () => {
+    const leaves = buildIntuneSettingLeaves(emptyPolicy(), getDefinition)
+
+    expect(leaves).toHaveLength(1)
+    expect(leaves[0].kind).toBe('simple')
+    expect(leaves[0].valueType).toBe('string')
+    expect(leaves[0].label).toBe('Machine inactivity limit')
+  })
+
+  it('leaves the policy untouched when the empty field is not edited', () => {
+    const original = emptyPolicy()
+    const leaves = buildIntuneSettingLeaves(original, getDefinition)
+    const edited = applyIntuneSettingEdits(
+      original,
+      leaves,
+      leaves.map(defaultValueForLeaf)
+    )
+
+    // No invented "value": "" - an untouched field round-trips exactly as imported.
+    expect(edited).toEqual(original)
+    expect(
+      'value' in edited.settings[0].settingInstance.simpleSettingValue
+    ).toBe(false)
+  })
+
+  it('writes a value into the empty field once one is entered', () => {
+    const original = emptyPolicy()
+    const leaves = buildIntuneSettingLeaves(original, getDefinition)
+    const edited = applyIntuneSettingEdits(original, leaves, ['print1;print2'])
+
+    expect(edited.settings[0].settingInstance.simpleSettingValue).toEqual({
+      '@odata.type':
+        '#microsoft.graph.deviceManagementConfigurationStringSettingValue',
+      value: 'print1;print2',
+    })
+  })
+})
+
+// The same absent-value shape reaches choice settings. Treating them as editable is right, but a
+// choice has no sensible blank: Intune expects an option id, so an untouched empty selector must
+// not serialise as "value": "".
+describe('choice settings with no option selected', () => {
+  const emptyChoicePolicy = () => ({
+    name: 'Empty choice',
+    settings: [
+      {
+        '@odata.type': '#microsoft.graph.deviceManagementConfigurationSetting',
+        settingInstance: {
+          '@odata.type':
+            '#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance',
+          settingDefinitionId:
+            'device_vendor_msft_policy_config_defender_allowrealtimemonitoring',
+          choiceSettingValue: {
+            '@odata.type':
+              '#microsoft.graph.deviceManagementConfigurationChoiceSettingValue',
+          },
+        },
+      },
+    ],
+  })
+
+  it('exposes the selector with its options and nothing selected', () => {
+    const leaves = buildIntuneSettingLeaves(emptyChoicePolicy(), getDefinition)
+
+    expect(leaves[0].kind).toBe('choice')
+    expect(leaves[0].options).toHaveLength(2)
+    expect(defaultValueForLeaf(leaves[0])).toBeUndefined()
+  })
+
+  it('does not invent an empty value when the selector is left alone', () => {
+    const original = emptyChoicePolicy()
+    const leaves = buildIntuneSettingLeaves(original, getDefinition)
+    const edited = applyIntuneSettingEdits(
+      original,
+      leaves,
+      leaves.map(defaultValueForLeaf)
+    )
+
+    expect(
+      'value' in edited.settings[0].settingInstance.choiceSettingValue
+    ).toBe(false)
+    expect(edited).toEqual(original)
+  })
+
+  it('writes the option id once one is chosen', () => {
+    const original = emptyChoicePolicy()
+    const leaves = buildIntuneSettingLeaves(original, getDefinition)
+    const edited = applyIntuneSettingEdits(original, leaves, [
+      {
+        label: 'Enabled',
+        value:
+          'device_vendor_msft_policy_config_defender_allowrealtimemonitoring_1',
+      },
+    ])
+
+    expect(edited.settings[0].settingInstance.choiceSettingValue.value).toBe(
+      'device_vendor_msft_policy_config_defender_allowrealtimemonitoring_1'
+    )
+  })
+})
+
+// The type of an unset field comes from the @odata.type on its value object, which Intune sends
+// whether or not a value is present - so an empty integer stays an integer rather than defaulting
+// to a string field that would write "" back over a numeric setting.
+describe('unset settings keep their declared type', () => {
+  const emptyOfType = (valueODataType) => ({
+    name: 'Typed',
+    settings: [
+      {
+        '@odata.type': '#microsoft.graph.deviceManagementConfigurationSetting',
+        settingInstance: {
+          '@odata.type':
+            '#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance',
+          settingDefinitionId: 'collection_setting',
+          simpleSettingValue: { '@odata.type': valueODataType },
+        },
+      },
+    ],
+  })
+
+  it.each([
+    ['StringSettingValue', 'string'],
+    ['IntegerSettingValue', 'integer'],
+    ['SecretSettingValue', 'secret'],
+  ])('reads %s as %s', (odataSuffix, expected) => {
+    const leaves = buildIntuneSettingLeaves(
+      emptyOfType(
+        `#microsoft.graph.deviceManagementConfiguration${odataSuffix}`
+      ),
+      getDefinition
+    )
+
+    expect(leaves[0].kind).toBe('simple')
+    expect(leaves[0].valueType).toBe(expected)
+  })
+})
+
+// The editor groups settings into collapsible categories. A regenerated catalog carries Intune's
+// own category name; until then the namespace inside the setting id stands in, so grouping works
+// either way and sharpens when the catalog is refreshed.
+describe('setting categories', () => {
+  it('prefers the catalog category name over the id namespace', () => {
+    expect(
+      categoryForSetting(
+        { categoryName: 'Local Policies Security Options' },
+        'device_vendor_msft_policy_config_localpoliciessecurityoptions_accounts_x'
+      )
+    ).toBe('Local Policies Security Options')
+  })
+
+  it('falls back to the id namespace when the catalog has no category', () => {
+    expect(
+      categoryForSetting(
+        {},
+        'device_vendor_msft_policy_config_localpoliciessecurityoptions_accounts_x'
+      )
+    ).toBe('localpoliciessecurityoptions')
+    // admx_ is matched ahead of the generic policy_config_ rule, or every administrative template
+    // would collapse into a single "admx" category.
+    expect(
+      categoryForSetting(
+        {},
+        'device_vendor_msft_policy_config_admx_eventlog_x_y'
+      )
+    ).toBe('eventlog')
+    expect(categoryForSetting({}, 'device_vendor_msft_bitlocker_x_y')).toBe(
+      'bitlocker'
+    )
+    expect(
+      categoryForSetting({}, 'vendor_msft_firewall_mdmstore_domainprofile_x')
+    ).toBe('firewall')
+  })
+
+  it('never leaves a setting without a category', () => {
+    expect(categoryForSetting(undefined, 'totally_unexpected')).toBe(
+      UNCATEGORISED
+    )
+    expect(categoryForSetting(undefined, null)).toBe(UNCATEGORISED)
+  })
+
+  it('puts a nested child in its parent category rather than one of its own', () => {
+    const leaves = buildIntuneSettingLeaves(catalogPolicy(), getDefinition)
+    const choice = leaves[1]
+    const nestedChild = leaves[2]
+
+    expect(nestedChild.depth).toBe(1)
+    expect(nestedChild.category).toBe(choice.category)
+  })
+
+  it('gives every leaf of a policy a category', () => {
+    const leaves = buildIntuneSettingLeaves(catalogPolicy(), getDefinition)
+    expect(leaves.every((leaf) => Boolean(leaf.category))).toBe(true)
+  })
+})
+
+// Sections are keyed on the category id, not its name: Intune has thirteen categories called
+// "Security", and grouping by name fused Event Log Service's settings with Remote Desktop's.
+describe('category keys', () => {
+  it('separates same-named categories by id', () => {
+    const eventLog = { categoryId: 'cat-a', categoryName: 'Security' }
+    const remoteDesktop = { categoryId: 'cat-b', categoryName: 'Security' }
+
+    expect(categoryForSetting(eventLog, 'x')).toBe(
+      categoryForSetting(remoteDesktop, 'x')
+    )
+    expect(categoryKeyForSetting(eventLog, 'x')).not.toBe(
+      categoryKeyForSetting(remoteDesktop, 'x')
+    )
+  })
+
+  it('ignores a category id that has no name, so unrelated settings do not fuse', () => {
+    // One real category ships with an empty display name and some ids settings point at are
+    // missing from the category list. Keying on those piled printers, file explorer and
+    // connectivity into a single section under whichever heading came first.
+    const nameless = { categoryId: 'shared-nameless-id' }
+
+    expect(
+      categoryKeyForSetting(
+        nameless,
+        'device_vendor_msft_policy_config_printers_x'
+      )
+    ).toBe('printers')
+    expect(
+      categoryKeyForSetting(
+        nameless,
+        'device_vendor_msft_policy_config_fileexplorer_x'
+      )
+    ).toBe('fileexplorer')
+  })
+
+  it('gives every leaf a key, and keeps a nested child on its parent key', () => {
+    const leaves = buildIntuneSettingLeaves(catalogPolicy(), getDefinition)
+
+    expect(leaves.every((leaf) => Boolean(leaf.categoryKey))).toBe(true)
+    expect(leaves[2].categoryKey).toBe(leaves[1].categoryKey)
   })
 })

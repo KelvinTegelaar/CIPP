@@ -1,0 +1,1 @@
+{"id":"vendor_msft_sharedpc_inactivethreshold","displayName":"Inactive Threshold","description":"Accounts will start being deleted when they have not been logged on during the specified period, given as number of days.","helpText":"","infoUrls":[],"categoryId":"891d2958-5a8c-479c-aa68-69b1b6c735e1","categoryName":"Shared PC","options":null}

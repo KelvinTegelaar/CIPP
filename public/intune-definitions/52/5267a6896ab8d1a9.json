@@ -1,0 +1,1 @@
+{"id":"com.apple.tcc.configuration-profile-policy_services_postevent","displayName":"Post Event","description":"Specifies the policies for the application to use CoreGraphics APIs to send CGEvents to the system event stream.","helpText":null,"infoUrls":[],"categoryId":"82d173f9-ba0b-4b09-bbb8-68cba4916162","categoryName":"Privacy Preferences Policy Control","options":null}

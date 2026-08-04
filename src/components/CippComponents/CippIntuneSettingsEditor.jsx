@@ -10,12 +10,21 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useWatch } from 'react-hook-form'
 import CippFormComponent from './CippFormComponent'
 import { CippCopyToClipBoard } from './CippCopyToClipboard'
-import { useIntuneCollectionState } from '../../hooks/use-intune-collection'
+import {
+  useIntuneCategories,
+  useIntuneDefinitions,
+} from '../../hooks/use-intune-collection'
+import { collectSettingDefinitionIds } from '../../utils/intune-setting-definition-ids'
 import { useCustomVariableOptions } from '../../hooks/use-custom-variables'
-import { containsVariable, unwrap } from '../../utils/intune-template-leaves'
+import {
+  containsVariable,
+  UNCATEGORISED,
+  unwrap,
+} from '../../utils/intune-template-leaves'
 
 const SETTING_GROUP = 'Setting values'
 
@@ -444,6 +453,50 @@ const CippIntuneSettingsEditor = ({
     [allVariableOptions]
   )
 
+  // Descriptive only, so it is fetched without gating anything: a section that has not resolved its
+  // category yet is labelled and grouped correctly, it just has no path under the heading.
+  const categories = useIntuneCategories({
+    enabled: (leaves || []).some((leaf) => leaf.categoryKey),
+  })
+
+  // One section per category, ordered by where the category first appears in the policy. Settings
+  // keep their policy order inside it, which is what keeps a nested child directly beneath the
+  // setting it hangs off - children carry their parent's category rather than starting a section
+  // of their own.
+  //
+  // Grouped by the category id rather than its name. Intune reuses names heavily - thirteen
+  // separate categories are called "Security" - so grouping by name silently fused Event Log
+  // Service's settings with Remote Desktop's under one heading.
+  const sections = useMemo(() => {
+    const byCategory = new Map()
+    ;(leaves || []).forEach((leaf) => {
+      const key = leaf.categoryKey || leaf.category || UNCATEGORISED
+      if (!byCategory.has(key)) {
+        byCategory.set(key, {
+          key,
+          heading: leaf.category || UNCATEGORISED,
+          leaves: [],
+        })
+      }
+      byCategory.get(key).leaves.push(leaf)
+    })
+    return Array.from(byCategory.values())
+  }, [leaves])
+
+  // Collapsed sections are tracked rather than expanded ones, so a policy opens fully expanded and
+  // a section the walk has not seen before is open by default.
+  const [collapsed, setCollapsed] = useState(() => new Set())
+
+  const toggleSection = (heading) =>
+    setCollapsed((current) => {
+      const next = new Set(current)
+      if (next.has(heading)) next.delete(heading)
+      else next.add(heading)
+      return next
+    })
+
+  const allCollapsed = collapsed.size >= sections.length && sections.length > 0
+
   if (!leaves?.length) {
     return (
       <Alert severity="info">
@@ -453,90 +506,144 @@ const CippIntuneSettingsEditor = ({
     )
   }
 
-  // Group headings come from the group collection a setting sits under, matching how the same
-  // policy reads in the compare view.
-  const sections = []
-  leaves.forEach((leaf) => {
-    const heading = leaf.groupLabel || null
-    const last = sections[sections.length - 1]
-    if (last && last.heading === heading) {
-      last.leaves.push(leaf)
-    } else {
-      sections.push({ heading, leaves: [leaf] })
-    }
-  })
-
   return (
-    <Stack spacing={3}>
-      {sections.map((section, sectionIndex) => (
-        <Box key={`section-${sectionIndex}`}>
-          {section.heading && (
-            <>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                {section.heading}
+    <Stack spacing={2}>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Typography variant="caption" color="text.secondary">
+          {sections.length} categories, {leaves.length} settings
+        </Typography>
+        <Link
+          component="button"
+          type="button"
+          variant="caption"
+          underline="hover"
+          onClick={() =>
+            setCollapsed(
+              allCollapsed
+                ? new Set()
+                : new Set(sections.map((section) => section.key))
+            )
+          }
+        >
+          {allCollapsed ? 'Expand all' : 'Collapse all'}
+        </Link>
+      </Stack>
+
+      {sections.map((section) => {
+        const isCollapsed = collapsed.has(section.key)
+        // Intune's own path for the category. Shown only when it says more than the heading
+        // already does, which is what tells two categories of the same name apart.
+        const path = categories.get(section.key)?.description
+        const showPath = path && path !== section.heading
+        return (
+          <Box key={`section-${section.key}`}>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              onClick={() => toggleSection(section.key)}
+              sx={{ cursor: 'pointer', userSelect: 'none' }}
+            >
+              <KeyboardArrowDownIcon
+                fontSize="small"
+                sx={{
+                  transition: 'transform 150ms',
+                  transform: isCollapsed ? 'rotate(-90deg)' : 'none',
+                }}
+              />
+              <Typography variant="subtitle2">{section.heading}</Typography>
+              <Typography variant="caption" color="text.secondary">
+                {section.leaves.length}
               </Typography>
-              <Divider sx={{ mb: 2 }} />
-            </>
-          )}
-          <Grid container spacing={2}>
-            {section.leaves.map((leaf) => (
-              <Grid
-                size={{ xs: 12, md: leaf.kind === 'unsupported' ? 12 : 6 }}
-                key={`leaf-${leaf.index}`}
-                sx={{ pl: leaf.depth > 0 ? leaf.depth * 2 : 0 }}
-              >
-                <LeafField
-                  leaf={leaf}
-                  fieldPrefix={fieldPrefix}
-                  formControl={formControl}
-                  variableOptions={variableOptions}
-                />
+              {showPath && (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  noWrap
+                  sx={{ minWidth: 0, opacity: 0.8 }}
+                >
+                  {path}
+                </Typography>
+              )}
+            </Stack>
+            <Divider sx={{ mb: 2, mt: 1 }} />
+
+            <Collapse in={!isCollapsed} unmountOnExit>
+              <Grid container spacing={2} sx={{ pb: 1 }}>
+                {section.leaves.map((leaf) => (
+                  <Grid
+                    size={{ xs: 12, md: leaf.kind === 'unsupported' ? 12 : 6 }}
+                    key={`leaf-${leaf.index}`}
+                    sx={{ pl: leaf.depth > 0 ? leaf.depth * 2 : 0 }}
+                  >
+                    <LeafField
+                      leaf={leaf}
+                      fieldPrefix={fieldPrefix}
+                      formControl={formControl}
+                      variableOptions={variableOptions}
+                    />
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </Box>
-      ))}
+            </Collapse>
+          </Box>
+        )
+      })}
     </Stack>
   )
 }
+
+// One shared reference for the nothing-to-resolve case, so the hook below is not handed a fresh
+// array on every render.
+const EMPTY_IDS = []
 
 // Resolves setting definitions the way CippJSONView does: definitions shipped inline with the policy
 // win over the bundled catalog, because they came from the tenant the policy was read from.
 //
 // Reports the catalog's load state alongside the resolver. Only a setting tree needs the catalog -
-// a classic device configuration policy names its own properties - so the 17MB download is skipped
-// for policies that would gain nothing from it.
+// a classic device configuration policy names its own properties - so nothing is fetched for
+// policies that would gain nothing from it.
 export const useIntuneDefinitionResolver = (policy) => {
   const needsCatalog =
     Array.isArray(policy?.settings) && policy.settings.length > 0
-  const {
-    data: intuneCollection,
-    isLoading,
-    isError,
-  } = useIntuneCollectionState({
-    enabled: needsCatalog,
-  })
 
-  const getDefinition = useMemo(() => {
-    const catalog = new Map(
-      (intuneCollection || [])
-        .filter((item) => item?.id)
-        .map((item) => [item.id, item])
-    )
-    const inline = new Map()
+  const inline = useMemo(() => {
+    const definitions = new Map()
     ;(Array.isArray(policy?.settings) ? policy.settings : []).forEach(
       (setting) => {
         ;(setting?.settingDefinitions || []).forEach((definition) => {
-          if (definition?.id) inline.set(definition.id, definition)
+          if (definition?.id) definitions.set(definition.id, definition)
         })
       }
     )
+    return definitions
+  }, [policy])
 
-    return (definitionId) =>
+  // Only the ids the policy actually references are requested, and only those the policy did not
+  // already carry a definition for - a policy read back from a tenant may need nothing at all.
+  const wantedIds = useMemo(
+    () =>
+      needsCatalog
+        ? Array.from(collectSettingDefinitionIds(policy)).filter(
+            (id) => !inline.has(id)
+          )
+        : EMPTY_IDS,
+    [policy, inline, needsCatalog]
+  )
+
+  const {
+    getDefinition: getCatalogDefinition,
+    isLoading,
+    isError,
+  } = useIntuneDefinitions(wantedIds, { enabled: needsCatalog })
+
+  const getDefinition = useMemo(
+    () => (definitionId) =>
       definitionId
-        ? inline.get(definitionId) || catalog.get(definitionId)
-        : undefined
-  }, [intuneCollection, policy])
+        ? inline.get(definitionId) || getCatalogDefinition(definitionId)
+        : undefined,
+    [inline, getCatalogDefinition]
+  )
 
   return { getDefinition, isLoading, isError }
 }

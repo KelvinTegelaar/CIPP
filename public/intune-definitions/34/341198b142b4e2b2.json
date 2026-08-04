@@ -1,0 +1,1 @@
+{"id":"com.apple.loginwindow_denylist","displayName":"Deny List","description":"The list of user GUIDs or group GUIDs of users that cannot log in. This list takes priority over the list in the Allow List key.","helpText":null,"infoUrls":[],"categoryId":"8f831e0a-feb7-4cbb-acc1-2e583f3f4de3","categoryName":"Login Window Behavior","options":null}
