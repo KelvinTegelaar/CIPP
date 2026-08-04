@@ -21,6 +21,7 @@ import { useCippReportDB } from '../../../../components/CippComponents/CippRepor
 const Page = () => {
   const pageTitle = 'Groups'
   const [showMembers, setShowMembers] = useState(false)
+  const [showOwners, setShowOwners] = useState(false)
   const { currentTenant } = useSettings()
 
   const reportDB = useCippReportDB({
@@ -35,7 +36,19 @@ const Page = () => {
   })
 
   const handleMembersToggle = () => {
-    setShowMembers(!showMembers)
+    setShowMembers((prev) => {
+      const next = !prev
+      if (next) setShowOwners(false)
+      return next
+    })
+  }
+
+  const handleOwnersToggle = () => {
+    setShowOwners((prev) => {
+      const next = !prev
+      if (next) setShowMembers(false)
+      return next
+    })
   }
   const actions = [
     {
@@ -348,9 +361,14 @@ const Page = () => {
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             {!reportDB.useReportDB && (
-              <Button onClick={handleMembersToggle}>
-                {showMembers ? 'Hide Members' : 'Show Members'}
-              </Button>
+              <>
+                <Button onClick={handleMembersToggle}>
+                  {showMembers ? 'Hide Members' : 'Show Members'}
+                </Button>
+                <Button onClick={handleOwnersToggle}>
+                  {showOwners ? 'Hide Owners' : 'Show Owners'}
+                </Button>
+              </>
             )}
             <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
               Add Group
@@ -366,13 +384,23 @@ const Page = () => {
           </Stack>
         }
         apiUrl={reportDB.resolvedApiUrl}
-        apiData={reportDB.useReportDB ? undefined : { expandMembers: showMembers }}
+        apiData={
+          reportDB.useReportDB
+            ? undefined
+            : showMembers
+              ? { expandMembers: true }
+              : showOwners
+                ? { expandOwners: true }
+                : {}
+        }
         queryKey={
           reportDB.useReportDB
             ? reportDB.resolvedQueryKey
             : showMembers
               ? `groups-with-members-${currentTenant}`
-              : `groups-without-members-${currentTenant}`
+              : showOwners
+                ? `groups-with-owners-${currentTenant}`
+                : `groups-${currentTenant}`
         }
         actions={actions}
         offCanvas={offCanvas}
