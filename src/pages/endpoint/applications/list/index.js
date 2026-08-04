@@ -324,7 +324,7 @@ const Page = () => {
             config: JSON.stringify({
               ApplicationName: r.displayName,
               IntuneBody: r,
-              assignTo: 'On',
+              AssignTo: 'On',
             }),
           })),
         }
