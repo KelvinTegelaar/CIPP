@@ -5,7 +5,8 @@ import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { initialize, mswLoader } from 'msw-storybook-addon'
+import { setupWorker } from 'msw/browser'
+import { mswLoader } from 'msw-storybook-addon/csf3'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import TimeAgo from 'javascript-time-ago'
@@ -27,10 +28,6 @@ const mockSettings = {
 }
 
 TimeAgo.addDefaultLocale(en)
-// 'bypass' silences MSW warnings for unhandled requests (Vite module imports,
-// static assets, CDN). 'quiet' suppresses console logging for handled requests
-// to avoid flooding the dev server console with large API responses.
-initialize({ onUnhandledRequest: 'bypass', quiet: true })
 
 const darkTheme = createTheme({
   colorPreset: 'orange',
@@ -65,7 +62,16 @@ const preview = {
       handlers,
     },
   },
-  loaders: [mswLoader],
+  // custom setup instead of the addon default: 'bypass' silences MSW warnings for
+  // unhandled requests (Vite module imports, static assets, unmocked /api routes),
+  // 'quiet' suppresses console logging for handled requests
+  loaders: [
+    mswLoader(async () => {
+      const worker = setupWorker()
+      await worker.start({ onUnhandledRequest: 'bypass', quiet: true })
+      return worker
+    }),
+  ],
   decorators: [
     withThemeFromJSXProvider({
       themes: {

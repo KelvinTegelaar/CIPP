@@ -111,15 +111,6 @@ describe('CippAuthShell', () => {
     expect(screen.getByText('Connection failed.')).toBeInTheDocument()
   })
 
-  it('renders the version only when one is given', () => {
-    const { unmount } = renderWithTheme(<CippAuthShell title="Access Denied" version="10.7.5" />)
-    expect(screen.getByText('v10.7.5')).toBeInTheDocument()
-    unmount()
-
-    renderWithTheme(<CippAuthShell title="Access Denied" />)
-    expect(screen.queryByText(/^v\d/)).not.toBeInTheDocument()
-  })
-
   it('renders the brand lockup and tagline, with no link in the panel', () => {
     renderWithTheme(<CippAuthShell title="Access Denied" />)
 

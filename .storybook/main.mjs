@@ -11,6 +11,7 @@ const config = {
     '@storybook/addon-docs',
     '@storybook/addon-themes',
     '@storybook/addon-vitest',
+    'msw-storybook-addon',
   ],
   features: {
     sidebarOnboardingChecklist: false,

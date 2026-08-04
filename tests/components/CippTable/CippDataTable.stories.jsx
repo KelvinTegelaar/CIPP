@@ -443,18 +443,16 @@ export const WithConditionalActions = {
 
 // edit filters drawer only exists for ListGraphRequest-backed tables (CIPPTableToptoolbar)
 export const GraphBackedEditFilters = {
-  parameters: {
-    msw: {
-      handlers: [
-        http.get('/api/ListGraphRequest', () =>
-          HttpResponse.json({
-            Results: [{ userPrincipalName: 'a@x.com', mail: 'a@x.com' }],
-            Metadata: {},
-          })
-        ),
-        http.get('/api/ListGraphExplorerPresets', () => HttpResponse.json({ Results: [] })),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.get('/api/ListGraphRequest', () =>
+        HttpResponse.json({
+          Results: [{ userPrincipalName: 'a@x.com', mail: 'a@x.com' }],
+          Metadata: {},
+        })
+      ),
+      http.get('/api/ListGraphExplorerPresets', () => HttpResponse.json({ Results: [] }))
+    )
   },
   args: {
     title: 'Graph Backed',

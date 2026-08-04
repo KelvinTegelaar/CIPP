@@ -55,20 +55,18 @@ export const Grouped = {
 }
 
 export const ApiDriven = {
-  parameters: {
-    msw: {
-      handlers: [
-        http.get('/api/ListUsers', () =>
-          HttpResponse.json({
-            Results: [
-              { displayName: 'Alice Example', id: '1' },
-              { displayName: 'Bob Example', id: '2' },
-            ],
-            Metadata: {},
-          })
-        ),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.get('/api/ListUsers', () =>
+        HttpResponse.json({
+          Results: [
+            { displayName: 'Alice Example', id: '1' },
+            { displayName: 'Bob Example', id: '2' },
+          ],
+          Metadata: {},
+        })
+      )
+    )
   },
   args: {
     multiple: false,

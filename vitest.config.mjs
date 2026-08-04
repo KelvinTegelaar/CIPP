@@ -74,6 +74,8 @@ export default defineConfig({
             '@mui/material',
             '@mui/system',
             'material-react-table',
+            'msw/browser',
+            'msw-storybook-addon/csf3',
           ],
           esbuildOptions: {
             jsx: 'automatic',

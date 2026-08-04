@@ -92,10 +92,8 @@ export default {
   args: {
     onQueueComplete: fn(),
   },
-  parameters: {
-    msw: {
-      handlers: [queueHandler],
-    },
+  beforeEach({ msw }) {
+    msw.use(queueHandler)
   },
 }
 
