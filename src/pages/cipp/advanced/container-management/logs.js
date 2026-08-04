@@ -15,12 +15,14 @@ import {
   Tabs,
 } from "@mui/material";
 import { ExpandMore, Search, Refresh, PlayArrow } from "@mui/icons-material";
-import { CippFormComponent } from "../../../components/CippComponents/CippFormComponent";
+import { CippFormComponent } from "../../../../components/CippComponents/CippFormComponent";
 import { Grid } from "@mui/system";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
-import { CippTablePage } from "../../../components/CippComponents/CippTablePage";
-import { ApiGetCall } from "../../../api/ApiCall";
-import defaultPresets from "../../../data/ContainerLogPresets.json";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import defaultPresets from "../../../../data/ContainerLogPresets.json";
+import tabOptions from "./tabOptions";
 
 const levelOptions = [
   { label: "All Levels", value: "" },
@@ -577,6 +579,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;

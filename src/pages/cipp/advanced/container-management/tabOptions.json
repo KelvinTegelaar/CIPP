@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Status & Updates",
+    "path": "/cipp/advanced/container-management/status",
+    "icon": "Storage"
+  },
+  {
+    "label": "Custom Domains",
+    "path": "/cipp/advanced/container-management/custom-domains",
+    "icon": "Dns"
+  },
+  {
+    "label": "Logs",
+    "path": "/cipp/advanced/container-management/logs",
+    "icon": "ManageSearch"
+  },
+  {
+    "label": "Worker Health",
+    "path": "/cipp/advanced/container-management/worker-health",
+    "icon": "Timeline"
+  }
+]

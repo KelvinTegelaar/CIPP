@@ -19,7 +19,7 @@ import {
 import { ExpandMore } from '@mui/icons-material'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 
-const SSO_DOCS_URL = 'https://docs.cipp.app/user-documentation/cipp/advanced/super-admin/sso'
+const SSO_DOCS_URL = 'https://docs.cipp.app/user-documentation/cipp/advanced/authentication/sso'
 
 export const ForcedSsoMigrationDialog = ({ setupCompleted = true }) => {
   const [multiTenant, setMultiTenant] = useState(false)

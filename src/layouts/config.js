@@ -1204,6 +1204,25 @@ export const nativeMenuItems = [
             scope: 'global',
           },
           {
+            title: 'Container Management',
+            path: '/cipp/advanced/container-management/status',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            // Lands on cipp-roles, not cipp-users: cipp-users is gated by the
+            // SuperAdminNG feature flag, and the nav filter drops any item whose
+            // path is in a disabled flag's Pages list — pointing here at cipp-users
+            // would hide the whole Authentication group (including the ungated
+            // SSO and SAM App pages) on non-NG instances.
+            title: 'Authentication',
+            path: '/cipp/advanced/authentication/cipp-roles',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
             title: 'Exchange Cmdlets',
             path: '/cipp/advanced/exchange-cmdlets',
             roles: ['superadmin'],
@@ -1227,20 +1246,6 @@ export const nativeMenuItems = [
           {
             title: 'Diagnostics',
             path: '/cipp/advanced/diagnostics',
-            roles: ['superadmin'],
-            permissions: ['CIPP.SuperAdmin.*'],
-            scope: 'global',
-          },
-          {
-            title: 'Container Logs',
-            path: '/cipp/advanced/container-logs',
-            roles: ['superadmin'],
-            permissions: ['CIPP.SuperAdmin.*'],
-            scope: 'global',
-          },
-          {
-            title: 'Worker Health',
-            path: '/cipp/advanced/worker-health',
             roles: ['superadmin'],
             permissions: ['CIPP.SuperAdmin.*'],
             scope: 'global',

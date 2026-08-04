@@ -1,23 +1,18 @@
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
-import CippPageCard from "../../../../../components/CippCards/CippPageCard";
-import { CippRoleAddEdit } from "../../../../../components/CippSettings/CippRoleAddEdit";
-import { CardContent, Stack, Alert } from "@mui/material";
+// Legacy redirect: this page moved to /cipp/advanced/authentication/cipp-roles/add when the
+// Super Admin area was split into Super Admin / Container Management / Authentication.
+// Safe to delete once bookmarks and docs links have aged out.
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-const AddRolePage = () => {
-  return (
-    <CippPageCard hideBackButton={false} title="Add New Role">
-      <CardContent>
-        <Stack spacing={2}>
-          <Alert color="info">
-            Create a new custom role with specific permissions and settings.
-          </Alert>
-          <CippRoleAddEdit />
-        </Stack>
-      </CardContent>
-    </CippPageCard>
-  );
+const Page = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    router.replace({ pathname: "/cipp/advanced/authentication/cipp-roles/add", query: router.query });
+  }, [router.isReady]);
+
+  return null;
 };
 
-AddRolePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
-export default AddRolePage;
+export default Page;

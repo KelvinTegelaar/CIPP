@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '../test-utils'
-import Page from '../../src/pages/cipp/advanced/worker-health.js'
+import Page from '../../src/pages/cipp/advanced/container-management/worker-health.js'
 
 vi.mock('../../src/api/ApiCall', async () => (await import('../mocks/api-call')).apiCallMock())
 import { api, getResult, paginatedResult, postResult } from '../mocks/api-call'

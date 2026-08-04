@@ -121,7 +121,7 @@ const Page = () => {
               under heavy load. Please review{" "}
               <Link
                 component={NextLink}
-                href="https://docs.cipp.app/user-documentation/cipp/settings/superadmin/function-offloading"
+                href="https://docs.cipp.app/user-documentation/cipp/advanced/super-admin/function-offloading"
                 target="_blank"
                 rel="noreferrer"
               >

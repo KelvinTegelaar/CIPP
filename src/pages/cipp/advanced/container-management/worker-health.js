@@ -58,10 +58,12 @@ import {
   Tooltip as RechartsTooltip,
   Legend,
 } from "recharts";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
-import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
-import { CippDataTable } from "../../../components/CippTable/CippDataTable";
-import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippInfoBar } from "../../../../components/CippCards/CippInfoBar";
+import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
+import tabOptions from "./tabOptions";
 
 const formatDuration = (ms) => {
   if (ms === 0 || ms == null) return "—";
@@ -713,7 +715,7 @@ const Page = () => {
       <Head>
         <title>Worker Health | CIPP</title>
       </Head>
-      <Box sx={{ flexGrow: 1, py: 4 }}>
+      <Box sx={{ flexGrow: 1, pb: 4 }}>
         <Container maxWidth="xl">
           <Stack spacing={2}>
             {/* ── Header toolbar ── */}
@@ -1210,6 +1212,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;

@@ -27,7 +27,7 @@ import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 
-const SSO_DOCS_URL = "https://docs.cipp.app/user-documentation/cipp/advanced/super-admin/sso";
+const SSO_DOCS_URL = "https://docs.cipp.app/user-documentation/cipp/advanced/authentication/sso";
 
 // The three delegated scopes New-CIPPSSOApp requests. Kept here verbatim so an admin can hand
 // this straight to their own security team without having to ask what the app can reach.

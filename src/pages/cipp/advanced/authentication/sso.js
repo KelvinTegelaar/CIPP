@@ -1,13 +1,18 @@
 import { Container } from "@mui/material";
+import { Grid } from "@mui/system";
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import tabOptions from "./tabOptions";
-import { CippAppServiceDomains } from "../../../../components/CippSettings/CippAppServiceDomains";
+import { CippSSOSettings } from "../../../../components/CippSettings/CippSSOSettings";
 
 const Page = () => {
   return (
     <Container sx={{ pt: 3 }} maxWidth="xl">
-      <CippAppServiceDomains />
+      <Grid container spacing={2}>
+        <Grid size={{ lg: 6, md: 8, sm: 12, xs: 12 }}>
+          <CippSSOSettings />
+        </Grid>
+      </Grid>
     </Container>
   );
 };
