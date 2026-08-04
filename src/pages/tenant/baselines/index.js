@@ -1,4 +1,14 @@
-import { Card, CardHeader, Container, Divider, Stack } from '@mui/material'
+import {
+  Box,
+  Card,
+  CardHeader,
+  Container,
+  Divider,
+  LinearProgress,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { Grid } from '@mui/system'
 import { useRouter } from 'next/router'
 import {
@@ -27,8 +37,11 @@ const EmptyChartCard = ({ title, message }) => (
   </Card>
 )
 
+// The API serializes single-element arrays as a bare object; charts need real arrays.
+const asArray = (value) => (Array.isArray(value) ? value : value ? [value] : [])
+
 const Page = () => {
-  const pageTitle = 'Baselines Overview'
+  const pageTitle = 'Fleet Overview'
   const router = useRouter()
 
   const aggregate = ApiGetCall({
@@ -38,11 +51,15 @@ const Page = () => {
   })
 
   const fleetScore = aggregate.data?.fleet
-  const trend = aggregate.data?.trend ?? []
-  const tenantsNeedingAttention = [...(aggregate.data?.tenants ?? [])]
+  const trend = asArray(aggregate.data?.trend)
+  const tenantsNeedingAttention = asArray(aggregate.data?.tenants)
+    .slice()
     .sort((a, b) => a.alignedPercentage - b.alignedPercentage)
     .slice(0, 5)
-  const activeDeviations = aggregate.data?.activeDeviations ?? []
+  const activeDeviations = asArray(aggregate.data?.activeDeviations)
+  const licenseMissingPercentage = fleetScore?.total
+    ? Math.round((fleetScore.licenseMissing / fleetScore.total) * 100)
+    : 0
 
   return (
     <>
@@ -76,10 +93,9 @@ const Page = () => {
               {
                 icon: <KeyIcon />,
                 name: 'License Missing',
-                data: fleetScore?.licenseMissing ?? 0,
+                data: `${licenseMissingPercentage}%`,
                 color: 'warning',
-                toolTip:
-                  'Standard instances excluded from scoring because the tenant lacks the license',
+                toolTip: `${fleetScore?.licenseMissing ?? 0} standard instance${(fleetScore?.licenseMissing ?? 0) === 1 ? '' : 's'} excluded from scoring because the tenant lacks the license`,
               },
             ]}
           />
@@ -153,19 +169,53 @@ const Page = () => {
                   message="Tenant scores appear after the first baseline runs."
                 />
               ) : (
-                <CippChartCard
-                  isFetching={aggregate.isFetching}
-                  title="Tenants Needing Attention"
-                  chartType="bar"
-                  totalLabel="Compliant"
-                  onClick={() => router.push('/tenant/baselines/alignment')}
-                  chartSeries={tenantsNeedingAttention.map(
-                    (tenant) => tenant.alignedPercentage
-                  )}
-                  labels={tenantsNeedingAttention.map(
-                    (tenant) => tenant.displayName
-                  )}
-                />
+                <Card style={{ width: '100%', height: '100%' }}>
+                  <CardHeader title="Tenants Needing Attention" />
+                  <Divider />
+                  <Stack spacing={2} sx={{ p: 2 }}>
+                    {tenantsNeedingAttention.map((tenant) => (
+                      <Box
+                        key={tenant.tenantFilter}
+                        onClick={() =>
+                          router.push('/tenant/baselines/alignment')
+                        }
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          spacing={1}
+                        >
+                          <Tooltip title={tenant.tenantFilter}>
+                            <Typography variant="body2" noWrap>
+                              {tenant.displayName}
+                            </Typography>
+                          </Tooltip>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ flexShrink: 0 }}
+                          >
+                            {tenant.alignedPercentage}%
+                          </Typography>
+                        </Stack>
+                        <LinearProgress
+                          variant="determinate"
+                          value={tenant.alignedPercentage ?? 0}
+                          color={
+                            tenant.alignedPercentage < 50
+                              ? 'error'
+                              : tenant.alignedPercentage < 80
+                                ? 'warning'
+                                : 'success'
+                          }
+                          sx={{ mt: 0.5, borderRadius: 1 }}
+                        />
+                      </Box>
+                    ))}
+                  </Stack>
+                </Card>
               )}
             </Grid>
             <Grid size={{ md: 8, xs: 12 }}>

@@ -14,7 +14,14 @@ import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import tabOptions from '../tabOptions.json'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { CippFormTemplateTenantSelector } from '../../../../components/CippComponents/CippFormTemplateTenantSelector'
 import { parseCippDate } from '../../../../utils/parse-cipp-date'
+
+// The API serializes single-element arrays as a bare object; the selector needs a real array.
+const asOptionArray = (value) =>
+  (Array.isArray(value) ? value : value ? [value] : []).filter(
+    (entry) => entry && typeof entry === 'object' && entry.value
+  )
 
 const Page = () => {
   const pageTitle = 'Baselines'
@@ -41,8 +48,19 @@ const Page = () => {
       icon: <PlayArrow />,
       color: 'info',
       data: { mode: '!run', templateId: 'GUID' },
+      children: ({ formHook, row }) => (
+        <Stack spacing={2} sx={{ mt: 2 }}>
+          <CippFormTemplateTenantSelector
+            formControl={formHook}
+            templateTenants={asOptionArray(row.assignments)}
+            excludedTenants={asOptionArray(
+              row.exclusions ?? row.excludedTenants
+            )}
+          />
+        </Stack>
+      ),
       confirmText:
-        'Force a run of [templateName] against its assigned tenants? Standards in report-only stages are compared without changes.',
+        'Run [templateName] now? Pick a single covered tenant, or All Tenants in Template for the whole assignment. Standards in report-only stages are compared without changes.',
       multiPost: false,
       relatedQueryKeys: ['ListBaseline*'],
     },

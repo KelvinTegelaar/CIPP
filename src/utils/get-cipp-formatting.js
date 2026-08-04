@@ -643,6 +643,21 @@ export const getCippFormatting = (
     }
   }
 
+  if (cellName === 'outcome') {
+    // Baseline run outcomes in the historic view
+    if (isText) return data
+    const outcomeColors = {
+      compliant: 'success',
+      remediated: 'info',
+      drift: 'error',
+      error: 'error',
+      'skipped-nocache': 'default',
+      'skipped-license': 'default',
+    }
+    const color = outcomeColors[String(data).toLowerCase()] ?? 'default'
+    return <Chip variant="outlined" label={data} size="small" color={color} />
+  }
+
   if (cellName === 'feedEvent') {
     // Baseline deviation feed events
     if (isText) return data

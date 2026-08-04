@@ -1,19 +1,34 @@
 import {
+  Alert,
   Box,
   Button,
+  Card,
+  CardContent,
   Chip,
+  CircularProgress,
   Container,
   Divider,
+  Link,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Tooltip,
   Typography,
 } from '@mui/material'
+import {
+  Timeline,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineItem,
+  TimelineOppositeContent,
+  TimelineSeparator,
+} from '@mui/lab'
 import { useState } from 'react'
 import {
   BuildingOfficeIcon,
   CheckBadgeIcon,
+  ClockIcon,
   ExclamationTriangleIcon,
   KeyIcon,
   RectangleStackIcon,
@@ -22,15 +37,20 @@ import {
 } from '@heroicons/react/24/outline'
 import {
   ArrowForward,
+  BuildOutlined,
   Cancel,
   CheckCircle,
+  CheckCircleOutlined,
   Compare,
   Edit,
+  ErrorOutlineOutlined,
+  InfoOutlined,
   LayersClear,
   PlayArrow,
   RemoveCircle,
   TaskAlt,
   Tune,
+  WarningAmberOutlined,
 } from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
@@ -41,7 +61,9 @@ import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
+import { CippApiLogsDrawer } from '../../../../components/CippComponents/CippApiLogsDrawer'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
+import { CippFormTemplateTenantSelector } from '../../../../components/CippComponents/CippFormTemplateTenantSelector'
 import CippBaselineWhatIfReport, {
   describeStageConditions,
 } from '../../../../components/CippBaselines/CippBaselineWhatIfReport'
@@ -104,10 +126,62 @@ const propertyList = (properties) => (
   </Stack>
 )
 
+// The API serializes single-element arrays as a bare object; the selector needs a real array.
+const asOptionArray = (value) =>
+  (Array.isArray(value) ? value : value ? [value] : []).filter(
+    (entry) => entry && typeof entry === 'object' && entry.value
+  )
+
 const runModeLabels = {
   run: 'Full run',
   compare: 'Compare',
   oneoff: 'One-off remediation',
+}
+
+// Timeline dot/chip styling per run outcome, mirroring the manage-tenant history page.
+const outcomeTimeline = {
+  Compliant: {
+    color: 'success',
+    chipColor: 'success',
+    icon: <CheckCircleOutlined />,
+  },
+  Remediated: { color: 'info', chipColor: 'info', icon: <BuildOutlined /> },
+  Drift: {
+    color: 'warning',
+    chipColor: 'error',
+    icon: <WarningAmberOutlined />,
+  },
+  Error: { color: 'error', chipColor: 'error', icon: <ErrorOutlineOutlined /> },
+  'Skipped-NoCache': {
+    color: 'grey',
+    chipColor: 'default',
+    icon: <InfoOutlined />,
+  },
+  'Skipped-License': {
+    color: 'grey',
+    chipColor: 'default',
+    icon: <InfoOutlined />,
+  },
+}
+
+// One readable sentence per run event for the historic timeline.
+const historyEventMessage = (event) => {
+  switch (event.outcome) {
+    case 'Remediated':
+      return `Successfully changed "${event.standardLabel}" to the expected configuration`
+    case 'Compliant':
+      return `Verified "${event.standardLabel}" is compliant with the baseline`
+    case 'Drift':
+      return `Detected drift on "${event.standardLabel}"`
+    case 'Error':
+      return `Failed to change "${event.standardLabel}" - see the logs for this run`
+    case 'Skipped-License':
+      return `Skipped "${event.standardLabel}" - the tenant is not licensed for it`
+    case 'Skipped-NoCache':
+      return `Skipped "${event.standardLabel}" - no data collected yet`
+    default:
+      return `"${event.standardLabel}" - ${event.outcome}`
+  }
 }
 
 // A run's diff can be long - hide it behind a toggle so the history list stays readable.
@@ -184,6 +258,18 @@ const Page = () => {
   const acceptPathDialog = useDialog()
   const [removeOverrideTarget, setRemoveOverrideTarget] = useState(null)
   const removeOverrideDialog = useDialog()
+  const [expandedEvents, setExpandedEvents] = useState(new Set())
+  const toggleEventExpansion = (index) => {
+    setExpandedEvents((prev) => {
+      const next = new Set(prev)
+      if (next.has(index)) {
+        next.delete(index)
+      } else {
+        next.add(index)
+      }
+      return next
+    })
+  }
   const isTenantView = viewMode === 'tenant'
   const isTemplateView = viewMode === 'template'
 
@@ -202,7 +288,13 @@ const Page = () => {
     url: '/api/ListBaselineAlignment',
     data: { byStandard: true },
     queryKey: 'ListBaselineAlignment-byStandard',
-    waiting: !isTenantView && !isTemplateView,
+    waiting: viewMode === 'standard',
+  })
+  const historyApi = ApiGetCall({
+    url: '/api/ListBaselineAlignment',
+    data: { tenantFilter: currentTenant, history: true },
+    queryKey: `ListBaselineAlignment-${currentTenant}-history`,
+    waiting: viewMode === 'history' && !!currentTenant,
   })
   const baselinesApi = ApiGetCall({
     url: '/api/ListBaselines',
@@ -977,8 +1069,19 @@ const Page = () => {
       icon: <PlayArrow />,
       color: 'info',
       data: { mode: '!run', templateId: 'GUID' },
+      children: ({ formHook, row }) => (
+        <Stack spacing={2} sx={{ mt: 2 }}>
+          <CippFormTemplateTenantSelector
+            formControl={formHook}
+            templateTenants={asOptionArray(row.assignments)}
+            excludedTenants={asOptionArray(
+              row.exclusions ?? row.excludedTenants
+            )}
+          />
+        </Stack>
+      ),
       confirmText:
-        'Force a run of [templateName] against its assigned tenants? Standards in report-only stages are compared without changes.',
+        'Run [templateName] now? Pick a single covered tenant, or All Tenants in Template for the whole assignment. Standards in report-only stages are compared without changes.',
       multiPost: false,
       relatedQueryKeys,
     },
@@ -1195,6 +1298,17 @@ const Page = () => {
               style={{ width: 16, height: 16, marginRight: 6 }}
             />
             Baseline View
+          </Box>
+        </Tooltip>
+      </ToggleButton>
+      <ToggleButton value="history" aria-label="historic view">
+        <Tooltip
+          title="Every recorded run event for the selected tenant"
+          placement="top"
+        >
+          <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+            <ClockIcon style={{ width: 16, height: 16, marginRight: 6 }} />
+            Historic View
           </Box>
         </Tooltip>
       </ToggleButton>
@@ -1485,6 +1599,242 @@ const Page = () => {
       )}
     </>
   )
+
+  // Historic view: the tenant's run events on an activity timeline (same pattern as the
+  // manage-tenant history page). Each event carries its run GUID; View Logs opens the
+  // Baselines log drawer filtered to exactly that run's entries.
+  if (viewMode === 'history') {
+    const historyEvents = historyApi.data?.events ?? []
+    return (
+      <>
+        <CippHead title={pageTitle} />
+        <Container maxWidth={false}>
+          <Stack spacing={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              {modeToggle}
+              <CippApiLogsDrawer
+                apiFilter="Baselines"
+                buttonText="View Logs"
+                title="Baseline Logs"
+                tenantFilter={currentTenant}
+                variant="outlined"
+              />
+            </Stack>
+            <Typography variant="body1" color="text.secondary">
+              This timeline shows every recorded baseline run event for{' '}
+              {tenant.displayName}.
+            </Typography>
+            {historyApi.isFetching && (
+              <Box display="flex" justifyContent="center" py={4}>
+                <CircularProgress />
+              </Box>
+            )}
+            {!historyApi.isFetching && historyEvents.length === 0 && (
+              <Alert severity="info">
+                No baseline run history for this tenant yet - run a baseline
+                first.
+              </Alert>
+            )}
+            {historyEvents.length > 0 && (
+              <Card sx={{ mr: 2 }}>
+                <CardContent>
+                  <Timeline
+                    sx={{
+                      [`& .MuiTimelineOppositeContent-root`]: {
+                        flex: 0.2,
+                        minWidth: 100,
+                      },
+                      [`& .MuiTimelineContent-root`]: { flex: 0.8 },
+                    }}
+                  >
+                    {historyEvents.map((event, index) => {
+                      const timelineConfig = outcomeTimeline[event.outcome] ?? {
+                        color: 'grey',
+                        chipColor: 'default',
+                        icon: <InfoOutlined />,
+                      }
+                      const eventDate = parseCippDate(event.timestamp)
+                      const isExpanded = expandedEvents.has(index)
+                      const diffEntries = event.diff
+                        ? Array.isArray(event.diff)
+                          ? event.diff
+                          : [event.diff]
+                        : []
+                      return (
+                        <TimelineItem key={`${event.runId}-${index}`}>
+                          <TimelineOppositeContent
+                            sx={{ m: 'auto 0', minWidth: 100, maxWidth: 100 }}
+                            align="right"
+                            variant="body2"
+                            color="text.secondary"
+                          >
+                            <Typography
+                              variant="caption"
+                              display="block"
+                              fontSize="0.7rem"
+                            >
+                              {eventDate.toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                              })}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              display="block"
+                              fontWeight="bold"
+                              fontSize="0.75rem"
+                            >
+                              {eventDate.toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false,
+                              })}
+                            </Typography>
+                          </TimelineOppositeContent>
+                          <TimelineSeparator>
+                            <TimelineDot
+                              color={timelineConfig.color}
+                              variant="outlined"
+                              size="small"
+                            >
+                              {timelineConfig.icon}
+                            </TimelineDot>
+                            {index < historyEvents.length - 1 && (
+                              <TimelineConnector />
+                            )}
+                          </TimelineSeparator>
+                          <TimelineContent sx={{ py: '8px', px: 2 }}>
+                            <Stack spacing={1}>
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                gap={1}
+                                flexWrap="wrap"
+                              >
+                                <Chip
+                                  label={event.outcome}
+                                  color={timelineConfig.chipColor}
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ fontSize: '0.7rem', height: 20 }}
+                                />
+                                <Chip
+                                  label={
+                                    runModeLabels[event.mode] ?? event.mode
+                                  }
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ fontSize: '0.7rem', height: 20 }}
+                                />
+                                <Tooltip title={event.runId}>
+                                  <Chip
+                                    label={`Run ${String(event.runId).slice(0, 8)}`}
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{ fontSize: '0.7rem', height: 20 }}
+                                  />
+                                </Tooltip>
+                              </Box>
+                              <Box>
+                                <Typography
+                                  variant="body2"
+                                  fontWeight="medium"
+                                  sx={{ fontSize: '0.875rem' }}
+                                >
+                                  {historyEventMessage(event)}
+                                </Typography>
+                                <Box
+                                  display="flex"
+                                  alignItems="center"
+                                  gap={2}
+                                  sx={{ mt: 0.5 }}
+                                >
+                                  <Link
+                                    component="button"
+                                    variant="caption"
+                                    onClick={() => toggleEventExpansion(index)}
+                                    sx={{
+                                      textAlign: 'left',
+                                      fontSize: '0.75rem',
+                                    }}
+                                  >
+                                    {isExpanded
+                                      ? 'Hide details'
+                                      : 'View details'}
+                                  </Link>
+                                  <CippApiLogsDrawer
+                                    baselineRunFilter={event.runId}
+                                    tenantFilter={currentTenant}
+                                    buttonText="View Logs"
+                                    title={`Run ${String(event.runId).slice(0, 8)} - Logs`}
+                                    size="small"
+                                    sx={{
+                                      fontSize: '0.75rem',
+                                      p: 0,
+                                      minWidth: 0,
+                                      textTransform: 'none',
+                                    }}
+                                  />
+                                </Box>
+                                {isExpanded && (
+                                  <Box sx={{ mt: 0.5 }}>
+                                    {diffEntries.map((entry, diffIndex) => (
+                                      <Typography
+                                        key={entry?.Property ?? diffIndex}
+                                        variant="caption"
+                                        sx={{
+                                          fontFamily: 'monospace',
+                                          display: 'block',
+                                          wordBreak: 'break-word',
+                                        }}
+                                      >
+                                        {entry?.Property}: expected{' '}
+                                        {JSON.stringify(entry?.ExpectedValue)},
+                                        found{' '}
+                                        {JSON.stringify(entry?.ReceivedValue)}
+                                      </Typography>
+                                    ))}
+                                    <Typography
+                                      variant="caption"
+                                      sx={{
+                                        fontFamily: 'monospace',
+                                        display: 'block',
+                                        wordBreak: 'break-word',
+                                        color: 'text.secondary',
+                                      }}
+                                    >
+                                      Run ID: {event.runId}
+                                    </Typography>
+                                  </Box>
+                                )}
+                              </Box>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ fontSize: '0.7rem' }}
+                              >
+                                Triggered by {event.triggeredBy}
+                              </Typography>
+                            </Stack>
+                          </TimelineContent>
+                        </TimelineItem>
+                      )
+                    })}
+                  </Timeline>
+                </CardContent>
+              </Card>
+            )}
+            {dialogs}
+          </Stack>
+        </Container>
+      </>
+    )
+  }
 
   // Tenant view: custom layout so the deviation feed sits directly next to the
   // alignment table.
