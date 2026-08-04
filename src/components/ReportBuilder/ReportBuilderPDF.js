@@ -1,6 +1,14 @@
 import { useMemo } from 'react'
 import { Document, Page, Text, View, StyleSheet, PDFViewer, Image, Font } from '@react-pdf/renderer'
 import { resolveCoverImage } from '../CippPdf/resolveCoverImage'
+import {
+  createTableCellHyphenation,
+  isTableSeparatorRow,
+  normaliseTableRow,
+  parseTableRow,
+} from '../../utils/markdown-table'
+import { parseInlineMarkdown } from '../../utils/markdown-inline'
+import { htmlToPlainText, parseInlineHtml } from '../../utils/html-inline'
 
 /* ── Emoji support ─────────────────────────────────────────
  * Helvetica has no emoji glyphs.  react-pdf can render emojis
@@ -185,30 +193,27 @@ const createStyles = (brandColor) =>
       color: '#FFFFFF',
       textTransform: 'uppercase',
       letterSpacing: 0.5,
-      flex: 1,
     },
     tableRow: {
       flexDirection: 'row',
       paddingVertical: 8,
       paddingHorizontal: 12,
-      alignItems: 'center',
+      alignItems: 'flex-start',
       backgroundColor: '#FFFFFF',
     },
     tableRowAlt: {
       flexDirection: 'row',
       paddingVertical: 8,
       paddingHorizontal: 12,
-      alignItems: 'center',
+      alignItems: 'flex-start',
       backgroundColor: '#F7FAFC',
     },
     tableCell: {
-      flex: 1,
       fontSize: 8,
       color: '#2D3748',
       lineHeight: 1.3,
     },
     tableCellBold: {
-      flex: 1,
       fontSize: 8,
       fontWeight: 'bold',
       color: '#2D3748',
@@ -308,23 +313,102 @@ const createStyles = (brandColor) =>
 
 /* ── Text helpers ────────────────────────────────────────── */
 
-const stripTags = (html) =>
-  html
-    .replace(/<[^>]*>/g, '')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ')
+/* Emphasis is rendered, not just stripped, so the PDF matches the on-screen preview.
+   Helvetica's standard bold/oblique faces cover all four combinations. */
+const inlineStyles = StyleSheet.create({
+  strong: { fontWeight: 'bold' },
+  em: { fontStyle: 'italic' },
+  strongEm: { fontWeight: 'bold', fontStyle: 'italic' },
+  code: { fontFamily: 'Courier' },
+  strike: { textDecoration: 'line-through' },
+  underline: { textDecoration: 'underline' },
+})
 
-const processInline = (text) =>
-  text
-    .replace(/\*\*\*(.*?)\*\*\*/g, '$1')
-    .replace(/\*\*(.*?)\*\*/g, '$1')
-    .replace(/\*(.*?)\*/g, '$1')
-    .replace(/`(.*?)`/g, '$1')
-    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+const renderInlineNodes = (nodes, keyPrefix) =>
+  nodes.map((node, index) => {
+    if (node.type === 'text') return node.value
+    const key = `${keyPrefix}-${index}`
+    return (
+      <Text key={key} style={inlineStyles[node.type]}>
+        {renderInlineNodes(node.children, key)}
+      </Text>
+    )
+  })
+
+/**
+ * Turn a line of inline Markdown into react-pdf nodes.
+ */
+const processInline = (text, keyPrefix = 'inline') =>
+  renderInlineNodes(parseInlineMarkdown(text ?? ''), keyPrefix)
+
+/**
+ * Turn a fragment of inline HTML — as written in the TipTap editor — into react-pdf nodes.
+ */
+const processInlineHtml = (html, keyPrefix = 'html') =>
+  renderInlineNodes(parseInlineHtml(html ?? ''), keyPrefix)
+
+/* ── Table helpers ───────────────────────────────────────── */
+
+/**
+ * Explicit per-column widths, not `flex: 1`.
+ *
+ * Each row is its own flex container, so `flex: 1` sizes a row's columns by how many cells
+ * that row happens to hold. A row that lost a cell — exactly what the old parser did to
+ * empty cells — therefore laid its values out on a different grid to the header. A fixed
+ * share of the table width keeps every row on the same grid, and gives each cell a definite
+ * width for long values to wrap against.
+ */
+const columnStyle = (index, count) => ({
+  width: `${(100 / count).toFixed(4)}%`,
+  paddingRight: index === count - 1 ? 0 : 6,
+})
+
+const breakTableCellWord = createTableCellHyphenation()
+
+/**
+ * Render a table from raw cell arrays. When `hasHeader`, the first row declares the column
+ * count and every other row is squared off to match, so no row can slip under the wrong
+ * heading no matter what the source data contained.
+ *
+ * `renderCell` decides how a cell's text is read — Markdown for markdown tables, HTML for
+ * ones authored in the editor.
+ */
+const renderTable = (rows, s, key, { hasHeader = true, renderCell = processInline } = {}) => {
+  const headerRow = hasHeader ? rows[0] : null
+  const bodyRows = hasHeader ? rows.slice(1) : rows
+  const columnCount =
+    headerRow && headerRow.length > 0
+      ? headerRow.length
+      : Math.max(...rows.map((row) => row.length), 1)
+
+  const cells = (row, rowStyle) =>
+    normaliseTableRow(row, columnCount).map((cell, ci) => (
+      <Text
+        key={ci}
+        style={[rowStyle(ci), columnStyle(ci, columnCount)]}
+        hyphenationCallback={breakTableCellWord}
+      >
+        {renderCell(cell, `c${ci}`)}
+      </Text>
+    ))
+
+  return (
+    <View key={key} style={s.controlsTable}>
+      {headerRow && (
+        /* `fixed` repeats the header at the top of every page the table spills onto —
+           without it, continued rows sat under no heading at all. */
+        <View style={s.tableHeader} fixed>
+          {cells(headerRow, () => s.headerCell)}
+        </View>
+      )}
+      {bodyRows.map((row, ri) => (
+        <View key={ri} style={ri % 2 === 0 ? s.tableRow : s.tableRowAlt} wrap={false}>
+          {cells(row, (ci) => (ci === 0 ? s.tableCellBold : s.tableCell))}
+        </View>
+      ))}
+    </View>
+  )
+}
 
 /**
  * Convert HTML (from TipTap rich-text editor) to @react-pdf/renderer elements.
@@ -353,9 +437,22 @@ const htmlToElements = (html, s) => {
     .split(/<\/p>|<\/h[1-6]>|<\/li>|<\/pre>|<\/blockquote>|<br\s*\/?>/)
     .filter((b) => b.trim())
 
+  // Splitting on </li> means only the first item of a list still carries its <ol>/<ul>
+  // opening tag, so the list kind has to be tracked across blocks — otherwise a numbered
+  // list reaches the page as bullets.
+  let inOrderedList = false
+  let orderedIndex = 0
+
   for (const block of blocks) {
     const cleaned = block.trim()
     if (!cleaned) continue
+
+    if (/<ol[\s>]/i.test(cleaned)) {
+      inOrderedList = true
+      orderedIndex = 0
+    } else if (/<ul[\s>]/i.test(cleaned)) {
+      inOrderedList = false
+    }
 
     // Check for table placeholder
     const tablePlaceholder = cleaned.match(/__TABLE_(\d+)__/)
@@ -365,44 +462,32 @@ const htmlToElements = (html, s) => {
       if (tableHtml) {
         // Parse rows from HTML table
         const allRows = []
+        const rowIsAllHeaderCells = []
         const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi
         let rowMatch
         while ((rowMatch = rowRegex.exec(tableHtml)) !== null) {
           const cells = []
-          const cellRegex = /<(?:td|th)[^>]*>([\s\S]*?)<\/(?:td|th)>/gi
+          const cellRegex = /<(td|th)[^>]*>([\s\S]*?)<\/(?:td|th)>/gi
           let cellMatch
+          let allHeaderCells = true
           while ((cellMatch = cellRegex.exec(rowMatch[1])) !== null) {
-            cells.push(stripTags(cellMatch[1]).trim())
+            if (cellMatch[1].toLowerCase() !== 'th') allHeaderCells = false
+            // Keep the cell's markup — renderTable reads it as HTML, so marks survive.
+            cells.push(cellMatch[2].trim())
           }
-          if (cells.length > 0) allRows.push(cells)
+          if (cells.length > 0) {
+            allRows.push(cells)
+            rowIsAllHeaderCells.push(allHeaderCells)
+          }
         }
 
         if (allRows.length > 0) {
-          const headerRow = allRows[0]
-          const dataRows = allRows.slice(1)
-          // Check if the first row was in <thead> (it's a header)
-          const hasHeader = /<thead/i.test(tableHtml)
+          // TipTap emits header cells as <th> inside <tbody> — it never writes a <thead> —
+          // so a first row of <th> counts as a header just as a <thead> does. Without this
+          // an editor-authored table loses its header styling and its repeat across pages.
+          const hasHeader = /<thead/i.test(tableHtml) || rowIsAllHeaderCells[0] === true
           elements.push(
-            <View key={key++} style={s.controlsTable}>
-              {hasHeader && (
-                <View style={s.tableHeader}>
-                  {headerRow.map((c, ci) => (
-                    <Text key={ci} style={s.headerCell}>
-                      {processInline(c)}
-                    </Text>
-                  ))}
-                </View>
-              )}
-              {(hasHeader ? dataRows : allRows).map((row, ri) => (
-                <View key={ri} style={ri % 2 === 0 ? s.tableRow : s.tableRowAlt}>
-                  {row.map((c, ci) => (
-                    <Text key={ci} style={ci === 0 ? s.tableCellBold : s.tableCell}>
-                      {processInline(c)}
-                    </Text>
-                  ))}
-                </View>
-              ))}
-            </View>
+            renderTable(allRows, s, key++, { hasHeader, renderCell: processInlineHtml })
           )
         }
         continue
@@ -412,44 +497,52 @@ const htmlToElements = (html, s) => {
     if (cleaned.match(/<h1[^>]*>/)) {
       elements.push(
         <Text key={key++} style={s.heading1}>
-          {stripTags(cleaned.replace(/<h1[^>]*>/, ''))}
+          {processInlineHtml(cleaned.replace(/<h1[^>]*>/, ''), `h1-${key}`)}
         </Text>
       )
     } else if (cleaned.match(/<h2[^>]*>/)) {
       elements.push(
         <Text key={key++} style={s.heading2}>
-          {stripTags(cleaned.replace(/<h2[^>]*>/, ''))}
+          {processInlineHtml(cleaned.replace(/<h2[^>]*>/, ''), `h2-${key}`)}
         </Text>
       )
     } else if (cleaned.match(/<h3[^>]*>/)) {
       elements.push(
         <Text key={key++} style={s.heading3}>
-          {stripTags(cleaned.replace(/<h3[^>]*>/, ''))}
+          {processInlineHtml(cleaned.replace(/<h3[^>]*>/, ''), `h3-${key}`)}
         </Text>
       )
     } else if (cleaned.match(/<li[^>]*>/)) {
+      if (inOrderedList) orderedIndex += 1
       elements.push(
         <View key={key++} style={s.listItem}>
-          <Text style={s.listBullet}>{'\u2022'}</Text>
-          <Text style={s.listText}>{stripTags(cleaned.replace(/<li[^>]*>/, ''))}</Text>
+          <Text style={inOrderedList ? s.orderedBullet : s.listBullet}>
+            {inOrderedList ? `${orderedIndex}.` : '\u2022'}
+          </Text>
+          <Text style={s.listText}>
+            {processInlineHtml(cleaned.replace(/<li[^>]*>/, ''), `li-${key}`)}
+          </Text>
         </View>
       )
     } else if (cleaned.match(/<pre[^>]*>/)) {
       elements.push(
         <Text key={key++} style={s.codeBlock}>
-          {stripTags(cleaned.replace(/<pre[^>]*>/, '').replace(/<code[^>]*>/, ''))}
+          {/* A code block is literal text — read it flat, marks and all. */}
+          {htmlToPlainText(cleaned.replace(/<pre[^>]*>/, '').replace(/<code[^>]*>/, ''))}
         </Text>
       )
     } else {
-      const text = stripTags(cleaned.replace(/<p[^>]*>/, ''))
-      if (text.trim()) {
+      const inner = cleaned.replace(/<p[^>]*>/, '')
+      if (htmlToPlainText(inner).trim()) {
         elements.push(
           <Text key={key++} style={s.bodyText}>
-            {text}
+            {processInlineHtml(inner, `p-${key}`)}
           </Text>
         )
       }
     }
+
+    if (/<\/(ol|ul)>/i.test(cleaned)) inOrderedList = false
   }
   return elements.length > 0
     ? elements
@@ -481,28 +574,7 @@ const markdownToElements = (markdown, s) => {
 
   const flushTable = () => {
     if (tableRows.length > 0) {
-      const header = tableRows[0]
-      const data = tableRows.slice(1)
-      elements.push(
-        <View key={key++} style={s.controlsTable}>
-          <View style={s.tableHeader}>
-            {header.map((c, ci) => (
-              <Text key={ci} style={s.headerCell}>
-                {processInline(c)}
-              </Text>
-            ))}
-          </View>
-          {data.map((row, ri) => (
-            <View key={ri} style={ri % 2 === 0 ? s.tableRow : s.tableRowAlt}>
-              {row.map((c, ci) => (
-                <Text key={ci} style={ci === 0 ? s.tableCellBold : s.tableCell}>
-                  {processInline(c)}
-                </Text>
-              ))}
-            </View>
-          ))}
-        </View>
-      )
+      elements.push(renderTable(tableRows, s, key++))
     }
     inTable = false
     tableRows = []
@@ -535,13 +607,8 @@ const markdownToElements = (markdown, s) => {
         inTable = true
         tableRows = []
       }
-      if (line.trim().match(/^\|[\s-:|]+\|$/)) continue
-      tableRows.push(
-        line
-          .split('|')
-          .filter((c) => c.trim() !== '')
-          .map((c) => c.trim())
-      )
+      if (isTableSeparatorRow(line)) continue
+      tableRows.push(parseTableRow(line))
       continue
     } else if (inTable) {
       flushTable()

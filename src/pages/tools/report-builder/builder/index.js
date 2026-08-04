@@ -34,6 +34,12 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { renderCustomScriptMarkdownTemplate } from '../../../../utils/customScriptTemplate'
 import {
+  escapeTableCell,
+  isTableSeparatorRow,
+  normaliseTableRow,
+  parseTableRow,
+} from '../../../../utils/markdown-table'
+import {
   Add,
   Delete,
   Edit,
@@ -48,16 +54,35 @@ import {
   ArrowDownward,
   Refresh,
   Storage,
+  GridOff,
 } from '@mui/icons-material'
 
 import {
+  MenuButtonAddTable,
   MenuButtonBold,
+  MenuButtonBulletedList,
+  MenuButtonCode,
+  MenuButtonCodeBlock,
   MenuButtonItalic,
+  MenuButtonOrderedList,
+  MenuButtonRedo,
+  MenuButtonStrikethrough,
+  MenuButtonUnderline,
+  MenuButtonUndo,
+  MenuButton,
   MenuControlsContainer,
   MenuDivider,
   MenuSelectHeading,
   RichTextEditor,
 } from 'mui-tiptap'
+import {
+  DeleteColumn,
+  DeleteRow,
+  InsertColumnLeft,
+  InsertColumnRight,
+  InsertRowBottom,
+  InsertRowTop,
+} from 'mui-tiptap/icons'
 import StarterKit from '@tiptap/starter-kit'
 import { Table, TableRow, TableHeader, TableCell } from '@tiptap/extension-table'
 import { Extension } from '@tiptap/core'
@@ -98,6 +123,14 @@ const markdownStyles = {
 }
 
 /* ── Simple markdown → HTML converter for TipTap editing ── */
+
+// Cell text is plain markdown, so anything angle-bracketed in it is data, not markup.
+const escapeHtml = (value) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+
 const markdownToHtml = (md) => {
   if (!md) return ''
 
@@ -109,29 +142,20 @@ const markdownToHtml = (md) => {
     const line = lines[i]
 
     // Detect GFM table: current line has pipes and next line is separator (|---|---| etc)
-    if (
-      line.includes('|') &&
-      i + 1 < lines.length &&
-      lines[i + 1].trim().match(/^\|?[\s-:|]+\|[\s-:|]*\|?$/)
-    ) {
-      const headerCells = line
-        .split('|')
-        .map((c) => c.trim())
-        .filter((c) => c !== '')
+    if (line.includes('|') && i + 1 < lines.length && isTableSeparatorRow(lines[i + 1])) {
+      const headerCells = parseTableRow(line)
+      const columnCount = Math.max(headerCells.length, 1)
       let tableHtml = '<table><thead><tr>'
       headerCells.forEach((cell) => {
-        tableHtml += `<th>${cell}</th>`
+        tableHtml += `<th>${escapeHtml(cell)}</th>`
       })
       tableHtml += '</tr></thead><tbody>'
       i += 2 // skip header + separator
       while (i < lines.length && lines[i].includes('|') && lines[i].trim() !== '') {
-        const cells = lines[i]
-          .split('|')
-          .map((c) => c.trim())
-          .filter((c) => c !== '')
+        const cells = normaliseTableRow(parseTableRow(lines[i]), columnCount)
         tableHtml += '<tr>'
         cells.forEach((cell) => {
-          tableHtml += `<td>${cell}</td>`
+          tableHtml += `<td>${escapeHtml(cell)}</td>`
         })
         tableHtml += '</tr>'
         i++
@@ -166,6 +190,47 @@ const markdownToHtml = (md) => {
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/`(.*?)`/g, '<code>$1</code>')
     .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
+}
+
+/* ── Table row/column controls ─────────────────────────────
+ * mui-tiptap's TableMenuControls renders a fixed set with no way to leave buttons out, so
+ * the subset the PDF can actually reproduce is composed here. Merge/split cells and the
+ * header toggles are deliberately absent: the PDF lays every row out on one fixed column
+ * grid, which a merged cell has no place in, and it decides a table has a heading from its
+ * first row being header cells — so toggling that off would cost the table its header bar
+ * and its repeat across page breaks.
+ */
+const TABLE_ACTIONS = [
+  { label: 'Insert column before', Icon: InsertColumnLeft, command: 'addColumnBefore' },
+  { label: 'Insert column after', Icon: InsertColumnRight, command: 'addColumnAfter' },
+  { label: 'Delete column', Icon: DeleteColumn, command: 'deleteColumn' },
+  null,
+  { label: 'Insert row above', Icon: InsertRowTop, command: 'addRowBefore' },
+  { label: 'Insert row below', Icon: InsertRowBottom, command: 'addRowAfter' },
+  { label: 'Delete row', Icon: DeleteRow, command: 'deleteRow' },
+  null,
+  { label: 'Delete table', Icon: GridOff, command: 'deleteTable' },
+]
+
+const TableControls = ({ editor }) => {
+  if (!editor) return null
+  return (
+    <>
+      {TABLE_ACTIONS.map((action, index) =>
+        action ? (
+          <MenuButton
+            key={action.command}
+            tooltipLabel={action.label}
+            IconComponent={action.Icon}
+            onClick={() => editor.chain().focus()[action.command]().run()}
+            disabled={!editor.can()[action.command]()}
+          />
+        ) : (
+          <MenuDivider key={`table-divider-${index}`} />
+        )
+      )}
+    </>
+  )
 }
 
 /* ── TipTap extension: convert pasted Markdown to HTML ── */
@@ -320,7 +385,9 @@ const ReportBlock = ({
         <RichTextEditor
           immediatelyRender={false}
           extensions={[
-            StarterKit,
+            // The PDF styles three heading levels; offering six would let an author pick
+            // one that arrives as ordinary body text.
+            StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
             Table.configure({ resizable: false }),
             TableRow,
             TableHeader,
@@ -337,12 +404,34 @@ const ReportBlock = ({
               onUpdate(index, { ...block, content: editor.getHTML() })
             }
           }}
-          renderControls={() => (
+          renderControls={(editor) => (
+            /* Only controls the PDF renderer honours belong here — anything else would let
+               an author style a block that then flattens out in the exported report. */
             <MenuControlsContainer>
               <MenuSelectHeading />
               <MenuDivider />
               <MenuButtonBold />
               <MenuButtonItalic />
+              <MenuButtonUnderline />
+              <MenuButtonStrikethrough />
+              <MenuButtonCode />
+              <MenuDivider />
+              <MenuButtonBulletedList />
+              <MenuButtonOrderedList />
+              <MenuButtonCodeBlock />
+              <MenuDivider />
+              <MenuButtonAddTable />
+              <MenuDivider />
+              <MenuButtonUndo />
+              <MenuButtonRedo />
+              {/* Row/column tools join the toolbar while the caret is in a table, rather
+                  than floating over the cell being edited. */}
+              {editor?.isActive('table') && (
+                <>
+                  <MenuDivider />
+                  <TableControls editor={editor} />
+                </>
+              )}
             </MenuControlsContainer>
           )}
         />
@@ -667,7 +756,7 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
   }
 
   // text format — generate a Markdown table
-  const header = '| ' + selectedHeaders.join(' | ') + ' |'
+  const header = '| ' + selectedHeaders.map(escapeTableCell).join(' | ') + ' |'
   const separator = '| ' + selectedHeaders.map(() => '---').join(' | ') + ' |'
   const dataRows = filtered.map((row) => {
     return (
@@ -676,8 +765,8 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
         .map((h) => {
           const val = row[h]
           if (val === null || val === undefined) return ''
-          if (typeof val === 'object') return JSON.stringify(val)
-          return String(val).replace(/\|/g, '\\|').replace(/\n/g, ' ')
+          if (typeof val === 'object') return escapeTableCell(JSON.stringify(val))
+          return escapeTableCell(val)
         })
         .join(' | ') +
       ' |'
