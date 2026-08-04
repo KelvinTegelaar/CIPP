@@ -9,8 +9,14 @@ import {
   CardContent,
   Chip,
   Divider,
+  Link,
   Skeleton,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
@@ -20,6 +26,74 @@ import CippFormComponent from "../CippComponents/CippFormComponent";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+
+const SSO_DOCS_URL = "https://docs.cipp.app/user-documentation/cipp/advanced/super-admin/sso";
+
+// The three delegated scopes New-CIPPSSOApp requests. Kept here verbatim so an admin can hand
+// this straight to their own security team without having to ask what the app can reach.
+const ssoAppPermissions = [
+  {
+    name: "openid",
+    reason: "Signs the user in and issues an ID token. The base OpenID Connect scope.",
+  },
+  {
+    name: "profile",
+    reason:
+      "Reads the signed-in user's display name, object ID and tenant ID, so CIPP knows which account signed in.",
+  },
+  {
+    name: "email",
+    reason:
+      "Reads the signed-in user's UPN, which CIPP matches against the CIPP Users list to decide their roles.",
+  },
+];
+
+// Application permissions already consented on CIPP-SAM that the setup runs as. Nothing new is
+// requested at setup time — if one of these steps fails, the SAM consent predates the permission.
+const samPermissionsUsed = [
+  {
+    name: "Application.ReadWrite.All",
+    reason: "Creates the CIPP-SSO app registration, its service principal and its client secret.",
+  },
+  {
+    name: "Directory.ReadWrite.All",
+    reason:
+      "Grants tenant-wide consent for the three scopes above so your users are not prompted to consent at sign-in.",
+  },
+  {
+    name: "Policy.ReadWrite.ApplicationConfiguration",
+    reason:
+      "Exempts CIPP from a tenant app management policy that blocks adding client secrets — only used when such a policy is in force.",
+  },
+];
+
+const PermissionTable = ({ rows, typeLabel }) => (
+  <Table size="small" sx={{ "& td, & th": { px: 1, verticalAlign: "top" } }}>
+    <TableHead>
+      <TableRow>
+        <TableCell sx={{ width: "40%" }}>Permission</TableCell>
+        <TableCell>Why it is needed</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {rows.map((row) => (
+        <TableRow key={row.name}>
+          <TableCell>
+            <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
+              {row.name}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {typeLabel}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2">{row.reason}</Typography>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+);
 
 const statusLabels = {
   none: { label: "Not Configured", color: "default" },
@@ -228,6 +302,96 @@ export const CippSSOSettings = () => {
           </Stack>
         ) : (
           <Stack spacing={3}>
+            {/* Expanded by default until SSO works, because that's when someone is looking for
+                "what is this and what do I have to get approved". */}
+            <Accordion
+              disableGutters
+              elevation={0}
+              defaultExpanded={!isProvisioned}
+              sx={{ "&:before": { display: "none" } }}
+            >
+              <AccordionSummary expandIcon={<ExpandMore />} sx={{ px: 0 }}>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  About the CIPP-SSO app registration
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ px: 0 }}>
+                <Stack spacing={2}>
+                  <Typography variant="body2">
+                    CIPP signs users in through an app registration called <strong>CIPP-SSO</strong>{" "}
+                    in your own partner tenant, which puts CIPP sign-in under your Conditional
+                    Access policies, MFA requirements and session controls. The app only proves who
+                    you are — it has no access to any data in your tenant. Everything CIPP does
+                    against Microsoft 365 still runs through the CIPP-SAM app and your GDAP
+                    relationships.
+                  </Typography>
+
+                  <Alert severity="info">
+                    You do <strong>not</strong> need Entra ID Global Administrator to run this
+                    setup, and there is no separate enterprise app for anyone to approve. CIPP
+                    creates the app itself using permissions your tenant consented to when CIPP was
+                    installed. A CIPP superadmin or admin role is all that is required.
+                  </Alert>
+
+                  <div>
+                    <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                      Permissions the CIPP-SSO app requests
+                    </Typography>
+                    <PermissionTable rows={ssoAppPermissions} typeLabel="Delegated · Microsoft Graph" />
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: "block", mt: 1 }}
+                    >
+                      No application (app-only) permissions are requested, so the app can never act
+                      without a signed-in user. None of these scopes grant access to mail, files,
+                      Teams or directory data — they are the standard OpenID Connect sign-in scopes,
+                      classed by Microsoft as low impact. Who can actually reach CIPP is still
+                      controlled by the CIPP Users list.
+                    </Typography>
+                  </div>
+
+                  <div>
+                    <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                      Permissions CIPP uses to create it
+                    </Typography>
+                    <PermissionTable rows={samPermissionsUsed} typeLabel="Application · on CIPP-SAM" />
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: "block", mt: 1 }}
+                    >
+                      These are part of the standard CIPP-SAM permission set and were consented when
+                      CIPP was installed — nothing new is requested during setup. If setup fails on
+                      one of these steps, your CIPP-SAM consent predates that permission and needs
+                      re-consenting from the SAM App Permissions page.
+                    </Typography>
+                  </div>
+
+                  <div>
+                    <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                      If your tenant blocks setup
+                    </Typography>
+                    <Typography variant="body2">
+                      The most common blocker is a tenant app management policy that forbids adding
+                      client secrets. <strong>Repair</strong> retries it, and CIPP will try to exempt
+                      itself from the policy. If it still fails, an Entra administrator can create
+                      the CIPP-SSO app registration by hand and you can store its credentials under{" "}
+                      <strong>Manual configuration</strong> below — the documentation has the exact
+                      settings to use.
+                    </Typography>
+                  </div>
+
+                  <Link href={SSO_DOCS_URL} target="_blank" rel="noopener noreferrer" variant="body2">
+                    Full SSO documentation, including permission justifications for your security
+                    team
+                  </Link>
+                </Stack>
+              </AccordionDetails>
+            </Accordion>
+
+            <Divider />
+
             <Grid container spacing={2} alignItems="center">
               <Grid size={{ xs: 4 }}>
                 <Typography variant="body2" color="text.secondary">
@@ -401,8 +565,13 @@ export const CippSSOSettings = () => {
                 <Stack spacing={2}>
                   <Alert severity="info">
                     Enter an existing Application (client) ID and client secret to store them directly
-                    in Key Vault — for example to rotate the secret by hand or point SSO at a different
-                    app registration. The instance must be restarted for the change to take effect.
+                    in Key Vault — for example to rotate the secret by hand, or to point SSO at an app
+                    registration an Entra administrator created for you because a tenant policy blocks
+                    CIPP from creating one. The instance must be restarted for the change to take
+                    effect.{" "}
+                    <Link href={`${SSO_DOCS_URL}#creating-the-app-registration-manually`} target="_blank" rel="noopener noreferrer">
+                      Settings to use when creating the app manually
+                    </Link>
                   </Alert>
 
                   <CippFormComponent
