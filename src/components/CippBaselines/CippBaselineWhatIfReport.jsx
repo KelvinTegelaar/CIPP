@@ -144,9 +144,12 @@ const WhatIfDocument = ({
     day: 'numeric',
   })
   const changesNow = tenant.rows.filter((row) =>
-    ['Drift', 'Denied - Remediate Pending', 'Denied - Delete Pending'].includes(
-      row.status
-    )
+    [
+      'Drift',
+      'Partially Accepted',
+      'Denied - Remediate Pending',
+      'Denied - Delete Pending',
+    ].includes(row.status)
   )
   const acceptedRows = tenant.rows.filter((row) => row.status === 'Accepted')
   const plannedStages = stageStates.filter((state) => state.nextStage)

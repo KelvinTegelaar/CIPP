@@ -17,6 +17,8 @@ import { AutoFixHigh, Delete, ExpandMore } from '@mui/icons-material'
 import { useWatch } from 'react-hook-form'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import CippBaselineStandardSettings from './CippBaselineStandardSettings'
+import { useM365Licenses } from '../../utils/m365-licenses-data'
+import { getServicePlanFriendlyName } from '../../utils/get-cipp-service-plan-name'
 
 const impactColors = {
   'Low Impact': 'info',
@@ -77,6 +79,14 @@ export const CippBaselineStandardItem = ({
     : null
   const watched = useWatch({ control: formControl.control, name: fieldBase })
   const variableEntries = Object.entries(standard.variables ?? {})
+  // The license catalog loads as an async chunk; this re-renders once it lands so
+  // the required-license chip shows friendly names instead of service plan codes.
+  useM365Licenses()
+  const requiredLicenseNames = [
+    ...new Set(
+      (standard.requiredCapabilities ?? []).map(getServicePlanFriendlyName)
+    ),
+  ]
 
   // Seed the action posture when the standard is first added; the settings fields seed
   // themselves (recommended value first) inside CippBaselineStandardSettings.
@@ -249,13 +259,15 @@ export const CippBaselineStandardItem = ({
             {(standard.tag ?? []).map((tag) => (
               <Chip key={tag} variant="outlined" size="small" label={tag} />
             ))}
-            {(standard.requiredCapabilities ?? []).length > 0 && (
-              <Tooltip title="Tenants without one of these licenses are excluded from scoring for this standard">
+            {requiredLicenseNames.length > 0 && (
+              <Tooltip
+                title={`Tenants without one of these licenses are excluded from scoring for this standard (${(standard.requiredCapabilities ?? []).join(', ')})`}
+              >
                 <Chip
                   variant="outlined"
                   size="small"
                   color="warning"
-                  label={`Requires: ${standard.requiredCapabilities.join(' or ')}`}
+                  label={`Requires: ${requiredLicenseNames.join(' or ')}`}
                 />
               </Tooltip>
             )}

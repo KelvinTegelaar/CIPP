@@ -624,6 +624,7 @@ export const getCippFormatting = (
       compliant: 'success',
       drift: 'error',
       accepted: 'info',
+      'partially accepted': 'warning',
       'denied - remediate pending': 'warning',
       'denied - delete pending': 'warning',
       'skipped - no license': 'default',
