@@ -107,6 +107,14 @@ const buildEditorStages = (templateDefinition) =>
   ).map((stage) => ({
     name: stage.name,
     standards: [...stage.standards],
+    // Saved per-instance configuration (variables + action posture) keyed by
+    // instance key, so the stage form can seed fields with what was saved.
+    standardConfigs: Object.fromEntries(
+      (stage.standardsConfig ?? []).map((config) => [
+        config.instance ?? config.standard,
+        config,
+      ])
+    ),
     conditionIds: stage.conditions.map((condition, index) => `c${index + 1}`),
     conditionDefaults: Object.fromEntries(
       stage.conditions.map((condition, index) => [
@@ -493,6 +501,7 @@ const StagePanel = ({
               key={instanceKey}
               standard={standard}
               instanceId={instanceKey}
+              savedConfig={stage.standardConfigs?.[instanceKey]}
               formControl={formControl}
               expanded={expandedStandard === instanceKey}
               onToggle={() =>
@@ -652,6 +661,7 @@ const Page = () => {
       {
         name: `Stage ${prev.length + 1}`,
         standards: [],
+        standardConfigs: {},
         conditionIds: ['c1'],
         conditionDefaults: {
           c1: toConditionDefaults({ type: 'time', days: 7 }),
@@ -676,6 +686,7 @@ const Page = () => {
         {
           name: `${source.name} (Copy)`,
           standards: [...source.standards],
+          standardConfigs: { ...source.standardConfigs },
           conditionIds: [...source.conditionIds],
           conditionDefaults: { ...source.conditionDefaults },
           logic: source.logic,

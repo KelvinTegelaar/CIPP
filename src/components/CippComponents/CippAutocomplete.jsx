@@ -401,7 +401,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           )
         }
         isOptionEqualToValue={(option, val) => option.value === val.value}
-        value={typeof value === 'string' ? { label: value, value: value } : value}
+        value={typeof value === 'string' ? lookupOptionByValue(value) : value}
         filterSelectedOptions
         disableClearable={disableClearable}
         multiple={multiple}

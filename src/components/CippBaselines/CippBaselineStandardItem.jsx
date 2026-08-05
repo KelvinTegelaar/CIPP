@@ -71,6 +71,7 @@ export const CippBaselineStandardItem = ({
   onToggle,
   onRemove,
   instanceId,
+  savedConfig,
 }) => {
   // Multi-instance standards use 'Name#<id>' keys so each instance keeps its own config.
   // Legacy keys were positional counters; new ones are opaque ids - only number the
@@ -102,18 +103,23 @@ export const CippBaselineStandardItem = ({
     ),
   ]
 
-  // Seed the action posture when the standard is first added; the settings fields seed
-  // themselves (recommended value first) inside CippBaselineStandardSettings.
+  // Seed the action posture: saved configuration (editing an existing baseline) wins,
+  // then the defaults for a freshly added standard. The settings fields seed themselves
+  // (saved value > recommended) inside CippBaselineStandardSettings.
   useEffect(() => {
-    if (formControl.getValues(`${fieldBase}.remediateEnabled`) === undefined) {
-      formControl.setValue(`${fieldBase}.remediateEnabled`, true)
+    const postureDefaults = {
+      remediateEnabled: true,
+      alertEnabled: true,
+      alertOnRemediate: false,
     }
-    if (formControl.getValues(`${fieldBase}.alertEnabled`) === undefined) {
-      formControl.setValue(`${fieldBase}.alertEnabled`, true)
-    }
-    if (formControl.getValues(`${fieldBase}.alertOnRemediate`) === undefined) {
-      formControl.setValue(`${fieldBase}.alertOnRemediate`, false)
-    }
+    Object.entries(postureDefaults).forEach(([field, fallback]) => {
+      if (formControl.getValues(`${fieldBase}.${field}`) === undefined) {
+        formControl.setValue(
+          `${fieldBase}.${field}`,
+          savedConfig?.[field] ?? fallback
+        )
+      }
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fieldBase])
 
@@ -304,6 +310,7 @@ export const CippBaselineStandardItem = ({
                 standard={standard}
                 formControl={formControl}
                 namePrefix={`${fieldBase}.variables`}
+                initialValues={savedConfig?.variables}
               />
             </>
           ) : (
