@@ -1,12 +1,4 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Stack,
-  Typography,
-} from '@mui/material'
+import { Box, Card, CardContent, CardHeader, Divider, Stack, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import Link from 'next/link'
 import { Button } from '@mui/material'
@@ -31,12 +23,8 @@ import {
 
 /** Card shell that renders its own fetch error inline rather than blanking the section. */
 const DashboardCard = ({ title, subheader, api, children, action }) => {
-  const isError = Array.isArray(api)
-    ? api.some((item) => item?.isError)
-    : api?.isError
-  const error = Array.isArray(api)
-    ? api.find((item) => item?.isError)?.error
-    : api?.error
+  const isError = Array.isArray(api) ? api.some((item) => item?.isError) : api?.isError
+  const error = Array.isArray(api) ? api.find((item) => item?.isError)?.error : api?.error
 
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -50,11 +38,7 @@ const DashboardCard = ({ title, subheader, api, children, action }) => {
       <Divider />
       <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {isError ? (
-          <Typography
-            variant="body2"
-            color="error"
-            sx={{ py: 2, textAlign: 'center' }}
-          >
+          <Typography variant="body2" color="error" sx={{ py: 2, textAlign: 'center' }}>
             {getCippError(error)}
           </Typography>
         ) : (
@@ -86,21 +70,20 @@ export const AllTenantsDashboard = () => {
   } = useAllTenantsDashboard()
 
   // Four items exactly — CippInfoBar lays out md:3 across and its divider rules target the 3rd and
-  // 4th cells. The collections that don't fit hang off the first item's off-canvas.
+  // 4th cells. Each tile links to the list page behind its number.
+  const scaleLinks = {
+    Users: '/identity/administration/users',
+    Mailboxes: '/email/administration/mailboxes',
+    'Managed devices': '/endpoint/MEM/devices',
+  }
+
   const portfolioBarItems = [
     {
       name: 'Tenants',
       data: tenantCount.toLocaleString(),
       icon: <BuildingOffice2Icon />,
-      toolTip:
-        'Tenants under management. Select for every cached collection total.',
-      offcanvas: {
-        title: 'Cached collection totals',
-        propertyItems: cache.allTotals.map((item) => ({
-          label: item.type,
-          value: item.value.toLocaleString(),
-        })),
-      },
+      toolTip: 'Tenants under management. Select to open the tenant list.',
+      link: '/tenant/administration/tenants',
     },
     ...cache.scale.map((item) => ({
       name: item.label,
@@ -113,7 +96,8 @@ export const AllTenantsDashboard = () => {
         ) : (
           <DevicePhoneMobileIcon />
         ),
-      toolTip: `${item.average.toLocaleString()} per tenant on average`,
+      toolTip: `${item.average.toLocaleString()} per tenant on average. Select to open the list.`,
+      link: scaleLinks[item.label],
     })),
   ]
 
@@ -137,23 +121,15 @@ export const AllTenantsDashboard = () => {
           data={portfolioBarItems}
         />
         {!countsApi.isLoading && !cache.hasData && (
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ mt: 1.5, display: 'block' }}
-          >
-            No cached collections were returned. The nightly cache job may not
-            have run yet.
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 1.5, display: 'block' }}>
+            No cached collections were returned. The nightly cache job may not have run yet.
           </Typography>
         )}
       </Box>
 
       {/* ------------------------------------------------------------ security */}
       <Box>
-        <AllTenantsBandHeading
-          title="Security posture"
-          description="How the estate is trending"
-        />
+        <AllTenantsBandHeading title="Security posture" description="How the estate is trending" />
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, lg: 5 }}>
             <DashboardCard
@@ -161,51 +137,38 @@ export const AllTenantsDashboard = () => {
               subheader="Portfolio average, from the nightly cache"
               api={secureScoreApi}
             >
-              <Stack
-                direction="row"
-                spacing={3}
-                alignItems="baseline"
-                sx={{ mb: 2 }}
-              >
+              <Stack direction="row" spacing={3} alignItems="baseline" sx={{ mb: 2 }}>
                 <Box>
-                  <Typography
-                    variant="h4"
-                    sx={{ fontVariantNumeric: 'tabular-nums' }}
-                  >
+                  <Typography variant="h4" sx={{ fontVariantNumeric: 'tabular-nums' }}>
                     {secureScore.average}%
                   </Typography>
                   <Typography variant="caption" color="text.disabled">
                     across {secureScore.scored} tenants
                   </Typography>
                 </Box>
-                {secureScore.delta !== null &&
-                  secureScore.delta !== undefined && (
-                    <Box>
-                      <Typography
-                        variant="subtitle2"
-                        sx={{
-                          fontVariantNumeric: 'tabular-nums',
-                          color: severityColor(
-                            secureScore.delta > 0
-                              ? 'ok'
-                              : secureScore.delta < 0
-                                ? 'critical'
-                                : 'neutral'
-                          ),
-                        }}
-                      >
-                        {secureScore.delta > 0
-                          ? '▲'
-                          : secureScore.delta < 0
-                            ? '▼'
-                            : '■'}{' '}
-                        {Math.abs(secureScore.delta)} pts
-                      </Typography>
-                      <Typography variant="caption" color="text.disabled">
-                        over {secureScore.trend.length} days
-                      </Typography>
-                    </Box>
-                  )}
+                {secureScore.delta !== null && secureScore.delta !== undefined && (
+                  <Box>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontVariantNumeric: 'tabular-nums',
+                        color: severityColor(
+                          secureScore.delta > 0
+                            ? 'ok'
+                            : secureScore.delta < 0
+                              ? 'critical'
+                              : 'neutral'
+                        ),
+                      }}
+                    >
+                      {secureScore.delta > 0 ? '▲' : secureScore.delta < 0 ? '▼' : '■'}{' '}
+                      {Math.abs(secureScore.delta)} pts
+                    </Typography>
+                    <Typography variant="caption" color="text.disabled">
+                      over {secureScore.trend.length} days
+                    </Typography>
+                  </Box>
+                )}
               </Stack>
 
               {secureScore.scored > 0 ? (
@@ -215,28 +178,16 @@ export const AllTenantsDashboard = () => {
                       points={secureScore.trend}
                       isFetching={secureScoreApi.isLoading}
                       severity={
-                        secureScore.delta < 0
-                          ? 'critical'
-                          : secureScore.delta > 0
-                            ? 'ok'
-                            : 'info'
+                        secureScore.delta < 0 ? 'critical' : secureScore.delta > 0 ? 'ok' : 'info'
                       }
                     />
                   </Box>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    sx={{ mb: 2 }}
-                  >
+                  <Stack direction="row" justifyContent="space-between" sx={{ mb: 2 }}>
                     <Box sx={{ minWidth: 0, pr: 1 }}>
                       <Typography variant="caption" color="text.disabled">
                         Best
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        noWrap
-                        title={secureScore.best?.name}
-                      >
+                      <Typography variant="body2" noWrap title={secureScore.best?.name}>
                         {secureScore.best?.name}
                       </Typography>
                       <Typography
@@ -253,11 +204,7 @@ export const AllTenantsDashboard = () => {
                       <Typography variant="caption" color="text.disabled">
                         Worst
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        noWrap
-                        title={secureScore.worst?.name}
-                      >
+                      <Typography variant="body2" noWrap title={secureScore.worst?.name}>
                         {secureScore.worst?.name}
                       </Typography>
                       <Typography
@@ -346,16 +293,16 @@ export const AllTenantsDashboard = () => {
           <Grid size={{ xs: 12, lg: 3 }}>
             <DashboardCard
               title="Mail hygiene"
-              subheader={
-                mail.total ? `${mail.total} domains` : 'Domain analyser results'
-              }
+              subheader={mail.total ? `${mail.total} domains` : 'Domain analyser results'}
               api={domainsApi}
+              action={
+                <Button component={Link} href="/tenant/standards/domains-analyser" size="small">
+                  View
+                </Button>
+              }
             >
               {mail.meters.length ? (
-                <AllTenantsMeterList
-                  meters={mail.meters}
-                  isFetching={domainsApi.isLoading}
-                />
+                <AllTenantsMeterList meters={mail.meters} isFetching={domainsApi.isLoading} />
               ) : (
                 !domainsApi.isLoading && (
                   <Typography variant="body2" color="text.secondary">
@@ -371,26 +318,14 @@ export const AllTenantsDashboard = () => {
               subheader="Tenants bucketed by combined alignment score"
               api={alignmentApi}
               action={
-                <Button
-                  component={Link}
-                  href="/tenant/standards/alignment"
-                  size="small"
-                >
+                <Button component={Link} href="/tenant/standards/alignment" size="small">
                   View
                 </Button>
               }
             >
-              <Stack
-                direction="row"
-                spacing={3}
-                alignItems="center"
-                sx={{ mb: 2 }}
-              >
+              <Stack direction="row" spacing={3} alignItems="center" sx={{ mb: 2 }}>
                 <Box>
-                  <Typography
-                    variant="h4"
-                    sx={{ fontVariantNumeric: 'tabular-nums' }}
-                  >
+                  <Typography variant="h4" sx={{ fontVariantNumeric: 'tabular-nums' }}>
                     {alignment.average}%
                   </Typography>
                   <Typography variant="caption" color="text.disabled">
@@ -405,9 +340,7 @@ export const AllTenantsDashboard = () => {
                 rows={alignmentBuckets.map((bucket) => ({
                   label: bucket.label,
                   total: bucket.value,
-                  segments: [
-                    { value: bucket.value, severity: bucket.severity },
-                  ],
+                  segments: [{ value: bucket.value, severity: bucket.severity }],
                 }))}
               />
               {alignment.lowest.length > 0 && (
@@ -431,9 +364,7 @@ export const AllTenantsDashboard = () => {
                           sx={{
                             fontVariantNumeric: 'tabular-nums',
                             fontWeight: 600,
-                            color: severityColor(
-                              item.score < 50 ? 'critical' : 'warning'
-                            ),
+                            color: severityColor(item.score < 50 ? 'critical' : 'warning'),
                           }}
                         >
                           {item.score}%
@@ -463,6 +394,7 @@ export const AllTenantsDashboard = () => {
               value={logs.tenantCount}
               label="Tenants logging errors today"
               meta={`${logs.total} entries · Error or Critical`}
+              link="/cipp/logs"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -472,6 +404,7 @@ export const AllTenantsDashboard = () => {
               value={delegation.expiringSoon}
               label="Delegations expiring within 30 days"
               meta={`${delegation.noAutoExtendSoon} without auto-extend`}
+              link="/tenant/gdap-management/relationships"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -490,6 +423,7 @@ export const AllTenantsDashboard = () => {
               value={alignment.pendingDeviations}
               label="Standards deviations awaiting approval"
               meta={`${alignment.pendingTenantCount} tenants`}
+              link="/tenant/standards/alignment"
             />
           </Grid>
         </Grid>
@@ -533,30 +467,22 @@ export const AllTenantsDashboard = () => {
                   {
                     label: '0 – 7 days',
                     total: delegation.buckets.week,
-                    segments: [
-                      { value: delegation.buckets.week, severity: 'critical' },
-                    ],
+                    segments: [{ value: delegation.buckets.week, severity: 'critical' }],
                   },
                   {
                     label: '8 – 30 days',
                     total: delegation.buckets.month,
-                    segments: [
-                      { value: delegation.buckets.month, severity: 'warning' },
-                    ],
+                    segments: [{ value: delegation.buckets.month, severity: 'warning' }],
                   },
                   {
                     label: '31 – 90 days',
                     total: delegation.buckets.quarter,
-                    segments: [
-                      { value: delegation.buckets.quarter, severity: 'info' },
-                    ],
+                    segments: [{ value: delegation.buckets.quarter, severity: 'info' }],
                   },
                   {
                     label: 'Over 90 days',
                     total: delegation.buckets.healthy,
-                    segments: [
-                      { value: delegation.buckets.healthy, severity: 'ok' },
-                    ],
+                    segments: [{ value: delegation.buckets.healthy, severity: 'ok' }],
                   },
                 ]}
               />

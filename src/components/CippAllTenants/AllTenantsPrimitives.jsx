@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import Link from 'next/link'
 import {
   Area,
   AreaChart,
@@ -29,8 +30,7 @@ export const SEVERITY_COLORS = {
   neutral: 'divider',
 }
 
-export const severityColor = (severity) =>
-  SEVERITY_COLORS[severity] ?? SEVERITY_COLORS.neutral
+export const severityColor = (severity) => SEVERITY_COLORS[severity] ?? SEVERITY_COLORS.neutral
 
 const CHIP_COLOR = {
   critical: 'error',
@@ -42,7 +42,8 @@ const CHIP_COLOR = {
 
 /**
  * KPI tile with a severity stripe down the left edge, so the thing needing attention reads at a
- * glance without parsing the number first.
+ * glance without parsing the number first. Pass `link` to make the whole tile navigate to the page
+ * where the number can be dug into.
  */
 export const AllTenantsStatTile = ({
   value,
@@ -50,51 +51,56 @@ export const AllTenantsStatTile = ({
   meta,
   severity = 'neutral',
   isFetching,
-}) => (
-  <Card
-    sx={{
-      height: '100%',
-      p: 2,
-      borderLeft: 3,
-      borderLeftColor: severityColor(severity),
-    }}
-  >
-    <Typography
-      variant="h4"
+  link,
+}) => {
+  const tile = (
+    <Card
       sx={{
-        fontVariantNumeric: 'tabular-nums',
-        lineHeight: 1.1,
-        color:
-          severity === 'neutral' ? 'text.primary' : severityColor(severity),
+        height: '100%',
+        p: 2,
+        borderLeft: 3,
+        borderLeftColor: severityColor(severity),
+        ...(link && {
+          cursor: 'pointer',
+          '&:hover': { backgroundColor: 'action.hover' },
+        }),
       }}
     >
-      {isFetching ? <Skeleton width={64} /> : value}
-    </Typography>
-    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-      {isFetching ? <Skeleton width="80%" /> : label}
-    </Typography>
-    {(meta || isFetching) && (
       <Typography
-        variant="caption"
-        color="text.disabled"
-        sx={{ display: 'block', mt: 0.5 }}
+        variant="h4"
+        sx={{
+          fontVariantNumeric: 'tabular-nums',
+          lineHeight: 1.1,
+          color: severity === 'neutral' ? 'text.primary' : severityColor(severity),
+        }}
       >
-        {isFetching ? <Skeleton width="45%" /> : meta}
+        {isFetching ? <Skeleton width={64} /> : value}
       </Typography>
-    )}
-  </Card>
-)
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+        {isFetching ? <Skeleton width="80%" /> : label}
+      </Typography>
+      {(meta || isFetching) && (
+        <Typography variant="caption" color="text.disabled" sx={{ display: 'block', mt: 0.5 }}>
+          {isFetching ? <Skeleton width="45%" /> : meta}
+        </Typography>
+      )}
+    </Card>
+  )
+
+  if (!link) return tile
+
+  return (
+    <Link href={link} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+      {tile}
+    </Link>
+  )
+}
 
 /**
  * Rows of `label — stacked bar — value`. Segments are drawn proportionally to `max` so bars stay
  * comparable across rows rather than each normalising to its own total.
  */
-export const AllTenantsBarList = ({
-  rows = [],
-  max,
-  isFetching,
-  emptyText = 'No data',
-}) => {
+export const AllTenantsBarList = ({ rows = [], max, isFetching, emptyText = 'No data' }) => {
   if (isFetching) {
     return (
       <Stack spacing={1.5}>
@@ -107,11 +113,7 @@ export const AllTenantsBarList = ({
 
   if (!rows.length) {
     return (
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ py: 2, textAlign: 'center' }}
-      >
+      <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
         {emptyText}
       </Typography>
     )
@@ -131,12 +133,7 @@ export const AllTenantsBarList = ({
             alignItems: 'center',
           }}
         >
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            noWrap
-            title={row.label}
-          >
+          <Typography variant="body2" color="text.secondary" noWrap title={row.label}>
             {row.label}
           </Typography>
           <Box
@@ -149,10 +146,7 @@ export const AllTenantsBarList = ({
             }}
           >
             {(row.segments ?? []).map((segment, index) => (
-              <Tooltip
-                key={index}
-                title={`${segment.label ?? ''} ${segment.value}`.trim()}
-              >
+              <Tooltip key={index} title={`${segment.label ?? ''} ${segment.value}`.trim()}>
                 <Box
                   sx={{
                     width: `${((segment.value ?? 0) / scale) * 100}%`,
@@ -182,11 +176,7 @@ export const AllTenantsBarList = ({
  * Severity-striped rows with an optional status chip. Used wherever a card is a short worklist
  * rather than a chart.
  */
-export const AllTenantsRowList = ({
-  rows = [],
-  isFetching,
-  emptyText = 'Nothing to report',
-}) => {
+export const AllTenantsRowList = ({ rows = [], isFetching, emptyText = 'Nothing to report' }) => {
   if (isFetching) {
     return (
       <Stack spacing={0.5}>
@@ -199,11 +189,7 @@ export const AllTenantsRowList = ({
 
   if (!rows.length) {
     return (
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ py: 2, textAlign: 'center' }}
-      >
+      <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
         {emptyText}
       </Typography>
     )
@@ -227,12 +213,7 @@ export const AllTenantsRowList = ({
           }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography
-              variant="subtitle2"
-              component="div"
-              noWrap
-              title={row.name}
-            >
+            <Typography variant="subtitle2" component="div" noWrap title={row.name}>
               {row.name}
             </Typography>
             {row.detail && (
@@ -281,11 +262,7 @@ export const AllTenantsMeterList = ({ meters = [], isFetching }) => {
     <Stack spacing={2}>
       {meters.map((meter) => (
         <Box key={meter.label}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="baseline"
-          >
+          <Stack direction="row" justifyContent="space-between" alignItems="baseline">
             <Typography variant="body2" color="text.secondary">
               {meter.label}
             </Typography>
@@ -380,17 +357,9 @@ export const AllTenantsTrendChart = ({
     <Box sx={{ height }}>
       {/* numeric height, recharts warns before its first measure when both sizes are percentages */}
       <ResponsiveContainer width="100%" height={height}>
-        <AreaChart
-          data={points}
-          margin={{ left: 0, right: 8, top: 8, bottom: 0 }}
-        >
+        <AreaChart data={points} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
-          <XAxis
-            dataKey="date"
-            tick={{ fontSize: 10 }}
-            tickMargin={6}
-            minTickGap={24}
-          />
+          <XAxis dataKey="date" tick={{ fontSize: 10 }} tickMargin={6} minTickGap={24} />
           <YAxis
             domain={[min, max]}
             tick={{ fontSize: 10 }}
