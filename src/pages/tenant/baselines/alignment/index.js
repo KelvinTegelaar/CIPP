@@ -356,6 +356,24 @@ const Page = () => {
 
   const tenantActions = [
     {
+      label: 'Compare Now',
+      type: 'POST',
+      url: '/api/ExecBaselineRun',
+      icon: <Compare />,
+      color: 'info',
+      data: {
+        mode: '!compare',
+        tenantFilter: 'tenantFilter',
+        standard: 'standardName',
+      },
+      confirmText:
+        'Run a compare-only pass of [standardLabel] against [tenantFilter]? No changes will be made.',
+      multiPost: false,
+      relatedQueryKeys,
+      // Compare applies to manual tasks too: it re-evaluates the completion recurrence,
+      // flipping a task back to Drift once its reopen window has elapsed.
+    },
+    {
       label: 'Remediate Now',
       type: 'POST',
       url: '/api/ExecBaselineRun',
@@ -373,25 +391,6 @@ const Page = () => {
       // Running remediation by hand is always possible - the engine deploys the expected
       // value regardless of the current state, and a license bought after the last run
       // should not block trying. Manual tasks have nothing to deploy.
-      condition: (row) => !row.standardName.startsWith('ManualTask'),
-      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
-      bulkFilterEligible: true,
-    },
-    {
-      label: 'Compare Now',
-      type: 'POST',
-      url: '/api/ExecBaselineRun',
-      icon: <Compare />,
-      color: 'info',
-      data: {
-        mode: '!compare',
-        tenantFilter: 'tenantFilter',
-        standard: 'standardName',
-      },
-      confirmText:
-        'Run a compare-only pass of [standardLabel] against [tenantFilter]? No changes will be made.',
-      multiPost: false,
-      relatedQueryKeys,
       condition: (row) => !row.standardName.startsWith('ManualTask'),
       hideCondition: (row) => row.standardName.startsWith('ManualTask'),
       bulkFilterEligible: true,
@@ -620,13 +619,20 @@ const Page = () => {
     children: (row) => {
       // The offcanvas renders with an empty row until one is selected. Rows without
       // collected data (No Data) have nothing to diff against.
-      const differences = row.currentValue
-        ? Object.keys(row.expectedValue ?? {}).filter(
-            (key) =>
-              JSON.stringify(row.expectedValue[key]) !==
-              JSON.stringify(row.currentValue?.[key])
-          )
-        : []
+      // Per-property drift comes from the ENGINE's persisted diff - the frontend never
+      // re-derives compares, so $anyOf/hard-compare/acceptance semantics live in exactly
+      // one place. A diff Property may be a nested dot-path under a top-level key.
+      const diffEntries = Array.isArray(row.diff)
+        ? row.diff
+        : row.diff
+          ? [row.diff]
+          : []
+      const differences = Object.keys(row.expectedValue ?? {}).filter((key) =>
+        diffEntries.some(
+          (entry) =>
+            entry?.Property === key || entry?.Property?.startsWith(`${key}.`)
+        )
+      )
       const properties = [
         { label: 'Standard', value: row.standardLabel },
         {
@@ -745,6 +751,65 @@ const Page = () => {
               When multiple baselines configure the same standard, the baseline
               with the most specific assignment wins.
             </Typography>
+            {(row.manual?.taskName || row.manual?.instructions) && (
+              <>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: 600,
+                    color: 'text.secondary',
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  Manual Task
+                </Typography>
+                <Box
+                  sx={{
+                    p: 1.5,
+                    borderRadius: '12px',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper',
+                  }}
+                >
+                  {row.manual.taskName && (
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                      {row.manual.taskName}
+                    </Typography>
+                  )}
+                  {row.manual.instructions && (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.5, whiteSpace: 'pre-wrap' }}
+                    >
+                      {row.manual.instructions}
+                    </Typography>
+                  )}
+                  {row.manual.documentationUrl && (
+                    <Link
+                      href={row.manual.documentationUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      variant="caption"
+                      sx={{ display: 'inline-block', mt: 1 }}
+                    >
+                      Open documentation
+                    </Link>
+                  )}
+                  {row.manual.reopen && row.manual.reopen !== 'once' && (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: 'block', mt: 1 }}
+                    >
+                      Reopens {row.manual.reopen} after completion.
+                    </Typography>
+                  )}
+                </Box>
+              </>
+            )}
             <Typography
               variant="caption"
               sx={{
