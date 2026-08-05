@@ -115,10 +115,6 @@ export const CippBaselineStandardItem = ({
     ([, definition]) =>
       definition.recommended !== undefined && !definition.locked
   )
-  const differsFromRecommended = recommendedEntries.some(
-    ([key, definition]) =>
-      unwrap(watched?.variables?.[key]) !== definition.recommended
-  )
 
   const applyRecommended = () => {
     recommendedEntries.forEach(([key, definition]) => {
@@ -166,14 +162,6 @@ export const CippBaselineStandardItem = ({
             justifyContent="flex-end"
             sx={{ minWidth: 0 }}
           >
-            {differsFromRecommended && (
-              <Chip
-                variant="outlined"
-                size="small"
-                color="warning"
-                label="Differs from recommended"
-              />
-            )}
             <Tooltip
               title={
                 remediateEnabled
@@ -317,7 +305,7 @@ export const CippBaselineStandardItem = ({
               <CippFormComponent
                 type="switch"
                 name={`${fieldBase}.remediateEnabled`}
-                label="Auto-remediate on drift"
+                label="Automatically fix this when the setting drifts"
                 formControl={formControl}
               />
             </Grid>

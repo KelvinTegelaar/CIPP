@@ -26,6 +26,7 @@ import { CippChartCard } from '../../../components/CippCards/CippChartCard'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { ApiGetCall } from '../../../api/ApiCall'
 import { ResourceUnavailable } from '../../../components/resource-unavailable'
+import { useSettings } from '../../../hooks/use-settings'
 
 // CippChartCard shows a skeleton while its series is empty; once the query settles with no
 // data (no baseline runs yet) we show a real empty state instead of a permanent skeleton.
@@ -43,6 +44,7 @@ const asArray = (value) => (Array.isArray(value) ? value : value ? [value] : [])
 const Page = () => {
   const pageTitle = 'Fleet Overview'
   const router = useRouter()
+  const settings = useSettings()
 
   const aggregate = ApiGetCall({
     url: '/api/ListBaselineAlignment',
@@ -176,9 +178,14 @@ const Page = () => {
                     {tenantsNeedingAttention.map((tenant) => (
                       <Box
                         key={tenant.tenantFilter}
-                        onClick={() =>
+                        onClick={() => {
+                          // Land on the alignment page AS this tenant, not whatever
+                          // tenant the global selector happened to hold.
+                          settings.handleUpdate({
+                            currentTenant: tenant.tenantFilter,
+                          })
                           router.push('/tenant/baselines/alignment')
-                        }
+                        }}
                         sx={{ cursor: 'pointer' }}
                       >
                         <Stack

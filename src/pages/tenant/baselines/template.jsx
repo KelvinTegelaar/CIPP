@@ -172,7 +172,7 @@ const StagePanel = ({
       value: false,
     },
     {
-      label: 'Auto-remediate on drift',
+      label: 'Automatically fix when settings drift',
       field: 'remediateEnabled',
       value: true,
     },
