@@ -26,6 +26,7 @@ import {
 } from '@mui/lab'
 import { Grid } from '@mui/system'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 import {
   BuildingOfficeIcon,
   CheckBadgeIcon,
@@ -58,6 +59,7 @@ import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import tabOptions from '../tabOptions.json'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import { CippQueueTracker } from '../../../../components/CippTable/CippQueueTracker'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
@@ -158,11 +160,13 @@ const outcomeTimeline = {
     color: 'grey',
     chipColor: 'default',
     icon: <InfoOutlined />,
+    label: 'Skipped - No Data',
   },
   'Skipped-License': {
     color: 'grey',
     chipColor: 'default',
     icon: <InfoOutlined />,
+    label: 'Skipped - No License',
   },
 }
 
@@ -248,6 +252,7 @@ const jsonBox = (value, isCompliant) => (
 
 const Page = () => {
   const pageTitle = 'Baseline Alignment'
+  const router = useRouter()
   const currentTenant = useSettings().currentTenant
   const [viewMode, setViewMode] = useState('tenant')
   const [advanceTarget, setAdvanceTarget] = useState(null)
@@ -277,8 +282,26 @@ const Page = () => {
 
   // Refetch everything baseline-related after any triage/run/override action:
   // the wildcard invalidates every ListBaseline* query, including the '-table'
-  // keys the table instances register.
-  const relatedQueryKeys = ['ListBaseline*']
+  // keys the table instances register. The queue key re-discovers the run a
+  // Compare/Remediate/Run action just started, so the progress tracker appears.
+  const relatedQueryKeys = ['ListBaseline*', 'ListCippQueue-BaselineRun']
+
+  // Live run progress: baseline runs tag their queue entry with this reference;
+  // the newest one drives the tracker chip next to the view toggle.
+  const baselineQueues = ApiGetCall({
+    url: '/api/ListCippQueue',
+    data: { Reference: 'BaselineRun' },
+    queryKey: 'ListCippQueue-BaselineRun',
+  })
+  const latestBaselineQueueId = Array.isArray(baselineQueues.data)
+    ? baselineQueues.data[0]?.RowKey
+    : baselineQueues.data?.RowKey
+
+  // Deep link support: /tenant/baselines/alignment?status=Drift lands with the
+  // table pre-filtered (the Fleet Overview tiles link here).
+  const initialStatusFilter = router.query.status
+    ? [{ id: 'status', value: router.query.status }]
+    : []
 
   const resolvedApi = ApiGetCall({
     url: '/api/ListBaselineAlignment',
@@ -385,7 +408,7 @@ const Page = () => {
         standard: 'standardName',
       },
       confirmText:
-        'Deploy the expected value of [standardLabel] to [tenantFilter]? This runs a one-off remediation from the configured expected value.',
+        'Fix [standardLabel] on [tenantFilter] now? CIPP immediately applies the configured expected value.',
       multiPost: false,
       relatedQueryKeys,
       // Running remediation by hand is always possible - the engine deploys the expected
@@ -419,7 +442,7 @@ const Page = () => {
       bulkFilterEligible: true,
     },
     {
-      label: 'Deny Deviation',
+      label: 'Deny & Fix Deviation',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
       icon: <Cancel />,
@@ -441,7 +464,7 @@ const Page = () => {
         </Stack>
       ),
       confirmText:
-        'Deny the deviation on [standardLabel]? The engine remediates it back to the baseline on the next run, regardless of the configured posture.',
+        'Deny the deviation on [standardLabel]? CIPP fixes it back to the baseline on the next run (within 12 hours), regardless of the configured posture.',
       multiPost: false,
       relatedQueryKeys,
       condition: (row) =>
@@ -451,7 +474,7 @@ const Page = () => {
       bulkFilterEligible: true,
     },
     {
-      label: 'Clear Triage Status',
+      label: 'Undo Accept/Deny',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
       icon: <RemoveCircle />,
@@ -1408,7 +1431,7 @@ const Page = () => {
   )
 
   const rolloutCard = (
-    <CippButtonCard title={`Assigned Templates - ${tenant.displayName}`}>
+    <CippButtonCard title={`Assigned Baselines - ${tenant.displayName}`}>
       {stageStates.length === 0 && (
         <Typography variant="body2" color="text.secondary">
           No baselines are assigned to this tenant.
@@ -1824,7 +1847,7 @@ const Page = () => {
                                 flexWrap="wrap"
                               >
                                 <Chip
-                                  label={event.outcome}
+                                  label={timelineConfig.label ?? event.outcome}
                                   color={timelineConfig.chipColor}
                                   size="small"
                                   variant="outlined"
@@ -1957,12 +1980,19 @@ const Page = () => {
               justifyContent="space-between"
             >
               {modeToggle}
-              <CippBaselineWhatIfReport
-                tenant={tenant}
-                stageStates={stageStates}
-                baselines={baselines}
-                catalog={catalog}
-              />
+              <Stack direction="row" spacing={1} alignItems="center">
+                <CippQueueTracker
+                  queueId={latestBaselineQueueId}
+                  queryKey={`ListBaselineAlignment-${currentTenant}`}
+                  title="Baseline Run"
+                />
+                <CippBaselineWhatIfReport
+                  tenant={tenant}
+                  stageStates={stageStates}
+                  baselines={baselines}
+                  catalog={catalog}
+                />
+              </Stack>
             </Stack>
             {tenantScoreBar}
             {rolloutCard}
@@ -1974,7 +2004,7 @@ const Page = () => {
               actions={tenantActions}
               offCanvas={tenantOffCanvas}
               offCanvasOnRowClick={true}
-              filters={tenantFilterList}
+              filters={[...initialStatusFilter, ...tenantFilterList]}
               simpleColumns={[
                 'standardLabel',
                 'category',

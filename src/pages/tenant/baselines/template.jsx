@@ -22,10 +22,12 @@ import {
 import { Grid } from '@mui/system'
 import {
   Add,
+  AutoFixHigh,
   CheckCircle,
   ContentCopy,
   Delete,
   ExpandMore,
+  PlayArrow,
   RadioButtonUnchecked,
   SaveRounded,
 } from '@mui/icons-material'
@@ -127,6 +129,7 @@ const StagePanel = ({
   onStageNameChange,
   onRemoveStage,
   onOpenDialog,
+  onAddRecommended,
   onRemoveStandard,
   canRemoveStage,
   tenantsInStage,
@@ -479,11 +482,20 @@ const StagePanel = ({
           >
             Add Standards
           </Button>
+          <Tooltip title="Adds every standard recommended by CIS/Microsoft/CIPP that this baseline does not have yet, pre-set to the recommended values">
+            <Button
+              variant="outlined"
+              startIcon={<AutoFixHigh />}
+              onClick={() => onAddRecommended(stageIndex)}
+            >
+              Add all recommended
+            </Button>
+          </Tooltip>
         </Stack>
         {stageStandards.length === 0 && (
           <Typography variant="body2" color="text.secondary">
             No standards in this stage yet. Use Add Standards to browse the
-            catalog.
+            catalog, or Add all recommended for a one-click starting point.
           </Typography>
         )}
         <Stack spacing={1.5}>
@@ -530,6 +542,11 @@ const Page = () => {
   // Saving a baseline invalidates every baseline-related query: the baselines list (direct
   // and table), all alignment views for every tenant, and the standards catalog.
   const saveBaseline = ApiPostCall({
+    relatedQueryKeys: ['ListBaseline*'],
+  })
+  // After a save, the natural next step is seeing where the tenants stand - offer a
+  // no-changes check right away instead of ending the setup flow in silence.
+  const runAfterSave = ApiPostCall({
     relatedQueryKeys: ['ListBaseline*'],
   })
   const customVariablesApi = ApiGetCall({
@@ -725,6 +742,28 @@ const Page = () => {
     setDialogOpen(true)
   }
 
+  // One-click starting point: every recommended catalog standard the baseline does not
+  // carry yet lands in this stage; settings seed themselves with the recommended values.
+  const handleAddRecommended = (stageIndex) =>
+    mutateStages((prev) => {
+      const inUse = new Set(
+        prev.flatMap((stage) => stage.standards.map((key) => key.split('#')[0]))
+      )
+      const additions = catalog
+        .filter(
+          (standard) =>
+            (standard.recommendedBy ?? []).length > 0 &&
+            standard.multiple !== true &&
+            !inUse.has(standard.name)
+        )
+        .map((standard) => standard.name)
+      return prev.map((stage, index) =>
+        index === stageIndex
+          ? { ...stage, standards: [...stage.standards, ...additions] }
+          : stage
+      )
+    })
+
   const stageOccupancy = template?.occupancy ?? []
 
   const registerSerializer = useCallback((index, serialize) => {
@@ -887,6 +926,37 @@ const Page = () => {
         </Stack>
 
         <CippApiResults apiObject={saveBaseline} />
+        {saveBaseline.isSuccess && !runAfterSave.isSuccess && (
+          <Alert
+            severity="success"
+            action={
+              <Button
+                color="inherit"
+                size="small"
+                startIcon={<PlayArrow />}
+                disabled={runAfterSave.isPending}
+                onClick={() =>
+                  runAfterSave.mutate({
+                    url: '/api/ExecBaselineRun',
+                    data: {
+                      mode: 'compare',
+                      templateId:
+                        saveBaseline.data?.data?.Metadata?.id ??
+                        loadedTemplateId,
+                    },
+                  })
+                }
+              >
+                Check tenants now
+              </Button>
+            }
+          >
+            Baseline saved. Want to see where the assigned tenants stand? A
+            check makes no changes - results appear on the Alignment page.
+            Otherwise the schedule picks it up within 12 hours.
+          </Alert>
+        )}
+        <CippApiResults apiObject={runAfterSave} />
 
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, lg: 4 }}>
@@ -1022,6 +1092,7 @@ const Page = () => {
                     onStageNameChange={handleStageNameChange}
                     onRemoveStage={handleRemoveStage}
                     onOpenDialog={handleOpenDialog}
+                    onAddRecommended={handleAddRecommended}
                     onRemoveStandard={handleRemoveStandard}
                     canRemoveStage={index > 0}
                     tenantsInStage={stageOccupancy[index]?.tenants ?? null}

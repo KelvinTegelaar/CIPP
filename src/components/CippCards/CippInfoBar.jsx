@@ -48,7 +48,12 @@ export const CippInfoBar = ({ data, isFetching }) => {
                 },
               }}
             >
-              <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2, minWidth: 0 }}>
+              <Stack
+                alignItems="center"
+                direction="row"
+                spacing={2}
+                sx={{ p: 2, minWidth: 0 }}
+              >
                 {item?.icon && (
                   <SvgIcon
                     color={item.color ? item.color : 'primary'}
@@ -82,7 +87,11 @@ export const CippInfoBar = ({ data, isFetching }) => {
                       </Typography>
                       <Typography
                         variant="h6"
-                        sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                        sx={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
                       >
                         {isFetching ? <Skeleton width={'100%'} /> : item.data}
                       </Typography>
@@ -111,7 +120,11 @@ export const CippInfoBar = ({ data, isFetching }) => {
                     </Typography>
                     <Typography
                       variant="h6"
-                      sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
                     >
                       {isFetching ? <Skeleton width={'100%'} /> : item.data}
                     </Typography>

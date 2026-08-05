@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardHeader,
   Container,
@@ -53,6 +54,17 @@ const Page = () => {
   })
 
   const fleetScore = aggregate.data?.fleet
+  // The baselines list tells first-run apart from "configured but not run yet".
+  const baselinesApi = ApiGetCall({
+    url: '/api/ListBaselines',
+    queryKey: 'ListBaselines',
+  })
+  const baselineCount = asArray(baselinesApi.data).length
+  const isFirstRun =
+    !aggregate.isFetching &&
+    !baselinesApi.isFetching &&
+    baselineCount === 0 &&
+    (fleetScore?.total ?? 0) === 0
   const trend = asArray(aggregate.data?.trend)
   const tenantsNeedingAttention = asArray(aggregate.data?.tenants)
     .slice()
@@ -62,6 +74,52 @@ const Page = () => {
   const licenseMissingPercentage = fleetScore?.total
     ? Math.round((fleetScore.licenseMissing / fleetScore.total) * 100)
     : 0
+
+  // First run: nothing exists yet, so charts and tables would all be empty
+  // shells. Replace the dashboard with the three steps that make it light up.
+  if (isFirstRun) {
+    return (
+      <>
+        <CippHead title={pageTitle} />
+        <Container maxWidth={false}>
+          <Card>
+            <CardHeader title="Welcome to Baselines" />
+            <Divider />
+            <Stack spacing={2} sx={{ p: 3, maxWidth: 720 }}>
+              <Typography variant="body1">
+                A baseline is the desired configuration for your tenants. CIPP
+                checks every tenant against it twice a day, shows exactly what
+                deviates, and - if you want - fixes it automatically.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                1. Create a baseline and add standards - &quot;Add all
+                recommended&quot; gives a solid starting point in one click.
+                <br />
+                2. Assign the tenants or tenant groups it applies to.
+                <br />
+                3. Save and run the first check - no changes are made until you
+                enable automatic fixing per standard.
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="contained"
+                  onClick={() => router.push('/tenant/baselines/template')}
+                >
+                  Create your first baseline
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => router.push('/tenant/baselines/templates')}
+                >
+                  Browse the community catalog
+                </Button>
+              </Stack>
+            </Stack>
+          </Card>
+        </Container>
+      </>
+    )
+  }
 
   return (
     <>
@@ -90,14 +148,21 @@ const Page = () => {
                 name: 'Open Deviations',
                 data: fleetScore?.drift ?? 0,
                 color: 'error',
-                toolTip: 'Drift awaiting triage (Accept / Deny / Remediate)',
+                toolTip:
+                  'Drift awaiting triage (Accept / Deny / Remediate) - click to review',
+                onClick: () =>
+                  router.push('/tenant/baselines/alignment?status=Drift'),
               },
               {
                 icon: <KeyIcon />,
                 name: 'License Missing',
                 data: `${licenseMissingPercentage}%`,
                 color: 'warning',
-                toolTip: `${fleetScore?.licenseMissing ?? 0} standard instance${(fleetScore?.licenseMissing ?? 0) === 1 ? '' : 's'} excluded from scoring because the tenant lacks the license`,
+                toolTip: `${fleetScore?.licenseMissing ?? 0} standard instance${(fleetScore?.licenseMissing ?? 0) === 1 ? '' : 's'} excluded from scoring because the tenant lacks the license - click to review`,
+                onClick: () =>
+                  router.push(
+                    '/tenant/baselines/alignment?status=Skipped - No License'
+                  ),
               },
             ]}
           />
@@ -172,7 +237,11 @@ const Page = () => {
                 />
               ) : (
                 <Card style={{ width: '100%', height: '100%' }}>
-                  <CardHeader title="Tenants Needing Attention" />
+                  <CardHeader
+                    title="Tenants Needing Attention"
+                    subheader="Open a tenant to triage its deviations or generate a board-ready What-if report."
+                    subheaderTypographyProps={{ variant: 'caption' }}
+                  />
                   <Divider />
                   <Stack spacing={2} sx={{ p: 2 }}>
                     {tenantsNeedingAttention.map((tenant) => (

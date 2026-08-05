@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, memo } from "react";
+import { useState, useMemo, useCallback, useEffect, memo } from 'react'
 import {
   Alert,
   Box,
@@ -27,65 +27,87 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-} from "@mui/material";
-import { Grid } from "@mui/system";
-import { CloudDownload, Search, ViewList, ViewModule, Visibility } from "@mui/icons-material";
-import { Virtuoso } from "react-virtuoso";
-import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-import { CippApiResults } from "./CippApiResults";
-import { CippAutoComplete } from "./CippAutocomplete";
-import { CippCopyToClipBoard } from "./CippCopyToClipboard";
-import CippJsonView from "../CippFormPages/CippJSONView";
+} from '@mui/material'
+import { Grid } from '@mui/system'
+import {
+  CloudDownload,
+  Search,
+  ViewList,
+  ViewModule,
+  Visibility,
+} from '@mui/icons-material'
+import { Virtuoso } from 'react-virtuoso'
+import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
+import { CippApiResults } from './CippApiResults'
+import { CippAutoComplete } from './CippAutocomplete'
+import { CippCopyToClipBoard } from './CippCopyToClipboard'
+import CippJsonView from '../CippFormPages/CippJSONView'
 
 export const templateTypeLabels = {
-  IntuneTemplate: "Intune Policy",
-  CATemplate: "Conditional Access",
-  StandardsTemplate: "Standards",
-  StandardsTemplateV2: "Standards",
-  ReportBuilderTemplate: "Report Builder",
-  GroupTemplate: "Group",
-  AppApprovalTemplate: "App Approval",
-  BPATemplate: "Best Practices Report",
-  TransportTemplate: "Transport Rule",
-  ExConnectorTemplate: "Exchange Connector",
-  AppTemplate: "Application",
-  ContactTemplate: "Contact",
-  JITAdminTemplate: "JIT Admin",
-  UserDefaultTemplate: "User Defaults",
-  AssignmentFilterTemplate: "Assignment Filter",
-  IntuneReusableSettingTemplate: "Intune Reusable Setting",
-  SharePointTemplate: "SharePoint",
-  DlpCompliancePolicyTemplate: "DLP Policy",
-  RetentionCompliancePolicyTemplate: "Retention Policy",
-  SensitivityLabelTemplate: "Sensitivity Label",
-  SensitiveInfoTypeTemplate: "Sensitive Info Type",
-  CustomTest: "Custom Test",
-  Other: "Other",
-};
+  BaselineTemplate: 'Baseline',
+  IntuneTemplate: 'Intune Policy',
+  CATemplate: 'Conditional Access',
+  StandardsTemplate: 'Standards',
+  StandardsTemplateV2: 'Standards',
+  ReportBuilderTemplate: 'Report Builder',
+  GroupTemplate: 'Group',
+  AppApprovalTemplate: 'App Approval',
+  BPATemplate: 'Best Practices Report',
+  TransportTemplate: 'Transport Rule',
+  ExConnectorTemplate: 'Exchange Connector',
+  AppTemplate: 'Application',
+  ContactTemplate: 'Contact',
+  JITAdminTemplate: 'JIT Admin',
+  UserDefaultTemplate: 'User Defaults',
+  AssignmentFilterTemplate: 'Assignment Filter',
+  IntuneReusableSettingTemplate: 'Intune Reusable Setting',
+  SharePointTemplate: 'SharePoint',
+  DlpCompliancePolicyTemplate: 'DLP Policy',
+  RetentionCompliancePolicyTemplate: 'Retention Policy',
+  SensitivityLabelTemplate: 'Sensitivity Label',
+  SensitiveInfoTypeTemplate: 'Sensitive Info Type',
+  CustomTest: 'Custom Test',
+  Other: 'Other',
+}
 
 export const getTemplateTypeLabel = (type) => {
-  if (!type) return "Other";
+  if (!type) return 'Other'
   return (
-    templateTypeLabels[type] ?? type.replace(/Template$/, "").replace(/([a-z])([A-Z])/g, "$1 $2")
-  );
-};
+    templateTypeLabels[type] ??
+    type.replace(/Template$/, '').replace(/([a-z])([A-Z])/g, '$1 $2')
+  )
+}
 
 const jsonViewTypeForTemplate = (type) => {
-  if (type === "CATemplate") return "conditionalaccess";
-  if (type === "StandardsTemplate" || type === "StandardsTemplateV2") return "standards";
-  if (type === "IntuneTemplate") return "intune";
-  return undefined;
-};
+  if (type === 'CATemplate') return 'conditionalaccess'
+  if (type === 'StandardsTemplate' || type === 'StandardsTemplateV2')
+    return 'standards'
+  if (type === 'IntuneTemplate') return 'intune'
+  return undefined
+}
 
-const itemKey = (item) => `${item.Repository}|${item.Path}`;
+const itemKey = (item) => `${item.Repository}|${item.Path}`
 
 // Memoized template card, modeled on the StandardCard pattern in CippStandardDialog
 const TemplateCard = memo(
-  ({ item, gridSize, isSelected, onToggleSelect, onPreview, onImport, isImporting }) => {
+  ({
+    item,
+    gridSize,
+    isSelected,
+    onToggleSelect,
+    onPreview,
+    onImport,
+    isImporting,
+  }) => {
     return (
       <Grid size={gridSize}>
         <Box
-          sx={{ position: "relative", height: "100%", display: "flex", flexDirection: "column" }}
+          sx={{
+            position: 'relative',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
           {item.UpdateAvailable ? (
             <Chip
@@ -93,13 +115,13 @@ const TemplateCard = memo(
               size="small"
               color="warning"
               sx={{
-                position: "absolute",
+                position: 'absolute',
                 top: -10,
                 left: 12,
                 zIndex: 1,
-                fontSize: "0.7rem",
+                fontSize: '0.7rem',
                 height: 20,
-                fontWeight: "bold",
+                fontWeight: 'bold',
               }}
             />
           ) : item.Imported ? (
@@ -108,30 +130,30 @@ const TemplateCard = memo(
               size="small"
               color="success"
               sx={{
-                position: "absolute",
+                position: 'absolute',
                 top: -10,
                 left: 12,
                 zIndex: 1,
-                fontSize: "0.7rem",
+                fontSize: '0.7rem',
                 height: 20,
-                fontWeight: "bold",
+                fontWeight: 'bold',
               }}
             />
           ) : null}
           <Card
             variant="outlined"
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
               flex: 1,
-              position: "relative",
+              position: 'relative',
               ...(item.Imported &&
                 !item.UpdateAvailable && {
-                  borderColor: "success.main",
+                  borderColor: 'success.main',
                 }),
               ...(item.UpdateAvailable && {
-                borderColor: "warning.main",
+                borderColor: 'warning.main',
               }),
             }}
           >
@@ -139,7 +161,11 @@ const TemplateCard = memo(
               <Stack direction="row" alignItems="flex-start" spacing={1}>
                 <Typography
                   variant="subtitle1"
-                  sx={{ fontWeight: "medium", wordBreak: "break-word", flexGrow: 1 }}
+                  sx={{
+                    fontWeight: 'medium',
+                    wordBreak: 'break-word',
+                    flexGrow: 1,
+                  }}
                 >
                   {item.DisplayName}
                 </Typography>
@@ -151,24 +177,28 @@ const TemplateCard = memo(
                 />
               </Stack>
               <Box sx={{ mt: 1 }}>
-                <Chip label={getTemplateTypeLabel(item.Type)} size="small" color="primary" />
+                <Chip
+                  label={getTemplateTypeLabel(item.Type)}
+                  size="small"
+                  color="primary"
+                />
               </Box>
-              {item.Category && item.Category !== "General" && (
+              {item.Category && item.Category !== 'General' && (
                 <Box sx={{ mt: 1 }}>
                   <CippCopyToClipBoard
                     type="chip"
                     text={item.Category}
-                    sx={{ maxWidth: "100%" }}
+                    sx={{ maxWidth: '100%' }}
                   />
                 </Box>
               )}
               <Typography
                 variant="caption"
                 color="text.secondary"
-                sx={{ display: "block", mt: 1.5 }}
+                sx={{ display: 'block', mt: 1.5 }}
                 noWrap
               >
-                Repository:{" "}
+                Repository:{' '}
                 <Link
                   href={`https://github.com/${item.Repository}`}
                   target="_blank"
@@ -179,8 +209,12 @@ const TemplateCard = memo(
               </Typography>
             </CardContent>
             <Divider />
-            <CardActions sx={{ justifyContent: "flex-end", px: 2, py: 1 }}>
-              <Button size="small" startIcon={<Visibility />} onClick={() => onPreview(item)}>
+            <CardActions sx={{ justifyContent: 'flex-end', px: 2, py: 1 }}>
+              <Button
+                size="small"
+                startIcon={<Visibility />}
+                onClick={() => onPreview(item)}
+              >
                 Preview
               </Button>
               <Button
@@ -196,84 +230,96 @@ const TemplateCard = memo(
           </Card>
         </Box>
       </Grid>
-    );
+    )
   },
   (prev, next) =>
     prev.item === next.item &&
     prev.gridSize === next.gridSize &&
     prev.isSelected === next.isSelected &&
-    prev.isImporting === next.isImporting,
-);
+    prev.isImporting === next.isImporting
+)
 
-TemplateCard.displayName = "TemplateCard";
+TemplateCard.displayName = 'TemplateCard'
 
 // Row-virtualized grid, modeled on VirtualizedStandardGrid in CippStandardDialog
-const VirtualizedTemplateGrid = memo(({ items, renderItem, itemsPerRowOverride }) => {
-  const computeItemsPerRow = useCallback(() => {
-    if (itemsPerRowOverride) return itemsPerRowOverride;
-    return window.innerWidth > 1200 ? 3 : window.innerWidth > 600 ? 2 : 1;
-  }, [itemsPerRowOverride]);
+const VirtualizedTemplateGrid = memo(
+  ({ items, renderItem, itemsPerRowOverride }) => {
+    const computeItemsPerRow = useCallback(() => {
+      if (itemsPerRowOverride) return itemsPerRowOverride
+      return window.innerWidth > 1200 ? 3 : window.innerWidth > 600 ? 2 : 1
+    }, [itemsPerRowOverride])
 
-  const [itemsPerRow, setItemsPerRow] = useState(computeItemsPerRow);
+    const [itemsPerRow, setItemsPerRow] = useState(computeItemsPerRow)
 
-  useEffect(() => {
-    const handleResize = () => setItemsPerRow(computeItemsPerRow());
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [computeItemsPerRow]);
+    useEffect(() => {
+      const handleResize = () => setItemsPerRow(computeItemsPerRow())
+      window.addEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize)
+    }, [computeItemsPerRow])
 
-  const rows = useMemo(() => {
-    const rowCount = Math.ceil(items.length / itemsPerRow);
-    const rowsData = [];
-    for (let i = 0; i < rowCount; i++) {
-      rowsData.push(items.slice(i * itemsPerRow, (i + 1) * itemsPerRow));
-    }
-    return rowsData;
-  }, [items, itemsPerRow]);
+    const rows = useMemo(() => {
+      const rowCount = Math.ceil(items.length / itemsPerRow)
+      const rowsData = []
+      for (let i = 0; i < rowCount; i++) {
+        rowsData.push(items.slice(i * itemsPerRow, (i + 1) * itemsPerRow))
+      }
+      return rowsData
+    }, [items, itemsPerRow])
 
-  const gridSize = 12 / itemsPerRow;
+    const gridSize = 12 / itemsPerRow
 
-  return (
-    <Virtuoso
-      style={{ height: "100%", width: "100%" }}
-      totalCount={rows.length}
-      overscan={5}
-      defaultItemHeight={200}
-      itemContent={(index) => (
-        <Box sx={{ pt: index === 0 ? 1.2 : 2, pb: index === rows.length - 1 ? 3 : 0 }}>
-          <Grid
-            container
-            spacing={2}
-            sx={{ width: "100%", m: 0, display: "flex", alignItems: "stretch" }}
+    return (
+      <Virtuoso
+        style={{ height: '100%', width: '100%' }}
+        totalCount={rows.length}
+        overscan={5}
+        defaultItemHeight={200}
+        itemContent={(index) => (
+          <Box
+            sx={{
+              pt: index === 0 ? 1.2 : 2,
+              pb: index === rows.length - 1 ? 3 : 0,
+            }}
           >
-            {rows[index].map((item) => renderItem(item, gridSize))}
-          </Grid>
-        </Box>
-      )}
-    />
-  );
-});
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                width: '100%',
+                m: 0,
+                display: 'flex',
+                alignItems: 'stretch',
+              }}
+            >
+              {rows[index].map((item) => renderItem(item, gridSize))}
+            </Grid>
+          </Box>
+        )}
+      />
+    )
+  }
+)
 
-VirtualizedTemplateGrid.displayName = "VirtualizedTemplateGrid";
+VirtualizedTemplateGrid.displayName = 'VirtualizedTemplateGrid'
 
 // Compact list view, modeled on CompactStandardList in CippStandardDialog
 const CompactTemplateList = memo(
   ({ items, selected, onToggleSelect, onPreview, onImport, isImporting }) => {
     return (
-      <List sx={{ width: "98%", bgcolor: "background.paper", pb: 3 }}>
+      <List sx={{ width: '98%', bgcolor: 'background.paper', pb: 3 }}>
         {items.map((item) => {
-          const key = itemKey(item);
-          const isSelected = !!selected[key];
+          const key = itemKey(item)
+          const isSelected = !!selected[key]
           return (
             <ListItem
               key={key}
               sx={{
-                border: "1px solid",
-                borderColor: "divider",
+                border: '1px solid',
+                borderColor: 'divider',
                 borderRadius: 1,
                 mb: 1,
-                bgcolor: "background.paper",
-                "&:hover": { bgcolor: "action.hover" },
+                bgcolor: 'background.paper',
+                '&:hover': { bgcolor: 'action.hover' },
                 pr: 20,
               }}
             >
@@ -285,16 +331,34 @@ const CompactTemplateList = memo(
               />
               <ListItemText
                 primary={
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ fontWeight: 'medium' }}
+                    >
                       {item.DisplayName}
                     </Typography>
-                    <Chip label={getTemplateTypeLabel(item.Type)} size="small" color="primary" />
-                    {item.Category && item.Category !== "General" && (
+                    <Chip
+                      label={getTemplateTypeLabel(item.Type)}
+                      size="small"
+                      color="primary"
+                    />
+                    {item.Category && item.Category !== 'General' && (
                       <CippCopyToClipBoard type="chip" text={item.Category} />
                     )}
                     {item.UpdateAvailable ? (
-                      <Chip label="Update Available" size="small" color="warning" />
+                      <Chip
+                        label="Update Available"
+                        size="small"
+                        color="warning"
+                      />
                     ) : item.Imported ? (
                       <Chip label="Imported" size="small" color="success" />
                     ) : null}
@@ -302,7 +366,7 @@ const CompactTemplateList = memo(
                 }
                 secondary={
                   <Typography variant="caption" color="text.secondary">
-                    Repository:{" "}
+                    Repository:{' '}
                     <Link
                       href={`https://github.com/${item.Repository}`}
                       target="_blank"
@@ -315,7 +379,11 @@ const CompactTemplateList = memo(
               />
               <ListItemSecondaryAction>
                 <Stack direction="row" spacing={1}>
-                  <Button size="small" variant="outlined" onClick={() => onPreview(item)}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => onPreview(item)}
+                  >
                     Preview
                   </Button>
                   <Button
@@ -329,192 +397,211 @@ const CompactTemplateList = memo(
                 </Stack>
               </ListItemSecondaryAction>
             </ListItem>
-          );
+          )
         })}
       </List>
-    );
-  },
-);
+    )
+  }
+)
 
-CompactTemplateList.displayName = "CompactTemplateList";
+CompactTemplateList.displayName = 'CompactTemplateList'
 
 export const CippTemplateCatalog = ({
   typeFilter = null,
-  variant = "page",
+  variant = 'page',
   relatedQueryKeys = [],
   selectedSources,
   onSelectedSourcesChange,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTypes, setSelectedTypes] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [viewMode, setViewMode] = useState("card");
-  const [selected, setSelected] = useState({});
-  const [forceImport, setForceImport] = useState(false);
-  const [previewItem, setPreviewItem] = useState(null);
-  const [internalSources, setInternalSources] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedTypes, setSelectedTypes] = useState([])
+  const [selectedCategories, setSelectedCategories] = useState([])
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [viewMode, setViewMode] = useState('card')
+  const [selected, setSelected] = useState({})
+  const [forceImport, setForceImport] = useState(false)
+  const [previewItem, setPreviewItem] = useState(null)
+  const [internalSources, setInternalSources] = useState([])
 
-  const sources = selectedSources ?? internalSources;
-  const setSources = onSelectedSourcesChange ?? setInternalSources;
+  const sources = selectedSources ?? internalSources
+  const setSources = onSelectedSourcesChange ?? setInternalSources
 
   const catalog = ApiGetCall({
-    url: "/api/ListCommunityRepoTemplates",
-    queryKey: "CommunityRepoTemplates",
-  });
+    url: '/api/ListCommunityRepoTemplates',
+    queryKey: 'CommunityRepoTemplates',
+  })
 
   const importMutation = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: [...relatedQueryKeys, "CommunityRepoTemplates"],
-  });
+    relatedQueryKeys: [...relatedQueryKeys, 'CommunityRepoTemplates'],
+  })
 
   const previewQuery = ApiGetCall({
-    url: "/api/ListCommunityRepoTemplates",
+    url: '/api/ListCommunityRepoTemplates',
     data: {
-      FullName: previewItem?.Repository || "",
-      Path: previewItem?.Path || "",
-      Branch: previewItem?.Branch || "main",
+      FullName: previewItem?.Repository || '',
+      Path: previewItem?.Path || '',
+      Branch: previewItem?.Branch || 'main',
     },
     queryKey: `CommunityRepoTemplate-Preview-${previewItem?.Repository}-${previewItem?.Path}`,
     waiting: !!previewItem,
-  });
+  })
 
   const previewObject = useMemo(() => {
-    let content = previewQuery.data?.Results?.content?.trim() || "{}";
-    content = content.replace(/^[\u0000-\u001F\u007F-\u009F]+|[\u0000-\u001F\u007F-\u009F]+$/g, "");
+    let content = previewQuery.data?.Results?.content?.trim() || '{}'
+    content = content.replace(
+      /^[\u0000-\u001F\u007F-\u009F]+|[\u0000-\u001F\u007F-\u009F]+$/g,
+      ''
+    )
     try {
-      let parsed = JSON.parse(content);
+      let parsed = JSON.parse(content)
       // CIPP-native repo files are table entities whose JSON property holds the template
-      if (parsed?.JSON && typeof parsed.JSON === "string") {
+      if (parsed?.JSON && typeof parsed.JSON === 'string') {
         try {
-          parsed = JSON.parse(parsed.JSON);
+          parsed = JSON.parse(parsed.JSON)
         } catch {
           // keep outer object
         }
       }
-      return parsed;
+      return parsed
     } catch {
-      return {};
+      return {}
     }
-  }, [previewQuery.data]);
+  }, [previewQuery.data])
 
   // Base item set: everything the endpoint returned, restricted to the caller's types
   const allItems = useMemo(() => {
-    const data = catalog.data?.Results;
-    const arr = Array.isArray(data) ? data : [];
+    const data = catalog.data?.Results
+    const arr = Array.isArray(data) ? data : []
     if (Array.isArray(typeFilter) && typeFilter.length > 0) {
       // PossibleTypes covers multi-type repos whose files can't be typed per-file
       return arr.filter(
         (item) =>
           typeFilter.includes(item.Type) ||
           (Array.isArray(item.PossibleTypes) &&
-            item.PossibleTypes.some((type) => typeFilter.includes(type))),
-      );
+            item.PossibleTypes.some((type) => typeFilter.includes(type)))
+      )
     }
-    return arr;
+    return arr
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [catalog.data, JSON.stringify(typeFilter)]);
+  }, [catalog.data, JSON.stringify(typeFilter)])
 
   const { allSources, allTypes, allCategories } = useMemo(() => {
-    const sourceSet = new Set();
-    const typeSet = new Set();
-    const categorySet = new Set();
+    const sourceSet = new Set()
+    const typeSet = new Set()
+    const categorySet = new Set()
     allItems.forEach((item) => {
-      if (item.Repository) sourceSet.add(item.Repository);
-      if (item.Type) typeSet.add(item.Type);
-      if (item.Category) categorySet.add(item.Category);
-    });
+      if (item.Repository) sourceSet.add(item.Repository)
+      if (item.Type) typeSet.add(item.Type)
+      if (item.Category) categorySet.add(item.Category)
+    })
     return {
       allSources: Array.from(sourceSet).sort(),
       allTypes: Array.from(typeSet).sort(),
       allCategories: Array.from(categorySet).sort(),
-    };
-  }, [allItems]);
+    }
+  }, [allItems])
 
   const filteredItems = useMemo(() => {
-    const searchLower = searchQuery.trim().toLowerCase();
+    const searchLower = searchQuery.trim().toLowerCase()
     return allItems
       .filter((item) => {
-        if (sources.length > 0 && !sources.includes(item.Repository)) return false;
-        if (selectedTypes.length > 0 && !selectedTypes.includes(item.Type)) return false;
-        if (selectedCategories.length > 0 && !selectedCategories.includes(item.Category))
-          return false;
-        if (statusFilter === "notimported" && item.Imported) return false;
-        if (statusFilter === "imported" && !item.Imported) return false;
-        if (statusFilter === "updates" && !item.UpdateAvailable) return false;
+        if (sources.length > 0 && !sources.includes(item.Repository))
+          return false
+        if (selectedTypes.length > 0 && !selectedTypes.includes(item.Type))
+          return false
+        if (
+          selectedCategories.length > 0 &&
+          !selectedCategories.includes(item.Category)
+        )
+          return false
+        if (statusFilter === 'notimported' && item.Imported) return false
+        if (statusFilter === 'imported' && !item.Imported) return false
+        if (statusFilter === 'updates' && !item.UpdateAvailable) return false
         if (searchLower) {
           return (
             item.DisplayName?.toLowerCase().includes(searchLower) ||
             item.Category?.toLowerCase().includes(searchLower) ||
             item.Path?.toLowerCase().includes(searchLower) ||
             item.Repository?.toLowerCase().includes(searchLower)
-          );
+          )
         }
-        return true;
+        return true
       })
-      .sort((a, b) => (a.DisplayName || "").localeCompare(b.DisplayName || ""));
-  }, [allItems, sources, selectedTypes, selectedCategories, statusFilter, searchQuery]);
+      .sort((a, b) => (a.DisplayName || '').localeCompare(b.DisplayName || ''))
+  }, [
+    allItems,
+    sources,
+    selectedTypes,
+    selectedCategories,
+    statusFilter,
+    searchQuery,
+  ])
 
   const selectedItems = useMemo(() => {
-    const byKey = new Map(allItems.map((item) => [itemKey(item), item]));
+    const byKey = new Map(allItems.map((item) => [itemKey(item), item]))
     return Object.keys(selected)
       .filter((key) => selected[key] && byKey.has(key))
-      .map((key) => byKey.get(key));
-  }, [selected, allItems]);
+      .map((key) => byKey.get(key))
+  }, [selected, allItems])
 
   const handleToggleSelect = useCallback((item) => {
-    setSelected((prev) => ({ ...prev, [itemKey(item)]: !prev[itemKey(item)] }));
-  }, []);
+    setSelected((prev) => ({ ...prev, [itemKey(item)]: !prev[itemKey(item)] }))
+  }, [])
 
   const importItems = useCallback(
     (items) => {
-      if (!items.length) return;
+      if (!items.length) return
       importMutation.mutate({
-        url: "/api/ExecCommunityRepo",
+        url: '/api/ExecCommunityRepo',
         bulkRequest: true,
         data: items.map((item) =>
-          item.Type === "CustomTest"
+          item.Type === 'CustomTest'
             ? {
-                Action: "ImportScript",
+                Action: 'ImportScript',
                 FullName: item.Repository,
                 Path: item.Path,
                 Branch: item.Branch,
               }
             : {
-                Action: "ImportTemplate",
+                Action: 'ImportTemplate',
                 FullName: item.Repository,
                 Path: item.Path,
                 Branch: item.Branch,
                 Force: forceImport,
-              },
+              }
         ),
-      });
+      })
     },
-    [importMutation, forceImport],
-  );
+    [importMutation, forceImport]
+  )
 
-  const handleImportSingle = useCallback((item) => importItems([item]), [importItems]);
+  const handleImportSingle = useCallback(
+    (item) => importItems([item]),
+    [importItems]
+  )
   const handleImportSelected = useCallback(
     () => importItems(selectedItems),
-    [importItems, selectedItems],
-  );
+    [importItems, selectedItems]
+  )
 
-  const handlePreview = useCallback((item) => setPreviewItem(item), []);
+  const handlePreview = useCallback((item) => setPreviewItem(item), [])
 
   const allFilteredSelected =
-    filteredItems.length > 0 && filteredItems.every((item) => selected[itemKey(item)]);
+    filteredItems.length > 0 &&
+    filteredItems.every((item) => selected[itemKey(item)])
 
   const handleToggleSelectAll = () => {
     if (allFilteredSelected) {
-      setSelected({});
+      setSelected({})
     } else {
-      const next = {};
+      const next = {}
       filteredItems.forEach((item) => {
-        next[itemKey(item)] = true;
-      });
-      setSelected(next);
+        next[itemKey(item)] = true
+      })
+      setSelected(next)
     }
-  };
+  }
 
   const renderCard = useCallback(
     (item, gridSize) => (
@@ -529,22 +616,35 @@ export const CippTemplateCatalog = ({
         isImporting={importMutation.isPending}
       />
     ),
-    [selected, handleToggleSelect, handlePreview, handleImportSingle, importMutation.isPending],
-  );
+    [
+      selected,
+      handleToggleSelect,
+      handlePreview,
+      handleImportSingle,
+      importMutation.isPending,
+    ]
+  )
 
   const warnings = Array.isArray(catalog.data?.Metadata?.Warnings)
     ? catalog.data.Metadata.Warnings
-    : [];
+    : []
 
   const toOptions = (values, labelFn) =>
-    values.map((value) => ({ label: labelFn ? labelFn(value) : value, value }));
+    values.map((value) => ({ label: labelFn ? labelFn(value) : value, value }))
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        minHeight: 0,
+      }}
+    >
       {/* Search + filter controls */}
       <Box sx={{ flexShrink: 0 }}>
         <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid size={{ xs: 12, md: variant === "drawer" ? 12 : 4 }}>
+          <Grid size={{ xs: 12, md: variant === 'drawer' ? 12 : 4 }}>
             <TextField
               fullWidth
               label="Search Templates"
@@ -552,11 +652,15 @@ export const CippTemplateCatalog = ({
               onChange={(e) => setSearchQuery(e.target.value)}
               autoComplete="off"
               placeholder="Search by name, category, or repository..."
-              InputProps={{ startAdornment: <Search sx={{ mr: 1, color: "text.secondary" }} /> }}
+              InputProps={{
+                startAdornment: (
+                  <Search sx={{ mr: 1, color: 'text.secondary' }} />
+                ),
+              }}
             />
           </Grid>
           {allSources.length > 1 && (
-            <Grid size={{ xs: 12, sm: 6, md: variant === "drawer" ? 4 : 2.5 }}>
+            <Grid size={{ xs: 12, sm: 6, md: variant === 'drawer' ? 4 : 2.5 }}>
               <CippAutoComplete
                 fullWidth
                 multiple={true}
@@ -566,13 +670,17 @@ export const CippTemplateCatalog = ({
                 options={toOptions(allSources)}
                 value={toOptions(sources)}
                 onChange={(newValue) =>
-                  setSources(Array.isArray(newValue) ? newValue.map((option) => option.value) : [])
+                  setSources(
+                    Array.isArray(newValue)
+                      ? newValue.map((option) => option.value)
+                      : []
+                  )
                 }
               />
             </Grid>
           )}
           {allTypes.length > 1 && (
-            <Grid size={{ xs: 12, sm: 6, md: variant === "drawer" ? 4 : 2.5 }}>
+            <Grid size={{ xs: 12, sm: 6, md: variant === 'drawer' ? 4 : 2.5 }}>
               <CippAutoComplete
                 fullWidth
                 multiple={true}
@@ -583,14 +691,16 @@ export const CippTemplateCatalog = ({
                 value={toOptions(selectedTypes, getTemplateTypeLabel)}
                 onChange={(newValue) =>
                   setSelectedTypes(
-                    Array.isArray(newValue) ? newValue.map((option) => option.value) : [],
+                    Array.isArray(newValue)
+                      ? newValue.map((option) => option.value)
+                      : []
                   )
                 }
               />
             </Grid>
           )}
           {allCategories.length > 1 && (
-            <Grid size={{ xs: 12, sm: 6, md: variant === "drawer" ? 4 : 3 }}>
+            <Grid size={{ xs: 12, sm: 6, md: variant === 'drawer' ? 4 : 3 }}>
               <CippAutoComplete
                 fullWidth
                 multiple={true}
@@ -601,7 +711,9 @@ export const CippTemplateCatalog = ({
                 value={toOptions(selectedCategories)}
                 onChange={(newValue) =>
                   setSelectedCategories(
-                    Array.isArray(newValue) ? newValue.map((option) => option.value) : [],
+                    Array.isArray(newValue)
+                      ? newValue.map((option) => option.value)
+                      : []
                   )
                 }
               />
@@ -622,7 +734,7 @@ export const CippTemplateCatalog = ({
             exclusive
             size="small"
             onChange={(e, newMode) => {
-              if (newMode !== null) setViewMode(newMode);
+              if (newMode !== null) setViewMode(newMode)
             }}
           >
             <ToggleButton value="card" aria-label="card view">
@@ -638,7 +750,7 @@ export const CippTemplateCatalog = ({
             exclusive
             size="small"
             onChange={(e, newValue) => {
-              if (newValue !== null) setStatusFilter(newValue);
+              if (newValue !== null) setStatusFilter(newValue)
             }}
           >
             <ToggleButton value="all">All</ToggleButton>
@@ -676,14 +788,22 @@ export const CippTemplateCatalog = ({
             variant="contained"
             size="small"
             startIcon={
-              importMutation.isPending ? <CircularProgress size={16} /> : <CloudDownload />
+              importMutation.isPending ? (
+                <CircularProgress size={16} />
+              ) : (
+                <CloudDownload />
+              )
             }
             onClick={handleImportSelected}
             disabled={selectedItems.length === 0 || importMutation.isPending}
           >
             Import Selected
           </Button>
-          <Typography variant="body2" color="text.secondary" sx={{ ml: "auto" }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ ml: 'auto' }}
+          >
             Showing {filteredItems.length} of {allItems.length} templates
           </Typography>
         </Stack>
@@ -709,7 +829,7 @@ export const CippTemplateCatalog = ({
           ))}
         </Grid>
       ) : filteredItems.length === 0 ? (
-        <Box sx={{ textAlign: "center", p: 4 }}>
+        <Box sx={{ textAlign: 'center', p: 4 }}>
           <Typography variant="h6" color="textSecondary">
             No templates match your search and filter criteria
           </Typography>
@@ -717,16 +837,16 @@ export const CippTemplateCatalog = ({
             Try adjusting your search terms or clearing some filters
           </Typography>
         </Box>
-      ) : viewMode === "card" ? (
+      ) : viewMode === 'card' ? (
         <Box sx={{ flexGrow: 1, minHeight: 0 }}>
           <VirtualizedTemplateGrid
             items={filteredItems}
             renderItem={renderCard}
-            itemsPerRowOverride={variant === "drawer" ? 2 : undefined}
+            itemsPerRowOverride={variant === 'drawer' ? 2 : undefined}
           />
         </Box>
       ) : (
-        <Box sx={{ flexGrow: 1, overflow: "auto", minHeight: 0 }}>
+        <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
           <CompactTemplateList
             items={filteredItems}
             selected={selected}
@@ -739,8 +859,15 @@ export const CippTemplateCatalog = ({
       )}
 
       {/* Preview dialog */}
-      <Dialog fullWidth maxWidth="xl" open={!!previewItem} onClose={() => setPreviewItem(null)}>
-        <DialogTitle>{previewItem?.DisplayName || "Template Details"}</DialogTitle>
+      <Dialog
+        fullWidth
+        maxWidth="xl"
+        open={!!previewItem}
+        onClose={() => setPreviewItem(null)}
+      >
+        <DialogTitle>
+          {previewItem?.DisplayName || 'Template Details'}
+        </DialogTitle>
         <DialogContent>
           {previewQuery.isFetching ? (
             <Box>
@@ -759,8 +886,8 @@ export const CippTemplateCatalog = ({
             variant="contained"
             startIcon={<CloudDownload />}
             onClick={() => {
-              importItems([previewItem]);
-              setPreviewItem(null);
+              importItems([previewItem])
+              setPreviewItem(null)
             }}
             disabled={importMutation.isPending}
           >
@@ -772,5 +899,5 @@ export const CippTemplateCatalog = ({
         </DialogActions>
       </Dialog>
     </Box>
-  );
-};
+  )
+}

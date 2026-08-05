@@ -9,12 +9,23 @@ import {
   Typography,
 } from '@mui/material'
 import Link from 'next/link'
-import { AddBox, CopyAll, Delete, Edit, PlayArrow } from '@mui/icons-material'
+import { useState } from 'react'
+import {
+  AddBox,
+  CloudDownload,
+  CopyAll,
+  Delete,
+  Edit,
+  PlayArrow,
+} from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import tabOptions from '../tabOptions.json'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippFormTemplateTenantSelector } from '../../../../components/CippComponents/CippFormTemplateTenantSelector'
+import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanvas'
+import { CippTemplateCatalog } from '../../../../components/CippComponents/CippTemplateCatalog'
+import { describeStageConditions } from '../../../../components/CippBaselines/CippBaselineWhatIfReport'
 import { parseCippDate } from '../../../../utils/parse-cipp-date'
 
 // The API serializes single-element arrays as a bare object; the selector needs a real array.
@@ -25,6 +36,7 @@ const asOptionArray = (value) =>
 
 const Page = () => {
   const pageTitle = 'Baselines'
+  const [catalogVisible, setCatalogVisible] = useState(false)
 
   const actions = [
     {
@@ -204,6 +216,19 @@ const Page = () => {
                     {parseCippDate(stage.nextAdvanceAt).toLocaleDateString()}
                   </Typography>
                 )}
+                {/* Why tenants in this stage have not advanced: the NEXT stage's
+                    graduation conditions. */}
+                {stage.stage < occupancy.length &&
+                  (row.stages ?? [])[stage.stage] && (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: 'block' }}
+                    >
+                      Tenants advance when{' '}
+                      {describeStageConditions(row.stages[stage.stage])}.
+                    </Typography>
+                  )}
               </Box>
             ))}
             <Typography
@@ -242,17 +267,60 @@ const Page = () => {
       offCanvas={offCanvas}
       offCanvasOnRowClick={true}
       cardButton={
-        <Button
-          component={Link}
-          href="/tenant/baselines/template"
-          startIcon={
-            <SvgIcon fontSize="small">
-              <AddBox />
-            </SvgIcon>
-          }
-        >
-          Add Baseline
-        </Button>
+        <>
+          <Button
+            component={Link}
+            href="/tenant/baselines/template"
+            startIcon={
+              <SvgIcon fontSize="small">
+                <AddBox />
+              </SvgIcon>
+            }
+          >
+            Add Baseline
+          </Button>
+          <Button
+            onClick={() => setCatalogVisible(true)}
+            startIcon={
+              <SvgIcon fontSize="small">
+                <CloudDownload />
+              </SvgIcon>
+            }
+          >
+            Browse Catalog
+          </Button>
+          <CippOffCanvas
+            title="Browse Baseline Catalog"
+            visible={catalogVisible}
+            onClose={() => setCatalogVisible(false)}
+            size="xl"
+            footer={
+              <Stack direction="row" justifyContent="flex-start" spacing={2}>
+                <Button
+                  variant="outlined"
+                  onClick={() => setCatalogVisible(false)}
+                >
+                  Close
+                </Button>
+              </Stack>
+            }
+          >
+            <Box
+              sx={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                flexGrow: 1,
+              }}
+            >
+              <CippTemplateCatalog
+                variant="drawer"
+                typeFilter={['BaselineTemplate']}
+                relatedQueryKeys={['ListBaseline*']}
+              />
+            </Box>
+          </CippOffCanvas>
+        </>
       }
       simpleColumns={[
         'baselineName',
