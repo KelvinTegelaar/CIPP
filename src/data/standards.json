@@ -39,8 +39,8 @@
         "name": "standards.CopilotSettings.imageGeneration",
         "options": [
           { "label": "Do not configure", "value": "donotconfigure" },
-          { "label": "Enabled", "value": "1" },
-          { "label": "Disabled", "value": "0" }
+          { "label": "Disabled", "value": "1" },
+          { "label": "Enabled", "value": "0" }
         ]
       },
       {
