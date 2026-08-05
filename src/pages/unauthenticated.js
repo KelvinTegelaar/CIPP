@@ -66,6 +66,8 @@ const Page = ({ reason = 'session' }) => {
 
   const permissionProps = {
     title: 'Access Denied',
+    // denied gets the 401 Cippy; the sign-in state keeps the shell's default
+    cippyImage: '/cippy-401.png',
     description: (
       <>
         <Typography variant="body1">

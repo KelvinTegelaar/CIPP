@@ -97,7 +97,9 @@ const LayoutContainer = styled('div')({
 })
 
 export const Layout = (props) => {
-  const { children, allTenantsSupport = true } = props
+  // showBreadcrumb: the error routes opt out — there is no trail to a page that
+  // doesn't exist or just crashed, and the bookmark button lives in there too.
+  const { children, allTenantsSupport = true, showBreadcrumb = true } = props
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
   const settings = useSettings()
   const mobileNav = useMobileNav()
@@ -357,7 +359,9 @@ export const Layout = (props) => {
               <OnboardingWizardPage />
             </DialogContent>
           </Dialog>
-          <SubscriptionEndedDialog hostedSubscriptionEnded={currentRole.data?.hostedSubscriptionEnded} />
+          <SubscriptionEndedDialog
+            hostedSubscriptionEnded={currentRole.data?.hostedSubscriptionEnded}
+          />
           <FailedPaymentDialog hostedFailedPayments={currentRole.data?.hostedFailedPayments} />
           <SsoMigrationDialog meData={currentRole.data} />
           <ForcedSsoMigrationDialog setupCompleted={setupCompleted} />
@@ -388,10 +392,14 @@ export const Layout = (props) => {
             </Box>
           ) : (
             <Stack>
-              <Box sx={{ mx: 3, mt: 3 }}>
-                <CippBreadcrumbNav mode="hierarchical" />
-              </Box>
-              <Divider sx={{ mb: 2 }} />
+              {showBreadcrumb && (
+                <>
+                  <Box sx={{ mx: 3, mt: 3 }}>
+                    <CippBreadcrumbNav mode="hierarchical" />
+                  </Box>
+                  <Divider sx={{ mb: 2 }} />
+                </>
+              )}
               {children}
             </Stack>
           )}
