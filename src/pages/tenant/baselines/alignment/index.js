@@ -83,6 +83,7 @@ const deviationColors = {
   Accepted: 'info',
   'Partially Accepted': 'warning',
   Drift: 'error',
+  Conflict: 'error',
   'Denied - Remediate Pending': 'warning',
   'Denied - Delete Pending': 'warning',
   'Skipped - No License': 'default',
@@ -394,7 +395,10 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
       // Compare applies to manual tasks too: it re-evaluates the completion recurrence,
-      // flipping a task back to Drift once its reopen window has elapsed.
+      // flipping a task back to Drift once its reopen window has elapsed. A Conflict
+      // cannot even compare - the expected value itself is ambiguous.
+      condition: (row) => row.status !== 'Conflict',
+      bulkFilterEligible: true,
     },
     {
       label: 'Remediate Now',
@@ -413,8 +417,10 @@ const Page = () => {
       relatedQueryKeys,
       // Running remediation by hand is always possible - the engine deploys the expected
       // value regardless of the current state, and a license bought after the last run
-      // should not block trying. Manual tasks have nothing to deploy.
-      condition: (row) => !row.standardName.startsWith('ManualTask'),
+      // should not block trying. Manual tasks have nothing to deploy; a Conflict has no
+      // unambiguous expected value to deploy.
+      condition: (row) =>
+        !row.standardName.startsWith('ManualTask') && row.status !== 'Conflict',
       hideCondition: (row) => row.standardName.startsWith('ManualTask'),
       bulkFilterEligible: true,
     },
@@ -774,6 +780,14 @@ const Page = () => {
               When multiple baselines configure the same standard, the baseline
               with the most specific assignment wins.
             </Typography>
+            {row.status === 'Conflict' && (
+              <Alert severity="error">
+                Two baselines configure this standard at the same assignment
+                level with different settings, so CIPP cannot know which one is
+                intended - nothing is compared or fixed until you edit one of
+                the baselines below.
+              </Alert>
+            )}
             {(row.manual?.taskName || row.manual?.instructions) && (
               <>
                 <Typography

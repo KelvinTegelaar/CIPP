@@ -72,10 +72,15 @@ export const CippBaselineStandardItem = ({
   onRemove,
   instanceId,
 }) => {
-  // Multi-instance standards use 'Name#n' keys so each instance keeps its own config.
+  // Multi-instance standards use 'Name#<id>' keys so each instance keeps its own config.
+  // Legacy keys were positional counters; new ones are opaque ids - only number the
+  // legacy ones, the id itself means nothing to a user.
   const fieldBase = instanceId ?? standard.name
-  const instanceNumber = fieldBase.includes('#')
-    ? Number(fieldBase.split('#')[1]) + 1
+  const instanceSuffix = fieldBase.includes('#')
+    ? fieldBase.split('#')[1]
+    : null
+  const instanceNumber = /^\d+$/.test(instanceSuffix ?? '')
+    ? Number(instanceSuffix) + 1
     : null
   const watched = useWatch({ control: formControl.control, name: fieldBase })
   const variableEntries = Object.entries(standard.variables ?? {})

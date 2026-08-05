@@ -716,15 +716,16 @@ const Page = () => {
         if (index !== dialogStageIndex) return stage
         const isMultiple = catalogByName[standardName]?.multiple === true
         if (isMultiple) {
-          // Multi-instance standards: every click adds another instance ('Name#n').
-          const instanceCount = stage.standards.filter(
-            (key) => key.split('#')[0] === standardName
-          ).length
-          const newKey =
-            instanceCount === 0
-              ? standardName
-              : `${standardName}#${instanceCount}`
-          return { ...stage, standards: [...stage.standards, newKey] }
+          // Multi-instance standards: every instance gets a unique id ('Name#<id>') so
+          // instances from different baselines never collide by accident - conflict
+          // detection compares real identities, not positional counters.
+          const instanceId =
+            globalThis.crypto?.randomUUID?.().slice(0, 8) ??
+            Math.random().toString(36).slice(2, 10)
+          return {
+            ...stage,
+            standards: [...stage.standards, `${standardName}#${instanceId}`],
+          }
         }
         return stage.standards.includes(standardName)
           ? {

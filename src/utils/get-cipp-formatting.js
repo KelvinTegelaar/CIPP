@@ -623,6 +623,7 @@ export const getCippFormatting = (
     const baselineStatusColors = {
       compliant: 'success',
       drift: 'error',
+      conflict: 'error',
       accepted: 'info',
       'partially accepted': 'warning',
       'denied - remediate pending': 'warning',
@@ -636,6 +637,8 @@ export const getCippFormatting = (
       // Pending states answer the "when does something happen?" question inline.
       const baselineStatusTooltips = {
         'no data': 'Not collected yet - happens automatically on the next run.',
+        conflict:
+          'Two baselines configure this at the same level with different settings. Nothing runs until you edit one of them - see the standard details for both sources.',
         'denied - remediate pending':
           'Fixed automatically on the next run (within 12 hours), or use Remediate Now.',
         'denied - delete pending':
