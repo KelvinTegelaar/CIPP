@@ -6,6 +6,7 @@ import {
   Password,
   PasswordOutlined,
   Key,
+  Memory,
   Edit,
   Security,
   FindInPage,
@@ -203,6 +204,19 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
     },
     condition: (row) => row.operatingSystem === 'Windows',
     confirmText: 'Are you sure you want to rotate the password for [deviceName]?',
+  },
+  {
+    label: 'Retrieve BIOS Password',
+    type: 'POST',
+    icon: <Memory />,
+    url: '/api/ExecGetRecoveryKey',
+    data: {
+      // hardwarePasswordDetails is keyed on the Intune managedDevice id, not azureADDeviceId.
+      GUID: 'id',
+      RecoveryKeyType: '!BiosPassword',
+    },
+    condition: (row) => row.operatingSystem === 'Windows',
+    confirmText: 'Are you sure you want to retrieve the BIOS password for [deviceName]?',
   },
   {
     label: 'Retrieve BitLocker Keys',
