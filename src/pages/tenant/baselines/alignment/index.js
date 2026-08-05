@@ -650,18 +650,50 @@ const Page = () => {
       // collected data (No Data) have nothing to diff against.
       // Per-property drift comes from the ENGINE's persisted diff - the frontend never
       // re-derives compares, so $anyOf/hard-compare/acceptance semantics live in exactly
-      // one place. A diff Property may be a nested dot-path under a top-level key.
+      // one place. A diff Property may be a nested dot-path under a card's path.
       const diffEntries = Array.isArray(row.diff)
         ? row.diff
         : row.diff
           ? [row.diff]
           : []
-      const differences = Object.keys(row.expectedValue ?? {}).filter((key) =>
+      const hasDiffAt = (path) =>
         diffEntries.some(
           (entry) =>
-            entry?.Property === key || entry?.Property?.startsWith(`${key}.`)
+            entry?.Property === path || entry?.Property?.startsWith(`${path}.`)
         )
+      // Display flattening only (never comparison): big policies like CA render each
+      // sub-object as its own card (conditions.users, conditions.applications, ...)
+      // instead of one unreadable JSON blob. Empty-vs-empty cards are skipped unless
+      // the engine flagged drift there.
+      const getPath = (source, path) =>
+        path
+          .split('.')
+          .reduce((acc, key) => (acc == null ? acc : acc[key]), source)
+      const isPlainObject = (value) =>
+        value && typeof value === 'object' && !Array.isArray(value)
+      const isEmptyish = (value) =>
+        value == null ||
+        (Array.isArray(value) && value.length === 0) ||
+        (isPlainObject(value) && Object.keys(value).length === 0)
+      // Expand every sub-object down to its leaves (scalars/arrays), so acceptance is
+      // exactly one setting: accepting conditions.users.excludeUsers never tolerates a
+      // change to includeUsers. Empty-vs-empty leaves are hidden below, keeping the
+      // card list compact despite the depth.
+      const buildCardPaths = (value, prefix = '') =>
+        Object.keys(value ?? {}).flatMap((key) => {
+          const child = value[key]
+          const path = prefix ? `${prefix}.${key}` : key
+          return isPlainObject(child) ? buildCardPaths(child, path) : [path]
+        })
+      const cardPaths = buildCardPaths(row.expectedValue).filter(
+        (path) =>
+          hasDiffAt(path) ||
+          !(
+            isEmptyish(getPath(row.expectedValue, path)) &&
+            isEmptyish(getPath(row.currentValue, path))
+          )
       )
+      const differences = cardPaths.filter(hasDiffAt)
       const properties = [
         { label: 'Standard', value: row.standardLabel },
         {
@@ -860,7 +892,7 @@ const Page = () => {
             </Typography>
             {row.currentValue ? (
               <>
-                {Object.keys(row.expectedValue ?? {}).map((key) => {
+                {cardPaths.map((key) => {
                   const drifted = differences.includes(key)
                   const acceptedPath = row.acceptedPaths?.[key]
                   return (
@@ -924,7 +956,8 @@ const Page = () => {
                           wordBreak: 'break-word',
                         }}
                       >
-                        Expected: {JSON.stringify(row.expectedValue[key])}
+                        Expected:{' '}
+                        {JSON.stringify(getPath(row.expectedValue, key))}
                       </Typography>
                       <Typography
                         variant="caption"
@@ -935,7 +968,8 @@ const Page = () => {
                           color: drifted ? 'error.main' : 'text.secondary',
                         }}
                       >
-                        Current: {JSON.stringify(row.currentValue?.[key])}
+                        Current:{' '}
+                        {JSON.stringify(getPath(row.currentValue, key))}
                       </Typography>
                       {drifted && !acceptedPath && (
                         <Button

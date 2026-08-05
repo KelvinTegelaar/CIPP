@@ -92,8 +92,7 @@ const Page = () => {
                 deviates, and - if you want - fixes it automatically.
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                1. Create a baseline and add standards - &quot;Add all
-                recommended&quot; gives a solid starting point in one click.
+                1. Create a baseline and add standards from the catalog.
                 <br />
                 2. Assign the tenants or tenant groups it applies to.
                 <br />

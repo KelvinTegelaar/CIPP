@@ -30,7 +30,9 @@ export const CippBaselineStandardSettings = ({
 }) => {
   const variableEntries = Object.entries(standard?.variables ?? {})
 
-  // Seed each field: current applied value > recommended > default.
+  // Seed each field: current applied value > recommended > default. Api-driven
+  // autoCompletes (e.g. the CA template picker) seed with a bare value; the
+  // autocomplete resolves the label once its option list loads.
   useEffect(() => {
     variableEntries.forEach(([key, definition]) => {
       const name = `${namePrefix}.${key}`
@@ -66,6 +68,9 @@ export const CippBaselineStandardSettings = ({
             label={definition.label}
             formControl={formControl}
             options={definition.options}
+            // Definitions may source options from an API instead of a static list
+            // (e.g. the CA template picker) - CippFormComponent handles the fetch.
+            api={definition.api}
             multiple={false}
             creatable={false}
             disabled={definition.locked === true}
