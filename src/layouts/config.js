@@ -610,6 +610,11 @@ export const nativeMenuItems = [
             permissions: ['Endpoint.Device.*'],
           },
           {
+            title: 'BitLocker Key Search',
+            path: '/endpoint/MEM/bitlocker-search',
+            permissions: ['Endpoint.Device.*'],
+          },
+          {
             title: 'Configuration Policies',
             path: '/endpoint/MEM/list-policies',
             permissions: ['Endpoint.MEM.*'],
