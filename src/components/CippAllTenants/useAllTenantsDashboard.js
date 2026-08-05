@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
 
 // Some CIPP endpoints return a bare array, others wrap in { Results: [...] }. Normalise both.
-const asArray = (payload) => {
+export const asArray = (payload) => {
   if (Array.isArray(payload)) return payload
   if (Array.isArray(payload?.Results)) return payload.Results
   return []
@@ -23,6 +23,76 @@ const hoursSince = (value) => {
 }
 
 const percent = (part, total) => (total > 0 ? Math.round((part / total) * 100) : 0)
+
+/**
+ * Latest-score summary plus portfolio trend from ListSecureScoreReport rows. Pure so the dashboard
+ * card and the full-page All Tenants secure score view derive identical numbers from one shape.
+ * `displayNameByDomain` is only a fallback — the endpoint already resolves TenantName for tenants
+ * it still knows about.
+ */
+export const deriveSecureScoreSummary = (rows, displayNameByDomain = new Map()) => {
+  const empty = {
+    average: 0,
+    best: null,
+    worst: null,
+    scored: 0,
+    trend: [],
+    delta: null,
+    ranked: [],
+  }
+  if (!rows.length) return empty
+
+  const scored = rows.filter((row) => Number(row?.MaxScore) > 0)
+  if (!scored.length) return empty
+
+  const withNames = scored.map((row) => ({
+    tenant: row.Tenant,
+    name: row.TenantName || displayNameByDomain.get(row.Tenant) || row.Tenant,
+    percent: Number(row.PercentageScore ?? 0),
+    current: Number(row.CurrentScore ?? 0),
+    max: Number(row.MaxScore ?? 0),
+  }))
+
+  const sorted = [...withNames].sort((a, b) => a.percent - b.percent)
+
+  // Portfolio trend: average the per-tenant percentage for each captured day. Each day is averaged
+  // only over the tenants that actually reported it, so a tenant that started reporting mid-window
+  // does not drag the earlier points down.
+  const byDate = new Map()
+  scored.forEach((row) => {
+    ;(row.History ?? []).forEach((point) => {
+      const date = String(point?.Date ?? '').slice(0, 10)
+      if (!date) return
+      const entry = byDate.get(date) ?? { total: 0, count: 0 }
+      entry.total += Number(point?.PercentageScore ?? 0)
+      entry.count += 1
+      byDate.set(date, entry)
+    })
+  })
+
+  const trend = [...byDate.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([date, value]) => ({
+      date,
+      percent: value.count ? Math.round((value.total / value.count) * 10) / 10 : 0,
+    }))
+
+  const delta =
+    trend.length > 1
+      ? Math.round((trend[trend.length - 1].percent - trend[0].percent) * 10) / 10
+      : null
+
+  return {
+    average: Math.round(withNames.reduce((sum, row) => sum + row.percent, 0) / withNames.length),
+    worst: sorted[0],
+    best: sorted[sorted.length - 1],
+    scored: withNames.length,
+    trend,
+    delta,
+    // Every scored tenant, worst first — the full-page view's leaderboards slice this.
+    ranked: sorted,
+  }
+}
 
 // Headline collections for the Portfolio info bar. Three, so that with the tenant count they fill
 // CippInfoBar's four-across grid exactly — its divider rules assume four items. Each tile links
@@ -54,9 +124,11 @@ export const useAllTenantsDashboard = () => {
     waiting: true,
   })
 
+  // summaryOnly projects away ResultMarkdown/ResultDataJson server-side — this card only counts
+  // rows, and those two columns are unbounded blobs that otherwise dominate the payload.
   const failedTestsApi = ApiGetCall({
     url: '/api/ListTestResultsTenants',
-    data: { status: 'Failed' },
+    data: { status: 'Failed', summaryOnly: 'true' },
     queryKey: 'AllTenantsDashboard-FailedTests',
     waiting: true,
   })
@@ -363,59 +435,10 @@ export const useAllTenantsDashboard = () => {
 
   /* ------------------------------------------------------------ secure score */
 
-  const secureScore = useMemo(() => {
-    const rows = asArray(secureScoreApi.data)
-    if (!rows.length) return { average: 0, best: null, worst: null, scored: 0 }
-
-    const scored = rows.filter((row) => Number(row?.MaxScore) > 0)
-    if (!scored.length) return { average: 0, best: null, worst: null, scored: 0 }
-
-    const withNames = scored.map((row) => ({
-      tenant: row.Tenant,
-      name: row.TenantName || displayNameByDomain.get(row.Tenant) || row.Tenant,
-      percent: Number(row.PercentageScore ?? 0),
-      current: Number(row.CurrentScore ?? 0),
-      max: Number(row.MaxScore ?? 0),
-    }))
-
-    const sorted = [...withNames].sort((a, b) => a.percent - b.percent)
-
-    // Portfolio trend: average the per-tenant percentage for each captured day. Each day is averaged
-    // only over the tenants that actually reported it, so a tenant that started reporting mid-window
-    // does not drag the earlier points down.
-    const byDate = new Map()
-    scored.forEach((row) => {
-      ;(row.History ?? []).forEach((point) => {
-        const date = String(point?.Date ?? '').slice(0, 10)
-        if (!date) return
-        const entry = byDate.get(date) ?? { total: 0, count: 0 }
-        entry.total += Number(point?.PercentageScore ?? 0)
-        entry.count += 1
-        byDate.set(date, entry)
-      })
-    })
-
-    const trend = [...byDate.entries()]
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([date, value]) => ({
-        date,
-        percent: value.count ? Math.round((value.total / value.count) * 10) / 10 : 0,
-      }))
-
-    const delta =
-      trend.length > 1
-        ? Math.round((trend[trend.length - 1].percent - trend[0].percent) * 10) / 10
-        : null
-
-    return {
-      average: Math.round(withNames.reduce((sum, row) => sum + row.percent, 0) / withNames.length),
-      worst: sorted[0],
-      best: sorted[sorted.length - 1],
-      scored: withNames.length,
-      trend,
-      delta,
-    }
-  }, [secureScoreApi.data, displayNameByDomain])
+  const secureScore = useMemo(
+    () => deriveSecureScoreSummary(asArray(secureScoreApi.data), displayNameByDomain),
+    [secureScoreApi.data, displayNameByDomain]
+  )
 
   /* -------------------------------------------------------------------- logs */
 

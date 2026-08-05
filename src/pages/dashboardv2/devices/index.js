@@ -9,12 +9,14 @@ import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { CippTestDetailOffCanvas } from '../../../components/CippTestDetail/CippTestDetailOffCanvas'
 import { CippReportToolbar } from '../../../components/CippComponents/CippReportToolbar'
 import { CippHead } from '../../../components/CippComponents/CippHead.jsx'
+import { AllTenantsTestResults } from '../../../components/CippAllTenants/AllTenantsTestResults'
 import { useRouter } from 'next/router'
 
 const Page = () => {
   const settings = useSettings()
   const { currentTenant } = settings
   const router = useRouter()
+  const isAllTenants = !currentTenant || currentTenant === 'AllTenants'
   // Only use default if router is ready and reportId is still not present
   const defaultReportId =
     settings.UserSpecificSettings?.defaultTestSuite?.value ||
@@ -29,7 +31,7 @@ const Page = () => {
     url: '/api/ListTests',
     data: { tenantFilter: currentTenant, reportId: selectedReport },
     queryKey: `${currentTenant}-ListTests-${selectedReport}`,
-    waiting: !!currentTenant && !!selectedReport,
+    waiting: !isAllTenants && !!currentTenant && !!selectedReport,
   })
 
   const reportsApi = ApiGetCall({
@@ -83,6 +85,19 @@ const Page = () => {
       type: 'column',
     },
   ]
+
+  if (isAllTenants) {
+    return (
+      <Container maxWidth={false}>
+        <CippHead title="Device Tests" />
+        <AllTenantsTestResults
+          testType="Devices"
+          title="Device tests by tenant"
+          perTenantPath="/dashboardv2/devices"
+        />
+      </Container>
+    )
+  }
 
   return (
     <Container maxWidth={false}>

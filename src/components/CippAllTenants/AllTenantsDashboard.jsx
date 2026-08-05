@@ -136,6 +136,11 @@ export const AllTenantsDashboard = () => {
               title="Secure score"
               subheader="Portfolio average, from the nightly cache"
               api={secureScoreApi}
+              action={
+                <Button component={Link} href="/tenant/administration/securescore" size="small">
+                  View
+                </Button>
+              }
             >
               <Stack direction="row" spacing={3} alignItems="baseline" sx={{ mb: 2 }}>
                 <Box>
@@ -234,6 +239,11 @@ export const AllTenantsDashboard = () => {
               title="Identity posture"
               subheader="Counted in tenants, not users"
               api={failedTestsApi}
+              action={
+                <Button component={Link} href="/dashboardv2/identity" size="small">
+                  View
+                </Button>
+              }
             >
               <Stack direction="row" spacing={4} sx={{ mb: 2 }}>
                 <Box>
@@ -414,6 +424,7 @@ export const AllTenantsDashboard = () => {
               value={tests.high}
               label="High-risk checks failing"
               meta={`across ${tests.highRiskTenantCount} tenants`}
+              link="/dashboardv2/identity"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>

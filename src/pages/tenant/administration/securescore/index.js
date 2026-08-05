@@ -1,84 +1,84 @@
-import { TabbedLayout } from "../../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import tabOptions from "./tabOptions";
-import { useSecureScore } from "../../../../hooks/use-securescore";
-import { CippInfoBar } from "../../../../components/CippCards/CippInfoBar";
-import { Box, Button, Chip, Container, Typography } from "@mui/material";
-import { Grid } from "@mui/system";
-import { CheckCircleIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
-import { Map, Score } from "@mui/icons-material";
-import { CippChartCard } from "../../../../components/CippCards/CippChartCard";
-import TimeAgo from "javascript-time-ago";
-import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
-import DOMPurify from "dompurify";
-import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
-import { useDialog } from "../../../../hooks/use-dialog";
-import { useState } from "react";
-import { CippTableDialog } from "../../../../components/CippComponents/CippTableDialog";
-import { Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
-import { FilterList } from "@mui/icons-material";
-import { CippImageCard } from "../../../../components/CippCards/CippImageCard";
-import { useSettings } from "../../../../hooks/use-settings";
-import { useRouter } from "next/navigation";
+import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import tabOptions from './tabOptions'
+import { useSecureScore } from '../../../../hooks/use-securescore'
+import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
+import { Box, Button, Chip, Container, Typography } from '@mui/material'
+import { Grid } from '@mui/system'
+import { CheckCircleIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
+import { Map, Score } from '@mui/icons-material'
+import { CippChartCard } from '../../../../components/CippCards/CippChartCard'
+import TimeAgo from 'javascript-time-ago'
+import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
+import DOMPurify from 'dompurify'
+import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
+import { useDialog } from '../../../../hooks/use-dialog'
+import { useState } from 'react'
+import { CippTableDialog } from '../../../../components/CippComponents/CippTableDialog'
+import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
+import { FilterList } from '@mui/icons-material'
+import { AllTenantsSecureScoreSummary } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
+import { useSettings } from '../../../../hooks/use-settings'
+import { useRouter } from 'next/navigation'
 
 const Page = () => {
-  const currentTenant = useSettings().currentTenant;
-  const createDialog = useDialog();
-  const secureScore = useSecureScore();
-  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  const [updatesData, setUpdatesData] = useState({ data: {}, ready: false });
-  const cippTableDialog = useDialog();
-  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
-  const [selectedFilter, setSelectedFilter] = useState("all");
-  const router = useRouter();
-  const timeAgo = new TimeAgo("en-US");
+  const currentTenant = useSettings().currentTenant
+  const createDialog = useDialog()
+  const secureScore = useSecureScore()
+  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false })
+  const [updatesData, setUpdatesData] = useState({ data: {}, ready: false })
+  const cippTableDialog = useDialog()
+  const [filterAnchorEl, setFilterAnchorEl] = useState(null)
+  const [selectedFilter, setSelectedFilter] = useState('all')
+  const router = useRouter()
+  const timeAgo = new TimeAgo('en-US')
 
   const openRemediation = (url) => {
-    if (url.startsWith("https")) {
-      window.open(url, "_blank");
+    if (url.startsWith('https')) {
+      window.open(url, '_blank')
     } else {
-      router.push(url);
+      router.push(url)
     }
-  };
+  }
 
   const handleFilterClick = (event) => {
-    setFilterAnchorEl(event.currentTarget);
-  };
+    setFilterAnchorEl(event.currentTarget)
+  }
 
   const handleFilterClose = () => {
-    setFilterAnchorEl(null);
-  };
+    setFilterAnchorEl(null)
+  }
 
   const handleFilterSelect = (filter) => {
-    setSelectedFilter(filter);
-    handleFilterClose();
-  };
+    setSelectedFilter(filter)
+    handleFilterClose()
+  }
 
   const getFilteredControlScores = () => {
-    if (!secureScore.isSuccess) return [];
+    if (!secureScore.isSuccess) return []
 
-    const controlScores = secureScore.translatedData.controlScores || [];
+    const controlScores = secureScore.translatedData.controlScores || []
 
     switch (selectedFilter) {
-      case "completed":
-        return controlScores.filter((score) => score.scoreInPercentage === 100);
-      case "zero":
-        return controlScores.filter((score) => score.scoreInPercentage === 0);
-      case "started":
+      case 'completed':
+        return controlScores.filter((score) => score.scoreInPercentage === 100)
+      case 'zero':
+        return controlScores.filter((score) => score.scoreInPercentage === 0)
+      case 'started':
         return controlScores.filter(
           (score) => score.scoreInPercentage > 0 && score.scoreInPercentage < 100
-        );
+        )
       default:
-        return controlScores;
+        return controlScores
     }
-  };
+  }
 
   const filterOptions = [
-    { value: "all", label: "All Recommendations" },
-    { value: "completed", label: "Completed (100%)" },
-    { value: "zero", label: "Not Started (0%)" },
-    { value: "started", label: "In Progress (Started)" },
-  ];
+    { value: 'all', label: 'All Recommendations' },
+    { value: 'completed', label: 'Completed (100%)' },
+    { value: 'zero', label: 'Not Started (0%)' },
+    { value: 'started', label: 'In Progress (Started)' },
+  ]
   return (
     <Container
       sx={{
@@ -88,22 +88,16 @@ const Page = () => {
       maxWidth={false}
     >
       <Grid container spacing={2}>
-        {currentTenant === "AllTenants" && (
-          <Grid size={{ md: 4, xs: 12 }}>
-            <CippImageCard
-              title="Not supported"
-              imageUrl="/assets/illustrations/undraw_website_ij0l.svg"
-              text={
-                "The Tenant Overview does not support all Tenants, please select a different tenant using the tenant selector. Would you like to see the scores for all tenants? Check out the Best Practices report instead."
-              }
-            />
+        {currentTenant === 'AllTenants' && (
+          <Grid size={{ xs: 12 }}>
+            <AllTenantsSecureScoreSummary />
           </Grid>
         )}
-        {currentTenant !== "AllTenants" && (
+        {currentTenant !== 'AllTenants' && (
           <>
             <Grid
               size={{ md: 12, xs: 12 }}
-              sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+              sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}
             >
               <Button variant="outlined" startIcon={<FilterList />} onClick={handleFilterClick}>
                 Filter: {filterOptions.find((opt) => opt.value === selectedFilter)?.label}
@@ -130,25 +124,25 @@ const Page = () => {
                 data={[
                   {
                     icon: <CheckCircleIcon />,
-                    data: secureScore.translatedData.percentageCurrent + "%",
-                    name: "Current Score",
-                    color: "secondary",
+                    data: secureScore.translatedData.percentageCurrent + '%',
+                    name: 'Current Score',
+                    color: 'secondary',
                   },
                   {
                     icon: <GlobeAltIcon />,
-                    data: secureScore.translatedData.percentageVsAllTenants + "%",
-                    name: "Compared score (All Tenants)",
-                    color: "green",
+                    data: secureScore.translatedData.percentageVsAllTenants + '%',
+                    name: 'Compared score (All Tenants)',
+                    color: 'green',
                   },
                   {
                     icon: <Map />,
-                    data: secureScore.translatedData.percentageVsSimilar + "%",
-                    name: "Compared score (Similar Tenants)",
+                    data: secureScore.translatedData.percentageVsSimilar + '%',
+                    name: 'Compared score (Similar Tenants)',
                   },
                   {
                     icon: <Score />,
                     data: `${secureScore.translatedData.currentScore} of ${secureScore.translatedData.maxScore}`,
-                    name: "Score in points",
+                    name: 'Score in points',
                   },
                 ]}
               />
@@ -156,12 +150,12 @@ const Page = () => {
             <Grid size={{ md: 3, xs: 12 }}>
               <CippChartCard
                 isFetching={secureScore.isFetching}
-                title={"Secure Score"}
+                title={'Secure Score'}
                 chartSeries={
                   secureScore.secureScore.isSuccess
                     ? [
                         {
-                          name: "Secure Score",
+                          name: 'Secure Score',
                           data: secureScore.secureScore.data.Results.map((data) => ({
                             x: timeAgo.format(new Date(data.createdDateTime)),
                             y: data.currentScore,
@@ -174,14 +168,14 @@ const Page = () => {
               />
             </Grid>
 
-            {currentTenant !== "AllTenants" &&
+            {currentTenant !== 'AllTenants' &&
               secureScore.isSuccess &&
               getFilteredControlScores().map((secureScoreControl) => (
                 <Grid size={{ md: 3, xs: 12 }} key={secureScoreControl.controlName}>
                   <CippButtonCard
                     title={secureScoreControl.title}
                     isFetching={secureScore.isFetching}
-                    cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
+                    cardSx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
                     CardButton={
                       <>
                         <Button
@@ -190,11 +184,11 @@ const Page = () => {
                             setActionData({
                               data: secureScoreControl,
                               ready: true,
-                            });
-                            createDialog.handleOpen();
+                            })
+                            createDialog.handleOpen()
                           }}
                           variant="contained"
-                          disabled={secureScoreControl.controlName.startsWith("scid_")}
+                          disabled={secureScoreControl.controlName.startsWith('scid_')}
                         >
                           Change Status
                         </Button>
@@ -212,8 +206,8 @@ const Page = () => {
                               setUpdatesData({
                                 data: secureScoreControl,
                                 ready: true,
-                              });
-                              cippTableDialog.handleOpen();
+                              })
+                              cippTableDialog.handleOpen()
                             }}
                             variant="outlined"
                           >
@@ -227,17 +221,17 @@ const Page = () => {
                       <Chip
                         variant="outlined"
                         label={`${secureScoreControl.scoreInPercentage}% ${
-                          secureScoreControl.controlStateUpdates?.[0]?.state === "ThirdParty"
-                            ? "- Resolved by Third Party"
-                            : ""
+                          secureScoreControl.controlStateUpdates?.[0]?.state === 'ThirdParty'
+                            ? '- Resolved by Third Party'
+                            : ''
                         }`}
                         size="small"
                         color={
                           secureScoreControl.scoreInPercentage === 100
-                            ? "success"
+                            ? 'success'
                             : secureScoreControl.scoreInPercentage > 50
-                            ? "warning"
-                            : "error"
+                              ? 'warning'
+                              : 'error'
                         }
                       />
 
@@ -250,9 +244,9 @@ const Page = () => {
                             variant="body2"
                             color="textPrimary"
                             sx={{
-                              "& a": {
+                              '& a': {
                                 color: (theme) => theme.palette.primary.main,
-                                textDecoration: "underline",
+                                textDecoration: 'underline',
                               },
                             }}
                             dangerouslySetInnerHTML={{
@@ -272,9 +266,9 @@ const Page = () => {
                               variant="body2"
                               color="textPrimary"
                               sx={{
-                                "& a": {
+                                '& a': {
                                   color: (theme) => theme.palette.primary.main,
-                                  textDecoration: "underline",
+                                  textDecoration: 'underline',
                                 },
                               }}
                               dangerouslySetInnerHTML={{
@@ -289,7 +283,7 @@ const Page = () => {
                           <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
                             Threats
                           </Typography>
-                          <Box sx={{ display: "flex", flexWrap: "wrap", mt: 1 }}>
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', mt: 1 }}>
                             {secureScoreControl.threats.map((threat, idx) => (
                               <Chip
                                 key={idx}
@@ -308,7 +302,7 @@ const Page = () => {
                           <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
                             Compliance Frameworks
                           </Typography>
-                          <Box sx={{ display: "flex", flexWrap: "wrap", mt: 1 }}>
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', mt: 1 }}>
                             {secureScoreControl.complianceInformation.map((framework, idx) => (
                               <Chip
                                 key={idx}
@@ -330,7 +324,7 @@ const Page = () => {
                 createDialog={cippTableDialog}
                 title={`Updates for ${updatesData.data.title}`}
                 data={updatesData.data.controlStateUpdates}
-                simpleColumns={["state", "assignedTo", "comment", "updatedBy", "updatedDateTime"]}
+                simpleColumns={['state', 'assignedTo', 'comment', 'updatedBy', 'updatedDateTime']}
               />
             )}
             <CippApiDialog
@@ -338,36 +332,36 @@ const Page = () => {
               title="Confirmation"
               fields={[
                 {
-                  type: "autoComplete",
-                  name: "resolutionType",
+                  type: 'autoComplete',
+                  name: 'resolutionType',
                   options: [
                     {
-                      value: "ThirdParty",
-                      label: "Resolved by Third Party (Mark as completed, receive points)",
+                      value: 'ThirdParty',
+                      label: 'Resolved by Third Party (Mark as completed, receive points)',
                     },
                     {
-                      value: "Ignored",
-                      label: "Ignored / Risk Accepted (Mark as completed, do not receive points)",
+                      value: 'Ignored',
+                      label: 'Ignored / Risk Accepted (Mark as completed, do not receive points)',
                     },
                     {
-                      value: "Default",
-                      label: "Mark as default (Receive points if Microsoft detects as completed)",
+                      value: 'Default',
+                      label: 'Mark as default (Receive points if Microsoft detects as completed)',
                     },
                   ],
-                  label: "Resolution Type",
+                  label: 'Resolution Type',
                 },
                 {
-                  type: "textField",
-                  name: "reason",
-                  label: "Reason for change (Mandatory)",
+                  type: 'textField',
+                  name: 'reason',
+                  label: 'Reason for change (Mandatory)',
                 },
               ]}
               api={{
-                url: "/api/ExecUpdateSecureScore",
-                type: "POST",
+                url: '/api/ExecUpdateSecureScore',
+                type: 'POST',
                 data: {
-                  controlName: "controlName",
-                  vendorInformation: "vendorInformation",
+                  controlName: 'controlName',
+                  vendorInformation: 'vendorInformation',
                 },
               }}
               row={actionData.data}
@@ -376,13 +370,13 @@ const Page = () => {
         )}
       </Grid>
     </Container>
-  );
-};
+  )
+}
 
 Page.getLayout = (page) => (
   <DashboardLayout>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
-);
+)
 
-export default Page;
+export default Page

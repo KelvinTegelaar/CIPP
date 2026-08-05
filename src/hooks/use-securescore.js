@@ -1,65 +1,69 @@
-import { useEffect, useState } from "react";
-import { ApiGetCall } from "../api/ApiCall";
-import { useSettings } from "./use-settings";
-import { getStandards } from "../utils/standards-data";
+import { useEffect, useState } from 'react'
+import { ApiGetCall } from '../api/ApiCall'
+import { useSettings } from './use-settings'
+import { getStandards } from '../utils/standards-data'
 
 export function useSecureScore({ waiting = true } = {}) {
-  const currentTenant = useSettings().currentTenant;
-  const isAllTenants = currentTenant === "AllTenants";
+  const currentTenant = useSettings().currentTenant
+  const isAllTenants = currentTenant === 'AllTenants'
 
-  const [translatedData, setTranslatedData] = useState([]);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const [translatedData, setTranslatedData] = useState([])
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
   const controlScore = ApiGetCall({
-    url: "/api/ListGraphRequest",
+    url: '/api/ListGraphRequest',
     data: {
-      Endpoint: "security/secureScoreControlProfiles",
+      Endpoint: 'security/secureScoreControlProfiles',
       tenantFilter: currentTenant,
       $count: true,
       $top: 999,
     },
     queryKey: `controlScore-${currentTenant}`,
-    waiting: waiting || isAllTenants,
-  });
+    // Never fetch under AllTenants: these are live per-tenant Graph reads whose results the
+    // effects below discard in that mode — the AllTenants view reads the nightly cache instead.
+    waiting: waiting && !isAllTenants,
+  })
 
   const secureScore = ApiGetCall({
-    url: "/api/ListGraphRequest",
+    url: '/api/ListGraphRequest',
     data: {
-      Endpoint: "security/secureScores",
+      Endpoint: 'security/secureScores',
       tenantFilter: currentTenant,
       $count: true,
       noPagination: true,
       $top: 7,
     },
     queryKey: `secureScore-${currentTenant}`,
-    waiting: waiting || isAllTenants,
-  });
+    // Never fetch under AllTenants: these are live per-tenant Graph reads whose results the
+    // effects below discard in that mode — the AllTenants view reads the nightly cache instead.
+    waiting: waiting && !isAllTenants,
+  })
 
   useEffect(() => {
     if (isAllTenants) {
-      setIsFetching(false);
-      setIsSuccess(false);
-      setTranslatedData([]);
-      return;
+      setIsFetching(false)
+      setIsSuccess(false)
+      setTranslatedData([])
+      return
     }
     if (controlScore.isFetching || secureScore.isFetching) {
-      setIsFetching(true);
+      setIsFetching(true)
     } else {
-      setIsFetching(false);
+      setIsFetching(false)
     }
-  }, [controlScore.isFetching, secureScore.isFetching, isAllTenants]);
+  }, [controlScore.isFetching, secureScore.isFetching, isAllTenants])
 
   useEffect(() => {
-    if (isAllTenants) return;
+    if (isAllTenants) return
     if (controlScore.isSuccess && secureScore.isSuccess) {
-      const secureScoreData = secureScore.data.Results[0];
+      const secureScoreData = secureScore.data.Results[0]
       const updatedControlScores = secureScoreData.controlScores.map((control) => {
         const translation = controlScore.data.Results?.find(
-          (controlTranslation) => controlTranslation.id === control.controlName,
-        );
+          (controlTranslation) => controlTranslation.id === control.controlName
+        )
         const remediation = getStandards().find((standard) =>
-          standard.tag?.includes(control.controlName),
-        );
+          standard.tag?.includes(control.controlName)
+        )
         return {
           ...control,
           title: translation?.title,
@@ -67,7 +71,7 @@ export function useSecureScore({ waiting = true } = {}) {
           complianceInformation: translation?.complianceInformation,
           actionUrl: remediation
             ? //this needs to be updated to be a direct url to apply this standard.
-              "/tenant/standards"
+              '/tenant/standards'
             : translation?.actionUrl,
           remediation: remediation
             ? `1. Enable the CIPP Standard: ${remediation.label}`
@@ -78,26 +82,26 @@ export function useSecureScore({ waiting = true } = {}) {
           userImpact: translation?.userImpact,
           vendorInformation: translation?.vendorInformation,
           controlStateUpdates: translation?.controlStateUpdates //remove each controlStateUpdate that has the state 'default' as it is not relevant.
-            ? translation.controlStateUpdates.filter((update) => update.state !== "Default")
+            ? translation.controlStateUpdates.filter((update) => update.state !== 'Default')
             : [],
-        };
-      });
-      updatedControlScores.sort((a, b) => b.scoreInPercentage - a.scoreInPercentage);
+        }
+      })
+      updatedControlScores.sort((a, b) => b.scoreInPercentage - a.scoreInPercentage)
       setTranslatedData({
         ...secureScoreData,
         //secureScoreData.currentscore is the current score, secureScoreData.maxscore is the max score. calculate % reached.
         percentageCurrent: Math.round(
-          (secureScoreData.currentScore / secureScoreData.maxScore) * 100,
+          (secureScoreData.currentScore / secureScoreData.maxScore) * 100
         ),
         percentageVsAllTenants: Math.round(
-          secureScoreData.averageComparativeScores?.[0]?.averageScore,
+          secureScoreData.averageComparativeScores?.[0]?.averageScore
         ),
         percentageVsSimilar: Math.round(
-          secureScoreData.averageComparativeScores?.[1]?.averageScore,
+          secureScoreData.averageComparativeScores?.[1]?.averageScore
         ),
         controlScores: updatedControlScores,
-      });
-      setIsSuccess(true);
+      })
+      setIsSuccess(true)
     }
   }, [
     controlScore.isSuccess,
@@ -105,7 +109,7 @@ export function useSecureScore({ waiting = true } = {}) {
     controlScore.data,
     secureScore.data,
     isAllTenants,
-  ]);
+  ])
 
   return {
     controlScore,
@@ -113,5 +117,5 @@ export function useSecureScore({ waiting = true } = {}) {
     translatedData,
     isFetching,
     isSuccess,
-  };
+  }
 }
