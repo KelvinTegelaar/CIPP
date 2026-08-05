@@ -14,6 +14,9 @@ import en from 'javascript-time-ago/locale/en.json'
 import { createTheme } from '../src/theme'
 import { SettingsContext } from '../src/contexts/settings-context'
 import { handlers } from '../tests/mocks/handlers'
+// require.context polyfill must load in the storybook dev server too, the vitest
+// setup files don't run there
+import '../tests/mocks/require-context'
 
 const mockSettings = {
   currentTenant: 'testdomain.com',

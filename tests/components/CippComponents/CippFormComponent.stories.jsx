@@ -32,6 +32,8 @@ export default {
   component: CippFormComponent,
   tags: ['autodocs'],
   decorators: [FormDecorator],
+  // formControl holds live dom refs, dynamic jsx source serialization stack-overflows on them
+  parameters: { docs: { source: { type: 'code' } } },
   argTypes: {
     type: {
       control: { type: 'select' },

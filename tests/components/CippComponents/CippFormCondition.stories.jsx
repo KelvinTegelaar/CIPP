@@ -7,6 +7,8 @@ export default {
   component: CippFormCondition,
   tags: ['autodocs'],
   decorators: [FormDecorator],
+  // formControl holds live dom refs, dynamic jsx source serialization stack-overflows on them
+  parameters: { docs: { source: { type: 'code' } } },
   argTypes: {
     compareType: {
       control: { type: 'select' },
