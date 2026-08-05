@@ -322,13 +322,19 @@ const CippAddEditUser = (props) => {
     const template = watchedFields.userTemplate.addedFields
     const templateKey = watchedFields.userTemplate.value ?? template.GUID ?? template.templateName
 
+    // Apply a template once per selection. useWatch hands back a freshly cloned userTemplate
+    // whenever any other watched field changes - AddToGroups included - so without this guard the
+    // effect re-fires while the operator is still filling the form and overwrites whatever they
+    // have done to the template-driven fields since. That is what made groups appended after the
+    // template silently disappear (or linger on screen while never reaching the API).
+    if (appliedTemplateKeyRef.current === templateKey) return
+
     // Distinguish the first apply from a switch. On a switch we replace
     // template-driven fields (and clear ones the new template doesn't define)
     // so stale values from the previous template don't linger. On the first
     // apply we only fill fields that have a template value, so we don't clobber
     // input the user already entered or copied from another user.
-    const isSwitch =
-      appliedTemplateKeyRef.current !== null && appliedTemplateKeyRef.current !== templateKey
+    const isSwitch = appliedTemplateKeyRef.current !== null
     appliedTemplateKeyRef.current = templateKey
 
     setSelectedTemplate(template)

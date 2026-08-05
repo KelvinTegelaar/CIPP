@@ -307,7 +307,7 @@ export const CippSSOSettings = () => {
             <Accordion
               disableGutters
               elevation={0}
-              defaultExpanded={!isProvisioned}
+              defaultExpanded={false}
               sx={{ "&:before": { display: "none" } }}
             >
               <AccordionSummary expandIcon={<ExpandMore />} sx={{ px: 0 }}>
