@@ -102,7 +102,7 @@ const toOptionArray = (value) => {
 const buildEditorStages = (templateDefinition) =>
   (
     templateDefinition?.stages ?? [
-      { name: 'Baseline', standards: [], conditions: [], logic: 'and' },
+      { name: 'Default', standards: [], conditions: [], logic: 'and' },
     ]
   ).map((stage) => ({
     name: stage.name,

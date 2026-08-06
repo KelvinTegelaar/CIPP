@@ -341,6 +341,8 @@ const Page = () => {
   const overrideDialog = useDialog()
   const [acceptPathTarget, setAcceptPathTarget] = useState(null)
   const acceptPathDialog = useDialog()
+  const [denyPathTarget, setDenyPathTarget] = useState(null)
+  const denyPathDialog = useDialog()
   const [removeOverrideTarget, setRemoveOverrideTarget] = useState(null)
   const removeOverrideDialog = useDialog()
   const [expandedEvents, setExpandedEvents] = useState(new Set())
@@ -1049,8 +1051,16 @@ const Page = () => {
                             <Chip
                               variant="outlined"
                               size="small"
-                              color="info"
-                              label="Accepted"
+                              color={
+                                acceptedPath.verdict === 'denyDelete'
+                                  ? 'warning'
+                                  : 'info'
+                              }
+                              label={
+                                acceptedPath.verdict === 'denyDelete'
+                                  ? 'Delete Pending'
+                                  : 'Accepted'
+                              }
                             />
                           </Tooltip>
                         ) : (
@@ -1085,21 +1095,37 @@ const Page = () => {
                         Current: {JSON.stringify(entry.ReceivedValue)}
                       </Typography>
                       {!acceptedPath && (
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          startIcon={<CheckCircle />}
-                          sx={{ mt: 1 }}
-                          onClick={() => {
-                            setAcceptPathTarget({
-                              ...row,
-                              path: entry.Property,
-                            })
-                            acceptPathDialog.handleOpen()
-                          }}
-                        >
-                          Accept this property only
-                        </Button>
+                        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<CheckCircle />}
+                            onClick={() => {
+                              setAcceptPathTarget({
+                                ...row,
+                                path: entry.Property,
+                              })
+                              acceptPathDialog.handleOpen()
+                            }}
+                          >
+                            Accept this property only
+                          </Button>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            color="error"
+                            startIcon={<RemoveCircle />}
+                            onClick={() => {
+                              setDenyPathTarget({
+                                ...row,
+                                path: entry.Property,
+                              })
+                              denyPathDialog.handleOpen()
+                            }}
+                          >
+                            Deny & queue deletion
+                          </Button>
+                        </Stack>
                       )}
                     </Box>
                   )
@@ -1139,8 +1165,16 @@ const Page = () => {
                             <Chip
                               variant="outlined"
                               size="small"
-                              color="info"
-                              label="Accepted"
+                              color={
+                                acceptedPath.verdict === 'denyDelete'
+                                  ? 'warning'
+                                  : 'info'
+                              }
+                              label={
+                                acceptedPath.verdict === 'denyDelete'
+                                  ? 'Delete Pending'
+                                  : 'Accepted'
+                              }
                             />
                           </Tooltip>
                         ) : drifted ? (
@@ -1184,18 +1218,31 @@ const Page = () => {
                         {JSON.stringify(getPath(row.currentValue, key))}
                       </Typography>
                       {drifted && !acceptedPath && (
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          startIcon={<CheckCircle />}
-                          sx={{ mt: 1 }}
-                          onClick={() => {
-                            setAcceptPathTarget({ ...row, path: key })
-                            acceptPathDialog.handleOpen()
-                          }}
-                        >
-                          Accept this property only
-                        </Button>
+                        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<CheckCircle />}
+                            onClick={() => {
+                              setAcceptPathTarget({ ...row, path: key })
+                              acceptPathDialog.handleOpen()
+                            }}
+                          >
+                            Accept this property only
+                          </Button>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            color="error"
+                            startIcon={<RemoveCircle />}
+                            onClick={() => {
+                              setDenyPathTarget({ ...row, path: key })
+                              denyPathDialog.handleOpen()
+                            }}
+                          >
+                            Deny & queue deletion
+                          </Button>
+                        </Stack>
                       )}
                     </Box>
                   )
@@ -2026,6 +2073,27 @@ const Page = () => {
             relatedQueryKeys,
           }}
           row={acceptPathTarget}
+        />
+      )}
+      {denyPathTarget && (
+        <CippApiDialog
+          createDialog={denyPathDialog}
+          title="Deny Deviation - Queue Deletion"
+          fields={[{ type: 'textField', name: 'reason', label: 'Reason' }]}
+          api={{
+            url: '/api/ExecUpdateBaselineDeviation',
+            type: 'POST',
+            data: {
+              action: '!DenyPath',
+              tenantFilter: 'tenantFilter',
+              standard: 'standardName',
+              path: 'path',
+            },
+            confirmText:
+              'Deny [path] of [standardLabel]? It stops alerting and shows as Delete Pending - the object is queued for deletion once delete support lands. Nothing is deleted automatically today.',
+            relatedQueryKeys,
+          }}
+          row={denyPathTarget}
         />
       )}
       {removeOverrideTarget && (
