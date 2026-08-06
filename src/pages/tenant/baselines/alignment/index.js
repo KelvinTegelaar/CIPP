@@ -52,6 +52,7 @@ import {
   RemoveCircle,
   TaskAlt,
   Tune,
+  Visibility,
   WarningAmberOutlined,
 } from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
@@ -77,6 +78,8 @@ import { useDialog } from '../../../../hooks/use-dialog'
 import { useSettings } from '../../../../hooks/use-settings'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { parseCippDate } from '../../../../utils/parse-cipp-date'
+import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanvas'
+import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 
 const deviationColors = {
   Compliant: 'success',
@@ -88,6 +91,80 @@ const deviationColors = {
   'Denied - Delete Pending': 'warning',
   'Skipped - No License': 'default',
   'No Data': 'default',
+}
+
+// Identity-carrying tiers (CA/Intune templates): the tier configures a full policy
+// template, so the card shows a View Policy button that opens the template in the
+// same policy viewer the editor's picker preview uses - a raw variables blob means
+// nothing to an operator.
+const templatePolicySources = {
+  intuneTemplate: {
+    title: 'Intune Template',
+    url: '/api/ListIntuneTemplates',
+    queryKey: 'ListIntuneTemplates',
+    property: 'RAWJson',
+    type: 'intune',
+  },
+  caTemplate: {
+    title: 'Conditional Access Policy',
+    url: '/api/ListCATemplates',
+    queryKey: 'ListCATemplates',
+    type: 'default',
+  },
+}
+
+const TierPolicyView = ({ variableKey, templateRef }) => {
+  const [visible, setVisible] = useState(false)
+  const source = templatePolicySources[variableKey]
+  const templatesApi = ApiGetCall({
+    url: source.url,
+    queryKey: source.queryKey,
+    waiting: visible,
+  })
+  const rawRef =
+    templateRef && typeof templateRef === 'object'
+      ? templateRef.value
+      : templateRef
+  const entry = (templatesApi.data ?? []).find(
+    (template) => template.GUID === rawRef
+  )
+  let policy = entry ?? null
+  if (entry && source.property) {
+    try {
+      policy = JSON.parse(entry[source.property])
+    } catch {
+      policy = entry
+    }
+  }
+  return (
+    <>
+      <Button
+        size="small"
+        variant="outlined"
+        startIcon={<Visibility />}
+        onClick={() => setVisible(true)}
+      >
+        View Policy
+      </Button>
+      <CippOffCanvas
+        visible={visible}
+        onClose={() => setVisible(false)}
+        title={source.title}
+        size="xl"
+      >
+        {templatesApi.isFetching ? (
+          <CircularProgress size={24} />
+        ) : policy ? (
+          <CippJsonView object={policy} defaultOpen={true} type={source.type} />
+        ) : (
+          <Typography variant="body2" color="text.secondary">
+            The template could not be found - it may have been deleted from the
+            template library.
+          </Typography>
+        )}
+      </CippOffCanvas>
+    </>
+  )
 }
 
 const propertyList = (properties) => (
@@ -874,17 +951,32 @@ const Page = () => {
                     )}
                   </Stack>
                 )}
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontFamily: 'monospace',
-                    display: 'block',
-                    mt: 0.5,
-                    wordBreak: 'break-word',
-                  }}
-                >
-                  {JSON.stringify(tier.value)}
-                </Typography>
+                {tier.value?.intuneTemplate || tier.value?.caTemplate ? (
+                  <Box sx={{ mt: 1 }}>
+                    <TierPolicyView
+                      variableKey={
+                        tier.value?.intuneTemplate
+                          ? 'intuneTemplate'
+                          : 'caTemplate'
+                      }
+                      templateRef={
+                        tier.value?.intuneTemplate ?? tier.value?.caTemplate
+                      }
+                    />
+                  </Box>
+                ) : (
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontFamily: 'monospace',
+                      display: 'block',
+                      mt: 0.5,
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    {JSON.stringify(tier.value)}
+                  </Typography>
+                )}
                 {tier.effective && tier.templateName === 'Tenant Override' && (
                   <Button
                     size="small"
