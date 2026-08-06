@@ -88,6 +88,22 @@ import { Table, TableRow, TableHeader, TableCell } from '@tiptap/extension-table
 import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { ReportBuilderPDF } from '../../../../components/ReportBuilder/ReportBuilderPDF'
+import {
+  STRUCTURED_BLOCK_TYPES,
+  StructuredBlockCard,
+  createStructuredBlock,
+  isStructuredBlock,
+} from '../../../../components/ReportBuilder/ReportBuilderBlocks'
+import { PAGE_ORIENTATIONS, PAGE_SIZES } from '../../../../components/CippPdf'
+import {
+  DEFAULT_PAGE_SETTINGS,
+  DEFAULT_BRANDING_OPTION,
+  fromReportSettings,
+  resolveBranding,
+  resolvePresetId,
+  serialiseBlock,
+  toReportSettings,
+} from '../../../../components/ReportBuilder/reportSettings'
 import { useRouter } from 'next/router'
 
 /* ── Markdown styles (matches CippTestDetailOffCanvas) ── */
@@ -814,6 +830,8 @@ const Page = () => {
   const settingsForm = useForm({
     defaultValues: { removeRemediation: true, includeRawAttachments: false },
   })
+  const pageSetupForm = useForm({ defaultValues: { ...DEFAULT_PAGE_SETTINGS } })
+  const pageSetupValues = useWatch({ control: pageSetupForm.control })
   const hasDatabaseBlocks = blocks.some((b) => b.type === 'database')
   const scheduleForm = useForm({
     defaultValues: { scheduleName: '', recurrence: null, postExecution: [] },
@@ -878,6 +896,46 @@ const Page = () => {
     queryKey: `${currentTenant}-ListGraphRequest-organization-reportbuilder`,
     waiting: !!currentTenant,
   })
+
+  // Image data is needed here, not just names — the preview renders the preset's logo and cover.
+  const brandingPresetsApi = ApiGetCall({
+    url: '/api/ListBrandingPresets',
+    data: { includeImages: true },
+    queryKey: 'ListBrandingPresets-withImages',
+  })
+
+  const brandingPresets = useMemo(
+    () => (Array.isArray(brandingPresetsApi.data) ? brandingPresetsApi.data : []),
+    [brandingPresetsApi.data]
+  )
+
+  const presetOptions = useMemo(
+    () => [
+      DEFAULT_BRANDING_OPTION,
+      ...brandingPresets.map((preset) => ({ label: preset.name, value: preset.id })),
+    ],
+    [brandingPresets]
+  )
+
+  const reportSettings = useMemo(() => toReportSettings(pageSetupValues || {}), [pageSetupValues])
+
+  // A template that has not picked a preset falls back to whichever one branding settings names as
+  // the default for report-builder reports.
+  const activePresetId = resolvePresetId(
+    reportSettings.brandingPresetId,
+    brandingSettings,
+    'reportBuilder'
+  )
+
+  const effectiveBranding = useMemo(
+    () => resolveBranding(brandingSettings, brandingPresets, activePresetId),
+    [activePresetId, brandingPresets, brandingSettings]
+  )
+
+  const missingPreset =
+    !!reportSettings.brandingPresetId &&
+    brandingPresetsApi.isSuccess &&
+    !brandingPresets.some((preset) => preset.id === reportSettings.brandingPresetId)
 
   const tenantDisplayName =
     organizationApi.data?.Results?.[0]?.displayName || currentTenant || 'Organization'
@@ -1036,16 +1094,44 @@ const Page = () => {
       setBlocks(templateBlocks)
       setTemplateGUID(found.GUID || found.RowKey || null)
       saveForm.setValue('templateName', found.Name || '')
+      // Templates saved before page setup existed have no Settings; the defaults reproduce
+      // exactly what those templates used to render.
+      let savedSettings = found.Settings
+      if (typeof savedSettings === 'string') {
+        try {
+          savedSettings = JSON.parse(savedSettings)
+        } catch {
+          savedSettings = null
+        }
+      }
+      pageSetupForm.reset(fromReportSettings(savedSettings, brandingPresets))
       templateLoadedRef.current = true
     }
-  }, [templateId, templatesApi.data, getTestContent, getTestStatus, saveForm])
+  }, [
+    templateId,
+    templatesApi.data,
+    getTestContent,
+    getTestStatus,
+    saveForm,
+    pageSetupForm,
+    brandingPresets,
+  ])
 
   /* ── Block operations ── */
   const handleAddBlock = () => {
     const type = addBlockForm.getValues('blockType')
     if (!type) return
 
-    if (type.value === 'blank') {
+    if (isStructuredBlock(type.value)) {
+      setBlocks((prev) => [...prev, createStructuredBlock(type.value, `block-${Date.now()}`)])
+      addBlockForm.reset({
+        blockType: null,
+        testSuite: null,
+        selectedTest: [],
+        dbCacheType: null,
+        dbFormat: null,
+      })
+    } else if (type.value === 'blank') {
       setBlocks((prev) => [
         ...prev,
         {
@@ -1163,25 +1249,8 @@ const Page = () => {
         Action: 'save',
         GUID: templateGUID || undefined,
         Name: name,
-        Blocks: blocks.map((b) => ({
-          type: b.type,
-          testId: b.testId || null,
-          testCategory: b.testCategory || null,
-          title: b.title,
-          content:
-            b.type === 'blank'
-              ? b.content
-              : b.type === 'database'
-                ? b.content
-                : b.static
-                  ? b.content
-                  : null,
-          status: b.status || null,
-          static: b.type === 'blank' ? true : b.type === 'database' ? true : b.static,
-          dbType: b.dbType || null,
-          format: b.format || null,
-          selectedHeaders: b.selectedHeaders || null,
-        })),
+        Blocks: blocks.map(serialiseBlock),
+        Settings: reportSettings,
       },
     })
   }
@@ -1203,27 +1272,8 @@ const Page = () => {
           TenantFilter: currentTenant,
           IncludeRawAttachments:
             settingsForm.getValues('includeRawAttachments') && hasDatabaseBlocks ? 'true' : 'false',
-          Blocks: JSON.stringify(
-            blocks.map((b) => ({
-              type: b.type,
-              testId: b.testId || null,
-              testCategory: b.testCategory || null,
-              title: b.title,
-              content:
-                b.type === 'blank'
-                  ? b.content
-                  : b.type === 'database'
-                    ? b.content
-                    : b.static
-                      ? b.content
-                      : null,
-              status: b.status || null,
-              static: b.type === 'blank' ? true : b.type === 'database' ? true : b.static,
-              dbType: b.dbType || null,
-              format: b.format || null,
-              selectedHeaders: b.selectedHeaders || null,
-            }))
-          ),
+          Blocks: JSON.stringify(blocks.map(serialiseBlock)),
+          Settings: JSON.stringify(reportSettings),
         },
         ScheduledTime: Math.floor(Date.now() / 1000),
         Recurrence: values.recurrence || { value: '0', label: 'Once' },
@@ -1243,7 +1293,8 @@ const Page = () => {
           blocks={displayBlocks}
           tenantName={tenantDisplayName}
           templateName={saveForm.getValues('templateName') || 'Custom Report'}
-          brandingSettings={brandingSettings}
+          brandingSettings={effectiveBranding}
+          reportSettings={reportSettings}
         />
       )
       pdf(doc)
@@ -1421,6 +1472,7 @@ const Page = () => {
                       { label: 'Custom Block', value: 'blank' },
                       { label: 'Test Result', value: 'test' },
                       { label: 'Database Data', value: 'database' },
+                      ...STRUCTURED_BLOCK_TYPES,
                     ]}
                   />
                 </Grid>
@@ -1526,6 +1578,59 @@ const Page = () => {
               </Grid>
             </CippButtonCard>
 
+            {/* Page Setup */}
+            <CippButtonCard title="Page Setup & Branding">
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 3 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="brandingPresetId"
+                    label="Branding"
+                    formControl={pageSetupForm}
+                    multiple={false}
+                    creatable={false}
+                    disableClearable={true}
+                    options={presetOptions}
+                    isFetching={brandingPresetsApi.isFetching}
+                  />
+                </Grid>
+                <Grid size={{ xs: 6, md: 2 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="size"
+                    label="Page Size"
+                    formControl={pageSetupForm}
+                    multiple={false}
+                    creatable={false}
+                    disableClearable={true}
+                    options={PAGE_SIZES}
+                  />
+                </Grid>
+                <Grid size={{ xs: 6, md: 2 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="orientation"
+                    label="Orientation"
+                    formControl={pageSetupForm}
+                    multiple={false}
+                    creatable={false}
+                    disableClearable={true}
+                    options={PAGE_ORIENTATIONS}
+                  />
+                </Grid>
+              </Grid>
+              {/* Cover, footer and watermark used to be overridden here as well. They are branding
+                  decisions, and branding presets now carry all of them — so a template says which
+                  branding to render against and nothing more. Two places to set the same thing is
+                  how a template ends up quietly contradicting the preset it points at. */}
+              {missingPreset && (
+                <Alert severity="warning" sx={{ mt: 2 }}>
+                  The branding preset saved with this template no longer exists — the global
+                  branding settings are being used instead.
+                </Alert>
+              )}
+            </CippButtonCard>
+
             {/* Blocks */}
             {blocks.length === 0 ? (
               <Alert severity="info">
@@ -1543,6 +1648,21 @@ const Page = () => {
                           status: getTestStatus(block.testId),
                         }
                       : block
+
+                  if (isStructuredBlock(block.type)) {
+                    return (
+                      <StructuredBlockCard
+                        key={block.id}
+                        block={block}
+                        index={index}
+                        totalBlocks={blocks.length}
+                        onRemove={handleRemoveBlock}
+                        onUpdate={handleUpdateBlock}
+                        onMoveUp={handleMoveBlockUp}
+                        onMoveDown={handleMoveBlockDown}
+                      />
+                    )
+                  }
 
                   if (block.type === 'database') {
                     return (
@@ -1604,7 +1724,8 @@ const Page = () => {
               blocks={displayBlocks}
               tenantName={tenantDisplayName}
               templateName={saveForm.getValues('templateName') || 'Custom Report'}
-              brandingSettings={brandingSettings}
+              brandingSettings={effectiveBranding}
+              reportSettings={reportSettings}
               mode="preview"
             />
           )}

@@ -36,7 +36,13 @@ vi.mock('@react-pdf/renderer', () => {
     PDFViewer: passthrough('div'),
     PDFDownloadLink: passthrough('div'),
     StyleSheet: { create: (styles) => styles },
-    Font: { register: () => {}, registerHyphenationCallback: () => {} },
+    // The kit registers its hyphenation and emoji behaviour globally on import, so the stub has to
+    // carry every `Font.register*` it calls or importing a report throws.
+    Font: {
+      register: () => {},
+      registerHyphenationCallback: () => {},
+      registerEmojiSource: () => {},
+    },
     pdf: () => ({ toBlob: () => Promise.resolve(new Blob()) }),
   }
 })

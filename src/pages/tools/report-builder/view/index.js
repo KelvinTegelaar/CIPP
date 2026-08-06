@@ -54,6 +54,33 @@ const Page = () => {
     }
   }, [report])
 
+  // Page setup saved with the report. Reports generated before it existed have none, and the
+  // renderer's defaults reproduce exactly how they used to look.
+  const reportSettings = useMemo(() => {
+    if (!report?.Settings) return null
+    try {
+      return typeof report.Settings === 'string' ? JSON.parse(report.Settings) : report.Settings
+    } catch {
+      return null
+    }
+  }, [report])
+
+  const brandingPresetsApi = ApiGetCall({
+    url: '/api/ListBrandingPresets',
+    data: { includeImages: true },
+    queryKey: 'ListBrandingPresets-withImages',
+    waiting: !!reportSettings?.brandingPresetId,
+  })
+
+  // A report rendered against a preset keeps rendering against it. If the preset has since been
+  // deleted the global settings stand in, which is a visible change but still a branded report.
+  const effectiveBranding = useMemo(() => {
+    const presetId = reportSettings?.brandingPresetId
+    if (!presetId) return brandingSettings
+    const presets = Array.isArray(brandingPresetsApi.data) ? brandingPresetsApi.data : []
+    return presets.find((preset) => preset.id === presetId) || brandingSettings
+  }, [reportSettings, brandingPresetsApi.data, brandingSettings])
+
   const reportName = report?.TemplateName || 'Generated Report'
   const tenantName = report?.TenantFilter || 'Organization'
 
@@ -67,7 +94,8 @@ const Page = () => {
           blocks={blocks}
           tenantName={tenantName}
           templateName={reportName}
-          brandingSettings={brandingSettings}
+          brandingSettings={effectiveBranding}
+          reportSettings={reportSettings}
           generatedDate={report?.GeneratedAt}
         />
       )
@@ -159,7 +187,8 @@ const Page = () => {
                 blocks={blocks}
                 tenantName={tenantName}
                 templateName={reportName}
-                brandingSettings={brandingSettings}
+                brandingSettings={effectiveBranding}
+                reportSettings={reportSettings}
                 generatedDate={report?.GeneratedAt}
                 mode="preview"
               />

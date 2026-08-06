@@ -1,8 +1,28 @@
 import { useMemo } from 'react'
-import { Document, Page, Text, View, StyleSheet, PDFViewer, Image, Font } from '@react-pdf/renderer'
-import { resolveCoverImage } from '../CippPdf/resolveCoverImage'
+import { Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer'
 import {
-  createTableCellHyphenation,
+  ContentPage,
+  DEFAULT_PAGE_SETUP,
+  HeroPage,
+  ProgressList,
+  ReportChart,
+  ReportDocument,
+  Section,
+  StatRow,
+  StatusText,
+  TABLE_ROW_PADDING,
+  contentWidth,
+  createReportTheme,
+  splitAccentTitle,
+  tableColumns,
+  useReport,
+  useReportStyles,
+  wrapLongTokens,
+} from '../CippPdf'
+
+// Matches the gutter tableColumns leaves between cells.
+const CELL_GUTTER = 6
+import {
   isTableSeparatorRow,
   normaliseTableRow,
   parseTableRow,
@@ -10,306 +30,33 @@ import {
 import { parseInlineMarkdown } from '../../utils/markdown-inline'
 import { htmlToPlainText, parseInlineHtml } from '../../utils/html-inline'
 
-/* ── Emoji support ─────────────────────────────────────────
- * Helvetica has no emoji glyphs.  react-pdf can render emojis
- * as inline Twemoji images via Font.registerEmojiSource().
- * ───────────────────────────────────────────────────────── */
-Font.registerEmojiSource({
-  format: 'png',
-  url: 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/',
-})
+/* ── Report settings ─────────────────────────────────────── */
 
 /**
- * Styles matching the CIPP Executive Report design system exactly.
- * Brand color drives accent throughout.
+ * What a template stores beyond its blocks: the paper, and which branding to render against.
+ *
+ * The cover label and note are fixed here rather than per template. They used to be editable in
+ * page setup alongside footer and watermark overrides, which meant a template could contradict the
+ * branding preset it pointed at — so the branding page showed one thing and the report produced
+ * another.
  */
-const createStyles = (brandColor) =>
-  StyleSheet.create({
-    /* ── Cover page ────────────────────────────────────── */
-    coverPage: {
-      flexDirection: 'column',
-      backgroundColor: '#FFFFFF',
-      fontFamily: 'Helvetica',
-      padding: 60,
-      justifyContent: 'space-between',
-      minHeight: '100%',
-    },
-    coverHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 80,
-    },
-    logoSection: { flexDirection: 'row', alignItems: 'center' },
-    logo: { height: 100, marginRight: 12 },
-    coverHero: {
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-      paddingTop: 40,
-    },
-    coverLabel: {
-      backgroundColor: brandColor,
-      color: '#FFFFFF',
-      fontSize: 10,
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      marginBottom: 30,
-      alignSelf: 'flex-start',
-    },
-    mainTitle: {
-      fontWeight: 'bold',
-      color: '#1A202C',
-      lineHeight: 1.1,
-      marginBottom: 20,
-      letterSpacing: -1,
-      textTransform: 'uppercase',
-    },
-    titleAccent: { color: brandColor },
-    subtitle: {
-      fontSize: 14,
-      color: '#000000',
-      fontWeight: 'normal',
-      lineHeight: 1.5,
-      marginBottom: 40,
-      maxWidth: 400,
-    },
-    tenantCard: {
-      backgroundColor: 'transparent',
-      padding: 0,
-      maxWidth: 400,
-    },
-    tenantName: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: '#000000',
-      marginBottom: 8,
-    },
-    coverFooter: { textAlign: 'center', marginTop: 60 },
-    confidential: {
-      fontSize: 9,
-      color: '#A0AEC0',
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-    },
-    dateStamp: {
-      fontSize: 9,
-      color: '#000000',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    },
-    coverBackground: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      opacity: 0.5,
-    },
+export const DEFAULT_REPORT_SETTINGS = {
+  ...DEFAULT_PAGE_SETUP,
+  coverLabel: 'ASSESSMENT REPORT',
+  coverFooterNote: 'Confidential & Proprietary',
+}
 
-    /* ── Content page ──────────────────────────────────── */
-    page: {
-      flexDirection: 'column',
-      backgroundColor: '#FFFFFF',
-      fontFamily: 'Helvetica',
-      fontSize: 10,
-      lineHeight: 1.4,
-      color: '#2D3748',
-      padding: 40,
-    },
-    pageHeader: {
-      paddingBottom: 12,
-      marginBottom: 0,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-    },
-    pageHeaderDivider: {
-      height: 1,
-      backgroundColor: brandColor,
-      marginBottom: 24,
-    },
-    pageHeaderContent: { flex: 1 },
-    pageTitle: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: '#1A202C',
-      marginBottom: 8,
-      paddingTop: 4,
-      paddingBottom: 4,
-    },
-    pageSubtitle: { fontSize: 11, color: '#4A5568', fontWeight: 'normal' },
-    headerLogo: { height: 30 },
+/**
+ * The branding a template renders against.
+ *
+ * Now simply the branding it was given — a preset, or the default. It used to fold per-template
+ * overrides on top; those are gone, and a stored template that still carries them is rendered by
+ * its preset alone.
+ */
+export const resolveReportBranding = (brandingSettings) => ({ ...brandingSettings })
 
-    /* ── Sections ──────────────────────────────────────── */
-    section: {
-      marginBottom: 24,
-    },
-    sectionTitle: {
-      fontSize: 14,
-      fontWeight: 'bold',
-      color: brandColor,
-      marginBottom: 12,
-      paddingTop: 4,
-      paddingBottom: 4,
-      pageBreakAfter: 'avoid',
-      breakAfter: 'avoid',
-      orphans: 3,
-      widows: 3,
-    },
-    statusText: {
-      fontSize: 9,
-      fontStyle: 'italic',
-    },
-    statusPassed: { color: '#22543D' },
-    statusFailed: { color: '#742A2A' },
-    statusInvestigate: { color: '#744210' },
-    statusSkipped: { color: '#718096' },
-    bodyText: {
-      fontSize: 9,
-      color: '#2D3748',
-      lineHeight: 1.5,
-      marginBottom: 12,
-      textAlign: 'justify',
-    },
-
-    /* ── Tables ────────────────────────────────────────── */
-    controlsTable: {
-      backgroundColor: '#FAFAFA',
-      marginBottom: 8,
-    },
-    tableHeader: {
-      flexDirection: 'row',
-      backgroundColor: brandColor,
-      paddingVertical: 10,
-      paddingHorizontal: 12,
-    },
-    headerCell: {
-      fontSize: 7,
-      fontWeight: 'bold',
-      color: '#FFFFFF',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    },
-    tableRow: {
-      flexDirection: 'row',
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      alignItems: 'flex-start',
-      backgroundColor: '#FFFFFF',
-    },
-    tableRowAlt: {
-      flexDirection: 'row',
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      alignItems: 'flex-start',
-      backgroundColor: '#F7FAFC',
-    },
-    tableCell: {
-      fontSize: 8,
-      color: '#2D3748',
-      lineHeight: 1.3,
-    },
-    tableCellBold: {
-      fontSize: 8,
-      fontWeight: 'bold',
-      color: '#2D3748',
-    },
-
-    /* ── Info boxes ─────────────────────────────────────── */
-    infoBox: {
-      backgroundColor: '#F7FAFC',
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      marginBottom: 12,
-    },
-    infoTitle: {
-      fontSize: 9,
-      fontWeight: 'bold',
-      color: '#2D3748',
-      marginBottom: 6,
-    },
-    infoText: { fontSize: 8, color: '#4A5568', lineHeight: 1.4 },
-
-    /* ── Lists ─────────────────────────────────────────── */
-    listItem: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      marginBottom: 3,
-    },
-    listBullet: {
-      fontSize: 8,
-      color: brandColor,
-      marginRight: 6,
-      fontWeight: 'bold',
-      marginTop: 1,
-      width: 10,
-    },
-    listText: {
-      fontSize: 9,
-      color: '#2D3748',
-      lineHeight: 1.5,
-      flex: 1,
-    },
-    orderedBullet: {
-      fontSize: 8,
-      color: brandColor,
-      marginRight: 6,
-      fontWeight: 'bold',
-      marginTop: 1,
-      width: 14,
-    },
-
-    /* ── Markdown headings ─────────────────────────────── */
-    heading1: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: '#1A202C',
-      marginTop: 10,
-      marginBottom: 6,
-      paddingTop: 4,
-      paddingBottom: 2,
-    },
-    heading2: {
-      fontSize: 14,
-      fontWeight: 'bold',
-      color: brandColor,
-      marginTop: 8,
-      marginBottom: 5,
-      paddingTop: 4,
-      paddingBottom: 2,
-    },
-    heading3: {
-      fontSize: 12,
-      fontWeight: 'bold',
-      color: '#2D3748',
-      marginTop: 6,
-      marginBottom: 4,
-      paddingTop: 3,
-      paddingBottom: 2,
-    },
-
-    /* ── Code ──────────────────────────────────────────── */
-    codeBlock: {
-      backgroundColor: '#F7FAFC',
-      padding: 8,
-      marginVertical: 6,
-      fontSize: 8,
-      fontFamily: 'Courier',
-      color: '#2D3748',
-    },
-    horizontalRule: {
-      height: 1,
-      backgroundColor: '#E2E8F0',
-      marginVertical: 8,
-    },
-
-    footerText: { fontSize: 7, color: '#718096' },
-    pageNumber: { fontSize: 7, color: '#718096', fontWeight: 'bold' },
-  })
+/** The same, as a theme. `ReportDocument` takes the branding and builds the theme itself. */
+export const resolveReportTheme = (brandingSettings) => createReportTheme(brandingSettings)
 
 /* ── Text helpers ────────────────────────────────────────── */
 
@@ -324,13 +71,17 @@ const inlineStyles = StyleSheet.create({
   underline: { textDecoration: 'underline' },
 })
 
-const renderInlineNodes = (nodes, keyPrefix) =>
+/**
+ * `transform` rewrites the leaf text — used by table cells to put a real line break inside a value
+ * too wide for its column, since react-pdf cannot break inside a word without drawing a hyphen.
+ */
+const renderInlineNodes = (nodes, keyPrefix, transform) =>
   nodes.map((node, index) => {
-    if (node.type === 'text') return node.value
+    if (node.type === 'text') return transform ? transform(node.value) : node.value
     const key = `${keyPrefix}-${index}`
     return (
       <Text key={key} style={inlineStyles[node.type]}>
-        {renderInlineNodes(node.children, key)}
+        {renderInlineNodes(node.children, key, transform)}
       </Text>
     )
   })
@@ -338,32 +89,22 @@ const renderInlineNodes = (nodes, keyPrefix) =>
 /**
  * Turn a line of inline Markdown into react-pdf nodes.
  */
-const processInline = (text, keyPrefix = 'inline') =>
-  renderInlineNodes(parseInlineMarkdown(text ?? ''), keyPrefix)
+const processInline = (text, keyPrefix = 'inline', transform) =>
+  renderInlineNodes(parseInlineMarkdown(text ?? ''), keyPrefix, transform)
 
 /**
  * Turn a fragment of inline HTML — as written in the TipTap editor — into react-pdf nodes.
  */
-const processInlineHtml = (html, keyPrefix = 'html') =>
-  renderInlineNodes(parseInlineHtml(html ?? ''), keyPrefix)
+const processInlineHtml = (html, keyPrefix = 'html', transform) =>
+  renderInlineNodes(parseInlineHtml(html ?? ''), keyPrefix, transform)
 
 /* ── Table helpers ───────────────────────────────────────── */
 
 /**
- * Explicit per-column widths, not `flex: 1`.
- *
- * Each row is its own flex container, so `flex: 1` sizes a row's columns by how many cells
- * that row happens to hold. A row that lost a cell — exactly what the old parser did to
- * empty cells — therefore laid its values out on a different grid to the header. A fixed
- * share of the table width keeps every row on the same grid, and gives each cell a definite
- * width for long values to wrap against.
+ * Equal-width columns, via the shared helper so this table and the hand-built ones in the other
+ * reports sit on the same grid rule. See `tableColumns` for why `flex: 1` cannot be used here.
  */
-const columnStyle = (index, count) => ({
-  width: `${(100 / count).toFixed(4)}%`,
-  paddingRight: index === count - 1 ? 0 : 6,
-})
-
-const breakTableCellWord = createTableCellHyphenation()
+const columnStyle = (index, count) => tableColumns(Array(count).fill(1))[index]
 
 /**
  * Render a table from raw cell arrays. When `hasHeader`, the first row declares the column
@@ -373,7 +114,12 @@ const breakTableCellWord = createTableCellHyphenation()
  * `renderCell` decides how a cell's text is read — Markdown for markdown tables, HTML for
  * ones authored in the editor.
  */
-const renderTable = (rows, s, key, { hasHeader = true, renderCell = processInline } = {}) => {
+const renderTable = (
+  rows,
+  s,
+  key,
+  { hasHeader = true, renderCell = processInline, pageSize, orientation } = {}
+) => {
   const headerRow = hasHeader ? rows[0] : null
   const bodyRows = hasHeader ? rows.slice(1) : rows
   const columnCount =
@@ -381,29 +127,40 @@ const renderTable = (rows, s, key, { hasHeader = true, renderCell = processInlin
       ? headerRow.length
       : Math.max(...rows.map((row) => row.length), 1)
 
-  const cells = (row, rowStyle) =>
+  // Columns are equal width here, so each gets its share of the table's usable width. A value wider
+  // than that is given a real line break rather than left to hyphenate — see measureText.js.
+  const columnPoints =
+    (contentWidth(pageSize, orientation) - TABLE_ROW_PADDING * 2) / columnCount - CELL_GUTTER
+  const wrapCell = (bold) => (text) =>
+    wrapLongTokens(text, columnPoints, s.tableCell.fontSize, bold)
+
+  const cells = (row, rowStyle, bold) =>
     normaliseTableRow(row, columnCount).map((cell, ci) => (
-      <Text
-        key={ci}
-        style={[rowStyle(ci), columnStyle(ci, columnCount)]}
-        hyphenationCallback={breakTableCellWord}
-      >
-        {renderCell(cell, `c${ci}`)}
+      <Text key={ci} style={[rowStyle(ci), columnStyle(ci, columnCount)]}>
+        {renderCell(cell, `c${ci}`, wrapCell(bold?.(ci) ?? false))}
       </Text>
     ))
 
   return (
-    <View key={key} style={s.controlsTable}>
+    <View key={key} style={s.table}>
       {headerRow && (
         /* `fixed` repeats the header at the top of every page the table spills onto —
            without it, continued rows sat under no heading at all. */
         <View style={s.tableHeader} fixed>
-          {cells(headerRow, () => s.headerCell)}
+          {cells(headerRow, () => s.tableHeaderCell, () => true)}
         </View>
       )}
       {bodyRows.map((row, ri) => (
-        <View key={ri} style={ri % 2 === 0 ? s.tableRow : s.tableRowAlt} wrap={false}>
-          {cells(row, (ci) => (ci === 0 ? s.tableCellBold : s.tableCell))}
+        <View
+          key={ri}
+          style={ri % 2 === 0 ? s.tableRow : [s.tableRow, s.tableRowAlt]}
+          wrap={false}
+        >
+          {cells(
+            row,
+            (ci) => (ci === 0 ? s.tableCellBold : s.tableCell),
+            (ci) => ci === 0
+          )}
         </View>
       ))}
     </View>
@@ -413,7 +170,7 @@ const renderTable = (rows, s, key, { hasHeader = true, renderCell = processInlin
 /**
  * Convert HTML (from TipTap rich-text editor) to @react-pdf/renderer elements.
  */
-const htmlToElements = (html, s) => {
+const htmlToElements = (html, s, page) => {
   if (!html)
     return [
       <Text key="empty" style={s.bodyText}>
@@ -487,7 +244,12 @@ const htmlToElements = (html, s) => {
           // an editor-authored table loses its header styling and its repeat across pages.
           const hasHeader = /<thead/i.test(tableHtml) || rowIsAllHeaderCells[0] === true
           elements.push(
-            renderTable(allRows, s, key++, { hasHeader, renderCell: processInlineHtml })
+            renderTable(allRows, s, key++, {
+          hasHeader,
+          renderCell: processInlineHtml,
+          pageSize: page?.size,
+          orientation: page?.orientation,
+        })
           )
         }
         continue
@@ -515,11 +277,11 @@ const htmlToElements = (html, s) => {
     } else if (cleaned.match(/<li[^>]*>/)) {
       if (inOrderedList) orderedIndex += 1
       elements.push(
-        <View key={key++} style={s.listItem}>
-          <Text style={inOrderedList ? s.orderedBullet : s.listBullet}>
-            {inOrderedList ? `${orderedIndex}.` : '\u2022'}
+        <View key={key++} style={s.bulletItem}>
+          <Text style={inOrderedList ? s.orderedBullet : s.bulletPoint}>
+            {inOrderedList ? `${orderedIndex}.` : '•'}
           </Text>
-          <Text style={s.listText}>
+          <Text style={s.bulletText}>
             {processInlineHtml(cleaned.replace(/<li[^>]*>/, ''), `li-${key}`)}
           </Text>
         </View>
@@ -557,7 +319,7 @@ const htmlToElements = (html, s) => {
  * Convert Markdown to @react-pdf/renderer elements.
  * Supports headings, lists, tables, code blocks, horizontal rules, and paragraphs.
  */
-const markdownToElements = (markdown, s) => {
+const markdownToElements = (markdown, s, page) => {
   if (!markdown)
     return [
       <Text key="empty" style={s.bodyText}>
@@ -574,7 +336,12 @@ const markdownToElements = (markdown, s) => {
 
   const flushTable = () => {
     if (tableRows.length > 0) {
-      elements.push(renderTable(tableRows, s, key++))
+      elements.push(
+        renderTable(tableRows, s, key++, {
+          pageSize: page?.size,
+          orientation: page?.orientation,
+        })
+      )
     }
     inTable = false
     tableRows = []
@@ -638,17 +405,17 @@ const markdownToElements = (markdown, s) => {
       elements.push(<View key={key++} style={s.horizontalRule} />)
     } else if (line.trim().match(/^[-*+]\s/)) {
       elements.push(
-        <View key={key++} style={s.listItem}>
-          <Text style={s.listBullet}>{'\u2022'}</Text>
-          <Text style={s.listText}>{processInline(line.trim().replace(/^[-*+]\s/, ''))}</Text>
+        <View key={key++} style={s.bulletItem}>
+          <Text style={s.bulletPoint}>{'•'}</Text>
+          <Text style={s.bulletText}>{processInline(line.trim().replace(/^[-*+]\s/, ''))}</Text>
         </View>
       )
     } else if (line.trim().match(/^\d+\.\s/)) {
       const num = line.trim().match(/^(\d+)\./)[1]
       elements.push(
-        <View key={key++} style={s.listItem}>
+        <View key={key++} style={s.bulletItem}>
           <Text style={s.orderedBullet}>{num + '.'}</Text>
-          <Text style={s.listText}>{processInline(line.trim().replace(/^\d+\.\s/, ''))}</Text>
+          <Text style={s.bulletText}>{processInline(line.trim().replace(/^\d+\.\s/, ''))}</Text>
         </View>
       )
     } else {
@@ -670,6 +437,116 @@ const markdownToElements = (markdown, s) => {
       ]
 }
 
+/* ── Blocks ──────────────────────────────────────────────── */
+
+/** A compliance test outcome, in the shared status vocabulary. */
+const statusToneFor = (status) =>
+  ({ Passed: 'pass', Failed: 'fail', Investigate: 'warn', Skipped: 'muted' })[status] ?? null
+
+/**
+ * The body of one block.
+ *
+ * Text blocks are read as Markdown or as HTML depending on where their content was authored;
+ * the data blocks (chart, scorecard, progress) carry structured arrays instead and hand them
+ * straight to the shared primitives.
+ */
+const BlockBody = ({ block, styles: s, page }) => {
+  switch (block.type) {
+    case 'chart':
+      return (
+        <ReportChart
+          kind={block.chartKind || 'bar'}
+          data={block.chartData}
+          caption={block.chartCaption}
+          centreLabel={block.chartCentreLabel}
+          max={block.chartMax}
+        />
+      )
+    case 'scorecard':
+      return <StatRow stats={block.stats || []} />
+    case 'progress':
+      return <ProgressList items={block.items || []} />
+    case 'database':
+      return block.format && block.format !== 'text' ? (
+        <Text style={s.codeBlock}>{block.content || ''}</Text>
+      ) : (
+        <>{markdownToElements(block.content, s, page)}</>
+      )
+    case 'blank':
+      return <>{htmlToElements(block.content, s, page)}</>
+    case 'test':
+      return block.static ? (
+        <>{htmlToElements(block.content, s, page)}</>
+      ) : (
+        <>{markdownToElements(block.content, s, page)}</>
+      )
+    default:
+      return <>{markdownToElements(block.content, s, page)}</>
+  }
+}
+
+/**
+ * One saved block, rendered into the shared Section.
+ *
+ * The block body still needs the stylesheet directly — it renders arbitrary Markdown and HTML into
+ * headings, lists, tables and code, which is far more of the sheet than any component covers — so
+ * this pulls it from the surrounding report rather than having it threaded down from the document.
+ */
+const ReportSection = ({ block, ...props }) => {
+  const { styles: s } = useReportStyles(props)
+  // The page setup decides how wide a table column is, which decides where an over-long value has
+  // to be broken. It comes from the document rather than being passed down block by block.
+  const report = useReport()
+  const page = { size: report.size, orientation: report.orientation }
+  return (
+    <Section title={block.title || undefined}>
+      {block.type === 'test' && block.status ? (
+        <StatusText tone={statusToneFor(block.status)}>Status: {block.status}</StatusText>
+      ) : null}
+      <BlockBody block={block} styles={s} page={page} />
+    </Section>
+  )
+}
+
+/**
+ * Split the flat block list into pages.
+ *
+ * Blocks used to be batched five to a page, which meant a page's length depended on how many
+ * blocks happened to precede it rather than on how much they contained — a five-row table and
+ * five long test results both got one page. Blocks now flow and react-pdf breaks them where they
+ * actually run out of room; an author who wants a specific break inserts a page-break block, and a
+ * hero block takes a full page of its own because its background has to bleed to the paper edge.
+ */
+export const buildPageGroups = (blocks) => {
+  const groups = []
+  let current = []
+
+  const flush = () => {
+    if (current.length > 0) {
+      groups.push({ kind: 'content', blocks: current })
+      current = []
+    }
+  }
+
+  for (const block of blocks) {
+    if (block?.type === 'pagebreak') {
+      flush()
+      continue
+    }
+    if (block?.type === 'hero') {
+      flush()
+      groups.push({ kind: 'hero', block })
+      continue
+    }
+    current.push(block)
+  }
+
+  flush()
+  // An empty report still needs a page, or react-pdf renders a document with no pages at all.
+  if (groups.length === 0) groups.push({ kind: 'content', blocks: [] })
+  return groups
+}
+
 /* ── Document ──────────────────────────────────────────────── */
 
 export const ReportBuilderDocument = ({
@@ -677,12 +554,12 @@ export const ReportBuilderDocument = ({
   tenantName,
   templateName,
   brandingSettings,
+  reportSettings,
   generatedDate,
 }) => {
-  const brandColor = brandingSettings?.colour || '#F77F00'
-  const logo = brandingSettings?.logo || null
-  const coverImage = resolveCoverImage(brandingSettings, '/reportImages/working.jpg')
-  const s = createStyles(brandColor)
+  // Only the paper comes from the template now. Everything else — theme, styles, cover, footer,
+  // watermark — is decided by the branding it points at, via ReportDocument.
+  const settings = { ...DEFAULT_REPORT_SETTINGS, ...(reportSettings || {}) }
 
   const dateObj = generatedDate ? new Date(generatedDate) : new Date()
   const currentDate = dateObj.toLocaleDateString('en-US', {
@@ -692,101 +569,49 @@ export const ReportBuilderDocument = ({
   })
 
   const reportName = templateName || 'Report'
-  const safeBlocks = blocks || []
+  const safeBlocks = Array.isArray(blocks) ? blocks : []
+  const pageGroups = buildPageGroups(safeBlocks)
 
   // Dynamic cover title: shrink font for long names, truncate beyond 50 chars
-  const coverTitle = reportName.length > 50 ? reportName.slice(0, 47) + '...' : reportName
+  const coverTitle = reportName.length > 50 ? `${reportName.slice(0, 47)}...` : reportName
   const coverTitleFontSize = coverTitle.length <= 20 ? 48 : coverTitle.length <= 35 ? 36 : 28
+  const { lead, accent } = splitAccentTitle(coverTitle)
 
   return (
-    <Document>
-      {/* ── Cover Page ── */}
-      <Page size="A4" style={s.coverPage}>
-        {coverImage ? <Image style={s.coverBackground} src={coverImage} /> : null}
-
-        <View style={s.coverHeader}>
-          <View style={s.logoSection}>
-            {logo && <Image style={s.logo} src={logo} cache={false} />}
-          </View>
-          <Text style={s.dateStamp}>{currentDate}</Text>
-        </View>
-
-        <View style={s.coverHero}>
-          <Text style={s.coverLabel}>ASSESSMENT REPORT</Text>
-          <Text style={{ ...s.mainTitle, fontSize: coverTitleFontSize }}>
-            {coverTitle.toUpperCase().split(' ').slice(0, -1).join(' ') || coverTitle.toUpperCase()}
-            {coverTitle.split(' ').length > 1 ? (
-              <>
-                {'\n'}
-                <Text style={s.titleAccent}>
-                  {coverTitle.toUpperCase().split(' ').slice(-1)[0]}
-                </Text>
-              </>
-            ) : null}
-          </Text>
-          <View style={s.tenantCard}>
-            <Text style={s.tenantName}>{tenantName || 'Organization'}</Text>
-          </View>
-        </View>
-
-        <View style={s.coverFooter}>
-          <Text style={s.confidential}>Confidential & Proprietary</Text>
-        </View>
-      </Page>
-
-      {/* ── Content Pages — blocks batched 5 per page ── */}
-      {(() => {
-        const BLOCKS_PER_PAGE = 5
-        const groups = []
-        for (let i = 0; i < safeBlocks.length; i += BLOCKS_PER_PAGE) {
-          groups.push(safeBlocks.slice(i, i + BLOCKS_PER_PAGE))
-        }
-        if (groups.length === 0) groups.push([])
-        return groups.map((group, pageIndex) => (
-          <Page key={pageIndex} size="A4" style={s.page}>
-            <View style={s.pageHeader}>
-              <View style={s.pageHeaderContent}>
-                <Text style={s.pageTitle}>{reportName}</Text>
-                <Text style={s.pageSubtitle}>{currentDate}</Text>
-              </View>
-              {logo && <Image style={s.headerLogo} src={logo} cache={false} />}
-            </View>
-            <View style={s.pageHeaderDivider} />
-
-            {group.map((block, blockIndex) => {
-              const statusStyle =
-                block.status === 'Passed'
-                  ? s.statusPassed
-                  : block.status === 'Failed'
-                    ? s.statusFailed
-                    : block.status === 'Investigate'
-                      ? s.statusInvestigate
-                      : block.status === 'Skipped'
-                        ? s.statusSkipped
-                        : null
-
-              return (
-                <View key={blockIndex} style={s.section}>
-                  {block.title ? <Text style={s.sectionTitle}>{block.title}</Text> : null}
-                  {block.type === 'test' && block.status ? (
-                    <Text style={{ ...s.statusText, ...statusStyle }}>Status: {block.status}</Text>
-                  ) : null}
-                  {block.type === 'database' && block.format && block.format !== 'text' ? (
-                    <Text style={s.codeBlock}>{block.content || ''}</Text>
-                  ) : block.type === 'database' && (!block.format || block.format === 'text') ? (
-                    markdownToElements(block.content, s)
-                  ) : block.type === 'blank' || (block.type === 'test' && block.static) ? (
-                    htmlToElements(block.content, s)
-                  ) : (
-                    markdownToElements(block.content, s)
-                  )}
-                </View>
-              )
-            })}
-          </Page>
-        ))
-      })()}
-    </Document>
+    <ReportDocument
+      brandingSettings={brandingSettings}
+      tenantName={tenantName}
+      reportName={reportName}
+      generatedOn={currentDate}
+      size={settings.size || DEFAULT_PAGE_SETUP.size}
+      orientation={settings.orientation || DEFAULT_PAGE_SETUP.orientation}
+      coverLabel={DEFAULT_REPORT_SETTINGS.coverLabel}
+      coverTitle={lead}
+      coverAccent={accent}
+      coverTitleFontSize={coverTitleFontSize}
+      coverFallbackImage="/reportImages/working.jpg"
+      // Branding's cover note wins; this is only the fallback when none is set.
+      coverFooterNote={DEFAULT_REPORT_SETTINGS.coverFooterNote}
+    >
+      {pageGroups.map((group, groupIndex) =>
+        group.kind === 'hero' ? (
+          <HeroPage
+            key={`hero-${groupIndex}`}
+            backgroundImage={group.block.heroImage || undefined}
+            highlight={group.block.heroHighlight}
+            headline={group.block.title}
+            subText={group.block.heroSubText}
+            footerText={group.block.heroFooterText}
+          />
+        ) : (
+          <ContentPage key={`content-${groupIndex}`} title={reportName} subtitle={currentDate}>
+            {group.blocks.map((block, blockIndex) => (
+              <ReportSection key={block?.id || `${groupIndex}-${blockIndex}`} block={block} />
+            ))}
+          </ContentPage>
+        )
+      )}
+    </ReportDocument>
   )
 }
 
@@ -797,6 +622,7 @@ export const ReportBuilderPDF = ({
   tenantName,
   templateName,
   brandingSettings,
+  reportSettings,
   generatedDate,
   mode = 'preview',
 }) => {
@@ -807,10 +633,11 @@ export const ReportBuilderPDF = ({
         tenantName={tenantName}
         templateName={templateName}
         brandingSettings={brandingSettings}
+        reportSettings={reportSettings}
         generatedDate={generatedDate}
       />
     ),
-    [blocks, tenantName, templateName, brandingSettings, generatedDate]
+    [blocks, tenantName, templateName, brandingSettings, reportSettings, generatedDate]
   )
 
   if (mode === 'preview') {
