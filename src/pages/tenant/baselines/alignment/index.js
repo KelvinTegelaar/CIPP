@@ -766,6 +766,14 @@ const Page = () => {
         <Stack spacing={0}>
           {propertyList(properties)}
           <Stack spacing={2} sx={{ p: 2 }}>
+            {row.status === 'Conflict' && (
+              <Alert severity="error">
+                Two baselines configure this standard at the same assignment
+                level with different settings, so CIPP cannot know which one is
+                intended - nothing is compared or fixed until you edit one of
+                the baselines below.
+              </Alert>
+            )}
             <Typography
               variant="caption"
               sx={{
@@ -810,6 +818,62 @@ const Page = () => {
                     <Chip size="small" color="primary" label="Effective" />
                   )}
                 </Stack>
+                {tier.remediateEnabled !== undefined && (
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    flexWrap="wrap"
+                    useFlexGap
+                    sx={{ mt: 1 }}
+                  >
+                    <Tooltip
+                      title={
+                        tier.remediateEnabled
+                          ? 'Drift is corrected automatically on every run'
+                          : 'Drift is only reported, never corrected automatically'
+                      }
+                    >
+                      <Chip
+                        variant="outlined"
+                        size="small"
+                        color={tier.remediateEnabled ? 'success' : 'default'}
+                        label={
+                          tier.remediateEnabled
+                            ? 'Auto-remediate'
+                            : 'Report only'
+                        }
+                      />
+                    </Tooltip>
+                    <Tooltip
+                      title={
+                        tier.alertEnabled
+                          ? 'An alert fires when a new deviation is detected'
+                          : 'No alerts fire for deviations on this standard'
+                      }
+                    >
+                      <Chip
+                        variant="outlined"
+                        size="small"
+                        color={tier.alertEnabled ? 'info' : 'warning'}
+                        label={
+                          tier.alertEnabled
+                            ? 'Alert on deviation'
+                            : 'Alerts muted'
+                        }
+                      />
+                    </Tooltip>
+                    {tier.alertOnRemediate && (
+                      <Tooltip title="An alert fires whenever auto-remediation corrects this standard">
+                        <Chip
+                          variant="outlined"
+                          size="small"
+                          color="info"
+                          label="Alert on remediation"
+                        />
+                      </Tooltip>
+                    )}
+                  </Stack>
+                )}
                 <Typography
                   variant="caption"
                   sx={{
@@ -842,14 +906,6 @@ const Page = () => {
               When multiple baselines configure the same standard, the baseline
               with the most specific assignment wins.
             </Typography>
-            {row.status === 'Conflict' && (
-              <Alert severity="error">
-                Two baselines configure this standard at the same assignment
-                level with different settings, so CIPP cannot know which one is
-                intended - nothing is compared or fixed until you edit one of
-                the baselines below.
-              </Alert>
-            )}
             {(row.manual?.taskName || row.manual?.instructions) && (
               <>
                 <Typography
