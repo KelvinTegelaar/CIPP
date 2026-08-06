@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { CippAutoComplete } from "../CippComponents/CippAutocomplete";
 import { ApiGetCall } from "../../api/ApiCall";
-import { IconButton, Tooltip, Box } from "@mui/material";
+import { IconButton, Tooltip, Box, Chip, Typography } from "@mui/material";
 import { Refresh } from "@mui/icons-material";
 import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
@@ -383,6 +383,41 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
           isOptionEqualToValue={
             (option, value) => option.value === value.value // Custom equality test to compare the tenant by value
           }
+          // Keep the selected tenant in the list so it stays in its alphabetical position
+          filterSelectedOptions={false}
+          renderOption={(props, option, { selected, index }) => {
+            const { key, ...optionProps } = props;
+            return (
+              <Box component="li" key={`${option.value}-${index}`} {...optionProps}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    width: "100%",
+                    minWidth: 0,
+                  }}
+                >
+                  <Typography variant="body1" noWrap>
+                    {option.label}
+                  </Typography>
+                  {selected && (
+                    <Chip
+                      label="Current"
+                      size="small"
+                      variant="outlined"
+                      sx={{
+                        ml: "auto",
+                        flexShrink: 0,
+                        height: 20,
+                        color: "text.secondary",
+                      }}
+                    />
+                  )}
+                </Box>
+              </Box>
+            );
+          }}
         />
         {refreshButton && (
           <IconButton
