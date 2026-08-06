@@ -865,6 +865,153 @@ const Page = () => {
                 letterSpacing: 0.5,
               }}
             >
+              Effective Configuration
+            </Typography>
+            {(row.inheritance ?? []).map((tier) => (
+              <Box
+                key={tier.templateName}
+                sx={{
+                  p: 1.5,
+                  borderRadius: '12px',
+                  border: '1px solid',
+                  borderColor: tier.effective ? 'primary.main' : 'divider',
+                  bgcolor: 'background.paper',
+                }}
+              >
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 600 }}
+                      noWrap
+                    >
+                      {tier.templateName}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Assigned to: {tier.assignedTo}
+                    </Typography>
+                  </Box>
+                  {tier.effective && (
+                    <Chip size="small" color="primary" label="Effective" />
+                  )}
+                </Stack>
+                {tier.remediateEnabled !== undefined && (
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    flexWrap="wrap"
+                    useFlexGap
+                    sx={{ mt: 1 }}
+                  >
+                    <Tooltip
+                      title={
+                        tier.remediateEnabled
+                          ? 'Drift is corrected automatically on every run'
+                          : 'Drift is only reported, never corrected automatically'
+                      }
+                    >
+                      <Chip
+                        variant="outlined"
+                        size="small"
+                        color={tier.remediateEnabled ? 'success' : 'default'}
+                        label={
+                          tier.remediateEnabled
+                            ? 'Auto-remediate'
+                            : 'Report only'
+                        }
+                      />
+                    </Tooltip>
+                    <Tooltip
+                      title={
+                        tier.alertEnabled
+                          ? 'An alert fires when a new deviation is detected'
+                          : 'No alerts fire for deviations on this standard'
+                      }
+                    >
+                      <Chip
+                        variant="outlined"
+                        size="small"
+                        color={tier.alertEnabled ? 'info' : 'warning'}
+                        label={
+                          tier.alertEnabled
+                            ? 'Alert on deviation'
+                            : 'Alerts muted'
+                        }
+                      />
+                    </Tooltip>
+                    {tier.alertOnRemediate && (
+                      <Tooltip title="An alert fires whenever auto-remediation corrects this standard">
+                        <Chip
+                          variant="outlined"
+                          size="small"
+                          color="info"
+                          label="Alert on remediation"
+                        />
+                      </Tooltip>
+                    )}
+                  </Stack>
+                )}
+                {tier.value?.intuneTemplate || tier.value?.caTemplate ? (
+                  <Box sx={{ mt: 1 }}>
+                    <TierPolicyView
+                      variableKey={
+                        tier.value?.intuneTemplate
+                          ? 'intuneTemplate'
+                          : 'caTemplate'
+                      }
+                      templateRef={
+                        tier.value?.intuneTemplate ?? tier.value?.caTemplate
+                      }
+                    />
+                  </Box>
+                ) : (
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontFamily: 'monospace',
+                      display: 'block',
+                      mt: 0.5,
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    {JSON.stringify(tier.value)}
+                  </Typography>
+                )}
+                {tier.effective && tier.templateName === 'Tenant Override' && (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="error"
+                    startIcon={<LayersClear />}
+                    sx={{ mt: 1 }}
+                    onClick={() => {
+                      setRemoveOverrideTarget(row)
+                      removeOverrideDialog.handleOpen()
+                    }}
+                  >
+                    Remove Override
+                  </Button>
+                )}
+              </Box>
+            ))}
+            <Typography variant="caption" color="text.secondary">
+              When multiple baselines configure the same standard, the baseline
+              with the most specific assignment wins.
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: 600,
+                color: 'text.secondary',
+                textTransform: 'uppercase',
+                letterSpacing: 0.5,
+              }}
+            >
               Expected vs Current
             </Typography>
             {row.currentValue ? (
@@ -1070,153 +1217,6 @@ const Page = () => {
                 </Typography>
               </>
             )}
-            <Typography
-              variant="caption"
-              sx={{
-                fontWeight: 600,
-                color: 'text.secondary',
-                textTransform: 'uppercase',
-                letterSpacing: 0.5,
-              }}
-            >
-              Effective Configuration
-            </Typography>
-            {(row.inheritance ?? []).map((tier) => (
-              <Box
-                key={tier.templateName}
-                sx={{
-                  p: 1.5,
-                  borderRadius: '12px',
-                  border: '1px solid',
-                  borderColor: tier.effective ? 'primary.main' : 'divider',
-                  bgcolor: 'background.paper',
-                }}
-              >
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{ fontWeight: 600 }}
-                      noWrap
-                    >
-                      {tier.templateName}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      Assigned to: {tier.assignedTo}
-                    </Typography>
-                  </Box>
-                  {tier.effective && (
-                    <Chip size="small" color="primary" label="Effective" />
-                  )}
-                </Stack>
-                {tier.remediateEnabled !== undefined && (
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    flexWrap="wrap"
-                    useFlexGap
-                    sx={{ mt: 1 }}
-                  >
-                    <Tooltip
-                      title={
-                        tier.remediateEnabled
-                          ? 'Drift is corrected automatically on every run'
-                          : 'Drift is only reported, never corrected automatically'
-                      }
-                    >
-                      <Chip
-                        variant="outlined"
-                        size="small"
-                        color={tier.remediateEnabled ? 'success' : 'default'}
-                        label={
-                          tier.remediateEnabled
-                            ? 'Auto-remediate'
-                            : 'Report only'
-                        }
-                      />
-                    </Tooltip>
-                    <Tooltip
-                      title={
-                        tier.alertEnabled
-                          ? 'An alert fires when a new deviation is detected'
-                          : 'No alerts fire for deviations on this standard'
-                      }
-                    >
-                      <Chip
-                        variant="outlined"
-                        size="small"
-                        color={tier.alertEnabled ? 'info' : 'warning'}
-                        label={
-                          tier.alertEnabled
-                            ? 'Alert on deviation'
-                            : 'Alerts muted'
-                        }
-                      />
-                    </Tooltip>
-                    {tier.alertOnRemediate && (
-                      <Tooltip title="An alert fires whenever auto-remediation corrects this standard">
-                        <Chip
-                          variant="outlined"
-                          size="small"
-                          color="info"
-                          label="Alert on remediation"
-                        />
-                      </Tooltip>
-                    )}
-                  </Stack>
-                )}
-                {tier.value?.intuneTemplate || tier.value?.caTemplate ? (
-                  <Box sx={{ mt: 1 }}>
-                    <TierPolicyView
-                      variableKey={
-                        tier.value?.intuneTemplate
-                          ? 'intuneTemplate'
-                          : 'caTemplate'
-                      }
-                      templateRef={
-                        tier.value?.intuneTemplate ?? tier.value?.caTemplate
-                      }
-                    />
-                  </Box>
-                ) : (
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontFamily: 'monospace',
-                      display: 'block',
-                      mt: 0.5,
-                      wordBreak: 'break-word',
-                    }}
-                  >
-                    {JSON.stringify(tier.value)}
-                  </Typography>
-                )}
-                {tier.effective && tier.templateName === 'Tenant Override' && (
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="error"
-                    startIcon={<LayersClear />}
-                    sx={{ mt: 1 }}
-                    onClick={() => {
-                      setRemoveOverrideTarget(row)
-                      removeOverrideDialog.handleOpen()
-                    }}
-                  >
-                    Remove Override
-                  </Button>
-                )}
-              </Box>
-            ))}
-            <Typography variant="caption" color="text.secondary">
-              When multiple baselines configure the same standard, the baseline
-              with the most specific assignment wins.
-            </Typography>
             {(row.manual?.taskName || row.manual?.instructions) && (
               <>
                 <Typography
