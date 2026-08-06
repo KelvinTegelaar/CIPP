@@ -2320,6 +2320,7 @@ const Page = () => {
               queryKey={`ListBaselineAlignment-${currentTenant}-standards-table`}
               title={`Applicable Standards - ${tenant.displayName}`}
               data={tenant.rows}
+              isFetching={resolvedApi.isFetching}
               refreshFunction={resolvedApi}
               actions={tenantActions}
               offCanvas={tenantOffCanvas}
@@ -2350,6 +2351,9 @@ const Page = () => {
       key={viewMode}
       title={pageTitle}
       data={isTemplateView ? baselines : standardAggregates}
+      isFetching={
+        isTemplateView ? baselinesApi.isFetching : aggregateApi.isFetching
+      }
       refreshFunction={isTemplateView ? baselinesApi : aggregateApi}
       tenantInTitle={false}
       tableFilter={
