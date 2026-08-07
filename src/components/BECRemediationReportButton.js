@@ -14,6 +14,7 @@ import {
 import { PictureAsPdf, Download, Close } from '@mui/icons-material'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
 import { useSettings } from '../hooks/use-settings'
+import { useReportVariables } from './CippPdf/useReportVariables'
 import {
   AlertBox,
   Bold,
@@ -39,6 +40,7 @@ export const BECRemediationReportDocument = ({
   brandingSettings,
   tenantName,
   remediationData,
+  variables,
 }) => {
   const currentDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
@@ -132,6 +134,7 @@ export const BECRemediationReportDocument = ({
       tenantName={tenantName}
       reportName="BEC Analysis Report"
       generatedOn={currentDate}
+      variables={variables}
       coverLabel="SECURITY INCIDENT REPORT"
       coverTitle="BEC Compromise"
       coverAccent="Analysis"
@@ -806,6 +809,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
   const hasData = userData && becData && !becData.Waiting
 
   const brandingSettings = userSettings?.customBranding
+  const variables = useReportVariables()
 
   const handleOpenDialog = () => {
     setDialogOpen(true)
@@ -862,6 +866,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
                 becData={becData}
                 brandingSettings={brandingSettings}
                 tenantName={tenantName}
+                variables={variables}
               />
             </PDFViewer>
           )}
@@ -875,6 +880,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
                 becData={becData}
                 brandingSettings={brandingSettings}
                 tenantName={tenantName}
+                variables={variables}
               />
             }
             fileName={`BEC_Report_${userData?.userPrincipalName}_${new Date().toISOString().split('T')[0]}.pdf`}

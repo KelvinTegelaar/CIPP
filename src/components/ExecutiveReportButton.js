@@ -25,6 +25,7 @@ import { useSecureScore } from '../hooks/use-securescore'
 import { ApiGetCall } from '../api/ApiCall'
 import { ShadowAIReportPages } from './ShadowAIReportButton'
 import { DEFAULT_BRANDING_OPTION } from './ReportBuilder/reportSettings'
+import { useReportVariables } from './CippPdf/useReportVariables'
 import {
   Bold,
   BulletList,
@@ -78,6 +79,7 @@ export const ExecutiveReportDocument = ({
   tenantName,
   userStats,
   brandingSettings,
+  variables,
   secureScoreData,
   licensingData,
   deviceData,
@@ -535,6 +537,7 @@ export const ExecutiveReportDocument = ({
       tenantName={tenantName}
       reportName="Executive Summary"
       generatedOn={currentDate}
+      variables={variables}
       coverLabel="SECURITY ASSESSMENT"
       coverTitle="Executive"
       coverAccent="Summary"
@@ -1346,6 +1349,8 @@ export const ExecutiveReportButton = (props) => {
     return presets.find((preset) => preset.id === brandingPresetId) || settings.customBranding
   }, [brandingPresetId, brandingPresets.data, settings.customBranding])
 
+  const variables = useReportVariables()
+
   const [sectionConfig, setSectionConfig] = useState({
     executiveSummary: true,
     securityStandards: true,
@@ -1523,6 +1528,7 @@ export const ExecutiveReportButton = (props) => {
           standardsData={driftComplianceData.data}
           organizationData={organizationRecord}
           brandingSettings={brandingSettings}
+          variables={variables}
           secureScoreData={secureScore.isSuccess ? secureScore : null}
           licensingData={licenseData.isSuccess ? licenseData?.data : null}
           deviceData={deviceData.isSuccess ? deviceData?.data?.Results : null}
@@ -1559,6 +1565,9 @@ export const ExecutiveReportButton = (props) => {
     organizationRecord,
     dashboard.data,
     brandingSettings,
+    // Resolved asynchronously, so without this the document keeps the copy built before the
+    // values landed and the footer shows %cippurl% instead of the URL.
+    variables,
     secureScore?.isSuccess,
     licenseData?.isSuccess,
     deviceData?.isSuccess,
@@ -1942,6 +1951,7 @@ export const ExecutiveReportButton = (props) => {
                   standardsData={driftComplianceData.data}
                   organizationData={organizationRecord}
                   brandingSettings={brandingSettings}
+                  variables={variables}
                   secureScoreData={secureScore.isSuccess ? secureScore : null}
                   licensingData={licenseData.isSuccess ? licenseData?.data : null}
                   deviceData={deviceData.isSuccess ? deviceData?.data?.Results : null}

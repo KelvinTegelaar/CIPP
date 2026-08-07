@@ -81,3 +81,5 @@ export {
   normalizeLogoUploads,
   resolveCoverImage,
 } from './resolveCoverImage'
+
+export { useReportVariables } from './useReportVariables'

@@ -29,6 +29,7 @@ import {
 } from '../../utils/markdown-table'
 import { parseInlineMarkdown } from '../../utils/markdown-inline'
 import { htmlToPlainText, parseInlineHtml } from '../../utils/html-inline'
+import { useReportVariables } from '../CippPdf/useReportVariables'
 
 /* ── Report settings ─────────────────────────────────────── */
 
@@ -556,6 +557,7 @@ export const ReportBuilderDocument = ({
   brandingSettings,
   reportSettings,
   generatedDate,
+  variables,
 }) => {
   // Only the paper comes from the template now. Everything else — theme, styles, cover, footer,
   // watermark — is decided by the branding it points at, via ReportDocument.
@@ -583,6 +585,7 @@ export const ReportBuilderDocument = ({
       tenantName={tenantName}
       reportName={reportName}
       generatedOn={currentDate}
+      variables={variables}
       size={settings.size || DEFAULT_PAGE_SETUP.size}
       orientation={settings.orientation || DEFAULT_PAGE_SETUP.orientation}
       coverLabel={DEFAULT_REPORT_SETTINGS.coverLabel}
@@ -626,6 +629,10 @@ export const ReportBuilderPDF = ({
   generatedDate,
   mode = 'preview',
 }) => {
+  // Fetched here rather than by each page that renders a built report: this wrapper is the one
+  // component in the DOM tree that both of them go through.
+  const variables = useReportVariables()
+
   const document = useMemo(
     () => (
       <ReportBuilderDocument
@@ -635,9 +642,10 @@ export const ReportBuilderPDF = ({
         brandingSettings={brandingSettings}
         reportSettings={reportSettings}
         generatedDate={generatedDate}
+        variables={variables}
       />
     ),
-    [blocks, tenantName, templateName, brandingSettings, reportSettings, generatedDate]
+    [blocks, tenantName, templateName, brandingSettings, reportSettings, generatedDate, variables]
   )
 
   if (mode === 'preview') {

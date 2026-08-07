@@ -30,6 +30,7 @@ import {
   severityColour,
 } from './index'
 import { useSettings } from '../../hooks/use-settings'
+import { useReportVariables } from './useReportVariables'
 
 const nz = (value) => Number(value ?? 0)
 const joinList = (value) => (Array.isArray(value) ? value.join(', ') : (value ?? ''))
@@ -60,6 +61,7 @@ export const SharingReportDocument = ({
   brandingSettings,
   tenantName,
   generatedOn,
+  variables,
 }) => {
   const summary = sharingData?.summary ?? {}
   const links = sharingData?.links ?? []
@@ -91,6 +93,7 @@ export const SharingReportDocument = ({
       tenantName={tenantName}
       reportName="Sharing Report"
       generatedOn={generatedOn}
+      variables={variables}
       coverLabel="Data Sharing Review"
       coverTitle="Sharing"
       coverAccent="Report"
@@ -409,6 +412,7 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [generatedOn, setGeneratedOn] = useState('')
   const brandingSettings = useSettings()?.customBranding
+  const variables = useReportVariables()
   const hasData = !!sharingData?.summary
 
   const handleOpen = () => {
@@ -424,6 +428,7 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
       brandingSettings={brandingSettings}
       tenantName={tenantName}
       generatedOn={generatedOn}
+      variables={variables}
     />
   )
 

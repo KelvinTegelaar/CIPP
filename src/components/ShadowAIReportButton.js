@@ -17,6 +17,7 @@ import {
 import { Close, Download, PictureAsPdf, Settings } from '@mui/icons-material'
 import { PDFViewer } from '@react-pdf/renderer'
 import { useSettings } from '../hooks/use-settings'
+import { useReportVariables } from './CippPdf/useReportVariables'
 import {
   Bold,
   BulletList,
@@ -505,10 +506,11 @@ export const ShadowAIReportPages = ({
 
 // Exported so the branding preview can render this report against sample data, and so tests can
 // render it to a real PDF.
-export const ShadowAIReportDocument = ({ tenantName, brandingSettings, ...props }) => (
+export const ShadowAIReportDocument = ({ tenantName, brandingSettings, variables, ...props }) => (
   <ReportDocument
     brandingSettings={brandingSettings}
     tenantName={tenantName}
+    variables={variables}
     reportName="Shadow AI Report"
     coverLabel="AI RISK ASSESSMENT"
     coverTitle="Shadow AI"
@@ -573,6 +575,7 @@ const sectionOptions = [
 export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
   const settings = useSettings()
   const brandingSettings = settings.customBranding
+  const variables = useReportVariables()
   const [previewOpen, setPreviewOpen] = useState(false)
   const [sectionConfig, setSectionConfig] = useState({
     coverPage: true,
@@ -608,11 +611,12 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
         tenantName={tenantName}
         data={data}
         brandingSettings={brandingSettings}
+        variables={variables}
         sectionConfig={sectionConfig}
       />
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [previewOpen, tenantName, data, brandingSettings, JSON.stringify(sectionConfig)])
+  }, [previewOpen, tenantName, data, brandingSettings, variables, JSON.stringify(sectionConfig)])
 
   return (
     <>
@@ -771,6 +775,7 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
                   tenantName={tenantName}
                   data={data}
                   brandingSettings={brandingSettings}
+                  variables={variables}
                   sectionConfig={sectionConfig}
                 />
               )

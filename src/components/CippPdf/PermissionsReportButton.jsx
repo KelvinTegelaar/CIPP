@@ -30,6 +30,7 @@ import {
   severityColour,
 } from './index'
 import { useSettings } from '../../hooks/use-settings'
+import { useReportVariables } from './useReportVariables'
 
 const nz = (value) => Number(value ?? 0)
 const plural = (count, singular, pluralForm) =>
@@ -64,6 +65,7 @@ export const PermissionsReportDocument = ({
   brandingSettings,
   tenantName,
   generatedOn,
+  variables,
 }) => {
   const summary = permissionsData?.summary ?? {}
   const assignments = permissionsData?.assignments ?? []
@@ -93,6 +95,7 @@ export const PermissionsReportDocument = ({
       tenantName={tenantName}
       reportName="Permissions Report"
       generatedOn={generatedOn}
+      variables={variables}
       coverLabel="Access Review"
       coverTitle="Permissions"
       coverAccent="Report"
@@ -418,6 +421,7 @@ export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [generatedOn, setGeneratedOn] = useState('')
   const brandingSettings = useSettings()?.customBranding
+  const variables = useReportVariables()
   const hasData = !!permissionsData?.summary
 
   const handleOpen = () => {
@@ -433,6 +437,7 @@ export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
       brandingSettings={brandingSettings}
       tenantName={tenantName}
       generatedOn={generatedOn}
+      variables={variables}
     />
   )
 
