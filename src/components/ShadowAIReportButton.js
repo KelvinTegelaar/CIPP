@@ -15,34 +15,41 @@ import {
   Typography,
 } from '@mui/material'
 import { Close, Download, PictureAsPdf, Settings } from '@mui/icons-material'
+import { PDFViewer } from '@react-pdf/renderer'
+import { useReportVariables } from './CippPdf/useReportVariables'
+import { useBrandingSettings } from './CippPdf/useBrandingSettings'
 import {
-  Document,
-  Font,
-  Image,
-  Page,
-  Path,
-  PDFViewer,
-  StyleSheet,
-  Svg,
-  Text,
-  View,
-} from '@react-pdf/renderer'
-import { useSettings } from '../hooks/use-settings'
+  Bold,
+  BulletList,
+  Columns,
+  ContentPage,
+  DataTable,
+  DonutChart,
+  HeroPage,
+  InfoBox,
+  Paragraph,
+  ReportDocument,
+  Section,
+  StatRow,
+} from './CippPdf'
 
-// react-pdf hyphenates words by default ("Detected" becomes "De-tected" in narrow stat cards);
-// keep words whole and let them wrap instead.
-Font.registerHyphenationCallback((word) => [word])
+// Risk bands keep the semantic red-to-green scale rather than the brand series: red has to mean
+// high risk whatever colours the MSP picked.
+const RISK_COLOURS = {
+  high: '#EF4444',
+  medium: '#F59E0B',
+  low: '#3B82F6',
+  informational: '#10B981',
+}
+const riskColor = (risk) => RISK_COLOURS[String(risk).toLowerCase()] ?? '#A0AEC0'
 
-// Executive Shadow AI report following the same design system as the executive report:
-// full-bleed cover, branded page headers, black infographic chapter splitters, and data pages.
-// Exported as a pages fragment so the executive report can embed the same pages in its own
-// document (see ExecutiveReportButton).
+// Executive Shadow AI report. Written as a pages fragment with no theme, stylesheet or page
+// furniture of its own, which is what lets the executive report drop the same pages into its own
+// document and have them come out branded identically (see ExecutiveReportButton).
 export const ShadowAIReportPages = ({
   tenantName,
   data,
-  brandingSettings,
   sectionConfig = {
-    coverPage: true,
     executiveSummary: true,
     infographics: true,
     background: true,
@@ -53,476 +60,11 @@ export const ShadowAIReportPages = ({
     recommendations: true,
   },
 }) => {
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-  const brandColor = brandingSettings?.colour || '#F77F00'
-
   const summary = data?.summary ?? {}
   const detectedApps = data?.detectedApps ?? []
   const consentedApps = data?.consentedApps ?? []
   const topTools = data?.topTools ?? []
   const byRisk = data?.byRisk ?? []
-
-  const styles = StyleSheet.create({
-    page: {
-      flexDirection: 'column',
-      backgroundColor: '#FFFFFF',
-      fontFamily: 'Helvetica',
-      fontSize: 10,
-      lineHeight: 1.4,
-      color: '#2D3748',
-      padding: 40,
-      paddingBottom: 60,
-    },
-
-    // COVER PAGE
-    coverPage: {
-      flexDirection: 'column',
-      backgroundColor: '#FFFFFF',
-      fontFamily: 'Helvetica',
-      padding: 60,
-      justifyContent: 'space-between',
-      minHeight: '100%',
-    },
-    coverHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 80,
-    },
-    logo: {
-      height: 100,
-      marginRight: 12,
-    },
-    headerLogo: {
-      height: 30,
-    },
-    dateStamp: {
-      fontSize: 9,
-      color: '#000000',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    },
-    coverHero: {
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-      paddingTop: 40,
-    },
-    coverLabel: {
-      backgroundColor: brandColor,
-      color: '#FFFFFF',
-      fontSize: 10,
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 20,
-      marginBottom: 30,
-      alignSelf: 'flex-start',
-    },
-    mainTitle: {
-      fontSize: 48,
-      fontWeight: 'bold',
-      color: '#1A202C',
-      lineHeight: 1.1,
-      marginBottom: 20,
-      letterSpacing: -1,
-      textTransform: 'uppercase',
-    },
-    titleAccent: {
-      color: brandColor,
-    },
-    subtitle: {
-      fontSize: 14,
-      color: '#000000',
-      fontWeight: 'normal',
-      lineHeight: 1.5,
-      marginBottom: 40,
-      maxWidth: 400,
-    },
-    tenantName: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: '#000000',
-      marginBottom: 8,
-    },
-    coverFooter: {
-      textAlign: 'center',
-      marginTop: 60,
-    },
-    confidential: {
-      fontSize: 9,
-      color: '#A0AEC0',
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-    },
-
-    // CONTENT PAGES
-    pageHeader: {
-      borderBottom: `1px solid ${brandColor}`,
-      paddingBottom: 12,
-      marginBottom: 24,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-    },
-    pageHeaderContent: {
-      flex: 1,
-    },
-    pageTitle: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: '#1A202C',
-      marginBottom: 8,
-    },
-    pageSubtitle: {
-      fontSize: 11,
-      color: '#4A5568',
-      fontWeight: 'normal',
-    },
-    section: {
-      marginBottom: 24,
-    },
-    sectionTitle: {
-      fontSize: 14,
-      fontWeight: 'bold',
-      color: brandColor,
-      marginBottom: 12,
-    },
-    bodyText: {
-      fontSize: 9,
-      color: '#2D3748',
-      lineHeight: 1.5,
-      marginBottom: 12,
-      textAlign: 'justify',
-    },
-
-    // STATS GRID
-    statsGrid: {
-      flexDirection: 'row',
-      gap: 12,
-      marginBottom: 20,
-    },
-    statCard: {
-      flex: 1,
-      backgroundColor: '#FFFFFF',
-      border: `1px solid #E2E8F0`,
-      borderRadius: 6,
-      padding: 16,
-      alignItems: 'center',
-      borderTop: `3px solid ${brandColor}`,
-    },
-    statNumber: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: brandColor,
-      marginBottom: 4,
-    },
-    statLabel: {
-      fontSize: 7,
-      color: '#4A5568',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      textAlign: 'center',
-      fontWeight: 'bold',
-    },
-
-    // TABLES
-    controlsTable: {
-      border: `1px solid #E2E8F0`,
-      borderRadius: 6,
-      overflow: 'hidden',
-    },
-    tableHeader: {
-      flexDirection: 'row',
-      backgroundColor: brandColor,
-      paddingVertical: 10,
-      paddingHorizontal: 12,
-    },
-    headerCell: {
-      fontSize: 7,
-      fontWeight: 'bold',
-      color: '#FFFFFF',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    },
-    tableRow: {
-      flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: '#F7FAFC',
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      alignItems: 'center',
-    },
-    cellName: {
-      fontSize: 8,
-      fontWeight: 'bold',
-      color: '#2D3748',
-    },
-    cellDesc: {
-      fontSize: 7,
-      color: '#4A5568',
-      lineHeight: 1.3,
-    },
-
-    // INFO BOXES
-    infoBox: {
-      backgroundColor: '#FFFFFF',
-      border: `1px solid #E2E8F0`,
-      borderLeft: `4px solid ${brandColor}`,
-      borderRadius: 4,
-      padding: 12,
-      marginBottom: 12,
-    },
-    infoTitle: {
-      fontSize: 9,
-      fontWeight: 'bold',
-      color: '#2D3748',
-      marginBottom: 6,
-    },
-    infoText: {
-      fontSize: 8,
-      color: '#4A5568',
-      lineHeight: 1.4,
-    },
-
-    // RECOMMENDATIONS
-    recommendationsList: {
-      gap: 8,
-    },
-    recommendationItem: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-    },
-    recommendationBullet: {
-      fontSize: 8,
-      color: brandColor,
-      marginRight: 6,
-      fontWeight: 'bold',
-      marginTop: 1,
-    },
-    recommendationText: {
-      fontSize: 8,
-      color: '#2D3748',
-      lineHeight: 1.4,
-      flex: 1,
-    },
-    recommendationLabel: {
-      fontWeight: 'bold',
-    },
-
-    // CHART
-    chartContainer: {
-      backgroundColor: '#FFFFFF',
-      border: `1px solid #E2E8F0`,
-      borderRadius: 6,
-      padding: 16,
-      marginBottom: 20,
-      alignItems: 'center',
-    },
-    chartTitle: {
-      fontSize: 10,
-      fontWeight: 'bold',
-      color: '#2D3748',
-      marginBottom: 12,
-    },
-    svgChart: {
-      width: 400,
-      height: 180,
-      marginBottom: 8,
-    },
-    legendRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 4,
-      alignSelf: 'flex-start',
-    },
-    legendSwatch: {
-      width: 8,
-      height: 8,
-      borderRadius: 4,
-      marginRight: 6,
-    },
-    legendText: {
-      fontSize: 8,
-      color: '#4A5568',
-    },
-
-    // FOOTER
-    footer: {
-      position: 'absolute',
-      bottom: 20,
-      left: 40,
-      right: 40,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      borderTop: '1px solid #E2E8F0',
-      paddingTop: 8,
-    },
-    footerText: {
-      fontSize: 7,
-      color: '#718096',
-    },
-    pageNumber: {
-      fontSize: 7,
-      color: '#718096',
-      fontWeight: 'bold',
-    },
-
-    // BLACK STATISTIC PAGES
-    statPage: {
-      flexDirection: 'column',
-      backgroundColor: '#000000',
-      fontFamily: 'Helvetica',
-      padding: 0,
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      minHeight: '100%',
-      position: 'relative',
-    },
-    statBackground: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      opacity: 0.5,
-    },
-    statOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      padding: 60,
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      zIndex: 10,
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    },
-    statHighlight: {
-      fontSize: 72,
-      color: brandColor,
-      fontWeight: '900',
-      lineHeight: 1,
-      marginBottom: 8,
-    },
-    statSubText: {
-      fontSize: 14,
-      color: '#FFFFFF',
-      fontWeight: 'bold',
-      lineHeight: 1.3,
-      marginBottom: 40,
-    },
-    statFooterText: {
-      position: 'absolute',
-      bottom: 60,
-      right: 60,
-      fontSize: 12,
-      color: '#FFFFFF',
-      fontWeight: 'bold',
-      textAlign: 'right',
-      lineHeight: 1.3,
-    },
-  })
-
-  const PageFooter = () => (
-    <View style={styles.footer}>
-      <Text style={styles.footerText}>{tenantName} - Shadow AI Report</Text>
-      <Text
-        style={styles.pageNumber}
-        render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-      />
-    </View>
-  )
-
-  const ContentPageHeader = ({ title, subtitle }) => (
-    <View style={styles.pageHeader}>
-      <View style={styles.pageHeaderContent}>
-        <Text style={styles.pageTitle}>{title}</Text>
-        <Text style={styles.pageSubtitle}>{subtitle}</Text>
-      </View>
-      {brandingSettings?.logo && (
-        <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-      )}
-    </View>
-  )
-
-  const riskColors = {
-    high: '#EF4444',
-    medium: '#F59E0B',
-    low: '#3B82F6',
-    informational: '#10B981',
-  }
-  const riskColor = (risk) => riskColors[String(risk).toLowerCase()] ?? '#A0AEC0'
-
-  // Donut chart for the risk distribution, same construction as the drift donut in the
-  // executive report.
-  const RiskDonut = () => {
-    const chartData = byRisk.filter((item) => item.tools > 0)
-    const total = chartData.reduce((sum, item) => sum + item.tools, 0)
-    if (total === 0) return null
-
-    const centerX = 200
-    const centerY = 90
-    const outerRadius = 60
-    const innerRadius = 25
-
-    let currentAngle = 0
-    const slices = chartData.map((item) => {
-      // Cap a full-circle slice just below 360 degrees - an arc with identical start and
-      // end points renders as nothing.
-      const angle = Math.min((item.tools / total) * 360, 359.99)
-      const startAngle = currentAngle
-      const endAngle = currentAngle + angle
-      currentAngle = endAngle
-
-      const outerStartX = centerX + outerRadius * Math.cos((startAngle * Math.PI) / 180)
-      const outerStartY = centerY + outerRadius * Math.sin((startAngle * Math.PI) / 180)
-      const outerEndX = centerX + outerRadius * Math.cos((endAngle * Math.PI) / 180)
-      const outerEndY = centerY + outerRadius * Math.sin((endAngle * Math.PI) / 180)
-      const innerStartX = centerX + innerRadius * Math.cos((startAngle * Math.PI) / 180)
-      const innerStartY = centerY + innerRadius * Math.sin((startAngle * Math.PI) / 180)
-      const innerEndX = centerX + innerRadius * Math.cos((endAngle * Math.PI) / 180)
-      const innerEndY = centerY + innerRadius * Math.sin((endAngle * Math.PI) / 180)
-      const largeArcFlag = angle > 180 ? 1 : 0
-
-      const pathData = [
-        `M ${outerStartX} ${outerStartY}`,
-        `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${outerEndX} ${outerEndY}`,
-        `L ${innerEndX} ${innerEndY}`,
-        `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}`,
-        'Z',
-      ].join(' ')
-
-      return { pathData, color: riskColor(item.risk) }
-    })
-
-    return (
-      <View style={styles.chartContainer} wrap={false}>
-        <Text style={styles.chartTitle}>AI Tool Risk Distribution</Text>
-        <Svg style={styles.svgChart} viewBox="0 0 400 180">
-          {slices.map((slice, index) => (
-            <Path key={index} d={slice.pathData} fill={slice.color} />
-          ))}
-        </Svg>
-        {chartData.map((item) => (
-          <View style={styles.legendRow} key={item.risk}>
-            <View style={[styles.legendSwatch, { backgroundColor: riskColor(item.risk) }]} />
-            <Text style={styles.legendText}>
-              {item.risk}: {item.tools} {item.tools === 1 ? 'tool' : 'tools'}
-            </Text>
-          </View>
-        ))}
-      </View>
-    )
-  }
 
   const riskAreas = [
     {
@@ -636,294 +178,213 @@ export const ShadowAIReportPages = ({
 
   return (
     <>
-      {/* COVER PAGE */}
-      {sectionConfig.coverPage && (
-        <Page size="A4" style={styles.coverPage}>
-          <Image style={styles.statBackground} src="/reportImages/city.jpg" />
-          <View style={styles.coverHeader}>
-            <View>
-              {brandingSettings?.logo && (
-                <Image style={styles.logo} src={brandingSettings.logo} cache={false} />
-              )}
-            </View>
-            <Text style={styles.dateStamp}>{currentDate}</Text>
-          </View>
-
-          <View style={styles.coverHero}>
-            <Text style={styles.coverLabel}>AI RISK ASSESSMENT</Text>
-
-            <Text style={styles.mainTitle}>
-              Shadow AI{'\n'}
-              <Text style={styles.titleAccent}>Report</Text>
-            </Text>
-
-            <Text style={styles.subtitle}>
-              Discovery and risk assessment of AI tools in use across managed devices and cloud
-              applications
-            </Text>
-
-            <Text style={styles.tenantName}>{tenantName || 'Organization Name'}</Text>
-          </View>
-
-          <View style={styles.coverFooter}>
-            <Text style={styles.confidential}>Confidential & Proprietary</Text>
-          </View>
-        </Page>
-      )}
-
-      {/* EXECUTIVE SUMMARY */}
+      {/* AI SUMMARY. Not "Executive Summary": these pages are appended to the executive report,
+          which opens with a page of that name, so two unrelated sections carried the same
+          heading. */}
       {sectionConfig.executiveSummary && (
-        <Page size="A4" style={styles.page}>
-          <ContentPageHeader
-            title="Executive Summary"
-            subtitle="Strategic overview of AI usage in your Microsoft 365 environment"
-          />
-
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
+        <ContentPage
+          title="AI Summary"
+          subtitle="Strategic overview of AI usage in your Microsoft 365 environment"
+        >
+          <Section>
+            <Paragraph>
               This report identifies the artificial intelligence tools discovered in the{' '}
-              <Text style={{ fontWeight: 'bold' }}>{tenantName || 'your organization'}</Text>{' '}
-              environment, combining software inventory from managed devices (Intune) with cloud
-              application consent data from Entra ID. Each tool is matched against a curated catalog
-              of known AI services and assigned a risk level based on its data handling practices.
-            </Text>
-            <Text style={styles.bodyText}>
+              <Bold>{tenantName || 'your organization'}</Bold> environment, combining software
+              inventory from managed devices (Intune) with cloud application consent data from Entra
+              ID. Each tool is matched against a curated catalog of known AI services and assigned a
+              risk level based on its data handling practices.
+            </Paragraph>
+            <Paragraph>
               Tools that have been explicitly approved are marked as company sanctioned and report
               the Informational risk level. Everything else represents shadow AI: tools adopted by
               employees without review or approval, whose handling of company data is unknown.
-            </Text>
-          </View>
+            </Paragraph>
+          </Section>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>AI Usage Overview</Text>
-            <View style={styles.statsGrid} wrap={false}>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>{summary.aiToolsDetected ?? 0}</Text>
-                <Text style={styles.statLabel}>AI Tools</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>{summary.deviceInstalls ?? 0}</Text>
-                <Text style={styles.statLabel}>Device Installs</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>{summary.consentedAiApps ?? 0}</Text>
-                <Text style={styles.statLabel}>Entra AI Apps</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={[styles.statNumber, { color: '#EF4444' }]}>
-                  {summary.highRiskTools ?? 0}
-                </Text>
-                <Text style={styles.statLabel}>High Risk</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={[styles.statNumber, { color: '#10B981' }]}>
-                  {summary.sanctionedTools ?? 0}
-                </Text>
-                <Text style={styles.statLabel}>Sanctioned</Text>
-              </View>
-            </View>
-          </View>
+          <Section title="AI Usage Overview">
+            <StatRow
+              stats={[
+                { value: summary.aiToolsDetected ?? 0, label: 'AI Tools' },
+                { value: summary.deviceInstalls ?? 0, label: 'Device Installs' },
+                { value: summary.consentedAiApps ?? 0, label: 'Entra AI Apps' },
+                {
+                  value: summary.highRiskTools ?? 0,
+                  label: 'High Risk',
+                  colour: riskColor('high'),
+                },
+                {
+                  value: summary.sanctionedTools ?? 0,
+                  label: 'Sanctioned',
+                  colour: riskColor('informational'),
+                },
+              ]}
+            />
+          </Section>
 
           {topTools.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Most Used AI Tools</Text>
-              <View style={styles.controlsTable}>
-                <View style={styles.tableHeader}>
-                  <Text style={[styles.headerCell, { flex: 3 }]}>Tool</Text>
-                  <Text style={[styles.headerCell, { flex: 3, marginLeft: 8 }]}>Category</Text>
-                  <Text style={[styles.headerCell, { flex: 2, marginLeft: 8 }]}>Status</Text>
-                  <Text style={[styles.headerCell, { flex: 1.5, marginLeft: 8 }]}>Devices</Text>
-                  <Text style={[styles.headerCell, { flex: 1.5, marginLeft: 8 }]}>Users (7d)</Text>
-                </View>
-                {topTools.map((tool, index) => (
-                  <View style={styles.tableRow} key={`${tool.tool}-${index}`} wrap={false}>
-                    <Text style={[styles.cellName, { flex: 3 }]}>{tool.tool}</Text>
-                    <Text style={[styles.cellDesc, { flex: 3, marginLeft: 8 }]}>
-                      {tool.category}
-                    </Text>
-                    <Text style={[styles.cellDesc, { flex: 2, marginLeft: 8 }]}>
-                      {tool.status ?? 'Unsanctioned'}
-                    </Text>
-                    <Text style={[styles.cellDesc, { flex: 1.5, marginLeft: 8 }]}>
-                      {tool.devices}
-                    </Text>
-                    <Text style={[styles.cellDesc, { flex: 1.5, marginLeft: 8 }]}>
-                      {tool.users}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
+            <Section title="Most Used AI Tools">
+              <DataTable
+                limit={topTools.length}
+                columns={[
+                  { header: 'Tool', key: 'tool', width: 3, bold: true },
+                  { header: 'Category', key: 'category', width: 3 },
+                  { header: 'Status', key: 'status', width: 2 },
+                  { header: 'Devices', key: 'devices', width: 1.5 },
+                  { header: 'Users (7d)', key: 'users', width: 1.5 },
+                ]}
+                rows={topTools.map((tool) => ({
+                  ...tool,
+                  status: tool.status ?? 'Unsanctioned',
+                }))}
+              />
+            </Section>
           )}
-
-          <PageFooter />
-        </Page>
+        </ContentPage>
       )}
 
-      {/* STATISTIC PAGE - CHAPTER SPLITTER */}
+      {/* CHAPTER SPLITTER */}
       {sectionConfig.infographics && (
-        <Page size="A4" style={styles.statPage}>
-          <Image style={styles.statBackground} src="/reportImages/laptop.jpg" />
-          <View style={styles.statOverlay}>
-            <Text style={styles.statHighlight}>75%</Text>
-            <Text style={styles.statSubText}>
+        <HeroPage
+          backgroundImage="/reportImages/laptop.jpg"
+          highlight="75%"
+          subText={
+            <>
               of knowledge workers already{'\n'}
-              use <Text style={{ fontWeight: 'bold' }}>generative AI</Text> at work -{'\n'}
+              use <Bold>generative AI</Bold> at work -{'\n'}
               most without their employer knowing
-            </Text>
-          </View>
-          <Text style={styles.statFooterText}>
-            <Text style={{ fontWeight: 'bold' }}>Visibility</Text> is the first step{'\n'}
-            to <Text style={{ fontWeight: 'bold' }}>control</Text>
-          </Text>
-        </Page>
+            </>
+          }
+          footerText={
+            <>
+              <Bold>Visibility</Bold> is the first step{'\n'}
+              to <Bold>control</Bold>
+            </>
+          }
+        />
       )}
 
       {/* UNDERSTANDING SHADOW AI */}
       {sectionConfig.background && (
-        <Page size="A4" style={styles.page}>
-          <ContentPageHeader
-            title="Understanding Shadow AI"
-            subtitle="What unmanaged AI usage means for your organization"
-          />
-
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
+        <ContentPage
+          title="Understanding Shadow AI"
+          subtitle="What unmanaged AI usage means for your organization"
+        >
+          <Section>
+            <Paragraph>
               Shadow AI is the use of artificial intelligence tools by employees without the
               knowledge or approval of the organization - the AI-era equivalent of shadow IT.
               Because most AI tools are free, browser-based and immediately useful, adoption happens
               quietly and quickly: an employee pastes a customer email into a chatbot to draft a
               reply, uploads a spreadsheet for analysis, or installs an AI notetaker that joins
               every meeting.
-            </Text>
-            <Text style={styles.bodyText}>
+            </Paragraph>
+            <Paragraph>
               The goal of a shadow AI program is not zero AI usage, but zero unsanctioned usage.
               Every tool in this report should end up either approved and managed, or replaced and
               blocked. The four risk areas below explain why unmanaged usage deserves attention.
-            </Text>
-          </View>
+            </Paragraph>
+          </Section>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Key Risk Areas</Text>
+          <Section title="Key Risk Areas">
             {riskAreas.map((area) => (
-              <View
-                style={[styles.infoBox, { borderLeft: `4px solid ${area.color}` }]}
-                key={area.title}
-                wrap={false}
-              >
-                <Text style={styles.infoTitle}>{area.title}</Text>
-                <Text style={styles.infoText}>{area.text}</Text>
-              </View>
+              <InfoBox key={area.title} title={area.title} colour={area.color}>
+                {area.text}
+              </InfoBox>
             ))}
-          </View>
-
-          <PageFooter />
-        </Page>
+          </Section>
+        </ContentPage>
       )}
 
       {/* RISK LEVELS & DISTRIBUTION */}
       {sectionConfig.riskLevels && (
-        <Page size="A4" style={styles.page}>
-          <ContentPageHeader
-            title="AI Tool Risk Levels"
-            subtitle="How risk is assigned and how it is distributed in this tenant"
-          />
-
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
+        <ContentPage
+          title="AI Tool Risk Levels"
+          subtitle="How risk is assigned and how it is distributed in this tenant"
+        >
+          <Section>
+            <Paragraph>
               Detected tools are matched against a curated catalog of known AI services, each
               carrying a risk classification based on its data handling practices, account model and
               enterprise controls. Marking a tool as company sanctioned overrides its catalog risk
               with the Informational level, so the figures below reflect only unapproved use.
-            </Text>
-          </View>
+            </Paragraph>
+          </Section>
 
-          <RiskDonut />
+          <DonutChart
+            title="AI Tool Risk Distribution"
+            centreLabel="Tools"
+            data={byRisk.map((item) => ({
+              label: item.risk,
+              value: item.tools,
+              colour: riskColor(item.risk),
+            }))}
+          />
 
-          <View style={styles.section}>
+          <Section>
             {[0, 2].map((start) => (
-              <View style={{ flexDirection: 'row', gap: 12 }} key={start} wrap={false}>
+              <Columns key={start}>
                 {riskLevels.slice(start, start + 2).map((level) => (
-                  <View
-                    style={[
-                      styles.infoBox,
-                      { flex: 1, borderLeft: `4px solid ${riskColor(level.name)}` },
-                    ]}
+                  <InfoBox
                     key={level.name}
+                    title={level.name}
+                    colour={riskColor(level.name)}
+                    tintTitle
                   >
-                    <Text style={[styles.infoTitle, { color: riskColor(level.name) }]}>
-                      {level.name}
-                    </Text>
-                    <Text style={styles.infoText}>{level.text}</Text>
-                  </View>
+                    {level.text}
+                  </InfoBox>
                 ))}
-              </View>
+              </Columns>
             ))}
-          </View>
-
-          <PageFooter />
-        </Page>
+          </Section>
+        </ContentPage>
       )}
 
       {/* SANCTIONED TOOLS */}
       {sectionConfig.sanctionedTools && sanctionedToolsList.length > 0 && (
-        <Page size="A4" style={styles.page}>
-          <ContentPageHeader
-            title="Company Sanctioned AI Tools"
-            subtitle="AI tools that are approved for use in this organization"
-          />
-
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
+        <ContentPage
+          title="Company Sanctioned AI Tools"
+          subtitle="AI tools that are approved for use in this organization"
+        >
+          <Section>
+            <Paragraph>
               The tools listed below are permitted in this environment. They are allowed either
               because a business justification exists for their use, or because the system
               administrator has explicitly approved these tools for deployment. Sanctioned tools
               report the Informational risk level and are excluded from the shadow AI risk figures
               in this report; they remain listed for visibility into where AI is used across the
               organization.
-            </Text>
-            <Text style={styles.bodyText}>
+            </Paragraph>
+            <Paragraph>
               Approval is not permanent: sanctioned tools should be reviewed periodically to confirm
               that the plan in use, the vendor's data handling terms and the business justification
               still hold.
-            </Text>
-          </View>
+            </Paragraph>
+          </Section>
 
-          <View style={styles.section}>
-            <View style={styles.controlsTable}>
-              <View style={styles.tableHeader}>
-                <Text style={[styles.headerCell, { flex: 3 }]}>Tool</Text>
-                <Text style={[styles.headerCell, { flex: 3, marginLeft: 8 }]}>Vendor</Text>
-                <Text style={[styles.headerCell, { flex: 3, marginLeft: 8 }]}>Category</Text>
-                <Text style={[styles.headerCell, { flex: 2, marginLeft: 8 }]}>Devices</Text>
-                <Text style={[styles.headerCell, { flex: 2, marginLeft: 8 }]}>Users (7d)</Text>
-              </View>
-              {sanctionedToolsList.map((tool, index) => (
-                <View style={styles.tableRow} key={`${tool.tool}-${index}`} wrap={false}>
-                  <Text style={[styles.cellName, { flex: 3 }]}>{tool.tool}</Text>
-                  <Text style={[styles.cellDesc, { flex: 3, marginLeft: 8 }]}>{tool.vendor}</Text>
-                  <Text style={[styles.cellDesc, { flex: 3, marginLeft: 8 }]}>{tool.category}</Text>
-                  <Text style={[styles.cellDesc, { flex: 2, marginLeft: 8 }]}>{tool.devices}</Text>
-                  <Text style={[styles.cellDesc, { flex: 2, marginLeft: 8 }]}>{tool.users}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          <PageFooter />
-        </Page>
+          <Section>
+            <DataTable
+              limit={sanctionedToolsList.length}
+              columns={[
+                { header: 'Tool', key: 'tool', width: 3, bold: true },
+                { header: 'Vendor', key: 'vendor', width: 3 },
+                { header: 'Category', key: 'category', width: 3 },
+                { header: 'Devices', key: 'devices', width: 2 },
+                { header: 'Users (7d)', key: 'users', width: 2 },
+              ]}
+              rows={sanctionedToolsList}
+            />
+          </Section>
+        </ContentPage>
       )}
 
       {/* DETECTED SOFTWARE */}
       {sectionConfig.detectedSoftware && (
-        <Page size="A4" style={styles.page}>
-          <ContentPageHeader
-            title="AI Software on Managed Devices"
-            subtitle="AI applications found in the Intune software inventory"
-          />
-
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
+        <ContentPage
+          title="AI Software on Managed Devices"
+          subtitle="AI applications found in the Intune software inventory"
+        >
+          <Section>
+            <Paragraph>
               The following AI applications were detected in the software inventory of managed
               devices
               {detectedApps.length > detectedRows.length
@@ -931,193 +392,136 @@ export const ShadowAIReportPages = ({
                 : ''}
               . Device counts indicate how widely each application has spread through the
               environment.
-            </Text>
-          </View>
+            </Paragraph>
+          </Section>
 
-          <View style={styles.section}>
-            {detectedRows.length === 0 ? (
-              <Text style={styles.bodyText}>
-                No AI software was detected on managed devices during the last inventory sync.
-              </Text>
-            ) : (
-              <View style={styles.controlsTable}>
-                <View style={styles.tableHeader}>
-                  <Text style={[styles.headerCell, { flex: 4 }]}>Application</Text>
-                  <Text style={[styles.headerCell, { flex: 3, marginLeft: 8 }]}>AI Tool</Text>
-                  <Text style={[styles.headerCell, { flex: 3, marginLeft: 8 }]}>Category</Text>
-                  <Text style={[styles.headerCell, { flex: 2, marginLeft: 8 }]}>Risk</Text>
-                  <Text style={[styles.headerCell, { flex: 2.5, marginLeft: 8 }]}>Status</Text>
-                  <Text style={[styles.headerCell, { flex: 1.5, marginLeft: 8 }]}>Devices</Text>
-                </View>
-                {detectedRows.map((app, index) => (
-                  <View style={styles.tableRow} key={`${app.application}-${index}`} wrap={false}>
-                    <Text style={[styles.cellName, { flex: 4 }]}>{app.application}</Text>
-                    <Text style={[styles.cellDesc, { flex: 3, marginLeft: 8 }]}>{app.aiTool}</Text>
-                    <Text style={[styles.cellDesc, { flex: 3, marginLeft: 8 }]}>
-                      {app.category}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.cellDesc,
-                        { flex: 2, marginLeft: 8, fontWeight: 'bold', color: riskColor(app.risk) },
-                      ]}
-                    >
-                      {app.risk}
-                    </Text>
-                    <Text style={[styles.cellDesc, { flex: 2.5, marginLeft: 8 }]}>
-                      {app.status}
-                    </Text>
-                    <Text style={[styles.cellDesc, { flex: 1.5, marginLeft: 8 }]}>
-                      {app.deviceCount}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            )}
-          </View>
-
-          <PageFooter />
-        </Page>
+          <Section>
+            <DataTable
+              limit={detectedRows.length}
+              emptyText="No AI software was detected on managed devices during the last inventory sync."
+              columns={[
+                { header: 'Application', key: 'application', width: 4, bold: true },
+                { header: 'AI Tool', key: 'aiTool', width: 3 },
+                { header: 'Category', key: 'category', width: 3 },
+                { header: 'Risk', key: 'risk', width: 2, colour: (row) => riskColor(row.risk) },
+                { header: 'Status', key: 'status', width: 2.5 },
+                { header: 'Devices', key: 'deviceCount', width: 1.5 },
+              ]}
+              rows={detectedRows}
+            />
+          </Section>
+        </ContentPage>
       )}
 
       {/* ENTRA APPLICATIONS */}
       {sectionConfig.entraApplications && (
-        <Page size="A4" style={styles.page}>
-          <ContentPageHeader
-            title="AI Applications in Entra ID"
-            subtitle="AI services with a footprint in your identity platform"
-          />
-
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
+        <ContentPage
+          title="AI Applications in Entra ID"
+          subtitle="AI services with a footprint in your identity platform"
+        >
+          <Section>
+            <Paragraph>
               The following AI services are registered as applications in the tenant, including any
               permissions users have consented to
               {consentedApps.length > consentedRows.length
                 ? `, showing the top ${consentedRows.length} of ${consentedApps.length} entries`
                 : ''}
               . The consent date shows when each service first gained a foothold in the environment.
-            </Text>
-          </View>
+            </Paragraph>
+          </Section>
 
-          <View style={styles.section}>
-            {consentedRows.length === 0 ? (
-              <Text style={styles.bodyText}>No AI applications were found in Entra ID.</Text>
-            ) : (
-              <View style={styles.controlsTable}>
-                <View style={styles.tableHeader}>
-                  <Text style={[styles.headerCell, { flex: 4 }]}>Application</Text>
-                  <Text style={[styles.headerCell, { flex: 3, marginLeft: 8 }]}>AI Tool</Text>
-                  <Text style={[styles.headerCell, { flex: 2, marginLeft: 8 }]}>Risk</Text>
-                  <Text style={[styles.headerCell, { flex: 2.5, marginLeft: 8 }]}>Status</Text>
-                  <Text style={[styles.headerCell, { flex: 2, marginLeft: 8 }]}>Users (7d)</Text>
-                  <Text style={[styles.headerCell, { flex: 2.5, marginLeft: 8 }]}>
-                    First Consented
-                  </Text>
-                </View>
-                {consentedRows.map((app, index) => (
-                  <View style={styles.tableRow} key={`${app.applicationId}-${index}`} wrap={false}>
-                    <Text style={[styles.cellName, { flex: 4 }]}>{app.application}</Text>
-                    <Text style={[styles.cellDesc, { flex: 3, marginLeft: 8 }]}>{app.aiTool}</Text>
-                    <Text
-                      style={[
-                        styles.cellDesc,
-                        { flex: 2, marginLeft: 8, fontWeight: 'bold', color: riskColor(app.risk) },
-                      ]}
-                    >
-                      {app.risk}
-                    </Text>
-                    <Text style={[styles.cellDesc, { flex: 2.5, marginLeft: 8 }]}>
-                      {app.status}
-                    </Text>
-                    <Text style={[styles.cellDesc, { flex: 2, marginLeft: 8 }]}>
-                      {app.activeUsersLast7Days}
-                    </Text>
-                    <Text style={[styles.cellDesc, { flex: 2.5, marginLeft: 8 }]}>
-                      {app.firstConsentedDateTime
-                        ? new Date(app.firstConsentedDateTime).toLocaleDateString()
-                        : 'Unknown'}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            )}
-          </View>
-
-          <PageFooter />
-        </Page>
+          <Section>
+            <DataTable
+              limit={consentedRows.length}
+              emptyText="No AI applications were found in Entra ID."
+              columns={[
+                { header: 'Application', key: 'application', width: 4, bold: true },
+                { header: 'AI Tool', key: 'aiTool', width: 3 },
+                { header: 'Risk', key: 'risk', width: 2, colour: (row) => riskColor(row.risk) },
+                { header: 'Status', key: 'status', width: 2.5 },
+                { header: 'Users (7d)', key: 'activeUsersLast7Days', width: 2 },
+                { header: 'First Consented', key: 'firstConsented', width: 2.5 },
+              ]}
+              rows={consentedRows.map((app) => ({
+                ...app,
+                firstConsented: app.firstConsentedDateTime
+                  ? new Date(app.firstConsentedDateTime).toLocaleDateString()
+                  : 'Unknown',
+              }))}
+            />
+          </Section>
+        </ContentPage>
       )}
 
-      {/* STATISTIC PAGE - CHAPTER SPLITTER */}
+      {/* CHAPTER SPLITTER */}
       {sectionConfig.infographics && (
-        <Page size="A4" style={styles.statPage}>
-          <Image style={styles.statBackground} src="/reportImages/working.jpg" />
-          <View style={styles.statOverlay}>
-            <Text style={styles.statHighlight}>1 in 3</Text>
-            <Text style={styles.statSubText}>
-              employees shares <Text style={{ fontWeight: 'bold' }}>sensitive work data</Text>
+        <HeroPage
+          backgroundImage="/reportImages/working.jpg"
+          highlight="1 in 3"
+          subText={
+            <>
+              employees shares <Bold>sensitive work data</Bold>
               {'\n'}
               with AI tools without approval
-            </Text>
-          </View>
-          <Text style={styles.statFooterText}>
-            <Text style={{ fontWeight: 'bold' }}>Sanctioned alternatives</Text> keep{'\n'}
-            your data <Text style={{ fontWeight: 'bold' }}>under contract</Text>
-          </Text>
-        </Page>
+            </>
+          }
+          footerText={
+            <>
+              <Bold>Sanctioned alternatives</Bold> keep{'\n'}
+              your data <Bold>under contract</Bold>
+            </>
+          }
+        />
       )}
 
       {/* RECOMMENDATIONS */}
       {sectionConfig.recommendations && (
-        <Page size="A4" style={styles.page}>
-          <ContentPageHeader
-            title="Recommendations"
-            subtitle="A structured response to shadow AI in your environment"
-          />
-
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
+        <ContentPage
+          title="Recommendations"
+          subtitle="A structured response to shadow AI in your environment"
+        >
+          <Section>
+            <Paragraph>
               A structured response to shadow AI combines approval of useful tools with controls on
               the rest. The following actions are recommended based on the findings in this report:
-            </Text>
-          </View>
+            </Paragraph>
+          </Section>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Action Plan</Text>
-            <View style={styles.recommendationsList}>
-              {recommendations.map((recommendation, index) => (
-                <View style={styles.recommendationItem} key={index} wrap={false}>
-                  <Text style={styles.recommendationBullet}>•</Text>
-                  <Text style={styles.recommendationText}>
-                    <Text style={styles.recommendationLabel}>{recommendation.label}</Text>{' '}
-                    {recommendation.text}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
+          <Section title="Action Plan">
+            <BulletList items={recommendations} />
+          </Section>
 
-          <View style={styles.section}>
-            <View style={styles.infoBox} wrap={false}>
-              <Text style={styles.infoTitle}>Next Review</Text>
-              <Text style={styles.infoText}>
-                The AI tool landscape changes quickly and new tools appear in tenants within days of
-                release. We recommend re-running this assessment monthly and reviewing newly
-                detected tools against your acceptable AI use policy.
-              </Text>
-            </View>
-          </View>
-
-          <PageFooter />
-        </Page>
+          <Section>
+            <InfoBox title="Next Review">
+              The AI tool landscape changes quickly and new tools appear in tenants within days of
+              release. We recommend re-running this assessment monthly and reviewing newly detected
+              tools against your acceptable AI use policy.
+            </InfoBox>
+          </Section>
+        </ContentPage>
       )}
     </>
   )
 }
 
-const ShadowAIReportDocument = (props) => (
-  <Document>
-    <ShadowAIReportPages {...props} />
-  </Document>
+// Exported so the branding preview can render this report against sample data, and so tests can
+// render it to a real PDF.
+export const ShadowAIReportDocument = ({ tenantName, brandingSettings, variables, ...props }) => (
+  <ReportDocument
+    brandingSettings={brandingSettings}
+    tenantName={tenantName}
+    variables={variables}
+    reportName="Shadow AI Report"
+    coverLabel="AI RISK ASSESSMENT"
+    coverTitle="Shadow AI"
+    coverAccent="Report"
+    coverSubtitle="Discovery and risk assessment of AI tools in use across managed devices and cloud applications"
+    coverTenant={tenantName || 'Organization Name'}
+    coverFallbackImage="/reportImages/city.jpg"
+    footerLabel={`${tenantName} - Shadow AI Report`}
+  >
+    <ShadowAIReportPages tenantName={tenantName} {...props} />
+  </ReportDocument>
 )
 
 const sectionOptions = [
@@ -1169,8 +573,8 @@ const sectionOptions = [
 ]
 
 export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
-  const settings = useSettings()
-  const brandingSettings = settings.customBranding
+  const brandingSettings = useBrandingSettings()
+  const variables = useReportVariables()
   const [previewOpen, setPreviewOpen] = useState(false)
   const [sectionConfig, setSectionConfig] = useState({
     coverPage: true,
@@ -1206,11 +610,12 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
         tenantName={tenantName}
         data={data}
         brandingSettings={brandingSettings}
+        variables={variables}
         sectionConfig={sectionConfig}
       />
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [previewOpen, tenantName, data, brandingSettings, JSON.stringify(sectionConfig)])
+  }, [previewOpen, tenantName, data, brandingSettings, variables, JSON.stringify(sectionConfig)])
 
   return (
     <>
@@ -1369,6 +774,7 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
                   tenantName={tenantName}
                   data={data}
                   brandingSettings={brandingSettings}
+                  variables={variables}
                   sectionConfig={sectionConfig}
                 />
               )

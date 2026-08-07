@@ -215,6 +215,11 @@ export const CippAppTemplateDrawer = ({
         if (repoMatch) config.customRepo = repoMatch[1]
       }
     }
+    // Canonical spelling only, same as ApplicationName above. Leaving 'assignTo' next to
+    // 'AssignTo' puts both on the form and stores both on save, and PowerShell's ConvertFrom-Json
+    // cannot read an object holding two casings of one key.
+    if (!config.AssignTo && config.assignTo) config.AssignTo = config.assignTo
+    delete config.assignTo
     formControl.reset({ appType: config.appType })
     setTimeout(() => {
       Object.entries(config).forEach(([key, value]) => {

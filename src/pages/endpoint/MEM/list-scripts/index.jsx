@@ -9,6 +9,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { showToast } from '../../../../store/toasts'
 import {
+  Alert,
+  Box,
   Button,
   Dialog,
   DialogTitle,
@@ -16,6 +18,8 @@ import {
   IconButton,
   CircularProgress,
   DialogActions,
+  Tab,
+  Tabs,
 } from '@mui/material'
 import { CippCodeBlock } from '../../../../components/CippComponents/CippCodeBlock'
 import { useState, useEffect, useMemo } from 'react'
@@ -36,10 +40,32 @@ const assignmentDirectionOptions = [
   { label: 'Exclude these group(s)', value: 'exclude' },
 ]
 
+// Remediation scripts (deviceHealthScripts) carry two payloads, everything else carries one.
+const scriptContentFields = {
+  Remediation: [
+    { name: 'detectionScriptContent', label: 'Detection Script' },
+    { name: 'remediationScriptContent', label: 'Remediation Script' },
+  ],
+}
+const defaultScriptContentFields = [{ name: 'scriptContent', label: 'Script' }]
+
+// Only keep fields the API actually returned, so an unexpected script type (e.g. a Linux
+// settings-catalog policy, which has no script body at all) degrades to a message instead of
+// throwing on Buffer.from(undefined).
+const getScriptContentFields = (script) => {
+  if (!script) return []
+  const fields = scriptContentFields[script.scriptType] ?? defaultScriptContentFields
+  return fields.filter((field) => script[field.name] !== undefined)
+}
+
+const decodeScript = (value) => (value ? Buffer.from(value, 'base64').toString('utf8') : '')
+const encodeScript = (value) => Buffer.from(value ?? '', 'utf8').toString('base64')
+
 const Page = () => {
   const pageTitle = 'Scripts'
   const [codeOpen, setCodeOpen] = useState(false)
-  const [codeContent, setCodeContent] = useState('')
+  const [scriptContents, setScriptContents] = useState({})
+  const [activeContentTab, setActiveContentTab] = useState(0)
   const [scriptId, setScriptId] = useState(null)
   const [saveScript, setSaveScript] = useState(false)
   const [codeContentChanged, setCodeContentChanged] = useState(false)
@@ -60,10 +86,14 @@ const Page = () => {
   const dispatch = useDispatch()
 
   const language = useMemo(() => {
-    return currentScript?.scriptType?.toLowerCase() === ('macos' || 'linux')
-      ? 'shell'
-      : 'powershell'
+    const scriptType = currentScript?.scriptType?.toLowerCase()
+    return scriptType === 'macos' || scriptType === 'linux' ? 'shell' : 'powershell'
   }, [currentScript?.scriptType])
+
+  const contentFields = useMemo(() => getScriptContentFields(currentScript), [currentScript])
+  // Built-in Microsoft remediations cannot be modified, Graph rejects the PATCH.
+  const isReadOnly = currentScript?.isGlobalScript === true
+  const activeField = contentFields[activeContentTab]
 
   const {
     isLoading: scriptIsLoading,
@@ -87,20 +117,37 @@ const Page = () => {
     if (scriptId) {
       scriptRefetch().then(({ data }) => {
         setCurrentScript(data)
-        const scriptBytes = Buffer.from(data.scriptContent, 'base64')
-        setCodeContent(scriptBytes.toString('ascii'))
+        const contents = {}
+        getScriptContentFields(data).forEach((field) => {
+          contents[field.name] = decodeScript(data?.[field.name])
+        })
+        setScriptContents(contents)
+        setActiveContentTab(0)
       })
     }
   }, [scriptId, scriptRefetch])
 
-  const handleScriptEdit = async (row, action) => {
-    setScriptId(row.id)
-    setScriptTenant(row?.Tenant || tenantFilter)
-    setCodeOpen(!codeOpen)
+  const resetScriptState = () => {
+    setCodeContentChanged(false)
+    setScriptId(null)
+    setScriptTenant(null)
+    setCurrentScript(null)
+    setScriptContents({})
+    setActiveContentTab(0)
   }
 
-  const codeChange = (newValue, evt) => {
-    setCodeContent(newValue)
+  const handleScriptEdit = async (row, action) => {
+    // Clear the previous script so the dialog never shows stale content while the fetch is in flight.
+    setCurrentScript(null)
+    setScriptContents({})
+    setActiveContentTab(0)
+    setScriptId(row.id)
+    setScriptTenant(row?.Tenant || tenantFilter)
+    setCodeOpen(true)
+  }
+
+  const codeChange = (fieldName) => (newValue) => {
+    setScriptContents((prev) => ({ ...prev, [fieldName]: newValue }))
     setCodeContentChanged(true)
   }
 
@@ -108,43 +155,62 @@ const Page = () => {
     if (codeContentChanged) {
       setWarnOpen(!warnOpen)
     } else {
-      setCodeOpen(!codeOpen)
-      setCodeContentChanged(false)
-      setScriptId(null)
-      setScriptTenant(null)
-      setCodeContent('')
+      setCodeOpen(false)
+      resetScriptState()
     }
   }
 
   const { refetch: saveScriptRefetch, isFetching: isSaving } = useQuery({
     queryKey: ['saveScript'],
     queryFn: async () => {
-      const scriptBytes = Buffer.from(codeContent, 'ascii')
       const {
         runAs32Bit,
         id,
         displayName,
         description,
-        scriptContent,
         runAsAccount,
         fileName,
         roleScopeTagIds,
         scriptType,
+        publisher,
+        enforceSignatureCheck,
       } = currentScript
+
+      // Convert each editor back to base64 under the field name it came from.
+      const encodedContent = {}
+      contentFields.forEach((field) => {
+        encodedContent[field.name] = encodeScript(scriptContents[field.name])
+      })
+
+      const intuneScript =
+        scriptType === 'Remediation'
+          ? {
+              id,
+              displayName,
+              description,
+              publisher,
+              runAsAccount,
+              runAs32Bit,
+              enforceSignatureCheck,
+              roleScopeTagIds,
+              ...encodedContent,
+            }
+          : {
+              runAs32Bit,
+              id,
+              displayName,
+              description,
+              runAsAccount,
+              fileName,
+              roleScopeTagIds,
+              ...encodedContent,
+            }
+
       const patchData = {
         TenantFilter: scriptTenant || tenantFilter,
         ScriptId: id,
         ScriptType: scriptType,
-        IntuneScript: JSON.stringify({
-          runAs32Bit,
-          id,
-          displayName,
-          description,
-          scriptContent: scriptBytes.toString('base64'), // Convert to base64
-          runAsAccount,
-          fileName,
-          roleScopeTagIds,
-        }),
+        IntuneScript: JSON.stringify(intuneScript),
       }
 
       const response = await fetch('/api/EditIntuneScript', {
@@ -173,8 +239,8 @@ const Page = () => {
 
   const saveCode = async () => {
     const { data } = await saveScriptRefetch()
-    setCodeContentChanged(false)
-    setCodeOpen(!codeOpen)
+    setCodeOpen(false)
+    resetScriptState()
     dispatch(
       showToast({
         title: 'Script Saved',
@@ -440,8 +506,8 @@ const Page = () => {
       />
 
       <Dialog open={codeOpen} maxWidth="lg" fullWidth>
-        <DialogTitle sx={{ py: 2 }}>
-          Script Content
+        <DialogTitle sx={{ py: 2, pr: 12 }}>
+          {currentScript?.displayName || 'Script Content'}
           {!isSaving && (
             <IconButton
               aria-label="close"
@@ -451,7 +517,7 @@ const Page = () => {
               <Close />
             </IconButton>
           )}
-          {!isSaving && (
+          {!isSaving && !isReadOnly && contentFields.length > 0 && (
             <IconButton
               aria-label="save"
               onClick={saveCode}
@@ -467,13 +533,41 @@ const Page = () => {
         <DialogContent dividers>
           {(scriptIsFetching || scriptIsLoading) && <CircularProgress size={40} />}
           {!scriptIsFetching && !scriptIsLoading && (
-            <CippCodeBlock
-              open={codeOpen}
-              type="editor"
-              code={codeContent}
-              onChange={codeChange}
-              language={language}
-            />
+            <>
+              {isReadOnly && (
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  This is a built-in Microsoft script and cannot be modified.
+                </Alert>
+              )}
+              {currentScript && contentFields.length === 0 && (
+                <Alert severity="warning">
+                  This script type does not expose editable script content.
+                </Alert>
+              )}
+              {contentFields.length > 1 && (
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+                  <Tabs
+                    value={activeContentTab}
+                    onChange={(event, newValue) => setActiveContentTab(newValue)}
+                    aria-label="Script content"
+                  >
+                    {contentFields.map((field) => (
+                      <Tab key={field.name} label={field.label} />
+                    ))}
+                  </Tabs>
+                </Box>
+              )}
+              {activeField && (
+                <CippCodeBlock
+                  key={activeField.name}
+                  type="editor"
+                  code={scriptContents[activeField.name] ?? ''}
+                  onChange={codeChange(activeField.name)}
+                  language={language}
+                  readOnly={isReadOnly}
+                />
+              )}
+            </>
           )}
         </DialogContent>
       </Dialog>
@@ -491,10 +585,7 @@ const Page = () => {
             onClick={() => {
               setCodeOpen(false)
               setWarnOpen(false)
-              setCodeContent('')
-              setScriptId(null)
-              setScriptTenant(null)
-              setCodeContentChanged(false)
+              resetScriptState()
             }}
           >
             Confirm

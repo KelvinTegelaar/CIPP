@@ -19,6 +19,7 @@ import { PropertyListItem } from '../../../../../components/property-list-item'
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
 import { BECRemediationReportButton } from '../../../../../components/BECRemediationReportButton'
 import { CippDataTable } from '../../../../../components/CippTable/CippDataTable'
+import { getBecIntuneDeviceActions } from '../../../../../components/CippComponents/CippIntuneDeviceActions.jsx'
 
 const checkItemSx = { px: 2, py: 0.75 }
 
@@ -215,6 +216,56 @@ const Page = () => {
     ],
     [becPollingCall.data]
   )
+
+  const intuneDevicesWindowStart = useMemo(() => {
+    const extractedAt = becPollingCall.data?.ExtractedAt
+      ? new Date(becPollingCall.data.ExtractedAt)
+      : new Date()
+    if (Number.isNaN(extractedAt.getTime())) {
+      return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    }
+    return new Date(extractedAt.getTime() - 7 * 24 * 60 * 60 * 1000)
+  }, [becPollingCall.data?.ExtractedAt])
+
+  const intuneDevices = useMemo(() => {
+    const devices = [...(becPollingCall.data?.IntuneDevices || [])]
+    devices.sort((a, b) => {
+      const aTime = a?.enrolledDateTime ? new Date(a.enrolledDateTime).getTime() : 0
+      const bTime = b?.enrolledDateTime ? new Date(b.enrolledDateTime).getTime() : 0
+      return bTime - aTime
+    })
+    return devices
+  }, [becPollingCall.data?.IntuneDevices])
+
+  const recentIntuneDeviceCount = useMemo(
+    () =>
+      intuneDevices.filter((device) => {
+        if (!device?.enrolledDateTime) return false
+        const enrolled = new Date(device.enrolledDateTime)
+        if (Number.isNaN(enrolled.getTime())) return false
+        return enrolled >= intuneDevicesWindowStart
+      }).length,
+    [intuneDevices, intuneDevicesWindowStart]
+  )
+
+  const intuneDeviceActions = useMemo(
+    () => getBecIntuneDeviceActions({ tenantFilter: userSettingsDefaults.currentTenant }),
+    [userSettingsDefaults.currentTenant]
+  )
+
+  const getIntuneDevicesMessage = () => {
+    if (!becPollingCall.data) return null
+    if (becPollingCall.data.IntuneDevicesError) {
+      return `Could not retrieve Intune-managed devices: ${becPollingCall.data.IntuneDevicesError}. This is not proof that the user has no devices — refresh after fixing permissions or licensing, or check Endpoint → MEM → Devices.`
+    }
+    if (intuneDevices.length === 0) {
+      return 'No Intune-managed devices found for this user.'
+    }
+    if (recentIntuneDeviceCount > 0) {
+      return `${intuneDevices.length} Intune-managed device(s) found for this user, ${recentIntuneDeviceCount} enrolled in the last 7 days. Prioritize review of recent enrollments (new VM, BYOD, or Windows Hello persistence risk). Retire or factory-wipe from the row actions if needed (requires MEM write permission). Refresh Data after actions to update this list.`
+    }
+    return `${intuneDevices.length} Intune-managed device(s) found for this user. None were enrolled in the last 7 days. Review the list below and take action as needed. Retire or factory-wipe from the row actions if needed (requires MEM write permission). Refresh Data after actions to update this list.`
+  }
 
   const subtitle = userRequest.isSuccess
     ? [
@@ -575,7 +626,43 @@ const Page = () => {
                   )}
                 </BecCheckCard>
 
-                {/* Check 9: Report Data */}
+                <BecCheckCard
+                  title="Check 9: Intune Devices"
+                  count={
+                    becPollingCall.data?.IntuneDevicesError ? undefined : recentIntuneDeviceCount
+                  }
+                >
+                  <Typography
+                    variant="body2"
+                    gutterBottom
+                    color={becPollingCall.data?.IntuneDevicesError ? 'error' : 'inherit'}
+                  >
+                    {getIntuneDevicesMessage()}
+                  </Typography>
+                  {intuneDevices.length > 0 && (
+                    <Box mt={2}>
+                      <CippDataTable
+                        noCard={true}
+                        hideTitle={true}
+                        title="Intune Devices"
+                        data={intuneDevices}
+                        simpleColumns={[
+                          'deviceName',
+                          'operatingSystem',
+                          'osVersion',
+                          'complianceState',
+                          'enrolledDateTime',
+                          'lastSyncDateTime',
+                          'deviceEnrollmentType',
+                          'serialNumber',
+                        ]}
+                        actions={intuneDeviceActions}
+                      />
+                    </Box>
+                  )}
+                </BecCheckCard>
+
+                {/* Report Data */}
                 <BecCheckCard title="Report">
                   <Typography variant="body2" gutterBottom>
                     Generate a comprehensive PDF report for documentation, compliance, or end-user

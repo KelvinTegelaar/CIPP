@@ -1,0 +1,1 @@
+{"id":"com.apple.mobiledevice.passwordpolicy_minlength","displayName":"Min Length","description":"The minimum overall length of the passcode. This parameter is independent of the also optional Min Complex Characters argument.","helpText":null,"infoUrls":[],"categoryId":"d68abc4d-559a-4339-be48-c41a77a87034","categoryName":"Passcode","options":null}

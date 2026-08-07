@@ -320,17 +320,38 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     api?.autoSelectFirstItem,
   ])
 
+  // single mode: live options win over the form-held copy, a stored label goes stale
+  // when its option refetches under it (e.g. renamed preset), resolve by value id
+  const resolvedDefaultValue = useMemo(() => {
+    if (
+      multiple ||
+      Array.isArray(defaultValue) ||
+      typeof defaultValue !== 'object' ||
+      defaultValue === null
+    ) {
+      return defaultValue
+    }
+    return memoizedOptions.find((option) => option.value === defaultValue.value) ?? defaultValue
+  }, [defaultValue, multiple, memoizedOptions])
+
   // Create a stable key that only changes when necessary inputs change
   const stableKey = useMemo(() => {
     // Only regenerate the key when these values change
     const keyParts = [
-      JSON.stringify(defaultValue),
+      JSON.stringify(resolvedDefaultValue),
       JSON.stringify(preselectedValue),
       api?.url,
       currentTenant,
     ]
     return keyParts.join('-')
-  }, [defaultValue, preselectedValue, api?.url, currentTenant])
+  }, [resolvedDefaultValue, preselectedValue, api?.url, currentTenant])
+
+  // keyed remount orphans an open single-mode popup (input unfocused, no close path), multiple refocuses in onChange
+  useEffect(() => {
+    if (!multiple) {
+      setOpen(false)
+    }
+  }, [stableKey, multiple])
 
   const lookupOptionByValue = useCallback(
     (value) => {
@@ -339,6 +360,22 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     },
     [memoizedOptions]
   )
+
+  // shape the seed for MUI: option arrays stay arrays, single objects wrap in multiple mode, strings resolve to options
+  const normalizedDefaultValue = useMemo(() => {
+    if (Array.isArray(resolvedDefaultValue)) {
+      return resolvedDefaultValue.map((item) =>
+        typeof item === 'string' ? lookupOptionByValue(item) : item
+      )
+    }
+    if (typeof resolvedDefaultValue === 'object' && multiple) {
+      return [resolvedDefaultValue]
+    }
+    if (typeof resolvedDefaultValue === 'string') {
+      return lookupOptionByValue(resolvedDefaultValue)
+    }
+    return resolvedDefaultValue
+  }, [resolvedDefaultValue, multiple, lookupOptionByValue])
 
   return (
     <>
@@ -364,7 +401,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           )
         }
         isOptionEqualToValue={(option, val) => option.value === val.value}
-        value={typeof value === 'string' ? { label: value, value: value } : value}
+        value={typeof value === 'string' ? lookupOptionByValue(value) : value}
         filterSelectedOptions
         disableClearable={disableClearable}
         multiple={multiple}
@@ -391,17 +428,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           return filtered
         }}
         size="small"
-        defaultValue={
-          Array.isArray(defaultValue)
-            ? defaultValue.map((item) =>
-                typeof item === 'string' ? lookupOptionByValue(item) : item
-              )
-            : typeof defaultValue === 'object' && multiple
-              ? [defaultValue]
-              : typeof defaultValue === 'string'
-                ? lookupOptionByValue(defaultValue)
-                : defaultValue
-        }
+        defaultValue={normalizedDefaultValue}
         name={name}
         onChange={(event, newValue) => {
           // Store scroll position before processing the change

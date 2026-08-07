@@ -24,6 +24,7 @@ import {
 import { Grid, Stack, Box } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { useSettings } from '../../../../hooks/use-settings'
+import { useBrandingSettings } from '../../../../components/CippPdf/useBrandingSettings'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall.jsx'
 import { useForm, useWatch } from 'react-hook-form'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
@@ -33,6 +34,12 @@ import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { renderCustomScriptMarkdownTemplate } from '../../../../utils/customScriptTemplate'
+import {
+  escapeTableCell,
+  isTableSeparatorRow,
+  normaliseTableRow,
+  parseTableRow,
+} from '../../../../utils/markdown-table'
 import {
   Add,
   Delete,
@@ -48,21 +55,56 @@ import {
   ArrowDownward,
   Refresh,
   Storage,
+  GridOff,
 } from '@mui/icons-material'
 
 import {
+  MenuButtonAddTable,
   MenuButtonBold,
+  MenuButtonBulletedList,
+  MenuButtonCode,
+  MenuButtonCodeBlock,
   MenuButtonItalic,
+  MenuButtonOrderedList,
+  MenuButtonRedo,
+  MenuButtonStrikethrough,
+  MenuButtonUnderline,
+  MenuButtonUndo,
+  MenuButton,
   MenuControlsContainer,
   MenuDivider,
   MenuSelectHeading,
   RichTextEditor,
 } from 'mui-tiptap'
+import {
+  DeleteColumn,
+  DeleteRow,
+  InsertColumnLeft,
+  InsertColumnRight,
+  InsertRowBottom,
+  InsertRowTop,
+} from 'mui-tiptap/icons'
 import StarterKit from '@tiptap/starter-kit'
 import { Table, TableRow, TableHeader, TableCell } from '@tiptap/extension-table'
 import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { ReportBuilderPDF } from '../../../../components/ReportBuilder/ReportBuilderPDF'
+import {
+  STRUCTURED_BLOCK_TYPES,
+  StructuredBlockCard,
+  createStructuredBlock,
+  isStructuredBlock,
+} from '../../../../components/ReportBuilder/ReportBuilderBlocks'
+import { PAGE_ORIENTATIONS, PAGE_SIZES } from '../../../../components/CippPdf'
+import {
+  DEFAULT_PAGE_SETTINGS,
+  DEFAULT_BRANDING_OPTION,
+  fromReportSettings,
+  resolveBranding,
+  resolvePresetId,
+  serialiseBlock,
+  toReportSettings,
+} from '../../../../components/ReportBuilder/reportSettings'
 import { useRouter } from 'next/router'
 
 /* ── Markdown styles (matches CippTestDetailOffCanvas) ── */
@@ -98,6 +140,14 @@ const markdownStyles = {
 }
 
 /* ── Simple markdown → HTML converter for TipTap editing ── */
+
+// Cell text is plain markdown, so anything angle-bracketed in it is data, not markup.
+const escapeHtml = (value) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+
 const markdownToHtml = (md) => {
   if (!md) return ''
 
@@ -109,29 +159,20 @@ const markdownToHtml = (md) => {
     const line = lines[i]
 
     // Detect GFM table: current line has pipes and next line is separator (|---|---| etc)
-    if (
-      line.includes('|') &&
-      i + 1 < lines.length &&
-      lines[i + 1].trim().match(/^\|?[\s-:|]+\|[\s-:|]*\|?$/)
-    ) {
-      const headerCells = line
-        .split('|')
-        .map((c) => c.trim())
-        .filter((c) => c !== '')
+    if (line.includes('|') && i + 1 < lines.length && isTableSeparatorRow(lines[i + 1])) {
+      const headerCells = parseTableRow(line)
+      const columnCount = Math.max(headerCells.length, 1)
       let tableHtml = '<table><thead><tr>'
       headerCells.forEach((cell) => {
-        tableHtml += `<th>${cell}</th>`
+        tableHtml += `<th>${escapeHtml(cell)}</th>`
       })
       tableHtml += '</tr></thead><tbody>'
       i += 2 // skip header + separator
       while (i < lines.length && lines[i].includes('|') && lines[i].trim() !== '') {
-        const cells = lines[i]
-          .split('|')
-          .map((c) => c.trim())
-          .filter((c) => c !== '')
+        const cells = normaliseTableRow(parseTableRow(lines[i]), columnCount)
         tableHtml += '<tr>'
         cells.forEach((cell) => {
-          tableHtml += `<td>${cell}</td>`
+          tableHtml += `<td>${escapeHtml(cell)}</td>`
         })
         tableHtml += '</tr>'
         i++
@@ -166,6 +207,47 @@ const markdownToHtml = (md) => {
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/`(.*?)`/g, '<code>$1</code>')
     .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
+}
+
+/* ── Table row/column controls ─────────────────────────────
+ * mui-tiptap's TableMenuControls renders a fixed set with no way to leave buttons out, so
+ * the subset the PDF can actually reproduce is composed here. Merge/split cells and the
+ * header toggles are deliberately absent: the PDF lays every row out on one fixed column
+ * grid, which a merged cell has no place in, and it decides a table has a heading from its
+ * first row being header cells — so toggling that off would cost the table its header bar
+ * and its repeat across page breaks.
+ */
+const TABLE_ACTIONS = [
+  { label: 'Insert column before', Icon: InsertColumnLeft, command: 'addColumnBefore' },
+  { label: 'Insert column after', Icon: InsertColumnRight, command: 'addColumnAfter' },
+  { label: 'Delete column', Icon: DeleteColumn, command: 'deleteColumn' },
+  null,
+  { label: 'Insert row above', Icon: InsertRowTop, command: 'addRowBefore' },
+  { label: 'Insert row below', Icon: InsertRowBottom, command: 'addRowAfter' },
+  { label: 'Delete row', Icon: DeleteRow, command: 'deleteRow' },
+  null,
+  { label: 'Delete table', Icon: GridOff, command: 'deleteTable' },
+]
+
+const TableControls = ({ editor }) => {
+  if (!editor) return null
+  return (
+    <>
+      {TABLE_ACTIONS.map((action, index) =>
+        action ? (
+          <MenuButton
+            key={action.command}
+            tooltipLabel={action.label}
+            IconComponent={action.Icon}
+            onClick={() => editor.chain().focus()[action.command]().run()}
+            disabled={!editor.can()[action.command]()}
+          />
+        ) : (
+          <MenuDivider key={`table-divider-${index}`} />
+        )
+      )}
+    </>
+  )
 }
 
 /* ── TipTap extension: convert pasted Markdown to HTML ── */
@@ -320,7 +402,9 @@ const ReportBlock = ({
         <RichTextEditor
           immediatelyRender={false}
           extensions={[
-            StarterKit,
+            // The PDF styles three heading levels; offering six would let an author pick
+            // one that arrives as ordinary body text.
+            StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
             Table.configure({ resizable: false }),
             TableRow,
             TableHeader,
@@ -337,12 +421,34 @@ const ReportBlock = ({
               onUpdate(index, { ...block, content: editor.getHTML() })
             }
           }}
-          renderControls={() => (
+          renderControls={(editor) => (
+            /* Only controls the PDF renderer honours belong here — anything else would let
+               an author style a block that then flattens out in the exported report. */
             <MenuControlsContainer>
               <MenuSelectHeading />
               <MenuDivider />
               <MenuButtonBold />
               <MenuButtonItalic />
+              <MenuButtonUnderline />
+              <MenuButtonStrikethrough />
+              <MenuButtonCode />
+              <MenuDivider />
+              <MenuButtonBulletedList />
+              <MenuButtonOrderedList />
+              <MenuButtonCodeBlock />
+              <MenuDivider />
+              <MenuButtonAddTable />
+              <MenuDivider />
+              <MenuButtonUndo />
+              <MenuButtonRedo />
+              {/* Row/column tools join the toolbar while the caret is in a table, rather
+                  than floating over the cell being edited. */}
+              {editor?.isActive('table') && (
+                <>
+                  <MenuDivider />
+                  <TableControls editor={editor} />
+                </>
+              )}
             </MenuControlsContainer>
           )}
         />
@@ -495,17 +601,19 @@ const DatabaseBlock = ({
       cardActions={
         <Stack direction="row" spacing={0.5} alignItems="center">
           <Tooltip title="Refresh data">
-            <IconButton
-              size="small"
-              onClick={handleRefresh}
-              disabled={dbCacheApi.isFetching || !currentTenant}
-            >
-              {dbCacheApi.isFetching ? (
-                <CircularProgress size={16} />
-              ) : (
-                <Refresh fontSize="small" />
-              )}
-            </IconButton>
+            <span>
+              <IconButton
+                size="small"
+                onClick={handleRefresh}
+                disabled={dbCacheApi.isFetching || !currentTenant}
+              >
+                {dbCacheApi.isFetching ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  <Refresh fontSize="small" />
+                )}
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title="Move up">
             <span>
@@ -665,7 +773,7 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
   }
 
   // text format — generate a Markdown table
-  const header = '| ' + selectedHeaders.join(' | ') + ' |'
+  const header = '| ' + selectedHeaders.map(escapeTableCell).join(' | ') + ' |'
   const separator = '| ' + selectedHeaders.map(() => '---').join(' | ') + ' |'
   const dataRows = filtered.map((row) => {
     return (
@@ -674,8 +782,8 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
         .map((h) => {
           const val = row[h]
           if (val === null || val === undefined) return ''
-          if (typeof val === 'object') return JSON.stringify(val)
-          return String(val).replace(/\|/g, '\\|').replace(/\n/g, ' ')
+          if (typeof val === 'object') return escapeTableCell(JSON.stringify(val))
+          return escapeTableCell(val)
         })
         .join(' | ') +
       ' |'
@@ -689,7 +797,7 @@ const Page = () => {
   const router = useRouter()
   const settings = useSettings()
   const { currentTenant } = settings
-  const brandingSettings = settings.customBranding
+  const brandingSettings = useBrandingSettings()
 
   /* ── Deeplink: load template by ID from URL ── */
   const [templateId, setTemplateId] = useState(null)
@@ -723,6 +831,8 @@ const Page = () => {
   const settingsForm = useForm({
     defaultValues: { removeRemediation: true, includeRawAttachments: false },
   })
+  const pageSetupForm = useForm({ defaultValues: { ...DEFAULT_PAGE_SETTINGS } })
+  const pageSetupValues = useWatch({ control: pageSetupForm.control })
   const hasDatabaseBlocks = blocks.some((b) => b.type === 'database')
   const scheduleForm = useForm({
     defaultValues: { scheduleName: '', recurrence: null, postExecution: [] },
@@ -787,6 +897,46 @@ const Page = () => {
     queryKey: `${currentTenant}-ListGraphRequest-organization-reportbuilder`,
     waiting: !!currentTenant,
   })
+
+  // Image data is needed here, not just names — the preview renders the preset's logo and cover.
+  const brandingPresetsApi = ApiGetCall({
+    url: '/api/ListBrandingPresets',
+    data: { includeImages: true },
+    queryKey: 'ListBrandingPresets-withImages',
+  })
+
+  const brandingPresets = useMemo(
+    () => (Array.isArray(brandingPresetsApi.data) ? brandingPresetsApi.data : []),
+    [brandingPresetsApi.data]
+  )
+
+  const presetOptions = useMemo(
+    () => [
+      DEFAULT_BRANDING_OPTION,
+      ...brandingPresets.map((preset) => ({ label: preset.name, value: preset.id })),
+    ],
+    [brandingPresets]
+  )
+
+  const reportSettings = useMemo(() => toReportSettings(pageSetupValues || {}), [pageSetupValues])
+
+  // A template that has not picked a preset falls back to whichever one branding settings names as
+  // the default for report-builder reports.
+  const activePresetId = resolvePresetId(
+    reportSettings.brandingPresetId,
+    brandingSettings,
+    'reportBuilder'
+  )
+
+  const effectiveBranding = useMemo(
+    () => resolveBranding(brandingSettings, brandingPresets, activePresetId),
+    [activePresetId, brandingPresets, brandingSettings]
+  )
+
+  const missingPreset =
+    !!reportSettings.brandingPresetId &&
+    brandingPresetsApi.isSuccess &&
+    !brandingPresets.some((preset) => preset.id === reportSettings.brandingPresetId)
 
   const tenantDisplayName =
     organizationApi.data?.Results?.[0]?.displayName || currentTenant || 'Organization'
@@ -945,16 +1095,44 @@ const Page = () => {
       setBlocks(templateBlocks)
       setTemplateGUID(found.GUID || found.RowKey || null)
       saveForm.setValue('templateName', found.Name || '')
+      // Templates saved before page setup existed have no Settings; the defaults reproduce
+      // exactly what those templates used to render.
+      let savedSettings = found.Settings
+      if (typeof savedSettings === 'string') {
+        try {
+          savedSettings = JSON.parse(savedSettings)
+        } catch {
+          savedSettings = null
+        }
+      }
+      pageSetupForm.reset(fromReportSettings(savedSettings, brandingPresets))
       templateLoadedRef.current = true
     }
-  }, [templateId, templatesApi.data, getTestContent, getTestStatus, saveForm])
+  }, [
+    templateId,
+    templatesApi.data,
+    getTestContent,
+    getTestStatus,
+    saveForm,
+    pageSetupForm,
+    brandingPresets,
+  ])
 
   /* ── Block operations ── */
   const handleAddBlock = () => {
     const type = addBlockForm.getValues('blockType')
     if (!type) return
 
-    if (type.value === 'blank') {
+    if (isStructuredBlock(type.value)) {
+      setBlocks((prev) => [...prev, createStructuredBlock(type.value, `block-${Date.now()}`)])
+      addBlockForm.reset({
+        blockType: null,
+        testSuite: null,
+        selectedTest: [],
+        dbCacheType: null,
+        dbFormat: null,
+      })
+    } else if (type.value === 'blank') {
       setBlocks((prev) => [
         ...prev,
         {
@@ -1072,25 +1250,8 @@ const Page = () => {
         Action: 'save',
         GUID: templateGUID || undefined,
         Name: name,
-        Blocks: blocks.map((b) => ({
-          type: b.type,
-          testId: b.testId || null,
-          testCategory: b.testCategory || null,
-          title: b.title,
-          content:
-            b.type === 'blank'
-              ? b.content
-              : b.type === 'database'
-                ? b.content
-                : b.static
-                  ? b.content
-                  : null,
-          status: b.status || null,
-          static: b.type === 'blank' ? true : b.type === 'database' ? true : b.static,
-          dbType: b.dbType || null,
-          format: b.format || null,
-          selectedHeaders: b.selectedHeaders || null,
-        })),
+        Blocks: blocks.map(serialiseBlock),
+        Settings: reportSettings,
       },
     })
   }
@@ -1112,27 +1273,8 @@ const Page = () => {
           TenantFilter: currentTenant,
           IncludeRawAttachments:
             settingsForm.getValues('includeRawAttachments') && hasDatabaseBlocks ? 'true' : 'false',
-          Blocks: JSON.stringify(
-            blocks.map((b) => ({
-              type: b.type,
-              testId: b.testId || null,
-              testCategory: b.testCategory || null,
-              title: b.title,
-              content:
-                b.type === 'blank'
-                  ? b.content
-                  : b.type === 'database'
-                    ? b.content
-                    : b.static
-                      ? b.content
-                      : null,
-              status: b.status || null,
-              static: b.type === 'blank' ? true : b.type === 'database' ? true : b.static,
-              dbType: b.dbType || null,
-              format: b.format || null,
-              selectedHeaders: b.selectedHeaders || null,
-            }))
-          ),
+          Blocks: JSON.stringify(blocks.map(serialiseBlock)),
+          Settings: JSON.stringify(reportSettings),
         },
         ScheduledTime: Math.floor(Date.now() / 1000),
         Recurrence: values.recurrence || { value: '0', label: 'Once' },
@@ -1152,7 +1294,8 @@ const Page = () => {
           blocks={displayBlocks}
           tenantName={tenantDisplayName}
           templateName={saveForm.getValues('templateName') || 'Custom Report'}
-          brandingSettings={brandingSettings}
+          brandingSettings={effectiveBranding}
+          reportSettings={reportSettings}
         />
       )
       pdf(doc)
@@ -1330,6 +1473,7 @@ const Page = () => {
                       { label: 'Custom Block', value: 'blank' },
                       { label: 'Test Result', value: 'test' },
                       { label: 'Database Data', value: 'database' },
+                      ...STRUCTURED_BLOCK_TYPES,
                     ]}
                   />
                 </Grid>
@@ -1435,6 +1579,59 @@ const Page = () => {
               </Grid>
             </CippButtonCard>
 
+            {/* Page Setup */}
+            <CippButtonCard title="Page Setup & Branding">
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 3 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="brandingPresetId"
+                    label="Branding"
+                    formControl={pageSetupForm}
+                    multiple={false}
+                    creatable={false}
+                    disableClearable={true}
+                    options={presetOptions}
+                    isFetching={brandingPresetsApi.isFetching}
+                  />
+                </Grid>
+                <Grid size={{ xs: 6, md: 2 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="size"
+                    label="Page Size"
+                    formControl={pageSetupForm}
+                    multiple={false}
+                    creatable={false}
+                    disableClearable={true}
+                    options={PAGE_SIZES}
+                  />
+                </Grid>
+                <Grid size={{ xs: 6, md: 2 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="orientation"
+                    label="Orientation"
+                    formControl={pageSetupForm}
+                    multiple={false}
+                    creatable={false}
+                    disableClearable={true}
+                    options={PAGE_ORIENTATIONS}
+                  />
+                </Grid>
+              </Grid>
+              {/* Cover, footer and watermark used to be overridden here as well. They are branding
+                  decisions, and branding presets now carry all of them — so a template says which
+                  branding to render against and nothing more. Two places to set the same thing is
+                  how a template ends up quietly contradicting the preset it points at. */}
+              {missingPreset && (
+                <Alert severity="warning" sx={{ mt: 2 }}>
+                  The branding preset saved with this template no longer exists — the global
+                  branding settings are being used instead.
+                </Alert>
+              )}
+            </CippButtonCard>
+
             {/* Blocks */}
             {blocks.length === 0 ? (
               <Alert severity="info">
@@ -1452,6 +1649,21 @@ const Page = () => {
                           status: getTestStatus(block.testId),
                         }
                       : block
+
+                  if (isStructuredBlock(block.type)) {
+                    return (
+                      <StructuredBlockCard
+                        key={block.id}
+                        block={block}
+                        index={index}
+                        totalBlocks={blocks.length}
+                        onRemove={handleRemoveBlock}
+                        onUpdate={handleUpdateBlock}
+                        onMoveUp={handleMoveBlockUp}
+                        onMoveDown={handleMoveBlockDown}
+                      />
+                    )
+                  }
 
                   if (block.type === 'database') {
                     return (
@@ -1513,7 +1725,8 @@ const Page = () => {
               blocks={displayBlocks}
               tenantName={tenantDisplayName}
               templateName={saveForm.getValues('templateName') || 'Custom Report'}
-              brandingSettings={brandingSettings}
+              brandingSettings={effectiveBranding}
+              reportSettings={reportSettings}
               mode="preview"
             />
           )}

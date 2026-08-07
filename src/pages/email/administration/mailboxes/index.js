@@ -61,6 +61,11 @@ const Page = () => {
       value: [{ id: 'ArchiveEnabled', value: true }],
       type: 'column',
     },
+    {
+      filterName: 'View Auto Expanding Archive Enabled',
+      value: [{ id: 'AutoExpandingArchive', value: true }],
+      type: 'column',
+    },
   ]
 
   // Simplified columns for the table

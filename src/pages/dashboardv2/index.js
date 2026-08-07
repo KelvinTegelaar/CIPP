@@ -33,11 +33,16 @@ import { CippReportToolbar } from '../../components/CippComponents/CippReportToo
 import { Assessment as AssessmentIcon } from '@mui/icons-material'
 import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
+import { AllTenantsDashboard } from '../../components/CippAllTenants/AllTenantsDashboard'
 
 const Page = () => {
   const settings = useSettings()
   const router = useRouter()
   const { currentTenant } = settings
+  // The per-tenant cards below are all scoped to a single tenant's Graph data. Under AllTenants —
+  // which is also the state on first login, before a tenant has been picked — swap in the
+  // cross-tenant view rather than letting the layout render "Not supported".
+  const isAllTenants = !currentTenant || currentTenant === 'AllTenants'
   const [portalMenuItems, setPortalMenuItems] = useState([])
   const isWide = useMediaQuery('(min-width:1513px)')
   const [reportsMenuAnchor, setReportsMenuAnchor] = useState(null)
@@ -64,6 +69,7 @@ const Page = () => {
     url: '/api/ListGraphRequest',
     queryKey: `${currentTenant}-ListGraphRequest-organization`,
     data: { tenantFilter: currentTenant, Endpoint: 'organization' },
+    waiting: !isAllTenants,
   })
 
   const organizationRecord = organization.data?.Results?.[0]
@@ -72,7 +78,7 @@ const Page = () => {
     url: '/api/ListTests',
     data: { tenantFilter: currentTenant, reportId: selectedReport },
     queryKey: `${currentTenant}-ListTests-${selectedReport}`,
-    waiting: !!currentTenant && !!selectedReport,
+    waiting: !isAllTenants && !!currentTenant && !!selectedReport,
   })
 
   const currentTenantInfo = ApiGetCall({
@@ -149,7 +155,10 @@ const Page = () => {
 
     let portalLinks
     if (settings.UserSpecificSettings?.portalLinks) {
-      portalLinks = { ...defaultLinks, ...settings.UserSpecificSettings.portalLinks }
+      portalLinks = {
+        ...defaultLinks,
+        ...settings.UserSpecificSettings.portalLinks,
+      }
     } else if (settings.portalLinks) {
       portalLinks = { ...defaultLinks, ...settings.portalLinks }
     } else {
@@ -198,6 +207,18 @@ const Page = () => {
       return (num / 1000).toFixed(1) + 'K'
     }
     return num.toLocaleString()
+  }
+
+  if (isAllTenants) {
+    // No top margin, matching CippTablePage: the layout's breadcrumb Divider already carries mb: 2.
+    // The per-tenant view below needs mt: 12 only because it sits under the test-suite tab bar,
+    // which AllTenants does not render.
+    return (
+      <Container maxWidth={false} sx={{ mb: 6 }}>
+        <CippHead title="Dashboard" />
+        <AllTenantsDashboard />
+      </Container>
+    )
   }
 
   return (
@@ -368,7 +389,14 @@ const Page = () => {
           <Grid container spacing={2}>
             {/* Left Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  height: '100%',
+                }}
+              >
                 <Box sx={{ height: 450 }} data-tutorial="dashboard-secure-score">
                   <SecureScoreCard
                     data={testsApi.data?.SecureScore}
@@ -388,7 +416,14 @@ const Page = () => {
 
             {/* Right Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  height: '100%',
+                }}
+              >
                 <Box sx={{ height: 450 }} data-tutorial="dashboard-mfa">
                   <MFACard
                     data={testsApi.data?.MFAState}
@@ -412,8 +447,11 @@ const Page = () => {
   )
 }
 
+// No allTenantsSupport={false} here: the page handles AllTenants itself (see isAllTenants above),
+// and the Identity / Devices / Custom tabs each render a cross-tenant view in that mode too.
+// Leaving the opt-out in place would make the layout render "Not supported" and never mount this page.
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={false}>
+  <DashboardLayout>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

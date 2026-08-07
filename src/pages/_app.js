@@ -15,7 +15,7 @@ import 'driver.js/dist/driver.css'
 import '../styles/tutorial-overrides.css'
 import { PrivateRoute } from '../components/PrivateRoute'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useMediaPredicate } from 'react-media-hook'
+import { useSystemPrefersDark } from '../hooks/use-system-prefers-dark'
 import Error500 from './500'
 import { ErrorBoundary } from 'react-error-boundary'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -77,7 +77,16 @@ const clientSideEmotionCache = createEmotionCache()
 const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   const getLayout = Component.getLayout ?? ((page) => page)
-  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'dark' : 'light'
+  const preferredTheme = useSystemPrefersDark() ? 'dark' : 'light'
+
+  // The _document.js init style painted the page dark and hid the stale light
+  // prerender for dark-mode users. By the time passive effects run, the themed
+  // UI is committed and painted (useSystemPrefersDark flushes pre-paint), so
+  // the guard style has done its job.
+  useEffect(() => {
+    document.getElementById('cipp-color-init')?.remove()
+  }, [])
+
   const pathname = usePathname()
   const route = useRouter()
   const [dateLocale, setDateLocale] = useState(enUS)

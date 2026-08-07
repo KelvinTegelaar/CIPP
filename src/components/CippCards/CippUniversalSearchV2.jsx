@@ -41,6 +41,8 @@ async function loadTabOptions() {
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
     "/cipp/advanced/super-admin",
+    "/cipp/advanced/container-management",
+    "/cipp/advanced/authentication",
     "/endpoint/MEM/enrollment-profiles",
     "/tenant/standards",
     "/tenant/manage",

@@ -299,23 +299,25 @@ export const CippUserPhotoManager = ({
           {/* Camera overlay button when not in upload mode */}
           {!selectedFile && (
             <Tooltip title="Change Photo">
-              <IconButton
-                sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  backgroundColor: "primary.main",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "primary.dark",
-                  },
-                }}
-                size="small"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isLoading}
-              >
-                <PhotoCamera fontSize="small" />
-              </IconButton>
+              <span>
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    right: 0,
+                    backgroundColor: "primary.main",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "primary.dark",
+                    },
+                  }}
+                  size="small"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isLoading}
+                >
+                  <PhotoCamera fontSize="small" />
+                </IconButton>
+              </span>
             </Tooltip>
           )}
         </Box>

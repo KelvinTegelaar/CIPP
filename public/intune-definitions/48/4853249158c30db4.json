@@ -1,0 +1,1 @@
+{"id":"com.apple.webcontent-filter_denylisturls","displayName":"Deny List URLs","description":"An array of URLs that are inaccessible. Limit the number of these URLs to about 500.","helpText":null,"infoUrls":[],"categoryId":"a6fe8038-136b-4d50-bf04-8e232409c0d2","categoryName":"Web Content Filter","options":null}

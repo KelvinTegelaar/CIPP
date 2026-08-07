@@ -5,6 +5,11 @@
     "icon": "Settings"
   },
   {
+    "label": "Branding",
+    "path": "/cipp/settings/branding",
+    "icon": "Palette"
+  },
+  {
     "label": "Permissions",
     "path": "/cipp/settings/permissions",
     "icon": "Key"

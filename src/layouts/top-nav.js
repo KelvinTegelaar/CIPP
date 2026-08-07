@@ -33,6 +33,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { Logo } from '../components/logo'
 import { useSettings } from '../hooks/use-settings'
 import { useUserBookmarks } from '../hooks/use-user-bookmarks'
@@ -45,7 +46,7 @@ import { CippUniversalSearchV2 } from '../components/CippCards/CippUniversalSear
 import { CippOffCanvas } from '../components/CippComponents/CippOffCanvas'
 import { CippLicenseDetailsDrawer } from '../components/CippComponents/CippLicenseDetailsDrawer'
 
-const TOP_NAV_HEIGHT = 64
+import { BANNER_HEIGHT_VAR, TOP_NAV_HEIGHT } from './constants'
 
 export const TopNav = (props) => {
   const universalSearchDialog = useDialog()
@@ -56,13 +57,19 @@ export const TopNav = (props) => {
   const showPopoverBookmarks = settings.bookmarkPopover === true
   const reorderMode = settings.bookmarkReorderMode || 'arrows'
   const locked = settings.bookmarkLocked ?? true
+  // Flip based on the RENDERED mode, not the stored value: the default
+  // currentTheme is 'browser' (follows prefers-color-scheme), so the stored
+  // value alone doesn't say which mode the user is actually looking at.
+  // Toggling always stores an explicit light/dark choice.
+  const theme = useTheme()
+  const effectivePaletteMode = theme.palette.mode
   const handleThemeSwitch = useCallback(() => {
-    const themeName = settings.currentTheme?.value === 'light' ? 'dark' : 'light'
+    const themeName = effectivePaletteMode === 'light' ? 'dark' : 'light'
     settings.handleUpdate({
       currentTheme: { value: themeName, label: themeName },
       paletteMode: themeName,
     })
-  }, [settings])
+  }, [settings, effectivePaletteMode])
 
   const [anchorEl, setAnchorEl] = useState(null)
   const [sortOrder, setSortOrder] = useState(settings.bookmarkSortOrder || 'custom')
@@ -244,6 +251,8 @@ export const TopNav = (props) => {
         backgroundColor: 'neutral.900',
         color: 'common.white',
         position: 'fixed',
+        // Pushed down by the maintenance banner when one is showing, 0px otherwise.
+        top: BANNER_HEIGHT_VAR,
         width: '100%',
         zIndex: (theme) => theme.zIndex.appBar,
       }}
@@ -314,7 +323,7 @@ export const TopNav = (props) => {
           {!mdDown && (
             <IconButton color="inherit" onClick={handleThemeSwitch}>
               <SvgIcon color="action" fontSize="small">
-                {settings?.currentTheme?.value === 'dark' ? <SunIcon /> : <MoonIcon />}
+                {effectivePaletteMode === 'dark' ? <SunIcon /> : <MoonIcon />}
               </SvgIcon>
             </IconButton>
           )}
@@ -671,7 +680,7 @@ export const TopNav = (props) => {
           <NotificationsPopover />
           <AccountPopover
             onThemeSwitch={handleThemeSwitch}
-            paletteMode={settings.currentTheme?.value === 'light' ? 'dark' : 'light'}
+            paletteMode={effectivePaletteMode === 'light' ? 'dark' : 'light'}
           />
         </Stack>
       </Stack>

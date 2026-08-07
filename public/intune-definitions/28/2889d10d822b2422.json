@@ -1,0 +1,1 @@
+{"id":"ddm-latestsoftwareupdate_delayindays","displayName":"Delay In Days","description":"Specify the number of days that should pass before a deadline is enforced after a new update is released by Apple.","helpText":null,"infoUrls":[],"categoryId":"15be55d8-7477-4274-9b09-b775bce68416","categoryName":"Software Update Enforce Latest","options":null}

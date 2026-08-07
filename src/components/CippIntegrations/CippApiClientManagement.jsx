@@ -189,7 +189,7 @@ const CippApiClientManagement = () => {
           name: "mcpAccessWarning",
           severity: "warning",
           label:
-            "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
+            "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
         },
       ],
       type: "POST",
@@ -455,7 +455,7 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
           },
         ]}
         api={{
@@ -536,7 +536,7 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
           },
         ]}
         api={{

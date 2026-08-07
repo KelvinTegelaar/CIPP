@@ -12,20 +12,25 @@ import {
   Typography,
 } from '@mui/material'
 import { Close, Download, PictureAsPdf } from '@mui/icons-material'
-import { Document, Page, Text, View, Image, PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
-import { createReportStyles, DEFAULT_BRAND_COLOUR, REPORT_COLOURS } from './reportPdfStyles'
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
 import {
   AlertBox,
+  Bold,
   BulletList,
   ClearBox,
+  ContentPage,
+  CoverMeta,
   DataTable,
   InfoBox,
-  PageFooter,
-  PageHeader,
+  Paragraph,
+  REPORT_COLOURS,
+  ReportDocument,
+  Section,
   StatRow,
   severityColour,
-} from './reportPdfPrimitives'
-import { useSettings } from '../../hooks/use-settings'
+} from './index'
+import { useReportVariables } from './useReportVariables'
+import { useBrandingSettings } from './useBrandingSettings'
 
 const nz = (value) => Number(value ?? 0)
 const joinList = (value) => (Array.isArray(value) ? value.join(', ') : (value ?? ''))
@@ -49,12 +54,15 @@ const assessExposure = (summary) => {
   return { level: 'Low', severity: 'low' }
 }
 
-const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, generatedOn }) => {
-  const brandColor = brandingSettings?.colour || DEFAULT_BRAND_COLOUR
-  const styles = createReportStyles(brandColor)
-  const logo = brandingSettings?.logo
-  const footerLabel = `${tenantName} — SharePoint & OneDrive Sharing`
-
+// Exported so the branding preview can render this report against sample data, and so tests can
+// render it to a real PDF.
+export const SharingReportDocument = ({
+  sharingData,
+  brandingSettings,
+  tenantName,
+  generatedOn,
+  variables,
+}) => {
   const summary = sharingData?.summary ?? {}
   const links = sharingData?.links ?? []
   const topRecipients = sharingData?.topRecipients ?? []
@@ -80,61 +88,43 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
     row.expirationDateTime ? new Date(row.expirationDateTime).toLocaleDateString() : 'Never'
 
   return (
-    <Document>
-      {/* COVER */}
-      <Page size="A4" style={styles.coverPage}>
-        <View style={styles.coverHeader}>
-          <View>{logo ? <Image style={styles.logo} src={logo} cache={false} /> : null}</View>
-          <Text style={styles.dateStamp}>{generatedOn}</Text>
-        </View>
-
-        <View style={styles.coverHero}>
-          <Text style={styles.coverLabel}>Data Sharing Review</Text>
-          <Text style={styles.mainTitle}>
-            Sharing{'\n'}
-            <Text style={styles.titleAccent}>Report</Text>
-          </Text>
-          <Text style={styles.subtitle}>
-            What has been shared out of SharePoint and OneDrive at {tenantName}, who it reaches, and
-            which of those shares are worth acting on.
-          </Text>
-          <View>
-            <Text style={styles.coverMetaLabel}>{tenantName}</Text>
-            <Text style={styles.coverMetavalue}>
-              {nz(summary.totalLinks)} sharing links · {nz(summary.itemsShared)} items ·{' '}
-              {nz(summary.externalRecipients)} external recipients
-            </Text>
-            <Text style={[styles.dateStamp, { marginTop: 8 }]}>
-              Sharing exposure: {exposure.level}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.coverFooter}>
-          <Text style={styles.confidential}>Confidential — For Internal Use Only</Text>
-        </View>
-      </Page>
-
-      {/* EXECUTIVE SUMMARY */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Executive Summary"
-          subtitle="What has been shared, and how far it reaches"
-          logo={logo}
+    <ReportDocument
+      brandingSettings={brandingSettings}
+      tenantName={tenantName}
+      reportName="Sharing Report"
+      generatedOn={generatedOn}
+      variables={variables}
+      coverLabel="Data Sharing Review"
+      coverTitle="Sharing"
+      coverAccent="Report"
+      coverSubtitle={`What has been shared out of SharePoint and OneDrive at ${tenantName}, who it reaches, and which of those shares are worth acting on.`}
+      coverFallbackImage="/reportImages/glasses.jpg"
+      coverFooterNote="Confidential — For Internal Use Only"
+      footerLabel={`${tenantName} — SharePoint & OneDrive Sharing`}
+      coverMeta={
+        <CoverMeta
+          lines={[
+            `${nz(summary.totalLinks)} sharing links · ${nz(summary.itemsShared)} items · ${nz(
+              summary.externalRecipients
+            )} external recipients`,
+          ]}
+          note={`Sharing exposure: ${exposure.level}`}
         />
+      }
+    >
+      {/* EXECUTIVE SUMMARY */}
+      <ContentPage title="Executive Summary" subtitle="What has been shared, and how far it reaches">
 
-        <View style={styles.section}>
-          <Text style={styles.bodyText}>
+        <Section>
+          <Paragraph>
             Sharing links are created by users on individual files and folders. They hand out access
             outside the permission structure an administrator sets on a site or library, they
             accumulate quietly as people work, and nothing prompts anyone to review them. This
             report covers what exists today across SharePoint and OneDrive in{' '}
-            <Text style={styles.bold}>{tenantName}</Text>.
-          </Text>
+            <Bold>{tenantName}</Bold>.
+          </Paragraph>
 
           <StatRow
-            styles={styles}
             stats={[
               {
                 value: nz(summary.anonymousEditLinks),
@@ -160,7 +150,6 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
           />
 
           <AlertBox
-            styles={styles}
             title={`Sharing Exposure: ${exposure.level}`}
             colour={exposureColour}
           >
@@ -171,40 +160,30 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
             {exposure.level === 'Low' &&
               'No high-risk sharing was found. Links are scoped and time-bounded. Continue reviewing periodically, since sharing accumulates as projects come and go.'}
           </AlertBox>
-        </View>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Scope of This Review</Text>
-          <InfoBox styles={styles} title="What was examined">
+        <Section title="Scope of This Review">
+          <InfoBox title="What was examined">
             {nz(summary.totalLinks)} sharing links and external shares across{' '}
             {nz(summary.sharePointSites)} SharePoint sites, {nz(summary.teamsSites)} Teams-connected
             sites and {nz(summary.oneDriveAccounts)} OneDrive accounts, covering{' '}
             {nz(summary.itemsShared)} distinct shared items. Data is taken from the last completed
             sync, not read live.
           </InfoBox>
-          <InfoBox styles={styles} title="What is not covered">
+          <InfoBox title="What is not covered">
             This report covers sharing links only. Permissions granted on a site or document library
             are a separate access path, governed differently, and are covered by the Permissions
             Report. A clean result here does not mean access is restricted — it means nothing has
             been shared out by link.
           </InfoBox>
-        </View>
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
+        </Section>
+      </ContentPage>
 
       {/* FINDINGS */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Findings"
-          subtitle="Shares worth reviewing, most urgent first"
-          logo={logo}
-        />
+      <ContentPage title="Findings" subtitle="Shares worth reviewing, most urgent first">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Finding 1: Anonymous Links That Allow Editing</Text>
-          <InfoBox styles={styles} title="Why this matters">
+        <Section title="Finding 1: Anonymous Links That Allow Editing">
+          <InfoBox title="Why this matters">
             An anonymous link works for anyone who holds it — no sign-in, no record of who used it.
             When that link also grants editing, anyone it has been forwarded to can change or delete
             the content, and the change is attributed to nobody. This is the only combination that
@@ -213,14 +192,12 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
           {anonEditRows.length > 0 ? (
             <>
               <AlertBox
-                styles={styles}
                 title={plural(anonEditRows.length, 'anonymous editable link')}
                 colour={REPORT_COLOURS.danger}
               >
                 Revoke these, or downgrade them to view-only where the sharing is still needed.
               </AlertBox>
               <DataTable
-                styles={styles}
                 columns={[
                   { header: 'Item', key: 'item', width: 2.4 },
                   { header: 'Location', key: 'location', width: 2 },
@@ -234,15 +211,14 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
               />
             </>
           ) : (
-            <ClearBox styles={styles} title="✓ No anonymous editable links">
+            <ClearBox title="✓ No anonymous editable links">
               No anonymous link grants write access.
             </ClearBox>
           )}
-        </View>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Finding 2: Anonymous Links That Never Expire</Text>
-          <InfoBox styles={styles} title="Why this matters">
+        <Section title="Finding 2: Anonymous Links That Never Expire">
+          <InfoBox title="Why this matters">
             A link with no expiry date stays live indefinitely, long after the reason for sharing
             has passed. Expiry is the only control that withdraws this access without somebody
             remembering to do it.
@@ -250,7 +226,6 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
           {neverExpiringRows.length > 0 ? (
             <>
               <AlertBox
-                styles={styles}
                 title={`${plural(neverExpiringRows.length, 'anonymous link')} with no expiry`}
                 colour={REPORT_COLOURS.warning}
               >
@@ -258,7 +233,6 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
                 links that are no longer needed.
               </AlertBox>
               <DataTable
-                styles={styles}
                 columns={[
                   { header: 'Item', key: 'item', width: 2.4 },
                   { header: 'Location', key: 'location', width: 2 },
@@ -272,27 +246,18 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
               />
             </>
           ) : (
-            <ClearBox styles={styles} title="✓ All anonymous links expire">
+            <ClearBox title="✓ All anonymous links expire">
               Every anonymous link has an expiry date set.
             </ClearBox>
           )}
-        </View>
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
+        </Section>
+      </ContentPage>
 
       {/* FINDINGS CONTINUED */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Findings (continued)"
-          subtitle="Reach and recipients"
-          logo={logo}
-        />
+      <ContentPage title="Findings (continued)" subtitle="Reach and recipients">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Finding 3: Shared Folders</Text>
-          <InfoBox styles={styles} title="Why this matters">
+        <Section title="Finding 3: Shared Folders">
+          <InfoBox title="Why this matters">
             Sharing a folder shares everything inside it, including anything added later. The
             recipient's access grows over time without anyone re-approving it, which is the main way
             a small share quietly becomes a large one.
@@ -300,14 +265,12 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
           {folderShareRows.length > 0 ? (
             <>
               <AlertBox
-                styles={styles}
                 title={`${plural(folderShareRows.length, 'folder')} shared externally or anonymously`}
                 colour={REPORT_COLOURS.warning}
               >
                 Check what each folder holds now, not what it held when it was shared.
               </AlertBox>
               <DataTable
-                styles={styles}
                 columns={[
                   { header: 'Folder', key: 'item', width: 2.2 },
                   { header: 'Location', key: 'location', width: 2 },
@@ -321,28 +284,26 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
               />
             </>
           ) : (
-            <ClearBox styles={styles} title="✓ No externally shared folders">
+            <ClearBox title="✓ No externally shared folders">
               External and anonymous shares point at individual files rather than folders.
             </ClearBox>
           )}
-        </View>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Finding 4: External Recipients</Text>
-          <InfoBox styles={styles} title="Why this matters">
+        <Section title="Finding 4: External Recipients">
+          <InfoBox title="Why this matters">
             Every external recipient is a person outside the organisation holding access that was
             granted individually, usually for a specific piece of work. Nothing withdraws it when
             that work ends.
           </InfoBox>
           {topRecipients.length > 0 ? (
             <>
-              <Text style={styles.bodyText}>
+              <Paragraph>
                 {plural(nz(summary.externalRecipients), 'external identity', 'external identities')}{' '}
                 hold shared content, across {plural(externalRows.length, 'share')}. The most
                 frequent are listed below.
-              </Text>
+              </Paragraph>
               <DataTable
-                styles={styles}
                 columns={[
                   { header: 'Recipient', key: 'recipient', width: 3 },
                   { header: 'Shares', key: 'shares', width: 1 },
@@ -355,21 +316,19 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
               />
             </>
           ) : (
-            <ClearBox styles={styles} title="✓ No external recipients">
+            <ClearBox title="✓ No external recipients">
               Nothing has been shared with an identity outside the organisation.
             </ClearBox>
           )}
-        </View>
+        </Section>
 
         {topLibraries.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Where Sharing Concentrates</Text>
-            <Text style={styles.bodyText}>
+          <Section title="Where Sharing Concentrates">
+            <Paragraph>
               The libraries below account for the most sharing links. Concentration is not a problem
               in itself, but it shows where a review will have the most effect.
-            </Text>
+            </Paragraph>
             <DataTable
-              styles={styles}
               columns={[
                 { header: 'Library', key: 'library', width: 3 },
                 { header: 'Links', key: 'links', width: 1 },
@@ -380,28 +339,18 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
               }))}
               limit={10}
             />
-          </View>
+          </Section>
         )}
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
+      </ContentPage>
 
       {/* RECOMMENDATIONS */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Recommendations"
-          subtitle="What to do about the findings"
-          logo={logo}
-        />
+      <ContentPage title="Recommendations" subtitle="What to do about the findings">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Priority Actions</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Priority Actions">
+          <Paragraph>
             Ordered by how much exposure each removes relative to the effort involved.
-          </Text>
+          </Paragraph>
           <BulletList
-            styles={styles}
             items={[
               {
                 marker: '1.',
@@ -430,12 +379,10 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
               },
             ]}
           />
-        </View>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Keeping It That Way</Text>
+        <Section title="Keeping It That Way">
           <BulletList
-            styles={styles}
             items={[
               {
                 label: 'Re-run this review regularly.',
@@ -455,18 +402,17 @@ const SharingReportDocument = ({ sharingData, brandingSettings, tenantName, gene
               },
             ]}
           />
-        </View>
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
-    </Document>
+        </Section>
+      </ContentPage>
+    </ReportDocument>
   )
 }
 
 export const SharingReportButton = ({ sharingData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [generatedOn, setGeneratedOn] = useState('')
-  const brandingSettings = useSettings()?.customBranding
+  const brandingSettings = useBrandingSettings()
+  const variables = useReportVariables()
   const hasData = !!sharingData?.summary
 
   const handleOpen = () => {
@@ -482,6 +428,7 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
       brandingSettings={brandingSettings}
       tenantName={tenantName}
       generatedOn={generatedOn}
+      variables={variables}
     />
   )
 

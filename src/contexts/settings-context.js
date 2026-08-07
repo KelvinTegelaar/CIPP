@@ -56,15 +56,41 @@ const restoreSettings = () => {
     // that's why we catch the error
   }
 
-  return value;
+  return value ? stripPersistedBrandingBlobs(stripServerManagedSettings(value)) : null;
 };
 
 const deleteSettings = () => {
   storage.removeItem(STORAGE_KEY);
 };
 
+/**
+ * Branding is no longer client settings — it is a request, cached by react-query under
+ * `BRANDING_QUERY_KEY` and read via `useBrandingSettings`. Anything a previous version of CIPP
+ * persisted here is dropped on load rather than migrated: it is a stale copy of server state, and
+ * its image payloads are what used to blow the localStorage quota once covers were uploaded.
+ */
+const stripPersistedBrandingBlobs = (settings) => {
+  if (!settings || typeof settings !== "object" || !("customBranding" in settings)) {
+    return settings;
+  }
+
+  const { customBranding: _legacyBranding, ...rest } = settings;
+  return rest;
+};
+
 const storeSettings = (value) => {
-  storage.setItem(STORAGE_KEY, JSON.stringify(value));
+  try {
+    storage.setItem(STORAGE_KEY, JSON.stringify(stripPersistedBrandingBlobs(value)));
+  } catch (err) {
+    console.error("[Settings Context] Failed to persist settings", err);
+    try {
+      // Drop a bloated legacy blob so future writes can succeed
+      storage.removeItem(STORAGE_KEY);
+      storage.setItem(STORAGE_KEY, JSON.stringify(stripPersistedBrandingBlobs(value)));
+    } catch (retryErr) {
+      console.error("[Settings Context] Failed to recover settings storage", retryErr);
+    }
+  }
 };
 
 const stripServerManagedSettings = (settings) => {
@@ -76,18 +102,20 @@ const stripServerManagedSettings = (settings) => {
   return cleanedSettings;
 };
 
+// First visit (no stored preference): follow the OS. 'browser' resolves against
+// prefers-color-scheme at render time in _app.js, so the app keeps tracking the
+// system preference until the user explicitly picks a mode with the theme toggle.
+const systemPrefersDark =
+  typeof window !== "undefined" && !!window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+
 const initialSettings = {
   direction: "ltr",
-  paletteMode: "light",
-  currentTheme: { value: "light", label: "light" },
+  paletteMode: systemPrefersDark ? "dark" : "light",
+  currentTheme: { value: "browser", label: "Browser Default" },
   pinNav: true,
   currentTenant: null,
   showDevtools: false,
   showAdvancedTools: false,
-  customBranding: {
-    colour: "#F77F00",
-    logo: null,
-  },
   persistFilters: false,
   lastUsedFilters: {},
   breadcrumbMode: "hierarchical",
@@ -117,7 +145,7 @@ export const SettingsProvider = (props) => {
     const restored = restoreSettings();
 
     if (restored) {
-      const cleanedRestored = stripServerManagedSettings(restored);
+      const cleanedRestored = restored;
 
       if (!cleanedRestored.currentTheme && cleanedRestored.paletteMode) {
         cleanedRestored.currentTheme = {

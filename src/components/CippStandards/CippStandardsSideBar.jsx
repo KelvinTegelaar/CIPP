@@ -144,7 +144,7 @@ const CippStandardsSideBar = ({
   };
 
   // Enhanced drift validation using CIPP patterns with group support
-  const validateDrift = async (tenants) => {
+  const validateDrift = async (tenants, excludedTenants) => {
     if (!isDriftMode || !tenants || tenants.length === 0) {
       setDriftError("");
       onDriftConflictChange?.(false);
@@ -170,6 +170,9 @@ const CippStandardsSideBar = ({
       // Expand selected tenants (including group members)
       const selectedTenantList = expandGroupsToTenants(tenants, groups);
 
+      // Expand excluded tenants the same way; a tenant excluded here can never overlap
+      const excludedTenantSet = new Set(expandGroupsToTenants(excludedTenants || [], groups));
+
       // Simple conflict check
       const conflicts = [];
 
@@ -194,17 +197,21 @@ const CippStandardsSideBar = ({
         const template = uniqueTemplates[templateId];
         const templateTenants = template.tenants;
 
-        const hasConflict = selectedTenantList.some((selectedTenant) => {
-          // Check if any template tenant matches the selected tenant
-          const conflict = templateTenants.some((templateTenant) => {
-            if (selectedTenant === "AllTenants" || templateTenant === "AllTenants") {
-              return true;
-            }
-            const match = selectedTenant === templateTenant;
-            return match;
-          });
-          return conflict;
-        });
+        // Template tenants come from ListTenantAlignment rows, which already have that
+        // template's own exclusions applied — only this form's exclusions need subtracting
+        const selectedHasAllTenants = selectedTenantList.includes("AllTenants");
+        const hasConflict = templateTenants.some(
+          (templateTenant) =>
+            !excludedTenantSet.has(templateTenant) &&
+            (selectedHasAllTenants ||
+              templateTenant === "AllTenants" ||
+              selectedTenantList.some(
+                (selectedTenant) =>
+                  selectedTenant !== "AllTenants" &&
+                  !excludedTenantSet.has(selectedTenant) &&
+                  selectedTenant === templateTenant,
+              )),
+        );
 
         if (hasConflict) {
           conflicts.push(template.standardName || "Unknown Template");
@@ -233,11 +240,17 @@ const CippStandardsSideBar = ({
     if (!isDriftMode) return;
 
     const timeoutId = setTimeout(() => {
-      validateDrift(watchForm.tenantFilter);
+      validateDrift(watchForm.tenantFilter, watchForm.excludedTenants);
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [watchForm.tenantFilter, isDriftMode, driftValidationApi.data, tenantGroupsApi.data]);
+  }, [
+    watchForm.tenantFilter,
+    watchForm.excludedTenants,
+    isDriftMode,
+    driftValidationApi.data,
+    tenantGroupsApi.data,
+  ]);
 
   useEffect(() => {
     const stepsStatus = {

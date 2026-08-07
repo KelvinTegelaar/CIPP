@@ -1,0 +1,1 @@
+{"id":"app_allowed_deniedbinaries_item_teamid","displayName":"Team ID","description":"The code signature team identifier of the binary. Use the value \"*APPLE*\" instead of an empty string for Apple binaries with an empty team identifier.","helpText":null,"infoUrls":[],"categoryId":"8c86f511-1729-4fe9-b0b2-111d9044e1ba","categoryName":"App Settings","options":null}

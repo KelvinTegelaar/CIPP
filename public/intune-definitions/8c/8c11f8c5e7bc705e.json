@@ -1,0 +1,1 @@
+{"id":"com.apple.cellularprivatenetwork.managed_geofences_item_radius","displayName":"Radius","description":"Specifies the radius of the geofence in meters. Set this value slightly greater than the private cellular network coverage area.","helpText":null,"infoUrls":[],"categoryId":"b6650a16-32bc-4344-ac98-8f20486c6b0b","categoryName":"Cellular Private Network","options":null}

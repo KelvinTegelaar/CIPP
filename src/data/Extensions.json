@@ -353,7 +353,7 @@
         "name": "HaloPSA.TicketType",
         "label": "HaloPSA Ticket Type",
         "placeholder": "Select your HaloPSA Ticket Type, leave blank for default",
-        "helperText": "The ticket type used for CIPP alert tickets. Sets the workflow and the Outcomes available below. Save after changing so the Outcome list refreshes.",
+        "helperText": "The ticket type used for CIPP alert tickets. Sets the workflow, and the priorities and outcomes available below.",
         "fullRow": true,
         "multiple": false,
         "api": {
@@ -375,23 +375,49 @@
         }
       },
       {
+        "type": "autoComplete",
+        "name": "HaloPSA.DefaultPriority",
+        "dependsOn": "HaloPSA.TicketType",
+        "label": "HaloPSA Default Priority",
+        "placeholder": "Select a priority, leave blank for default",
+        "helperText": "Optional. Sets the priority on every CIPP-generated ticket. Restricted to priorities on the Ticket Type's SLA. Leave blank to use the SLA default.",
+        "fullRow": true,
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloPriorities",
+          "dataKey": "Priorities",
+          "labelField": "name",
+          "valueField": "priorityid",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.TicketType",
+          "compareType": "hasValue",
+          "action": "hide"
+        }
+      },
+      {
         "type": "switch",
         "name": "HaloPSA.ConsolidateTickets",
         "label": "Consolidate Tickets",
         "helperText": "Adds repeat alerts (same title) as a note on the existing open ticket instead of raising a new one. Turns on the Outcome dropdown below, which needs a valid private note action.",
         "condition": {
-          "field": "HaloPSA.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
+          "field": "HaloPSA.TicketType",
+          "compareType": "hasValue",
+          "action": "hide"
         }
       },
       {
         "type": "autoComplete",
         "name": "HaloPSA.Outcome",
+        "dependsOn": "HaloPSA.TicketType",
         "label": "HaloPSA Outcome",
         "placeholder": "Select your HaloPSA Outcome, leave blank for default",
-        "helperText": "The action applied when a duplicate alert is added to an existing ticket. Use a private note action your HaloPSA API user can run. Set the Ticket Type first and save - the list only shows outcomes from that type's workflow.",
+        "helperText": "The action applied when a duplicate alert is added to an existing ticket. Use a private note action your HaloPSA API user can run. Only outcomes from the selected Ticket Type's workflow are listed. Leave blank to use Halo's built-in Internal Note action.",
         "fullRow": true,
         "multiple": false,
         "api": {
@@ -418,14 +444,14 @@
         "label": "Link Tickets to affected Users",
         "helperText": "Raises one ticket per affected user and links it to the matching HaloPSA contact (by Azure Object ID, then email/login). No match falls back to the client's General User, with the UPN in the ticket body.",
         "condition": {
-          "field": "HaloPSA.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
+          "field": "HaloPSA.TicketType",
+          "compareType": "hasValue",
+          "action": "hide"
         }
       }
     ],
-    "mappingRequired": true
+    "mappingRequired": true,
+    "autoMapSyncApi": true
   },
   {
     "name": "NinjaOne",

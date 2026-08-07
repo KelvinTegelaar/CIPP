@@ -433,6 +433,12 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "IntuneApprovalRequests",
+    "label": "Alert on Intune changes waiting for multi-admin approval",
+    "recommendedRunInterval": "1d",
+    "description": "Multi-admin approval holds a protected Intune change until a second administrator approves it, and nothing notifies the requestor. This reports requests still sitting in needsApproval."
+  },
+  {
     "name": "SoftDeletedMailboxes",
     "label": "Alert on soft deleted mailboxes",
     "recommendedRunInterval": "1d"

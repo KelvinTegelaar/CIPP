@@ -12,20 +12,25 @@ import {
   Typography,
 } from '@mui/material'
 import { Close, Download, PictureAsPdf } from '@mui/icons-material'
-import { Document, Page, Text, View, Image, PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
-import { createReportStyles, DEFAULT_BRAND_COLOUR, REPORT_COLOURS } from './reportPdfStyles'
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
 import {
   AlertBox,
+  Bold,
   BulletList,
   ClearBox,
+  ContentPage,
+  CoverMeta,
   DataTable,
   InfoBox,
-  PageFooter,
-  PageHeader,
+  Paragraph,
+  REPORT_COLOURS,
+  ReportDocument,
+  Section,
   StatRow,
   severityColour,
-} from './reportPdfPrimitives'
-import { useSettings } from '../../hooks/use-settings'
+} from './index'
+import { useReportVariables } from './useReportVariables'
+import { useBrandingSettings } from './useBrandingSettings'
 
 const nz = (value) => Number(value ?? 0)
 const plural = (count, singular, pluralForm) =>
@@ -53,17 +58,15 @@ const CLAIM_LABELS = {
   AllUsers: 'All Users',
 }
 
-const PermissionsReportDocument = ({
+// Exported so the branding preview can render this report against sample data, and so tests can
+// render it to a real PDF.
+export const PermissionsReportDocument = ({
   permissionsData,
   brandingSettings,
   tenantName,
   generatedOn,
+  variables,
 }) => {
-  const brandColor = brandingSettings?.colour || DEFAULT_BRAND_COLOUR
-  const styles = createReportStyles(brandColor)
-  const logo = brandingSettings?.logo
-  const footerLabel = `${tenantName} — SharePoint Permissions`
-
   const summary = permissionsData?.summary ?? {}
   const assignments = permissionsData?.assignments ?? []
   const skippedSites = permissionsData?.skippedSites ?? []
@@ -87,61 +90,43 @@ const PermissionsReportDocument = ({
     row.scope === 'Library' ? `${siteLabel(row)} / ${row.libraryTitle}` : siteLabel(row)
 
   return (
-    <Document>
-      {/* COVER */}
-      <Page size="A4" style={styles.coverPage}>
-        <View style={styles.coverHeader}>
-          <View>{logo ? <Image style={styles.logo} src={logo} cache={false} /> : null}</View>
-          <Text style={styles.dateStamp}>{generatedOn}</Text>
-        </View>
-
-        <View style={styles.coverHero}>
-          <Text style={styles.coverLabel}>Access Review</Text>
-          <Text style={styles.mainTitle}>
-            Permissions{'\n'}
-            <Text style={styles.titleAccent}>Report</Text>
-          </Text>
-          <Text style={styles.subtitle}>
-            Who is structurally allowed into SharePoint sites and document libraries at {tenantName}
-            , and where that access reaches further than intended.
-          </Text>
-          <View>
-            <Text style={styles.coverMetaLabel}>{tenantName}</Text>
-            <Text style={styles.coverMetavalue}>
-              {nz(summary.sitesScanned)} sites · {nz(summary.librariesScanned)} libraries ·{' '}
-              {nz(summary.totalAssignments)} permission assignments
-            </Text>
-            <Text style={[styles.dateStamp, { marginTop: 8 }]}>
-              Permission exposure: {exposure.level}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.coverFooter}>
-          <Text style={styles.confidential}>Confidential — For Internal Use Only</Text>
-        </View>
-      </Page>
-
-      {/* EXECUTIVE SUMMARY */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Executive Summary"
-          subtitle="Who is allowed in, and how widely"
-          logo={logo}
+    <ReportDocument
+      brandingSettings={brandingSettings}
+      tenantName={tenantName}
+      reportName="Permissions Report"
+      generatedOn={generatedOn}
+      variables={variables}
+      coverLabel="Access Review"
+      coverTitle="Permissions"
+      coverAccent="Report"
+      coverSubtitle={`Who is structurally allowed into SharePoint sites and document libraries at ${tenantName}, and where that access reaches further than intended.`}
+      coverFallbackImage="/reportImages/soc.jpg"
+      coverFooterNote="Confidential — For Internal Use Only"
+      footerLabel={`${tenantName} — SharePoint Permissions`}
+      coverMeta={
+        <CoverMeta
+          lines={[
+            `${nz(summary.sitesScanned)} sites · ${nz(summary.librariesScanned)} libraries · ${nz(
+              summary.totalAssignments
+            )} permission assignments`,
+          ]}
+          note={`Permission exposure: ${exposure.level}`}
         />
+      }
+    >
+      {/* EXECUTIVE SUMMARY */}
+      <ContentPage title="Executive Summary" subtitle="Who is allowed in, and how widely">
 
-        <View style={styles.section}>
-          <Text style={styles.bodyText}>
+        <Section>
+          <Paragraph>
             Permissions are set by administrators on a site or document library and decide who is
             structurally allowed in. They change rarely, which is what makes them worth auditing: a
             permission granted for one project stays in place indefinitely, and a permission granted
             to the whole organisation looks identical to one granted to a single team until somebody
-            reads it. This report covers <Text style={styles.bold}>{tenantName}</Text>.
-          </Text>
+            reads it. This report covers <Bold>{tenantName}</Bold>.
+          </Paragraph>
 
           <StatRow
-            styles={styles}
             stats={[
               {
                 value: nz(summary.broadClaimGrants),
@@ -167,7 +152,6 @@ const PermissionsReportDocument = ({
           />
 
           <AlertBox
-            styles={styles}
             title={`Permission Exposure: ${exposure.level}`}
             colour={exposureColour}
           >
@@ -178,16 +162,15 @@ const PermissionsReportDocument = ({
             {exposure.level === 'Low' &&
               'Permissions broadly match what the structure intends. No tenant-wide grants were found. Continue reviewing periodically, particularly after site or library changes.'}
           </AlertBox>
-        </View>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Scope of This Review</Text>
-          <InfoBox styles={styles} title="What was examined">
+        <Section title="Scope of This Review">
+          <InfoBox title="What was examined">
             {nz(summary.sitesScanned)} SharePoint sites and {nz(summary.librariesScanned)} document
             libraries were read, producing {nz(summary.totalAssignments)} permission assignments.
             Data is taken from the last completed sync, not read live.
           </InfoBox>
-          <InfoBox styles={styles} title="What is not covered">
+          <InfoBox title="What is not covered">
             Permissions are reported as grant paths, not effective access — a group holding a
             permission is one entry and its members are not expanded, so a person may hold access
             that shows here only via their group. Permissions on individual folders and files are
@@ -196,7 +179,6 @@ const PermissionsReportDocument = ({
           </InfoBox>
           {skippedSites.length > 0 ? (
             <AlertBox
-              styles={styles}
               title={`${plural(skippedSites.length, 'site')} could not be read`}
               colour={REPORT_COLOURS.warning}
             >
@@ -206,23 +188,14 @@ const PermissionsReportDocument = ({
               for these sites is not evidence of good configuration.
             </AlertBox>
           ) : null}
-        </View>
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
+        </Section>
+      </ContentPage>
 
       {/* FINDINGS */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Findings"
-          subtitle="Permissions worth reviewing, most urgent first"
-          logo={logo}
-        />
+      <ContentPage title="Findings" subtitle="Permissions worth reviewing, most urgent first">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Finding 1: Tenant-Wide Grants</Text>
-          <InfoBox styles={styles} title="Why this matters">
+        <Section title="Finding 1: Tenant-Wide Grants">
+          <InfoBox title="Why this matters">
             SharePoint offers a handful of special audiences — Everyone, Everyone except external
             users, and All Users — that resolve to the whole organisation rather than to named
             people. A library carrying one is readable by every employee no matter what the site's
@@ -232,7 +205,6 @@ const PermissionsReportDocument = ({
           {broadClaimRows.length > 0 ? (
             <>
               <AlertBox
-                styles={styles}
                 title={`${plural(broadClaimRows.length, 'tenant-wide grant')} found`}
                 colour={REPORT_COLOURS.danger}
               >
@@ -241,7 +213,6 @@ const PermissionsReportDocument = ({
                 meant to have it.
               </AlertBox>
               <DataTable
-                styles={styles}
                 columns={[
                   { header: 'Location', key: 'location', width: 2.4 },
                   { header: 'Audience', key: 'audience', width: 2 },
@@ -255,16 +226,15 @@ const PermissionsReportDocument = ({
               />
             </>
           ) : (
-            <ClearBox styles={styles} title="✓ No tenant-wide grants found">
+            <ClearBox title="✓ No tenant-wide grants found">
               No site or library grants access to Everyone, Everyone except external users, or All
               Users.
             </ClearBox>
           )}
-        </View>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Finding 2: External and Guest Access</Text>
-          <InfoBox styles={styles} title="Why this matters">
+        <Section title="Finding 2: External and Guest Access">
+          <InfoBox title="Why this matters">
             Guest accounts holding permissions retain that access until somebody removes it — unlike
             a sharing link, nothing expires it. Guests from finished projects are a common source of
             standing access nobody is reviewing.
@@ -272,14 +242,12 @@ const PermissionsReportDocument = ({
           {externalGrantRows.length > 0 ? (
             <>
               <AlertBox
-                styles={styles}
                 title={`${plural(externalGrantRows.length, 'grant')} held by external identities`}
                 colour={REPORT_COLOURS.warning}
               >
                 Verify each guest still needs access and that the relationship is current.
               </AlertBox>
               <DataTable
-                styles={styles}
                 columns={[
                   { header: 'Location', key: 'location', width: 2.2 },
                   { header: 'Identity', key: 'identity', width: 2.4 },
@@ -293,27 +261,18 @@ const PermissionsReportDocument = ({
               />
             </>
           ) : (
-            <ClearBox styles={styles} title="✓ No external grants found">
+            <ClearBox title="✓ No external grants found">
               No guest or external identity holds a permission on a scanned site or library.
             </ClearBox>
           )}
-        </View>
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
+        </Section>
+      </ContentPage>
 
       {/* FINDINGS CONTINUED */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Findings (continued)"
-          subtitle="Elevated rights and inheritance"
-          logo={logo}
-        />
+      <ContentPage title="Findings (continued)" subtitle="Elevated rights and inheritance">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Finding 3: Directly Granted Full Control</Text>
-          <InfoBox styles={styles} title="Why this matters">
+        <Section title="Finding 3: Directly Granted Full Control">
+          <InfoBox title="Why this matters">
             Every site has an Owners group that holds Full Control by design, and that is expected.
             Full Control granted straight to a person or a directory group is different: it sits
             outside the membership structure, so it is not removed when someone leaves a team and it
@@ -322,7 +281,6 @@ const PermissionsReportDocument = ({
           {fullControlRows.length > 0 ? (
             <>
               <AlertBox
-                styles={styles}
                 title={`${plural(fullControlRows.length, 'direct Full Control grant')}`}
                 colour={REPORT_COLOURS.warning}
               >
@@ -330,7 +288,6 @@ const PermissionsReportDocument = ({
                 membership changes take effect automatically.
               </AlertBox>
               <DataTable
-                styles={styles}
                 columns={[
                   { header: 'Location', key: 'location', width: 2.2 },
                   { header: 'Principal', key: 'principal', width: 2.2 },
@@ -344,53 +301,42 @@ const PermissionsReportDocument = ({
               />
             </>
           ) : (
-            <ClearBox styles={styles} title="✓ Full Control is held through Owners groups">
+            <ClearBox title="✓ Full Control is held through Owners groups">
               No user or directory group holds Full Control outside a site's Owners group.
             </ClearBox>
           )}
-        </View>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Finding 4: Libraries With Their Own Permissions</Text>
-          <InfoBox styles={styles} title="Why this matters">
+        <Section title="Finding 4: Libraries With Their Own Permissions">
+          <InfoBox title="Why this matters">
             A library normally inherits from its site, so managing the site manages everything in
             it. A detached library keeps its own permissions and later site-level changes no longer
             reach it. That is legitimate when deliberate and a blind spot when not — removing
             somebody from the site does not remove them here.
           </InfoBox>
           {nz(summary.uniquePermissionLibraries) > 0 ? (
-            <Text style={styles.bodyText}>
+            <Paragraph>
               {nz(summary.uniquePermissionLibraries)} of {nz(summary.librariesScanned)} libraries no
               longer inherit from their site. Their assignments are listed in the appendix. Review
               whether each detachment was intentional and is still needed.
-            </Text>
+            </Paragraph>
           ) : (
-            <ClearBox styles={styles} title="✓ All libraries inherit from their site">
+            <ClearBox title="✓ All libraries inherit from their site">
               Every scanned library takes its permissions from its site, so site-level access
               management covers them all.
             </ClearBox>
           )}
-        </View>
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
+        </Section>
+      </ContentPage>
 
       {/* RECOMMENDATIONS */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Recommendations"
-          subtitle="What to do about the findings"
-          logo={logo}
-        />
+      <ContentPage title="Recommendations" subtitle="What to do about the findings">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Priority Actions</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Priority Actions">
+          <Paragraph>
             Ordered by how much access each removes relative to the effort involved.
-          </Text>
+          </Paragraph>
           <BulletList
-            styles={styles}
             items={[
               {
                 marker: '1.',
@@ -419,12 +365,10 @@ const PermissionsReportDocument = ({
               },
             ]}
           />
-        </View>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Keeping It That Way</Text>
+        <Section title="Keeping It That Way">
           <BulletList
-            styles={styles}
             items={[
               {
                 label: 'Re-run this review regularly.',
@@ -444,23 +388,14 @@ const PermissionsReportDocument = ({
               },
             ]}
           />
-        </View>
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
+        </Section>
+      </ContentPage>
 
       {/* APPENDIX */}
-      <Page size="A4" style={styles.page}>
-        <PageHeader
-          styles={styles}
-          title="Appendix: Detached Library Permissions"
-          subtitle="Assignments on libraries that no longer inherit from their site"
-          logo={logo}
-        />
+      <ContentPage title="Appendix: Detached Library Permissions" subtitle="Assignments on libraries that no longer inherit from their site">
 
-        <View style={styles.section}>
+        <Section>
           <DataTable
-            styles={styles}
             columns={[
               { header: 'Site', key: 'site', width: 1.8 },
               { header: 'Library', key: 'library', width: 1.6 },
@@ -476,18 +411,17 @@ const PermissionsReportDocument = ({
             limit={40}
             emptyText="No libraries hold their own permissions."
           />
-        </View>
-
-        <PageFooter styles={styles} label={footerLabel} />
-      </Page>
-    </Document>
+        </Section>
+      </ContentPage>
+    </ReportDocument>
   )
 }
 
 export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [generatedOn, setGeneratedOn] = useState('')
-  const brandingSettings = useSettings()?.customBranding
+  const brandingSettings = useBrandingSettings()
+  const variables = useReportVariables()
   const hasData = !!permissionsData?.summary
 
   const handleOpen = () => {
@@ -503,6 +437,7 @@ export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
       brandingSettings={brandingSettings}
       tenantName={tenantName}
       generatedOn={generatedOn}
+      variables={variables}
     />
   )
 

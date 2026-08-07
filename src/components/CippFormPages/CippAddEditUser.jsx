@@ -1,6 +1,7 @@
 import { Alert, Divider, InputAdornment, Typography } from '@mui/material'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { getCippValidator } from '../../utils/get-cipp-validator'
+import { toAutoCompleteOptions } from '../../utils/to-autocomplete-options'
 import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import { CippFormDomainSelector } from '../CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
@@ -13,6 +14,29 @@ import { useWatch } from 'react-hook-form'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Sync } from '@mui/icons-material'
+
+// Exchange only sends a sharing invitation for these calendar access levels.
+const sharedCalendarPermissionOptions = [
+  { label: 'Editor', value: 'Editor' },
+  { label: 'Reviewer', value: 'Reviewer' },
+  { label: 'Limited Details', value: 'LimitedDetails' },
+  { label: 'Availability Only', value: 'AvailabilityOnly' },
+]
+
+const sharedMailboxPermissionOptions = [
+  { label: 'Full Access', value: 'FullAccess' },
+  { label: 'Send As', value: 'SendAs' },
+  { label: 'Send on Behalf', value: 'SendOnBehalf' },
+]
+
+// Both selectors offer the same set: only shared mailboxes of the tenant are accepted.
+const sharedMailboxApi = (tenantDomain) => ({
+  queryKey: `SharedMailboxes-${tenantDomain}`,
+  url: '/api/ListMailboxes',
+  data: { RecipientTypeDetails: 'SharedMailbox' },
+  labelField: (option) => `${option.displayName} (${option.UPN})`,
+  valueField: 'UPN',
+})
 
 const CippAddEditUser = (props) => {
   const { formControl, userSettingsDefaults, formType = 'add' } = props
@@ -298,13 +322,19 @@ const CippAddEditUser = (props) => {
     const template = watchedFields.userTemplate.addedFields
     const templateKey = watchedFields.userTemplate.value ?? template.GUID ?? template.templateName
 
+    // Apply a template once per selection. useWatch hands back a freshly cloned userTemplate
+    // whenever any other watched field changes - AddToGroups included - so without this guard the
+    // effect re-fires while the operator is still filling the form and overwrites whatever they
+    // have done to the template-driven fields since. That is what made groups appended after the
+    // template silently disappear (or linger on screen while never reaching the API).
+    if (appliedTemplateKeyRef.current === templateKey) return
+
     // Distinguish the first apply from a switch. On a switch we replace
     // template-driven fields (and clear ones the new template doesn't define)
     // so stale values from the previous template don't linger. On the first
     // apply we only fill fields that have a template value, so we don't clobber
     // input the user already entered or copied from another user.
-    const isSwitch =
-      appliedTemplateKeyRef.current !== null && appliedTemplateKeyRef.current !== templateKey
+    const isSwitch = appliedTemplateKeyRef.current !== null
     appliedTemplateKeyRef.current = templateKey
 
     setSelectedTemplate(template)
@@ -394,6 +424,24 @@ const CippAddEditUser = (props) => {
       }
     })
     applyField('AddToGroups', groups, [])
+
+    // Shared mailbox/calendar selections may be stored as option objects or as bare values
+    // depending on when the template was saved, so normalise before handing them to the fields.
+    applyField('sharedMailboxes', toAutoCompleteOptions(template.sharedMailboxes), [])
+    applyField(
+      'sharedMailboxPermission',
+      toAutoCompleteOptions(template.sharedMailboxPermission, sharedMailboxPermissionOptions),
+      []
+    )
+    applyField('sharedCalendars', toAutoCompleteOptions(template.sharedCalendars), [])
+    applyField(
+      'sharedCalendarPermission',
+      toAutoCompleteOptions(
+        template.sharedCalendarPermission,
+        sharedCalendarPermissionOptions
+      )[0] ?? null,
+      null
+    )
 
     // Custom user attributes. On a switch, clear every known attribute field
     // first so attributes the new template doesn't define don't linger, then
@@ -896,6 +944,58 @@ const CippAddEditUser = (props) => {
           }}
         />
       </Grid>
+      {formType === 'add' && (
+        <>
+          <Grid size={{ xs: 8 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Shared Mailboxes"
+              name="sharedMailboxes"
+              multiple={true}
+              creatable={false}
+              api={sharedMailboxApi(tenantDomain)}
+              helperText="Access is granted 15 minutes after creation, once Exchange has provisioned the user's mailbox. With Full Access, Outlook adds the mailbox automatically."
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 4 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Shared Mailbox Permissions"
+              name="sharedMailboxPermission"
+              multiple={true}
+              creatable={false}
+              options={sharedMailboxPermissionOptions}
+              helperText="Defaults to Full Access. Select several to grant them together."
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 8 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Shared Calendars"
+              name="sharedCalendars"
+              multiple={true}
+              creatable={false}
+              api={sharedMailboxApi(tenantDomain)}
+              helperText="The user is sent a sharing invitation for these calendars 15 minutes after creation, once Exchange has provisioned their mailbox."
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 4 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Shared Calendar Permission"
+              name="sharedCalendarPermission"
+              multiple={false}
+              creatable={false}
+              options={sharedCalendarPermissionOptions}
+              helperText="Defaults to Editor."
+              formControl={formControl}
+            />
+          </Grid>
+        </>
+      )}
       {formType === 'edit' && (
         <Grid size={{ xs: 12 }}>
           <CippFormComponent

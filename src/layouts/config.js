@@ -145,7 +145,12 @@ export const nativeMenuItems = [
         <BuildingOfficeIcon />
       </SvgIcon>
     ),
-    permissions: ['Tenant.*', 'Identity.AuditLog.*', 'CIPP.Backup.*', 'Scheduler.Billing.*'],
+    permissions: [
+      'Tenant.*',
+      'Identity.AuditLog.*',
+      'CIPP.Backup.*',
+      'Scheduler.Billing.*',
+    ],
     items: [
       {
         title: 'Administration',
@@ -220,6 +225,14 @@ export const nativeMenuItems = [
             permissions: ['Tenant.Standards.*'],
             scope: 'global',
           },
+          // Baselines mockup - hidden from the nav for now; reach it directly
+          // at /tenant/baselines
+          // {
+          //   title: 'Baselines (Preview)',
+          //   path: '/tenant/baselines',
+          //   permissions: ['Tenant.Standards.*'],
+          //   scope: 'global',
+          // },
           {
             title: 'Best Practice Analyser',
             path: '/tenant/standards/bpa-report',
@@ -263,7 +276,11 @@ export const nativeMenuItems = [
       },
       {
         title: 'Reports',
-        permissions: ['Tenant.Administration.*', 'Scheduler.Billing.*', 'Tenant.Application.*'],
+        permissions: [
+          'Tenant.Administration.*',
+          'Scheduler.Billing.*',
+          'Tenant.Application.*',
+        ],
         items: [
           {
             title: 'Licence Report',
@@ -593,6 +610,11 @@ export const nativeMenuItems = [
             permissions: ['Endpoint.Device.*'],
           },
           {
+            title: 'BitLocker Key Search',
+            path: '/endpoint/MEM/bitlocker-search',
+            permissions: ['Endpoint.Device.*'],
+          },
+          {
             title: 'Configuration Policies',
             path: '/endpoint/MEM/list-policies',
             permissions: ['Endpoint.MEM.*'],
@@ -640,11 +662,20 @@ export const nativeMenuItems = [
             path: '/endpoint/MEM/list-scripts',
             permissions: ['Endpoint.MEM.*'],
           },
+          {
+            title: 'MAA Requests',
+            path: '/endpoint/MEM/approval-requests',
+            permissions: ['Endpoint.MEM.*'],
+          },
         ],
       },
       {
         title: 'Reports',
-        permissions: ['Endpoint.Device.*', 'Endpoint.Autopilot.*', 'Endpoint.MEM.*'],
+        permissions: [
+          'Endpoint.Device.*',
+          'Endpoint.Autopilot.*',
+          'Endpoint.MEM.*',
+        ],
         items: [
           {
             title: 'Analytics Device Score',
@@ -1109,7 +1140,7 @@ export const nativeMenuItems = [
         scope: 'global',
       },
       {
-        title: 'Community Repositories',
+        title: 'Catalog',
         path: '/tools/community-repos',
         roles: ['editor', 'admin', 'superadmin'],
         permissions: ['CIPP.Core.*'],
@@ -1183,6 +1214,25 @@ export const nativeMenuItems = [
             scope: 'global',
           },
           {
+            title: 'Container Management',
+            path: '/cipp/advanced/container-management/status',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            // Lands on cipp-roles, not cipp-users: cipp-users is gated by the
+            // SuperAdminNG feature flag, and the nav filter drops any item whose
+            // path is in a disabled flag's Pages list — pointing here at cipp-users
+            // would hide the whole Authentication group (including the ungated
+            // SSO and SAM App pages) on non-NG instances.
+            title: 'Authentication',
+            path: '/cipp/advanced/authentication/cipp-roles',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
             title: 'Exchange Cmdlets',
             path: '/cipp/advanced/exchange-cmdlets',
             roles: ['superadmin'],
@@ -1206,20 +1256,6 @@ export const nativeMenuItems = [
           {
             title: 'Diagnostics',
             path: '/cipp/advanced/diagnostics',
-            roles: ['superadmin'],
-            permissions: ['CIPP.SuperAdmin.*'],
-            scope: 'global',
-          },
-          {
-            title: 'Container Logs',
-            path: '/cipp/advanced/container-logs',
-            roles: ['superadmin'],
-            permissions: ['CIPP.SuperAdmin.*'],
-            scope: 'global',
-          },
-          {
-            title: 'Worker Health',
-            path: '/cipp/advanced/worker-health',
             roles: ['superadmin'],
             permissions: ['CIPP.SuperAdmin.*'],
             scope: 'global',
