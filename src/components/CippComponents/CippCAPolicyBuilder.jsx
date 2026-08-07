@@ -617,7 +617,21 @@ function GrantControlsSection({ formControl, disabled }) {
           disabled={disabled}
           options={operatorOpts}
           multiple={false}
-          validators={{ required: "Grant operator is required when grant controls are set" }}
+          validators={{
+            validate: (value, formValues) => {
+              const gc = formValues?.grantControls || {};
+              const hasControls =
+                (Array.isArray(gc.builtInControls)
+                  ? gc.builtInControls.length
+                  : gc.builtInControls) ||
+                gc.authenticationStrength?.id ||
+                (Array.isArray(gc.termsOfUse) ? gc.termsOfUse.length : gc.termsOfUse);
+              if (hasControls && !(value?.value ?? value)) {
+                return "Grant operator is required when grant controls are set";
+              }
+              return true;
+            },
+          }}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 8 }}>
@@ -1447,6 +1461,12 @@ export function extractCAPolicyJSON(formValues) {
       if (cleaned.sessionControls[key]?.isEnabled === false) {
         delete cleaned.sessionControls[key];
       }
+    }
+    // `disableResilienceDefaults` defaults to false from the switch even when
+    // untouched. Left in place it keeps `sessionControls` non-empty, so Graph
+    // never persists it on read
+    if (cleaned.sessionControls.disableResilienceDefaults !== true) {
+      delete cleaned.sessionControls.disableResilienceDefaults;
     }
     // If sessionControls is now empty, remove it too
     if (Object.keys(cleaned.sessionControls).length === 0) {

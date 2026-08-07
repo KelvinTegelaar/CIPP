@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
 import { CippAutoComplete } from "../CippComponents/CippAutocomplete";
 import { ApiGetCall } from "../../api/ApiCall";
-import { IconButton, Tooltip, Box } from "@mui/material";
-import { Refresh } from "@mui/icons-material";
+import { IconButton, Tooltip, Box, Chip, Typography } from "@mui/material";
+import { Refresh, Star, StarBorder } from "@mui/icons-material";
 import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { useSettings } from "../../hooks/use-settings";
+import { useTenantPreferences } from "../../hooks/use-tenant-preferences";
 import { getCippError } from "../../utils/get-cipp-error";
 import { useQueryClient } from "@tanstack/react-query";
 import { getIconByName } from "../../utils/icon-registry";
@@ -17,6 +18,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
   const router = useRouter();
   const settings = useSettings();
   const queryClient = useQueryClient();
+  const { recent, favorites, trackRecent, toggleFavorite, isFavorite } = useTenantPreferences();
   const tenant = router.query.tenantFilter ? router.query.tenantFilter : settings.currentTenant;
   const routerUpdateTimeoutRef = useRef(null);
 
@@ -41,6 +43,79 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
     waiting: false,
     toast: true,
   });
+
+  const baseTenantOptions = useMemo(() => {
+    if (!tenantList.isSuccess || !Array.isArray(tenantList.data) || tenantList.data.length === 0) {
+      return [];
+    }
+    return tenantList.data.map(({ customerId, displayName, defaultDomainName, initialDomainName, SharepointAdminUrl }) => ({
+      value: defaultDomainName,
+      label: `${displayName} (${defaultDomainName})`,
+      addedFields: {
+        defaultDomainName: defaultDomainName,
+        displayName: displayName,
+        customerId: customerId,
+        initialDomainName: initialDomainName,
+        sharepointAdminUrl: SharepointAdminUrl,
+      },
+    }));
+  }, [tenantList.isSuccess, tenantList.data]);
+
+  const groupedTenantOptions = useMemo(() => {
+    if (baseTenantOptions.length === 0) {
+      return [];
+    }
+
+    const allTenantsOption = baseTenantOptions.find((option) => option.value === "AllTenants");
+    const selectableOptions = baseTenantOptions.filter((option) => option.value !== "AllTenants");
+
+    const favoriteValues = new Set(favorites.map((item) => item.value).filter((value) => value !== "AllTenants"));
+    const recentValues = recent.map((item) => item.value).filter((value) => value !== "AllTenants" && !favoriteValues.has(value));
+    const recentSet = new Set(recentValues);
+    const byValue = new Map(selectableOptions.map((option) => [option.value, option]));
+
+    const favoriteOptions = favorites
+      .map((item) => byValue.get(item.value))
+      .filter(Boolean)
+      .map((option) => ({ ...option, group: "Favorites" }));
+
+    const recentOptions = recentValues
+      .map((value) => byValue.get(value))
+      .filter(Boolean)
+      .map((option) => ({ ...option, group: "Recent" }));
+
+    const allOptions = selectableOptions
+      .filter((option) => !favoriteValues.has(option.value) && !recentSet.has(option.value))
+      .slice()
+      .sort((a, b) => a.label.localeCompare(b.label))
+      .map((option) => ({ ...option, group: "All tenants" }));
+
+    // Keep AllTenants pinned first in its own unlabelled group so Favorites/Recent don't split "All tenants"
+    return [
+      ...(allTenantsOption ? [{ ...allTenantsOption, group: "" }] : []),
+      ...favoriteOptions,
+      ...recentOptions,
+      ...allOptions,
+    ];
+  }, [baseTenantOptions, favorites, recent]);
+
+  const handleToggleFavorite = useCallback(
+    (event, option) => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleFavorite(option);
+    },
+    [toggleFavorite]
+  );
+
+  const handleTenantChange = useCallback(
+    (newValue) => {
+      if (!newValue) return;
+      setSelectedTenant(newValue);
+      trackRecent(newValue);
+    },
+    [trackRecent]
+  );
 
   // Filter portal actions based on user preferences
   const filteredPortalActions = useMemo(() => {
@@ -85,7 +160,10 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
       {
         key: "SharePoint_Admin",
         label: "SharePoint Portal",
-        link: `/api/ListSharePointAdminUrl?tenantFilter=${currentTenant?.value}`,
+        // The only portal whose host cannot be derived from the tenant - it has to be resolved
+        // through Graph. Use the URL the backend already resolved when it has one; otherwise fall
+        // back to the endpoint that resolves it and redirects.
+        link: currentTenant?.addedFields?.sharepointAdminUrl || `/api/ListSharePointAdminUrl?tenantFilter=${currentTenant?.value}`,
         icon: "Share",
         external: true,
       },
@@ -97,7 +175,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
       },
       {
         key: "Compliance_Portal",
-        label: "Compliance Portal",
+        label: "Purview Portal",
         link: `https://purview.microsoft.com/?tid=${currentTenant?.addedFields?.customerId}`,
         icon: "ShieldMoon",
       },
@@ -195,13 +273,9 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
     if (urlTenant) {
       // Find the tenant in our list - try defaultDomainName first, then customerId and initialDomainName
       const matchingTenant =
-        tenantList.data.find(
-          ({ defaultDomainName }) => defaultDomainName === urlTenant
-        ) ||
+        tenantList.data.find(({ defaultDomainName }) => defaultDomainName === urlTenant) ||
         tenantList.data.find(({ customerId }) => customerId === urlTenant) ||
-        tenantList.data.find(
-          ({ initialDomainName }) => initialDomainName === urlTenant
-        );
+        tenantList.data.find(({ initialDomainName }) => initialDomainName === urlTenant);
 
       if (matchingTenant) {
         const resolvedDomain = matchingTenant.defaultDomainName;
@@ -209,11 +283,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
         // If the URL used a non-default identifier, normalize the URL to use defaultDomainName
         if (urlTenant !== resolvedDomain) {
           const query = { ...router.query, tenantFilter: resolvedDomain };
-          router.replace(
-            { pathname: router.pathname, query },
-            undefined,
-            { shallow: true }
-          );
+          router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
           return; // The replace will re-trigger this effect with the normalized value
         }
 
@@ -227,6 +297,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
               displayName: matchingTenant.displayName,
               customerId: matchingTenant.customerId,
               initialDomainName: matchingTenant.initialDomainName,
+              sharepointAdminUrl: matchingTenant.SharepointAdminUrl,
             },
           });
         }
@@ -269,13 +340,9 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (tenant && tenantList.isSuccess && !currentTenant) {
       const matchingTenant =
-        tenantList.data.find(
-          ({ defaultDomainName }) => defaultDomainName === tenant
-        ) ||
+        tenantList.data.find(({ defaultDomainName }) => defaultDomainName === tenant) ||
         tenantList.data.find(({ customerId }) => customerId === tenant) ||
-        tenantList.data.find(
-          ({ initialDomainName }) => initialDomainName === tenant
-        );
+        tenantList.data.find(({ initialDomainName }) => initialDomainName === tenant);
       const resolvedDomain = matchingTenant?.defaultDomainName;
       setSelectedTenant(
         matchingTenant
@@ -287,6 +354,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
                 displayName: matchingTenant.displayName,
                 customerId: matchingTenant.customerId,
                 initialDomainName: matchingTenant.initialDomainName,
+                sharepointAdminUrl: matchingTenant.SharepointAdminUrl,
               },
             }
           : {
@@ -327,9 +395,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
             }}
             disabled={!currentTenant || currentTenant.value === "AllTenants"}
           >
-            <Tooltip title="Show Tenant Information">
-              {getIconByName("Business")}
-            </Tooltip>
+            <Tooltip title="Show Tenant Information">{getIconByName("Business")}</Tooltip>
           </IconButton>
         )}
         <CippAutoComplete
@@ -344,25 +410,88 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
             tenantList.isFetching
               ? "Loading Tenants..."
               : tenantList.isError
-              ? `Error loading Tenants: ${getCippError(tenantList.error)}`
-              : "Select a Tenant"
+                ? `Error loading Tenants: ${getCippError(tenantList.error)}`
+                : "Select a Tenant"
           }
           value={currentTenant}
-          onChange={(nv) => setSelectedTenant(nv)}
-          options={
-            tenantList.isSuccess && tenantList.data && tenantList.data.length > 0
-              ? tenantList.data.map(({ customerId, displayName, defaultDomainName, initialDomainName }) => ({
-                  value: defaultDomainName,
-                  label: `${displayName} (${defaultDomainName})`,
-                  addedFields: {
-                    defaultDomainName: defaultDomainName,
-                    displayName: displayName,
-                    customerId: customerId,
-                    initialDomainName: initialDomainName,
-                  },
-                }))
-              : []
-          }
+          onChange={handleTenantChange}
+          options={groupedTenantOptions}
+          groupBy={(option) => option.group ?? ""}
+          // Keep the selected tenant in the list so it stays in its group / alphabetical position
+          filterSelectedOptions={false}
+          renderGroup={(params) => (
+            <li key={params.key}>
+              {params.group ? (
+                <Box
+                  component="div"
+                  sx={{
+                    px: 1.5,
+                    py: 0.75,
+                    typography: "caption",
+                    fontWeight: 700,
+                    color: "text.secondary",
+                    textTransform: "uppercase",
+                    letterSpacing: 0.4,
+                  }}
+                >
+                  {params.group}
+                </Box>
+              ) : null}
+              <ul style={{ padding: 0, margin: 0 }}>{params.children}</ul>
+            </li>
+          )}
+          renderOption={(props, option, { selected }) => {
+            const { key, ...optionProps } = props;
+            const isAllTenants = option.value === "AllTenants";
+            const favourited = !isAllTenants && isFavorite(option.value);
+            return (
+              <Box component="li" key={key ?? `${option.group}-${option.value}`} {...optionProps}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    width: "100%",
+                    minWidth: 0,
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    noWrap
+                    sx={{ flex: 1, minWidth: 0, fontWeight: isAllTenants ? 600 : 400 }}
+                  >
+                    {option.label}
+                  </Typography>
+                  {selected && (
+                    <Chip
+                      label="Current"
+                      size="small"
+                      variant="outlined"
+                      sx={{
+                        flexShrink: 0,
+                        height: 20,
+                        color: "text.secondary",
+                      }}
+                    />
+                  )}
+                  {!isAllTenants && (
+                    <Tooltip title={favourited ? "Remove favorite" : "Add favorite"}>
+                      <IconButton
+                        size="small"
+                        edge="end"
+                        aria-label={favourited ? "Remove favorite" : "Add favorite"}
+                        onClick={(event) => handleToggleFavorite(event, option)}
+                        onMouseDown={(event) => event.preventDefault()}
+                        sx={{ color: favourited ? "warning.main" : "action.active", flexShrink: 0 }}
+                      >
+                        {favourited ? <Star fontSize="small" /> : <StarBorder fontSize="small" />}
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Box>
+              </Box>
+            );
+          }}
           getOptionLabel={(option) => option?.label || ""}
           isOptionEqualToValue={
             (option, value) => option.value === value.value // Custom equality test to compare the tenant by value

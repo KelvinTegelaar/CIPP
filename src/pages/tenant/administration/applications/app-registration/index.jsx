@@ -63,6 +63,8 @@ const Page = () => {
         ? `applications(appId='${applicationClientId}')`
         : 'applications',
       tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
+      // Always fetch live data on this management page so credential/URI/audience edits reflect immediately.
+      SkipCache: true,
     },
     queryKey: `Application-appId-${applicationClientId}`,
     waiting: waiting,
@@ -271,6 +273,8 @@ const Page = () => {
           tenantFilter={tenantForApi}
           canRemove={canWriteApplication}
           onRemoved={() => appRequest.refetch()}
+          canAdd={canWriteApplication}
+          onAdded={() => appRequest.refetch()}
         />
       ),
     },

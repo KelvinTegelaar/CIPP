@@ -1,0 +1,55 @@
+# DAST: OWASP ZAP scans against the CIPP staging deployment
+# ISO 27001:2022 A.8.29 evidence — Dynamic Application Security Testing
+#
+# Prerequisites:
+#   - Repo variable STAGING_URL pointing at a staging deployment (test-tenant data only, never production)
+#   - Optional: .zap/rules.tsv to suppress documented false positives (annotate each with justification)
+name: DAST - OWASP ZAP Scan
+on:
+  schedule:
+    - cron: "0 4 * * 1" # Weekly, Monday 04:00 UTC
+  workflow_dispatch: # Run on demand before each versioned release
+    inputs:
+      full_scan:
+        description: "Run full (active) scan instead of baseline"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write # ZAP action files findings as GitHub issues
+
+jobs:
+  zap_baseline:
+    if: github.repository_owner == 'KelvinTegelaar' && (github.event_name == 'schedule' || !inputs.full_scan)
+    name: ZAP Baseline Scan (passive)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (for .zap rules file)
+        uses: actions/checkout@v6
+
+      - name: ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.15.0
+        with:
+          target: ${{ vars.STAGING_URL }}
+          rules_file_name: ".zap/rules.tsv"
+          allow_issue_writing: true
+          issue_title: "ZAP baseline scan findings"
+          artifact_name: zap-baseline-report
+
+  zap_full:
+    if: github.repository_owner == 'KelvinTegelaar' && github.event_name == 'workflow_dispatch' && inputs.full_scan
+    name: ZAP Full Scan (active, pre-release)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (for .zap rules file)
+        uses: actions/checkout@v6
+
+      - name: ZAP full scan
+        uses: zaproxy/action-full-scan@v0.13.0
+        with:
+          target: ${{ vars.STAGING_URL }}
+          rules_file_name: ".zap/rules.tsv"
+          allow_issue_writing: true
+          issue_title: "ZAP full scan findings (pre-release)"
+          artifact_name: zap-full-report

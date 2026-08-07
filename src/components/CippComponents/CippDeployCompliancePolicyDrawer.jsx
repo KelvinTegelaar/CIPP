@@ -61,12 +61,17 @@ const MODE_CONFIG = {
     listTemplatesUrl: "/api/ListSensitivityLabelTemplates",
     templateQueryKey: "TemplateListSensitivityLabel",
     relatedQueryKeys: ["ListSensitivityLabel", "ListSensitivityLabelTemplates"],
+    supportsLabelColor: true,
+    // Sensitivity label templates store DisplayName/Name (Purview casing); the other template
+    // types store a lowercase 'name', which is the default label field below.
+    templateLabelField: (option) => option.DisplayName ?? option.Name ?? option.name,
     placeholder: `{
   "Name": "Confidential",
   "DisplayName": "Confidential",
   "Tooltip": "Confidential data, do not share externally",
   "Comment": "Internal-only confidential classification",
   "ContentType": "File, Email",
+  "AdvancedSettings": { "color": "#40E0D0" },
   "ApplyContentMarkingHeaderEnabled": true,
   "ApplyContentMarkingHeaderText": "Confidential - Internal Use Only",
   "ApplyContentMarkingHeaderFontColor": "#FF0000",
@@ -110,6 +115,22 @@ const MODE_CONFIG = {
   },
 };
 
+// A sensitivity label's custom color lives in the 'color' advanced setting. On stored templates it is
+// either an explicit AdvancedSettings object or, for templates captured from Get-Label, an entry in the
+// read-only Settings array ({Key, Value} object or the serialized string '[color, #RRGGBB]').
+const extractLabelColor = (template) => {
+  if (!template) return "";
+  if (template.AdvancedSettings?.color) return template.AdvancedSettings.color;
+  for (const entry of template.Settings || []) {
+    if (entry?.Key?.toLowerCase?.() === "color") return entry.Value || "";
+    if (typeof entry === "string") {
+      const match = entry.match(/^\[\s*color\s*,\s*(.*?)\s*\]$/i);
+      if (match) return match[1];
+    }
+  }
+  return "";
+};
+
 export const CippDeployCompliancePolicyDrawer = ({
   mode,
   buttonText,
@@ -126,6 +147,7 @@ export const CippDeployCompliancePolicyDrawer = ({
       selectedTenants: [],
       TemplateList: null,
       PowerShellCommand: "",
+      labelColor: "",
     },
   });
 
@@ -136,8 +158,11 @@ export const CippDeployCompliancePolicyDrawer = ({
   useEffect(() => {
     if (templateListVal?.value) {
       formControl.setValue("PowerShellCommand", JSON.stringify(templateListVal.value));
+      if (config?.supportsLabelColor) {
+        formControl.setValue("labelColor", extractLabelColor(templateListVal.value));
+      }
     }
-  }, [templateListVal, formControl]);
+  }, [templateListVal, formControl, config?.supportsLabelColor]);
 
   const deployPolicy = ApiPostCall({
     urlFromData: true,
@@ -150,6 +175,7 @@ export const CippDeployCompliancePolicyDrawer = ({
         selectedTenants: [],
         TemplateList: null,
         PowerShellCommand: "",
+        labelColor: "",
       });
     }
   }, [deployPolicy.isSuccess, formControl]);
@@ -161,9 +187,21 @@ export const CippDeployCompliancePolicyDrawer = ({
   const handleSubmit = () => {
     formControl.trigger();
     if (!isValid) return;
+    const { labelColor, ...values } = formControl.getValues();
+    if (config.supportsLabelColor && labelColor) {
+      // Merge the picked color into the JSON as the 'color' advanced setting; an explicit color
+      // already typed into the JSON is overridden by the picker since it is the visible control.
+      try {
+        const parsed = JSON.parse(values.PowerShellCommand);
+        parsed.AdvancedSettings = { ...(parsed.AdvancedSettings || {}), color: labelColor };
+        values.PowerShellCommand = JSON.stringify(parsed, null, 2);
+      } catch {
+        // Invalid JSON in the textarea - submit unchanged and let the backend report the parse error.
+      }
+    }
     deployPolicy.mutate({
       url: config.postUrl,
-      data: formControl.getValues(),
+      data: values,
     });
   };
 
@@ -173,6 +211,7 @@ export const CippDeployCompliancePolicyDrawer = ({
       selectedTenants: [],
       TemplateList: null,
       PowerShellCommand: "",
+      labelColor: "",
     });
   };
 
@@ -234,7 +273,7 @@ export const CippDeployCompliancePolicyDrawer = ({
               multiple={false}
               api={{
                 queryKey: config.templateQueryKey,
-                labelField: "name",
+                labelField: config.templateLabelField ?? "name",
                 valueField: (option) => option,
                 url: config.listTemplatesUrl,
               }}
@@ -243,6 +282,18 @@ export const CippDeployCompliancePolicyDrawer = ({
           </Grid>
 
           <Divider sx={{ my: 1, width: "100%" }} />
+
+          {config.supportsLabelColor && (
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="colorPicker"
+                label="Label Color (optional)"
+                name="labelColor"
+                formControl={formControl}
+                helperText="Custom label color, applied via the 'color' advanced setting. The Purview portal only offers preset colors; this supports any hex color. Leave empty to keep the color from the JSON below."
+              />
+            </Grid>
+          )}
 
           <Grid size={{ xs: 12 }}>
             <CippFormComponent

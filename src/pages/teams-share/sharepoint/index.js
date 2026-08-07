@@ -11,16 +11,26 @@ import {
   Delete,
   CleaningServices,
   Assessment,
+  FolderShared,
+  ManageAccounts,
+  PersonSearch,
+  RestoreFromTrash,
+  Settings,
 } from '@mui/icons-material'
 import Link from 'next/link'
 import { Stack } from '@mui/system'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { useSettings } from '../../../hooks/use-settings'
+import { usePermissions } from '../../../hooks/use-permissions'
 import { useCippReportDB } from '../../../components/CippComponents/CippReportDBControls'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
 import { CippFormCondition } from '../../../components/CippComponents/CippFormCondition'
 import { CippPropertyList } from '../../../components/CippComponents/CippPropertyList'
 import { ApiGetCall } from '../../../api/ApiCall'
+import { CippEditSitePropertiesForm } from '../../../components/CippComponents/CippEditSitePropertiesForm'
+import { CippSiteRecycleBinDialog } from '../../../components/CippComponents/CippSiteRecycleBinDialog'
+import { CippLibraryPermissionsDialog } from '../../../components/CippComponents/CippLibraryPermissionsDialog'
+import { CippCheckUserAccessDialog } from '../../../components/CippComponents/CippCheckUserAccessDialog'
 
 // Friendly labels for the SharePoint version cleanup (trim) job progress fields.
 const VERSION_CLEANUP_LABELS = {
@@ -68,7 +78,7 @@ const VersionCleanupStatusBody = ({ statusApi }) => {
   }
 
   const propertyItems = VERSION_CLEANUP_FIELDS.filter(
-    (key) => progress?.[key] !== undefined && progress?.[key] !== '',
+    (key) => progress?.[key] !== undefined && progress?.[key] !== ''
   ).map((key) => ({
     label: VERSION_CLEANUP_LABELS[key],
     value: String(progress[key]),
@@ -103,12 +113,7 @@ const VersionCleanupStatusModal = ({ row, tenantFilter, drawerVisible, setDrawer
   })
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="sm"
-      open={!!drawerVisible}
-      onClose={() => setDrawerVisible(false)}
-    >
+    <Dialog fullWidth maxWidth="sm" open={!!drawerVisible} onClose={() => setDrawerVisible(false)}>
       <DialogTitle>
         Cleanup Job Status{siteRow?.displayName ? ` — ${siteRow.displayName}` : ''}
       </DialogTitle>
@@ -127,6 +132,13 @@ const VersionCleanupStatusModal = ({ row, tenantFilter, drawerVisible, setDrawer
 const Page = () => {
   const pageTitle = 'SharePoint Sites'
   const tenantFilter = useSettings().currentTenant
+  const { checkPermissions } = usePermissions()
+  const canWriteSite = checkPermissions(['Sharepoint.Site.ReadWrite'])
+  const canReadSite = checkPermissions(['Sharepoint.Site.Read', 'Sharepoint.Site.ReadWrite'])
+  const canReadRecycleBin = checkPermissions([
+    'Sharepoint.SiteRecycleBin.Read',
+    'Sharepoint.SiteRecycleBin.ReadWrite',
+  ])
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListSites?type=SharePointSiteUsage',
     queryKey: 'ListSites-SharePointSiteUsage',
@@ -150,7 +162,8 @@ const Page = () => {
         URL: 'webUrl',
         SharePointType: 'rootWebTemplate',
       },
-      confirmText: 'Select the User to add as a member.',
+      confirmText: 'Select the User to add and the site role to add them to.',
+      condition: () => canWriteSite,
       fields: [
         {
           type: 'autoComplete',
@@ -176,7 +189,21 @@ const Page = () => {
             showRefresh: true,
           },
         },
+        {
+          type: 'radio',
+          name: 'Role',
+          label: 'Site Role',
+          options: [
+            { label: 'Members', value: 'Members' },
+            { label: 'Owners', value: 'Owners' },
+            { label: 'Visitors', value: 'Visitors' },
+          ],
+        },
       ],
+      defaultvalues: {
+        Role: 'Members',
+      },
+      allowResubmit: true,
       multiPost: false,
     },
     {
@@ -187,37 +214,194 @@ const Page = () => {
       data: {
         groupId: 'ownerPrincipalName',
         add: false,
-        URL: 'URL',
+        URL: 'webUrl',
         SharePointType: 'rootWebTemplate',
       },
-      confirmText: 'Select the User to remove as a member.',
+      confirmText: 'Select the user to remove from their site role.',
+      condition: () => canWriteSite,
+      children: ({ formHook, row }) => {
+        const siteRow = Array.isArray(row) ? row[0] : row
+        return (
+          <CippFormComponent
+            type="autoComplete"
+            name="user"
+            label="Select Member"
+            multiple={false}
+            creatable={false}
+            formControl={formHook}
+            validators={{ required: 'Please select a member' }}
+            api={{
+              url: '/api/ListSiteMembers',
+              data: {
+                SiteId: siteRow?.siteId,
+                SiteUrl: siteRow?.webUrl,
+                tenantFilter: siteRow?.Tenant ?? tenantFilter,
+              },
+              queryKey: `SiteMembersPicker-${siteRow?.siteId}`,
+              dataKey: 'Results',
+              labelField: (member) =>
+                `${member.Title} (${member.UserPrincipalName}) — ${member.Group}`,
+              valueField: 'UserPrincipalName',
+              addedField: {
+                Group: 'Group',
+                Type: 'Type',
+              },
+              dataFilter: (options) =>
+                options.filter(
+                  (option, index, all) =>
+                    option.value &&
+                    ['Owners', 'Members', 'Visitors'].includes(option.addedFields?.Group) &&
+                    all.findIndex(
+                      (o) =>
+                        o.value === option.value &&
+                        o.addedFields?.Group === option.addedFields?.Group
+                    ) === index
+                ),
+              showRefresh: true,
+            }}
+          />
+        )
+      },
+      multiPost: false,
+      allowResubmit: true,
+    },
+    {
+      label: 'Remove User From Site',
+      type: 'POST',
+      icon: <NoAccounts />,
+      url: '/api/ExecRemoveSiteUser',
+      data: {
+        SiteUrl: 'webUrl',
+      },
+      confirmText:
+        'Remove a user from the entire site: this removes them from every site group and direct permission grant at once. Sharing links they received are not revoked.',
+      condition: () => canWriteSite,
+      children: ({ formHook, row }) => {
+        const siteRow = Array.isArray(row) ? row[0] : row
+        return (
+          <CippFormComponent
+            type="autoComplete"
+            name="user"
+            label="Select User"
+            multiple={false}
+            creatable={false}
+            formControl={formHook}
+            validators={{ required: 'Please select a user' }}
+            api={{
+              url: '/api/ListSiteMembers',
+              data: {
+                SiteId: siteRow?.siteId,
+                SiteUrl: siteRow?.webUrl,
+                tenantFilter: siteRow?.Tenant ?? tenantFilter,
+              },
+              queryKey: `SiteMembersPicker-${siteRow?.siteId}`,
+              dataKey: 'Results',
+              labelField: (member) =>
+                `${member.Title} (${member.UserPrincipalName})${member.IsGuest ? ' — Guest' : ''} — ${member.Group}`,
+              valueField: 'UserPrincipalName',
+              addedField: {
+                LoginName: 'LoginName',
+                Type: 'Type',
+              },
+              dataFilter: (options) =>
+                options.filter(
+                  (option, index, all) =>
+                    option.value &&
+                    option.addedFields?.Type === 'User' &&
+                    all.findIndex((o) => o.value === option.value) === index
+                ),
+              showRefresh: true,
+            }}
+          />
+        )
+      },
+      multiPost: false,
+    },
+    {
+      label: 'Revoke Sharing Links',
+      type: 'POST',
+      icon: <FolderShared />,
+      url: '/api/ExecBulkRemoveSharingLinks',
+      data: {
+        SiteUrl: 'webUrl',
+      },
+      confirmText:
+        'Bulk revoke sharing links on [displayName]. This uses the sharing report cache: links created since the last sharing sync are not covered - run a sync from the Sharing Report page first for full coverage.',
+      condition: () => canWriteSite,
       fields: [
         {
-          type: 'autoComplete',
-          name: 'user',
-          label: 'Select User',
-          multiple: false,
-          creatable: false,
-          api: {
-            url: '/api/ListGraphRequest',
-            data: {
-              Endpoint: 'users',
-              $select: 'id,displayName,userPrincipalName',
-              $top: 999,
-              $count: true,
-            },
-            queryKey: 'ListUsersAutoComplete',
-            dataKey: 'Results',
-            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
-            valueField: 'userPrincipalName',
-            addedField: {
-              id: 'id',
-            },
-            showRefresh: true,
-          },
+          type: 'radio',
+          name: 'Scope',
+          label: 'Which links to revoke',
+          options: [
+            { label: 'Anonymous links only (anyone with the link)', value: 'Anonymous' },
+            { label: 'Anonymous + external user shares', value: 'External' },
+            { label: 'All sharing links, including internal', value: 'All' },
+          ],
         },
       ],
+      defaultvalues: {
+        Scope: 'Anonymous',
+      },
       multiPost: false,
+    },
+    {
+      label: 'Edit Site',
+      type: 'POST',
+      icon: <Settings />,
+      url: '/api/ExecSetSiteProperties',
+      confirmText:
+        'Edit site properties for [displayName]. Fields are prefilled with the current values.',
+      condition: () => canWriteSite,
+      children: ({ formHook, row }) => (
+        <CippEditSitePropertiesForm formHook={formHook} row={row} tenantFilter={tenantFilter} />
+      ),
+      customDataformatter: (row, action, formData) => {
+        const siteRow = Array.isArray(row) ? row[0] : row
+        const isGroupSite = siteRow?.rootWebTemplate === 'Group'
+        const v = (x) => (x && typeof x === 'object' && 'value' in x ? x.value : x)
+        const payload = {
+          tenantFilter: siteRow.Tenant ?? tenantFilter,
+          SiteUrl: siteRow.webUrl,
+          SharingCapability: v(formData.SharingCapability),
+          DefaultSharingLinkType: v(formData.DefaultSharingLinkType),
+          DefaultLinkPermission: v(formData.DefaultLinkPermission),
+          LockState: v(formData.LockState),
+        }
+        if (!isGroupSite) {
+          payload.Title = formData.Title
+          payload.SharingDomainRestrictionMode = v(formData.SharingDomainRestrictionMode)
+          payload.OverrideTenantAnonymousLinkExpirationPolicy =
+            !!formData.OverrideTenantAnonymousLinkExpirationPolicy
+          payload.InheritVersionPolicyFromTenant = !!formData.InheritVersionPolicyFromTenant
+        }
+        if (!isGroupSite && v(formData.SharingDomainRestrictionMode) === 'AllowList') {
+          payload.SharingAllowedDomainList = formData.SharingAllowedDomainList
+        }
+        if (!isGroupSite && v(formData.SharingDomainRestrictionMode) === 'BlockList') {
+          payload.SharingBlockedDomainList = formData.SharingBlockedDomainList
+        }
+        if (!isGroupSite && formData.OverrideTenantAnonymousLinkExpirationPolicy) {
+          payload.AnonymousLinkExpirationInDays = parseInt(
+            formData.AnonymousLinkExpirationInDays ?? 0,
+            10
+          )
+        }
+        const storageMax = parseInt(formData.StorageMaximumLevel, 10)
+        const storageWarn = parseInt(formData.StorageWarningLevel, 10)
+        if (!isNaN(storageMax) && storageMax > 0) payload.StorageMaximumLevel = storageMax
+        if (!isNaN(storageWarn) && storageWarn > 0) payload.StorageWarningLevel = storageWarn
+        if (!isGroupSite && !formData.InheritVersionPolicyFromTenant) {
+          payload.EnableAutoExpirationVersionTrim = !!formData.EnableAutoExpirationVersionTrim
+          if (!formData.EnableAutoExpirationVersionTrim) {
+            payload.MajorVersionLimit = parseInt(formData.MajorVersionLimit ?? 0, 10)
+            payload.ExpireVersionsAfterDays = parseInt(formData.ExpireVersionsAfterDays ?? 0, 10)
+          }
+        }
+        return payload
+      },
+      multiPost: false,
+      allowResubmit: true,
     },
     {
       label: 'Add Site Admin',
@@ -230,6 +414,7 @@ const Page = () => {
         URL: 'webUrl',
       },
       confirmText: 'Select the User to add to the Site Admins permissions',
+      condition: () => canWriteSite,
       fields: [
         {
           type: 'autoComplete',
@@ -269,6 +454,7 @@ const Page = () => {
         URL: 'webUrl',
       },
       confirmText: 'Select the User to remove from the Site Admins permissions',
+      condition: () => canWriteSite,
       fields: [
         {
           type: 'autoComplete',
@@ -298,6 +484,38 @@ const Page = () => {
       multiPost: false,
     },
     {
+      // Read access is enough to open this: the dialog gates every change on write access,
+      // so a read-only admin can still inspect who has what.
+      label: 'Manage Permissions',
+      icon: <ManageAccounts />,
+      condition: () => canReadSite,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <CippLibraryPermissionsDialog
+          row={row}
+          tenantFilter={tenantFilter}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
+      multiPost: false,
+      hideBulk: true,
+    },
+    {
+      // Answers "does this person have access, and how" rather than "who holds permissions".
+      label: 'Check User Access',
+      icon: <PersonSearch />,
+      condition: () => canReadSite,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <CippCheckUserAccessDialog
+          row={row}
+          tenantFilter={tenantFilter}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
+      multiPost: false,
+    },
+    {
       label: 'Delete Site',
       type: 'POST',
       icon: <Delete />,
@@ -306,8 +524,24 @@ const Page = () => {
         SiteId: 'siteId',
       },
       confirmText:
-        'Are you sure you want to delete this SharePoint site? This action cannot be undone.',
+        'Are you sure you want to delete this SharePoint site? Deleted sites can be restored from the Deleted Sites page for 93 days.',
       color: 'error',
+      // System sites cannot be deleted (SPO rejects it or the tenant breaks): admin site,
+      // My Site host, search/compliance centers, root site, content type hub. Team channel
+      // sites are deleted by deleting the channel in Teams, not directly.
+      condition: (row) =>
+        canWriteSite &&
+        ![
+          'Tenant Admin Site',
+          'My Site Host',
+          'Basic Search Center',
+          'Compliance Policy Center',
+          'SharePoint Online Tenant Fundamental Site',
+          'Team Channel',
+          'App Catalog Site',
+        ].includes(row.rootWebTemplate) &&
+        !/\.sharepoint\.com\/?$/i.test(row.webUrl ?? '') &&
+        !/\/sites\/contentTypeHub$/i.test(row.webUrl ?? ''),
       multiPost: false,
     },
     {
@@ -320,6 +554,7 @@ const Page = () => {
       },
       confirmText:
         'Start a file version cleanup job for [displayName]. This will trim old file versions based on the selected mode.',
+      condition: () => canWriteSite,
       children: ({ formHook }) => (
         <>
           <CippFormComponent
@@ -400,8 +635,23 @@ const Page = () => {
       multiPost: false,
     },
     {
+      label: 'Recycle Bin',
+      icon: <RestoreFromTrash />,
+      condition: () => canReadRecycleBin,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <CippSiteRecycleBinDialog
+          row={row}
+          tenantFilter={tenantFilter}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
+      multiPost: false,
+    },
+    {
       label: 'Check Cleanup Job Status',
       icon: <Assessment />,
+      condition: () => canReadSite,
       customComponent: (row, { drawerVisible, setDrawerVisible }) => (
         <VersionCleanupStatusModal
           row={row}
@@ -425,11 +675,12 @@ const Page = () => {
           url: '/api/ListSiteMembers',
           data: {
             SiteId: row.siteId,
+            SiteUrl: row.webUrl,
             tenantFilter: tenantFilter,
           },
           dataKey: 'Results',
         }}
-        simpleColumns={['fields.Title', 'fields.EMail', 'fields.IsSiteAdmin']}
+        simpleColumns={['Title', 'Email', 'Group', 'Type', 'IsGuest', 'IsSiteAdmin']}
       />
     ),
     size: 'lg', // Make the offcanvas extra large

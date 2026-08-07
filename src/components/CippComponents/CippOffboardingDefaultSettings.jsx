@@ -1,49 +1,43 @@
 import { CippPropertyListCard } from '../../components/CippCards/CippPropertyListCard'
 import CippFormComponent from '../../components/CippComponents/CippFormComponent'
-import { Typography, Box } from '@mui/material'
+import { Box, Chip, Typography } from '@mui/material'
+import { Grid } from '@mui/system'
 
 export const CippOffboardingDefaultSettings = (props) => {
   const { formControl, defaultsSource = null, title = 'Offboarding Default Settings' } = props
 
-  const getSourceIndicator = () => {
-    // Only show the indicator if defaultsSource is explicitly provided (for wizard, not tenant config)
-    if (!defaultsSource || defaultsSource === null) return null
+  const getSourceChip = () => {
+    // Only show the chip if defaultsSource is explicitly provided (for wizard/preferences, not tenant config)
+    if (!defaultsSource) return null
 
-    let sourceText = ''
-    let color = 'text.secondary'
-
-    switch (defaultsSource) {
-      case 'tenant':
-        sourceText = 'Using Tenant Defaults'
-        color = 'primary.main'
-        break
-      case 'user':
-        sourceText = 'Using User Defaults'
-        color = 'info.main'
-        break
-      case 'none':
-      default:
-        sourceText = 'Using Default Settings'
-        color = 'text.secondary'
-        break
+    const sourceConfig = {
+      tenant: { label: 'Using Tenant Defaults', color: 'primary' },
+      user: { label: 'Using User Defaults', color: 'info' },
+      allUsers: { label: 'Using All Users Defaults', color: 'default' },
+      none: { label: 'Using Default Settings', color: 'default' },
     }
 
-    return (
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" sx={{ color, fontStyle: 'italic' }}>
-          {sourceText}
-        </Typography>
-      </Box>
-    )
+    const { label, color } = sourceConfig[defaultsSource] ?? sourceConfig.none
+
+    return <Chip size="small" variant="outlined" color={color} label={label} />
   }
+
+  const sourceChip = getSourceChip()
+  const cardTitle = sourceChip ? (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      {title}
+      {sourceChip}
+    </Box>
+  ) : (
+    title
+  )
 
   return (
     <>
-      {getSourceIndicator()}
       <CippPropertyListCard
         layout="two"
         showDivider={false}
-        title={title}
+        title={cardTitle}
         propertyItems={[
           {
             label: 'Convert to Shared Mailbox',
@@ -226,6 +220,39 @@ export const CippOffboardingDefaultSettings = (props) => {
             ),
           },
         ]}
+        cardButton={
+          <Box sx={{ width: '100%', px: 2, py: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+              Send results to
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <CippFormComponent
+                  type="switch"
+                  label="Webhook"
+                  name="offboardingDefaults.postExecution.webhook"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <CippFormComponent
+                  type="switch"
+                  label="E-mail"
+                  name="offboardingDefaults.postExecution.email"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <CippFormComponent
+                  type="switch"
+                  label="PSA"
+                  name="offboardingDefaults.postExecution.psa"
+                  formControl={formControl}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        }
       />
     </>
   )

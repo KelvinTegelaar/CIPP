@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Fleet Overview",
+    "path": "/tenant/baselines",
+    "icon": "Dashboard"
+  },
+  {
+    "label": "Alignment",
+    "path": "/tenant/baselines/alignment",
+    "icon": "FactCheck"
+  },
+  {
+    "label": "Baselines",
+    "path": "/tenant/baselines/templates",
+    "icon": "Description"
+  }
+]

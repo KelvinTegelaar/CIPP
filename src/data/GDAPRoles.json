@@ -33,7 +33,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Assign custom security attribute keys and values to supported Azure AD objects.",
+    "Description": "Assign custom security attribute keys and values to supported Microsoft Entra objects.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Attribute Assignment Administrator",
@@ -41,7 +41,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Read custom security attribute keys and values for supported Azure AD objects.",
+    "Description": "Read custom security attribute keys and values for supported Microsoft Entra objects.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Attribute Assignment Reader",
@@ -105,10 +105,10 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Users assigned to this role are added to the local administrators group on Azure AD-joined devices.",
+    "Description": "Users assigned to this role are added to the local administrators group on Microsoft Entra joined devices.",
     "IsEnabled": true,
     "IsSystem": true,
-    "Name": "Azure AD Joined Device Local Administrator",
+    "Name": "Microsoft Entra Joined Device Local Administrator",
     "ObjectId": "9f06204d-73c1-4d4c-880a-6edb90606fd8"
   },
   {
@@ -169,7 +169,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Full access to manage devices in Azure AD.",
+    "Description": "Full access to manage devices in Microsoft Entra ID.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Cloud Device Administrator",
@@ -177,15 +177,15 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Can manage all aspects of Azure AD and Microsoft services that use Azure AD identities. This role was formerly known as Global Administrator.",
+    "Description": "Can manage all aspects of Microsoft Entra ID and Microsoft services that use Microsoft Entra identities.",
     "IsEnabled": true,
     "IsSystem": true,
-    "Name": "Company Administrator",
+    "Name": "Global Administrator",
     "ObjectId": "62e90394-69f5-4237-9190-012177145e10"
   },
   {
     "ExtensionData": {},
-    "Description": "Can read and manage compliance configuration and reports in Azure AD and Microsoft 365.",
+    "Description": "Can read and manage compliance configuration and reports in Microsoft Entra ID and Microsoft 365.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Compliance Administrator",
@@ -212,7 +212,7 @@
     "Description": "Can approve Microsoft support requests to access customer organizational data.",
     "IsEnabled": true,
     "IsSystem": true,
-    "Name": "Customer LockBox Access Approver",
+    "Name": "Customer Lockbox Access Approver",
     "ObjectId": "5c4f9dcd-47dc-4cf7-8c9a-9e4207cbfc91"
   },
   {
@@ -249,7 +249,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Only used by Azure AD Connect service.",
+    "Description": "Only used by Microsoft Entra Connect service.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Directory Synchronization Accounts",
@@ -377,7 +377,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Can manage AD to Azure AD cloud provisioning, Azure AD Connect, and federation settings.",
+    "Description": "Can manage AD to Microsoft Entra cloud provisioning, Microsoft Entra Connect, and federation settings.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Hybrid Identity Administrator",
@@ -385,7 +385,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Manage access using Azure AD for identity governance scenarios.",
+    "Description": "Manage access using Microsoft Entra ID for identity governance scenarios.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Identity Governance Administrator",
@@ -457,7 +457,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Create and manage all aspects of workflows and tasks associated with Lifecycle Workflows in Azure AD.",
+    "Description": "Create and manage all aspects of workflows and tasks associated with Lifecycle Workflows in Microsoft Entra ID.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Lifecycle Workflows Administrator",
@@ -545,10 +545,10 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Can manage all aspects of the Power BI product.",
+    "Description": "Manage all aspects of the Fabric and Power BI products.",
     "IsEnabled": true,
     "IsSystem": true,
-    "Name": "Power BI Administrator",
+    "Name": "Fabric Administrator",
     "ObjectId": "a9ea8996-122f-4c74-9520-8edcd192826c"
   },
   {
@@ -585,7 +585,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Can manage role assignments in Azure AD, and all aspects of Privileged Identity Management.",
+    "Description": "Can manage role assignments in Microsoft Entra ID, and all aspects of Privileged Identity Management.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Privileged Role Administrator",
@@ -633,7 +633,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Can read security information and reports in Azure AD and Office 365.",
+    "Description": "Can read security information and reports in Microsoft Entra ID and Office 365.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Security Reader",
@@ -661,7 +661,7 @@
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "SharePoint Embedded Administrator",
-    "ObjectId": "1a7d78b6-429f-476b-8eb-35fb715fffd4"
+    "ObjectId": "1a7d78b6-429f-476b-b8eb-35fb715fffd4"
   },
   {
     "ExtensionData": {},
@@ -809,18 +809,34 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Assign the Customer Delegated Admin Relationship Administrator role to users who need to accept, view, or terminate GDAP relationships with partners.",
-    "IsEnabled": true,
-    "IsSystem": true,
-    "Name": "Customer Delegated Admin Relationship Administrator",
-    "ObjectId": "fc8ad4e2-40e4-4724-8317-bcda7503ecbf"
-  },
-  {
-    "ExtensionData": {},
     "Description": "Assign the AI Administrator role to users who need to manage all aspects of Microsoft 365 Copilot, AI-related enterprise services, copilot agents, and view usage reports and service health dashboards.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "AI Administrator",
     "ObjectId": "d2562ede-74db-457e-a7b6-544e236ebb61"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Manage all aspects of the Microsoft Dragon admin center.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Dragon Administrator",
+    "ObjectId": "e93e3737-fa85-474a-aee4-7d3fb86510f3"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Manage all aspects of organizational branding in a tenant.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Organizational Branding Administrator",
+    "ObjectId": "92ed04bf-c94a-4b82-9729-b799a7a4c178"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Review, approve, or reject new organizational messages for delivery in the Microsoft 365 admin center before they are sent to users.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Organizational Messages Approver",
+    "ObjectId": "e48398e2-f4bb-4074-8f31-4586725e205b"
   }
 ]

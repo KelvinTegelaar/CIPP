@@ -21,6 +21,7 @@ import { useCippReportDB } from '../../../../components/CippComponents/CippRepor
 const Page = () => {
   const pageTitle = 'Groups'
   const [showMembers, setShowMembers] = useState(false)
+  const [showOwners, setShowOwners] = useState(false)
   const { currentTenant } = useSettings()
 
   const reportDB = useCippReportDB({
@@ -35,7 +36,19 @@ const Page = () => {
   })
 
   const handleMembersToggle = () => {
-    setShowMembers(!showMembers)
+    setShowMembers((prev) => {
+      const next = !prev
+      if (next) setShowOwners(false)
+      return next
+    })
+  }
+
+  const handleOwnersToggle = () => {
+    setShowOwners((prev) => {
+      const next = !prev
+      if (next) setShowMembers(false)
+      return next
+    })
   }
   const actions = [
     {
@@ -116,6 +129,16 @@ const Page = () => {
         displayName: 'displayName',
         type: '!Group',
       },
+      // Pre-select the current source of authority; leave unselected when the
+      // selected rows have mixed states
+      defaultvalues: (row) => {
+        const states = [
+          ...new Set(
+            (Array.isArray(row) ? row : [row]).map((r) => r?.onPremisesSyncEnabled === true)
+          ),
+        ]
+        return states.length === 1 ? { isCloudManaged: String(!states[0]) } : {}
+      },
       fields: [
         {
           type: 'radio',
@@ -125,12 +148,29 @@ const Page = () => {
             { label: 'Cloud Managed', value: true },
             { label: 'On-Premises Managed', value: false },
           ],
-          validators: { required: 'Please select a source of authority' },
+          validators: {
+            required: 'Please select a source of authority',
+            validate: (value, formValues, row) => {
+              const states = [
+                ...new Set(
+                  (Array.isArray(row) ? row : [row]).map((r) => r?.onPremisesSyncEnabled === true)
+                ),
+              ]
+              if (states.length === 1 && String(value) === String(!states[0])) {
+                return 'Source of authority is unchanged'
+              }
+              return true
+            },
+          },
         },
       ],
       confirmText:
         "Are you sure you want to change the source of authority for '[displayName]'? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
       multiPost: false,
+      // Only meaningful for groups that are on-premises managed (convert to cloud) or
+      // were synced at some point (revert to on-premises); hide for cloud-native groups
+      condition: (row) =>
+        row?.onPremisesSyncEnabled === true || !!row?.onPremisesSamAccountName,
     },
     {
       label: 'Create template based on group',
@@ -321,9 +361,14 @@ const Page = () => {
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             {!reportDB.useReportDB && (
-              <Button onClick={handleMembersToggle}>
-                {showMembers ? 'Hide Members' : 'Show Members'}
-              </Button>
+              <>
+                <Button onClick={handleMembersToggle}>
+                  {showMembers ? 'Hide Members' : 'Show Members'}
+                </Button>
+                <Button onClick={handleOwnersToggle}>
+                  {showOwners ? 'Hide Owners' : 'Show Owners'}
+                </Button>
+              </>
             )}
             <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
               Add Group
@@ -339,13 +384,23 @@ const Page = () => {
           </Stack>
         }
         apiUrl={reportDB.resolvedApiUrl}
-        apiData={reportDB.useReportDB ? undefined : { expandMembers: showMembers }}
+        apiData={
+          reportDB.useReportDB
+            ? undefined
+            : showMembers
+              ? { expandMembers: true }
+              : showOwners
+                ? { expandOwners: true }
+                : {}
+        }
         queryKey={
           reportDB.useReportDB
             ? reportDB.resolvedQueryKey
             : showMembers
               ? `groups-with-members-${currentTenant}`
-              : `groups-without-members-${currentTenant}`
+              : showOwners
+                ? `groups-with-owners-${currentTenant}`
+                : `groups-${currentTenant}`
         }
         actions={actions}
         offCanvas={offCanvas}

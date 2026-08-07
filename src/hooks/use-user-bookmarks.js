@@ -2,6 +2,8 @@ import { useCallback, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiGetCall, ApiPostCall } from "../api/ApiCall";
 
+export const MAX_BOOKMARKS = 50;
+
 const sanitizeBookmark = (bookmark) => {
   if (!bookmark || typeof bookmark !== "object") {
     return null;
@@ -118,9 +120,39 @@ export const useUserBookmarks = () => {
     [persistBookmarks]
   );
 
+  const isBookmarked = useCallback(
+    (path) => bookmarks.some((bookmark) => bookmark.path === path),
+    [bookmarks]
+  );
+
+  // Bookmarks are keyed on path alone, so adding and removing are the same gesture. Returns the
+  // action taken so callers can react to hitting the cap instead of silently doing nothing.
+  const toggleBookmark = useCallback(
+    (bookmark) => {
+      if (!bookmark?.path) {
+        return "invalid";
+      }
+
+      if (bookmarks.some((existing) => existing.path === bookmark.path)) {
+        setBookmarks(bookmarks.filter((existing) => existing.path !== bookmark.path));
+        return "removed";
+      }
+
+      if (bookmarks.length >= MAX_BOOKMARKS) {
+        return "limit";
+      }
+
+      setBookmarks([...bookmarks, bookmark]);
+      return "added";
+    },
+    [bookmarks, setBookmarks]
+  );
+
   return {
     bookmarks,
     setBookmarks,
+    isBookmarked,
+    toggleBookmark,
     isLoading: userSettings.isLoading,
     isSaving: saveBookmarksPost.isPending,
   };

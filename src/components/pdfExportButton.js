@@ -1,7 +1,8 @@
 import { IconButton, Tooltip } from '@mui/material'
 import { PictureAsPdf } from '@mui/icons-material'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
-import { useSettings } from '../hooks/use-settings'
+import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
+import { useBrandingSettings } from './CippPdf/useBrandingSettings'
 
 // Flatten nested objects so deeply nested properties export properly.
 // This function only restructures data without formatting - formatting happens later in one pass.
@@ -9,7 +10,12 @@ const flattenObject = (obj, parentKey = '') => {
   const flattened = {}
   Object.keys(obj).forEach((key) => {
     const fullKey = parentKey ? `${parentKey}.${key}` : key
-    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+    if (
+      typeof obj[key] === 'object' &&
+      obj[key] !== null &&
+      !Array.isArray(obj[key]) &&
+      !SKIP_RECURSION_KEYS.includes(key)
+    ) {
       Object.assign(flattened, flattenObject(obj[key], fullKey))
     } else {
       // Store the raw value - formatting will happen in a single pass later
@@ -152,7 +158,7 @@ export const exportRowsToPdf = async ({
 
 export const PDFExportButton = (props) => {
   const { rows = [], columns = [], reportName, columnVisibility = {}, ...other } = props
-  const brandingSettings = useSettings().customBranding
+  const brandingSettings = useBrandingSettings()
 
   return (
     <Tooltip title="Export to PDF">

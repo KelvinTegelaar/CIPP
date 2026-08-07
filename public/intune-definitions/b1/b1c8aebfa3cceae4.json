@@ -1,0 +1,1 @@
+{"id":"com.apple.managedclient.preferences_weeklyconfiguration","displayName":"Weekly scheduled scan configuration","description":"Should scheduled scan be run with low priority. (Scan might take longer to complete).","helpText":null,"infoUrls":[],"categoryId":"64c8233f-3057-4485-b902-d71a312318d7","categoryName":"Scheduled scan configuration","options":null}

@@ -41,7 +41,11 @@ export const CippWizardVacationConfirmation = (props) => {
   const handleSubmit = () => {
     if (values.enableCAExclusion) {
       const policies = Array.isArray(values.PolicyId) ? values.PolicyId : [values.PolicyId]
-      const policyData = policies.map((policy) => ({
+      const createTravelPolicy =
+        values.createTravelPolicy &&
+        Array.isArray(values.travelCountries) &&
+        values.travelCountries.length > 0
+      const policyData = policies.map((policy, index) => ({
         tenantFilter,
         Users: values.Users,
         PolicyId: policy?.value ?? policy,
@@ -51,6 +55,11 @@ export const CippWizardVacationConfirmation = (props) => {
         reference: values.reference || null,
         postExecution: values.postExecution || [],
         excludeLocationAuditAlerts: values.excludeLocationAuditAlerts || false,
+        // Only send the travel policy fields on the first request so the
+        // temporary policy is scheduled once, not once per selected CA policy
+        ...(index === 0 && createTravelPolicy
+          ? { CreateTravelPolicy: true, TravelCountries: values.travelCountries }
+          : {}),
       }))
       caExclusion.mutate({
         url: '/api/ExecCAExclusion',
@@ -249,6 +258,23 @@ export const CippWizardVacationConfirmation = (props) => {
                         <div>
                           <Typography variant="body2" color="warning.main">
                             Location-based audit log alerts will be excluded
+                          </Typography>
+                        </div>
+                      )}
+                      {values.createTravelPolicy && (
+                        <div>
+                          <Typography variant="subtitle2" color="text.secondary">
+                            Temporary Travel Policy
+                          </Typography>
+                          <Typography variant="body2">
+                            Sign-ins restricted to:{' '}
+                            {Array.isArray(values.travelCountries) &&
+                            values.travelCountries.length > 0
+                              ? values.travelCountries.map((c) => c.label || c.value).join(', ')
+                              : 'Not set'}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            The policy and named location are deleted at the end date
                           </Typography>
                         </div>
                       )}

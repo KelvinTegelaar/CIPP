@@ -1,0 +1,1 @@
+{"id":"com.apple.assetcache.managed_port","displayName":"Port","description":"The TCP port number on which the content cache accepts requests for uploads or downloads. Set the port to 0 to pick a random, available port.","helpText":null,"infoUrls":[],"categoryId":"e95335ec-2704-47ab-8b40-f602b31eeb9d","categoryName":"Content Caching","options":null}

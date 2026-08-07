@@ -1,0 +1,1 @@
+{"id":"com.apple.applicationaccess_enforcedfingerprinttimeout","displayName":"Enforced Fingerprint Timeout","description":"The value, in seconds, after which the fingerprint unlock will require a password to authenticate. The default value is 48 hours.","helpText":null,"infoUrls":[],"categoryId":"eda31027-9270-4959-801b-397fa05512e2","categoryName":"Restrictions","options":null}

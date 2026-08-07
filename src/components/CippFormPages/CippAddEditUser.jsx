@@ -1,6 +1,7 @@
 import { Alert, Divider, InputAdornment, Typography } from '@mui/material'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { getCippValidator } from '../../utils/get-cipp-validator'
+import { toAutoCompleteOptions } from '../../utils/to-autocomplete-options'
 import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import { CippFormDomainSelector } from '../CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
@@ -14,12 +15,38 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Sync } from '@mui/icons-material'
 
+// Exchange only sends a sharing invitation for these calendar access levels.
+const sharedCalendarPermissionOptions = [
+  { label: 'Editor', value: 'Editor' },
+  { label: 'Reviewer', value: 'Reviewer' },
+  { label: 'Limited Details', value: 'LimitedDetails' },
+  { label: 'Availability Only', value: 'AvailabilityOnly' },
+]
+
+const sharedMailboxPermissionOptions = [
+  { label: 'Full Access', value: 'FullAccess' },
+  { label: 'Send As', value: 'SendAs' },
+  { label: 'Send on Behalf', value: 'SendOnBehalf' },
+]
+
+// Both selectors offer the same set: only shared mailboxes of the tenant are accepted.
+const sharedMailboxApi = (tenantDomain) => ({
+  queryKey: `SharedMailboxes-${tenantDomain}`,
+  url: '/api/ListMailboxes',
+  data: { RecipientTypeDetails: 'SharedMailbox' },
+  labelField: (option) => `${option.displayName} (${option.UPN})`,
+  valueField: 'UPN',
+})
+
 const CippAddEditUser = (props) => {
   const { formControl, userSettingsDefaults, formType = 'add' } = props
   const tenantDomain = useSettings().currentTenant
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const [displayNameManuallySet, setDisplayNameManuallySet] = useState(false)
   const [usernameManuallySet, setUsernameManuallySet] = useState(false)
+  // Tracks the template already applied to the form so we can tell a first
+  // apply (fill empty fields) apart from a switch (replace/clear stale values)
+  const appliedTemplateKeyRef = useRef(null)
   const router = useRouter()
   const { userId } = router.query
 
@@ -70,6 +97,25 @@ const CippAddEditUser = (props) => {
     }
     return []
   }, [manualEntryMappings.isSuccess, manualEntryMappings.data])
+
+  // Prefill manual entry custom data fields in edit mode. The fetched user's extension values sit
+  // at the top level of the form (edit.jsx resets with the spread user object), while these fields
+  // live under customData.*
+  const currentUserObjectId = useWatch({ control: formControl.control, name: 'id' })
+  useEffect(() => {
+    if (formType === 'add' || !currentUserObjectId || currentTenantManualMappings.length === 0)
+      return
+    currentTenantManualMappings.forEach((mapping) => {
+      const attribute = mapping.customDataAttribute?.value
+      if (!attribute) return
+      const existing = formControl.getValues(`customData.${attribute}`)
+      if (existing !== undefined && existing !== null && existing !== '') return
+      const value = formControl.getValues(attribute)
+      if (value !== undefined && value !== null) {
+        formControl.setValue(`customData.${attribute}`, value)
+      }
+    })
+  }, [formType, currentUserObjectId, currentTenantManualMappings])
 
   // Make new list of groups by removing userGroups from tenantGroups
   const filteredTenantGroups = useMemo(() => {
@@ -242,6 +288,7 @@ const CippAddEditUser = (props) => {
       // Only clear selected template if it's not the default template
       if (selectedTemplate && !selectedTemplate.defaultForTenant) {
         setSelectedTemplate(null)
+        appliedTemplateKeyRef.current = null
       }
     }
   }, [
@@ -271,95 +318,147 @@ const CippAddEditUser = (props) => {
 
   // Auto-populate fields when template selected
   useEffect(() => {
-    if (formType === 'add' && watchedFields.userTemplate?.addedFields) {
-      const template = watchedFields.userTemplate.addedFields
-      setSelectedTemplate(template)
+    if (formType !== 'add' || !watchedFields.userTemplate?.addedFields) return
+    const template = watchedFields.userTemplate.addedFields
+    const templateKey = watchedFields.userTemplate.value ?? template.GUID ?? template.templateName
 
-      // Reset manual edit flags when template changes
-      setDisplayNameManuallySet(false)
-      setUsernameManuallySet(false)
+    // Apply a template once per selection. useWatch hands back a freshly cloned userTemplate
+    // whenever any other watched field changes - AddToGroups included - so without this guard the
+    // effect re-fires while the operator is still filling the form and overwrites whatever they
+    // have done to the template-driven fields since. That is what made groups appended after the
+    // template silently disappear (or linger on screen while never reaching the API).
+    if (appliedTemplateKeyRef.current === templateKey) return
 
-      // Only set fields if they don't already have values (don't override user input)
-      const setFieldIfEmpty = (fieldName, value) => {
-        if (value) {
-          formControl.setValue(fieldName, value)
-        }
+    // Distinguish the first apply from a switch. On a switch we replace
+    // template-driven fields (and clear ones the new template doesn't define)
+    // so stale values from the previous template don't linger. On the first
+    // apply we only fill fields that have a template value, so we don't clobber
+    // input the user already entered or copied from another user.
+    const isSwitch = appliedTemplateKeyRef.current !== null
+    appliedTemplateKeyRef.current = templateKey
+
+    setSelectedTemplate(template)
+
+    // Reset manual edit flags when template changes
+    setDisplayNameManuallySet(false)
+    setUsernameManuallySet(false)
+
+    // Apply a template value to a field. When the template has a value we set
+    // it; when it doesn't and this is a switch we clear the field (emptyValue)
+    // so the previous template's value doesn't linger.
+    const applyField = (fieldName, value, emptyValue = '') => {
+      const hasValue = Array.isArray(value)
+        ? value.length > 0
+        : value !== undefined && value !== null && value !== ''
+      if (hasValue) {
+        formControl.setValue(fieldName, value, { shouldDirty: true })
+      } else if (isSwitch) {
+        formControl.setValue(fieldName, emptyValue, { shouldDirty: true })
       }
+    }
 
-      // Populate form fields from template
-      if (template.primDomain) {
-        // If primDomain is an object, use it as-is; if it's a string, convert to object
-        const primDomainValue =
-          typeof template.primDomain === 'string'
-            ? { label: template.primDomain, value: template.primDomain }
-            : template.primDomain
-        formControl.setValue('primDomain', primDomainValue)
+    // Primary domain - accept both object and string formats
+    const primDomainValue = template.primDomain
+      ? typeof template.primDomain === 'string'
+        ? { label: template.primDomain, value: template.primDomain }
+        : template.primDomain
+      : null
+    applyField('primDomain', primDomainValue, null)
+
+    // Usage location - accept both object and string formats
+    const usageLocationCode =
+      typeof template.usageLocation === 'string'
+        ? template.usageLocation
+        : template.usageLocation?.value
+    const country = usageLocationCode
+      ? countryList.find((c) => c.Code === usageLocationCode)
+      : null
+    applyField(
+      'usageLocation',
+      country ? { label: country.Name, value: country.Code } : null,
+      null
+    )
+
+    applyField('jobTitle', template.jobTitle)
+    applyField('streetAddress', template.streetAddress)
+    applyField('city', template.city)
+    applyField('state', template.state)
+    applyField('postalCode', template.postalCode)
+    applyField('country', template.country)
+    applyField('companyName', template.companyName)
+    applyField('department', template.department)
+    applyField('mobilePhone', template.mobilePhone)
+
+    const templateBusinessPhone = Array.isArray(template.businessPhones)
+      ? template.businessPhones[0]
+      : template.businessPhones
+    applyField('businessPhones', templateBusinessPhone ? [templateBusinessPhone] : [], [])
+
+    // Licenses - match the format expected by CippFormLicenseSelector
+    applyField(
+      'licenses',
+      Array.isArray(template.licenses) ? template.licenses : [],
+      []
+    )
+
+    // Groups from template
+    const templateGroups = template.addToGroups || template.groupMemberships
+    const rawGroups = templateGroups
+      ? Array.isArray(templateGroups)
+        ? templateGroups
+        : [templateGroups]
+      : []
+    const groups = rawGroups.map((g) => {
+      if (g.label && g.value) return g
+      const groupType = g.groupTypes?.includes('Unified')
+        ? 'Microsoft 365'
+        : g.mailEnabled && !g.groupTypes?.includes('Unified')
+          ? g.securityEnabled
+            ? 'Mail-Enabled Security'
+            : 'Distribution list'
+          : 'Security'
+      return {
+        label: g.displayName,
+        value: g.id,
+        addedFields: { groupType },
       }
-      if (template.usageLocation) {
-        // Handle both object and string formats
-        const usageLocationCode =
-          typeof template.usageLocation === 'string'
-            ? template.usageLocation
-            : template.usageLocation?.value
-        const country = countryList.find((c) => c.Code === usageLocationCode)
-        if (country) {
-          setFieldIfEmpty('usageLocation', {
-            label: country.Name,
-            value: country.Code,
+    })
+    applyField('AddToGroups', groups, [])
+
+    // Shared mailbox/calendar selections may be stored as option objects or as bare values
+    // depending on when the template was saved, so normalise before handing them to the fields.
+    applyField('sharedMailboxes', toAutoCompleteOptions(template.sharedMailboxes), [])
+    applyField(
+      'sharedMailboxPermission',
+      toAutoCompleteOptions(template.sharedMailboxPermission, sharedMailboxPermissionOptions),
+      []
+    )
+    applyField('sharedCalendars', toAutoCompleteOptions(template.sharedCalendars), [])
+    applyField(
+      'sharedCalendarPermission',
+      toAutoCompleteOptions(
+        template.sharedCalendarPermission,
+        sharedCalendarPermissionOptions
+      )[0] ?? null,
+      null
+    )
+
+    // Custom user attributes. On a switch, clear every known attribute field
+    // first so attributes the new template doesn't define don't linger, then
+    // apply the template's values.
+    if (isSwitch) {
+      userSettingsDefaults?.userAttributes
+        ?.filter((attribute) => attribute.value !== 'sponsor')
+        .forEach((attribute) => {
+          formControl.setValue(`defaultAttributes.${attribute.label}.Value`, '', {
+            shouldDirty: true,
           })
-        }
-      }
-      setFieldIfEmpty('jobTitle', template.jobTitle)
-      setFieldIfEmpty('streetAddress', template.streetAddress)
-      setFieldIfEmpty('city', template.city)
-      setFieldIfEmpty('state', template.state)
-      setFieldIfEmpty('postalCode', template.postalCode)
-      setFieldIfEmpty('country', template.country)
-      setFieldIfEmpty('companyName', template.companyName)
-      setFieldIfEmpty('department', template.department)
-      setFieldIfEmpty('mobilePhone', template.mobilePhone)
-      setFieldIfEmpty('businessPhones[0]', template.businessPhones)
-
-      // Handle licenses - need to match the format expected by CippFormLicenseSelector
-      if (template.licenses && Array.isArray(template.licenses)) {
-        setFieldIfEmpty('licenses', template.licenses)
-      }
-
-      // Handle groups from template
-      const templateGroups = template.addToGroups || template.groupMemberships
-      if (templateGroups) {
-        const rawGroups = Array.isArray(templateGroups) ? templateGroups : [templateGroups]
-        const groups = rawGroups.map((g) => {
-          if (g.label && g.value) return g
-          const groupType = g.groupTypes?.includes('Unified')
-            ? 'Microsoft 365'
-            : g.mailEnabled && !g.groupTypes?.includes('Unified')
-              ? g.securityEnabled
-                ? 'Mail-Enabled Security'
-                : 'Distribution list'
-              : 'Security'
-          return {
-            label: g.displayName,
-            value: g.id,
-            addedFields: { groupType },
-          }
         })
-        if (groups.length > 0) {
-          const currentGroups = watchedFields.AddToGroups
-          if (!currentGroups || (Array.isArray(currentGroups) && currentGroups.length === 0)) {
-            formControl.setValue('AddToGroups', groups, { shouldDirty: true })
-          }
-        }
-      }
-
-      // Populate custom user attributes from template
-      if (template.defaultAttributes) {
-        Object.entries(template.defaultAttributes).forEach(([key, attr]) => {
-          if (attr?.Value) {
-            setFieldIfEmpty(`defaultAttributes.${key}.Value`, attr.Value)
-          }
-        })
-      }
+    }
+    if (template.defaultAttributes) {
+      Object.entries(template.defaultAttributes).forEach(([key, attr]) => {
+        applyField(`defaultAttributes.${key}.Value`, attr?.Value)
+      })
     }
   }, [watchedFields.userTemplate, formType])
 
@@ -825,6 +924,7 @@ const CippAddEditUser = (props) => {
               value: group.id,
               addedFields: {
                 groupType: group.groupType,
+                calculatedGroupType: group.calculatedGroupType,
               },
             })) || []
           }
@@ -844,6 +944,58 @@ const CippAddEditUser = (props) => {
           }}
         />
       </Grid>
+      {formType === 'add' && (
+        <>
+          <Grid size={{ xs: 8 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Shared Mailboxes"
+              name="sharedMailboxes"
+              multiple={true}
+              creatable={false}
+              api={sharedMailboxApi(tenantDomain)}
+              helperText="Access is granted 15 minutes after creation, once Exchange has provisioned the user's mailbox. With Full Access, Outlook adds the mailbox automatically."
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 4 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Shared Mailbox Permissions"
+              name="sharedMailboxPermission"
+              multiple={true}
+              creatable={false}
+              options={sharedMailboxPermissionOptions}
+              helperText="Defaults to Full Access. Select several to grant them together."
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 8 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Shared Calendars"
+              name="sharedCalendars"
+              multiple={true}
+              creatable={false}
+              api={sharedMailboxApi(tenantDomain)}
+              helperText="The user is sent a sharing invitation for these calendars 15 minutes after creation, once Exchange has provisioned their mailbox."
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 4 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Shared Calendar Permission"
+              name="sharedCalendarPermission"
+              multiple={false}
+              creatable={false}
+              options={sharedCalendarPermissionOptions}
+              helperText="Defaults to Editor."
+              formControl={formControl}
+            />
+          </Grid>
+        </>
+      )}
       {formType === 'edit' && (
         <Grid size={{ xs: 12 }}>
           <CippFormComponent
@@ -855,7 +1007,8 @@ const CippAddEditUser = (props) => {
               label: userGroups.DisplayName,
               value: userGroups.id,
               addedFields: {
-                groupType: userGroups.calculatedGroupType || userGroups.groupType,
+                groupType: userGroups.groupType,
+                calculatedGroupType: userGroups.calculatedGroupType,
               },
             }))}
             creatable={false}
@@ -914,65 +1067,59 @@ const CippAddEditUser = (props) => {
           })}
         </>
       )}
-      {/* Schedule User Creation */}
-      {formType === 'add' && (
-        <>
-          <Grid size={{ xs: 12 }}>
-            <Divider />
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <CippFormComponent
-              type="switch"
-              label="Schedule user creation"
-              name="Scheduled.enabled"
-              formControl={formControl}
-            />
-            <CippFormCondition
-              formControl={formControl}
-              field="Scheduled.enabled"
-              compareType="is"
-              compareValue={true}
-            >
-              <Grid size={{ xs: 12 }}>
-                <label>Scheduled creation Date</label>
-                <CippFormComponent
-                  type="datePicker"
-                  name="Scheduled.date"
-                  formControl={formControl}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="switch"
-                  label="Send results to Webhook"
-                  name="postExecution.webhook"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="Send results to E-mail"
-                  name="postExecution.email"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="Send results to PSA"
-                  name="postExecution.psa"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="textField"
-                  fullWidth
-                  label="Reference"
-                  name="reference"
-                  placeholder="Enter a reference that will be added to the notification title"
-                  formControl={formControl}
-                />
-              </Grid>
-            </CippFormCondition>
-          </Grid>
-        </>
-      )}
+      {/* Schedule User Creation / Edit */}
+      <>
+        <Grid size={{ xs: 12 }}>
+          <Divider />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            label={formType === 'add' ? 'Schedule user creation' : 'Schedule this user edit'}
+            name="Scheduled.enabled"
+            formControl={formControl}
+          />
+          <CippFormCondition
+            formControl={formControl}
+            field="Scheduled.enabled"
+            compareType="is"
+            compareValue={true}
+          >
+            <Grid size={{ xs: 12 }}>
+              <label>{formType === 'add' ? 'Scheduled creation Date' : 'Scheduled edit date'}</label>
+              <CippFormComponent type="datePicker" name="Scheduled.date" formControl={formControl} />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="switch"
+                label="Send results to Webhook"
+                name="postExecution.webhook"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Send results to E-mail"
+                name="postExecution.email"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Send results to PSA"
+                name="postExecution.psa"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="textField"
+                fullWidth
+                label="Reference"
+                name="reference"
+                placeholder="Enter a reference that will be added to the notification title"
+                formControl={formControl}
+              />
+            </Grid>
+          </CippFormCondition>
+        </Grid>
+      </>
     </Grid>
   )
 }

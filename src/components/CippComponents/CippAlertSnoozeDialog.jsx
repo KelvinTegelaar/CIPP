@@ -8,12 +8,18 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  TextField,
   Typography,
   Box,
-  Alert,
+  Stack,
 } from '@mui/material'
 import { ApiPostCall } from '../../api/ApiCall'
 import { CippApiResults } from './CippApiResults'
+import {
+  describeAlertItem,
+  getAlertItemFields,
+  humanizeCmdlet,
+} from '../../utils/format-alert-item'
 
 const SNOOZE_OPTIONS = [
   { value: '7', label: 'Snooze for 7 days' },
@@ -30,6 +36,7 @@ export const CippAlertSnoozeDialog = ({
   relatedQueryKeys,
 }) => {
   const [duration, setDuration] = useState('7')
+  const [reason, setReason] = useState('')
   const [submitted, setSubmitted] = useState(false)
 
   const snoozeRequest = ApiPostCall({
@@ -45,6 +52,7 @@ export const CippAlertSnoozeDialog = ({
         TenantFilter: tenantFilter,
         AlertItem: alertItem,
         Duration: parseInt(duration, 10),
+        Reason: reason,
       },
     })
   }
@@ -53,26 +61,57 @@ export const CippAlertSnoozeDialog = ({
     setSubmitted(false)
     snoozeRequest.reset()
     setDuration('7')
+    setReason('')
     onClose()
   }
 
-  // Build a preview of the alert item
-  const preview =
-    alertItem?.UserPrincipalName ||
-    alertItem?.Message ||
-    alertItem?.DisplayName ||
-    (alertItem ? JSON.stringify(alertItem).substring(0, 120) : '')
+  const fields = getAlertItemFields(alertItem)
+  const { title } = describeAlertItem(alertItem)
+  const alertLabel = humanizeCmdlet(cmdletName)
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>Snooze Alert</DialogTitle>
       <DialogContent>
-        {preview && (
-          <Alert severity="info" sx={{ mb: 2 }}>
-            <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
-              {preview}
+        {alertItem && (
+          <Box
+            sx={{
+              mb: 2,
+              p: 2,
+              borderRadius: 1,
+              border: 1,
+              borderColor: 'divider',
+              borderLeft: 4,
+              borderLeftColor: 'primary.main',
+              bgcolor: 'action.hover',
+            }}
+          >
+            <Typography variant="overline" color="text.secondary">
+              {alertLabel}
             </Typography>
-          </Alert>
+            {fields.length > 0 ? (
+              <Stack spacing={0.75} sx={{ mt: 0.5 }}>
+                {fields.map((field) => (
+                  <Box key={field.label} sx={{ display: 'flex', gap: 1.5 }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ minWidth: 104, flexShrink: 0 }}
+                    >
+                      {field.label}
+                    </Typography>
+                    <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
+                      {field.value}
+                    </Typography>
+                  </Box>
+                ))}
+              </Stack>
+            ) : (
+              <Typography variant="body2" sx={{ mt: 0.5, wordBreak: 'break-word' }}>
+                {title}
+              </Typography>
+            )}
+          </Box>
         )}
         {!submitted ? (
           <Box sx={{ mt: 1 }}>
@@ -90,6 +129,16 @@ export const CippAlertSnoozeDialog = ({
                 />
               ))}
             </RadioGroup>
+            <TextField
+              label="Reason (optional)"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              fullWidth
+              multiline
+              minRows={2}
+              sx={{ mt: 2 }}
+              placeholder="Why is this alert being snoozed?"
+            />
           </Box>
         ) : (
           <CippApiResults apiObject={snoozeRequest} />

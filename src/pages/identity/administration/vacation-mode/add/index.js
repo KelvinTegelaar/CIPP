@@ -69,6 +69,8 @@ const Page = () => {
     enableCAExclusion: false,
     PolicyId: [],
     excludeLocationAuditAlerts: false,
+    createTravelPolicy: false,
+    travelCountries: [],
     enableMailboxPermissions: false,
     delegates: [],
     permissionTypes: [],

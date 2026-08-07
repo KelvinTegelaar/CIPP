@@ -39,6 +39,7 @@ export const CippSankey = ({ data, onNodeClick, onLinkClick }) => {
         margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
         align="justify"
         colors={(node) => node.nodeColor}
+        label={(node) => node.label ?? node.id}
         nodeOpacity={1}
         nodeHoverOthersOpacity={0.35}
         nodeThickness={18}

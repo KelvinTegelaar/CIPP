@@ -266,6 +266,64 @@ export const CippFormComponent = (props) => {
           )}
         </>
       );
+    case "colorPicker":
+      return (
+        <>
+          <div>
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              defaultValue={defaultValue || ""}
+              rules={{
+                pattern: {
+                  value: /^#[0-9A-F]{6}$/i,
+                  message: "Please enter a valid hex color (e.g., #F77F00)",
+                },
+                ...validators,
+              }}
+              render={({ field }) => (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <input
+                    type="color"
+                    value={/^#[0-9A-F]{6}$/i.test(field.value || "") ? field.value : "#000000"}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    style={{
+                      width: "50px",
+                      height: "40px",
+                      border: "1px solid #ddd",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      padding: 0,
+                    }}
+                  />
+                  <TextField
+                    variant="filled"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    sx={{ width: "150px" }}
+                    {...other}
+                    label={label}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                  />
+                </Box>
+              )}
+            />
+          </div>
+          {get(errors, convertedName, {})?.message && (
+            <Typography variant="subtitle3" color="error">
+              {get(errors, convertedName, {})?.message}
+            </Typography>
+          )}
+          {helperText && (
+            <Typography variant="subtitle3" color="text.secondary">
+              {helperText}
+            </Typography>
+          )}
+        </>
+      );
     case "textFieldWithVariables":
       return (
         <>
@@ -276,6 +334,10 @@ export const CippFormComponent = (props) => {
                 control={formControl.control}
                 defaultValue={defaultValue || ""}
                 rules={validators}
+                // No tenantFilter prop: CippTextFieldWithVariables reads the current tenant from
+                // useSettings itself and does not accept one. This used to pass an identifier that
+                // was never destructured from props, so the field threw a ReferenceError as soon as
+                // it rendered — which made the whole type unusable.
                 render={({ field }) => (
                   <CippTextFieldWithVariables
                     {...other}
@@ -288,7 +350,6 @@ export const CippFormComponent = (props) => {
                     value={field.value || ""}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
-                    tenantFilter={tenantFilter}
                     includeSystemVariables={includeSystemVariables}
                   />
                 )}
@@ -445,7 +506,15 @@ export const CippFormComponent = (props) => {
               name={convertedName}
               control={formControl.control}
               defaultValue={defaultValue}
-              rules={validators}
+              rules={
+                // Pass row as third parameter, same as autoComplete fields
+                typeof validators?.validate === "function"
+                  ? {
+                      ...validators,
+                      validate: (value, formValues) => validators.validate(value, formValues, row),
+                    }
+                  : validators
+              }
               render={({ field }) => {
                 return (
                   <RadioGroup

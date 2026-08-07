@@ -1,47 +1,21 @@
-import { Box, Container, Stack } from "@mui/material";
-import { Grid } from "@mui/system";
-import Head from "next/head";
-import { CippImageCard } from "../components/CippCards/CippImageCard";
-import { Layout as DashboardLayout } from "../layouts/index.js";
+import Head from 'next/head'
+import { CippErrorState } from '../components/CippComponents/CippErrorState'
+import { Layout as DashboardLayout } from '../layouts/index.js'
 
 const Page = () => (
-  <>
-    <DashboardLayout>
-      <Head>
-        <title>404 - Not Found</title>
-      </Head>
-      <Box
-        sx={{
-          flexGrow: 1,
-          py: 4,
-          height: "100vh", // Full height of the viewport
-        }}
-      >
-        <Container maxWidth={false}>
-          <Stack spacing={6} sx={{ height: "100%" }}>
-            <Grid
-              container
-              spacing={3}
-              justifyContent="center" // Center horizontally
-              alignItems="center" // Center vertically
-              sx={{ height: "100%" }} // Ensure the container takes full height
-            >
-              <Grid size={{ md: 6, xs: 12 }}>
-                <CippImageCard
-                  isFetching={false}
-                  imageUrl="/assets/illustrations/undraw_lost_re_xqjt.svg"
-                  text="Oh no! We're lost. This page is here to help you find your way back. Let's go to the homepage to see if we know where we need to go next."
-                  title="Error 404 - Page not found"
-                  linkText={"Return"}
-                  link={"/"}
-                />
-              </Grid>
-            </Grid>
-          </Stack>
-        </Container>
-      </Box>
-    </DashboardLayout>
-  </>
-);
+  <DashboardLayout showBreadcrumb={false}>
+    <Head>
+      <title>404 - Not Found</title>
+    </Head>
+    <CippErrorState
+      code="404"
+      title="Page not found"
+      description="This page doesn't exist, or it has moved. Head back to the dashboard and pick up from there."
+      imageUrl="/cippy-404.png"
+      actionText="Return to Home"
+      actionHref="/"
+    />
+  </DashboardLayout>
+)
 
-export default Page;
+export default Page

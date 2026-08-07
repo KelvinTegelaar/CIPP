@@ -261,11 +261,12 @@ export const AppleADEEnrollmentProfiles = () => {
 
   const appleFilters = useMemo(
     () => [
-      { filterName: 'All', value: [] },
-      { filterName: 'macOS', value: [{ id: 'platform', value: 'macOS' }] },
+      { filterName: 'All', value: [], type: 'column' },
+      { filterName: 'macOS', value: [{ id: 'platform', value: 'macOS' }], type: 'column' },
       {
         filterName: 'iOS/iPadOS',
         value: [{ id: 'platform', value: 'iOS/iPadOS' }],
+        type: 'column',
       },
     ],
     []

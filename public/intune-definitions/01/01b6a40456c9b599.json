@@ -1,0 +1,1 @@
+{"id":"com.apple.mcx.filevault2_password","displayName":"Password","description":"The password of the Open Directory user to be added to FileVault. Use the 'UserEntersMissingInfo' key if you want to prompt for this information.","helpText":null,"infoUrls":[],"categoryId":"3f56adc1-2207-4033-a6e2-07f64c08e3ff","categoryName":"FileVault","options":null}
