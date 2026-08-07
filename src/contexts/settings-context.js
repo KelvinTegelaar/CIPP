@@ -116,10 +116,16 @@ const stripServerManagedSettings = (settings) => {
   return cleanedSettings;
 };
 
+// First visit (no stored preference): follow the OS. 'browser' resolves against
+// prefers-color-scheme at render time in _app.js, so the app keeps tracking the
+// system preference until the user explicitly picks a mode with the theme toggle.
+const systemPrefersDark =
+  typeof window !== "undefined" && !!window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+
 const initialSettings = {
   direction: "ltr",
-  paletteMode: "light",
-  currentTheme: { value: "light", label: "light" },
+  paletteMode: systemPrefersDark ? "dark" : "light",
+  currentTheme: { value: "browser", label: "Browser Default" },
   pinNav: true,
   currentTenant: null,
   showDevtools: false,
