@@ -327,14 +327,31 @@ export const CIPPM365OAuthButton = ({
       `&state=${state}` +
       `&prompt=select_account`
 
-    // Open a blank popup first, then navigate it. This keeps the window reference stable and
-    // avoids treating slow Microsoft page loads as an immediate user cancellation.
     const width = 500
     const height = 600
     const left = window.screen.width / 2 - width / 2
     const top = window.screen.height / 2 - height / 2
 
-    window.open(authUrl, 'msalAuthPopup', `width=${width},height=${height},left=${left},top=${top}`)
+    const popup = window.open(
+      authUrl,
+      'msalAuthPopup',
+      `width=${width},height=${height},left=${left},top=${top}`
+    )
+
+    // A null reference means the browser blocked the popup outright - nothing will
+    // ever post back, so fail fast instead of sitting on the 10-minute timeout.
+    if (!popup) {
+      const error = {
+        errorCode: 'popup_blocked',
+        errorMessage:
+          'The sign-in popup was blocked by the browser. Allow popups for this site and try again.',
+        timestamp: new Date().toISOString(),
+      }
+      setAuthError(error)
+      if (onAuthError) onAuthError(error)
+      setAuthInProgress(false)
+      return
+    }
 
     // Function to actually exchange the authorization code for tokens
     const handleAuthorizationCode = async (code, receivedState) => {
@@ -474,6 +491,7 @@ export const CIPPM365OAuthButton = ({
 
     // Listen for auth result via BroadcastChannel (works regardless of COOP)
     const channel = new BroadcastChannel('cipp_auth')
+    let resultReceived = false
 
     const authTimeout = setTimeout(() => {
       // If no response after 10 minutes, treat as cancelled
@@ -499,9 +517,11 @@ export const CIPPM365OAuthButton = ({
 
     channel.onmessage = (event) => {
       if (event.data?.type === 'auth_code') {
+        resultReceived = true
         cleanup()
         handleAuthorizationCode(event.data.code, event.data.state)
       } else if (event.data?.type === 'auth_error') {
+        resultReceived = true
         cleanup()
 
         // Check if it's the AADSTS650051 error (service principal already exists during consent)
@@ -526,9 +546,35 @@ export const CIPPM365OAuthButton = ({
       }
     }
 
+    // The /authredirect callback posts its result and then closes the popup, so
+    // closure is also part of the happy path - give the BroadcastChannel message
+    // a short grace period before treating it as a cancellation. Without this,
+    // closing the sign-in window left the button stuck on "Authenticating..."
+    // until the 10-minute timeout.
+    const popupWatcher = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(popupWatcher)
+        setTimeout(() => {
+          if (!resultReceived) {
+            cleanup()
+            const error = {
+              errorCode: 'popup_closed',
+              errorMessage:
+                'The sign-in window was closed before authentication completed. Please try again.',
+              timestamp: new Date().toISOString(),
+            }
+            setAuthError(error)
+            if (onAuthError) onAuthError(error)
+            setAuthInProgress(false)
+          }
+        }, 2000)
+      }
+    }, 1000)
+
     const cleanup = () => {
       channel.close()
       clearTimeout(authTimeout)
+      clearInterval(popupWatcher)
     }
   }
 

@@ -21,7 +21,7 @@ import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 
 const SSO_DOCS_URL = 'https://docs.cipp.app/user-documentation/cipp/advanced/authentication/sso'
 
-export const ForcedSsoMigrationDialog = ({ setupCompleted = true }) => {
+export const ForcedSsoMigrationDialog = () => {
   const [multiTenant, setMultiTenant] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
@@ -37,6 +37,9 @@ export const ForcedSsoMigrationDialog = ({ setupCompleted = true }) => {
   const permissions = currentRole.data?.permissions || []
   const forceSsoMigration = currentRole.data?.forceSsoMigration
   const hasPermission = permissions.includes('CIPP.AppSettings.ReadWrite')
+  // Same response computes both flags from the same backend check, so this can
+  // never disagree with the setup gate. Strict !== false: absent means complete.
+  const setupCompleted = currentRole.data?.initialSetupComplete !== false
 
   // Hold the forced migration behind initial setup — the setup wizard must be
   // reachable (and the SAM app configured) before SSO migration can succeed.

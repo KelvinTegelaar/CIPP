@@ -90,7 +90,11 @@ export default defineConfig({
             enabled: true,
             provider: playwright(),
             headless: true,
-            instances: [{ browser: 'chromium' }],
+            // dockerized runs (cipp-storybook) have the default 64MB /dev/shm, which
+            // chromium exhausts on heavier story trees and dies mid-run - use /tmp
+            instances: [
+              { browser: 'chromium', launch: { args: ['--disable-dev-shm-usage'] } },
+            ],
           },
         },
       },

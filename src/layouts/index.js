@@ -1,18 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import dynamic from 'next/dynamic'
-import {
-  Alert,
-  Box,
-  Button,
-  Container,
-  Dialog,
-  Divider,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  useMediaQuery,
-} from '@mui/material'
+import { Box, Container, Divider, Stack, useMediaQuery } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useSettings } from '../hooks/use-settings'
 import { Footer } from './footer'
@@ -24,7 +12,6 @@ import { useDispatch } from 'react-redux'
 import { showToast } from '../store/toasts'
 import Grid from '@mui/system/Grid'
 import { CippImageCard } from '../components/CippCards/CippImageCard'
-import { useDialog } from '../hooks/use-dialog'
 import { nativeMenuItems } from './config'
 import { CippBreadcrumbNav } from '../components/CippComponents/CippBreadcrumbNav'
 import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDialog'
@@ -32,11 +19,6 @@ import { ForcedSsoMigrationDialog } from '../components/CippComponents/ForcedSso
 import { SubscriptionEndedDialog } from '../components/CippComponents/SubscriptionEndedDialog'
 import { FailedPaymentDialog } from '../components/CippComponents/FailedPaymentDialog'
 import { CippMaintenanceBanner } from '../components/CippComponents/CippMaintenanceBanner'
-
-const OnboardingWizardPage = dynamic(
-  () => import('../components/CippWizard/OnboardingWizardPage.jsx'),
-  { ssr: false }
-)
 
 import {
   BANNER_HEIGHT_VAR,
@@ -296,8 +278,6 @@ export const Layout = (props) => {
       setFetchingVisible(new Array(alertsAPI.data.length).fill(true))
     }
   }, [alertsAPI.isSuccess, alertsAPI.data, alertsAPI.isFetching])
-  const [setupCompleted, setSetupCompleted] = useState(true)
-  const createDialog = useDialog()
   const dispatch = useDispatch()
   useEffect(() => {
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
@@ -315,14 +295,6 @@ export const Layout = (props) => {
               })
             )
           })
-      }
-    }
-    if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
-      if (alertsAPI.data.length > 0) {
-        const setupCompleted = alertsAPI.data.find((alert) => alert.setupCompleted === false)
-        if (setupCompleted) {
-          setSetupCompleted(false)
-        }
       }
     }
   }, [alertsAPI.isSuccess])
@@ -348,31 +320,12 @@ export const Layout = (props) => {
         }}
       >
         <LayoutContainer>
-          <Dialog
-            fullWidth
-            maxWidth="lg"
-            onClose={createDialog.handleClose}
-            open={createDialog.open}
-          >
-            <DialogTitle>Setup Wizard</DialogTitle>
-            <DialogContent>
-              <OnboardingWizardPage />
-            </DialogContent>
-          </Dialog>
           <SubscriptionEndedDialog
             hostedSubscriptionEnded={currentRole.data?.hostedSubscriptionEnded}
           />
           <FailedPaymentDialog hostedFailedPayments={currentRole.data?.hostedFailedPayments} />
           <SsoMigrationDialog meData={currentRole.data} />
-          <ForcedSsoMigrationDialog setupCompleted={setupCompleted} />
-          {!setupCompleted && (
-            <Box sx={{ py: 2, px: 3, flexShrink: 0 }}>
-              <Alert severity="info">
-                Setup has not been completed.
-                <Button onClick={createDialog.handleOpen}>Start Wizard</Button>
-              </Alert>
-            </Box>
-          )}
+          <ForcedSsoMigrationDialog />
           {(currentTenant === 'AllTenants' || !currentTenant) && !allTenantsSupport ? (
             <Box sx={{ flexGrow: 1, py: 3 }}>
               <Container maxWidth={false}>

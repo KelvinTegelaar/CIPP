@@ -23,6 +23,22 @@ const config = {
   async viteFinal(config) {
     return {
       ...config,
+      plugins: [
+        ...(config.plugins || []),
+        {
+          // Real Microsoft auth can't run in Storybook (MSAL popups, device codes),
+          // so every import of CIPPM365OAuthButton resolves to a mock that reports
+          // instant auth success. Relative imports can't be object-alias'd, hence a
+          // resolveId hook instead of an entry in resolve.alias below.
+          name: 'cipp-mock-m365-oauth-button',
+          enforce: 'pre',
+          resolveId(source) {
+            if (source.endsWith('CippComponents/CIPPM365OAuthButton')) {
+              return path.resolve(dirname, '../tests/mocks/cipp-m365-oauth-button.jsx')
+            }
+          },
+        },
+      ],
       resolve: {
         ...config.resolve,
         // CIPP is a Next.js app but uses @storybook/react-vite because @storybook/nextjs

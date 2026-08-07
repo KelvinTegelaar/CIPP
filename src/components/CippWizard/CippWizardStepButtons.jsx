@@ -88,6 +88,16 @@ export const CippWizardStepButtons = (props) => {
           </Button>
         </form>
       )}
+      {dialogContext?.completionButton && currentStep === lastStep && sendForm.isSuccess && (
+        <Button
+          size="large"
+          variant="contained"
+          color="success"
+          onClick={dialogContext.completionButton.onClick}
+        >
+          {dialogContext.completionButton.label}
+        </Button>
+      )}
     </Stack>
   );
 
