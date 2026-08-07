@@ -167,6 +167,69 @@ const TierPolicyView = ({ variableKey, templateRef }) => {
   )
 }
 
+// Detect-drift standards flag LIVE policies that no baseline covers. Their cards get a
+// View Policy button that pulls the real policy from the tenant on demand, so an
+// operator can read what it actually does before accepting or deleting it.
+const detectPolicySources = {
+  DetectIntuneDrift: {
+    title: 'Intune Policy',
+    url: '/api/ListIntunePolicy',
+    queryKey: 'ListIntunePolicy',
+    type: 'intune',
+  },
+  DetectConditionalAccessDrift: {
+    title: 'Conditional Access Policy',
+    url: '/api/ListConditionalAccessPolicies',
+    queryKey: 'ListConditionalAccessPolicies',
+    dataKey: 'Results',
+    type: 'default',
+  },
+}
+
+const LivePolicyView = ({ standardName, tenantFilter, policyId }) => {
+  const [visible, setVisible] = useState(false)
+  const source = detectPolicySources[standardName]
+  const policiesApi = ApiGetCall({
+    url: source.url,
+    data: { tenantFilter },
+    queryKey: `${source.queryKey}-${tenantFilter}`,
+    waiting: visible,
+  })
+  const policies = source.dataKey
+    ? (policiesApi.data?.[source.dataKey] ?? [])
+    : (policiesApi.data ?? [])
+  const policy = policies.find((entry) => entry?.id === policyId)
+  return (
+    <>
+      <Button
+        size="small"
+        variant="outlined"
+        startIcon={<Visibility />}
+        onClick={() => setVisible(true)}
+      >
+        View Policy
+      </Button>
+      <CippOffCanvas
+        visible={visible}
+        onClose={() => setVisible(false)}
+        title={source.title}
+        size="xl"
+      >
+        {policiesApi.isFetching ? (
+          <CircularProgress size={24} />
+        ) : policy ? (
+          <CippJsonView object={policy} defaultOpen={true} type={source.type} />
+        ) : (
+          <Typography variant="body2" color="text.secondary">
+            The policy could not be found - it may already have been removed
+            from the tenant.
+          </Typography>
+        )}
+      </CippOffCanvas>
+    </>
+  )
+}
+
 const propertyList = (properties) => (
   <Stack
     spacing={0}
@@ -763,10 +826,20 @@ const Page = () => {
       // sub-object as its own card (conditions.users, conditions.applications, ...)
       // instead of one unreadable JSON blob. Empty-vs-empty cards are skipped unless
       // the engine flagged drift there.
-      const getPath = (source, path) =>
-        path
+      // A literal property name wins over dot-path traversal: policy names routinely
+      // contain dots ("... - v3.0"), and splitting those would resolve to nothing.
+      const getPath = (source, path) => {
+        if (
+          source &&
+          typeof source === 'object' &&
+          Object.prototype.hasOwnProperty.call(source, path)
+        ) {
+          return source[path]
+        }
+        return path
           .split('.')
           .reduce((acc, key) => (acc == null ? acc : acc[key]), source)
+      }
       const isPlainObject = (value) =>
         value && typeof value === 'object' && !Array.isArray(value)
       const isEmptyish = (value) =>
@@ -1020,6 +1093,13 @@ const Page = () => {
               <>
                 {unmatchedDiffEntries.map((entry) => {
                   const acceptedPath = row.acceptedPaths?.[entry.Property]
+                  // Detect-drift cards reference a real policy in the tenant: show what
+                  // it is in plain language and offer to open it, instead of a blob.
+                  const policyRef =
+                    detectPolicySources[row.standardName] &&
+                    entry.ReceivedValue?.id
+                      ? entry.ReceivedValue
+                      : null
                   return (
                     <Box
                       key={entry.Property}
@@ -1072,30 +1152,66 @@ const Page = () => {
                           />
                         )}
                       </Stack>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontFamily: 'monospace',
-                          display: 'block',
-                          mt: 0.5,
-                          wordBreak: 'break-word',
-                        }}
+                      {policyRef ? (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            display: 'block',
+                            mt: 0.5,
+                            color: acceptedPath
+                              ? 'text.secondary'
+                              : 'error.main',
+                          }}
+                        >
+                          {policyRef.status}
+                          {policyRef.policyType
+                            ? ` - ${policyRef.policyType}`
+                            : ''}
+                          {policyRef.state ? ` - ${policyRef.state}` : ''}
+                        </Typography>
+                      ) : (
+                        <>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontFamily: 'monospace',
+                              display: 'block',
+                              mt: 0.5,
+                              wordBreak: 'break-word',
+                            }}
+                          >
+                            Expected: {JSON.stringify(entry.ExpectedValue)}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontFamily: 'monospace',
+                              display: 'block',
+                              wordBreak: 'break-word',
+                              color: acceptedPath
+                                ? 'text.secondary'
+                                : 'error.main',
+                            }}
+                          >
+                            Current: {JSON.stringify(entry.ReceivedValue)}
+                          </Typography>
+                        </>
+                      )}
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ mt: 1 }}
+                        flexWrap="wrap"
+                        useFlexGap
                       >
-                        Expected: {JSON.stringify(entry.ExpectedValue)}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontFamily: 'monospace',
-                          display: 'block',
-                          wordBreak: 'break-word',
-                          color: acceptedPath ? 'text.secondary' : 'error.main',
-                        }}
-                      >
-                        Current: {JSON.stringify(entry.ReceivedValue)}
-                      </Typography>
-                      {!acceptedPath && (
-                        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                        {policyRef && (
+                          <LivePolicyView
+                            standardName={row.standardName}
+                            tenantFilter={row.tenantFilter}
+                            policyId={policyRef.id}
+                          />
+                        )}
+                        {!acceptedPath && (
                           <Button
                             size="small"
                             variant="outlined"
@@ -1110,6 +1226,8 @@ const Page = () => {
                           >
                             Accept this property only
                           </Button>
+                        )}
+                        {!acceptedPath && (
                           <Button
                             size="small"
                             variant="outlined"
@@ -1125,14 +1243,21 @@ const Page = () => {
                           >
                             Deny & queue deletion
                           </Button>
-                        </Stack>
-                      )}
+                        )}
+                      </Stack>
                     </Box>
                   )
                 })}
                 {orderedCardPaths.map((key) => {
                   const drifted = differences.includes(key)
                   const acceptedPath = row.acceptedPaths?.[key]
+                  // Detect-drift cards reference a real policy in the tenant: show what
+                  // it is in plain language and offer to open it, instead of a blob.
+                  const cardCurrent = getPath(row.currentValue, key)
+                  const policyRef =
+                    detectPolicySources[row.standardName] && cardCurrent?.id
+                      ? cardCurrent
+                      : null
                   return (
                     <Box
                       key={key}
@@ -1193,32 +1318,63 @@ const Page = () => {
                           />
                         )}
                       </Stack>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontFamily: 'monospace',
-                          display: 'block',
-                          mt: 0.5,
-                          wordBreak: 'break-word',
-                        }}
+                      {policyRef ? (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            display: 'block',
+                            mt: 0.5,
+                            color: drifted ? 'error.main' : 'text.secondary',
+                          }}
+                        >
+                          {policyRef.status}
+                          {policyRef.policyType
+                            ? ` - ${policyRef.policyType}`
+                            : ''}
+                          {policyRef.state ? ` - ${policyRef.state}` : ''}
+                        </Typography>
+                      ) : (
+                        <>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontFamily: 'monospace',
+                              display: 'block',
+                              mt: 0.5,
+                              wordBreak: 'break-word',
+                            }}
+                          >
+                            Expected:{' '}
+                            {JSON.stringify(getPath(row.expectedValue, key))}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontFamily: 'monospace',
+                              display: 'block',
+                              wordBreak: 'break-word',
+                              color: drifted ? 'error.main' : 'text.secondary',
+                            }}
+                          >
+                            Current: {JSON.stringify(cardCurrent)}
+                          </Typography>
+                        </>
+                      )}
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ mt: 1 }}
+                        flexWrap="wrap"
+                        useFlexGap
                       >
-                        Expected:{' '}
-                        {JSON.stringify(getPath(row.expectedValue, key))}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontFamily: 'monospace',
-                          display: 'block',
-                          wordBreak: 'break-word',
-                          color: drifted ? 'error.main' : 'text.secondary',
-                        }}
-                      >
-                        Current:{' '}
-                        {JSON.stringify(getPath(row.currentValue, key))}
-                      </Typography>
-                      {drifted && !acceptedPath && (
-                        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                        {policyRef && (
+                          <LivePolicyView
+                            standardName={row.standardName}
+                            tenantFilter={row.tenantFilter}
+                            policyId={policyRef.id}
+                          />
+                        )}
+                        {drifted && !acceptedPath && (
                           <Button
                             size="small"
                             variant="outlined"
@@ -1230,6 +1386,8 @@ const Page = () => {
                           >
                             Accept this property only
                           </Button>
+                        )}
+                        {drifted && !acceptedPath && (
                           <Button
                             size="small"
                             variant="outlined"
@@ -1242,8 +1400,8 @@ const Page = () => {
                           >
                             Deny & queue deletion
                           </Button>
-                        </Stack>
-                      )}
+                        )}
+                      </Stack>
                     </Box>
                   )
                 })}
@@ -2090,7 +2248,7 @@ const Page = () => {
               path: 'path',
             },
             confirmText:
-              'Deny [path] of [standardLabel]? It stops alerting and shows as Delete Pending - the object is queued for deletion once delete support lands. Nothing is deleted automatically today.',
+              'Deny [path] of [standardLabel]? It shows as Delete Pending and is DELETED from the tenant on the next remediation run. Only this object is deleted - other deviations are untouched. This cannot be undone.',
             relatedQueryKeys,
           }}
           row={denyPathTarget}
