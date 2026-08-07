@@ -117,7 +117,7 @@ export const createReportStyles = (themeOrColour = DEFAULT_BRAND_COLOUR) => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: 80,
+      marginBottom: 40,
     },
     logoSection: { flexDirection: 'row', alignItems: 'center' },
     logo: { height: 100, marginRight: 12 },
@@ -136,7 +136,7 @@ export const createReportStyles = (themeOrColour = DEFAULT_BRAND_COLOUR) => {
       bottom: 0,
       opacity: 0.5,
     },
-    coverHero: { flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', paddingTop: 40 },
+    coverHero: { flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', paddingTop: 24 },
     coverLabel: {
       backgroundColor: brandColor,
       color: theme.onPrimary,
@@ -176,7 +176,7 @@ export const createReportStyles = (themeOrColour = DEFAULT_BRAND_COLOUR) => {
     coverMetavalue: { fontSize: 12, color: subtitleColor, marginBottom: 4 },
     // A grade or qualifier under the cover detail lines.
     coverMetaNote: { fontSize: 11, color: subtitleColor, marginTop: 8 },
-    coverFooter: { textAlign: 'center', marginTop: 60 },
+    coverFooter: { textAlign: 'center', marginTop: 32 },
     // The cover's own footer note, so it follows the footer role rather than a literal grey.
     confidential: {
       fontSize: 9,
