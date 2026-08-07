@@ -34,6 +34,7 @@ import {
   normalizeLogoUploads,
 } from "../CippPdf/resolveCoverImage";
 import { REPORT_COLOUR_ROLES } from "../CippPdf/reportTheme";
+import { BRANDING_GALLERY_QUERY_KEY } from "../CippPdf/useBrandingSettings";
 import { useForm } from "react-hook-form";
 
 const LOGO_TOOLTIP =
@@ -86,8 +87,8 @@ const PREVIEW_TOOLTIP =
   "Renders the real report against sample data so you can page through it. The sample figures exist only in this preview — a report run for a client with no data still shows that it has none.";
 
 // Kept in step with the same ceiling in Add-CIPPImage. Storage is not the constraint — oversized
-// entities are split across part rows — but branding images ride along in ListUserSettings as data
-// URLs on every page load, and base64 adds about a third on top.
+// entities are split across part rows — but branding images are returned inline as data URLs by
+// ListBrandingSettings, and base64 adds about a third on top.
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 const readImageFile = (file, onSuccess) => {
@@ -221,11 +222,15 @@ const GalleryTile = ({
 
 const CippBrandingSettings = () => {
   const settings = useSettings();
-  const branding = settings?.customBranding || {};
-  const userSettings = ApiGetCall({
-    url: "/api/ListUserSettings",
-    queryKey: "userSettings",
+  // Read through ApiGetCall rather than useBrandingSettings so this page can see when the fetch
+  // landed: the sync effect below has to run on a *new* server payload, not on every render.
+  // Same url and queryKey, so it is the same cache entry every report reads.
+  const brandingQuery = ApiGetCall({
+    url: "/api/ListBrandingSettings",
+    data: { includeGallery: true },
+    queryKey: BRANDING_GALLERY_QUERY_KEY,
   });
+  const branding = brandingQuery.data && !Array.isArray(brandingQuery.data) ? brandingQuery.data : {};
 
   const [logoImageId, setLogoImageId] = useState(branding.logoImageId || null);
   const [logoImageIds, setLogoImageIds] = useState(() => normalizeLogoImageIds(branding));
@@ -337,13 +342,13 @@ const CippBrandingSettings = () => {
 
   // Sync gallery from ListUserSettings; selection is id-based (pinned in-session).
   useEffect(() => {
-    if (!userSettings.isSuccess || uploadPending) return;
+    if (!brandingQuery.isSuccess || uploadPending) return;
     // While a preset is being edited the form holds that preset's values, not the default ones —
     // syncing here would silently overwrite them with the default branding mid-edit.
     if (activePresetId) return;
 
-    const next = settings?.customBranding;
-    if (!next) return;
+    const next = brandingQuery.data;
+    if (!next || Array.isArray(next)) return;
 
     const nextCoverIds = normalizeCoverImageIds(next);
     const nextCoverUploadsAligned = normalizeCoverUploads(next);
@@ -410,34 +415,12 @@ const CippBrandingSettings = () => {
     if (coversHydrated || logosHydrated) {
       setCoversReady(true);
     }
+    // Branding used to be a mutable client blob on the settings object, so this had to list every
+    // field that might have changed underneath it — and compare the arrays by hand, because their
+    // identity changed on every render. A query has one answer to "is this a new payload from the
+    // server", which is the only question this effect was ever asking.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- sync when server branding payload changes
-  }, [
-    activePresetId,
-    uploadPending,
-    userSettings.isSuccess,
-    userSettings.dataUpdatedAt,
-    settings?.customBranding?.logoImageId,
-    settings?.customBranding?.coverImageId,
-    settings?.customBranding?.coverStock,
-    settings?.customBranding?.colour,
-    settings?.customBranding?.logo,
-    Array.isArray(settings?.customBranding?.logoImageIds)
-      ? settings.customBranding.logoImageIds.join(",")
-      : settings?.customBranding?.logoImageIds,
-    Array.isArray(settings?.customBranding?.logoUploads)
-      ? settings.customBranding.logoUploads.length
-      : settings?.customBranding?.logoUploads
-        ? 1
-        : 0,
-    Array.isArray(settings?.customBranding?.coverImageIds)
-      ? settings.customBranding.coverImageIds.join(",")
-      : settings?.customBranding?.coverImageIds,
-    Array.isArray(settings?.customBranding?.coverUploads)
-      ? settings.customBranding.coverUploads.length
-      : settings?.customBranding?.coverUploads
-        ? 1
-        : 0,
-  ]);
+  }, [activePresetId, uploadPending, brandingQuery.isSuccess, brandingQuery.dataUpdatedAt]);
 
   const brandColour = formControl.watch("colour") || "#F77F00";
   const previewReportTypeValue = formControl.watch("previewReportType");
@@ -456,7 +439,7 @@ const CippBrandingSettings = () => {
    * is the one on screen.
    */
   const brandingApi = ApiPostCall({
-    relatedQueryKeys: ["BrandingSettings", "userSettings", "BrandingPresets"],
+    relatedQueryKeys: ["BrandingSettings*", "BrandingPresets"],
   });
 
   const logoPreview = useMemo(() => {
@@ -589,13 +572,6 @@ const CippBrandingSettings = () => {
         setLogoUploads(nextUploads);
         setLogoImageId(id);
         pinLogoSelection(id);
-        settings.handleUpdate({
-          customBranding: buildLocalBranding({
-            logoImageId: id,
-            logoImageIds: nextIds,
-            logoUploads: nextUploads,
-          }),
-        });
         if (logoGalleryRef.current) {
           logoGalleryRef.current.scrollLeft = 0;
         }
@@ -643,13 +619,6 @@ const CippBrandingSettings = () => {
       } else {
         pinLogoSelection(logoImageId);
       }
-      settings.handleUpdate({
-        customBranding: buildLocalBranding({
-          logoImageId: nextLogoId,
-          logoImageIds: nextIds,
-          logoUploads: nextUploads,
-        }),
-      });
     } catch (error) {
       console.error("Failed to delete logo", error);
       alert(error?.response?.data?.Results || error.message || "Failed to delete logo");
@@ -687,13 +656,6 @@ const CippBrandingSettings = () => {
         setCoverUploads(nextUploads);
         setCoverImageId(id);
         pinCoverSelection(id, coverStock);
-        settings.handleUpdate({
-          customBranding: buildLocalBranding({
-            coverImageId: id,
-            coverImageIds: nextIds,
-            coverUploads: nextUploads,
-          }),
-        });
         if (coverGalleryRef.current) {
           coverGalleryRef.current.scrollTop = 0;
         }
@@ -744,14 +706,6 @@ const CippBrandingSettings = () => {
       } else {
         pinCoverSelection(coverImageId, coverStock);
       }
-      settings.handleUpdate({
-        customBranding: buildLocalBranding({
-          coverImageId: nextCoverId,
-          coverImageIds: nextIds,
-          coverUploads: nextUploads,
-          coverStock: nextStock,
-        }),
-      });
     } catch (error) {
       console.error("Failed to delete cover", error);
       alert(error?.response?.data?.Results || error.message || "Failed to delete cover");
@@ -768,7 +722,7 @@ const CippBrandingSettings = () => {
    */
   const handleSelectScope = (presetId) => {
     const preset = presetId ? presets.find((item) => item.id === presetId) : null;
-    const source = presetId ? preset : settings?.customBranding || {};
+    const source = presetId ? preset : branding;
     if (presetId && !preset) return;
 
     setActivePresetId(presetId || null);
@@ -873,9 +827,6 @@ const CippBrandingSettings = () => {
 
     const brandingData = buildLocalBranding();
 
-    settings.handleUpdate({
-      customBranding: brandingData,
-    });
 
     brandingApi.mutate({
       url: "/api/ExecBrandingSettings",
@@ -916,9 +867,6 @@ const CippBrandingSettings = () => {
       delete next[reportId];
     }
     setReportDefaults(next);
-    settings.handleUpdate({
-      customBranding: { ...(settings?.customBranding || {}), reportDefaults: next },
-    });
     brandingApi.mutate({
       url: "/api/ExecBrandingSettings",
       data: { Action: "Set", reportDefaults: next },
@@ -941,20 +889,6 @@ const CippBrandingSettings = () => {
       previewReportType: formControl.getValues("previewReportType") || reportTypeOptions[0],
     });
 
-    settings.handleUpdate({
-      customBranding: {
-        ...reportChromeValues({}),
-        logoImageId: null,
-        logoImageIds: [],
-        coverImageId: null,
-        coverImageIds: [],
-        coverStock: DEFAULT_COVER_STOCK,
-        logo: null,
-        logoUploads: [],
-        coverImage: null,
-        coverUploads: [],
-      },
-    });
 
     brandingApi.mutate({
       url: "/api/ExecBrandingSettings",

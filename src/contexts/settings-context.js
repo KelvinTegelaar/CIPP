@@ -64,32 +64,18 @@ const deleteSettings = () => {
 };
 
 /**
- * Branding image payloads (data URLs) live in memory / ListUserSettings only.
- * Persisting them to localStorage exceeds quota once covers are uploaded.
+ * Branding is no longer client settings — it is a request, cached by react-query under
+ * `BRANDING_QUERY_KEY` and read via `useBrandingSettings`. Anything a previous version of CIPP
+ * persisted here is dropped on load rather than migrated: it is a stale copy of server state, and
+ * its image payloads are what used to blow the localStorage quota once covers were uploaded.
  */
 const stripPersistedBrandingBlobs = (settings) => {
-  if (!settings || typeof settings !== "object" || !settings.customBranding) {
+  if (!settings || typeof settings !== "object" || !("customBranding" in settings)) {
     return settings;
   }
 
-  const {
-    logo: _logo,
-    logoUploads: _logoUploads,
-    coverImage: _coverImage,
-    coverUploads: _coverUploads,
-    ...brandingMeta
-  } = settings.customBranding;
-
-  return {
-    ...settings,
-    customBranding: {
-      ...brandingMeta,
-      logo: null,
-      logoUploads: [],
-      coverImage: null,
-      coverUploads: [],
-    },
-  };
+  const { customBranding: _legacyBranding, ...rest } = settings;
+  return rest;
 };
 
 const storeSettings = (value) => {
@@ -130,18 +116,6 @@ const initialSettings = {
   currentTenant: null,
   showDevtools: false,
   showAdvancedTools: false,
-  customBranding: {
-    colour: "#F77F00",
-    logoImageId: null,
-    logoImageIds: [],
-    coverImageId: null,
-    coverImageIds: [],
-    coverStock: "/reportImages/soc.jpg",
-    logo: null,
-    logoUploads: [],
-    coverImage: null,
-    coverUploads: [],
-  },
   persistFilters: false,
   lastUsedFilters: {},
   breadcrumbMode: "hierarchical",

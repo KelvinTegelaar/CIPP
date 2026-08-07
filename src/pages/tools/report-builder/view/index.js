@@ -12,6 +12,7 @@ import {
 import { Stack, Box } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { useSettings } from '../../../../hooks/use-settings'
+import { useBrandingSettings } from '../../../../components/CippPdf/useBrandingSettings'
 import { ApiGetCall } from '../../../../api/ApiCall.jsx'
 import { ReportBuilderPDF } from '../../../../components/ReportBuilder/ReportBuilderPDF'
 import { Download, ArrowBack } from '@mui/icons-material'
@@ -22,7 +23,7 @@ const Page = () => {
   const [reportId, setReportId] = useState(null)
   const [isReady, setIsReady] = useState(false)
   const settings = useSettings()
-  const brandingSettings = settings.customBranding
+  const brandingSettings = useBrandingSettings()
 
   useEffect(() => {
     if (router.isReady) {

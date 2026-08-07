@@ -29,8 +29,8 @@ import {
   StatRow,
   severityColour,
 } from './index'
-import { useSettings } from '../../hooks/use-settings'
 import { useReportVariables } from './useReportVariables'
+import { useBrandingSettings } from './useBrandingSettings'
 
 const nz = (value) => Number(value ?? 0)
 const plural = (count, singular, pluralForm) =>
@@ -420,7 +420,7 @@ export const PermissionsReportDocument = ({
 export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [generatedOn, setGeneratedOn] = useState('')
-  const brandingSettings = useSettings()?.customBranding
+  const brandingSettings = useBrandingSettings()
   const variables = useReportVariables()
   const hasData = !!permissionsData?.summary
 

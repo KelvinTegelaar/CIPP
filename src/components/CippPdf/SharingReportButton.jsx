@@ -29,8 +29,8 @@ import {
   StatRow,
   severityColour,
 } from './index'
-import { useSettings } from '../../hooks/use-settings'
 import { useReportVariables } from './useReportVariables'
+import { useBrandingSettings } from './useBrandingSettings'
 
 const nz = (value) => Number(value ?? 0)
 const joinList = (value) => (Array.isArray(value) ? value.join(', ') : (value ?? ''))
@@ -411,7 +411,7 @@ export const SharingReportDocument = ({
 export const SharingReportButton = ({ sharingData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [generatedOn, setGeneratedOn] = useState('')
-  const brandingSettings = useSettings()?.customBranding
+  const brandingSettings = useBrandingSettings()
   const variables = useReportVariables()
   const hasData = !!sharingData?.summary
 

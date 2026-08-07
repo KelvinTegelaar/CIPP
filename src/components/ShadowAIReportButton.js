@@ -16,8 +16,8 @@ import {
 } from '@mui/material'
 import { Close, Download, PictureAsPdf, Settings } from '@mui/icons-material'
 import { PDFViewer } from '@react-pdf/renderer'
-import { useSettings } from '../hooks/use-settings'
 import { useReportVariables } from './CippPdf/useReportVariables'
+import { useBrandingSettings } from './CippPdf/useBrandingSettings'
 import {
   Bold,
   BulletList,
@@ -573,8 +573,7 @@ const sectionOptions = [
 ]
 
 export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
-  const settings = useSettings()
-  const brandingSettings = settings.customBranding
+  const brandingSettings = useBrandingSettings()
   const variables = useReportVariables()
   const [previewOpen, setPreviewOpen] = useState(false)
   const [sectionConfig, setSectionConfig] = useState({

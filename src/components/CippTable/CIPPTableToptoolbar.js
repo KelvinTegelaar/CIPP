@@ -48,6 +48,7 @@ import { usePopover } from '../../hooks/use-popover'
 import { useDialog } from '../../hooks/use-dialog'
 import { CippApiDialog } from '../CippComponents/CippApiDialog'
 import { useSettings } from '../../hooks/use-settings'
+import { useBrandingSettings } from '../CippPdf/useBrandingSettings'
 import { useRouter } from 'next/router'
 import { CippOffCanvas } from '../CippComponents/CippOffCanvas'
 import { CippCodeBlock } from '../CippComponents/CippCodeBlock'
@@ -174,6 +175,7 @@ export const CIPPTableToptoolbar = React.memo(
 
     const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
     const settings = useSettings()
+    const brandingSettings = useBrandingSettings()
     const router = useRouter()
     const createDialog = useDialog()
     const [actionData, setActionData] = useState({
@@ -250,7 +252,7 @@ export const CIPPTableToptoolbar = React.memo(
         columns: usedColumns,
         reportName: `${title}`,
         columnVisibility,
-        brandingSettings: settings?.customBranding,
+        brandingSettings,
       })
     }
 

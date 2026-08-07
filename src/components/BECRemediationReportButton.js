@@ -13,8 +13,8 @@ import {
 } from '@mui/material'
 import { PictureAsPdf, Download, Close } from '@mui/icons-material'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
-import { useSettings } from '../hooks/use-settings'
 import { useReportVariables } from './CippPdf/useReportVariables'
+import { useBrandingSettings } from './CippPdf/useBrandingSettings'
 import {
   AlertBox,
   Bold,
@@ -803,12 +803,11 @@ export const BECRemediationReportDocument = ({
 export const BECRemediationReportButton = ({ userData, becData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
-  const userSettings = useSettings()
 
   // Check if we have the necessary data
   const hasData = userData && becData && !becData.Waiting
 
-  const brandingSettings = userSettings?.customBranding
+  const brandingSettings = useBrandingSettings()
   const variables = useReportVariables()
 
   const handleOpenDialog = () => {

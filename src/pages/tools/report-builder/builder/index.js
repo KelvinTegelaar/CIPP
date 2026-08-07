@@ -24,6 +24,7 @@ import {
 import { Grid, Stack, Box } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { useSettings } from '../../../../hooks/use-settings'
+import { useBrandingSettings } from '../../../../components/CippPdf/useBrandingSettings'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall.jsx'
 import { useForm, useWatch } from 'react-hook-form'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
@@ -796,7 +797,7 @@ const Page = () => {
   const router = useRouter()
   const settings = useSettings()
   const { currentTenant } = settings
-  const brandingSettings = settings.customBranding
+  const brandingSettings = useBrandingSettings()
 
   /* ── Deeplink: load template by ID from URL ── */
   const [templateId, setTemplateId] = useState(null)
