@@ -80,7 +80,30 @@ export const BECRemediationReportDocument = ({
     trustedSenders: becData?.TrustedSenders?.length || 0,
     blockedSenders: becData?.BlockedSenders?.length || 0,
     safelistChanges: becData?.SafelistChanges?.length || 0,
+    intuneDevices: becData?.IntuneDevices?.length || 0,
   }
+
+  const intuneWindowStart = (() => {
+    const extractedAt = becData?.ExtractedAt ? new Date(becData.ExtractedAt) : new Date()
+    if (Number.isNaN(extractedAt.getTime())) {
+      return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    }
+    return new Date(extractedAt.getTime() - 7 * 24 * 60 * 60 * 1000)
+  })()
+
+  const recentIntuneDevices = (becData?.IntuneDevices || []).filter((device) => {
+    if (!device?.enrolledDateTime) return false
+    const enrolled = new Date(device.enrolledDateTime)
+    if (Number.isNaN(enrolled.getTime())) return false
+    return enrolled >= intuneWindowStart
+  })
+  stats.recentIntuneDevices = recentIntuneDevices.length
+
+  const sortedIntuneDevices = [...(becData?.IntuneDevices || [])].sort((a, b) => {
+    const aTime = a?.enrolledDateTime ? new Date(a.enrolledDateTime).getTime() : 0
+    const bTime = b?.enrolledDateTime ? new Date(b.enrolledDateTime).getTime() : 0
+    return bTime - aTime
+  })
 
   // Determine threat level
   const calculateThreatLevel = () => {
@@ -527,6 +550,50 @@ export const BECRemediationReportDocument = ({
               </ClearBox>
           )}
         </Section>
+
+        {/* Check 8: Intune Devices */}
+        <Section title="Check 8: Intune Devices">
+          <InfoBox title="Why We Check This">
+              Newly enrolled Intune devices can indicate an attacker standing up a VM or BYOD
+              endpoint under the compromised identity, including paths that re-register Windows
+              Hello for Business. Review devices enrolled during the analysis window first.
+            </InfoBox>
+
+          {becData?.IntuneDevicesError ? (
+            <AlertBox title="⚠ Could Not Retrieve Intune Devices">
+                {becData.IntuneDevicesError}
+                {'\n'}
+                An empty device list here does not mean the user has no Intune devices.
+              </AlertBox>
+          ) : stats.intuneDevices > 0 ? (
+            <>
+              <Paragraph indent>
+                ℹ {stats.intuneDevices} Intune-managed device(s) associated with this user
+                {stats.recentIntuneDevices > 0
+                  ? `, including ${stats.recentIntuneDevices} enrolled in the last 7 days.`
+                  : '. None were enrolled in the last 7 days.'}
+              </Paragraph>
+
+              {sortedIntuneDevices.slice(0, 5).map((device, index) => (
+                <InfoBox key={index} title={`${device.deviceName || 'Unknown device'}`}>
+                    OS: {device.operatingSystem || 'N/A'}
+                    {device.osVersion ? ` ${device.osVersion}` : ''}
+                    {'\n'}
+                    Enrolled: {formatDate(device.enrolledDateTime)}
+                    {'\n'}
+                    Compliance: {device.complianceState || 'N/A'}
+                    {'\n'}
+                    Enrollment Type: {device.deviceEnrollmentType || 'N/A'}
+                    {device.serialNumber ? `\nSerial: ${device.serialNumber}` : ''}
+                  </InfoBox>
+              ))}
+            </>
+          ) : (
+            <ClearBox title="✓ No Intune Devices Found">
+                No Intune-managed devices were found for this user.
+              </ClearBox>
+          )}
+        </Section>
       </ContentPage>
 
       {/* RECOMMENDATIONS PAGE */}
@@ -691,6 +758,10 @@ export const BECRemediationReportDocument = ({
               Blocked Senders: {stats.blockedSenders}
               {'\n'}
               Safelist Changes: {stats.safelistChanges}
+              {'\n'}
+              Intune Devices: {stats.intuneDevices}
+              {'\n'}
+              Recent Intune Enrollments (7d): {stats.recentIntuneDevices}
             </InfoBox>
         </Section>
 
