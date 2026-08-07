@@ -2346,6 +2346,71 @@
     ]
   },
   {
+    "name": "standards.SetDefaultMailboxFont",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets the default compose font name, size and colour for all user and shared mailboxes. Font size is the 1-7 scale Exchange stores, not a point size. Applies to Outlook on the web and new Outlook only - classic Outlook for Windows/Mac uses its own local font settings and is not affected.",
+    "docsDescription": "Loops through all UserMailbox and SharedMailbox recipients and sets the Outlook on the web default compose font using `Set-MailboxMessageConfiguration`. Mailboxes already matching the configured font are skipped, so steady-state runs make no writes. Font size is the integer 1-7 scale Exchange stores rather than a point size: 3 is the Exchange default and corresponds to 12pt. Note that these settings apply to Outlook on the web and the new Outlook client only; classic Outlook for Windows and Mac read their compose font from local client settings. See [Microsoft's documentation.](https://learn.microsoft.com/powershell/module/exchangepowershell/set-mailboxmessageconfiguration)",
+    "executiveText": "Applies a consistent default font, size and colour to outgoing email so that messages from across the organisation look uniform and on-brand. This affects the web and new Outlook clients; users can still change the font on an individual message.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": true,
+        "required": true,
+        "name": "standards.SetDefaultMailboxFont.DefaultFontName",
+        "label": "Default font name",
+        "helperText": "Font applied to new messages. You can type a font that is not in this list.",
+        "options": [
+          { "label": "Aptos", "value": "Aptos" },
+          { "label": "Arial", "value": "Arial" },
+          { "label": "Calibri", "value": "Calibri" },
+          { "label": "Cambria", "value": "Cambria" },
+          { "label": "Georgia", "value": "Georgia" },
+          { "label": "Helvetica", "value": "Helvetica" },
+          { "label": "Segoe UI", "value": "Segoe UI" },
+          { "label": "Tahoma", "value": "Tahoma" },
+          { "label": "Times New Roman", "value": "Times New Roman" },
+          { "label": "Trebuchet MS", "value": "Trebuchet MS" },
+          { "label": "Verdana", "value": "Verdana" }
+        ]
+      },
+      {
+        "type": "number",
+        "required": true,
+        "name": "standards.SetDefaultMailboxFont.DefaultFontSize",
+        "label": "Default font size (1-7)",
+        "defaultValue": 3,
+        "helperText": "Exchange stores a 1-7 size scale, not a point size. 3 is the Exchange default and corresponds to 12pt; lower is smaller, higher is larger.",
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 7, "message": "Maximum value is 7" }
+        }
+      },
+      {
+        "type": "textField",
+        "required": true,
+        "name": "standards.SetDefaultMailboxFont.DefaultFontColor",
+        "label": "Default font colour",
+        "placeholder": "#000000",
+        "helperText": "Six-digit hex colour in the #xxxxxx format, for example #000000. Exchange stores six digits, so shorthand such as #000 is not accepted."
+      }
+    ],
+    "label": "Set default mailbox font, size and colour",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-04",
+    "powershellEquivalent": "Set-MailboxMessageConfiguration -DefaultFontName -DefaultFontSize -DefaultFontColor",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
     "name": "standards.SpoofWarn",
     "cat": "Exchange Standards",
     "tag": ["CIS M365 7.0.0 (6.2.3)"],
