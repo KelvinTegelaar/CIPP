@@ -1,1 +1,0 @@
-{"id":"device_vendor_msft_scepcertificate_keyusage","displayName":"Key usage","description":"Specify the cryptographic action that is required to exchange the certificate’s public key.","helpText":"","infoUrls":[],"categoryId":"66c92e07-234b-4992-a081-9afe4c113ba3","categoryName":"SCEP certificate","options":null}

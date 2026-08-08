@@ -429,6 +429,7 @@ export const CippTemplateCatalog = ({
   const catalog = ApiGetCall({
     url: '/api/ListCommunityRepoTemplates',
     queryKey: 'CommunityRepoTemplates',
+    waiting: true,
   })
 
   const importMutation = ApiPostCall({

@@ -1,1 +1,0 @@
-{"id":"linux_mdatp_managed_edr_tags_item_value","displayName":"Value of tag","description":"Only one value per tag type can be set. Type of tags are unique, and should not be repeated in the same configuration profile.","helpText":null,"infoUrls":[],"categoryId":"22a2a407-0f28-481d-bdbe-1f9cb6d589c3","categoryName":" EDR preferences","options":null}

@@ -1,1 +1,0 @@
-{"id":"app_allowed_deniedbinaries","displayName":"Denied Binaries","description":"If present, the device doesn't allow binaries that match the binary identifier properties to run. A binary only matches when all the binary identifiers match.","helpText":null,"infoUrls":[],"categoryId":"8c86f511-1729-4fe9-b0b2-111d9044e1ba","categoryName":"App Settings","options":null}

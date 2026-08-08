@@ -1,1 +1,0 @@
-{"id":"com.apple.mobiledevice.passwordpolicy_pinhistory","displayName":"PIN History","description":"This value defines N, where the new passcode must be unique within the last N entries in the passcode history. ","helpText":null,"infoUrls":[],"categoryId":"d68abc4d-559a-4339-be48-c41a77a87034","categoryName":"Passcode","options":null}

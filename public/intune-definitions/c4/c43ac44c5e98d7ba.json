@@ -1,1 +1,0 @@
-{"id":"device_vendor_msft_scepcertificate_scepserverurls","displayName":"SCEP Server URLs","description":"Add one or more URLs for the NDES Server that issues certificates through SCEP.","helpText":"","infoUrls":[],"categoryId":"66c92e07-234b-4992-a081-9afe4c113ba3","categoryName":"SCEP certificate","options":null}

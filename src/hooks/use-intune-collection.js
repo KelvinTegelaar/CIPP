@@ -1,31 +1,37 @@
 import { useEffect, useMemo, useState } from 'react'
 
-// Intune setting definitions are fetched one file at a time from public/intune-definitions, which
+// Intune setting definitions are fetched in bucket bundles from public/intune-definitions, which
 // build/tools/Split-IntuneCollection.ps1 generates from the catalog.
 //
 // The catalog holds ~18k definitions and a settings catalog policy references around 2% of them,
 // so shipping it whole meant downloading 17MB (1MB compressed) and parsing it on the main thread to
-// read a few hundred entries. Fetching the referenced definitions individually moves far fewer
-// bytes, needs no parse worth the name, and lets the browser cache each definition on its own -
-// a second policy that shares settings re-fetches nothing.
+// read a few hundred entries. Definitions are grouped into 256 bundles by hash prefix - one file
+// per definition moved the fewest bytes, but Azure Static Web Apps caps a deployment at 15,000
+// files, and 18k definition files alone overran it. A bundle is ~75KB raw, a few KB compressed,
+// and the browser caches each one on its own - a second policy that shares buckets re-fetches
+// nothing.
 //
-// Definitions are addressed by the SHA-256 of their id because ids run up to 278 characters, which
-// overruns the 260-character Windows MAX_PATH as a filename. The generator uses the same scheme;
-// changing it here means changing it there too.
+// Definitions are addressed by the SHA-256 of their id because ids run up to 278 characters. Each
+// bundle is an object keyed by the first 16 hex characters of the hash, and the first 2 of those
+// name the bundle file. The generator uses the same scheme; changing it here means changing it
+// there too.
 
 const DEFINITION_ROOT = '/intune-definitions'
 
-// Enough to keep the connection busy without opening several hundred requests at once.
+// Enough to keep the connection busy without opening a couple of hundred requests at once.
 const CONCURRENCY = 24
 
-// id -> definition, or null for an id the catalog has no file for. Kept for the life of the tab so
+// id -> definition, or null for an id the catalog has no entry for. Kept for the life of the tab so
 // moving between policies that share settings costs nothing.
 const cache = new Map()
 
-// Requests in flight, so two components mounting at once ask for a shared id only once.
+// Bundle requests in flight, keyed by bucket, so ids sharing a bucket - and two components mounting
+// at once - fetch each bundle only once. Parsed bundles are not kept beyond that: a large policy
+// touches most buckets, and retaining them would hold most of the catalog in memory. The ids that
+// were asked for land in `cache`, and a later re-fetch of a bundle hits the browser's HTTP cache.
 const inFlight = new Map()
 
-const pathForId = async (id) => {
+const hashForId = async (id) => {
   const digest = await crypto.subtle.digest(
     'SHA-256',
     new TextEncoder().encode(id)
@@ -34,63 +40,79 @@ const pathForId = async (id) => {
   for (const byte of new Uint8Array(digest, 0, 8)) {
     hash += byte.toString(16).padStart(2, '0')
   }
-  return `${DEFINITION_ROOT}/${hash.slice(0, 2)}/${hash}.json`
+  return hash
 }
 
-const fetchDefinition = (id) => {
-  if (cache.has(id)) return Promise.resolve(cache.get(id))
-
-  let request = inFlight.get(id)
+const fetchBundle = (bucket) => {
+  let request = inFlight.get(bucket)
   if (!request) {
-    request = pathForId(id)
-      .then((path) => fetch(path))
+    request = fetch(`${DEFINITION_ROOT}/${bucket}.json`)
       .then((response) => {
-        // A 404 is a setting Intune has since retired, not a failure: the screen falls back to
-        // showing the raw definition id. Caching the miss stops it being asked for again.
-        if (response.status === 404) return null
+        // A missing bundle just means no current definition hashes into it: every id that led
+        // here is a setting Intune has since retired, and the screen falls back to showing the
+        // raw definition id.
+        if (response.status === 404) return {}
         if (!response.ok) {
           throw new Error(`${DEFINITION_ROOT} HTTP ${response.status}`)
         }
         return response.json()
       })
-      .then((definition) => {
-        cache.set(id, definition)
-        inFlight.delete(id)
-        return definition
+      .finally(() => {
+        inFlight.delete(bucket)
       })
-      .catch((error) => {
-        inFlight.delete(id)
-        throw error
-      })
-    inFlight.set(id, request)
+    inFlight.set(bucket, request)
   }
 
   return request
 }
 
-// Resolves the ids a few at a time rather than all at once, so a policy with several hundred
-// settings does not open several hundred simultaneous requests.
+// Resolves ids one bundle at a time, a few bundles in flight at once. Ids already in the cache -
+// hits and misses alike - are answered without a request; the rest are grouped by the bundle they
+// live in so each bundle is fetched once.
 const resolveDefinitions = async (ids) => {
   const found = []
   let failures = 0
+
+  const buckets = new Map()
+  for (const id of ids) {
+    if (cache.has(id)) {
+      const definition = cache.get(id)
+      if (definition) found.push(definition)
+      continue
+    }
+    const hash = await hashForId(id)
+    const bucket = hash.slice(0, 2)
+    let wanted = buckets.get(bucket)
+    if (!wanted) {
+      wanted = []
+      buckets.set(bucket, wanted)
+    }
+    wanted.push({ id, hash })
+  }
+
+  const pending = Array.from(buckets.entries())
   let next = 0
 
   const drain = async () => {
-    while (next < ids.length) {
-      const id = ids[next]
+    while (next < pending.length) {
+      const [bucket, wanted] = pending[next]
       next += 1
       try {
-        const definition = await fetchDefinition(id)
-        if (definition) found.push(definition)
+        const bundle = await fetchBundle(bucket)
+        for (const { id, hash } of wanted) {
+          const definition = bundle[hash] ?? null
+          cache.set(id, definition)
+          if (definition) found.push(definition)
+        }
       } catch {
-        // One definition failing should not cost the screen every other setting's name.
-        failures += 1
+        // One bundle failing should not cost the screen every other setting's name.
+        failures += wanted.length
       }
     }
   }
 
   await Promise.all(
-    Array.from({ length: Math.min(CONCURRENCY, ids.length) }, drain)
+    Array.from({ length: Math.min(CONCURRENCY, pending.length) }, drain)
   )
 
   return { found, failures }

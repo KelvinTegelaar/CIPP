@@ -1,1 +1,0 @@
-{"id":"com.apple.managedclient.preferences_randomizescanstarttime","displayName":"Randomize scheduled scan start time","description":"Randomize the start time of a daily and weekly scheduled scan to any interval from 0 to 23 hours.","helpText":null,"infoUrls":[],"categoryId":"64c8233f-3057-4485-b902-d71a312318d7","categoryName":"Scheduled scan configuration","options":null}
