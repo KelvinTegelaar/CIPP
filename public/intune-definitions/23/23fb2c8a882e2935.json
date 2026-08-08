@@ -1,1 +1,0 @@
-{"id":"com.apple.loginwindow_allowlist","displayName":"Allow List","description":"The list of user GUIDs or group GUIDs of users that are allowed to log in. An asterisk '*' string specifies all users or groups.","helpText":null,"infoUrls":[],"categoryId":"8f831e0a-feb7-4cbb-acc1-2e583f3f4de3","categoryName":"Login Window Behavior","options":null}

@@ -1,1 +1,0 @@
-{"id":"com.apple.directoryservice.managed_adtrustchangepassintervaldays","displayName":"AD Trust Change Pass Interval Days","description":"The number of days before requiring a change of the computer trust account password. 0 disables the feature.","helpText":null,"infoUrls":[],"categoryId":"5995d2ad-5ec7-49d2-ada2-d9c2b57746ba","categoryName":"Directory Service","options":null}

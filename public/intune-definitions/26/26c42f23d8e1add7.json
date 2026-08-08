@@ -1,1 +1,0 @@
-{"id":"com.apple.tcc.configuration-profile-policy_services_camera","displayName":"Camera (deprecated)","description":"A system camera. A profile can't grant access to the camera; it can only deny it.","helpText":null,"infoUrls":[],"categoryId":"82d173f9-ba0b-4b09-bbb8-68cba4916162","categoryName":"Privacy Preferences Policy Control","options":null}

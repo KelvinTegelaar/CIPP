@@ -1,1 +1,0 @@
-{"id":"audioaccessory_temporarypairing_configuration","displayName":"Configuration","description":"A dictionary providing configuration for temporary pairing. Required if `Disabled` isn't present or is `false`.","helpText":null,"infoUrls":[],"categoryId":"a42e2248-d2dc-4476-a92d-d152fd67e04b","categoryName":"Audio Accessory","options":null}

@@ -1,1 +1,0 @@
-{"id":"safari_newtabstartpage_homepageurl","displayName":"Homepage URL","description":"The URL of the homepage which needs to start with `https://` or `http://`. Required when setting `PageType` to `Home`.","helpText":null,"infoUrls":[],"categoryId":"e0ab6868-4b53-4310-b665-f7c979941db7","categoryName":"Safari Browser","options":null}

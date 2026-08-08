@@ -1,1 +1,0 @@
-{"id":"com.apple.xsan_sanname","displayName":"San Name","description":"The name of the SAN. This key is required for all Xsan SANs. The name must exactly match the name of the SAN defined in the metadata server.","helpText":null,"infoUrls":[],"categoryId":"46af3391-ed6d-4ada-aef7-02dac2a1b136","categoryName":"Xsan","options":null}

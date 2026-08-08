@@ -1,1 +1,0 @@
-{"id":"com.apple.extensiblesso_extensiondata_credentialbundleidacl_kerberos","displayName":"Credential Bundle ID ACL","description":"A list of bundle IDs allowed to access the ticket-granting ticket (TGT).","helpText":null,"infoUrls":[],"categoryId":"f35cc803-3a06-4262-b38b-a5295321f756","categoryName":"Extensible Single Sign On Kerberos","options":null}

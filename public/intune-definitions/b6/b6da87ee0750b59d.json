@@ -1,1 +1,0 @@
-{"id":"vendor_msft_sharedpc_kioskmodeaumid","displayName":"Kiosk Mode AUMID","description":"Specifies the AUMID of the app to use with assigned access. If used, this value must be set before the action on the EnableSharedPCMode node is taken.","helpText":"","infoUrls":[],"categoryId":"891d2958-5a8c-479c-aa68-69b1b6c735e1","categoryName":"Shared PC","options":null}
