@@ -51,6 +51,7 @@ const typeOptions = [
   { label: "Intune Policy", value: "IntuneTemplate" },
   { label: "Conditional Access", value: "CATemplate" },
   { label: "Standards", value: "StandardsTemplateV2" },
+  { label: "Baseline", value: "BaselineTemplate" },
   { label: "Report Builder", value: "ReportBuilderTemplate" },
   { label: "Group", value: "GroupTemplate" },
   { label: "Custom Test", value: "CustomTest" },

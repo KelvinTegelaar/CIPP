@@ -16,6 +16,7 @@ import {
   CopyAll,
   Delete,
   Edit,
+  GitHub,
   PlayArrow,
 } from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
@@ -27,6 +28,7 @@ import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanv
 import { CippTemplateCatalog } from '../../../../components/CippComponents/CippTemplateCatalog'
 import { describeStageConditions } from '../../../../components/CippBaselines/CippBaselineWhatIfReport'
 import { parseCippDate } from '../../../../utils/parse-cipp-date'
+import { ApiGetCall } from '../../../../api/ApiCall'
 
 // The API serializes single-element arrays as a bare object; the selector needs a real array.
 const asOptionArray = (value) =>
@@ -37,6 +39,10 @@ const asOptionArray = (value) =>
 const Page = () => {
   const pageTitle = 'Baselines'
   const [catalogVisible, setCatalogVisible] = useState(false)
+  const integrations = ApiGetCall({
+    url: '/api/ListExtensionsConfig',
+    queryKey: 'Integrations',
+  })
 
   const actions = [
     {
@@ -75,6 +81,43 @@ const Page = () => {
         'Run [templateName] now? Pick a single covered tenant, or All Tenants in Template for the whole assignment. Standards in report-only stages are compared without changes.',
       multiPost: false,
       relatedQueryKeys: ['ListBaseline*'],
+    },
+    {
+      label: 'Save to GitHub',
+      type: 'POST',
+      url: '/api/ExecCommunityRepo',
+      icon: <GitHub />,
+      data: { Action: 'UploadBaseline', GUID: 'GUID' },
+      fields: [
+        {
+          label: 'Repository',
+          name: 'FullName',
+          type: 'select',
+          api: {
+            url: '/api/ListCommunityRepos',
+            data: { WriteAccess: true },
+            queryKey: 'CommunityRepos-Write',
+            dataKey: 'Results',
+            valueField: 'FullName',
+            labelField: 'FullName',
+          },
+          multiple: false,
+          creatable: false,
+          required: true,
+        },
+        {
+          label: 'Commit Message',
+          name: 'Message',
+          type: 'textField',
+          multiline: true,
+          required: true,
+          rows: 4,
+        },
+      ],
+      confirmText:
+        'Save [templateName] to the selected repository? This uploads the baseline AND every CA/Intune template it references as separate files. Template packages are expanded to their current members, and tenant assignments are replaced with a placeholder.',
+      condition: () =>
+        integrations.isSuccess && integrations?.data?.GitHub?.Enabled,
     },
     {
       label: 'Delete Baseline',
