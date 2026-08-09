@@ -10,6 +10,7 @@ import {
   Divider,
   Link,
   Stack,
+  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Tooltip,
@@ -50,6 +51,7 @@ import {
   LayersClear,
   PlayArrow,
   RemoveCircle,
+  Search,
   TaskAlt,
   Tune,
   Visibility,
@@ -79,6 +81,7 @@ import { useSettings } from '../../../../hooks/use-settings'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { parseCippDate } from '../../../../utils/parse-cipp-date'
 import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanvas'
+import { CippAutoComplete } from '../../../../components/CippComponents/CippAutocomplete'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 
 const deviationColors = {
@@ -281,6 +284,9 @@ const runModeLabels = {
   run: 'Full run',
   compare: 'Compare',
   oneoff: 'One-off remediation',
+  triage: 'Operator action',
+  stage: 'Stage change',
+  delete: 'Deletion',
 }
 
 // Timeline dot/chip styling per run outcome, mirroring the manage-tenant history page.
@@ -309,10 +315,61 @@ const outcomeTimeline = {
     icon: <InfoOutlined />,
     label: 'Skipped - No License',
   },
+  // Operator/system audit events (triage verdicts, overrides, stage changes,
+  // deletions carried out for denied deviations).
+  Accepted: { color: 'info', chipColor: 'info', icon: <TaskAlt /> },
+  'Property Accepted': { color: 'info', chipColor: 'info', icon: <TaskAlt /> },
+  'Denied - Remediation Ordered': {
+    color: 'warning',
+    chipColor: 'warning',
+    icon: <Cancel />,
+  },
+  'Denied - Delete Ordered': {
+    color: 'warning',
+    chipColor: 'warning',
+    icon: <Cancel />,
+  },
+  'Property Denied': {
+    color: 'warning',
+    chipColor: 'warning',
+    icon: <Cancel />,
+  },
+  'Triage Cleared': { color: 'grey', chipColor: 'default', icon: <Edit /> },
+  'Property Triage Cleared': {
+    color: 'grey',
+    chipColor: 'default',
+    icon: <Edit />,
+  },
+  'Task Completed': {
+    color: 'success',
+    chipColor: 'success',
+    icon: <TaskAlt />,
+  },
+  'Override Created': { color: 'info', chipColor: 'info', icon: <Tune /> },
+  'Override Removed': {
+    color: 'grey',
+    chipColor: 'default',
+    icon: <LayersClear />,
+  },
+  'Stage Advanced': {
+    color: 'primary',
+    chipColor: 'primary',
+    icon: <ArrowForward />,
+  },
+  Deleted: { color: 'error', chipColor: 'error', icon: <RemoveCircle /> },
+  'Delete Failed': {
+    color: 'error',
+    chipColor: 'error',
+    icon: <ErrorOutlineOutlined />,
+  },
 }
 
-// One readable sentence per run event for the historic timeline.
+// One readable sentence per run event for the historic timeline. Operator and
+// system events carry their own story in `detail`; run events derive one here.
 const historyEventMessage = (event) => {
+  if (event.detail) {
+    return `"${event.standardLabel}" - ${event.detail}`
+  }
   switch (event.outcome) {
     case 'Remediated':
       return `Successfully changed "${event.standardLabel}" to the expected configuration`
@@ -408,17 +465,42 @@ const Page = () => {
   const denyPathDialog = useDialog()
   const [removeOverrideTarget, setRemoveOverrideTarget] = useState(null)
   const removeOverrideDialog = useDialog()
+  // Filtering re-orders the timeline, so expansion state keys on stable event/run
+  // identity rather than render index.
   const [expandedEvents, setExpandedEvents] = useState(new Set())
-  const toggleEventExpansion = (index) => {
+  const toggleEventExpansion = (eventKey) => {
     setExpandedEvents((prev) => {
       const next = new Set(prev)
-      if (next.has(index)) {
-        next.delete(index)
+      if (next.has(eventKey)) {
+        next.delete(eventKey)
       } else {
-        next.add(index)
+        next.add(eventKey)
       }
       return next
     })
+  }
+  const [expandedRuns, setExpandedRuns] = useState(new Set())
+  const toggleRunExpansion = (runKey) => {
+    setExpandedRuns((prev) => {
+      const next = new Set(prev)
+      if (next.has(runKey)) {
+        next.delete(runKey)
+      } else {
+        next.add(runKey)
+      }
+      return next
+    })
+  }
+  const [historyFilters, setHistoryFilters] = useState({
+    standard: [],
+    outcome: [],
+    mode: [],
+    search: '',
+  })
+  const [historyLimit, setHistoryLimit] = useState(50)
+  const setHistoryFilter = (name, value) => {
+    setHistoryFilters((prev) => ({ ...prev, [name]: value }))
+    setHistoryLimit(50)
   }
   const isTenantView = viewMode === 'tenant'
   const isTemplateView = viewMode === 'template'
@@ -1515,14 +1597,8 @@ const Page = () => {
                   <Chip
                     variant="outlined"
                     size="small"
-                    label={run.outcome}
-                    color={
-                      run.outcome === 'Compliant'
-                        ? 'success'
-                        : run.outcome === 'Remediated'
-                          ? 'info'
-                          : 'error'
-                    }
+                    label={outcomeTimeline[run.outcome]?.label ?? run.outcome}
+                    color={outcomeTimeline[run.outcome]?.chipColor ?? 'error'}
                   />
                 </Stack>
                 <Typography
@@ -1534,9 +1610,35 @@ const Page = () => {
                   {run.triggeredBy}
                   {run.remediated ? ', remediated' : ''}
                 </Typography>
+                {run.detail && (
+                  <Typography
+                    variant="caption"
+                    sx={{ display: 'block', mt: 0.5 }}
+                  >
+                    {run.detail}
+                  </Typography>
+                )}
                 <RunDetails diff={run.diff} />
               </Box>
             ))}
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<Visibility />}
+              sx={{ alignSelf: 'flex-start' }}
+              onClick={() => {
+                setHistoryFilters({
+                  standard: row.standardLabel ? [row.standardLabel] : [],
+                  outcome: [],
+                  mode: [],
+                  search: '',
+                })
+                setHistoryLimit(50)
+                setViewMode('history')
+              }}
+            >
+              View full history
+            </Button>
           </Stack>
         </Stack>
       )
@@ -2276,11 +2378,73 @@ const Page = () => {
     </>
   )
 
-  // Historic view: the tenant's run events on an activity timeline (same pattern as the
-  // manage-tenant history page). Each event carries its run GUID; View Logs opens the
-  // Baselines log drawer filtered to exactly that run's entries.
+  // Historic view: every recorded baseline event for the tenant on an activity
+  // timeline (same pattern as the manage-tenant history page). Engine runs touch
+  // many standards under one run GUID, so those group into a collapsible summary
+  // entry; operator events (triage, overrides, stage changes, deletions) stand on
+  // their own. View Logs opens the Baselines log drawer filtered to one run.
   if (viewMode === 'history') {
     const historyEvents = historyApi.data?.events ?? []
+    const standardOptions = [
+      ...new Set(historyEvents.map((event) => event.standardLabel)),
+    ]
+      .filter(Boolean)
+      .sort()
+      .map((value) => ({ label: value, value }))
+    const outcomeOptions = [
+      ...new Set(historyEvents.map((event) => event.outcome)),
+    ]
+      .filter(Boolean)
+      .sort()
+      .map((value) => ({
+        label: outcomeTimeline[value]?.label ?? value,
+        value,
+      }))
+    const modeOptions = [...new Set(historyEvents.map((event) => event.mode))]
+      .filter(Boolean)
+      .map((value) => ({ label: runModeLabels[value] ?? value, value }))
+    const searchTerm = historyFilters.search.trim().toLowerCase()
+    const filteredEvents = historyEvents.filter(
+      (event) =>
+        (historyFilters.standard.length === 0 ||
+          historyFilters.standard.includes(event.standardLabel)) &&
+        (historyFilters.outcome.length === 0 ||
+          historyFilters.outcome.includes(event.outcome)) &&
+        (historyFilters.mode.length === 0 ||
+          historyFilters.mode.includes(event.mode)) &&
+        (!searchTerm ||
+          `${event.standardLabel} ${event.outcome} ${event.detail ?? ''} ${event.triggeredBy}`
+            .toLowerCase()
+            .includes(searchTerm))
+    )
+    // Group by run GUID (newest-first order preserved); multi-event groups render
+    // as one collapsible summary. Flattening to render rows up front lets the
+    // timeline connector stop at the true last item.
+    const runGroups = []
+    const groupIndex = new Map()
+    for (const event of filteredEvents) {
+      const key = String(event.runId ?? 'unknown')
+      if (groupIndex.has(key)) {
+        runGroups[groupIndex.get(key)].events.push(event)
+      } else {
+        groupIndex.set(key, runGroups.length)
+        runGroups.push({ runId: key, events: [event] })
+      }
+    }
+    const visibleGroups = runGroups.slice(0, historyLimit)
+    const renderRows = []
+    for (const group of visibleGroups) {
+      if (group.events.length === 1) {
+        renderRows.push({ type: 'event', event: group.events[0] })
+      } else {
+        renderRows.push({ type: 'group', group })
+        if (expandedRuns.has(group.runId)) {
+          for (const event of group.events) {
+            renderRows.push({ type: 'event', event })
+          }
+        }
+      }
+    }
     return (
       <>
         <CippHead title={pageTitle} />
@@ -2301,9 +2465,95 @@ const Page = () => {
               />
             </Stack>
             <Typography variant="body1" color="text.secondary">
-              This timeline shows every recorded baseline run event for{' '}
-              {tenant.displayName}.
+              This timeline shows every recorded baseline event for{' '}
+              {tenant.displayName} - runs, operator decisions, stage changes,
+              and deletions.
             </Typography>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <TextField
+                  fullWidth
+                  label="Search Events"
+                  value={historyFilters.search}
+                  onChange={(event) =>
+                    setHistoryFilter('search', event.target.value)
+                  }
+                  autoComplete="off"
+                  placeholder="Search by standard, outcome, or operator..."
+                  InputProps={{
+                    startAdornment: (
+                      <Search sx={{ mr: 1, color: 'text.secondary' }} />
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <CippAutoComplete
+                  fullWidth
+                  multiple={true}
+                  creatable={false}
+                  label="Standard"
+                  placeholder="All standards"
+                  options={standardOptions}
+                  value={historyFilters.standard.map((value) => ({
+                    label: value,
+                    value,
+                  }))}
+                  onChange={(newValue) =>
+                    setHistoryFilter(
+                      'standard',
+                      Array.isArray(newValue)
+                        ? newValue.map((option) => option.value)
+                        : []
+                    )
+                  }
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                <CippAutoComplete
+                  fullWidth
+                  multiple={true}
+                  creatable={false}
+                  label="Outcome"
+                  placeholder="All outcomes"
+                  options={outcomeOptions}
+                  value={historyFilters.outcome.map((value) => ({
+                    label: outcomeTimeline[value]?.label ?? value,
+                    value,
+                  }))}
+                  onChange={(newValue) =>
+                    setHistoryFilter(
+                      'outcome',
+                      Array.isArray(newValue)
+                        ? newValue.map((option) => option.value)
+                        : []
+                    )
+                  }
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                <CippAutoComplete
+                  fullWidth
+                  multiple={true}
+                  creatable={false}
+                  label="Event Type"
+                  placeholder="All event types"
+                  options={modeOptions}
+                  value={historyFilters.mode.map((value) => ({
+                    label: runModeLabels[value] ?? value,
+                    value,
+                  }))}
+                  onChange={(newValue) =>
+                    setHistoryFilter(
+                      'mode',
+                      Array.isArray(newValue)
+                        ? newValue.map((option) => option.value)
+                        : []
+                    )
+                  }
+                />
+              </Grid>
+            </Grid>
             {historyApi.isFetching && (
               <Box display="flex" justifyContent="center" py={4}>
                 <CircularProgress />
@@ -2315,7 +2565,14 @@ const Page = () => {
                 first.
               </Alert>
             )}
-            {historyEvents.length > 0 && (
+            {!historyApi.isFetching &&
+              historyEvents.length > 0 &&
+              filteredEvents.length === 0 && (
+                <Alert severity="info">
+                  No events match the current filters.
+                </Alert>
+              )}
+            {renderRows.length > 0 && (
               <Card sx={{ mr: 2 }}>
                 <CardContent>
                   <Timeline
@@ -2327,21 +2584,203 @@ const Page = () => {
                       [`& .MuiTimelineContent-root`]: { flex: 0.8 },
                     }}
                   >
-                    {historyEvents.map((event, index) => {
+                    {renderRows.map((row, index) => {
+                      // Collapsed engine run: one summary entry with per-outcome
+                      // counts; expanding reveals the individual standards below.
+                      if (row.type === 'group') {
+                        const group = row.group
+                        const first = group.events[0]
+                        const groupDate = parseCippDate(first.timestamp)
+                        const outcomeCounts = {}
+                        for (const groupEvent of group.events) {
+                          outcomeCounts[groupEvent.outcome] =
+                            (outcomeCounts[groupEvent.outcome] ?? 0) + 1
+                        }
+                        const severityRank = {
+                          error: 4,
+                          warning: 3,
+                          info: 2,
+                          success: 1,
+                        }
+                        const dotColor = group.events.reduce(
+                          (worst, groupEvent) => {
+                            const color =
+                              outcomeTimeline[groupEvent.outcome]?.color ??
+                              'grey'
+                            return (severityRank[color] ?? 0) >
+                              (severityRank[worst] ?? 0)
+                              ? color
+                              : worst
+                          },
+                          'grey'
+                        )
+                        const isOpen = expandedRuns.has(group.runId)
+                        const alertedCount = group.events.filter(
+                          (groupEvent) => groupEvent.alerted
+                        ).length
+                        return (
+                          <TimelineItem key={`group-${group.runId}`}>
+                            <TimelineOppositeContent
+                              sx={{ m: 'auto 0', minWidth: 100, maxWidth: 100 }}
+                              align="right"
+                              variant="body2"
+                              color="text.secondary"
+                            >
+                              <Typography
+                                variant="caption"
+                                display="block"
+                                fontSize="0.7rem"
+                              >
+                                {groupDate.toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric',
+                                })}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                display="block"
+                                fontWeight="bold"
+                                fontSize="0.75rem"
+                              >
+                                {groupDate.toLocaleTimeString('en-US', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  hour12: false,
+                                })}
+                              </Typography>
+                            </TimelineOppositeContent>
+                            <TimelineSeparator>
+                              <TimelineDot
+                                color={dotColor}
+                                variant="outlined"
+                                size="small"
+                              >
+                                {first.mode === 'compare' ? (
+                                  <Compare />
+                                ) : (
+                                  <PlayArrow />
+                                )}
+                              </TimelineDot>
+                              {index < renderRows.length - 1 && (
+                                <TimelineConnector />
+                              )}
+                            </TimelineSeparator>
+                            <TimelineContent sx={{ py: '8px', px: 2 }}>
+                              <Stack spacing={1}>
+                                <Box
+                                  display="flex"
+                                  alignItems="center"
+                                  gap={1}
+                                  flexWrap="wrap"
+                                >
+                                  <Chip
+                                    label={
+                                      runModeLabels[first.mode] ?? first.mode
+                                    }
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{ fontSize: '0.7rem', height: 20 }}
+                                  />
+                                  <Tooltip title={group.runId}>
+                                    <Chip
+                                      label={`Run ${String(group.runId).slice(0, 8)}`}
+                                      size="small"
+                                      variant="outlined"
+                                      sx={{ fontSize: '0.7rem', height: 20 }}
+                                    />
+                                  </Tooltip>
+                                  {Object.entries(outcomeCounts).map(
+                                    ([outcome, count]) => (
+                                      <Chip
+                                        key={outcome}
+                                        label={`${count} ${outcomeTimeline[outcome]?.label ?? outcome}`}
+                                        color={
+                                          outcomeTimeline[outcome]?.chipColor ??
+                                          'default'
+                                        }
+                                        size="small"
+                                        variant="outlined"
+                                        sx={{ fontSize: '0.7rem', height: 20 }}
+                                      />
+                                    )
+                                  )}
+                                  {alertedCount > 0 && (
+                                    <Chip
+                                      label={`${alertedCount} alert${alertedCount === 1 ? '' : 's'} sent`}
+                                      color="warning"
+                                      size="small"
+                                      variant="outlined"
+                                      sx={{ fontSize: '0.7rem', height: 20 }}
+                                    />
+                                  )}
+                                </Box>
+                                <Typography
+                                  variant="body2"
+                                  fontWeight="medium"
+                                  sx={{ fontSize: '0.875rem' }}
+                                >
+                                  Processed {group.events.length} standards in
+                                  this run
+                                </Typography>
+                                <Box display="flex" alignItems="center" gap={2}>
+                                  <Link
+                                    component="button"
+                                    variant="caption"
+                                    onClick={() =>
+                                      toggleRunExpansion(group.runId)
+                                    }
+                                    sx={{
+                                      textAlign: 'left',
+                                      fontSize: '0.75rem',
+                                    }}
+                                  >
+                                    {isOpen
+                                      ? 'Hide the individual standards'
+                                      : `View all ${group.events.length} standards`}
+                                  </Link>
+                                  <CippApiLogsDrawer
+                                    baselineRunFilter={group.runId}
+                                    tenantFilter={currentTenant}
+                                    buttonText="View Logs"
+                                    title={`Run ${String(group.runId).slice(0, 8)} - Logs`}
+                                    size="small"
+                                    sx={{
+                                      fontSize: '0.75rem',
+                                      p: 0,
+                                      minWidth: 0,
+                                      textTransform: 'none',
+                                    }}
+                                  />
+                                </Box>
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                  sx={{ fontSize: '0.7rem' }}
+                                >
+                                  Triggered by {first.triggeredBy}
+                                </Typography>
+                              </Stack>
+                            </TimelineContent>
+                          </TimelineItem>
+                        )
+                      }
+                      const event = row.event
                       const timelineConfig = outcomeTimeline[event.outcome] ?? {
                         color: 'grey',
                         chipColor: 'default',
                         icon: <InfoOutlined />,
                       }
                       const eventDate = parseCippDate(event.timestamp)
-                      const isExpanded = expandedEvents.has(index)
+                      const eventKey = `${event.runId}-${event.standardName}-${event.outcome}-${event.timestamp}`
+                      const isExpanded = expandedEvents.has(eventKey)
                       const diffEntries = event.diff
                         ? Array.isArray(event.diff)
                           ? event.diff
                           : [event.diff]
                         : []
                       return (
-                        <TimelineItem key={`${event.runId}-${index}`}>
+                        <TimelineItem key={`${eventKey}-${index}`}>
                           <TimelineOppositeContent
                             sx={{ m: 'auto 0', minWidth: 100, maxWidth: 100 }}
                             align="right"
@@ -2380,7 +2819,7 @@ const Page = () => {
                             >
                               {timelineConfig.icon}
                             </TimelineDot>
-                            {index < historyEvents.length - 1 && (
+                            {index < renderRows.length - 1 && (
                               <TimelineConnector />
                             )}
                           </TimelineSeparator>
@@ -2415,6 +2854,15 @@ const Page = () => {
                                     sx={{ fontSize: '0.7rem', height: 20 }}
                                   />
                                 </Tooltip>
+                                {event.alerted && (
+                                  <Chip
+                                    label="Alert sent"
+                                    color="warning"
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{ fontSize: '0.7rem', height: 20 }}
+                                  />
+                                )}
                               </Box>
                               <Box>
                                 <Typography
@@ -2433,7 +2881,9 @@ const Page = () => {
                                   <Link
                                     component="button"
                                     variant="caption"
-                                    onClick={() => toggleEventExpansion(index)}
+                                    onClick={() =>
+                                      toggleEventExpansion(eventKey)
+                                    }
                                     sx={{
                                       textAlign: 'left',
                                       fontSize: '0.75rem',
@@ -2504,6 +2954,15 @@ const Page = () => {
                   </Timeline>
                 </CardContent>
               </Card>
+            )}
+            {runGroups.length > historyLimit && (
+              <Button
+                variant="outlined"
+                sx={{ alignSelf: 'center' }}
+                onClick={() => setHistoryLimit((prev) => prev + 50)}
+              >
+                Load more (showing {historyLimit} of {runGroups.length} entries)
+              </Button>
             )}
             {dialogs}
           </Stack>
