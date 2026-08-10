@@ -45,6 +45,10 @@ const Page = () => {
 
   const subscription = listSubscription?.data?.Results;
   const expectedWebhookUrl = subscription?.expectedWebhookUrl;
+  // The backend resolves the expected URL from the custom domain bound to the instance, not from
+  // the host this page was loaded on, so surface which one it picked when there is more than one.
+  const customDomains = subscription?.customDomains ?? [];
+  const hasMultipleCustomDomains = customDomains.length > 1;
   // Compared case-insensitively to match the backend, which uses PowerShell's -ne
   const webhookUrlIsStale =
     !!expectedWebhookUrl &&
@@ -180,9 +184,17 @@ const Page = () => {
                     <CippCodeBlock code={subscription?.webhookUrl} />
                     {webhookUrlIsStale && (
                       <Alert severity="warning">
-                        This subscription points at a different URL than the one you are using now.
-                        Save the settings below to re-register it against{" "}
+                        This subscription points at a different URL than the one this instance is
+                        published on. Save the settings below to re-register it against{" "}
                         <strong>{expectedWebhookUrl}</strong>.
+                      </Alert>
+                    )}
+                    {hasMultipleCustomDomains && (
+                      <Alert severity="info">
+                        This instance has {customDomains.length} custom domains bound (
+                        {customDomains.join(", ")}). CIPP uses the first one,{" "}
+                        <strong>{subscription?.instanceHostname}</strong>, for webhook registrations
+                        and notification links.
                       </Alert>
                     )}
                   </Stack>
