@@ -222,9 +222,8 @@ const GalleryTile = ({
 
 const CippBrandingSettings = () => {
   const settings = useSettings();
-  // Read through ApiGetCall rather than useBrandingSettings so this page can see when the fetch
-  // landed: the sync effect below has to run on a *new* server payload, not on every render.
-  // Same url and queryKey, so it is the same cache entry every report reads.
+  // Read through ApiGetCall rather than useBrandingSettings so the sync effect below can key on
+  // when the fetch landed. Same cache entry either way.
   const brandingQuery = ApiGetCall({
     url: "/api/ListBrandingSettings",
     data: { includeGallery: true },
@@ -415,10 +414,6 @@ const CippBrandingSettings = () => {
     if (coversHydrated || logosHydrated) {
       setCoversReady(true);
     }
-    // Branding used to be a mutable client blob on the settings object, so this had to list every
-    // field that might have changed underneath it — and compare the arrays by hand, because their
-    // identity changed on every render. A query has one answer to "is this a new payload from the
-    // server", which is the only question this effect was ever asking.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- sync when server branding payload changes
   }, [activePresetId, uploadPending, brandingQuery.isSuccess, brandingQuery.dataUpdatedAt]);
 

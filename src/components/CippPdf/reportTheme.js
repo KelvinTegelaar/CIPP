@@ -300,10 +300,8 @@ export const buildPalette = (branding, { primary, secondary }) => {
  * footer might want — `%tenantname%` foremost — is already a CIPP variable, so it is not restated
  * here. The `report` prefix keeps these clear of the reserved names in Get-CIPPTextReplacement.
  *
- * A PDF is rendered in the browser, so Get-CIPPTextReplacement never sees this text and cannot fill
- * CIPP's own variables in it. `useReportVariables` reads their resolved values back out of
- * ListCustomVariables and hands them to the report, which is what makes `%cippurl%` in a footer
- * print the URL rather than the word. Being a CIPP variable is about where it is documented and
+ * A PDF renders in the browser, so Get-CIPPTextReplacement never sees this text. `useReportVariables`
+ * supplies the resolved values instead. Being a CIPP variable is about where it is documented and
  * offered, not about who substitutes it.
  */
 export const REPORT_VARIABLES = [
@@ -318,9 +316,8 @@ export const REPORT_VARIABLES = [
  * and an unknown token is left as written rather than blanked — that is what tells whoever
  * configured it that they mistyped, instead of silently swallowing it.
  *
- * This runs in the browser because that is where the PDF is rendered, so it is given the values
- * rather than looking them up: the report's own tokens plus whatever `useReportVariables` resolved
- * out of CIPP for the tenant.
+ * Given the values rather than looking them up: the report's own tokens plus whatever
+ * `useReportVariables` resolved for the tenant.
  */
 export const applyReportVariables = (template, variables = {}) => {
   if (!template) return ''
