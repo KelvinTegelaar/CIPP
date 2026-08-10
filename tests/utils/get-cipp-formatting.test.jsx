@@ -124,3 +124,56 @@ describe('getCippFormatting (component mode)', () => {
     expect(getCippFormatting(null, 'Severity', 'text')).toBe('No data')
   })
 })
+
+// Role members exported as raw JSON instead of a name list.
+// Shape mirrors Invoke-ListRoles: { displayName, userPrincipalName, id, directoryScopeId }.
+describe('getCippFormatting Members (roles export)', () => {
+  const members = [
+    {
+      displayName: 'Alice Adams',
+      userPrincipalName: 'alice@contoso.com',
+      id: '11111111-1111-1111-1111-111111111111',
+      directoryScopeId: '/',
+    },
+    {
+      displayName: 'Bob Brown',
+      userPrincipalName: 'bob@contoso.com',
+      id: '22222222-2222-2222-2222-222222222222',
+      directoryScopeId: '/',
+    },
+  ]
+
+  it('joins member display names in text mode', () => {
+    expect(getCippFormatting(members, 'Members', 'text')).toBe('Alice Adams, Bob Brown')
+  })
+
+  it('never emits JSON or [object Object] on the CSV export path', () => {
+    // csvExportButton calls this with flatten=false first, and only falls back to
+    // per-member JSON.stringify when the result still contains [object Object].
+    const exported = getCippFormatting(members, 'Members', 'text', false, false)
+    expect(exported).toBe('Alice Adams, Bob Brown')
+    expect(exported).not.toContain('[object Object]')
+    expect(exported).not.toContain('displayName')
+    expect(exported).not.toContain('{')
+  })
+
+  it('falls back to UPN then id when a display name is missing', () => {
+    expect(
+      getCippFormatting(
+        [{ userPrincipalName: 'svc@contoso.com' }, { id: 'abc-123' }],
+        'Members',
+        'text'
+      )
+    ).toBe('svc@contoso.com, abc-123')
+  })
+
+  it('renders an empty member list as an empty string', () => {
+    expect(getCippFormatting([], 'Members', 'text')).toBe('')
+  })
+
+  it('still renders the items button in component mode', () => {
+    const cell = getCippFormatting(members, 'Members')
+    expect(typeof cell).toBe('object')
+    expect(cell?.props?.tableTitle).toBe('Members')
+  })
+})
