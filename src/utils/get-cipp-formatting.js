@@ -1051,6 +1051,20 @@ export const getCippFormatting = (
     )
   }
 
+  // handle role members
+  // Without this the CSV/PDF exports fall through to the generic object branch and emit raw
+  // JSON per member. The on-screen cell keeps rendering as the items button.
+  if (cellName === 'Members' && Array.isArray(data)) {
+    return isText ? (
+      data
+        .map((member) => member?.displayName || member?.userPrincipalName || member?.id)
+        .filter(Boolean)
+        .join(', ')
+    ) : (
+      <CippDataTableButton data={data} tableTitle="Members" />
+    )
+  }
+
   // Handle assigned licenses
   if (cellName === 'assignedLicenses') {
     var translatedLicenses = getCippLicenseTranslation(data)

@@ -24,6 +24,11 @@ const MemoTextField = React.memo(function MemoTextField({
   params,
   label,
   placeholder,
+  // Field-level required: asterisk on the label. HTML5 required is separate because
+  // Autocomplete (especially multiple) clears the input after selection — a static
+  // required on the input would falsely block submit even when chips/value exist.
+  required = false,
+  htmlRequired = false,
   // Autocomplete-specific props that must not be forwarded to TextField/DOM
   getOptionLabel,
   isOptionEqualToValue,
@@ -43,11 +48,12 @@ const MemoTextField = React.memo(function MemoTextField({
         label={label}
         placeholder={placeholder}
         {...otherProps}
+        required={htmlRequired}
         slotProps={{
           inputLabel: {
             shrink: true,
             sx: { transition: 'none' },
-            required: otherProps.required,
+            required,
           },
           input: {
             ...InputProps,
@@ -137,6 +143,13 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
       })
     }
   }, [value, defaultValue])
+
+  // Controlled value wins; otherwise use the onChange-tracked selection (FormComponent
+  // often drives via defaultValue + onChange rather than a controlled value prop).
+  const currentSelection = value !== undefined && value !== null ? value : internalValue
+  const hasSelection = multiple
+    ? Array.isArray(currentSelection) && currentSelection.length > 0
+    : currentSelection != null && currentSelection !== ''
 
   // This is our paginated call
   const actionGetRequest = ApiGetCallWithPagination({
@@ -611,6 +624,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
                 label={label}
                 placeholder={placeholder}
                 required={required}
+                htmlRequired={required && !hasSelection}
                 {...other}
               />
               {api?.url && api?.showRefresh && (

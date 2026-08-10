@@ -64,10 +64,9 @@ const deleteSettings = () => {
 };
 
 /**
- * Branding is no longer client settings — it is a request, cached by react-query under
- * `BRANDING_QUERY_KEY` and read via `useBrandingSettings`. Anything a previous version of CIPP
- * persisted here is dropped on load rather than migrated: it is a stale copy of server state, and
- * its image payloads are what used to blow the localStorage quota once covers were uploaded.
+ * Branding is server state now, read via `useBrandingSettings`. Anything a previous version
+ * persisted here is dropped on load rather than migrated - it is a stale copy, and its image
+ * payloads used to exhaust the localStorage quota.
  */
 const stripPersistedBrandingBlobs = (settings) => {
   if (!settings || typeof settings !== "object" || !("customBranding" in settings)) {

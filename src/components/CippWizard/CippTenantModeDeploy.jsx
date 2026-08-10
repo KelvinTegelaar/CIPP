@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import {
+  Alert,
   Stack,
   Box,
   Typography,
@@ -34,6 +35,33 @@ export const CippTenantModeDeploy = (props) => {
     queryKey: "listAppId",
     waiting: true,
   });
+
+  // The application step mints a client secret and this step uses it moments later, but Entra
+  // can take minutes to activate a new secret. Poll until it is usable so the wait happens
+  // here, rather than the sign-in appearing to work and then failing on the token exchange
+  // with an "invalid client secret" that looks like the app was created wrong.
+  const samSecret = ApiGetCall({
+    url: `/api/ExecSamSecretStatus`,
+    queryKey: "samSecretStatus",
+    waiting: true,
+    staleTime: 0,
+  });
+  const samSecretReady = samSecret.data?.ready === true;
+  const samSecretPropagating = samSecret.data?.reason === "propagating";
+  const {
+    isSuccess: samSecretLoaded,
+    dataUpdatedAt: samSecretUpdatedAt,
+    refetch: refetchSamSecret,
+  } = samSecret;
+
+  // Re-check on a timer rather than a fixed refetchInterval so polling stops once the secret
+  // is usable - there is nothing left to wait for at that point.
+  useEffect(() => {
+    if (samSecretLoaded && !samSecretReady) {
+      const timer = setTimeout(() => refetchSamSecret(), 15000);
+      return () => clearTimeout(timer);
+    }
+  }, [samSecretLoaded, samSecretUpdatedAt, samSecretReady, refetchSamSecret]);
 
   useEffect(() => {
     if (updateRefreshToken.isSuccess) {
@@ -201,8 +229,24 @@ export const CippTenantModeDeploy = (props) => {
             </Box>
           )}
 
+        {samSecretLoaded && !samSecretReady && (
+          <Alert severity={samSecretPropagating ? "info" : "warning"} sx={{ mb: 2 }}>
+            {samSecretPropagating ? (
+              <>
+                Waiting for Microsoft to activate the application secret created in the previous
+                step. Signing in before it is active fails with an invalid client secret error, so
+                this step unlocks on its own once it is ready - usually within a few minutes.
+                Nothing needs to be recreated.
+              </>
+            ) : (
+              samSecret.data?.message
+            )}
+          </Alert>
+        )}
+
         <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>
           <CIPPM365OAuthButton
+            disabled={samSecretLoaded && !samSecretReady}
             onAuthSuccess={(tokenData) => {
               const updatedTokenData = {
                 ...tokenData,

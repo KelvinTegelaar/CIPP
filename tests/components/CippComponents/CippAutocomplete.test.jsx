@@ -305,4 +305,44 @@ describe('CippAutoComplete', () => {
       expect(options[0]).toHaveTextContent('Alpha')
     })
   })
+
+  // Multi-select clears the native input after chips are selected; HTML5 required must
+  // track selection state or submit falsely fails with "Please fill out this field".
+  describe('required HTML5 vs selection', () => {
+    it('marks the input required when empty, and keeps the label required', () => {
+      renderWithProviders(
+        <CippAutoComplete
+          multiple
+          creatable={false}
+          required
+          label="Permissions to remove"
+          options={OPTIONS}
+          onChange={() => {}}
+        />
+      )
+      const input = screen.getByRole('combobox')
+      expect(input).toBeRequired()
+      expect(document.querySelector('.Mui-required')).toBeTruthy()
+      expect(document.querySelector('.MuiFormLabel-asterisk')).toBeTruthy()
+    })
+
+    it('clears HTML5 required on the input after a multi selection, label stays required', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <CippAutoComplete
+          multiple
+          creatable={false}
+          required
+          label="Permissions to remove"
+          options={OPTIONS}
+          onChange={() => {}}
+        />
+      )
+      await user.click(screen.getByRole('combobox'))
+      await user.click(await screen.findByRole('option', { name: 'Alpha' }))
+      expect(screen.getByRole('combobox')).not.toBeRequired()
+      expect(document.querySelector('.Mui-required')).toBeTruthy()
+      expect(document.querySelector('.MuiFormLabel-asterisk')).toBeTruthy()
+    })
+  })
 })

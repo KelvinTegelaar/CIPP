@@ -55,8 +55,7 @@ export const ReportDocument = ({
   // The report's own footer wording, used when branding configures none.
   footerLabel,
 
-  // Resolved CIPP variables, from `useReportVariables`. Without them a footer configured with
-  // `%cippurl%` or a custom variable ships with the token still written in it.
+  // Resolved CIPP variables, from `useReportVariables`.
   variables: cippVariables,
 
   size = DEFAULT_PAGE_SETUP.size,
@@ -73,10 +72,8 @@ export const ReportDocument = ({
     generatedOn ??
     new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
-  // What every `%variable%` resolves to anywhere in this report. CIPP's own come first and the
-  // report's three override them: `%reportname%` and `%reportdate%` exist nowhere else, and this
-  // report's subject is the authority on `%tenantname%` — it still resolves before the fetch lands,
-  // which a footer that has always worked should not have to wait for.
+  // What every `%variable%` resolves to in this report. The report's own three override CIPP's,
+  // so `%tenantname%` still resolves before the variables fetch lands.
   const variables = {
     ...cippVariables,
     tenantname: tenantName || 'Organization',

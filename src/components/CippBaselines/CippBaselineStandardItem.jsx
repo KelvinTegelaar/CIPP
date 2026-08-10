@@ -350,14 +350,14 @@ export const CippBaselineStandardItem = ({
             </Grid>
           </Grid>
 
-          {standard.prepare ? (
+          {standard.prepare || standard.package ? (
             // Template-backed standards (CA/Intune): the real expected value is the FULL
-            // selected template, normalized by the engine at run time - a rendered
-            // preview here would show only the template reference and mislead.
+            // selected template (or every template in the package), resolved by the
+            // engine at run time - a rendered preview here would mislead.
             <Typography variant="caption" color="text.secondary">
-              The expected configuration is the full selected template - use the
-              preview button on the template picker to inspect it. The engine
-              compares every setting in it against the tenant on each run.
+              {standard.package
+                ? 'This deploys and drift-checks every template tagged with the selected package. Membership is resolved fresh on every run: tagging a template with this package adds it to the baseline automatically, untagging removes it. All templates in the package share the options configured above.'
+                : 'The expected configuration is the full selected template - use the preview button on the template picker to inspect it. The engine compares every setting in it against the tenant on each run.'}
             </Typography>
           ) : (
             <>

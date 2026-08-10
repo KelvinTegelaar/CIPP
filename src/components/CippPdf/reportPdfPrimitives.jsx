@@ -173,10 +173,7 @@ export const ReportPage = ({
 }) => (
   <Page size={size} orientation={orientation} style={style ?? styles.page}>
     {children}
-    {/* Last, so it paints over the content rather than under it. Underneath, anything with a solid
-        background — a chart card, a stat tile, a table header — hid it completely, which is how a
-        page that did carry a watermark still looked like it did not. At 8% it reads as a wash over
-        the page and leaves everything below it legible. */}
+    {/* Last, so it paints over the content. Underneath, any solid background hides it entirely. */}
     <Watermark styles={styles} theme={theme} onDark={watermarkOnDark} />
   </Page>
 )
