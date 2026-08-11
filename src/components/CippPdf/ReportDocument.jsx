@@ -1,6 +1,6 @@
 import { Document } from '@react-pdf/renderer'
 import { ReportProvider } from './reportContext'
-import { createReportTheme } from './reportTheme'
+import { applyFooterText, createReportTheme } from './reportTheme'
 import { createReportStyles, DEFAULT_PAGE_SETUP } from './reportPdfStyles'
 import { CoverPage } from './reportPdfPrimitives'
 import { resolveCoverImage } from './resolveCoverImage'
@@ -83,6 +83,14 @@ export const ReportDocument = ({
 
   const context = { theme, styles, variables, logo, footerLabel, size, orientation, date }
 
+  // Branding's cover note wins; a report's own wording is the fallback. Leave the prop undefined
+  // when neither is set so CoverPage's default confidentiality line still appears. Variables are
+  // filled here so a configured `%tenantname%` note resolves the same way the page footer does.
+  const coverNoteTemplate = theme.coverFooterText || coverFooterNote
+  const coverNote = coverNoteTemplate
+    ? applyFooterText(coverNoteTemplate, variables)
+    : undefined
+
   return (
     <ReportProvider value={context}>
       <Document>
@@ -103,8 +111,7 @@ export const ReportDocument = ({
             // Naming the client on the cover is what makes it a client report. Every report wanted
             // it and each one printed it slightly differently; `coverTenant={false}` opts out.
             tenantName={coverTenant === false ? null : coverTenant || tenantName}
-            // Branding's cover note wins; a report's own wording is the fallback.
-            footerNote={theme.coverFooterText || coverFooterNote}
+            footerNote={coverNote}
           >
             {coverMeta}
           </CoverPage>

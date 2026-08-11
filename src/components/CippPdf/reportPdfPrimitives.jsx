@@ -1,6 +1,6 @@
 import { Children } from 'react'
 import { Text, View, Image, Page } from '@react-pdf/renderer'
-import { REPORT_COLOURS, applyReportVariables } from './reportTheme'
+import { REPORT_COLOURS, applyFooterText, applyWatermarkText } from './reportTheme'
 import { useReport, useReportStyles } from './reportContext'
 import { DEFAULT_PAGE_SETUP, TABLE_ROW_PADDING, contentWidth } from './reportPdfStyles'
 import { wrapLongTokens } from './measureText'
@@ -124,7 +124,7 @@ export const ContentPage = ({ title, subtitle, children, ...props }) => {
  */
 export const PageFooter = ({ styles, label, theme, variables }) => {
   const templated = theme?.footer?.enabled
-    ? applyReportVariables(theme.footer.template, variables)
+    ? applyFooterText(theme.footer.template, variables)
     : ''
   // Configured branding wins over the report's own label. The reverse — which this did at first —
   // meant every report that passed a label silently ignored the footer text an MSP had set, which
@@ -178,8 +178,16 @@ export const ReportPage = ({
   </Page>
 )
 
-export const Watermark = ({ styles, theme, text, onDark = false }) => {
-  const value = text ?? (theme?.watermark?.enabled ? theme.watermark.text : '')
+/**
+ * Diagonal mark drawn over every page. Same `%variable%` substitution as the footer — branding
+ * stores a template (e.g. `%tenantname%`), and the report fills it from the surrounding context.
+ * The 40-character ceiling is applied to the *resolved* string, after variables expand.
+ */
+export const Watermark = ({ styles, theme, text, variables: variablesProp, onDark = false }) => {
+  const report = useReport()
+  const variables = variablesProp ?? report.variables
+  const template = text ?? (theme?.watermark?.enabled ? theme.watermark.text : '')
+  const value = template ? applyWatermarkText(template, variables) : ''
   if (!value) return null
 
   return (

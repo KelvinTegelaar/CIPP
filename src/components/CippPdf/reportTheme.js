@@ -169,6 +169,12 @@ const buildSeries = (primary, secondary) => {
 const DEFAULT_FOOTER_TEMPLATE = ''
 const DEFAULT_WATERMARK_TEXT = ''
 
+/** Hard ceiling for page/cover footer text — applied after `%variable%` substitution. */
+export const FOOTER_MAX_LENGTH = 200
+
+/** Hard ceiling for the mark drawn on the page — applied after `%variable%` substitution. */
+export const WATERMARK_MAX_LENGTH = 40
+
 /**
  * The parts of a report that can be coloured independently.
  *
@@ -332,6 +338,23 @@ export const applyReportVariables = (template, variables = {}) => {
     return value == null ? match : String(value)
   })
 }
+
+/**
+ * Resolve a watermark template and enforce the on-page length ceiling.
+ *
+ * The branding field stores a template (and rejects templates over the same limit). Tenant names
+ * and other variables can still expand past it at render time — that is when the ceiling is
+ * applied, so a long `%tenantname%` cannot spill a mark across the whole page.
+ */
+export const applyWatermarkText = (template, variables = {}) =>
+  applyReportVariables(template, variables).slice(0, WATERMARK_MAX_LENGTH)
+
+/**
+ * Resolve page-footer / cover-note text and enforce the length ceiling after substitution.
+ * Same reason as the watermark: a long `%tenantname%` must not blow past the stored limit.
+ */
+export const applyFooterText = (template, variables = {}) =>
+  applyReportVariables(template, variables).slice(0, FOOTER_MAX_LENGTH)
 
 /**
  * Build the theme a report renders against.
