@@ -127,10 +127,8 @@ export const useAllTenantsDashboard = () => {
     waiting: true,
   })
 
-  // countsOnly returns the aggregates with no rows at all. This card renders three numbers and a
-  // four-item list; fetching the rows to derive them here shipped the estate's entire failed-test
-  // set to the browser (~928 KB / 1581 rows on a 12-tenant dev estate, growing linearly with
-  // tenant count) to produce a handful of integers.
+  // countsOnly returns the aggregates with no rows. Deriving them here pulled the estate's whole
+  // failed-test set over the wire, growing linearly with tenant count.
   const failedTestsApi = ApiGetCall({
     url: '/api/ListTestResultsTenants',
     data: { status: 'Failed', countsOnly: 'true' },
