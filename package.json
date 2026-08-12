@@ -60,7 +60,7 @@
     "@tiptap/extension-table": "^3.20.5",
     "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.20.5",
-    "@tiptap/starter-kit": "^3.20.5",
+    "@tiptap/starter-kit": "^3.29.2",
     "@vvo/tzdb": "^6.198.0",
     "apexcharts": "6.6.1",
     "axios": "1.18.1",
