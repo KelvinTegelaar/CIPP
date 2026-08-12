@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { resolveCoverImage } from "../CippPdf/resolveCoverImage";
 import { createReportStyles } from "../CippPdf/reportPdfStyles";
-import { createReportTheme } from "../CippPdf/reportTheme";
+import { applyFooterText, applyWatermarkText, createReportTheme } from "../CippPdf/reportTheme";
 import {
   SAMPLE_BEC,
   SAMPLE_PERMISSIONS,
@@ -37,6 +37,8 @@ export const REPORT_COVER_PRESETS = [
   {
     id: "executive",
     label: "Executive Report",
+    // Must match `reportName` on ExecutiveReportDocument — cover-mock `%reportname%` uses this.
+    reportName: "Executive Summary",
     coverLabel: "Security Assessment",
     title: "Executive",
     accent: "Summary",
@@ -48,6 +50,7 @@ export const REPORT_COVER_PRESETS = [
   {
     id: "shadowAI",
     label: "Shadow AI Report",
+    reportName: "Shadow AI Report",
     coverLabel: "AI Risk Assessment",
     title: "Shadow AI",
     accent: "Report",
@@ -60,6 +63,7 @@ export const REPORT_COVER_PRESETS = [
   {
     id: "bec",
     label: "BEC Remediation",
+    reportName: "BEC Analysis Report",
     coverLabel: "Security Incident Report",
     title: "BEC Compromise",
     accent: "Analysis",
@@ -74,6 +78,7 @@ export const REPORT_COVER_PRESETS = [
   {
     id: "sharing",
     label: "Sharing Report",
+    reportName: "Sharing Report",
     coverLabel: "Data Sharing Review",
     title: "Sharing",
     accent: "Report",
@@ -88,6 +93,7 @@ export const REPORT_COVER_PRESETS = [
   {
     id: "permissions",
     label: "Permissions Report",
+    reportName: "Permissions Report",
     coverLabel: "Access Review",
     title: "Permissions",
     accent: "Report",
@@ -102,6 +108,8 @@ export const REPORT_COVER_PRESETS = [
     // the report builder, so it belongs after the reports that are the same every time.
     id: "reportBuilder",
     label: "Report Builder",
+    // Matches the sample template name used by CippBrandingReportPreview for this report type.
+    reportName: "Quarterly Security Review",
     coverLabel: "Assessment Report",
     title: "Custom",
     accent: "Report",
@@ -152,6 +160,18 @@ const CippBrandingCoverPreview = ({
     month: "long",
     day: "numeric",
   });
+  // Same substitution + length ceiling the PDF applies — without it, typing %tenantname% in
+  // branding shows the token literally in this mock while real reports resolve it.
+  const previewVariables = {
+    tenantname: SAMPLE_TENANT_NAME,
+    reportname: preset.reportName,
+    reportdate: currentDate,
+  };
+  const watermarkLabel = applyWatermarkText(theme.watermark.text, previewVariables);
+  const coverFooterLabel = applyFooterText(
+    theme.coverFooterText || preset.footer,
+    previewVariables
+  );
 
   return (
     <Box
@@ -251,7 +271,7 @@ const CippBrandingCoverPreview = ({
               whiteSpace: "nowrap",
             }}
           >
-            {theme.watermark.text}
+            {watermarkLabel}
           </Box>
         </Box>
       )}
@@ -339,7 +359,7 @@ const CippBrandingCoverPreview = ({
           }}
         >
           {/* A configured cover note replaces the report's own wording, exactly as the PDF does. */}
-          {theme.coverFooterText || preset.footer}
+          {coverFooterLabel}
         </Typography>
       </Box>
     </Box>

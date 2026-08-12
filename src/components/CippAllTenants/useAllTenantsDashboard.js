@@ -118,17 +118,20 @@ export const useAllTenantsDashboard = () => {
     waiting: true,
   })
 
+  // summary returns the estate roll-up only. The row list is one entry per tenant per standard, and
+  // this card renders four bucket counts, an average, four low scorers and two pending totals.
   const alignmentApi = ApiGetCall({
     url: '/api/ListTenantAlignment',
+    data: { summary: true },
     queryKey: 'AllTenantsDashboard-Alignment',
     waiting: true,
   })
 
-  // summaryOnly projects away ResultMarkdown/ResultDataJson server-side — this card only counts
-  // rows, and those two columns are unbounded blobs that otherwise dominate the payload.
+  // countsOnly returns the aggregates with no rows. Deriving them here pulled the estate's whole
+  // failed-test set over the wire, growing linearly with tenant count.
   const failedTestsApi = ApiGetCall({
     url: '/api/ListTestResultsTenants',
-    data: { status: 'Failed', summaryOnly: 'true' },
+    data: { status: 'Failed', countsOnly: 'true' },
     queryKey: 'AllTenantsDashboard-FailedTests',
     waiting: true,
   })
@@ -226,104 +229,45 @@ export const useAllTenantsDashboard = () => {
   /* ---------------------------------------------------------------- alignment */
 
   const alignment = useMemo(() => {
-    const rows = asArray(alignmentApi.data)
-    const byTenant = new Map()
-    let pendingDeviations = 0
-    const pendingByTenant = new Map()
-
-    // ListTenantAlignment serialises camelCase on the wire even though the PowerShell object that
-    // builds it is PascalCase. Accept both so this keeps working if that ever normalises.
-    rows.forEach((row) => {
-      const key = row?.tenantFilter ?? row?.TenantFilter
-      if (!key) return
-      const score = Number(
-        row?.combinedAlignmentScore ??
-          row?.CombinedScore ??
-          row?.alignmentScore ??
-          row?.AlignmentScore ??
-          0
-      )
-      const existing = byTenant.get(key) ?? { total: 0, count: 0 }
-      byTenant.set(key, {
-        total: existing.total + score,
-        count: existing.count + 1,
-      })
-
-      const pending = Number(row?.pendingDeviationsCount ?? row?.PendingDeviationsCount ?? 0)
-      if (pending > 0) {
-        pendingDeviations += pending
-        pendingByTenant.set(key, (pendingByTenant.get(key) ?? 0) + pending)
-      }
-    })
-
-    const scores = []
-    byTenant.forEach((value, key) => {
-      scores.push({
-        tenant: key,
-        name: displayNameByDomain.get(key) ?? key,
-        score: value.count ? Math.round(value.total / value.count) : 0,
-      })
-    })
-
-    const buckets = { strong: 0, good: 0, weak: 0, poor: 0 }
-    scores.forEach(({ score }) => {
-      if (score >= 90) buckets.strong += 1
-      else if (score >= 75) buckets.good += 1
-      else if (score >= 50) buckets.weak += 1
-      else buckets.poor += 1
-    })
-
-    const average = scores.length
-      ? Math.round(scores.reduce((sum, item) => sum + item.score, 0) / scores.length)
-      : 0
+    const summary = alignmentApi.data ?? {}
+    const buckets = summary.Buckets ?? {}
 
     return {
-      scores,
-      buckets,
-      average,
-      lowest: [...scores].sort((a, b) => a.score - b.score).slice(0, 4),
-      pendingDeviations,
-      pendingTenantCount: pendingByTenant.size,
+      // Only ever read for its length — the endpoint returns the count directly.
+      scores: { length: summary.ScoredTenantCount ?? 0 },
+      buckets: {
+        strong: buckets.Strong ?? 0,
+        good: buckets.Good ?? 0,
+        weak: buckets.Weak ?? 0,
+        poor: buckets.Poor ?? 0,
+      },
+      average: summary.Average ?? 0,
+      lowest: (summary.Lowest ?? []).map((item) => ({
+        tenant: item.Tenant,
+        name: item.Name ?? item.Tenant,
+        score: item.Score ?? 0,
+      })),
+      pendingDeviations: summary.PendingDeviations ?? 0,
+      pendingTenantCount: summary.PendingTenantCount ?? 0,
     }
-  }, [alignmentApi.data, displayNameByDomain])
+  }, [alignmentApi.data])
 
   /* ------------------------------------------------------------- test results */
 
   const tests = useMemo(() => {
-    const rows = asArray(failedTestsApi.data)
-    const identityChecks = new Map()
-    const highRiskTenants = new Set()
-    let high = 0
-
-    rows.forEach((row) => {
-      if (String(row?.Risk ?? '').toLowerCase() === 'high') {
-        high += 1
-        if (row?.Tenant) highRiskTenants.add(row.Tenant)
-      }
-
-      if (String(row?.TestType ?? '').toLowerCase() === 'identity' && row?.Name) {
-        const tenantSet = identityChecks.get(row.Name) ?? new Set()
-        if (row?.Tenant) tenantSet.add(row.Tenant)
-        identityChecks.set(row.Name, tenantSet)
-      }
-    })
-
-    const identityRows = [...identityChecks.entries()]
-      .map(([label, tenantSet]) => ({ label, tenantCount: tenantSet.size }))
-      .sort((a, b) => b.tenantCount - a.tenantCount)
-      .slice(0, 4)
-
-    const identityTenantCount = new Set(
-      rows
-        .filter((row) => String(row?.TestType ?? '').toLowerCase() === 'identity' && row?.Tenant)
-        .map((row) => row.Tenant)
-    ).size
+    const counts = failedTestsApi.data?.Counts ?? {}
+    const byTestType = counts.ByTestType ?? {}
+    // The facet is keyed by the TestType as stored ('Identity'); match without assuming casing.
+    const identityKey = Object.keys(byTestType).find((key) => key.toLowerCase() === 'identity')
+    const identity = (identityKey ? byTestType[identityKey] : null) ?? {}
 
     return {
-      identityRows,
-      identityTenantCount,
-      high,
-      highRiskTenantCount: highRiskTenants.size,
+      identityRows: (identity.TopChecks ?? [])
+        .slice(0, 4)
+        .map((check) => ({ label: check.Name, tenantCount: check.TenantCount })),
+      identityTenantCount: identity.Tenants ?? 0,
+      high: counts.HighRiskFailed ?? 0,
+      highRiskTenantCount: counts.HighRiskTenants ?? 0,
     }
   }, [failedTestsApi.data])
 

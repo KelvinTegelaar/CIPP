@@ -350,22 +350,204 @@ export const SAMPLE_SHADOW_AI = {
   ],
 }
 
-/** BEC remediation report. */
+/** BEC remediation report. Field shapes mirror the real Push-BECRun payload so the preview
+ * renders every report section with plausible values rather than 'Unknown' placeholders. */
 export const SAMPLE_BEC = {
   userData: { displayName: 'Sample User', userPrincipalName: 'sample.user@example.com' },
   becData: {
     ExtractedAt: '2026-08-05T09:00:00Z',
-    ExtractResult: 'Completed',
-    NewRules: [{ Name: 'Sample forwarding rule', MoveToFolder: 'RSS Feeds' }],
-    InboxRuleChanges: [{ Name: 'Sample rule change' }],
-    NewUsers: [],
-    AddedApps: [{ DisplayName: 'Sample OAuth app' }],
-    MailboxPermissionChanges: [{ Grantee: 'sample.other@example.com' }],
-    MFADevices: [{ Device: 'Sample phone' }],
-    ChangedPasswords: [{ User: 'sample.user@example.com' }],
-    TrustedSenders: [],
-    BlockedSenders: [],
-    SafelistChanges: [],
+    ExtractResult: 'Successfully extracted logs from auditlog',
+    AnalysisWindowDays: 7,
+    NewRules: [
+      {
+        Name: 'Sample forwarding rule',
+        Description: 'Move messages from billing@example.com to folder RSS Feeds',
+        MoveToFolder: 'RSS Feeds',
+        RecentlyChanged: true,
+      },
+    ],
+    InboxRuleChanges: [
+      {
+        Operation: 'New-InboxRule',
+        UserKey: 'sample.user@example.com',
+        RuleName: 'Sample forwarding rule',
+        Parameters: 'MoveToFolder=RSS Feeds; MarkAsRead=True',
+        Date: '2026-08-03T11:24:00Z',
+        ClientIP: '203.0.113.10',
+        Country: 'NG',
+        City: 'Lagos',
+        ForeignLocation: true,
+      },
+    ],
+    NewUsers: [
+      {
+        displayName: 'Sample Contractor',
+        userPrincipalName: 'sample.contractor@example.com',
+        createdDateTime: '2026-08-02T08:00:00Z',
+      },
+    ],
+    AddedApps: [
+      {
+        displayName: 'Sample OAuth app',
+        appId: '00000000-0000-0000-0000-000000000001',
+        publisher: 'Sample Publisher',
+        createdDateTime: '2026-08-01T10:00:00Z',
+        MaliciousMatch: null,
+      },
+    ],
+    MaliciousSPs: [
+      {
+        displayName: 'Sample Mail Sync Tool',
+        appId: '00000000-0000-0000-0000-000000000002',
+        accountEnabled: true,
+        createdDateTime: '2026-07-30T09:30:00Z',
+        CatalogName: 'Sample Mail Sync Tool',
+        Categories: ['Mailbox exfiltration', 'Business Email Compromise'],
+        Description: 'Sample catalog entry used for preview data.',
+      },
+    ],
+    MailboxPermissionChanges: [
+      {
+        Operation: 'Add-MailboxPermission',
+        UserKey: 'admin@example.com',
+        ObjectId: 'sample.user@example.com',
+        Permissions: 'FullAccess',
+        TargetsSuspect: true,
+      },
+    ],
+    SentMessages: [
+      {
+        MessageTraceId: '00000000-0000-0000-0000-000000000003',
+        Status: 'Delivered',
+        Subject: 'Sample invoice',
+        RecipientAddress: 'supplier@example.net',
+        Received: '2026-08-04 15:02:11Z',
+        FromIP: '203.0.113.10',
+        Country: 'NG',
+        City: 'Lagos',
+        ForeignLocation: true,
+      },
+    ],
+    SentMessageAnalysis: {
+      TotalMessages: 47,
+      TotalRecipients: 212,
+      RepeatedSubjects: [
+        {
+          Subject: 'Sample invoice',
+          MessageCount: 38,
+          RecipientCount: 190,
+          FirstSent: '2026-08-04 14:55:00Z',
+          LastSent: '2026-08-04 15:20:00Z',
+          Flagged: true,
+        },
+      ],
+      FlaggedSubjectCount: 1,
+      Bursts: [
+        {
+          WindowStart: '2026-08-04 15:00:00Z',
+          WindowMinutes: 10,
+          MessageCount: 31,
+          RecipientCount: 160,
+          TopSubject: 'Sample invoice',
+        },
+      ],
+      Flagged: true,
+    },
+    MFADevices: [
+      {
+        '@odata.type': '#microsoft.graph.microsoftAuthenticatorAuthenticationMethod',
+        displayName: 'Sample phone',
+        createdDateTime: '2026-08-03T12:00:00Z',
+      },
+    ],
+    ChangedPasswords: [
+      {
+        displayName: 'Sample User',
+        userPrincipalName: 'sample.user@example.com',
+        lastPasswordChangeDateTime: '2026-08-03T12:05:00Z',
+      },
+    ],
+    TrustedSenders: ['trusted@example.net', 'example-partner.com'],
+    BlockedSenders: ['security-alerts@example.org'],
+    SafelistChanges: [
+      {
+        Operation: 'Set-MailboxJunkEmailConfiguration',
+        UserKey: 'sample.user@example.com',
+        Date: '2026-08-03T11:30:00Z',
+        ClientIP: '203.0.113.10',
+        Country: 'NG',
+        City: 'Lagos',
+        ForeignLocation: true,
+        Trusted: ['attacker-domain.example'],
+        Blocked: null,
+      },
+    ],
+    SharingChanges: [
+      {
+        Operation: 'AnonymousLinkCreated',
+        UserKey: 'sample.user@example.com',
+        Date: '2026-08-04T10:15:00Z',
+        Workload: 'OneDrive',
+        FileName: 'Payroll Q3.xlsx',
+        ItemUrl: 'https://example-my.sharepoint.com/personal/sample_user/Documents/Payroll Q3.xlsx',
+        Target: null,
+        TargetType: null,
+        ClientIP: '203.0.113.10',
+        Country: 'NG',
+        City: 'Lagos',
+        ForeignLocation: true,
+      },
+    ],
+    IntuneDevices: [
+      {
+        id: '00000000-0000-0000-0000-000000000004',
+        deviceName: 'SAMPLE-VM01',
+        operatingSystem: 'Windows',
+        osVersion: '10.0.26100',
+        complianceState: 'noncompliant',
+        enrolledDateTime: '2026-08-03T13:00:00Z',
+        lastSyncDateTime: '2026-08-05T08:00:00Z',
+        deviceEnrollmentType: 'windowsAzureADJoin',
+        serialNumber: 'SAMPLE1234',
+      },
+    ],
+    SuspectUserSignIns: [
+      {
+        CreatedDateTime: '2026-08-04T22:14:00Z',
+        AppDisplayName: 'Office 365 Exchange Online',
+        ClientAppUsed: 'Browser',
+        Status: 'Success',
+        IPAddress: '203.0.113.10',
+        Country: 'NG',
+        City: 'Lagos',
+        ForeignLocation: true,
+      },
+      {
+        CreatedDateTime: '2026-08-04T09:02:00Z',
+        AppDisplayName: 'Microsoft Teams',
+        ClientAppUsed: 'Mobile Apps and Desktop clients',
+        Status: 'Success',
+        IPAddress: '198.51.100.24',
+        Country: 'US',
+        City: 'Seattle',
+        ForeignLocation: false,
+      },
+    ],
+    LocationAnalysis: {
+      UsageLocation: 'US',
+      UserRegisteredCountry: 'United States',
+      SignInCountries: [
+        { Country: 'US', Count: 41 },
+        { Country: 'NG', Count: 9 },
+      ],
+      ForeignSignInCount: 9,
+      ForeignSuccessfulSignInCount: 8,
+      ForeignRuleChangeCount: 1,
+      ForeignSafelistChangeCount: 1,
+      ForeignSharingChangeCount: 1,
+      ForeignSentMessageCount: 1,
+      Note: null,
+    },
   },
 }
 

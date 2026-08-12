@@ -4,7 +4,7 @@
     "cat": "Copilot (M365) Standards",
     "tag": [],
     "helpText": "Configures Microsoft 365 Copilot tenant policy settings: Copilot Chat pinning, blocking Copilot access to open content, Designer image generation, web search, and admin-center Copilot. Each setting can be left unconfigured, enabled, or disabled. These settings are managed through the Copilot policy service (Cloud Policy / Intune) and are applied at the tenant level.",
-    "docsDescription": "Manages Microsoft 365 Copilot admin policy settings via the `/copilot/admin/policySettings` Microsoft Graph API (beta). Each of the five supported settings can be independently set or left unmanaged using the \"Do not configure\" option. NOTE: this API currently requires delegated authentication and supports only tenant-level policies; settings scoped to group-level policies return an error and are skipped. The exact accepted value per setting is a string (commonly \"1\"/\"0\") and should be validated against a Copilot-licensed tenant.",
+    "docsDescription": "Manages Microsoft 365 Copilot admin policy settings via the `/copilot/admin/policySettings` Microsoft Graph API (beta). Each of the five supported settings can be independently set or left unmanaged using the \"Do not configure\" option. NOTE: this API currently requires delegated authentication and supports only tenant-level policies; settings scoped to group-level policies return an error and are skipped. Values are strings whose meaning is per-setting, not uniform: web search is three-state (\"0\" enabled everywhere, \"1\" disabled everywhere, \"2\" disabled in Copilot Work mode only) and Designer image generation is inverted (\"1\" disables it, \"0\" enables it). Graph treats these as opaque strings and validates nothing, so do not assume 1=on/0=off for a setting you have not verified against a Copilot-licensed tenant.",
     "executiveText": "Provides centralized governance of Microsoft 365 Copilot capabilities across the organization. Administrators can control whether Copilot Chat is pinned for users, whether Copilot can access open files, and whether features such as image generation and web search are available, helping balance employee productivity with data governance and compliance requirements.",
     "addedComponent": [
       {
@@ -51,11 +51,11 @@
         "name": "standards.CopilotSettings.allowWebSearch",
         "options": [
           { "label": "Do not configure", "value": "donotconfigure" },
-          { "label": "Enabled in Microsoft 365 Copilot and Microsoft 365 Copilot Chat", "value": "2" },
+          { "label": "Enabled in Microsoft 365 Copilot and Microsoft 365 Copilot Chat", "value": "0" },
           { "label": "Disabled in Microsoft 365 Copilot and Microsoft 365 Copilot Chat", "value": "1" },
           {
             "label": "Disabled in Microsoft 365 Copilot Work mode, Enabled in Microsoft 365 Copilot Chat",
-            "value": "0"
+            "value": "2"
           }
         ]
       },
@@ -7597,7 +7597,7 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2026-04-28",
-    "powershellEquivalent": "Set-SPOTenant -CustomScriptsRestrictMode $true",
+    "powershellEquivalent": "Portal only",
     "recommendedBy": ["CIPP"],
     "requiredCapabilities": [
       "SHAREPOINTWAC",

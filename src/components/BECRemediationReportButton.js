@@ -77,18 +77,46 @@ export const BECRemediationReportDocument = ({
     newUsers: becData?.NewUsers?.length || 0,
     newApps: becData?.AddedApps?.length || 0,
     permissionChanges: becData?.MailboxPermissionChanges?.length || 0,
+    permissionChangesTargetingUser: (becData?.MailboxPermissionChanges || []).filter(
+      (change) => change?.TargetsSuspect === true
+    ).length,
     mfaDevices: becData?.MFADevices?.length || 0,
     passwordChanges: becData?.ChangedPasswords?.length || 0,
+    sentMessages: becData?.SentMessages?.length || 0,
     trustedSenders: becData?.TrustedSenders?.length || 0,
     blockedSenders: becData?.BlockedSenders?.length || 0,
     safelistChanges: becData?.SafelistChanges?.length || 0,
+    sharingChanges: becData?.SharingChanges?.length || 0,
+    anonymousLinks: (becData?.SharingChanges || []).filter((c) =>
+      c?.Operation?.startsWith('AnonymousLink')
+    ).length,
     intuneDevices: becData?.IntuneDevices?.length || 0,
+    signIns: becData?.SuspectUserSignIns?.length || 0,
+    sentTotalMessages: becData?.SentMessageAnalysis?.TotalMessages ?? 0,
+    sentTotalRecipients: becData?.SentMessageAnalysis?.TotalRecipients ?? 0,
+    repeatedSubjects: becData?.SentMessageAnalysis?.FlaggedSubjectCount || 0,
+    sendBursts: becData?.SentMessageAnalysis?.Bursts?.length || 0,
+    massMailFlagged: becData?.SentMessageAnalysis?.Flagged === true,
+    maliciousApps:
+      (becData?.AddedApps || []).filter((app) => app?.MaliciousMatch).length +
+      (becData?.MaliciousSPs?.length || 0),
   }
 
-  const intuneWindowStart = (() => {
+  const locationAnalysis = becData?.LocationAnalysis
+  stats.foreignSignIns = locationAnalysis?.ForeignSignInCount || 0
+  stats.foreignSuccessfulSignIns = locationAnalysis?.ForeignSuccessfulSignInCount || 0
+  stats.foreignSentMessages = locationAnalysis?.ForeignSentMessageCount || 0
+  stats.foreignActivity =
+    (locationAnalysis?.ForeignRuleChangeCount || 0) +
+    (locationAnalysis?.ForeignSafelistChangeCount || 0) +
+    (locationAnalysis?.ForeignSharingChangeCount || 0) +
+    (locationAnalysis?.ForeignSentMessageCount || 0)
+
+  // the analysis window: 7 days before the data was extracted
+  const analysisWindowStart = (() => {
     const extractedAt = becData?.ExtractedAt ? new Date(becData.ExtractedAt) : new Date()
     if (Number.isNaN(extractedAt.getTime())) {
-      return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      return new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
     }
     return new Date(extractedAt.getTime() - 7 * 24 * 60 * 60 * 1000)
   })()
@@ -97,9 +125,22 @@ export const BECRemediationReportDocument = ({
     if (!device?.enrolledDateTime) return false
     const enrolled = new Date(device.enrolledDateTime)
     if (Number.isNaN(enrolled.getTime())) return false
-    return enrolled >= intuneWindowStart
+    return enrolled >= analysisWindowStart
   })
   stats.recentIntuneDevices = recentIntuneDevices.length
+
+  const isRecentMfaDevice = (method) => {
+    if (!method?.createdDateTime) return false
+    const created = new Date(method.createdDateTime)
+    if (Number.isNaN(created.getTime())) return false
+    return created >= analysisWindowStart
+  }
+  stats.recentMfaDevices = (becData?.MFADevices || []).filter(isRecentMfaDevice).length
+
+  // successful foreign sign-ins first - they prove access, failed ones are mostly spray noise
+  const foreignSignIns = (becData?.SuspectUserSignIns || [])
+    .filter((signIn) => signIn?.ForeignLocation === true)
+    .sort((a, b) => (b?.Status === 'Success') - (a?.Status === 'Success'))
 
   const sortedIntuneDevices = [...(becData?.IntuneDevices || [])].sort((a, b) => {
     const aTime = a?.enrolledDateTime ? new Date(a.enrolledDateTime).getTime() : 0
@@ -112,14 +153,32 @@ export const BECRemediationReportDocument = ({
     let threatScore = 0
     if (stats.newRules > 0) threatScore += 3
     if (stats.ruleChanges > 0) threatScore += 3
-    if (stats.permissionChanges > 0) threatScore += 2
-    if (stats.newApps > 0) threatScore += 2
+    // A change to this mailbox's permissions outweighs unrelated tenant churn, which the
+    // tenant-wide search also surfaces
+    if (stats.permissionChangesTargetingUser > 0) threatScore += 2
+    else if (stats.permissionChanges > 0) threatScore += 1
+    // Generic new service principals appear constantly; the actually-bad ones score +5 below
+    if (stats.newApps > 0) threatScore += 1
     if (stats.newUsers > 5) threatScore += 1
     if (stats.safelistChanges > 0) threatScore += 2
 
     // Check for suspicious rules (RSS folder moves)
     const hasSuspiciousRules = becData?.NewRules?.some((rule) => rule.MoveToFolder?.includes('RSS'))
     if (hasSuspiciousRules) threatScore += 5
+
+    // A catalog-matched application is a confirmed bad indicator, not a heuristic
+    if (stats.maliciousApps > 0) threatScore += 5
+    // Only a successful foreign sign-in proves access - failed foreign attempts are
+    // password-spray background noise present on almost every tenant
+    if (stats.foreignSuccessfulSignIns > 0) threatScore += 3
+    if (stats.foreignActivity > 0) threatScore += 3
+    // An anonymous link exposes data to anyone holding the URL, past any later reset
+    if (stats.anonymousLinks > 0) threatScore += 3
+    // Repeated-subject campaigns and send bursts are how a compromised mailbox spreads
+    if (stats.massMailFlagged) threatScore += 3
+    // Persistence moves during the window: a fresh MFA method or device enrollment
+    if (stats.recentMfaDevices > 0) threatScore += 2
+    if (stats.recentIntuneDevices > 0) threatScore += 2
 
     if (threatScore >= 7) return { level: 'High', color: '#742A2A' }
     if (threatScore >= 4) return { level: 'Medium', color: '#744210' }
@@ -164,7 +223,7 @@ export const BECRemediationReportDocument = ({
             <Bold>{userData?.userPrincipalName}</Bold> within{' '}
             <Bold>{tenantName}</Bold>. The investigation analyzed
             suspicious activity indicators including mailbox rules, permission changes, new
-            applications, and authentication patterns over a 7-day period.
+            applications, authentication patterns, and sign-in locations over a 7-day period.
           </Paragraph>
 
           <Paragraph>
@@ -182,8 +241,8 @@ export const BECRemediationReportDocument = ({
             stats={[
               { value: stats.newRules, label: 'Mailbox Rules' },
               { value: stats.permissionChanges, label: 'Permission Changes' },
-              { value: stats.newApps, label: 'New Applications' },
-              { value: stats.newUsers, label: 'New Users' },
+              { value: stats.foreignSignIns, label: 'Foreign Sign-ins' },
+              { value: stats.maliciousApps, label: 'Malicious Apps' },
             ]}
           />
 
@@ -201,6 +260,10 @@ export const BECRemediationReportDocument = ({
           <InfoBox title="Audit Log Status">{becData?.ExtractResult || 'Unknown'}</InfoBox>
           <InfoBox title="Analysis Period">
               Last 7 days ending {becData?.ExtractedAt ? formatDate(becData.ExtractedAt) : 'N/A'}
+            </InfoBox>
+          <InfoBox title="Assigned Usage Location">
+              {locationAnalysis?.UsageLocation ||
+                'Not assigned - sign-ins and activity could not be compared against an expected country'}
             </InfoBox>
         </Section>
       </ContentPage>
@@ -279,7 +342,7 @@ export const BECRemediationReportDocument = ({
 
           {stats.newRules > 0 && (
             <>
-              <AlertBox title={`⚠ ${stats.newRules} Mailbox Rule(s) Found`}>
+              <AlertBox title={`⚠️ ${stats.newRules} Mailbox Rule(s) Found`}>
                   The following mailbox rules were detected. Review each rule carefully to determine
                   if it was created by the user or by an attacker. Rules that forward emails or move
                   them to unusual folders are particularly suspicious.
@@ -304,7 +367,7 @@ export const BECRemediationReportDocument = ({
           )}
           {stats.ruleChanges > 0 && (
             <>
-              <AlertBox title={`⚠ ${stats.ruleChanges} Rule Change(s) in the Last 7 Days`}>
+              <AlertBox title={`⚠️ ${stats.ruleChanges} Rule Change(s) in the Last 7 Days`}>
                   The audit log recorded inbox rules being created, changed or removed on this
                   mailbox. Rules that were removed after use are a common way for attackers to cover
                   their tracks.
@@ -315,6 +378,10 @@ export const BECRemediationReportDocument = ({
                     Date: {change.Date || 'Unknown'}
                     {'\n'}
                     By: {change.UserKey || 'Unknown'}
+                    {change.ClientIP &&
+                      `\nFrom: ${change.ClientIP}${change.Country ? ` (${change.Country})` : ''}`}
+                    {change.ForeignLocation === true &&
+                      '\n⚠️ Originated outside the assigned usage location'}
                     {change.Parameters && `\nParameters: ${change.Parameters}`}
                   </InfoBox>
               ))}
@@ -327,7 +394,7 @@ export const BECRemediationReportDocument = ({
             </>
           )}
           {stats.newRules === 0 && stats.ruleChanges === 0 && (
-            <ClearBox title="✓ No Suspicious Rules Found">
+            <ClearBox title="✔️ No Suspicious Rules Found">
                 No mailbox rules were detected that match suspicious patterns. This is a positive
                 indicator.
               </ClearBox>
@@ -347,7 +414,7 @@ export const BECRemediationReportDocument = ({
 
           {stats.newUsers > 0 ? (
             <>
-              <AlertBox title={`ℹ ${stats.newUsers} New User(s) Found`}>
+              <AlertBox title={`ℹ️ ${stats.newUsers} New User(s) Found`}>
                   The following users were created in the last 7 days. Verify that each account
                   creation was authorized and legitimate.
                 </AlertBox>
@@ -366,7 +433,7 @@ export const BECRemediationReportDocument = ({
               )}
             </>
           ) : (
-            <ClearBox title="✓ No New Users Found">
+            <ClearBox title="✔️ No New Users Found">
                 No new user accounts were created during the analysis period.
               </ClearBox>
           )}
@@ -380,9 +447,17 @@ export const BECRemediationReportDocument = ({
               files without the user's explicit knowledge.
             </InfoBox>
 
+          {stats.maliciousApps > 0 && (
+            <AlertBox title={`⚠️ ${stats.maliciousApps} Known-Malicious Application(s) Detected`}>
+                One or more applications in this tenant match the CIPP known-malicious application
+                catalog. Consent-based access survives a password reset, so these applications
+                should be removed unless their presence is explained.
+              </AlertBox>
+          )}
+
           {stats.newApps > 0 ? (
             <>
-              <AlertBox title={`⚠ ${stats.newApps} New Application(s) Found`}>
+              <AlertBox title={`⚠️ ${stats.newApps} New Application(s) Found`}>
                   New applications were granted access during the analysis period. Review each
                   application to ensure it was authorized and is from a trusted publisher.
                 </AlertBox>
@@ -394,6 +469,12 @@ export const BECRemediationReportDocument = ({
                     App ID: {app.appId || 'N/A'}
                     {'\n'}
                     Created: {formatDate(app.createdDateTime)}
+                    {app.MaliciousMatch &&
+                      `\n⚠️ Matches known-malicious catalog entry "${app.MaliciousMatch.Name}"${
+                        app.MaliciousMatch.Categories?.length
+                          ? ` (${app.MaliciousMatch.Categories.join(', ')})`
+                          : ''
+                      }`}
                   </InfoBox>
               ))}
               {becData.AddedApps.length > 6 && (
@@ -403,15 +484,41 @@ export const BECRemediationReportDocument = ({
               )}
             </>
           ) : (
-            <ClearBox title="✓ No New Applications Found">
-                No new applications were authorized during the analysis period.
-              </ClearBox>
+            (becData?.MaliciousSPs?.length || 0) === 0 && (
+              <ClearBox title="✔️ No New Applications Found">
+                  No new applications were authorized during the analysis period, and no known
+                  malicious applications are present in the tenant.
+                </ClearBox>
+            )
+          )}
+
+          {(becData?.MaliciousSPs?.length || 0) > 0 && (
+            <>
+              {becData.MaliciousSPs.slice(0, 6).map((app, index) => (
+                <InfoBox key={`malsp-${index}`} title={`⚠️ ${app.displayName || 'Unknown'} (present in tenant)`}>
+                    Catalog entry: {app.CatalogName || 'Unknown'}
+                    {'\n'}
+                    App ID: {app.appId || 'N/A'}
+                    {'\n'}
+                    Categories: {app.Categories?.length ? app.Categories.join(', ') : 'N/A'}
+                    {'\n'}
+                    Enabled: {String(app.accountEnabled ?? 'Unknown')}
+                    {'\n'}
+                    First seen: {formatDate(app.createdDateTime)}
+                  </InfoBox>
+              ))}
+              {becData.MaliciousSPs.length > 6 && (
+                <Note>
+                  ... and {becData.MaliciousSPs.length - 6} more (see JSON export for full list)
+                </Note>
+              )}
+            </>
           )}
         </Section>
       </ContentPage>
 
-      {/* CHECK 4, 5, 6: PERMISSIONS, MFA, PASSWORDS */}
-      <ContentPage title="Additional Security Checks" subtitle="Permissions, authentication, and access patterns">
+      {/* CHECK 4, 5, 6, 7: PERMISSIONS, SENT MAIL, MFA, PASSWORDS */}
+      <ContentPage title="Additional Security Checks" subtitle="Permissions, outbound mail, authentication, and access patterns">
 
         {/* Check 4: Mailbox Permission Changes */}
         <Section title="Check 4: Mailbox Permission Changes">
@@ -423,7 +530,7 @@ export const BECRemediationReportDocument = ({
 
           {stats.permissionChanges > 0 ? (
             <>
-              <AlertBox title={`⚠ ${stats.permissionChanges} Permission Change(s) Found`}>
+              <AlertBox title={`⚠️ ${stats.permissionChanges} Permission Change(s) Found`}>
                   Mailbox permission changes were detected. Verify that each change was authorized
                   and necessary for legitimate business purposes.
                 </AlertBox>
@@ -435,6 +542,8 @@ export const BECRemediationReportDocument = ({
                     Target: {change.ObjectId || 'N/A'}
                     {'\n'}
                     Permissions: {change.Permissions || 'Unknown'}
+                    {change.TargetsSuspect === true &&
+                      '\n⚠️ Targets the investigated mailbox'}
                   </InfoBox>
               ))}
               {becData.MailboxPermissionChanges.length > 5 && (
@@ -444,14 +553,107 @@ export const BECRemediationReportDocument = ({
               )}
             </>
           ) : (
-            <ClearBox title="✓ No Permission Changes Found">
+            <ClearBox title="✔️ No Permission Changes Found">
                 No mailbox permission changes were detected during the analysis period.
               </ClearBox>
           )}
         </Section>
 
-        {/* Check 5: MFA Devices */}
-        <Section title="Check 5: MFA Devices">
+        {/* Check 5: Sent Messages */}
+        <Section title="Check 5: Sent Messages">
+          <InfoBox title="Why We Check This">
+              Attackers use a compromised mailbox to send fraudulent invoices, phishing, or
+              internal impersonation mail. The message trace shows what actually left the mailbox
+              during the analysis period, including the IP address it was sent from.
+            </InfoBox>
+
+          {stats.sentMessages > 0 ? (
+            <>
+              <Paragraph indent>
+                ℹ️ {stats.sentTotalMessages || stats.sentMessages} message(s) to{' '}
+                {stats.sentTotalRecipients || stats.sentMessages} recipient(s) were sent by this
+                mailbox during the analysis period
+                {stats.foreignSentMessages > 0
+                  ? `, including ${stats.foreignSentMessages} from an IP outside the user's assigned usage location.`
+                  : '.'}
+              </Paragraph>
+
+              {stats.massMailFlagged && (
+                <AlertBox title="⚠️ Mass-Mail Pattern Detected">
+                    {stats.repeatedSubjects > 0
+                      ? `${stats.repeatedSubjects} subject(s) were sent as many separate messages or to many recipients. `
+                      : ''}
+                    {stats.sendBursts > 0
+                      ? `${stats.sendBursts} short burst(s) of high-volume sending were detected. `
+                      : ''}
+                    Identical-subject mass mail and send bursts are how a compromised mailbox
+                    spreads phishing or fraudulent invoices. Review the campaigns below and warn
+                    the recipients if the content was malicious.
+                  </AlertBox>
+              )}
+
+              {(becData?.SentMessageAnalysis?.RepeatedSubjects || [])
+                .slice(0, 5)
+                .map((group, index) => (
+                  <InfoBox key={`subject-${index}`} title={`${group.Flagged ? '⚠️ ' : ''}Repeated subject: ${group.Subject || '(no subject)'}`}>
+                      Messages: {group.MessageCount}
+                      {'\n'}
+                      Recipients: {group.RecipientCount}
+                      {'\n'}
+                      First sent: {group.FirstSent || 'N/A'}
+                      {'\n'}
+                      Last sent: {group.LastSent || 'N/A'}
+                    </InfoBox>
+                ))}
+              {(becData?.SentMessageAnalysis?.RepeatedSubjects?.length || 0) > 5 && (
+                <Note>
+                  ... and {becData.SentMessageAnalysis.RepeatedSubjects.length - 5} more repeated
+                  subjects (see JSON export for full list)
+                </Note>
+              )}
+
+              {(becData?.SentMessageAnalysis?.Bursts || []).slice(0, 5).map((burst, index) => (
+                <InfoBox key={`burst-${index}`} title={`⚠️ Send burst: ${burst.MessageCount} message(s) to ${burst.RecipientCount} recipient(s) in ${burst.WindowMinutes || 10} minutes`}>
+                    Starting: {burst.WindowStart || 'N/A'}
+                    {burst.TopSubject && `\nMost common subject: ${burst.TopSubject}`}
+                  </InfoBox>
+              ))}
+              {(becData?.SentMessageAnalysis?.Bursts?.length || 0) > 5 && (
+                <Note>
+                  ... and {becData.SentMessageAnalysis.Bursts.length - 5} more bursts (see JSON
+                  export for full list)
+                </Note>
+              )}
+
+              {becData.SentMessages.slice(0, 10).map((msg, index) => (
+                <InfoBox key={index} title={`${msg.Subject || '(no subject)'}`}>
+                    To: {msg.RecipientAddress || 'N/A'}
+                    {'\n'}
+                    Status: {msg.Status || 'N/A'}
+                    {'\n'}
+                    Received: {msg.Received || 'N/A'}
+                    {msg.FromIP &&
+                      `\nFrom IP: ${msg.FromIP}${msg.Country ? ` (${msg.Country})` : ''}`}
+                    {msg.ForeignLocation === true &&
+                      '\n⚠️ Sent from outside the assigned usage location'}
+                  </InfoBox>
+              ))}
+              {becData.SentMessages.length > 10 && (
+                <Note>
+                  ... and {becData.SentMessages.length - 10} more messages (see JSON export for
+                  full list)
+                </Note>
+              )}
+            </>
+          ) : (
+            <ClearBox title="✔️ No Sent Messages Found">
+                No messages were sent by this mailbox during the analysis period.
+              </ClearBox>
+          )}
+        </Section>
+
+        {/* Check 6: MFA Devices */}
+        <Section title="Check 6: MFA Devices">
           <InfoBox title="Why We Check This">
               Multi-factor authentication (MFA) devices provide an additional layer of security.
               Reviewing registered MFA methods helps identify if attackers have added unauthorized
@@ -461,28 +663,42 @@ export const BECRemediationReportDocument = ({
           {stats.mfaDevices > 0 ? (
             <>
               <Paragraph indent>
-                ℹ {stats.mfaDevices} MFA device(s) registered. Verify each device belongs to the
-                user.
+                ℹ️ {stats.mfaDevices} MFA device(s) registered
+                {stats.recentMfaDevices > 0
+                  ? `, including ${stats.recentMfaDevices} registered in the last 7 days. Verify the recent registrations were made by the user — attackers register their own method to keep access after a password reset.`
+                  : '. Verify each device belongs to the user.'}
               </Paragraph>
 
-              {becData.MFADevices.slice(0, 5).map((device, index) => (
-                <InfoBox key={index} title={`${device['@odata.type'] ?.replace('#microsoft.graph.', '') .replace('AuthenticationMethod', '') || 'Unknown'}`}>
-                    Display Name: {device.displayName || 'N/A'}
-                    {'\n'}
-                    Registered: {formatDate(device.createdDateTime)}
-                  </InfoBox>
-              ))}
+              {[...becData.MFADevices]
+                .sort(
+                  (a, b) => new Date(b?.createdDateTime || 0) - new Date(a?.createdDateTime || 0)
+                )
+                .slice(0, 5)
+                .map((device, index) => (
+                  <InfoBox key={index} title={`${device['@odata.type'] ?.replace('#microsoft.graph.', '') .replace('AuthenticationMethod', '') || 'Unknown'}`}>
+                      Display Name: {device.displayName || 'N/A'}
+                      {'\n'}
+                      Registered: {formatDate(device.createdDateTime)}
+                      {isRecentMfaDevice(device) && '\n⚠️ Registered in the last 7 days'}
+                    </InfoBox>
+                ))}
+              {becData.MFADevices.length > 5 && (
+                <Note>
+                  ... and {becData.MFADevices.length - 5} more methods (see JSON export for full
+                  list)
+                </Note>
+              )}
             </>
           ) : (
-            <InfoBox tone="warn" title="⚠ No MFA Devices Found">
+            <InfoBox tone="warn" title="⚠️ No MFA Devices Found">
                 No multi-factor authentication devices are registered. MFA is highly recommended to
                 prevent unauthorized access.
               </InfoBox>
           )}
         </Section>
 
-        {/* Check 6: Password Changes */}
-        <Section title="Check 6: Recent Password Changes">
+        {/* Check 7: Password Changes */}
+        <Section title="Check 7: Recent Password Changes">
           <InfoBox title="Why We Check This">
               Attackers often change passwords to lock out legitimate users. Reviewing recent
               password changes in the tenant helps identify if the compromised account's password
@@ -492,7 +708,7 @@ export const BECRemediationReportDocument = ({
           {stats.passwordChanges > 0 ? (
             <>
               <Paragraph indent>
-                ℹ {stats.passwordChanges} password change(s) detected in the tenant during the
+                ℹ️ {stats.passwordChanges} password change(s) detected in the tenant during the
                 analysis period.
               </Paragraph>
 
@@ -503,16 +719,26 @@ export const BECRemediationReportDocument = ({
                     Last Password Change: {formatDate(user.lastPasswordChangeDateTime)}
                   </InfoBox>
               ))}
+              {becData.ChangedPasswords.length > 5 && (
+                <Note>
+                  ... and {becData.ChangedPasswords.length - 5} more (see JSON export for full
+                  list)
+                </Note>
+              )}
             </>
           ) : (
             <Paragraph indent>
-              ℹ No password changes detected during the analysis period.
+              ℹ️ No password changes detected during the analysis period.
             </Paragraph>
           )}
         </Section>
+      </ContentPage>
 
-        {/* Check 7: Trusted & Blocked Senders */}
-        <Section title="Check 7: Trusted &amp; Blocked Senders">
+      {/* CHECK 8, 9, 10: SENDER LISTS, DEVICES, LOCATIONS */}
+      <ContentPage title="Mailbox Lists, Devices & Locations" subtitle="Sender lists, managed devices, and sign-in origins">
+
+        {/* Check 8: Trusted & Blocked Senders */}
+        <Section title="Check 8: Trusted &amp; Blocked Senders">
           <InfoBox title="Why We Check This">
               Attackers may add their own domain to the Trusted Senders list so their fraudulent
               messages bypass spam filtering, or add finance/security domains to the Blocked
@@ -520,9 +746,17 @@ export const BECRemediationReportDocument = ({
               folder.
             </InfoBox>
 
+          {becData?.SafelistError && (
+            <AlertBox title="⚠️ Could Not Retrieve Sender Lists">
+                {becData.SafelistError}
+                {'\n'}
+                An empty list here does not mean the mailbox has no trusted or blocked senders.
+              </AlertBox>
+          )}
+
           {stats.safelistChanges > 0 && (
             <>
-              <AlertBox title={`⚠ ${stats.safelistChanges} Safelist Change(s) in the Last 7 Days`}>
+              <AlertBox title={`⚠️ ${stats.safelistChanges} Safelist Change(s) in the Last 7 Days`}>
                   The audit log recorded changes to the Trusted/Blocked Senders and Domains list on
                   this mailbox. Review each change carefully.
                 </AlertBox>
@@ -530,32 +764,57 @@ export const BECRemediationReportDocument = ({
               {becData.SafelistChanges.slice(0, 10).map((change, index) => (
                 <InfoBox key={index} title={`${change.Operation || 'Safelist Change'} by ${change.UserKey || 'Unknown'}`}>
                     Date: {formatDate(change.Date)}
+                    {change.ClientIP &&
+                      `\nFrom: ${change.ClientIP}${change.Country ? ` (${change.Country})` : ''}`}
+                    {change.ForeignLocation === true &&
+                      '\n⚠️ Originated outside the assigned usage location'}
                     {'\n'}
                     Trusted: {formatSafelistValue(change.Trusted)}
                     {'\n'}
                     Blocked: {formatSafelistValue(change.Blocked)}
                   </InfoBox>
               ))}
+              {becData.SafelistChanges.length > 10 && (
+                <Note>
+                  ... and {becData.SafelistChanges.length - 10} more changes (see JSON export for
+                  full list)
+                </Note>
+              )}
             </>
           )}
 
           {stats.trustedSenders > 0 && (
             <InfoBox title={`Trusted Senders/Domains (${stats.trustedSenders})`}>{becData.TrustedSenders.slice(0, 15).join(', ')}</InfoBox>
           )}
+          {stats.trustedSenders > 15 && (
+            <Note>
+              ... and {stats.trustedSenders - 15} more trusted entries (see JSON export for full
+              list)
+            </Note>
+          )}
 
           {stats.blockedSenders > 0 && (
             <InfoBox title={`Blocked Senders/Domains (${stats.blockedSenders})`}>{becData.BlockedSenders.slice(0, 15).join(', ')}</InfoBox>
           )}
-
-          {stats.trustedSenders === 0 && stats.blockedSenders === 0 && stats.safelistChanges === 0 && (
-            <ClearBox title="✓ No Trusted or Blocked Senders Found">
-                No trusted or blocked sender/domain entries were found on this mailbox.
-              </ClearBox>
+          {stats.blockedSenders > 15 && (
+            <Note>
+              ... and {stats.blockedSenders - 15} more blocked entries (see JSON export for full
+              list)
+            </Note>
           )}
+
+          {!becData?.SafelistError &&
+            stats.trustedSenders === 0 &&
+            stats.blockedSenders === 0 &&
+            stats.safelistChanges === 0 && (
+              <ClearBox title="✔️ No Trusted or Blocked Senders Found">
+                  No trusted or blocked sender/domain entries were found on this mailbox.
+                </ClearBox>
+            )}
         </Section>
 
-        {/* Check 8: Intune Devices */}
-        <Section title="Check 8: Intune Devices">
+        {/* Check 9: Intune Devices */}
+        <Section title="Check 9: Intune Devices">
           <InfoBox title="Why We Check This">
               Newly enrolled Intune devices can indicate an attacker standing up a VM or BYOD
               endpoint under the compromised identity, including paths that re-register Windows
@@ -563,7 +822,7 @@ export const BECRemediationReportDocument = ({
             </InfoBox>
 
           {becData?.IntuneDevicesError ? (
-            <AlertBox title="⚠ Could Not Retrieve Intune Devices">
+            <AlertBox title="⚠️ Could Not Retrieve Intune Devices">
                 {becData.IntuneDevicesError}
                 {'\n'}
                 An empty device list here does not mean the user has no Intune devices.
@@ -571,7 +830,7 @@ export const BECRemediationReportDocument = ({
           ) : stats.intuneDevices > 0 ? (
             <>
               <Paragraph indent>
-                ℹ {stats.intuneDevices} Intune-managed device(s) associated with this user
+                ℹ️ {stats.intuneDevices} Intune-managed device(s) associated with this user
                 {stats.recentIntuneDevices > 0
                   ? `, including ${stats.recentIntuneDevices} enrolled in the last 7 days.`
                   : '. None were enrolled in the last 7 days.'}
@@ -590,10 +849,139 @@ export const BECRemediationReportDocument = ({
                     {device.serialNumber ? `\nSerial: ${device.serialNumber}` : ''}
                   </InfoBox>
               ))}
+              {sortedIntuneDevices.length > 5 && (
+                <Note>
+                  ... and {sortedIntuneDevices.length - 5} more devices (see JSON export for full
+                  list)
+                </Note>
+              )}
             </>
           ) : (
-            <ClearBox title="✓ No Intune Devices Found">
+            <ClearBox title="✔️ No Intune Devices Found">
                 No Intune-managed devices were found for this user.
+              </ClearBox>
+          )}
+        </Section>
+
+        {/* Check 10: Sign-in Locations */}
+        <Section title="Check 10: Sign-in Locations">
+          <InfoBox title="Why We Check This">
+              Sign-ins from countries the user does not work from are one of the strongest
+              compromise indicators. Each sign-in is compared against the user's assigned usage
+              location in Entra ID
+              {locationAnalysis?.UsageLocation ? ` (${locationAnalysis.UsageLocation})` : ''}, and
+              the client IPs behind rule changes, safelist changes, sharing changes, and sent mail
+              are geo-located and compared the same way.
+            </InfoBox>
+
+          {becData?.SuspectUserSignInsError ? (
+            <AlertBox title="⚠️ Could Not Retrieve Sign-in Logs">
+                {becData.SuspectUserSignInsError}
+                {'\n'}
+                An empty list here does not mean the user has not signed in.
+              </AlertBox>
+          ) : (
+            <>
+              {!locationAnalysis?.UsageLocation && (
+                <InfoBox tone="warn" title="⚠️ No Usage Location Assigned">
+                    {locationAnalysis?.Note ||
+                      'The user has no usage location assigned in Entra ID, so activity cannot be compared against an expected country.'}
+                  </InfoBox>
+              )}
+
+              {(locationAnalysis?.SignInCountries?.length || 0) > 0 && (
+                <InfoBox title={`Sign-in Countries Observed (last ${stats.signIns} sign-ins)`}>
+                    {locationAnalysis.SignInCountries.map(
+                      (c) => `${c.Country}: ${c.Count} sign-in(s)`
+                    ).join('\n')}
+                  </InfoBox>
+              )}
+
+              {stats.foreignSignIns > 0 || stats.foreignActivity > 0 ? (
+                <>
+                  <AlertBox title="⚠️ Activity Outside the Assigned Usage Location">
+                      {stats.foreignSignIns} sign-in(s) (of which {stats.foreignSuccessfulSignIns}{' '}
+                      succeeded), {locationAnalysis?.ForeignRuleChangeCount || 0} inbox rule
+                      change(s), {locationAnalysis?.ForeignSafelistChangeCount || 0} safelist
+                      change(s), {locationAnalysis?.ForeignSharingChangeCount || 0} sharing
+                      change(s), and {locationAnalysis?.ForeignSentMessageCount || 0} sent
+                      message(s) originated outside {locationAnalysis?.UsageLocation}. Failed
+                      foreign sign-ins are mostly password-spray noise; the successful ones prove
+                      access. Review each carefully — a single legitimate trip can explain some of
+                      this, but rule, safelist, or sharing changes from a foreign IP rarely have an
+                      innocent explanation.
+                    </AlertBox>
+
+                  {foreignSignIns.slice(0, 10).map((signIn, index) => (
+                    <InfoBox key={index} title={`${formatDate(signIn.CreatedDateTime)} - ${signIn.Country || 'Unknown'}`}>
+                        Application: {signIn.AppDisplayName || 'N/A'}
+                        {'\n'}
+                        IP Address: {signIn.IPAddress || 'N/A'}
+                        {'\n'}
+                        City: {signIn.City || 'N/A'}
+                        {'\n'}
+                        Result: {signIn.Status || 'N/A'}
+                      </InfoBox>
+                  ))}
+                  {foreignSignIns.length > 10 && (
+                    <Note>
+                      ... and {foreignSignIns.length - 10} more foreign sign-ins (see JSON export
+                      for full list)
+                    </Note>
+                  )}
+                </>
+              ) : locationAnalysis?.UsageLocation ? (
+                <ClearBox title="✔️ No Foreign Activity Detected">
+                    All located sign-ins and activity match the user's assigned usage location (
+                    {locationAnalysis.UsageLocation}).
+                  </ClearBox>
+              ) : null}
+            </>
+          )}
+        </Section>
+
+        {/* Check 11: Sharing Links */}
+        <Section title="Check 11: Sharing Links">
+          <InfoBox title="Why We Check This">
+              Attackers share OneDrive and SharePoint folders to give themselves a data feed that
+              survives a password reset, and anonymous links expose the content to anyone holding
+              the URL. This check lists every sharing link the account created or changed during
+              the analysis period, including the IP address it was done from.
+            </InfoBox>
+
+          {stats.sharingChanges > 0 ? (
+            <>
+              <AlertBox title={`⚠️ ${stats.sharingChanges} Sharing Change(s) in the Last 7 Days`}>
+                  {stats.anonymousLinks > 0
+                    ? `${stats.anonymousLinks} of these involve anonymous links, which anyone with the URL can open. `
+                    : ''}
+                  Review each link and remove any that are not explained, even if the account has
+                  since been remediated.
+                </AlertBox>
+
+              {becData.SharingChanges.slice(0, 10).map((change, index) => (
+                <InfoBox key={index} title={`${change.Operation || 'Sharing Change'}: ${change.FileName || change.ItemUrl || 'Unknown item'}`}>
+                    Date: {formatDate(change.Date)}
+                    {'\n'}
+                    Workload: {change.Workload || 'N/A'}
+                    {change.Target && `\nShared with: ${change.Target}`}
+                    {change.ClientIP &&
+                      `\nFrom: ${change.ClientIP}${change.Country ? ` (${change.Country})` : ''}`}
+                    {change.ForeignLocation === true &&
+                      '\n⚠️ Originated outside the assigned usage location'}
+                  </InfoBox>
+              ))}
+              {becData.SharingChanges.length > 10 && (
+                <Note>
+                  ... and {becData.SharingChanges.length - 10} more changes (see JSON export for
+                  full list)
+                </Note>
+              )}
+            </>
+          ) : (
+            <ClearBox title="✔️ No Sharing Changes Found">
+                No sharing links were created or changed by this account during the analysis
+                period.
               </ClearBox>
           )}
         </Section>
@@ -736,6 +1124,8 @@ export const BECRemediationReportDocument = ({
               {'\n'}
               Analysis Period: 7 days
               {'\n'}
+              Assigned Usage Location: {locationAnalysis?.UsageLocation || 'Not assigned'}
+              {'\n'}
               Audit Log Status: {becData?.ExtractResult || 'Unknown'}
             </InfoBox>
 
@@ -746,13 +1136,24 @@ export const BECRemediationReportDocument = ({
               {'\n'}
               Rule Changes: {stats.ruleChanges}
               {'\n'}
-              Permission Changes: {stats.permissionChanges}
+              Permission Changes: {stats.permissionChanges} ({stats.permissionChangesTargetingUser}{' '}
+              targeting this mailbox)
               {'\n'}
               New Applications: {stats.newApps}
               {'\n'}
+              Known-Malicious Applications: {stats.maliciousApps}
+              {'\n'}
               New Users: {stats.newUsers}
               {'\n'}
+              Sent Messages: {stats.sentTotalMessages || stats.sentMessages}
+              {'\n'}
+              Repeated Subject Campaigns: {stats.repeatedSubjects}
+              {'\n'}
+              Send Bursts: {stats.sendBursts}
+              {'\n'}
               MFA Devices: {stats.mfaDevices}
+              {'\n'}
+              Recent MFA Registrations (7d): {stats.recentMfaDevices}
               {'\n'}
               Password Changes: {stats.passwordChanges}
               {'\n'}
@@ -762,9 +1163,17 @@ export const BECRemediationReportDocument = ({
               {'\n'}
               Safelist Changes: {stats.safelistChanges}
               {'\n'}
+              Sharing Changes: {stats.sharingChanges}
+              {'\n'}
+              Anonymous Links: {stats.anonymousLinks}
+              {'\n'}
               Intune Devices: {stats.intuneDevices}
               {'\n'}
               Recent Intune Enrollments (7d): {stats.recentIntuneDevices}
+              {'\n'}
+              Foreign Sign-ins: {stats.foreignSignIns} ({stats.foreignSuccessfulSignIns} successful)
+              {'\n'}
+              Foreign Rule/Safelist/Sharing/Mail Activity: {stats.foreignActivity}
             </InfoBox>
         </Section>
 
