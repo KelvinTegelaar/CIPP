@@ -183,11 +183,13 @@ const Page = () => {
 
   const getMailboxPermissionMessage = () => {
     if (!becPollingCall.data) return null
-    if (
-      becPollingCall.data.MailboxPermissionChanges &&
-      becPollingCall.data.MailboxPermissionChanges.length > 0
-    ) {
-      return 'Mailbox permission changes have been found.'
+    const changes = becPollingCall.data.MailboxPermissionChanges || []
+    if (changes.length > 0) {
+      const targeting = changes.filter((c) => c?.TargetsSuspect === true).length
+      if (targeting > 0) {
+        return `${changes.length} mailbox permission change(s) found across the tenant in the last 7 days, ${targeting} of which target this mailbox. Review those first.`
+      }
+      return `${changes.length} mailbox permission change(s) found across the tenant in the last 7 days. None appear to target this mailbox, but verify the list below.`
     }
     return 'No mailbox permission changes found.'
   }
@@ -347,7 +349,11 @@ const Page = () => {
     }
     const foreignParts = []
     if (analysis.ForeignSignInCount > 0) {
-      foreignParts.push(`${analysis.ForeignSignInCount} sign-in(s)`)
+      foreignParts.push(
+        `${analysis.ForeignSignInCount} sign-in(s), of which ${
+          analysis.ForeignSuccessfulSignInCount || 0
+        } succeeded (failed foreign attempts are mostly password-spray noise)`
+      )
     }
     if (analysis.ForeignRuleChangeCount > 0) {
       foreignParts.push(`${analysis.ForeignRuleChangeCount} inbox rule change(s)`)
@@ -679,14 +685,20 @@ const Page = () => {
                   {becPollingCall.data?.MailboxPermissionChanges?.length > 0 && (
                     <Box mt={2} sx={{ maxHeight: 300, overflowY: 'auto' }}>
                       <PropertyList>
-                        {becPollingCall.data.MailboxPermissionChanges.map((permission, index) => (
-                          <PropertyListItem
-                            key={index}
-                            sx={checkItemSx}
-                            label={permission.UserKey}
-                            value={`${permission.Operation} - ${permission.Permissions}`}
-                          />
-                        ))}
+                        {[...becPollingCall.data.MailboxPermissionChanges]
+                          .sort((a, b) => (b?.TargetsSuspect === true) - (a?.TargetsSuspect === true))
+                          .map((permission, index) => (
+                            <PropertyListItem
+                              key={index}
+                              sx={checkItemSx}
+                              label={
+                                permission?.TargetsSuspect === true
+                                  ? `${permission.UserKey} - targets this mailbox`
+                                  : permission.UserKey
+                              }
+                              value={`${permission.Operation} - ${permission.Permissions}`}
+                            />
+                          ))}
                       </PropertyList>
                     </Box>
                   )}

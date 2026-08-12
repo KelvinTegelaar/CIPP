@@ -412,6 +412,7 @@ export const SAMPLE_BEC = {
         UserKey: 'admin@example.com',
         ObjectId: 'sample.user@example.com',
         Permissions: 'FullAccess',
+        TargetsSuspect: true,
       },
     ],
     SentMessages: [
@@ -540,6 +541,7 @@ export const SAMPLE_BEC = {
         { Country: 'NG', Count: 9 },
       ],
       ForeignSignInCount: 9,
+      ForeignSuccessfulSignInCount: 8,
       ForeignRuleChangeCount: 1,
       ForeignSafelistChangeCount: 1,
       ForeignSharingChangeCount: 1,

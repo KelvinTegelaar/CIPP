@@ -77,6 +77,9 @@ export const BECRemediationReportDocument = ({
     newUsers: becData?.NewUsers?.length || 0,
     newApps: becData?.AddedApps?.length || 0,
     permissionChanges: becData?.MailboxPermissionChanges?.length || 0,
+    permissionChangesTargetingUser: (becData?.MailboxPermissionChanges || []).filter(
+      (change) => change?.TargetsSuspect === true
+    ).length,
     mfaDevices: becData?.MFADevices?.length || 0,
     passwordChanges: becData?.ChangedPasswords?.length || 0,
     sentMessages: becData?.SentMessages?.length || 0,
@@ -101,6 +104,7 @@ export const BECRemediationReportDocument = ({
 
   const locationAnalysis = becData?.LocationAnalysis
   stats.foreignSignIns = locationAnalysis?.ForeignSignInCount || 0
+  stats.foreignSuccessfulSignIns = locationAnalysis?.ForeignSuccessfulSignInCount || 0
   stats.foreignSentMessages = locationAnalysis?.ForeignSentMessageCount || 0
   stats.foreignActivity =
     (locationAnalysis?.ForeignRuleChangeCount || 0) +
@@ -133,9 +137,10 @@ export const BECRemediationReportDocument = ({
   }
   stats.recentMfaDevices = (becData?.MFADevices || []).filter(isRecentMfaDevice).length
 
-  const foreignSignIns = (becData?.SuspectUserSignIns || []).filter(
-    (signIn) => signIn?.ForeignLocation === true
-  )
+  // successful foreign sign-ins first - they prove access, failed ones are mostly spray noise
+  const foreignSignIns = (becData?.SuspectUserSignIns || [])
+    .filter((signIn) => signIn?.ForeignLocation === true)
+    .sort((a, b) => (b?.Status === 'Success') - (a?.Status === 'Success'))
 
   const sortedIntuneDevices = [...(becData?.IntuneDevices || [])].sort((a, b) => {
     const aTime = a?.enrolledDateTime ? new Date(a.enrolledDateTime).getTime() : 0
@@ -148,8 +153,12 @@ export const BECRemediationReportDocument = ({
     let threatScore = 0
     if (stats.newRules > 0) threatScore += 3
     if (stats.ruleChanges > 0) threatScore += 3
-    if (stats.permissionChanges > 0) threatScore += 2
-    if (stats.newApps > 0) threatScore += 2
+    // A change to this mailbox's permissions outweighs unrelated tenant churn, which the
+    // tenant-wide search also surfaces
+    if (stats.permissionChangesTargetingUser > 0) threatScore += 2
+    else if (stats.permissionChanges > 0) threatScore += 1
+    // Generic new service principals appear constantly; the actually-bad ones score +5 below
+    if (stats.newApps > 0) threatScore += 1
     if (stats.newUsers > 5) threatScore += 1
     if (stats.safelistChanges > 0) threatScore += 2
 
@@ -159,8 +168,9 @@ export const BECRemediationReportDocument = ({
 
     // A catalog-matched application is a confirmed bad indicator, not a heuristic
     if (stats.maliciousApps > 0) threatScore += 5
-    // Activity from outside the user's assigned usage location
-    if (stats.foreignSignIns > 0) threatScore += 3
+    // Only a successful foreign sign-in proves access - failed foreign attempts are
+    // password-spray background noise present on almost every tenant
+    if (stats.foreignSuccessfulSignIns > 0) threatScore += 3
     if (stats.foreignActivity > 0) threatScore += 3
     // An anonymous link exposes data to anyone holding the URL, past any later reset
     if (stats.anonymousLinks > 0) threatScore += 3
@@ -532,6 +542,8 @@ export const BECRemediationReportDocument = ({
                     Target: {change.ObjectId || 'N/A'}
                     {'\n'}
                     Permissions: {change.Permissions || 'Unknown'}
+                    {change.TargetsSuspect === true &&
+                      '\n⚠️ Targets the investigated mailbox'}
                   </InfoBox>
               ))}
               {becData.MailboxPermissionChanges.length > 5 && (
@@ -888,14 +900,16 @@ export const BECRemediationReportDocument = ({
               {stats.foreignSignIns > 0 || stats.foreignActivity > 0 ? (
                 <>
                   <AlertBox title="⚠️ Activity Outside the Assigned Usage Location">
-                      {stats.foreignSignIns} sign-in(s),{' '}
-                      {locationAnalysis?.ForeignRuleChangeCount || 0} inbox rule change(s),{' '}
-                      {locationAnalysis?.ForeignSafelistChangeCount || 0} safelist change(s),{' '}
-                      {locationAnalysis?.ForeignSharingChangeCount || 0} sharing change(s), and{' '}
-                      {locationAnalysis?.ForeignSentMessageCount || 0} sent message(s) originated
-                      outside {locationAnalysis?.UsageLocation}. Review each carefully — a single
-                      legitimate trip can explain some of this, but rule, safelist, or sharing
-                      changes from a foreign IP rarely have an innocent explanation.
+                      {stats.foreignSignIns} sign-in(s) (of which {stats.foreignSuccessfulSignIns}{' '}
+                      succeeded), {locationAnalysis?.ForeignRuleChangeCount || 0} inbox rule
+                      change(s), {locationAnalysis?.ForeignSafelistChangeCount || 0} safelist
+                      change(s), {locationAnalysis?.ForeignSharingChangeCount || 0} sharing
+                      change(s), and {locationAnalysis?.ForeignSentMessageCount || 0} sent
+                      message(s) originated outside {locationAnalysis?.UsageLocation}. Failed
+                      foreign sign-ins are mostly password-spray noise; the successful ones prove
+                      access. Review each carefully — a single legitimate trip can explain some of
+                      this, but rule, safelist, or sharing changes from a foreign IP rarely have an
+                      innocent explanation.
                     </AlertBox>
 
                   {foreignSignIns.slice(0, 10).map((signIn, index) => (
@@ -1122,7 +1136,8 @@ export const BECRemediationReportDocument = ({
               {'\n'}
               Rule Changes: {stats.ruleChanges}
               {'\n'}
-              Permission Changes: {stats.permissionChanges}
+              Permission Changes: {stats.permissionChanges} ({stats.permissionChangesTargetingUser}{' '}
+              targeting this mailbox)
               {'\n'}
               New Applications: {stats.newApps}
               {'\n'}
@@ -1156,7 +1171,7 @@ export const BECRemediationReportDocument = ({
               {'\n'}
               Recent Intune Enrollments (7d): {stats.recentIntuneDevices}
               {'\n'}
-              Foreign Sign-ins: {stats.foreignSignIns}
+              Foreign Sign-ins: {stats.foreignSignIns} ({stats.foreignSuccessfulSignIns} successful)
               {'\n'}
               Foreign Rule/Safelist/Sharing/Mail Activity: {stats.foreignActivity}
             </InfoBox>
