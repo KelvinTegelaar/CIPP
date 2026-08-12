@@ -211,7 +211,7 @@ export const SharingReportDocument = ({
               />
             </>
           ) : (
-            <ClearBox title="✓ No anonymous editable links">
+            <ClearBox title="✔️ No anonymous editable links">
               No anonymous link grants write access.
             </ClearBox>
           )}
@@ -246,7 +246,7 @@ export const SharingReportDocument = ({
               />
             </>
           ) : (
-            <ClearBox title="✓ All anonymous links expire">
+            <ClearBox title="✔️ All anonymous links expire">
               Every anonymous link has an expiry date set.
             </ClearBox>
           )}
@@ -284,7 +284,7 @@ export const SharingReportDocument = ({
               />
             </>
           ) : (
-            <ClearBox title="✓ No externally shared folders">
+            <ClearBox title="✔️ No externally shared folders">
               External and anonymous shares point at individual files rather than folders.
             </ClearBox>
           )}
@@ -316,7 +316,7 @@ export const SharingReportDocument = ({
               />
             </>
           ) : (
-            <ClearBox title="✓ No external recipients">
+            <ClearBox title="✔️ No external recipients">
               Nothing has been shared with an identity outside the organisation.
             </ClearBox>
           )}
