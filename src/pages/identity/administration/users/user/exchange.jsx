@@ -801,26 +801,16 @@ const Page = () => {
             icon: <Delete />,
             url: '/api/ExecModifyCalPerms',
             customDataformatter: (row, action, formData) => {
-              var permissions = []
-              if (Array.isArray(row)) {
-                row.forEach((item) => {
-                  const originalUser = item._raw ? item._raw.User : item.User
-                  permissions.push({
-                    UserID: originalUser, // Use original identifier for API calls
-                    PermissionLevel: item.AccessRights,
-                    FolderName: item.FolderName,
-                    Modification: 'Remove',
-                  })
-                })
-              } else {
-                const originalUser = row._raw ? row._raw.User : row.User
-                permissions.push({
-                  UserID: originalUser, // Use original identifier for API calls
-                  PermissionLevel: row.AccessRights,
-                  FolderName: row.FolderName,
-                  Modification: 'Remove',
-                })
-              }
+              const rows = Array.isArray(row) ? row : [row]
+              // UserId is the resolved recipient; User is only a display
+              // name, which Exchange cannot resolve when two share it.
+              const permissions = rows.map((item) => ({
+                UserID: item._raw?.UserId || item._raw?.User || item.User,
+                DisplayName: item._raw?.User || item.User,
+                PermissionLevel: item.AccessRights,
+                FolderName: item.FolderName,
+                Modification: 'Remove',
+              }))
               return {
                 userID: graphUserRequest.data?.[0]?.userPrincipalName,
                 tenantFilter: userSettingsDefaults.currentTenant,
@@ -870,7 +860,8 @@ const Page = () => {
                       tenantFilter: userSettingsDefaults.currentTenant,
                       permissions: [
                         {
-                          UserID: originalUser, // Use original identifier for API calls
+                          UserID: data._raw?.UserId || originalUser,
+                          DisplayName: originalUser,
                           PermissionLevel: data.AccessRights,
                           FolderName: data.FolderName,
                           Modification: 'Remove',
@@ -944,26 +935,16 @@ const Page = () => {
             icon: <Delete />,
             url: '/api/ExecModifyContactPerms',
             customDataformatter: (row, action, formData) => {
-              var permissions = []
-              if (Array.isArray(row)) {
-                row.forEach((item) => {
-                  const originalUser = item._raw ? item._raw.User : item.User
-                  permissions.push({
-                    UserID: originalUser, // Use original identifier for API calls
-                    PermissionLevel: item.AccessRights,
-                    FolderName: item.FolderName,
-                    Modification: 'Remove',
-                  })
-                })
-              } else {
-                const originalUser = row._raw ? row._raw.User : row.User
-                permissions.push({
-                  UserID: originalUser, // Use original identifier for API calls
-                  PermissionLevel: row.AccessRights,
-                  FolderName: row.FolderName,
-                  Modification: 'Remove',
-                })
-              }
+              const rows = Array.isArray(row) ? row : [row]
+              // UserId is the resolved recipient; User is only a display
+              // name, which Exchange cannot resolve when two share it.
+              const permissions = rows.map((item) => ({
+                UserID: item._raw?.UserId || item._raw?.User || item.User,
+                DisplayName: item._raw?.User || item.User,
+                PermissionLevel: item.AccessRights,
+                FolderName: item.FolderName,
+                Modification: 'Remove',
+              }))
               return {
                 userID: graphUserRequest.data?.[0]?.userPrincipalName,
                 tenantFilter: userSettingsDefaults.currentTenant,
@@ -1013,7 +994,8 @@ const Page = () => {
                       tenantFilter: userSettingsDefaults.currentTenant,
                       permissions: [
                         {
-                          UserID: originalUser, // Use original identifier for API calls
+                          UserID: data._raw?.UserId || originalUser,
+                          DisplayName: originalUser,
                           PermissionLevel: data.AccessRights,
                           FolderName: data.FolderName,
                           Modification: 'Remove',
