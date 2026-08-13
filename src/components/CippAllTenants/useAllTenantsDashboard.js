@@ -117,28 +117,48 @@ const ADHOC_CACHE_TYPES = new Set([
   'OneDriveRootPermissions',
 ])
 
+// The nightly orchestrator runs at 03:00, so a tenant that collected yesterday is still healthy;
+// past 30 hours it has missed a run, and past 72 it has missed three.
+const STALE_HOURS = 30
+const CRITICAL_HOURS = 72
+
 /**
  * Estate-wide scale totals and per-tenant cache freshness from ListDBCache countsOnly rows. Pure so
  * the freshness rules can be exercised on their own — the alternative is standing up all seven of
  * the dashboard's queries to assert on three integers.
+ *
+ * Each stale tenant carries the collections that made it stale, oldest first, so the card can answer
+ * "which one, and when did it last run" without a second request — the rows are already here.
  */
 export const deriveCacheSummary = (rows, tenants) => {
   const tenantCount = tenants.length
   const totals = new Map()
-  const tenantOldest = new Map()
+  const collectionsByTenant = new Map()
+  // Domains whose only rows are ad-hoc collections. They have nothing scheduled to judge, so they
+  // read as never cached — but saying that flatly would be wrong when a manual sync plainly ran.
+  const adhocOnly = new Set()
 
   rows.forEach((row) => {
     const type = row?.Type
     const count = Number(row?.Count ?? 0)
     // Scale totals still count every collection — only the age judgement is scoped.
     if (type) totals.set(type, (totals.get(type) ?? 0) + count)
-    if (ADHOC_CACHE_TYPES.has(type)) return
-
-    const age = hoursSince(row?.LastRefresh)
-    if (row?.Tenant && age !== null) {
-      const current = tenantOldest.get(row.Tenant)
-      if (current === undefined || age > current) tenantOldest.set(row.Tenant, age)
+    if (!row?.Tenant) return
+    if (ADHOC_CACHE_TYPES.has(type)) {
+      adhocOnly.add(row.Tenant)
+      return
     }
+
+    const ageHours = hoursSince(row?.LastRefresh)
+    if (ageHours === null) return
+    const collections = collectionsByTenant.get(row.Tenant) ?? []
+    collections.push({ type, lastRefresh: row.LastRefresh, ageHours })
+    collectionsByTenant.set(row.Tenant, collections)
+  })
+
+  collectionsByTenant.forEach((collections, domain) => {
+    collections.sort((a, b) => b.ageHours - a.ageHours)
+    adhocOnly.delete(domain)
   })
 
   const scale = SCALE_TYPES.map(({ type, label }) => ({
@@ -156,39 +176,59 @@ export const deriveCacheSummary = (rows, tenants) => {
   // iterate the tenant list rather than the returned rows.
   tenants.forEach((tenant) => {
     const domain = tenant?.defaultDomainName
-    const age = domain ? tenantOldest.get(domain) : undefined
+    const collections = (domain && collectionsByTenant.get(domain)) || []
     const name = tenant?.displayName || domain
-    if (age === undefined) {
+    const oldest = collections[0]
+
+    if (!oldest) {
       missing += 1
       staleTenants.push({
         name,
-        detail: 'No cached collections found',
+        domain,
+        detail: adhocOnly.has(domain)
+          ? 'Only on-demand collections cached'
+          : 'No cached collections found',
         severity: 'critical',
+        ageHours: null,
+        collections: [],
       })
-    } else if (age > 72) {
-      stale += 1
-      staleTenants.push({
-        name,
-        detail: `Oldest collection ${Math.round(age / 24)} days old`,
-        severity: 'critical',
-      })
-    } else if (age > 30) {
-      stale += 1
-      staleTenants.push({
-        name,
-        detail: `Oldest collection ${Math.round(age)} hours old`,
-        severity: 'warning',
-      })
-    } else {
-      fresh += 1
+      return
     }
+
+    const age = oldest.ageHours
+    if (age <= STALE_HOURS) {
+      fresh += 1
+      return
+    }
+
+    stale += 1
+    staleTenants.push({
+      name,
+      domain,
+      detail:
+        age > CRITICAL_HOURS
+          ? `Oldest collection ${Math.round(age / 24)} days old`
+          : `Oldest collection ${Math.round(age)} hours old`,
+      severity: age > CRITICAL_HOURS ? 'critical' : 'warning',
+      ageHours: age,
+      // Only what is actually behind — a tenant that missed one run has three stale collections,
+      // not the eighty that refreshed fine.
+      collections: collections.filter((entry) => entry.ageHours > STALE_HOURS),
+    })
+  })
+
+  // Worst first: never cached, then oldest. The list scrolls rather than truncating at five, so this
+  // order is the triage order.
+  staleTenants.sort((a, b) => {
+    if ((a.ageHours === null) !== (b.ageHours === null)) return a.ageHours === null ? -1 : 1
+    return (b.ageHours ?? 0) - (a.ageHours ?? 0)
   })
 
   return {
     scale,
     hasData: rows.length > 0,
     freshness: { fresh, stale, missing },
-    staleTenants: staleTenants.slice(0, 5),
+    staleTenants,
   }
 }
 

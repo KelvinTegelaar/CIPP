@@ -14,6 +14,7 @@ import { useAllTenantsDashboard } from './useAllTenantsDashboard'
 import {
   AllTenantsBandHeading,
   AllTenantsBarList,
+  AllTenantsCacheList,
   AllTenantsMeterList,
   AllTenantsRowList,
   AllTenantsTrendChart,
@@ -578,7 +579,7 @@ export const AllTenantsDashboard = () => {
                   </Stack>
                 </Grid>
                 <Grid size={{ xs: 12, md: 8 }}>
-                  <AllTenantsRowList
+                  <AllTenantsCacheList
                     rows={cache.staleTenants}
                     isFetching={countsApi.isLoading || tenants.isLoading}
                     emptyText="Every tenant was cached within the last 30 hours."
