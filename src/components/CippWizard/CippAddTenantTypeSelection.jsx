@@ -9,19 +9,16 @@ export const CippAddTenantTypeSelection = (props) => {
 
   const [selectedOption, setSelectedOption] = useState(null)
 
-  // Fetch host tenant organization to check partnerTenantType.
-  // No tenantFilter means the backend defaults to $env:TenantID (the CIPP host tenant).
+  // Ask the backend whether this CIPP instance runs on a partner tenant. Deliberately not a
+  // direct Graph call: the tenant-scoped route is denied for custom roles that block the
+  // partner tenant, which greys out the partner-only options below for roles that are
+  // otherwise fully permitted. ListPartnerTenantInfo pins the lookup to the host tenant.
   const organization = ApiGetCall({
-    url: '/api/ListGraphRequest',
-    queryKey: 'ListGraphRequest-organization-partnerTenantType',
-    data: {
-      Endpoint: 'organization',
-      $select: 'partnerTenantType,displayName',
-    },
+    url: '/api/ListPartnerTenantInfo',
+    queryKey: 'ListPartnerTenantInfo',
   })
 
-  const partnerTenantType = organization.data?.Results?.[0]?.partnerTenantType
-  const isPartner = organization.isSuccess && Boolean(partnerTenantType)
+  const isPartner = organization.isSuccess && Boolean(organization.data?.isPartnerTenant)
   const partnerCheckComplete = organization.isSuccess || organization.isError
 
   // Register the tenantType field in react-hook-form

@@ -11,20 +11,15 @@ import { ApiGetCall } from "../../../api/ApiCall";
 const Page = () => {
   const [importReport, setImportReport] = useState(false);
 
-  // Same signal the Add Tenant wizard uses to decide whether partner-only flows apply.
-  // No tenantFilter means the backend defaults to the CIPP host tenant.
+  // Same signal the Add Tenant wizard uses to decide whether partner-only flows apply, and the
+  // same shared query key so the two pages hit one cache entry.
   const organization = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    queryKey: "ListGraphRequest-organization-partnerTenantType",
-    data: {
-      Endpoint: "organization",
-      $select: "partnerTenantType,displayName",
-    },
+    url: "/api/ListPartnerTenantInfo",
+    queryKey: "ListPartnerTenantInfo",
   });
 
-  const partnerTenantType = organization.data?.Results?.[0]?.partnerTenantType;
   const partnerCheckComplete = organization.isSuccess || organization.isError;
-  const isPartner = organization.isSuccess && Boolean(partnerTenantType);
+  const isPartner = organization.isSuccess && Boolean(organization.data?.isPartnerTenant);
 
   // Keep the GDAP check visible until we know it does not apply, and always show it when an
   // imported report contains GDAP data.
