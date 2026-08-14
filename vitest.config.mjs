@@ -17,6 +17,23 @@ const nextAliases = {
   'next/link': path.resolve(dirname, 'tests/mocks/next-link.js'),
 }
 
+// vitest gives every module its own cjs `require`, which shadows the globalThis polyfill in
+// tests/mocks/require-context.js. jsdom only - the browser project has no local require
+const requireContextPlugin = {
+  name: 'cipp-require-context',
+  enforce: 'pre',
+  transform(code, id) {
+    if (id.includes('/node_modules/') || !code.includes('require.context(')) {
+      return null
+    }
+    // lookbehind so an already-prefixed call isn't rewritten to globalThis.globalThis.require
+    return {
+      code: code.replace(/(?<![.\w$])require\.context\(/g, 'globalThis.require.context('),
+      map: null,
+    }
+  },
+}
+
 export default defineConfig({
   esbuild: {
     jsx: 'automatic',
@@ -38,6 +55,7 @@ export default defineConfig({
     },
     projects: [
       {
+        plugins: [requireContextPlugin],
         resolve: { alias: nextAliases },
         define: { 'process.env': '{}' },
         esbuild: {
