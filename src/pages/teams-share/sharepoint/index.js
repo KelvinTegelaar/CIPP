@@ -357,48 +357,54 @@ const Page = () => {
         <CippEditSitePropertiesForm formHook={formHook} row={row} tenantFilter={tenantFilter} />
       ),
       customDataformatter: (row, action, formData) => {
-        const siteRow = Array.isArray(row) ? row[0] : row
-        const isGroupSite = siteRow?.rootWebTemplate === 'Group'
         const v = (x) => (x && typeof x === 'object' && 'value' in x ? x.value : x)
-        const payload = {
-          tenantFilter: siteRow.Tenant ?? tenantFilter,
-          SiteUrl: siteRow.webUrl,
-          SharingCapability: v(formData.SharingCapability),
-          DefaultSharingLinkType: v(formData.DefaultSharingLinkType),
-          DefaultLinkPermission: v(formData.DefaultLinkPermission),
-          LockState: v(formData.LockState),
-        }
-        if (!isGroupSite) {
-          payload.Title = formData.Title
-          payload.SharingDomainRestrictionMode = v(formData.SharingDomainRestrictionMode)
-          payload.OverrideTenantAnonymousLinkExpirationPolicy =
-            !!formData.OverrideTenantAnonymousLinkExpirationPolicy
-          payload.InheritVersionPolicyFromTenant = !!formData.InheritVersionPolicyFromTenant
-        }
-        if (!isGroupSite && v(formData.SharingDomainRestrictionMode) === 'AllowList') {
-          payload.SharingAllowedDomainList = formData.SharingAllowedDomainList
-        }
-        if (!isGroupSite && v(formData.SharingDomainRestrictionMode) === 'BlockList') {
-          payload.SharingBlockedDomainList = formData.SharingBlockedDomainList
-        }
-        if (!isGroupSite && formData.OverrideTenantAnonymousLinkExpirationPolicy) {
-          payload.AnonymousLinkExpirationInDays = parseInt(
-            formData.AnonymousLinkExpirationInDays ?? 0,
-            10
-          )
-        }
-        const storageMax = parseInt(formData.StorageMaximumLevel, 10)
-        const storageWarn = parseInt(formData.StorageWarningLevel, 10)
-        if (!isNaN(storageMax) && storageMax > 0) payload.StorageMaximumLevel = storageMax
-        if (!isNaN(storageWarn) && storageWarn > 0) payload.StorageWarningLevel = storageWarn
-        if (!isGroupSite && !formData.InheritVersionPolicyFromTenant) {
-          payload.EnableAutoExpirationVersionTrim = !!formData.EnableAutoExpirationVersionTrim
-          if (!formData.EnableAutoExpirationVersionTrim) {
-            payload.MajorVersionLimit = parseInt(formData.MajorVersionLimit ?? 0, 10)
-            payload.ExpireVersionsAfterDays = parseInt(formData.ExpireVersionsAfterDays ?? 0, 10)
+        // isGroupSite is evaluated per site: a selection can mix group-backed and classic
+        // sites, and the group-backed ones reject the properties guarded below.
+        const formatRow = (siteRow) => {
+          const isGroupSite = siteRow?.rootWebTemplate === 'Group'
+          const payload = {
+            tenantFilter: siteRow.Tenant ?? tenantFilter,
+            SiteUrl: siteRow.webUrl,
+            SharingCapability: v(formData.SharingCapability),
+            DefaultSharingLinkType: v(formData.DefaultSharingLinkType),
+            DefaultLinkPermission: v(formData.DefaultLinkPermission),
+            LockState: v(formData.LockState),
           }
+          if (!isGroupSite) {
+            payload.Title = formData.Title
+            payload.SharingDomainRestrictionMode = v(formData.SharingDomainRestrictionMode)
+            payload.OverrideTenantAnonymousLinkExpirationPolicy =
+              !!formData.OverrideTenantAnonymousLinkExpirationPolicy
+            payload.InheritVersionPolicyFromTenant = !!formData.InheritVersionPolicyFromTenant
+          }
+          if (!isGroupSite && v(formData.SharingDomainRestrictionMode) === 'AllowList') {
+            payload.SharingAllowedDomainList = formData.SharingAllowedDomainList
+          }
+          if (!isGroupSite && v(formData.SharingDomainRestrictionMode) === 'BlockList') {
+            payload.SharingBlockedDomainList = formData.SharingBlockedDomainList
+          }
+          if (!isGroupSite && formData.OverrideTenantAnonymousLinkExpirationPolicy) {
+            payload.AnonymousLinkExpirationInDays = parseInt(
+              formData.AnonymousLinkExpirationInDays ?? 0,
+              10
+            )
+          }
+          const storageMax = parseInt(formData.StorageMaximumLevel, 10)
+          const storageWarn = parseInt(formData.StorageWarningLevel, 10)
+          if (!isNaN(storageMax) && storageMax > 0) payload.StorageMaximumLevel = storageMax
+          if (!isNaN(storageWarn) && storageWarn > 0) payload.StorageWarningLevel = storageWarn
+          if (!isGroupSite && !formData.InheritVersionPolicyFromTenant) {
+            payload.EnableAutoExpirationVersionTrim = !!formData.EnableAutoExpirationVersionTrim
+            if (!formData.EnableAutoExpirationVersionTrim) {
+              payload.MajorVersionLimit = parseInt(formData.MajorVersionLimit ?? 0, 10)
+              payload.ExpireVersionsAfterDays = parseInt(formData.ExpireVersionsAfterDays ?? 0, 10)
+            }
+          }
+          return payload
         }
-        return payload
+        // When multiple rows are selected, row is an array. Returning an array
+        // makes CippApiDialog send one request per row (bulk request mode).
+        return Array.isArray(row) ? row.map(formatRow) : formatRow(row)
       },
       multiPost: false,
       allowResubmit: true,
@@ -514,6 +520,7 @@ const Page = () => {
         />
       ),
       multiPost: false,
+      hideBulk: true,
     },
     {
       label: 'Delete Site',
@@ -647,6 +654,7 @@ const Page = () => {
         />
       ),
       multiPost: false,
+      hideBulk: true,
     },
     {
       label: 'Check Cleanup Job Status',
@@ -661,6 +669,7 @@ const Page = () => {
         />
       ),
       multiPost: false,
+      hideBulk: true,
     },
   ]
 
