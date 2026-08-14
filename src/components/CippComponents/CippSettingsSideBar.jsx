@@ -60,6 +60,7 @@ export const CippSettingsSideBar = (props) => {
       // General Settings
       usageLocation: formValues.usageLocation,
       tablePageSize: formValues.tablePageSize,
+      defaultTestSuite: formValues.defaultTestSuite,
       userAttributes: formValues.userAttributes,
 
       // Table Filter Preferences
@@ -104,6 +105,13 @@ export const CippSettingsSideBar = (props) => {
         RemoveMFADevices: formValues.offboardingDefaults?.RemoveMFADevices,
         RemoveTeamsPhoneDID: formValues.offboardingDefaults?.RemoveTeamsPhoneDID,
         ClearImmutableId: formValues.offboardingDefaults?.ClearImmutableId,
+        removeCalendarPermissions: formValues.offboardingDefaults?.removeCalendarPermissions,
+        DisableOneDriveSharing: formValues.offboardingDefaults?.DisableOneDriveSharing,
+        postExecution: {
+          psa: formValues.offboardingDefaults?.postExecution?.psa,
+          email: formValues.offboardingDefaults?.postExecution?.email,
+          webhook: formValues.offboardingDefaults?.postExecution?.webhook,
+        },
       },
     };
 

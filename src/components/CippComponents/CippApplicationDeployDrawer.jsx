@@ -500,6 +500,13 @@ export const CippApplicationDeployDrawer = ({
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="switch"
+                label="Install as system"
+                name="InstallAsSystem"
+                formControl={formControl}
+                defaultValue={true}
+              />
+              <CippFormComponent
+                type="switch"
                 label="Mark for Uninstallation"
                 name="InstallationIntent"
                 formControl={formControl}

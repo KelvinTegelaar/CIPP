@@ -40,9 +40,11 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
       // Flatten all pages and extract Results
       const allGroups = tenantGroupsQuery.data.pages.flatMap((page) => page?.Results || []);
       return allGroups
-        .filter((group) => group.GroupType === "static")
         .map((group) => ({
-          label: group.Name || group.displayName,
+          label:
+            group.GroupType === "dynamic"
+              ? `${group.Name || group.displayName} (dynamic)`
+              : group.Name || group.displayName,
           value: group.Id || group.RowKey,
           type: group.GroupType,
         }))
@@ -188,6 +190,16 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
                     />
                   </Grid>
                 </Grid>
+              ) : watchedRules?.[ruleIndex]?.property?.type === "gdapAge" ? (
+                <CippFormComponent
+                  type="number"
+                  name={`${name}.${ruleIndex}.value.value`}
+                  label="Days"
+                  formControl={formControl}
+                  required
+                  placeholder="e.g. 14"
+                  fullWidth
+                />
               ) : (
                 <CippFormComponent
                   type="autoComplete"
@@ -233,6 +245,8 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
         "Member of Tenant Group equals 'Production Tenants'"
         {" | "}
         "Custom Variable: Environment equals Production"
+        {" | "}
+        "GDAP Relationship Age (days) Greater Than or Equal 14"
       </Alert>
 
       {/* Logic Operator Selection */}

@@ -8,9 +8,12 @@ import { ApiGetCall } from '../api/ApiCall.jsx'
 import { CippSponsor } from '../components/CippComponents/CippSponsor'
 import { useSettings } from '../hooks/use-settings'
 
-const SIDE_NAV_WIDTH = 290
-const SIDE_NAV_COLLAPSED_WIDTH = 73 // icon size + padding + border right
-const TOP_NAV_HEIGHT = 64
+import {
+  BANNER_HEIGHT_VAR,
+  SIDE_NAV_COLLAPSED_WIDTH,
+  SIDE_NAV_WIDTH,
+  TOP_NAV_HEIGHT,
+} from './constants'
 
 const isPathPrefix = (pathname, itemPath) => {
   if (!pathname || !itemPath) return false
@@ -135,15 +138,28 @@ export const SideNav = (props) => {
 
     let targetScrollTop = el.scrollTop
     let animating = false
+    let lastWrite = null
 
     const animate = () => {
+      if (!animating) {
+        return
+      }
       const diff = targetScrollTop - el.scrollTop
-      if (Math.abs(diff) < 0.5) {
-        el.scrollTop = targetScrollTop
+
+      // browsers can round to device pixels
+      if (Math.abs(diff) < 1) {
         animating = false
         return
       }
-      el.scrollTop += diff * 0.25
+      const before = el.scrollTop
+      lastWrite = before + diff * 0.25
+      el.scrollTop = lastWrite
+      if (el.scrollTop === before) {
+        // write clamped or rounded to a no-op, stop instead of spinning the raf loop
+        targetScrollTop = before
+        animating = false
+        return
+      }
       requestAnimationFrame(animate)
     }
 
@@ -157,8 +173,25 @@ export const SideNav = (props) => {
       }
     }
 
+    // scrollbar drags, keyboard and touch move scrollTop outside the wheel path,
+    // resync the target so the easing loop doesn't fight them for the thumb.
+    // mid-animation, events matching our own write are the loop's echo, skip those
+    const handleScroll = () => {
+      if (animating && lastWrite !== null && Math.abs(el.scrollTop - lastWrite) < 1) {
+        return
+      }
+      targetScrollTop = el.scrollTop
+      animating = false
+    }
+
     el.addEventListener('wheel', handleWheel, { passive: false })
-    return () => el.removeEventListener('wheel', handleWheel)
+    el.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      // queued animate() exits on guard, stopping RAF chain
+      animating = false
+      el.removeEventListener('wheel', handleWheel)
+      el.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   // Preprocess items to mark which should be open
@@ -176,11 +209,11 @@ export const SideNav = (props) => {
             onMouseLeave: () => setHovered(false),
             sx: {
               backgroundColor: 'background.default',
-              height: `calc(100% - ${TOP_NAV_HEIGHT}px)`,
+              height: `calc(100% - ${TOP_NAV_HEIGHT}px - ${BANNER_HEIGHT_VAR})`,
               overflowX: 'hidden',
               overflowY: 'auto',
               scrollbarGutter: 'stable',
-              top: TOP_NAV_HEIGHT,
+              top: `calc(${TOP_NAV_HEIGHT}px + ${BANNER_HEIGHT_VAR})`,
               transition: 'width 250ms ease-in-out',
               width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
               zIndex: (theme) => theme.zIndex.appBar - 100,

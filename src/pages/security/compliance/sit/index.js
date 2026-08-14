@@ -1,7 +1,9 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { TrashIcon } from '@heroicons/react/24/outline'
+import { Book } from '@mui/icons-material'
 import { CippDeployCompliancePolicyDrawer } from '../../../../components/CippComponents/CippDeployCompliancePolicyDrawer.jsx'
+import { CippSitRulePackDetails } from '../../../../components/CippComponents/CippSitRulePackDetails.jsx'
 import { PermissionButton } from '../../../../utils/permissions.js'
 import { useSettings } from '../../../../hooks/use-settings'
 
@@ -12,6 +14,19 @@ const Page = () => {
   const cardButtonPermissions = ['Security.SensitiveInfoType.ReadWrite']
 
   const actions = [
+    {
+      label: 'Create template based on SIT',
+      type: 'POST',
+      icon: <Book />,
+      url: '/api/AddSensitiveInfoTypeTemplate',
+      data: {
+        Identity: 'Name',
+      },
+      hideBulk: true,
+      confirmText: 'Are you sure you want to create a template based on this Sensitive Information Type?',
+      // Only Microsoft built-ins can't be templated; custom regex and fingerprint SITs both can.
+      condition: (row) => row.Publisher && !String(row.Publisher).startsWith('Microsoft'),
+    },
     {
       label: 'Delete SIT',
       type: 'POST',
@@ -31,18 +46,21 @@ const Page = () => {
       'Name',
       'Description',
       'Publisher',
+      'Type',
       'Recommended',
       'RulePackId',
       'RulePackVersion',
       'State',
-      'Type',
     ],
     actions: actions,
+    children: (row) => <CippSitRulePackDetails row={row} tenant={tenantFilter} />,
+    size: 'lg',
   }
 
   const simpleColumns = [
     'Name',
     'Publisher',
+    'Type',
     'Description',
     'Recommended',
     'RulePackVersion',

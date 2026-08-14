@@ -35,7 +35,17 @@ const Page = () => {
           multiple: false,
           creatable: false,
           api: {
-            url: "/api/listUsers",
+            url: "/api/ListGraphRequest",
+            queryKey: "TeamsVoiceAssignableUsers",
+            dataKey: "Results",
+            data: {
+              Endpoint: "users",
+              manualPagination: true,
+              $select: "id,userPrincipalName,displayName",
+              $count: true,
+              $orderby: "displayName",
+              $top: 999,
+            },
             labelField: (input) => `${input.displayName} (${input.userPrincipalName})`,
             valueField: "userPrincipalName",
           },
@@ -71,7 +81,16 @@ const Page = () => {
           label: "Emergency Location",
           api: {
             url: "/api/ListTeamsLisLocation",
-            labelField: "Description",
+            queryKey: "TeamsLisLocations",
+            // Description is optional on a location, so fall back to the place name and
+            // then the street address rather than rendering "No label found".
+            labelField: (location) =>
+              location.Description ||
+              location.Location ||
+              [location.HouseNumber, location.StreetName, location.City]
+                .filter(Boolean)
+                .join(" ") ||
+              location.LocationId,
             valueField: "LocationId",
           },
         },
@@ -86,6 +105,7 @@ const Page = () => {
       "AcquiredCapabilities",
       "AssignmentStatus",
       "AssignedTo",
+      "EmergencyLocation",
     ],
     actions: actions,
   };
@@ -100,10 +120,11 @@ const Page = () => {
         offCanvas={offCanvas}
         simpleColumns={[
           ...reportDB.cacheColumns,
-          "AssignedTo",
+          "AssignedTo.userPrincipalName",
           "TelephoneNumber",
           "AssignmentStatus",
           "NumberType",
+          "EmergencyLocation",
           "AcquiredCapabilities",
           "IsoCountryCode",
           "PlaceName",

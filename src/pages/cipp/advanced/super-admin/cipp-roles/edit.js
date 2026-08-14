@@ -1,28 +1,18 @@
+// Legacy redirect: this page moved to /cipp/advanced/authentication/cipp-roles/edit when the
+// Super Admin area was split into Super Admin / Container Management / Authentication.
+// Safe to delete once bookmarks and docs links have aged out.
+import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
-import CippPageCard from "../../../../../components/CippCards/CippPageCard";
-import { CippRoleAddEdit } from "../../../../../components/CippSettings/CippRoleAddEdit";
-import { CardContent, Stack, Alert } from "@mui/material";
 
-const EditRolePage = () => {
+const Page = () => {
   const router = useRouter();
-  const { role } = router.query;
 
-  return (
-    <CippPageCard hideBackButton={false} title={`Edit Role: ${role}`}>
-      <CardContent>
-        <Stack spacing={2}>
-          <Alert color="info">
-            Editing an existing role will update the permissions for all users assigned to this
-            role.
-          </Alert>
-          <CippRoleAddEdit selectedRole={role} />
-        </Stack>
-      </CardContent>
-    </CippPageCard>
-  );
+  useEffect(() => {
+    if (!router.isReady) return;
+    router.replace({ pathname: "/cipp/advanced/authentication/cipp-roles/edit", query: router.query });
+  }, [router.isReady]);
+
+  return null;
 };
 
-EditRolePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
-export default EditRolePage;
+export default Page;

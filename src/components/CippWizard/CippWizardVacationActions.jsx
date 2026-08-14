@@ -17,6 +17,7 @@ import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippValidator } from '../../utils/get-cipp-validator'
+import countryList from '../../data/countryList.json'
 
 export const CippWizardVacationActions = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep, lastStep } = props
@@ -146,7 +147,10 @@ export const CippWizardVacationActions = (props) => {
                 <Grid size={{ xs: 12 }}>
                   <Alert severity="info" sx={{ mb: 1 }}>
                     Vacation mode uses group-based exclusions for reliability. The exclusion group
-                    follows the format: &apos;Vacation Exclusion - $Policy.displayName&apos;
+                    follows the format: &apos;Vacation Exclusion - $Policy.displayName&apos;. For
+                    longer policy names the name is shortened and suffixed with the start of the
+                    policy ID, e.g. &apos;Vacation Exclusion - CA005-RegisterSecurityInfo: Require...
+                    [a1b2c3d4]&apos;
                   </Alert>
                 </Grid>
                 <Grid size={{ xs: 12 }}>
@@ -198,6 +202,55 @@ export const CippWizardVacationActions = (props) => {
                     formControl={formControl}
                   />
                 </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    label="Create temporary travel policy (only allow sign-ins from the travel destination)"
+                    name="createTravelPolicy"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="createTravelPolicy"
+                  compareType="is"
+                  compareValue={true}
+                  clearOnHide={false}
+                >
+                  <Grid size={{ xs: 12 }}>
+                    <Alert severity="info" sx={{ mb: 1 }}>
+                      Excluding a user from a CA policy allows sign-ins from anywhere. This option
+                      closes that gap: at the start date a named location and a conditional access
+                      policy named &apos;Travel Policy &lt;users&gt; - &lt;start date&gt; - &lt;end
+                      date&gt;&apos; are created, blocking sign-ins for the selected users from
+                      every location except the travel destination. At the end date, the policy and
+                      the named location are deleted automatically.
+                    </Alert>
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Travel destination countries"
+                      name="travelCountries"
+                      multiple={true}
+                      creatable={false}
+                      options={countryList.map(({ Code, Name }) => ({
+                        value: Code,
+                        label: Name,
+                      }))}
+                      formControl={formControl}
+                      validators={{
+                        validate: (option) => {
+                          if (!Array.isArray(option) || option.length === 0) {
+                            return 'At least one travel destination country must be selected'
+                          }
+                          return true
+                        },
+                      }}
+                      required={true}
+                    />
+                  </Grid>
+                </CippFormCondition>
               </Grid>
             </CippFormCondition>
           </Stack>

@@ -10,6 +10,14 @@ import { CippApiResults } from "./CippApiResults";
 import languageList from "../../data/languageList.json";
 import { ApiPostCall } from "../../api/ApiCall";
 
+// Intune rejects anything outside this set with a generic 500 that carries no reason, so we catch it here.
+// Kept in sync with Test-CIPPAutopilotProfileName on the backend.
+const PROFILE_NAME_PATTERN = /^[\p{L}\p{N} :"?.@$&_\[\]{}|\\]+$/u;
+const PROFILE_NAME_MESSAGE =
+  'Only letters, numbers, spaces and : " ? . @ $ & _ [ ] { } | \\ are allowed';
+const PROFILE_NAME_HINT =
+  'Intune only accepts letters, numbers, spaces and : " ? . @ $ & _ [ ] { } | \\ — hyphens are rejected';
+
 export const CippAutopilotProfileDrawer = ({
   buttonText = "Add Profile",
   requiredPermissions = [],
@@ -144,8 +152,14 @@ export const CippAutopilotProfileDrawer = ({
               label="Display Name"
               name="DisplayName"
               formControl={formControl}
-              validators={{ required: "Display Name is required" }}
+              validators={{
+                required: "Display Name is required",
+                validate: (value) =>
+                  (value ?? "").trim().length > 0 || "Display Name is required",
+                pattern: { value: PROFILE_NAME_PATTERN, message: PROFILE_NAME_MESSAGE },
+              }}
               required={true}
+              helperText={PROFILE_NAME_HINT}
             />
           </Grid>
 
@@ -225,7 +239,7 @@ export const CippAutopilotProfileDrawer = ({
               name="HideChangeAccount"
               formControl={formControl}
               disabled={true}
-              helperText="This setting requires Hybrid Azure AD Join which is not supported in CIPP"
+              helperText="This setting requires Hybrid Microsoft Entra Join which is not supported in CIPP"
             />
             <CippFormComponent
               type="switch"

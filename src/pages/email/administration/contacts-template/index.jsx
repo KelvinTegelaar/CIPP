@@ -81,7 +81,14 @@ const Page = () => {
       target: "_self",
     },
   ];
-  const simpleColumns = ["name", "contactTemplateName", "GUID"];
+  const simpleColumns = [
+    "displayName",
+    "email",
+    "companyName",
+    "jobTitle",
+    "hidefromGAL",
+    "GUID",
+  ];
 
   return (
     <CippTablePage
@@ -92,7 +99,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <CippDeployContactTemplateDrawer permissions={cardButtonPermissions} />
+          <CippDeployContactTemplateDrawer requiredPermissions={cardButtonPermissions} />
           <Button
             component={Link}
             href="/email/administration/contacts-template/add"

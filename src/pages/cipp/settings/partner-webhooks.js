@@ -4,6 +4,7 @@ import tabOptions from "./tabOptions";
 import CippFormPage from "../../../components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -41,6 +42,19 @@ const Page = () => {
     data: { Action: "ListSubscription" },
     queryKey: "listSubscription",
   });
+
+  const subscription = listSubscription?.data?.Results;
+  const expectedWebhookUrl = subscription?.expectedWebhookUrl;
+  // The backend resolves the expected URL from the custom domain bound to the instance, not from
+  // the host this page was loaded on, so surface which one it picked when there is more than one.
+  const customDomains = subscription?.customDomains ?? [];
+  const hasMultipleCustomDomains = customDomains.length > 1;
+  // Compared case-insensitively to match the backend, which uses PowerShell's -ne
+  const webhookUrlIsStale =
+    !!expectedWebhookUrl &&
+    !!subscription?.webhookUrl &&
+    subscription.webhookUrl !== "None" &&
+    subscription.webhookUrl.toLowerCase() !== expectedWebhookUrl.toLowerCase();
 
   const listEventTypes = ApiGetCall({
     url: "/api/ExecPartnerWebhook",
@@ -165,7 +179,26 @@ const Page = () => {
               },
               {
                 label: "Webhook URL",
-                value: <CippCodeBlock code={listSubscription?.data?.Results?.webhookUrl} />,
+                value: (
+                  <Stack spacing={1}>
+                    <CippCodeBlock code={subscription?.webhookUrl} />
+                    {webhookUrlIsStale && (
+                      <Alert severity="warning">
+                        This subscription points at a different URL than the one this instance is
+                        published on. Save the settings below to re-register it against{" "}
+                        <strong>{expectedWebhookUrl}</strong>.
+                      </Alert>
+                    )}
+                    {hasMultipleCustomDomains && (
+                      <Alert severity="info">
+                        This instance has {customDomains.length} custom domains bound (
+                        {customDomains.join(", ")}). CIPP uses the first one,{" "}
+                        <strong>{subscription?.instanceHostname}</strong>, for webhook registrations
+                        and notification links.
+                      </Alert>
+                    )}
+                  </Stack>
+                ),
                 sx: { pl: 0 },
               },
               {

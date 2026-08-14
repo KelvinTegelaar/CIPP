@@ -28,22 +28,34 @@ import { LicenseCard } from '../../components/CippComponents/LicenseCard'
 import { TenantInfoCard } from '../../components/CippComponents/TenantInfoCard'
 import { TenantMetricsGrid } from '../../components/CippComponents/TenantMetricsGrid'
 import { AssessmentCard } from '../../components/CippComponents/AssessmentCard'
+import { AlertsOverviewCard } from '../../components/CippComponents/AlertsOverviewCard'
 import { CippReportToolbar } from '../../components/CippComponents/CippReportToolbar'
 import { Assessment as AssessmentIcon } from '@mui/icons-material'
 import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
+import { AllTenantsDashboard } from '../../components/CippAllTenants/AllTenantsDashboard'
 
 const Page = () => {
   const settings = useSettings()
   const router = useRouter()
   const { currentTenant } = settings
+  // The per-tenant cards below are all scoped to a single tenant's Graph data. Under AllTenants —
+  // which is also the state on first login, before a tenant has been picked — swap in the
+  // cross-tenant view rather than letting the layout render "Not supported".
+  const isAllTenants = !currentTenant || currentTenant === 'AllTenants'
   const [portalMenuItems, setPortalMenuItems] = useState([])
   const isWide = useMediaQuery('(min-width:1513px)')
   const [reportsMenuAnchor, setReportsMenuAnchor] = useState(null)
-  // Get reportId from query params or default to "ztna"
+  // Get reportId from query params or default to the user's preferred suite (Preferences page)
   // Only use default if router is ready and reportId is still not present
+  const defaultReportId =
+    settings.UserSpecificSettings?.defaultTestSuite?.value ||
+    settings.defaultTestSuite?.value ||
+    'ztna'
   const selectedReport =
-    router.isReady && !router.query.reportId ? 'ztna' : router.query.reportId || 'ztna'
+    router.isReady && !router.query.reportId
+      ? defaultReportId
+      : router.query.reportId || defaultReportId
 
   // Fetch available reports (shared cache with CippReportToolbar)
   const reportsApi = ApiGetCall({
@@ -57,6 +69,7 @@ const Page = () => {
     url: '/api/ListGraphRequest',
     queryKey: `${currentTenant}-ListGraphRequest-organization`,
     data: { tenantFilter: currentTenant, Endpoint: 'organization' },
+    waiting: !isAllTenants,
   })
 
   const organizationRecord = organization.data?.Results?.[0]
@@ -65,7 +78,7 @@ const Page = () => {
     url: '/api/ListTests',
     data: { tenantFilter: currentTenant, reportId: selectedReport },
     queryKey: `${currentTenant}-ListTests-${selectedReport}`,
-    waiting: !!currentTenant && !!selectedReport,
+    waiting: !isAllTenants && !!currentTenant && !!selectedReport,
   })
 
   const currentTenantInfo = ApiGetCall({
@@ -142,7 +155,10 @@ const Page = () => {
 
     let portalLinks
     if (settings.UserSpecificSettings?.portalLinks) {
-      portalLinks = { ...defaultLinks, ...settings.UserSpecificSettings.portalLinks }
+      portalLinks = {
+        ...defaultLinks,
+        ...settings.UserSpecificSettings.portalLinks,
+      }
     } else if (settings.portalLinks) {
       portalLinks = { ...defaultLinks, ...settings.portalLinks }
     } else {
@@ -168,7 +184,12 @@ const Page = () => {
       const menuItems = filteredPortals.map((portal) => ({
         label: portal.label,
         target: '_blank',
-        link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+        // A portal with a `field` has a URL the backend resolved for us (SharePoint's host cannot be
+        // derived from the tenant). Use it when it's there, otherwise fall back to the templated URL.
+        link:
+          portal.field && tenantLookup?.[portal.field]
+            ? tenantLookup[portal.field]
+            : portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
         icon: portal.icon,
       }))
       setPortalMenuItems(menuItems)
@@ -186,6 +207,18 @@ const Page = () => {
       return (num / 1000).toFixed(1) + 'K'
     }
     return num.toLocaleString()
+  }
+
+  if (isAllTenants) {
+    // No top margin, matching CippTablePage: the layout's breadcrumb Divider already carries mb: 2.
+    // The per-tenant view below needs mt: 12 only because it sits under the test-suite tab bar,
+    // which AllTenants does not render.
+    return (
+      <Container maxWidth={false} sx={{ mb: 6 }}>
+        <CippHead title="Dashboard" />
+        <AllTenantsDashboard />
+      </Container>
+    )
   }
 
   return (
@@ -346,12 +379,24 @@ const Page = () => {
           </Grid>
         </Grid>
 
+        {/* Alerts Section - Full Width */}
+        <Box sx={{ mb: 2 }} data-tutorial="dashboard-alerts">
+          <AlertsOverviewCard tenantFilter={currentTenant} />
+        </Box>
+
         {/* Identity Section - 2 Column Grid */}
         <Box>
           <Grid container spacing={2}>
             {/* Left Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  height: '100%',
+                }}
+              >
                 <Box sx={{ height: 450 }} data-tutorial="dashboard-secure-score">
                   <SecureScoreCard
                     data={testsApi.data?.SecureScore}
@@ -371,7 +416,14 @@ const Page = () => {
 
             {/* Right Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  height: '100%',
+                }}
+              >
                 <Box sx={{ height: 450 }} data-tutorial="dashboard-mfa">
                   <MFACard
                     data={testsApi.data?.MFAState}
@@ -395,8 +447,11 @@ const Page = () => {
   )
 }
 
+// No allTenantsSupport={false} here: the page handles AllTenants itself (see isAllTenants above),
+// and the Identity / Devices / Custom tabs each render a cross-tenant view in that mode too.
+// Leaving the opt-out in place would make the layout render "Not supported" and never mount this page.
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={false}>
+  <DashboardLayout>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

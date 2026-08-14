@@ -16,6 +16,10 @@ import {
   InputAdornment,
   ButtonGroup,
   Button,
+  Menu,
+  MenuItem,
+  Checkbox,
+  ListItemText,
 } from "@mui/material";
 import {
   ExpandMore as ExpandMoreIcon,
@@ -41,7 +45,7 @@ import Defender from "../../icons/iconly/bulk/defender";
 import Intune from "../../icons/iconly/bulk/intune";
 import GDAPRoles from "../../data/GDAPRoles";
 import timezoneList from "../../data/timezoneList";
-import standards from "../../data/standards.json";
+import { getStandards } from "../../utils/standards-data";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippPolicyImportDrawer } from "../CippComponents/CippPolicyImportDrawer";
 import ReactMarkdown from "react-markdown";
@@ -121,6 +125,8 @@ const CippStandardAccordion = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [savedValues, setSavedValues] = useState({});
   const [originalValues, setOriginalValues] = useState({});
+  const [bulkAnchorEl, setBulkAnchorEl] = useState(null);
+  const [bulkActions, setBulkActions] = useState([]);
 
   const watchedValues = useWatch({
     control: formControl.control,
@@ -367,6 +373,44 @@ const CippStandardAccordion = ({
     formControl.setValue(`${standardName}.action`, action);
   };
 
+  // Apply the selected action set to every standard in the template
+  const handleBulkSetActions = () => {
+    // Collapse any expanded accordion so the action change isn't edited underneath the user
+    if (expanded) {
+      handleAccordionToggle(null);
+    }
+
+    const newSaved = {};
+    const newConfigured = {};
+
+    Object.keys(selectedStandards).forEach((standardName) => {
+      const baseStandardName = standardName.split("[")[0];
+      const standard = providedStandards.find((s) => s.name === baseStandardName);
+      if (!standard) return; // unknown/removed standard — skip
+      if (standard.deprecated) return; // deprecated standards can't be configured
+
+      // Replace the action selection, keeping only actions this standard supports
+      const nextActions = getAvailableActions(standard.disabledFeatures).filter((action) =>
+        bulkActions.includes(action.value),
+      );
+      if (nextActions.length === 0) return;
+
+      formControl.setValue(`${standardName}.action`, nextActions, { shouldDirty: true });
+
+      // Only the action is saved — any other unsaved edits stay unsaved so Cancel still reverts them
+      const previous = get(savedValues, standardName);
+      const merged = previous
+        ? { ...cloneDeep(previous), action: nextActions }
+        : { action: nextActions };
+      newSaved[standardName] = merged;
+      newConfigured[standardName] = isStandardConfigured(standardName, standard, merged);
+    });
+
+    setSavedValues((prev) => ({ ...prev, ...newSaved }));
+    setConfiguredState((prev) => ({ ...prev, ...newConfigured }));
+    setBulkAnchorEl(null);
+  };
+
   // Cancel changes for a standard
   const handleCancel = (standardName) => {
     // Get the last saved values
@@ -420,7 +464,7 @@ const CippStandardAccordion = ({
         return;
       }
 
-      const standardInfo = standards.find((s) => s.name === baseStandardName);
+      const standardInfo = getStandards().find((s) => s.name === baseStandardName);
       const category = standardInfo?.cat || "Other Standards";
 
       if (!result[category]) {
@@ -517,6 +561,8 @@ const CippStandardAccordion = ({
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={2}
+            flexWrap="wrap"
+            useFlexGap
             sx={{
               mt: 2,
               mb: 3,
@@ -611,6 +657,52 @@ const CippStandardAccordion = ({
                 Unconfigured ({standardCounts.unconfiguredCount})
               </Button>
             </ButtonGroup>
+            {!isDriftMode && (
+              <>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={(e) => setBulkAnchorEl(e.currentTarget)}
+                >
+                  Set All Actions
+                </Button>
+                <Menu
+                  anchorEl={bulkAnchorEl}
+                  open={Boolean(bulkAnchorEl)}
+                  onClose={() => setBulkAnchorEl(null)}
+                >
+                  {getAvailableActions({}).map((action) => (
+                    <MenuItem
+                      key={action.value}
+                      dense
+                      onClick={() =>
+                        setBulkActions((prev) =>
+                          prev.includes(action.value)
+                            ? prev.filter((v) => v !== action.value)
+                            : [...prev, action.value],
+                        )
+                      }
+                    >
+                      <Checkbox
+                        size="small"
+                        checked={bulkActions.includes(action.value)}
+                        disableRipple
+                        sx={{ p: 0.5, mr: 1 }}
+                      />
+                      <ListItemText primary={action.label} />
+                    </MenuItem>
+                  ))}
+                  <Divider />
+                  <MenuItem dense disabled={bulkActions.length === 0} onClick={handleBulkSetActions}>
+                    <ListItemText
+                      primary="Apply to all standards"
+                      slotProps={{ primary: { color: "primary" } }}
+                    />
+                  </MenuItem>
+                </Menu>
+              </>
+            )}
           </Stack>
 
           {!hasFilteredStandards && (

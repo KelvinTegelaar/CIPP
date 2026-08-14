@@ -4,13 +4,12 @@ import { Layout as DashboardLayout } from '../../../layouts/index.js'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
 import { Button, SvgIcon, Stack, Box } from '@mui/material'
 import { TrashIcon } from '@heroicons/react/24/outline'
-import { Add, RestartAlt, NotificationsOff } from '@mui/icons-material'
+import { Add, RestartAlt, NotificationsOff, Visibility, VisibilityOff } from '@mui/icons-material'
 import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
 import { useDialog } from '../../../hooks/use-dialog'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
 import { CippFormCondition } from '../../../components/CippComponents/CippFormCondition'
-import M365LicensesDefault from '../../../data/M365Licenses.json'
-import M365LicensesAdditional from '../../../data/M365Licenses-additional.json'
+import { getM365Licenses } from '../../../utils/m365-licenses-data'
 import { useMemo, useCallback } from 'react'
 
 const Page = () => {
@@ -18,10 +17,10 @@ const Page = () => {
   const apiUrl = '/api/ListExcludedLicenses'
   const createDialog = useDialog()
   const resetDialog = useDialog()
-  const simpleColumns = ['Product_Display_Name', 'GUID', 'ExclusionType']
+  const simpleColumns = ['Product_Display_Name', 'GUID', 'ExclusionType', 'ShowInLicenseDropdown']
 
   const allLicenseOptions = useMemo(() => {
-    const allLicenses = [...M365LicensesDefault, ...M365LicensesAdditional]
+    const allLicenses = getM365Licenses()
     const uniqueLicenses = new Map()
 
     allLicenses.forEach((license) => {
@@ -57,6 +56,34 @@ const Page = () => {
       confirmText:
         'This license will remain visible in CIPP but will be excluded from alerts. Continue?',
       icon: <NotificationsOff fontSize="small" />,
+    },
+    {
+      label: 'Show in License Dropdowns',
+      type: 'POST',
+      url: '/api/ExecExcludeLicenses',
+      data: {
+        Action: '!SetShowInDropdown',
+        GUID: 'GUID',
+        SKUName: 'Product_Display_Name',
+        ShowInDropdown: true,
+      },
+      confirmText: '[Product_Display_Name] will be available in license dropdowns. Continue?',
+      icon: <Visibility fontSize="small" />,
+      condition: (row) => row.ShowInLicenseDropdown !== true,
+    },
+    {
+      label: 'Hide from License Dropdowns',
+      type: 'POST',
+      url: '/api/ExecExcludeLicenses',
+      data: {
+        Action: '!SetShowInDropdown',
+        GUID: 'GUID',
+        SKUName: 'Product_Display_Name',
+        ShowInDropdown: false,
+      },
+      confirmText: '[Product_Display_Name] will be hidden from license dropdowns. Continue?',
+      icon: <VisibilityOff fontSize="small" />,
+      condition: (row) => row.ShowInLicenseDropdown === true,
     },
     {
       label: 'Delete Exclusion',
@@ -103,7 +130,7 @@ const Page = () => {
   }
 
   const offCanvas = {
-    extendedInfoFields: ['Product_Display_Name', 'GUID', 'ExclusionType'],
+    extendedInfoFields: ['Product_Display_Name', 'GUID', 'ExclusionType', 'ShowInLicenseDropdown'],
     actions: actions,
   }
 

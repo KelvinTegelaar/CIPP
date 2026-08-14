@@ -1,18 +1,6 @@
-import { useCallback, useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import dynamic from 'next/dynamic'
-import {
-  Alert,
-  Box,
-  Button,
-  Container,
-  Dialog,
-  Divider,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  useMediaQuery,
-} from '@mui/material'
+import { Box, Container, Divider, Stack, useMediaQuery } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useSettings } from '../hooks/use-settings'
 import { Footer } from './footer'
@@ -24,22 +12,20 @@ import { useDispatch } from 'react-redux'
 import { showToast } from '../store/toasts'
 import Grid from '@mui/system/Grid'
 import { CippImageCard } from '../components/CippCards/CippImageCard'
-import { useDialog } from '../hooks/use-dialog'
 import { nativeMenuItems } from './config'
 import { CippBreadcrumbNav } from '../components/CippComponents/CippBreadcrumbNav'
 import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDialog'
 import { ForcedSsoMigrationDialog } from '../components/CippComponents/ForcedSsoMigrationDialog'
 import { SubscriptionEndedDialog } from '../components/CippComponents/SubscriptionEndedDialog'
 import { FailedPaymentDialog } from '../components/CippComponents/FailedPaymentDialog'
+import { CippMaintenanceBanner } from '../components/CippComponents/CippMaintenanceBanner'
 
-const OnboardingWizardPage = dynamic(
-  () => import('../components/CippWizard/OnboardingWizardPage.jsx'),
-  { ssr: false }
-)
-
-const SIDE_NAV_WIDTH = 290
-const SIDE_NAV_PINNED_WIDTH = 50
-const TOP_NAV_HEIGHT = 50
+import {
+  BANNER_HEIGHT_VAR,
+  SIDE_NAV_PINNED_WIDTH,
+  SIDE_NAV_WIDTH,
+  TOP_NAV_HEIGHT,
+} from './constants'
 
 const useMobileNav = () => {
   const pathname = usePathname()
@@ -77,7 +63,7 @@ const LayoutRoot = styled('div')(({ theme }) => ({
   maxWidth: '100%',
   height: '100vh',
   overflow: 'hidden',
-  paddingTop: TOP_NAV_HEIGHT,
+  paddingTop: `calc(${TOP_NAV_HEIGHT}px + ${BANNER_HEIGHT_VAR})`,
   [theme.breakpoints.up('lg')]: {
     paddingLeft: SIDE_NAV_WIDTH,
   },
@@ -93,7 +79,9 @@ const LayoutContainer = styled('div')({
 })
 
 export const Layout = (props) => {
-  const { children, allTenantsSupport = true } = props
+  // showBreadcrumb: the error routes opt out — there is no trail to a page that
+  // doesn't exist or just crashed, and the bookmark button lives in there too.
+  const { children, allTenantsSupport = true, showBreadcrumb = true } = props
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
   const settings = useSettings()
   const mobileNav = useMobileNav()
@@ -180,6 +168,7 @@ export const Layout = (props) => {
             // check sub-items
             if (item.items && item.items.length > 0) {
               const filteredSubItems = filterItemsByRole(item.items).filter(Boolean)
+              if (filteredSubItems.length === 0) return null
               return { ...item, items: filteredSubItems }
             }
 
@@ -262,13 +251,20 @@ export const Layout = (props) => {
   })
 
   const alertsAPI = ApiGetCall({
-    url: `/api/GetCippAlerts?localversion=${version?.data?.version}`,
+    url: `/api/GetCippAlerts?localversion=${encodeURIComponent(version?.data?.version)}`,
     queryKey: 'alertsDashboard',
     waiting: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
     keepPreviousData: true,
   })
+
+  // Hosted maintenance notice, if the instance has one set. Derived from the alerts already
+  // fetched above rather than a second request.
+  const maintenanceAlert = useMemo(
+    () => alertsAPI.data?.find((alert) => alert.maintenance === true) ?? null,
+    [alertsAPI.data]
+  )
 
   useEffect(() => {
     if (!hideSidebar && version.isFetched && !alertsAPI.isFetched) {
@@ -282,35 +278,31 @@ export const Layout = (props) => {
       setFetchingVisible(new Array(alertsAPI.data.length).fill(true))
     }
   }, [alertsAPI.isSuccess, alertsAPI.data, alertsAPI.isFetching])
-  const [setupCompleted, setSetupCompleted] = useState(true)
-  const createDialog = useDialog()
   const dispatch = useDispatch()
   useEffect(() => {
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
       if (alertsAPI.data.length > 0) {
-        alertsAPI.data.forEach((alert) => {
-          dispatch(
-            showToast({
-              message: alert.Alert,
-              title: alert.title,
-              toastError: alert,
-            })
-          )
-        })
-      }
-    }
-    if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
-      if (alertsAPI.data.length > 0) {
-        const setupCompleted = alertsAPI.data.find((alert) => alert.setupCompleted === false)
-        if (setupCompleted) {
-          setSetupCompleted(false)
-        }
+        // The maintenance notice renders as its own banner - toasting it too would surface the
+        // same message three times per page load (banner, snackbar, notification bell).
+        alertsAPI.data
+          .filter((alert) => !alert.maintenance)
+          .forEach((alert) => {
+            dispatch(
+              showToast({
+                message: alert.Alert,
+                title: alert.title,
+                toastError: alert,
+              })
+            )
+          })
       }
     }
   }, [alertsAPI.isSuccess])
 
   return (
     <>
+      {/* Rendered outside the hideSidebar check - maintenance applies to chrome-less pages too. */}
+      <CippMaintenanceBanner alert={maintenanceAlert} />
       {hideSidebar === false && (
         <>
           <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
@@ -328,31 +320,12 @@ export const Layout = (props) => {
         }}
       >
         <LayoutContainer>
-          <Dialog
-            fullWidth
-            maxWidth="lg"
-            onClose={createDialog.handleClose}
-            open={createDialog.open}
-          >
-            <DialogTitle>Setup Wizard</DialogTitle>
-            <DialogContent>
-              <OnboardingWizardPage />
-            </DialogContent>
-          </Dialog>
-          <SubscriptionEndedDialog hostedSubscriptionEnded={currentRole.data?.hostedSubscriptionEnded} />
+          <SubscriptionEndedDialog
+            hostedSubscriptionEnded={currentRole.data?.hostedSubscriptionEnded}
+          />
           <FailedPaymentDialog hostedFailedPayments={currentRole.data?.hostedFailedPayments} />
           <SsoMigrationDialog meData={currentRole.data} />
           <ForcedSsoMigrationDialog />
-          {!setupCompleted && (
-            <Box sx={{ flexGrow: 1, py: 2 }}>
-              <Container maxWidth={false}>
-                <Alert severity="info">
-                  Setup has not been completed.
-                  <Button onClick={createDialog.handleOpen}>Start Wizard</Button>
-                </Alert>
-              </Container>
-            </Box>
-          )}
           {(currentTenant === 'AllTenants' || !currentTenant) && !allTenantsSupport ? (
             <Box sx={{ flexGrow: 1, py: 3 }}>
               <Container maxWidth={false}>
@@ -372,10 +345,14 @@ export const Layout = (props) => {
             </Box>
           ) : (
             <Stack>
-              <Box sx={{ mx: 3, mt: 3 }}>
-                <CippBreadcrumbNav mode="hierarchical" />
-              </Box>
-              <Divider sx={{ mb: 2 }} />
+              {showBreadcrumb && (
+                <>
+                  <Box sx={{ mx: 3, mt: 3 }}>
+                    <CippBreadcrumbNav mode="hierarchical" />
+                  </Box>
+                  <Divider sx={{ mb: 2 }} />
+                </>
+              )}
               {children}
             </Stack>
           )}

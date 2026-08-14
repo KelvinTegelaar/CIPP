@@ -12,411 +12,42 @@ import {
   CircularProgress,
 } from '@mui/material'
 import { PictureAsPdf, Download, Close } from '@mui/icons-material'
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
+import { useReportVariables } from './CippPdf/useReportVariables'
+import { useBrandingSettings } from './CippPdf/useBrandingSettings'
 import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  PDFViewer,
-  PDFDownloadLink,
-  Image,
-} from '@react-pdf/renderer'
-import { useSettings } from '../hooks/use-settings'
+  AlertBox,
+  Bold,
+  Bullet,
+  BulletList,
+  ClearBox,
+  ContentPage,
+  CoverMeta,
+  InfoBox,
+  Note,
+  Paragraph,
+  ReportDocument,
+  Section,
+  StatRow,
+} from './CippPdf'
 
 // BEC Remediation PDF Document Component
-const BECRemediationReportDocument = ({
+// Exported so the branding preview can render this report against sample data, and so tests can
+// render it to a real PDF.
+export const BECRemediationReportDocument = ({
   userData,
   becData,
   brandingSettings,
   tenantName,
   remediationData,
+  variables,
 }) => {
   const currentDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   })
-  const brandColor = brandingSettings?.colour || '#F77F00'
 
-  const styles = StyleSheet.create({
-    page: {
-      flexDirection: 'column',
-      backgroundColor: '#FFFFFF',
-      fontFamily: 'Helvetica',
-      fontSize: 10,
-      lineHeight: 1.4,
-      color: '#2D3748',
-      padding: 40,
-    },
-
-    // COVER PAGE
-    coverPage: {
-      flexDirection: 'column',
-      backgroundColor: '#FFFFFF',
-      fontFamily: 'Helvetica',
-      padding: 60,
-      justifyContent: 'space-between',
-      minHeight: '100%',
-    },
-
-    coverHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 80,
-    },
-
-    logoSection: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-
-    logo: {
-      height: 100,
-      marginRight: 12,
-    },
-
-    headerLogo: {
-      height: 30,
-    },
-
-    dateStamp: {
-      fontSize: 9,
-      color: '#000000',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    },
-
-    coverHero: {
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-      paddingTop: 40,
-    },
-
-    coverLabel: {
-      backgroundColor: brandColor,
-      color: '#FFFFFF',
-      fontSize: 10,
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 20,
-      marginBottom: 30,
-      alignSelf: 'flex-start',
-    },
-
-    mainTitle: {
-      fontSize: 48,
-      fontWeight: 'bold',
-      color: '#1A202C',
-      lineHeight: 1.1,
-      marginBottom: 20,
-      letterSpacing: -1,
-    },
-
-    titleAccent: {
-      color: brandColor,
-    },
-
-    subtitle: {
-      fontSize: 14,
-      color: '#000000',
-      fontWeight: 'normal',
-      lineHeight: 1.5,
-      marginBottom: 40,
-      maxWidth: 400,
-    },
-
-    userCard: {
-      backgroundColor: 'transparent',
-      padding: 0,
-      maxWidth: 500,
-    },
-
-    userName: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: '#000000',
-      marginBottom: 8,
-    },
-
-    userEmail: {
-      fontSize: 12,
-      color: '#333333',
-      marginBottom: 4,
-    },
-
-    coverFooter: {
-      textAlign: 'center',
-      marginTop: 60,
-    },
-
-    confidential: {
-      fontSize: 9,
-      color: '#A0AEC0',
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-    },
-
-    // CONTENT PAGES
-    pageHeader: {
-      borderBottom: `1px solid ${brandColor}`,
-      paddingBottom: 12,
-      marginBottom: 24,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-    },
-
-    pageHeaderContent: {
-      flex: 1,
-    },
-
-    pageTitle: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: '#1A202C',
-      marginBottom: 8,
-    },
-
-    pageSubtitle: {
-      fontSize: 11,
-      color: '#4A5568',
-      fontWeight: 'normal',
-    },
-
-    section: {
-      marginBottom: 24,
-      pageBreakInside: 'avoid',
-      breakInside: 'avoid',
-    },
-
-    sectionTitle: {
-      fontSize: 14,
-      fontWeight: 'bold',
-      color: brandColor,
-      marginBottom: 12,
-    },
-
-    sectionSubtitle: {
-      fontSize: 11,
-      fontWeight: 'bold',
-      color: '#2D3748',
-      marginBottom: 8,
-      marginTop: 12,
-    },
-
-    bodyText: {
-      fontSize: 9,
-      color: '#2D3748',
-      lineHeight: 1.5,
-      marginBottom: 12,
-      textAlign: 'justify',
-    },
-
-    bulletList: {
-      marginLeft: 12,
-      marginBottom: 12,
-    },
-
-    bulletItem: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      marginBottom: 6,
-    },
-
-    bulletPoint: {
-      fontSize: 8,
-      color: brandColor,
-      marginRight: 6,
-      fontWeight: 'bold',
-      marginTop: 1,
-    },
-
-    bulletText: {
-      fontSize: 9,
-      color: '#2D3748',
-      lineHeight: 1.4,
-      flex: 1,
-    },
-
-    // ALERT BOXES
-    alertBox: {
-      backgroundColor: '#FFF5F5',
-      border: `2px solid ${brandColor}`,
-      borderRadius: 6,
-      padding: 12,
-      marginBottom: 16,
-    },
-
-    alertTitle: {
-      fontSize: 11,
-      fontWeight: 'bold',
-      color: brandColor,
-      marginBottom: 6,
-    },
-
-    alertText: {
-      fontSize: 9,
-      color: '#2D3748',
-      lineHeight: 1.4,
-    },
-
-    // INFO BOXES
-    infoBox: {
-      backgroundColor: '#F7FAFC',
-      border: `1px solid #E2E8F0`,
-      borderLeft: `4px solid ${brandColor}`,
-      borderRadius: 4,
-      padding: 12,
-      marginBottom: 12,
-    },
-
-    infoTitle: {
-      fontSize: 10,
-      fontWeight: 'bold',
-      color: '#2D3748',
-      marginBottom: 6,
-    },
-
-    infoText: {
-      fontSize: 8,
-      color: '#4A5568',
-      lineHeight: 1.4,
-    },
-
-    // STATS GRID
-    statsGrid: {
-      flexDirection: 'row',
-      gap: 12,
-      marginBottom: 20,
-      pageBreakInside: 'avoid',
-      breakInside: 'avoid',
-    },
-
-    statCard: {
-      flex: 1,
-      backgroundColor: '#FFFFFF',
-      border: `1px solid #E2E8F0`,
-      borderRadius: 6,
-      padding: 16,
-      alignItems: 'center',
-      borderTop: `3px solid ${brandColor}`,
-    },
-
-    statNumber: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: brandColor,
-      marginBottom: 4,
-    },
-
-    statLabel: {
-      fontSize: 7,
-      color: '#4A5568',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      textAlign: 'center',
-      fontWeight: 'bold',
-    },
-
-    // TABLES
-    table: {
-      border: `1px solid #E2E8F0`,
-      borderRadius: 6,
-      overflow: 'hidden',
-      marginBottom: 16,
-    },
-
-    tableHeader: {
-      flexDirection: 'row',
-      backgroundColor: brandColor,
-      paddingVertical: 10,
-      paddingHorizontal: 12,
-    },
-
-    tableHeaderCell: {
-      fontSize: 7,
-      fontWeight: 'bold',
-      color: '#FFFFFF',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    },
-
-    tableRow: {
-      flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: '#F7FAFC',
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      alignItems: 'flex-start',
-    },
-
-    tableCell: {
-      fontSize: 8,
-      color: '#2D3748',
-      lineHeight: 1.3,
-    },
-
-    // FOOTER
-    footer: {
-      position: 'absolute',
-      bottom: 20,
-      left: 40,
-      right: 40,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      borderTop: '1px solid #E2E8F0',
-      paddingTop: 8,
-    },
-
-    footerText: {
-      fontSize: 7,
-      color: '#718096',
-    },
-
-    pageNumber: {
-      fontSize: 7,
-      color: '#718096',
-      fontWeight: 'bold',
-    },
-
-    // STATUS INDICATORS
-    statusBadge: {
-      fontSize: 7,
-      fontWeight: 'bold',
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 4,
-      textTransform: 'uppercase',
-      letterSpacing: 0.3,
-    },
-
-    statusSuccess: {
-      backgroundColor: '#C6F6D5',
-      color: '#22543D',
-    },
-
-    statusWarning: {
-      backgroundColor: '#FEEBC8',
-      color: '#744210',
-    },
-
-    statusDanger: {
-      backgroundColor: '#FED7D7',
-      color: '#742A2A',
-    },
-
-    statusInfo: {
-      backgroundColor: '#BEE3F8',
-      color: '#2C5282',
-    },
-  })
 
   // Helper function to format dates
   const formatDate = (dateString) => {
@@ -434,27 +65,120 @@ const BECRemediationReportDocument = ({
     }
   }
 
+  const formatSafelistValue = (value) => {
+    if (!value) return 'unchanged'
+    return Array.isArray(value) ? value.join(', ') || 'unchanged' : String(value)
+  }
+
   // Calculate statistics
   const stats = {
     newRules: becData?.NewRules?.length || 0,
+    ruleChanges: becData?.InboxRuleChanges?.length || 0,
     newUsers: becData?.NewUsers?.length || 0,
     newApps: becData?.AddedApps?.length || 0,
     permissionChanges: becData?.MailboxPermissionChanges?.length || 0,
+    permissionChangesTargetingUser: (becData?.MailboxPermissionChanges || []).filter(
+      (change) => change?.TargetsSuspect === true
+    ).length,
     mfaDevices: becData?.MFADevices?.length || 0,
     passwordChanges: becData?.ChangedPasswords?.length || 0,
+    sentMessages: becData?.SentMessages?.length || 0,
+    trustedSenders: becData?.TrustedSenders?.length || 0,
+    blockedSenders: becData?.BlockedSenders?.length || 0,
+    safelistChanges: becData?.SafelistChanges?.length || 0,
+    sharingChanges: becData?.SharingChanges?.length || 0,
+    anonymousLinks: (becData?.SharingChanges || []).filter((c) =>
+      c?.Operation?.startsWith('AnonymousLink')
+    ).length,
+    intuneDevices: becData?.IntuneDevices?.length || 0,
+    signIns: becData?.SuspectUserSignIns?.length || 0,
+    sentTotalMessages: becData?.SentMessageAnalysis?.TotalMessages ?? 0,
+    sentTotalRecipients: becData?.SentMessageAnalysis?.TotalRecipients ?? 0,
+    repeatedSubjects: becData?.SentMessageAnalysis?.FlaggedSubjectCount || 0,
+    sendBursts: becData?.SentMessageAnalysis?.Bursts?.length || 0,
+    massMailFlagged: becData?.SentMessageAnalysis?.Flagged === true,
+    maliciousApps:
+      (becData?.AddedApps || []).filter((app) => app?.MaliciousMatch).length +
+      (becData?.MaliciousSPs?.length || 0),
   }
+
+  const locationAnalysis = becData?.LocationAnalysis
+  stats.foreignSignIns = locationAnalysis?.ForeignSignInCount || 0
+  stats.foreignSuccessfulSignIns = locationAnalysis?.ForeignSuccessfulSignInCount || 0
+  stats.foreignSentMessages = locationAnalysis?.ForeignSentMessageCount || 0
+  stats.foreignActivity =
+    (locationAnalysis?.ForeignRuleChangeCount || 0) +
+    (locationAnalysis?.ForeignSafelistChangeCount || 0) +
+    (locationAnalysis?.ForeignSharingChangeCount || 0) +
+    (locationAnalysis?.ForeignSentMessageCount || 0)
+
+  // the analysis window: 7 days before the data was extracted
+  const analysisWindowStart = (() => {
+    const extractedAt = becData?.ExtractedAt ? new Date(becData.ExtractedAt) : new Date()
+    if (Number.isNaN(extractedAt.getTime())) {
+      return new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
+    }
+    return new Date(extractedAt.getTime() - 7 * 24 * 60 * 60 * 1000)
+  })()
+
+  const recentIntuneDevices = (becData?.IntuneDevices || []).filter((device) => {
+    if (!device?.enrolledDateTime) return false
+    const enrolled = new Date(device.enrolledDateTime)
+    if (Number.isNaN(enrolled.getTime())) return false
+    return enrolled >= analysisWindowStart
+  })
+  stats.recentIntuneDevices = recentIntuneDevices.length
+
+  const isRecentMfaDevice = (method) => {
+    if (!method?.createdDateTime) return false
+    const created = new Date(method.createdDateTime)
+    if (Number.isNaN(created.getTime())) return false
+    return created >= analysisWindowStart
+  }
+  stats.recentMfaDevices = (becData?.MFADevices || []).filter(isRecentMfaDevice).length
+
+  // successful foreign sign-ins first - they prove access, failed ones are mostly spray noise
+  const foreignSignIns = (becData?.SuspectUserSignIns || [])
+    .filter((signIn) => signIn?.ForeignLocation === true)
+    .sort((a, b) => (b?.Status === 'Success') - (a?.Status === 'Success'))
+
+  const sortedIntuneDevices = [...(becData?.IntuneDevices || [])].sort((a, b) => {
+    const aTime = a?.enrolledDateTime ? new Date(a.enrolledDateTime).getTime() : 0
+    const bTime = b?.enrolledDateTime ? new Date(b.enrolledDateTime).getTime() : 0
+    return bTime - aTime
+  })
 
   // Determine threat level
   const calculateThreatLevel = () => {
     let threatScore = 0
     if (stats.newRules > 0) threatScore += 3
-    if (stats.permissionChanges > 0) threatScore += 2
-    if (stats.newApps > 0) threatScore += 2
+    if (stats.ruleChanges > 0) threatScore += 3
+    // A change to this mailbox's permissions outweighs unrelated tenant churn, which the
+    // tenant-wide search also surfaces
+    if (stats.permissionChangesTargetingUser > 0) threatScore += 2
+    else if (stats.permissionChanges > 0) threatScore += 1
+    // Generic new service principals appear constantly; the actually-bad ones score +5 below
+    if (stats.newApps > 0) threatScore += 1
     if (stats.newUsers > 5) threatScore += 1
+    if (stats.safelistChanges > 0) threatScore += 2
 
     // Check for suspicious rules (RSS folder moves)
     const hasSuspiciousRules = becData?.NewRules?.some((rule) => rule.MoveToFolder?.includes('RSS'))
     if (hasSuspiciousRules) threatScore += 5
+
+    // A catalog-matched application is a confirmed bad indicator, not a heuristic
+    if (stats.maliciousApps > 0) threatScore += 5
+    // Only a successful foreign sign-in proves access - failed foreign attempts are
+    // password-spray background noise present on almost every tenant
+    if (stats.foreignSuccessfulSignIns > 0) threatScore += 3
+    if (stats.foreignActivity > 0) threatScore += 3
+    // An anonymous link exposes data to anyone holding the URL, past any later reset
+    if (stats.anonymousLinks > 0) threatScore += 3
+    // Repeated-subject campaigns and send bursts are how a compromised mailbox spreads
+    if (stats.massMailFlagged) threatScore += 3
+    // Persistence moves during the window: a fresh MFA method or device enrollment
+    if (stats.recentMfaDevices > 0) threatScore += 2
+    if (stats.recentIntuneDevices > 0) threatScore += 2
 
     if (threatScore >= 7) return { level: 'High', color: '#742A2A' }
     if (threatScore >= 4) return { level: 'Medium', color: '#744210' }
@@ -464,867 +188,934 @@ const BECRemediationReportDocument = ({
   const threatLevel = calculateThreatLevel()
 
   return (
-    <Document>
-      {/* COVER PAGE */}
-      <Page size="A4" style={styles.coverPage}>
-        <View style={styles.coverHeader}>
-          <View style={styles.logoSection}>
-            {brandingSettings?.logo && (
-              <Image style={styles.logo} src={brandingSettings.logo} cache={false} />
-            )}
-          </View>
-          <Text style={styles.dateStamp}>{currentDate}</Text>
-        </View>
-
-        <View style={styles.coverHero}>
-          <Text style={styles.coverLabel}>SECURITY INCIDENT REPORT</Text>
-
-          <Text style={styles.mainTitle}>
-            BEC Compromise{'\n'}
-            <Text style={styles.titleAccent}>Analysis</Text>
-          </Text>
-
-          <Text style={styles.subtitle}>
-            Business Email Compromise Investigation Report for {tenantName || 'your organization'}
-          </Text>
-
-          <View style={styles.userCard}>
-            <Text style={styles.userName}>{userData?.displayName || 'Unknown User'}</Text>
-            <Text style={styles.userEmail}>{userData?.userPrincipalName || 'user@domain.com'}</Text>
-            <Text style={[styles.dateStamp, { marginTop: 8 }]}>
-              Analysis Date: {becData?.ExtractedAt ? formatDate(becData.ExtractedAt) : 'N/A'}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.coverFooter}>
-          <Text style={styles.confidential}>
-            Confidential & Proprietary - For Internal Use Only
-          </Text>
-        </View>
-      </Page>
-
+    <ReportDocument
+      brandingSettings={brandingSettings}
+      tenantName={tenantName}
+      reportName="BEC Analysis Report"
+      generatedOn={currentDate}
+      variables={variables}
+      coverLabel="SECURITY INCIDENT REPORT"
+      coverTitle="BEC Compromise"
+      coverAccent="Analysis"
+      coverSubtitle={`Business Email Compromise Investigation Report for ${
+        tenantName || 'your organization'
+      }`}
+      // The one report whose subject is a person rather than the tenant, so the cover names the
+      // compromised account.
+      coverTenant={userData?.displayName || 'Unknown User'}
+      coverFallbackImage="/reportImages/soc.jpg"
+      coverFooterNote="Confidential & Proprietary - For Internal Use Only"
+      footerLabel={`${tenantName} - BEC Analysis Report for ${userData?.displayName}`}
+      coverMeta={
+        <CoverMeta
+          lines={[userData?.userPrincipalName || 'user@domain.com']}
+          note={`Analysis Date: ${becData?.ExtractedAt ? formatDate(becData.ExtractedAt) : 'N/A'}`}
+        />
+      }
+    >
       {/* EXECUTIVE SUMMARY PAGE */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Executive Summary</Text>
-            <Text style={styles.pageSubtitle}>
-              Overview of Business Email Compromise investigation findings
-            </Text>
-          </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-          )}
-        </View>
+      <ContentPage title="Executive Summary" subtitle="Overview of Business Email Compromise investigation findings">
 
-        <View style={styles.section}>
-          <Text style={styles.bodyText}>
+        <Section>
+          <Paragraph>
             This report documents the findings of a Business Email Compromise (BEC) investigation
             performed for the user account{' '}
-            <Text style={{ fontWeight: 'bold' }}>{userData?.userPrincipalName}</Text> within{' '}
-            <Text style={{ fontWeight: 'bold' }}>{tenantName}</Text>. The investigation analyzed
+            <Bold>{userData?.userPrincipalName}</Bold> within{' '}
+            <Bold>{tenantName}</Bold>. The investigation analyzed
             suspicious activity indicators including mailbox rules, permission changes, new
-            applications, and authentication patterns over a 7-day period.
-          </Text>
+            applications, authentication patterns, and sign-in locations over a 7-day period.
+          </Paragraph>
 
-          <Text style={styles.bodyText}>
+          <Paragraph>
             Business Email Compromise is a sophisticated scam targeting organizations that regularly
             perform wire transfers or have established relationships with foreign suppliers.
             Attackers compromise legitimate email accounts through social engineering or computer
             intrusion techniques to conduct unauthorized fund transfers, steal sensitive
             information, or impersonate executives.
-          </Text>
-        </View>
+          </Paragraph>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Investigation Overview</Text>
+        <Section title="Investigation Overview">
 
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{stats.newRules}</Text>
-              <Text style={styles.statLabel}>Mailbox Rules</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{stats.permissionChanges}</Text>
-              <Text style={styles.statLabel}>Permission Changes</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{stats.newApps}</Text>
-              <Text style={styles.statLabel}>New Applications</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{stats.newUsers}</Text>
-              <Text style={styles.statLabel}>New Users</Text>
-            </View>
-          </View>
+          <StatRow
+            stats={[
+              { value: stats.newRules, label: 'Mailbox Rules' },
+              { value: stats.permissionChanges, label: 'Permission Changes' },
+              { value: stats.foreignSignIns, label: 'Foreign Sign-ins' },
+              { value: stats.maliciousApps, label: 'Malicious Apps' },
+            ]}
+          />
 
-          <View style={[styles.alertBox, { borderColor: threatLevel.color }]}>
-            <Text style={[styles.alertTitle, { color: threatLevel.color }]}>
-              Threat Assessment: {threatLevel.level}
-            </Text>
-            <Text style={styles.alertText}>
+          <AlertBox colour={threatLevel.color} title={`Threat Assessment: ${threatLevel.level}`}>
               {threatLevel.level === 'High' &&
                 'HIGH RISK: Multiple indicators of compromise detected. Immediate remediation actions are strongly recommended. This account shows patterns consistent with active Business Email Compromise attacks.'}
               {threatLevel.level === 'Medium' &&
                 'MEDIUM RISK: Suspicious activity patterns detected. Review findings and consider implementing recommended security measures. Some indicators suggest potential unauthorized access.'}
               {threatLevel.level === 'Low' &&
                 'LOW RISK: Minimal suspicious activity detected. The findings show standard user behavior with no significant indicators of compromise. Continue monitoring as a precautionary measure.'}
-            </Text>
-          </View>
-        </View>
+            </AlertBox>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Data Source Information</Text>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Audit Log Status</Text>
-            <Text style={styles.infoText}>{becData?.ExtractResult || 'Unknown'}</Text>
-          </View>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Analysis Period</Text>
-            <Text style={styles.infoText}>
+        <Section title="Data Source Information">
+          <InfoBox title="Audit Log Status">{becData?.ExtractResult || 'Unknown'}</InfoBox>
+          <InfoBox title="Analysis Period">
               Last 7 days ending {becData?.ExtractedAt ? formatDate(becData.ExtractedAt) : 'N/A'}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            {tenantName} - BEC Analysis Report for {userData?.displayName}
-          </Text>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
+            </InfoBox>
+          <InfoBox title="Assigned Usage Location">
+              {locationAnalysis?.UsageLocation ||
+                'Not assigned - sign-ins and activity could not be compared against an expected country'}
+            </InfoBox>
+        </Section>
+      </ContentPage>
 
       {/* UNDERSTANDING BEC PAGE */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Understanding Business Email Compromise</Text>
-            <Text style={styles.pageSubtitle}>What is BEC and why does it matter?</Text>
-          </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-          )}
-        </View>
+      <ContentPage title="Understanding Business Email Compromise" subtitle="What is BEC and why does it matter?">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>What is Business Email Compromise?</Text>
-          <Text style={styles.bodyText}>
+        <Section title="What is Business Email Compromise?">
+          <Paragraph>
             Business Email Compromise (BEC) is a type of cyberattack where criminals gain
             unauthorized access to a business email account. Once inside, attackers can:
-          </Text>
+          </Paragraph>
 
-          <View style={styles.bulletList}>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Monitor communications:</Text> Read sensitive
+          <BulletList>
+            <Bullet label="Monitor communications:"> Read sensitive
                 emails to learn about business operations, financial processes, and key
                 relationships.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Impersonate executives:</Text> Send fraudulent
+              </Bullet>
+            <Bullet label="Impersonate executives:"> Send fraudulent
                 emails appearing to come from company leadership requesting wire transfers or
                 sensitive data.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Manipulate transactions:</Text> Intercept
+              </Bullet>
+            <Bullet label="Manipulate transactions:"> Intercept
                 legitimate invoices and alter payment information to redirect funds to
                 attacker-controlled accounts.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Hide their tracks:</Text> Create email rules to
+              </Bullet>
+            <Bullet label="Hide their tracks:"> Create email rules to
                 automatically delete or hide messages, preventing detection.
-              </Text>
-            </View>
-          </View>
-        </View>
+              </Bullet>
+          </BulletList>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Common Attack Methods</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Common Attack Methods">
+          <Paragraph>
             Attackers typically gain access to email accounts through:
-          </Text>
+          </Paragraph>
 
-          <View style={styles.bulletList}>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Phishing:</Text> Deceptive emails that trick
+          <BulletList>
+            <Bullet label="Phishing:"> Deceptive emails that trick
                 users into providing their login credentials on fake websites.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Password Spraying:</Text> Automated attempts to
+              </Bullet>
+            <Bullet label="Password Spraying:"> Automated attempts to
                 log in using common passwords across many accounts.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Credential Stuffing:</Text> Using usernames and
+              </Bullet>
+            <Bullet label="Credential Stuffing:"> Using usernames and
                 passwords leaked from other breached websites.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Malware:</Text> Software that captures
+              </Bullet>
+            <Bullet label="Malware:"> Software that captures
                 keystrokes or steals stored passwords from compromised devices.
-              </Text>
-            </View>
-          </View>
-        </View>
+              </Bullet>
+          </BulletList>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Why This Investigation Was Performed</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Why This Investigation Was Performed">
+          <Paragraph>
             This analysis was initiated because suspicious activity was detected or reported for
             this user account. The investigation examines multiple indicators that might suggest
             account compromise, including unusual mailbox rules, unexpected permission changes, new
             application authorizations, and abnormal sign-in patterns. Early detection is critical
             to minimize potential damage and prevent financial loss or data theft.
-          </Text>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            {tenantName} - BEC Analysis Report for {userData?.displayName}
-          </Text>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
+          </Paragraph>
+        </Section>
+      </ContentPage>
 
       {/* DETAILED FINDINGS PAGE */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Detailed Findings</Text>
-            <Text style={styles.pageSubtitle}>Investigation results and analysis</Text>
-          </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-          )}
-        </View>
+      <ContentPage title="Detailed Findings" subtitle="Investigation results and analysis">
 
         {/* Check 1: Mailbox Rules */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Check 1: Mailbox Rules</Text>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Why We Check This</Text>
-            <Text style={styles.infoText}>
+        <Section title="Check 1: Mailbox Rules">
+          <InfoBox title="Why We Check This">
               Attackers often create email rules to automatically forward, delete, or hide messages.
               This prevents victims from seeing evidence of fraudulent activity. Suspicious rules
               may move emails to obscure folders like "RSS Subscriptions" or forward them to
               external addresses.
-            </Text>
-          </View>
+            </InfoBox>
 
-          {stats.newRules > 0 ? (
+          {stats.newRules > 0 && (
             <>
-              <View style={styles.alertBox}>
-                <Text style={styles.alertTitle}>⚠ {stats.newRules} Mailbox Rule(s) Found</Text>
-                <Text style={styles.alertText}>
+              <AlertBox title={`⚠️ ${stats.newRules} Mailbox Rule(s) Found`}>
                   The following mailbox rules were detected. Review each rule carefully to determine
                   if it was created by the user or by an attacker. Rules that forward emails or move
                   them to unusual folders are particularly suspicious.
-                </Text>
-              </View>
+                </AlertBox>
 
               {becData.NewRules.slice(0, 10).map((rule, index) => (
-                <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>Rule: {rule.Name || 'Unnamed Rule'}</Text>
-                  <Text style={styles.infoText}>
+                <InfoBox key={index} title={`Rule: ${rule.Name || 'Unnamed Rule'}`}>
                     Description: {rule.Description || 'No description available'}
                     {'\n'}
                     {rule.MoveToFolder && `Moves to: ${rule.MoveToFolder}`}
                     {rule.ForwardTo && `\nForwards to: ${rule.ForwardTo}`}
                     {rule.DeleteMessage && '\nDeletes messages'}
-                  </Text>
-                </View>
+                    {rule.RecentlyChanged && '\nCreated or changed in the last 7 days'}
+                  </InfoBox>
               ))}
               {becData.NewRules.length > 10 && (
-                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
+                <Note>
                   ... and {becData.NewRules.length - 10} more rules (see JSON export for full list)
-                </Text>
+                </Note>
               )}
             </>
-          ) : (
-            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
-              <Text style={[styles.infoTitle, { color: '#22543D' }]}>
-                ✓ No Suspicious Rules Found
-              </Text>
-              <Text style={styles.infoText}>
+          )}
+          {stats.ruleChanges > 0 && (
+            <>
+              <AlertBox title={`⚠️ ${stats.ruleChanges} Rule Change(s) in the Last 7 Days`}>
+                  The audit log recorded inbox rules being created, changed or removed on this
+                  mailbox. Rules that were removed after use are a common way for attackers to cover
+                  their tracks.
+                </AlertBox>
+
+              {becData.InboxRuleChanges.slice(0, 10).map((change, index) => (
+                <InfoBox key={index} title={`${change.Operation || 'Rule Change'}: ${change.RuleName || 'Unnamed Rule'}`}>
+                    Date: {change.Date || 'Unknown'}
+                    {'\n'}
+                    By: {change.UserKey || 'Unknown'}
+                    {change.ClientIP &&
+                      `\nFrom: ${change.ClientIP}${change.Country ? ` (${change.Country})` : ''}`}
+                    {change.ForeignLocation === true &&
+                      '\n⚠️ Originated outside the assigned usage location'}
+                    {change.Parameters && `\nParameters: ${change.Parameters}`}
+                  </InfoBox>
+              ))}
+              {becData.InboxRuleChanges.length > 10 && (
+                <Note>
+                  ... and {becData.InboxRuleChanges.length - 10} more changes (see JSON export for
+                  full list)
+                </Note>
+              )}
+            </>
+          )}
+          {stats.newRules === 0 && stats.ruleChanges === 0 && (
+            <ClearBox title="✔️ No Suspicious Rules Found">
                 No mailbox rules were detected that match suspicious patterns. This is a positive
                 indicator.
-              </Text>
-            </View>
+              </ClearBox>
           )}
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            {tenantName} - BEC Analysis Report for {userData?.displayName}
-          </Text>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
+        </Section>
+      </ContentPage>
 
       {/* CHECK 2: NEW USERS */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Detailed Findings (Continued)</Text>
-            <Text style={styles.pageSubtitle}>Investigation results and analysis</Text>
-          </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-          )}
-        </View>
+      <ContentPage title="Detailed Findings (Continued)" subtitle="Investigation results and analysis">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Check 2: Recently Created Users</Text>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Why We Check This</Text>
-            <Text style={styles.infoText}>
+        <Section title="Check 2: Recently Created Users">
+          <InfoBox title="Why We Check This">
               Attackers sometimes create new user accounts to maintain persistent access or to use
               as staging accounts for fraudulent activities. Reviewing recently created users helps
               identify unauthorized account creation.
-            </Text>
-          </View>
+            </InfoBox>
 
           {stats.newUsers > 0 ? (
             <>
-              <View style={styles.alertBox}>
-                <Text style={styles.alertTitle}>ℹ {stats.newUsers} New User(s) Found</Text>
-                <Text style={styles.alertText}>
+              <AlertBox title={`ℹ️ ${stats.newUsers} New User(s) Found`}>
                   The following users were created in the last 7 days. Verify that each account
                   creation was authorized and legitimate.
-                </Text>
-              </View>
+                </AlertBox>
 
               {becData.NewUsers.slice(0, 8).map((user, index) => (
-                <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>{user.displayName || 'Unknown'}</Text>
-                  <Text style={styles.infoText}>
+                <InfoBox key={index} title={`${user.displayName || 'Unknown'}`}>
                     Email: {user.userPrincipalName || 'N/A'}
                     {'\n'}
                     Created: {formatDate(user.createdDateTime)}
-                  </Text>
-                </View>
+                  </InfoBox>
               ))}
               {becData.NewUsers.length > 8 && (
-                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
+                <Note>
                   ... and {becData.NewUsers.length - 8} more users (see JSON export for full list)
-                </Text>
+                </Note>
               )}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
-              <Text style={[styles.infoTitle, { color: '#22543D' }]}>✓ No New Users Found</Text>
-              <Text style={styles.infoText}>
+            <ClearBox title="✔️ No New Users Found">
                 No new user accounts were created during the analysis period.
-              </Text>
-            </View>
+              </ClearBox>
           )}
-        </View>
+        </Section>
 
         {/* Check 3: New Applications */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Check 3: New Applications</Text>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Why We Check This</Text>
-            <Text style={styles.infoText}>
+        <Section title="Check 3: New Applications">
+          <InfoBox title="Why We Check This">
               Attackers may authorize malicious or suspicious third-party applications to access
               your email and data. These applications can read emails, send messages, and access
               files without the user's explicit knowledge.
-            </Text>
-          </View>
+            </InfoBox>
+
+          {stats.maliciousApps > 0 && (
+            <AlertBox title={`⚠️ ${stats.maliciousApps} Known-Malicious Application(s) Detected`}>
+                One or more applications in this tenant match the CIPP known-malicious application
+                catalog. Consent-based access survives a password reset, so these applications
+                should be removed unless their presence is explained.
+              </AlertBox>
+          )}
 
           {stats.newApps > 0 ? (
             <>
-              <View style={styles.alertBox}>
-                <Text style={styles.alertTitle}>⚠ {stats.newApps} New Application(s) Found</Text>
-                <Text style={styles.alertText}>
+              <AlertBox title={`⚠️ ${stats.newApps} New Application(s) Found`}>
                   New applications were granted access during the analysis period. Review each
                   application to ensure it was authorized and is from a trusted publisher.
-                </Text>
-              </View>
+                </AlertBox>
 
               {becData.AddedApps.slice(0, 6).map((app, index) => (
-                <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>
-                    {app.displayName || app.appDisplayName || 'Unknown'}
-                  </Text>
-                  <Text style={styles.infoText}>
+                <InfoBox key={index} title={`${app.displayName || app.appDisplayName || 'Unknown'}`}>
                     Publisher: {app.publisher || 'Unknown'}
                     {'\n'}
                     App ID: {app.appId || 'N/A'}
                     {'\n'}
                     Created: {formatDate(app.createdDateTime)}
-                  </Text>
-                </View>
+                    {app.MaliciousMatch &&
+                      `\n⚠️ Matches known-malicious catalog entry "${app.MaliciousMatch.Name}"${
+                        app.MaliciousMatch.Categories?.length
+                          ? ` (${app.MaliciousMatch.Categories.join(', ')})`
+                          : ''
+                      }`}
+                  </InfoBox>
               ))}
               {becData.AddedApps.length > 6 && (
-                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
+                <Note>
                   ... and {becData.AddedApps.length - 6} more apps (see JSON export for full list)
-                </Text>
+                </Note>
               )}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
-              <Text style={[styles.infoTitle, { color: '#22543D' }]}>
-                ✓ No New Applications Found
-              </Text>
-              <Text style={styles.infoText}>
-                No new applications were authorized during the analysis period.
-              </Text>
-            </View>
+            (becData?.MaliciousSPs?.length || 0) === 0 && (
+              <ClearBox title="✔️ No New Applications Found">
+                  No new applications were authorized during the analysis period, and no known
+                  malicious applications are present in the tenant.
+                </ClearBox>
+            )
           )}
-        </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            {tenantName} - BEC Analysis Report for {userData?.displayName}
-          </Text>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
-
-      {/* CHECK 4, 5, 6: PERMISSIONS, MFA, PASSWORDS */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Additional Security Checks</Text>
-            <Text style={styles.pageSubtitle}>
-              Permissions, authentication, and access patterns
-            </Text>
-          </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+          {(becData?.MaliciousSPs?.length || 0) > 0 && (
+            <>
+              {becData.MaliciousSPs.slice(0, 6).map((app, index) => (
+                <InfoBox key={`malsp-${index}`} title={`⚠️ ${app.displayName || 'Unknown'} (present in tenant)`}>
+                    Catalog entry: {app.CatalogName || 'Unknown'}
+                    {'\n'}
+                    App ID: {app.appId || 'N/A'}
+                    {'\n'}
+                    Categories: {app.Categories?.length ? app.Categories.join(', ') : 'N/A'}
+                    {'\n'}
+                    Enabled: {String(app.accountEnabled ?? 'Unknown')}
+                    {'\n'}
+                    First seen: {formatDate(app.createdDateTime)}
+                  </InfoBox>
+              ))}
+              {becData.MaliciousSPs.length > 6 && (
+                <Note>
+                  ... and {becData.MaliciousSPs.length - 6} more (see JSON export for full list)
+                </Note>
+              )}
+            </>
           )}
-        </View>
+        </Section>
+      </ContentPage>
+
+      {/* CHECK 4, 5, 6, 7: PERMISSIONS, SENT MAIL, MFA, PASSWORDS */}
+      <ContentPage title="Additional Security Checks" subtitle="Permissions, outbound mail, authentication, and access patterns">
 
         {/* Check 4: Mailbox Permission Changes */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Check 4: Mailbox Permission Changes</Text>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Why We Check This</Text>
-            <Text style={styles.infoText}>
+        <Section title="Check 4: Mailbox Permission Changes">
+          <InfoBox title="Why We Check This">
               Unauthorized changes to mailbox permissions can allow attackers to grant themselves or
               accomplices access to read, send, or manage emails. This is a common technique to
               maintain persistent access.
-            </Text>
-          </View>
+            </InfoBox>
 
           {stats.permissionChanges > 0 ? (
             <>
-              <View style={styles.alertBox}>
-                <Text style={styles.alertTitle}>
-                  ⚠ {stats.permissionChanges} Permission Change(s) Found
-                </Text>
-                <Text style={styles.alertText}>
+              <AlertBox title={`⚠️ ${stats.permissionChanges} Permission Change(s) Found`}>
                   Mailbox permission changes were detected. Verify that each change was authorized
                   and necessary for legitimate business purposes.
-                </Text>
-              </View>
+                </AlertBox>
 
               {becData.MailboxPermissionChanges.slice(0, 5).map((change, index) => (
-                <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>{change.Operation || 'Permission Change'}</Text>
-                  <Text style={styles.infoText}>
+                <InfoBox key={index} title={`${change.Operation || 'Permission Change'}`}>
                     User: {change.UserKey || 'Unknown'}
                     {'\n'}
                     Target: {change.ObjectId || 'N/A'}
                     {'\n'}
                     Permissions: {change.Permissions || 'Unknown'}
-                  </Text>
-                </View>
+                    {change.TargetsSuspect === true &&
+                      '\n⚠️ Targets the investigated mailbox'}
+                  </InfoBox>
               ))}
               {becData.MailboxPermissionChanges.length > 5 && (
-                <Text style={[styles.infoText, { marginLeft: 12, fontStyle: 'italic' }]}>
+                <Note>
                   ... and {becData.MailboxPermissionChanges.length - 5} more changes
-                </Text>
+                </Note>
               )}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: '#F0FDF4' }]}>
-              <Text style={[styles.infoTitle, { color: '#22543D' }]}>
-                ✓ No Permission Changes Found
-              </Text>
-              <Text style={styles.infoText}>
+            <ClearBox title="✔️ No Permission Changes Found">
                 No mailbox permission changes were detected during the analysis period.
-              </Text>
-            </View>
+              </ClearBox>
           )}
-        </View>
+        </Section>
 
-        {/* Check 5: MFA Devices */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Check 5: MFA Devices</Text>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Why We Check This</Text>
-            <Text style={styles.infoText}>
+        {/* Check 5: Sent Messages */}
+        <Section title="Check 5: Sent Messages">
+          <InfoBox title="Why We Check This">
+              Attackers use a compromised mailbox to send fraudulent invoices, phishing, or
+              internal impersonation mail. The message trace shows what actually left the mailbox
+              during the analysis period, including the IP address it was sent from.
+            </InfoBox>
+
+          {stats.sentMessages > 0 ? (
+            <>
+              <Paragraph indent>
+                ℹ️ {stats.sentTotalMessages || stats.sentMessages} message(s) to{' '}
+                {stats.sentTotalRecipients || stats.sentMessages} recipient(s) were sent by this
+                mailbox during the analysis period
+                {stats.foreignSentMessages > 0
+                  ? `, including ${stats.foreignSentMessages} from an IP outside the user's assigned usage location.`
+                  : '.'}
+              </Paragraph>
+
+              {stats.massMailFlagged && (
+                <AlertBox title="⚠️ Mass-Mail Pattern Detected">
+                    {stats.repeatedSubjects > 0
+                      ? `${stats.repeatedSubjects} subject(s) were sent as many separate messages or to many recipients. `
+                      : ''}
+                    {stats.sendBursts > 0
+                      ? `${stats.sendBursts} short burst(s) of high-volume sending were detected. `
+                      : ''}
+                    Identical-subject mass mail and send bursts are how a compromised mailbox
+                    spreads phishing or fraudulent invoices. Review the campaigns below and warn
+                    the recipients if the content was malicious.
+                  </AlertBox>
+              )}
+
+              {(becData?.SentMessageAnalysis?.RepeatedSubjects || [])
+                .slice(0, 5)
+                .map((group, index) => (
+                  <InfoBox key={`subject-${index}`} title={`${group.Flagged ? '⚠️ ' : ''}Repeated subject: ${group.Subject || '(no subject)'}`}>
+                      Messages: {group.MessageCount}
+                      {'\n'}
+                      Recipients: {group.RecipientCount}
+                      {'\n'}
+                      First sent: {group.FirstSent || 'N/A'}
+                      {'\n'}
+                      Last sent: {group.LastSent || 'N/A'}
+                    </InfoBox>
+                ))}
+              {(becData?.SentMessageAnalysis?.RepeatedSubjects?.length || 0) > 5 && (
+                <Note>
+                  ... and {becData.SentMessageAnalysis.RepeatedSubjects.length - 5} more repeated
+                  subjects (see JSON export for full list)
+                </Note>
+              )}
+
+              {(becData?.SentMessageAnalysis?.Bursts || []).slice(0, 5).map((burst, index) => (
+                <InfoBox key={`burst-${index}`} title={`⚠️ Send burst: ${burst.MessageCount} message(s) to ${burst.RecipientCount} recipient(s) in ${burst.WindowMinutes || 10} minutes`}>
+                    Starting: {burst.WindowStart || 'N/A'}
+                    {burst.TopSubject && `\nMost common subject: ${burst.TopSubject}`}
+                  </InfoBox>
+              ))}
+              {(becData?.SentMessageAnalysis?.Bursts?.length || 0) > 5 && (
+                <Note>
+                  ... and {becData.SentMessageAnalysis.Bursts.length - 5} more bursts (see JSON
+                  export for full list)
+                </Note>
+              )}
+
+              {becData.SentMessages.slice(0, 10).map((msg, index) => (
+                <InfoBox key={index} title={`${msg.Subject || '(no subject)'}`}>
+                    To: {msg.RecipientAddress || 'N/A'}
+                    {'\n'}
+                    Status: {msg.Status || 'N/A'}
+                    {'\n'}
+                    Received: {msg.Received || 'N/A'}
+                    {msg.FromIP &&
+                      `\nFrom IP: ${msg.FromIP}${msg.Country ? ` (${msg.Country})` : ''}`}
+                    {msg.ForeignLocation === true &&
+                      '\n⚠️ Sent from outside the assigned usage location'}
+                  </InfoBox>
+              ))}
+              {becData.SentMessages.length > 10 && (
+                <Note>
+                  ... and {becData.SentMessages.length - 10} more messages (see JSON export for
+                  full list)
+                </Note>
+              )}
+            </>
+          ) : (
+            <ClearBox title="✔️ No Sent Messages Found">
+                No messages were sent by this mailbox during the analysis period.
+              </ClearBox>
+          )}
+        </Section>
+
+        {/* Check 6: MFA Devices */}
+        <Section title="Check 6: MFA Devices">
+          <InfoBox title="Why We Check This">
               Multi-factor authentication (MFA) devices provide an additional layer of security.
               Reviewing registered MFA methods helps identify if attackers have added unauthorized
               devices to bypass security controls.
-            </Text>
-          </View>
+            </InfoBox>
 
           {stats.mfaDevices > 0 ? (
             <>
-              <Text style={[styles.bodyText, { marginLeft: 12, marginTop: 8 }]}>
-                ℹ {stats.mfaDevices} MFA device(s) registered. Verify each device belongs to the
-                user.
-              </Text>
+              <Paragraph indent>
+                ℹ️ {stats.mfaDevices} MFA device(s) registered
+                {stats.recentMfaDevices > 0
+                  ? `, including ${stats.recentMfaDevices} registered in the last 7 days. Verify the recent registrations were made by the user — attackers register their own method to keep access after a password reset.`
+                  : '. Verify each device belongs to the user.'}
+              </Paragraph>
 
-              {becData.MFADevices.slice(0, 5).map((device, index) => (
-                <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>
-                    {device['@odata.type']
-                      ?.replace('#microsoft.graph.', '')
-                      .replace('AuthenticationMethod', '') || 'Unknown'}
-                  </Text>
-                  <Text style={styles.infoText}>
-                    Display Name: {device.displayName || 'N/A'}
-                    {'\n'}
-                    Registered: {formatDate(device.createdDateTime)}
-                  </Text>
-                </View>
-              ))}
+              {[...becData.MFADevices]
+                .sort(
+                  (a, b) => new Date(b?.createdDateTime || 0) - new Date(a?.createdDateTime || 0)
+                )
+                .slice(0, 5)
+                .map((device, index) => (
+                  <InfoBox key={index} title={`${device['@odata.type'] ?.replace('#microsoft.graph.', '') .replace('AuthenticationMethod', '') || 'Unknown'}`}>
+                      Display Name: {device.displayName || 'N/A'}
+                      {'\n'}
+                      Registered: {formatDate(device.createdDateTime)}
+                      {isRecentMfaDevice(device) && '\n⚠️ Registered in the last 7 days'}
+                    </InfoBox>
+                ))}
+              {becData.MFADevices.length > 5 && (
+                <Note>
+                  ... and {becData.MFADevices.length - 5} more methods (see JSON export for full
+                  list)
+                </Note>
+              )}
             </>
           ) : (
-            <View style={[styles.infoBox, { backgroundColor: '#FEF5E7' }]}>
-              <Text style={[styles.infoTitle, { color: '#744210' }]}>⚠ No MFA Devices Found</Text>
-              <Text style={styles.infoText}>
+            <InfoBox tone="warn" title="⚠️ No MFA Devices Found">
                 No multi-factor authentication devices are registered. MFA is highly recommended to
                 prevent unauthorized access.
-              </Text>
-            </View>
+              </InfoBox>
           )}
-        </View>
+        </Section>
 
-        {/* Check 6: Password Changes */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Check 6: Recent Password Changes</Text>
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Why We Check This</Text>
-            <Text style={styles.infoText}>
+        {/* Check 7: Password Changes */}
+        <Section title="Check 7: Recent Password Changes">
+          <InfoBox title="Why We Check This">
               Attackers often change passwords to lock out legitimate users. Reviewing recent
               password changes in the tenant helps identify if the compromised account's password
               was changed or if other accounts were affected.
-            </Text>
-          </View>
+            </InfoBox>
 
           {stats.passwordChanges > 0 ? (
             <>
-              <Text style={[styles.bodyText, { marginLeft: 12, marginTop: 8 }]}>
-                ℹ {stats.passwordChanges} password change(s) detected in the tenant during the
+              <Paragraph indent>
+                ℹ️ {stats.passwordChanges} password change(s) detected in the tenant during the
                 analysis period.
-              </Text>
+              </Paragraph>
 
               {becData.ChangedPasswords.slice(0, 5).map((user, index) => (
-                <View key={index} style={styles.infoBox}>
-                  <Text style={styles.infoTitle}>{user.displayName || 'Unknown'}</Text>
-                  <Text style={styles.infoText}>
+                <InfoBox key={index} title={`${user.displayName || 'Unknown'}`}>
                     Email: {user.userPrincipalName || 'N/A'}
                     {'\n'}
                     Last Password Change: {formatDate(user.lastPasswordChangeDateTime)}
-                  </Text>
-                </View>
+                  </InfoBox>
               ))}
+              {becData.ChangedPasswords.length > 5 && (
+                <Note>
+                  ... and {becData.ChangedPasswords.length - 5} more (see JSON export for full
+                  list)
+                </Note>
+              )}
             </>
           ) : (
-            <Text style={[styles.bodyText, { marginLeft: 12, marginTop: 8 }]}>
-              ℹ No password changes detected during the analysis period.
-            </Text>
+            <Paragraph indent>
+              ℹ️ No password changes detected during the analysis period.
+            </Paragraph>
           )}
-        </View>
+        </Section>
+      </ContentPage>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            {tenantName} - BEC Analysis Report for {userData?.displayName}
-          </Text>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
+      {/* CHECK 8, 9, 10: SENDER LISTS, DEVICES, LOCATIONS */}
+      <ContentPage title="Mailbox Lists, Devices & Locations" subtitle="Sender lists, managed devices, and sign-in origins">
+
+        {/* Check 8: Trusted & Blocked Senders */}
+        <Section title="Check 8: Trusted &amp; Blocked Senders">
+          <InfoBox title="Why We Check This">
+              Attackers may add their own domain to the Trusted Senders list so their fraudulent
+              messages bypass spam filtering, or add finance/security domains to the Blocked
+              Senders list so warnings and alerts are hidden from the victim in the Junk Email
+              folder.
+            </InfoBox>
+
+          {becData?.SafelistError && (
+            <AlertBox title="⚠️ Could Not Retrieve Sender Lists">
+                {becData.SafelistError}
+                {'\n'}
+                An empty list here does not mean the mailbox has no trusted or blocked senders.
+              </AlertBox>
+          )}
+
+          {stats.safelistChanges > 0 && (
+            <>
+              <AlertBox title={`⚠️ ${stats.safelistChanges} Safelist Change(s) in the Last 7 Days`}>
+                  The audit log recorded changes to the Trusted/Blocked Senders and Domains list on
+                  this mailbox. Review each change carefully.
+                </AlertBox>
+
+              {becData.SafelistChanges.slice(0, 10).map((change, index) => (
+                <InfoBox key={index} title={`${change.Operation || 'Safelist Change'} by ${change.UserKey || 'Unknown'}`}>
+                    Date: {formatDate(change.Date)}
+                    {change.ClientIP &&
+                      `\nFrom: ${change.ClientIP}${change.Country ? ` (${change.Country})` : ''}`}
+                    {change.ForeignLocation === true &&
+                      '\n⚠️ Originated outside the assigned usage location'}
+                    {'\n'}
+                    Trusted: {formatSafelistValue(change.Trusted)}
+                    {'\n'}
+                    Blocked: {formatSafelistValue(change.Blocked)}
+                  </InfoBox>
+              ))}
+              {becData.SafelistChanges.length > 10 && (
+                <Note>
+                  ... and {becData.SafelistChanges.length - 10} more changes (see JSON export for
+                  full list)
+                </Note>
+              )}
+            </>
+          )}
+
+          {stats.trustedSenders > 0 && (
+            <InfoBox title={`Trusted Senders/Domains (${stats.trustedSenders})`}>{becData.TrustedSenders.slice(0, 15).join(', ')}</InfoBox>
+          )}
+          {stats.trustedSenders > 15 && (
+            <Note>
+              ... and {stats.trustedSenders - 15} more trusted entries (see JSON export for full
+              list)
+            </Note>
+          )}
+
+          {stats.blockedSenders > 0 && (
+            <InfoBox title={`Blocked Senders/Domains (${stats.blockedSenders})`}>{becData.BlockedSenders.slice(0, 15).join(', ')}</InfoBox>
+          )}
+          {stats.blockedSenders > 15 && (
+            <Note>
+              ... and {stats.blockedSenders - 15} more blocked entries (see JSON export for full
+              list)
+            </Note>
+          )}
+
+          {!becData?.SafelistError &&
+            stats.trustedSenders === 0 &&
+            stats.blockedSenders === 0 &&
+            stats.safelistChanges === 0 && (
+              <ClearBox title="✔️ No Trusted or Blocked Senders Found">
+                  No trusted or blocked sender/domain entries were found on this mailbox.
+                </ClearBox>
+            )}
+        </Section>
+
+        {/* Check 9: Intune Devices */}
+        <Section title="Check 9: Intune Devices">
+          <InfoBox title="Why We Check This">
+              Newly enrolled Intune devices can indicate an attacker standing up a VM or BYOD
+              endpoint under the compromised identity, including paths that re-register Windows
+              Hello for Business. Review devices enrolled during the analysis window first.
+            </InfoBox>
+
+          {becData?.IntuneDevicesError ? (
+            <AlertBox title="⚠️ Could Not Retrieve Intune Devices">
+                {becData.IntuneDevicesError}
+                {'\n'}
+                An empty device list here does not mean the user has no Intune devices.
+              </AlertBox>
+          ) : stats.intuneDevices > 0 ? (
+            <>
+              <Paragraph indent>
+                ℹ️ {stats.intuneDevices} Intune-managed device(s) associated with this user
+                {stats.recentIntuneDevices > 0
+                  ? `, including ${stats.recentIntuneDevices} enrolled in the last 7 days.`
+                  : '. None were enrolled in the last 7 days.'}
+              </Paragraph>
+
+              {sortedIntuneDevices.slice(0, 5).map((device, index) => (
+                <InfoBox key={index} title={`${device.deviceName || 'Unknown device'}`}>
+                    OS: {device.operatingSystem || 'N/A'}
+                    {device.osVersion ? ` ${device.osVersion}` : ''}
+                    {'\n'}
+                    Enrolled: {formatDate(device.enrolledDateTime)}
+                    {'\n'}
+                    Compliance: {device.complianceState || 'N/A'}
+                    {'\n'}
+                    Enrollment Type: {device.deviceEnrollmentType || 'N/A'}
+                    {device.serialNumber ? `\nSerial: ${device.serialNumber}` : ''}
+                  </InfoBox>
+              ))}
+              {sortedIntuneDevices.length > 5 && (
+                <Note>
+                  ... and {sortedIntuneDevices.length - 5} more devices (see JSON export for full
+                  list)
+                </Note>
+              )}
+            </>
+          ) : (
+            <ClearBox title="✔️ No Intune Devices Found">
+                No Intune-managed devices were found for this user.
+              </ClearBox>
+          )}
+        </Section>
+
+        {/* Check 10: Sign-in Locations */}
+        <Section title="Check 10: Sign-in Locations">
+          <InfoBox title="Why We Check This">
+              Sign-ins from countries the user does not work from are one of the strongest
+              compromise indicators. Each sign-in is compared against the user's assigned usage
+              location in Entra ID
+              {locationAnalysis?.UsageLocation ? ` (${locationAnalysis.UsageLocation})` : ''}, and
+              the client IPs behind rule changes, safelist changes, sharing changes, and sent mail
+              are geo-located and compared the same way.
+            </InfoBox>
+
+          {becData?.SuspectUserSignInsError ? (
+            <AlertBox title="⚠️ Could Not Retrieve Sign-in Logs">
+                {becData.SuspectUserSignInsError}
+                {'\n'}
+                An empty list here does not mean the user has not signed in.
+              </AlertBox>
+          ) : (
+            <>
+              {!locationAnalysis?.UsageLocation && (
+                <InfoBox tone="warn" title="⚠️ No Usage Location Assigned">
+                    {locationAnalysis?.Note ||
+                      'The user has no usage location assigned in Entra ID, so activity cannot be compared against an expected country.'}
+                  </InfoBox>
+              )}
+
+              {(locationAnalysis?.SignInCountries?.length || 0) > 0 && (
+                <InfoBox title={`Sign-in Countries Observed (last ${stats.signIns} sign-ins)`}>
+                    {locationAnalysis.SignInCountries.map(
+                      (c) => `${c.Country}: ${c.Count} sign-in(s)`
+                    ).join('\n')}
+                  </InfoBox>
+              )}
+
+              {stats.foreignSignIns > 0 || stats.foreignActivity > 0 ? (
+                <>
+                  <AlertBox title="⚠️ Activity Outside the Assigned Usage Location">
+                      {stats.foreignSignIns} sign-in(s) (of which {stats.foreignSuccessfulSignIns}{' '}
+                      succeeded), {locationAnalysis?.ForeignRuleChangeCount || 0} inbox rule
+                      change(s), {locationAnalysis?.ForeignSafelistChangeCount || 0} safelist
+                      change(s), {locationAnalysis?.ForeignSharingChangeCount || 0} sharing
+                      change(s), and {locationAnalysis?.ForeignSentMessageCount || 0} sent
+                      message(s) originated outside {locationAnalysis?.UsageLocation}. Failed
+                      foreign sign-ins are mostly password-spray noise; the successful ones prove
+                      access. Review each carefully — a single legitimate trip can explain some of
+                      this, but rule, safelist, or sharing changes from a foreign IP rarely have an
+                      innocent explanation.
+                    </AlertBox>
+
+                  {foreignSignIns.slice(0, 10).map((signIn, index) => (
+                    <InfoBox key={index} title={`${formatDate(signIn.CreatedDateTime)} - ${signIn.Country || 'Unknown'}`}>
+                        Application: {signIn.AppDisplayName || 'N/A'}
+                        {'\n'}
+                        IP Address: {signIn.IPAddress || 'N/A'}
+                        {'\n'}
+                        City: {signIn.City || 'N/A'}
+                        {'\n'}
+                        Result: {signIn.Status || 'N/A'}
+                      </InfoBox>
+                  ))}
+                  {foreignSignIns.length > 10 && (
+                    <Note>
+                      ... and {foreignSignIns.length - 10} more foreign sign-ins (see JSON export
+                      for full list)
+                    </Note>
+                  )}
+                </>
+              ) : locationAnalysis?.UsageLocation ? (
+                <ClearBox title="✔️ No Foreign Activity Detected">
+                    All located sign-ins and activity match the user's assigned usage location (
+                    {locationAnalysis.UsageLocation}).
+                  </ClearBox>
+              ) : null}
+            </>
+          )}
+        </Section>
+
+        {/* Check 11: Sharing Links */}
+        <Section title="Check 11: Sharing Links">
+          <InfoBox title="Why We Check This">
+              Attackers share OneDrive and SharePoint folders to give themselves a data feed that
+              survives a password reset, and anonymous links expose the content to anyone holding
+              the URL. This check lists every sharing link the account created or changed during
+              the analysis period, including the IP address it was done from.
+            </InfoBox>
+
+          {stats.sharingChanges > 0 ? (
+            <>
+              <AlertBox title={`⚠️ ${stats.sharingChanges} Sharing Change(s) in the Last 7 Days`}>
+                  {stats.anonymousLinks > 0
+                    ? `${stats.anonymousLinks} of these involve anonymous links, which anyone with the URL can open. `
+                    : ''}
+                  Review each link and remove any that are not explained, even if the account has
+                  since been remediated.
+                </AlertBox>
+
+              {becData.SharingChanges.slice(0, 10).map((change, index) => (
+                <InfoBox key={index} title={`${change.Operation || 'Sharing Change'}: ${change.FileName || change.ItemUrl || 'Unknown item'}`}>
+                    Date: {formatDate(change.Date)}
+                    {'\n'}
+                    Workload: {change.Workload || 'N/A'}
+                    {change.Target && `\nShared with: ${change.Target}`}
+                    {change.ClientIP &&
+                      `\nFrom: ${change.ClientIP}${change.Country ? ` (${change.Country})` : ''}`}
+                    {change.ForeignLocation === true &&
+                      '\n⚠️ Originated outside the assigned usage location'}
+                  </InfoBox>
+              ))}
+              {becData.SharingChanges.length > 10 && (
+                <Note>
+                  ... and {becData.SharingChanges.length - 10} more changes (see JSON export for
+                  full list)
+                </Note>
+              )}
+            </>
+          ) : (
+            <ClearBox title="✔️ No Sharing Changes Found">
+                No sharing links were created or changed by this account during the analysis
+                period.
+              </ClearBox>
+          )}
+        </Section>
+      </ContentPage>
 
       {/* RECOMMENDATIONS PAGE */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Recommendations</Text>
-            <Text style={styles.pageSubtitle}>Actions to take and prevention best practices</Text>
-          </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-          )}
-        </View>
+      <ContentPage title="Recommendations" subtitle="Actions to take and prevention best practices">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Immediate Actions Required</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Immediate Actions Required">
+          <Paragraph>
             Based on the investigation findings, the following actions should be taken immediately:
-          </Text>
+          </Paragraph>
 
-          <View style={styles.bulletList}>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>1.</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Reset Password:</Text> Change the user's
+          <BulletList>
+            <Bullet marker="1." label="Reset Password:"> Change the user's
                 password immediately to prevent further unauthorized access.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>2.</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Revoke Sessions:</Text> Sign out the user from
+              </Bullet>
+            <Bullet marker="2." label="Revoke Sessions:"> Sign out the user from
                 all active sessions to terminate any attacker access.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>3.</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Remove Suspicious Rules:</Text> Delete any
+              </Bullet>
+            <Bullet marker="3." label="Remove Suspicious Rules:"> Delete any
                 mailbox rules that forward, redirect, or hide emails, especially those moving
                 messages to unusual folders.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>4.</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Review MFA Devices:</Text> Remove any MFA
+              </Bullet>
+            <Bullet marker="4." label="Review MFA Devices:"> Remove any MFA
                 devices that the user doesn't recognize and re-register legitimate devices.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>5.</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Audit Permissions:</Text> Review and revoke any
+              </Bullet>
+            <Bullet marker="5." label="Audit Permissions:"> Review and revoke any
                 unauthorized mailbox permissions or application consents.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>6.</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Monitor Account:</Text> Continue monitoring the
+              </Bullet>
+            <Bullet marker="6." label="Monitor Account:"> Continue monitoring the
                 account for suspicious activity for at least 30 days.
-              </Text>
-            </View>
-          </View>
-        </View>
+              </Bullet>
+          </BulletList>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Long-Term Prevention Strategies</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Long-Term Prevention Strategies">
+          <Paragraph>
             To prevent future Business Email Compromise attacks, implement these security best
             practices:
-          </Text>
+          </Paragraph>
 
-          <View style={styles.bulletList}>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>
-                  Enforce Multi-Factor Authentication (MFA):
-                </Text>{' '}
+          <BulletList>
+            <Bullet label="Enforce Multi-Factor Authentication (MFA):">{' '}
                 Require MFA for all users, especially those with administrative privileges or access
                 to financial systems.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Implement Security Awareness Training:</Text>{' '}
+              </Bullet>
+            <Bullet label="Implement Security Awareness Training:">{' '}
                 Educate employees about phishing, social engineering, and how to identify suspicious
                 emails. Regular training significantly reduces successful attacks.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Enable Advanced Threat Protection:</Text> Use
+              </Bullet>
+            <Bullet label="Enable Advanced Threat Protection:"> Use
                 email security solutions that detect and block phishing, malware, and suspicious
                 attachments.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Configure Conditional Access Policies:</Text>{' '}
+              </Bullet>
+            <Bullet label="Configure Conditional Access Policies:">{' '}
                 Restrict access based on location, device compliance, and risk level to prevent
                 unauthorized sign-ins.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Monitor Audit Logs:</Text> Regularly review
+              </Bullet>
+            <Bullet label="Monitor Audit Logs:"> Regularly review
                 audit logs for suspicious activities such as unusual sign-in patterns, rule
                 creation, or permission changes.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>Establish Financial Controls:</Text> Implement
+              </Bullet>
+            <Bullet label="Establish Financial Controls:"> Implement
                 multi-person approval processes for wire transfers and payment changes to prevent
                 fraudulent transactions.
-              </Text>
-            </View>
-          </View>
-        </View>
+              </Bullet>
+          </BulletList>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>User Education Points</Text>
-          <Text style={styles.bodyText}>
+        <Section title="User Education Points">
+          <Paragraph>
             Share these key points with the affected user to help prevent future compromises:
-          </Text>
+          </Paragraph>
 
-          <View style={styles.bulletList}>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
+          <BulletList>
+            <Bullet>
                 Never click on links or open attachments in unexpected emails, even if they appear
                 to come from known contacts.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
+              </Bullet>
+            <Bullet>
                 Always verify unusual requests for money transfers or sensitive information through
                 a separate communication channel (phone call, in person).
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
+              </Bullet>
+            <Bullet>
                 Use strong, unique passwords for each account and consider using a password manager.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
+              </Bullet>
+            <Bullet>
                 Be cautious when authorizing new applications or granting permissions to third-party
                 services.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
+              </Bullet>
+            <Bullet>
                 Report suspicious emails or activities to your IT security team immediately.
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            {tenantName} - BEC Analysis Report for {userData?.displayName}
-          </Text>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
+              </Bullet>
+          </BulletList>
+        </Section>
+      </ContentPage>
 
       {/* COMPLIANCE & DOCUMENTATION PAGE */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Compliance & Documentation</Text>
-            <Text style={styles.pageSubtitle}>Meeting regulatory and audit requirements</Text>
-          </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-          )}
-        </View>
+      <ContentPage title="Compliance & Documentation" subtitle="Meeting regulatory and audit requirements">
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Compliance Considerations</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Compliance Considerations">
+          <Paragraph>
             This report supports compliance and documentation requirements for various security
             frameworks and regulatory standards:
-          </Text>
+          </Paragraph>
 
-          <View style={styles.bulletList}>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>ISO 27001:</Text> Demonstrates incident
+          <BulletList>
+            <Bullet label="ISO 27001:"> Demonstrates incident
                 detection, analysis, and response procedures (Controls A.16.1.1 - A.16.1.7).
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>CMMC Level 2:</Text> Provides evidence of
+              </Bullet>
+            <Bullet label="CMMC Level 2:"> Provides evidence of
                 security incident monitoring, analysis, and documentation (AC.L2-3.1.12,
                 AU.L2-3.3.1).
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>SOC 2 Type II:</Text> Documents detective and
+              </Bullet>
+            <Bullet label="SOC 2 Type II:"> Documents detective and
                 responsive controls for security incidents (CC7.3, CC7.4).
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>NIST CSF:</Text> Aligns with Detect (DE.AE,
+              </Bullet>
+            <Bullet label="NIST CSF:"> Aligns with Detect (DE.AE,
                 DE.CM) and Respond (RS.AN, RS.MI) functions.
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
-                <Text style={{ fontWeight: 'bold' }}>GDPR:</Text> Demonstrates security breach
+              </Bullet>
+            <Bullet label="GDPR:"> Demonstrates security breach
                 detection and potential data breach assessment (Articles 32, 33).
-              </Text>
-            </View>
-          </View>
-        </View>
+              </Bullet>
+          </BulletList>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Audit Trail</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Audit Trail">
+          <Paragraph>
             This investigation and resulting documentation provide an audit trail for security
             incident response:
-          </Text>
+          </Paragraph>
 
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Investigation Details</Text>
-            <Text style={styles.infoText}>
+          <InfoBox title="Investigation Details">
               Investigation Date: {formatDate(becData?.ExtractedAt)}
               {'\n'}
               Analyzed User: {userData?.userPrincipalName}
@@ -1333,79 +1124,87 @@ const BECRemediationReportDocument = ({
               {'\n'}
               Analysis Period: 7 days
               {'\n'}
+              Assigned Usage Location: {locationAnalysis?.UsageLocation || 'Not assigned'}
+              {'\n'}
               Audit Log Status: {becData?.ExtractResult || 'Unknown'}
-            </Text>
-          </View>
+            </InfoBox>
 
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Findings Summary</Text>
-            <Text style={styles.infoText}>
+          <InfoBox title="Findings Summary">
               Threat Level: {threatLevel.level}
               {'\n'}
               Mailbox Rules Found: {stats.newRules}
               {'\n'}
-              Permission Changes: {stats.permissionChanges}
+              Rule Changes: {stats.ruleChanges}
+              {'\n'}
+              Permission Changes: {stats.permissionChanges} ({stats.permissionChangesTargetingUser}{' '}
+              targeting this mailbox)
               {'\n'}
               New Applications: {stats.newApps}
               {'\n'}
+              Known-Malicious Applications: {stats.maliciousApps}
+              {'\n'}
               New Users: {stats.newUsers}
+              {'\n'}
+              Sent Messages: {stats.sentTotalMessages || stats.sentMessages}
+              {'\n'}
+              Repeated Subject Campaigns: {stats.repeatedSubjects}
+              {'\n'}
+              Send Bursts: {stats.sendBursts}
               {'\n'}
               MFA Devices: {stats.mfaDevices}
               {'\n'}
+              Recent MFA Registrations (7d): {stats.recentMfaDevices}
+              {'\n'}
               Password Changes: {stats.passwordChanges}
-            </Text>
-          </View>
-        </View>
+              {'\n'}
+              Trusted Senders: {stats.trustedSenders}
+              {'\n'}
+              Blocked Senders: {stats.blockedSenders}
+              {'\n'}
+              Safelist Changes: {stats.safelistChanges}
+              {'\n'}
+              Sharing Changes: {stats.sharingChanges}
+              {'\n'}
+              Anonymous Links: {stats.anonymousLinks}
+              {'\n'}
+              Intune Devices: {stats.intuneDevices}
+              {'\n'}
+              Recent Intune Enrollments (7d): {stats.recentIntuneDevices}
+              {'\n'}
+              Foreign Sign-ins: {stats.foreignSignIns} ({stats.foreignSuccessfulSignIns} successful)
+              {'\n'}
+              Foreign Rule/Safelist/Sharing/Mail Activity: {stats.foreignActivity}
+            </InfoBox>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Document Retention</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Document Retention">
+          <Paragraph>
             This report should be retained according to your organization's document retention
             policy and regulatory requirements. Typical retention periods range from 3-7 years
             depending on applicable compliance frameworks. Store this document securely with
             restricted access as it contains sensitive security information.
-          </Text>
-        </View>
+          </Paragraph>
+        </Section>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Additional Resources</Text>
-          <Text style={styles.bodyText}>
+        <Section title="Additional Resources">
+          <Paragraph>
             For more information about Business Email Compromise and cybersecurity best practices:
-          </Text>
+          </Paragraph>
 
-          <View style={styles.bulletList}>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
+          <BulletList>
+            <Bullet>
                 FBI IC3: Internet Crime Complaint Center (ic3.gov)
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
+              </Bullet>
+            <Bullet>
                 CISA: Cybersecurity & Infrastructure Security Agency (cisa.gov)
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletText}>
+              </Bullet>
+            <Bullet>
                 Microsoft Security: Business Email Compromise resources
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            {tenantName} - BEC Analysis Report for {userData?.displayName}
-          </Text>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
-    </Document>
+              </Bullet>
+          </BulletList>
+        </Section>
+      </ContentPage>
+    </ReportDocument>
   )
 }
 
@@ -1413,15 +1212,12 @@ const BECRemediationReportDocument = ({
 export const BECRemediationReportButton = ({ userData, becData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
-  const userSettings = useSettings()
 
   // Check if we have the necessary data
   const hasData = userData && becData && !becData.Waiting
 
-  const brandingSettings = userSettings?.organizationSettings || {
-    logo: userSettings?.organizationSettings?.logo,
-    colour: userSettings?.organizationSettings?.colour || '#F77F00',
-  }
+  const brandingSettings = useBrandingSettings()
+  const variables = useReportVariables()
 
   const handleOpenDialog = () => {
     setDialogOpen(true)
@@ -1478,6 +1274,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
                 becData={becData}
                 brandingSettings={brandingSettings}
                 tenantName={tenantName}
+                variables={variables}
               />
             </PDFViewer>
           )}
@@ -1491,6 +1288,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
                 becData={becData}
                 brandingSettings={brandingSettings}
                 tenantName={tenantName}
+                variables={variables}
               />
             }
             fileName={`BEC_Report_${userData?.userPrincipalName}_${new Date().toISOString().split('T')[0]}.pdf`}

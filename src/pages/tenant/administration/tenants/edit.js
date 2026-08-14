@@ -69,16 +69,23 @@ const Page = () => {
         RemoveMFADevices: false,
         RemoveTeamsPhoneDID: false,
         ClearImmutableId: false,
+        DisableOneDriveSharing: false,
+        removeCalendarPermissions: false,
+        postExecution: {
+          psa: false,
+          email: false,
+          webhook: false,
+        },
       };
-      
+
       let offboardingDefaults = {};
-      
+
       if (tenantOffboardingDefaults) {
         try {
           const parsed = JSON.parse(tenantOffboardingDefaults);
           // Merge defaults with parsed values to ensure all fields are defined
-          offboardingDefaults = { 
-            offboardingDefaults: { ...defaultOffboardingValues, ...parsed } 
+          offboardingDefaults = {
+            offboardingDefaults: { ...defaultOffboardingValues, ...parsed }
           };
         } catch {
           offboardingDefaults = { offboardingDefaults: defaultOffboardingValues };
@@ -86,7 +93,7 @@ const Page = () => {
       } else {
         offboardingDefaults = { offboardingDefaults: defaultOffboardingValues };
       }
-      
+
       offboardingFormControl.reset(offboardingDefaults);
     }
   }, [tenantDetails.isSuccess, tenantDetails.data, id]);
@@ -113,8 +120,15 @@ const Page = () => {
       RemoveMFADevices: false,
       RemoveTeamsPhoneDID: false,
       ClearImmutableId: false,
+      DisableOneDriveSharing: false,
+      removeCalendarPermissions: false,
+      postExecution: {
+        psa: false,
+        email: false,
+        webhook: false,
+      },
     };
-    
+
     offboardingFormControl.reset({ offboardingDefaults: defaultOffboardingValues });
   };
 
@@ -222,7 +236,7 @@ const Page = () => {
                 <Typography variant="body2" color="text.secondary">
                   Configure default offboarding settings specifically for this tenant. These settings will override user defaults when offboarding users in this tenant.
                 </Typography>
-                
+
                 <CippFormSection
                   relatedQueryKeys={[`TenantProperties_${id}`]}
                   formControl={offboardingFormControl}
@@ -237,14 +251,14 @@ const Page = () => {
                   }}
                   hideTitle={true}
                 >
-                  <CippOffboardingDefaultSettings 
+                  <CippOffboardingDefaultSettings
                     formControl={offboardingFormControl}
                     title="Tenant Offboarding Defaults"
                   />
-                  
+
                   <Box sx={{ mt: 2 }}>
-                    <Button 
-                      variant="outlined" 
+                    <Button
+                      variant="outlined"
                       onClick={handleResetOffboardingDefaults}
                       sx={{ mr: 2 }}
                     >

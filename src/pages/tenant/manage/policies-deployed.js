@@ -15,7 +15,7 @@ import tabOptions from './tabOptions.json'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { CippHead } from '../../../components/CippComponents/CippHead'
 import { ApiGetCall } from '../../../api/ApiCall'
-import standardsData from '../../../data/standards.json'
+import { getStandards } from '../../../utils/standards-data'
 import { createDriftManagementActions } from './driftManagementActions'
 import { useSettings } from '../../../hooks/use-settings'
 import { CippAutoComplete } from '../../../components/CippComponents/CippAutocomplete'
@@ -200,7 +200,7 @@ const PoliciesDeployedPage = () => {
   // Helper function to get standard name from standards.json
   const getStandardName = (standardKey) => {
     const standardName = `standards.${standardKey}`
-    const standard = standardsData.find((s) => s.name === standardName)
+    const standard = getStandards().find((s) => s.name === standardName)
     return standard?.label || standardKey.replace(/([A-Z])/g, ' $1').trim()
   }
 

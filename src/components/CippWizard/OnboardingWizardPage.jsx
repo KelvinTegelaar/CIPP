@@ -15,12 +15,16 @@ import { CippGDAPTenantOnboarding } from './CippGDAPTenantOnboarding.jsx'
 import { BuildingOfficeIcon, CloudIcon, CpuChipIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/router'
 
-const OnboardingWizardPage = () => {
+const OnboardingWizardPage = ({ mode, samAppPresent, completionButton }) => {
   const router = useRouter()
+  const isSetupGate = mode === 'setupGate'
   const selectedOptionQuery = router.query?.selectedOption
   const deepLinkedOption = Array.isArray(selectedOptionQuery)
     ? selectedOptionQuery[0]
     : selectedOptionQuery
+
+  const tenantTypeQuery = router.query?.tenantType
+  const deepLinkedTenantType = Array.isArray(tenantTypeQuery) ? tenantTypeQuery[0] : tenantTypeQuery
 
   const setupOptions = [
     {
@@ -58,9 +62,26 @@ const OnboardingWizardPage = () => {
     },
   ]
 
+  // On the blocking first-run gate, AddTenant and CreateApp are noise: both need an
+  // existing SAM app or are a subset of First Setup. Refresh Tokens only helps when
+  // an app registration already exists (credentials stored but the token is dead).
+  const visibleOptions = isSetupGate
+    ? setupOptions.filter((option) =>
+        ['FirstSetup', 'Manual', ...(samAppPresent ? ['UpdateTokens'] : [])].includes(option.value)
+      )
+    : setupOptions
+
   const hasDeepLinkedOption =
+    !isSetupGate &&
     typeof deepLinkedOption === 'string' &&
     setupOptions.some((option) => option.value === deepLinkedOption)
+
+  // A deep link that already names the tenant type skips the type selection and lands the user
+  // straight on that type's step, e.g. re-authenticating a direct tenant from the tenants list.
+  const hasDeepLinkedTenantType =
+    hasDeepLinkedOption &&
+    deepLinkedOption === 'AddTenant' &&
+    ['GDAP', 'Direct', 'IndirectReseller'].includes(deepLinkedTenantType)
 
   const steps = [
     {
@@ -72,7 +93,7 @@ const OnboardingWizardPage = () => {
         subtext:
           'This wizard will guide you through setting up CIPPs access to your client tenants. If this is your first time setting up CIPP you will want to choose the option "Create application for me and connect to my tenants".',
         valuesKey: 'SyncTool',
-        options: setupOptions,
+        options: visibleOptions,
       },
     },
     {
@@ -90,7 +111,7 @@ const OnboardingWizardPage = () => {
     {
       description: 'Tenant Type',
       component: CippAddTenantTypeSelection,
-      showStepWhen: (values) => values?.selectedOption === 'AddTenant',
+      showStepWhen: (values) => values?.selectedOption === 'AddTenant' && !hasDeepLinkedTenantType,
     },
     {
       description: 'Direct Tenant',
@@ -155,7 +176,15 @@ const OnboardingWizardPage = () => {
       steps={steps}
       wizardTitle="Setup Wizard"
       postUrl="/api/ExecCombinedSetup"
-      initialState={hasDeepLinkedOption ? { selectedOption: deepLinkedOption } : undefined}
+      completionButton={completionButton}
+      initialState={
+        hasDeepLinkedOption
+          ? {
+              selectedOption: deepLinkedOption,
+              ...(hasDeepLinkedTenantType && { tenantType: deepLinkedTenantType }),
+            }
+          : undefined
+      }
     />
   )
 }

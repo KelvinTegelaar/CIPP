@@ -1,32 +1,18 @@
-import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
-import tabOptions from "../tabOptions";
-import CippPageCard from "../../../../../components/CippCards/CippPageCard";
-import CippRoles from "../../../../../components/CippSettings/CippRoles";
-import { CardContent, Stack, Alert } from "@mui/material";
+// Legacy redirect: this page moved to /cipp/advanced/authentication/cipp-roles when the
+// Super Admin area was split into Super Admin / Container Management / Authentication.
+// Safe to delete once bookmarks and docs links have aged out.
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Page = () => {
-  return (
-    <CippPageCard hideBackButton={true} title={"CIPP Roles"}>
-      <CardContent>
-        <Stack spacing={2}>
-          <Alert severity="info">
-            Custom roles can be used to restrict permissions for users with the 'editor' or
-            'readonly' roles in CIPP. They can be limited to a subset of tenants and API
-            permissions. Built-in and custom roles can be assigned to Entra security groups for
-            granular access control.
-          </Alert>
-          <CippRoles />
-        </Stack>
-      </CardContent>
-    </CippPageCard>
-  );
-};
+  const router = useRouter();
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
-  </DashboardLayout>
-);
+  useEffect(() => {
+    if (!router.isReady) return;
+    router.replace({ pathname: "/cipp/advanced/authentication/cipp-roles", query: router.query });
+  }, [router.isReady]);
+
+  return null;
+};
 
 export default Page;

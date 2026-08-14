@@ -109,6 +109,7 @@ const Page = () => {
           confirmText:
             "Are you sure you want to delete the offloaded function entry for [Name]? This does not delete the function app from Azure, this must be done first or it will register again.",
           condition: (row) => row.Default !== true,
+          hideBulk: true,
         },
       ]}
       tableFilter={
@@ -120,7 +121,7 @@ const Page = () => {
               under heavy load. Please review{" "}
               <Link
                 component={NextLink}
-                href="https://docs.cipp.app/user-documentation/cipp/settings/superadmin/function-offloading"
+                href="https://docs.cipp.app/user-documentation/cipp/advanced/super-admin/function-offloading"
                 target="_blank"
                 rel="noreferrer"
               >

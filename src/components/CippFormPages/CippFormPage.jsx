@@ -13,9 +13,14 @@ import {
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
 import { ApiPostCall } from '../../api/ApiCall'
 import { CippApiResults } from '../CippComponents/CippApiResults'
-import { useEffect } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 import { useFormState } from 'react-hook-form'
 import { CippHead } from '../CippComponents/CippHead'
+
+// Lets a page render its own Save button somewhere inside `children` (e.g. next to a
+// Run Test button) while reusing this component's submit pipeline. Pair with hideSubmit.
+const CippFormPageContext = createContext(null)
+export const useCippFormPageActions = () => useContext(CippFormPageContext)
 
 const CippFormPage = (props) => {
   const {
@@ -29,6 +34,7 @@ const CippFormPage = (props) => {
     postUrl,
     customDataformatter,
     resetForm = false,
+    preserveNullValues = false,
     hideBackButton = false,
     hidePageType = false,
     hideTitle = false,
@@ -85,16 +91,20 @@ const CippFormPage = (props) => {
       ? customDataformatter(formControl.getValues())
       : formControl.getValues()
     //remove all empty values or blanks (recursively)
+    //when preserveNullValues is set, explicit nulls are kept so the API can
+    //distinguish "clear this field" from "field omitted"
+    const isEmptyValue = (value) =>
+      value === '' || value === undefined || (!preserveNullValues && value === null)
     const removeEmpty = (obj) => {
       if (Array.isArray(obj)) {
         return obj
           .map((item) => (item && typeof item === 'object' ? removeEmpty(item) : item))
-          .filter((item) => item !== '' && item !== null && item !== undefined)
+          .filter((item) => !isEmptyValue(item))
       }
       Object.keys(obj).forEach((key) => {
-        if (obj[key] === '' || obj[key] === null || obj[key] === undefined) {
+        if (isEmptyValue(obj[key])) {
           delete obj[key]
-        } else if (typeof obj[key] === 'object') {
+        } else if (obj[key] !== null && typeof obj[key] === 'object') {
           obj[key] = removeEmpty(obj[key])
           if (!Array.isArray(obj[key]) && Object.keys(obj[key]).length === 0) {
             delete obj[key]
@@ -109,8 +119,16 @@ const CippFormPage = (props) => {
       data: values,
     })
   }
+  const formPageActions = {
+    submit: formControl.handleSubmit(handleSubmit),
+    isSubmitting: postCall.isPending,
+    isValid,
+    isDirty,
+    allowResubmit,
+  }
+
   return (
-    <>
+    <CippFormPageContext.Provider value={formPageActions}>
       <CippHead title={title} />
       <Box
         sx={{
@@ -159,7 +177,7 @@ const CippFormPage = (props) => {
           </Stack>
         </Container>
       </Box>
-    </>
+    </CippFormPageContext.Provider>
   )
 }
 

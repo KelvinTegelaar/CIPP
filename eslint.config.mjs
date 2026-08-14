@@ -24,6 +24,13 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // csf meta is an anonymous default export by convention
+    files: ['tests/**/*.stories.jsx', '.storybook/**'],
+    rules: {
+      'import/no-anonymous-default-export': 'off',
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

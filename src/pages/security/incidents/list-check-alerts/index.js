@@ -14,7 +14,7 @@ const Page = () => {
       <Link href="https://docs.check.tech" target="_blank" rel="noopener noreferrer">
         docs.check.tech
       </Link>{" "}
-      or install the plugin now:
+      or install the plugin now: 
       <Link
         href="https://microsoftedge.microsoft.com/addons/detail/check-by-cyberdrain/knepjpocdagponkonnbggpcnhnaikajg"
         target="_blank"
@@ -22,7 +22,7 @@ const Page = () => {
       >
         Microsoft Edge
       </Link>{" "}
-      |
+      | 
       <Link
         href="https://chromewebstore.google.com/detail/check-by-cyberdrain/benimdeioplgkhanklclahllklceahbe"
         target="_blank"

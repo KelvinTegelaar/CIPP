@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { DeleteForever, ShoppingCart } from "@mui/icons-material";
+import { DeleteForever, EventRepeat, ShoppingCart } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
@@ -60,6 +60,24 @@ const Page = () => {
       ],
       data: { Action: "!Remove", sku: "sku" },
       confirmText: "Enter the number of licences to remove. This must be a number greater than 0.",
+      multiPost: false,
+    },
+    {
+      label: "Schedule decrease of 1 at next renewal",
+      type: "POST",
+      icon: <EventRepeat />,
+      url: "/api/ExecCSPLicense",
+      data: { Action: "!ScheduleRemoval", sku: "sku", Remove: 1 },
+      fields: [
+        {
+          type: "number",
+          name: "DaysBeforeRenewal",
+          label: "Days before renewal to execute (default 3)",
+          multiple: false,
+        },
+      ],
+      confirmText:
+        "Schedule a decrease of 1 licence for [productName], executed shortly before the renewal date ([commitmentTerm.renewalConfiguration.renewalDate])? The decrease only happens if at least 1 licence is unassigned at that time; otherwise it is skipped and nothing changes.",
       multiPost: false,
     },
     {
