@@ -31,6 +31,12 @@ import { CippEditSitePropertiesForm } from '../../../components/CippComponents/C
 import { CippSiteRecycleBinDialog } from '../../../components/CippComponents/CippSiteRecycleBinDialog'
 import { CippLibraryPermissionsDialog } from '../../../components/CippComponents/CippLibraryPermissionsDialog'
 import { CippCheckUserAccessDialog } from '../../../components/CippComponents/CippCheckUserAccessDialog'
+import { CippSharePointQuotaCard } from '../../../components/CippCards/CippSharePointQuotaCard'
+import {
+  CippAnonymizedReportAlert,
+  isReportAnonymized,
+  useReportAnonymized,
+} from '../../../components/CippComponents/CippAnonymizedReportAlert'
 
 // Friendly labels for the SharePoint version cleanup (trim) job progress fields.
 const VERSION_CLEANUP_LABELS = {
@@ -148,6 +154,30 @@ const Page = () => {
     allowToggle: true,
     defaultCached: true,
     allowAllTenantSync: true,
+  })
+
+  // Two different faults produce empty usage columns here, and they need different advice.
+  //
+  // Anonymization: Microsoft 365 hashes the owner names in the SharePoint site usage report.
+  // Only hashed values prove this - absent usage data does not, because anonymization still
+  // returns rows, it just hashes them. Both the live and cached paths merge the same report,
+  // so this is not gated on cache mode.
+  const anonymizedReport = useReportAnonymized({
+    url: reportDB.resolvedApiUrl,
+    data: reportDB.resolvedApiData,
+    queryKey: reportDB.resolvedQueryKey,
+    check: (rows) => isReportAnonymized(rows, ['ownerPrincipalName', 'ownerDisplayName']),
+  })
+
+  // Empty usage report: getSharePointSiteUsageDetail returns no rows at all for tenants
+  // Microsoft has not generated a report for yet. The site listing still populates the table,
+  // so every usage-derived column is blank. reportRefreshDate comes only from that report, so
+  // an empty one across every row means the merge contributed nothing.
+  const noUsageData = useReportAnonymized({
+    url: reportDB.resolvedApiUrl,
+    data: reportDB.resolvedApiData,
+    queryKey: reportDB.resolvedQueryKey,
+    check: (rows) => rows.every((site) => !site?.reportRefreshDate),
   })
 
   const actions = [
@@ -736,6 +766,22 @@ const Page = () => {
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         cardButton={pageActions}
+        tableFilter={
+          <>
+            <CippSharePointQuotaCard />
+            <CippAnonymizedReportAlert show={anonymizedReport}>
+              Site owner names in this report are pseudo-anonymised because Microsoft 365 report
+              anonymization is enabled for this tenant.
+            </CippAnonymizedReportAlert>
+            {!anonymizedReport && noUsageData && (
+              <Alert severity="info">
+                Microsoft returned no SharePoint usage report for this tenant, so activity,
+                storage and file count are blank. The site list itself is complete. Usage reports
+                can take up to 48 hours to appear on a new tenant.
+              </Alert>
+            )}
+          </>
+        }
       />
       {reportDB.syncDialog}
     </>
