@@ -6449,8 +6449,10 @@
         "label": "Policy Assignment",
         "options": [
           { "label": "Do not assign", "value": "none" },
-          { "label": "All devices", "value": "AllDevices" },
-          { "label": "All users and devices", "value": "AllDevicesAndUsers" }
+          {
+            "label": "All users (Device Preparation profiles deploy to the enrolling user, so device targets do not apply)",
+            "value": "AllDevicesAndUsers"
+          }
         ]
       }
     ],

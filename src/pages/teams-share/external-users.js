@@ -22,14 +22,16 @@ const Page = () => {
       icon: <NoAccounts />,
       url: '/api/ExecRemoveSPOExternalUser',
       customDataformatter: (row) => {
-        const r = Array.isArray(row) ? row[0] : row
-        return {
+        const formatRow = (r) => ({
           tenantFilter: r.Tenant ?? tenantFilter,
           EntraUserId: r.EntraUserId,
           LoginName: r.LoginName,
           SiteUrls: Array.isArray(r.Sites) ? r.Sites : [],
           DisplayName: r.DisplayName,
-        }
+        })
+        // When multiple rows are selected, row is an array. Returning an array
+        // makes CippApiDialog send one request per row (bulk request mode).
+        return Array.isArray(row) ? row.map(formatRow) : formatRow(row)
       },
       confirmText:
         'Fully remove guest access for [DisplayName]? This deletes their Entra guest account (if one exists) AND removes them from every site listed in the Sites column, so nothing is left orphaned. Sharing links they hold can be revoked from the Sharing Report; the inert SharePoint store entry ages out on its own.',

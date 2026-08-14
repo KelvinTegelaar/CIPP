@@ -244,8 +244,11 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
           clearTimeout(routerUpdateTimeoutRef.current);
         }
 
-        // Cancel all in-flight queries before changing tenant
-        queryClient.cancelQueries();
+        // Only cancel on a real tenant change; cancelling the initial-load URL backfill
+        // aborts mount fetches that react-query never retries.
+        if (query.tenantFilter && query.tenantFilter !== currentTenant.value) {
+          queryClient.cancelQueries();
+        }
 
         // Update router only - let the URL watcher handle settings
         query.tenantFilter = currentTenant.value;

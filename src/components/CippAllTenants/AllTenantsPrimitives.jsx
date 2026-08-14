@@ -1,15 +1,20 @@
 import {
   Box,
+  ButtonBase,
   Card,
   Chip,
+  Collapse,
   LinearProgress,
   Skeleton,
   Stack,
   Tooltip,
   Typography,
 } from '@mui/material'
+import { ExpandMore } from '@mui/icons-material'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
+import { useState } from 'react'
+import { parseCippDate } from '../../utils/parse-cipp-date'
 import {
   Area,
   AreaChart,
@@ -242,6 +247,162 @@ export const AllTenantsRowList = ({ rows = [], isFetching, emptyText = 'Nothing 
           )}
         </Stack>
       ))}
+    </Stack>
+  )
+}
+
+// Same 72-hour boundary the summary line uses, so a row reading "Oldest collection 60 hours old"
+// never expands to a collection labelled "3 days ago".
+const formatAge = (hours) => {
+  if (hours >= 72) return `${Math.round(hours / 24)} days ago`
+  if (hours >= 1) return `${Math.round(hours)} hours ago`
+  return 'under an hour ago'
+}
+
+/**
+ * The cache freshness worklist: one row per tenant that is behind, expandable to the collections
+ * holding it back and when each last ran.
+ *
+ * Scrolls rather than truncating. When a whole collection group fails estate-wide the affected
+ * tenants number in the dozens, and the previous five-row cut said "stale" without ever saying which
+ * collection or how stale — which is the only part you can act on.
+ */
+export const AllTenantsCacheList = ({
+  rows = [],
+  isFetching,
+  emptyText = 'Nothing to report',
+  maxHeight = 296,
+}) => {
+  const [expanded, setExpanded] = useState(null)
+
+  if (isFetching) {
+    return (
+      <Stack spacing={0.5}>
+        {[0, 1, 2].map((key) => (
+          <Skeleton key={key} variant="rounded" height={48} />
+        ))}
+      </Stack>
+    )
+  }
+
+  if (!rows.length) {
+    return (
+      <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+        {emptyText}
+      </Typography>
+    )
+  }
+
+  return (
+    <Stack spacing={0.5} sx={{ maxHeight, overflowY: 'auto', pr: 0.5 }}>
+      {rows.map((row, index) => {
+        const key = row.domain ?? `${row.name}-${index}`
+        const isOpen = expanded === key
+        const collections = row.collections ?? []
+        const canExpand = collections.length > 0
+
+        const header = (
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1.5}
+            sx={{ px: 1.25, py: 1.25, width: '100%' }}
+          >
+            <Box sx={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+              <Typography variant="subtitle2" component="div" noWrap title={row.name}>
+                {row.name}
+              </Typography>
+              {row.detail && (
+                <Typography
+                  variant="caption"
+                  component="div"
+                  color="text.secondary"
+                  noWrap
+                  title={row.detail}
+                >
+                  {row.detail}
+                </Typography>
+              )}
+            </Box>
+            {canExpand && (
+              <>
+                <Chip
+                  size="small"
+                  variant="outlined"
+                  color={CHIP_COLOR[row.severity] ?? 'default'}
+                  label={`${collections.length} stale`}
+                  sx={{ flexShrink: 0 }}
+                />
+                <ExpandMore
+                  fontSize="small"
+                  sx={{
+                    flexShrink: 0,
+                    color: 'text.secondary',
+                    transform: isOpen ? 'rotate(180deg)' : 'none',
+                    transition: 'transform 150ms',
+                  }}
+                />
+              </>
+            )}
+          </Stack>
+        )
+
+        return (
+          <Box
+            key={key}
+            sx={{
+              borderRadius: 1,
+              borderLeft: 3,
+              borderLeftColor: severityColor(row.severity),
+              backgroundColor: 'action.hover',
+            }}
+          >
+            {canExpand ? (
+              <ButtonBase
+                onClick={() => setExpanded(isOpen ? null : key)}
+                aria-expanded={isOpen}
+                sx={{ width: '100%', display: 'block', borderRadius: 1 }}
+              >
+                {header}
+              </ButtonBase>
+            ) : (
+              header
+            )}
+            <Collapse in={isOpen} unmountOnExit>
+              <Stack spacing={0.25} sx={{ px: 1.25, pb: 1.25 }}>
+                {collections.map((collection) => (
+                  <Stack
+                    key={collection.type}
+                    direction="row"
+                    alignItems="baseline"
+                    spacing={1}
+                    sx={{ justifyContent: 'space-between' }}
+                  >
+                    <Typography
+                      variant="caption"
+                      component="div"
+                      noWrap
+                      title={collection.type}
+                      sx={{ minWidth: 0 }}
+                    >
+                      {collection.type}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      component="div"
+                      color="text.secondary"
+                      sx={{ flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}
+                    >
+                      {parseCippDate(collection.lastRefresh).toLocaleString()} ·{' '}
+                      {formatAge(collection.ageHours)}
+                    </Typography>
+                  </Stack>
+                ))}
+              </Stack>
+            </Collapse>
+          </Box>
+        )
+      })}
     </Stack>
   )
 }

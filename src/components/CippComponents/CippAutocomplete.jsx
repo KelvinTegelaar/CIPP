@@ -216,10 +216,11 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         return result
       }
 
-      // Flatten the results from all pages
+      // Flatten the results from all pages. A dataKey can be present but null (e.g. an API
+      // returning {"Accounts":null}), which must read as "no options", not as a null option.
       const combinedResults = allPages.flatMap((page) => {
         const nestedData = getNestedValue(page, currentApi?.dataKey)
-        return nestedData !== undefined ? nestedData : []
+        return nestedData ?? []
       })
 
       if (!Array.isArray(combinedResults)) {
@@ -230,8 +231,11 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           },
         ])
       } else {
-        // Convert each item into your { label, value, addedFields, rawData } shape
-        const convertedOptions = combinedResults.map((option) => {
+        // Convert each item into your { label, value, addedFields, rawData } shape.
+        // Null items would throw on the label/value field lookups below.
+        const convertedOptions = combinedResults
+          .filter((option) => option !== null && option !== undefined)
+          .map((option) => {
           const addedFields = {}
           if (currentApi?.addedField) {
             Object.keys(currentApi.addedField).forEach((key) => {
