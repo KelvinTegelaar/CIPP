@@ -55,18 +55,18 @@ beforeEach(() => {
 })
 
 describe('ReleaseNotesDialog', () => {
-  it('opens on the running hotfix release rather than its .0 base release', async () => {
+  it('opens on the .0 base release even when running a hotfix build', async () => {
     renderWithProviders(<ReleaseNotesDialog />)
 
-    expect(await screen.findByText('Release notes for v10.8.2 - Hotfix')).toBeInTheDocument()
-    expect(screen.getByText('Notes for the hotfix that is actually running')).toBeInTheDocument()
+    expect(await screen.findByText('Release notes for v10.8.0 - Ramos Melon Fizz')).toBeInTheDocument()
+    expect(screen.getByText('Notes for the base release of the 10.8 series')).toBeInTheDocument()
   })
 
   it('stays dismissed on reload after "Don\'t show until next release"', async () => {
     const user = userEvent.setup()
 
     const { unmount } = renderWithProviders(<ReleaseNotesDialog />)
-    await screen.findByText('Release notes for v10.8.2 - Hotfix')
+    await screen.findByText('Release notes for v10.8.0 - Ramos Melon Fizz')
     await user.click(screen.getByRole('button', { name: "Don't show until next release" }))
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
 

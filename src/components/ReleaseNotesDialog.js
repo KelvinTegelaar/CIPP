@@ -83,8 +83,8 @@ const deleteCookie = (name) => {
 // running build's exact tag is both what we show and what we remember as dismissed. Collapsing
 // patch releases back to vX.Y.0 here left the dismissal cookie - which stores the tag that was
 // actually released - permanently unmatchable, so the dialog reopened on every page load.
-// baseTag survives only as a display fallback for builds whose exact tag has no release
-// (nightly, local, or a version bumped ahead of the tag being published).
+// baseTag (vX.Y.0) is what the dialog selects by default so the feature-release notes lead;
+// hotfix notes stay reachable via the dropdown.
 const buildReleaseMetadata = (version) => {
   const match = /^v?(\d+)\.(\d+)\.(\d+)/.exec(String(version ?? ''))
   const [major, minor, patch] = match ? match.slice(1) : ['0', '0', '0']
@@ -140,7 +140,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
   const [open, setOpen] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [manualOpenRequested, setManualOpenRequested] = useState(false)
-  const [selectedReleaseTag, setSelectedReleaseTag] = useState(releaseMeta.releaseTag)
+  const [selectedReleaseTag, setSelectedReleaseTag] = useState(releaseMeta.baseTag)
   const hasOpenedRef = useRef(false)
 
   useEffect(() => {
@@ -148,8 +148,8 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
   }, [releaseMeta.releaseTag])
 
   useEffect(() => {
-    setSelectedReleaseTag(releaseMeta.releaseTag)
-  }, [releaseMeta.releaseTag])
+    setSelectedReleaseTag(releaseMeta.baseTag)
+  }, [releaseMeta.baseTag])
 
   useEffect(() => {
     if (typeof window === 'undefined') {
