@@ -501,14 +501,15 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
     return (
       <Stack
-        direction="row"
-        display="flex"
-        alignItems="center"
+        // The None/Read/ReadWrite radio row is wider than a phone leaves beside the object
+        // name, so the controls drop below it there.
+        direction={{ xs: "column", md: "row" }}
+        alignItems={{ xs: "flex-start", md: "center" }}
         justifyContent={"space-between"}
         width={"100%"}
       >
         <Typography variant="h6">{obj}</Typography>
-        <Stack direction="row" spacing={3} size={{ xl: 8 }}>
+        <Stack direction="row" spacing={3} alignItems="center">
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
               <InformationCircleIcon />
@@ -602,8 +603,11 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
   return (
     <>
-      <Stack spacing={3} direction="row">
-        <Box width={"80%"}>
+      {/* The summary pane rides beside the form only where there is room for both; below xl
+          it follows the form instead of squeezing it (the old 80%/30% flex split shrank both
+          panes at every width and pushed the summary off a phone screen entirely). */}
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, xl: 9 }}>
           <Stack spacing={1} sx={{ mb: 3 }}>
             <Typography variant="h5" sx={{ mb: 2 }}>
               Role Options
@@ -1216,9 +1220,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               )}
             </>
           )}
-        </Box>
+        </Grid>
 
-        <Box size={{ md: 12, xl: 3 }} width="30%">
+        <Grid size={{ xs: 12, xl: 3 }}>
           {selectedEntraGroup && (
             <Alert color="info">
               This role will be assigned to the Entra Group:{" "}
@@ -1309,8 +1313,8 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               </ul>
             </>
           )}
-        </Box>
-      </Stack>
+        </Grid>
+      </Grid>
 
       <CippApiResults apiObject={updatePermissions} />
       <Stack direction="row" spacing={2} justifyContent="flex-end">

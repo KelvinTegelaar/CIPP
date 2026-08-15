@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { useIsMobileLayout } from '../hooks/use-breakpoint'
 
 /**
  * Lets a tabbed layout publish its tab list — and, on the headered variant, its page actions.
@@ -39,6 +40,22 @@ export const useActionCornerClaim = (active) => {
     claim(claimId)
     return () => release(claimId)
   }, [active, claim, release, claimId])
+}
+
+/**
+ * True when the mobile tab picker already names this page. The picker trigger wears the
+ * current tab's label in heading clothes directly above the page header, so a page whose own
+ * title is the same string would print it twice in a row. The page keeps its title on
+ * desktop, where the tab bar looks like navigation rather than a heading.
+ */
+export const useTitleClaimedByTabPicker = (title) => {
+  const context = useContext(TabNavigationContext)
+  const isMobile = useIsMobileLayout()
+  // Mirrors CippTabPicker's own render conditions: below two destinations it draws nothing,
+  // so there is no trigger to claim the title.
+  if (!isMobile || !context?.enabled || (context.tabs?.length ?? 0) < 2 || !title) return false
+  const current = context.tabs.find((tab) => tab.path === context.currentPath)
+  return current?.label?.trim().toLowerCase() === String(title).trim().toLowerCase()
 }
 
 /**

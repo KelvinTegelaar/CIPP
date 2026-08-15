@@ -100,6 +100,30 @@ export const gridOffenders = (rawSource) => {
   return offenders;
 };
 
+/**
+ * Percent-width column splits on Box/Stack, as `line reason` strings. The flexbox sibling
+ * of the Grid rule above: `<Box width="80%">` beside `<Box width="30%">` holds a desktop
+ * split at 390px too — the role editor's summary pane sat off the right edge of a phone
+ * this way. A responsive object (`width={{ xs: "100%", xl: "30%" }}`) passes.
+ */
+export const percentSplitOffenders = (rawSource) => {
+  const source = stripComments(rawSource);
+  const marked = new Set();
+  rawSource.split("\n").forEach((text, index) => {
+    if (text.includes(MARKER)) marked.add(index + 1);
+  });
+
+  const offenders = [];
+  for (const name of ["Box", "Stack"]) {
+    for (const tag of openingTags(source, name)) {
+      if (isExempt(marked, tag)) continue;
+      const percent = tag.text.match(/\bwidth=\{?"(\d{1,2})%"\}?/);
+      if (percent) offenders.push(`${tag.line} width="${percent[1]}%"`);
+    }
+  }
+  return offenders;
+};
+
 /** Dashboard card wrappers pinned to a pixel height, as `line reason` strings. */
 export const pinnedHeightOffenders = (rawSource) => {
   const source = stripComments(rawSource);
@@ -147,6 +171,27 @@ describe("mobile layout patterns", () => {
     ).toEqual([]);
     // but a marker further up the file does not blanket the rest of it
     expect(gridOffenders(`      // ${MARKER}\n\n\n\n\n${split}`)).toEqual(["6 xs: 6"]);
+  });
+
+  it("declares no percent-width flex split that survives a phone", () => {
+    const offenders = files.flatMap((file) =>
+      percentSplitOffenders(fs.readFileSync(file, "utf8")).map(
+        (offender) => `${rel(file)}:${offender}`
+      )
+    );
+    expect(
+      offenders,
+      `A percent width on Box/Stack holds a desktop split at 390px. Use width={{ xs: "100%", md|xl: "N%" }} or a Grid:\n${offenders.join("\n")}`
+    ).toEqual([]);
+  });
+
+  it("reads a percent split only as a fixed string width", () => {
+    expect(percentSplitOffenders(`      <Box width="30%">\n`)).toEqual(['1 width="30%"']);
+    expect(percentSplitOffenders(`      <Box width={"80%"}>\n`)).toEqual(['1 width="80%"']);
+    expect(percentSplitOffenders(`      <Box width="100%">\n`)).toEqual([]);
+    expect(percentSplitOffenders(`      <Box width={{ xs: "100%", xl: "30%" }}>\n`)).toEqual([]);
+    expect(percentSplitOffenders(`      <Skeleton width="80%" />\n`)).toEqual([]);
+    expect(percentSplitOffenders(`      // ${MARKER}\n      <Box width="30%">\n`)).toEqual([]);
   });
 
   it("pins no dashboard card to a pixel height", () => {
