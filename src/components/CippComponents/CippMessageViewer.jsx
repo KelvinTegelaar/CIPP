@@ -509,7 +509,17 @@ export const CippMessageViewer = ({ emailSource }) => {
                                 <SvgIcon>{darkMode ? <SunIcon /> : <MoonIcon />}</SvgIcon>
                               </IconButton>
                             </Box>
-                            {messageHtml}
+                            {/* Sanitized but untrusted layout: marketing mail ships fixed
+                                <table width="600">s, so the message scrolls inside its own
+                                card instead of widening the page body. */}
+                            <Box
+                              sx={{
+                                overflowX: "auto",
+                                "& img": { maxWidth: "100%", height: "auto" },
+                              }}
+                            >
+                              {messageHtml}
+                            </Box>
                           </CardContent>
                         </Card>
                       </ThemeProvider>
