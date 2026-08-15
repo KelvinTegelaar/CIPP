@@ -19,7 +19,7 @@ export const variableValuesFromExpected = (standard, expectedValue) => {
   return values
 }
 
-// The configurable settings of a V3 standard, rendered as real form fields from the
+// The configurable settings of a baseline standard, rendered as real form fields from the
 // definition's `variables`. Used by the template editor and the tenant-override dialog —
 // users always configure standards through the same fields, never raw JSON.
 export const CippBaselineStandardSettings = ({
@@ -74,6 +74,13 @@ export const CippBaselineStandardSettings = ({
             multiple={false}
             creatable={false}
             disabled={definition.locked === true}
+            // A required variable has no safe fallback: saving without it leaves the
+            // raw %token% in the baseline, which the engine refuses to compare or apply.
+            validators={
+              definition.required
+                ? { required: `${definition.label} is required` }
+                : undefined
+            }
           />
           {definition.locked && (
             <Stack direction="row" spacing={0.5} alignItems="center">
