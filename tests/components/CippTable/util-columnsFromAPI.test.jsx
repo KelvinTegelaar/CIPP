@@ -13,6 +13,22 @@ describe('utilColumnsFromAPI', () => {
     expect(ids).toContain('department')
   })
 
+  it('includes assigned license filter options found after the heuristic sample', () => {
+    const businessPremiumSku = 'cbdc14ab-d96c-4c30-b9f4-6ada7cdc1d46'
+    const data = Array.from({ length: 51 }, (_, index) => ({
+      assignedLicenses: index === 50 ? [{ skuId: businessPremiumSku }] : [],
+    }))
+
+    const licenseColumn = utilColumnsFromAPI(data).find(
+      (column) => column.id === 'assignedLicenses'
+    )
+
+    expect(licenseColumn.filterSelectOptions).toContainEqual({
+      label: 'Microsoft 365 Business Premium',
+      value: businessPremiumSku,
+    })
+  })
+
   it('generates columns for nested object properties', () => {
     const data = [
       { info: { city: 'Seattle', state: 'WA' }, name: 'Test' },

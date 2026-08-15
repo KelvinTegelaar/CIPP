@@ -294,7 +294,7 @@ export const utilColumnsFromAPI = (dataArray) => {
             sampleValue,
             values: valuesForColumn,
             getValue: (row) => resolveValue(row),
-            dataArray: filterSample,
+            dataArray,
           }),
           Cell: ({ row }) => {
             const value = resolveValue(row.original)
