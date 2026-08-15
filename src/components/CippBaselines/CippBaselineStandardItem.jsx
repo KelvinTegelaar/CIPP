@@ -104,11 +104,14 @@ export const CippBaselineStandardItem = ({
   ]
 
   // Seed the action posture: saved configuration (editing an existing baseline) wins,
-  // then the defaults for a freshly added standard. The settings fields seed themselves
-  // (saved value > recommended) inside CippBaselineStandardSettings.
+  // then the defaults for a freshly added standard - report only, never auto-remediate,
+  // until the operator explicitly enables it. The settings fields seed themselves
+  // (saved value > recommended) inside CippBaselineStandardSettings. savedConfig is a
+  // dependency so a form reset (reloading a template into a mounted editor) re-seeds
+  // the wiped fields; the undefined guard keeps live edits untouched.
   useEffect(() => {
     const postureDefaults = {
-      remediateEnabled: true,
+      remediateEnabled: false,
       alertEnabled: true,
       alertOnRemediate: false,
     }
@@ -121,9 +124,9 @@ export const CippBaselineStandardItem = ({
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fieldBase])
+  }, [fieldBase, savedConfig])
 
-  const remediateEnabled = watched?.remediateEnabled ?? true
+  const remediateEnabled = watched?.remediateEnabled ?? false
   const alertEnabled = watched?.alertEnabled ?? true
   const alertOnRemediate = watched?.alertOnRemediate ?? false
   const renderedExpected = renderExpectedValue(
