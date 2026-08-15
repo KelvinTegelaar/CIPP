@@ -18,7 +18,8 @@
       "CIPP.SuperAdmin.*",
       "CIPP.Admin.*",
       "CIPP.AppSettings.*",
-      "Tenant.Standards.ReadWrite"
+      "Tenant.Standards.ReadWrite",
+      "Tenant.Baselines.ReadWrite"
     ]
   },
   "admin": {

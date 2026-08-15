@@ -215,6 +215,7 @@ export const nativeMenuItems = [
         title: 'Standards & Drift',
         permissions: [
           'Tenant.Standards.*',
+          'Tenant.Baselines.*',
           'Tenant.BestPracticeAnalyser.*',
           'Tenant.DomainAnalyser.*',
         ],
@@ -225,12 +226,12 @@ export const nativeMenuItems = [
             permissions: ['Tenant.Standards.*'],
             scope: 'global',
           },
-          // Baselines mockup - hidden from the nav for now; reach it directly
+          // Baselines - hidden from the nav for now; reach it directly
           // at /tenant/baselines
           // {
           //   title: 'Baselines (Preview)',
           //   path: '/tenant/baselines',
-          //   permissions: ['Tenant.Standards.*'],
+          //   permissions: ['Tenant.Baselines.*'],
           //   scope: 'global',
           // },
           {
@@ -660,6 +661,11 @@ export const nativeMenuItems = [
           {
             title: 'Scripts',
             path: '/endpoint/MEM/list-scripts',
+            permissions: ['Endpoint.MEM.*'],
+          },
+          {
+            title: 'MAA Requests',
+            path: '/endpoint/MEM/approval-requests',
             permissions: ['Endpoint.MEM.*'],
           },
         ],
