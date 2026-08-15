@@ -24,20 +24,12 @@ const MemoTextField = React.memo(function MemoTextField({
   params,
   label,
   placeholder,
+  variant,
   // Field-level required: asterisk on the label. HTML5 required is separate because
   // Autocomplete (especially multiple) clears the input after selection — a static
   // required on the input would falsely block submit even when chips/value exist.
   required = false,
   htmlRequired = false,
-  // Autocomplete-specific props that must not be forwarded to TextField/DOM
-  getOptionLabel,
-  isOptionEqualToValue,
-  filterOptions,
-  getOptionDisabled,
-  groupBy,
-  renderGroup,
-  renderOption,
-  ...otherProps
 }) {
   const { InputProps, ...otherParams } = params
 
@@ -47,7 +39,7 @@ const MemoTextField = React.memo(function MemoTextField({
         {...otherParams}
         label={label}
         placeholder={placeholder}
-        {...otherProps}
+        variant={variant}
         required={htmlRequired}
         slotProps={{
           inputLabel: {
@@ -96,6 +88,8 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     renderGroup,
     customAction,
     handleHomeEndKeys = false,
+    // TextField-bound, MUI Autocomplete would pass it through to its root div
+    variant,
     ...other
   } = props
 
@@ -623,13 +617,14 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
 
           return (
             <Stack direction="row" spacing={1}>
+              {/* caller props stay on <Autocomplete>, anything spread here reaches the input as a DOM attr */}
               <MemoTextField
                 params={{ ...otherParams, InputProps: modifiedInputProps }}
                 label={label}
                 placeholder={placeholder}
+                variant={variant}
                 required={required}
                 htmlRequired={required && !hasSelection}
-                {...other}
               />
               {api?.url && api?.showRefresh && (
                 <Tooltip title="Refresh">
