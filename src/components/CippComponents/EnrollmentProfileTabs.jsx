@@ -16,9 +16,12 @@ import {
   ContentCopy,
   Delete,
   EventAvailable,
+  LaptopChromebook,
+  LinkOff,
   QrCode2,
   Sync,
 } from '@mui/icons-material'
+import { UserGroupIcon } from '@heroicons/react/24/outline'
 import { CippHead } from './CippHead.jsx'
 import { CippDataTable } from '../CippTable/CippDataTable.js'
 import { CippInfoBar } from '../CippCards/CippInfoBar.jsx'
@@ -419,7 +422,140 @@ export const AndroidEnterpriseEnrollmentProfiles = () => {
 
 export const WindowsAutopilotEnrollmentProfiles = () => {
   const currentTenant = useSettings().currentTenant
+
+  const groupsQuery = ApiGetCall({
+    url: '/api/ListGroups',
+    data: { tenantFilter: currentTenant },
+    queryKey: `ListGroups-${currentTenant}`,
+    waiting: Boolean(currentTenant),
+  })
+  const groupMap = useMemo(() => {
+    const map = {}
+    if (groupsQuery.data) {
+      for (const g of groupsQuery.data) {
+        if (g.id) map[g.id] = g.displayName
+      }
+    }
+    return map
+  }, [groupsQuery.data])
+
   const autopilotActions = [
+    {
+      label: 'Assign to All Devices',
+      type: 'POST',
+      icon: <LaptopChromebook />,
+      url: '/api/ExecAssignAutopilotProfile',
+      data: {
+        ProfileId: 'id',
+        ProfileName: 'displayName',
+        AssignTo: '!AllDevices',
+      },
+      confirmText:
+        'Are you sure you want to assign "[displayName]" to all devices?',
+      color: 'info',
+      multiPost: false,
+      allowResubmit: true,
+      relatedQueryKeys: [`AutopilotProfiles-${currentTenant}`],
+    },
+    {
+      label: 'Assign to Custom Group(s)',
+      type: 'POST',
+      icon: <UserGroupIcon />,
+      url: '/api/ExecAssignAutopilotProfile',
+      confirmText: 'Select the target groups for "[displayName]".',
+      color: 'info',
+      multiPost: false,
+      allowResubmit: true,
+      relatedQueryKeys: [`AutopilotProfiles-${currentTenant}`],
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'GroupIds',
+          label: 'Group(s)',
+          multiple: true,
+          creatable: false,
+          validators: { required: 'Please select at least one group' },
+          api: {
+            url: '/api/ListGroups',
+            queryKey: `ListGroups-${currentTenant}`,
+            tenantFilter: currentTenant,
+            labelField: (option) =>
+              option?.groupType
+                ? `${option.displayName} (${option.groupType})`
+                : (option?.displayName ?? ''),
+            valueField: 'id',
+            showRefresh: true,
+          },
+        },
+      ],
+      customDataformatter: (row, action, formData) => ({
+        tenantFilter: currentTenant,
+        ProfileId: row.id,
+        ProfileName: row.displayName,
+        AssignTo: 'customGroup',
+        GroupIds: (formData?.GroupIds || []).map((g) => g.value).filter(Boolean),
+      }),
+    },
+    {
+      label: 'Remove Assignment(s)',
+      type: 'POST',
+      icon: <LinkOff />,
+      url: '/api/ExecAssignAutopilotProfile',
+      confirmText: 'Remove assignments from "[displayName]".',
+      color: 'warning',
+      multiPost: false,
+      allowResubmit: true,
+      relatedQueryKeys: [`AutopilotProfiles-${currentTenant}`],
+      fields: [
+        {
+          type: 'switch',
+          name: 'removeAll',
+          label: 'Remove all assignments',
+          defaultValue: true,
+        },
+        {
+          type: 'autoComplete',
+          name: 'GroupIds',
+          label: 'Assignment(s) to remove',
+          multiple: true,
+          creatable: false,
+          validators: {
+            validate: (value, formValues) => {
+              if (formValues?.removeAll) return true
+              return (Array.isArray(value) && value.length > 0) || 'Please select at least one assignment'
+            },
+          },
+          options: (row) =>
+            (row?.assignments || [])
+              .map((a) => {
+                const t = a.target?.['@odata.type'] || ''
+                if (t.endsWith('allDevicesAssignmentTarget')) {
+                  return { label: 'All Devices', value: 'allDevices' }
+                }
+                if (t.endsWith('groupAssignmentTarget') && a.target?.groupId) {
+                  const id = a.target.groupId
+                  const name = groupMap[id]
+                  return {
+                    label: name ? `${name} (${id})` : id,
+                    value: id,
+                  }
+                }
+                return null
+              })
+              .filter(Boolean),
+          condition: { field: 'removeAll', compareType: 'is', compareValue: false },
+        },
+      ],
+      customDataformatter: (row, action, formData) => ({
+        tenantFilter: currentTenant,
+        ProfileId: row.id,
+        ProfileName: row.displayName,
+        AssignTo: formData?.removeAll ? 'RemoveAll' : 'RemoveGroups',
+        GroupIds: formData?.removeAll
+          ? []
+          : (formData?.GroupIds || []).map((g) => g.value).filter(Boolean),
+      }),
+    },
     {
       label: 'Delete Profile',
       icon: <Delete />,
