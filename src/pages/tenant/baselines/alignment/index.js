@@ -65,6 +65,7 @@ import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippQueueTracker } from '../../../../components/CippTable/CippQueueTracker'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
+import { CippChartCard } from '../../../../components/CippCards/CippChartCard'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
 import { CippApiLogsDrawer } from '../../../../components/CippComponents/CippApiLogsDrawer'
@@ -583,6 +584,11 @@ const Page = () => {
     rows: resolvedApi.data?.rows ?? [],
   }
   const stageStates = resolvedApi.data?.stageStates ?? []
+  // The API serializes single-element arrays as a bare object; the chart needs a
+  // real array (and a lone point is hidden anyway - it is just today's score).
+  const tenantTrend = Array.isArray(resolvedApi.data?.trend)
+    ? resolvedApi.data.trend
+    : []
 
   const triageFormFields = ({ formHook }) => (
     <Stack spacing={2} sx={{ mt: 2 }}>
@@ -1682,6 +1688,32 @@ const Page = () => {
               : 'None',
           },
         ])}
+        {/* A single point is just today's live score (already listed above) - the
+            chart earns its space once there is an actual line to draw. */}
+        {Array.isArray(row.trend) && row.trend.length > 1 && (
+          <Box sx={{ px: 2, pt: 2 }}>
+            <CippChartCard
+              title="Compliance Trend"
+              chartType="area"
+              chartSeries={[
+                {
+                  name: 'Compliant with accepted deviations',
+                  data: row.trend.map((point) => ({
+                    x: point.date,
+                    y: point.aligned,
+                  })),
+                },
+                {
+                  name: 'Compliant with baseline',
+                  data: row.trend.map((point) => ({
+                    x: point.date,
+                    y: point.verified,
+                  })),
+                },
+              ]}
+            />
+          </Box>
+        )}
         <Stack spacing={1.5} sx={{ p: 2 }}>
           <Typography
             variant="caption"
@@ -3010,6 +3042,29 @@ const Page = () => {
               </Stack>
             </Stack>
             {tenantScoreBar}
+            {tenantTrend.length > 1 && (
+              <CippChartCard
+                isFetching={resolvedApi.isFetching}
+                title="Tenant Compliance Trend"
+                chartType="area"
+                chartSeries={[
+                  {
+                    name: 'Compliant with accepted deviations',
+                    data: tenantTrend.map((point) => ({
+                      x: point.date,
+                      y: point.aligned,
+                    })),
+                  },
+                  {
+                    name: 'Compliant with baseline',
+                    data: tenantTrend.map((point) => ({
+                      x: point.date,
+                      y: point.verified,
+                    })),
+                  },
+                ]}
+              />
+            )}
             {rolloutCard}
             <CippDataTable
               queryKey={`ListBaselineAlignment-${currentTenant}-standards-table`}
