@@ -144,16 +144,16 @@ export const CippTestDetailOffCanvas = ({ row }) => {
     <Stack spacing={3}>
       <Card>
         <Grid container>
+          {/* short label + chip pairs: full-width rows left 80% of a phone empty — 2x2 there,
+              the same 4-across strip on desktop. two-up by design: mobile-layout-ok */}
           <Grid
-            size={{ xs: 12, md: 3 }}
+            size={{ xs: 6, md: 3 }}
             sx={{
               borderBottom: (theme) => ({
                 xs: `1px solid ${theme.palette.divider}`,
                 md: "none",
               }),
-              borderRight: (theme) => ({
-                md: `1px solid ${theme.palette.divider}`,
-              }),
+              borderRight: (theme) => `1px solid ${theme.palette.divider}`,
             }}
           >
             <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
@@ -167,8 +167,9 @@ export const CippTestDetailOffCanvas = ({ row }) => {
               </Box>
             </Stack>
           </Grid>
+          {/* two-up by design: mobile-layout-ok */}
           <Grid
-            size={{ xs: 12, md: 3 }}
+            size={{ xs: 6, md: 3 }}
             sx={{
               borderBottom: (theme) => ({
                 xs: `1px solid ${theme.palette.divider}`,
@@ -194,16 +195,11 @@ export const CippTestDetailOffCanvas = ({ row }) => {
               </Box>
             </Stack>
           </Grid>
+          {/* two-up by design: mobile-layout-ok */}
           <Grid
-            size={{ xs: 12, md: 3 }}
+            size={{ xs: 6, md: 3 }}
             sx={{
-              borderBottom: (theme) => ({
-                xs: `1px solid ${theme.palette.divider}`,
-                md: "none",
-              }),
-              borderRight: (theme) => ({
-                md: `1px solid ${theme.palette.divider}`,
-              }),
+              borderRight: (theme) => `1px solid ${theme.palette.divider}`,
             }}
           >
             <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
@@ -221,12 +217,8 @@ export const CippTestDetailOffCanvas = ({ row }) => {
               </Box>
             </Stack>
           </Grid>
-          <Grid
-            size={{ xs: 12, md: 3 }}
-            sx={{
-              borderBottom: "none",
-            }}
-          >
+          {/* two-up by design: mobile-layout-ok */}
+          <Grid size={{ xs: 6, md: 3 }}>
             <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
               <Box>
                 <Typography color="text.secondary" variant="overline">

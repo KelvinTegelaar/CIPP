@@ -243,7 +243,7 @@ export const CippPathVisualization = ({
     <Box sx={{ my: 2 }} {...other}>
       {relationshipName && (
         <Paper elevation={0} sx={{ p: 1, mb: 2, bgcolor: "background.default" }}>
-          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+          <Stack useFlexGap direction="row" spacing={1} alignItems="center" flexWrap="wrap">
             <Typography variant="caption" color="text.secondary">
               <strong>Relationship:</strong> {relationshipName}
             </Typography>

@@ -101,9 +101,9 @@ const Page = () => {
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             <CippSharedMailboxDrawer />
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

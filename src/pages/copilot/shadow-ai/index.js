@@ -136,7 +136,7 @@ const AiToolDetail = ({ row }) => {
         {properties
           .filter((prop) => prop.value !== undefined && prop.value !== null && prop.value !== '')
           .map((prop) => (
-            <Grid size={{ md: 4, xs: 6 }} key={prop.label}>
+            <Grid size={{ md: 4, xs: 12 }} key={prop.label}>
               <Typography variant="subtitle2" color="text.secondary">
                 {prop.label}
               </Typography>

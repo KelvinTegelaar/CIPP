@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
+import { useIsMobileLayout } from "../../hooks/use-breakpoint";
+import { CippWizardProgressHeader } from "./CippWizardProgressHeader";
 import {
   Box,
   Step,
@@ -137,6 +139,14 @@ const WizardStepIcon = (props) => {
 
 export const WizardSteps = (props) => {
   const { activeStep = 1, orientation = "vertical", steps = [] } = props;
+  const isMobile = useIsMobileLayout();
+
+  // Only the horizontal stepper is wizard navigation. The vertical one is a status list —
+  // GDAP onboarding feeds it server-side steps where each step's message and pass/fail
+  // state IS the content, so collapsing it to a progress bar would delete that.
+  if (isMobile && orientation === "horizontal") {
+    return <CippWizardProgressHeader activeStep={activeStep} steps={steps} />;
+  }
 
   return (
     <div>
@@ -145,8 +155,10 @@ export const WizardSteps = (props) => {
         activeStep={activeStep}
         connector={<WizardStepConnector />}
       >
-        {steps.map((step) => (
-          <Step key={step.title}>
+        {/* Onboarding's steps carry only a description, so keying on title alone made
+            every key undefined and reconciliation index-driven by accident. */}
+        {steps.map((step, index) => (
+          <Step key={step.title ?? step.description ?? index}>
             <StepLabel
               error={step.error ?? false}
               slots={{ stepIcon: WizardStepIcon }}

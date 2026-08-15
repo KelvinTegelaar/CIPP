@@ -15,6 +15,7 @@ import { CippApiResults } from '../CippComponents/CippApiResults'
 import { ApiPostCall } from '../../api/ApiCall'
 import { useWatch } from 'react-hook-form'
 import Link from 'next/link'
+import { CippWizardActionsRow } from "./CippWizardActionsRow";
 
 export const CippWizardVacationConfirmation = (props) => {
   const { formControl, onPreviousStep, currentStep, lastStep } = props
@@ -439,13 +440,7 @@ export const CippWizardVacationConfirmation = (props) => {
       {values.enableOOO && <CippApiResults apiObject={oooVacation} />}
 
       {/* Navigation + Custom Submit */}
-      <Stack
-        alignItems="center"
-        direction="row"
-        justifyContent="flex-end"
-        spacing={2}
-        sx={{ mt: 3 }}
-      >
+      <CippWizardActionsRow sx={{ mt: 3 }}>
         {currentStep > 0 && (
           <Button color="inherit" onClick={onPreviousStep} size="large" type="button">
             Back
@@ -465,7 +460,7 @@ export const CippWizardVacationConfirmation = (props) => {
             {isSubmitting ? 'Submitting...' : 'Submit'}
           </Button>
         )}
-      </Stack>
+      </CippWizardActionsRow>
     </Stack>
   )
 }

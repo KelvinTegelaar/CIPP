@@ -62,9 +62,9 @@ const Page = () => {
             <Button component={Link} href="/teams-share/teams/list-team/add" startIcon={<GroupAdd />}>
               Add Team
             </Button>
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

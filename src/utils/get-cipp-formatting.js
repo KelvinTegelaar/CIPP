@@ -43,6 +43,22 @@ const getCountryNameFromCode = (countryCode) => {
   return country ? country.Name : countryCode
 }
 
+// Shared so the card list and the extended-info drawer can label a portal link with the
+// same glyph the table cell uses.
+export const portalIcons = {
+  portal_m365: CogIcon,
+  portal_exchange: MailOutline,
+  portal_entra: UserIcon,
+  portal_teams: UsersIcon,
+  portal_azure: ServerIcon,
+  portal_intune: LaptopWindows,
+  portal_security: Shield,
+  portal_compliance: CompassCalibration,
+  portal_sharepoint: Description,
+  portal_platform: PrecisionManufacturing,
+  portal_bi: BarChart,
+}
+
 export const getCippFormatting = (
   data,
   cellName,
@@ -61,20 +77,6 @@ export const getCippFormatting = (
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
     )
-  }
-
-  const portalIcons = {
-    portal_m365: CogIcon,
-    portal_exchange: MailOutline,
-    portal_entra: UserIcon,
-    portal_teams: UsersIcon,
-    portal_azure: ServerIcon,
-    portal_intune: LaptopWindows,
-    portal_security: Shield,
-    portal_compliance: CompassCalibration,
-    portal_sharepoint: Description,
-    portal_platform: PrecisionManufacturing,
-    portal_bi: BarChart,
   }
 
   // Create a helper function to render chips with CollapsibleChipList

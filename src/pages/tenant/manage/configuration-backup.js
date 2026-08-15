@@ -401,15 +401,26 @@ const Page = () => {
                   sx={{ height: "100%", display: "flex", flexDirection: "column" }}
                 >
                   <Box
-                    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      rowGap: 1,
+                    }}
                   >
                     <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <History color="primary" />
                       Backup History
                     </Typography>
-                    <Stack direction="row" spacing={2} alignItems="center">
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      alignItems="center"
+                      sx={{ width: { xs: "100%", md: "auto" } }}
+                    >
                       {settings.currentTenant === "AllTenants" && (
-                        <Box sx={{ minWidth: 250 }}>
+                        <Box sx={{ minWidth: { md: 250 }, flexGrow: 1 }}>
                           <CippFormTenantSelector
                             formControl={tenantFilterForm}
                             componentType="select"
@@ -460,9 +471,12 @@ const Page = () => {
                                     display: "flex",
                                     justifyContent: "space-between",
                                     alignItems: "flex-start",
+                                    flexWrap: "wrap",
+                                    rowGap: 1,
+                                    columnGap: 1,
                                   }}
                                 >
-                                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                                  <Box sx={{ flex: "1 1 auto", minWidth: 150 }}>
                                     <Typography variant="h6" sx={{ fontSize: "1rem" }}>
                                       {(() => {
                                         const match = backup.name.match(
@@ -485,7 +499,12 @@ const Page = () => {
                                       />
                                     )}
                                   </Box>
-                                  <Stack direction="row" spacing={1} sx={{ flexShrink: 0 }}>
+                                  <Stack
+                                    direction="row"
+                                    spacing={1}
+                                    useFlexGap
+                                    sx={{ flexWrap: "wrap", minWidth: 0 }}
+                                  >
                                     <Button
                                       size="small"
                                       variant="outlined"

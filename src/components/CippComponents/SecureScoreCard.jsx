@@ -11,9 +11,37 @@ import {
   Tooltip as RechartsTooltip,
   ReferenceLine,
 } from 'recharts'
+import { useIsMobileLayout } from '../../hooks/use-breakpoint'
+
+/**
+ * Axis configuration for the score trend.
+ *
+ * Exported because it is the whole of the narrow-screen fix and there is nothing rendered to
+ * assert against: recharts reads its axis children's props directly rather than mounting them,
+ * so an XAxis cannot be captured by wrapping it.
+ *
+ * `interval: 0` draws a label for every point. Thirteen dates fit across a desktop card and
+ * overlap into one smear at 390px — "Jul 27Jul 28Jul 29". A narrow chart hands spacing back to
+ * recharts and lets it drop whatever will not fit.
+ */
+export const secureScoreAxisProps = ({ isMobile, ticks }) => ({
+  x: {
+    tick: { fontSize: isMobile ? 10 : 12 },
+    tickMargin: 8,
+    ticks: isMobile ? undefined : ticks,
+    interval: isMobile ? 'preserveStartEnd' : 0,
+    minTickGap: isMobile ? 28 : 5,
+  },
+  y: {
+    tick: { fontSize: isMobile ? 10 : 12 },
+    tickMargin: 8,
+    width: isMobile ? 34 : undefined,
+  },
+})
 
 export const SecureScoreCard = ({ data, isLoading }) => {
   const router = useRouter()
+  const isMobile = useIsMobileLayout()
   return (
     <Card sx={{ flex: 1, height: '100%' }}>
       <CardHeader
@@ -86,22 +114,16 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                     percentage: Math.round((score.currentScore / score.maxScore) * 100),
                   }))
                   const ticks = chartData.map((d) => d.date)
+                  const axis = secureScoreAxisProps({ isMobile, ticks })
                   return (
                     <LineChart
                       data={chartData}
                       margin={{ left: 12, right: 12, top: 10, bottom: 10 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                      <XAxis
-                        dataKey="date"
-                        tick={{ fontSize: 12 }}
-                        tickMargin={8}
-                        ticks={ticks}
-                        interval={0}
-                      />
+                      <XAxis dataKey="date" {...axis.x} />
                       <YAxis
-                        tick={{ fontSize: 12 }}
-                        tickMargin={8}
+                        {...axis.y}
                         domain={[0, maxScore]}
                         tickFormatter={(value) => Math.round(value)}
                       />

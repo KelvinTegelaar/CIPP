@@ -190,9 +190,9 @@ const Page = () => {
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             <CippHVEUserDrawer />
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

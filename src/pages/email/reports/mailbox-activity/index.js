@@ -101,7 +101,7 @@ const Page = () => {
             </Grid>
 
             <Grid size={{ xs: 12 }}>
-              <Stack direction="row" spacing={2}>
+              <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
                 <Button
                   type="submit"
                   variant="contained"

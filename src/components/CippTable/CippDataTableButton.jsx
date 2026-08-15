@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Dialog, DialogContent, Button } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, IconButton, Button, useMediaQuery } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { CippDataTable } from "./CippDataTable";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 const CippDataTableButton = ({ data, title, tableTitle = "Data" }) => {
   const [openDialogs, setOpenDialogs] = useState([]);
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
   const handleOpenDialog = (event) => {
     event?.stopPropagation();
@@ -55,15 +57,32 @@ const CippDataTableButton = ({ data, title, tableTitle = "Data" }) => {
           onMouseDown={(event) => event.stopPropagation()}
           onClick={(event) => event.stopPropagation()}
           fullWidth
+          // Fullscreen on phones (CippApiDialog precedent): the nested card list needs the
+          // viewport, not a cramped modal window — and fullscreen has no backdrop, so give
+          // it an explicit close header.
+          fullScreen={mdDown}
           maxWidth="lg"
         >
-          <DialogContent sx={tableTitle !== "Data" && { p: 0 }}>
+          {mdDown && (
+            <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 0.5, py: 1, px: 1 }}>
+              <IconButton
+                onClick={(event) => handleCloseDialog(index, event)}
+                aria-label="Close"
+                sx={{ minWidth: 44, minHeight: 44 }}
+              >
+                <CloseIcon />
+              </IconButton>
+              {tableTitle}
+            </DialogTitle>
+          )}
+          <DialogContent sx={tableTitle !== "Data" && { p: mdDown ? 1 : 0 }}>
             <CippDataTable
               noCard={tableTitle === "Data"}
               title={tableTitle}
               data={dialogData}
               simple={false}
               isInDialog={true}
+              hideTitle={mdDown}
             />
           </DialogContent>
         </Dialog>

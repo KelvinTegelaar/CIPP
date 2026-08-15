@@ -385,6 +385,9 @@ function CippJsonView({
             enterTouchDelay={0}
             leaveTouchDelay={8000}
             disableInteractive={false}
+            // Opts back out of the theme default: this one IS the description, and there is
+            // no other way to read it on a touch device.
+            disableTouchListener={false}
           >
             <IconButton
               aria-label={`Description for ${label}`}

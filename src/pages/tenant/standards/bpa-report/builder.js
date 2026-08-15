@@ -243,7 +243,7 @@ const Page = () => {
                 size={{
                   md: layoutMode === "Table" ? 12 : 4,
                   sm: layoutMode === "Table" ? 12 : 6,
-                  xs: 10,
+                  xs: 12,
                 }}
                 key={block.id}
               >
@@ -264,14 +264,14 @@ const Page = () => {
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
                       {/* Report Style - Full Width */}
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <CippFormComponent
                           label="Card Name"
                           name={`Fields.${index}.FrontendFields.0.name`} // Corrected index
                           formControl={formControl}
                         />
                       </Grid>
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <CippFormComponent
                           label="Card Description"
                           name={`Fields.${index}.FrontendFields.0.desc`} // Corrected index

@@ -699,7 +699,7 @@ const Page = () => {
         >
           <CippHead title={title} />
           <Grid container spacing={2}>
-            <Grid size={4}>
+            <Grid size={{ xs: 12, lg: 4 }}>
               <Card>
                 <CardHeader title="Group Details" />
                 <Divider />
@@ -806,7 +806,7 @@ const Page = () => {
                 </PropertyList>
               </Card>
             </Grid>
-            <Grid size={8}>
+            <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
                 <Typography variant="h6">Members</Typography>
                 <CippBannerListCard

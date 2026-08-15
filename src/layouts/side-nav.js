@@ -227,6 +227,9 @@ export const SideNav = (props) => {
               flexDirection: 'column',
               height: '100%',
               p: 2,
+              // The breadcrumb rail across the seam starts 10px under the top nav; starting
+              // the Bookmarks header at the same offset lets the two rows share a line.
+              pt: '10px',
             }}
           >
             <Box
@@ -241,8 +244,9 @@ export const SideNav = (props) => {
               {/* Bookmarks section above Dashboard */}
               {showSidebarBookmarks && (
                 <>
-                  <SideNavBookmarks collapse={collapse} />
-                  <Divider sx={{ my: 1 }} />
+                  <SideNavBookmarks collapse={collapse} alignWithRail />
+                  {/* mt matches the rail row's mb: 1, so the dividers meet across the seam */}
+                  <Divider sx={{ mt: 1, mb: 1 }} />
                 </>
               )}
               {/* Render all menu items */}

@@ -151,7 +151,7 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
               {/* Custom Variable - Two-field input */}
               {watchedRules?.[ruleIndex]?.property?.type === "customVariable" ? (
                 <Grid container spacing={2}>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <CippFormComponent
                       type="autoComplete"
                       name={`${name}.${ruleIndex}.value.variableName`}
@@ -178,7 +178,7 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
                       }}
                     />
                   </Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <CippFormComponent
                       type="textField"
                       name={`${name}.${ruleIndex}.value.value`}

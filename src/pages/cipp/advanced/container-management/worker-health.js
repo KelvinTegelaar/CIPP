@@ -1145,7 +1145,7 @@ const Page = () => {
                       />
                     </Box>
                     {/* Stats row */}
-                    <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap", gap: 2, rowGap: 1 }}>
+                    <Stack useFlexGap direction="row" sx={{ flexWrap: "wrap", gap: 2, rowGap: 1 }}>
                       {cacheStats.map((s) => {
                         const cell = (
                           <Box sx={{ minWidth: 80 }}>

@@ -61,9 +61,9 @@ const Page = () => {
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             <CippAddTenantAllowBlockListDrawer requiredPermissions={cardButtonPermissions} />
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

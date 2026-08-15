@@ -88,7 +88,22 @@ export const NotificationsPopover = () => {
 
   return (
     <>
-      <Badge color={BadgeColour} variant="dot" invisible={notifications.length === 0}>
+      <Badge
+        color={BadgeColour}
+        variant="dot"
+        invisible={notifications.length === 0}
+        sx={{
+          // The dot hangs off the button's top-right corner by default. On a phone the
+          // account avatar sits a few pixels to the right of that corner, so the dot reads as
+          // attached to the avatar rather than the bell. Tuck it inside the button below md;
+          // the md values are MUI's own, so desktop is unchanged.
+          "& .MuiBadge-badge": {
+            top: { xs: 7, md: 0 },
+            right: { xs: 7, md: 0 },
+            transform: { xs: "none", md: "scale(1) translate(50%, -50%)" },
+          },
+        }}
+      >
         <IconButton color="inherit" onClick={popover.handleOpen} ref={popover.anchorRef}>
           <SvgIcon color="action" fontSize="small">
             <BellIcon />

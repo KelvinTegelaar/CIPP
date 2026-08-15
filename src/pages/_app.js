@@ -55,6 +55,7 @@ import {
   ClearAll as ClearAllIcon,
 } from '@mui/icons-material'
 import { School as TutorialIcon } from '@mui/icons-material'
+import { getHelpLinks, clearCippCache } from '../utils/help-links'
 import { SvgIcon } from '@mui/material'
 import React, { useEffect, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
@@ -195,29 +196,21 @@ const App = (props) => {
     }
   }, [])
 
+  // Link/cache destinations are shared with AccountPopover's mobile help section — see
+  // utils/help-links.js. Only the icons and SpeedDial-specific actions live here.
+  const helpLinkIcons = {
+    'bug-report': <BugReportIcon />,
+    'feature-request': <FeedbackIcon />,
+    discord: <img src="/discord-mark-blue.svg" alt="Discord" style={{ width: 24, height: 24 }} />,
+    documentation: <AutoStories />,
+  }
+
   const speedDialActions = [
     {
-      // add clear cache action that removes the persisted query cache from local storage and reloads the page
       id: 'clearCache',
       icon: <ClearAllIcon />,
       name: 'Clear Cache and Reload',
-      onClick: () => {
-        // Clear the TanStack Query cache
-        queryClient.clear()
-
-        // Remove persisted cache from localStorage
-        if (typeof window !== 'undefined') {
-          // Remove the persisted query cache keys
-          Object.keys(localStorage).forEach((key) => {
-            if (key.startsWith('REACT_QUERY_OFFLINE_CACHE')) {
-              localStorage.removeItem(key)
-            }
-          })
-        }
-
-        // Force refresh the page to bypass browser cache and reload JavaScript
-        window.location.reload(true)
-      },
+      onClick: () => clearCippCache(queryClient),
     },
     {
       id: 'license',
@@ -226,39 +219,11 @@ const App = (props) => {
       href: '/license',
       onClick: () => route.push('/license'),
     },
-    {
-      id: 'bug-report',
-      icon: <BugReportIcon />,
-      name: 'Report Bug',
-      href: 'https://github.com/CyberDrain/CIPP/issues/new?template=bug.yml',
-      onClick: () =>
-        window.open('https://github.com/CyberDrain/CIPP/issues/new?template=bug.yml', '_blank'),
-    },
-    {
-      id: 'feature-request',
-      icon: <FeedbackIcon />,
-      name: 'Request Feature',
-      href: 'https://github.com/CyberDrain/CIPP/issues/new?template=feature.yml',
-      onClick: () =>
-        window.open(
-          'https://github.com/CyberDrain/CIPP/issues/new?template=feature.yml',
-          '_blank'
-        ),
-    },
-    {
-      id: 'discord',
-      icon: <img src="/discord-mark-blue.svg" alt="Discord" style={{ width: 24, height: 24 }} />,
-      name: 'Join the Discord!',
-      href: 'https://discord.gg/cyberdrain',
-      onClick: () => window.open('https://discord.gg/cyberdrain', '_blank'),
-    },
-    {
-      id: 'documentation',
-      icon: <AutoStories />,
-      name: 'Check the Documentation',
-      href: `https://docs.cipp.app/user-documentation${pathname}`,
-      onClick: () => window.open(`https://docs.cipp.app/user-documentation${pathname}`, '_blank'),
-    },
+    ...getHelpLinks(pathname).map((link) => ({
+      ...link,
+      icon: helpLinkIcons[link.id],
+      onClick: () => window.open(link.href, '_blank'),
+    })),
     {
       id: 'tutorials',
       icon: <TutorialIcon />,

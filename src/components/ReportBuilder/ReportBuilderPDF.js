@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer'
+import { Text, View, StyleSheet } from '@react-pdf/renderer'
+import { CippPdfPreview } from '../CippPdf/CippPdfPreview'
 import {
   ContentPage,
   DEFAULT_PAGE_SETUP,
@@ -650,9 +651,15 @@ export const ReportBuilderPDF = ({
 
   if (mode === 'preview') {
     return (
-      <PDFViewer style={{ width: '100%', height: '100%', border: 'none' }} showToolbar={true}>
+      <CippPdfPreview
+        title="Report preview"
+        fileName="Report.pdf"
+        style={{ width: '100%', height: '100%', border: 'none' }}
+        showToolbar={true}
+        showDownload
+      >
         {document}
-      </PDFViewer>
+      </CippPdfPreview>
     )
   }
   return null

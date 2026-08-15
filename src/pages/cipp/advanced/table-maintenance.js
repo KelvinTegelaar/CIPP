@@ -287,7 +287,7 @@ const Page = () => {
         that should only be used when directed by CyberDrain support.
       </Alert>
       <Grid sx={{ flexGrow: 1, display: "flex" }} container spacing={2}>
-        <Grid size={3}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <CippPropertyListCard
             title="Tables"
             propertyItems={propertyItems}
@@ -324,7 +324,7 @@ const Page = () => {
             }
           />
         </Grid>
-        <Grid size={9}>
+        <Grid size={{ xs: 12, md: 9 }}>
           {selectedTable && (
             <Box sx={{ width: "100%" }}>
               <Stack spacing={1}>

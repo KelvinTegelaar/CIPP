@@ -68,7 +68,7 @@ export const CippDateRangeFilter = ({
             {formControl.watch("dateFilter") === "relative" && (
               <Grid size={{ xs: 12, md: 8 }}>
                 <Grid container spacing={2}>
-                  <Grid size={{ xs: 2 }}>
+                  <Grid size={{ xs: 12, md: 2 }}>
                     <CippFormComponent
                       fullWidth
                       type="number"
@@ -77,7 +77,7 @@ export const CippDateRangeFilter = ({
                       formControl={formControl}
                     />
                   </Grid>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <CippFormComponent
                       fullWidth
                       type="autoComplete"
@@ -98,7 +98,7 @@ export const CippDateRangeFilter = ({
             {/* Start and End Date Filters */}
             {formControl.watch("dateFilter") === "startEnd" && (
               <>
-                <Grid size={{ xs: 6, md: 3 }}>
+                <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
                     type="datePicker"
                     name="startDate"
@@ -107,7 +107,7 @@ export const CippDateRangeFilter = ({
                     formControl={formControl}
                   />
                 </Grid>
-                <Grid size={{ xs: 6, md: 3 }}>
+                <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
                     type="datePicker"
                     name="endDate"

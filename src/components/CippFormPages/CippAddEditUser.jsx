@@ -617,7 +617,7 @@ const CippAddEditUser = (props) => {
       <Grid size={{ xs: 12 }}>
         <Typography variant="h6">Settings</Typography>
       </Grid>
-      <Grid size={{ xs: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CippFormComponent
           type="switch"
           label="Create password manually"
@@ -650,7 +650,7 @@ const CippAddEditUser = (props) => {
           </Grid>
         </CippFormCondition>
       </Grid>
-      <Grid size={{ xs: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CippFormComponent
           type="switch"
           label="Require password change at next logon"
@@ -689,7 +689,7 @@ const CippAddEditUser = (props) => {
             compareValue="(0 available)"
             labelCompare={true}
           >
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CippFormComponent
                 type="switch"
                 label="0 Licences available. Purchase new licence?"
@@ -729,7 +729,7 @@ const CippAddEditUser = (props) => {
           </CippFormCondition>
         </>
       )}
-      <Grid size={{ xs: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CippFormComponent
           type="switch"
           label="Remove all licenses"
@@ -860,7 +860,7 @@ const CippAddEditUser = (props) => {
       {userSettingsDefaults?.userAttributes
         ?.filter((attribute) => attribute.value !== 'sponsor')
         .map((attribute, idx) => (
-          <Grid size={{ xs: 6 }} key={idx}>
+          <Grid size={{ xs: 12, sm: 6 }} key={idx}>
             <CippFormComponent
               type="textField"
               fullWidth
@@ -946,7 +946,7 @@ const CippAddEditUser = (props) => {
       </Grid>
       {formType === 'add' && (
         <>
-          <Grid size={{ xs: 8 }}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <CippFormComponent
               type="autoComplete"
               label="Shared Mailboxes"
@@ -958,7 +958,7 @@ const CippAddEditUser = (props) => {
               formControl={formControl}
             />
           </Grid>
-          <Grid size={{ xs: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <CippFormComponent
               type="autoComplete"
               label="Shared Mailbox Permissions"
@@ -970,7 +970,7 @@ const CippAddEditUser = (props) => {
               formControl={formControl}
             />
           </Grid>
-          <Grid size={{ xs: 8 }}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <CippFormComponent
               type="autoComplete"
               label="Shared Calendars"
@@ -982,7 +982,7 @@ const CippAddEditUser = (props) => {
               formControl={formControl}
             />
           </Grid>
-          <Grid size={{ xs: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <CippFormComponent
               type="autoComplete"
               label="Shared Calendar Permission"

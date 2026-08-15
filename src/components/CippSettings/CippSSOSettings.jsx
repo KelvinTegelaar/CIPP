@@ -402,23 +402,23 @@ export const CippSSOSettings = () => {
             <Divider />
 
             <Grid container spacing={2} alignItems="center">
-              <Grid size={{ xs: 4 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="body2" color="text.secondary">
                   Status
                 </Typography>
               </Grid>
-              <Grid size={{ xs: 8 }}>
+              <Grid size={{ xs: 12, md: 8 }}>
                 <Chip label={statusInfo.label} color={statusInfo.color} size="small" />
               </Grid>
 
               {hasAppId && (
                 <>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       Admin Consent
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Chip
                       label={preconsentInfo.label}
                       color={preconsentInfo.color}
@@ -441,12 +441,12 @@ export const CippSSOSettings = () => {
 
               {data?.appId && (
                 <>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       App ID
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
                       {data.appId}
                     </Typography>
@@ -456,12 +456,12 @@ export const CippSSOSettings = () => {
 
               {signInHosts.length > 0 && (
                 <>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       Sign-in URLs
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                       {signInHosts.map((host) => (
                         <Chip
@@ -503,12 +503,12 @@ export const CippSSOSettings = () => {
 
               {data?.createdAt && (
                 <>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       Created
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Typography variant="body2">
                       {new Date(data.createdAt).toLocaleString()}
                     </Typography>

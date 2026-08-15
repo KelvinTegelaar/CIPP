@@ -15,11 +15,11 @@ import { Download, PictureAsPdf } from '@mui/icons-material'
 import {
   Document,
   Page,
-  PDFViewer,
   StyleSheet,
   Text,
   View,
 } from '@react-pdf/renderer'
+import { CippPdfPreview } from '../CippPdf/CippPdfPreview'
 import { parseCippDate } from '../../utils/parse-cipp-date'
 
 const operatorLabels = {
@@ -439,14 +439,16 @@ export const CippBaselineWhatIfReport = ({
             />
           </Box>
           {open && (
-            <PDFViewer
+            <CippPdfPreview
               // Remount when the simulation changes so react-pdf re-renders cleanly
-              key={simulatedTemplate?.GUID ?? 'assigned-only'}
+              viewerKey={simulatedTemplate?.GUID ?? 'assigned-only'}
+              title="Baseline what-if report"
+              fileName="Baseline_WhatIf_Report.pdf"
               style={{ width: '100%', height: '100%', border: 'none' }}
               showToolbar={true}
             >
               {reportDocument}
-            </PDFViewer>
+            </CippPdfPreview>
           )}
         </DialogContent>
         <DialogActions

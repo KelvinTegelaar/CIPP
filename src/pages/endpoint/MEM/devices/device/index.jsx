@@ -492,7 +492,7 @@ const Page = () => {
         >
           <CippHead title={title} />
           <Grid container spacing={2}>
-            <Grid size={4}>
+            <Grid size={{ xs: 12, lg: 4 }}>
               <Card>
                 <CardHeader
                   title="Device Details"
@@ -656,7 +656,7 @@ const Page = () => {
                 </PropertyList>
               </Card>
             </Grid>
-            <Grid size={8}>
+            <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
                 <Typography variant="h6">Compliance Policies</Typography>
                 <CippBannerListCard

@@ -155,7 +155,7 @@ export const CippMessageDeliveryInfo = ({ emailSource }) => {
       />
       <CardContent>
         {authEntries.length > 0 && (
-          <Stack direction="row" spacing={1} sx={{ mb: hasHops ? 3 : 0, flexWrap: "wrap", gap: 1 }}>
+          <Stack useFlexGap direction="row" sx={{ mb: hasHops ? 3 : 0, flexWrap: "wrap", gap: 1 }}>
             {authEntries.map(([label, result]) => (
               <Chip
                 key={label}

@@ -320,7 +320,7 @@ const CompactTemplateList = memo(
                 mb: 1,
                 bgcolor: 'background.paper',
                 '&:hover': { bgcolor: 'action.hover' },
-                pr: 20,
+                pr: { xs: 6, md: 20 },
               }}
             >
               <Checkbox

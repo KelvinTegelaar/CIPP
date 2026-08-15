@@ -77,7 +77,7 @@ export const CippFlowDiagram = ({
               </Typography>
             )}
             {node.chips && node.chips.length > 0 && (
-              <Stack direction="row" spacing={0.5} justifyContent="center" sx={{ mt: 1 }} flexWrap="wrap" gap={0.5}>
+              <Stack useFlexGap direction="row" justifyContent="center" sx={{ mt: 1 }} flexWrap="wrap" gap={0.5}>
                 {node.chips.map((chip, chipIndex) => (
                   <Chip key={chipIndex} {...chip} size="small" />
                 ))}

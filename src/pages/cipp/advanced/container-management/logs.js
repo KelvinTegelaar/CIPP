@@ -310,7 +310,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                   }}
                 />
 
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
                   <Button
                     type="submit"
                     variant="contained"
@@ -454,7 +454,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                   </Grid>
                 </Grid>
 
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
                   <Button type="submit" variant="contained" startIcon={<Search />}>
                     Search Logs
                   </Button>

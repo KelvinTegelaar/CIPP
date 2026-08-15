@@ -147,7 +147,7 @@ const MailboxRestoreForm = () => {
         <Grid size={12}>
           <Typography variant="h6">Optional Settings</Typography>
         </Grid>
-        <Grid size={{ xs: 6, md: 2 }}>
+        <Grid size={{ xs: 12, md: 2 }}>
           <CippFormComponent
             type="number"
             label="Bad Item Limit"
@@ -155,7 +155,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid size={{ xs: 6, md: 2 }}>
+        <Grid size={{ xs: 12, md: 2 }}>
           <CippFormComponent
             type="number"
             label="Large Item Limit"
@@ -163,7 +163,7 @@ const MailboxRestoreForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid size={{ xs: 6, md: 2 }}>
+        <Grid size={{ xs: 12, md: 2 }}>
           <CippFormComponent
             type="number"
             label="Completed Request Age Limit"

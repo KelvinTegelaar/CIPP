@@ -1,5 +1,5 @@
 import React from 'react'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '../test-utils'
 import { ExecutiveReportButton } from '../../src/components/ExecutiveReportButton'
@@ -98,5 +98,51 @@ describe('ExecutiveReportButton', () => {
 
     expect(onClick).toHaveBeenCalled()
     expect(await screen.findByRole('dialog')).toBeInTheDocument()
+  })
+
+  // The 320px config rail would leave the preview about 70px wide on a phone, so below md it
+  // moves into a drawer. Both homes render the same panel, and the toggles have to keep
+  // working from the drawer.
+  describe('section configuration on a phone', () => {
+    const openSections = async () => {
+      renderWithProviders(<ExecutiveReportButton />)
+      await userEvent.click(screen.getByRole('button', { name: /executive summary/i }))
+      await screen.findByRole('dialog')
+      await userEvent.click(screen.getByRole('button', { name: 'Report sections' }))
+      // jsdom applies no media queries, so the desktop rail is in the document too — every
+      // query here has to be scoped to the drawer or it matches both copies.
+      return within(document.querySelector('.MuiDrawer-paper'))
+    }
+
+    it('opens the sections panel in a drawer', async () => {
+      const drawer = await openSections()
+
+      expect(drawer.getByText('Report Sections')).toBeVisible()
+      expect(drawer.getByText('Executive Summary')).toBeVisible()
+      expect(drawer.getByText('Shadow AI Report')).toBeVisible()
+    })
+
+    it('toggles a section from inside the drawer', async () => {
+      const drawer = await openSections()
+
+      const deviceRow = drawer.getByText('Device Management').closest('.MuiPaper-root')
+      const toggle = within(deviceRow).getByRole('switch')
+      expect(toggle).toBeChecked()
+
+      await userEvent.click(toggle)
+
+      expect(toggle).not.toBeChecked()
+      // the footer count is the shared state both panels read
+      expect(screen.getByText(/Sections enabled: 6 of 9/)).toBeInTheDocument()
+    })
+
+    it('lifts the drawer above the dialog that opened it', async () => {
+      await openSections()
+
+      // A stock Drawer sits below a Dialog and would open behind the preview.
+      const drawer = document.querySelector('.MuiDrawer-root')
+      expect(drawer).not.toBeNull()
+      expect(window.getComputedStyle(drawer).zIndex).toBe('1301')
+    })
   })
 })

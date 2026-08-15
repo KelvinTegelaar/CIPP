@@ -721,7 +721,7 @@ const AlertWizard = () => {
                               sx={{ mb: 2 }}
                               key={event.id}
                             >
-                              <Grid size={4}>
+                              <Grid size={{ xs: 12, md: 4 }}>
                                 <CippFormComponent
                                   type="autoComplete"
                                   multiple={false}
@@ -743,7 +743,7 @@ const AlertWizard = () => {
                                   }}
                                 />
                               </Grid>
-                              <Grid size={4}>
+                              <Grid size={{ xs: 12, md: 4 }}>
                                 <CippFormComponent
                                   type="autoComplete"
                                   multiple={false}
@@ -763,7 +763,7 @@ const AlertWizard = () => {
                                   ]}
                                 />
                               </Grid>
-                              <Grid size={3}>
+                              <Grid size={{ xs: 12, md: 3 }}>
                                 {/* Show textField for String properties when NOT using in/notIn operators */}
                                 <CippFormCondition
                                   field={`conditions.${event.id}.Property`}
@@ -858,7 +858,7 @@ const AlertWizard = () => {
                                   </CippFormCondition>
                                 </CippFormCondition>
                               </Grid>
-                              <Grid size={1}>
+                              <Grid size={{ xs: 12, md: 1 }}>
                                 <Tooltip title="Remove condition">
                                   <IconButton
                                     color="error"

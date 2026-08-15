@@ -1320,7 +1320,7 @@ const CippStandardDialog = ({
           {/* Active Filter Chips */}
           {activeFiltersCount > 0 && (
             <Box sx={{ mb: 2 }}>
-              <Stack direction="row" spacing={1} flexWrap="wrap">
+              <Stack useFlexGap direction="row" spacing={1} flexWrap="wrap">
                 {selectedCategories.map((category) => (
                   <Chip
                     key={category}

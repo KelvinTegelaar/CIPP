@@ -1595,7 +1595,7 @@ const Page = () => {
                     isFetching={brandingPresetsApi.isFetching}
                   />
                 </Grid>
-                <Grid size={{ xs: 6, md: 2 }}>
+                <Grid size={{ xs: 12, md: 2 }}>
                   <CippFormComponent
                     type="autoComplete"
                     name="size"
@@ -1607,7 +1607,7 @@ const Page = () => {
                     options={PAGE_SIZES}
                   />
                 </Grid>
-                <Grid size={{ xs: 6, md: 2 }}>
+                <Grid size={{ xs: 12, md: 2 }}>
                   <CippFormComponent
                     type="autoComplete"
                     name="orientation"

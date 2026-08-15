@@ -11,6 +11,7 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  useMediaQuery,
 } from '@mui/material'
 import { Close as CloseIcon } from '@mui/icons-material'
 import { useForm } from 'react-hook-form'
@@ -28,6 +29,9 @@ const CippSpeedDial = ({
   const [speedDialOpen, setSpeedDialOpen] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
+  // Bottom-right belongs to page actions on mobile; help destinations live in the
+  // account popover there instead (see AccountPopover's mdDown section).
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
 
   const formControls = actions.reduce((acc, action) => {
     if (action.form) {
@@ -108,6 +112,10 @@ const CippSpeedDial = ({
       document.removeEventListener('click', handleClickOutside)
     }
   }, [speedDialOpen])
+
+  if (mdDown) {
+    return null
+  }
 
   return (
     <>

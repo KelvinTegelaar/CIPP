@@ -380,9 +380,9 @@ const Page = () => {
             >
               Deploy Group Template
             </Button>
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
         apiUrl={reportDB.resolvedApiUrl}
         apiData={
           reportDB.useReportDB

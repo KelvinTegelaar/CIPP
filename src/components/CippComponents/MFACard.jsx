@@ -228,7 +228,7 @@ export const MFACard = ({ data, isLoading }) => {
         sx={{ pb: 1 }}
       />
       <CardContent sx={{ pb: 0 }}>
-        <Box sx={{ height: 300 }}>
+        <Box sx={{ height: { xs: 360, md: 300 } }}>
           {isLoading ? (
             <Skeleton variant="rectangular" width="100%" height={300} />
           ) : processedData ? (

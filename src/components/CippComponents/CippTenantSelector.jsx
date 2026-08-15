@@ -408,7 +408,9 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
           disableClearable={true}
           creatable={false}
           multiple={multiple}
-          sx={{ width: width ? width : "400px" }}
+          // Full width below md by default: the hard 400px overflowed any narrow container
+          // this selector was dropped into (the old 80%-wide mobile drawer most visibly).
+          sx={{ width: width ? width : { xs: "100%", md: "400px" } }}
           placeholder={
             tenantList.isFetching
               ? "Loading Tenants..."

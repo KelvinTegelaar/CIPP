@@ -490,7 +490,7 @@ const Page = () => {
             <>
               <Typography variant="h6">Location</Typography>
               <Grid container spacing={2}>
-                <Grid size={8}>
+                <Grid size={{ xs: 12, md: 8 }}>
                   <CippMap
                     markers={[
                       {
@@ -503,7 +503,7 @@ const Page = () => {
                     ]}
                   />
                 </Grid>
-                <Grid size={4}>
+                <Grid size={{ xs: 12, md: 4 }}>
                   <CippPropertyList
                     propertyItems={[
                       { label: 'City', value: signInData.location.city },
@@ -1015,19 +1015,21 @@ const Page = () => {
         <Box
           sx={{
             flexGrow: 1,
-            py: 4,
+            py: { xs: 2, md: 4 },
           }}
         >
           <CippHead title={title} />
           <Grid container spacing={2}>
-            <Grid size={4}>
+            {/* Stacked below lg — at phone widths a 4/8 split leaves both columns too
+                narrow to hold a label, breaking the text one word per line. */}
+            <Grid size={{ xs: 12, lg: 4 }}>
               <CippUserInfoCard
                 user={data}
                 tenant={userSettingsDefaults.currentTenant}
                 isFetching={userRequest.isLoading}
               />
             </Grid>
-            <Grid size={8}>
+            <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
                 <Typography variant="h6">Latest Logon</Typography>
                 <CippBannerListCard

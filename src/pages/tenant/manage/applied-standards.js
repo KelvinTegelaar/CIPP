@@ -1690,7 +1690,7 @@ const Page = () => {
                 mt: 2,
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ flexWrap: 'wrap' }}>
+              <Stack useFlexGap direction="row" alignItems="center" spacing={1} sx={{ flexWrap: 'wrap' }}>
                 <CippAutoComplete
                   options={templateOptions}
                   label="Template"

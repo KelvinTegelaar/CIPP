@@ -189,14 +189,14 @@ const Page = () => {
                 disable the schedule. After conversion, please check the new templates to ensure
                 they are correct and re-enable the schedule.
               </Grid>
-              <Grid size={2}>
+              <Grid size={{ xs: 12, md: 2 }}>
                 <Button onClick={() => handleConversion()} variant={'contained'}>
                   Convert Legacy Standards
                 </Button>
               </Grid>
             </Alert>
           </Grid>
-          <Grid size={8}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <CippApiResults apiObject={conversionApi} />
           </Grid>
         </Grid>

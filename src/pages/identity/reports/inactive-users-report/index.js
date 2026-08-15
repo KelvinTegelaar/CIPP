@@ -89,7 +89,7 @@ const Page = () => {
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
-        cardButton={reportDB.controls}
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

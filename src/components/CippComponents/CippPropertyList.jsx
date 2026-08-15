@@ -20,7 +20,7 @@ export const CippPropertyList = (props) => {
     return item?.label === "" || item?.label === undefined || item?.label === null;
   };
 
-  const setPadding = isLabelPresent ? { py: 0.5, px: 3 } : { py: 1.5, px: 3 };
+  const setPadding = isLabelPresent ? { py: 0.5, px: { xs: 2, md: 3 } } : { py: 1.5, px: { xs: 2, md: 3 } };
   return (
     <>
       {layout === "single" ? (

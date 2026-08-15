@@ -50,7 +50,7 @@ export const CippSharePointPermissionEditor = ({
                 validators={{ required: "A group display name is required" }}
               />
             </Grid>
-            <Grid size={{ xs: 10, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <CippFormComponent
                 type="select"
                 label="Permission Level"
@@ -60,7 +60,7 @@ export const CippSharePointPermissionEditor = ({
                 validators={{ required: "Select a permission level" }}
               />
             </Grid>
-            <Grid size={{ xs: 2, md: 1 }} sx={{ display: "flex", justifyContent: "center" }}>
+            <Grid size={{ xs: 12, md: 1 }} sx={{ display: "flex", justifyContent: "center" }}>
               <Tooltip title="Remove permission">
                 <IconButton
                   aria-label="remove permission"

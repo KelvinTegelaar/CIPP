@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useTabNavigation } from '../../layouts/tab-navigation-context'
 import {
   Box,
   Container,
@@ -45,6 +46,7 @@ const CippFormPage = (props) => {
     ...other
   } = props
   const router = useRouter()
+  const ancestorHasGutters = useTabNavigation()?.providesGutters ?? false
   //check if there are
   const postCall = ApiPostCall({
     datafromUrl: true,
@@ -135,19 +137,29 @@ const CippFormPage = (props) => {
           flexGrow: 1,
         }}
       >
-        <Container maxWidth="lg">
+        <Container
+          maxWidth="lg"
+          // HeaderedTabbedLayout already wraps children in a gutter-bearing Container, so on
+          // those pages this one would double it — 32px of indent on a 390px screen. Desktop
+          // keeps the standard 24px either way.
+          sx={ancestorHasGutters ? { px: { xs: 0, sm: 3 } } : undefined}
+        >
           <Stack spacing={2}>
             {!hideTitle && (
               <Stack spacing={2}>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                <Stack
+                  direction={{ xs: 'column', sm: 'row' }}
+                  justifyContent="space-between"
+                  alignItems={{ xs: 'stretch', sm: 'center' }}
+                  useFlexGap
+                  sx={{ columnGap: 2, rowGap: 1 }}
                 >
                   <Typography variant="h4">
                     {!hidePageType && <>{formPageType} - </>}
                     {title}
                   </Typography>
                   {titleButton && titleButton}
-                </div>
+                </Stack>
               </Stack>
             )}
 
@@ -160,7 +172,16 @@ const CippFormPage = (props) => {
               </CardContent>
               {!hideSubmit && (
                 <CardActions sx={{ justifyContent: 'flex-end' }}>
-                  <Stack spacing={2} direction="row">
+                  {/* Stacked full-width on phones: Submit is the primary action of the whole
+                      page and shouldn't be a narrow target crowded by the extra buttons. */}
+                  <Stack
+                    spacing={2}
+                    direction={{ xs: 'column-reverse', sm: 'row' }}
+                    sx={{
+                      width: { xs: '100%', sm: 'auto' },
+                      '& .MuiButton-root': { minHeight: { xs: 44, sm: 'auto' } },
+                    }}
+                  >
                     {addedButtons && addedButtons}
                     <Button
                       disabled={postCall.isPending || !isValid || (!allowResubmit && !isDirty)}

@@ -155,7 +155,7 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
 
     return (
       <>
-        <Stack direction="row" spacing={1} sx={{ mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
+        <Stack useFlexGap direction="row" sx={{ mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
           <Chip
             size="small"
             color={activeItems.length ? 'error' : 'success'}

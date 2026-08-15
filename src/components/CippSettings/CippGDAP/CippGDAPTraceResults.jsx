@@ -468,7 +468,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                                     >
                                       Additional Roles:
                                     </Typography>
-                                    <Stack direction="row" spacing={0.5} flexWrap="wrap" gap={0.5}>
+                                    <Stack useFlexGap direction="row" flexWrap="wrap" gap={0.5}>
                                       {group.roles.slice(1).map((role, roleIndex) => (
                                         <Chip
                                           key={roleIndex}

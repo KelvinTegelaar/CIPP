@@ -123,7 +123,7 @@ export const CippWizardOffboarding = (props) => {
   return (
     <Stack spacing={4}>
       <Grid container spacing={4}>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card variant="outlined">
             <CardHeader title="Offboarding Settings" />
             <Divider />
@@ -266,7 +266,7 @@ export const CippWizardOffboarding = (props) => {
           </Card>
         </Grid>
 
-        <Grid size={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card variant="outlined">
             <CardHeader title="Permissions and forwarding" />
             <Divider />
