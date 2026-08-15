@@ -29,7 +29,7 @@ export const ActionsMenu = (props) => {
           whiteSpace: "nowrap",
         }}
       >
-        Actions
+        {label}
       </Button>
       <Menu
         anchorEl={popover.anchorRef.current}
