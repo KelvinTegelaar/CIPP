@@ -6021,6 +6021,16 @@
         "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
         "label": "Allow communication with unmanaged Teams accounts"
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerInbound",
+        "label": "Allow unmanaged Teams users to initiate contact",
+        "condition": {
+          "field": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "label": "External Access Settings for Microsoft Teams",
@@ -6044,6 +6054,16 @@
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
         "label": "Allow users to communicate with consumer Teams accounts"
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumerInbound",
+        "label": "Allow unmanaged Teams users to initiate contact",
+        "condition": {
+          "field": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "autoComplete",
