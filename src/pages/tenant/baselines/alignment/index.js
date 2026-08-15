@@ -556,6 +556,13 @@ const Page = () => {
   })
 
   const catalog = definitionsApi.data ?? []
+  // A per-path deny queues an OBJECT deletion, so it only exists where the
+  // definition ships a delete executor (the detect-drift standards, where each
+  // path IS a policy). Ordinary standards get accept-only per-property actions -
+  // enforcing the baseline is the row-level Deny.
+  const supportsPathDeletion = (standardName) =>
+    !!catalog.find((entry) => entry.name === `${standardName}`.split('#')[0])
+      ?.delete
   const baselines = baselinesApi.data ?? []
   const standardAggregates = aggregateApi.data?.standards ?? []
   const tenant = {
@@ -1309,23 +1316,24 @@ const Page = () => {
                             Accept this property only
                           </Button>
                         )}
-                        {!acceptedPath && (
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="error"
-                            startIcon={<RemoveCircle />}
-                            onClick={() => {
-                              setDenyPathTarget({
-                                ...row,
-                                path: entry.Property,
-                              })
-                              denyPathDialog.handleOpen()
-                            }}
-                          >
-                            Deny & queue deletion
-                          </Button>
-                        )}
+                        {!acceptedPath &&
+                          supportsPathDeletion(row.standardName) && (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="error"
+                              startIcon={<RemoveCircle />}
+                              onClick={() => {
+                                setDenyPathTarget({
+                                  ...row,
+                                  path: entry.Property,
+                                })
+                                denyPathDialog.handleOpen()
+                              }}
+                            >
+                              Deny & queue deletion
+                            </Button>
+                          )}
                       </Stack>
                     </Box>
                   )
@@ -1469,20 +1477,22 @@ const Page = () => {
                             Accept this property only
                           </Button>
                         )}
-                        {drifted && !acceptedPath && (
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="error"
-                            startIcon={<RemoveCircle />}
-                            onClick={() => {
-                              setDenyPathTarget({ ...row, path: key })
-                              denyPathDialog.handleOpen()
-                            }}
-                          >
-                            Deny & queue deletion
-                          </Button>
-                        )}
+                        {drifted &&
+                          !acceptedPath &&
+                          supportsPathDeletion(row.standardName) && (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="error"
+                              startIcon={<RemoveCircle />}
+                              onClick={() => {
+                                setDenyPathTarget({ ...row, path: key })
+                                denyPathDialog.handleOpen()
+                              }}
+                            >
+                              Deny & queue deletion
+                            </Button>
+                          )}
                       </Stack>
                     </Box>
                   )
