@@ -84,6 +84,26 @@ describe('PrivateRoute', () => {
     expect(screen.queryByText('app content')).not.toBeInTheDocument()
   })
 
+  it('shows the server explanation when a signed-in identity is denied (e.g. IP blocked)', async () => {
+    // real SWA session, but CIPP refused the caller and said why - the wording must
+    // surface instead of the misleading "session expired" prompt
+    authState.swa = result({ data: swaPrincipal() })
+    authState.me = result({
+      data: {
+        clientPrincipal: null,
+        permissions: [],
+        message: 'Your IP address (203.0.113.7) is not in the allowed range for your role(s)',
+      },
+    })
+    renderRoute()
+
+    await waitFor(() => {
+      expect(screen.getByText(/not in the allowed range/)).toBeInTheDocument()
+    })
+    expect(screen.getByText('Access Denied')).toBeInTheDocument()
+    expect(screen.queryByText('Sign in to CIPP')).not.toBeInTheDocument()
+  })
+
   it('shows the sign-in page when the session has no identity in either shape', async () => {
     // settled /.auth/me with neither clientPrincipal nor easyauth array
     authState.swa = result({ data: {} })

@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { Box, Stack, SvgIcon, Typography } from '@mui/material'
 import { Microsoft, PersonOutlineOutlined } from '@mui/icons-material'
 import { CippAuthShell } from '../components/CippComponents/CippAuthShell'
+import { CippImpersonationBanner } from '../components/CippComponents/CippImpersonationBanner'
 import { ApiGetCall } from '../api/ApiCall'
 import { hasSeenSession } from '../utils/auth-session'
 
@@ -49,7 +50,12 @@ const Page = ({ reason = 'session' }) => {
     swaStatus.isSuccess && !!swaStatus?.data?.clientPrincipal && userRoles.length > 0
   const signedInAs = swaStatus?.data?.clientPrincipal?.userDetails
 
-  const isSessionEnded = reason === 'session'
+  // A signed-in identity plus a /me message is not a missing session — it's a denial the
+  // server explained (e.g. "your IP is not in the allowed range"). Show the explanation
+  // instead of the generic sign-in prompt, whatever reason the caller guessed. Without a
+  // SWA identity there is nobody to deny, so a stale message must not hide the sign-in.
+  const hasIdentity = Boolean(swaStatus?.data?.clientPrincipal)
+  const isSessionEnded = reason === 'session' && !(hasIdentity && orgData?.data?.message)
 
   const sessionProps = {
     title: 'Sign in to CIPP',
@@ -115,6 +121,9 @@ const Page = ({ reason = 'session' }) => {
       <Head>
         <title>{isSessionEnded ? 'Sign in - CIPP' : '401 - Access Denied'}</title>
       </Head>
+      {/* If an impersonated role can't load /me, this page is what renders — the exit
+          affordance must exist here or the user is stuck until they clear localStorage. */}
+      <CippImpersonationBanner />
       {(orgData.isSuccess || swaStatus.isSuccess) && Array.isArray(userRoles) && (
         <CippAuthShell
           version={version?.data?.version}

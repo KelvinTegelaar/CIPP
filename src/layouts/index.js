@@ -19,6 +19,7 @@ import { ForcedSsoMigrationDialog } from '../components/CippComponents/ForcedSso
 import { SubscriptionEndedDialog } from '../components/CippComponents/SubscriptionEndedDialog'
 import { FailedPaymentDialog } from '../components/CippComponents/FailedPaymentDialog'
 import { CippMaintenanceBanner } from '../components/CippComponents/CippMaintenanceBanner'
+import { CippImpersonationBanner } from '../components/CippComponents/CippImpersonationBanner'
 
 import {
   BANNER_HEIGHT_VAR,
@@ -303,6 +304,7 @@ export const Layout = (props) => {
     <>
       {/* Rendered outside the hideSidebar check - maintenance applies to chrome-less pages too. */}
       <CippMaintenanceBanner alert={maintenanceAlert} />
+      <CippImpersonationBanner />
       {hideSidebar === false && (
         <>
           <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
