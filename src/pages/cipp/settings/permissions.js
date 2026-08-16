@@ -26,7 +26,7 @@ const Page = () => {
   const showGdapCheck = !partnerCheckComplete || isPartner || Boolean(importReport?.GDAP);
 
   return (
-    <Container sx={{ pt: { xs: 0, md: 3 } }} maxWidth="xl">
+    <Container sx={{ pt: { xs: 0, md: 3 }, px: { xs: 1.5, md: 3 } }} maxWidth="xl">
       <Grid container spacing={2}>
         {/* Below lg the report renders as a fixed FAB (plus a portaled dialog), so this item
             is empty in flow — display: contents dissolves it, or grid spacing leaves a blank

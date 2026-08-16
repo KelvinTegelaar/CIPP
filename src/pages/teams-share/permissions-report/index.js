@@ -13,6 +13,7 @@ import { ApiGetCall } from '../../../api/ApiCall'
 import { useSettings } from '../../../hooks/use-settings'
 import { Alert, Button, Container, Stack, SvgIcon, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
+import { CippExpandableAlert } from '../../../components/CippComponents/CippExpandableAlert'
 import {
   BuildingOfficeIcon,
   CloudArrowDownIcon,
@@ -253,7 +254,7 @@ const Page = () => {
             )}
 
             <Grid size={{ md: 12, xs: 12 }}>
-              <Alert severity="info" sx={{ mb: 2 }}>
+              <CippExpandableAlert severity="info" sx={{ mb: 2 }}>
                 <strong>Applies To</strong> shows how far each permission reaches.{' '}
                 <em>Whole site</em> is a permission on the site itself, which every library that
                 still inherits also gets. <em>This library only</em> means that library was detached
@@ -261,7 +262,7 @@ const Page = () => {
                 that still inherit are not listed — their permissions are the site&apos;s, so
                 everything here is either the site&apos;s own permissions or a deliberate exception
                 to them.
-              </Alert>
+              </CippExpandableAlert>
               <CippDataTable
                 title="Library Permissions"
                 queryKey={`${queryKey}-table`}

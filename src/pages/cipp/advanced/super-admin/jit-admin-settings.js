@@ -7,6 +7,7 @@ import { Typography, Alert } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../../api/ApiCall";
+import { CippExpandableAlert } from "../../../../components/CippComponents/CippExpandableAlert";
 import { useEffect } from "react";
 
 const Page = () => {
@@ -103,7 +104,7 @@ const Page = () => {
         </Grid>
 
         <Grid size={{ md: 12, xs: 12 }}>
-          <Alert severity="warning">
+          <CippExpandableAlert severity="warning">
             <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
               Important Notes:
             </Typography>
@@ -121,7 +122,7 @@ const Page = () => {
                 <li>This setting applies globally to all tenants and all JIT admin creations</li>
               </ul>
             </Typography>
-          </Alert>
+          </CippExpandableAlert>
         </Grid>
 
         <Grid size={{ md: 12, xs: 12 }}>
