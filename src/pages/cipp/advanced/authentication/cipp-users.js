@@ -8,7 +8,9 @@ import { CardContent, Stack } from "@mui/material";
 
 const Page = () => {
   return (
-    <CippPageCard hideBackButton={true} title={"CIPP User Management"}>
+    // Titled to match the tab label, so the mobile picker claims the heading and the page
+    // does not say "CIPP Users" and "CIPP User Management" back to back.
+    <CippPageCard hideBackButton={true} title={"CIPP Users"}>
       <CardContent>
         <Stack spacing={2}>
           <CippExpandableAlert severity="info">

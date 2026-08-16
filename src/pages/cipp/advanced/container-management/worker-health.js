@@ -64,6 +64,7 @@ import { CippInfoBar } from "../../../../components/CippCards/CippInfoBar";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import tabOptions from "./tabOptions";
+import { useTitleClaimedByTabPicker } from "../../../../layouts/tab-navigation-context";
 
 const formatDuration = (ms) => {
   if (ms === 0 || ms == null) return "—";
@@ -459,6 +460,7 @@ const HistoryChart = ({ data, rangeMinutes, title, icon, children }) => {
 
 const Page = () => {
   const theme = useTheme();
+  const titleClaimed = useTitleClaimedByTabPicker("Worker Health");
   const queryClient = useQueryClient();
   const fileInputRef = useRef(null);
   const [historyRange, setHistoryRange] = useState(60);
@@ -720,7 +722,9 @@ const Page = () => {
           <Stack spacing={2}>
             {/* ── Header toolbar ── */}
             <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography variant="h4">Worker Health</Typography>
+              {/* Empty Box keeps the toolbar on the right when the mobile tab picker has
+                  already said "Worker Health" directly above this row. */}
+              {titleClaimed ? <Box /> : <Typography variant="h4">Worker Health</Typography>}
               <Stack direction="row" alignItems="center" spacing={1}>
                 {isImported && (
                   <Chip

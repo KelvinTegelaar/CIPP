@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useTabNavigation } from '../../layouts/tab-navigation-context'
+import { useTabNavigation, useTitleClaimedByTabPicker } from '../../layouts/tab-navigation-context'
 import {
   Box,
   Container,
@@ -47,6 +47,12 @@ const CippFormPage = (props) => {
   } = props
   const router = useRouter()
   const ancestorHasGutters = useTabNavigation()?.providesGutters ?? false
+  // On mobile the tab picker directly above already reads as this page's heading whenever it
+  // shows the same text this h4 would (SAM App Roles printed its name twice in a row). The
+  // claim compares what would actually render, page-type prefix included; a row that also
+  // carries a titleButton keeps rendering, because the button has nowhere else to live.
+  const renderedTitle = hidePageType ? title : `${formPageType} - ${title}`
+  const titleClaimed = useTitleClaimedByTabPicker(renderedTitle) && !titleButton
   //check if there are
   const postCall = ApiPostCall({
     datafromUrl: true,
@@ -145,7 +151,7 @@ const CippFormPage = (props) => {
           sx={ancestorHasGutters ? { px: { xs: 0, sm: 3 } } : undefined}
         >
           <Stack spacing={2}>
-            {!hideTitle && (
+            {!hideTitle && !titleClaimed && (
               <Stack spacing={2}>
                 <Stack
                   direction={{ xs: 'column', sm: 'row' }}

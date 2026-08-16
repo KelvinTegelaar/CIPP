@@ -217,7 +217,7 @@ export const CippUserManagement = () => {
     <Box>
       <CippDataTable
         actions={actions}
-        title="CIPP Users"
+        title="Users"
         cardButton={
           <Button
             variant="contained"
