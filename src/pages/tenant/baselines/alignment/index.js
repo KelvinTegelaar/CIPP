@@ -584,11 +584,6 @@ const Page = () => {
     rows: resolvedApi.data?.rows ?? [],
   }
   const stageStates = resolvedApi.data?.stageStates ?? []
-  // The API serializes single-element arrays as a bare object; the chart needs a
-  // real array (and a lone point is hidden anyway - it is just today's score).
-  const tenantTrend = Array.isArray(resolvedApi.data?.trend)
-    ? resolvedApi.data.trend
-    : []
 
   const triageFormFields = ({ formHook }) => (
     <Stack spacing={2} sx={{ mt: 2 }}>
@@ -3042,29 +3037,6 @@ const Page = () => {
               </Stack>
             </Stack>
             {tenantScoreBar}
-            {tenantTrend.length > 1 && (
-              <CippChartCard
-                isFetching={resolvedApi.isFetching}
-                title="Tenant Compliance Trend"
-                chartType="area"
-                chartSeries={[
-                  {
-                    name: 'Compliant with accepted deviations',
-                    data: tenantTrend.map((point) => ({
-                      x: point.date,
-                      y: point.aligned,
-                    })),
-                  },
-                  {
-                    name: 'Compliant with baseline',
-                    data: tenantTrend.map((point) => ({
-                      x: point.date,
-                      y: point.verified,
-                    })),
-                  },
-                ]}
-              />
-            )}
             {rolloutCard}
             <CippDataTable
               queryKey={`ListBaselineAlignment-${currentTenant}-standards-table`}
