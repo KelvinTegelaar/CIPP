@@ -150,7 +150,13 @@ const StagePanel = ({
       conditions: stage.conditionDefaults,
     },
   })
-  const watchForm = useWatch({ control: formControl.control })
+  // Watch ONLY the conditions branch. A whole-form watch re-renders this panel - and
+  // every standard item in it - on each keystroke in any of the standards' fields,
+  // which makes the editor crawl once a few hundred standards are loaded.
+  const watchConditions = useWatch({
+    control: formControl.control,
+    name: 'conditions',
+  })
   const [expandedStandard, setExpandedStandard] = useState(null)
   const [conditionIds, setConditionIds] = useState(stage.conditionIds)
   const [nextConditionId, setNextConditionId] = useState(
@@ -232,15 +238,22 @@ const StagePanel = ({
         }),
         standards: stage.standards.map((instanceKey) => {
           const config = values[instanceKey] ?? {}
+          // A standard the operator never expanded never mounts its settings fields,
+          // so its variables never enter the form - serialize the SAVED variables for
+          // those, or saving a large baseline would silently wipe their configuration.
+          const savedVariables =
+            stage.standardConfigs?.[instanceKey]?.variables ?? {}
           return {
             standard: instanceKey.split('#')[0],
             instance: instanceKey,
-            variables: Object.fromEntries(
-              Object.entries(config.variables ?? {}).map(([key, value]) => [
-                key,
-                unwrapValue(value),
-              ])
-            ),
+            variables: config.variables
+              ? Object.fromEntries(
+                  Object.entries(config.variables).map(([key, value]) => [
+                    key,
+                    unwrapValue(value),
+                  ])
+                )
+              : savedVariables,
             // Report-only unless the operator explicitly enabled remediation - a
             // missing value must never fail open into auto-fixing tenants.
             remediateEnabled: config.remediateEnabled ?? false,
@@ -333,8 +346,8 @@ const StagePanel = ({
             )}
             {conditionIds.map((conditionId) => {
               const conditionType = get(
-                watchForm,
-                `conditions.${conditionId}.type`
+                watchConditions,
+                `${conditionId}.type`
               )?.value
               return (
                 <Card key={conditionId} variant="outlined">

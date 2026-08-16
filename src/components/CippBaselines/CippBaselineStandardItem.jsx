@@ -86,9 +86,12 @@ export const CippBaselineStandardItem = ({
   const watched = useWatch({ control: formControl.control, name: fieldBase })
   // Identity-carrying standards (CA/Intune templates via instanceIdentity, manual tasks
   // via taskName) title as '<label> - <selected name>' so ten instances stay tellable.
+  // Saved-but-never-expanded instances have no form values yet (details mount lazily),
+  // so the saved configuration supplies the identity for the title.
   const identityValueRaw = standard.instanceIdentity
-    ? watched?.variables?.[standard.instanceIdentity]
-    : watched?.variables?.taskName
+    ? (watched?.variables?.[standard.instanceIdentity] ??
+      savedConfig?.variables?.[standard.instanceIdentity])
+    : (watched?.variables?.taskName ?? savedConfig?.variables?.taskName)
   const identityLabel =
     identityValueRaw && typeof identityValueRaw === 'object'
       ? (identityValueRaw.label ?? identityValueRaw.value)
@@ -157,6 +160,11 @@ export const CippBaselineStandardItem = ({
       expanded={expanded}
       onChange={onToggle}
       disableGutters
+      // Collapsed details stay UNMOUNTED: with hundreds of standards loaded, mounting
+      // every settings form (and its api-driven autocompletes) at once makes the
+      // editor crawl. react-hook-form keeps the values when details unmount, and the
+      // stage serializer falls back to the saved config for never-expanded standards.
+      TransitionProps={{ unmountOnExit: true }}
       sx={{ '&:before': { display: 'none' }, borderRadius: '12px' }}
     >
       <AccordionSummary expandIcon={<ExpandMore />}>
