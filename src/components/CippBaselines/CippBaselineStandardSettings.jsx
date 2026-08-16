@@ -71,8 +71,10 @@ export const CippBaselineStandardSettings = ({
             // Definitions may source options from an API instead of a static list
             // (e.g. the CA template picker) - CippFormComponent handles the fetch.
             api={definition.api}
-            multiple={false}
-            creatable={false}
+            // Identity pickers are always single-select (the catalog tests enforce it);
+            // list-shaped variables (allowed domains, IP ranges) declare multiple:true.
+            multiple={definition.multiple === true}
+            creatable={definition.creatable === true}
             disabled={definition.locked === true}
             // A required variable has no safe fallback: saving without it leaves the
             // raw %token% in the baseline, which the engine refuses to compare or apply.
