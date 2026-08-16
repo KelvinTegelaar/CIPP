@@ -32,9 +32,8 @@ export const CippPropertyList = (props) => {
                   key={`${index}-index-PropertyListOffCanvas`}
                   align={align}
                   label={item.label}
-                  value={<Skeleton width={280} />}
+                  value={<Skeleton sx={{ width: "100%", maxWidth: 280 }} />}
                   sx={setPadding}
-                  {...item}
                 />
               ))}
             </>
@@ -75,7 +74,7 @@ export const CippPropertyList = (props) => {
                     key={`${index}-index-PropertyListOffCanvas`}
                     align={align}
                     label={item.label}
-                    value={<Skeleton width={280} />}
+                    value={<Skeleton sx={{ width: "100%", maxWidth: 280 }} />}
                     sx={setPadding}
                   />
                 ))}
@@ -101,12 +100,8 @@ export const CippPropertyList = (props) => {
                     key={`${index}-index-PropertyListOffCanvas`}
                     align={align}
                     label={item.label}
-                    value={<Skeleton width={280} />}
-                    sx={() => {
-                      if (item?.label === "" || item?.label === undefined || item?.label === null) {
-                        return { py: 0 };
-                      }
-                    }}
+                    value={<Skeleton sx={{ width: "100%", maxWidth: 280 }} />}
+                    sx={setPadding}
                   />
                 ))}
               </>
