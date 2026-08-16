@@ -241,19 +241,18 @@ const StagePanel = ({
           // A standard the operator never expanded never mounts its settings fields,
           // so its variables never enter the form - serialize the SAVED variables for
           // those, or saving a large baseline would silently wipe their configuration.
+          // Unwrapped either way: legacy saves stored option objects ({label, value})
+          // for some variables, and passing them through verbatim keeps that debt alive.
           const savedVariables =
             stage.standardConfigs?.[instanceKey]?.variables ?? {}
           return {
             standard: instanceKey.split('#')[0],
             instance: instanceKey,
-            variables: config.variables
-              ? Object.fromEntries(
-                  Object.entries(config.variables).map(([key, value]) => [
-                    key,
-                    unwrapValue(value),
-                  ])
-                )
-              : savedVariables,
+            variables: Object.fromEntries(
+              Object.entries(config.variables ?? savedVariables).map(
+                ([key, value]) => [key, unwrapValue(value)]
+              )
+            ),
             // Report-only unless the operator explicitly enabled remediation - a
             // missing value must never fail open into auto-fixing tenants.
             remediateEnabled: config.remediateEnabled ?? false,
