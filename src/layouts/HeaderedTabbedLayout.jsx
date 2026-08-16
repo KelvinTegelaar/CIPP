@@ -35,6 +35,8 @@ export const HeaderedTabbedLayout = (props) => {
     queryKeys,
     isFetching = false,
     backUrl,
+    // Optional replacement for the title Typography — same slot, same truncation duties.
+    titleControl,
   } = props;
 
   // The shared hook rather than an inline useMediaQuery: same threshold, but only this one is
@@ -175,9 +177,25 @@ export const HeaderedTabbedLayout = (props) => {
                       spacing={1}
                       justifyContent="space-between"
                     >
-                      <Typography variant={isMobile ? "h6" : "h4"} noWrap={isMobile}>
-                        {title}
-                      </Typography>
+                      {/* A name-shaped skeleton, not the word "Loading...": the header is
+                          the entity's identity, and a text placeholder reads as a title.
+                          titleControl lets a page swap the text for an interactive control
+                          in the same clothes (the View User pages mount a user switcher). */}
+                      {isFetching ? (
+                        <Typography
+                          variant={isMobile ? "h6" : "h4"}
+                          noWrap={isMobile}
+                          sx={{ minWidth: 0, flex: 1 }}
+                        >
+                          <Skeleton variant="text" sx={{ maxWidth: 280 }} />
+                        </Typography>
+                      ) : (
+                        titleControl ?? (
+                          <Typography variant={isMobile ? "h6" : "h4"} noWrap={isMobile} sx={{ minWidth: 0 }}>
+                            {title}
+                          </Typography>
+                        )
+                      )}
                     </Stack>
                     {!isMobile && subtitleBlock}
                   </Stack>

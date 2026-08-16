@@ -20,6 +20,7 @@ import {
 } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import tabOptions from './tabOptions'
+import { CippUserSwitcher } from '../../../../../components/CippComponents/CippUserSwitcher'
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { Box, Stack } from '@mui/system'
@@ -1407,6 +1408,13 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
+      titleControl={
+        <CippUserSwitcher
+          title={title}
+          currentUserId={userId}
+          tenantFilter={userSettingsDefaults.currentTenant}
+        />
+      }
       subtitle={subtitle}
       actions={CippExchangeActions()}
       actionsData={userRequest.data?.[0]?.MailboxActionsData}
