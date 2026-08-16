@@ -375,6 +375,32 @@ describe('CippDataTable card view without an offCanvas', () => {
     expect(drawer.textContent).not.toMatch(/Risk/)
   })
 
+  // Retired: the extended-info drawer's action buttons. Pages still carry `actions` in their
+  // offCanvas configs (the Users page spreads userActions in), and the config is spread onto
+  // the drawer — so the retirement has to survive the spread, not just the explicit prop.
+  it('keeps retired drawer actions out even when the page config carries them', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        data={wideData}
+        simpleColumns={columns}
+        title="Users"
+        offCanvas={{
+          extendedInfoFields: ['displayName', 'mail'],
+          actions: [{ label: 'View User', link: '/identity/administration/users/user' }],
+        }}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Alice Smith')).toBeInTheDocument())
+    await user.click(screen.getByText('Alice Smith'))
+
+    // drawer is open (property list rendered) but the actions block is gone
+    await waitFor(() => expect(screen.getAllByText(/alice@contoso.com/).length).toBeGreaterThan(0))
+    expect(screen.queryByText('View User')).not.toBeInTheDocument()
+  })
+
   it('formats fallback values the way their table cells do', async () => {
     const user = userEvent.setup()
     renderWithProviders(

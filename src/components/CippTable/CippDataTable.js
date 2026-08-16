@@ -1529,7 +1529,6 @@ export const CippDataTable = (props) => {
         onClose={() => setOffcanvasVisible(false)}
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
-        actions={actions}
         title={offCanvasData?.Name || offCanvas?.title || 'Extended Info'}
         children={
           offCanvas?.children
@@ -1559,6 +1558,9 @@ export const CippDataTable = (props) => {
         }}
         {...offCanvas}
         {...cardInfoOverride}
+        // Retired: the drawer's action buttons never dispatched reliably, and the row menu
+        // is the actions surface. Last so it beats page configs carrying offCanvas.actions.
+        actions={undefined}
       />
       {/* Render custom component */}
       {customComponentVisible &&
