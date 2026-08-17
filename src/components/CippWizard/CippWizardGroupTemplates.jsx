@@ -12,7 +12,6 @@ export const CippWizardGroupTemplates = (props) => {
   const lastAppliedTemplate = useRef(null);
   const groupOptions = [
     { label: "Dynamic Group", value: "dynamic" },
-    { label: "Dynamic Distribution Group", value: "dynamicDistribution" },
     { label: "Security Group", value: "generic" },
     { label: "Distribution Group", value: "distribution" },
     { label: "Azure Role Group", value: "azureRole" },
