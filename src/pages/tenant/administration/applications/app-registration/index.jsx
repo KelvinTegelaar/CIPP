@@ -14,6 +14,7 @@ import {
   Badge,
 } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
+import { CippAppRegistrationSwitcher } from '../../../../../components/CippComponents/CippAppRegistrationSwitcher'
 import tabOptions from './tabOptions'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { Box, Stack } from '@mui/system'
@@ -368,6 +369,13 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
+      titleControl={
+        <CippAppRegistrationSwitcher
+          title={title}
+          currentAppId={applicationClientId}
+          tenantFilter={router.query.tenantFilter ?? userSettingsDefaults.currentTenant}
+        />
+      }
       subtitle={subtitle}
       actions={appData ? appActions : []}
       actionsData={actionsData}
