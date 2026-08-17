@@ -210,6 +210,26 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "UnlicensedOneDriveData",
+    "label": "Alert on leftover unlicensed OneDrive data nearing deletion",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days until deletion (default: 30)",
+        "inputName": "UnlicensedOneDriveData"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include shared mailboxes",
+        "inputName": "IncludeSharedMailboxes"
+      }
+    ],
+    "description": "Fires when a still-existing user has an unlicensed OneDrive within the selected days of unpaid deletion (unlicensed start + 365 days). Skips Entra-deleted owners. Shared mailboxes are excluded unless the toggle is on."
+  },
+  {
     "name": "ExpiringLicenses",
     "label": "Alert on licenses expiring in X days",
     "recommendedRunInterval": "7d",
@@ -431,6 +451,12 @@
     "name": "DepTokenExpiry",
     "label": "Alert on expiring DEP tokens",
     "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "IntuneApprovalRequests",
+    "label": "Alert on Intune changes waiting for multi-admin approval",
+    "recommendedRunInterval": "1d",
+    "description": "Multi-admin approval holds a protected Intune change until a second administrator approves it, and nothing notifies the requestor. This reports requests still sitting in needsApproval."
   },
   {
     "name": "SoftDeletedMailboxes",
