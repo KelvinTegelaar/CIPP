@@ -97,9 +97,10 @@ const CippIntegrationSettings = ({ children }) => {
   };
 
   // Halo returns an explanatory row with an id of -1 when it has nothing real to offer ("no SLA
-  // attached", "select a ticket type first"). It's there to be read, not picked - without this
-  // it can be selected and saved as if it were a priority or an outcome.
-  const isPlaceholderOption = (option) => option?.value === -1;
+  // attached", "select a ticket type first"); PWPush's account placeholders use an empty id.
+  // These rows are there to be read, not picked - without this they can be selected and saved as
+  // if they were real settings, and a saved PWPush placeholder breaks every push.
+  const isPlaceholderOption = (option) => option?.value === -1 || option?.value === "";
 
   // Existing configs can already hold one of those rows from before it was blocked, and it would
   // otherwise sit there looking like a real setting. Drop it so the field reads as unset.
