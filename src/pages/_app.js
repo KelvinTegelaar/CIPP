@@ -53,6 +53,7 @@ import {
   AutoStories,
   Gavel,
   ClearAll as ClearAllIcon,
+  SupportAgent,
 } from '@mui/icons-material'
 import { School as TutorialIcon } from '@mui/icons-material'
 import { getHelpLinks, clearCippCache } from '../utils/help-links'
@@ -64,6 +65,7 @@ import { persistQueryClient } from '@tanstack/react-query-persist-client'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 import { TutorialProvider } from '../contexts/tutorial-context'
 import CippTutorialDialog from '../components/CippComponents/CippTutorialDialog'
+import CippSupportBundleDialog from '../components/CippComponents/CippSupportBundleDialog'
 
 const ReactQueryDevtoolsProduction = React.lazy(() =>
   import('@tanstack/react-query-devtools/build/modern/production.js').then((d) => ({
@@ -92,6 +94,7 @@ const App = (props) => {
   const route = useRouter()
   const [dateLocale, setDateLocale] = useState(enUS)
   const [tutorialDialogOpen, setTutorialDialogOpen] = useState(false)
+  const [supportBundleOpen, setSupportBundleOpen] = useState(false)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -219,6 +222,12 @@ const App = (props) => {
       href: '/license',
       onClick: () => route.push('/license'),
     },
+    {
+      id: 'supportBundle',
+      icon: <SupportAgent />,
+      name: 'Generate Support File',
+      onClick: () => setSupportBundleOpen(true),
+    },
     ...getHelpLinks(pathname).map((link) => ({
       ...link,
       icon: helpLinkIcons[link.id],
@@ -269,6 +278,10 @@ const App = (props) => {
                                 <CippTutorialDialog
                                   open={tutorialDialogOpen}
                                   onClose={() => setTutorialDialogOpen(false)}
+                                />
+                                <CippSupportBundleDialog
+                                  open={supportBundleOpen}
+                                  onClose={() => setSupportBundleOpen(false)}
                                 />
                               </TutorialProvider>
                             </PrivateRoute>
