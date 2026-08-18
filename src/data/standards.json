@@ -3430,21 +3430,38 @@
     "name": "standards.QuarantineRequestAlert",
     "cat": "Defender Standards",
     "tag": [],
-    "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message.",
-    "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released.",
+    "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message. Set the alert state to Removed to delete the alert rule CIPP created from the tenant.",
+    "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released. Setting the alert state to Removed deletes the alert rule CIPP created from the tenant, for when the alert is no longer wanted.",
     "executiveText": "Notifies IT administrators when employees request to release emails that were quarantined for security reasons, enabling oversight of potentially dangerous messages. This helps ensure that legitimate emails are released while maintaining security controls over suspicious content.",
     "addedComponent": [
       {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "label": "Alert state (blank or Enabled creates the alert, Removed deletes it)",
+        "name": "standards.QuarantineRequestAlert.state",
+        "options": [
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Removed", "value": "removed" }
+        ]
+      },
+      {
         "type": "textField",
         "name": "standards.QuarantineRequestAlert.NotifyUser",
-        "label": "E-mail to receive the alert"
+        "label": "E-mail to receive the alert",
+        "condition": {
+          "field": "standards.QuarantineRequestAlert.state",
+          "compareType": "isNot",
+          "compareValue": { "label": "Removed", "value": "removed" }
+        }
       }
     ],
     "label": "Quarantine Release Request Alert",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-07-15",
-    "powershellEquivalent": "New-ProtectionAlert and Set-ProtectionAlert",
+    "powershellEquivalent": "New-ProtectionAlert, Set-ProtectionAlert and Remove-ProtectionAlert",
     "recommendedBy": [],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",
