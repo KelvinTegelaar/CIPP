@@ -226,6 +226,12 @@ const Page = () => {
                     label="Remove all Domain Analyser results for this tenant."
                     type="switch"
                   />
+                  <CippFormComponent
+                    formControl={formControl}
+                    name="RemoveQuarantineAlert"
+                    label="Remove the quarantine release request alert created by the CIPP standard."
+                    type="switch"
+                  />
                 </Stack>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
