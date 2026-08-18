@@ -13,7 +13,12 @@ import {
   Switch,
   Typography,
 } from '@mui/material'
-import { Download, PlayArrow } from '@mui/icons-material'
+import {
+  Download,
+  FiberManualRecord,
+  PlayArrow,
+  Stop,
+} from '@mui/icons-material'
 import { useQueryClient } from '@tanstack/react-query'
 import { useSettings } from '../../hooks/use-settings'
 import {
@@ -28,7 +33,7 @@ import {
 
 // The fixed sections go through fetch() rather than axios on purpose: the armed recorder
 // captures all axios traffic, and the network section should contain only what the page
-// itself requested.
+// (or the user's recorded actions) actually requested.
 const fetchJson = async (url) => {
   try {
     const response = await fetch(url, { credentials: 'include' })
@@ -39,7 +44,7 @@ const fetchJson = async (url) => {
   }
 }
 
-const CippSupportBundleDialog = ({ open, onClose }) => {
+const CippSupportBundleDialog = ({ open, onClose, onRecordingChange }) => {
   const queryClient = useQueryClient()
   const settings = useSettings()
   const [phase, setPhase] = useState('options')
@@ -48,110 +53,160 @@ const CippSupportBundleDialog = ({ open, onClose }) => {
   const [redactionSummary, setRedactionSummary] = useState(null)
   const [progress, setProgress] = useState(0)
   const [errorMessage, setErrorMessage] = useState(null)
-  // Invalidates a run when the dialog closes mid-collection, so a stale run cannot
-  // finish later and overwrite the state of a newer one.
+  // True while a manual recording is running. It deliberately survives the dialog being
+  // closed - the user closes it, reproduces the issue, and comes back to stop. The
+  // dialog stays mounted in _app, so this state outlives the close.
+  const [recording, setRecording] = useState(false)
+  // Invalidates a run when it is cancelled, so a stale run cannot finish later and
+  // overwrite the state of a newer one.
   const runToken = useRef(0)
-  const pollRef = useRef(null)
+  const modeRef = useRef('page')
 
-  const stopCollecting = () => {
-    disarmSupportRecorder()
-    if (pollRef.current) {
-      clearInterval(pollRef.current)
-      pollRef.current = null
-    }
-  }
-
-  // Each open starts back at the options screen. State is adjusted during render on the
-  // open transition (the React-sanctioned alternative to setState-in-effect); the close
-  // effect below only cancels the run and disarms the recorder — external side effects,
-  // no state updates.
+  // Reopening lands on the options screen - unless a manual recording is running, in
+  // which case it lands back on the recording screen. Adjusted during render (the
+  // React-sanctioned alternative to setState-in-effect).
   const [prevOpen, setPrevOpen] = useState(open)
   if (open !== prevOpen) {
     setPrevOpen(open)
     if (open) {
-      setPhase('options')
-      setBundle(null)
-      setRedactionSummary(null)
-      setErrorMessage(null)
-      setProgress(0)
+      if (recording) {
+        setPhase('recording')
+        setProgress(getSupportRecordingCount())
+      } else {
+        setPhase('options')
+        setBundle(null)
+        setRedactionSummary(null)
+        setErrorMessage(null)
+        setProgress(0)
+      }
     }
   }
 
+  // Closing cancels a page capture in flight; a manual recording keeps running.
   useEffect(() => {
-    if (!open) {
+    if (!open && !recording) {
       runToken.current++
-      stopCollecting()
+      disarmSupportRecorder()
     }
-  }, [open])
+  }, [open, recording])
 
-  const handleStart = async () => {
-    const token = ++runToken.current
-    setPhase('collecting')
-    setProgress(0)
-    armSupportRecorder()
-    pollRef.current = setInterval(
+  // Live request counter while the dialog is showing an armed recorder.
+  useEffect(() => {
+    if (!open || (phase !== 'collecting' && phase !== 'recording')) return
+    const interval = setInterval(
       () => setProgress(getSupportRecordingCount()),
       300
     )
-    try {
-      // Force every query mounted on the current page to hit the API again — the
-      // recorder only sees axios traffic, so cache reads must become real requests.
-      const refetchPromise = queryClient.refetchQueries({ type: 'active' })
-      const localVersion = await fetchJson('/version.json')
-      const [instance, me, authMe] = await Promise.all([
-        fetchJson(
-          `/api/GetVersion?LocalVersion=${encodeURIComponent(localVersion?.version ?? '')}`
-        ),
-        fetchJson('/api/me'),
-        fetchJson('/.auth/me'),
-      ])
-      await refetchPromise
-      if (token !== runToken.current) return
-      stopCollecting()
-      const network = getSupportRecording()
-      let assembled = {
-        schemaVersion: 1,
-        generatedAt: new Date().toISOString(),
-        instanceHostname: window.location.hostname,
-        redaction: { enabled: redact },
-        client: {
-          path: window.location.pathname,
-          tenant: settings.currentTenant ?? null,
-          userAgent: navigator.userAgent,
-          frontendVersion: localVersion?.version ?? null,
-        },
-        instance,
-        user: { me, authMe },
-        network,
-      }
-      // Tokens are live credentials and are stripped from every bundle, before and
-      // independent of the optional identifier redaction.
-      const stripped = stripTokens(assembled)
-      assembled = stripped.bundle
-      assembled.tokensRemoved = stripped.removed
-      if (redact) {
-        // The instance's own hostname identifies the installation, not a customer
-        // tenant — support needs it, so it survives redaction.
-        const redacted = redactBundle(assembled, {
-          keepHostnames: [window.location.hostname],
-        })
-        assembled = redacted.bundle
-        assembled.redaction = { enabled: true, ...redacted.summary }
-        setRedactionSummary(redacted.summary)
-      }
-      setBundle(assembled)
-      setProgress(network.length)
-      setPhase('ready')
-    } catch (error) {
-      if (token !== runToken.current) return
-      stopCollecting()
-      setErrorMessage(String(error?.message ?? error))
-      setPhase('error')
+    return () => clearInterval(interval)
+  }, [open, phase])
+
+  const assemble = async (token) => {
+    const localVersion = await fetchJson('/version.json')
+    const [instance, me, authMe] = await Promise.all([
+      fetchJson(
+        `/api/GetVersion?LocalVersion=${encodeURIComponent(localVersion?.version ?? '')}`
+      ),
+      fetchJson('/api/me'),
+      fetchJson('/.auth/me'),
+    ])
+    if (token !== runToken.current) return
+    disarmSupportRecorder()
+    const network = getSupportRecording()
+    let assembled = {
+      schemaVersion: 1,
+      generatedAt: new Date().toISOString(),
+      instanceHostname: window.location.hostname,
+      redaction: { enabled: redact },
+      client: {
+        captureMode: modeRef.current,
+        path: window.location.pathname,
+        tenant: settings.currentTenant ?? null,
+        userAgent: navigator.userAgent,
+        frontendVersion: localVersion?.version ?? null,
+      },
+      instance,
+      user: { me, authMe },
+      network,
     }
+    // Tokens are live credentials and are stripped from every bundle, before and
+    // independent of the optional identifier redaction.
+    const stripped = stripTokens(assembled)
+    assembled = stripped.bundle
+    assembled.tokensRemoved = stripped.removed
+    if (redact) {
+      // The instance's own hostname identifies the installation, not a customer
+      // tenant - support needs it, so it survives redaction.
+      const redacted = redactBundle(assembled, {
+        keepHostnames: [window.location.hostname],
+      })
+      assembled = redacted.bundle
+      assembled.redaction = { enabled: true, ...redacted.summary }
+      setRedactionSummary(redacted.summary)
+    }
+    setBundle(assembled)
+    setProgress(network.length)
+    setPhase('ready')
+  }
+
+  const failRun = (token, error) => {
+    if (token !== runToken.current) return
+    disarmSupportRecorder()
+    setErrorMessage(String(error?.message ?? error))
+    setPhase('error')
+  }
+
+  const handleCapturePage = async () => {
+    const token = ++runToken.current
+    modeRef.current = 'page'
+    setPhase('collecting')
+    setProgress(0)
+    armSupportRecorder()
+    try {
+      // Force every query mounted on the current page to hit the API again - the
+      // recorder only sees axios traffic, so cache reads must become real requests.
+      await queryClient.refetchQueries({ type: 'active' })
+      await assemble(token)
+    } catch (error) {
+      failRun(token, error)
+    }
+  }
+
+  const handleStartRecording = () => {
+    ++runToken.current
+    modeRef.current = 'recording'
+    setRecording(true)
+    onRecordingChange?.(true)
+    armSupportRecorder()
+    onClose()
+  }
+
+  const handleStopRecording = async () => {
+    const token = ++runToken.current
+    setRecording(false)
+    onRecordingChange?.(false)
+    setPhase('collecting')
+    try {
+      await assemble(token)
+    } catch (error) {
+      failRun(token, error)
+    }
+  }
+
+  const handleDiscardRecording = () => {
+    ++runToken.current
+    setRecording(false)
+    onRecordingChange?.(false)
+    disarmSupportRecorder()
+    setPhase('options')
+    setProgress(0)
   }
 
   const failedCount =
     bundle?.network?.filter((call) => !call.success).length ?? 0
+  const capturedFrom =
+    bundle?.client?.captureMode === 'recording'
+      ? 'during the recording'
+      : 'from this page'
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -160,9 +215,10 @@ const CippSupportBundleDialog = ({ open, onClose }) => {
         {phase === 'options' && (
           <Stack spacing={2}>
             <DialogContentText>
-              This refreshes the current page&apos;s data and captures the API
-              requests behind it, together with the instance version, hosting
-              and update details, and your signed-in identity and roles
+              Capture this page&apos;s API requests now, or record while you
+              reproduce an issue. Either way the file also includes the instance
+              version, hosting and update details, and your signed-in identity
+              and roles.
             </DialogContentText>
             <FormControlLabel
               control={
@@ -175,12 +231,28 @@ const CippSupportBundleDialog = ({ open, onClose }) => {
             />
           </Stack>
         )}
+        {phase === 'recording' && (
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <FiberManualRecord color="error" />
+              <Typography variant="body2">
+                Recording — {progress} request{progress === 1 ? '' : 's'}{' '}
+                captured so far.
+              </Typography>
+            </Stack>
+            <Typography variant="caption" color="text.secondary">
+              Close this dialog, reproduce the issue, then click the recording
+              indicator to come back and stop. Reloading the browser discards
+              the recording.
+            </Typography>
+          </Stack>
+        )}
         {phase === 'collecting' && (
           <Stack spacing={2} alignItems="center" sx={{ py: 2 }}>
             <CircularProgress />
             <Typography variant="body2" color="text.secondary">
-              Refreshing the current page&apos;s data — {progress} request
-              {progress === 1 ? '' : 's'} captured...
+              Collecting — {progress} request{progress === 1 ? '' : 's'}{' '}
+              captured...
             </Typography>
           </Stack>
         )}
@@ -188,7 +260,7 @@ const CippSupportBundleDialog = ({ open, onClose }) => {
           <Stack spacing={2}>
             <DialogContentText>
               Captured {bundle.network.length} request
-              {bundle.network.length === 1 ? '' : 's'} from this page
+              {bundle.network.length === 1 ? '' : 's'} {capturedFrom}
               {failedCount > 0 ? `, of which ${failedCount} failed` : ''}, along
               with the instance version, hosting and update details, and your
               signed-in identity and roles.
@@ -218,27 +290,52 @@ const CippSupportBundleDialog = ({ open, onClose }) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>
-          {phase === 'ready' ? 'Close' : 'Cancel'}
-        </Button>
         {phase === 'options' && (
-          <Button
-            variant="contained"
-            startIcon={<PlayArrow />}
-            onClick={handleStart}
-          >
-            Start Capture
-          </Button>
+          <>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button
+              startIcon={<FiberManualRecord />}
+              onClick={handleStartRecording}
+            >
+              Record Actions
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<PlayArrow />}
+              onClick={handleCapturePage}
+            >
+              Capture This Page
+            </Button>
+          </>
         )}
-        {phase !== 'options' && (
-          <Button
-            variant="contained"
-            startIcon={<Download />}
-            disabled={phase !== 'ready'}
-            onClick={() => downloadSupportBundle(bundle)}
-          >
-            Download
-          </Button>
+        {phase === 'recording' && (
+          <>
+            <Button onClick={handleDiscardRecording}>Discard</Button>
+            <Button onClick={onClose}>Continue Recording</Button>
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<Stop />}
+              onClick={handleStopRecording}
+            >
+              Stop &amp; Generate
+            </Button>
+          </>
+        )}
+        {(phase === 'collecting' || phase === 'ready' || phase === 'error') && (
+          <>
+            <Button onClick={onClose}>
+              {phase === 'ready' ? 'Close' : 'Cancel'}
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Download />}
+              disabled={phase !== 'ready'}
+              onClick={() => downloadSupportBundle(bundle)}
+            >
+              Download
+            </Button>
+          </>
         )}
       </DialogActions>
     </Dialog>

@@ -14,15 +14,18 @@ let armed = false
 let seq = 0
 let calls = []
 
-const serializeBody = (data, responseType) => {
-  if (data === null || data === undefined) return { body: null }
+const serializeValue = (data, responseType) => {
+  if (data === null || data === undefined) return { value: null }
   if (
     responseType === 'blob' ||
     (typeof Blob !== 'undefined' && data instanceof Blob)
   ) {
     return {
-      body: `<binary ${data?.type || 'blob'}, ${data?.size ?? 'unknown'} bytes>`,
+      value: `<binary ${data?.type || 'blob'}, ${data?.size ?? 'unknown'} bytes>`,
     }
+  }
+  if (typeof FormData !== 'undefined' && data instanceof FormData) {
+    return { value: '<form data>' }
   }
   let text
   try {
@@ -31,10 +34,24 @@ const serializeBody = (data, responseType) => {
     text = String(data)
   }
   if (typeof text === 'string' && text.length > MAX_BODY_CHARS) {
-    return { body: text.slice(0, MAX_BODY_CHARS), bodyTruncated: true }
+    return { value: text.slice(0, MAX_BODY_CHARS), truncated: true }
   }
   // Small bodies keep their shape so the bundle stays readable as plain JSON.
-  return { body: typeof data === 'string' ? data : data }
+  return { value: typeof data === 'string' ? data : data }
+}
+
+// By response time axios has already transformed the request payload into its wire form,
+// which for CIPP means a JSON string. Parse it back so the recorded requestBody is a
+// readable object rather than an escaped string inside the bundle.
+const parseMaybeJson = (data) => {
+  if (typeof data !== 'string') return data
+  const trimmed = data.trim()
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return data
+  try {
+    return JSON.parse(trimmed)
+  } catch {
+    return data
+  }
 }
 
 const record = (config, response, error) => {
@@ -43,7 +60,7 @@ const record = (config, response, error) => {
   // keeps a call from being recorded twice.
   config.cippSupportRecorded = true
   const { start, seq: n } = config.cippSupportMeta
-  calls.push({
+  const entry = {
     seq: n,
     startedAt: new Date(start).toISOString(),
     durationMs: Date.now() - start,
@@ -52,9 +69,19 @@ const record = (config, response, error) => {
     params: config.params ?? null,
     status: response?.status ?? null,
     success: !error,
-    ...(error ? { errorMessage: String(error.message ?? error) } : {}),
-    ...serializeBody(response?.data, config.responseType),
-  })
+  }
+  if (error) entry.errorMessage = String(error.message ?? error)
+  // The payload the client SENT matters as much as what came back - a failing write
+  // usually fails because of what was in it.
+  if (config.data !== undefined) {
+    const requestBody = serializeValue(parseMaybeJson(config.data))
+    entry.requestBody = requestBody.value
+    if (requestBody.truncated) entry.requestBodyTruncated = true
+  }
+  const responseBody = serializeValue(response?.data, config.responseType)
+  entry.responseBody = responseBody.value
+  if (responseBody.truncated) entry.responseBodyTruncated = true
+  calls.push(entry)
 }
 
 axios.interceptors.request.use((config) => {

@@ -54,10 +54,11 @@ import {
   Gavel,
   ClearAll as ClearAllIcon,
   SupportAgent,
+  FiberManualRecord,
 } from '@mui/icons-material'
 import { School as TutorialIcon } from '@mui/icons-material'
 import { getHelpLinks, clearCippCache } from '../utils/help-links'
-import { SvgIcon } from '@mui/material'
+import { Chip, SvgIcon } from '@mui/material'
 import React, { useEffect, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/router'
@@ -95,6 +96,7 @@ const App = (props) => {
   const [dateLocale, setDateLocale] = useState(enUS)
   const [tutorialDialogOpen, setTutorialDialogOpen] = useState(false)
   const [supportBundleOpen, setSupportBundleOpen] = useState(false)
+  const [supportRecording, setSupportRecording] = useState(false)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -282,11 +284,31 @@ const App = (props) => {
                                 <CippSupportBundleDialog
                                   open={supportBundleOpen}
                                   onClose={() => setSupportBundleOpen(false)}
+                                  onRecordingChange={setSupportRecording}
                                 />
                               </TutorialProvider>
                             </PrivateRoute>
                           </ErrorBoundary>
                           <Toaster position="top-center" />
+                          {supportRecording && !supportBundleOpen && (
+                            <Chip
+                              icon={<FiberManualRecord />}
+                              label="Recording — click to stop"
+                              color="error"
+                              onClick={() => setSupportBundleOpen(true)}
+                              sx={{
+                                position: 'fixed',
+                                bottom: 20,
+                                // Pinned left of the speed dial FAB (46px wide + 12px gap),
+                                // which itself shifts left when devtools is enabled.
+                                right:
+                                  (settings.isInitialized && settings?.showDevtools === true
+                                    ? 60
+                                    : 12) + 58,
+                                zIndex: (muiTheme) => muiTheme.zIndex.speedDial,
+                              }}
+                            />
+                          )}
                           <CippSpeedDial
                             actions={speedDialActions}
                             icon={<HelpIcon />}
