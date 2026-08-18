@@ -353,5 +353,10 @@
     "type": "IntuneAppInstallStatus",
     "friendlyName": "Intune App Install Status",
     "description": "Per-application install status rollup (failed/installed/pending device counts) from the AppInstallStatusAggregate report"
+  },
+  {
+    "type": "DomainAnalyser",
+    "friendlyName": "Domain Analyser",
+    "description": "Domain Analyser results per domain: SPF, MX, DMARC, DKIM, DNSSEC, enrollment CNAMEs and the domain health score"
   }
 ]
