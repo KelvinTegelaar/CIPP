@@ -1,10 +1,11 @@
 import Head from 'next/head'
-import { useMemo } from 'react'
-import { Box, Stack, SvgIcon, Typography } from '@mui/material'
-import { Microsoft, PersonOutlineOutlined } from '@mui/icons-material'
+import { useMemo, useState } from 'react'
+import { Alert, Box, Button, Stack, SvgIcon, Typography } from '@mui/material'
+import { Microsoft, PersonOutlineOutlined, Refresh } from '@mui/icons-material'
 import { CippAuthShell } from '../components/CippComponents/CippAuthShell'
 import { CippImpersonationBanner } from '../components/CippComponents/CippImpersonationBanner'
-import { ApiGetCall } from '../api/ApiCall'
+import { ApiGetCall, ApiPostCall } from '../api/ApiCall'
+import { getCippError } from '../utils/get-cipp-error'
 import { hasSeenSession } from '../utils/auth-session'
 
 const LOGIN_BASE = '/.auth/login/aad?prompt=select_account'
@@ -49,6 +50,26 @@ const Page = ({ reason = 'session' }) => {
   const canReturnHome =
     swaStatus.isSuccess && !!swaStatus?.data?.clientPrincipal && userRoles.length > 0
   const signedInAs = swaStatus?.data?.clientPrincipal?.userDetails
+
+  // Server-side re-check of Entra group membership, for roles granted through a PIM-activated
+  // group. Invalidating authmecipp makes PrivateRoute refetch /api/me, so a successful
+  // elevation walks the user straight into the app without another sign-in.
+  const [refreshResult, setRefreshResult] = useState(null)
+  const refreshAccess = ApiPostCall({
+    relatedQueryKeys: ['authmecipp'],
+    onResult: (result) =>
+      setRefreshResult({
+        severity: result?.Roles?.length > 0 ? 'success' : 'info',
+        text: result?.Results ?? 'Access refreshed.',
+      }),
+  })
+  const handleRefreshAccess = () => {
+    setRefreshResult(null)
+    refreshAccess.mutate(
+      { url: '/api/ExecRefreshMyAccess', data: {} },
+      { onError: (error) => setRefreshResult({ severity: 'warning', text: getCippError(error) }) }
+    )
+  }
 
   // A signed-in identity plus a /me message is not a missing session — it's a denial the
   // server explained (e.g. "your IP is not in the allowed range"). Show the explanation
@@ -114,6 +135,35 @@ const Page = ({ reason = 'session' }) => {
     actionHref: loginUrl(),
     secondaryText: canReturnHome ? 'Return to Home' : undefined,
     secondaryHref: canReturnHome ? '/' : undefined,
+    busy: refreshAccess.isPending,
+    // below the card rather than in its button row: both slots are taken when the user
+    // already holds roles, and that is exactly the PIM case (standing readonly, elevated
+    // to admin) this affordance exists for
+    children: (
+      <Stack spacing={1.5}>
+        {refreshResult && <Alert severity={refreshResult.severity}>{refreshResult.text}</Alert>}
+        <Stack
+          direction="row"
+          spacing={1.5}
+          alignItems="center"
+          useFlexGap
+          flexWrap="wrap"
+          sx={{ color: 'text.secondary' }}
+        >
+          <Button
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={handleRefreshAccess}
+            disabled={refreshAccess.isPending}
+          >
+            Refresh my access
+          </Button>
+          <Typography variant="body2">
+            Just activated a role through PIM? Re-check your access.
+          </Typography>
+        </Stack>
+      </Stack>
+    ),
   }
 
   return (

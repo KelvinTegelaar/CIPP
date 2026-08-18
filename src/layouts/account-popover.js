@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
 import ArrowRightOnRectangleIcon from "@heroicons/react/24/outline/ArrowRightOnRectangleIcon";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
@@ -23,8 +24,10 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
+import { useDialog } from "../hooks/use-dialog";
 import { paths } from "../paths";
 import { ApiGetCall } from "../api/ApiCall";
+import { CippApiDialog } from "../components/CippComponents/CippApiDialog";
 import { CogIcon, DocumentTextIcon, LifebuoyIcon, TrashIcon } from "@heroicons/react/24/outline";
 import ArrowTopRightOnSquareIcon from "@heroicons/react/24/outline/ArrowTopRightOnSquareIcon";
 import { useReleaseNotes } from "../contexts/release-notes-context";
@@ -65,6 +68,11 @@ export const AccountPopover = (props) => {
     responseType: "blob",
     convertToDataUrl: true,
   });
+
+  // Re-checks Entra group membership server-side, then refetches /api/me so a role granted
+  // through a just-activated PIM group applies without waiting out the role cache. Runs
+  // through the standard confirm dialog, which also renders the API result.
+  const refreshAccessDialog = useDialog();
 
   const handleLogout = useCallback(async () => {
     try {
@@ -132,6 +140,20 @@ export const AccountPopover = (props) => {
           )}
         </>
       </Stack>
+      {orgData.data?.clientPrincipal?.userDetails && (
+        <CippApiDialog
+          title="Refresh My Access"
+          createDialog={refreshAccessDialog}
+          api={{
+            url: "/api/ExecRefreshMyAccess",
+            type: "POST",
+            data: {},
+            confirmText:
+              "Re-check your Entra group membership and refresh your CIPP roles? Use this after activating a role-mapped group through PIM.",
+            relatedQueryKeys: ["authmecipp"],
+          }}
+        />
+      )}
       {orgData.data?.clientPrincipal?.userDetails && (
         <Popover
           anchorEl={popover.anchorRef.current}
@@ -241,6 +263,22 @@ export const AccountPopover = (props) => {
                 <Divider sx={{ my: 0.5 }} />
               </>
             )}
+            <ListItemButton
+              onClick={() => {
+                popover.handleClose();
+                refreshAccessDialog.handleOpen();
+              }}
+            >
+              <ListItemIcon>
+                <SvgIcon fontSize="small">
+                  <ArrowPathIcon />
+                </SvgIcon>
+              </ListItemIcon>
+              <ListItemText
+                primary="Refresh my access"
+                secondary="Re-check role group membership"
+              />
+            </ListItemButton>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon>
                 <SvgIcon fontSize="small">
