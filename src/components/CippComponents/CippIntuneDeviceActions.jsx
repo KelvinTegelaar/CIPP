@@ -15,6 +15,7 @@ import {
   Recycling,
   ManageAccounts,
   GroupAdd,
+  RemoveModerator,
 } from '@mui/icons-material'
 
 // Shared between the MEM devices list page and the View Device detail page.
@@ -303,6 +304,19 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
     },
     confirmText:
       'Are you sure you want to update the Windows Defender signatures for [deviceName]?',
+  },
+  {
+    label: 'Offboard from Defender for Endpoint',
+    type: 'POST',
+    icon: <RemoveModerator />,
+    url: '/api/ExecDeviceAction',
+    data: {
+      GUID: 'azureADDeviceId',
+      Action: 'offboardMDEDevice',
+    },
+    condition: (row) => row.operatingSystem === 'Windows',
+    confirmText:
+      'Are you sure you want to offboard [deviceName] from Microsoft Defender for Endpoint? This queues an offboarding action via the MDE API and cannot be undone without re-onboarding the device.',
   },
   // This endpoint currently does not work, Graph just returns an error. Leaving this here for now in case it is fixed in the future. -Zac
   // {
