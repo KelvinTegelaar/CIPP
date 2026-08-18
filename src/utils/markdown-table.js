@@ -12,10 +12,6 @@
 
 const SEPARATOR_ROW = /^\|?[\s:|-]*-[\s:|-]*\|?$/
 
-// Long values wrap at these characters before we resort to chopping mid-token.
-const BREAK_AFTER = /[_\-/\\.,:;@+&]/
-const DEFAULT_MAX_TOKEN_LENGTH = 14
-
 /**
  * True for the `|----|:---:|` divider that separates a GFM table header from its body.
  */
@@ -93,84 +89,6 @@ export const normaliseTableRow = (cells, columnCount) => {
     row.slice(columnCount - 1).join(' | '),
   ]
 }
-
-const chunkByCodePoint = (value, size) => {
-  const characters = Array.from(value)
-  const chunks = []
-  for (let i = 0; i < characters.length; i += size) {
-    chunks.push(characters.slice(i, i + size).join(''))
-  }
-  return chunks
-}
-
-/**
- * Break an oversized token into pieces a narrow table column can wrap.
- *
- * Prefers natural seams — separators such as `_` and `.`, plus camelCase boundaries — so
- * `Defender_for_Business_Servers` becomes `Defender_ / for_ / Business_ / Servers`. Only
- * a run with no seam at all (a GUID, a thumbprint, a base64 blob) is chopped at a fixed
- * width. The pieces always rejoin to the original token.
- *
- * These are break *opportunities*, not forced breaks: the layout engine packs as many
- * consecutive pieces onto a line as will fit, and draws a hyphen wherever it does break —
- * that hyphen is react-pdf's own behaviour at any mid-word break and cannot be turned off.
- *
- * @param {string} word the token to split
- * @param {number} [maxLength] longest piece to leave intact
- * @returns {string[]} pieces that satisfy `pieces.join('') === word`
- */
-export const splitLongToken = (word, maxLength = DEFAULT_MAX_TOKEN_LENGTH) => {
-  if (!word || word.length <= maxLength) return [word]
-
-  // `SPE365Business` reads as camelCase; `A1B2C3D4` is a hex blob, not humps. Only treat a
-  // digit-to-capital transition as a seam when the token has lower-case letters elsewhere,
-  // otherwise a thumbprint shreds into two-character fragments.
-  const digitHumpIsSeam = /[a-z]/.test(word)
-
-  const parts = []
-  let current = ''
-  for (let i = 0; i < word.length; i += 1) {
-    current += word[i]
-    const nextIsCapital = /[A-Z]/.test(word[i + 1] ?? '')
-    const atSeparator = BREAK_AFTER.test(word[i])
-    const atCamelHump =
-      nextIsCapital &&
-      (/[a-z]/.test(word[i]) || (digitHumpIsSeam && /[0-9]/.test(word[i])))
-    if (atSeparator || atCamelHump) {
-      parts.push(current)
-      current = ''
-    }
-  }
-  if (current) parts.push(current)
-
-  return parts.flatMap((part) =>
-    part.length <= maxLength ? [part] : chunkByCodePoint(part, maxLength)
-  )
-}
-
-/**
- * Build a `hyphenationCallback` for @react-pdf/renderer `<Text>` nodes in table cells.
- *
- * react-pdf hyphenates with English patterns by default. Those find no break at all in a
- * GUID or a certificate thumbprint, so the whole token is drawn on one line and runs off
- * into the next column; and where they do fire on an identifier they land badly, cutting
- * `Defender_for_Business_Servers` after `Defend`. This defers to the built-in engine for
- * ordinary words and takes over once a token is too wide for its column.
- *
- * @param {number} [maxLength] longest token left to the built-in hyphenation engine
- * @returns {(word: string, builtinHyphenate?: (word: string) => string[]) => string[]}
- */
-export const createTableCellHyphenation =
-  (maxLength = DEFAULT_MAX_TOKEN_LENGTH) =>
-  (word, builtinHyphenate) => {
-    if (!word || !word.trim()) return [word]
-    if (word.length <= maxLength) {
-      return typeof builtinHyphenate === 'function'
-        ? builtinHyphenate(word)
-        : [word]
-    }
-    return splitLongToken(word, maxLength)
-  }
 
 /**
  * Escape a value so it survives being dropped into a Markdown table cell.

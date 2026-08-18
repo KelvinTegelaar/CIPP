@@ -27,6 +27,7 @@ import CippIntegrationTenantMapping from "../../../components/CippIntegrations/C
 import CippIntegrationFieldMapping from "../../../components/CippIntegrations/CippIntegrationFieldMapping";
 import { CippCardTabPanel } from "../../../components/CippComponents/CippCardTabPanel";
 import CippApiClientManagement from "../../../components/CippIntegrations/CippApiClientManagement";
+import CippApiDocumentation from "../../../components/CippIntegrations/CippApiDocumentation";
 
 function tabProps(index) {
   return {
@@ -291,6 +292,12 @@ const Page = () => {
                     }
                   />
                 )}
+                {/* An explicit value is required: MUI falls back to the child index when a
+                    Tab has none, and the Tenant Mapping / Field Mapping tabs are absent for
+                    cippapi, so this would otherwise be tab 1 while its panel waits on 3. */}
+                {extension?.id === "cippapi" && (
+                  <Tab label="API Documentation" value={3} {...tabProps(3)} />
+                )}
               </Tabs>
             </Box>
             <CippCardTabPanel value={value} index={0}>
@@ -309,6 +316,11 @@ const Page = () => {
             {extension?.fieldMapping && (
               <CippCardTabPanel value={value} index={2}>
                 <CippIntegrationFieldMapping />
+              </CippCardTabPanel>
+            )}
+            {extension?.id === "cippapi" && (
+              <CippCardTabPanel value={value} index={3}>
+                <CippApiDocumentation />
               </CippCardTabPanel>
             )}
           </Box>
