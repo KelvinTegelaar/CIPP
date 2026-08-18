@@ -34,6 +34,7 @@ import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { renderCustomScriptMarkdownTemplate } from '../../../../utils/customScriptTemplate'
+import { getCippLicenseTranslation } from '../../../../utils/get-cipp-license-translation'
 import {
   escapeTableCell,
   isTableSeparatorRow,
@@ -740,6 +741,14 @@ const DatabaseBlock = ({
 }
 
 /* ── Format database content helper ─────────────────────── */
+
+// License assignments come out of the cache as objects carrying skuId GUIDs; render the product
+// names instead. Matches the shape check the backend applies when the report is generated.
+const isLicenseAssignmentValue = (val) => {
+  const items = Array.isArray(val) ? val : [val]
+  return items.length > 0 && items.every((v) => v && typeof v === 'object' && 'skuId' in v)
+}
+
 const formatDatabaseContent = (data, selectedHeaders, format) => {
   if (!data || !selectedHeaders || selectedHeaders.length === 0) return ''
 
@@ -750,7 +759,8 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
   const filtered = rows.map((row) => {
     const obj = {}
     selectedHeaders.forEach((h) => {
-      obj[h] = row[h] !== undefined && row[h] !== null ? row[h] : ''
+      const val = row[h] !== undefined && row[h] !== null ? row[h] : ''
+      obj[h] = isLicenseAssignmentValue(val) ? getCippLicenseTranslation(val).join(', ') : val
     })
     return obj
   })
