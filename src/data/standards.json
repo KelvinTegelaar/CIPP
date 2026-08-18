@@ -7703,6 +7703,28 @@
     ]
   },
   {
+    "name": "standards.MessageEncryption",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Enables Microsoft Purview Message Encryption by turning on Azure RMS licensing for Exchange Online. Skipped with a warning when the tenant still points at an on-premises AD RMS cluster, because AD RMS has to be migrated to Azure RMS first. This standard only turns the feature on: branding, one-time passcodes, and social ID sign-in for encrypted messages are configured in the [Configure Encrypted Message Branding (OME)](https://standards.cipp.app/standards/omebranding) standard. [Read more](https://learn.microsoft.com/en-us/purview/set-up-new-message-encryption-capabilities)",
+    "docsDescription": "Sets AzureRMSLicensingEnabled to true, the only prerequisite for Microsoft Purview Message Encryption. Reports the IRM licensing state per tenant, including the licensing location, so you can see at a glance which tenants have message encryption available. Remediation is deliberately skipped for tenants with an on-premises AD RMS licensing location, as Purview Message Encryption is not compatible with AD RMS and those tenants need to be migrated to Azure RMS first.",
+    "executiveText": "Turns on the built-in encryption that lets staff send protected email to anyone, including recipients outside the organization. Uses licensing the organization already owns, removing the need for a separate secure-email product.",
+    "addedComponent": [],
+    "label": "Enable Purview Message Encryption",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-04",
+    "powershellEquivalent": "Set-IRMConfiguration -AzureRMSLicensingEnabled $true",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
     "name": "standards.OMEBranding",
     "cat": "Exchange Standards",
     "tag": [],

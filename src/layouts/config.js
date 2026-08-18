@@ -1092,6 +1092,11 @@ export const nativeMenuItems = [
             path: '/email/tools/mailbox-restores',
             permissions: ['Exchange.Mailbox.*'],
           },
+          {
+            title: 'Message Encryption',
+            path: '/email/tools/message-encryption',
+            permissions: ['Exchange.Mailbox.*'],
+          },
         ],
       },
       {
