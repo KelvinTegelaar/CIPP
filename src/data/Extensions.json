@@ -376,6 +376,32 @@
       },
       {
         "type": "autoComplete",
+        "name": "HaloPSA.RequestSource",
+        "label": "HaloPSA Request Source",
+        "placeholder": "Select a request source, leave blank for default",
+        "helperText": "Optional. Stamps every CIPP-generated ticket with this request source. Halo records tickets created over the API as Manual unless one is set, so create a CIPP request source in Halo to tell them apart.",
+        "fullRow": true,
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSARequestSources"
+          },
+          "queryKey": "HaloRequestSources",
+          "dataKey": "RequestSources",
+          "labelField": "name",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
         "name": "HaloPSA.DefaultPriority",
         "dependsOn": "HaloPSA.TicketType",
         "label": "HaloPSA Default Priority",
