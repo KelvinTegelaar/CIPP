@@ -332,7 +332,10 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
   ])
 
   // single mode: live options win over the form-held copy, a stored label goes stale
-  // when its option refetches under it (e.g. renamed preset), resolve by value id
+  // when its option refetches under it (e.g. renamed preset), resolve by value id.
+  // Values are not always unique (the alert wizard's property options share a type
+  // string as value), so only let a value-only match win when it's unambiguous —
+  // otherwise require the label to match too, and keep the stored copy if none does.
   const resolvedDefaultValue = useMemo(() => {
     if (
       multiple ||
@@ -342,7 +345,11 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     ) {
       return defaultValue
     }
-    return memoizedOptions.find((option) => option.value === defaultValue.value) ?? defaultValue
+    const valueMatches = memoizedOptions.filter((option) => option.value === defaultValue.value)
+    if (valueMatches.length === 1) {
+      return valueMatches[0]
+    }
+    return valueMatches.find((option) => option.label === defaultValue.label) ?? defaultValue
   }, [defaultValue, multiple, memoizedOptions])
 
   // Create a stable key that only changes when necessary inputs change
