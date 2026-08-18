@@ -3,6 +3,7 @@ import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { ApiGetCallWithPagination } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
+import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import {
   Card,
   CardActionArea,
@@ -75,14 +76,24 @@ const Page = () => {
   const pageTitle = 'Guest Users'
   const currentTenant = useSettings().currentTenant
   const [statusFilter, setStatusFilter] = useState(null)
-  const queryKey = `ListGuestUsers-${currentTenant}`
 
-  // Same queryKey as the table below, so react-query shares one request between
-  // the summary cards and the table.
+  const reportDB = useCippReportDB({
+    apiUrl: '/api/ListGuestUsers',
+    queryKey: 'ListGuestUsers',
+    cacheName: 'Guests',
+    syncTitle: 'Sync Guest Users',
+    allowToggle: true,
+    defaultCached: true,
+    allowAllTenantSync: true,
+    cacheColumns: ['CacheTimestamp'],
+  })
+
+  // Same url/data/queryKey as the table below, so react-query shares one request
+  // between the summary cards and the table.
   const guestData = ApiGetCallWithPagination({
-    url: '/api/ListGuestUsers',
+    url: reportDB.resolvedApiUrl,
     data: { tenantFilter: currentTenant },
-    queryKey: queryKey,
+    queryKey: reportDB.resolvedQueryKey,
     waiting: true,
   })
 
@@ -188,11 +199,13 @@ const Page = () => {
       'daysSinceSignIn',
       'accountEnabled',
       'sourceDomain',
+      'sponsors',
     ],
     actions: actions,
   }
 
   const simpleColumns = [
+    ...reportDB.cacheColumns,
     'displayName',
     'mail',
     'sourceDomain',
@@ -204,21 +217,25 @@ const Page = () => {
   ]
 
   return (
-    <CippTablePage
-      tableFilter={tableFilter}
-      title={pageTitle}
-      apiUrl="/api/ListGuestUsers"
-      queryKey={queryKey}
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={simpleColumns}
-      filters={filterList}
-    />
+    <>
+      <CippTablePage
+        tableFilter={tableFilter}
+        title={pageTitle}
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={reportDB.resolvedQueryKey}
+        dataSourceControls={reportDB.controls}
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={simpleColumns}
+        filters={filterList}
+      />
+      {reportDB.syncDialog}
+    </>
   )
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>
+  <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
 )
 
 export default Page
