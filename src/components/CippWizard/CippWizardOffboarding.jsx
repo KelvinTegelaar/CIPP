@@ -326,6 +326,61 @@ export const CippWizardOffboarding = (props) => {
                   },
                 }}
               />
+              <CippFormComponent
+                sx={{ m: 1 }}
+                name="AccessSendAs"
+                label="Grant Send As Access"
+                disabled={!!deleteUser}
+                type="autoComplete"
+                placeholder="Leave blank if not needed"
+                formControl={formControl}
+                multi
+                api={{
+                  labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+                  valueField: 'id',
+                  url: '/api/ListGraphRequest',
+                  dataKey: 'Results',
+                  tenantFilter: currentTenant ? currentTenant.value : undefined,
+                  queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : 'default'}`,
+                  data: {
+                    Endpoint: 'users',
+                    manualPagination: true,
+                    $select: 'id,userPrincipalName,displayName',
+                    $count: true,
+                    $orderby: 'displayName',
+                    $top: 999,
+                  },
+                }}
+              />
+              <CippFormComponent
+                sx={{ m: 1 }}
+                name="AccessSendOnBehalf"
+                label="Grant Send on Behalf Access"
+                disabled={!!deleteUser}
+                type="autoComplete"
+                placeholder="Leave blank if not needed"
+                formControl={formControl}
+                multi
+                api={{
+                  labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+                  valueField: 'id',
+                  url: '/api/ListGraphRequest',
+                  dataKey: 'Results',
+                  tenantFilter: currentTenant ? currentTenant.value : undefined,
+                  queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : 'default'}`,
+                  data: {
+                    Endpoint: 'users',
+                    manualPagination: true,
+                    $select: 'id,userPrincipalName,displayName',
+                    $count: true,
+                    $orderby: 'displayName',
+                    $top: 999,
+                  },
+                }}
+              />
+              <Typography variant="subtitle2" sx={{ mt: 3 }} gutterBottom>
+                OneDrive Access
+              </Typography>
               {deleteUser && (
                 <Alert severity="info" sx={{ mb: 1 }}>
                   When a user is deleted, their OneDrive is retained for 30 days by default unless
@@ -335,7 +390,7 @@ export const CippWizardOffboarding = (props) => {
               <CippFormComponent
                 sx={{ m: 1 }}
                 name="OnedriveAccess"
-                label="Grant Onedrive Full Access"
+                label="Grant OneDrive Full Access"
                 type="autoComplete"
                 placeholder="Leave blank if not needed"
                 formControl={formControl}
@@ -409,6 +464,9 @@ export const CippWizardOffboarding = (props) => {
                   disabled={!!deleteUser}
                 />
               </CippFormCondition>
+              <Typography variant="subtitle2" sx={{ mt: 3 }} gutterBottom>
+                Out of Office
+              </Typography>
               <Box
                 sx={deleteUser ? { pointerEvents: 'none', opacity: 0.5, userSelect: 'none' } : {}}
               >
