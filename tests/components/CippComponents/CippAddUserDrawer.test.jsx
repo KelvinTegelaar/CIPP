@@ -150,12 +150,14 @@ describe('CippAddUserDrawer - create another user without a page refresh (issue 
     // The drawer resets the form for the next user
     const anotherButton = await screen.findByRole('button', { name: 'Create Another User' })
 
+    // The remounted domain selector must auto-pick the default domain again; without it the
+    // required primDomain stays silently empty and the button never re-enables (issue #309)
+    await waitFor(() => {
+      expect(getDomainInput()).toHaveValue('testdomain.com')
+    })
+
     // Second user: complete all required fields again, exactly as the issue describes
     await fillRequiredFields(user, { displayName: 'Second User', username: 'second.user' })
-
-    // Diagnostic: what does the domain field show after the reset?
-    // eslint-disable-next-line no-console
-    console.log('domain input after reset:', JSON.stringify(getDomainInput().value))
 
     await waitFor(() => {
       expect(anotherButton).toBeEnabled()
