@@ -1387,7 +1387,8 @@
         "name": "standards.NudgeMFA.state",
         "options": [
           { "label": "Enabled", "value": "enabled" },
-          { "label": "Disabled", "value": "disabled" }
+          { "label": "Disabled", "value": "disabled" },
+          { "label": "Microsoft managed", "value": "default" }
         ]
       },
       {
