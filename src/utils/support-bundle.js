@@ -92,6 +92,30 @@ export const getSupportRecordingCount = () => calls.length
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
+// A bearer token is a live credential, not an identifier — there is no support value in
+// shipping one, so tokens are stripped from EVERY bundle regardless of the redaction
+// option. Known token fields (/.auth/me's access_token, id_token, refresh_token and
+// friends) are emptied by name, and anything shaped like a JWT is removed wherever it
+// appears, error payloads included. base64url can never contain a quote or backslash,
+// so the substitution cannot break the serialized JSON.
+const TOKEN_FIELD_PATTERN =
+  /"([A-Za-z0-9_]*(?:access|id|refresh|session)_token[A-Za-z0-9_]*)":"[^"]*"/g
+const JWT_PATTERN = /eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{4,}\.[A-Za-z0-9_-]*/g
+
+export const stripTokens = (bundle) => {
+  let text = JSON.stringify(bundle)
+  let removed = 0
+  text = text.replace(TOKEN_FIELD_PATTERN, (match, key) => {
+    removed++
+    return `"${key}":"<token removed>"`
+  })
+  text = text.replace(JWT_PATTERN, () => {
+    removed++
+    return '<jwt removed>'
+  })
+  return { bundle: JSON.parse(text), removed }
+}
+
 const EMAIL_PATTERN = /[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g
 const GUID_PATTERN =
   /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi

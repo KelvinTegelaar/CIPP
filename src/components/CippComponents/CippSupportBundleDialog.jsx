@@ -23,6 +23,7 @@ import {
   getSupportRecording,
   getSupportRecordingCount,
   redactBundle,
+  stripTokens,
 } from '../../utils/support-bundle'
 
 // The fixed sections go through fetch() rather than axios on purpose: the armed recorder
@@ -123,6 +124,11 @@ const CippSupportBundleDialog = ({ open, onClose }) => {
         user: { me, authMe },
         network,
       }
+      // Tokens are live credentials and are stripped from every bundle, before and
+      // independent of the optional identifier redaction.
+      const stripped = stripTokens(assembled)
+      assembled = stripped.bundle
+      assembled.tokensRemoved = stripped.removed
       if (redact) {
         // The instance's own hostname identifies the installation, not a customer
         // tenant — support needs it, so it survives redaction.
@@ -199,7 +205,8 @@ const CippSupportBundleDialog = ({ open, onClose }) => {
             ) : (
               <Alert severity="info">
                 The file contains unredacted data from the current page, your
-                user identity, and instance details. Only share it with support.
+                user identity, and instance details. Authentication tokens are
+                always removed. Only share it with support.
               </Alert>
             )}
           </Stack>
