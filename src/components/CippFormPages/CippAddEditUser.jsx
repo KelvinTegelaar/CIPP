@@ -10,6 +10,7 @@ import { CippFormLicenseSelector } from '../CippComponents/CippFormLicenseSelect
 import { Grid } from '@mui/system'
 import { ApiGetCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
+import { useQueryClient } from '@tanstack/react-query'
 import { useWatch } from 'react-hook-form'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -157,6 +158,32 @@ const CippAddEditUser = (props) => {
     userTemplate: watcher[2],
     AddToGroups: watcher[3],
   }
+
+  // Duplicate-username warning. The Users table already pulled the tenant's user list into the
+  // tanstack cache when it loaded, so this reads that cache and makes no API request. The entry
+  // is an infinite query (the table pages through nextLinks), so every page must be flattened -
+  // checking one page would miss most of the tenant. Warning-only: the cache can be partial or
+  // stale, so no conflict found is never presented as the name being available.
+  const queryClient = useQueryClient()
+  const usernameValue = useWatch({ control: formControl.control, name: 'username' })
+  const primDomainValue = useWatch({ control: formControl.control, name: 'primDomain' })
+  const usernameConflict = useMemo(() => {
+    if (formType !== 'add' || !usernameValue || !primDomainValue?.value) return null
+    const cachedUsers = queryClient
+      .getQueryData([`Users - ${tenantDomain}`])
+      ?.pages?.flatMap((page) => page?.Results ?? [])
+    if (!cachedUsers?.length) return null
+    const candidateUPN = `${usernameValue}@${primDomainValue.value}`.toLowerCase()
+    const candidateSmtp = `smtp:${candidateUPN}`
+    return (
+      cachedUsers.find(
+        (user) =>
+          user?.userPrincipalName?.toLowerCase() === candidateUPN ||
+          (Array.isArray(user?.proxyAddresses) &&
+            user.proxyAddresses.some((address) => address?.toLowerCase() === candidateSmtp))
+      ) ?? null
+    )
+  }, [formType, usernameValue, primDomainValue?.value, tenantDomain, queryClient])
 
   // Helper function to generate username from template format
   const generateUsername = (
@@ -601,6 +628,13 @@ const CippAddEditUser = (props) => {
           showRefresh={true}
         />
       </Grid>
+      {formType === 'add' && usernameConflict && (
+        <Grid size={{ xs: 12 }}>
+          <Alert severity="warning">
+            {`${usernameValue}@${primDomainValue?.value} is already in use by "${usernameConflict.displayName}" (${usernameConflict.userPrincipalName}).`}
+          </Alert>
+        </Grid>
+      )}
       <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="textField"

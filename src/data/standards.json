@@ -1353,14 +1353,22 @@
       "ZTNA21809",
       "ZTNA21869"
     ],
-    "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
-    "docsDescription": "Enables the ability for users to request admin consent for applications. Should be used in conjunction with the \"Require admin consent for applications\" standards",
+    "helpText": "Enables App consent admin requests for the tenant via the GA role. Optionally adds specific users (matched by display name) as reviewers. Does not overwrite existing reviewer settings",
+    "docsDescription": "Enables the ability for users to request admin consent for applications. Reviewers can be directory roles and/or specific users matched by display name, e.g. a central MSP support account that exists as a guest in each tenant, so each consent request generates a notification to a monitored mailbox. Should be used in conjunction with the \"Require admin consent for applications\" standards",
     "executiveText": "Establishes a formal approval process where employees can request access to business applications that require administrative review. This balances security with productivity by allowing controlled access to necessary tools while preventing unauthorized application installations.",
     "addedComponent": [
       {
         "type": "AdminRolesMultiSelect",
         "label": "App Consent Reviewer Roles",
         "name": "standards.EnableAppConsentRequests.ReviewerRoles"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "label": "Optional: reviewer users (display names of existing users or guests)",
+        "name": "standards.EnableAppConsentRequests.ReviewerUsers"
       }
     ],
     "label": "Enable App consent admin requests",

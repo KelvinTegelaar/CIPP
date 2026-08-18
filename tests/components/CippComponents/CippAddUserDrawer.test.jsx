@@ -26,6 +26,30 @@ vi.mock('../../../src/components/CippComponents/CippFormLicenseSelector', () => 
 vi.mock('../../../src/components/CippComponents/CippApiResults', () => ({
   CippApiResults: () => null,
 }))
+// CippFormComponent statically imports the data-table stack for its cippDataTable case;
+// nothing in this drawer uses it, but importing it is enough to exhaust the test worker.
+vi.mock('../../../src/components/CippTable/CippDataTable', () => ({
+  CippDataTable: () => <div data-testid="CippDataTable" />,
+  default: () => <div data-testid="CippDataTable" />,
+}))
+// CippAutoComplete statically imports CippJsonView for its option-preview offcanvas, which
+// drags in the formatting/code-block/Intune-definition graph - another worker-killer this
+// flow never renders.
+vi.mock('../../../src/components/CippFormPages/CippJSONView', () => ({
+  default: () => null,
+}))
+// The real drawer shell drags in the property-card/formatting graph, which this test does
+// not exercise. The stub keeps the essential contract: content + footer render only while
+// the drawer is open.
+vi.mock('../../../src/components/CippComponents/CippOffCanvas', () => ({
+  CippOffCanvas: ({ visible, children, footer }) =>
+    visible ? (
+      <div data-testid="CippOffCanvas">
+        {children}
+        {footer}
+      </div>
+    ) : null,
+}))
 
 const idleGet = { isSuccess: false, isFetching: false, isError: false, data: undefined, refetch: vi.fn() }
 const okGet = (data) => ({ isSuccess: true, isFetching: false, isError: false, data, refetch: vi.fn() })
