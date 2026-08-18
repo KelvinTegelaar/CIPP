@@ -182,6 +182,11 @@ export const MobileNav = (props) => {
         sx={{
           flexGrow: 1,
           minHeight: 0,
+          // wrapper is height:inherit, auto under flex-grow, and the escaped list height
+          // scrolls the drawer paper itself
+          "& .simplebar-wrapper": {
+            height: "100%",
+          },
           "& .simplebar-content": {
             height: "100%",
           },

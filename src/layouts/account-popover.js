@@ -24,6 +24,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
+import { useIsMobileLayout } from "../hooks/use-breakpoint";
 import { useDialog } from "../hooks/use-dialog";
 import { paths } from "../paths";
 import { ApiGetCall } from "../api/ApiCall";
@@ -48,6 +49,7 @@ export const AccountPopover = (props) => {
   const router = useRouter();
   const pathname = usePathname();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const navCollapsed = useIsMobileLayout();
   const popover = usePopover();
   const queryClient = useQueryClient();
   const { openReleaseNotes } = useReleaseNotes();
@@ -167,16 +169,19 @@ export const AccountPopover = (props) => {
           PaperProps={{ sx: { width: 260 } }}
         >
           <List>
+            {/* Pairs with the trigger above: the identity is either beside the avatar or here. */}
             {mdDown && (
+              <ListItem divider>
+                <ListItemText
+                  primary={orgData.data?.clientPrincipal?.userDetails}
+                  secondary={orgData?.data?.Org?.Domain}
+                />
+              </ListItem>
+            )}
+            {/* Home for the two bar icons top-nav drops at navCollapsed (useIsMobileLayout),
+                so they stay reachable wherever the bar isn't showing them. */}
+            {navCollapsed && (
               <>
-                <ListItem divider>
-                  <ListItemText
-                    primary={orgData.data?.clientPrincipal?.userDetails}
-                    secondary={orgData?.data?.Org?.Domain}
-                  />
-                </ListItem>
-                {/* Universal search's mobile home — the top bar gives its width to the
-                    tenant chip instead of a search icon. */}
                 {onOpenSearch && (
                   <ListItemButton
                     onClick={() => {

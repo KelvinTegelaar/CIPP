@@ -127,3 +127,63 @@ export const DragClosesFromWhereItWasLeft = {
     )
   },
 }
+
+// enough rows to overflow a phone-height drawer once the group is expanded
+const tallItems = [
+  { title: 'Dashboard', path: '/' },
+  {
+    title: 'CIPP',
+    path: '/cipp',
+    items: [
+      { title: 'Custom Data', path: '/cipp/custom-data' },
+      {
+        title: 'Advanced',
+        path: '/cipp/advanced',
+        items: [
+          { title: 'Super Admin', path: '/cipp/advanced/super-admin/tenant-mode' },
+          { title: 'Container Management', path: '/cipp/advanced/container-management/status' },
+          { title: 'Authentication', path: '/cipp/advanced/authentication' },
+          { title: 'Timers', path: '/cipp/advanced/timers' },
+        ],
+      },
+      { title: 'Settings', path: '/cipp/settings' },
+      { title: 'Preferences', path: '/cipp/preferences' },
+    ],
+  },
+  ...Array.from({ length: 14 }, (_, index) => ({
+    title: `Section ${index + 1}`,
+    path: `/section-${index + 1}`,
+  })),
+]
+
+export const NavListIsTheOnlyScroller = {
+  render: () => <Harness items={tallItems} />,
+  play: async ({ canvasElement }) => {
+    const onAPhone = await shrinkToPhoneViewport()
+    const canvas = within(canvasElement)
+
+    await userEvent.click(canvas.getByTestId('open-nav'))
+    const paper = await waitFor(() => {
+      const node = document.querySelector('.MuiDrawer-paper')
+      expect(node).not.toBeNull()
+      return node
+    })
+    if (!onAPhone) {
+      return
+    }
+    await waitFor(() =>
+      expect(new DOMMatrixReadOnly(getComputedStyle(paper).transform).m41).toBe(0)
+    )
+
+    await userEvent.click(await within(paper).findByText('CIPP'))
+
+    // the list has to overflow, or the paper assertion below would pass for the wrong reason
+    const scroller = paper.querySelector('.simplebar-content-wrapper')
+    await waitFor(() =>
+      expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight + 200)
+    )
+
+    // a scrollable paper carries the pinned sponsor up with it and leaves blank drawer below
+    expect(paper.scrollHeight).toBeLessThanOrEqual(paper.clientHeight + 1)
+  },
+}
