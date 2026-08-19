@@ -35,6 +35,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { renderCustomScriptMarkdownTemplate } from '../../../../utils/customScriptTemplate'
 import { getCippLicenseTranslation } from '../../../../utils/get-cipp-license-translation'
+import { isCloudPcDevice } from '../../../../utils/is-cloud-pc-device'
 import {
   escapeTableCell,
   isTableSeparatorRow,
@@ -760,7 +761,13 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
     const obj = {}
     selectedHeaders.forEach((h) => {
       const val = row[h] !== undefined && row[h] !== null ? row[h] : ''
-      obj[h] = isLicenseAssignmentValue(val) ? getCippLicenseTranslation(val).join(', ') : val
+      if (h === 'isEncrypted' && val !== true && isCloudPcDevice(row)) {
+        // Cloud PCs never report BitLocker but are platform-encrypted by Azure. Matches the
+        // cell rendering the backend applies when the report is generated.
+        obj[h] = 'Encrypted (platform-managed)'
+      } else {
+        obj[h] = isLicenseAssignmentValue(val) ? getCippLicenseTranslation(val).join(', ') : val
+      }
     })
     return obj
   })

@@ -29,6 +29,7 @@ import { ShadowAIReportPages } from './ShadowAIReportButton'
 import { DEFAULT_BRANDING_OPTION } from './ReportBuilder/reportSettings'
 import { useReportVariables } from './CippPdf/useReportVariables'
 import { useBrandingSettings } from './CippPdf/useBrandingSettings'
+import { isCloudPcDevice } from '../utils/is-cloud-pc-device'
 import {
   Bold,
   BulletList,
@@ -1146,7 +1147,10 @@ export const ExecutiveReportDocument = ({
                       label: 'Android Devices',
                     },
                     {
-                      value: deviceData.filter((device) => device.isEncrypted === true).length,
+                      // Cloud PCs never report BitLocker but are platform-encrypted by Azure.
+                      value: deviceData.filter(
+                        (device) => device.isEncrypted === true || isCloudPcDevice(device),
+                      ).length,
                       label: 'Encrypted',
                     },
                   ]}
