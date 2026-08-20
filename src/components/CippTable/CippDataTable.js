@@ -35,6 +35,16 @@ import { useLicenseBackfill } from '../../hooks/use-license-backfill'
 import { useTableViewMode, useIsNarrowForTables } from '../../hooks/use-breakpoint'
 import { CippMobileCardList } from './CippMobileCardList'
 import { CippPageActionsFab } from '../CippComponents/CippPageActionsFab'
+import CippDataTableButton from './CippDataTableButton'
+import { CippTableCardButton } from './CippTableCardButton'
+import {
+  subTableIsSelected,
+  subTableShowsCachedColumn,
+  resolveSubTableSimpleColumns,
+  getSubTableDisplayColumnIds,
+  columnOrderHasStaleIds,
+} from './util-subTables'
+import { attachParentRow, getRowTenant } from '../../utils/resolve-row-templates'
 
 // Resolve dot-delimited property paths against arbitrary data objects.
 const getNestedValue = (source, path) => {
@@ -127,6 +137,31 @@ export const orderColumnsBySelection = (allIds, selectedIds) => {
 // Stable ref so an undefined `data` prop doesn't create a fresh [] each render
 // and loop the static-data sync effect.
 const EMPTY_ARRAY = []
+
+const buildSubTableColumn = (sub) => ({
+  id: sub.id,
+  header: sub.header ?? sub.id,
+  size: sub.size ?? 120,
+  minSize: sub.minSize ?? 100,
+  enableSorting: false,
+  enableColumnFilter: false,
+  enableGlobalFilter: false,
+  accessorFn: (row) => {
+    if (typeof sub.label === 'function') {
+      return sub.label(row)
+    }
+    return sub.label ?? 'View'
+  },
+  Cell: ({ row }) => (
+    <CippDataTableButton
+      row={row.original}
+      label={sub.label}
+      condition={sub.condition}
+      tableTitle={sub.header}
+      {...(sub.table ?? {})}
+    />
+  ),
+})
 
 const SORTING_FNS = {
   dateTimeNullsLast: (a, b, id) => {
@@ -431,6 +466,9 @@ export const CippDataTable = (props) => {
     viewMode: viewModeProp,
     mobileCard,
     dataSourceControls,
+    subTables = EMPTY_ARRAY,
+    persistenceKey,
+    parentRow,
   } = props
 
   // Create a map of column IDs to their filterType for quick lookup
@@ -459,7 +497,7 @@ export const CippDataTable = (props) => {
     useState(simpleColumns)
   const [usedData, setUsedData] = useState(data)
   const [usedColumns, setUsedColumns] = useState([])
-  const lastOrderedSelectionRef = useRef(simpleColumns)
+  const lastOrderedSelectionRef = useRef(null)
   const [offcanvasVisible, setOffcanvasVisible] = useState(false)
   const [offCanvasData, setOffCanvasData] = useState({})
   const [offCanvasRowIndex, setOffCanvasRowIndex] = useState(0)
@@ -484,7 +522,8 @@ export const CippDataTable = (props) => {
 
   const settings = useSettings()
   const router = useRouter()
-  const pageName = router.pathname.split('/').slice(1).join('/')
+  const routerPageName = router.pathname.split('/').slice(1).join('/')
+  const pageName = persistenceKey ?? (isInDialog ? '' : routerPageName)
 
   // 'cards' below the md breakpoint (or when forced via settings/prop), 'table' otherwise.
   // simple tables always resolve to 'table'.
@@ -654,8 +693,12 @@ export const CippDataTable = (props) => {
       })
     } else if (configuredSimpleColumns.length > 0) {
       // Resolve any variables in the simple columns before checking visibility
-      const resolvedSimpleColumns = resolveSimpleColumnVariables(
-        configuredSimpleColumns,
+      const resolvedSimpleColumns = resolveSubTableSimpleColumns(
+        resolveSimpleColumnVariables(
+          configuredSimpleColumns,
+          usedData
+        ),
+        subTables,
         usedData
       )
 
@@ -671,11 +714,23 @@ export const CippDataTable = (props) => {
           newVisibility[col.id] = finalResolvedColumns.includes(col.id)
         }
       })
-      // Selection order wins over data-key order — but only when the selection itself
-      // changed, so a data refetch doesn't stomp a manual column reorder.
-      if (lastOrderedSelectionRef.current !== configuredSimpleColumns) {
-        lastOrderedSelectionRef.current = configuredSimpleColumns
-        const allIds = finalColumns.map((col) => col.id).filter(Boolean)
+      // Selection order wins over data-key order — but only when the resolved selection
+      // changed (including subTable cachedColumn swaps), so a data refetch doesn't
+      // stomp a manual column reorder.
+      const resolvedOrderKey = finalResolvedColumns.join('|')
+      if (lastOrderedSelectionRef.current !== resolvedOrderKey) {
+        lastOrderedSelectionRef.current = resolvedOrderKey
+        const subTableIds = getSubTableDisplayColumnIds(
+          subTables,
+          configuredSimpleColumns,
+          usedData
+        )
+        const allIds = [
+          ...new Set([
+            ...finalColumns.map((col) => col.id).filter(Boolean),
+            ...subTableIds,
+          ]),
+        ]
         table.setColumnOrder(orderColumnsBySelection(allIds, finalResolvedColumns))
       }
     } else {
@@ -713,6 +768,7 @@ export const CippDataTable = (props) => {
     queryKey,
     settings?.currentTenant,
     filterTypeMap,
+    subTables,
   ])
 
   // Previous-value refs for the guards below: CippDataTable is the single owner of this
@@ -758,8 +814,11 @@ export const CippDataTable = (props) => {
   }, [pageName])
 
   // apply preferred columns once per page, and again whenever the saved preference's
-  // identity changes
+  // identity changes. Nested dialog tables must not read or write the parent page key.
   useEffect(() => {
+    if (!pageName) {
+      return
+    }
     const preferred = settings?.columnDefaults?.[pageName]
     if (
       preferred &&
@@ -821,12 +880,70 @@ export const CippDataTable = (props) => {
     return result
   }, [columnVisibility])
 
+  const displayColumns = useMemo(() => {
+    if (!Array.isArray(subTables) || subTables.length === 0) {
+      return usedColumns
+    }
+    const cachedHeaders = new Map()
+    const injected = []
+    for (const sub of subTables) {
+      if (!subTableIsSelected(sub, configuredSimpleColumns)) {
+        continue
+      }
+      if (subTableShowsCachedColumn(sub, usedData)) {
+        cachedHeaders.set(sub.cachedColumn, sub.header ?? sub.id)
+        continue
+      }
+      injected.push(buildSubTableColumn(sub))
+    }
+    const columns = cachedHeaders.size
+      ? usedColumns.map((col) =>
+          cachedHeaders.has(col.id)
+            ? { ...col, header: cachedHeaders.get(col.id) }
+            : col
+        )
+      : usedColumns
+    const injectedById = new Map(injected.map((col) => [col.id, col]))
+    const replaced = columns.map((col) => injectedById.get(col.id) ?? col)
+    const existing = new Set(columns.map((col) => col.id))
+    return [...replaced, ...injected.filter((col) => !existing.has(col.id))]
+  }, [usedColumns, usedData, subTables, configuredSimpleColumns])
+
+  useEffect(() => {
+    if (!Array.isArray(subTables) || subTables.length === 0) {
+      return
+    }
+    setColumnVisibility((prev) => {
+      const next = { ...prev }
+      let changed = false
+      for (const sub of subTables) {
+        if (!subTableIsSelected(sub, configuredSimpleColumns)) {
+          continue
+        }
+        const columnId = subTableShowsCachedColumn(sub, usedData)
+          ? sub.cachedColumn
+          : sub.id
+        if (next[columnId] === undefined) {
+          next[columnId] = true
+          changed = true
+        }
+      }
+      return changed ? next : prev
+    })
+  }, [subTables, configuredSimpleColumns, usedData])
+
   const handleActionDisabled = useCallback((row, action) => {
+    const actionRow = attachParentRow(row, parentRow)
     if (action?.condition) {
-      return !action.condition(row)
+      return !action.condition(actionRow)
     }
     return false
-  }, [])
+  }, [parentRow])
+
+  const getActionRow = useCallback(
+    (rowOriginal) => attachParentRow(rowOriginal, parentRow),
+    [parentRow]
+  )
 
   // Stable callback for sorting changes.
   const handleSortingChange = useCallback((newSorting) => {
@@ -935,16 +1052,17 @@ export const CippDataTable = (props) => {
   const dispatchRowAction = useCallback(
     (action, rowOriginal, closeMenu = () => {}) => {
       const scopeToRowTenant = () => {
-        if (settings.currentTenant === 'AllTenants' && rowOriginal?.Tenant) {
+        const tenant = getRowTenant(getActionRow(rowOriginal), settings.currentTenant)
+        if (settings.currentTenant === 'AllTenants' && tenant && tenant !== 'AllTenants') {
           settings.handleUpdate({
-            currentTenant: rowOriginal.Tenant,
+            currentTenant: tenant,
           })
         }
       }
 
       if (action.noConfirm && action.customFunction) {
         scopeToRowTenant()
-        action.customFunction(rowOriginal, action, {})
+        action.customFunction(getActionRow(rowOriginal), action, {})
         closeMenu()
         return
       }
@@ -952,7 +1070,7 @@ export const CippDataTable = (props) => {
       // Handle custom component differently
       if (typeof action.customComponent === 'function') {
         scopeToRowTenant()
-        setCustomComponentData({ data: rowOriginal, action: action })
+        setCustomComponentData({ data: getActionRow(rowOriginal), action: action })
         setCustomComponentVisible(true)
         closeMenu()
         return
@@ -960,14 +1078,14 @@ export const CippDataTable = (props) => {
 
       // Standard dialog flow
       setActionData({
-        data: rowOriginal,
+        data: getActionRow(rowOriginal),
         action: action,
         ready: true,
       })
       createDialog.handleOpen()
       closeMenu()
     },
-    [settings, createDialog]
+    [settings, createDialog, getActionRow]
   )
 
   // Open the extended-info offcanvas for a row, recording its position in the row model so
@@ -1003,7 +1121,7 @@ export const CippDataTable = (props) => {
             // condition, which renders it disabled).
             (action) =>
               typeof action.hideCondition !== 'function' ||
-              !action.hideCondition(row.original)
+              !action.hideCondition(getActionRow(row.original))
           )
           .map((action, index) => (
             <MenuItem
@@ -1058,6 +1176,7 @@ export const CippDataTable = (props) => {
     dispatchRowAction,
     openRowOffCanvas,
     handleActionDisabled,
+    getActionRow,
   ])
 
   // Stable renderTopToolbar — memoized so MaterialReactTable doesn't re-create the toolbar
@@ -1075,7 +1194,7 @@ export const CippDataTable = (props) => {
               data={data}
               columnVisibility={columnVisibility}
               getRequestData={getRequestData}
-              usedColumns={usedColumns}
+              usedColumns={displayColumns}
               usedData={memoizedData ?? EMPTY_ARRAY}
               title={title}
               actions={actions}
@@ -1088,6 +1207,8 @@ export const CippDataTable = (props) => {
               setGraphFilterData={setGraphFilterData}
               setConfiguredSimpleColumns={setConfiguredSimpleColumns}
               queueMetadata={getRequestData.data?.pages?.[0]?.Metadata}
+              persistenceKey={persistenceKey}
+              parentRow={parentRow}
               isInDialog={isInDialog}
               showBulkExportAction={showBulkExportAction}
               onViewToggle={toggleAllowed ? handleViewToggle : undefined}
@@ -1114,6 +1235,7 @@ export const CippDataTable = (props) => {
       columnVisibility,
       getRequestData,
       usedColumns,
+      displayColumns,
       memoizedData,
       title,
       actions,
@@ -1154,7 +1276,7 @@ export const CippDataTable = (props) => {
       columnFilters: columnFilters,
       columnVisibility: sanitizedColumnVisibility,
     },
-    columns: usedColumns,
+    columns: displayColumns,
     data: memoizedData ?? EMPTY_ARRAY,
     state: tableState,
     onSortingChange: handleSortingChange,
@@ -1194,6 +1316,29 @@ export const CippDataTable = (props) => {
     prevUsedDataRef.current = memoizedData
     table.toggleAllRowsSelected(false)
   }, [memoizedData])
+
+  // utilTableMode seeds columnOrder from simpleColumns (e.g. "members"), but cached report
+  // data shows membersCsv instead — MRT crashes if order references ids that are not in
+  // displayColumns.
+  useEffect(() => {
+    if (!Array.isArray(subTables) || subTables.length === 0) {
+      return
+    }
+    const displayIds = displayColumns.map((col) => col.id).filter(Boolean)
+    if (displayIds.length === 0) {
+      return
+    }
+    const currentOrder = table.getState().columnOrder ?? []
+    if (!columnOrderHasStaleIds(currentOrder, displayIds)) {
+      return
+    }
+    const selectedForOrder = resolveSubTableSimpleColumns(
+      configuredSimpleColumns,
+      subTables,
+      usedData
+    ).filter((id) => displayIds.includes(id))
+    table.setColumnOrder(orderColumnsBySelection(displayIds, selectedForOrder))
+  }, [configuredSimpleColumns, displayColumns, subTables, usedData, table])
 
   // size the narrow table's scroll viewport from where it actually sits: viewport height
   // minus the container's measured top, the real footer height and the chrome below the
@@ -1337,8 +1482,12 @@ export const CippDataTable = (props) => {
 
   const selectModeActive = hasOnChange ? true : mobileSelectMode
 
+  const resolvedCardButton = cardButton ? (
+    <CippTableCardButton cardButton={cardButton} row={parentRow} />
+  ) : undefined
+
   // below md, table-in-Card branch: the actions FAB carries cardButton
-  const headerAction = isNarrowViewport && !isInDialog ? undefined : cardButton
+  const headerAction = isNarrowViewport && !isInDialog ? undefined : resolvedCardButton
 
   return (
     <>
@@ -1392,7 +1541,7 @@ export const CippDataTable = (props) => {
                 data={data}
                 columnVisibility={columnVisibility}
                 getRequestData={getRequestData}
-                usedColumns={usedColumns}
+                usedColumns={displayColumns}
                 usedData={memoizedData ?? EMPTY_ARRAY}
                 title={title}
                 actions={actions}
@@ -1405,6 +1554,8 @@ export const CippDataTable = (props) => {
                 setGraphFilterData={setGraphFilterData}
                 setConfiguredSimpleColumns={setConfiguredSimpleColumns}
                 queueMetadata={getRequestData.data?.pages?.[0]?.Metadata}
+                persistenceKey={persistenceKey}
+                parentRow={parentRow}
                 isInDialog={isInDialog}
                 embedded={isInDialog || noCard}
                 showBulkExportAction={showBulkExportAction}
@@ -1430,8 +1581,9 @@ export const CippDataTable = (props) => {
                 onRowAction={dispatchRowAction}
                 onMoreInfo={openRowOffCanvas}
                 isActionDisabled={handleActionDisabled}
+                getActionRow={getActionRow}
                 selectMode={selectModeActive}
-                cardButton={cardButton}
+                cardButton={resolvedCardButton}
                 mobileCard={mobileCard}
                 fixedChrome={!isInDialog && !noCard}
                 onClearFilters={handleClearAllFilters}
@@ -1518,8 +1670,8 @@ export const CippDataTable = (props) => {
               </Scrollbar>
             </CardContent>
           </Card>
-          {isNarrowViewport && !isInDialog && cardButton && (
-            <CippPageActionsFab title="Actions">{cardButton}</CippPageActionsFab>
+          {isNarrowViewport && !isInDialog && resolvedCardButton && (
+            <CippPageActionsFab title="Actions">{resolvedCardButton}</CippPageActionsFab>
           )}
         </>
       )}
@@ -1530,6 +1682,7 @@ export const CippDataTable = (props) => {
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
         title={offCanvasData?.Name || offCanvas?.title || 'Extended Info'}
+        aboveModal={isInDialog}
         children={
           offCanvas?.children
             ? (row) => offCanvas.children(row, currentRowIndex)
@@ -1587,8 +1740,15 @@ export const CippDataTable = (props) => {
             fields={actionData.action?.fields}
             api={actionData.action}
             row={actionData.data}
-            relatedQueryKeys={queryKey ? queryKey : title}
             {...actionData.action}
+            relatedQueryKeys={[
+              ...(queryKey ? [queryKey] : title ? [title] : []),
+              ...(Array.isArray(actionData.action?.relatedQueryKeys)
+                ? actionData.action.relatedQueryKeys
+                : actionData.action?.relatedQueryKeys
+                  ? [actionData.action.relatedQueryKeys]
+                  : []),
+            ].filter(Boolean)}
           />
         )
       }, [

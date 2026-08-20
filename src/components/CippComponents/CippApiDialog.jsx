@@ -16,6 +16,15 @@ import { useForm, useFormState } from 'react-hook-form'
 import { useSettings } from '../../hooks/use-settings'
 import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
+import {
+  getNestedValue as getRowPath,
+  getRowTenant,
+} from '../../utils/resolve-row-templates'
+import {
+  extractCsvColumnValues,
+  mergeCsvFormFields,
+  normalizeAutoCompleteValues,
+} from '../../utils/csv-field-values'
 
 export const CippApiDialog = (props) => {
   const {
@@ -121,7 +130,8 @@ export const CippApiDialog = (props) => {
       if (typeof value === 'string' && value.startsWith('!')) {
         newData[key] = value.slice(1)
       } else if (typeof value === 'string') {
-        newData[key] = row[value] ?? value
+        const nested = getRowPath(row, value)
+        newData[key] = nested !== undefined ? nested : value
       } else if (typeof value === 'boolean') {
         newData[key] = value
       } else if (typeof value === 'object' && value !== null) {
@@ -138,31 +148,22 @@ export const CippApiDialog = (props) => {
   }
 
   const tenantFilter = useSettings().currentTenant
+
   const handleActionClick = (row, action, formData) => {
     setIsFormSubmitted(true)
+    const resolvedFormData = mergeCsvFormFields(formData, fields)
     let finalData = {}
     let isBulkRequest = false
     if (typeof api?.customDataformatter === 'function') {
-      finalData = api.customDataformatter(row, action, formData)
-      // If customDataformatter returns an array, enable bulk request mode
+      finalData = api.customDataformatter(row, action, resolvedFormData)
       isBulkRequest = Array.isArray(finalData)
     } else {
       if (action.multiPost === undefined) action.multiPost = false
 
       if (api.customFunction) {
-        action.customFunction(row, action, formData)
+        action.customFunction(row, action, resolvedFormData)
         createDialog.handleClose()
         return
-      }
-
-      // Helper function to get the correct tenant filter for a row
-      const getRowTenantFilter = (rowData) => {
-        // If we're in AllTenants mode and the row has a Tenant property, use that
-        if (tenantFilter === 'AllTenants' && rowData?.Tenant) {
-          return rowData.Tenant
-        }
-        // Otherwise use the current tenant filter
-        return tenantFilter
       }
 
       const processedActionData = processActionData(action.data, row, action.replacementBehaviour)
@@ -174,14 +175,16 @@ export const CippApiDialog = (props) => {
         if (Array.isArray(row)) {
           const arrayData = row.map((singleRow) => {
             const commonData = {
-              tenantFilter: getRowTenantFilter(singleRow),
-              ...formData,
+              tenantFilter: getRowTenant(singleRow, tenantFilter),
+              ...resolvedFormData,
               ...addedFieldData,
             }
             const itemData = { ...commonData }
             Object.keys(processedActionData).forEach((key) => {
-              const rowValue = singleRow[processedActionData[key]]
-              itemData[key] = rowValue !== undefined ? rowValue : processedActionData[key]
+              const mapped = processedActionData[key]
+              const rowValue =
+                typeof mapped === 'string' ? getRowPath(singleRow, mapped) : undefined
+              itemData[key] = rowValue !== undefined ? rowValue : mapped
             })
             return itemData
           })
@@ -208,12 +211,11 @@ export const CippApiDialog = (props) => {
 
       // SINGLE ROW CASE
       const commonData = {
-        tenantFilter: getRowTenantFilter(row),
-        ...formData,
+        tenantFilter: getRowTenant(row, tenantFilter),
+        ...resolvedFormData,
         ...addedFieldData,
       }
 
-      // ✅ FIXED: DIRECT MERGE INSTEAD OF CORRUPT TRANSFORMATION
       finalData = {
         ...commonData,
         ...processedActionData,
@@ -404,23 +406,64 @@ export const CippApiDialog = (props) => {
                 ) : (
                   <>
                     {fields?.map((fieldProps, i) => {
-                      const { condition, ...rest } = fieldProps
-                      if (
-                        rest.api?.processFieldData &&
-                        rest.api?.data &&
-                        row &&
-                        !Array.isArray(row)
-                      ) {
-                        const processedData = processActionData(rest.api.data, row)
-                        rest.api = {
-                          ...rest.api,
-                          data: processedData,
-                          queryKey:
-                            rest.api.queryKey ?? `${rest.api.url}-${JSON.stringify(processedData)}`,
+                      const { condition, component, csvColumn, ...rest } = fieldProps
+
+                      if (csvColumn && rest.type === 'autoComplete') {
+                        const csvFieldName = `${rest.name}__csv`
+                        const origValidate = rest.validators?.validate
+                        rest.validators = {
+                          ...rest.validators,
+                          validate: (value, formValues) => {
+                            const hasAC = normalizeAutoCompleteValues(value).length > 0
+                            const csvRows = formValues[csvFieldName]
+                            const csvValues = extractCsvColumnValues(csvRows, csvColumn)
+                            const hasCsvValues = csvValues.length > 0
+                            const hasCsvRows =
+                              Array.isArray(csvRows) && csvRows.length > 0
+
+                            if (hasAC || hasCsvValues) {
+                              if (typeof origValidate === 'function' && hasAC) {
+                                return origValidate(value, formValues)
+                              }
+                              return true
+                            }
+                            if (hasCsvRows) {
+                              return `CSV must include a ${csvColumn} column with at least one value`
+                            }
+                            return `Select at least one option or upload a CSV with a ${csvColumn} column`
+                          },
+                          deps: [csvFieldName],
                         }
                       }
+
+                      if (rest.api) {
+                        let nextApi = rest.api
+                        if (
+                          nextApi.processFieldData &&
+                          nextApi.data &&
+                          row &&
+                          !Array.isArray(row)
+                        ) {
+                          const processedData = processActionData(nextApi.data, row)
+                          nextApi = {
+                            ...nextApi,
+                            data: processedData,
+                            queryKey:
+                              nextApi.queryKey ??
+                              `${nextApi.url}-${JSON.stringify(processedData)}`,
+                          }
+                        }
+                        if (nextApi.tenantFilter === undefined && nextApi.url) {
+                          nextApi = {
+                            ...nextApi,
+                            tenantFilter: getRowTenant(row, tenantFilter),
+                          }
+                        }
+                        rest.api = nextApi
+                      }
+                      const FieldComponent = component ?? CippFormComponent
                       const fieldElement = (
-                        <CippFormComponent
+                        <FieldComponent
                           formControl={formHook}
                           addedFieldData={addedFieldData}
                           setAddedFieldData={setAddedFieldData}
@@ -428,14 +471,30 @@ export const CippApiDialog = (props) => {
                           {...rest}
                         />
                       )
+
+                      const csvElement = csvColumn ? (
+                        <Box sx={{ mt: 1 }}>
+                          <CippFormComponent
+                            type="CSVReader"
+                            name={`${rest.name}__csv`}
+                            label={`Or upload a CSV with a ${csvColumn} column`}
+                            formControl={formHook}
+                          />
+                        </Box>
+                      ) : null
+
                       return (
                         <Box key={i} sx={{ width: '100%' }}>
                           {condition ? (
                             <CippFormCondition {...condition} formControl={formHook}>
                               {fieldElement}
+                              {csvElement}
                             </CippFormCondition>
                           ) : (
-                            fieldElement
+                            <>
+                              {fieldElement}
+                              {csvElement}
+                            </>
                           )}
                         </Box>
                       )

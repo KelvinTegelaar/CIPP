@@ -1,3 +1,4 @@
+import { http, HttpResponse } from 'msw'
 import { within, expect, userEvent, waitFor } from 'storybook/test'
 import CippDataTableButton from '../../../src/components/CippTable/CippDataTableButton'
 
@@ -52,5 +53,54 @@ export const EmptyData = {
   args: {
     title: 'No Data',
     data: null,
+  },
+}
+
+export const LiveNestedTable = {
+  parameters: {
+    msw: {
+      handlers: [
+        http.get('/api/TestRelated', () =>
+          HttpResponse.json({
+            Results: [
+              { id: 'rel-1', displayName: 'Related one' },
+              { id: 'rel-2', displayName: 'Related two' },
+            ],
+          })
+        ),
+        http.post('/api/ExecTestRelated', () => HttpResponse.json({ Results: 'ok' })),
+      ],
+    },
+  },
+  args: {
+    row: { id: 'parent-1', displayName: 'Finance' },
+    label: 'View',
+    title: 'Related for [displayName]',
+    queryKey: 'related-[id]',
+    api: {
+      url: '/api/TestRelated',
+      data: { someId: '[id]' },
+      dataKey: 'Results',
+    },
+    simpleColumns: ['displayName'],
+    actions: [
+      {
+        label: 'Remove',
+        type: 'POST',
+        url: '/api/ExecTestRelated',
+        data: { childId: 'id', parentId: 'parent.id' },
+        confirmText: 'Remove [displayName] from [parent.displayName]?',
+      },
+    ],
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    await step('opens a live nested table on click', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'View' }))
+      const root = within(document.body)
+      await waitFor(() => {
+        expect(root.getByRole('dialog')).toBeVisible()
+      })
+    })
   },
 }

@@ -48,6 +48,7 @@ import { usePopover } from '../../hooks/use-popover'
 import { useDialog } from '../../hooks/use-dialog'
 import { CippApiDialog } from '../CippComponents/CippApiDialog'
 import { useSettings } from '../../hooks/use-settings'
+import { attachParentRow } from '../../utils/resolve-row-templates'
 import { useBrandingSettings } from '../CippPdf/useBrandingSettings'
 import { useRouter } from 'next/router'
 import { CippOffCanvas } from '../CippComponents/CippOffCanvas'
@@ -114,6 +115,8 @@ export const CIPPTableToptoolbar = React.memo(
     searchValue = '',
     setSearchValue,
     restoredFiltersRef,
+    persistenceKey,
+    parentRow,
   }) => {
     const popover = usePopover()
     const [filtersAnchor, setFiltersAnchor] = useState(null)
@@ -144,11 +147,13 @@ export const CIPPTableToptoolbar = React.memo(
       useState(simpleColumns)
     const [filterCanvasVisible, setFilterCanvasVisible] = useState(false)
     const presetKey = (filter) => filter?.id ?? filter?.filterName
-    const pageName = router.pathname.split('/').slice(1).join('/')
+    const pageName = persistenceKey ?? (isInDialog ? '' : router.pathname.split('/').slice(1).join('/'))
     const [useCompactMode, setUseCompactMode] = useState(false)
     const toolbarRef = useRef(null)
     const leftContainerRef = useRef(null)
     const actionsContainerRef = useRef(null)
+
+    const wrapActionRow = (original) => attachParentRow(original, parentRow)
 
     const getBulkActions = (actions, selectedRows) => {
       return (
@@ -163,8 +168,8 @@ export const CIPPTableToptoolbar = React.memo(
             // The default stays all-or-nothing (every selected row must qualify).
             disabled: action.condition
               ? action.bulkFilterEligible
-                ? !selectedRows.some((row) => action.condition(row.original))
-                : !selectedRows.every((row) => action.condition(row.original))
+                ? !selectedRows.some((row) => action.condition(wrapActionRow(row.original)))
+                : !selectedRows.every((row) => action.condition(wrapActionRow(row.original)))
               : false,
           })) || []
       )
@@ -227,9 +232,9 @@ export const CIPPTableToptoolbar = React.memo(
       const allSelectedRows = table.getSelectedRowModel().rows
       const eligibleRows =
         action.bulkFilterEligible && action.condition
-          ? allSelectedRows.filter((row) => action.condition(row.original))
+          ? allSelectedRows.filter((row) => action.condition(wrapActionRow(row.original)))
           : allSelectedRows
-      const selectedData = eligibleRows.map((row) => row.original)
+      const selectedData = eligibleRows.map((row) => wrapActionRow(row.original))
 
       if (typeof action.customBulkHandler === 'function') {
         action.customBulkHandler({
@@ -246,7 +251,7 @@ export const CIPPTableToptoolbar = React.memo(
       // api.noConfirm true, and its mount effect auto-submits into the same customFunction
       // being called here — every selected row's action fired twice.
       if (action?.noConfirm && action.customFunction) {
-        eligibleRows.forEach((row) => action.customFunction(row.original.original, action, {}))
+        eligibleRows.forEach((row) => action.customFunction(wrapActionRow(row.original.original ?? row.original), action, {}))
         // Deliberately no closeMenu() here — that matches the behaviour this branch had
         // before; the only thing being fixed is the duplicate invocation.
         return
@@ -276,6 +281,7 @@ export const CIPPTableToptoolbar = React.memo(
       const restorationKey = `${pageName}-graph`
 
       if (
+        pageName &&
         settings.persistFilters &&
         settings.lastUsedFilters &&
         settings.lastUsedFilters[pageName] &&
@@ -393,6 +399,7 @@ export const CIPPTableToptoolbar = React.memo(
       const restorationKey = `${pageName}-table`
       // Wait for table to be initialized and columns to exist (column filters need them)
       if (
+        pageName &&
         settings.persistFilters &&
         settings.lastUsedFilters &&
         settings.lastUsedFilters[pageName] &&
@@ -510,12 +517,14 @@ export const CIPPTableToptoolbar = React.memo(
         }
         return updatedVisibility
       })
-      settings.handleUpdate({
-        columnDefaults: {
-          ...settings?.columnDefaults,
-          [pageName]: {},
-        },
-      })
+      if (pageName) {
+        settings.handleUpdate({
+          columnDefaults: {
+            ...settings?.columnDefaults,
+            [pageName]: {},
+          },
+        })
+      }
       setColumnsAnchor(null)
     }
 
@@ -540,12 +549,14 @@ export const CIPPTableToptoolbar = React.memo(
     }
 
     const saveAsPreferedColumns = () => {
-      settings.handleUpdate({
-        columnDefaults: {
-          ...settings?.columnDefaults,
-          [pageName]: columnVisibility,
-        },
-      })
+      if (pageName) {
+        settings.handleUpdate({
+          columnDefaults: {
+            ...settings?.columnDefaults,
+            [pageName]: columnVisibility,
+          },
+        })
+      }
       setColumnsAnchor(null)
     }
 
@@ -638,7 +649,7 @@ export const CIPPTableToptoolbar = React.memo(
     }
 
     const persistFilterSlots = (updater) => {
-      if (!settings.persistFilters || !settings.setLastUsedFilter) {
+      if (!pageName || !settings.persistFilters || !settings.setLastUsedFilter) {
         return
       }
       const current = normalizePersistedFilters(
@@ -1627,8 +1638,19 @@ export const CIPPTableToptoolbar = React.memo(
             fields={actionData.action?.fields}
             api={actionData.action}
             row={actionData.data}
-            relatedQueryKeys={queryKeys}
             {...actionData.action}
+            relatedQueryKeys={[
+              ...(queryKeys
+                ? Array.isArray(queryKeys)
+                  ? queryKeys
+                  : [queryKeys]
+                : []),
+              ...(Array.isArray(actionData.action?.relatedQueryKeys)
+                ? actionData.action.relatedQueryKeys
+                : actionData.action?.relatedQueryKeys
+                  ? [actionData.action.relatedQueryKeys]
+                  : []),
+            ].filter(Boolean)}
           />
         )}
 
@@ -1640,6 +1662,7 @@ export const CIPPTableToptoolbar = React.memo(
           onClose={() => setFilterCanvasVisible(!filterCanvasVisible)}
           contentPadding={1}
           keepMounted={true}
+          aboveModal={isInDialog}
         >
           <CippGraphExplorerFilter
             endpointFilter={api?.data?.Endpoint}

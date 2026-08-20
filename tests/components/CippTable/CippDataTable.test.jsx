@@ -715,3 +715,324 @@ describe('CippDataTable cards->table toggle scroll', () => {
     expect(scroller.scrollTop).toBe(120 + (300 - 64))
   })
 })
+
+describe('CippDataTable subTables', () => {
+  const parentRows = [{ id: 'parent-1', displayName: 'Finance' }]
+  const relatedRows = [{ id: 'child-1', displayName: 'Jane Doe' }]
+
+  it('injects a button column that opens a nested table', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        data={parentRows}
+        simpleColumns={['displayName', 'related']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'related',
+            header: 'Related',
+            label: 'View',
+            table: {
+              title: 'Related for [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+              viewMode: 'cards',
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    await user.click(screen.getByRole('button', { name: 'View' }))
+
+    const dialog = await screen.findByRole('dialog')
+    await waitFor(() => {
+      expect(within(dialog).getByText('Related for Finance')).toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(within(dialog).getByText('Jane Doe')).toBeInTheDocument()
+    })
+  })
+
+  it('runs nested row and bulk actions with the parent row attached', async () => {
+    const rowFn = vi.fn()
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        data={parentRows}
+        simpleColumns={['displayName', 'related']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'related',
+            header: 'Related',
+            label: 'View',
+            table: {
+              title: 'Related for [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+              viewMode: 'cards',
+              actions: [
+                {
+                  label: 'Remove',
+                  noConfirm: true,
+                  customFunction: rowFn,
+                },
+              ],
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    await user.click(screen.getByRole('button', { name: 'View' }))
+
+    const dialog = await screen.findByRole('dialog')
+    await waitFor(() => expect(within(dialog).getByText('Jane Doe')).toBeInTheDocument())
+
+    await user.click(within(dialog).getByRole('button', { name: 'Row actions' }))
+    await user.click(await screen.findByText('Remove'))
+
+    expect(rowFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'child-1',
+        displayName: 'Jane Doe',
+        parent: expect.objectContaining({ id: 'parent-1', displayName: 'Finance' }),
+      }),
+      expect.anything(),
+      expect.anything()
+    )
+
+    rowFn.mockClear()
+    await user.click(within(dialog).getByRole('button', { name: 'Select' }))
+    await user.click(within(dialog).getByRole('checkbox', { name: 'Select Jane Doe' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Actions' }))
+    await user.click(await screen.findByText('Remove'))
+
+    expect(rowFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'child-1',
+        parent: expect.objectContaining({ id: 'parent-1' }),
+      }),
+      expect.anything(),
+      expect.anything()
+    )
+  })
+
+  it('replaces a data column that shares the subTable id', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        data={[{ id: 'parent-1', displayName: 'Finance', related: [{ id: 'stale' }] }]}
+        simpleColumns={['displayName', 'related']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'related',
+            header: 'Related',
+            label: 'View',
+            table: {
+              title: 'Related for [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+              viewMode: 'cards',
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    await user.click(screen.getByRole('button', { name: 'View' }))
+
+    const dialog = await screen.findByRole('dialog')
+    await waitFor(() => {
+      expect(within(dialog).getByText('Jane Doe')).toBeInTheDocument()
+    })
+    expect(within(dialog).queryByText('stale')).not.toBeInTheDocument()
+  })
+
+  it('does not show a subTable column unless it is listed in simpleColumns', async () => {
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        data={parentRows}
+        simpleColumns={['displayName']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'related',
+            header: 'Related',
+            label: 'View',
+            table: {
+              title: 'Related for [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+              viewMode: 'cards',
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    expect(screen.queryByRole('button', { name: 'View' })).not.toBeInTheDocument()
+  })
+
+  it('shows cachedColumn instead of the nested table button when that field is on the data', async () => {
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        data={[{ id: 'parent-1', displayName: 'Finance', membersCsv: 'Jane, Bob' }]}
+        simpleColumns={['displayName', 'members']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'members',
+            header: 'Members',
+            label: 'View members',
+            cachedColumn: 'membersCsv',
+            table: {
+              title: 'Members of [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+              viewMode: 'cards',
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    expect(screen.queryByRole('button', { name: 'View members' })).not.toBeInTheDocument()
+    expect(screen.getByText('Jane, Bob')).toBeInTheDocument()
+  })
+
+  it('renders cached report columns in table view without a stale column order crash', async () => {
+    renderWithProviders(
+      <CippDataTable
+        viewMode="table"
+        data={[{ id: 'parent-1', displayName: 'Finance', membersCsv: 'Jane, Bob' }]}
+        simpleColumns={['displayName', 'members']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'members',
+            header: 'Members',
+            label: 'View members',
+            cachedColumn: 'membersCsv',
+            table: {
+              title: 'Members of [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    expect(screen.getByRole('columnheader', { name: 'Members' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'View members' })).not.toBeInTheDocument()
+  })
+
+  it('still shows the nested table button when cachedColumn is configured but missing from the data', async () => {
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        data={parentRows}
+        simpleColumns={['displayName', 'members']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'members',
+            header: 'Members',
+            label: 'View members',
+            cachedColumn: 'membersCsv',
+            table: {
+              title: 'Members of [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+              viewMode: 'cards',
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'View members' })).toBeInTheDocument()
+  })
+
+  it('shows the nested table button when cachedColumn exists but is empty (live API shape)', async () => {
+    renderWithProviders(
+      <CippDataTable
+        viewMode="table"
+        data={[{ id: 'parent-1', displayName: 'Finance', membersCsv: '', ownersCsv: '' }]}
+        simpleColumns={['displayName', 'members']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'members',
+            header: 'Members',
+            label: 'View members',
+            cachedColumn: 'membersCsv',
+            table: {
+              title: 'Members of [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'View members' })).toBeInTheDocument()
+  })
+
+  it('renders a declarative nested cardButton from table config', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        data={parentRows}
+        simpleColumns={['displayName', 'related']}
+        title="Groups"
+        subTables={[
+          {
+            id: 'related',
+            header: 'Related',
+            label: 'View',
+            table: {
+              title: 'Related for [displayName]',
+              data: relatedRows,
+              simpleColumns: ['displayName'],
+              viewMode: 'cards',
+              cardButton: {
+                label: 'Add Members',
+                url: '/api/EditGroup',
+                confirmText: 'Add Members for [displayName]?',
+                data: { groupId: 'id' },
+              },
+            },
+          },
+        ]}
+      />
+    )
+
+    await waitFor(() => expect(screen.getByText('Finance')).toBeInTheDocument())
+    await user.click(screen.getByRole('button', { name: 'View' }))
+
+    const nested = await screen.findByRole('dialog')
+    const addButton = await within(nested).findByRole('button', { name: 'Add Members' })
+    await user.click(addButton)
+
+    expect(await screen.findByText('Add Members for Finance?')).toBeInTheDocument()
+  })
+})
