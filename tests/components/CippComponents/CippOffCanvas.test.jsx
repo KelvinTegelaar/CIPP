@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { act, screen, waitFor, within } from '@testing-library/react'
+import { act, cleanup, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Button } from '@mui/material'
 import { renderWithTheme } from '../../test-utils'
@@ -52,7 +52,12 @@ const mockDeviceData = {
   },
 }
 
-const InteractiveWrapper = ({ onClose, onNavigateUp, onNavigateDown, ...props }) => {
+const InteractiveWrapper = ({
+  onClose,
+  onNavigateUp,
+  onNavigateDown,
+  ...props
+}) => {
   const [open, setOpen] = useState(false)
   return (
     <>
@@ -146,7 +151,9 @@ describe('CippOffCanvas', () => {
 
     expect(onClose).toHaveBeenCalledTimes(1)
     await waitFor(() =>
-      expect(within(document.body).queryByText('Device Details')).not.toBeInTheDocument()
+      expect(
+        within(document.body).queryByText('Device Details')
+      ).not.toBeInTheDocument()
     )
   })
 
@@ -187,5 +194,38 @@ describe('CippOffCanvas', () => {
     expect(root.getByText('Windows 11')).toBeInTheDocument()
     // field absent from extendedData renders the N/A fallback
     expect(root.getByText('N/A')).toBeInTheDocument()
+  })
+
+  it('renders the info card above children by default and below with actionsPosition bottom', () => {
+    const renderCanvas = (actionsPosition) => {
+      renderWithTheme(
+        <CippOffCanvas
+          visible={true}
+          title="Device Details"
+          extendedData={mockDeviceData}
+          extendedInfoFields={['displayName']}
+          actionsPosition={actionsPosition}
+          children={() => (
+            <div data-testid="custom-children">child content</div>
+          )}
+        />
+      )
+    }
+    const childrenBox = () =>
+      within(document.body).getByTestId('custom-children')
+    const infoValue = () => within(document.body).getByText('DESKTOP-ENTRA-01')
+
+    renderCanvas('top')
+    expect(
+      childrenBox().compareDocumentPosition(infoValue()) &
+        Node.DOCUMENT_POSITION_PRECEDING
+    ).toBeTruthy()
+
+    cleanup()
+    renderCanvas('bottom')
+    expect(
+      childrenBox().compareDocumentPosition(infoValue()) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
   })
 })

@@ -29,6 +29,7 @@ export const CippOffCanvas = (props) => {
     navigationPosition,
     contentPadding = 2,
     keepMounted = false,
+    actionsPosition = "top",
     richFormatting = false,
     aboveModal = false,
   } = props;
@@ -70,6 +71,19 @@ export const CippOffCanvas = (props) => {
       };
     }
   });
+
+  const infoCard = (extendedInfo.length > 0 || actions?.length > 0) && (
+    <Grid size={{ xs: 12 }}>
+      <CippPropertyListCard
+        isFetching={isFetching}
+        align="vertical"
+        propertyItems={extendedInfo}
+        copyItems={true}
+        actionItems={actions}
+        data={extendedData}
+      />
+    </Grid>
+  );
 
   const SIZE_WIDTHS = { sm: 400, md: 600, lg: 800, xl: 1000 };
   const drawerWidth = mdDown ? "100%" : (SIZE_WIDTHS[size] ?? 400);
@@ -162,18 +176,7 @@ export const CippOffCanvas = (props) => {
             }}
           >
             <Grid container spacing={1} sx={{ flexGrow: 1 }}>
-              {extendedInfo.length > 0 && (
-                <Grid size={{ xs: 12 }}>
-                  <CippPropertyListCard
-                    isFetching={isFetching}
-                    align="vertical"
-                    propertyItems={extendedInfo}
-                    copyItems={true}
-                    actionItems={actions}
-                    data={extendedData}
-                  />
-                </Grid>
-              )}
+              {actionsPosition !== "bottom" && infoCard}
               <Grid
                 size={{ xs: 12 }}
                 sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
@@ -191,6 +194,7 @@ export const CippOffCanvas = (props) => {
                   {typeof children === "function" ? children(extendedData) : children}
                 </Box>
               </Grid>
+              {actionsPosition === "bottom" && infoCard}
             </Grid>
           </Box>
 
