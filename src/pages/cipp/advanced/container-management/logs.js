@@ -23,6 +23,7 @@ import { CippTablePage } from "../../../../components/CippComponents/CippTablePa
 import { ApiGetCall } from "../../../../api/ApiCall";
 import defaultPresets from "../../../../data/ContainerLogPresets.json";
 import tabOptions from "./tabOptions";
+import { CippExpandableAlert } from "../../../../components/CippComponents/CippExpandableAlert";
 
 const levelOptions = [
   { label: "All Levels", value: "" },
@@ -249,7 +250,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
           {tabValue === 0 && (
             <Box component="form" onSubmit={handleQuerySubmit}>
               <Stack spacing={2}>
-                <Alert severity="info">
+                <CippExpandableAlert severity="info">
                   <AlertTitle>Query Syntax</AlertTitle>
                   <Typography variant="body2">
                     Use a KQL-inspired pipe syntax to filter container logs. Separate clauses with{" "}
@@ -279,7 +280,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                     <br />
                     <code>search all files</code> &mdash; include rotated logs
                   </Typography>
-                </Alert>
+                </CippExpandableAlert>
 
                 <Grid container spacing={2}>
                   <Grid size={{ xs: 12 }}>
@@ -310,7 +311,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                   }}
                 />
 
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
                   <Button
                     type="submit"
                     variant="contained"
@@ -454,7 +455,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                   </Grid>
                 </Grid>
 
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
                   <Button type="submit" variant="contained" startIcon={<Search />}>
                     Search Logs
                   </Button>

@@ -1212,15 +1212,55 @@
     "cat": "Entra (AAD) Standards",
     "tag": [],
     "appliesToTest": ["EIDSCAAT01", "EIDSCAAT02", "ZTNA21845", "ZTNA21846"],
-    "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select if a TAP is single use or multi-logon.",
+    "helpText": "Enable TAP with the specified configuration settings.",
     "docsDescription": "Enables Temporary Access Pass generation for the tenant.",
-    "executiveText": "Enables temporary access passes that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passs provide a secure way to restore access without compromising long-term security policies.",
+    "executiveText": "Enables temporary access passes that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passes provide a secure way to restore access without compromising long-term security policies.",
     "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.TAP.MinimumLifetime",
+        "label": "Minimum Lifetime (minutes)",
+        "defaultValue": 60,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.MaximumLifetime",
+        "label": "Maximum Lifetime (minutes)",
+        "defaultValue": 480,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.DefaultLifetime",
+        "label": "Default Lifetime (minutes)",
+        "defaultValue": 60,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.TAPLength",
+        "label": "Length (characters)",
+        "defaultValue": 8,
+        "validators": {
+          "min": { "value": 8, "message": "Minimum value is 8" },
+          "max": { "value": 48, "message": "Maximum value is 48" }
+        }
+      },
       {
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
-        "label": "Select TAP Lifetime",
+        "label": "Number of Times Usable",
         "name": "standards.TAP.config",
         "options": [
           { "label": "Only Once", "value": "true" },
@@ -1353,14 +1393,22 @@
       "ZTNA21809",
       "ZTNA21869"
     ],
-    "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
-    "docsDescription": "Enables the ability for users to request admin consent for applications. Should be used in conjunction with the \"Require admin consent for applications\" standards",
+    "helpText": "Enables App consent admin requests for the tenant via the GA role. Optionally adds specific users (matched by display name) as reviewers. Does not overwrite existing reviewer settings",
+    "docsDescription": "Enables the ability for users to request admin consent for applications. Reviewers can be directory roles and/or specific users matched by display name, e.g. a central MSP support account that exists as a guest in each tenant, so each consent request generates a notification to a monitored mailbox. Should be used in conjunction with the \"Require admin consent for applications\" standards",
     "executiveText": "Establishes a formal approval process where employees can request access to business applications that require administrative review. This balances security with productivity by allowing controlled access to necessary tools while preventing unauthorized application installations.",
     "addedComponent": [
       {
         "type": "AdminRolesMultiSelect",
         "label": "App Consent Reviewer Roles",
         "name": "standards.EnableAppConsentRequests.ReviewerRoles"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "label": "Optional: reviewer users (display names of existing users or guests)",
+        "name": "standards.EnableAppConsentRequests.ReviewerUsers"
       }
     ],
     "label": "Enable App consent admin requests",
@@ -1387,7 +1435,8 @@
         "name": "standards.NudgeMFA.state",
         "options": [
           { "label": "Enabled", "value": "enabled" },
-          { "label": "Disabled", "value": "disabled" }
+          { "label": "Disabled", "value": "disabled" },
+          { "label": "Microsoft managed", "value": "default" }
         ]
       },
       {
@@ -3429,21 +3478,38 @@
     "name": "standards.QuarantineRequestAlert",
     "cat": "Defender Standards",
     "tag": [],
-    "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message.",
-    "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released.",
+    "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message. Set the alert state to Removed to delete the alert rule CIPP created from the tenant.",
+    "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released. Setting the alert state to Removed deletes the alert rule CIPP created from the tenant, for when the alert is no longer wanted.",
     "executiveText": "Notifies IT administrators when employees request to release emails that were quarantined for security reasons, enabling oversight of potentially dangerous messages. This helps ensure that legitimate emails are released while maintaining security controls over suspicious content.",
     "addedComponent": [
       {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "label": "Alert state (blank or Enabled creates the alert, Removed deletes it)",
+        "name": "standards.QuarantineRequestAlert.state",
+        "options": [
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Removed", "value": "removed" }
+        ]
+      },
+      {
         "type": "textField",
         "name": "standards.QuarantineRequestAlert.NotifyUser",
-        "label": "E-mail to receive the alert"
+        "label": "E-mail to receive the alert",
+        "condition": {
+          "field": "standards.QuarantineRequestAlert.state",
+          "compareType": "isNot",
+          "compareValue": { "label": "Removed", "value": "removed" }
+        }
       }
     ],
     "label": "Quarantine Release Request Alert",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-07-15",
-    "powershellEquivalent": "New-ProtectionAlert and Set-ProtectionAlert",
+    "powershellEquivalent": "New-ProtectionAlert, Set-ProtectionAlert and Remove-ProtectionAlert",
     "recommendedBy": [],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",
@@ -6021,6 +6087,16 @@
         "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
         "label": "Allow communication with unmanaged Teams accounts"
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerInbound",
+        "label": "Allow unmanaged Teams users to initiate contact",
+        "condition": {
+          "field": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "label": "External Access Settings for Microsoft Teams",
@@ -6044,6 +6120,16 @@
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
         "label": "Allow users to communicate with consumer Teams accounts"
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumerInbound",
+        "label": "Allow unmanaged Teams users to initiate contact",
+        "condition": {
+          "field": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "autoComplete",
@@ -6460,6 +6546,68 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2026-05-25",
+    "recommendedBy": [],
+    "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
+  },
+  {
+    "name": "standards.AppleEnrollmentTypeProfile",
+    "cat": "Intune Standards",
+    "tag": ["enrollment", "apple", "ios"],
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
+    "helpText": "Creates and manages an Apple user-initiated enrollment type profile (such as iOS/iPadOS web based device enrollment) and keeps it assigned to the configured groups. The tenant needs an Apple MDM push certificate for the enrollment itself to function.",
+    "executiveText": "Ensures every tenant offers the same enrollment experience for Apple devices, such as web based enrollment for personal iPhones and iPads, without engineers configuring each tenant by hand. This keeps device onboarding consistent and makes it possible to report on which tenants are correctly configured.",
+    "docsDescription": "Deploys an Apple user-initiated enrollment type profile through deviceManagement/appleUserInitiatedEnrollmentProfiles. The profile is matched by display name; the enrollment type (web based device enrollment, account driven user enrollment, or device enrollment with Company Portal), description and group assignments are kept in sync, with a wrong assignment repaired in place. Priority is only applied when the profile is first created, because reordering is relative to the other profiles in each tenant.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.AppleEnrollmentTypeProfile.DisplayName",
+        "label": "Profile Display Name",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.AppleEnrollmentTypeProfile.Description",
+        "label": "Profile Description",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.AppleEnrollmentTypeProfile.EnrollmentType",
+        "label": "Enrollment Type",
+        "options": [
+          { "label": "Web based device enrollment", "value": "webDeviceEnrollment" },
+          { "label": "Account driven user enrollment", "value": "accountDrivenUserEnrollment" },
+          { "label": "Device enrollment with Company Portal", "value": "device" }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.AppleEnrollmentTypeProfile.Priority",
+        "label": "Priority (applied when the profile is created)",
+        "defaultValue": 1
+      },
+      {
+        "type": "radio",
+        "name": "standards.AppleEnrollmentTypeProfile.AssignTo",
+        "label": "Profile Assignment",
+        "options": [
+          { "label": "Do not assign", "value": "none" },
+          { "label": "Assign to Custom Group", "value": "customGroup" }
+        ]
+      },
+      {
+        "type": "textField",
+        "name": "standards.AppleEnrollmentTypeProfile.customGroup",
+        "label": "Custom group name(s). Comma separated, wildcards allowed.",
+        "required": false
+      }
+    ],
+    "label": "Deploy Apple Enrollment Type Profile",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-08-18",
     "recommendedBy": [],
     "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
   },
@@ -6939,7 +7087,8 @@
         "label": "Select Sensitivity Label Templates",
         "api": {
           "url": "/api/ListSensitivityLabelTemplates",
-          "labelField": "name",
+          "labelField": "DisplayName",
+          "altLabelField": "Name",
           "valueField": "GUID",
           "queryKey": "ListSensitivityLabelTemplates"
         }
@@ -7647,6 +7796,28 @@
     "addedDate": "2026-04-28",
     "powershellEquivalent": "Set-OrganizationConfig -EwsEnabled $false",
     "recommendedBy": ["CIPP"],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
+    "name": "standards.MessageEncryption",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Enables Microsoft Purview Message Encryption by turning on Azure RMS licensing for Exchange Online. Skipped with a warning when the tenant still points at an on-premises AD RMS cluster, because AD RMS has to be migrated to Azure RMS first. This standard only turns the feature on: branding, one-time passcodes, and social ID sign-in for encrypted messages are configured in the [Configure Encrypted Message Branding (OME)](https://standards.cipp.app/standards/omebranding) standard. [Read more](https://learn.microsoft.com/en-us/purview/set-up-new-message-encryption-capabilities)",
+    "docsDescription": "Sets AzureRMSLicensingEnabled to true, the only prerequisite for Microsoft Purview Message Encryption. Reports the IRM licensing state per tenant, including the licensing location, so you can see at a glance which tenants have message encryption available. Remediation is deliberately skipped for tenants with an on-premises AD RMS licensing location, as Purview Message Encryption is not compatible with AD RMS and those tenants need to be migrated to Azure RMS first.",
+    "executiveText": "Turns on the built-in encryption that lets staff send protected email to anyone, including recipients outside the organization. Uses licensing the organization already owns, removing the need for a separate secure-email product.",
+    "addedComponent": [],
+    "label": "Enable Purview Message Encryption",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-04",
+    "powershellEquivalent": "Set-IRMConfiguration -AzureRMSLicensingEnabled $true",
+    "recommendedBy": [],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",
       "EXCHANGE_S_ENTERPRISE",

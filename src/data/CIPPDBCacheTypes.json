@@ -332,7 +332,7 @@
   {
     "type": "ManagedDeviceEncryptionStates",
     "friendlyName": "Managed Device Encryption States",
-    "description": "BitLocker encryption states for managed devices"
+    "description": "BitLocker encryption states for managed devices; Windows 365 Cloud PCs are marked encryptedByPlatform"
   },
   {
     "type": "IntuneAppProtectionPolicies",
@@ -353,5 +353,10 @@
     "type": "IntuneAppInstallStatus",
     "friendlyName": "Intune App Install Status",
     "description": "Per-application install status rollup (failed/installed/pending device counts) from the AppInstallStatusAggregate report"
+  },
+  {
+    "type": "DomainAnalyser",
+    "friendlyName": "Domain Analyser",
+    "description": "Domain Analyser results per domain: SPF, MX, DMARC, DKIM, DNSSEC, enrollment CNAMEs and the domain health score"
   }
 ]

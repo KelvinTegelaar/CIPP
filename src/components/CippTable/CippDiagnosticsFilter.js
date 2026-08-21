@@ -19,8 +19,11 @@ import { CippFormComponent } from "../CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { Grid } from "@mui/system";
 import defaultPresets from "../../data/DiagnosticsPresets.json";
+import { useIsMobileLayout } from "../../hooks/use-breakpoint";
 
 const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
+  // A 12-row monospace query box is roughly half a phone viewport before anything else.
+  const isMobile = useIsMobileLayout();
   const [expanded, setExpanded] = useState(true);
   const [selectedPreset, setSelectedPreset] = useState(null);
   const [presetOptions, setPresetOptions] = useState([]);
@@ -270,7 +273,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
                 label="KQL Query"
                 formControl={formControl}
                 multiline
-                rows={12}
+                rows={isMobile ? 6 : 12}
                 placeholder={`Enter your KQL query here, for example:\n\ntraces\n| where timestamp > ago(1h)\n| where severityLevel >= 2\n| project timestamp, message, severityLevel\n| order by timestamp desc`}
                 helperText="Enter a valid Kusto Query Language (KQL) query to execute against Application Insights"
                 sx={{
@@ -281,7 +284,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
                 }}
               />
 
-              <Stack direction="row" spacing={2}>
+              <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
                 <Button
                   type="submit"
                   variant="contained"

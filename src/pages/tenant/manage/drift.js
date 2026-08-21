@@ -75,12 +75,14 @@ const ManageDriftPage = () => {
   ]
 
   // API calls for drift data
+  // Hoisted so the header actions invalidate the same query this page reads.
+  const driftQueryKey = `TenantDrift-${tenantFilter}`
   const driftApi = ApiGetCall({
     url: '/api/listTenantDrift',
     data: {
       tenantFilter: tenantFilter,
     },
-    queryKey: `TenantDrift-${tenantFilter}`,
+    queryKey: driftQueryKey,
   })
 
   // API call for available drift templates (for What If dropdown)
@@ -1724,6 +1726,7 @@ const ManageDriftPage = () => {
       title={title}
       subtitle={subtitle}
       actions={actions}
+      queryKeys={driftQueryKey}
       actionsData={{}}
       isFetching={
         driftApi.isFetching ||

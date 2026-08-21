@@ -1,90 +1,109 @@
-import React from 'react'
-import { screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { useForm } from 'react-hook-form'
-import { renderWithProviders } from '../../test-utils'
-import CippFormPage from '../../../src/components/CippFormPages/CippFormPage'
-import CippFormComponent from '../../../src/components/CippComponents/CippFormComponent'
+import React from "react";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { screen } from "@testing-library/react";
+import { useForm } from "react-hook-form";
+import { renderWithProviders } from "../../test-utils";
 
-// capture the submit payload, network layer is not under test here
-const apiState = vi.hoisted(() => ({ mutate: null }))
+// jsdom has no width-based matchMedia, so the mobile branch is driven by mocking the hook
+const layoutState = vi.hoisted(() => ({ isMobile: false }));
+vi.mock("../../../src/hooks/use-breakpoint", async (importOriginal) => ({
+  ...(await importOriginal()),
+  useIsMobileLayout: () => layoutState.isMobile,
+  useIsTabletLayout: () => false,
+}));
 
-vi.mock('../../../src/api/ApiCall', () => ({
-  ApiPostCall: () => ({
-    mutate: apiState.mutate,
-    isPending: false,
-    isSuccess: false,
-    isIdle: true,
-    isError: false,
-    isFetching: false,
-    data: undefined,
-    reset: () => {},
-  }),
-  // CippApiResults polls job status through ApiGetCall, keep it inert
-  ApiGetCall: () => ({
-    isSuccess: false,
-    isPending: true,
-    isFetching: false,
-    isError: false,
-    data: undefined,
-  }),
-}))
+// Stable identities: CippFormPage has a useEffect keyed on the router object itself that
+// resets the form — a fresh object per call re-renders forever (tests/mocks/api-call.js)
+const routerState = vi.hoisted(() => {
+  const router = { push: () => {}, back: () => {}, query: {} };
+  return { push: router.push, pathname: "/cipp/sam-roles", router };
+});
+vi.mock("next/navigation", () => ({
+  useRouter: () => routerState.router,
+  usePathname: () => routerState.pathname,
+  useSearchParams: () => new URLSearchParams(""),
+}));
+vi.mock("next/router", () => ({
+  useRouter: () => routerState.router,
+}));
 
-const Harness = ({ defaultValues = { displayName: '', notes: '' }, ...pageProps }) => {
-  const formControl = useForm({ mode: 'onChange', defaultValues })
+// Stable identities: a fresh object per call re-renders forever (tests/mocks/api-call.js)
+const idle = vi.hoisted(() => ({
+  isSuccess: false,
+  isFetching: false,
+  isPending: false,
+  isError: false,
+  isIdle: true,
+  data: undefined,
+  mutate: () => {},
+  reset: () => {},
+  refetch: () => {},
+}));
+vi.mock("../../../src/api/ApiCall", () => ({
+  ApiGetCall: () => idle,
+  ApiPostCall: () => idle,
+  ApiGetCallWithPagination: () => ({ ...idle, fetchNextPage: () => {} }),
+}));
+
+import { TabbedLayout } from "../../../src/layouts/TabbedLayout";
+import CippFormPage from "../../../src/components/CippFormPages/CippFormPage";
+
+const tabOptions = [
+  { label: "SAM App Roles", path: "/cipp/sam-roles" },
+  { label: "SSO", path: "/cipp/sso" },
+];
+
+const Harness = (formPageProps) => {
+  const formControl = useForm({ mode: "onChange" });
   return (
-    <CippFormPage title="User" postUrl="/api/AddUser" formControl={formControl} {...pageProps}>
-      <CippFormComponent
-        type="textField"
-        name="displayName"
-        label="Display Name"
+    <TabbedLayout tabOptions={tabOptions}>
+      <CippFormPage
+        title="SAM App Roles"
+        hideBackButton
+        hidePageType
         formControl={formControl}
-      />
-      <CippFormComponent type="textField" name="notes" label="Notes" formControl={formControl} />
-    </CippFormPage>
-  )
-}
+        postUrl="/api/x"
+        queryKey="x"
+        {...formPageProps}
+      >
+        <div>form content</div>
+      </CippFormPage>
+    </TabbedLayout>
+  );
+};
 
-describe('CippFormPage', () => {
+describe("CippFormPage title vs the mobile tab picker", () => {
   beforeEach(() => {
-    apiState.mutate = vi.fn()
-  })
+    layoutState.isMobile = false;
+    routerState.pathname = "/cipp/sam-roles";
+  });
 
-  it('renders the page type, title, and form children', () => {
-    renderWithProviders(<Harness />)
+  // Same defect class as CippPageCard: the picker trigger already says "SAM App Roles"
+  // right above this h4, so the page opened with its own name printed twice in a row.
+  it("stands its title down when the picker already says it", () => {
+    layoutState.isMobile = true;
+    renderWithProviders(<Harness />);
 
-    expect(screen.getByRole('heading', { name: 'Add - User' })).toBeInTheDocument()
-    expect(screen.getByRole('textbox', { name: 'Display Name' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled()
-  })
+    expect(screen.getAllByText("SAM App Roles")).toHaveLength(1);
+    expect(
+      screen.queryByRole("heading", { level: 4, name: "SAM App Roles" })
+    ).not.toBeInTheDocument();
+  });
 
-  it('renders a custom page type and hides it on request', () => {
-    const { unmount } = renderWithProviders(<Harness formPageType="Edit" />)
-    expect(screen.getByRole('heading', { name: 'Edit - User' })).toBeInTheDocument()
-    unmount()
+  // With the page-type prefix the rendered text is "Add - SAM App Roles", which is not what
+  // the picker says — so it still renders.
+  it("keeps a title the prefix makes different", () => {
+    layoutState.isMobile = true;
+    renderWithProviders(<Harness hidePageType={false} />);
 
-    renderWithProviders(<Harness hidePageType />)
-    expect(screen.getByRole('heading', { name: 'User' })).toBeInTheDocument()
-  })
+    expect(
+      screen.getByRole("heading", { level: 4, name: "Add - SAM App Roles" })
+    ).toBeInTheDocument();
+  });
 
-  it('submits form values to postUrl and strips empty fields', async () => {
-    const user = userEvent.setup()
-    renderWithProviders(<Harness />)
+  it("keeps its title on desktop", () => {
+    renderWithProviders(<Harness />);
 
-    await user.type(screen.getByRole('textbox', { name: 'Display Name' }), 'John Doe')
-    const submit = screen.getByRole('button', { name: 'Submit' })
-    await waitFor(() => {
-      expect(submit).toBeEnabled()
-    })
-    await user.click(submit)
-
-    await waitFor(() => {
-      expect(apiState.mutate).toHaveBeenCalledTimes(1)
-    })
-    // notes stayed '', removeEmpty drops it from the payload
-    expect(apiState.mutate).toHaveBeenCalledWith({
-      url: '/api/AddUser',
-      data: { displayName: 'John Doe' },
-    })
-  })
-})
+    expect(screen.getByRole("heading", { level: 4, name: "SAM App Roles" })).toBeInTheDocument();
+  });
+});

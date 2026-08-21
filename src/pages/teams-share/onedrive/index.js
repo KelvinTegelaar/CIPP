@@ -119,7 +119,7 @@ const Page = () => {
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         simpleColumns={simpleColumns}
-        cardButton={reportDB.controls}
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

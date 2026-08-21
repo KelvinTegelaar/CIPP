@@ -2,25 +2,17 @@ import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import PropTypes from "prop-types";
 import { Button, ListItemText, Menu, MenuItem, SvgIcon } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
-import { useState } from "react";
-import { useDialog } from "../hooks/use-dialog";
-import { CippApiDialog } from "./CippComponents/CippApiDialog";
+import { useActionsDispatch } from "../hooks/use-actions-dispatch";
 
 export const ActionsMenu = (props) => {
   const { actions = [], label = "Actions", data, queryKeys, ...other } = props;
   const popover = usePopover();
-  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  const createDialog = useDialog();
-  const handleActionDisabled = (row, action) => {
-    //add nullsaftey for row. It can sometimes be undefined(still loading) or null(no data)
-    if (!row) {
-      return true;
-    }
-    if (action?.condition) {
-      return !action?.condition(row);
-    }
-    return false;
-  };
+  const { visibleActions, isDisabled, dispatch, dialog } = useActionsDispatch({
+    actions,
+    data,
+    queryKeys,
+  });
+
   return (
     <>
       <Button
@@ -37,7 +29,7 @@ export const ActionsMenu = (props) => {
           whiteSpace: "nowrap",
         }}
       >
-        Actions
+        {label}
       </Button>
       <Menu
         anchorEl={popover.anchorRef.current}
@@ -56,46 +48,23 @@ export const ActionsMenu = (props) => {
           vertical: "top",
         }}
       >
-        {actions
-          ?.filter((action) => !action.link || action.showInActionsMenu)
-          .map((action, index) => (
-            <MenuItem
-              disabled={handleActionDisabled(data, action)}
-              key={index}
-              onClick={() => {
-                setActionData({
-                  data: data,
-                  action: action,
-                  ready: true,
-                });
-
-                if (action?.noConfirm && action.customFunction) {
-                  action.customFunction(data, action, {});
-                  popover.handleClose();
-                } else {
-                  createDialog.handleOpen();
-                  popover.handleClose();
-                }
-              }}
-            >
-              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                {action.icon}
-              </SvgIcon>
-              <ListItemText>{action.label}</ListItemText>
-            </MenuItem>
-          ))}
+        {visibleActions.map((action, index) => (
+          <MenuItem
+            disabled={isDisabled(action)}
+            key={index}
+            onClick={() => {
+              dispatch(action);
+              popover.handleClose();
+            }}
+          >
+            <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+              {action.icon}
+            </SvgIcon>
+            <ListItemText>{action.label}</ListItemText>
+          </MenuItem>
+        ))}
       </Menu>
-      {actionData.ready && (
-        <CippApiDialog
-          createDialog={createDialog}
-          title="Confirmation"
-          fields={actionData.action?.fields}
-          api={actionData.action}
-          row={actionData.data}
-          relatedQueryKeys={queryKeys}
-          {...actionData.action}
-        />
-      )}
+      {dialog}
     </>
   );
 };

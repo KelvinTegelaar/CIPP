@@ -64,6 +64,7 @@ import { CippInfoBar } from "../../../../components/CippCards/CippInfoBar";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import tabOptions from "./tabOptions";
+import { useTitleClaimedByTabPicker } from "../../../../layouts/tab-navigation-context";
 
 const formatDuration = (ms) => {
   if (ms === 0 || ms == null) return "—";
@@ -352,6 +353,8 @@ const CompactStatsRow = ({ snapshot }) => {
         { k: "Queued", v: jobs.Queued ?? 0, w: jobs.Queued > 10 },
         { k: "Done", v: jobs.Completed?.toLocaleString() ?? 0 },
         { k: "Failed", v: jobs.Failed ?? 0, w: jobs.Failed > 0 },
+        // Stale queue entries whose task was gone by dispatch time — benign, so never flagged.
+        { k: "Skipped", v: jobs.Skipped ?? 0 },
       ],
     },
     {
@@ -459,6 +462,7 @@ const HistoryChart = ({ data, rangeMinutes, title, icon, children }) => {
 
 const Page = () => {
   const theme = useTheme();
+  const titleClaimed = useTitleClaimedByTabPicker("Worker Health");
   const queryClient = useQueryClient();
   const fileInputRef = useRef(null);
   const [historyRange, setHistoryRange] = useState(60);
@@ -720,7 +724,9 @@ const Page = () => {
           <Stack spacing={2}>
             {/* ── Header toolbar ── */}
             <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography variant="h4">Worker Health</Typography>
+              {/* Empty Box keeps the toolbar on the right when the mobile tab picker has
+                  already said "Worker Health" directly above this row. */}
+              {titleClaimed ? <Box /> : <Typography variant="h4">Worker Health</Typography>}
               <Stack direction="row" alignItems="center" spacing={1}>
                 {isImported && (
                   <Chip
@@ -837,6 +843,21 @@ const Page = () => {
                 }}
                 simpleColumns={jobSimpleColumns}
                 actions={jobActions}
+                offCanvas={{
+                  extendedInfoFields: [
+                    "Id",
+                    "Name",
+                    "RunName",
+                    "Status",
+                    "Priority",
+                    "QueuedUtc",
+                    "StartedUtc",
+                    "CompletedUtc",
+                    "WaitSeconds",
+                    "DurationSeconds",
+                    "LastError",
+                  ],
+                }}
                 defaultSorting={[{ id: "QueuedUtc", desc: true }]}
                 cardButton={
                   <Stack direction="row" spacing={1}>
@@ -846,7 +867,7 @@ const Page = () => {
                       onChange={(_, val) => val !== null && setJobStatus(val)}
                       size="small"
                     >
-                      {["", "Queued", "Running", "Completed", "Failed", "Cancelled"].map((s) => (
+                      {["", "Queued", "Running", "Completed", "Failed", "Cancelled", "Skipped"].map((s) => (
                         <ToggleButton key={s || "all"} value={s}>
                           {s || "All"}
                         </ToggleButton>
@@ -1145,7 +1166,7 @@ const Page = () => {
                       />
                     </Box>
                     {/* Stats row */}
-                    <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap", gap: 2, rowGap: 1 }}>
+                    <Stack useFlexGap direction="row" sx={{ flexWrap: "wrap", gap: 2, rowGap: 1 }}>
                       {cacheStats.map((s) => {
                         const cell = (
                           <Box sx={{ minWidth: 80 }}>

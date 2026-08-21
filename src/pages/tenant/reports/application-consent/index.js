@@ -31,7 +31,7 @@ const Page = () => {
         apiUrl={reportDB.resolvedApiUrl}
         queryKey={reportDB.resolvedQueryKey}
         simpleColumns={simpleColumns}
-        cardButton={reportDB.controls}
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

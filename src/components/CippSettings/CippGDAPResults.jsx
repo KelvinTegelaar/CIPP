@@ -69,6 +69,15 @@ export const CippGDAPResults = (props) => {
 
   const gdapTests = [
     {
+      resultProperty: "GDAPIssues",
+      matchProperty: "Issue",
+      match: ".+Partner Center API.+",
+      count: 0,
+      successMessage: "Partner Center API access is granted to the SAM application",
+      failureMessage:
+        "The SAM application cannot access the Partner Center API. Click Details for more information.",
+    },
+    {
       resultProperty: "Memberships",
       matchProperty: "displayName",
       match: "AdminAgents",
@@ -143,7 +152,15 @@ export const CippGDAPResults = (props) => {
       )}
 
       {!importReport && executeCheck?.isFetching ? (
-        <Skeleton variant="rectangular" height={100} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
+        <List>
+          {[70, 85, 60, 75].map((width, index) => (
+            <ListItem key={index} sx={{ py: 0 }}>
+              <Typography variant="body2" sx={{ width: `${width}%` }}>
+                <Skeleton />
+              </Typography>
+            </ListItem>
+          ))}
+        </List>
       ) : !importReport && executeCheck?.isError ? (
         <Alert severity="error" sx={{ ml: 3, mr: 1 }}>
           Failed to load GDAP check results. Please try refreshing or contact support if the issue

@@ -1154,7 +1154,7 @@ const CippStandardAccordion = ({
                     ) : (
                       /* Standard mode layout - original grid layout */
                       <Grid container spacing={2}>
-                        <Grid size={4}>
+                        <Grid size={{ xs: 12, md: 4 }}>
                           <CippFormComponent
                             type="autoComplete"
                             name={`${standardName}.action`}
@@ -1167,7 +1167,7 @@ const CippStandardAccordion = ({
                         </Grid>
 
                         {hasAddedComponents && (
-                          <Grid size={8}>
+                          <Grid size={{ xs: 12, md: 8 }}>
                             <Grid container spacing={2}>
                               {/* Add catalog button for Intune Template standard - appears first */}
                               {standardName.startsWith("standards.IntuneTemplate") && (

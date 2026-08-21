@@ -386,9 +386,9 @@ const Page = () => {
             <Button onClick={vppSyncDialog.handleOpen} startIcon={<Sync />}>
               Sync VPP
             </Button>
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
       />
       <CippApiDialog
         title="Sync VPP Tokens"

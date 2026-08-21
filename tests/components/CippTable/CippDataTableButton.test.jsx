@@ -3,8 +3,22 @@ import { screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '../../test-utils'
 import CippDataTableButton from '../../../src/components/CippTable/CippDataTableButton'
+import { ApiGetCallWithPagination } from '../../../src/api/ApiCall'
+import { api, paginatedResult } from '../../mocks/api-call'
+
+vi.mock('../../../src/api/ApiCall', async () => (await import('../../mocks/api-call')).apiCallMock())
+
+const idlePaginated = paginatedResult([], { isSuccess: false })
+const relatedRows = [{ id: 'rel-1', name: 'Related one' }]
+const relatedResult = paginatedResult(relatedRows)
 
 describe('CippDataTableButton', () => {
+  beforeEach(() => {
+    ApiGetCallWithPagination.mockClear()
+    api.paginated = (opts) =>
+      opts?.url === '/api/TestRelated' ? relatedResult : idlePaginated
+  })
+
   it('shows item count and opens dialog on click', async () => {
     const user = userEvent.setup()
     renderWithProviders(
@@ -79,5 +93,58 @@ describe('CippDataTableButton', () => {
     const button = screen.getByRole('button')
     expect(button).toHaveTextContent('No items')
     expect(button).toBeDisabled()
+  })
+
+  it('does not fetch live related data until the button is clicked', async () => {
+    const user = userEvent.setup()
+    const parentRow = { id: 'parent-1', displayName: 'Finance' }
+
+    renderWithProviders(
+      <CippDataTableButton
+        row={parentRow}
+        label="View"
+        title="Related for [displayName]"
+        queryKey="related-[id]"
+        api={{
+          url: '/api/TestRelated',
+          data: { someId: '[id]' },
+          dataKey: 'Results',
+        }}
+        simpleColumns={['name']}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: 'View' })).toBeEnabled()
+    expect(
+      ApiGetCallWithPagination.mock.calls.some((call) => call[0]?.url === '/api/TestRelated')
+    ).toBe(false)
+
+    await user.click(screen.getByRole('button', { name: 'View' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    await waitFor(() => {
+      expect(
+        ApiGetCallWithPagination.mock.calls.some((call) => call[0]?.url === '/api/TestRelated')
+      ).toBe(true)
+    })
+
+    const relatedCall = ApiGetCallWithPagination.mock.calls.find(
+      (call) => call[0]?.url === '/api/TestRelated'
+    )
+    expect(relatedCall[0].data.someId).toBe('parent-1')
+    expect(relatedCall[0].queryKey).toBe('related-parent-1')
+  })
+
+  it('disables the live button when condition is false', () => {
+    renderWithProviders(
+      <CippDataTableButton
+        row={{ id: 'parent-1' }}
+        label="View"
+        condition={(row) => row.id === 'other'}
+        api={{ url: '/api/TestRelated', dataKey: 'Results' }}
+      />
+    )
+    expect(screen.getByRole('button', { name: 'View' })).toBeDisabled()
   })
 })

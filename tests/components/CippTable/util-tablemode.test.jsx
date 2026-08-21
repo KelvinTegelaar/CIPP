@@ -42,6 +42,26 @@ describe('utilTableMode', () => {
     expect(result.muiPaginationProps.rowsPerPageOptions).toBeDefined()
   })
 
+  it('narrow table slims the footer so it cannot wrap below MRT 720px pivot', () => {
+    const result = utilTableMode({}, false, null, [], false, null, '380px', defaultSettings, 'table', true)
+    expect(result.muiPaginationProps.showRowsPerPage).toBe(false)
+    expect(result.muiPaginationProps.showFirstButton).toBe(false)
+    expect(result.muiPaginationProps.showLastButton).toBe(false)
+  })
+
+  it('narrow table page-scrolls instead of keeping an inner scroll viewport', () => {
+    const result = utilTableMode({}, false, null, [], false, null, '380px', defaultSettings, 'table', true)
+    expect(result.muiTableContainerProps.sx.maxHeight).toBe('none')
+  })
+
+  it('wide table keeps the full footer and the viewport-budget maxHeight', () => {
+    const result = utilTableMode({}, false, null, [], false, null, '380px', defaultSettings, 'table', false)
+    expect(result.muiPaginationProps.showRowsPerPage).toBeUndefined()
+    expect(result.muiPaginationProps.showFirstButton).toBeUndefined()
+    expect(result.muiPaginationProps.showLastButton).toBeUndefined()
+    expect(result.muiTableContainerProps.sx.maxHeight).toBe('calc(100vh - 380px)')
+  })
+
   it('returns table container height config', () => {
     const result = utilTableMode({}, false, null, [], false, null, '500px', defaultSettings)
     expect(result.muiTableContainerProps).toBeDefined()

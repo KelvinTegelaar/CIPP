@@ -995,7 +995,7 @@ export const CippTransportRuleDrawer = ({
         return (
           <Grid size={12} key={conditionValue}>
             <Grid container spacing={2}>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <CippFormComponent
                   type="textField"
                   label="Header name"
@@ -1004,7 +1004,7 @@ export const CippTransportRuleDrawer = ({
                   placeholder="e.g., Subject, From"
                 />
               </Grid>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <CippFormComponent
                   type="textField"
                   label="Words/Patterns (comma-separated)"
@@ -1195,7 +1195,7 @@ export const CippTransportRuleDrawer = ({
         return (
           <Grid size={12} key={actionValue}>
             <Grid container spacing={2}>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <CippFormComponent
                   type="textField"
                   label="Header name"
@@ -1204,7 +1204,7 @@ export const CippTransportRuleDrawer = ({
                   placeholder="X-Custom-Header"
                 />
               </Grid>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <CippFormComponent
                   type="textField"
                   label="Header value"
@@ -1245,7 +1245,7 @@ export const CippTransportRuleDrawer = ({
                   placeholder="Enter HTML disclaimer text"
                 />
               </Grid>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <CippFormComponent
                   type="autoComplete"
                   label="Disclaimer location"
@@ -1257,7 +1257,7 @@ export const CippTransportRuleDrawer = ({
                   ]}
                 />
               </Grid>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <CippFormComponent
                   type="autoComplete"
                   label="Fallback action"

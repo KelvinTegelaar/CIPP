@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
 import { getCippError } from "../utils/get-cipp-error";
 import { buildVersionedHeaders } from "../utils/cippVersion";
+import { impersonationCacheParams } from "../utils/impersonation";
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const wildcardToRegExp = (pattern) =>
@@ -71,7 +72,7 @@ export function ApiGetCall(props) {
           const element = data[i];
           const response = await axios.get(url, {
             signal: signal,
-            params: element,
+            params: { ...element, ...impersonationCacheParams() },
             headers: await buildVersionedHeaders(),
           });
           results.push(response.data);
@@ -109,7 +110,7 @@ export function ApiGetCall(props) {
       } else {
         const response = await axios.get(url, {
           signal: url === "/api/tenantFilter" ? null : signal,
-          params: data,
+          params: { ...data, ...impersonationCacheParams() },
           headers: await buildVersionedHeaders(),
           responseType: responseType,
         });
@@ -292,7 +293,7 @@ export function ApiGetCallWithPagination({
     queryFn: async ({ pageParam = null, signal }) => {
       const response = await axios.get(url, {
         signal: signal,
-        params: { ...data, ...pageParam },
+        params: { ...data, ...pageParam, ...impersonationCacheParams() },
         headers: await buildVersionedHeaders(),
       });
       return response.data;

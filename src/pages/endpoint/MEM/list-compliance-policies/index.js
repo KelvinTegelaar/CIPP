@@ -65,9 +65,9 @@ const Page = () => {
               requiredPermissions={cardButtonPermissions}
               PermissionButton={PermissionButton}
             />
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

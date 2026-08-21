@@ -751,7 +751,6 @@ const Page = () => {
       >
         Bulk Add Sites
       </Button>
-      {reportDB.controls}
     </Stack>
   )
 
@@ -766,6 +765,7 @@ const Page = () => {
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         cardButton={pageActions}
+        dataSourceControls={reportDB.controls}
         tableFilter={
           <>
             <CippSharePointQuotaCard />

@@ -61,6 +61,7 @@ const Page = () => {
       "createdDateTime",
       "lastSignInDateTime",
       "lastNonInteractiveSignInDateTime",
+      "lastSuccessfulSignInDateTime",
       "numberOfAssignedLicenses",
       "daysSinceLastSignIn",
       "lastRefreshedDateTime",
@@ -75,6 +76,7 @@ const Page = () => {
     "displayName",
     "lastSignInDateTime",
     "lastNonInteractiveSignInDateTime",
+    "lastSuccessfulSignInDateTime",
     "numberOfAssignedLicenses",
     "daysSinceLastSignIn",
     ...reportDB.cacheColumns.filter((c) => c !== "Tenant"),
@@ -89,7 +91,7 @@ const Page = () => {
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
-        cardButton={reportDB.controls}
+        dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}
     </>

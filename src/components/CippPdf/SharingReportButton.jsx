@@ -12,7 +12,8 @@ import {
   Typography,
 } from '@mui/material'
 import { Close, Download, PictureAsPdf } from '@mui/icons-material'
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import { CippPdfPreview } from './CippPdfPreview'
 import {
   AlertBox,
   Bold,
@@ -467,9 +468,14 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
         </DialogTitle>
         <DialogContent dividers sx={{ p: 0 }}>
           {dialogOpen && (
-            <PDFViewer width="100%" height="100%">
+            <CippPdfPreview
+              width="100%"
+              height="100%"
+              title={`Sharing Report - ${tenantName}`}
+              fileName={`Sharing_Report_${tenantName}.pdf`}
+            >
               {documentNode}
-            </PDFViewer>
+            </CippPdfPreview>
           )}
         </DialogContent>
         <DialogActions>

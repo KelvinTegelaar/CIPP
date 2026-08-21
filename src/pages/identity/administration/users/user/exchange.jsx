@@ -20,6 +20,7 @@ import {
 } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import tabOptions from './tabOptions'
+import { CippUserSwitcher } from '../../../../../components/CippComponents/CippUserSwitcher'
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { Box, Stack } from '@mui/system'
@@ -1407,6 +1408,13 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
+      titleControl={
+        <CippUserSwitcher
+          title={title}
+          currentUserId={userId}
+          tenantFilter={userSettingsDefaults.currentTenant}
+        />
+      }
       subtitle={subtitle}
       actions={CippExchangeActions()}
       actionsData={userRequest.data?.[0]?.MailboxActionsData}
@@ -1451,7 +1459,9 @@ const Page = () => {
               'Microsoft.Exchange.Configuration.Tasks.ManagementObjectNotFoundException'
             ) && (
               <>
-                <Grid size={4}>
+                {/* Stacked below lg — a 4/8 split at phone widths leaves both columns too
+                    narrow to hold a label, breaking the text one word per line. */}
+                <Grid size={{ xs: 12, lg: 4 }}>
                   <CippExchangeInfoCard
                     exchangeData={data}
                     isLoading={userRequest.isLoading}
@@ -1459,7 +1469,7 @@ const Page = () => {
                     handleRefresh={() => userRequest.refetch()}
                   />
                 </Grid>
-                <Grid size={8}>
+                <Grid size={{ xs: 12, lg: 8 }}>
                   <Stack spacing={3}>
                     <CippBannerListCard
                       isFetching={graphUserRequest.isLoading}

@@ -65,6 +65,7 @@ import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippQueueTracker } from '../../../../components/CippTable/CippQueueTracker'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
+import { CippChartCard } from '../../../../components/CippCards/CippChartCard'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
 import { CippApiLogsDrawer } from '../../../../components/CippComponents/CippApiLogsDrawer'
@@ -556,6 +557,13 @@ const Page = () => {
   })
 
   const catalog = definitionsApi.data ?? []
+  // A per-path deny queues an OBJECT deletion, so it only exists where the
+  // definition ships a delete executor (the detect-drift standards, where each
+  // path IS a policy). Ordinary standards get accept-only per-property actions -
+  // enforcing the baseline is the row-level Deny.
+  const supportsPathDeletion = (standardName) =>
+    !!catalog.find((entry) => entry.name === `${standardName}`.split('#')[0])
+      ?.delete
   const baselines = baselinesApi.data ?? []
   const standardAggregates = aggregateApi.data?.standards ?? []
   const tenant = {
@@ -1309,23 +1317,24 @@ const Page = () => {
                             Accept this property only
                           </Button>
                         )}
-                        {!acceptedPath && (
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="error"
-                            startIcon={<RemoveCircle />}
-                            onClick={() => {
-                              setDenyPathTarget({
-                                ...row,
-                                path: entry.Property,
-                              })
-                              denyPathDialog.handleOpen()
-                            }}
-                          >
-                            Deny & queue deletion
-                          </Button>
-                        )}
+                        {!acceptedPath &&
+                          supportsPathDeletion(row.standardName) && (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="error"
+                              startIcon={<RemoveCircle />}
+                              onClick={() => {
+                                setDenyPathTarget({
+                                  ...row,
+                                  path: entry.Property,
+                                })
+                                denyPathDialog.handleOpen()
+                              }}
+                            >
+                              Deny & queue deletion
+                            </Button>
+                          )}
                       </Stack>
                     </Box>
                   )
@@ -1469,20 +1478,22 @@ const Page = () => {
                             Accept this property only
                           </Button>
                         )}
-                        {drifted && !acceptedPath && (
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="error"
-                            startIcon={<RemoveCircle />}
-                            onClick={() => {
-                              setDenyPathTarget({ ...row, path: key })
-                              denyPathDialog.handleOpen()
-                            }}
-                          >
-                            Deny & queue deletion
-                          </Button>
-                        )}
+                        {drifted &&
+                          !acceptedPath &&
+                          supportsPathDeletion(row.standardName) && (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="error"
+                              startIcon={<RemoveCircle />}
+                              onClick={() => {
+                                setDenyPathTarget({ ...row, path: key })
+                                denyPathDialog.handleOpen()
+                              }}
+                            >
+                              Deny & queue deletion
+                            </Button>
+                          )}
                       </Stack>
                     </Box>
                   )
@@ -1672,6 +1683,32 @@ const Page = () => {
               : 'None',
           },
         ])}
+        {/* A single point is just today's live score (already listed above) - the
+            chart earns its space once there is an actual line to draw. */}
+        {Array.isArray(row.trend) && row.trend.length > 1 && (
+          <Box sx={{ px: 2, pt: 2 }}>
+            <CippChartCard
+              title="Compliance Trend"
+              chartType="area"
+              chartSeries={[
+                {
+                  name: 'Compliant with accepted deviations',
+                  data: row.trend.map((point) => ({
+                    x: point.date,
+                    y: point.aligned,
+                  })),
+                },
+                {
+                  name: 'Compliant with baseline',
+                  data: row.trend.map((point) => ({
+                    x: point.date,
+                    y: point.verified,
+                  })),
+                },
+              ]}
+            />
+          </Box>
+        )}
         <Stack spacing={1.5} sx={{ p: 2 }}>
           <Typography
             variant="caption"

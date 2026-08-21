@@ -79,6 +79,18 @@ export const SAMPLE_EXECUTIVE = {
       isEncrypted: true,
       lastSyncDateTime: '2026-08-04T21:30:00Z',
     },
+    // A Windows 365 Cloud PC: isEncrypted is false (no BitLocker) but the disk is
+    // platform-encrypted by Azure, so the report counts it as encrypted.
+    {
+      deviceName: 'CPC-SAMPLE-005',
+      operatingSystem: 'Windows',
+      complianceState: 'compliant',
+      isEncrypted: false,
+      deviceType: 'cloudPC',
+      model: 'Cloud PC Enterprise 2vCPU/8GB/128GB',
+      manufacturer: 'Microsoft Corporation',
+      lastSyncDateTime: '2026-08-05T08:20:00Z',
+    },
   ],
   // Also a plain array — `conditionalAccessData?.data?.Results` in the real report.
   conditionalAccessData: [

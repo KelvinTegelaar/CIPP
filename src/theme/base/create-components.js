@@ -71,6 +71,29 @@ export const createComponents = () => {
         disableRipple: true,
       },
     },
+    MuiAccordionDetails: {
+      styleOverrides: {
+        // An accordion is almost always nested inside a card that already pays for gutters,
+        // and its own content usually adds a third layer. Halve the horizontal padding on a
+        // phone so the innermost text is not reading through 70px of chrome.
+        root: {
+          "@media (max-width: 899.95px)": {
+            paddingLeft: 8,
+            paddingRight: 8,
+          },
+        },
+      },
+    },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        root: {
+          "@media (max-width: 899.95px)": {
+            paddingLeft: 8,
+            paddingRight: 8,
+          },
+        },
+      },
+    },
     MuiCardActions: {
       styleOverrides: {
         root: {
@@ -78,6 +101,10 @@ export const createComponents = () => {
           paddingLeft: 24,
           paddingRight: 24,
           paddingTop: 16,
+          "@media (max-width: 899.95px)": {
+            paddingLeft: 16,
+            paddingRight: 16,
+          },
         },
       },
     },
@@ -88,6 +115,13 @@ export const createComponents = () => {
           paddingLeft: 24,
           paddingRight: 24,
           paddingTop: 20,
+          // 48px of the 390 a phone has is 12% of the screen spent on one card's gutters,
+          // and cards nest — a card inside an accordion inside a page card pays it three
+          // times over. Vertical padding is left alone; it isn't what runs out.
+          "@media (max-width: 899.95px)": {
+            paddingLeft: 16,
+            paddingRight: 16,
+          },
         },
       },
     },
@@ -98,6 +132,11 @@ export const createComponents = () => {
           paddingLeft: 24,
           paddingRight: 24,
           paddingTop: 16,
+          // Matches MuiCardContent, or the header would sit inset from its own card body.
+          "@media (max-width: 899.95px)": {
+            paddingLeft: 16,
+            paddingRight: 16,
+          },
         },
         subheader: {
           fontSize: 14,
@@ -176,6 +215,24 @@ export const createComponents = () => {
         },
       },
     },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          // Below md a centred dialog wastes both screen edges and clips long forms, and
+          // there are ~70 dialogs in the app that never opted into fullScreen. Give them
+          // the full width and the full available height here rather than per call site.
+          // Height stays content-driven, so a two-line confirmation doesn't become an
+          // empty full screen. Dialogs that already pass fullScreen are unaffected.
+          "@media (max-width: 899.95px)": {
+            margin: 0,
+            width: "100%",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            borderRadius: 0,
+          },
+        },
+      },
+    },
     MuiDialogActions: {
       styleOverrides: {
         root: {
@@ -185,6 +242,21 @@ export const createComponents = () => {
           paddingTop: 24,
           "&>:not(:first-of-type)": {
             marginLeft: 16,
+          },
+          "@media (max-width: 899.95px)": {
+            // 32px of side padding is a lot of a 390px screen.
+            paddingBottom: 16,
+            paddingLeft: 16,
+            paddingRight: 16,
+            paddingTop: 16,
+            // Spacing as gap, not margin-left. `:first-of-type` counts per element type, so an
+            // actions row of [caption div, button, button] gave the FIRST button no margin and
+            // the second 16px — invisible in a row, but once the row stacks on a phone the two
+            // buttons sit at different left edges and different widths. gap works either way.
+            gap: 8,
+            "&>:not(:first-of-type)": {
+              marginLeft: 0,
+            },
           },
         },
       },
@@ -232,9 +304,17 @@ export const createComponents = () => {
         root: {
           borderRadius: 6,
           padding: 8,
+          // Touch devices get 44px hit targets without changing desktop density —
+          // pointer:coarse only matches touch-primary input.
+          "@media (pointer: coarse)": {
+            padding: 10,
+          },
         },
         sizeSmall: {
           padding: 4,
+          "@media (pointer: coarse)": {
+            padding: 8,
+          },
         },
       },
     },
@@ -254,6 +334,11 @@ export const createComponents = () => {
       styleOverrides: {
         input: {
           fontSize: 14,
+          // iOS Safari zooms the viewport when a focused input's text is under 16px, and
+          // never zooms back out. Touch devices get 16px; pointer devices keep 14.
+          "@media (pointer: coarse)": {
+            fontSize: 16,
+          },
           height: "40px", // Apply height only to single-line inputs
           "&.MuiInputBase-inputMultiline": {
             height: "unset", // Allow textareas to be flexible
@@ -291,6 +376,11 @@ export const createComponents = () => {
         input: {
           padding: "0 12px", // Adds padding to the left and right of the text
           fontSize: 14,
+          // iOS Safari zooms the viewport when a focused input's text is under 16px, and
+          // never zooms back out. Touch devices get 16px; pointer devices keep 14.
+          "@media (pointer: coarse)": {
+            fontSize: 16,
+          },
           height: "40px", // Height for single-line input fields only
           "&.MuiInputBase-inputMultiline": {
             height: "unset", // Exclude multiline inputs (textareas) from fixed height
@@ -425,6 +515,17 @@ export const createComponents = () => {
             borderWidth: 0,
           },
         },
+      },
+    },
+    MuiTooltip: {
+      defaultProps: {
+        // MUI's Tooltip attaches no touchmove and no scroll listener, so a press held
+        // through a scroll opens the tooltip after 700ms and nothing is scheduled to close
+        // it until the finger lifts — it rides the page as you drag. A tooltip is a hover
+        // affordance and touch has no hover, so the long-press variant is not worth the
+        // defect. Sites that genuinely want one opt back in with disableTouchListener={false}
+        // (CippJSONView's field descriptions are the only one).
+        disableTouchListener: true,
       },
     },
     MuiTextField: {

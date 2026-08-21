@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { PDFViewer } from '@react-pdf/renderer'
+import { CippPdfPreview } from './CippPdfPreview'
 import { ExecutiveReportDocument } from '../ExecutiveReportButton'
 import { ShadowAIReportDocument } from '../ShadowAIReportButton'
 import { BECRemediationReportDocument } from '../BECRemediationReportButton'
@@ -105,9 +105,15 @@ const CippBrandingReportPreview = ({ reportType = 'executive', brandingSettings 
   )
 
   return (
-    <PDFViewer style={{ width: '100%', height: '100%', border: 'none' }} showToolbar={true}>
+    <CippPdfPreview
+      title="Branding preview"
+      fileName="Branding_Preview.pdf"
+      style={{ width: '100%', height: '100%', border: 'none' }}
+      showToolbar={true}
+      showDownload
+    >
       {document}
-    </PDFViewer>
+    </CippPdfPreview>
   )
 }
 

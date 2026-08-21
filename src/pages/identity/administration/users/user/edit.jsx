@@ -12,6 +12,7 @@ import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
 import { Mail, Fingerprint, Launch } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import tabOptions from './tabOptions'
+import { CippUserSwitcher } from '../../../../../components/CippComponents/CippUserSwitcher'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
 import { Button, Alert } from '@mui/material'
@@ -155,6 +156,13 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
+      titleControl={
+        <CippUserSwitcher
+          title={title}
+          currentUserId={userId}
+          tenantFilter={userSettingsDefaults.currentTenant}
+        />
+      }
       subtitle={subtitle}
       isFetching={userRequest.isLoading}
     >

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import NextLink from 'next/link'
-import { Box, Button, Chip, IconButton, Stack, Typography } from '@mui/material'
+import { Box, Button, Chip, IconButton, Link, Stack, Typography, useMediaQuery } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { Close, ErrorOutline, InfoOutlined, WarningAmber } from '@mui/icons-material'
 import { formatDistanceStrict } from 'date-fns'
@@ -85,6 +85,41 @@ const buildWindowText = (start, end, active, now) => {
 export const CippMaintenanceBanner = ({ alert }) => {
   const theme = useTheme()
   const rootRef = useRef(null)
+  const messageRef = useRef(null)
+  // On phones a long notice pushes the whole chrome down by its height — clamp the message
+  // to two lines with a Read more toggle there. Desktop keeps the full inline message.
+  const mdDown = useMediaQuery(theme.breakpoints.down('md'))
+  const [messageExpanded, setMessageExpanded] = useState(false)
+  const [messageClamped, setMessageClamped] = useState(false)
+  const clampActive = mdDown && !messageExpanded
+
+  // Measured off a frame rather than synchronously in the effect: the clamped height isn't
+  // final until the browser has laid the text out, and a synchronous setState here would
+  // cascade a second render on every pass.
+  useEffect(() => {
+    const element = messageRef.current
+    if (!mdDown || !element) {
+      const frame = requestAnimationFrame(() => setMessageClamped(false))
+      return () => cancelAnimationFrame(frame)
+    }
+
+    const measure = () =>
+      setMessageClamped(
+        // Expanded text no longer overflows — keep the toggle so it can collapse again.
+        messageExpanded || element.scrollHeight > element.clientHeight + 1
+      )
+
+    const frame = requestAnimationFrame(measure)
+    if (typeof ResizeObserver === 'undefined') {
+      return () => cancelAnimationFrame(frame)
+    }
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+    }
+  }, [mdDown, messageExpanded, alert?.Alert])
 
   const noticeId = alert?.noticeId
   const dismissible = alert?.dismissible !== false
@@ -193,7 +228,7 @@ export const CippMaintenanceBanner = ({ alert }) => {
       <Stack direction="row" spacing={1.5} alignItems="flex-start">
         <Icon fontSize="small" sx={{ color: solid ? 'inherit' : palette.main, mt: 0.25 }} />
 
-        <Stack
+        <Stack useFlexGap
           direction={{ xs: 'column', md: 'row' }}
           spacing={{ xs: 0.25, md: 1.5 }}
           alignItems={{ xs: 'flex-start', md: 'baseline' }}
@@ -219,9 +254,33 @@ export const CippMaintenanceBanner = ({ alert }) => {
             )}
           </Stack>
 
-          <Typography variant="body2" sx={{ color: 'text.primary', opacity: solid ? 0.9 : 0.86 }}>
+          <Typography
+            ref={messageRef}
+            variant="body2"
+            sx={{
+              color: 'text.primary',
+              opacity: solid ? 0.9 : 0.86,
+              ...(clampActive && {
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }),
+            }}
+          >
             {alert.Alert}
           </Typography>
+          {messageClamped && (
+            <Link
+              component="button"
+              type="button"
+              variant="body2"
+              onClick={() => setMessageExpanded((prev) => !prev)}
+              sx={{ color: 'inherit', fontWeight: 600, textDecorationColor: 'currentColor' }}
+            >
+              {messageExpanded ? 'Show less' : 'Read more'}
+            </Link>
+          )}
 
           {windowText && (
             <Typography
@@ -230,7 +289,7 @@ export const CippMaintenanceBanner = ({ alert }) => {
                 color: 'text.primary',
                 opacity: solid ? 0.85 : 0.62,
                 fontVariantNumeric: 'tabular-nums',
-                whiteSpace: 'nowrap',
+                whiteSpace: { xs: 'normal', md: 'nowrap' },
               }}
             >
               {windowText}

@@ -336,7 +336,7 @@ export const CippAppTemplateDrawer = ({
 
           {/* Added Apps List */}
           {apps.length > 0 && (
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12, md: 5 }}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 Apps in this template:
               </Typography>
@@ -421,7 +421,7 @@ export const CippAppTemplateDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12, md: 5 }}>
               <Alert severity="info">
                 Enter tenant-specific parameters (keys, URLs, IDs) below. You can enter a literal
                 value that is the same for every tenant, or reference a CIPP custom variable like{' '}
@@ -564,7 +564,7 @@ export const CippAppTemplateDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 5 }}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 onClick={() => searchApp(formControl.getValues('searchQuery'), 'StoreApp')}
                 disabled={winGetSearchResults.isPending}
@@ -639,7 +639,7 @@ export const CippAppTemplateDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 5 }}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 onClick={() => searchApp(formControl.getValues('searchQuery'), 'choco')}
                 disabled={ChocosearchResults.isPending}

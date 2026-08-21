@@ -455,7 +455,7 @@ export const CippRestoreWizard = ({
           {selectedCount} {selectedCount === 1 ? "category" : "categories"} ({filteredData.length}{" "}
           items) selected for restore:
         </Typography>
-        <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
+        <Stack useFlexGap direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
           {categories
             .filter((c) => selectedCategories[c.key])
             .map((c) => (

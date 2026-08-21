@@ -24,6 +24,9 @@ export const MobileNavItem = (props) => {
   const isGlobal = scope === "global";
   const [open, setOpen] = useState(openImmediately);
 
+  // same step as side-nav-item, nesting reads the same in both navs
+  const indent = depth > 0 ? depth * 1.5 : 1;
+
   const handleToggle = useCallback(() => {
     setOpen((prevOpen) => !prevOpen);
   }, []);
@@ -43,7 +46,7 @@ export const MobileNavItem = (props) => {
             fontSize: 14,
             fontWeight: 500,
             justifyContent: 'flex-start',
-            px: '6px',
+            px: `${indent * 6}px`,
             py: '12px',
             textAlign: 'left',
             whiteSpace: 'nowrap',
@@ -119,7 +122,7 @@ export const MobileNavItem = (props) => {
           fontSize: 14,
           fontWeight: 500,
           justifyContent: 'flex-start',
-          px: '6px',
+          px: `${indent * 6}px`,
           py: '12px',
           textAlign: 'left',
           whiteSpace: 'nowrap',

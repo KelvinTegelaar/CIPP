@@ -76,9 +76,9 @@ const Page = () => {
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
             <CippReusableSettingsDeployDrawer requiredPermissions={["Endpoint.MEM.ReadWrite"]} />
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
         apiUrl={reportDB.resolvedApiUrl}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}

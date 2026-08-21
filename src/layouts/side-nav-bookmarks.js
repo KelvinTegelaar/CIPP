@@ -16,10 +16,15 @@ import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { useSettings } from "../hooks/use-settings";
 import { useUserBookmarks } from "../hooks/use-user-bookmarks";
 
-export const SideNavBookmarks = ({ collapse = false }) => {
+// alignWithRail: the pinned side nav sits beside the content area's breadcrumb rail, and the
+// two header rows share a divider line across the seam — the desktop nav passes this so the
+// Bookmarks row matches the rail's 28px row instead of the 48px nav-item rhythm. The mobile
+// drawer has no rail beside it and keeps the roomier row.
+export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) => {
   const settings = useSettings();
   const compactNav = settings.compactNav ?? false;
   const navItemPy = compactNav ? "6px" : "12px";
+  const headerPy = alignWithRail ? "2px" : navItemPy;
   const emptyStatePy = compactNav ? "4px" : "8px";
   const { bookmarks, setBookmarks } = useUserBookmarks();
   const [open, setOpen] = useState(settings.bookmarksOpen ?? false);
@@ -190,7 +195,7 @@ export const SideNavBookmarks = ({ collapse = false }) => {
             fontWeight: 500,
             justifyContent: "flex-start",
             px: "6px",
-            py: navItemPy,
+            py: headerPy,
             textAlign: "left",
             whiteSpace: "nowrap",
             width: "100%",

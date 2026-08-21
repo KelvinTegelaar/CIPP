@@ -10,6 +10,8 @@ import {
   DialogActions,
   TextField,
   Alert,
+  Paper,
+  IconButton,
 } from '@mui/material'
 import { CippWizardStepButtons } from './CippWizardStepButtons'
 import { CippDataTable } from '../CippTable/CippDataTable'
@@ -17,6 +19,7 @@ import { useWatch } from 'react-hook-form'
 import { Delete, FileDownload, Upload, Add } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import React from 'react'
+import { useIsMobileLayout } from '../../hooks/use-breakpoint'
 
 export const CippWizardAutopilotImport = (props) => {
   const {
@@ -35,6 +38,7 @@ export const CippWizardAutopilotImport = (props) => {
   const [manualDialogOpen, setManualDialogOpen] = useState(false)
   const [manualInputs, setManualInputs] = useState([{}])
   const inputRefs = React.useRef([])
+  const isMobile = useIsMobileLayout()
   const [validationErrors, setValidationErrors] = useState([])
 
   const handleRemoveItem = (row) => {
@@ -404,28 +408,35 @@ export const CippWizardAutopilotImport = (props) => {
                 ))}
               </Alert>
             )}
-            {manualInputs.map((row, rowIndex) => (
-              <Box
-                key={rowIndex}
-                sx={{
-                  display: 'flex',
-                  gap: 2,
-                  mt: rowIndex === 0 ? 2 : 0,
-                  flexWrap: 'nowrap',
-                  overflowX: 'auto',
-                  py: 0.75,
-                  alignItems: 'center',
-                  '& .MuiInputLabel-root': {
-                    backgroundColor: 'background.paper',
-                    px: 1,
-                    transform: 'translate(14px, -9px) scale(0.75)',
-                    '&.Mui-focused': {
-                      backgroundColor: 'background.paper',
-                    },
-                  },
-                }}
-              >
-                {/* Row identifier */}
+            {manualInputs.map((row, rowIndex) => {
+              // Defined once and placed by either branch, so the two layouts cannot drift.
+              const fieldInputs = fields.map((field) => (
+                <Box
+                  key={field.propertyName}
+                  sx={isMobile ? undefined : { minWidth: 150, flex: 1 }}
+                >
+                  <TextField
+                    inputRef={(el) => {
+                      if (!inputRefs.current[rowIndex]) {
+                        inputRefs.current[rowIndex] = {}
+                      }
+                      inputRefs.current[rowIndex][field.propertyName] = el
+                    }}
+                    label={field.friendlyName}
+                    value={row[field.propertyName] || ''}
+                    onChange={(e) =>
+                      handleManualInputChange(rowIndex, field.propertyName, e.target.value)
+                    }
+                    onKeyDown={(e) =>
+                      field.propertyName === 'productKey' && handleKeyPress(e, rowIndex)
+                    }
+                    fullWidth
+                    size="small"
+                  />
+                </Box>
+              ))
+
+              const rowNumber = (
                 <Box
                   sx={{
                     display: 'flex',
@@ -439,52 +450,90 @@ export const CippWizardAutopilotImport = (props) => {
                     fontSize: '0.875rem',
                     fontWeight: 600,
                     flexShrink: 0,
-                    ml: 1,
+                    ml: isMobile ? 0 : 1,
                   }}
                 >
                   {rowIndex + 1}
                 </Box>
-                {fields.map((field) => (
-                  <Box key={field.propertyName} sx={{ minWidth: 150, flex: 1 }}>
-                    <TextField
-                      inputRef={(el) => {
-                        if (!inputRefs.current[rowIndex]) {
-                          inputRefs.current[rowIndex] = {}
-                        }
-                        inputRefs.current[rowIndex][field.propertyName] = el
-                      }}
-                      label={field.friendlyName}
-                      value={row[field.propertyName] || ''}
-                      onChange={(e) =>
-                        handleManualInputChange(rowIndex, field.propertyName, e.target.value)
-                      }
-                      onKeyDown={(e) =>
-                        field.propertyName === 'productKey' && handleKeyPress(e, rowIndex)
-                      }
-                      fullWidth
-                      size="small"
-                    />
-                  </Box>
-                ))}
-                <Button
-                  onClick={() => handleRemoveRow(rowIndex)}
-                  disabled={manualInputs.length === 1}
+              )
+
+              // Six 150px fields, an index badge and a delete button come to ~1010px, which
+              // on a phone was reachable only by scrolling a nested container inside a
+              // full-screen dialog. Below md one row becomes one card instead.
+              if (isMobile) {
+                return (
+                  <Paper key={rowIndex} variant="outlined" data-testid="manual-row" sx={{ p: 2 }}>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      alignItems="center"
+                      sx={{ mb: 2 }}
+                      useFlexGap
+                    >
+                      {rowNumber}
+                      <Typography variant="subtitle2" sx={{ flexGrow: 1, minWidth: 0 }} noWrap>
+                        Device {rowIndex + 1}
+                      </Typography>
+                      <IconButton
+                        onClick={() => handleRemoveRow(rowIndex)}
+                        disabled={manualInputs.length === 1}
+                        color="error"
+                        aria-label={`Remove device ${rowIndex + 1}`}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Stack>
+                    <Stack spacing={2}>{fieldInputs}</Stack>
+                  </Paper>
+                )
+              }
+
+              return (
+                <Box
+                  key={rowIndex}
+                  data-testid="manual-row"
                   sx={{
-                    minWidth: '48px',
-                    height: '40px',
-                    fontSize: '24px',
                     display: 'flex',
+                    gap: 2,
+                    mt: rowIndex === 0 ? 2 : 0,
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    py: 0.75,
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    alignSelf: 'center',
-                    mr: 2,
+                    // Keeps the outlined labels legible inside the scroller; the mobile
+                    // branch has no scroller and no need for it.
+                    '& .MuiInputLabel-root': {
+                      backgroundColor: 'background.paper',
+                      px: 1,
+                      transform: 'translate(14px, -9px) scale(0.75)',
+                      '&.Mui-focused': {
+                        backgroundColor: 'background.paper',
+                      },
+                    },
                   }}
-                  color="error"
                 >
-                  ×
-                </Button>
-              </Box>
-            ))}
+                  {rowNumber}
+                  {fieldInputs}
+                  <Button
+                    onClick={() => handleRemoveRow(rowIndex)}
+                    disabled={manualInputs.length === 1}
+                    sx={{
+                      minWidth: '48px',
+                      height: '40px',
+                      fontSize: '24px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      alignSelf: 'center',
+                      mr: 2,
+                    }}
+                    color="error"
+                  >
+                    ×
+                  </Button>
+                </Box>
+              )
+            })}
             <Box
               sx={{
                 display: 'flex',

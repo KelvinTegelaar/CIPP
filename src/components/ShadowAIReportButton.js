@@ -15,7 +15,8 @@ import {
   Typography,
 } from '@mui/material'
 import { Close, Download, PictureAsPdf, Settings } from '@mui/icons-material'
-import { PDFViewer } from '@react-pdf/renderer'
+import { CippPdfPreview } from './CippPdf/CippPdfPreview'
+import { CippOffCanvas } from './CippComponents/CippOffCanvas'
 import { useReportVariables } from './CippPdf/useReportVariables'
 import { useBrandingSettings } from './CippPdf/useBrandingSettings'
 import {
@@ -576,6 +577,9 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
   const brandingSettings = useBrandingSettings()
   const variables = useReportVariables()
   const [previewOpen, setPreviewOpen] = useState(false)
+  // Below md the 320px config rail would leave the preview about 70px wide, so it moves into
+  // a drawer and the preview takes the whole dialog. Same treatment as the executive report.
+  const [sectionsOpen, setSectionsOpen] = useState(false)
   const [sectionConfig, setSectionConfig] = useState({
     coverPage: true,
     executiveSummary: true,
@@ -602,6 +606,73 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
   const fileName = `Shadow_AI_Report_${String(tenantName).replace(/[^a-zA-Z0-9]/g, '_')}_${
     new Date().toISOString().split('T')[0]
   }.pdf`
+
+  // One definition, two homes: the desktop rail and the mobile drawer. The drawer's own
+  // header already says "Report Sections", so it takes the panel without the heading.
+  const sectionPanel = ({ showHeading = true } = {}) => (
+    <Box sx={{ p: 2 }}>
+      {showHeading && (
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+        >
+          <Settings size={20} />
+          Report Sections
+        </Typography>
+      )}
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        Configure which sections to include in your Shadow AI report. Changes are reflected in
+        real-time.
+      </Typography>
+
+      <Stack spacing={1.5}>
+        {sectionOptions.map((option) => (
+          <Paper
+            key={option.key}
+            onClick={() => handleSectionToggle(option.key)}
+            sx={{
+              p: 1.5,
+              border: '1px solid',
+              borderColor: sectionConfig[option.key] ? 'primary.main' : 'divider',
+              bgcolor: sectionConfig[option.key] ? 'primary.50' : 'background.paper',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease-in-out',
+              display: 'flex',
+              alignItems: 'center',
+              '&:hover': {
+                borderColor: 'primary.main',
+                bgcolor: sectionConfig[option.key] ? 'primary.100' : 'primary.25',
+              },
+            }}
+          >
+            <Switch
+              checked={sectionConfig[option.key]}
+              onChange={(event) => {
+                event.stopPropagation()
+                handleSectionToggle(option.key)
+              }}
+              onClick={(event) => event.stopPropagation()}
+              color="primary"
+              size="small"
+              disabled={
+                sectionConfig[option.key] &&
+                Object.values(sectionConfig).filter(Boolean).length === 1
+              }
+            />
+            <Box sx={{ ml: 1, flexGrow: 1, minWidth: 0 }}>
+              <Typography variant="subtitle2" fontWeight="bold" sx={{ fontSize: '0.875rem' }}>
+                {option.label}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                {option.description}
+              </Typography>
+            </Box>
+          </Paper>
+        ))}
+      </Stack>
+    </Box>
+  )
 
   const reportDocument = useMemo(() => {
     if (!previewOpen) return null
@@ -642,7 +713,13 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
         onClose={() => setPreviewOpen(false)}
         maxWidth="xl"
         fullWidth
-        sx={{ '& .MuiDialog-paper': { height: '95vh', maxHeight: '95vh' } }}
+        sx={{
+          '& .MuiDialog-paper': {
+            // dvh, not vh: iOS counts the collapsing address bar in vh, so 95vh overflows.
+            height: { xs: '100dvh', md: '95vh' },
+            maxHeight: { xs: '100dvh', md: '95vh' },
+          },
+        }}
       >
         <DialogTitle
           sx={{
@@ -654,15 +731,31 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
             borderColor: 'divider',
           }}
         >
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" noWrap sx={{ minWidth: 0 }}>
             Shadow AI Report - {tenantName}
           </Typography>
-          <IconButton onClick={() => setPreviewOpen(false)} size="small">
-            <Close />
-          </IconButton>
+          <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
+            {/* The config rail's stand-in below md, in the title bar because the dialog is
+                full-screen there and this is the only chrome that stays put. */}
+            <IconButton
+              onClick={() => setSectionsOpen(true)}
+              size="small"
+              aria-label="Report sections"
+              sx={{ display: { xs: 'inline-flex', md: 'none' } }}
+            >
+              <Settings />
+            </IconButton>
+            <IconButton
+              onClick={() => setPreviewOpen(false)}
+              size="small"
+              aria-label="Close preview"
+            >
+              <Close />
+            </IconButton>
+          </Stack>
         </DialogTitle>
         <DialogContent sx={{ p: 0, height: '100%', display: 'flex' }}>
-          {/* Left Panel - Section Configuration */}
+          {/* Left Panel - Section Configuration. Below md it lives in the drawer instead. */}
           <Paper
             sx={{
               width: 320,
@@ -672,92 +765,40 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
               borderColor: 'divider',
               height: '100%',
               overflow: 'auto',
+              display: { xs: 'none', md: 'block' },
             }}
           >
-            <Box sx={{ p: 2 }}>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <Settings size={20} />
-                Report Sections
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Configure which sections to include in your Shadow AI report. Changes are reflected
-                in real-time.
-              </Typography>
-
-              <Stack spacing={1.5}>
-                {sectionOptions.map((option) => (
-                  <Paper
-                    key={option.key}
-                    onClick={() => handleSectionToggle(option.key)}
-                    sx={{
-                      p: 1.5,
-                      border: '1px solid',
-                      borderColor: sectionConfig[option.key] ? 'primary.main' : 'divider',
-                      bgcolor: sectionConfig[option.key] ? 'primary.50' : 'background.paper',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease-in-out',
-                      display: 'flex',
-                      alignItems: 'center',
-                      '&:hover': {
-                        borderColor: 'primary.main',
-                        bgcolor: sectionConfig[option.key] ? 'primary.100' : 'primary.25',
-                      },
-                    }}
-                  >
-                    <Switch
-                      checked={sectionConfig[option.key]}
-                      onChange={(event) => {
-                        event.stopPropagation()
-                        handleSectionToggle(option.key)
-                      }}
-                      onClick={(event) => event.stopPropagation()}
-                      color="primary"
-                      size="small"
-                      disabled={
-                        sectionConfig[option.key] &&
-                        Object.values(sectionConfig).filter(Boolean).length === 1
-                      }
-                    />
-                    <Box sx={{ ml: 1, flexGrow: 1 }}>
-                      <Typography
-                        variant="subtitle2"
-                        fontWeight="bold"
-                        sx={{ fontSize: '0.875rem' }}
-                      >
-                        {option.label}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ fontSize: '0.75rem' }}
-                      >
-                        {option.description}
-                      </Typography>
-                    </Box>
-                  </Paper>
-                ))}
-              </Stack>
-            </Box>
+            {sectionPanel()}
           </Paper>
 
           {/* Right Panel - PDF Preview */}
-          <Box sx={{ flex: 1, height: '100%' }}>
+          <Box sx={{ flex: 1, height: '100%', minWidth: 0 }}>
             {reportDocument && (
-              <PDFViewer
-                key={`shadow-ai-pdf-viewer-${Date.now()}`}
+              <CippPdfPreview
+                viewerKey={`shadow-ai-pdf-viewer-${Date.now()}`}
+                title={`Shadow AI Report - ${tenantName}`}
+                fileName={`Shadow_AI_Report_${tenantName}.pdf`}
                 style={{ width: '100%', height: '100%', border: 'none' }}
                 showToolbar={true}
               >
                 {reportDocument}
-              </PDFViewer>
+              </CippPdfPreview>
             )}
           </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', gap: 1 }}>
+        <DialogActions
+          sx={{
+            p: 2,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            gap: 1,
+            // Caption plus two buttons in one row leaves nothing usable at 390px; the primary
+            // action goes to the bottom of the stack, in thumb reach.
+            flexDirection: { xs: 'column-reverse', md: 'row' },
+            alignItems: { xs: 'stretch', md: 'center' },
+            '& > :not(style) ~ :not(style)': { ml: { xs: 0, md: 1 } },
+          }}
+        >
           <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="caption" color="text.secondary">
               Sections enabled: {Object.values(sectionConfig).filter(Boolean).length} of{' '}
@@ -803,6 +844,19 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
             Close
           </Button>
         </DialogActions>
+
+        {/* Mounted inside the Dialog so it inherits its theme scope; aboveModal lifts it over
+            the dialog it is opened from. */}
+        <CippOffCanvas
+          visible={sectionsOpen}
+          onClose={() => setSectionsOpen(false)}
+          title="Report Sections"
+          size="sm"
+          contentPadding={0}
+          aboveModal
+        >
+          {sectionPanel({ showHeading: false })}
+        </CippOffCanvas>
       </Dialog>
     </>
   )

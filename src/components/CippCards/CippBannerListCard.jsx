@@ -53,7 +53,7 @@ export const CippBannerListCard = (props) => {
       <Stack spacing={3} {...other}>
         {[...Array(1)].map((_, index) => (
           <Card key={index}>
-            <Stack direction="row" flexWrap="wrap" justifyContent="space-between" sx={{ p: 3 }}>
+            <Stack useFlexGap direction="row" flexWrap="wrap" justifyContent="space-between" sx={{ p: 3 }}>
               <Stack direction="row" spacing={2} alignItems="center">
                 <Box>
                   <Skeleton variant="text" width={80} />
@@ -95,8 +95,14 @@ export const CippBannerListCard = (props) => {
                   <Stack
                     direction="row"
                     justifyContent="space-between"
+                    // Status, actions and the expander take their own row below md: sharing
+                    // one line with them squeezed the text column to about 90px, which broke
+                    // the subtext one word per line and ellipsed every title.
+                    useFlexGap
+                    flexWrap={{ xs: "wrap", md: "nowrap" }}
+                    rowGap={1.5}
                     sx={{
-                      p: 3,
+                      p: { xs: 2, md: 3 },
                       ...(isCollapsible && {
                         cursor: "pointer",
                         "&:hover": {
@@ -111,7 +117,7 @@ export const CippBannerListCard = (props) => {
                       direction="row"
                       spacing={2}
                       alignItems="center"
-                      sx={{ flex: 1, minWidth: 0 }}
+                      sx={{ flex: { xs: "1 1 100%", md: "1 1 auto" }, minWidth: 0 }}
                     >
                       {onSelectionChange && (
                         <Checkbox
@@ -148,7 +154,7 @@ export const CippBannerListCard = (props) => {
                       </Box>
 
                       {/* Main Text and Subtext */}
-                      <Box sx={{ flex: 1, minWidth: 0, pr: 2 }}>
+                      <Box sx={{ flex: 1, minWidth: 0, pr: { xs: 0, md: 2 } }}>
                         <Typography
                           color="text.primary"
                           variant="h6"
@@ -167,7 +173,15 @@ export const CippBannerListCard = (props) => {
                     </Stack>
 
                     {/* Right Side: Status and Expand Icon */}
-                    <Stack alignItems="center" direction="row" spacing={2} sx={{ flexShrink: 0 }}>
+                    <Stack
+                      alignItems="center"
+                      direction="row"
+                      spacing={2}
+                      // Pushed to the right edge once this group wraps onto its own row,
+                      // so the expander sits in the same place on every item instead of
+                      // trailing whatever width that item's action button happens to be.
+                      sx={{ flexShrink: 0, ml: { xs: "auto", md: 0 } }}
+                    >
                       {item?.statusText && (
                         <Stack alignItems="center" direction="row" spacing={1}>
                           <Box

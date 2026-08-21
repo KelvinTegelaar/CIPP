@@ -107,7 +107,7 @@ const Page = () => {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               <Button variant="contained" onClick={formControl.handleSubmit(onSubmit)}>
                 Apply
               </Button>

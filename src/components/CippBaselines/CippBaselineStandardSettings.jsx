@@ -19,7 +19,7 @@ export const variableValuesFromExpected = (standard, expectedValue) => {
   return values
 }
 
-// The configurable settings of a V3 standard, rendered as real form fields from the
+// The configurable settings of a baseline standard, rendered as real form fields from the
 // definition's `variables`. Used by the template editor and the tenant-override dialog —
 // users always configure standards through the same fields, never raw JSON.
 export const CippBaselineStandardSettings = ({
@@ -71,9 +71,18 @@ export const CippBaselineStandardSettings = ({
             // Definitions may source options from an API instead of a static list
             // (e.g. the CA template picker) - CippFormComponent handles the fetch.
             api={definition.api}
-            multiple={false}
-            creatable={false}
+            // Identity pickers are always single-select (the catalog tests enforce it);
+            // list-shaped variables (allowed domains, IP ranges) declare multiple:true.
+            multiple={definition.multiple === true}
+            creatable={definition.creatable === true}
             disabled={definition.locked === true}
+            // A required variable has no safe fallback: saving without it leaves the
+            // raw %token% in the baseline, which the engine refuses to compare or apply.
+            validators={
+              definition.required
+                ? { required: `${definition.label} is required` }
+                : undefined
+            }
           />
           {definition.locked && (
             <Stack direction="row" spacing={0.5} alignItems="center">

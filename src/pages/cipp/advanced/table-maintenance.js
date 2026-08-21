@@ -66,8 +66,15 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
           {Array.isArray(fields) && fields?.length > 0 && (
             <>
               {fields.map((field, index) => (
-                <Stack direction="row" spacing={0.5} key={index} alignItems="center" width="100%">
-                  <Box width="30%">
+                <Stack
+                  // Name/type/value share a row only where all three fit; a phone stacks them
+                  direction={{ xs: "column", md: "row" }}
+                  spacing={0.5}
+                  key={index}
+                  alignItems={{ xs: "stretch", md: "center" }}
+                  width="100%"
+                >
+                  <Box width={{ xs: "100%", md: "30%" }}>
                     <CippFormComponent
                       type="textField"
                       name={`fields[${index}].name`}
@@ -76,7 +83,7 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       disableVariables={true}
                     />
                   </Box>
-                  <Box width="10%">
+                  <Box width={{ xs: "100%", md: "10%" }}>
                     <Select
                       value={field.type}
                       onChange={(e) => handleTypeChange(index, e.target.value)}
@@ -88,7 +95,7 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       <MenuItem value="switch">Boolean</MenuItem>
                     </Select>
                   </Box>
-                  <Box width="50%">
+                  <Box width={{ xs: "100%", md: "50%" }}>
                     <CippFormComponent
                       type={field.type}
                       name={`fields[${index}].value`}
@@ -287,7 +294,7 @@ const Page = () => {
         that should only be used when directed by CyberDrain support.
       </Alert>
       <Grid sx={{ flexGrow: 1, display: "flex" }} container spacing={2}>
-        <Grid size={3}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <CippPropertyListCard
             title="Tables"
             propertyItems={propertyItems}
@@ -324,7 +331,7 @@ const Page = () => {
             }
           />
         </Grid>
-        <Grid size={9}>
+        <Grid size={{ xs: 12, md: 9 }}>
           {selectedTable && (
             <Box sx={{ width: "100%" }}>
               <Stack spacing={1}>

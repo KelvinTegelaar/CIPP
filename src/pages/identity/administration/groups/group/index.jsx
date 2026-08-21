@@ -19,6 +19,7 @@ import {
   GroupAdd,
 } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
+import { CippEntitySwitcher } from "../../../../../components/CippComponents/CippEntitySwitcher";
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
@@ -684,6 +685,27 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
+      titleControl={
+        <CippEntitySwitcher
+          title={title}
+          currentId={groupId}
+          queryParamKey="groupId"
+          entityName="group"
+          api={{
+            url: "/api/ListGraphRequest",
+            data: {
+              Endpoint: "groups",
+              tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
+              $select: "id,displayName,mail",
+              $count: true,
+              $orderby: "displayName",
+              $top: 999,
+            },
+            queryKey: `GroupSwitcher-${router.query.tenantFilter ?? userSettingsDefaults.currentTenant}`,
+          }}
+          getSecondary={(group) => group.mail}
+        />
+      }
       actions={groupActions}
       actionsData={data}
       subtitle={subtitle}
@@ -699,7 +721,7 @@ const Page = () => {
         >
           <CippHead title={title} />
           <Grid container spacing={2}>
-            <Grid size={4}>
+            <Grid size={{ xs: 12, lg: 4 }}>
               <Card>
                 <CardHeader title="Group Details" />
                 <Divider />
@@ -806,7 +828,7 @@ const Page = () => {
                 </PropertyList>
               </Card>
             </Grid>
-            <Grid size={8}>
+            <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
                 <Typography variant="h6">Members</Typography>
                 <CippBannerListCard

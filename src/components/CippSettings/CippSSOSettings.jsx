@@ -15,6 +15,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -67,32 +68,41 @@ const samPermissionsUsed = [
   },
 ];
 
-const PermissionTable = ({ rows, typeLabel }) => (
-  <Table size="small" sx={{ "& td, & th": { px: 1, verticalAlign: "top" } }}>
-    <TableHead>
-      <TableRow>
-        <TableCell sx={{ width: "40%" }}>Permission</TableCell>
-        <TableCell>Why it is needed</TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {rows.map((row) => (
-        <TableRow key={row.name}>
-          <TableCell>
-            <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
-              {row.name}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {typeLabel}
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography variant="body2">{row.reason}</Typography>
-          </TableCell>
+// Exported for the phone-width overflow story: readable consent text is this table's job.
+export const PermissionTable = ({ rows, typeLabel }) => (
+  // TableContainer: the surrounding Card sets overflow: hidden, which cut this table off
+  // with no scroll path — an admin could not read the permission they were asked to approve.
+  // The monospace names also break, so a phone rarely needs the scrollbar at all.
+  <TableContainer>
+    <Table size="small" sx={{ "& td, & th": { px: 1, verticalAlign: "top" } }}>
+      <TableHead>
+        <TableRow>
+          <TableCell sx={{ width: "40%" }}>Permission</TableCell>
+          <TableCell>Why it is needed</TableCell>
         </TableRow>
-      ))}
-    </TableBody>
-  </Table>
+      </TableHead>
+      <TableBody>
+        {rows.map((row) => (
+          <TableRow key={row.name}>
+            <TableCell>
+              <Typography
+                variant="body2"
+                sx={{ fontFamily: "monospace", overflowWrap: "anywhere" }}
+              >
+                {row.name}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {typeLabel}
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="body2">{row.reason}</Typography>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
 );
 
 const statusLabels = {
@@ -402,23 +412,23 @@ export const CippSSOSettings = () => {
             <Divider />
 
             <Grid container spacing={2} alignItems="center">
-              <Grid size={{ xs: 4 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="body2" color="text.secondary">
                   Status
                 </Typography>
               </Grid>
-              <Grid size={{ xs: 8 }}>
+              <Grid size={{ xs: 12, md: 8 }}>
                 <Chip label={statusInfo.label} color={statusInfo.color} size="small" />
               </Grid>
 
               {hasAppId && (
                 <>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       Admin Consent
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Chip
                       label={preconsentInfo.label}
                       color={preconsentInfo.color}
@@ -441,12 +451,12 @@ export const CippSSOSettings = () => {
 
               {data?.appId && (
                 <>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       App ID
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
                       {data.appId}
                     </Typography>
@@ -456,12 +466,12 @@ export const CippSSOSettings = () => {
 
               {signInHosts.length > 0 && (
                 <>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       Sign-in URLs
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                       {signInHosts.map((host) => (
                         <Chip
@@ -503,12 +513,12 @@ export const CippSSOSettings = () => {
 
               {data?.createdAt && (
                 <>
-                  <Grid size={{ xs: 4 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       Created
                     </Typography>
                   </Grid>
-                  <Grid size={{ xs: 8 }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Typography variant="body2">
                       {new Date(data.createdAt).toLocaleString()}
                     </Typography>

@@ -12,17 +12,21 @@ import {
   GroupSharp,
   CloudSync,
   RocketLaunch,
+  PersonAdd,
+  PersonRemove,
 } from '@mui/icons-material'
 import { Stack } from '@mui/system'
-import { useState } from 'react'
 import { useSettings } from '../../../../hooks/use-settings'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
+import { getRowTenant } from '../../../../utils/resolve-row-templates'
 
 const Page = () => {
   const pageTitle = 'Groups'
-  const [showMembers, setShowMembers] = useState(false)
-  const [showOwners, setShowOwners] = useState(false)
   const { currentTenant } = useSettings()
+  const tenantQuery =
+    currentTenant === 'AllTenants' ? '[Tenant]' : currentTenant
+  const nestedTenantQuery =
+    currentTenant === 'AllTenants' ? '[parent.Tenant]' : currentTenant
 
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListGroups',
@@ -35,25 +39,10 @@ const Page = () => {
     cacheColumns: ['CacheTimestamp'],
   })
 
-  const handleMembersToggle = () => {
-    setShowMembers((prev) => {
-      const next = !prev
-      if (next) setShowOwners(false)
-      return next
-    })
-  }
-
-  const handleOwnersToggle = () => {
-    setShowOwners((prev) => {
-      const next = !prev
-      if (next) setShowMembers(false)
-      return next
-    })
-  }
   const actions = [
     {
       label: 'View Group',
-      link: `/identity/administration/groups/group?groupId=[id]&tenantFilter=${currentTenant}`,
+      link: `/identity/administration/groups/group?groupId=[id]&tenantFilter=${tenantQuery}`,
       color: 'info',
       icon: <EyeIcon />,
       multiPost: false,
@@ -65,6 +54,81 @@ const Page = () => {
       multiPost: false,
       icon: <Edit />,
       color: 'success',
+    },
+    {
+      label: 'Add Member',
+      type: 'POST',
+      url: '/api/EditGroup',
+      icon: <PersonAdd />,
+      customDataformatter: (row, action, formData) => {
+        // Members picked in the dialog already carry {label, value: id, addedFields}
+        const addMember = [...(formData.AddMember ?? [])]
+        // CSV rows only carry a userPrincipalName; without a value the backend
+        // resolves the directory object id itself
+        ;(formData.bulkMember ?? []).forEach((csvRow) => {
+          const upnKey = Object.keys(csvRow).find(
+            (key) => key.trim().toLowerCase() === 'userprincipalname'
+          )
+          const userPrincipalName = upnKey ? csvRow[upnKey]?.trim() : undefined
+          if (userPrincipalName) {
+            addMember.push({
+              label: userPrincipalName,
+              addedFields: { userPrincipalName: userPrincipalName },
+            })
+          }
+        })
+
+        // Handle multiple groups - return an array of requests (one per group)
+        const selectedGroups = Array.isArray(row) ? row : [row]
+        return selectedGroups.map((group) => ({
+          AddMember: addMember,
+          tenantFilter: getRowTenant(group, currentTenant),
+          groupId: group.id,
+          groupName: group.displayName,
+          groupType: group.groupType,
+        }))
+      },
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'AddMember',
+          label: 'Select users to add as members',
+          multiple: true,
+          creatable: false,
+          api: {
+            url: '/api/ListGraphRequest',
+            data: {
+              Endpoint: 'users',
+              $select: 'id,displayName,userPrincipalName',
+              $top: 999,
+              $count: true,
+            },
+            dataKey: 'Results',
+            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
+            valueField: 'id',
+            addedField: {
+              userPrincipalName: 'userPrincipalName',
+              displayName: 'displayName',
+            },
+            queryKey: 'ListUsersAutoComplete',
+            showRefresh: true,
+          },
+          validators: {
+            validate: (value, formValues) =>
+              (Array.isArray(value) && value.length > 0) ||
+              (Array.isArray(formValues.bulkMember) && formValues.bulkMember.length > 0) ||
+              'Select at least one user or upload a CSV',
+          },
+        },
+        {
+          type: 'CSVReader',
+          name: 'bulkMember',
+        },
+      ],
+      confirmText:
+        'Select the users to add as members to [displayName], or drop a CSV file with a userPrincipalName column to bulk add members.',
+      multiPost: false,
+      allowResubmit: true,
     },
     {
       label: 'Set Global Address List Visibility',
@@ -360,16 +424,6 @@ const Page = () => {
         title={pageTitle}
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">
-            {!reportDB.useReportDB && (
-              <>
-                <Button onClick={handleMembersToggle}>
-                  {showMembers ? 'Hide Members' : 'Show Members'}
-                </Button>
-                <Button onClick={handleOwnersToggle}>
-                  {showOwners ? 'Hide Owners' : 'Show Owners'}
-                </Button>
-              </>
-            )}
             <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
               Add Group
             </Button>
@@ -380,27 +434,13 @@ const Page = () => {
             >
               Deploy Group Template
             </Button>
-            {reportDB.controls}
           </Stack>
         }
+        dataSourceControls={reportDB.controls}
         apiUrl={reportDB.resolvedApiUrl}
-        apiData={
-          reportDB.useReportDB
-            ? undefined
-            : showMembers
-              ? { expandMembers: true }
-              : showOwners
-                ? { expandOwners: true }
-                : {}
-        }
+        apiData={reportDB.useReportDB ? undefined : {}}
         queryKey={
-          reportDB.useReportDB
-            ? reportDB.resolvedQueryKey
-            : showMembers
-              ? `groups-with-members-${currentTenant}`
-              : showOwners
-                ? `groups-with-owners-${currentTenant}`
-                : `groups-${currentTenant}`
+          reportDB.useReportDB ? reportDB.resolvedQueryKey : `groups-${currentTenant}`
         }
         actions={actions}
         offCanvas={offCanvas}
@@ -419,6 +459,148 @@ const Page = () => {
           'onPremisesSamAccountName',
           'membershipRule',
           'onPremisesSyncEnabled',
+          'members',
+          'owners',
+        ]}
+        subTables={[
+          {
+            id: 'members',
+            header: 'Members',
+            label: 'View members',
+            cachedColumn: 'membersCsv',
+            table: {
+              title: 'Members of [displayName]',
+              queryKey: 'group-members-[id]',
+              api: {
+                url: '/api/ListGroups',
+                data: { groupID: '[id]', members: true, groupType: '[groupType]' },
+                dataKey: 'members',
+              },
+              simpleColumns: ['displayName', 'userPrincipalName', 'mail', '@odata.type'],
+              actions: [
+                {
+                  label: 'View User',
+                  link: `/identity/administration/users/user?userId=[id]&tenantFilter=${nestedTenantQuery}`,
+                  color: 'info',
+                  icon: <EyeIcon />,
+                  condition: (row) =>
+                    !row?.['@odata.type'] || row['@odata.type'] === '#microsoft.graph.user',
+                },
+                {
+                  label: 'View Group',
+                  link: `/identity/administration/groups/group?groupId=[id]&tenantFilter=${nestedTenantQuery}`,
+                  color: 'info',
+                  icon: <EyeIcon />,
+                  condition: (row) => row?.['@odata.type'] === '#microsoft.graph.group',
+                },
+                {
+                  label: 'Remove Member',
+                  type: 'POST',
+                  url: '/api/ExecGroupMembers',
+                  icon: <PersonRemove />,
+                  data: { action: '!removeMember', groupId: 'parent.id', users: 'id' },
+                  confirmText: 'Remove [displayName] from [parent.displayName]?',
+                  condition: (row) =>
+                    !row?.parent?.dynamicGroupBool && !row?.parent?.membershipRule,
+                },
+              ],
+              cardButton: {
+                label: 'Add Members',
+                icon: <GroupAdd />,
+                url: '/api/ExecGroupMembers',
+                allowResubmit: true,
+                relatedQueryKeys: 'group-members-[id]',
+                confirmText: 'Add members to [displayName]?',
+                condition: (row) => !row?.dynamicGroupBool && !row?.membershipRule,
+                data: { action: '!addMember', groupId: 'id' },
+                fields: [
+                  {
+                    type: 'autoComplete',
+                    name: 'users',
+                    label: 'Add Members',
+                    multiple: true,
+                    creatable: false,
+                    csvColumn: 'userPrincipalName',
+                    api: {
+                      url: '/api/ListUsersAndGroups',
+                      dataKey: 'Results',
+                      valueField: 'id',
+                      labelField: 'displayName',
+                      descriptionField: 'userPrincipalName',
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          {
+            id: 'owners',
+            header: 'Owners',
+            label: 'View owners',
+            cachedColumn: 'ownersCsv',
+            table: {
+              title: 'Owners of [displayName]',
+              queryKey: 'group-owners-[id]',
+              api: {
+                url: '/api/ListGroups',
+                data: { groupID: '[id]', owners: true, groupType: '[groupType]' },
+                dataKey: 'owners',
+              },
+              simpleColumns: ['displayName', 'userPrincipalName', 'mail'],
+              actions: [
+                {
+                  label: 'View User',
+                  link: `/identity/administration/users/user?userId=[id]&tenantFilter=${nestedTenantQuery}`,
+                  color: 'info',
+                  icon: <EyeIcon />,
+                  condition: (row) =>
+                    !row?.['@odata.type'] || row['@odata.type'] === '#microsoft.graph.user',
+                },
+                {
+                  label: 'Remove Owner',
+                  type: 'POST',
+                  url: '/api/ExecGroupMembers',
+                  icon: <PersonRemove />,
+                  data: { action: '!removeOwner', groupId: 'parent.id', users: 'id' },
+                  confirmText: 'Remove [displayName] as owner of [parent.displayName]?',
+                },
+              ],
+              cardButton: {
+                label: 'Add Owners',
+                icon: <GroupAdd />,
+                url: '/api/ExecGroupMembers',
+                allowResubmit: true,
+                relatedQueryKeys: 'group-owners-[id]',
+                confirmText: 'Add owners to [displayName]?',
+                data: { action: '!addOwner', groupId: 'id' },
+                fields: [
+                  {
+                    type: 'autoComplete',
+                    name: 'users',
+                    label: 'Add Owners',
+                    multiple: true,
+                    creatable: false,
+                    csvColumn: 'userPrincipalName',
+                    api: {
+                      url: '/api/ListGraphRequest',
+                      dataKey: 'Results',
+                      valueField: 'id',
+                      labelField: 'displayName',
+                      descriptionField: 'userPrincipalName',
+                      data: {
+                        Endpoint: 'users',
+                        manualPagination: true,
+                        $select: 'id,userPrincipalName,displayName',
+                        $count: true,
+                        $orderby: 'displayName',
+                        $top: 999,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
         ]}
       />
       {reportDB.syncDialog}

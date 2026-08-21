@@ -50,7 +50,7 @@ export const CippPropertyListCard = (props) => {
     )
   }
 
-  const setPadding = isLabelPresent ? { py: 0.5, px: 3 } : { py: 1.5, px: 3 }
+  const setPadding = isLabelPresent ? { py: 0.5, px: { xs: 2, md: 3 } } : { py: 1.5, px: { xs: 2, md: 3 } }
   const handleActionDisabled = (row, action) => {
     if (action?.condition) {
       return !action.condition(row)

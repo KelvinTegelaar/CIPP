@@ -52,7 +52,7 @@ const AddContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Email */}
-        <Grid size={{ md: 6, xs: 6 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="username"
@@ -60,7 +60,7 @@ const AddContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid size={{ md: 6, xs: 6 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormDomainSelector formControl={formControl} name="domain" label="Domain" required />
         </Grid>
       </Grid>

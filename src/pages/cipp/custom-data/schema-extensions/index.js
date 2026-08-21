@@ -6,6 +6,7 @@ import { Add, Block, CheckCircleOutline } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
+import { CippExpandableAlert } from "../../../../components/CippComponents/CippExpandableAlert";
 
 const Page = () => {
   const pageTitle = "Schema Extensions";
@@ -107,7 +108,7 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         tableFilter={
-          <Alert severity="info" style={{ marginBottom: 16 }}>
+          <CippExpandableAlert severity="info" style={{ marginBottom: 16 }}>
             <Link
               target="_blank"
               href="https://learn.microsoft.com/en-us/graph/extensibility-overview?tabs=http#schema-extensions"
@@ -124,7 +125,7 @@ const Page = () => {
               </li>
               <li>There is a limit of 5 total schema extensions.</li>
             </ul>
-          </Alert>
+          </CippExpandableAlert>
         }
         cardButton={
           <Button

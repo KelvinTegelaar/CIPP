@@ -43,6 +43,22 @@ const getCountryNameFromCode = (countryCode) => {
   return country ? country.Name : countryCode
 }
 
+// Shared so the card list and the extended-info drawer can label a portal link with the
+// same glyph the table cell uses.
+export const portalIcons = {
+  portal_m365: CogIcon,
+  portal_exchange: MailOutline,
+  portal_entra: UserIcon,
+  portal_teams: UsersIcon,
+  portal_azure: ServerIcon,
+  portal_intune: LaptopWindows,
+  portal_security: Shield,
+  portal_compliance: CompassCalibration,
+  portal_sharepoint: Description,
+  portal_platform: PrecisionManufacturing,
+  portal_bi: BarChart,
+}
+
 export const getCippFormatting = (
   data,
   cellName,
@@ -61,20 +77,6 @@ export const getCippFormatting = (
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
     )
-  }
-
-  const portalIcons = {
-    portal_m365: CogIcon,
-    portal_exchange: MailOutline,
-    portal_entra: UserIcon,
-    portal_teams: UsersIcon,
-    portal_azure: ServerIcon,
-    portal_intune: LaptopWindows,
-    portal_security: Shield,
-    portal_compliance: CompassCalibration,
-    portal_sharepoint: Description,
-    portal_platform: PrecisionManufacturing,
-    portal_bi: BarChart,
   }
 
   // Create a helper function to render chips with CollapsibleChipList
@@ -266,6 +268,9 @@ export const getCippFormatting = (
     'NextAttemptUtc',
     'LastErrorUtc',
     'LastPolledUtc',
+    'QueuedUtc', // Worker health job queue
+    'StartedUtc', // Worker health job queue
+    'CompletedUtc', // Worker health job queue
   ]
   if (absoluteDateArray.includes(cellName)) {
     if (data === null || data === undefined || data === '') {
@@ -274,9 +279,11 @@ export const getCippFormatting = (
     const dt = parseCippDate(data)
     if (isNaN(dt.getTime())) return isText ? '' : ''
     if (dt.getTime() === 0) return isText ? '' : 'Never'
-    // text mode: Date object so MRT sorts chronologically (toLocaleString for CSV export);
+    // text mode: Date object so MRT sorts chronologically — except when the caller can
+    // receive a rendered node ('both': off-canvas, card views) or explicitly wants a
+    // string (false: CSV export); a raw Date is not a valid React child.
     // cell mode: long absolute string in the browser's locale + timezone.
-    if (isText) return canReceive === false ? dt.toLocaleString() : dt
+    if (isText) return canReceive === 'both' || canReceive === false ? dt.toLocaleString() : dt
     return dt.toLocaleString()
   }
 
@@ -317,6 +324,7 @@ export const getCippFormatting = (
     'requestDate', // App Consent Requests
     'reviewedDate', // App Consent Requests
     'GeneratedAt', // Report Builder
+    'RecordedAt', // Container update history
     'directTenantAuthDate', // Direct tenant service account
     'ServiceAccountLastAuth', // Direct tenant service account
   ]

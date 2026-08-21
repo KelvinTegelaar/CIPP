@@ -6,6 +6,7 @@ import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSk
 import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
 import { Fingerprint, Launch, Apps, Group, CheckCircle, Warning, Badge } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
+import { CippEnterpriseAppSwitcher } from '../../../../../components/CippComponents/CippEnterpriseAppSwitcher'
 import tabOptions from './tabOptions'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { Box, Stack } from '@mui/system'
@@ -288,6 +289,13 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
+      titleControl={
+        <CippEnterpriseAppSwitcher
+          title={title}
+          currentSpId={spObjectId}
+          tenantFilter={router.query.tenantFilter ?? userSettingsDefaults.currentTenant}
+        />
+      }
       subtitle={subtitle}
       actions={spData ? appActions : []}
       actionsData={actionsData}
@@ -305,7 +313,7 @@ const Page = () => {
         <Box sx={{ flexGrow: 1, py: 4 }}>
           <CippHead title={title} />
           <Grid container spacing={2}>
-            <Grid size={4}>
+            <Grid size={{ xs: 12, lg: 4 }}>
               <Card>
                 <CardHeader title="Enterprise application" />
                 <Divider />
@@ -393,7 +401,7 @@ const Page = () => {
                 </PropertyList>
               </Card>
             </Grid>
-            <Grid size={8}>
+            <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
                 <Typography variant="h6">Credentials</Typography>
                 <CippBannerListCard

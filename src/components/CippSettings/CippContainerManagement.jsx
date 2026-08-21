@@ -29,6 +29,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import CippButtonCard from '../CippCards/CippButtonCard'
 import { CippInfoBar } from '../CippCards/CippInfoBar'
+import { CippDataTable } from '../CippTable/CippDataTable'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { CippApiResults } from '../CippComponents/CippApiResults'
 import { useDialog } from '../../hooks/use-dialog'
@@ -542,6 +543,24 @@ export const CippContainerManagement = () => {
                 <CippApiResults apiObject={updateSettingsAction} />
               </Stack>
             </CippButtonCard>
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            {/* Version transitions recorded at warmup - answers "when did this instance land
+                on the current build, and what was it on before?" without reading container
+                logs. Rows come newest first from the Status payload. */}
+            <CippDataTable
+              title="Update History"
+              data={data?.UpgradeHistory ?? []}
+              isFetching={containerStatus.isFetching}
+              refreshFunction={() => containerStatus.refetch()}
+              simpleColumns={[
+                'RecordedAt',
+                'PreviousVersion',
+                'NewVersion',
+                'ImageTag',
+              ]}
+            />
           </Grid>
         </Grid>
       </Stack>

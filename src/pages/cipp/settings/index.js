@@ -14,7 +14,7 @@ import CippLogRetentionSettings from "../../../components/CippSettings/CippLogRe
 import CippJitAdminSettings from "../../../components/CippSettings/CippJitAdminSettings";
 const Page = () => {
   return (
-    <Container sx={{ pt: 3 }} maxWidth="xl">
+    <Container sx={{ pt: { xs: 0, md: 3 }, px: { xs: 1.5, md: 3 } }} maxWidth="xl">
       <Grid container spacing={2}>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippVersionProperties />

@@ -32048,6 +32048,54 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Webinar"
   },
   {
+    "Product_Display_Name": "Microsoft Teams Premium",
+    "String_Id": "M365_TEAMS_PREMIUM",
+    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
+    "Service_Plan_Name": "TEAMSPRO_MGMT",
+    "Service_Plan_Id": "0504111f-feb8-4a3c-992a-70280f9a2869",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Intelligent"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Premium",
+    "String_Id": "M365_TEAMS_PREMIUM",
+    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
+    "Service_Plan_Name": "TEAMSPRO_CUST",
+    "Service_Plan_Id": "cc8c0802-a325-43df-8cba-995d0c6cb373",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Personalized"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Premium",
+    "String_Id": "M365_TEAMS_PREMIUM",
+    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
+    "Service_Plan_Name": "TEAMSPRO_PROTECTION",
+    "Service_Plan_Id": "f8b44f54-18bb-46a3-9658-44ab58712968",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Secure"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Premium",
+    "String_Id": "M365_TEAMS_PREMIUM",
+    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
+    "Service_Plan_Name": "TEAMSPRO_VIRTUALAPPT",
+    "Service_Plan_Id": "9104f592-f2a7-4f77-904c-ca5a5715883f",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Virtual Appointment"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Premium",
+    "String_Id": "M365_TEAMS_PREMIUM",
+    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
+    "Service_Plan_Name": "MCO_VIRTUAL_APPT",
+    "Service_Plan_Id": "711413d0-b36e-4cd4-93db-0a50a4ab7ea3",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Virtual Appointments"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Premium",
+    "String_Id": "M365_TEAMS_PREMIUM",
+    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
+    "Service_Plan_Name": "QUEUES_APP",
+    "Service_Plan_Id": "ab2d4fb5-f80a-4bf1-a11d-7f1da254041b",
+    "Service_Plans_Included_Friendly_Names": "Queues app for Microsoft Teams"
+  },
+  {
     "Product_Display_Name": "Microsoft Teams Rooms Basic",
     "String_Id": "Microsoft_Teams_Rooms_Basic",
     "GUID": "6af4b3d6-14bb-4a2a-960c-6c902aad34f3",
@@ -32214,6 +32262,14 @@
     "Service_Plan_Name": "WHITEBOARD_PLAN3",
     "Service_Plan_Id": "4a51bca5-1eff-43f5-878c-177680f191af",
     "Service_Plans_Included_Friendly_Names": "Whiteboard (Plan 3)"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Rooms Pro",
+    "String_Id": "Microsoft_Teams_Rooms_Pro",
+    "GUID": "4cde982a-ede4-4409-9ae6-b003453c8ea6",
+    "Service_Plan_Name": "MICROSOFT_TEAMS_EVENTS",
+    "Service_Plan_Id": "29c62f1c-8ffc-4304-9cb9-398a6aa1852b",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Events"
   },
   {
     "Product_Display_Name": "Microsoft Teams Rooms Pro for EDU",
@@ -33030,6 +33086,14 @@
     "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_USER",
     "Service_Plan_Id": "b622badb-1b45-48d5-920f-4b27a2c0996c",
     "Service_Plans_Included_Friendly_Names": "Microsoft Workplace Analytics Insights User"
+  },
+  {
+    "Product_Display_Name": "Microsoft Workplace Analytics",
+    "String_Id": "WORKPLACE_ANALYTICS",
+    "GUID": "3d957427-ecdc-4df2-aacd-01cc9d519da8",
+    "Service_Plan_Name": "SKILLS_IN_VIVA",
+    "Service_Plan_Id": "ccaebebf-3634-4975-a0ad-3eccb697f393",
+    "Service_Plans_Included_Friendly_Names": "Skills in Viva"
   },
   {
     "Product_Display_Name": "Minecraft Education Faculty",
@@ -45328,6 +45392,14 @@
     "Service_Plans_Included_Friendly_Names": "DOMESTIC AND INTERNATIONAL CALLING PLAN"
   },
   {
+    "Product_Display_Name": "Skype for Business PSTN Domestic and International Calling",
+    "String_Id": "MCOPSTN2",
+    "GUID": "d3b4fe1f-9992-4930-8acb-ca6ec609365e",
+    "Service_Plan_Name": "MCOSMS2",
+    "Service_Plan_Id": "d4009785-b899-4cab-97b6-d06a7c799507",
+    "Service_Plans_Included_Friendly_Names": "DOMESTIC AND INTERNATIONAL CALLING PLAN"
+  },
+  {
     "Product_Display_Name": "Skype for Business PSTN Domestic Calling",
     "String_Id": "MCOPSTN1",
     "GUID": "0dab259f-bf13-4952-b7f8-7db8f131b28d",
@@ -46715,6 +46787,14 @@
     "Product_Display_Name": "Windows 365 Enterprise 4 vCPU 16 GB 128 GB",
     "String_Id": "CPC_E_4C_16GB_128GB",
     "GUID": "d201f153-d3b2-4057-be2f-fe25c8983e6f",
+    "Service_Plan_Name": "Windows_10_ESU_Commercial",
+    "Service_Plan_Id": "6dc0e3c6-2e4e-463c-90a4-9989d8543841",
+    "Service_Plans_Included_Friendly_Names": "Windows 10 ESU Commercial"
+  },
+  {
+    "Product_Display_Name": "Windows 365 Enterprise 4 vCPU 16 GB 128 GB",
+    "String_Id": "CPC_E_4C_16GB_128GB",
+    "GUID": "d201f153-d3b2-4057-be2f-fe25c8983e6f",
     "Service_Plan_Name": "CPC_E_4C_16GB_128GB",
     "Service_Plan_Id": "2de9c682-ca3f-4f2b-b360-dfc4775db133",
     "Service_Plans_Included_Friendly_Names": "Windows 365 Enterprise 4 vCPU 16 GB 128 GB"
@@ -46854,6 +46934,14 @@
     "Service_Plan_Name": "CPC_S_2C_8GB_256GB",
     "Service_Plan_Id": "50ef7026-6174-40ba-bff7-f0e4fcddbf65",
     "Service_Plans_Included_Friendly_Names": "Windows 365 Shared Use 2 vCPU 8 GB 256 GB"
+  },
+  {
+    "Product_Display_Name": "Windows 365 Shared Use 4 vCPU 16 GB 128 GB",
+    "String_Id": "Windows_365_S_4vCPU_16GB_128GB",
+    "GUID": "1bf40e76-4065-4530-ac37-f1513f362f50",
+    "Service_Plan_Name": "WINDOWS_10_ESU_TENANT",
+    "Service_Plan_Id": "a22efeae-e37a-47ac-9a61-1572d74202e5",
+    "Service_Plans_Included_Friendly_Names": "Windows 10 ESU Tenant"
   },
   {
     "Product_Display_Name": "Windows 365 Shared Use 4 vCPU 16 GB 128 GB",
@@ -47926,61 +48014,5 @@
     "Service_Plan_Name": "INSIDER_RISK_MANAGEMENT_FOR_AGENTS",
     "Service_Plan_Id": "004ddfc0-c92f-4b0a-90c5-c60646299d71",
     "Service_Plans_Included_Friendly_Names": "Microsoft Purview Insider Risk Management for Agents"
-  },
-  {
-    "Product_Display_Name": "Microsoft Teams Premium",
-    "String_Id": "M365_TEAMS_PREMIUM",
-    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
-    "Service_Plan_Name": "TEAMSPRO_MGMT",
-    "Service_Plan_Id": "0504111f-feb8-4a3c-992a-70280f9a2869",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Intelligent"
-  },
-  {
-    "Product_Display_Name": "Microsoft Teams Premium",
-    "String_Id": "M365_TEAMS_PREMIUM",
-    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
-    "Service_Plan_Name": "TEAMSPRO_CUST",
-    "Service_Plan_Id": "cc8c0802-a325-43df-8cba-995d0c6cb373",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Personalized"
-  },
-  {
-    "Product_Display_Name": "Microsoft Teams Premium",
-    "String_Id": "M365_TEAMS_PREMIUM",
-    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
-    "Service_Plan_Name": "TEAMSPRO_PROTECTION",
-    "Service_Plan_Id": "f8b44f54-18bb-46a3-9658-44ab58712968",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Secure"
-  },
-  {
-    "Product_Display_Name": "Microsoft Teams Premium",
-    "String_Id": "M365_TEAMS_PREMIUM",
-    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
-    "Service_Plan_Name": "TEAMSPRO_VIRTUALAPPT",
-    "Service_Plan_Id": "9104f592-f2a7-4f77-904c-ca5a5715883f",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Virtual Appointment"
-  },
-  {
-    "Product_Display_Name": "Microsoft Teams Premium",
-    "String_Id": "M365_TEAMS_PREMIUM",
-    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
-    "Service_Plan_Name": "MCO_VIRTUAL_APPT",
-    "Service_Plan_Id": "711413d0-b36e-4cd4-93db-0a50a4ab7ea3",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Virtual Appointments"
-  },
-  {
-    "Product_Display_Name": "Microsoft Teams Premium",
-    "String_Id": "M365_TEAMS_PREMIUM",
-    "GUID": "6432c818-bcef-43b6-9290-aec052964950",
-    "Service_Plan_Name": "QUEUES_APP",
-    "Service_Plan_Id": "ab2d4fb5-f80a-4bf1-a11d-7f1da254041b",
-    "Service_Plans_Included_Friendly_Names": "Queues app for Microsoft Teams"
-  },
-  {
-    "Product_Display_Name": "Skype for Business PSTN Domestic and International Calling",
-    "String_Id": "MCOSMS2",
-    "GUID": "d4009785-b899-4cab-97b6-d06a7c799507",
-    "Service_Plan_Name": "MCOSMS2",
-    "Service_Plan_Id": "d4009785-b899-4cab-97b6-d06a7c799507",
-    "Service_Plans_Included_Friendly_Names": "DOMESTIC AND INTERNATIONAL CALLING PLAN"
   }
 ]

@@ -903,6 +903,19 @@ export const useCippUserActions = () => {
       condition: () => canWriteUser,
     },
     {
+      label: 'Require Password Change at Next Logon',
+      type: 'POST',
+      icon: <Password />,
+      url: '/api/ExecRequirePasswordChange',
+      data: {
+        ID: 'id',
+      },
+      confirmText:
+        'Require [userPrincipalName] to change their password at next logon? This does not reset the password. Not supported for directory-synced accounts.',
+      multiPost: false,
+      condition: () => canWriteUser,
+    },
+    {
       label: 'Set Password Expiration',
       type: 'POST',
       icon: <LockClock />,

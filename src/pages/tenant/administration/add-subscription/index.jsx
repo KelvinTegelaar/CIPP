@@ -54,7 +54,7 @@ const Page = () => {
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2}>
             {/* Conditional Access Policy Selector */}
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CippFormComponent
                 type="autoComplete"
                 creatable={false}
@@ -83,7 +83,7 @@ const Page = () => {
                 sortOptions={true}
               />
             </Grid>
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CippFormComponent
                 type="number"
                 label="Quantity of licenses to purchase."

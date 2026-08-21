@@ -142,7 +142,7 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
 
   return (
     <Box>
-      <Stack direction="row" spacing={0.5} alignItems="center" flexWrap="wrap">
+      <Stack useFlexGap direction="row" spacing={0.5} alignItems="center" flexWrap="wrap">
         <Tooltip
           title={leaf.helpText || leaf.definitionId || ''}
           placement="top"
@@ -195,7 +195,7 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
           ))}
 
           {!usesVariable && rawValues.length > 0 && (
-            <Stack
+            <Stack useFlexGap
               direction="row"
               spacing={0.5}
               alignItems="center"

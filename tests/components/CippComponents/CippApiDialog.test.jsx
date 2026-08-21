@@ -116,4 +116,38 @@ describe('CippApiDialog', () => {
     await user.click(screen.getByRole('button', { name: 'Close' }))
     expect(createDialog.handleClose).toHaveBeenCalledTimes(1)
   })
+
+  it('resolves dotted parent maps on confirm', async () => {
+    const user = userEvent.setup()
+    renderDialog({
+      row: {
+        id: 'member-1',
+        displayName: 'Jane',
+        parent: { id: 'group-1', displayName: 'Finance' },
+      },
+      api: {
+        type: 'POST',
+        url: '/api/ExecWhatever',
+        data: { childId: 'id', parentId: 'parent.id' },
+        confirmText: 'Remove [displayName] from [parent.displayName]?',
+      },
+    })
+
+    expect(screen.getByText('Remove Jane from Finance?')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Confirm' }))
+
+    await waitFor(() => {
+      expect(apiState.mutate).toHaveBeenCalledTimes(1)
+    })
+    expect(apiState.mutate).toHaveBeenCalledWith({
+      url: '/api/ExecWhatever',
+      bulkRequest: false,
+      data: {
+        tenantFilter: 'testdomain.com',
+        childId: 'member-1',
+        parentId: 'group-1',
+      },
+    })
+  })
 })

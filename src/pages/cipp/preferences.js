@@ -294,6 +294,25 @@ const Page = () => {
                           ),
                         },
                         {
+                          label: "Table view on small screens",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              creatable={false}
+                              disableClearable={true}
+                              defaultValue={{ value: "auto", label: "Automatic (cards on mobile)" }}
+                              name="tableViewMode"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={[
+                                { value: "auto", label: "Automatic (cards on mobile)" },
+                                { value: "cards", label: "Always card list" },
+                                { value: "table", label: "Always classic table" },
+                              ]}
+                            />
+                          ),
+                        },
+                        {
                           label: "Default test suite on the Home page",
                           value: (
                             <CippFormComponent

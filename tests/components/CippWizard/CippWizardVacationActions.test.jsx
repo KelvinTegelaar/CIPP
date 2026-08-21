@@ -148,6 +148,28 @@ describe('CippWizardVacationActions', () => {
       ).not.toBeInTheDocument()
       expect(formApi.getValues('enableCAExclusion')).toBeFalsy()
     })
+
+    it('offers the location alert exclusion without Conditional Access', async () => {
+      // Tenants without CA policies still get location-based audit alerts, so this switch
+      // must stand on its own rather than hide inside the CA branch.
+      renderWithProviders(<Harness />)
+
+      expect(
+        screen.getByText('Exclude from location-based audit log alerts')
+      ).toBeInTheDocument()
+
+      await setField('excludeLocationAuditAlerts', true)
+
+      await waitFor(() =>
+        expect(
+          screen.getByText(/does not require a Conditional Access policy/i)
+        ).toBeInTheDocument()
+      )
+      expect(
+        screen.queryByText(/uses group-based exclusions/i)
+      ).not.toBeInTheDocument()
+      expect(formApi.getValues('enableCAExclusion')).toBeFalsy()
+    })
   })
 
   // The out-of-office branch renders a rich-text editor that does not mount under jsdom

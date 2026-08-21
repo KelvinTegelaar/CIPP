@@ -1436,7 +1436,7 @@ const CippBrandingSettings = () => {
                       },
                     }}
                   />
-                  <Stack direction="row" spacing={2} flexWrap="wrap">
+                  <Stack useFlexGap direction="row" columnGap={2} rowGap={1} flexWrap="wrap">
                     <CippFormComponent
                       type="switch"
                       name="showFooter"

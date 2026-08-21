@@ -345,4 +345,51 @@ describe('CippAutoComplete', () => {
       expect(document.querySelector('.MuiFormLabel-asterisk')).toBeTruthy()
     })
   })
+
+  // TextField forwards what it doesn't consume to the FormControl root, so a leak lands as a DOM attr
+  describe('prop routing', () => {
+    it('keeps autocomplete-only props off the DOM', () => {
+      const { container } = renderWithProviders(
+        <CippAutoComplete
+          multiple={false}
+          creatable={false}
+          options={OPTIONS}
+          onChange={() => {}}
+          noOptionsText="nothing here"
+        />
+      )
+      expect(container.querySelector('[nooptionstext]')).toBeNull()
+    })
+
+    it('routes variant to the text field, not to the autocomplete root', () => {
+      const { container } = renderWithProviders(
+        <CippAutoComplete
+          multiple={false}
+          creatable={false}
+          options={OPTIONS}
+          onChange={() => {}}
+          variant="outlined"
+        />
+      )
+      // outlined draws the notched fieldset/legend, the themed filled default does not
+      expect(container.querySelector('fieldset legend')).toBeTruthy()
+      expect(container.querySelector('[variant]')).toBeNull()
+    })
+
+    it('forwards filterSelectedOptions to the autocomplete, selected option stays listed', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <CippAutoComplete
+          multiple={false}
+          creatable={false}
+          options={OPTIONS}
+          value={OPTIONS[0]}
+          onChange={() => {}}
+          filterSelectedOptions={false}
+        />
+      )
+      await user.click(screen.getByRole('combobox'))
+      expect(await screen.findByRole('option', { name: 'Alpha' })).toBeInTheDocument()
+    })
+  })
 })

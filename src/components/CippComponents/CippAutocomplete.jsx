@@ -24,20 +24,12 @@ const MemoTextField = React.memo(function MemoTextField({
   params,
   label,
   placeholder,
+  variant,
   // Field-level required: asterisk on the label. HTML5 required is separate because
   // Autocomplete (especially multiple) clears the input after selection — a static
   // required on the input would falsely block submit even when chips/value exist.
   required = false,
   htmlRequired = false,
-  // Autocomplete-specific props that must not be forwarded to TextField/DOM
-  getOptionLabel,
-  isOptionEqualToValue,
-  filterOptions,
-  getOptionDisabled,
-  groupBy,
-  renderGroup,
-  renderOption,
-  ...otherProps
 }) {
   const { InputProps, ...otherParams } = params
 
@@ -47,7 +39,7 @@ const MemoTextField = React.memo(function MemoTextField({
         {...otherParams}
         label={label}
         placeholder={placeholder}
-        {...otherProps}
+        variant={variant}
         required={htmlRequired}
         slotProps={{
           inputLabel: {
@@ -96,6 +88,8 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     renderGroup,
     customAction,
     handleHomeEndKeys = false,
+    // TextField-bound, MUI Autocomplete would pass it through to its root div
+    variant,
     ...other
   } = props
 
@@ -338,7 +332,10 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
   ])
 
   // single mode: live options win over the form-held copy, a stored label goes stale
-  // when its option refetches under it (e.g. renamed preset), resolve by value id
+  // when its option refetches under it (e.g. renamed preset), resolve by value id.
+  // Values are not always unique (the alert wizard's property options share a type
+  // string as value), so only let a value-only match win when it's unambiguous —
+  // otherwise require the label to match too, and keep the stored copy if none does.
   const resolvedDefaultValue = useMemo(() => {
     if (
       multiple ||
@@ -348,7 +345,11 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     ) {
       return defaultValue
     }
-    return memoizedOptions.find((option) => option.value === defaultValue.value) ?? defaultValue
+    const valueMatches = memoizedOptions.filter((option) => option.value === defaultValue.value)
+    if (valueMatches.length === 1) {
+      return valueMatches[0]
+    }
+    return valueMatches.find((option) => option.label === defaultValue.label) ?? defaultValue
   }, [defaultValue, multiple, memoizedOptions])
 
   // Create a stable key that only changes when necessary inputs change
@@ -623,13 +624,14 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
 
           return (
             <Stack direction="row" spacing={1}>
+              {/* caller props stay on <Autocomplete>, anything spread here reaches the input as a DOM attr */}
               <MemoTextField
                 params={{ ...otherParams, InputProps: modifiedInputProps }}
                 label={label}
                 placeholder={placeholder}
+                variant={variant}
                 required={required}
                 htmlRequired={required && !hasSelection}
-                {...other}
               />
               {api?.url && api?.showRefresh && (
                 <Tooltip title="Refresh">

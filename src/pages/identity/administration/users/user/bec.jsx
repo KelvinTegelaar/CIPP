@@ -7,6 +7,7 @@ import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
 import { Download, Mail, Fingerprint, Launch } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import tabOptions from './tabOptions'
+import { CippUserSwitcher } from '../../../../../components/CippComponents/CippUserSwitcher'
 import ReactTimeAgo from 'react-time-ago'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { Box, Stack } from '@mui/system'
@@ -455,6 +456,13 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={userRequest.isSuccess ? userRequest.data?.[0]?.displayName : ''}
+      titleControl={
+        <CippUserSwitcher
+          title={userRequest.isSuccess ? userRequest.data?.[0]?.displayName : ''}
+          currentUserId={userId}
+          tenantFilter={userSettingsDefaults.currentTenant}
+        />
+      }
       subtitle={subtitle}
       isFetching={userRequest.isFetching}
     >
@@ -469,7 +477,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {/* Remediation Card */}
-            <Grid size={5}>
+            <Grid size={{ xs: 12, lg: 5 }}>
               <CippRemediationCard
                 userPrincipalName={userRequest.data[0].userPrincipalName}
                 userId={userRequest.data[0].id}
@@ -479,7 +487,7 @@ const Page = () => {
               />
             </Grid>
             {/* Check 1 Card with Loading */}
-            <Grid size={7}>
+            <Grid size={{ xs: 12, lg: 7 }}>
               <CippButtonCard
                 variant="outlined"
                 isFetching={false}
@@ -510,7 +518,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {/* Remediation Card */}
-            <Grid size={5}>
+            <Grid size={{ xs: 12, lg: 5 }}>
               <CippRemediationCard
                 userPrincipalName={userRequest.data[0].userPrincipalName}
                 userId={userRequest.data[0].id}
@@ -520,7 +528,7 @@ const Page = () => {
               />
             </Grid>
             {/* All Steps */}
-            <Grid size={7}>
+            <Grid size={{ xs: 12, lg: 7 }}>
               <Stack spacing={3}>
                 <BecCheckCard title="Log information">
                   <Typography variant="body2" gutterBottom>

@@ -85,12 +85,12 @@ const HOSTNAME_REGEX = /^(\*\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
 
 const InfoRow = ({ label, value, copy = true }) => (
   <Grid container spacing={2} alignItems="center">
-    <Grid size={{ xs: 5, md: 4 }}>
+    <Grid size={{ xs: 12, md: 4 }}>
       <Typography variant="body2" color="text.secondary">
         {label}
       </Typography>
     </Grid>
-    <Grid size={{ xs: 7, md: 8 }}>
+    <Grid size={{ xs: 12, md: 8 }}>
       <Stack direction="row" spacing={1} alignItems="center">
         <Typography variant="body2" sx={{ fontFamily: "monospace", wordBreak: "break-all" }}>
           {value || "—"}

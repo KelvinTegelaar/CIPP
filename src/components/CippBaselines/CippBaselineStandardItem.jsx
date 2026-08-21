@@ -86,9 +86,12 @@ export const CippBaselineStandardItem = ({
   const watched = useWatch({ control: formControl.control, name: fieldBase })
   // Identity-carrying standards (CA/Intune templates via instanceIdentity, manual tasks
   // via taskName) title as '<label> - <selected name>' so ten instances stay tellable.
+  // Saved-but-never-expanded instances have no form values yet (details mount lazily),
+  // so the saved configuration supplies the identity for the title.
   const identityValueRaw = standard.instanceIdentity
-    ? watched?.variables?.[standard.instanceIdentity]
-    : watched?.variables?.taskName
+    ? (watched?.variables?.[standard.instanceIdentity] ??
+      savedConfig?.variables?.[standard.instanceIdentity])
+    : (watched?.variables?.taskName ?? savedConfig?.variables?.taskName)
   const identityLabel =
     identityValueRaw && typeof identityValueRaw === 'object'
       ? (identityValueRaw.label ?? identityValueRaw.value)
@@ -104,11 +107,14 @@ export const CippBaselineStandardItem = ({
   ]
 
   // Seed the action posture: saved configuration (editing an existing baseline) wins,
-  // then the defaults for a freshly added standard. The settings fields seed themselves
-  // (saved value > recommended) inside CippBaselineStandardSettings.
+  // then the defaults for a freshly added standard - report only, never auto-remediate,
+  // until the operator explicitly enables it. The settings fields seed themselves
+  // (saved value > recommended) inside CippBaselineStandardSettings. savedConfig is a
+  // dependency so a form reset (reloading a template into a mounted editor) re-seeds
+  // the wiped fields; the undefined guard keeps live edits untouched.
   useEffect(() => {
     const postureDefaults = {
-      remediateEnabled: true,
+      remediateEnabled: false,
       alertEnabled: true,
       alertOnRemediate: false,
     }
@@ -121,9 +127,9 @@ export const CippBaselineStandardItem = ({
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fieldBase])
+  }, [fieldBase, savedConfig])
 
-  const remediateEnabled = watched?.remediateEnabled ?? true
+  const remediateEnabled = watched?.remediateEnabled ?? false
   const alertEnabled = watched?.alertEnabled ?? true
   const alertOnRemediate = watched?.alertOnRemediate ?? false
   const renderedExpected = renderExpectedValue(
@@ -154,6 +160,11 @@ export const CippBaselineStandardItem = ({
       expanded={expanded}
       onChange={onToggle}
       disableGutters
+      // Collapsed details stay UNMOUNTED: with hundreds of standards loaded, mounting
+      // every settings form (and its api-driven autocompletes) at once makes the
+      // editor crawl. react-hook-form keeps the values when details unmount, and the
+      // stage serializer falls back to the saved config for never-expanded standards.
+      TransitionProps={{ unmountOnExit: true }}
       sx={{ '&:before': { display: 'none' }, borderRadius: '12px' }}
     >
       <AccordionSummary expandIcon={<ExpandMore />}>

@@ -10,6 +10,7 @@ import { CippFormLicenseSelector } from '../CippComponents/CippFormLicenseSelect
 import { Grid } from '@mui/system'
 import { ApiGetCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
+import { useQueryClient } from '@tanstack/react-query'
 import { useWatch } from 'react-hook-form'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -157,6 +158,32 @@ const CippAddEditUser = (props) => {
     userTemplate: watcher[2],
     AddToGroups: watcher[3],
   }
+
+  // Duplicate-username warning. The Users table already pulled the tenant's user list into the
+  // tanstack cache when it loaded, so this reads that cache and makes no API request. The entry
+  // is an infinite query (the table pages through nextLinks), so every page must be flattened -
+  // checking one page would miss most of the tenant. Warning-only: the cache can be partial or
+  // stale, so no conflict found is never presented as the name being available.
+  const queryClient = useQueryClient()
+  const usernameValue = useWatch({ control: formControl.control, name: 'username' })
+  const primDomainValue = useWatch({ control: formControl.control, name: 'primDomain' })
+  const usernameConflict = useMemo(() => {
+    if (formType !== 'add' || !usernameValue || !primDomainValue?.value) return null
+    const cachedUsers = queryClient
+      .getQueryData([`Users - ${tenantDomain}`])
+      ?.pages?.flatMap((page) => page?.Results ?? [])
+    if (!cachedUsers?.length) return null
+    const candidateUPN = `${usernameValue}@${primDomainValue.value}`.toLowerCase()
+    const candidateSmtp = `smtp:${candidateUPN}`
+    return (
+      cachedUsers.find(
+        (user) =>
+          user?.userPrincipalName?.toLowerCase() === candidateUPN ||
+          (Array.isArray(user?.proxyAddresses) &&
+            user.proxyAddresses.some((address) => address?.toLowerCase() === candidateSmtp))
+      ) ?? null
+    )
+  }, [formType, usernameValue, primDomainValue?.value, tenantDomain, queryClient])
 
   // Helper function to generate username from template format
   const generateUsername = (
@@ -601,6 +628,13 @@ const CippAddEditUser = (props) => {
           showRefresh={true}
         />
       </Grid>
+      {formType === 'add' && usernameConflict && (
+        <Grid size={{ xs: 12 }}>
+          <Alert severity="warning">
+            {`${usernameValue}@${primDomainValue?.value} is already in use by "${usernameConflict.displayName}" (${usernameConflict.userPrincipalName}).`}
+          </Alert>
+        </Grid>
+      )}
       <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="textField"
@@ -617,7 +651,7 @@ const CippAddEditUser = (props) => {
       <Grid size={{ xs: 12 }}>
         <Typography variant="h6">Settings</Typography>
       </Grid>
-      <Grid size={{ xs: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CippFormComponent
           type="switch"
           label="Create password manually"
@@ -650,7 +684,7 @@ const CippAddEditUser = (props) => {
           </Grid>
         </CippFormCondition>
       </Grid>
-      <Grid size={{ xs: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CippFormComponent
           type="switch"
           label="Require password change at next logon"
@@ -689,7 +723,7 @@ const CippAddEditUser = (props) => {
             compareValue="(0 available)"
             labelCompare={true}
           >
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CippFormComponent
                 type="switch"
                 label="0 Licences available. Purchase new licence?"
@@ -729,7 +763,7 @@ const CippAddEditUser = (props) => {
           </CippFormCondition>
         </>
       )}
-      <Grid size={{ xs: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CippFormComponent
           type="switch"
           label="Remove all licenses"
@@ -860,7 +894,7 @@ const CippAddEditUser = (props) => {
       {userSettingsDefaults?.userAttributes
         ?.filter((attribute) => attribute.value !== 'sponsor')
         .map((attribute, idx) => (
-          <Grid size={{ xs: 6 }} key={idx}>
+          <Grid size={{ xs: 12, sm: 6 }} key={idx}>
             <CippFormComponent
               type="textField"
               fullWidth
@@ -946,7 +980,7 @@ const CippAddEditUser = (props) => {
       </Grid>
       {formType === 'add' && (
         <>
-          <Grid size={{ xs: 8 }}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <CippFormComponent
               type="autoComplete"
               label="Shared Mailboxes"
@@ -958,7 +992,7 @@ const CippAddEditUser = (props) => {
               formControl={formControl}
             />
           </Grid>
-          <Grid size={{ xs: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <CippFormComponent
               type="autoComplete"
               label="Shared Mailbox Permissions"
@@ -970,7 +1004,7 @@ const CippAddEditUser = (props) => {
               formControl={formControl}
             />
           </Grid>
-          <Grid size={{ xs: 8 }}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <CippFormComponent
               type="autoComplete"
               label="Shared Calendars"
@@ -982,7 +1016,7 @@ const CippAddEditUser = (props) => {
               formControl={formControl}
             />
           </Grid>
-          <Grid size={{ xs: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <CippFormComponent
               type="autoComplete"
               label="Shared Calendar Permission"

@@ -7,8 +7,7 @@
 
 export const TOP_NAV_HEIGHT = 64
 export const SIDE_NAV_WIDTH = 290
-export const SIDE_NAV_PINNED_WIDTH = 50
-export const SIDE_NAV_COLLAPSED_WIDTH = 73 // icon size + padding + border right
+export const SIDE_NAV_COLLAPSED_WIDTH = 73 // icon size + padding + border right; also the unpinned content offset
 
 // Height of the hosted maintenance banner, published by CippMaintenanceBanner via a CSS custom
 // property on :root so the fixed chrome can offset itself without prop threading. Resolves to 0px
