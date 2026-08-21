@@ -16,20 +16,17 @@ import {
 export const CippWizardAutopilotTypeSelection = (props) => {
   const { onNextStep, formControl, currentStep, onPreviousStep } = props
 
-  const [selectedOption, setSelectedOption] = useState(null)
+  const [selectedOption, setSelectedOption] = useState(() =>
+    formControl.getValues('deploymentType')
+  )
 
   // Register the deploymentType field in react-hook-form
   formControl.register('deploymentType', {
     required: true,
   })
 
-  // Reflect the preselected default from the wizard's initialState, and restore
-  // the selection when navigating back. The trigger makes the default count as
-  // valid so Next is enabled without a click.
   useEffect(() => {
-    const currentValue = formControl.getValues('deploymentType')
-    if (currentValue) {
-      setSelectedOption(currentValue)
+    if (formControl.getValues('deploymentType')) {
       formControl.trigger('deploymentType')
     }
   }, [formControl])

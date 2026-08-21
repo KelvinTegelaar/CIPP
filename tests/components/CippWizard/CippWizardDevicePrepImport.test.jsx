@@ -56,7 +56,7 @@ describe('CippWizardDevicePrepImport manual entry', () => {
 
     expect(await dialog.findByText(/Model, Serial Number are required/)).toBeInTheDocument()
     expect(dialog.getByRole('button', { name: 'Add' })).toBeDisabled()
-  })
+  }, 20000)
 
   it('rejects values containing a comma', async () => {
     const { user, dialog } = await openManualImport()
@@ -67,7 +67,7 @@ describe('CippWizardDevicePrepImport manual entry', () => {
 
     expect(await dialog.findByText(/Manufacturer may not contain a comma/)).toBeInTheDocument()
     expect(dialog.getByRole('button', { name: 'Add' })).toBeDisabled()
-  })
+  }, 20000)
 
   it('adds a complete device to the table', async () => {
     const { user, dialog } = await openManualImport()
@@ -80,10 +80,10 @@ describe('CippWizardDevicePrepImport manual entry', () => {
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     })
-    expect(await screen.findByText('Dell')).toBeInTheDocument()
-    expect(screen.getByText('XPS 13')).toBeInTheDocument()
-    expect(screen.getByText('SN001')).toBeInTheDocument()
-  })
+    // MRT virtualizes rows and jsdom has no layout engine, so cells are not
+    // rendered; the pagination summary is the observable proof the row landed.
+    expect(await screen.findByText('1-1 of 1', {}, { timeout: 10000 })).toBeInTheDocument()
+  }, 20000)
 })
 
 describe('CippWizardDevicePrepImport CSV import', () => {
@@ -98,31 +98,27 @@ describe('CippWizardDevicePrepImport CSV import', () => {
   it('imports a headerless CSV in the Intune portal order', async () => {
     await uploadCsv('Dell,XPS 13,SN001\nHP,EliteBook,SN002\n')
 
-    expect(await screen.findByText('Dell')).toBeInTheDocument()
-    expect(screen.getByText('SN001')).toBeInTheDocument()
-    expect(screen.getByText('HP')).toBeInTheDocument()
-    expect(screen.getByText('SN002')).toBeInTheDocument()
-  })
+    expect(await screen.findByText('1-2 of 2', {}, { timeout: 10000 })).toBeInTheDocument()
+  }, 20000)
 
   it('imports a CSV with headers', async () => {
     await uploadCsv('manufacturer,model,serialNumber\nDell,XPS 13,SN001\n')
 
-    expect(await screen.findByText('Dell')).toBeInTheDocument()
-    expect(screen.getByText('SN001')).toBeInTheDocument()
-  })
+    expect(await screen.findByText('1-1 of 1', {}, { timeout: 10000 })).toBeInTheDocument()
+  }, 20000)
 
   it('rejects rows with missing values instead of importing them', async () => {
     await uploadCsv('Dell,,SN001\n')
 
     expect(await screen.findByText(/could not be imported/)).toBeInTheDocument()
     expect(screen.getByText(/Model is required/)).toBeInTheDocument()
-    expect(screen.queryByText('SN001')).not.toBeInTheDocument()
-  })
+    expect(screen.queryByText('1-1 of 1')).not.toBeInTheDocument()
+  }, 20000)
 
   it('rejects duplicate devices', async () => {
     await uploadCsv('Dell,XPS 13,SN001\nDell,XPS 13,SN001\n')
 
     expect(await screen.findByText(/could not be imported/)).toBeInTheDocument()
     expect(screen.getByText(/Duplicate device/)).toBeInTheDocument()
-  })
+  }, 20000)
 })

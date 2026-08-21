@@ -1212,15 +1212,55 @@
     "cat": "Entra (AAD) Standards",
     "tag": [],
     "appliesToTest": ["EIDSCAAT01", "EIDSCAAT02", "ZTNA21845", "ZTNA21846"],
-    "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select if a TAP is single use or multi-logon.",
+    "helpText": "Enable TAP with the specified configuration settings.",
     "docsDescription": "Enables Temporary Access Pass generation for the tenant.",
-    "executiveText": "Enables temporary access passes that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passs provide a secure way to restore access without compromising long-term security policies.",
+    "executiveText": "Enables temporary access passes that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passes provide a secure way to restore access without compromising long-term security policies.",
     "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.TAP.MinimumLifetime",
+        "label": "Minimum Lifetime (minutes)",
+        "defaultValue": 60,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.MaximumLifetime",
+        "label": "Maximum Lifetime (minutes)",
+        "defaultValue": 480,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.DefaultLifetime",
+        "label": "Default Lifetime (minutes)",
+        "defaultValue": 60,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.TAPLength",
+        "label": "Length (characters)",
+        "defaultValue": 8,
+        "validators": {
+          "min": { "value": 8, "message": "Minimum value is 8" },
+          "max": { "value": 48, "message": "Maximum value is 48" }
+        }
+      },
       {
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
-        "label": "Select TAP Lifetime",
+        "label": "Number of Times Usable",
         "name": "standards.TAP.config",
         "options": [
           { "label": "Only Once", "value": "true" },
@@ -5131,6 +5171,27 @@
       "SHAREPOINTENTERPRISE_EDU",
       "ONEDRIVE_BASIC",
       "ONEDRIVE_ENTERPRISE"
+    ]
+  },
+  {
+    "name": "standards.OneDriveLicensedQuota",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Raises the OneDrive storage quota to 5 TB for users whose license includes that entitlement. Microsoft provisions every OneDrive at 1 TB and does not apply the licensed entitlement automatically. Users already at or above 5 TB, for example raised further by Microsoft support, are left untouched.",
+    "docsDescription": "Microsoft provisions every OneDrive with a 1 TB quota regardless of license. Users holding OneDrive for Business (Plan 2), SharePoint Online (Plan 2), or a bundle that includes one of these (Microsoft 365/Office 365 E3/E5, A3/A5, G3/G5) are entitled to 5 TB, but an admin has to raise the quota manually. This standard finds enabled users with a qualifying service plan whose OneDrive quota is below 5 TB and raises it to 5 TB, with the warning level at 90%. Users whose quota is already at or above 5 TB, for example increased to 25 TB by Microsoft support, are skipped. Microsoft only permits quotas above 1 TB when the subscription has five or more users on a qualifying plan, so tenants below that threshold are reported as compliant and left unchanged.",
+    "executiveText": "Ensures employees receive the full OneDrive storage their licenses already include. Microsoft grants 5 TB of storage with most enterprise licenses but only provisions 1 TB by default, leaving paid-for capacity unused. Automatically correcting the allocation prevents storage shortages and support tickets without any additional licensing cost.",
+    "addedComponent": [],
+    "label": "Raise OneDrive storage quota for entitled users",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-21",
+    "powershellEquivalent": "Set-SPOSite -Identity https://tenant-my.sharepoint.com/personal/user -StorageQuota 5242880",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "SHAREPOINTENTERPRISE",
+      "SHAREPOINTENTERPRISE_EDU",
+      "SHAREPOINTENTERPRISE_GOV",
+      "ONEDRIVEENTERPRISE"
     ]
   },
   {

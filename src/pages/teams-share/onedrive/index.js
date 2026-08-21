@@ -1,10 +1,16 @@
 import { Layout as DashboardLayout } from '../../../layouts/index.js'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
-import { PersonAdd, PersonRemove } from '@mui/icons-material'
+import { PersonAdd, PersonRemove, Settings } from '@mui/icons-material'
 import { useCippReportDB } from '../../../components/CippComponents/CippReportDBControls'
+import { useSettings } from '../../../hooks/use-settings'
+import { usePermissions } from '../../../hooks/use-permissions'
+import { CippEditSitePropertiesForm } from '../../../components/CippComponents/CippEditSitePropertiesForm'
 
 const Page = () => {
   const pageTitle = 'OneDrive'
+  const tenantFilter = useSettings().currentTenant
+  const { checkPermissions } = usePermissions()
+  const canWriteSite = checkPermissions(['Sharepoint.Site.ReadWrite'])
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListSites?type=OneDriveUsageAccount',
     queryKey: 'ListSites-OneDriveUsageAccount',
@@ -93,6 +99,67 @@ const Page = () => {
           },
         },
       ],
+    },
+    {
+      label: 'Edit OneDrive Site',
+      type: 'POST',
+      icon: <Settings />,
+      url: '/api/ExecSetSiteProperties',
+      confirmText:
+        'Edit OneDrive site properties for [displayName]. Fields are prefilled with the current values.',
+      condition: () => canWriteSite,
+      children: ({ formHook, row }) => (
+        <CippEditSitePropertiesForm formHook={formHook} row={row} tenantFilter={tenantFilter} />
+      ),
+      customDataformatter: (row, action, formData) => {
+        const v = (x) => (x && typeof x === 'object' && 'value' in x ? x.value : x)
+        // OneDrive sites are never group-connected, so the full personal-site property set
+        // applies to every selected row.
+        const formatRow = (siteRow) => {
+          const payload = {
+            tenantFilter: siteRow.Tenant ?? tenantFilter,
+            SiteUrl: siteRow.webUrl,
+            Title: formData.Title,
+            SharingCapability: v(formData.SharingCapability),
+            DefaultSharingLinkType: v(formData.DefaultSharingLinkType),
+            DefaultLinkPermission: v(formData.DefaultLinkPermission),
+            SharingDomainRestrictionMode: v(formData.SharingDomainRestrictionMode),
+            OverrideTenantAnonymousLinkExpirationPolicy:
+              !!formData.OverrideTenantAnonymousLinkExpirationPolicy,
+            InheritVersionPolicyFromTenant: !!formData.InheritVersionPolicyFromTenant,
+            LockState: v(formData.LockState),
+          }
+          if (v(formData.SharingDomainRestrictionMode) === 'AllowList') {
+            payload.SharingAllowedDomainList = formData.SharingAllowedDomainList
+          }
+          if (v(formData.SharingDomainRestrictionMode) === 'BlockList') {
+            payload.SharingBlockedDomainList = formData.SharingBlockedDomainList
+          }
+          if (formData.OverrideTenantAnonymousLinkExpirationPolicy) {
+            payload.AnonymousLinkExpirationInDays = parseInt(
+              formData.AnonymousLinkExpirationInDays ?? 0,
+              10
+            )
+          }
+          const storageMax = parseInt(formData.StorageMaximumLevel, 10)
+          const storageWarn = parseInt(formData.StorageWarningLevel, 10)
+          if (!isNaN(storageMax) && storageMax > 0) payload.StorageMaximumLevel = storageMax
+          if (!isNaN(storageWarn) && storageWarn > 0) payload.StorageWarningLevel = storageWarn
+          if (!formData.InheritVersionPolicyFromTenant) {
+            payload.EnableAutoExpirationVersionTrim = !!formData.EnableAutoExpirationVersionTrim
+            if (!formData.EnableAutoExpirationVersionTrim) {
+              payload.MajorVersionLimit = parseInt(formData.MajorVersionLimit ?? 0, 10)
+              payload.ExpireVersionsAfterDays = parseInt(formData.ExpireVersionsAfterDays ?? 0, 10)
+            }
+          }
+          return payload
+        }
+        // When multiple rows are selected, row is an array. Returning an array
+        // makes CippApiDialog send one request per row (bulk request mode).
+        return Array.isArray(row) ? row.map(formatRow) : formatRow(row)
+      },
+      multiPost: false,
+      allowResubmit: true,
     },
   ]
 
