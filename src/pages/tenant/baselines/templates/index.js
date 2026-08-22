@@ -437,8 +437,10 @@ const Page = () => {
             <Stack spacing={2}>
               <Typography variant="body2" color="text.secondary">
                 Converts your classic Standards templates (including drift
-                templates) into baselines. The originals are never modified -
-                both systems keep running until you retire the old one.
+                templates) into baselines. The originals are never modified,
+                but while the Baselines feature is enabled the classic
+                Standards and Drift pages and their scheduled runs are turned
+                off - only one engine manages your tenants at a time.
               </Typography>
               <FormControlLabel
                 control={
