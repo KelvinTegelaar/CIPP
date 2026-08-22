@@ -21,6 +21,7 @@ import { useActionsDispatch } from "../hooks/use-actions-dispatch";
 import { TabNavigationContext, useTabNavigationValue } from "./tab-navigation-context";
 import { CippPageActionsFab } from "../components/CippComponents/CippPageActionsFab";
 import { CippTabPicker } from "../components/CippComponents/CippTabPicker";
+import { ApiGetCall } from "../api/ApiCall";
 
 export const HeaderedTabbedLayout = (props) => {
   const {
@@ -62,7 +63,30 @@ export const HeaderedTabbedLayout = (props) => {
 
   const handleTabsChange = useCallback((event, value) => navigateToTab(value), [navigateToTab]);
 
-  const currentTab = tabOptions.find((option) => option.path === pathname);
+  // Feature-flag gating, same rules as TabbedLayout: a DISABLED flag hides its Pages;
+  // an ENABLED flag hides its HidesPages (the pages it replaces - e.g. Baselines
+  // supersedes the classic Standards and Drift tabs on Manage Tenant).
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000,
+  });
+  const visibleTabs = useMemo(() => {
+    if (!featureFlags.isSuccess || !Array.isArray(featureFlags.data)) return tabOptions;
+    const disabledPages = featureFlags.data
+      .filter((flag) => flag.Enabled === false || flag.enabled === false)
+      .flatMap((flag) => flag.Pages || flag.pages || [])
+      .filter((page) => typeof page === "string");
+    const replacedPages = featureFlags.data
+      .filter((flag) => flag.Enabled === true || flag.enabled === true)
+      .flatMap((flag) => flag.HidesPages || flag.hidesPages || [])
+      .filter((page) => typeof page === "string");
+    const hiddenPages = [...disabledPages, ...replacedPages];
+    if (hiddenPages.length === 0) return tabOptions;
+    return tabOptions.filter((option) => !hiddenPages.includes(option.path));
+  }, [tabOptions, featureFlags.isSuccess, featureFlags.data]);
+
+  const currentTab = visibleTabs.find((option) => option.path === pathname);
 
   // Below md the tab row scrolls horizontally and still hides tabs off the right edge, so
   // navigation collapses to a picker in the title row — the one part of that row that is
@@ -88,7 +112,7 @@ export const HeaderedTabbedLayout = (props) => {
   );
 
   const tabNavValue = useTabNavigationValue({
-    tabs: tabOptions,
+    tabs: visibleTabs,
     currentPath: pathname,
     onNavigate: navigateToTab,
     actions: sheetActions,
@@ -227,7 +251,7 @@ export const HeaderedTabbedLayout = (props) => {
                       },
                     }}
                   >
-                    {tabOptions.map((option) => {
+                    {visibleTabs.map((option) => {
                       const icon = getIconByName(option.icon, { fontSize: "small" });
                       const iconPosition = option.iconPosition ?? "start";
                       const compactIcon = icon && ["end", "start"].includes(iconPosition);

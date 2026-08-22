@@ -123,20 +123,28 @@ export const Layout = (props) => {
         return
       }
 
-      // Get disabled pages from feature flags - only filter if we have valid data
-      let disabledPages = []
+      // Get hidden pages from feature flags - only filter if we have valid data.
+      // A DISABLED flag hides its Pages (features gated behind the flag); an ENABLED
+      // flag hides its HidesPages (features it replaces - e.g. Baselines supersedes
+      // the classic Standards and Drift pages).
+      let hiddenPages = []
       if (featureFlags.isSuccess && Array.isArray(featureFlags.data)) {
-        disabledPages = featureFlags.data
+        const disabledPages = featureFlags.data
           .filter((flag) => flag.Enabled === false || flag.enabled === false)
           .flatMap((flag) => flag.Pages || flag.pages || [])
           .filter((page) => typeof page === 'string')
+        const replacedPages = featureFlags.data
+          .filter((flag) => flag.Enabled === true || flag.enabled === true)
+          .flatMap((flag) => flag.HidesPages || flag.hidesPages || [])
+          .filter((page) => typeof page === 'string')
+        hiddenPages = [...disabledPages, ...replacedPages]
       }
 
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
-            // Check if page is disabled by feature flag
-            if (item.path && disabledPages.length > 0 && disabledPages.includes(item.path)) {
+            // Check if page is hidden by feature flag
+            if (item.path && hiddenPages.length > 0 && hiddenPages.includes(item.path)) {
               return null
             }
 
