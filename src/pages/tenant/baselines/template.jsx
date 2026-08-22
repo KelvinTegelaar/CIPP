@@ -888,14 +888,19 @@ const Page = () => {
           </Button>
         </Box>
         <Stack
-          direction="row"
+          direction={{ xs: 'column', sm: 'row' }}
           justifyContent="space-between"
-          alignItems="center"
-          spacing={4}
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+          spacing={{ xs: 2, sm: 4 }}
           sx={{ mb: 1 }}
         >
           <Typography variant="h4">{pageTitle}</Typography>
-          <Stack direction="row" spacing={2}>
+          <Stack
+            direction="row"
+            spacing={2}
+            useFlexGap
+            sx={{ flexWrap: 'wrap' }}
+          >
             <PermissionButton
               requiredPermissions={['Tenant.Standards.ReadWrite']}
               variant="contained"
