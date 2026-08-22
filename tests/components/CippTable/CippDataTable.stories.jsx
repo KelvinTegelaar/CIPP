@@ -480,3 +480,40 @@ export const GraphBackedEditFilters = {
     })
   },
 }
+
+// cached report column (membersCsv) wears the subTable header, no nested-table button. MRT renders no header cells in jsdom
+export const CachedReportColumns = {
+  args: {
+    title: 'Groups',
+    data: [{ id: 'parent-1', displayName: 'Finance', membersCsv: 'Jane, Bob' }],
+    simpleColumns: ['displayName', 'members'],
+    subTables: [
+      {
+        id: 'members',
+        header: 'Members',
+        label: 'View members',
+        cachedColumn: 'membersCsv',
+        table: {
+          title: 'Members of [displayName]',
+          api: { url: '/api/TestRelated', dataKey: 'Results' },
+          simpleColumns: ['displayName'],
+        },
+      },
+    ],
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+
+    await step('cached csv column takes the subTable header', async () => {
+      await waitFor(() => {
+        expect(canvas.getByRole('columnheader', { name: /Members/ })).toBeVisible()
+      })
+      expect(canvas.queryByRole('columnheader', { name: /csv/i })).toBeNull()
+    })
+
+    await step('cell shows the cached value, no nested table button', async () => {
+      await expect(canvas.getByText('Jane, Bob')).toBeVisible()
+      expect(canvas.queryByRole('button', { name: 'View members' })).toBeNull()
+    })
+  },
+}

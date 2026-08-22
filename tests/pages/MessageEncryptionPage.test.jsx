@@ -32,10 +32,15 @@ describe('Message Encryption page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     api.post = postResult()
-    api.paginated = paginatedResult([
-      { displayName: 'Admin', UPN: 'admin@contoso.com' },
-      { displayName: 'Helpdesk', UPN: 'helpdesk@contoso.com' },
-    ])
+    // ListMailboxes returns a bare array (no Results wrapper, the page's api sets no dataKey)
+    api.paginated = paginatedResult([], {
+      data: {
+        pages: [[
+          { displayName: 'Admin', UPN: 'admin@contoso.com' },
+          { displayName: 'Helpdesk', UPN: 'helpdesk@contoso.com' },
+        ]],
+      },
+    })
   })
 
   it('renders the current IRM state for the tenant', async () => {

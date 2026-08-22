@@ -37,7 +37,7 @@ const CippDataTableButton = ({
   const settings = useSettings();
   const isLive = Boolean(api?.url);
 
-  const nestedTitle = tableProps.title ?? tableTitle ?? title ?? "Data";
+  const nestedTitle = title ?? tableTitle ?? "Data";
 
   const handleOpenStaticDialog = (event) => {
     event?.stopPropagation();

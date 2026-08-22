@@ -9,7 +9,10 @@ vi.mock('../../../src/api/ApiCall', async () => (await import('../../mocks/api-c
 import { api, getResult, paginatedResult, postResult } from '../../mocks/api-call'
 
 // stable references, fresh literals per call spin CippAutoComplete's mapping effect
-api.get = getResult()
+const statusGet = getResult()
+// status payload only answers its own url, the page's other GETs stay idle
+const idleGet = getResult({ isSuccess: false })
+api.get = (opts) => (opts.url === '/api/ExecContainerManagement' ? statusGet : idleGet)
 api.paginated = paginatedResult()
 api.post = postResult()
 
@@ -55,26 +58,26 @@ const ALERT_RE = /unsupported build from an unmerged branch/
 describe('CippContainerManagement branch-build flagging', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    api.get.data = undefined
+    statusGet.data = undefined
     api.paginated.data = { pages: [{ Results: [] }] }
   })
 
   it('running pinned branch build chips the split tag, not Unknown', () => {
-    api.get.data = { Results: statusResults('fix-sso-thing-a1b2c3d') }
+    statusGet.data = { Results: statusResults('fix-sso-thing-a1b2c3d') }
     renderWithProviders(<CippContainerManagement />)
     expect(screen.getByText(PINNED_PRETTY)).toBeInTheDocument()
     expect(screen.queryByText('Unknown')).not.toBeInTheDocument()
   })
 
   it('running branch build shows the unsupported-build alert and seeds the picker with its tag', async () => {
-    api.get.data = { Results: statusResults('feat-new-widget') }
+    statusGet.data = { Results: statusResults('feat-new-widget') }
     renderWithProviders(<CippContainerManagement />)
     expect(await screen.findByText(ALERT_RE)).toBeInTheDocument()
     expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('feat-new-widget')
   })
 
   it('standard channel chips its friendly label and raises no branch alert', async () => {
-    api.get.data = { Results: statusResults('dev') }
+    statusGet.data = { Results: statusResults('dev') }
     renderWithProviders(<CippContainerManagement />)
     expect(screen.getByText('Dev')).toBeInTheDocument()
     // wait for the seed effect so the alert-absence check runs against the settled form
@@ -86,7 +89,7 @@ describe('CippContainerManagement branch-build flagging', () => {
 
   it('unrecognized non-branch tag chips Unknown without raising the branch alert', async () => {
     // bare version tag: not a valid channel, does not match BuildChannelPattern
-    api.get.data = { Results: statusResults('8.0.1') }
+    statusGet.data = { Results: statusResults('8.0.1') }
     renderWithProviders(<CippContainerManagement />)
     expect(screen.getByText('Unknown')).toBeInTheDocument()
     await waitFor(() => {
@@ -96,7 +99,7 @@ describe('CippContainerManagement branch-build flagging', () => {
   })
 
   it('picking a branch build raises the alert, switching back to a standard channel clears it', async () => {
-    api.get.data = { Results: statusResults('latest') }
+    statusGet.data = { Results: statusResults('latest') }
     api.paginated.data = { pages: [{ Results: channelListResults }] }
     const user = userEvent.setup()
     renderWithProviders(<CippContainerManagement />)
