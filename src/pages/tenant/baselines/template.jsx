@@ -611,6 +611,7 @@ const Page = () => {
       description: '',
       alertEmails: '',
       alertWebhookUrl: '',
+      disableScheduledRuns: false,
     },
   })
   const watchForm = useWatch({ control: formControl.control })
@@ -630,6 +631,7 @@ const Page = () => {
       description: template.description,
       alertEmails: template.alertEmails ?? '',
       alertWebhookUrl: template.alertWebhookUrl ?? '',
+      disableScheduledRuns: template.disableScheduledRuns === true,
       // The tenant selector's own option objects round-trip verbatim through the API
       // (assignments/exclusions); older saves fall back to name-based options.
       tenantFilter:
@@ -849,6 +851,7 @@ const Page = () => {
         ),
         alertEmails: values.alertEmails,
         alertWebhookUrl: values.alertWebhookUrl,
+        disableScheduledRuns: values.disableScheduledRuns === true,
         stages: stages.map(
           (stage, index) =>
             stageSerializers.current[index]?.() ?? {
@@ -1011,6 +1014,17 @@ const Page = () => {
                     required={false}
                     disableClearable={false}
                   />
+                  <CippFormComponent
+                    type="switch"
+                    name="disableScheduledRuns"
+                    label="Disable Scheduled Runs"
+                    formControl={formControl}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    With scheduled runs disabled, this baseline only executes
+                    when you run it yourself - drift is not detected or
+                    remediated in between.
+                  </Typography>
                 </Stack>
               </CippButtonCard>
               <CippButtonCard title="Alerting">
