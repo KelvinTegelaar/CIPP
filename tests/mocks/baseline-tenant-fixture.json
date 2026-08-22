@@ -1,0 +1,613 @@
+{
+  "baseline": {
+    "GUID": "3ca8c0ec-9294-4060-8191-f1f2f3af37da",
+    "templateName": ".Baseline - Tenant",
+    "baselineName": ".Baseline - Tenant",
+    "description": "<p>description</p>",
+    "assignedTenants": [
+      "Exported Template"
+    ],
+    "assignments": {
+      "label": "Exported Template",
+      "value": "Exported Template",
+      "type": "Tenant"
+    },
+    "exclusions": null,
+    "excludedTenants": [],
+    "alertEmails": "",
+    "alertWebhookUrl": "",
+    "disableScheduledRuns": false,
+    "standardsCount": 9,
+    "stageNames": [
+      "Default"
+    ],
+    "stages": [
+      {
+        "name": "Default",
+        "logic": "and",
+        "conditions": [],
+        "standards": [
+          "ActivityBasedTimeout",
+          "AnonReportDisable",
+          "AuditLog",
+          "DisableBasicAuthSMTP",
+          "DisableGuestDirectory",
+          "EnablePronouns",
+          "FormsPhishingProtection",
+          "MailContacts",
+          "PhishProtection"
+        ],
+        "standardsConfig": [
+          {
+            "standard": "ActivityBasedTimeout",
+            "instance": "ActivityBasedTimeout",
+            "variables": {
+              "timeout": "06:00:00"
+            },
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          },
+          {
+            "standard": "AnonReportDisable",
+            "instance": "AnonReportDisable",
+            "variables": null,
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          },
+          {
+            "standard": "AuditLog",
+            "instance": "AuditLog",
+            "variables": null,
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          },
+          {
+            "standard": "DisableBasicAuthSMTP",
+            "instance": "DisableBasicAuthSMTP",
+            "variables": null,
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          },
+          {
+            "standard": "DisableGuestDirectory",
+            "instance": "DisableGuestDirectory",
+            "variables": null,
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          },
+          {
+            "standard": "EnablePronouns",
+            "instance": "EnablePronouns",
+            "variables": null,
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          },
+          {
+            "standard": "FormsPhishingProtection",
+            "instance": "FormsPhishingProtection",
+            "variables": null,
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          },
+          {
+            "standard": "MailContacts",
+            "instance": "MailContacts",
+            "variables": {
+              "SecurityContact": "support@bezalu.com",
+              "TechContact": "support@bezalu.com",
+              "GeneralContact": "support@bezalu.com",
+              "MarketingContact": ""
+            },
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          },
+          {
+            "standard": "PhishProtection",
+            "instance": "PhishProtection",
+            "variables": null,
+            "remediateEnabled": false,
+            "alertEnabled": false,
+            "alertOnRemediate": false
+          }
+        ]
+      }
+    ],
+    "remediationPosture": "Report",
+    "updatedAt": 1787415499,
+    "updatedBy": "developer@localhost",
+    "occupancy": [
+      {
+        "stage": 1,
+        "name": "Default",
+        "standardsCount": 9,
+        "tenants": [
+          null
+        ],
+        "nextAdvanceAt": null
+      }
+    ],
+    "tenantStates": []
+  },
+  "definitions": [
+    {
+      "name": "DisableBasicAuthSMTP",
+      "label": "Disable SMTP Basic Authentication",
+      "cat": "Exchange Standards",
+      "tag": [
+        "CIS M365 7.0.0 (6.5.4)",
+        "NIST CSF 2.0 (PR.IR-01)"
+      ],
+      "impact": "Medium Impact",
+      "helpText": "Disables SMTP AUTH organization-wide, impacting POP and IMAP clients that rely on SMTP for sending emails. Default for new tenants. For more information, see the [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission)",
+      "executiveText": "Disables outdated email authentication methods that are vulnerable to security attacks, forcing applications and devices to use modern, more secure authentication protocols. This reduces the risk of email-based security breaches and credential theft.",
+      "docsDescription": "Disables tenant-wide SMTP basic authentication, including for all explicitly enabled users, impacting POP and IMAP clients that rely on SMTP for sending emails. For more information, see the [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission).",
+      "impactColour": "warning",
+      "addedDate": "2021-11-16",
+      "powershellEquivalent": "Set-TransportConfig -SmtpClientAuthenticationDisabled $true",
+      "appliesToTest": [
+        "CISAMSEXO51",
+        "CIS_6_5_4",
+        "ZTNA21799"
+      ],
+      "recommendedBy": [
+        "CIS",
+        "CIPP"
+      ],
+      "requiredCapabilities": [
+        "EXCHANGE_S_STANDARD",
+        "EXCHANGE_S_ENTERPRISE",
+        "EXCHANGE_S_STANDARD_GOV",
+        "EXCHANGE_S_ENTERPRISE_GOV",
+        "EXCHANGE_LITE"
+      ],
+      "secureScoreImpact": 10,
+      "compare": "subset",
+      "variables": {
+        "disabled": {
+          "type": "switch",
+          "label": "SMTP basic authentication disabled",
+          "default": true,
+          "recommended": true
+        }
+      },
+      "expected": {
+        "SmtpClientAuthenticationDisabled": "%disabled%",
+        "UsersWithSmtpAuthEnabled": []
+      },
+      "read": {
+        "cacheType": "ExoTransportConfig"
+      },
+      "prepare": "Get-CIPPBaselineDisableBasicAuthSMTPState",
+      "remediate": {
+        "executor": "DisableBasicAuthSMTP",
+        "disabled": "%disabled%"
+      }
+    },
+    {
+      "name": "ActivityBasedTimeout",
+      "label": "Enable Activity based Timeout",
+      "cat": "Global Standards",
+      "tag": [
+        "CIS M365 7.0.0 (1.3.2)",
+        "spo_idle_session_timeout",
+        "NIST CSF 2.0 (PR.AA-03)"
+      ],
+      "impact": "Medium Impact",
+      "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
+      "executiveText": "Automatically logs out inactive users from Microsoft 365 applications after a specified time period to prevent unauthorized access to company data on unattended devices. This security measure protects against data breaches when employees leave workstations unlocked.",
+      "impactColour": "warning",
+      "addedDate": "2022-04-13",
+      "powershellEquivalent": "Portal or Graph API",
+      "appliesToTest": [
+        "CIS_1_3_2",
+        "ZTNA21813",
+        "ZTNA21814",
+        "ZTNA21815"
+      ],
+      "recommendedBy": [
+        "CIS"
+      ],
+      "requiredCapabilities": [],
+      "secureScoreImpact": 5,
+      "compare": "subset",
+      "variables": {
+        "timeout": {
+          "type": "autoComplete",
+          "label": "Idle session timeout",
+          "options": [
+            {
+              "label": "1 Hour",
+              "value": "01:00:00"
+            },
+            {
+              "label": "3 Hours",
+              "value": "03:00:00"
+            },
+            {
+              "label": "6 Hours",
+              "value": "06:00:00"
+            },
+            {
+              "label": "12 Hours",
+              "value": "12:00:00"
+            },
+            {
+              "label": "24 Hours",
+              "value": "1.00:00:00"
+            }
+          ],
+          "default": "01:00:00",
+          "recommended": "01:00:00"
+        }
+      },
+      "expected": {
+        "timeout": "%timeout%"
+      },
+      "read": {
+        "cacheType": "ActivityBasedTimeoutPolicy"
+      },
+      "prepare": "Get-CIPPBaselineActivityBasedTimeoutState",
+      "remediate": {
+        "executor": "ActivityBasedTimeout",
+        "timeout": "%timeout%"
+      }
+    },
+    {
+      "name": "AnonReportDisable",
+      "label": "Enable Usernames instead of pseudo anonymised names in reports",
+      "cat": "Global Standards",
+      "tag": [],
+      "impact": "Low Impact",
+      "helpText": "Shows usernames instead of pseudo anonymised names in reports. This standard is required for reporting to work correctly.",
+      "executiveText": "Configures Microsoft 365 reports to display actual usernames instead of anonymized identifiers, enabling IT administrators to effectively troubleshoot issues and generate meaningful usage reports. This improves operational efficiency and system management capabilities.",
+      "docsDescription": "Microsoft announced some APIs and reports no longer return names, to comply with compliance and legal requirements in specific countries. This proves an issue for a lot of MSPs because those reports are often helpful for engineers. This standard applies a setting that shows usernames in those API calls / reports.",
+      "impactColour": "info",
+      "addedDate": "2021-11-16",
+      "powershellEquivalent": "Update-MgBetaAdminReportSetting -BodyParameter @{displayConcealedNames = $true}",
+      "recommendedBy": [
+        "CIPP"
+      ],
+      "requiredCapabilities": [],
+      "secureScoreImpact": 0,
+      "compare": "subset",
+      "variables": null,
+      "expected": {
+        "displayConcealedNames": false
+      },
+      "read": {
+        "cacheType": "AdminReportSettings"
+      },
+      "remediate": {
+        "executor": "GraphRequest",
+        "requests": [
+          {
+            "method": "PATCH",
+            "uri": "admin/reportSettings",
+            "body": {
+              "displayConcealedNames": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuditLog",
+      "label": "Enable the Unified Audit Log",
+      "cat": "Global Standards",
+      "tag": [
+        "CIS M365 7.0.0 (3.1.1)",
+        "mip_search_auditlog",
+        "NIST CSF 2.0 (DE.CM-09)"
+      ],
+      "impact": "Low Impact",
+      "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
+      "executiveText": "Activates comprehensive activity logging across Microsoft 365 services to track user actions, system changes, and security events. This provides essential audit trails for compliance requirements, security investigations, and regulatory reporting.",
+      "impactColour": "info",
+      "addedDate": "2021-11-16",
+      "powershellEquivalent": "Enable-OrganizationCustomization",
+      "appliesToTest": [
+        "CISAMSEXO171",
+        "CISAMSEXO173",
+        "CIS_3_1_1"
+      ],
+      "recommendedBy": [
+        "CIS",
+        "CIPP"
+      ],
+      "requiredCapabilities": [
+        "EXCHANGE_S_STANDARD",
+        "EXCHANGE_S_ENTERPRISE",
+        "EXCHANGE_S_STANDARD_GOV",
+        "EXCHANGE_S_ENTERPRISE_GOV",
+        "EXCHANGE_LITE"
+      ],
+      "secureScoreImpact": 0,
+      "compare": "subset",
+      "variables": {
+        "enabled": {
+          "type": "switch",
+          "label": "Unified Audit Log ingestion enabled",
+          "default": true,
+          "recommended": true,
+          "locked": true
+        }
+      },
+      "expected": {
+        "UnifiedAuditLogIngestionEnabled": "%enabled%"
+      },
+      "read": {
+        "cacheType": "ExoAdminAuditLogConfig"
+      },
+      "remediate": {
+        "executor": "ExoRequest",
+        "cmdlets": [
+          {
+            "cmdlet": "Enable-OrganizationCustomization",
+            "params": null,
+            "continueOnError": true
+          },
+          {
+            "cmdlet": "Set-AdminAuditLogConfig",
+            "params": {
+              "UnifiedAuditLogIngestionEnabled": "%enabled%"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisableGuestDirectory",
+      "label": "Restrict guest user access to directory objects",
+      "cat": "Global Standards",
+      "tag": [
+        "CIS M365 7.0.0 (5.1.6.2)",
+        "CISA (MS.AAD.5.1v1)",
+        "EIDSCA.AP14",
+        "EIDSCA.ST08",
+        "EIDSCA.ST09",
+        "NIST CSF 2.0 (PR.AA-05)",
+        "SMB1001 (2.8)"
+      ],
+      "impact": "Low Impact",
+      "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from seeing other users or guests in the directory.",
+      "executiveText": "Restricts external guest users from viewing the company's employee directory and organizational structure, protecting sensitive information about staff and internal groups. This security measure prevents unauthorized access to corporate contact information while still allowing necessary collaboration.",
+      "docsDescription": "Sets it so guests can view only their own user profile. Permission to view other users isn't allowed. Also restricts guest users from seeing the membership of groups they're in. See exactly what get locked down in the [Microsoft documentation.](https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions)",
+      "impactColour": "info",
+      "addedDate": "2022-05-04",
+      "powershellEquivalent": "Set-AzureADMSAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa82404023b'",
+      "appliesToTest": [
+        "CIS_5_1_6_2",
+        "EIDSCAAP07",
+        "EIDSCAAP14",
+        "EIDSCAST08",
+        "EIDSCAST09",
+        "SMB1001_2_8",
+        "ZTNA21792"
+      ],
+      "recommendedBy": [
+        "CIPP"
+      ],
+      "requiredCapabilities": [],
+      "secureScoreImpact": 0,
+      "compare": "subset",
+      "variables": {
+        "guestUserRoleId": {
+          "type": "autoComplete",
+          "label": "Guest user access level",
+          "options": [
+            {
+              "label": "Restricted access (guests can only see their own profile)",
+              "value": "2af84b1e-32c8-42b7-82bc-daa82404023b"
+            },
+            {
+              "label": "Limited access (guests can see membership of non-hidden groups)",
+              "value": "10dae51f-b6af-4016-8d66-8c2a99b929b3"
+            },
+            {
+              "label": "Same access as member users",
+              "value": "a0b1b346-4d3e-4e8b-98f8-753987be4970"
+            }
+          ],
+          "default": "2af84b1e-32c8-42b7-82bc-daa82404023b",
+          "recommended": "2af84b1e-32c8-42b7-82bc-daa82404023b"
+        }
+      },
+      "expected": {
+        "guestUserRoleId": "%guestUserRoleId%"
+      },
+      "read": {
+        "cacheType": "AuthorizationPolicy"
+      },
+      "remediate": {
+        "executor": "GraphRequest",
+        "requests": [
+          {
+            "method": "PATCH",
+            "asApp": false,
+            "uri": "policies/authorizationPolicy/authorizationPolicy",
+            "body": {
+              "guestUserRoleId": "%guestUserRoleId%"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "EnablePronouns",
+      "label": "Enable Pronouns",
+      "cat": "Global Standards",
+      "tag": [],
+      "impact": "Low Impact",
+      "helpText": "Enables the Pronouns feature for the tenant. This allows users to set their pronouns in their profile.",
+      "executiveText": "Allows employees to display their preferred pronouns in their Microsoft 365 profiles, supporting inclusive workplace practices and helping colleagues communicate respectfully. This feature enhances diversity and inclusion initiatives while fostering a more welcoming work environment.",
+      "impactColour": "info",
+      "addedDate": "2024-06-05",
+      "powershellEquivalent": "Update-MgBetaAdminPeoplePronoun -IsEnabledInOrganization:$true",
+      "recommendedBy": [],
+      "requiredCapabilities": [],
+      "secureScoreImpact": 0,
+      "compare": "subset",
+      "variables": null,
+      "expected": {
+        "isEnabledInOrganization": true
+      },
+      "read": {
+        "cacheType": "Pronouns"
+      },
+      "remediate": {
+        "executor": "GraphRequest",
+        "requests": [
+          {
+            "method": "PATCH",
+            "uri": "admin/people/pronouns",
+            "body": {
+              "isEnabledInOrganization": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FormsPhishingProtection",
+      "label": "Enable internal phishing protection for Forms",
+      "cat": "Global Standards",
+      "tag": [
+        "CIS M365 7.0.0 (1.3.5)",
+        "Security",
+        "PhishingProtection"
+      ],
+      "impact": "Low Impact",
+      "helpText": "Enables internal phishing protection for Microsoft Forms to help prevent malicious forms from being created and shared within the organization. This feature scans forms created by internal users for potential phishing content and suspicious patterns.",
+      "executiveText": "Automatically scans Microsoft Forms created by employees for malicious content and phishing attempts, preventing the creation and distribution of harmful forms within the organization. This protects against both internal threats and compromised accounts that might be used to distribute malicious content.",
+      "docsDescription": "Enables internal phishing protection for Microsoft Forms by setting the isInOrgFormsPhishingScanEnabled property to true. This security feature helps protect organizations from internal phishing attacks through Microsoft Forms by automatically scanning forms created by internal users for potential malicious content, suspicious links, and phishing patterns. When enabled, Forms will analyze form content and block or flag potentially dangerous forms before they can be shared within the organization.",
+      "impactColour": "info",
+      "addedDate": "2025-06-06",
+      "powershellEquivalent": "Graph API",
+      "appliesToTest": [
+        "CIS_1_3_5"
+      ],
+      "recommendedBy": [
+        "CIS",
+        "CIPP"
+      ],
+      "requiredCapabilities": [],
+      "secureScoreImpact": 0,
+      "compare": "subset",
+      "variables": null,
+      "expected": {
+        "isInOrgFormsPhishingScanEnabled": true
+      },
+      "read": {
+        "cacheType": "FormsSettings"
+      },
+      "remediate": {
+        "executor": "GraphRequest",
+        "requests": [
+          {
+            "method": "PATCH",
+            "asApp": false,
+            "uri": "admin/forms/settings",
+            "body": {
+              "isInOrgFormsPhishingScanEnabled": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MailContacts",
+      "label": "Set contact e-mails",
+      "cat": "Global Standards",
+      "tag": [],
+      "impact": "Low Impact",
+      "helpText": "Sets the organization's notification contacts: technical, security, marketing and general/privacy. Only configured contacts are enforced.",
+      "executiveText": "Keeps Microsoft's service, security and privacy notifications flowing to the right mailboxes instead of a former employee's.",
+      "docsDescription": "Grades only the configured contacts: marketing as contains, security+technical as a set against the technical notification list, and the general contact against the privacy profile. Remediation writes only the configured members.",
+      "impactColour": "info",
+      "addedDate": "2026-08-16",
+      "powershellEquivalent": "Graph: PATCH organization",
+      "recommendedBy": [],
+      "requiredCapabilities": [],
+      "disabledFeatures": {
+        "report": false,
+        "warn": false,
+        "remediate": false
+      },
+      "secureScoreImpact": 0,
+      "compare": "subset",
+      "variables": {
+        "GeneralContact": {
+          "type": "textField",
+          "label": "General/privacy contact email",
+          "omitWhenBlank": true
+        },
+        "SecurityContact": {
+          "type": "textField",
+          "label": "Security contact email",
+          "omitWhenBlank": true
+        },
+        "MarketingContact": {
+          "type": "textField",
+          "label": "Marketing contact email",
+          "omitWhenBlank": true
+        },
+        "TechContact": {
+          "type": "textField",
+          "label": "Technical contact email",
+          "omitWhenBlank": true
+        }
+      },
+      "read": {
+        "cacheType": "Organization"
+      },
+      "prepare": "Get-CIPPBaselineMailContactsState",
+      "remediate": {
+        "executor": "MailContacts",
+        "generalContact": "%GeneralContact%",
+        "securityContact": "%SecurityContact%",
+        "marketingContact": "%MarketingContact%",
+        "techContact": "%TechContact%"
+      }
+    },
+    {
+      "name": "PhishProtection",
+      "label": "Enable Phishing Protection system via branding CSS",
+      "cat": "Global Standards",
+      "tag": [],
+      "impact": "Low Impact",
+      "helpText": "Adds branding to the logon page that only appears if the url is not login.microsoftonline.com. This potentially prevents AITM attacks via EvilNginx, and automatically generates alerts if a clone of your login page is found.",
+      "executiveText": "Adds a hidden canary to the company sign-in page that exposes cloned phishing pages and alerts when one is found, protecting staff credentials from adversary-in-the-middle attacks.",
+      "docsDescription": "Grades whether the default branding localization's custom CSS contains the tenant's clone-detection canary (the clone.cipp.app background-image URL carrying this instance's CIPPURL from the Config table). The branding singleton reads live. Remediation strips a known malformed variant, creates the default localization when missing (Accept-Language 0, tolerating already-exists), and APPENDS the canary to the existing CSS - operator customizations are never overwritten. Report and warn are disabled as in the classic: this standard acts through remediation only.",
+      "impactColour": "info",
+      "addedDate": "2026-08-16",
+      "powershellEquivalent": "Portal only",
+      "recommendedBy": [],
+      "requiredCapabilities": [
+        "AAD_PREMIUM",
+        "AAD_PREMIUM_P2",
+        "OFFICE_BUSINESS"
+      ],
+      "disabledFeatures": {
+        "report": true,
+        "warn": true,
+        "remediate": false
+      },
+      "secureScoreImpact": 0,
+      "compare": "subset",
+      "variables": null,
+      "read": null,
+      "prepare": "Get-CIPPBaselinePhishProtectionState",
+      "remediate": {
+        "executor": "PhishProtection"
+      }
+    }
+  ]
+}

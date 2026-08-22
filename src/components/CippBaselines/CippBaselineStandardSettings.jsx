@@ -30,20 +30,33 @@ export const CippBaselineStandardSettings = ({
 }) => {
   const variableEntries = Object.entries(standard?.variables ?? {})
 
-  // Seed each field: current applied value > recommended > default. Api-driven
+  // Seed value per field: current applied value > recommended > default. Api-driven
   // autoCompletes (e.g. the CA template picker) seed with a bare value; the
   // autocomplete resolves the label once its option list loads.
+  const resolveSeed = (key, definition) => {
+    const seed =
+      initialValues?.[key] ?? definition.recommended ?? definition.default
+    if (seed === undefined) return undefined
+    return definition.type === 'autoComplete'
+      ? (definition.options?.find((option) => option.value === seed) ?? seed)
+      : seed
+  }
+
+  // The seed is ALSO passed as each field's defaultValue below - that is the load-bearing
+  // path. CippFormComponent's Controllers register with defaultValue '' during render, so
+  // by the time this effect runs on a lazily-mounted details pane (accordion expand), the
+  // form already holds '' for every field and a plain undefined-check never seeds. That is
+  // exactly how a saved baseline's variables rendered blank in the editor. The effect stays
+  // for values a Controller default cannot reach (a form reset that wipes mounted fields):
+  // it re-seeds untouched empties but never overwrites a value the operator typed.
   useEffect(() => {
     variableEntries.forEach(([key, definition]) => {
       const name = `${namePrefix}.${key}`
-      const seed =
-        initialValues?.[key] ?? definition.recommended ?? definition.default
-      if (formControl.getValues(name) === undefined && seed !== undefined) {
-        const seedValue =
-          definition.type === 'autoComplete'
-            ? (definition.options?.find((option) => option.value === seed) ??
-              seed)
-            : seed
+      const seedValue = resolveSeed(key, definition)
+      if (seedValue === undefined || seedValue === '') return
+      const currentValue = formControl.getValues(name)
+      const untouched = !formControl.getFieldState(name).isDirty
+      if (currentValue === undefined || (currentValue === '' && untouched)) {
         formControl.setValue(name, seedValue)
       }
     })
@@ -67,6 +80,9 @@ export const CippBaselineStandardSettings = ({
             name={`${namePrefix}.${key}`}
             label={definition.label}
             formControl={formControl}
+            // Saved/recommended value rides the Controller's own defaultValue so a
+            // lazily-mounted field initializes correctly regardless of effect order.
+            defaultValue={resolveSeed(key, definition)}
             options={definition.options}
             // Definitions may source options from an API instead of a static list
             // (e.g. the CA template picker) - CippFormComponent handles the fetch.
