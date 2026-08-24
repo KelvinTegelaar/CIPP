@@ -30,14 +30,21 @@ export const TabbedLayout = (props) => {
 
     if (!featureFlags.isSuccess || !Array.isArray(featureFlags.data)) return tabs
 
+    // A DISABLED flag hides its Pages; an ENABLED flag hides its HidesPages (the
+    // pages it replaces - e.g. Baselines supersedes the classic Standards tabs).
     const disabledPages = featureFlags.data
       .filter((flag) => flag.Enabled === false || flag.enabled === false)
       .flatMap((flag) => flag.Pages || flag.pages || [])
       .filter((page) => typeof page === 'string')
+    const replacedPages = featureFlags.data
+      .filter((flag) => flag.Enabled === true || flag.enabled === true)
+      .flatMap((flag) => flag.HidesPages || flag.hidesPages || [])
+      .filter((page) => typeof page === 'string')
+    const hiddenPages = [...disabledPages, ...replacedPages]
 
-    if (disabledPages.length === 0) return tabs
+    if (hiddenPages.length === 0) return tabs
 
-    return tabs.filter((option) => !disabledPages.includes(option.path))
+    return tabs.filter((option) => !hiddenPages.includes(option.path))
   }, [tabOptions, featureFlags.isSuccess, featureFlags.data, showAdvanced])
 
   const navigateToTab = useCallback(

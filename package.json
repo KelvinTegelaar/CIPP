@@ -1,6 +1,6 @@
 {
   "name": "cipp",
-  "version": "10.9.0",
+  "version": "10.9.1",
   "author": "CIPP Contributors",
   "homepage": "https://cipp.app/",
   "bugs": {
@@ -60,7 +60,7 @@
     "@tiptap/extension-table": "^3.20.5",
     "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.20.5",
-    "@tiptap/starter-kit": "^3.20.5",
+    "@tiptap/starter-kit": "^3.29.2",
     "@vvo/tzdb": "^6.198.0",
     "apexcharts": "6.6.1",
     "axios": "1.18.1",
@@ -91,7 +91,7 @@
     "react-apexcharts": "2.1.1",
     "react-beautiful-dnd": "13.1.1",
     "react-dom": "19.2.8",
-    "react-dropzone": "15.0.0",
+    "react-dropzone": "20.0.0",
     "react-error-boundary": "^6.1.2",
     "react-hook-form": "^7.76.1",
     "react-hot-toast": "2.6.0",
@@ -140,7 +140,7 @@
     "msw-storybook-addon": "3.0.0",
     "playwright": "1.59.1",
     "prettier": "^3.9.6",
-    "storybook": "10.3.5",
+    "storybook": "10.5.7",
     "typescript": "5.9.3",
     "vite": "7.3.6",
     "vitest": "4.1.10"

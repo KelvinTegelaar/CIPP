@@ -31,6 +31,7 @@ export const paginatedResult = (rows = [], overrides = {}) => ({
 
 export const postResult = (overrides = {}) => ({
   mutate: vi.fn(),
+  reset: vi.fn(),
   isPending: false,
   isSuccess: false,
   isError: false,

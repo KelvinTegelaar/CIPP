@@ -1221,6 +1221,31 @@ const Page = () => {
     }
   }
 
+  // One click after picking a suite adds every test in it, instead of selecting them one by one.
+  const handleAddAllSuiteTests = () => {
+    if (!watchTestSuite?.value || filteredTestOptions.length === 0) return
+    setBlocks((prev) => [
+      ...prev,
+      ...filteredTestOptions.map((test, i) => ({
+        id: `block-${Date.now()}-${i}`,
+        type: 'test',
+        testId: test.value,
+        testCategory: test.category,
+        title: test.name || test.label,
+        content: getTestContent(test.value),
+        status: getTestStatus(test.value),
+        static: false,
+      })),
+    ])
+    addBlockForm.reset({
+      blockType: null,
+      testSuite: null,
+      selectedTest: [],
+      dbCacheType: null,
+      dbFormat: null,
+    })
+  }
+
   const handleRemoveBlock = (index) => setBlocks((prev) => prev.filter((_, i) => i !== index))
 
   const handleMoveBlockUp = (index) => {
@@ -1525,6 +1550,17 @@ const Page = () => {
                       isFetching={availableTestsApi.isFetching}
                       disabled={!watchTestSuite?.value}
                     />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 2 }}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<Add />}
+                      onClick={handleAddAllSuiteTests}
+                      disabled={!watchTestSuite?.value || filteredTestOptions.length === 0}
+                    >
+                      Add All Tests
+                    </Button>
                   </Grid>
                 </CippFormCondition>
                 <CippFormCondition

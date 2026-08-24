@@ -54,6 +54,31 @@ vi.mock('../../../src/components/CippComponents/CippOffCanvas', () => ({
 const idleGet = { isSuccess: false, isFetching: false, isError: false, data: undefined, refetch: vi.fn() }
 const okGet = (data) => ({ isSuccess: true, isFetching: false, isError: false, data, refetch: vi.fn() })
 
+// built once: CippAutoComplete's option mapping keys on data identity, a fresh literal per call never settles
+const userDefaults = okGet([])
+const extensionsConfig = okGet({})
+const groups = okGet([])
+const customDataMappings = okGet({ Results: [] })
+const userGroups = okGet([])
+const tenantDomains = {
+  isSuccess: true,
+  isFetching: false,
+  isError: false,
+  data: {
+    pages: [
+      {
+        Results: [
+          { id: 'testdomain.com', isDefault: true, isInitial: false, isVerified: true },
+          { id: 'other.com', isDefault: false, isInitial: false, isVerified: true },
+        ],
+      },
+    ],
+  },
+  fetchNextPage: vi.fn(),
+  refetch: vi.fn(),
+}
+const idlePaginated = { ...idleGet, fetchNextPage: vi.fn() }
+
 // Mutable state backing the ApiPostCall mock: flipping it and re-rendering imitates the
 // react-query mutation lifecycle (idle -> pending -> success) the drawer sees in production.
 let postState
@@ -61,35 +86,16 @@ let mutateSpy
 
 function mockApis() {
   ApiGetCall.mockImplementation(({ url }) => {
-    if (url.startsWith('/api/ListNewUserDefaults')) return okGet([])
-    if (url.startsWith('/api/ListExtensionsConfig')) return okGet({})
-    if (url.startsWith('/api/ListGroups')) return okGet([])
-    if (url.startsWith('/api/ListCustomDataMappings')) return okGet({ Results: [] })
-    if (url.startsWith('/api/ListUserGroups')) return okGet([])
+    if (url.startsWith('/api/ListNewUserDefaults')) return userDefaults
+    if (url.startsWith('/api/ListExtensionsConfig')) return extensionsConfig
+    if (url.startsWith('/api/ListGroups')) return groups
+    if (url.startsWith('/api/ListCustomDataMappings')) return customDataMappings
+    if (url.startsWith('/api/ListUserGroups')) return userGroups
     return idleGet
   })
-  ApiGetCallWithPagination.mockImplementation(({ url }) => {
-    if (url === '/api/ListGraphRequest') {
-      return {
-        isSuccess: true,
-        isFetching: false,
-        isError: false,
-        data: {
-          pages: [
-            {
-              Results: [
-                { id: 'testdomain.com', isDefault: true, isInitial: false, isVerified: true },
-                { id: 'other.com', isDefault: false, isInitial: false, isVerified: true },
-              ],
-            },
-          ],
-        },
-        fetchNextPage: vi.fn(),
-        refetch: vi.fn(),
-      }
-    }
-    return { ...idleGet, fetchNextPage: vi.fn() }
-  })
+  ApiGetCallWithPagination.mockImplementation(({ url }) =>
+    url === '/api/ListGraphRequest' ? tenantDomains : idlePaginated
+  )
   ApiPostCall.mockImplementation(() => ({ ...postState, mutate: mutateSpy }))
 }
 
@@ -193,5 +199,6 @@ describe('CippAddUserDrawer - create another user without a page refresh (issue 
       username: 'second.user',
       primDomain: { value: 'testdomain.com' },
     })
-  })
+    // two full form fills through userEvent.type
+  }, 15000)
 })
