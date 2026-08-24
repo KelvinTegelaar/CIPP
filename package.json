@@ -91,7 +91,7 @@
     "react-apexcharts": "2.1.1",
     "react-beautiful-dnd": "13.1.1",
     "react-dom": "19.2.8",
-    "react-dropzone": "20.0.0",
+    "react-dropzone": "20.1.1",
     "react-error-boundary": "^6.1.2",
     "react-hook-form": "^7.76.1",
     "react-hot-toast": "2.6.0",
