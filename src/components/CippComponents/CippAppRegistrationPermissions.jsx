@@ -161,8 +161,18 @@ const ResourcePermissionsAccordion = ({
       }}
       disableGutters
     >
-      <AccordionSummary expandIcon={<ExpandMore />}>
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ width: "100%", pr: 1 }}>
+      <AccordionSummary
+        expandIcon={<ExpandMore />}
+        // summary is a centered ButtonBase, an unshrinkable row spills both edges
+        sx={{ "& .MuiAccordionSummary-content": { minWidth: 0 } }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          useFlexGap
+          alignItems="center"
+          sx={{ width: "100%", pr: 1, flexWrap: "wrap", rowGap: 1 }}
+        >
           <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
@@ -180,7 +190,12 @@ const ResourcePermissionsAccordion = ({
               />
             </Tooltip>
           )}
-          <Chip size="small" label={resourceAppId} variant="outlined" sx={{ maxWidth: 280 }} />
+          <Chip
+            size="small"
+            label={resourceAppId}
+            variant="outlined"
+            sx={{ maxWidth: 280, minWidth: 0 }}
+          />
           <Chip size="small" label={`${resourceAccess.length}`} />
         </Stack>
       </AccordionSummary>

@@ -191,8 +191,18 @@ const ResourceAccordion = ({ title, resourceId, chipLabel, children, riskSummary
       }}
       disableGutters
     >
-      <AccordionSummary expandIcon={<ExpandMore />}>
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ width: "100%", pr: 1 }}>
+      <AccordionSummary
+        expandIcon={<ExpandMore />}
+        // summary is a centered ButtonBase, an unshrinkable row spills both edges
+        sx={{ "& .MuiAccordionSummary-content": { minWidth: 0 } }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          useFlexGap
+          alignItems="center"
+          sx={{ width: "100%", pr: 1, flexWrap: "wrap", rowGap: 1 }}
+        >
           <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
@@ -210,7 +220,12 @@ const ResourceAccordion = ({ title, resourceId, chipLabel, children, riskSummary
               />
             </Tooltip>
           )}
-          <Chip size="small" label={resourceId} variant="outlined" sx={{ maxWidth: 260 }} />
+          <Chip
+            size="small"
+            label={resourceId}
+            variant="outlined"
+            sx={{ maxWidth: 260, minWidth: 0 }}
+          />
           {chipLabel != null && <Chip size="small" label={String(chipLabel)} />}
         </Stack>
       </AccordionSummary>

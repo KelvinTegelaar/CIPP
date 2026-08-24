@@ -122,4 +122,6 @@ export const CippTranslations = {
   resellerPartnerDelegatedAdmin: 'Direct Reseller',
   valueAddedResellerPartnerDelegatedAdmin: 'Indirect Reseller',
   unknownFutureValue: 'Unknown',
+  devicePrepData: 'Corporate Identifiers',
+  overwriteExisting: 'Overwrite Existing Identifiers',
 }

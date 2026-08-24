@@ -18,6 +18,7 @@ vi.mock('../../src/api/ApiCall', () => ({
     // /.auth/me and /version.json
     return authState.swa
   },
+  ApiPostCall: () => ({ mutate: vi.fn(), isPending: false }),
 }))
 
 const successResult = (data) => ({

@@ -1,11 +1,19 @@
 import {
+  Alert,
   Box,
   Button,
+  Checkbox,
   Chip,
+  CircularProgress,
   Divider,
+  FormControlLabel,
   LinearProgress,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   SvgIcon,
+  Switch,
   Typography,
 } from '@mui/material'
 import Link from 'next/link'
@@ -18,6 +26,7 @@ import {
   Edit,
   GitHub,
   PlayArrow,
+  Upgrade,
 } from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
@@ -28,7 +37,8 @@ import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanv
 import { CippTemplateCatalog } from '../../../../components/CippComponents/CippTemplateCatalog'
 import { describeStageConditions } from '../../../../components/CippBaselines/CippBaselineWhatIfReport'
 import { parseCippDate } from '../../../../utils/parse-cipp-date'
-import { ApiGetCall } from '../../../../api/ApiCall'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 
 // The API serializes single-element arrays as a bare object; the selector needs a real array.
 const asOptionArray = (value) =>
@@ -39,10 +49,52 @@ const asOptionArray = (value) =>
 const Page = () => {
   const pageTitle = 'Baselines'
   const [catalogVisible, setCatalogVisible] = useState(false)
+  const [migrateVisible, setMigrateVisible] = useState(false)
+  const [migrateSelected, setMigrateSelected] = useState([])
+  const [migrateReportOnly, setMigrateReportOnly] = useState(true)
+  const [migrateAddDetect, setMigrateAddDetect] = useState(false)
   const integrations = ApiGetCall({
     url: '/api/ListExtensionsConfig',
     queryKey: 'Integrations',
   })
+  const migratePreview = ApiPostCall({
+    onResult: (result) => {
+      // Pre-select everything migratable; skipped/up-to-date rows stay untouched.
+      setMigrateSelected(
+        (result?.Metadata?.templates ?? [])
+          .filter((template) =>
+            ['Ready', 'WillUpdate'].includes(template.status)
+          )
+          .map((template) => template.v2Guid)
+      )
+    },
+  })
+  const migrateCommit = ApiPostCall({
+    relatedQueryKeys: ['ListBaseline*'],
+  })
+  const openMigrate = () => {
+    setMigrateVisible(true)
+    migratePreview.mutate({
+      url: '/api/ExecBaselineMigrate',
+      data: { action: 'preview' },
+    })
+  }
+  // A finished commit replaces the preview as the list's source, so each row shows
+  // what actually happened to it.
+  const migrationReport =
+    migrateCommit.data?.data?.Metadata ?? migratePreview.data?.data?.Metadata
+  const migrationTemplates = Array.isArray(migrationReport?.templates)
+    ? migrationReport.templates
+    : []
+  const migrateStatusChip = {
+    Ready: { color: 'info', label: 'Ready' },
+    WillUpdate: { color: 'info', label: 'Will update' },
+    Migrated: { color: 'success', label: 'Migrated' },
+    Updated: { color: 'success', label: 'Updated' },
+    UpToDate: { color: 'default', label: 'Up to date' },
+    Skipped: { color: 'default', label: 'Skipped' },
+    Failed: { color: 'error', label: 'Failed' },
+  }
 
   const actions = [
     {
@@ -155,6 +207,10 @@ const Page = () => {
               { label: 'Description', value: row.description },
               { label: 'Standards', value: row.standardsCount },
               { label: 'Remediation', value: row.remediationPosture },
+              {
+                label: 'Scheduled Runs',
+                value: row.disableScheduledRuns ? 'Disabled' : 'Enabled',
+              },
               {
                 label: 'Last Updated',
                 value: row.updatedAt
@@ -332,6 +388,203 @@ const Page = () => {
           >
             Browse Catalog
           </Button>
+          <Button
+            onClick={openMigrate}
+            startIcon={
+              <SvgIcon fontSize="small">
+                <Upgrade />
+              </SvgIcon>
+            }
+          >
+            Migrate from Standards
+          </Button>
+          <CippOffCanvas
+            title="Migrate from Standards"
+            visible={migrateVisible}
+            onClose={() => setMigrateVisible(false)}
+            size="lg"
+            footer={
+              <Stack direction="row" justifyContent="flex-start" spacing={2}>
+                <Button
+                  variant="contained"
+                  disabled={
+                    migrateSelected.length === 0 || migrateCommit.isPending
+                  }
+                  onClick={() =>
+                    migrateCommit.mutate({
+                      url: '/api/ExecBaselineMigrate',
+                      data: {
+                        action: 'commit',
+                        templateIds: migrateSelected,
+                        reportOnly: migrateReportOnly,
+                        addDetectStandards: migrateAddDetect,
+                      },
+                    })
+                  }
+                >
+                  Migrate {migrateSelected.length} template
+                  {migrateSelected.length === 1 ? '' : 's'}
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => setMigrateVisible(false)}
+                >
+                  Close
+                </Button>
+              </Stack>
+            }
+          >
+            <Stack spacing={2}>
+              <Typography variant="body2" color="text.secondary">
+                Converts your classic Standards templates (including drift
+                templates) into baselines. The originals are never modified,
+                but while the Baselines feature is enabled the classic
+                Standards and Drift pages and their scheduled runs are turned
+                off - only one engine manages your tenants at a time.
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={migrateReportOnly}
+                    onChange={(event) =>
+                      setMigrateReportOnly(event.target.checked)
+                    }
+                  />
+                }
+                label="Import everything as report-only (recommended) - re-enable auto-remediation per standard once you have reviewed the results"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={migrateAddDetect}
+                    onChange={(event) =>
+                      setMigrateAddDetect(event.target.checked)
+                    }
+                  />
+                }
+                label="Migrated drift templates should also alert on Intune and Conditional Access policies that were not created from a template"
+              />
+              <CippApiResults apiObject={migrateCommit} />
+              {migratePreview.isPending && (
+                <Box display="flex" justifyContent="center" py={4}>
+                  <CircularProgress />
+                </Box>
+              )}
+              {!migratePreview.isPending && migrationTemplates.length === 0 && (
+                <Alert severity="info">
+                  No classic Standards templates were found to migrate.
+                </Alert>
+              )}
+              <List sx={{ pt: 0 }}>
+                {migrationTemplates.map((template) => {
+                  const selectable = ['Ready', 'WillUpdate'].includes(
+                    template.status
+                  )
+                  const chip =
+                    migrateStatusChip[template.status] ??
+                    migrateStatusChip.Ready
+                  return (
+                    <ListItem
+                      key={template.v2Guid}
+                      sx={{
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        borderRadius: 1,
+                        mb: 1,
+                        alignItems: 'flex-start',
+                      }}
+                    >
+                      <Checkbox
+                        checked={migrateSelected.includes(template.v2Guid)}
+                        disabled={!selectable}
+                        onChange={() =>
+                          setMigrateSelected((prev) =>
+                            prev.includes(template.v2Guid)
+                              ? prev.filter((id) => id !== template.v2Guid)
+                              : [...prev, template.v2Guid]
+                          )
+                        }
+                        sx={{ mt: 0.5 }}
+                      />
+                      <ListItemText
+                        disableTypography
+                        primary={
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              flexWrap: 'wrap',
+                            }}
+                          >
+                            <Typography
+                              variant="subtitle2"
+                              sx={{ fontWeight: 600 }}
+                            >
+                              {template.templateName || '(unnamed template)'}
+                            </Typography>
+                            {template.type === 'drift' && (
+                              <Chip
+                                label="Drift"
+                                size="small"
+                                color="warning"
+                                variant="outlined"
+                              />
+                            )}
+                            <Chip
+                              label={chip.label}
+                              size="small"
+                              color={chip.color}
+                              variant="outlined"
+                            />
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              {template.standardsCount} standard
+                              {template.standardsCount === 1 ? '' : 's'}
+                            </Typography>
+                          </Box>
+                        }
+                        secondary={
+                          <Box>
+                            {(template.tenants ?? []).length > 0 && (
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ display: 'block' }}
+                              >
+                                Tenants: {(template.tenants ?? []).join(', ')}
+                              </Typography>
+                            )}
+                            {template.detail && (
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ display: 'block' }}
+                              >
+                                {template.detail}
+                              </Typography>
+                            )}
+                            {(template.warnings ?? []).map((warning) => (
+                              <Typography
+                                key={warning}
+                                variant="caption"
+                                color="warning.main"
+                                sx={{ display: 'block' }}
+                              >
+                                {warning}
+                              </Typography>
+                            ))}
+                          </Box>
+                        }
+                      />
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </Stack>
+          </CippOffCanvas>
           <CippOffCanvas
             title="Browse Baseline Catalog"
             visible={catalogVisible}

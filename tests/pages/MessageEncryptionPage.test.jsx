@@ -32,10 +32,15 @@ describe('Message Encryption page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     api.post = postResult()
-    api.paginated = paginatedResult([
-      { displayName: 'Admin', UPN: 'admin@contoso.com' },
-      { displayName: 'Helpdesk', UPN: 'helpdesk@contoso.com' },
-    ])
+    // ListMailboxes returns a bare array (no Results wrapper, the page's api sets no dataKey)
+    api.paginated = paginatedResult([], {
+      data: {
+        pages: [[
+          { displayName: 'Admin', UPN: 'admin@contoso.com' },
+          { displayName: 'Helpdesk', UPN: 'helpdesk@contoso.com' },
+        ]],
+      },
+    })
   })
 
   it('renders the current IRM state for the tenant', async () => {
@@ -119,6 +124,27 @@ describe('Message Encryption page', () => {
         Action: 'Test',
         Sender: 'admin@contoso.com',
         Recipient: 'helpdesk@contoso.com',
+      },
+    })
+  })
+
+  it('posts the Set action with both encryption switches', async () => {
+    const user = userEvent.setup()
+    // AzureRMS already on, Encrypt button off — the state the standard fix was about
+    api.get = getResult({ data: irmConfig() })
+    renderWithProviders(<Page />)
+
+    await screen.findByText('Current Configuration')
+    await user.click(screen.getByRole('switch', { name: /Show the Encrypt button/i }))
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    expect(api.post.mutate).toHaveBeenCalledWith({
+      url: '/api/ExecIRMConfiguration',
+      data: {
+        tenantFilter: 'testdomain.com',
+        Action: 'Set',
+        AzureRMSLicensingEnabled: true,
+        SimplifiedClientAccessEnabled: true,
       },
     })
   })

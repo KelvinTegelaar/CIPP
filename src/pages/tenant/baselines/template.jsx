@@ -51,6 +51,7 @@ import { CippApiResults } from '../../../components/CippComponents/CippApiResult
 const conditionTypeOptions = [
   { label: 'Time in previous stage', value: 'time' },
   { label: 'Tenant variable', value: 'variable' },
+  { label: 'Is in tenant group', value: 'group' },
   { label: 'All previous stage items applied successfully', value: 'success' },
   { label: 'Manual approval by an operator', value: 'manual' },
 ]
@@ -87,6 +88,10 @@ const toConditionDefaults = (condition) => ({
     (option) => option.value === condition.operator
   ),
   value: condition.value,
+  // The stored groupName keeps the picker readable without waiting for the group list.
+  group: condition.group
+    ? { label: condition.groupName ?? condition.group, value: condition.group }
+    : undefined,
 })
 
 // The API serializes single-element arrays as a bare object; normalize before handing
@@ -142,6 +147,7 @@ const StagePanel = ({
   catalogByName,
   registerSerializer,
   variableOptions,
+  groupOptions,
 }) => {
   const formControl = useForm({
     mode: 'onBlur',
@@ -234,6 +240,8 @@ const StagePanel = ({
             variable: unwrapValue(condition.variable),
             operator: unwrapValue(condition.operator),
             value: condition.value,
+            group: unwrapValue(condition.group),
+            groupName: condition.group?.label ?? unwrapValue(condition.group),
           }
         }),
         standards: stage.standards.map((instanceKey) => {
@@ -318,11 +326,10 @@ const StagePanel = ({
               Graduation conditions
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Tenants graduate from Stage {stageIndex} into this stage when the
-              conditions below are met. Stages are cumulative: a tenant in this
-              stage also receives everything from the previous stages. If this
-              stage configures a standard an earlier stage also configures, the
-              settings here replace the earlier ones once the tenant arrives.
+              A tenant advances from Stage {stageIndex} into this stage once
+              the conditions below are met. Earlier stages keep applying; if
+              the same standard is configured in both, this stage's settings
+              win.
             </Typography>
             {conditionIds.length > 1 && (
               <Box sx={{ maxWidth: 380 }}>
@@ -439,6 +446,19 @@ const StagePanel = ({
                             />
                           </Box>
                         </Stack>
+                      )}
+                      {conditionType === 'group' && (
+                        <Box sx={{ maxWidth: 380 }}>
+                          <CippFormComponent
+                            type="autoComplete"
+                            name={`conditions.${conditionId}.group`}
+                            label="Tenant group"
+                            formControl={formControl}
+                            options={groupOptions}
+                            multiple={false}
+                            creatable={false}
+                          />
+                        </Box>
                       )}
                       {conditionType === 'success' && (
                         <Typography variant="body2" color="text.secondary">
@@ -591,6 +611,15 @@ const Page = () => {
     url: '/api/ListCustomVariables',
     queryKey: 'ListCustomVariables',
   })
+  // Same query key as the Edit Tenant group picker so both share one cached list.
+  const tenantGroupsApi = ApiGetCall({
+    url: '/api/ListTenantGroups',
+    queryKey: 'AllTenantGroups',
+  })
+  const groupOptions = (tenantGroupsApi.data?.Results ?? []).map((group) => ({
+    label: group.Name,
+    value: group.Id,
+  }))
   // Graduation conditions compare against CIPP custom variables; reserved tenant tokens
   // are not useful graduation signals. Creatable, so any variable name can be typed.
   const variableOptions = (customVariablesApi.data?.Results ?? [])
@@ -611,6 +640,7 @@ const Page = () => {
       description: '',
       alertEmails: '',
       alertWebhookUrl: '',
+      disableScheduledRuns: false,
     },
   })
   const watchForm = useWatch({ control: formControl.control })
@@ -630,6 +660,7 @@ const Page = () => {
       description: template.description,
       alertEmails: template.alertEmails ?? '',
       alertWebhookUrl: template.alertWebhookUrl ?? '',
+      disableScheduledRuns: template.disableScheduledRuns === true,
       // The tenant selector's own option objects round-trip verbatim through the API
       // (assignments/exclusions); older saves fall back to name-based options.
       tenantFilter:
@@ -849,6 +880,7 @@ const Page = () => {
         ),
         alertEmails: values.alertEmails,
         alertWebhookUrl: values.alertWebhookUrl,
+        disableScheduledRuns: values.disableScheduledRuns === true,
         stages: stages.map(
           (stage, index) =>
             stageSerializers.current[index]?.() ?? {
@@ -885,14 +917,19 @@ const Page = () => {
           </Button>
         </Box>
         <Stack
-          direction="row"
+          direction={{ xs: 'column', sm: 'row' }}
           justifyContent="space-between"
-          alignItems="center"
-          spacing={4}
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+          spacing={{ xs: 2, sm: 4 }}
           sx={{ mb: 1 }}
         >
           <Typography variant="h4">{pageTitle}</Typography>
-          <Stack direction="row" spacing={2}>
+          <Stack
+            direction="row"
+            spacing={2}
+            useFlexGap
+            sx={{ flexWrap: 'wrap' }}
+          >
             <PermissionButton
               requiredPermissions={['Tenant.Standards.ReadWrite']}
               variant="contained"
@@ -1011,6 +1048,17 @@ const Page = () => {
                     required={false}
                     disableClearable={false}
                   />
+                  <CippFormComponent
+                    type="switch"
+                    name="disableScheduledRuns"
+                    label="Disable Scheduled Runs"
+                    formControl={formControl}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    With scheduled runs disabled, this baseline only executes
+                    when you run it yourself - drift is not detected or
+                    remediated in between.
+                  </Typography>
                 </Stack>
               </CippButtonCard>
               <CippButtonCard title="Alerting">
@@ -1118,6 +1166,7 @@ const Page = () => {
                     catalogByName={catalogByName}
                     registerSerializer={registerSerializer}
                     variableOptions={variableOptions}
+                    groupOptions={groupOptions}
                   />
                 ))}
               </CardContent>

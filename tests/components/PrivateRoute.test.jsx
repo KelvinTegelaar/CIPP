@@ -19,6 +19,7 @@ vi.mock('../../src/api/ApiCall', () => ({
     // /.auth/me
     return authState.swa
   },
+  ApiPostCall: () => ({ mutate: vi.fn(), isPending: false }),
 }))
 
 // the gate page hosts the entire setup wizard via next/dynamic - the routing
