@@ -1,0 +1,120 @@
+
+name: 'CI: Scan - Code & Security'
+
+permissions:
+  contents: read
+  packages: read
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  # ============================================
+  # MANDATORY: GitGuardian secret scanning
+  # ============================================
+  gitguardian:
+    uses: kyos-iac/library-cicd-iac/.github/workflows/gitguardian-only-check.yml@main
+    with:
+      runs-on: '["ubuntu-latest"]'
+      caller_repo: ${{ github.repository }}
+      caller_sha: ${{ github.event.pull_request.head.sha || github.sha }}
+    permissions:
+      contents: read
+      packages: read
+    secrets:
+      caller_token: ${{ secrets.GITHUB_TOKEN }}
+      GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+
+  create-secret-issue:
+    needs: [gitguardian]
+    if: ${{ always() && needs.gitguardian.outputs.secrets_found == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Create issue for detected secrets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CALLER_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          summary="${{ needs.gitguardian.outputs.scan_summary }}"
+          title="Security: GitGuardian detected secret(s) in ${CALLER_SHA}"
+          body=$(cat <<EOF
+          ## Secret(s) detected by GitGuardian
+
+          The reusable GitGuardian scan detected one or more potential secrets.
+
+          - Repository: ${{ github.repository }}
+          - Commit: ${CALLER_SHA}
+          - Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          ### Scan summary
+          ~~~text
+          ${summary}
+          ~~~
+
+          Action required: rotate/revoke exposed credentials and remove secrets from git history if needed.
+
+          cc @${{ github.repository_owner }}/AR_Kyos_GitHub_Admins
+          EOF
+          )
+
+          gh label create security \
+            --repo "${{ github.repository }}" \
+            --color "d73a4a" \
+            --description "Security findings" \
+            --force
+
+          gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body" --label "security" || \
+          gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body"
+
+
+
+  # ============================================
+  # JavaScript/TypeScript: Prettier
+  # ============================================
+  check-javascript:
+    uses: kyos-iac/library-cicd-iac/.github/workflows/javascript-only-check.yml@main
+    with:
+      runs-on: '["ubuntu-latest"]'
+      caller_repo: ${{ github.repository }}
+      caller_sha: ${{ github.event.pull_request.head.sha || github.sha }}
+    permissions:
+      contents: read
+      packages: read
+    secrets:
+      caller_token: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+
+  # ============================================
+  # PowerShell: PSScriptAnalyzer
+  # ============================================
+  check-powershell:
+    uses: kyos-iac/library-cicd-iac/.github/workflows/pwsh-only-check.yml@main
+    with:
+      runs-on: '["ubuntu-latest"]'
+      caller_repo: ${{ github.repository }}
+      caller_sha: ${{ github.event.pull_request.head.sha || github.sha }}
+    permissions:
+      contents: read
+      packages: read
+    secrets:
+      caller_token: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+
+
+
+
+
+
+
+
