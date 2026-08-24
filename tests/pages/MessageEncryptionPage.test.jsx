@@ -128,6 +128,27 @@ describe('Message Encryption page', () => {
     })
   })
 
+  it('posts the Set action with both encryption switches', async () => {
+    const user = userEvent.setup()
+    // AzureRMS already on, Encrypt button off — the state the standard fix was about
+    api.get = getResult({ data: irmConfig() })
+    renderWithProviders(<Page />)
+
+    await screen.findByText('Current Configuration')
+    await user.click(screen.getByRole('switch', { name: /Show the Encrypt button/i }))
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    expect(api.post.mutate).toHaveBeenCalledWith({
+      url: '/api/ExecIRMConfiguration',
+      data: {
+        tenantFilter: 'testdomain.com',
+        Action: 'Set',
+        AzureRMSLicensingEnabled: true,
+        SimplifiedClientAccessEnabled: true,
+      },
+    })
+  })
+
   it('surfaces a load failure', async () => {
     api.get = getResult({ isSuccess: false, isError: true, data: undefined })
     renderWithProviders(<Page />)
