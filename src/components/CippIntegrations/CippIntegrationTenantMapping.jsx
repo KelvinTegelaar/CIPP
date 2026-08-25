@@ -59,6 +59,11 @@ const CippIntegrationSettings = ({ children }) => {
     relatedQueryKeys: [`IntegrationTenantMapping-${router.query.id}`],
   });
 
+  const [syncTenantQuery, setSyncTenantQuery] = useState({ url: "", waiting: false, queryKey: "" });
+  const syncTenantResults = ApiGetCall({
+    ...syncTenantQuery,
+  });
+
   const handleSubmit = () => {
     postCall.mutate({
       url: `/api/ExecExtensionMapping?AddMapping=${router.query.id}`,
@@ -156,7 +161,39 @@ const CippIntegrationSettings = ({ children }) => {
     }
   };
 
+  // Sync a single mapped tenant on demand. The backend already supports this via the TenantID
+  // query param; we also pass the domain so the queued run is tagged to the tenant in the logbook.
+  const handleSyncTenant = (row) => {
+    const target = Array.isArray(row) ? row[0] : row;
+    if (!target?.TenantId) return;
+    // Re-clicking the same tenant reuses the query key, so trigger a refetch instead.
+    if (syncTenantQuery.waiting && syncTenantQuery.data?.TenantID === target.TenantId) {
+      syncTenantResults.refetch();
+      return;
+    }
+    setSyncTenantQuery({
+      url: "/api/ExecExtensionSync",
+      data: {
+        Extension: router.query.id,
+        TenantID: target.TenantId,
+        TenantFilter: target.TenantDomain,
+      },
+      waiting: true,
+      queryKey: `ExecExtensionSync-${router.query.id}-${target.TenantId}`,
+    });
+  };
+
   const actions = [
+    {
+      label: "Sync Now",
+      icon: (
+        <SvgIcon>
+          <Sync />
+        </SvgIcon>
+      ),
+      confirmText: "Queue a NinjaOne sync for [Tenant]?",
+      customFunction: handleSyncTenant,
+    },
     {
       label: "Delete Mapping",
       icon: <TrashIcon />,
@@ -279,6 +316,7 @@ const CippIntegrationSettings = ({ children }) => {
                 refreshFunction={() => mappings.refetch()}
               />
             </Box>
+            <CippApiResults apiObject={syncTenantResults} />
             <CippApiResults apiObject={postCall} />
           </CardContent>
           <CardActions sx={{ justifyContent: "flex-end" }}>
