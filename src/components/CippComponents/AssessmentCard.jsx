@@ -8,9 +8,28 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Security as SecurityIcon } from "@mui/icons-material";
+import { useRouter } from "next/router";
 import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 
+// Each assessment category lines up with a dashboard tab, so its row links straight to the
+// matching result list. Keys match the `key` values in testCategories below.
+const categoryTabPaths = {
+  identity: "/dashboardv2/identity",
+  devices: "/dashboardv2/devices",
+  custom: "/dashboardv2/custom",
+};
+
 export const AssessmentCard = ({ data, isLoading, title, description }) => {
+  const router = useRouter();
+
+  // Jump to the category's tab, keeping the currently selected test suite (reportId) so the
+  // destination list stays in sync with what the card is summarising.
+  const navigateToCategory = (key) => {
+    const path = categoryTabPaths[key];
+    if (!path) return;
+    const reportId = router.query?.reportId;
+    router.push(reportId ? { pathname: path, query: { reportId } } : path);
+  };
   // Extract data with null safety
   const identityPassed = data?.TestResultSummary?.IdentityPassed || 0;
   const identityFailed = data?.TestResultSummary?.IdentityFailed || 0;
@@ -249,8 +268,36 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
                       ].filter((item) => item.value > 0);
 
                       return (
-                        <Box key={category.key}>
-                          <Typography variant="caption" color="text.secondary">
+                        <Box
+                          key={category.key}
+                          onClick={() => navigateToCategory(category.key)}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              navigateToCategory(category.key);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`View ${category.label} test results`}
+                          sx={{
+                            cursor: "pointer",
+                            borderRadius: 1,
+                            mx: -0.5,
+                            px: 0.5,
+                            transition: "background-color 0.15s ease-in-out",
+                            "&:hover": { bgcolor: "action.hover" },
+                            "&:hover .assessment-category-label": {
+                              color: "primary.main",
+                              textDecoration: "underline",
+                            },
+                          }}
+                        >
+                          <Typography
+                            className="assessment-category-label"
+                            variant="caption"
+                            color="text.secondary"
+                          >
                             {category.label + ` (${category.total})`}
                           </Typography>
                           <Box
