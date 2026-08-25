@@ -7,6 +7,7 @@ import {
   CheckCircle,
   ContentCopy,
   Visibility,
+  VisibilityOff,
 } from '@mui/icons-material'
 import { CippFormComponent } from './CippFormComponent.jsx'
 import { CertificateCredentialRemovalForm } from './CertificateCredentialRemovalForm.jsx'
@@ -45,7 +46,8 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
     ],
     confirmText:
       "'[displayName]' is a multi-tenant app, so a multi-tenant Enterprise App template will be created. This copies all permissions into a reusable template.",
-    condition: (row) => canWriteApplication && row?.signInAudience === 'AzureADMultipleOrgs',
+    condition: (row) =>
+      canWriteApplication && row?.signInAudience === 'AzureADMultipleOrgs',
   },
   {
     icon: <Key />,
@@ -68,7 +70,9 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
           label="Select Password Credentials to Remove"
           multiple
           creatable={false}
-          validators={{ required: 'Please select at least one password credential' }}
+          validators={{
+            required: 'Please select at least one password credential',
+          }}
           options={
             row?.passwordCredentials?.map((cred) => ({
               label: `${cred.displayName || 'Unnamed'} (Expiration: ${new Date(
@@ -80,8 +84,10 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
         />
       )
     },
-    confirmText: 'Are you sure you want to remove the selected password credentials?',
-    condition: (row) => canWriteApplication && row?.passwordCredentials?.length > 0,
+    confirmText:
+      'Are you sure you want to remove the selected password credentials?',
+    condition: (row) =>
+      canWriteApplication && row?.passwordCredentials?.length > 0,
   },
   {
     icon: <Security />,
@@ -98,7 +104,8 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
     children: ({ formHook, row }) => {
       return <CertificateCredentialRemovalForm formHook={formHook} row={row} />
     },
-    confirmText: 'Are you sure you want to remove the selected certificate credentials?',
+    confirmText:
+      'Are you sure you want to remove the selected certificate credentials?',
     condition: (row) => canWriteApplication && row?.keyCredentials?.length > 0,
   },
   {
@@ -137,6 +144,39 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
     },
     confirmText: 'Are you sure you want to enable this service principal?',
     condition: (row) => canWriteApplication && row?.accountEnabled === false,
+  },
+  {
+    icon: <VisibilityOff />,
+    label: 'Hide from MyApps portal',
+    type: 'POST',
+    color: 'warning',
+    multiPost: false,
+    url: '/api/ExecApplication',
+    data: {
+      Id: 'id',
+      Type: 'servicePrincipals',
+      Action: 'Hide',
+    },
+    confirmText:
+      "Hide '[displayName]' from the MyApps portal? Users will no longer see it at myapps.microsoft.com.",
+    condition: (row) =>
+      canWriteApplication && !(row?.tags ?? []).includes('HideApp'),
+  },
+  {
+    icon: <Visibility />,
+    label: 'Show in MyApps portal',
+    type: 'POST',
+    color: 'success',
+    multiPost: false,
+    url: '/api/ExecApplication',
+    data: {
+      Id: 'id',
+      Type: 'servicePrincipals',
+      Action: 'Show',
+    },
+    confirmText: "Make '[displayName]' visible to users in the MyApps portal?",
+    condition: (row) =>
+      canWriteApplication && (row?.tags ?? []).includes('HideApp'),
   },
   {
     icon: <Delete />,

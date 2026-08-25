@@ -2128,6 +2128,16 @@
         "type": "textField",
         "name": "standards.OutBoundSpamAlert.OutboundSpamContact",
         "label": "Outbound spam contact"
+      },
+      {
+        "type": "switch",
+        "name": "standards.OutBoundSpamAlert.BccSuspiciousOutboundMail",
+        "label": "BCC suspicious outbound mail to a mailbox"
+      },
+      {
+        "type": "textField",
+        "name": "standards.OutBoundSpamAlert.BccSuspiciousOutboundContact",
+        "label": "BCC recipient for suspicious outbound mail"
       }
     ],
     "label": "Set Outbound Spam Alert e-mail",
