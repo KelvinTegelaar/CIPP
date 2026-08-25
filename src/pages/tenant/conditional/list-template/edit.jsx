@@ -134,7 +134,9 @@ const EditCATemplate = () => {
 
   return (
     <CippFormPage
-      title={` ${templateData?.displayName || "Unnamed Template"}`}
+      title={
+        templateData?.displayName || (templateData ? "Unnamed Template" : "Loading...")
+      }
       formControl={formControl}
       queryKey={[`CATemplate-${GUID}`, "CATemplates"]}
       backButtonTitle="Conditional Access Templates"
