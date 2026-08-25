@@ -4,6 +4,7 @@ import { CippTablePage } from '../../../../components/CippComponents/CippTablePa
 import { ApiGetCallWithPagination } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
+import { usePermissions } from '../../../../hooks/use-permissions'
 import {
   Card,
   CardActionArea,
@@ -13,12 +14,13 @@ import {
   Typography,
 } from '@mui/material'
 import { Box, Grid } from '@mui/system'
-import { EyeIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, TrashIcon } from '@heroicons/react/24/outline'
 import {
   Block,
   CheckCircle,
   GroupOutlined,
   HourglassEmpty,
+  LockPerson,
   PersonOff,
   Send,
   WarningAmber,
@@ -76,6 +78,8 @@ const Page = () => {
   const pageTitle = 'Guest Users'
   const currentTenant = useSettings().currentTenant
   const [statusFilter, setStatusFilter] = useState(null)
+  const { checkPermissions } = usePermissions()
+  const canWriteUser = checkPermissions(['Identity.User.ReadWrite'])
 
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListGuestUsers',
@@ -181,6 +185,39 @@ const Page = () => {
       condition: (row) =>
         !!row.mail &&
         (row.status === 'Pending Acceptance' || row.status === 'Stale'),
+    },
+    {
+      label: 'Set Sign In State',
+      type: 'POST',
+      icon: <LockPerson />,
+      url: '/api/ExecDisableUser',
+      data: { ID: 'id' },
+      fields: [
+        {
+          type: 'radio',
+          name: 'Enable',
+          label: 'Sign In State',
+          options: [
+            { label: 'Enabled', value: true },
+            { label: 'Disabled', value: false },
+          ],
+          validators: { required: 'Please select a sign-in state' },
+        },
+      ],
+      confirmText:
+        'Are you sure you want to set the sign-in state for [userPrincipalName]?',
+      multiPost: false,
+      condition: () => canWriteUser,
+    },
+    {
+      label: 'Delete Guest',
+      type: 'POST',
+      icon: <TrashIcon />,
+      url: '/api/RemoveUser',
+      data: { ID: 'id', userPrincipalName: 'userPrincipalName' },
+      confirmText: 'Are you sure you want to delete [userPrincipalName]?',
+      multiPost: false,
+      condition: () => canWriteUser,
     },
   ]
 
