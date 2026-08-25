@@ -5811,7 +5811,7 @@
       "CIS_8_5_8",
       "CIS_8_5_9"
     ],
-    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl, AllowParticipantGiveRequestControl",
+    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl, AllowParticipantGiveRequestControl, AllowExternalNonTrustedMeetingChat, AllowCloudRecording",
     "executiveText": "Establishes security-focused default settings for Teams meetings, controlling who can join meetings, present content, and participate in chats. These policies balance collaboration needs with security requirements, ensuring meetings remain productive while protecting against unauthorized access and disruption.",
     "addedComponent": [
       {
@@ -5886,13 +5886,39 @@
         "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowExternalParticipantGiveRequestControl",
         "label": "External participants can give or request control"
+      },
+      {
+        "type": "autoComplete",
+        "required": false,
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowExternalNonTrustedMeetingChat",
+        "label": "External meeting chat",
+        "helperText": "CIS 8.5.8 recommends Off. Leave blank to keep the tenant's current value.",
+        "options": [
+          { "label": "Off (CIS recommended)", "value": false },
+          { "label": "On", "value": true }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "required": false,
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowCloudRecording",
+        "label": "Meeting cloud recording",
+        "helperText": "CIS 8.5.9 recommends Off. Leave blank to keep the tenant's current value.",
+        "options": [
+          { "label": "Off (CIS recommended)", "value": false },
+          { "label": "On", "value": true }
+        ]
       }
     ],
     "label": "Define Global Meeting Policy for Teams",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers $AutoAdmittedUsers -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false -AllowParticipantGiveRequestControl $false",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers $AutoAdmittedUsers -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false -AllowParticipantGiveRequestControl $false -AllowExternalNonTrustedMeetingChat $false -AllowCloudRecording $false",
     "recommendedBy": ["CIS"],
     "requiredCapabilities": ["MCOSTANDARD", "MCOEV", "MCOIMP", "TEAMS1", "Teams_Room_Standard"]
   },
