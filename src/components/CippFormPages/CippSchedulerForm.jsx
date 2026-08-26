@@ -697,6 +697,18 @@ const CippSchedulerForm = (props) => {
               options={psaStrategyDropdownOptions}
             />
           </Grid>
+          {integrationsConfig?.data?.HaloPSA?.Enabled === true && (
+            <Grid size={{ md: 12, xs: 12 }}>
+              <CippFormComponent
+                type="number"
+                name="PsaTicketId"
+                label="HaloPSA Ticket"
+                formControl={formControl}
+                placeholder="Enter the related HaloPSA Ticket ID"
+                helperText="The results are added to the associated ticket in HaloPSA as a note instead of raising a new ticket."
+              />
+            </Grid>
+          )}
         </CippFormCondition>
 
         <Grid size={{ md: 12, xs: 12 }}>

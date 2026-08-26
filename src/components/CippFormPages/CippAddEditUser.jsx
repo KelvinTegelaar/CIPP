@@ -1151,6 +1151,28 @@ const CippAddEditUser = (props) => {
                 formControl={formControl}
               />
             </Grid>
+            {integrationSettings?.data?.HaloPSA?.Enabled === true && (
+              <CippFormCondition
+                formControl={formControl}
+                field="postExecution.psa"
+                compareType="is"
+                compareValue={true}
+              >
+                {/* These Grids sit inside a plain Grid item, not the form's spacing={2} container,
+                    so the gap has to be set here or the box butts against Reference. */}
+                <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+                  <CippFormComponent
+                    type="number"
+                    fullWidth
+                    label="HaloPSA Ticket"
+                    name="PsaTicketId"
+                    placeholder="Enter the related HaloPSA Ticket ID"
+                    helperText="The results are added to the associated ticket in HaloPSA as a note instead of raising a new ticket."
+                    formControl={formControl}
+                  />
+                </Grid>
+              </CippFormCondition>
+            )}
           </CippFormCondition>
         </Grid>
       </>
