@@ -91,6 +91,7 @@ export const CippMobileCardList = (props) => {
     table,
     actions,
     hasOffCanvas = false,
+    openOffCanvasOnTap = false,
     onRowAction,
     onMoreInfo,
     isActionDisabled,
@@ -173,7 +174,7 @@ export const CippMobileCardList = (props) => {
       row.toggleSelected();
       return;
     }
-    if (hasOffCanvas) {
+    if (openOffCanvasOnTap) {
       onMoreInfo?.(row.original);
     }
   };
@@ -229,7 +230,7 @@ export const CippMobileCardList = (props) => {
                     display: "flex",
                     gap: 1.25,
                     position: "relative",
-                    cursor: selectMode || hasOffCanvas ? "pointer" : "default",
+                    cursor: selectMode || openOffCanvasOnTap ? "pointer" : "default",
                     ...(selected && {
                       borderColor: "primary.main",
                       bgcolor: (theme) =>

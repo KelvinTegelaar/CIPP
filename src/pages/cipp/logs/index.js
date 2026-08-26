@@ -341,6 +341,11 @@ const Page = () => {
       }}
       actions={actions}
       offCanvas={offcanvas}
+      offCanvasOnRowClick={true}
+      rowOpen={{
+        link: '/cipp/logs/logentry?logentry=[RowKey]&dateFilter=[DateFilter]',
+        condition: (row) => Boolean(row?.RowKey),
+      }}
     />
   )
 }

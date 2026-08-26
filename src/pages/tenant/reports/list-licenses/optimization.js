@@ -383,6 +383,7 @@ const Page = () => {
               simpleColumns={simpleColumns}
               actions={actions}
               offCanvas={offCanvas}
+              offCanvasOnRowClick={true}
             />
           </Stack>
         </Container>

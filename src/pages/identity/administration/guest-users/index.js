@@ -92,6 +92,10 @@ const Page = () => {
     cacheColumns: ['CacheTimestamp'],
   })
 
+  const tenantQuery =
+    currentTenant === 'AllTenants' ? '[Tenant]' : currentTenant
+  const userHubLink = `/identity/administration/users/user?userId=[id]&tenantFilter=${tenantQuery}`
+
   // Same url/data/queryKey as the table below, so react-query shares one request
   // between the summary cards and the table.
   const guestData = ApiGetCallWithPagination({
@@ -169,7 +173,7 @@ const Page = () => {
   const actions = [
     {
       label: 'View User',
-      link: '/identity/administration/users/user?userId=[id]',
+      link: userHubLink,
       multiPost: false,
       icon: <EyeIcon />,
       color: 'success',
@@ -265,6 +269,11 @@ const Page = () => {
         dataSourceControls={reportDB.controls}
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
+        rowOpen={{
+          link: userHubLink,
+          condition: (row) => Boolean(row?.id),
+        }}
         simpleColumns={simpleColumns}
         filters={filterList}
       />

@@ -57,6 +57,11 @@ const Page = () => {
       type: "column",
     },
     {
+      filterName: "Location Alerts",
+      value: [{ id: "Name", value: "Location Alert Exclusion" }],
+      type: "column",
+    },
+    {
       filterName: "Mailbox Permissions",
       value: [{ id: "Name", value: "Mailbox Vacation" }],
       type: "column",
@@ -96,6 +101,11 @@ const Page = () => {
         ),
         size: "xl",
         actions: actions,
+      }}
+      offCanvasOnRowClick={true}
+      rowOpen={{
+        link: '/cipp/scheduler/task?id=[RowKey]',
+        condition: (row) => Boolean(row?.RowKey),
       }}
     />
   );

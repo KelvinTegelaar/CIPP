@@ -118,4 +118,10 @@ describe('getRowTenant', () => {
       getRowTenant({ parent: { Tenant: 'parent.com' } }, 'AllTenants')
     ).toBe('parent.com')
   })
+
+  it('prefers tenantId on the row in AllTenants', () => {
+    expect(getRowTenant({ tenantId: 'child.com' }, 'AllTenants')).toBe(
+      'child.com'
+    )
+  })
 })

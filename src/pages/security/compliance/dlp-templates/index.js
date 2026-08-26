@@ -84,6 +84,7 @@ const Page = () => {
       queryKey="ListDlpCompliancePolicyTemplates"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <>

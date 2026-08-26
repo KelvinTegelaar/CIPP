@@ -87,6 +87,7 @@ const Page = () => {
       queryKey="ListSensitiveInfoTypeTemplates"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <>

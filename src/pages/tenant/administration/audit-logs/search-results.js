@@ -104,6 +104,7 @@ const Page = () => {
           SearchId: searchId,
         }}
         offCanvas={offcanvas}
+        offCanvasOnRowClick={true}
         actions={[]}
       />
 

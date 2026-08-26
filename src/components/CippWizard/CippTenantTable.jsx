@@ -171,6 +171,7 @@ export const CippTenantTable = ({
         apiUrl="/api/ExecExcludeTenant?ListAll=True"
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={columns}
         filters={filters}
         showTenantSelector={showTenantSelector}

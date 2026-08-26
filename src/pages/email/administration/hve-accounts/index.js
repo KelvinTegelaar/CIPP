@@ -186,6 +186,7 @@ const Page = () => {
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">

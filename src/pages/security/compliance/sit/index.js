@@ -74,6 +74,7 @@ const Page = () => {
       queryKey={`ListSensitiveInfoType-${tenantFilter}`}
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <CippDeployCompliancePolicyDrawer

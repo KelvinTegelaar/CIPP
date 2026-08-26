@@ -91,6 +91,7 @@ const Page = () => {
       queryKey="ListSensitivityLabelTemplates"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <>

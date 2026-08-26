@@ -90,6 +90,11 @@ const Page = () => {
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
+        rowOpen={{
+          link: '/identity/administration/users/user?userId=[azureAdUserId]&tenantFilter=[tenantId]',
+          condition: (row) => Boolean(row?.azureAdUserId),
+        }}
         simpleColumns={simpleColumns}
         dataSourceControls={reportDB.controls}
       />

@@ -81,6 +81,7 @@ const Page = () => {
         ],
         actions: actions,
       }}
+      offCanvasOnRowClick={true}
       simpleColumns={[
         'userDisplayName',
         'userPrincipalName',

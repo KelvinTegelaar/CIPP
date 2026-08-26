@@ -99,6 +99,7 @@ const Page = () => {
       queryKey={`ListDlpCompliancePolicy-${tenantFilter}`}
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <CippDeployCompliancePolicyDrawer

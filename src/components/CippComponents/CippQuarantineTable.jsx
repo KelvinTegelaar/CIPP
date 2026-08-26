@@ -442,6 +442,7 @@ export const CippQuarantineTable = ({ entityType = 'Email' }) => {
         queryKey={queryKey}
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         filters={filterList}
       />

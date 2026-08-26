@@ -56,6 +56,7 @@ const Page = () => {
           },
         ],
       }}
+      offCanvasOnRowClick={true}
     />
   );
 };

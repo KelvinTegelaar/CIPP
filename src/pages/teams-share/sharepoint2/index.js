@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Container, IconButton, Stack, Tooltip, Typography } from '@mui/material'
+import { Container, Stack, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
-import { Delete, FolderOpen, Launch, Refresh, Storage as StorageIcon } from '@mui/icons-material'
+import { Delete, FolderOpen, Launch, Storage as StorageIcon } from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../layouts/index.js'
 import { CippHead } from '../../../components/CippComponents/CippHead'
 import { CippSharePointBrowserBanner } from '../../../components/CippComponents/CippSharePointBrowserBanner'
@@ -11,6 +11,7 @@ import { CippSharePointBrowserPermissions } from '../../../components/CippCompon
 import { CippSharePointBrowserStorage } from '../../../components/CippComponents/CippSharePointBrowserStorage'
 import { CippSharePointFolderView } from '../../../components/CippComponents/CippSharePointFolderView'
 import { ApiGetCall } from '../../../api/ApiCall'
+import { usePermissions } from '../../../hooks/use-permissions'
 import { useSettings } from '../../../hooks/use-settings'
 
 const openUrls = (rows) => {
@@ -26,9 +27,29 @@ const queryString = (value) => (typeof value === 'string' && value.length > 0 ? 
 
 const isSiteRow = (row) => row?.type === 'site'
 
+const PROTECTED_SITE_TYPES = [
+  'Tenant Admin Site',
+  'My Site Host',
+  'Basic Search Center',
+  'Compliance Policy Center',
+  'SharePoint Online Tenant Fundamental Site',
+  'Team Channel',
+  'App Catalog Site',
+  'App catalog',
+]
+
+const canDeleteSite = (row) =>
+  isSiteRow(row) &&
+  !PROTECTED_SITE_TYPES.includes(row.siteType) &&
+  !/\.sharepoint\.com\/?$/i.test(row.webUrl ?? '') &&
+  !/\/sites\/contentTypeHub$/i.test(row.webUrl ?? '')
+
 const Page = () => {
   const router = useRouter()
   const tenantFilter = useSettings().currentTenant
+  const { checkPermissions } = usePermissions()
+  const canWriteSite = checkPermissions(['Sharepoint.Site.ReadWrite'])
+  const canReadSite = checkPermissions(['Sharepoint.Site.Read', 'Sharepoint.Site.ReadWrite'])
   const [checkedIds, setCheckedIds] = useState([])
   const [permissionsOpen, setPermissionsOpen] = useState(false)
   const [storageOpen, setStorageOpen] = useState(false)
@@ -136,7 +157,7 @@ const Page = () => {
 
   // Storage is site-scoped: selected site at root, or the opened site when drilled in
   const storageSite = isSiteRow(selected) ? selected : openedSite
-  const showStorage = Boolean(storageSite?.webUrl)
+  const showStorage = canReadSite && Boolean(storageSite?.webUrl)
 
   const handleCheckedChange = (ids) => {
     setCheckedIds(ids)
@@ -171,7 +192,12 @@ const Page = () => {
         noConfirm: true,
         condition: (rows) => {
           const list = Array.isArray(rows) ? rows : [rows]
-          return list.length === 1 && isSiteRow(list[0]) && Boolean(list[0]?.webUrl)
+          return (
+            canReadSite &&
+            list.length === 1 &&
+            isSiteRow(list[0]) &&
+            Boolean(list[0]?.webUrl)
+          )
         },
         customFunction: (rows) => {
           const list = Array.isArray(rows) ? rows : [rows]
@@ -185,9 +211,13 @@ const Page = () => {
         showInActionsMenu: true,
         noConfirm: true,
         customFunction: () => {},
+        condition: (rows) => {
+          const list = Array.isArray(rows) ? rows : [rows]
+          return canWriteSite && list.length === 1 && canDeleteSite(list[0])
+        },
       },
     ],
-    []
+    [canWriteSite, canReadSite]
   )
 
   const rowActions = useMemo(
@@ -207,7 +237,7 @@ const Page = () => {
       {
         label: 'Storage',
         icon: <StorageIcon fontSize="small" />,
-        condition: (item) => isSiteRow(item) && Boolean(item?.webUrl),
+        condition: (item) => canReadSite && isSiteRow(item) && Boolean(item?.webUrl),
         onClick: (item) => {
           if (item?.id) setCheckedIds([item.id])
           setStorageOpen(true)
@@ -216,31 +246,18 @@ const Page = () => {
       {
         label: 'Delete',
         icon: <Delete fontSize="small" />,
+        condition: (item) => canWriteSite && canDeleteSite(item),
         onClick: () => {},
       },
     ],
-    []
+    [canWriteSite, canReadSite, handleOpen]
   )
 
   return (
     <>
-      <CippHead title="SharePoint Site Browser" />
+      <CippHead title="SharePoint Sites" />
       <Container maxWidth="xl" sx={{ pt: 3, pb: 3 }}>
         <Stack spacing={2}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="h4">SharePoint Site Browser</Typography>
-            <Tooltip title="Refresh">
-              <span>
-                <IconButton
-                  size="small"
-                  onClick={() => browserApi.refetch()}
-                  disabled={!tenantFilter || tenantFilter === 'AllTenants' || browserApi.isFetching}
-                >
-                  <Refresh />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </Stack>
           {!tenantFilter || tenantFilter === 'AllTenants' ? (
             <Typography color="text.secondary">
               Select a tenant to browse SharePoint sites.
@@ -256,14 +273,22 @@ const Page = () => {
                 atRoot={atRoot}
                 showStorage={showStorage}
                 onStorageClick={() => setStorageOpen(true)}
-                showPermissions={selected?.type === 'site' || selected?.type === 'library'}
+                showPermissions={
+                  canReadSite &&
+                  (selected?.type === 'site' || selected?.type === 'library')
+                }
                 onPermissionsClick={() => setPermissionsOpen(true)}
-                showEditSite={Boolean(openedSite) || isSiteRow(selected)}
+                showNew={canWriteSite}
+                showEditSite={
+                  canWriteSite && (Boolean(openedSite) || isSiteRow(selected))
+                }
                 queryKeys={
                   siteId
                     ? `ListSiteBrowser-${tenantFilter}-${siteId}`
                     : `ListSiteBrowser-${tenantFilter}-root`
                 }
+                onRefresh={() => browserApi.refetch()}
+                refreshDisabled={browserApi.isFetching}
               />
               <CippSharePointBrowserPermissions
                 open={permissionsOpen}

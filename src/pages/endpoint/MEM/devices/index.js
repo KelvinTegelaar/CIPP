@@ -46,6 +46,14 @@ const Page = () => {
         actions={actions}
         queryKey={`MEMDevices-${tenantFilter}`}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
+        rowOpen={{
+          link:
+            tenantFilter === 'AllTenants'
+              ? '/endpoint/MEM/devices/device?deviceId=[id]&tenantFilter=[Tenant]'
+              : `/endpoint/MEM/devices/device?deviceId=[id]&tenantFilter=${tenantFilter}`,
+          condition: (row) => Boolean(row?.id),
+        }}
         simpleColumns={simpleColumns}
         cardButton={
           <Stack direction="row" spacing={1} alignItems="center">

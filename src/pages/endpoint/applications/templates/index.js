@@ -160,6 +160,7 @@ const Page = () => {
         apiUrl="/api/ListAppTemplates"
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={['displayName', 'description', 'appCount', 'appTypes', 'appNames']}
         queryKey="ListAppTemplates"
         cardButton={

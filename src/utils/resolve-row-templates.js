@@ -65,7 +65,9 @@ export const getRowTenant = (row, currentTenant) => {
   const source = Array.isArray(row) ? row[0] : row
   return (
     source?.Tenant ||
+    source?.tenantId ||
     source?.parent?.Tenant ||
+    source?.parent?.tenantId ||
     source?.tenantFilter ||
     source?.parent?.tenantFilter ||
     currentTenant

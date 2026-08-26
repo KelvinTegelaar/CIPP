@@ -57,6 +57,7 @@ const Page = () => {
       apiUrl="/api/ListFeatureFlags"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       tenantInTitle={false}
       dataFilter={(row) => !row.Hidden}

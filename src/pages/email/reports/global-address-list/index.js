@@ -69,6 +69,7 @@ const Page = () => {
       apiUrl="/api/ListGlobalAddressList"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       filters={filters}
       simpleColumns={[
         "HiddenFromAddressListsEnabled",

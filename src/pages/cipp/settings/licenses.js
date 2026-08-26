@@ -159,6 +159,7 @@ const Page = () => {
         actions={actions}
         apiDataKey="Results"
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         tenantInTitle={false}
       />

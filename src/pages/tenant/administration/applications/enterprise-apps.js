@@ -70,6 +70,11 @@ const Page = () => {
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
+      rowOpen={{
+        link: '/tenant/administration/applications/enterprise-app?spId=[id]&tenantFilter=[Tenant]',
+        condition: (row) => Boolean(row?.id),
+      }}
       simpleColumns={simpleColumns}
       filters={filters}
       cardButton={

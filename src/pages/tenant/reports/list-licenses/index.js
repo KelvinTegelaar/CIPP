@@ -102,6 +102,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       initialFilters={urlFilters}
     />
   )

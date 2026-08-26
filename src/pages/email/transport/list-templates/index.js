@@ -83,6 +83,7 @@ const Page = () => {
       apiUrl="/api/ListTransportRulesTemplates"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={ <CippAddTransportRuleDrawer requiredPermissions={cardButtonPermissions} />}
     />

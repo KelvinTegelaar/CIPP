@@ -382,6 +382,7 @@ const Page = () => {
           );
         },
       }}
+      offCanvasOnRowClick={true}
       title={pageTitle}
       tenantInTitle={false}
       apiDataKey="Results"

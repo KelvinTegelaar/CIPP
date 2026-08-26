@@ -61,6 +61,7 @@ const Page = () => {
       apiUrl="/api/ListMailboxRestores"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={<CippMailboxRestoreDrawer buttonText="New Restore Job" />}
       queryKey={`MailboxRestores-${tenantDomain}`}

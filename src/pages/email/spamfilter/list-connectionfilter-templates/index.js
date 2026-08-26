@@ -95,6 +95,7 @@ const Page = () => {
       apiUrl="/api/ListConnectionfilterTemplates"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
     />
   );

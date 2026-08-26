@@ -90,6 +90,7 @@ const Page = () => {
         queryKey={reportDB.resolvedQueryKey}
         actions={CippExchangeActions()}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         filters={filterList}
         tableFilter={

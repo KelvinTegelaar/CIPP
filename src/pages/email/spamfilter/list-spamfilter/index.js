@@ -98,6 +98,7 @@ const Page = () => {
       apiUrl={apiUrl}
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <>

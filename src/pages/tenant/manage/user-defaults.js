@@ -340,6 +340,7 @@ const Page = () => {
           queryKey={`ListNewUserDefaults-${userSettings.currentTenant}`}
           actions={actions}
           offCanvas={offCanvas}
+          offCanvasOnRowClick={true}
           simpleColumns={[
             'templateName',
             'defaultForTenant',

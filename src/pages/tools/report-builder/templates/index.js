@@ -89,6 +89,7 @@ const Page = () => {
       simpleColumns={['Name', 'Sections', 'TestCount', 'CustomCount']}
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       cardButton={
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button

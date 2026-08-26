@@ -47,6 +47,7 @@ const Page = () => {
         filters={filters}
         dataSourceControls={reportDB.controls}
         offCanvas={null}
+        offCanvasOnRowClick={true}
       />
       {reportDB.syncDialog}
     </>

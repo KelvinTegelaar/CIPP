@@ -297,6 +297,7 @@ export const CippUserReportedMessagesTable = () => {
         queryKey={queryKey}
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         filters={categoryFilters}
       />

@@ -71,6 +71,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       apiData={apiData}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       cardButton={
         <CippAddDomainDrawer
           buttonText="Add Domain"

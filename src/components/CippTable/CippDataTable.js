@@ -1,5 +1,6 @@
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import {
+  alpha,
   Card,
   CardContent,
   CardHeader,
@@ -45,6 +46,7 @@ import {
   columnOrderHasStaleIds,
 } from './util-subTables'
 import { attachParentRow, getRowTenant } from '../../utils/resolve-row-templates'
+import { dispatchRowOpen, rowOpenEnabled } from './util-row-open'
 
 // Resolve dot-delimited property paths against arbitrary data objects.
 const getNestedValue = (source, path) => {
@@ -315,6 +317,49 @@ const MUI_TABLE_HEAD_CELL_PROPS = {
   },
 }
 
+const ROW_CLICK_DELAY_MS = 250
+
+// Stable keys for row context — reference equality breaks after React Query refetches.
+const ROW_CONTEXT_KEY_FIELDS = [
+  'id',
+  'RowKey',
+  'GUID',
+  'userId',
+  'appId',
+  'azureAdUserId',
+  'tenantId',
+]
+
+const getRowContextKey = (row) => {
+  if (!row || typeof row !== 'object') {
+    return null
+  }
+  for (const field of ROW_CONTEXT_KEY_FIELDS) {
+    const value = row[field]
+    if (value != null && value !== '') {
+      return String(value)
+    }
+  }
+  return null
+}
+
+const rowsMatchContext = (a, b) => {
+  if (a === b) {
+    return true
+  }
+  const keyA = getRowContextKey(a)
+  const keyB = getRowContextKey(b)
+  if (keyA && keyB) {
+    return keyA === keyB
+  }
+  return false
+}
+
+const isRowClickTarget = (event) =>
+  event.target?.closest?.(
+    'button, a, input, textarea, select, [role="button"], [role="menuitem"], [data-no-row-click="true"]'
+  )
+
 const MUI_TABLE_BODY_CELL_ON_COPY = (e) => {
   const sel = window.getSelection()?.toString() ?? ''
   if (sel) {
@@ -453,6 +498,7 @@ export const CippDataTable = (props) => {
     cardButton,
     offCanvas = false,
     offCanvasOnRowClick = false,
+    rowOpen,
     noCard = false,
     hideTitle = false,
     refreshFunction,
@@ -501,6 +547,8 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false)
   const [offCanvasData, setOffCanvasData] = useState({})
   const [offCanvasRowIndex, setOffCanvasRowIndex] = useState(0)
+  const [contextRow, setContextRow] = useState(null)
+  const rowClickTimerRef = useRef(null)
   const [customComponentData, setCustomComponentData] = useState({})
   const [customComponentVisible, setCustomComponentVisible] = useState(false)
   const [actionData, setActionData] = useState({
@@ -979,40 +1027,6 @@ export const CippDataTable = (props) => {
     [settings?.sidebarCollapse]
   )
 
-  // Memoize row click props for offCanvas navigation.
-  const muiTableBodyRowProps = useMemo(() => {
-    if (offCanvasOnRowClick && offCanvas) {
-      return ({ row }) => ({
-        onClick: (event) => {
-          if (
-            event.target?.closest?.(
-              'button, a, input, textarea, select, [role="button"], [role="menuitem"], [data-no-row-click="true"]'
-            )
-          ) {
-            return
-          }
-
-          setOffCanvasData(row.original)
-          const navigable = table?.getSortedRowModel?.()?.rows
-          if (navigable) {
-            const indexInList = navigable.findIndex(
-              (r) => r.original === row.original
-            )
-            setOffCanvasRowIndex(indexInList >= 0 ? indexInList : 0)
-          }
-          setOffcanvasVisible(true)
-        },
-        sx: {
-          cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: 'action.hover',
-          },
-        },
-      })
-    }
-    return undefined
-  }, [offCanvasOnRowClick, offCanvas])
-
   // Memoize the empty-rows fallback renderer.
   const queueMessage = getRequestData.data?.pages?.[0]?.Metadata?.QueueMessage
   const renderEmptyRowsFallback = useCallback(
@@ -1094,12 +1108,157 @@ export const CippDataTable = (props) => {
   // position taken from it stops matching the list the moment a column is sorted.
   const openRowOffCanvas = useCallback((rowOriginal) => {
     setOffCanvasData(rowOriginal)
+    setContextRow(rowOriginal)
     const navigable = table.getSortedRowModel().rows
-    const indexInList = navigable.findIndex((r) => r.original === rowOriginal)
+    const indexInList = navigable.findIndex((r) =>
+      rowsMatchContext(r.original, rowOriginal)
+    )
     setOffCanvasRowIndex(indexInList >= 0 ? indexInList : 0)
     setOffcanvasVisible(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const closeRowOffCanvas = useCallback(() => {
+    setOffcanvasVisible(false)
+    setContextRow(null)
+  }, [])
+
+  const handleRowClickOffCanvas = useCallback(
+    (rowOriginal) => {
+      if (!offCanvas || !offCanvasOnRowClick) {
+        return
+      }
+      if (offcanvasVisible && rowsMatchContext(offCanvasData, rowOriginal)) {
+        closeRowOffCanvas()
+        return
+      }
+      openRowOffCanvas(rowOriginal)
+    },
+    [
+      offCanvas,
+      offCanvasOnRowClick,
+      offcanvasVisible,
+      offCanvasData,
+      closeRowOffCanvas,
+      openRowOffCanvas,
+    ]
+  )
+
+  const handleRowDoubleClickOpen = useCallback(
+    (rowOriginal) => {
+      const actionRow = getActionRow(rowOriginal)
+      if (!rowOpenEnabled(rowOpen, actionRow)) {
+        return
+      }
+      const tenant = getRowTenant(actionRow, settings.currentTenant)
+      const rowTenant =
+        tenant && tenant !== 'AllTenants' ? tenant : undefined
+      if (settings.currentTenant === 'AllTenants' && rowTenant) {
+        settings.handleUpdate({
+          currentTenant: rowTenant,
+        })
+      }
+      dispatchRowOpen(rowOpen, actionRow, router, {
+        fallbackTenant: rowTenant,
+        currentTenant: settings.currentTenant,
+      })
+    },
+    [rowOpen, getActionRow, settings, router]
+  )
+
+  useEffect(
+    () => () => {
+      if (rowClickTimerRef.current) {
+        clearTimeout(rowClickTimerRef.current)
+      }
+    },
+    []
+  )
+
+  // offCanvasOnRowClick and rowOpen are independent: a page may enable either, both, or
+  // neither. Click delay applies only when both are active — otherwise offCanvas opens
+  // immediately and rowOpen is double-click only.
+  const muiTableBodyRowProps = useMemo(() => {
+    const clickOffCanvas = Boolean(offCanvasOnRowClick && offCanvas)
+    const dblOpen = Boolean(rowOpen?.link || rowOpen?.onOpen)
+    if (!clickOffCanvas && !dblOpen) {
+      return undefined
+    }
+    const needsClickDelay = clickOffCanvas && dblOpen
+
+    return ({ row }) => {
+      const actionRow = getActionRow(row.original)
+      const canOpen = rowOpenEnabled(rowOpen, actionRow)
+      const isContextRow =
+        clickOffCanvas && rowsMatchContext(contextRow, row.original)
+
+      return {
+        onClick: (event) => {
+          if (isRowClickTarget(event) || !clickOffCanvas) {
+            return
+          }
+          const open = () => handleRowClickOffCanvas(row.original)
+          if (!needsClickDelay) {
+            open()
+            return
+          }
+          if (rowClickTimerRef.current) {
+            clearTimeout(rowClickTimerRef.current)
+          }
+          rowClickTimerRef.current = setTimeout(() => {
+            rowClickTimerRef.current = null
+            open()
+          }, ROW_CLICK_DELAY_MS)
+        },
+        onDoubleClick: (event) => {
+          if (isRowClickTarget(event) || !dblOpen) {
+            return
+          }
+          if (rowClickTimerRef.current) {
+            clearTimeout(rowClickTimerRef.current)
+            rowClickTimerRef.current = null
+          }
+          if (canOpen) {
+            handleRowDoubleClickOpen(row.original)
+          }
+        },
+        sx: {
+          cursor: clickOffCanvas || canOpen ? 'pointer' : undefined,
+          borderLeft: (theme) =>
+            isContextRow
+              ? `3px solid ${theme.palette.primary.main}`
+              : '3px solid transparent',
+          ...(isContextRow && {
+            bgcolor: (theme) =>
+              alpha(
+                theme.palette.primary.main,
+                theme.palette.mode === 'dark' ? 0.14 : 0.08
+              ),
+            '&:hover': {
+              bgcolor: (theme) =>
+                alpha(
+                  theme.palette.primary.main,
+                  theme.palette.mode === 'dark' ? 0.22 : 0.12
+                ),
+            },
+          }),
+          ...(!isContextRow && {
+            '&:hover': {
+              backgroundColor: 'action.hover',
+            },
+          }),
+        },
+      }
+    }
+  }, [
+    offCanvasOnRowClick,
+    offCanvas,
+    rowOpen,
+    contextRow,
+    getActionRow,
+    handleRowClickOffCanvas,
+    handleRowDoubleClickOpen,
+  ])
 
   // the flipped table shows whatever columns are visible; horizontal scroll covers the width
   const cardViewSurfaceRef = useRef(null)
@@ -1437,7 +1596,9 @@ export const CippDataTable = (props) => {
   // identity alone would strand the position — and is clamped so a list that shrank under
   // it can't report "6 of 2".
   const derivedRowIndex = offcanvasVisible
-    ? navigationRows.findIndex((row) => row.original === offCanvasData)
+    ? navigationRows.findIndex((row) =>
+        rowsMatchContext(row.original, offCanvasData)
+      )
     : -1
   const currentRowIndex =
     derivedRowIndex >= 0
@@ -1578,6 +1739,7 @@ export const CippDataTable = (props) => {
                 table={table}
                 actions={actions}
                 hasOffCanvas={!!offCanvas || Boolean(cardInfoFields?.length)}
+                openOffCanvasOnTap={Boolean(offCanvasOnRowClick && offCanvas)}
                 onRowAction={dispatchRowAction}
                 onMoreInfo={openRowOffCanvas}
                 isActionDisabled={handleActionDisabled}
@@ -1678,7 +1840,7 @@ export const CippDataTable = (props) => {
       <CippOffCanvas
         isFetching={getRequestData.isFetching}
         visible={offcanvasVisible}
-        onClose={() => setOffcanvasVisible(false)}
+        onClose={closeRowOffCanvas}
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
         title={offCanvasData?.Name || offCanvas?.title || 'Extended Info'}
@@ -1692,15 +1854,19 @@ export const CippDataTable = (props) => {
         onNavigateUp={() => {
           const newIndex = currentRowIndex - 1
           if (newIndex >= 0 && navigationRows[newIndex]) {
+            const nextRow = navigationRows[newIndex].original
             setOffCanvasRowIndex(newIndex)
-            setOffCanvasData(navigationRows[newIndex].original)
+            setOffCanvasData(nextRow)
+            setContextRow(nextRow)
           }
         }}
         onNavigateDown={() => {
           const newIndex = currentRowIndex + 1
           if (navigationRows[newIndex]) {
+            const nextRow = navigationRows[newIndex].original
             setOffCanvasRowIndex(newIndex)
-            setOffCanvasData(navigationRows[newIndex].original)
+            setOffCanvasData(nextRow)
+            setContextRow(nextRow)
           }
         }}
         canNavigateUp={currentRowIndex > 0}

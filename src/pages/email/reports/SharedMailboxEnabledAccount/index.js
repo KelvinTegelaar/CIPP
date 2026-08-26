@@ -50,6 +50,7 @@ const Page = () => {
             "onPremisesSyncEnabled",
           ],
         }}
+        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         filters={[
           {

@@ -501,6 +501,7 @@ const Page = () => {
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         dataSourceControls={reportDB.controls}
       />

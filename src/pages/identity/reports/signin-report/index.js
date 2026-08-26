@@ -318,6 +318,7 @@ const Page = () => {
         apiDataKey="Results"
         simpleColumns={getSimpleColumns(appliedFilters.signInEventType)}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         actions={[]}
         queryKey={`ListSignIns-${currentTenant}-${JSON.stringify(appliedFilters)}`}
       />

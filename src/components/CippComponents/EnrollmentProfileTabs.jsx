@@ -331,6 +331,7 @@ export const AppleADEEnrollmentProfiles = () => {
               children: (row) => <CippJsonView object={row} type="intune" defaultOpen />,
               size: 'xl',
             }}
+            offCanvasOnRowClick={true}
             cardButton={
               <Stack direction="row" spacing={1}>
                 <Button onClick={depSyncDialog.handleOpen} startIcon={<Sync />}>
@@ -414,6 +415,7 @@ export const AndroidEnterpriseEnrollmentProfiles = () => {
             children: (row) => <CippJsonView object={row} type="intune" defaultOpen />,
             size: 'xl',
           }}
+          offCanvasOnRowClick={true}
         />
       </Card>
     </EnrollmentProfilesPage>
@@ -595,6 +597,7 @@ export const WindowsAutopilotEnrollmentProfiles = () => {
             children: (row) => <CippJsonView object={row} type="intune" defaultOpen />,
             size: 'xl',
           }}
+          offCanvasOnRowClick={true}
           cardButton={<CippAutopilotProfileDrawer />}
         />
       </Card>

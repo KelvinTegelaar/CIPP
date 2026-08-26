@@ -73,6 +73,7 @@ const Page = () => {
         isFetching={fetchData.isPending}
         cardButton={<ResetToDefaultButton />}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         actions={[
           {
             label: "Run Now",

@@ -87,6 +87,7 @@ const Page = () => {
           'EnterpriseRegistration',
         ]}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         actions={actions}
       />
       <DomainAnalyserDialog createDialog={analyserDialog} />

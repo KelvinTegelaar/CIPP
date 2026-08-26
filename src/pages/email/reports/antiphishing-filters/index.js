@@ -63,6 +63,7 @@ const Page = () => {
       apiUrl="/api/ListAntiPhishingFilters"
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={[
         "RuleName",
         "Name",

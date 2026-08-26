@@ -763,6 +763,7 @@ const Page = () => {
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         cardButton={pageActions}
         dataSourceControls={reportDB.controls}

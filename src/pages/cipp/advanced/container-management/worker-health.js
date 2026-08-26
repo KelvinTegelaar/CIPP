@@ -353,6 +353,8 @@ const CompactStatsRow = ({ snapshot }) => {
         { k: "Queued", v: jobs.Queued ?? 0, w: jobs.Queued > 10 },
         { k: "Done", v: jobs.Completed?.toLocaleString() ?? 0 },
         { k: "Failed", v: jobs.Failed ?? 0, w: jobs.Failed > 0 },
+        // Stale queue entries whose task was gone by dispatch time — benign, so never flagged.
+        { k: "Skipped", v: jobs.Skipped ?? 0 },
       ],
     },
     {
@@ -841,6 +843,22 @@ const Page = () => {
                 }}
                 simpleColumns={jobSimpleColumns}
                 actions={jobActions}
+                offCanvas={{
+                  extendedInfoFields: [
+                    "Id",
+                    "Name",
+                    "RunName",
+                    "Status",
+                    "Priority",
+                    "QueuedUtc",
+                    "StartedUtc",
+                    "CompletedUtc",
+                    "WaitSeconds",
+                    "DurationSeconds",
+                    "LastError",
+                  ],
+                }}
+                offCanvasOnRowClick={true}
                 defaultSorting={[{ id: "QueuedUtc", desc: true }]}
                 cardButton={
                   <Stack direction="row" spacing={1}>
@@ -850,7 +868,7 @@ const Page = () => {
                       onChange={(_, val) => val !== null && setJobStatus(val)}
                       size="small"
                     >
-                      {["", "Queued", "Running", "Completed", "Failed", "Cancelled"].map((s) => (
+                      {["", "Queued", "Running", "Completed", "Failed", "Cancelled", "Skipped"].map((s) => (
                         <ToggleButton key={s || "all"} value={s}>
                           {s || "All"}
                         </ToggleButton>

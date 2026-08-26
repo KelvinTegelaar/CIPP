@@ -98,6 +98,7 @@ const Page = () => {
       queryKey={`ListRetentionCompliancePolicy-${tenantFilter}`}
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <CippDeployCompliancePolicyDrawer

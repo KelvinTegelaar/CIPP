@@ -3,11 +3,11 @@ import { Layout as DashboardLayout } from '../../../../layouts/index.js'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { Delete, OpenInNew } from '@mui/icons-material'
 import { useSettings } from '../../../../hooks/use-settings'
-import { useRouter } from 'next/router'
 import tabOptions from '../tabOptions.json'
 
+const reportViewLink = '/tools/report-builder/view?id=[RowKey]'
+
 const Page = () => {
-  const router = useRouter()
   const settings = useSettings()
   const { currentTenant } = settings
 
@@ -15,10 +15,8 @@ const Page = () => {
     {
       label: 'View Report',
       icon: <OpenInNew />,
+      link: reportViewLink,
       noConfirm: true,
-      customFunction: (row) => {
-        router.push(`/tools/report-builder/view?id=${row.RowKey || row.GUID}`)
-      },
     },
     {
       label: 'Delete',
@@ -45,6 +43,11 @@ const Page = () => {
       simpleColumns={['TemplateName', 'TenantFilter', 'GeneratedAt', 'Status', 'Sections']}
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
+      rowOpen={{
+        link: reportViewLink,
+        condition: (row) => Boolean(row?.RowKey),
+      }}
     />
   )
 }

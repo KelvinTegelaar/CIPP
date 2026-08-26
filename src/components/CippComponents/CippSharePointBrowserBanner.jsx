@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types'
-import { Box, Button, Card, Skeleton, Stack, Typography } from '@mui/material'
-import { Add, Edit, Security, Storage as StorageIcon } from '@mui/icons-material'
+import { Box, Button, Card, IconButton, Skeleton, Stack, Tooltip, Typography } from '@mui/material'
+import {
+  Add,
+  Edit,
+  Refresh,
+  Security,
+  Storage as StorageIcon,
+} from '@mui/icons-material'
 import { ActionsMenu } from '../actions-menu'
 
 /**
  * Top chrome for the SharePoint site browser: selection title on the left,
- * bulk Actions + Storage + Permissions + contextual New / Edit Site on the right.
+ * bulk Actions + Storage + Permissions + contextual New / Edit Site + Refresh on the right.
  *
  * Title rules:
  * - site only → "SiteName"
@@ -31,8 +37,11 @@ export const CippSharePointBrowserBanner = ({
   onStorageClick,
   showPermissions = false,
   onPermissionsClick,
+  showNew = false,
   showEditSite = false,
   onEditSiteClick,
+  onRefresh,
+  refreshDisabled = false,
 }) => {
   const siteName = site?.displayName ?? null
   const libraryName = library?.displayName ?? null
@@ -92,13 +101,29 @@ export const CippSharePointBrowserBanner = ({
               Permissions
             </Button>
           ) : null}
-          <Button variant="contained" startIcon={<Add />}>
-            {newLabel}
-          </Button>
+          {showNew ? (
+            <Button variant="contained" startIcon={<Add />}>
+              {newLabel}
+            </Button>
+          ) : null}
           {showEditSite ? (
             <Button variant="outlined" startIcon={<Edit />} onClick={onEditSiteClick}>
               Edit Site
             </Button>
+          ) : null}
+          {onRefresh ? (
+            <Tooltip title="Refresh">
+              <span>
+                <IconButton
+                  size="small"
+                  aria-label="Refresh"
+                  onClick={onRefresh}
+                  disabled={refreshDisabled}
+                >
+                  <Refresh />
+                </IconButton>
+              </span>
+            </Tooltip>
           ) : null}
         </Stack>
       </Stack>
@@ -118,6 +143,9 @@ CippSharePointBrowserBanner.propTypes = {
   onStorageClick: PropTypes.func,
   showPermissions: PropTypes.bool,
   onPermissionsClick: PropTypes.func,
+  showNew: PropTypes.bool,
   showEditSite: PropTypes.bool,
   onEditSiteClick: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshDisabled: PropTypes.bool,
 }
