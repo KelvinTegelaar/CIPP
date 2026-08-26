@@ -6,6 +6,7 @@ import { useState } from "react";
 import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 import { CippScheduledTaskActions } from "../../../components/CippComponents/CippScheduledTaskActions";
 import { CippSchedulerDrawer } from "../../../components/CippComponents/CippSchedulerDrawer";
+import { CippSchedulerCountdown } from "../../../components/CippComponents/CippSchedulerCountdown";
 import { useSettings } from "../../../hooks/use-settings";
 
 const Page = () => {
@@ -55,6 +56,14 @@ const Page = () => {
     actions: actions,
   };
   const [showHiddenJobs, setShowHiddenJobs] = useState(false);
+  // Hoisted so the countdown can subscribe to exactly the cache entry the table populates,
+  // rather than issuing a second request for the same rows.
+  const apiUrl = showHiddenJobs
+    ? `/api/ListScheduledItems?ShowHidden=true`
+    : `/api/ListScheduledItems`;
+  const queryKey = showHiddenJobs
+    ? `ListScheduledItems-hidden-${currentTenant}`
+    : `ListScheduledItems-${currentTenant}`;
   return (
     <>
       <CippTablePage
@@ -67,14 +76,9 @@ const Page = () => {
           </>
         }
         title="Scheduled Tasks"
-        apiUrl={
-          showHiddenJobs ? `/api/ListScheduledItems?ShowHidden=true` : `/api/ListScheduledItems`
-        }
-        queryKey={
-          showHiddenJobs
-            ? `ListScheduledItems-hidden-${currentTenant}`
-            : `ListScheduledItems-${currentTenant}`
-        }
+        tableFilter={<CippSchedulerCountdown apiUrl={apiUrl} queryKey={queryKey} />}
+        apiUrl={apiUrl}
+        queryKey={queryKey}
         simpleColumns={[
           "ExecutedTime",
           "TaskState",
