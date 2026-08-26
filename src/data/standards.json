@@ -1354,6 +1354,32 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.ExternalComplianceTrusted",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Sets the state of the Cross-tenant access setting to trust external compliant devices. This allows guest users to use a compliant device from their home tenant to access your tenant.",
+    "executiveText": "Allows external partners and vendors to use compliant devices from their own organization when accessing company resources, streamlining collaboration while maintaining security standards. This reduces friction for external users while ensuring their devices still meet compliance requirements.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.ExternalComplianceTrusted.state",
+        "options": [
+          { "label": "Enabled", "value": "true" },
+          { "label": "Disabled", "value": "false" }
+        ]
+      }
+    ],
+    "label": "Sets the Cross-tenant access setting to trust external compliant devices",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-25",
+    "powershellEquivalent": "Update-MgBetaPolicyCrossTenantAccessPolicyDefault",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS M365 7.0.0 (5.1.2.3)", "CISA (MS.AAD.6.1v1)", "SMB1001 (2.8)"],
