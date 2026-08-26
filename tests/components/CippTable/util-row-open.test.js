@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   dispatchRowOpen,
+  resolveRowOpenHref,
   resolveRowOpenLink,
   rowOpenEnabled,
+  rowOpenSupportsNewTab,
 } from '../../../src/components/CippTable/util-row-open'
 
 describe('rowOpenEnabled', () => {
@@ -135,5 +137,55 @@ describe('dispatchRowOpen', () => {
       'noopener,noreferrer'
     )
     openSpy.mockRestore()
+  })
+
+  it('window.open with absolute href when newTab is set', () => {
+    const router = { push: vi.fn() }
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
+
+    expect(
+      dispatchRowOpen(
+        { link: '/identity/administration/users/user?userId=[id]' },
+        { id: 'abc' },
+        router,
+        { newTab: true }
+      )
+    ).toBe(true)
+
+    expect(router.push).not.toHaveBeenCalled()
+    expect(openSpy).toHaveBeenCalledWith(
+      `${window.location.origin}/identity/administration/users/user?userId=abc`,
+      '_blank',
+      'noopener,noreferrer'
+    )
+    openSpy.mockRestore()
+  })
+})
+
+describe('resolveRowOpenHref', () => {
+  it('returns absolute URL for internal paths', () => {
+    expect(
+      resolveRowOpenHref(
+        { link: '/identity/administration/users/user?userId=[id]' },
+        { id: 'abc' }
+      )
+    ).toBe(
+      `${window.location.origin}/identity/administration/users/user?userId=abc`
+    )
+  })
+})
+
+describe('rowOpenSupportsNewTab', () => {
+  it('returns false for onOpen-only configs', () => {
+    expect(rowOpenSupportsNewTab({ onOpen: () => {} }, { id: '1' })).toBe(false)
+  })
+
+  it('returns true when link resolves', () => {
+    expect(
+      rowOpenSupportsNewTab(
+        { link: '/identity/administration/users/user?userId=[id]' },
+        { id: 'abc' }
+      )
+    ).toBe(true)
   })
 })

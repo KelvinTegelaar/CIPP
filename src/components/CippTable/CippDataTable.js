@@ -46,7 +46,7 @@ import {
   columnOrderHasStaleIds,
 } from './util-subTables'
 import { attachParentRow, getRowTenant } from '../../utils/resolve-row-templates'
-import { dispatchRowOpen, rowOpenEnabled } from './util-row-open'
+import { dispatchRowOpen, rowOpenEnabled, rowOpenSupportsNewTab } from './util-row-open'
 import {
   isRowTextInteraction,
 } from './util-row-text-interaction'
@@ -1161,8 +1161,28 @@ export const CippDataTable = (props) => {
     [rowOpen, getActionRow, settings, router]
   )
 
-  // Desktop: double-click navigates when rowOpen is configured. offCanvas preview is
-  // always via the row "More Info" action (desktop) or card tap (mobile).
+  const handleRowOpenNewTab = useCallback(
+    (rowOriginal) => {
+      const actionRow = getActionRow(rowOriginal)
+      const tenant = getRowTenant(actionRow, settings.currentTenant)
+      const rowTenant =
+        tenant && tenant !== 'AllTenants' ? tenant : undefined
+      const dispatchOptions = {
+        fallbackTenant: rowTenant,
+        currentTenant: settings.currentTenant,
+        newTab: true,
+      }
+      if (!rowOpenSupportsNewTab(rowOpen, actionRow, dispatchOptions)) {
+        return
+      }
+      dispatchRowOpen(rowOpen, actionRow, router, dispatchOptions)
+    },
+    [rowOpen, getActionRow, settings, router]
+  )
+
+  // Desktop: double-click navigates when rowOpen is configured; middle-click or
+  // Ctrl/Cmd+click opens the resolved href in a new tab. offCanvas preview is via
+  // the row "More Info" action (desktop) or card tap (mobile).
   const muiTableBodyRowProps = useMemo(() => {
     const dblOpen = Boolean(rowOpen?.link || rowOpen?.onOpen)
     if (!dblOpen) {
@@ -1180,7 +1200,27 @@ export const CippDataTable = (props) => {
           if (isRowClickTarget(event)) {
             return
           }
+          if (event.button === 1) {
+            event.preventDefault()
+          }
           rowClickStartRef.current = { x: event.clientX, y: event.clientY }
+        },
+        onClick: (event) => {
+          if (isRowClickTarget(event) || !canOpen) {
+            return
+          }
+          if (!event.ctrlKey && !event.metaKey) {
+            return
+          }
+          event.preventDefault()
+          handleRowOpenNewTab(row.original)
+        },
+        onAuxClick: (event) => {
+          if (event.button !== 1 || isRowClickTarget(event) || !canOpen) {
+            return
+          }
+          event.preventDefault()
+          handleRowOpenNewTab(row.original)
         },
         onDoubleClick: (event) => {
           if (isRowClickTarget(event) || !canOpen) {
@@ -1225,6 +1265,7 @@ export const CippDataTable = (props) => {
     contextRow,
     getActionRow,
     handleRowDoubleClickOpen,
+    handleRowOpenNewTab,
   ])
 
   // the flipped table shows whatever columns are visible; horizontal scroll covers the width
