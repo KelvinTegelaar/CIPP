@@ -13,5 +13,10 @@
     "label": "Teams Messages",
     "path": "/email/administration/quarantine/teams",
     "icon": "Groups"
+  },
+  {
+    "label": "User Reported",
+    "path": "/email/administration/quarantine/user-reported",
+    "icon": "Flag"
   }
 ]
