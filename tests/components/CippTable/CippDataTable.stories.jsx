@@ -279,7 +279,6 @@ export const WithOffCanvas = {
         'createdDateTime',
       ],
     },
-    offCanvasOnRowClick: true,
   },
 }
 
@@ -517,3 +516,4 @@ export const CachedReportColumns = {
     })
   },
 }
+

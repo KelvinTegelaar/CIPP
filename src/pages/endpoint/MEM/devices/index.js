@@ -46,7 +46,6 @@ const Page = () => {
         actions={actions}
         queryKey={`MEMDevices-${tenantFilter}`}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         rowOpen={{
           link:
             tenantFilter === 'AllTenants'

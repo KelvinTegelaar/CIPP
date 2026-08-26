@@ -42,7 +42,6 @@ const Page = () => {
       apiUrl="/api/ListConnectionFilter"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <>

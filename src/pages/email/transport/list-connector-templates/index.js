@@ -90,7 +90,6 @@ const Page = () => {
       apiUrl="/api/ListExconnectorTemplates"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       titleButton={{
         label: "Add Template",

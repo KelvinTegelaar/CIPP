@@ -93,7 +93,6 @@ const Page = () => {
       apiUrl="/api/ListSpamfilterTemplates"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
     />
   );

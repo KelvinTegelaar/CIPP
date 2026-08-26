@@ -1,4 +1,4 @@
-﻿import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -69,7 +69,6 @@ const Page = () => {
       apiUrl="/api/ListGlobalAddressList"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       filters={filters}
       simpleColumns={[
         "HiddenFromAddressListsEnabled",

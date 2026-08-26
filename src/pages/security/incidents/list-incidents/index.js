@@ -252,7 +252,6 @@ const Page = () => {
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       tableFilter={tableFilter}
       queryKey={`ExecIncidentsList-${userSettingsDefaults.currentTenant}-${startDate}-${endDate}`}

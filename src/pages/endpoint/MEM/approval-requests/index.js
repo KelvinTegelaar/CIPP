@@ -76,7 +76,6 @@ const Page = () => {
         apiUrl="/api/ListIntuneApprovalRequests"
         queryKey="ListIntuneApprovalRequests"
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
       />
       <Dialog

@@ -858,7 +858,6 @@ const Page = () => {
                     "LastError",
                   ],
                 }}
-                offCanvasOnRowClick={true}
                 defaultSorting={[{ id: "QueuedUtc", desc: true }]}
                 cardButton={
                   <Stack direction="row" spacing={1}>
@@ -1241,3 +1240,4 @@ Page.getLayout = (page) => (
 );
 
 export default Page;
+

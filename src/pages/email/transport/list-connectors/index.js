@@ -96,7 +96,6 @@ const Page = () => {
       apiUrl="/api/ListExchangeConnectors"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       filters={filters}
       simpleColumns={simpleColumns}
       cardButton={<CippAddConnectorDrawer requiredPermissions={cardButtonPermissions} />}

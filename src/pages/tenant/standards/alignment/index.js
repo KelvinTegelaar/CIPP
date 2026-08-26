@@ -961,7 +961,6 @@ const Page = () => {
             : 'listTenantAlignment'
       }
       offCanvas={isGranular ? granularOffCanvas : isByStandard ? byStandardOffCanvas : undefined}
-      offCanvasOnRowClick={isByStandard}
       cardButton={modeToggle}
     />
   )
@@ -974,3 +973,4 @@ Page.getLayout = (page) => (
 )
 
 export default Page
+

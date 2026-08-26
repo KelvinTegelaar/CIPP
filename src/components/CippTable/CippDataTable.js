@@ -47,6 +47,9 @@ import {
 } from './util-subTables'
 import { attachParentRow, getRowTenant } from '../../utils/resolve-row-templates'
 import { dispatchRowOpen, rowOpenEnabled } from './util-row-open'
+import {
+  isRowTextInteraction,
+} from './util-row-text-interaction'
 
 // Resolve dot-delimited property paths against arbitrary data objects.
 const getNestedValue = (source, path) => {
@@ -317,8 +320,6 @@ const MUI_TABLE_HEAD_CELL_PROPS = {
   },
 }
 
-const ROW_CLICK_DELAY_MS = 250
-
 // Stable keys for row context — reference equality breaks after React Query refetches.
 const ROW_CONTEXT_KEY_FIELDS = [
   'id',
@@ -373,7 +374,23 @@ const MUI_TABLE_BODY_CELL_ON_COPY = (e) => {
   }
 }
 
-const MUI_TABLE_BODY_CELL_PROPS = { onCopy: MUI_TABLE_BODY_CELL_ON_COPY }
+const MUI_TABLE_BODY_CELL_PROPS = {
+  onCopy: MUI_TABLE_BODY_CELL_ON_COPY,
+  sx: {
+    cursor: 'inherit',
+    '& .cipp-cell-text': {
+      cursor: 'text',
+      userSelect: 'text',
+    },
+    '& .MuiSvgIcon-root': {
+      cursor: 'inherit',
+    },
+    '& a, & button, & [role="button"], & .MuiChip-root, & .MuiIconButton-root, & .MuiButton-root, & .MuiCheckbox-root':
+      {
+        cursor: 'pointer',
+      },
+  },
+}
 
 const MRT_THEME = (theme) => ({
   baseBackgroundColor: theme.palette.background.paper,
@@ -497,7 +514,6 @@ export const CippDataTable = (props) => {
     simple = false,
     cardButton,
     offCanvas = false,
-    offCanvasOnRowClick = false,
     rowOpen,
     noCard = false,
     hideTitle = false,
@@ -548,7 +564,7 @@ export const CippDataTable = (props) => {
   const [offCanvasData, setOffCanvasData] = useState({})
   const [offCanvasRowIndex, setOffCanvasRowIndex] = useState(0)
   const [contextRow, setContextRow] = useState(null)
-  const rowClickTimerRef = useRef(null)
+  const rowClickStartRef = useRef(null)
   const [customComponentData, setCustomComponentData] = useState({})
   const [customComponentVisible, setCustomComponentVisible] = useState(false)
   const [actionData, setActionData] = useState({
@@ -1123,27 +1139,6 @@ export const CippDataTable = (props) => {
     setContextRow(null)
   }, [])
 
-  const handleRowClickOffCanvas = useCallback(
-    (rowOriginal) => {
-      if (!offCanvas || !offCanvasOnRowClick) {
-        return
-      }
-      if (offcanvasVisible && rowsMatchContext(offCanvasData, rowOriginal)) {
-        closeRowOffCanvas()
-        return
-      }
-      openRowOffCanvas(rowOriginal)
-    },
-    [
-      offCanvas,
-      offCanvasOnRowClick,
-      offcanvasVisible,
-      offCanvasData,
-      closeRowOffCanvas,
-      openRowOffCanvas,
-    ]
-  )
-
   const handleRowDoubleClickOpen = useCallback(
     (rowOriginal) => {
       const actionRow = getActionRow(rowOriginal)
@@ -1166,64 +1161,38 @@ export const CippDataTable = (props) => {
     [rowOpen, getActionRow, settings, router]
   )
 
-  useEffect(
-    () => () => {
-      if (rowClickTimerRef.current) {
-        clearTimeout(rowClickTimerRef.current)
-      }
-    },
-    []
-  )
-
-  // offCanvasOnRowClick and rowOpen are independent: a page may enable either, both, or
-  // neither. Click delay applies only when both are active — otherwise offCanvas opens
-  // immediately and rowOpen is double-click only.
+  // Desktop: double-click navigates when rowOpen is configured. offCanvas preview is
+  // always via the row "More Info" action (desktop) or card tap (mobile).
   const muiTableBodyRowProps = useMemo(() => {
-    const clickOffCanvas = Boolean(offCanvasOnRowClick && offCanvas)
     const dblOpen = Boolean(rowOpen?.link || rowOpen?.onOpen)
-    if (!clickOffCanvas && !dblOpen) {
+    if (!dblOpen) {
       return undefined
     }
-    const needsClickDelay = clickOffCanvas && dblOpen
 
     return ({ row }) => {
       const actionRow = getActionRow(row.original)
       const canOpen = rowOpenEnabled(rowOpen, actionRow)
       const isContextRow =
-        clickOffCanvas && rowsMatchContext(contextRow, row.original)
+        Boolean(offCanvas) && rowsMatchContext(contextRow, row.original)
 
       return {
-        onClick: (event) => {
-          if (isRowClickTarget(event) || !clickOffCanvas) {
+        onMouseDown: (event) => {
+          if (isRowClickTarget(event)) {
             return
           }
-          const open = () => handleRowClickOffCanvas(row.original)
-          if (!needsClickDelay) {
-            open()
-            return
-          }
-          if (rowClickTimerRef.current) {
-            clearTimeout(rowClickTimerRef.current)
-          }
-          rowClickTimerRef.current = setTimeout(() => {
-            rowClickTimerRef.current = null
-            open()
-          }, ROW_CLICK_DELAY_MS)
+          rowClickStartRef.current = { x: event.clientX, y: event.clientY }
         },
         onDoubleClick: (event) => {
-          if (isRowClickTarget(event) || !dblOpen) {
+          if (isRowClickTarget(event) || !canOpen) {
             return
           }
-          if (rowClickTimerRef.current) {
-            clearTimeout(rowClickTimerRef.current)
-            rowClickTimerRef.current = null
+          if (isRowTextInteraction(rowClickStartRef.current, event)) {
+            return
           }
-          if (canOpen) {
-            handleRowDoubleClickOpen(row.original)
-          }
+          handleRowDoubleClickOpen(row.original)
         },
         sx: {
-          cursor: clickOffCanvas || canOpen ? 'pointer' : undefined,
+          cursor: canOpen ? 'pointer' : undefined,
           borderLeft: (theme) =>
             isContextRow
               ? `3px solid ${theme.palette.primary.main}`
@@ -1251,12 +1220,10 @@ export const CippDataTable = (props) => {
       }
     }
   }, [
-    offCanvasOnRowClick,
     offCanvas,
     rowOpen,
     contextRow,
     getActionRow,
-    handleRowClickOffCanvas,
     handleRowDoubleClickOpen,
   ])
 
@@ -1739,7 +1706,7 @@ export const CippDataTable = (props) => {
                 table={table}
                 actions={actions}
                 hasOffCanvas={!!offCanvas || Boolean(cardInfoFields?.length)}
-                openOffCanvasOnTap={Boolean(offCanvasOnRowClick && offCanvas)}
+                openOffCanvasOnTap={Boolean(offCanvas)}
                 onRowAction={dispatchRowAction}
                 onMoreInfo={openRowOffCanvas}
                 isActionDisabled={handleActionDisabled}

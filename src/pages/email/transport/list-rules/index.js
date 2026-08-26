@@ -128,7 +128,6 @@ const Page = () => {
       queryKey={`Transport Rules - ${currentTenant}`}
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       filters={filters}
       cardButton={

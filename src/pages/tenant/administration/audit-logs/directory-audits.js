@@ -25,7 +25,6 @@ const DirectoryAuditsPage = () => {
       apiDataKey="Results"
       actions={[]}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={[
         "activityDateTime",
         "activityDisplayName",

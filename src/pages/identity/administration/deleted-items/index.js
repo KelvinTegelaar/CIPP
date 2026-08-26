@@ -60,7 +60,6 @@ const Page = () => {
       apiUrl="/api/ListDeletedItems"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={columns}
     />
   );

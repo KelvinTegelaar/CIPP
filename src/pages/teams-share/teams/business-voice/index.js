@@ -118,7 +118,6 @@ const Page = () => {
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         simpleColumns={[
           ...reportDB.cacheColumns,
           "AssignedTo.userPrincipalName",

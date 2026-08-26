@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -23,6 +23,7 @@ import { CippBottomSheet } from "../CippComponents/CippBottomSheet";
 import { CippPageActionsFab } from "../CippComponents/CippPageActionsFab";
 import { useActionCornerClaim } from "../../layouts/tab-navigation-context";
 import { useSheetHandoff } from "../../hooks/use-sheet-handoff";
+import { isRowTextInteraction } from "./util-row-text-interaction";
 
 // Mobile card pageSize ceiling: a desktop tablePageSize of 250/500 must not become
 // 250 unvirtualized cards. "Load more" grows pageSize from here in steps of LOAD_STEP.
@@ -106,6 +107,7 @@ export const CippMobileCardList = (props) => {
   } = props;
 
   const [actionSheetRow, setActionSheetRow] = useState(null);
+  const cardTapStartRef = useRef(null);
   // Row actions and More info both open a Modal — hand the sheet off rather than racing it
   const rowSheet = useSheetHandoff(() => setActionSheetRow(null));
 
@@ -170,6 +172,9 @@ export const CippMobileCardList = (props) => {
     ) {
       return;
     }
+    if (isRowTextInteraction(cardTapStartRef.current, event)) {
+      return;
+    }
     if (selectMode) {
       row.toggleSelected();
       return;
@@ -224,6 +229,9 @@ export const CippMobileCardList = (props) => {
                 <Card
                   key={row.id}
                   variant="outlined"
+                  onMouseDown={(event) => {
+                    cardTapStartRef.current = { x: event.clientX, y: event.clientY };
+                  }}
                   onClick={(event) => handleCardTap(event, row)}
                   sx={{
                     p: 2,
@@ -231,6 +239,11 @@ export const CippMobileCardList = (props) => {
                     gap: 1.25,
                     position: "relative",
                     cursor: selectMode || openOffCanvasOnTap ? "pointer" : "default",
+                    "& .cipp-cell-text": { cursor: "text", userSelect: "text" },
+                    "& .MuiSvgIcon-root": { cursor: "default" },
+                    "& a, & button, & [role=\"button\"], & .MuiChip-root, & .MuiIconButton-root": {
+                      cursor: "pointer",
+                    },
                     ...(selected && {
                       borderColor: "primary.main",
                       bgcolor: (theme) =>

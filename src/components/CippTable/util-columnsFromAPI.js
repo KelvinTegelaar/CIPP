@@ -1,5 +1,6 @@
 import { getCippFilterVariant } from '../../utils/get-cipp-filter-variant'
 import { getCippFormatting } from '../../utils/get-cipp-formatting'
+import { formatCellText } from './CippCellText'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
 import { getCippColumnSize } from '../../utils/get-cipp-column-size'
 import { SKIP_RECURSION_KEYS as skipRecursion } from '../../utils/skip-recursion-keys'
@@ -32,12 +33,13 @@ const TIME_AGO_NAMES = new Set([
   'Date', 'WhenCreated', 'WhenChanged', 'CreationTime', 'renewalDate',
   'commitmentTerm.renewalConfiguration.renewalDate', 'purchaseDate', 'NextOccurrence',
   'LastOccurrence', 'NotBefore', 'NotAfter', 'latestDataCollection',
-  'requestDate', 'reviewedDate', 'GeneratedAt',
+  'requestDate', 'reviewedDate', 'GeneratedAt', 'RecordedAt',
 ])
 const MATCH_DATE_TIME = /([dD]ate[tT]ime|[Ee]xpiration|[Tt]imestamp|[sS]tart[Dd]ate)/
 const ABSOLUTE_DATE_NAMES = new Set([
   'WindowStart', 'WindowEnd', 'CreatedUtc', 'DownloadedUtc', 'ProcessedUtc',
   'NextAttemptUtc', 'LastErrorUtc', 'LastPolledUtc',
+  'QueuedUtc', 'StartedUtc', 'CompletedUtc',
 ])
 const isDateTimeColumn = (key) =>
   TIME_AGO_NAMES.has(key) || ABSOLUTE_DATE_NAMES.has(key) || MATCH_DATE_TIME.test(key)
@@ -298,7 +300,8 @@ export const utilColumnsFromAPI = (dataArray) => {
           }),
           Cell: ({ row }) => {
             const value = resolveValue(row.original)
-            return getCippFormatting(value, accessorKey)
+            const rendered = getCippFormatting(value, accessorKey)
+            return formatCellText(rendered, false)
           },
         }
 

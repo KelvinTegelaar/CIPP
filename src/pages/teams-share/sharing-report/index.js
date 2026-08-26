@@ -473,7 +473,6 @@ const Page = () => {
                 actions={linkActions}
                 filters={linkFilters}
                 offCanvas={linkDetailOffCanvas}
-                offCanvasOnRowClick={true}
                 simpleColumns={[
                   'fileName',
                   'itemType',
@@ -531,3 +530,4 @@ const Page = () => {
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
 
 export default Page
+

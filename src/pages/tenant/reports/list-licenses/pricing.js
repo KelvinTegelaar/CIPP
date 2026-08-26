@@ -181,7 +181,6 @@ const Page = () => {
         cardButton={cardButton}
         actions={actions}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         tenantInTitle={false}
       />

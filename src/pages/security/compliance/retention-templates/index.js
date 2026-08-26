@@ -84,7 +84,6 @@ const Page = () => {
       queryKey="ListRetentionCompliancePolicyTemplates"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <>

@@ -104,7 +104,6 @@ const Page = () => {
           SearchId: searchId,
         }}
         offCanvas={offcanvas}
-        offCanvasOnRowClick={true}
         actions={[]}
       />
 
@@ -120,3 +119,4 @@ const Page = () => {
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;
+

@@ -81,7 +81,6 @@ const Page = () => {
         ],
         actions: actions,
       }}
-      offCanvasOnRowClick={true}
       simpleColumns={[
         'userDisplayName',
         'userPrincipalName',
@@ -103,3 +102,4 @@ const Page = () => {
 Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>
 
 export default Page
+

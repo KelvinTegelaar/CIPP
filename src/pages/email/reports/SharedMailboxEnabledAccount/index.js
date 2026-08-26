@@ -50,7 +50,6 @@ const Page = () => {
             "onPremisesSyncEnabled",
           ],
         }}
-        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         filters={[
           {
@@ -67,3 +66,4 @@ const Page = () => {
 Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
 
 export default Page;
+

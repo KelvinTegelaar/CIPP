@@ -58,7 +58,6 @@ const Page = () => {
       apiData={apiParams}
       actions={savedLogsActions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       rowOpen={{
         link: savedLogViewLink,
         condition: (row) => Boolean(row?.LogId),

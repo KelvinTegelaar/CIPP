@@ -60,7 +60,6 @@ const Page = () => {
         apiUrl={reportDB.resolvedApiUrl}
         actions={actions}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         queryKey={reportDB.resolvedQueryKey}
         cardButton={

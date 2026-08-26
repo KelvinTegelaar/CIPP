@@ -217,7 +217,6 @@ const Page = () => {
         Filter: filterEnabled, // Pass filter toggle state
       }}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       actions={actions}
     />
   );

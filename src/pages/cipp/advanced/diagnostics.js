@@ -382,7 +382,6 @@ const Page = () => {
           );
         },
       }}
-      offCanvasOnRowClick={true}
       title={pageTitle}
       tenantInTitle={false}
       apiDataKey="Results"
@@ -398,3 +397,4 @@ const Page = () => {
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;
+

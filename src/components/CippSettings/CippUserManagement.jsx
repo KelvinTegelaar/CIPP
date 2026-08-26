@@ -239,7 +239,6 @@ export const CippUserManagement = () => {
         queryKey="cippUsersList"
         simpleColumns={["UPN", "Roles", "Source"]}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
       />
 
       <CippApiResults apiObject={userAction} />

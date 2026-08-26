@@ -66,7 +66,6 @@ const Page = () => {
       apiDataKey="Results.MSResults"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
     />
   );

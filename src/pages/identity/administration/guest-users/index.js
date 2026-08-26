@@ -269,7 +269,6 @@ const Page = () => {
         dataSourceControls={reportDB.controls}
         actions={actions}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         rowOpen={{
           link: userHubLink,
           condition: (row) => Boolean(row?.id),

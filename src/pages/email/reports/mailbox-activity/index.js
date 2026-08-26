@@ -164,7 +164,6 @@ const Page = () => {
         "reportPeriod",
       ]}
       offCanvas={null}
-      offCanvasOnRowClick={true}
     />
   );
 };

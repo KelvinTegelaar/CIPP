@@ -113,7 +113,6 @@ const Page = () => {
         simpleColumns={['Name', 'Category', 'Risk', 'Status']}
         isFetching={testsApi.isFetching}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         filters={filters}
         actions={[]}
         maxHeightOffset="600px"
@@ -130,3 +129,4 @@ Page.getLayout = (page) => (
 )
 
 export default Page
+

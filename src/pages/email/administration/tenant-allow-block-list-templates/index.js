@@ -57,7 +57,6 @@ const Page = () => {
         queryKey="ListTenantAllowBlockListTemplates"
         actions={actions}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         simpleColumns={simpleColumns}
         cardButton={<CippTenantAllowBlockListTemplateDrawer />}
       />

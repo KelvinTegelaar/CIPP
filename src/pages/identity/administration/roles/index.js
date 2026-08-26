@@ -82,7 +82,6 @@ const Page = () => {
       apiUrl="/api/ListRoles"
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={columns}
     />
   )

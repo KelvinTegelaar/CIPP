@@ -364,7 +364,6 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       cardButton={
         <>
           <Button
@@ -640,3 +639,4 @@ Page.getLayout = (page) => (
 )
 
 export default Page
+

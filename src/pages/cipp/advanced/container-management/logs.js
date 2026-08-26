@@ -568,7 +568,6 @@ const Page = () => {
           );
         },
       }}
-      offCanvasOnRowClick={true}
       title="Container Logs"
       tenantInTitle={false}
       apiDataKey="Results"
@@ -588,3 +587,4 @@ Page.getLayout = (page) => (
 );
 
 export default Page;
+

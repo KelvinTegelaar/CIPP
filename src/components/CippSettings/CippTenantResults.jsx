@@ -37,7 +37,6 @@ export const CippTenantResults = (props) => {
                 "OrgManagementRolesMissing",
               ],
             }}
-            offCanvasOnRowClick={true}
           />
         </>
       )}
@@ -95,9 +94,9 @@ export const CippTenantResults = (props) => {
               "ExchangeTest",
             ],
           }}
-          offCanvasOnRowClick={true}
         />
       )}
     </>
   );
 };
+

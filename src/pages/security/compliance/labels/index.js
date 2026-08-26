@@ -102,7 +102,6 @@ const Page = () => {
       queryKey={`ListSensitivityLabel-${tenantFilter}`}
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       simpleColumns={simpleColumns}
       cardButton={
         <CippDeployCompliancePolicyDrawer

@@ -467,7 +467,6 @@ const Page = () => {
                 simpleColumns={simpleColumns}
                 filters={tableFilters}
                 offCanvas={offCanvas}
-                offCanvasOnRowClick={true}
                 queryKey={`AuditLogCoverageTable-${tenant}-${periodKey}`}
               />
             </Card>

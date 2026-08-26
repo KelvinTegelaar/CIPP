@@ -134,7 +134,6 @@ const Page = () => {
         ]}
         filters={filterList}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         rowOpen={{
           link: '/cipp/scheduler/task?id=[RowKey]',
           condition: (row) => Boolean(row?.RowKey),

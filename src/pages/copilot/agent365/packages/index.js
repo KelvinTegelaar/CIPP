@@ -70,7 +70,6 @@ const Page = () => {
       apiUrl="/api/ListAgent365Packages"
       simpleColumns={simpleColumns}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
     />
   )
 }

@@ -352,7 +352,6 @@ const Page = () => {
       apiDataKey="Results.0.authenticationMethodConfigurations"
       simpleColumns={simpleColumns}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       actions={actions}
       dynamicColumns={false}
     />

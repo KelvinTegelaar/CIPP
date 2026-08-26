@@ -444,7 +444,6 @@ const Page = () => {
         }
         actions={actions}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         rowOpen={{
           link: `/identity/administration/groups/group?groupId=[id]&tenantFilter=${tenantQuery}`,
           condition: (row) => Boolean(row?.id),

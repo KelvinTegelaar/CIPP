@@ -349,7 +349,6 @@ const Page = () => {
         apiData={{ tenantFilter: currentTenant, type: "QuarantinePolicy" }}
         actions={actions}
         offCanvas={offCanvas}
-        offCanvasOnRowClick={true}
         filters={filterList}
         simpleColumns={simpleColumns}
         cardButton={

@@ -197,7 +197,6 @@ const Page = () => {
         cardButton={pageActions}
         dataSourceControls={reportDB.controls}
         offCanvas={null}
-        offCanvasOnRowClick={true}
       />
       {reportDB.syncDialog}
     </>

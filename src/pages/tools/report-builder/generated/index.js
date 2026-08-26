@@ -43,7 +43,6 @@ const Page = () => {
       simpleColumns={['TemplateName', 'TenantFilter', 'GeneratedAt', 'Status', 'Sections']}
       actions={actions}
       offCanvas={offCanvas}
-      offCanvasOnRowClick={true}
       rowOpen={{
         link: reportViewLink,
         condition: (row) => Boolean(row?.RowKey),
