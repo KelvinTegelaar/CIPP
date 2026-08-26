@@ -11,6 +11,20 @@ const wildcardToRegExp = (pattern) =>
   new RegExp(`^${pattern.split("*").map(escapeRegExp).join(".*")}$`);
 const matchesWildcardPattern = (queryKey, pattern) => wildcardToRegExp(pattern).test(queryKey);
 
+// The server's Retry-After (seconds) as ms, capped so a large hint can't hang a request indefinitely.
+const getRetryAfterMs = (error) => {
+  if (!isAxiosError(error)) return null;
+  const headers = error.response?.headers;
+  const raw = headers?.get?.("retry-after") ?? headers?.["retry-after"];
+  const seconds = Number(raw);
+  return Number.isFinite(seconds) && seconds > 0 ? Math.min(seconds * 1000, 60000) : null;
+};
+
+// react-query's default exponential backoff, but honouring the server's Retry-After when present so a
+// throttled retry lands after the limit clears instead of hammering inside the window.
+const retryDelayWithRetryAfter = (failureCount, error) =>
+  getRetryAfterMs(error) ?? Math.min(1000 * 2 ** failureCount, 30000);
+
 export function ApiGetCall(props) {
   const {
     url,
@@ -165,6 +179,7 @@ export function ApiGetCall(props) {
     keepPreviousData: keepPreviousData,
     refetchInterval: refetchInterval,
     retry: retryFn,
+    retryDelay: retryDelayWithRetryAfter,
   });
   return queryInfo;
 }
@@ -311,6 +326,7 @@ export function ApiGetCallWithPagination({
     staleTime: 300000,
     refetchOnWindowFocus: false,
     retry: retryFn,
+    retryDelay: retryDelayWithRetryAfter,
   });
 
   return queryInfo;

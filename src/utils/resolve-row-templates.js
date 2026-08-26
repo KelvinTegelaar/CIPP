@@ -11,6 +11,16 @@ export const getNestedValue = (source, path) => {
     return source
   }
 
+  // Row keys can contain literal dots (e.g. '@odata.type'). Prefer an exact key match before
+  // treating the dot as a path separator, otherwise '@odata.type' resolves to row['@odata']['type']
+  // (undefined) and callers fall back to the literal string.
+  if (
+    typeof source === 'object' &&
+    Object.prototype.hasOwnProperty.call(source, path)
+  ) {
+    return source[path]
+  }
+
   return path.split('.').reduce((acc, key) => {
     if (acc === undefined || acc === null) {
       return undefined
