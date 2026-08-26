@@ -102,7 +102,14 @@ export const CippAddUserDrawer = ({
     });
   };
 
-  const handleCloseDrawer = () => {
+  const handleCloseDrawer = (event, reason) => {
+    // Closing resets the form, so a stray backdrop click or Escape would silently wipe
+    // everything typed so far (#390). A dirty-check is no help: the domain selector
+    // auto-picks the default domain on open, so the form is dirty before the user types.
+    // Ignore those dismissals — the X and Close buttons call this without a reason.
+    if (reason === "backdropClick" || reason === "escapeKeyDown") {
+      return;
+    }
     setDrawerVisible(false);
     const resetValues = {
       tenantFilter: userSettingsDefaults.currentTenant,

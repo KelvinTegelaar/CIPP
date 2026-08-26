@@ -469,6 +469,21 @@
     "recommendedRunInterval": "4h"
   },
   {
+    "name": "DeviceComplianceGracePeriod",
+    "label": "Alert on devices in the compliance grace period",
+    "recommendedRunInterval": "1d",
+    "description": "Devices in the compliance grace period are still trusted, but will be marked noncompliant when the grace period expires. This alerts before that happens so you can fix the device without user impact.",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Only alert when the grace period expires within this many days (default: all devices in grace period)",
+        "inputName": "ExpiresWithinDays"
+      }
+    ]
+  },
+  {
     "name": "IntunePolicyConflicts",
     "label": "Alert on Intune policy or app conflicts/errors",
     "recommendedRunInterval": "1d",

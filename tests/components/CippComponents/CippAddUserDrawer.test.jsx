@@ -42,9 +42,14 @@ vi.mock('../../../src/components/CippFormPages/CippJSONView', () => ({
 // not exercise. The stub keeps the essential contract: content + footer render only while
 // the drawer is open.
 vi.mock('../../../src/components/CippComponents/CippOffCanvas', () => ({
-  CippOffCanvas: ({ visible, children, footer }) =>
+  CippOffCanvas: ({ visible, children, footer, onClose }) =>
     visible ? (
       <div data-testid="CippOffCanvas">
+        {/* MUI's Drawer invokes onClose with a reason for backdrop clicks and Escape;
+            these stand in for those dismissal paths (the X button passes no reason) */}
+        <button onClick={(e) => onClose(e, 'backdropClick')}>backdrop-dismiss</button>
+        <button onClick={(e) => onClose(e, 'escapeKeyDown')}>escape-dismiss</button>
+        <button onClick={(e) => onClose(e)}>x-dismiss</button>
         {children}
         {footer}
       </div>
@@ -200,5 +205,50 @@ describe('CippAddUserDrawer - create another user without a page refresh (issue 
       primDomain: { value: 'testdomain.com' },
     })
     // two full form fills through userEvent.type
+  }, 15000)
+})
+
+describe('CippAddUserDrawer - backdrop click must not wipe typed input (issue #390)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    postState = { isPending: false, isSuccess: false, isError: false }
+    mutateSpy = vi.fn()
+    mockApis()
+  })
+
+  it('ignores backdrop and Escape dismissals; the X and Close buttons still close and reset', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Harness />, {
+      settings: settingsWith({ usageLocation: { value: 'US', label: 'United States' } }),
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Add User' }))
+    await waitFor(() => {
+      expect(getDomainInput()).toHaveValue('testdomain.com')
+    })
+    await fillRequiredFields(user, { displayName: 'Half Finished', username: 'half.finished' })
+
+    // Backdrop click and Escape leave the drawer open with the input intact
+    await user.click(screen.getByRole('button', { name: 'backdrop-dismiss' }))
+    await user.click(screen.getByRole('button', { name: 'escape-dismiss' }))
+    expect(screen.getByTestId('CippOffCanvas')).toBeInTheDocument()
+    expect(screen.getByLabelText(/Display Name/i, { selector: 'input' })).toHaveValue(
+      'Half Finished'
+    )
+
+    // The header X (no reason) closes the drawer
+    await user.click(screen.getByRole('button', { name: 'x-dismiss' }))
+    expect(screen.queryByTestId('CippOffCanvas')).not.toBeInTheDocument()
+
+    // An explicit close resets: reopening starts from a blank form again
+    await user.click(screen.getByRole('button', { name: 'Add User' }))
+    await waitFor(() => {
+      expect(getDomainInput()).toHaveValue('testdomain.com')
+    })
+    expect(screen.getByLabelText(/Display Name/i, { selector: 'input' })).toHaveValue('')
+
+    // The footer Close button closes too
+    await user.click(screen.getByRole('button', { name: 'Close' }))
+    expect(screen.queryByTestId('CippOffCanvas')).not.toBeInTheDocument()
   }, 15000)
 })
