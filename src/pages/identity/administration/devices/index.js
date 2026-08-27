@@ -11,6 +11,7 @@ const Page = () => {
     {
       label: "View in Entra",
       link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/[id]/deviceId/`,
+      pinned: true,
       color: "info",
       icon: <Visibility />,
       target: "_blank",

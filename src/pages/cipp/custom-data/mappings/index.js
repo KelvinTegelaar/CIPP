@@ -23,6 +23,7 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Mapping",
+      pinned: true,
       icon: <PencilIcon />,
       link: "/cipp/custom-data/mappings/edit?id=[id]",
     },

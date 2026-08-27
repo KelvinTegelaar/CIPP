@@ -21,6 +21,7 @@ const Page = () => {
     {
       label: "View User",
       link: "/identity/administration/users/user?userId=[azureAdUserId]&tenantFilter=[tenantId]",
+      pinned: true,
       multiPost: false,
       icon: <EyeIcon />,
       color: "success",
@@ -28,6 +29,7 @@ const Page = () => {
     {
       label: "Edit User",
       link: "/identity/administration/users/user/edit?userId=[azureAdUserId]&tenantFilter=[tenantId]",
+      pinned: true,
       icon: <Edit />,
       color: "success",
       target: "_self",

@@ -16,6 +16,7 @@ const Page = () => {
       label: 'View Report',
       icon: <OpenInNew />,
       link: reportViewLink,
+      pinned: true,
       noConfirm: true,
     },
     {

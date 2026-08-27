@@ -19,6 +19,7 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Template",
+      pinned: true,
       icon: <Edit />,
       link: "/identity/administration/group-templates/edit?id=[GUID]",
     },

@@ -213,6 +213,7 @@ const Page = () => {
                   icon: <EyeIcon />,
                   label: 'View User',
                   link: `/identity/administration/users/user?userId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
+                  pinned: true,
                   condition: (row) => row?.['@odata.type'] === '#microsoft.graph.user',
                 },
               ],

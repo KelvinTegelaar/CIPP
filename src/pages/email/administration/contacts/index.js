@@ -14,6 +14,7 @@ const Page = () => {
       {
         label: "Edit Contact",
         link: "/email/administration/contacts/edit?id=[Guid]",
+        pinned: true,
         multiPost: false,
         postEntireRow: true,
         icon: <Edit />,

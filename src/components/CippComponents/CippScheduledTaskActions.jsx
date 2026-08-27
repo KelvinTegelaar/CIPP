@@ -11,6 +11,7 @@ export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = []
     {
       label: "View Task Details",
       link: "/cipp/scheduler/task?id=[RowKey]",
+      pinned: true,
       icon: <EyeIcon />,
       condition: () => canReadScheduler,
     },
@@ -26,6 +27,7 @@ export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = []
     },
     {
       label: "Edit Job",
+      pinned: true,
       customFunction:
         drawerHandlers.openEditDrawer ||
         ((row) => {

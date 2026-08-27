@@ -12,6 +12,7 @@ const Page = () => {
     {
       label: "Edit Equipment",
       link: `/email/resources/management/equipment/edit?equipmentId=[ExternalDirectoryObjectId]`,
+      pinned: true,
       icon: <Edit />,
       color: "info",
       // ListEquipment returns the raw Get-Mailbox object, so these are PascalCase like the

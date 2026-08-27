@@ -23,6 +23,7 @@ const Page = () => {
     {
       label: "View Report",
       link: "/tenant/standards/bpa-report/view?id=[Name]",
+      pinned: true,
       icon: <EyeIcon />,
       color: "success",
       target: "_self",
@@ -31,6 +32,7 @@ const Page = () => {
       label: "Edit Template",
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
       link: "/tenant/standards/bpa-report/builder?id=[Name]",
+      pinned: true,
       icon: <Edit />,
       color: "success",
       target: "_self",

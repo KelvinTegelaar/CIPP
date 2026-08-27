@@ -45,6 +45,7 @@ export const createDriftManagementActions = ({
     if (showEditTemplate) {
       actions.push({
         label: 'Edit Template',
+        pinned: true,
         icon: <Edit />,
         color: 'info',
         noConfirm: true,

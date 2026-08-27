@@ -16,6 +16,7 @@ const Page = () => {
     {
       label: "View Task Details",
       link: "/cipp/scheduler/task?id=[RowKey]",
+      pinned: true,
       icon: <EyeIcon />,
     },
     {

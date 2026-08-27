@@ -38,6 +38,7 @@ const Page = () => {
       {
         label: "Edit Safe Links Policy",
         link: "/security/safelinks/safelinks/edit?PolicyName=[PolicyName]&RuleName=[RuleName]&tenantFilter=[tenantFilter]",
+        pinned: true,
         icon: <Edit />,
         color: "success",
         target: "_self",

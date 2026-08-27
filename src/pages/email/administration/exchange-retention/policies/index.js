@@ -18,6 +18,7 @@ const Page = () => {
       {
         label: "Edit Policy",
         link: "/email/administration/exchange-retention/policies/policy?name=[Name]",
+        pinned: true,
         multiPost: false,
         postEntireRow: true,
         icon: <Edit />,

@@ -13,6 +13,7 @@ const Page = () => {
     {
       label: "View Device in Intune",
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[deviceId]`,
+      pinned: true,
       color: "info",
       icon: <EyeIcon />,
       target: "_blank",
@@ -22,6 +23,7 @@ const Page = () => {
     {
       label: "View Deployment Details",
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_DeviceSettings/DeploymentOverviewMenuBlade/~/autopilotDeployment/deploymentProfileId/[windowsAutopilotDeploymentProfileDisplayName]`,
+      pinned: true,
       color: "info",
       icon: <DocumentTextIcon />,
       target: "_blank",

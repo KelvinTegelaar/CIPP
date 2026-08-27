@@ -52,6 +52,7 @@ export const CippApiLogsDrawer = ({
     {
       label: 'View Log Entry',
       link: '/cipp/logs/logentry?logentry=[RowKey]',
+      pinned: true,
       icon: <EyeIcon />,
       color: 'primary',
     },

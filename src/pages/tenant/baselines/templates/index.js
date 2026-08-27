@@ -100,6 +100,7 @@ const Page = () => {
     {
       label: 'Edit Baseline',
       link: '/tenant/baselines/template?id=[GUID]',
+      pinned: true,
       icon: <Edit />,
       color: 'success',
       target: '_self',

@@ -18,6 +18,7 @@ const Page = () => {
       {
         label: "Edit Tag",
         link: "/email/administration/exchange-retention/tags/tag?name=[Name]",
+        pinned: true,
         multiPost: false,
         postEntireRow: true,
         icon: <Edit />,

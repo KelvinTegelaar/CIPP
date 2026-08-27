@@ -23,6 +23,7 @@ const Page = () => {
     {
       label: "Edit Group",
       link: "/identity/administration/groups/edit?groupId=[id]&groupType=Microsoft 365",
+      pinned: true,
       multiPost: false,
       color: "warning",
       icon: <Edit />,

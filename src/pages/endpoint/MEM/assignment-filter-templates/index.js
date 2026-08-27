@@ -19,6 +19,7 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Template",
+      pinned: true,
       icon: <Edit />,
       link: "/endpoint/MEM/assignment-filter-templates/edit?id=[GUID]",
     },

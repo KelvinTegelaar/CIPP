@@ -28,6 +28,7 @@ const Page = () => {
     {
       label: 'View Tenant Report',
       link: '/tenant/manage/applied-standards/?templateId=[GUID]',
+      pinned: true,
       icon: <EyeIcon />,
       color: 'info',
       target: '_self',
@@ -36,6 +37,7 @@ const Page = () => {
       label: 'Edit Template',
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
       link: '/tenant/standards/templates/template?id=[GUID]&type=[type]',
+      pinned: true,
       icon: <Edit />,
       color: 'success',
       target: '_self',

@@ -14,6 +14,7 @@ const savedLogsActions = [
   {
     label: "View Log",
     link: savedLogViewLink,
+    pinned: true,
     color: "primary",
     icon: <EyeIcon />,
   },

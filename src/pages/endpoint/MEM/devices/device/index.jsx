@@ -385,6 +385,7 @@ const Page = () => {
               icon: <EyeIcon />,
               label: 'View User',
               link: `/identity/administration/users/user?userId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
+              pinned: true,
             },
           ],
         },
@@ -440,6 +441,7 @@ const Page = () => {
                   icon: <PencilIcon />,
                   label: 'Edit Group',
                   link: '/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]',
+                  pinned: true,
                 },
               ],
               data: deviceMemberOf?.filter(

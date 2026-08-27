@@ -866,6 +866,7 @@ const Page = () => {
                 icon: <PencilIcon />,
                 label: 'Edit Group',
                 link: '/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]',
+                pinned: true,
               },
             ],
             data: userMemberOf?.filter(
@@ -972,6 +973,7 @@ const Page = () => {
                   icon: <EyeIcon />,
                   label: 'View Device',
                   link: `/endpoint/MEM/devices/device?deviceId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
+                  pinned: true,
                 },
               ],
             },

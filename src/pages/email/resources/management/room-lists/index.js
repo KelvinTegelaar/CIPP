@@ -13,6 +13,7 @@ const Page = () => {
     {
       label: "Edit Room List",
       link: "/email/resources/management/room-lists/edit?groupId=[PrimarySmtpAddress]",
+      pinned: true,
       multiPost: false,
       icon: <Edit />,
       color: "success",

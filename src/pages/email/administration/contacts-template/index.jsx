@@ -76,6 +76,7 @@ const Page = () => {
     {
       label: "Edit Contact Template",
       link: "/email/administration/contacts-template/edit?id=[GUID]",
+      pinned: true,
       icon: <Edit />,
       color: "success",
       target: "_self",

@@ -43,6 +43,7 @@ const Page = () => {
     {
       label: 'View Group',
       link: `/identity/administration/groups/group?groupId=[id]&tenantFilter=${tenantQuery}`,
+      pinned: true,
       color: 'info',
       icon: <EyeIcon />,
       multiPost: false,
@@ -51,6 +52,7 @@ const Page = () => {
       //tested
       label: 'Edit Group',
       link: '/identity/administration/groups/edit?groupId=[id]&groupType=[groupType]',
+      pinned: true,
       multiPost: false,
       icon: <Edit />,
       color: 'success',
@@ -485,6 +487,7 @@ const Page = () => {
                 {
                   label: 'View User',
                   link: `/identity/administration/users/user?userId=[id]&tenantFilter=${nestedTenantQuery}`,
+                  pinned: true,
                   color: 'info',
                   icon: <EyeIcon />,
                   condition: (row) =>
@@ -493,6 +496,7 @@ const Page = () => {
                 {
                   label: 'View Group',
                   link: `/identity/administration/groups/group?groupId=[id]&tenantFilter=${nestedTenantQuery}`,
+                  pinned: true,
                   color: 'info',
                   icon: <EyeIcon />,
                   condition: (row) => row?.['@odata.type'] === '#microsoft.graph.group',
@@ -555,6 +559,7 @@ const Page = () => {
                 {
                   label: 'View User',
                   link: `/identity/administration/users/user?userId=[id]&tenantFilter=${nestedTenantQuery}`,
+                  pinned: true,
                   color: 'info',
                   icon: <EyeIcon />,
                   condition: (row) =>

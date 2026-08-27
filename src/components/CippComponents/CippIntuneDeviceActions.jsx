@@ -26,6 +26,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'View Device',
     link: `/endpoint/MEM/devices/device?deviceId=[id]`,
+    pinned: true,
     color: 'info',
     icon: <EyeIcon />,
     multiPost: false,
@@ -33,6 +34,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'View in Intune',
     link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
+    pinned: true,
     color: 'info',
     icon: <EyeIcon />,
     target: '_blank',
@@ -482,6 +484,7 @@ export const getBecIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'View Device',
     link: `/endpoint/MEM/devices/device?deviceId=[id]&tenantFilter=${tenantFilter}`,
+    pinned: true,
     color: 'info',
     icon: <EyeIcon />,
     multiPost: false,
@@ -489,6 +492,7 @@ export const getBecIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'View in Intune',
     link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
+    pinned: true,
     color: 'info',
     icon: <EyeIcon />,
     target: '_blank',

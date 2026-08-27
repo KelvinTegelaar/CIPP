@@ -70,6 +70,7 @@ const Page = () => {
           label: "Edit Test",
           icon: <PencilIcon />,
           link: "/tools/custom-tests/add?ScriptGuid=[ScriptGuid]",
+          pinned: true,
         },
         {
           label: "View Versions",

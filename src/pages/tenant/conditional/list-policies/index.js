@@ -28,6 +28,7 @@ const Page = () => {
     {
       label: "Edit Policy",
       link: "/tenant/conditional/list-policies/edit?id=[id]",
+      pinned: true,
       icon: <Edit />,
       color: "info",
       hideBulk: true,

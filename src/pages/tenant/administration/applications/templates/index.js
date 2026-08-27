@@ -25,6 +25,7 @@ const Page = () => {
     {
       icon: <Edit />,
       label: "Edit Template",
+      pinned: true,
       color: "warning",
       link: "/tenant/administration/applications/templates/edit?template=[TemplateId]&name=[TemplateName]",
     },

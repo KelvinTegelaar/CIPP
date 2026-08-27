@@ -70,6 +70,7 @@ const Page = () => {
     {
       label: "Review in Entra",
       link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AccessRequests`,
+      pinned: true,
       color: "info",
       icon: <Visibility />,
       target: "_blank",
@@ -78,6 +79,7 @@ const Page = () => {
     {
       label: "Approve in Entra",
       link: "[consentUrl]",
+      pinned: true,
       color: "info",
       icon: <CheckCircle />,
       target: "_blank",

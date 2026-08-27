@@ -57,6 +57,7 @@ const CippRoles = () => {
       : []),
     {
       label: "Edit",
+      pinned: true,
       icon: (
         <SvgIcon>
           <PencilIcon />

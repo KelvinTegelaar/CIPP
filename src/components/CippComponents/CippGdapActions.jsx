@@ -13,6 +13,7 @@ export const CippGdapActions = () => [
   {
     label: "View Relationship",
     link: "/tenant/gdap-management/relationships/relationship?id=[id]",
+    pinned: true,
     color: "primary",
     icon: <EyeIcon />,
   },

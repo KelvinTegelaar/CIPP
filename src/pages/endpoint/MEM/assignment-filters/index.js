@@ -38,6 +38,7 @@ const Page = () => {
     {
       label: "Edit Filter",
       link: "/endpoint/MEM/assignment-filters/edit?filterId=[id]",
+      pinned: true,
       multiPost: false,
       icon: <Edit />,
       color: "success",

@@ -40,6 +40,7 @@ const Page = () => {
     {
       label: "Edit Template",
       link: "/tenant/conditional/list-template/edit?GUID=[GUID]",
+      pinned: true,
       icon: <Edit />,
       color: "info",
     },

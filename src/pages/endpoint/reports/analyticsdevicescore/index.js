@@ -12,6 +12,7 @@ const Page = () => {
     {
       label: "View in Intune",
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
+      pinned: true,
       color: "info",
       icon: <EyeIcon />,
       target: "_blank",

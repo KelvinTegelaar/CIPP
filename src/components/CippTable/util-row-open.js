@@ -57,6 +57,56 @@ export const resolveRowOpenLink = (rowOpen, row, options = {}) => {
   return link
 }
 
+export const resolveActionLink = (action, row, options = {}) => {
+  if (!action?.link || !row) {
+    return null
+  }
+  let link = resolveRowTemplates(action.link, row)
+  link = applyTenantFallback(link, row, options)
+  if (UNRESOLVED.test(link)) {
+    return null
+  }
+  return link
+}
+
+export const actionMatchesRowOpen = (action, rowOpen, row, options = {}) => {
+  if (!action?.link || !rowOpen?.link) {
+    return false
+  }
+  if (action.link === rowOpen.link) {
+    return true
+  }
+  const actionLink = resolveActionLink(action, row, options)
+  const rowOpenLink = resolveRowOpenLink(rowOpen, row, options)
+  return Boolean(actionLink && rowOpenLink && actionLink === rowOpenLink)
+}
+
+export const isPinnedRowAction = (action) => Boolean(action?.pinned)
+
+export const filterVisibleRowActions = (actions, row) =>
+  (actions ?? []).filter(
+    (action) =>
+      typeof action.hideCondition !== 'function' || !action.hideCondition(row)
+  )
+
+export const findRowOpenMatchingAction = (actions, rowOpen, row, options = {}) => {
+  if (!Array.isArray(actions) || !rowOpen?.link) {
+    return null
+  }
+  return (
+    actions.find((action) => actionMatchesRowOpen(action, rowOpen, row, options)) ??
+    null
+  )
+}
+
+export const partitionRowMenuActions = (actions) => {
+  const visible = Array.isArray(actions) ? actions : []
+  // Preserve declaration order within each partition (not alpha/priority sorted).
+  const pinnedActions = visible.filter(isPinnedRowAction)
+  const menuActions = visible.filter((action) => !isPinnedRowAction(action))
+  return { pinnedActions, menuActions }
+}
+
 export const resolveRowOpenHref = (rowOpen, row, options = {}) => {
   const link = resolveRowOpenLink(rowOpen, row, options)
   if (!link) {

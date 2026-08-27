@@ -21,6 +21,7 @@ const Page = () => {
     {
       label: "Edit Template",
       link: "/security/safelinks/safelinks-template/edit?ID=[GUID]",
+      pinned: true,
       icon: <Edit />,
       color: "success",
       target: "_self",

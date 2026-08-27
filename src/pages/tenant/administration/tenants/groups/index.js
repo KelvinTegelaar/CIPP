@@ -31,6 +31,7 @@ const Page = () => {
     {
       label: "Edit Group",
       link: "/tenant/administration/tenants/groups/edit?id=[Id]",
+      pinned: true,
       icon: <Edit />,
     },
     {

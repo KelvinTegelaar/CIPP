@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
+  actionMatchesRowOpen,
   dispatchRowOpen,
+  partitionRowMenuActions,
   resolveRowOpenHref,
   resolveRowOpenLink,
   rowOpenEnabled,
@@ -187,5 +189,104 @@ describe('rowOpenSupportsNewTab', () => {
         { id: 'abc' }
       )
     ).toBe(true)
+  })
+})
+
+describe('actionMatchesRowOpen', () => {
+  const rowOpen = { link: '/identity/administration/users/user?userId=[id]' }
+  const row = { id: 'user-123' }
+
+  it('matches identical link templates', () => {
+    expect(
+      actionMatchesRowOpen(
+        { label: 'View User', link: rowOpen.link },
+        rowOpen,
+        row
+      )
+    ).toBe(true)
+  })
+
+  it('does not match different destinations', () => {
+    expect(
+      actionMatchesRowOpen(
+        { label: 'Edit User', link: '/identity/administration/users/user/edit?userId=[id]' },
+        rowOpen,
+        row
+      )
+    ).toBe(false)
+  })
+})
+
+describe('partitionRowMenuActions', () => {
+  it('splits pinned actions from the scrollable menu list', () => {
+    const actions = [
+      { label: 'View User', link: '/identity/administration/users/user?userId=[id]' },
+      {
+        label: 'Edit User',
+        pinned: true,
+        link: '/identity/administration/users/user/edit?userId=[id]',
+      },
+    ]
+
+    const { pinnedActions, menuActions } = partitionRowMenuActions(actions)
+
+    expect(pinnedActions).toHaveLength(1)
+    expect(pinnedActions[0].label).toBe('Edit User')
+    expect(menuActions).toHaveLength(1)
+    expect(menuActions[0].label).toBe('View User')
+  })
+
+  it('promotes pinned actions above the scrollable menu list', () => {
+    const actions = [
+      { label: 'Quick task', pinned: true },
+      { label: 'Other action' },
+    ]
+
+    const { pinnedActions, menuActions } = partitionRowMenuActions(actions)
+
+    expect(pinnedActions).toHaveLength(1)
+    expect(pinnedActions[0].label).toBe('Quick task')
+    expect(menuActions).toHaveLength(1)
+    expect(menuActions[0].label).toBe('Other action')
+  })
+
+  it('keeps multiple pinned actions in declaration order', () => {
+    const actions = [
+      { label: 'Pinned other', pinned: true },
+      {
+        label: 'View User',
+        pinned: true,
+        link: '/identity/administration/users/user?userId=[id]',
+      },
+      { label: 'Edit User', link: '/identity/administration/users/user/edit?userId=[id]' },
+    ]
+
+    const { pinnedActions, menuActions } = partitionRowMenuActions(actions)
+
+    expect(pinnedActions.map((action) => action.label)).toEqual([
+      'Pinned other',
+      'View User',
+    ])
+    expect(menuActions).toHaveLength(1)
+    expect(menuActions[0].label).toBe('Edit User')
+  })
+
+  it('preserves declaration order when pinned actions are non-contiguous', () => {
+    const actions = [
+      { label: 'View Device', pinned: true },
+      { label: 'Sync' },
+      { label: 'View in Intune', pinned: true, external: true },
+      { label: 'Retire' },
+      { label: 'Edit Device', pinned: true },
+    ]
+
+    const { pinnedActions, menuActions } = partitionRowMenuActions(actions)
+
+    expect(pinnedActions.map((action) => action.label)).toEqual([
+      'View Device',
+      'View in Intune',
+      'Edit Device',
+    ])
+    expect(menuActions.map((action) => action.label)).toEqual(['Sync', 'Retire'])
   })
 })

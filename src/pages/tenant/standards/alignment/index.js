@@ -312,6 +312,7 @@ const Page = () => {
     {
       label: 'View Tenant Report',
       link: '/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[standardId]',
+      pinned: true,
       icon: <EyeIcon />,
       color: 'info',
       target: '_self',
@@ -319,6 +320,7 @@ const Page = () => {
     {
       label: 'Edit Template',
       link: '/tenant/standards/templates/template?id=[standardId]&type=[standardType]',
+      pinned: true,
       icon: <Edit />,
       color: 'success',
       target: '_self',
@@ -351,6 +353,7 @@ const Page = () => {
     {
       label: 'View Tenant Report',
       link: '/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[templateId]',
+      pinned: true,
       icon: <EyeIcon />,
       color: 'info',
       target: '_self',
@@ -358,6 +361,7 @@ const Page = () => {
     {
       label: 'Edit Template',
       link: '/tenant/standards/templates/template?id=[templateId]&type=[templateType]',
+      pinned: true,
       icon: <Edit />,
       color: 'success',
       target: '_self',

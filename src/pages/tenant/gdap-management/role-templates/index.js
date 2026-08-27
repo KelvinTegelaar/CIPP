@@ -18,6 +18,7 @@ const Page = () => {
     {
       label: "Edit Template",
       link: "/tenant/gdap-management/role-templates/edit?templateId=[TemplateId]",
+      pinned: true,
       icon: <Edit />,
     },
     {

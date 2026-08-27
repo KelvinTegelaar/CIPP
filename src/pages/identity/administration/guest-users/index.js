@@ -174,6 +174,7 @@ const Page = () => {
     {
       label: 'View User',
       link: userHubLink,
+      pinned: true,
       multiPost: false,
       icon: <EyeIcon />,
       color: 'success',

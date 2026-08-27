@@ -20,12 +20,14 @@ const Page = () => {
     {
       label: 'View Task Details',
       link: '/cipp/scheduler/task?id=[RowKey]',
+      pinned: true,
       icon: <Visibility />,
       condition: (row) => row?.EventType === 'Scheduled Task',
     },
     {
       label: 'Edit Alert',
       link: '/tenant/administration/alert-configuration/alert?id=[RowKey]',
+      pinned: true,
       icon: <Edit />,
       color: 'success',
       target: '_self',

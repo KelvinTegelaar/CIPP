@@ -35,6 +35,7 @@ const Page = () => {
     {
       label: 'Edit Template',
       link: `/endpoint/MEM/list-templates/edit?id=[GUID]`,
+      pinned: true,
       icon: <Edit />,
       color: 'info',
       condition: (row) => row.isSynced === false,

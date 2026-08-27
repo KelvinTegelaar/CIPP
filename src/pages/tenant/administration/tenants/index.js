@@ -28,6 +28,7 @@ const Page = () => {
     {
       label: "Edit Tenant",
       link: "/tenant/manage/edit?tenantFilter=[defaultDomainName]",
+      pinned: true,
       icon: <Edit />,
     },
     {

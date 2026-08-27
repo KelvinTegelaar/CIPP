@@ -24,6 +24,7 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Reusable Setting",
+      pinned: true,
       link: isAllTenants
         ? "/endpoint/MEM/reusable-settings/edit?id=[id]&tenant=[Tenant]&tenantFilter=[Tenant]"
         : `/endpoint/MEM/reusable-settings/edit?id=[id]&tenant=${currentTenant}&tenantFilter=${currentTenant}`,

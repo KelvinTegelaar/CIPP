@@ -16,6 +16,7 @@ const actions = [
   {
     label: "View Results",
     link: "/tenant/administration/audit-logs/search-results?id=[id]&name=[displayName]",
+    pinned: true,
     color: "primary",
     icon: <EyeIcon />,
   },

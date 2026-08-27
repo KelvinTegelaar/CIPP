@@ -12,6 +12,7 @@ const Page = () => {
     {
       label: "Edit Room",
       link: `/email/resources/management/list-rooms/edit?roomId=[id]`,
+      pinned: true,
       icon: <Edit />,
       color: "info",
       condition: (row) => !row.isDirSynced,

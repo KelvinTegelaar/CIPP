@@ -23,6 +23,7 @@ const Page = () => {
   const actions = [
     {
       label: 'Edit Template',
+      pinned: true,
       icon: <Edit />,
       color: 'info',
       noConfirm: true,
