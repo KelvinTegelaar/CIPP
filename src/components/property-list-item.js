@@ -35,7 +35,7 @@ export const PropertyListItem = (props) => {
             }}
           >
             {children || (
-              <Typography color="text.secondary" variant="body3">
+              <Typography component="div" color="text.secondary" variant="body3">
                 {type !== "password" &&
                   (value === true ? "Yes" : value === false || value === null ? "No" : value)}
                 {type === "password" && (
