@@ -193,7 +193,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
     data: {
       GUID: 'azureADDeviceId',
     },
-    condition: (row) => row.operatingSystem === 'Windows',
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
     confirmText: 'Are you sure you want to retrieve the local admin password for [deviceName]?',
   },
   {
@@ -205,7 +205,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       GUID: 'id',
       Action: 'RotateLocalAdminPassword',
     },
-    condition: (row) => row.operatingSystem === 'Windows',
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
     confirmText: 'Are you sure you want to rotate the password for [deviceName]?',
   },
   {
@@ -218,7 +218,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       GUID: 'id',
       RecoveryKeyType: '!BiosPassword',
     },
-    condition: (row) => row.operatingSystem === 'Windows',
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
     confirmText: 'Are you sure you want to retrieve the BIOS password for [deviceName]?',
   },
   {
@@ -230,7 +230,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       GUID: 'azureADDeviceId',
       RecoveryKeyType: '!BitLocker',
     },
-    condition: (row) => row.operatingSystem === 'Windows',
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
     confirmText: 'Are you sure you want to retrieve the BitLocker keys for [deviceName]?',
   },
   {
@@ -242,7 +242,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       GUID: 'id',
       RecoveryKeyType: '!FileVault',
     },
-    condition: (row) => row.operatingSystem === 'macOS',
+    hideCondition: (row) => row.operatingSystem !== 'macOS',
     confirmText: 'Are you sure you want to retrieve the FileVault key for [deviceName]?',
   },
   {
@@ -254,7 +254,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       GUID: 'id',
       Action: 'resetPasscode',
     },
-    condition: (row) => row.operatingSystem === 'Android',
+    hideCondition: (row) => row.operatingSystem !== 'Android',
     confirmText:
       'Are you sure you want to reset the passcode for [deviceName]? A new passcode will be generated and displayed.',
   },
@@ -267,7 +267,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       GUID: 'id',
       Action: 'resetPasscode',
     },
-    condition: (row) => row.operatingSystem === 'iOS',
+    hideCondition: (row) => row.operatingSystem !== 'iOS',
     confirmText:
       'Are you sure you want to remove the passcode from [deviceName]? This will remove the device passcode requirement.',
   },
@@ -316,7 +316,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       GUID: 'azureADDeviceId',
       Action: 'offboardMDEDevice',
     },
-    condition: (row) => row.operatingSystem === 'Windows',
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
     confirmText:
       'Are you sure you want to offboard [deviceName] from Microsoft Defender for Endpoint? This queues an offboarding action via the MDE API and cannot be undone without re-onboarding the device.',
   },
@@ -335,33 +335,31 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   //     'Are you sure you want to generate logs for device [deviceName] and ship these to MEM?',
   // },
   {
-    label: 'Fresh Start (Remove user data)',
+    label: 'Fresh Start',
     type: 'POST',
     icon: <RestartAlt />,
     url: '/api/ExecDeviceAction',
     data: {
       GUID: 'id',
       Action: 'cleanWindowsDevice',
-      keepUserData: false,
     },
-    condition: (row) => row.operatingSystem === 'Windows',
+    fields: [
+      {
+        type: 'radio',
+        name: 'keepUserData',
+        label: 'User Data',
+        options: [
+          { label: 'Keep user data', value: true },
+          { label: 'Remove user data', value: false },
+        ],
+        validators: { required: 'Please select an option' },
+      },
+    ],
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
     confirmText: 'Are you sure you want to Fresh Start [deviceName]?',
   },
   {
-    label: 'Fresh Start (Do not remove user data)',
-    type: 'POST',
-    icon: <RestartAlt />,
-    url: '/api/ExecDeviceAction',
-    data: {
-      GUID: 'id',
-      Action: 'cleanWindowsDevice',
-      keepUserData: true,
-    },
-    condition: (row) => row.operatingSystem === 'Windows',
-    confirmText: 'Are you sure you want to Fresh Start [deviceName]?',
-  },
-  {
-    label: 'Wipe Device, keep enrollment data',
+    label: 'Wipe Device',
     type: 'POST',
     icon: <RestartAlt />,
     url: '/api/ExecDeviceAction',
@@ -369,56 +367,40 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       GUID: 'id',
       Action: 'wipe',
       keepUserData: false,
-      keepEnrollmentData: true,
     },
-    condition: (row) => row.operatingSystem === 'Windows',
-    confirmText: 'Are you sure you want to wipe [deviceName], and retain enrollment data?',
-  },
-  {
-    label: 'Wipe Device, remove enrollment data',
-    type: 'POST',
-    icon: <RestartAlt />,
-    url: '/api/ExecDeviceAction',
-    data: {
-      GUID: 'id',
-      Action: 'wipe',
-      keepUserData: false,
-      keepEnrollmentData: false,
-    },
-    condition: (row) => row.operatingSystem === 'Windows',
-    confirmText: 'Are you sure you want to wipe [deviceName], and remove enrollment data?',
-  },
-  {
-    label: 'Wipe Device, keep enrollment data, and continue at powerloss',
-    type: 'POST',
-    icon: <RestartAlt />,
-    url: '/api/ExecDeviceAction',
-    data: {
-      GUID: 'id',
-      Action: 'wipe',
-      keepEnrollmentData: true,
-      keepUserData: false,
-      useProtectedWipe: true,
-    },
-    condition: (row) => row.operatingSystem === 'Windows',
+    fields: [
+      {
+        type: 'radio',
+        name: 'keepEnrollmentData',
+        label: 'Enrollment Data',
+        options: [
+          {
+            label:
+              'Keep enrollment data (Autopilot Reset — device re-provisions through Autopilot)',
+            value: true,
+          },
+          { label: 'Remove enrollment data (full retirement)', value: false },
+        ],
+        validators: { required: 'Please select an option' },
+      },
+      {
+        type: 'radio',
+        name: 'useProtectedWipe',
+        label: 'Wipe Type',
+        options: [
+          { label: 'Standard wipe', value: false },
+          {
+            label:
+              'Protected wipe — resumes if interrupted; may leave the device unbootable if it fails',
+            value: true,
+          },
+        ],
+        validators: { required: 'Please select an option' },
+      },
+    ],
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
     confirmText:
-      'Are you sure you want to wipe [deviceName]? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.',
-  },
-  {
-    label: 'Wipe Device, remove enrollment data, and continue at powerloss',
-    type: 'POST',
-    icon: <RestartAlt />,
-    url: '/api/ExecDeviceAction',
-    data: {
-      GUID: 'id',
-      Action: 'wipe',
-      keepEnrollmentData: false,
-      keepUserData: false,
-      useProtectedWipe: true,
-    },
-    condition: (row) => row.operatingSystem === 'Windows',
-    confirmText:
-      'Are you sure you want to wipe [deviceName]? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.',
+      'Are you sure you want to wipe [deviceName]? This removes all user data on the device. Use Fresh Start to keep user files.',
   },
   {
     label: 'Wipe Device',
@@ -436,9 +418,9 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
         label: 'Recovery PIN (optional, 6 digits)',
       },
     ],
-    condition: (row) => row.operatingSystem === 'macOS',
+    hideCondition: (row) => row.operatingSystem !== 'macOS',
     confirmText:
-      'Are you sure you want to wipe [deviceName]? This erases all content and settings and cannot be undone. Intel Macs without a T2 security chip require the recovery PIN to unlock the device after the wipe.',
+      'Are you sure you want to wipe [deviceName]? This erases all content and settings and cannot be undone. Intel Macs without a T2 security chip require the recovery PIN to unlock the device after the wipe. This removes all user data on the device.',
   },
   {
     label: 'Autopilot Reset',
@@ -451,8 +433,9 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
       keepUserData: false,
       keepEnrollmentData: true,
     },
-    condition: (row) => row.operatingSystem === 'Windows',
-    confirmText: 'Are you sure you want to Autopilot Reset [deviceName]?',
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
+    confirmText:
+      'Are you sure you want to Autopilot Reset [deviceName]? This wipes the device and keeps enrollment data, removes all user data on the device, and the device will re-provision through Windows Autopilot.',
   },
   {
     label: 'Delete device',
