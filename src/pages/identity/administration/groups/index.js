@@ -129,6 +129,8 @@ const Page = () => {
       ],
       confirmText:
         'Select the users to add as members to [displayName], or drop a CSV file with a userPrincipalName column to bulk add members.',
+      // Manual member adds are rejected on dynamic and on-prem synced groups
+      condition: (row) => !row?.membershipRule && row?.onPremisesSyncEnabled !== true,
       multiPost: false,
       allowResubmit: true,
     },
