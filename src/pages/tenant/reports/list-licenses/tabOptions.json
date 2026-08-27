@@ -3,15 +3,5 @@
     "label": "Licences",
     "path": "/tenant/reports/list-licenses",
     "icon": "Assignment"
-  },
-  {
-    "label": "Optimization",
-    "path": "/tenant/reports/list-licenses/optimization",
-    "icon": "BarChart"
-  },
-  {
-    "label": "Pricing",
-    "path": "/tenant/reports/list-licenses/pricing",
-    "icon": "Label"
   }
 ]
