@@ -67,9 +67,64 @@ export const getSubTableDisplayColumnIds = (subTables, simpleColumns, data) => {
   return ids
 }
 
+/**
+ * The inactive half of each subTable pair must leave the column set entirely.
+ * Cached report rows often carry both `members` (array) and `membersCsv`; if both
+ * stay as MRT columns, live↔cache toggles don't look "stale" to columnOrder
+ * sanitization, but the column virtualizer still blows up on pinned-index drift.
+ */
+export const getInactiveSubTableColumnIds = (subTables, simpleColumns, data) => {
+  if (!Array.isArray(subTables) || subTables.length === 0) {
+    return []
+  }
+  const ids = []
+  for (const sub of subTables) {
+    if (!subTableIsSelected(sub, simpleColumns)) {
+      continue
+    }
+    if (subTableShowsCachedColumn(sub, data)) {
+      if (sub.id) {
+        ids.push(sub.id)
+      }
+    } else if (sub.cachedColumn) {
+      ids.push(sub.cachedColumn)
+    }
+  }
+  return ids
+}
+
 export const columnOrderHasStaleIds = (columnOrder, displayColumnIds) => {
   const displayIdSet = new Set(displayColumnIds)
   return (columnOrder ?? []).some(
     (id) => id && !String(id).startsWith('mrt-') && !displayIdSet.has(id)
   )
+}
+
+/**
+ * Rebuild columnOrder so every non-MRT id exists on the current display column set.
+ * MRT (with column virtualization) throws during render if order references removed
+ * ids — e.g. membersCsv after switching ReportDB cache → live — so this must run
+ * in the same render as the column swap, not in a later useEffect.
+ */
+export const sanitizeColumnOrder = (columnOrder, displayColumnIds, preferredIds = []) => {
+  const displayIds = (displayColumnIds ?? []).filter(Boolean)
+  if (displayIds.length === 0) {
+    return columnOrder ?? []
+  }
+  if (!columnOrderHasStaleIds(columnOrder, displayIds)) {
+    return columnOrder ?? []
+  }
+  const mrtLeading = (columnOrder ?? []).filter(
+    (id) => id && String(id).startsWith('mrt-') && String(id).includes('select')
+  )
+  const mrtTrailing = (columnOrder ?? []).filter(
+    (id) =>
+      id &&
+      String(id).startsWith('mrt-') &&
+      !String(id).includes('select')
+  )
+  const preferred = (preferredIds ?? []).filter((id) => displayIds.includes(id))
+  const selected = preferred.length > 0 ? preferred : displayIds
+  const rest = displayIds.filter((id) => !selected.includes(id))
+  return [...mrtLeading, ...selected, ...rest, ...mrtTrailing]
 }

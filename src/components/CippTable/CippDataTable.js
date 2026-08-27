@@ -45,7 +45,8 @@ import {
   subTableShowsCachedColumn,
   resolveSubTableSimpleColumns,
   getSubTableDisplayColumnIds,
-  columnOrderHasStaleIds,
+  getInactiveSubTableColumnIds,
+  sanitizeColumnOrder,
 } from './util-subTables'
 import { attachParentRow, getRowTenant } from '../../utils/resolve-row-templates'
 import {
@@ -570,6 +571,9 @@ export const CippDataTable = (props) => {
     useState(simpleColumns)
   const [usedData, setUsedData] = useState(data)
   const [usedColumns, setUsedColumns] = useState([])
+  // Controlled so we can drop stale ids (membersCsv ↔ members) in the same render
+  // as displayColumns changes — a post-render setColumnOrder is too late; MRT throws first.
+  const [columnOrder, setColumnOrder] = useState(() => [...simpleColumns])
   const lastOrderedSelectionRef = useRef(null)
   const [offcanvasVisible, setOffcanvasVisible] = useState(false)
   const [offCanvasData, setOffCanvasData] = useState({})
@@ -807,7 +811,7 @@ export const CippDataTable = (props) => {
             ...subTableIds,
           ]),
         ]
-        table.setColumnOrder(orderColumnsBySelection(allIds, finalResolvedColumns))
+        setColumnOrder(orderColumnsBySelection(allIds, finalResolvedColumns))
       }
     } else {
       const providedColumnKeys = new Set(
@@ -962,6 +966,9 @@ export const CippDataTable = (props) => {
     }
     const cachedHeaders = new Map()
     const injected = []
+    const excludedIds = new Set(
+      getInactiveSubTableColumnIds(subTables, configuredSimpleColumns, usedData)
+    )
     for (const sub of subTables) {
       if (!subTableIsSelected(sub, configuredSimpleColumns)) {
         continue
@@ -982,8 +989,48 @@ export const CippDataTable = (props) => {
     const injectedById = new Map(injected.map((col) => [col.id, col]))
     const replaced = columns.map((col) => injectedById.get(col.id) ?? col)
     const existing = new Set(columns.map((col) => col.id))
-    return [...replaced, ...injected.filter((col) => !existing.has(col.id))]
+    return [...replaced, ...injected.filter((col) => !existing.has(col.id))].filter(
+      (col) => !excludedIds.has(col.id)
+    )
   }, [usedColumns, usedData, subTables, configuredSimpleColumns])
+
+  const displayColumnIds = useMemo(
+    () => displayColumns.map((col) => col.id).filter(Boolean),
+    [displayColumns]
+  )
+
+  // Remount MRT when the visible column identity set changes (cache↔live). MRT's
+  // column virtualizer memoizes pinned indexes without depending on column count;
+  // without a remount, TableHeadRow maps a sparse virtual item and reads `.index`
+  // on undefined.
+  const mrtColumnSetKey = useMemo(() => displayColumnIds.join('|'), [displayColumnIds])
+
+  const preferredColumnOrderIds = useMemo(
+    () =>
+      resolveSubTableSimpleColumns(
+        configuredSimpleColumns,
+        subTables,
+        usedData
+      ).filter((id) => displayColumnIds.includes(id)),
+    [configuredSimpleColumns, subTables, usedData, displayColumnIds]
+  )
+
+  // Same-render sanitize: toggling ReportDB cache↔live swaps membersCsv↔members (and
+  // drops CacheTimestamp). MRT column virtualization reads virtualItem.index during
+  // render and throws if columnOrder still names the old ids ("can't access property
+  // index, e is undefined" in Firefox). A useEffect setColumnOrder runs too late.
+  const safeColumnOrder = useMemo(
+    () =>
+      sanitizeColumnOrder(columnOrder, displayColumnIds, preferredColumnOrderIds),
+    [columnOrder, displayColumnIds, preferredColumnOrderIds]
+  )
+
+  useEffect(() => {
+    if (safeColumnOrder === columnOrder) {
+      return
+    }
+    setColumnOrder(safeColumnOrder)
+  }, [safeColumnOrder, columnOrder])
 
   useEffect(() => {
     if (!Array.isArray(subTables) || subTables.length === 0) {
@@ -1080,11 +1127,12 @@ export const CippDataTable = (props) => {
   const tableState = useMemo(
     () => ({
       columnVisibility: sanitizedColumnVisibility,
+      columnOrder: safeColumnOrder,
       sorting,
       columnFilters,
       showSkeletons,
     }),
-    [sanitizedColumnVisibility, sorting, columnFilters, showSkeletons]
+    [sanitizedColumnVisibility, safeColumnOrder, sorting, columnFilters, showSkeletons]
   )
 
   // Single row-action dispatch used by BOTH the desktop row menu and the mobile action
@@ -1618,6 +1666,7 @@ export const CippDataTable = (props) => {
     onColumnFiltersChange: setColumnFilters,
     renderEmptyRowsFallback,
     onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
     ...modeInfo,
     // narrow table views size their scroll viewport from measurement (see the effect below),
     // the modeInfo calc budget only holds for desktop chrome
@@ -1651,29 +1700,6 @@ export const CippDataTable = (props) => {
     prevUsedDataRef.current = memoizedData
     table.toggleAllRowsSelected(false)
   }, [memoizedData])
-
-  // utilTableMode seeds columnOrder from simpleColumns (e.g. "members"), but cached report
-  // data shows membersCsv instead — MRT crashes if order references ids that are not in
-  // displayColumns.
-  useEffect(() => {
-    if (!Array.isArray(subTables) || subTables.length === 0) {
-      return
-    }
-    const displayIds = displayColumns.map((col) => col.id).filter(Boolean)
-    if (displayIds.length === 0) {
-      return
-    }
-    const currentOrder = table.getState().columnOrder ?? []
-    if (!columnOrderHasStaleIds(currentOrder, displayIds)) {
-      return
-    }
-    const selectedForOrder = resolveSubTableSimpleColumns(
-      configuredSimpleColumns,
-      subTables,
-      usedData
-    ).filter((id) => displayIds.includes(id))
-    table.setColumnOrder(orderColumnsBySelection(displayIds, selectedForOrder))
-  }, [configuredSimpleColumns, displayColumns, subTables, usedData, table])
 
   // size the narrow table's scroll viewport from where it actually sits: viewport height
   // minus the container's measured top, the real footer height and the chrome below the
@@ -1945,7 +1971,7 @@ export const CippDataTable = (props) => {
             <>
               {(getRequestData.isSuccess ||
                 getRequestData.data?.pages.length >= 0 ||
-                data) && <MaterialReactTable table={table} />}
+                data) && <MaterialReactTable key={mrtColumnSetKey} table={table} />}
             </>
           )}
           {getRequestData.isError && !getRequestData.isFetchNextPageError && (
@@ -1994,7 +2020,7 @@ export const CippDataTable = (props) => {
                     {(getRequestData.isSuccess ||
                       getRequestData.data?.pages.length >= 0 ||
                       (data && !getRequestData.isError)) && (
-                      <MaterialReactTable table={table} />
+                      <MaterialReactTable key={mrtColumnSetKey} table={table} />
                     )}
                   </>
                 )}

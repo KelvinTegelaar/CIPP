@@ -4,7 +4,9 @@ import {
   subTableIsSelected,
   subTableShowsCachedColumn,
   getSubTableDisplayColumnIds,
+  getInactiveSubTableColumnIds,
   columnOrderHasStaleIds,
+  sanitizeColumnOrder,
 } from '../../../src/components/CippTable/util-subTables'
 
 const membersSub = {
@@ -50,6 +52,18 @@ describe('util-subTables', () => {
     ).toEqual(['members'])
   })
 
+  it('excludes the inactive half of each subTable column pair', () => {
+    const cached = [{ id: '1', membersCsv: 'Jane, Bob', members: [{ id: 'u1' }] }]
+    const live = [{ id: '1', displayName: 'Finance', membersCsv: '' }]
+
+    expect(
+      getInactiveSubTableColumnIds([membersSub], ['displayName', 'members'], cached)
+    ).toEqual(['members'])
+    expect(
+      getInactiveSubTableColumnIds([membersSub], ['displayName', 'members'], live)
+    ).toEqual(['membersCsv'])
+  })
+
   it('detects stale column order ids that are not on the table', () => {
     expect(columnOrderHasStaleIds(['displayName', 'members'], ['displayName', 'membersCsv'])).toBe(
       true
@@ -58,5 +72,22 @@ describe('util-subTables', () => {
       columnOrderHasStaleIds(['displayName', 'membersCsv'], ['displayName', 'membersCsv'])
     ).toBe(false)
     expect(columnOrderHasStaleIds(['mrt-row-select', 'displayName'], ['displayName'])).toBe(false)
+  })
+
+  it('sanitizes stale column order in the same pass (cache→live membersCsv swap)', () => {
+    expect(
+      sanitizeColumnOrder(
+        ['mrt-row-select', 'CacheTimestamp', 'displayName', 'membersCsv', 'mrt-row-actions'],
+        ['displayName', 'members'],
+        ['displayName', 'members']
+      )
+    ).toEqual(['mrt-row-select', 'displayName', 'members', 'mrt-row-actions'])
+  })
+
+  it('leaves a valid column order untouched', () => {
+    const order = ['mrt-row-select', 'displayName', 'membersCsv', 'mrt-row-actions']
+    expect(sanitizeColumnOrder(order, ['displayName', 'membersCsv'], ['displayName', 'membersCsv'])).toBe(
+      order
+    )
   })
 })
