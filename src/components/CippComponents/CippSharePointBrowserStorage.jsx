@@ -398,7 +398,7 @@ export const CippSharePointBrowserStorage = ({
             </IconButton>
           </Stack>
         </DialogTitle>
-        <DialogContent dividers sx={{ minHeight: 520 }}>
+        <DialogContent dividers sx={{ minHeight: { xs: 360, md: 520 } }}>
           {!siteUrl ? (
             <Alert severity="warning">No site URL available for this selection.</Alert>
           ) : (

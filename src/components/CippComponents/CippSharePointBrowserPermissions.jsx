@@ -911,7 +911,7 @@ export const CippSharePointBrowserPermissions = ({
           </IconButton>
         </Stack>
       </DialogTitle>
-      <DialogContent dividers sx={{ minHeight: 520 }}>
+      <DialogContent dividers sx={{ minHeight: { xs: 360, md: 520 } }}>
         {!effectiveSiteUrl ? (
           <Alert severity="warning">No site URL available for this selection.</Alert>
         ) : api.isFetching && !data ? (

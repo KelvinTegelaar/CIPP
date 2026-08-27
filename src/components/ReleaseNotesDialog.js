@@ -382,11 +382,15 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
     }
   }, [isEligible, releaseCatalog.length, releaseListQuery.error])
 
+  // Phones always go fullscreen — a centred md dialog wastes the viewport and
+  // fights the bottom-sheet pickers. Desktop Expand still toggles fullScreen.
+  const fullScreen = isExpanded || isMobile
+
   return (
     <Dialog
-      fullScreen={isExpanded}
+      fullScreen={fullScreen}
       fullWidth
-      maxWidth={isExpanded ? 'xl' : 'md'}
+      maxWidth={fullScreen ? 'xl' : 'md'}
       onClose={handleRemindLater}
       open={open}
       scroll="paper"
@@ -394,10 +398,10 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
         sx: {
           display: 'flex',
           flexDirection: 'column',
-          ...(isExpanded
+          ...(isExpanded && !isMobile
             ? {
-                m: { xs: 0, sm: 2 },
-                height: { xs: '100%', sm: 'calc(100% - 32px)' },
+                m: { sm: 2 },
+                height: { sm: 'calc(100% - 32px)' },
               }
             : {}),
         },
@@ -500,7 +504,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
                 flexGrow: 1,
                 // dvh tracks the visible viewport; 100vh over-reports it on mobile browsers
                 // with collapsing chrome, so the notes ran past the bottom of the screen.
-                maxHeight: isExpanded
+                maxHeight: fullScreen
                   ? { xs: 'calc(100dvh - 200px)', md: 'calc(100vh - 260px)' }
                   : 600,
                 overflowY: 'auto',
