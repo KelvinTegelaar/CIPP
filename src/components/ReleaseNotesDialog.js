@@ -168,12 +168,47 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
   // Left unset until the catalog loads so pickDisplayRelease chooses; seeding it with
   // the running tag meant a hotfix build always displayed its own thin release notes.
   const [selectedReleaseTag, setSelectedReleaseTag] = useState(null)
+  const [notesScrolling, setNotesScrolling] = useState(false)
   const hasOpenedRef = useRef(false)
+  const notesScrollIdleRef = useRef(null)
   const isMobile = useIsMobileLayout()
 
   useEffect(() => {
     hasOpenedRef.current = false
   }, [releaseMeta.releaseTag])
+
+  useEffect(() => {
+    if (!open) {
+      setNotesScrolling(false)
+      if (notesScrollIdleRef.current) {
+        clearTimeout(notesScrollIdleRef.current)
+        notesScrollIdleRef.current = null
+      }
+    }
+  }, [open])
+
+  useEffect(
+    () => () => {
+      if (notesScrollIdleRef.current) {
+        clearTimeout(notesScrollIdleRef.current)
+      }
+    },
+    []
+  )
+
+  const handleNotesScroll = useCallback(() => {
+    if (!isMobile) {
+      return
+    }
+
+    setNotesScrolling(true)
+    if (notesScrollIdleRef.current) {
+      clearTimeout(notesScrollIdleRef.current)
+    }
+    // Flash the track while moving, then fade back out — phones don't need a
+    // permanent gutter advertising that a long page can scroll.
+    notesScrollIdleRef.current = setTimeout(() => setNotesScrolling(false), 900)
+  }, [isMobile])
 
   useEffect(() => {
     // New build -> re-pick from the catalog rather than pinning to this build's tag
@@ -474,17 +509,29 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
           <Close fontSize="small" />
         </IconButton>
       </DialogTitle>
-      <DialogContent dividers sx={{ pt: 1, flex: 1, display: 'flex' }}>
+      <DialogContent
+        dividers
+        sx={{
+          pt: 1,
+          pb: 0,
+          flex: 1,
+          display: 'flex',
+          // Default MUI padding floats the gutter too far in; a slim right inset
+          // keeps it off the dialog chrome without the old empty strip.
+          px: 0,
+          pr: { xs: 0.75, md: 0 },
+        }}
+      >
         <Stack spacing={2} sx={{ flex: 1, minHeight: 0 }}>
           {releaseListQuery.error ? (
-            <Typography color="error" variant="body2">
+            <Typography color="error" variant="body2" sx={{ px: { xs: 2, md: 3 } }}>
               We couldn't load additional releases right now. The latest release notes are shown
               below.
               {releaseListQuery.error?.message ? ` (${releaseListQuery.error.message})` : ''}
             </Typography>
           ) : null}
           {gfmSupport.error ? (
-            <Typography color="warning.main" variant="body2">
+            <Typography color="warning.main" variant="body2" sx={{ px: { xs: 2, md: 3 } }}>
               Displaying these release notes without GitHub-flavoured markdown enhancements due to a
               parsing issue. Formatting may look different.
             </Typography>
@@ -494,12 +541,13 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
               <CircularProgress />
             </Box>
           ) : releaseListQuery.error ? (
-            <Typography color="error" variant="body2">
+            <Typography color="error" variant="body2" sx={{ px: { xs: 2, md: 3 } }}>
               We couldn't load the release notes right now. You can view them on GitHub instead.
               {releaseListQuery.error?.message ? ` (${releaseListQuery.error.message})` : ''}
             </Typography>
           ) : (
             <Box
+              onScroll={handleNotesScroll}
               sx={{
                 flexGrow: 1,
                 // dvh tracks the visible viewport; 100vh over-reports it on mobile browsers
@@ -508,11 +556,36 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
                   ? { xs: 'calc(100dvh - 200px)', md: 'calc(100vh - 260px)' }
                   : 600,
                 overflowY: 'auto',
+                // Padding is on the scroll box so the markdown stays clear of the track.
+                px: { xs: 2, md: 3 },
                 // Release notes are GitHub markdown: long URLs, commit SHAs and fenced code
                 // are single unbreakable tokens that otherwise widen the dialog and push the
                 // text off the right edge. Wrap prose; let code and tables scroll themselves.
                 overflowX: 'hidden',
                 overflowWrap: 'anywhere',
+                // Global theme forces a persistent 7px scrollbar on *; phones don't need
+                // that affordance — hide at rest, flash while scrolling.
+                ...(isMobile
+                  ? {
+                      scrollbarWidth: notesScrolling ? 'thin' : 'none',
+                      scrollbarColor: notesScrolling
+                        ? 'var(--sb-thumb-color) transparent'
+                        : 'transparent transparent',
+                      '&::-webkit-scrollbar': {
+                        width: notesScrolling ? 6 : 0,
+                        height: notesScrolling ? 6 : 0,
+                      },
+                      '&::-webkit-scrollbar-track': {
+                        backgroundColor: 'transparent',
+                      },
+                      '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: notesScrolling
+                          ? 'var(--sb-thumb-color)'
+                          : 'transparent',
+                        borderRadius: 4,
+                      },
+                    }
+                  : {}),
                 '& pre': {
                   maxWidth: '100%',
                   overflowX: 'auto',
