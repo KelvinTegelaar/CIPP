@@ -9,10 +9,9 @@ import { CippSponsor } from '../components/CippComponents/CippSponsor'
 import { useSettings } from '../hooks/use-settings'
 
 import {
-  BANNER_HEIGHT_VAR,
+  CHROME_TOP_OFFSET,
   SIDE_NAV_COLLAPSED_WIDTH,
   SIDE_NAV_WIDTH,
-  TOP_NAV_HEIGHT,
 } from './constants'
 
 const isPathPrefix = (pathname, itemPath) => {
@@ -209,11 +208,11 @@ export const SideNav = (props) => {
             onMouseLeave: () => setHovered(false),
             sx: {
               backgroundColor: 'background.default',
-              height: `calc(100% - ${TOP_NAV_HEIGHT}px - ${BANNER_HEIGHT_VAR})`,
+              height: `calc(100% - (${CHROME_TOP_OFFSET}))`,
               overflowX: 'hidden',
               overflowY: 'auto',
               scrollbarGutter: 'stable',
-              top: `calc(${TOP_NAV_HEIGHT}px + ${BANNER_HEIGHT_VAR})`,
+              top: CHROME_TOP_OFFSET,
               transition: 'width 250ms ease-in-out',
               width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
               zIndex: (theme) => theme.zIndex.appBar - 100,

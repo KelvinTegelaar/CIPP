@@ -47,7 +47,7 @@ import { CippUniversalSearchV2 } from '../components/CippCards/CippUniversalSear
 import { CippOffCanvas } from '../components/CippComponents/CippOffCanvas'
 import { CippLicenseDetailsDrawer } from '../components/CippComponents/CippLicenseDetailsDrawer'
 
-import { BANNER_HEIGHT_VAR, TOP_NAV_HEIGHT } from './constants'
+import { BANNER_HEIGHT_VAR, SAFE_AREA_TOP_OFFSET, TOP_NAV_HEIGHT } from './constants'
 
 export const TopNav = (props) => {
   const universalSearchDialog = useDialog()
@@ -253,7 +253,9 @@ export const TopNav = (props) => {
         backgroundColor: 'neutral.900',
         color: 'common.white',
         position: 'fixed',
-        // Pushed down by the maintenance banner when one is showing, 0px otherwise.
+        // Pushed down by the maintenance/impersonation banner when one is showing.
+        // SAFE_AREA_TOP_OFFSET pads the notch when no banner covers it; banners fold
+        // the inset into --cipp-banner-h themselves so we don't double-count.
         top: BANNER_HEIGHT_VAR,
         width: '100%',
         zIndex: (theme) => theme.zIndex.appBar,
@@ -265,6 +267,7 @@ export const TopNav = (props) => {
         alignItems="center"
         sx={{
           minHeight: TOP_NAV_HEIGHT,
+          pt: SAFE_AREA_TOP_OFFSET,
           // Mobile: the 24px desktop inset pushed the hamburger far off the left edge —
           // an 8px inset puts the ☰ glyph on the content gutter line.
           px: { xs: 1, md: 3 },

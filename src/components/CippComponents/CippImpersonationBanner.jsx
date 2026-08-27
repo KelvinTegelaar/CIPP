@@ -76,8 +76,9 @@ export const CippImpersonationBanner = () => {
         borderBottom: `1px solid ${alpha(palette.main, 0.42)}`,
         boxShadow: `inset 0 3px 0 0 ${palette.main}`,
         px: { xs: 2, md: 3 },
-        // the 3px inset accent bar eats into the top, so give it a bit more than the bottom
-        pt: 1.875,
+        // the 3px inset accent bar eats into the top, so give it a bit more than the bottom;
+        // safe-area extends the tint under the status bar and is published via --cipp-banner-h
+        pt: 'calc(15px + env(safe-area-inset-top, 0px))',
         pb: 1.5,
       }}
     >

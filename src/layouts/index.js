@@ -23,10 +23,9 @@ import { CippMaintenanceBanner } from '../components/CippComponents/CippMaintena
 import { CippImpersonationBanner } from '../components/CippComponents/CippImpersonationBanner'
 
 import {
-  BANNER_HEIGHT_VAR,
+  CHROME_TOP_OFFSET,
   SIDE_NAV_COLLAPSED_WIDTH,
   SIDE_NAV_WIDTH,
-  TOP_NAV_HEIGHT,
 } from './constants'
 
 const useMobileNav = () => {
@@ -61,14 +60,21 @@ const useMobileNav = () => {
 // No breakpoint paddingLeft here: the side-nav offset is applied once, via the inline
 // `sx` on the rendered LayoutRoot (it depends on pinNav). A second static rule at lg+
 // used to fight that dynamic one over the same property.
+// 100vh includes the area under iOS Safari's collapsing URL bar, which clips the
+// bottom of the contained LayoutContainer scroller. Match CippAuthShell: dvh when
+// supported, vh as the fallback. CHROME_TOP_OFFSET clears the fixed top nav, any
+// maintenance/impersonation banner, and the notch when no banner is covering it.
 const LayoutRoot = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   flex: '1 1 auto',
   maxWidth: '100%',
   height: '100vh',
+  '@supports (height: 100dvh)': {
+    height: '100dvh',
+  },
   overflow: 'hidden',
-  paddingTop: `calc(${TOP_NAV_HEIGHT}px + ${BANNER_HEIGHT_VAR})`,
+  paddingTop: CHROME_TOP_OFFSET,
 }))
 
 const LayoutContainer = styled('div')({

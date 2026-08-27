@@ -221,7 +221,10 @@ export const CippMaintenanceBanner = ({ alert }) => {
         borderBottom: `1px solid ${solid ? alpha('#000000', 0.18) : alpha(palette.main, 0.42)}`,
         boxShadow: solid ? 'none' : `inset 0 3px 0 0 ${palette.main}`,
         px: { xs: 2, md: 3 },
-        py: 1.25,
+        // Extend into the status-bar region under black-translucent / notched devices;
+        // the measured --cipp-banner-h then carries the inset for chrome below.
+        pt: 'calc(10px + env(safe-area-inset-top, 0px))',
+        pb: 1.25,
       }}
     >
       {/* Top-aligned so the icon and actions sit level with the title when the message wraps. */}
