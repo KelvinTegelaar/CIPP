@@ -3,7 +3,7 @@ import { CippTablePage } from "../../../../components/CippComponents/CippTablePa
 import { PersonAdd, PlayArrow, Assignment, Done } from "@mui/icons-material";
 
 const Page = () => {
-  const pageTitle = "Email & Collaboration Alerts";
+  const pageTitle = "Defender Alerts";
 
   // Define actions for incidents
   const actions = [
@@ -96,6 +96,7 @@ const Page = () => {
     "severity",
     "title",
     "category",
+    "serviceSource",
     "classification",
     "affectedResources",
     "evidence",
