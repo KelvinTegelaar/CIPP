@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from '../../../layouts/index.js'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
-import { PersonAdd, PersonRemove, Settings } from '@mui/icons-material'
+import { PersonAdd, PersonRemove, Settings, Unarchive } from '@mui/icons-material'
 import { useCippReportDB } from '../../../components/CippComponents/CippReportDBControls'
 import { useSettings } from '../../../hooks/use-settings'
 import { usePermissions } from '../../../hooks/use-permissions'
@@ -160,6 +160,32 @@ const Page = () => {
       },
       multiPost: false,
       allowResubmit: true,
+    },
+    {
+      label: 'Reactivate Archived OneDrive',
+      type: 'POST',
+      icon: <Unarchive />,
+      url: '/api/ExecReactivateSite',
+      confirmText:
+        'Reactivate the archived OneDrive for [displayName] ([ownerPrincipalName])? ' +
+        'Reactivation is asynchronous and can take up to 24 hours. If the account is fully ' +
+        'archived this may incur Microsoft 365 Archive reactivation and storage charges and ' +
+        'requires Unlicensed OneDrive billing to be enabled in the tenant. After reactivation ' +
+        'the account stays active for 30 days before it is archived again.',
+      condition: () => canWriteSite,
+      // Per-row Tenant (AllTenants / cached view) wins over the current tenant, matching the
+      // "Edit OneDrive Site" action above. Returning an array on a multi-select sends one
+      // request per row.
+      customDataformatter: (row) => {
+        const formatRow = (siteRow) => ({
+          tenantFilter: siteRow.Tenant ?? tenantFilter,
+          SiteUrl: siteRow.webUrl,
+          SiteId: siteRow.siteId,
+          WebId: siteRow.webId,
+        })
+        return Array.isArray(row) ? row.map(formatRow) : formatRow(row)
+      },
+      multiPost: false,
     },
   ]
 
