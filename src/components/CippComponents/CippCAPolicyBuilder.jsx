@@ -1657,13 +1657,17 @@ export function extractCAPolicyJSON(formValues) {
         delete cleaned.sessionControls[key];
       }
     }
-    // signInFrequency.value comes off the "number" form field as a string, but Graph types
-    // it Int32 — coerce it. When frequencyInterval is everyTime, Graph requires value/type to
-    // be null rather than merely absent; drop them here and let the backend canonicalizer
-    // supply the explicit nulls at deploy.
+    // signInFrequency.value comes off the "number" form field as a Number (or null when
+    // empty), but Graph types it Int32 — coerce it. When frequencyInterval is everyTime,
+    // Graph requires value/type to be null rather than merely absent; drop them here and
+    // let the backend canonicalizer supply the explicit nulls at deploy.
     const signInFrequency = cleaned.sessionControls.signInFrequency;
     if (signInFrequency) {
-      if (signInFrequency.value !== undefined && signInFrequency.value !== "") {
+      if (
+        signInFrequency.value !== undefined &&
+        signInFrequency.value !== null &&
+        signInFrequency.value !== ""
+      ) {
         signInFrequency.value = Number(signInFrequency.value);
       }
       const frequencyInterval =

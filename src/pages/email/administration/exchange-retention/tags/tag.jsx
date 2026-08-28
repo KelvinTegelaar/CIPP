@@ -134,7 +134,7 @@ const RetentionTag = () => {
             ? values.RetentionAction 
             : values.RetentionAction.value;
         }
-        if (values.AgeLimitForRetention) {
+        if (values.AgeLimitForRetention != null) {
           tagData.AgeLimitForRetention = parseInt(values.AgeLimitForRetention);
         }
         if (values.LocalizedComment) {

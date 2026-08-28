@@ -35,7 +35,7 @@ export const CippDateRangeFilter = ({
 
   const onSubmit = (data) => {
     if (data.dateFilter === "relative") {
-      onApply?.({ RelativeTime: `${data.Time}${data.Interval.value}`, StartDate: null, EndDate: null });
+      onApply?.({ RelativeTime: `${data.Time ?? ""}${data.Interval.value}`, StartDate: null, EndDate: null });
     } else if (data.dateFilter === "startEnd") {
       onApply?.({ RelativeTime: null, StartDate: data.startDate, EndDate: data.endDate });
     }

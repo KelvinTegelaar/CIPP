@@ -244,6 +244,12 @@ const CippStandardAccordion = ({
           }
         }
 
+        // Number fields now carry a real 0 (or null when empty) instead of a string - "0" was
+        // truthy so !!fieldValue passed, but 0 is falsy and would wrongly read as unfilled.
+        if (component.type === "number") {
+          return fieldValue !== undefined && fieldValue !== null && fieldValue !== "";
+        }
+
         // For other field types
         return !!fieldValue;
       }) ?? true;
@@ -888,6 +894,13 @@ const CippStandardAccordion = ({
                       // For single selection, check if value exists
                       return !!fieldValue;
                     }
+                  }
+
+                  // Number fields now carry a real 0 (or null when empty) instead of a string -
+                  // "0" was truthy so !!fieldValue passed, but 0 is falsy and would wrongly read
+                  // as unfilled.
+                  if (component.type === "number") {
+                    return fieldValue !== undefined && fieldValue !== null && fieldValue !== "";
                   }
 
                   // For other field types

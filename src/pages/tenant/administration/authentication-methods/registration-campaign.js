@@ -120,7 +120,9 @@ const Page = () => {
         targetedAuthenticationMethod:
           values?.targetedAuthenticationMethod?.value ?? values?.targetedAuthenticationMethod,
         snoozeDurationInDays:
-          values?.snoozeDurationInDays === "" || values?.snoozeDurationInDays === undefined
+          values?.snoozeDurationInDays === "" ||
+          values?.snoozeDurationInDays === null ||
+          values?.snoozeDurationInDays === undefined
             ? undefined
             : Number(values?.snoozeDurationInDays),
         enforceRegistrationAfterAllowedSnoozes: !!values?.enforceRegistrationAfterAllowedSnoozes,

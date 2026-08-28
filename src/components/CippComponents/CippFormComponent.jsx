@@ -422,7 +422,11 @@ export const CippFormComponent = (props) => {
                   shrink: true,
                 }}
                 {...other}
-                {...formControl.register(convertedName, { ...validators })}
+                {...formControl.register(convertedName, {
+                  setValueAs: (v) =>
+                    v === "" || v === null || v === undefined ? null : Number(v),
+                  ...validators,
+                })}
                 label={label}
                 defaultValue={defaultValue}
               />
