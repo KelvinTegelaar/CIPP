@@ -124,6 +124,36 @@ export const CippWizardOffboarding = (props) => {
     }
   }, [disableForwarding, formControl])
 
+  // Clear every field the UI disables when deleting the user, so submitted values match what is shown
+  useEffect(() => {
+    if (deleteUser) {
+      formControl.setValue('ConvertToShared', false)
+      formControl.setValue('HideFromGAL', false)
+      formControl.setValue('removeCalendarInvites', false)
+      formControl.setValue('removePermissions', false)
+      formControl.setValue('removeCalendarPermissions', false)
+      formControl.setValue('RemoveRules', false)
+      formControl.setValue('RemoveMobile', false)
+      formControl.setValue('RemoveGroups', false)
+      formControl.setValue('RemoveLicenses', false)
+      formControl.setValue('RevokeSessions', false)
+      formControl.setValue('DisableSignIn', false)
+      formControl.setValue('ClearImmutableId', false)
+      formControl.setValue('ResetPass', false)
+      formControl.setValue('RemoveMFADevices', false)
+      formControl.setValue('RemoveTeamsPhoneDID', false)
+      formControl.setValue('DisableOneDriveSharing', false)
+      formControl.setValue('disableForwarding', false)
+      formControl.setValue('KeepCopy', false)
+      formControl.setValue('AccessNoAutomap', null)
+      formControl.setValue('AccessAutomap', null)
+      formControl.setValue('AccessSendAs', null)
+      formControl.setValue('AccessSendOnBehalf', null)
+      formControl.setValue('forward', null)
+      formControl.setValue('OOO', '')
+    }
+  }, [deleteUser, formControl])
+
   const getDefaultsSource = () => {
     return formControl.getValues('HIDDEN_defaultsSource') || 'user'
   }
