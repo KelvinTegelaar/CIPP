@@ -4,6 +4,7 @@ import { Button, Container, Stack, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import {
   Add,
+  ContentCopy,
   Delete,
   FolderOpen,
   Launch,
@@ -17,6 +18,7 @@ import { CippSharePointBrowserBanner } from '../../../components/CippComponents/
 import { CippSharePointBrowserProperties } from '../../../components/CippComponents/CippSharePointBrowserProperties'
 import { CippSharePointBrowserPermissions } from '../../../components/CippComponents/CippSharePointBrowserPermissions'
 import { CippSharePointBrowserStorage } from '../../../components/CippComponents/CippSharePointBrowserStorage'
+import { CippSharePointLibraryCopyDialog } from '../../../components/CippComponents/CippSharePointLibraryCopyDialog'
 import { CippSharePointFolderView } from '../../../components/CippComponents/CippSharePointFolderView'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { ApiGetCall } from '../../../api/ApiCall'
@@ -177,6 +179,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
   const [checkedIds, setCheckedIds] = useState([])
   const [permissionsOpen, setPermissionsOpen] = useState(false)
   const [storageOpen, setStorageOpen] = useState(false)
+  const [libraryCopyOpen, setLibraryCopyOpen] = useState(false)
 
   const siteId = queryString(router.query.siteId)
   const [siteMeta, setSiteMeta] = useState(null)
@@ -359,6 +362,18 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         },
       },
       {
+        label: 'Copy contents to library…',
+        icon: <ContentCopy fontSize="small" />,
+        condition: (item) =>
+          canWriteSite &&
+          item?.type === 'library' &&
+          item?.template === 'documentLibrary',
+        onClick: (item) => {
+          if (item?.id) setCheckedIds([item.id])
+          setLibraryCopyOpen(true)
+        },
+      },
+      {
         label: 'Delete',
         icon: <Delete fontSize="small" />,
         condition: (item) => canWriteSite && canDeleteSite(item),
@@ -412,6 +427,13 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         onClose={() => setStorageOpen(false)}
         item={storageSite}
         tenantFilter={tenantFilter}
+      />
+      <CippSharePointLibraryCopyDialog
+        open={libraryCopyOpen}
+        onClose={() => setLibraryCopyOpen(false)}
+        tenantFilter={tenantFilter}
+        sourceSite={openedSite}
+        sourceLibrary={bannerLibrary ?? (selected?.type === 'library' ? selected : null)}
       />
       <Grid container spacing={2} alignItems="stretch">
         <Grid size={{ xs: 12, md: 4, lg: 3 }}>
