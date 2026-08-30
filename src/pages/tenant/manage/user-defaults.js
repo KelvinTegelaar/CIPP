@@ -248,6 +248,11 @@ const Page = () => {
       type: 'textField',
     },
     {
+      label: 'Enforce Per-User MFA',
+      name: 'perUserMfa',
+      type: 'switch',
+    },
+    {
       label: 'Mobile #',
       name: 'mobilePhone',
       type: 'textField',
@@ -313,6 +318,7 @@ const Page = () => {
       'country',
       'companyName',
       'department',
+      'perUserMfa',
       'mobilePhone',
       'businessPhones',
       ...(userSettings?.userAttributes
