@@ -999,7 +999,8 @@
           "labelField": "TemplateName",
           "valueField": "TemplateId",
           "queryKey": "StdAppApprovalTemplateList",
-          "addedField": { "AppId": "AppId" }
+          "addedField": { "AppId": "AppId" },
+          "templateView": { "title": "App Approval Template" }
         },
         "condition": {
           "field": "standards.AppDeploy.mode",
@@ -3358,7 +3359,7 @@
     "tag": ["CIS M365 7.0.0 (8.6.1)"],
     "appliesToTest": ["CIS_8_6_1"],
     "helpText": "Set the state of the spam submission button in Outlook",
-    "docsDescription": "Set the state of the built-in Report button in Outlook. This gives the users the ability to report emails as spam or phish.",
+    "docsDescription": "Set the state of the built-in Report button in Outlook. This gives the users the ability to report emails as spam or phish. When a destination email address is set, the 'Send reported items to' setting controls whether reported messages go to Microsoft and the reporting mailbox, or to the reporting mailbox only (for third-party phishing report services).",
     "executiveText": "Enables employees to easily report suspicious emails directly from Outlook, helping improve the organization's spam and phishing detection systems. This crowdsourced approach to security allows users to contribute to threat detection while providing valuable feedback to enhance email security filters.",
     "addedComponent": [
       {
@@ -3376,6 +3377,16 @@
         "name": "standards.UserSubmissions.email",
         "required": false,
         "label": "Destination email address"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "label": "Send reported items to (when a destination email address is set)",
+        "name": "standards.UserSubmissions.reportDestination",
+        "options": [
+          { "label": "Microsoft and my reporting mailbox", "value": "Both" },
+          { "label": "My reporting mailbox only", "value": "Mailbox" }
+        ]
       }
     ],
     "label": "Set the state of the built-in Report button in Outlook",
@@ -8166,7 +8177,8 @@
           "url": "/api/ListAppTemplates",
           "labelField": "displayName",
           "valueField": "GUID",
-          "queryKey": "StdIntuneAppTemplateList"
+          "queryKey": "StdIntuneAppTemplateList",
+          "templateView": { "title": "Application Template" }
         }
       }
     ],

@@ -226,6 +226,17 @@ const StagePanel = ({
       value && typeof value === 'object' && 'value' in value
         ? value.value
         : value
+    // Multi-select option arrays keep {label, value} so re-editing shows names without
+    // an option lookup, but shed everything else (addedFields, rawData) - persisting a
+    // full template object into the baseline bloats storage and the expected-value views.
+    const cleanVariableValue = (value) =>
+      Array.isArray(value)
+        ? value.map((item) =>
+            item && typeof item === 'object' && 'value' in item
+              ? { label: item.label ?? String(item.value), value: item.value }
+              : item
+          )
+        : unwrapValue(value)
     registerSerializer(stageIndex, () => {
       const values = formControl.getValues()
       return {
@@ -258,7 +269,7 @@ const StagePanel = ({
             instance: instanceKey,
             variables: Object.fromEntries(
               Object.entries(config.variables ?? savedVariables).map(
-                ([key, value]) => [key, unwrapValue(value)]
+                ([key, value]) => [key, cleanVariableValue(value)]
               )
             ),
             // Report-only unless the operator explicitly enabled remediation - a
