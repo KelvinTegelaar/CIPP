@@ -424,6 +424,7 @@ const Page = () => {
                 actions={sanctionActions}
                 filters={statusFilters}
                 offCanvas={toolDetailOffCanvas}
+                offCanvasOnRowClick={true}
                 simpleColumns={[
                   'application',
                   'aiTool',
@@ -460,6 +461,7 @@ const Page = () => {
                 data={data.consentedApps ?? []}
                 filters={statusFilters}
                 offCanvas={toolDetailOffCanvas}
+                offCanvasOnRowClick={true}
                 simpleColumns={[
                   'application',
                   'aiTool',

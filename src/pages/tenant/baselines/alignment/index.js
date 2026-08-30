@@ -3048,6 +3048,7 @@ const Page = () => {
               refreshFunction={resolvedApi}
               actions={tenantActions}
               offCanvas={tenantOffCanvas}
+              offCanvasOnRowClick={true}
               filters={[...initialStatusFilter, ...tenantFilterList]}
               simpleColumns={[
                 'standardLabel',
@@ -3094,6 +3095,7 @@ const Page = () => {
       actions={isTemplateView ? templateActions : standardActions}
       filters={isTemplateView ? undefined : standardFilterList}
       offCanvas={isTemplateView ? templateOffCanvas : standardOffCanvas}
+      offCanvasOnRowClick={true}
       simpleColumns={
         isTemplateView
           ? [

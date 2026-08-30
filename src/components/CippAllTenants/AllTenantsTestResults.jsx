@@ -240,6 +240,7 @@ export const AllTenantsTestResults = ({ testType, title, perTenantPath }) => {
           size: 'lg',
           children: (row) => <LazyTestDetail row={row} />,
         }}
+        offCanvasOnRowClick={true}
         actions={
           perTenantPath
             ? [

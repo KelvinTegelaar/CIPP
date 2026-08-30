@@ -527,6 +527,7 @@ export const CippDataTable = (props) => {
     simple = false,
     cardButton,
     offCanvas = false,
+    offCanvasOnRowClick = false,
     rowOpen,
     noCard = false,
     hideTitle = false,
@@ -1208,28 +1209,6 @@ export const CippDataTable = (props) => {
     setContextRow(null)
   }, [])
 
-  const handleRowDoubleClickOpen = useCallback(
-    (rowOriginal) => {
-      const actionRow = getActionRow(rowOriginal)
-      if (!rowOpenEnabled(rowOpen, actionRow)) {
-        return
-      }
-      const tenant = getRowTenant(actionRow, settings.currentTenant)
-      const rowTenant =
-        tenant && tenant !== 'AllTenants' ? tenant : undefined
-      if (settings.currentTenant === 'AllTenants' && rowTenant) {
-        settings.handleUpdate({
-          currentTenant: rowTenant,
-        })
-      }
-      dispatchRowOpen(rowOpen, actionRow, router, {
-        fallbackTenant: rowTenant,
-        currentTenant: settings.currentTenant,
-      })
-    },
-    [rowOpen, getActionRow, settings, router]
-  )
-
   const handleRowOpenNewTab = useCallback(
     (rowOriginal) => {
       const actionRow = getActionRow(rowOriginal)
@@ -1282,22 +1261,24 @@ export const CippDataTable = (props) => {
     [actions, rowOpen, getRowOpenDispatchOptions]
   )
 
-  // Desktop: double-click navigates when rowOpen is configured; middle-click or
-  // Ctrl/Cmd+click opens the resolved href in a new tab. Right-click opens the row
-  // context menu. offCanvas preview is also in that menu, the row ⋮ menu, and mobile tap.
+  // Desktop: middle-click or Ctrl/Cmd+click opens the resolved rowOpen href in a new
+  // tab; right-click opens the row context menu. Plain clicks only act on pages that
+  // opt in with offCanvasOnRowClick, where a single click opens the extended-info
+  // offcanvas. That preview is also in the context menu, the row ⋮ menu, and mobile tap.
   const muiTableBodyRowProps = useMemo(() => {
-    const dblOpen = Boolean(rowOpen?.link || rowOpen?.onOpen)
+    const newTabOpen = Boolean(rowOpen?.link || rowOpen?.onOpen)
+    const clickOpensOffCanvas = Boolean(offCanvasOnRowClick && offCanvas)
     const hasContextMenu = Boolean(
-      (actions && actions.length > 0) || offCanvas || dblOpen
+      (actions && actions.length > 0) || offCanvas || newTabOpen
     )
 
-    if (!hasContextMenu && !dblOpen) {
+    if (!hasContextMenu && !newTabOpen && !clickOpensOffCanvas) {
       return undefined
     }
 
     return ({ row }) => {
       const actionRow = getActionRow(row.original)
-      const canOpen = rowOpenEnabled(rowOpen, actionRow)
+      const canOpen = newTabOpen && rowOpenEnabled(rowOpen, actionRow)
       const isContextRow =
         Boolean(offCanvas) && rowsMatchContext(contextRow, row.original)
 
@@ -1317,7 +1298,7 @@ export const CippDataTable = (props) => {
           })
         },
         sx: {
-          cursor: canOpen ? 'pointer' : undefined,
+          cursor: clickOpensOffCanvas ? 'pointer' : undefined,
           borderLeft: (theme) =>
             isContextRow
               ? `3px solid ${theme.palette.primary.main}`
@@ -1344,7 +1325,7 @@ export const CippDataTable = (props) => {
         },
       }
 
-      if (dblOpen) {
+      if (newTabOpen || clickOpensOffCanvas) {
         Object.assign(rowProps, {
           onMouseDown: (event) => {
             if (isRowClickTarget(event)) {
@@ -1356,14 +1337,26 @@ export const CippDataTable = (props) => {
             rowClickStartRef.current = { x: event.clientX, y: event.clientY }
           },
           onClick: (event) => {
-            if (isRowClickTarget(event) || !canOpen) {
+            if (isRowClickTarget(event)) {
               return
             }
-            if (!event.ctrlKey && !event.metaKey) {
+            if (event.ctrlKey || event.metaKey) {
+              if (canOpen) {
+                event.preventDefault()
+                handleRowOpenNewTab(row.original)
+              }
               return
             }
-            event.preventDefault()
-            handleRowOpenNewTab(row.original)
+            if (!clickOpensOffCanvas) {
+              return
+            }
+            if (
+              isRowTextInteraction(rowClickStartRef.current, event) ||
+              hasTextSelection()
+            ) {
+              return
+            }
+            openRowOffCanvas(row.original)
           },
           onAuxClick: (event) => {
             if (event.button !== 1 || isRowClickTarget(event) || !canOpen) {
@@ -1372,15 +1365,6 @@ export const CippDataTable = (props) => {
             event.preventDefault()
             handleRowOpenNewTab(row.original)
           },
-          onDoubleClick: (event) => {
-            if (isRowClickTarget(event) || !canOpen) {
-              return
-            }
-            if (isRowTextInteraction(rowClickStartRef.current, event)) {
-              return
-            }
-            handleRowDoubleClickOpen(row.original)
-          },
         })
       }
 
@@ -1388,12 +1372,13 @@ export const CippDataTable = (props) => {
     }
   }, [
     offCanvas,
+    offCanvasOnRowClick,
     rowOpen,
     actions,
     contextRow,
     getActionRow,
-    handleRowDoubleClickOpen,
     handleRowOpenNewTab,
+    openRowOffCanvas,
   ])
 
   // the flipped table shows whatever columns are visible; horizontal scroll covers the width
@@ -1950,7 +1935,7 @@ export const CippDataTable = (props) => {
                 table={table}
                 actions={actions}
                 hasOffCanvas={!!offCanvas || Boolean(cardInfoFields?.length)}
-                openOffCanvasOnTap={Boolean(offCanvas)}
+                openOffCanvasOnTap={!!offCanvas || Boolean(cardInfoFields?.length)}
                 onRowAction={dispatchRowAction}
                 onMoreInfo={openRowOffCanvas}
                 isActionDisabled={handleActionDisabled}

@@ -473,6 +473,7 @@ const Page = () => {
                 actions={linkActions}
                 filters={linkFilters}
                 offCanvas={linkDetailOffCanvas}
+                offCanvasOnRowClick={true}
                 simpleColumns={[
                   'fileName',
                   'itemType',

@@ -965,6 +965,7 @@ const Page = () => {
             : 'listTenantAlignment'
       }
       offCanvas={isGranular ? granularOffCanvas : isByStandard ? byStandardOffCanvas : undefined}
+      offCanvasOnRowClick={isByStandard}
       cardButton={modeToggle}
     />
   )

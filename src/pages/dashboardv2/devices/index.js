@@ -116,6 +116,7 @@ const Page = () => {
         simpleColumns={['Name', 'Risk', 'Status']}
         isFetching={testsApi.isFetching}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         filters={filters}
         actions={[]}
         maxHeightOffset="600px"

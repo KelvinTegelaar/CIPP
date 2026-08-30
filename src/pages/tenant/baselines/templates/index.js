@@ -365,6 +365,7 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       offCanvas={offCanvas}
+      offCanvasOnRowClick={true}
       cardButton={
         <>
           <Button

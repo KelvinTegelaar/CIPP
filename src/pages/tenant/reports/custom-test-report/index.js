@@ -110,6 +110,7 @@ const Page = () => {
         simpleColumns={['Tenant', 'Name', 'Enabled', 'Risk', 'Status', 'LastRun']}
         isFetching={resultsApi.isFetching}
         offCanvas={offCanvas}
+        offCanvasOnRowClick={true}
         filters={filters}
         actions={[]}
         maxHeightOffset="400px"
