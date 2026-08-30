@@ -85,6 +85,10 @@ import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanv
 import { CippAutoComplete } from '../../../../components/CippComponents/CippAutocomplete'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 
+// Manual-task instance keys are 'ManualTask#n', so match by prefix. standardName can be
+// absent on malformed or partially hydrated rows - the check must never throw.
+const isManualTaskRow = (row) => Boolean(row?.standardName?.startsWith('ManualTask'))
+
 const deviationColors = {
   Compliant: 'success',
   Accepted: 'info',
@@ -651,9 +655,8 @@ const Page = () => {
       // value regardless of the current state, and a license bought after the last run
       // should not block trying. Manual tasks have nothing to deploy; a Conflict has no
       // unambiguous expected value to deploy.
-      condition: (row) =>
-        !row.standardName.startsWith('ManualTask') && row.status !== 'Conflict',
-      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      condition: (row) => !isManualTaskRow(row) && row.status !== 'Conflict',
+      hideCondition: (row) => isManualTaskRow(row),
       bulkFilterEligible: true,
     },
     {
@@ -674,9 +677,8 @@ const Page = () => {
       relatedQueryKeys,
       // Manual tasks are completed, not triaged.
       condition: (row) =>
-        ['Drift', 'Partially Accepted'].includes(row.status) &&
-        !row.standardName.startsWith('ManualTask'),
-      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+        ['Drift', 'Partially Accepted'].includes(row.status) && !isManualTaskRow(row),
+      hideCondition: (row) => isManualTaskRow(row),
       bulkFilterEligible: true,
     },
     {
@@ -706,9 +708,8 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
       condition: (row) =>
-        ['Drift', 'Partially Accepted'].includes(row.status) &&
-        !row.standardName.startsWith('ManualTask'),
-      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+        ['Drift', 'Partially Accepted'].includes(row.status) && !isManualTaskRow(row),
+      hideCondition: (row) => isManualTaskRow(row),
       bulkFilterEligible: true,
     },
     {
@@ -732,8 +733,8 @@ const Page = () => {
         (['Accepted', 'Partially Accepted'].includes(row.status) ||
           row.status?.startsWith('Denied') ||
           Object.keys(row.acceptedPaths ?? {}).length > 0) &&
-        !row.standardName.startsWith('ManualTask'),
-      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+        !isManualTaskRow(row),
+      hideCondition: (row) => isManualTaskRow(row),
       bulkFilterEligible: true,
     },
     {
@@ -751,10 +752,8 @@ const Page = () => {
         'Mark the manual task [standardLabel] as completed for [tenantFilter]? A new deviation is raised again on the configured recurrence.',
       multiPost: false,
       relatedQueryKeys,
-      // Instance keys are 'ManualTask#n' - an exact match missed every instance but the first.
-      condition: (row) =>
-        row.standardName.startsWith('ManualTask') && row.status === 'Drift',
-      hideCondition: (row) => !row.standardName.startsWith('ManualTask'),
+      condition: (row) => isManualTaskRow(row) && row.status === 'Drift',
+      hideCondition: (row) => !isManualTaskRow(row),
       bulkFilterEligible: true,
     },
     {
@@ -808,7 +807,7 @@ const Page = () => {
           Object.keys(standard?.variables ?? {}).length > 0
         )
       },
-      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => isManualTaskRow(row),
     },
     {
       label: 'Remove Tenant Override',
@@ -827,7 +826,7 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
       condition: (row) => row.sourceTemplate === 'Tenant Override',
-      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => isManualTaskRow(row),
     },
   ]
 
@@ -848,7 +847,7 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
       // Manual tasks have nothing to deploy - operators complete them instead.
-      hideCondition: (row) => row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => isManualTaskRow(row),
     },
     {
       label: 'Mark Task Complete (All Tenants)',
@@ -865,7 +864,7 @@ const Page = () => {
         'Mark the manual task [standardLabel] as completed for every applicable tenant? Each tenant raises it again on the configured recurrence.',
       multiPost: false,
       relatedQueryKeys,
-      hideCondition: (row) => !row.standardName.startsWith('ManualTask'),
+      hideCondition: (row) => !isManualTaskRow(row),
     },
     {
       label: 'Compare All Tenants',

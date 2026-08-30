@@ -4347,6 +4347,18 @@
       },
       {
         "type": "autoComplete",
+        "required": false,
+        "multiple": false,
+        "creatable": false,
+        "label": "Bulk moves enabled (deliver bulk mail below the threshold to the Promotions folder - Preview)",
+        "name": "standards.SpamFilterPolicy.BulkMovesEnabled",
+        "options": [
+          { "label": "On", "value": "On" },
+          { "label": "Off", "value": "Off" }
+        ]
+      },
+      {
+        "type": "autoComplete",
         "required": true,
         "multiple": false,
         "creatable": false,
