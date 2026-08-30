@@ -140,7 +140,7 @@ export const CippQuarantineTable = ({ entityType = 'Email' }) => {
     urlFromData: true,
     queryKey: `MessageTraceDetail-${traceTenant}-${traceMessageId}`,
     onResult: (result) => {
-      setTraceDetails(result)
+      setTraceDetails(result?.Results ?? result)
     },
   })
 

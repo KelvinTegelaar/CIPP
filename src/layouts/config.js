@@ -949,6 +949,11 @@ export const nativeMenuItems = [
         ],
         items: [
           {
+            title: 'Mail Flow Statistics',
+            path: '/email/reports/mail-flow-statistics',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
             title: 'Mailbox Statistics',
             path: '/email/reports/mailbox-statistics',
             permissions: ['Exchange.Mailbox.*'],
