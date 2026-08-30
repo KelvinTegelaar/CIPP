@@ -26,6 +26,7 @@ const sharedCalendarPermissionOptions = [
 
 const sharedMailboxPermissionOptions = [
   { label: 'Full Access', value: 'FullAccess' },
+  { label: 'Full Access (no Automapping)', value: 'FullAccessNoAutoMap' },
   { label: 'Send As', value: 'SendAs' },
   { label: 'Send on Behalf', value: 'SendOnBehalf' },
 ]
