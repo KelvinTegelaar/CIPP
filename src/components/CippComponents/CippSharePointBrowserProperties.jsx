@@ -5,7 +5,18 @@ import { CippPropertyList } from './CippPropertyList'
 import { CippCopyToClipBoard } from './CippCopyToClipboard'
 import { ApiPostCall } from '../../api/ApiCall'
 
-const isSiteLike = (item) => item && (item.type === 'site' || item.canOpen)
+const isSiteLike = (item) =>
+  item && (item.type === 'site' || (item.canOpen && item.type !== 'recycleFolder'))
+
+const formatBytes = (bytes) => {
+  const num = Number(bytes)
+  if (bytes === null || bytes === undefined || bytes === '' || Number.isNaN(num)) return null
+  if (num < 1024) return `${num} B`
+  const gb = num / (1024 * 1024 * 1024)
+  if (gb >= 0.01) return `${gb.toLocaleString(undefined, { maximumFractionDigits: 2 })} GB`
+  const mb = num / (1024 * 1024)
+  return `${mb.toLocaleString(undefined, { maximumFractionDigits: 2 })} MB`
+}
 
 const formatVersionPolicy = (props) => {
   if (!props || typeof props !== 'object') return null
@@ -92,6 +103,42 @@ export const CippSharePointBrowserProperties = ({
   const propertyItems = (() => {
     if (!item) return []
 
+    if (item.type === 'recycleFolder') {
+      return [
+        { label: 'Type', value: 'Folder (recycle path)' },
+        {
+          label: 'Path',
+          value: item.dirName ? <CippCopyToClipBoard text={item.dirName} type="chip" /> : '—',
+        },
+      ]
+    }
+
+    if (item.type === 'recycleItem') {
+      return [
+        { label: 'Type', value: item.siteType || '—' },
+        { label: 'State', value: item.itemState || '—' },
+        {
+          label: 'Size',
+          value: formatBytes(item.storageUsedInBytes) || '—',
+        },
+        { label: 'Deleted by', value: item.deletedByName || '—' },
+        {
+          label: 'Deleted',
+          value: item.createdDateTime
+            ? new Date(item.createdDateTime).toLocaleString()
+            : '—',
+        },
+        {
+          label: 'Path',
+          value: item.dirName ? <CippCopyToClipBoard text={item.dirName} type="chip" /> : '—',
+        },
+        {
+          label: 'Item ID',
+          value: item.id ? <CippCopyToClipBoard text={item.id} type="chip" /> : '—',
+        },
+      ]
+    }
+
     if (isSiteLike(item)) {
       return [
         {
@@ -138,17 +185,19 @@ export const CippSharePointBrowserProperties = ({
     ]
   })()
 
+  const subheader = (() => {
+    if (!item) return 'Nothing selected'
+    if (item.type === 'recycleFolder') return 'Recycle folder'
+    if (item.type === 'recycleItem') return 'Deleted item'
+    if (item.type === 'site' || (item.canOpen && item.type !== 'recycleFolder')) return 'Site'
+    return 'Library'
+  })()
+
   return (
     <Card sx={{ height: '100%', minHeight: 360 }}>
       <CardHeader
         title={item?.displayName ?? item?.name ?? 'Properties'}
-        subheader={
-          item
-            ? item.type === 'site' || item.canOpen
-              ? 'Site'
-              : 'Library'
-            : 'Nothing selected'
-        }
+        subheader={subheader}
         titleTypographyProps={{ variant: 'h6', noWrap: true }}
         subheaderTypographyProps={{ variant: 'caption' }}
       />
@@ -158,7 +207,10 @@ export const CippSharePointBrowserProperties = ({
         </Typography>
       ) : (
         <CippPropertyList
-          isFetching={(isFetching && !item) || versionsFetching}
+          isFetching={
+            (isFetching && !item) ||
+            (versionsFetching && item?.type !== 'recycleItem' && item?.type !== 'recycleFolder')
+          }
           propertyItems={
             propertyItems.length
               ? propertyItems

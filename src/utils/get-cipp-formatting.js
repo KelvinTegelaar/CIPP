@@ -232,19 +232,34 @@ export const getCippFormatting = (
   if (
     cellName === 'prohibitSendReceiveQuotaInBytes' ||
     cellName === 'storageUsedInBytes' ||
+    cellName === 'cleanupReclaimBytes' ||
     cellName === 'ArchiveSize'
   ) {
     //convert bytes to GB
     const bytes = data
     if (bytes === null || bytes === undefined) {
+      if (cellName === 'cleanupReclaimBytes') {
+        return isText ? '—' : formatCellText('—', isText)
+      }
       return isText ? (
         'No data'
       ) : (
         <Chip variant="outlined" label="No data" size="small" color="info" />
       )
     }
+    if (cellName === 'cleanupReclaimBytes' && Number(bytes) === 0) {
+      return isText ? '—' : formatCellText('—', isText)
+    }
     const gb = bytes / 1024 / 1024 / 1024
     return formatCellText(`${gb.toFixed(2)} GB`, isText)
+  }
+
+  if (cellName === 'cleanupSignals') {
+    const labels = Array.isArray(data) ? data.filter(Boolean) : data ? [String(data)] : []
+    if (labels.length === 0) {
+      return isText ? '—' : formatCellText('—', isText)
+    }
+    return isText ? labels.join(', ') : renderChipList(labels)
   }
 
   if (cellName === 'info.logoUrl') {
@@ -431,6 +446,30 @@ export const getCippFormatting = (
         colourLevels={'flipped'}
         variant="determinate"
         value={data}
+      />
+    )
+  }
+
+  // Storage composition / capacity percentages (site of tenant, library of site, site of quota).
+  if (
+    cellName === 'percentOfTenant' ||
+    cellName === 'percentOfSite' ||
+    cellName === 'percentUsed'
+  ) {
+    if (data === undefined || data === null || data === '') {
+      return isText ? '' : ''
+    }
+    const numeric = Number(data)
+    if (!Number.isFinite(numeric)) {
+      return isText ? String(data) : formatCellText(data, isText)
+    }
+    return isText ? (
+      `${numeric}%`
+    ) : (
+      <LinearProgressWithLabel
+        colourLevels={cellName === 'percentUsed' ? 'flipped' : false}
+        variant="determinate"
+        value={Math.max(0, Math.min(100, numeric))}
       />
     )
   }

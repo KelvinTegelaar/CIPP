@@ -1,14 +1,30 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Button, Container, Stack, Typography } from '@mui/material'
+import {
+  Alert,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material'
 import { Grid } from '@mui/system'
 import {
   Add,
   ContentCopy,
   Delete,
+  Edit,
   FolderOpen,
   Launch,
+  Lock,
   ManageAccounts,
+  RestoreFromTrash,
   Storage as StorageIcon,
 } from '@mui/icons-material'
 import Link from 'next/link'
@@ -19,12 +35,25 @@ import { CippSharePointBrowserProperties } from '../../../components/CippCompone
 import { CippSharePointBrowserPermissions } from '../../../components/CippComponents/CippSharePointBrowserPermissions'
 import { CippSharePointBrowserStorage } from '../../../components/CippComponents/CippSharePointBrowserStorage'
 import { CippSharePointLibraryCopyDialog } from '../../../components/CippComponents/CippSharePointLibraryCopyDialog'
+import { CippSharePointRecycleFolderRestoreDialog } from '../../../components/CippComponents/CippSharePointRecycleFolderRestoreDialog'
 import { CippSharePointFolderView } from '../../../components/CippComponents/CippSharePointFolderView'
+import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
+import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
-import { ApiGetCall } from '../../../api/ApiCall'
+import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
 import { useIsNarrowForTables } from '../../../hooks/use-breakpoint'
+import { useDialog } from '../../../hooks/use-dialog'
 import { usePermissions } from '../../../hooks/use-permissions'
 import { useSettings } from '../../../hooks/use-settings'
+import {
+  libraryRecyclePathSeed,
+  projectRecycleBinTree,
+  expandRecycleRestoreRows,
+  RECYCLE_BIN_CAP,
+} from '../../../utils/sharepoint-recycle-bin-tree'
+
+const optionValue = (value) =>
+  value && typeof value === 'object' && 'value' in value ? value.value : value
 
 const openUrls = (rows) => {
   const list = Array.isArray(rows) ? rows : [rows]
@@ -38,6 +67,13 @@ const openUrls = (rows) => {
 const queryString = (value) => (typeof value === 'string' && value.length > 0 ? value : null)
 
 const isSiteRow = (row) => row?.type === 'site'
+
+const RECYCLE_ROOT = {
+  id: '__recycle__',
+  displayName: 'Recycle bin',
+  type: 'recycleRoot',
+  canOpen: false,
+}
 
 const PROTECTED_SITE_TYPES = [
   'Tenant Admin Site',
@@ -124,6 +160,39 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
         hideBulk: true,
       },
       {
+        label: 'Lock',
+        type: 'POST',
+        icon: <Lock />,
+        url: '/api/ExecSetSiteProperties',
+        confirmText:
+          'Change lock state for [displayName]? Prefer Read only before No access. Teams-connected sites affect the whole team.',
+        condition: () => canWriteSite,
+        defaultvalues: { LockState: 'ReadOnly' },
+        fields: [
+          {
+            type: 'radio',
+            name: 'LockState',
+            label: 'Lock state',
+            options: [
+              { label: 'Read only', value: 'ReadOnly' },
+              { label: 'No access', value: 'NoAccess' },
+              { label: 'Unlock', value: 'Unlock' },
+            ],
+          },
+        ],
+        customDataformatter: (row, _action, formData) => {
+          const site = Array.isArray(row) ? row[0] : row
+          return {
+            tenantFilter: site?.Tenant ?? tenantFilter,
+            SiteUrl: site?.webUrl,
+            LockState: optionValue(formData.LockState) || 'ReadOnly',
+          }
+        },
+        multiPost: false,
+        allowResubmit: true,
+        hideBulk: true,
+      },
+      {
         label: 'Delete',
         icon: <Delete />,
         noConfirm: true,
@@ -176,12 +245,27 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
 
 const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) => {
   const router = useRouter()
+  const { checkPermissions } = usePermissions()
+  const canReadRecycleBin = checkPermissions([
+    'Sharepoint.SiteRecycleBin.Read',
+    'Sharepoint.SiteRecycleBin.ReadWrite',
+  ])
+  const canRestoreRecycleBin = checkPermissions(['Sharepoint.SiteRecycleBin.ReadWrite'])
+
   const [checkedIds, setCheckedIds] = useState([])
   const [permissionsOpen, setPermissionsOpen] = useState(false)
   const [storageOpen, setStorageOpen] = useState(false)
   const [libraryCopyOpen, setLibraryCopyOpen] = useState(false)
+  const [contentMode, setContentMode] = useState('browse')
+  const [recycleStage, setRecycleStage] = useState('all')
+  const [recycleView, setRecycleView] = useState('folders')
+  const [recyclePath, setRecyclePath] = useState([])
+  const [restoreTargets, setRestoreTargets] = useState(null)
+  const [folderRestorePicker, setFolderRestorePicker] = useState(null)
+  const lockDialog = useDialog()
 
   const siteId = queryString(router.query.siteId)
+  const siteUrlQuery = queryString(router.query.siteUrl)
   const [siteMeta, setSiteMeta] = useState(null)
 
   const openedSite =
@@ -196,12 +280,17 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
             siteMeta?.id === siteId ? siteMeta.storageUsedInBytes : undefined,
         }
       : null
-  const path = openedSite ? [openedSite] : []
   const atRoot = !openedSite
+  const inRecycle = contentMode === 'recycle' && !atRoot
+  const resolvingSiteUrl = Boolean(siteUrlQuery && !siteId)
 
   useEffect(() => {
     setCheckedIds([])
-  }, [siteId])
+    setContentMode('browse')
+    setRecycleStage('all')
+    setRecycleView('folders')
+    setRecyclePath([])
+  }, [siteId, tenantFilter])
 
   const setBrowserLocation = (site) => {
     if (!router.isReady) return
@@ -219,6 +308,28 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
   }
 
+  // Deep link from Storage Report: ?siteUrl=… → resolve Graph site id then replace URL.
+  const resolveSiteApi = ApiGetCall({
+    url: '/api/ListSiteBrowser',
+    data: {
+      tenantFilter,
+      SiteUrl: siteUrlQuery,
+    },
+    queryKey: `ListSiteBrowser-resolveUrl-${tenantFilter}-${siteUrlQuery}`,
+    waiting:
+      router.isReady &&
+      resolvingSiteUrl &&
+      !!tenantFilter &&
+      tenantFilter !== 'AllTenants',
+  })
+
+  useEffect(() => {
+    const site = resolveSiteApi.data?.Site
+    if (!resolvingSiteUrl || !site?.id) return
+    setBrowserLocation(site)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when resolve payload arrives
+  }, [resolvingSiteUrl, resolveSiteApi.data?.Site?.id])
+
   const rootQueryKey = `ListSiteBrowser-${tenantFilter}-root`
   const browserApi = ApiGetCall({
     url: '/api/ListSiteBrowser',
@@ -227,8 +338,30 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       ...(siteId ? { SiteId: siteId } : {}),
     },
     queryKey: siteId ? `ListSiteBrowser-${tenantFilter}-${siteId}` : rootQueryKey,
-    waiting: router.isReady && !!tenantFilter && tenantFilter !== 'AllTenants',
+    waiting:
+      router.isReady &&
+      !!tenantFilter &&
+      tenantFilter !== 'AllTenants' &&
+      !resolvingSiteUrl,
   })
+
+  const recycleQueryKey = `SiteBrowserRecycleBin-${openedSite?.webUrl ?? ''}`
+  const recycleApi = ApiGetCall({
+    url: '/api/ListSiteRecycleBin',
+    data: {
+      SiteUrl: openedSite?.webUrl,
+      tenantFilter,
+    },
+    queryKey: recycleQueryKey,
+    waiting:
+      inRecycle &&
+      router.isReady &&
+      !!tenantFilter &&
+      tenantFilter !== 'AllTenants' &&
+      !!openedSite?.webUrl,
+  })
+
+  const restoreApi = ApiPostCall({ relatedQueryKeys: recycleQueryKey })
 
   useEffect(() => {
     const site = browserApi.data?.Site
@@ -241,14 +374,44 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     }
   }, [browserApi.data?.Site, siteId])
 
-  const rawResults = browserApi.data?.Results
-  const items = useMemo(() => {
-    if (!Array.isArray(rawResults)) return []
-    return rawResults.map((row) => ({
+  const rawBrowseResults = browserApi.data?.Results
+  const browseItems = useMemo(() => {
+    if (!Array.isArray(rawBrowseResults)) return []
+    return rawBrowseResults.map((row) => ({
       ...row,
       canOpen: row.type === 'site',
     }))
-  }, [rawResults])
+  }, [rawBrowseResults])
+
+  const rawRecycleResults = recycleApi.data?.Results
+  const recycleProjection = useMemo(() => {
+    if (!inRecycle) return { items: [], capped: false, totalMatching: 0 }
+    return projectRecycleBinTree(Array.isArray(rawRecycleResults) ? rawRecycleResults : [], {
+      recyclePath,
+      recycleStage,
+      recycleView,
+      siteWebUrl: openedSite?.webUrl,
+    })
+  }, [inRecycle, rawRecycleResults, recyclePath, recycleStage, recycleView, openedSite?.webUrl])
+
+  const items = inRecycle ? recycleProjection.items : browseItems
+
+  const path = useMemo(() => {
+    if (!openedSite) return []
+    if (!inRecycle) return [openedSite]
+    const crumbs = [openedSite, RECYCLE_ROOT]
+    recyclePath.forEach((segment, index) => {
+      const full = recyclePath.slice(0, index + 1).join('/')
+      crumbs.push({
+        id: `dir:${full}`,
+        displayName: segment,
+        type: 'recycleFolder',
+        canOpen: true,
+        dirName: full,
+      })
+    })
+    return crumbs
+  }, [openedSite, inRecycle, recyclePath])
 
   const checkedItems = useMemo(() => {
     if (!checkedIds.length) return []
@@ -260,40 +423,186 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
 
   const actionRows = useMemo(() => {
     if (checkedItems.length) return checkedItems
-    if (openedSite?.webUrl) return [openedSite]
+    if (!inRecycle && openedSite?.webUrl) return [openedSite]
     return []
-  }, [checkedItems, openedSite])
+  }, [checkedItems, openedSite, inRecycle])
 
-  const errorMessage =
-    typeof rawResults === 'string'
-      ? rawResults
+  const browseError =
+    typeof rawBrowseResults === 'string'
+      ? rawBrowseResults
       : browserApi.isError
         ? (browserApi.error?.message ?? 'Failed to load items.')
         : null
+  const recycleError =
+    typeof rawRecycleResults === 'string'
+      ? rawRecycleResults
+      : recycleApi.isError
+        ? (recycleApi.error?.message ?? 'Failed to load recycle bin.')
+        : null
+  const errorMessage = inRecycle ? recycleError : browseError
+  const isFetching = inRecycle ? recycleApi.isFetching : browserApi.isFetching
 
   const bannerSite = openedSite ?? (selected?.type === 'site' ? selected : null)
-  const bannerLibrary = selected?.type === 'library' ? selected : null
-  const propertiesItem = selected
+  const bannerLibrary = !inRecycle && selected?.type === 'library' ? selected : null
+
+  // Location vs selection: empty selection inside a site defaults focus to the opened site.
+  // Multi-select clears single-item inspectors. Recycle never defaults to the site object.
+  const propertiesItem =
+    checkedItems.length > 1
+      ? null
+      : selected
+        ? selected
+        : !inRecycle && openedSite
+          ? openedSite
+          : null
+
+  const permissionsItem = (() => {
+    if (inRecycle || !canReadSite || checkedItems.length > 1) return null
+    if (selected?.type === 'site' || selected?.type === 'library') return selected
+    if (!atRoot && openedSite) return openedSite
+    return null
+  })()
+
+  // Storage is always site-scoped (selected site at root, else opened site).
+  // Banner shows Storage only at root (site selected); inside a site it lives under Actions.
   const storageSite = isSiteRow(selected) ? selected : openedSite
-  const showStorage = canReadSite && Boolean(storageSite?.webUrl)
+  const showStorage =
+    !inRecycle && atRoot && canReadSite && Boolean(storageSite?.webUrl)
+  const showPermissions = Boolean(permissionsItem)
+  const focusLibraryId =
+    !inRecycle && selected?.type === 'library' ? selected.id : null
 
   const handleCheckedChange = (ids) => {
     setCheckedIds(ids)
   }
 
+  const enterRecycleMode = (seedLibrary = null) => {
+    if (!canReadRecycleBin || atRoot) return
+    setCheckedIds([])
+    setContentMode('recycle')
+    setRecycleStage('all')
+    const seed = libraryRecyclePathSeed(seedLibrary, openedSite?.webUrl)
+    setRecyclePath(seed)
+  }
+
+  const exitRecycleMode = () => {
+    setCheckedIds([])
+    setContentMode('browse')
+    setRecyclePath([])
+    setRecycleStage('all')
+  }
+
   const handleOpen = (item) => {
     if (!item?.canOpen) return
     setCheckedIds([])
-    setBrowserLocation(item)
+    if (inRecycle && item.type === 'recycleFolder') {
+      const segs = (item.dirName ?? '').split('/').filter(Boolean)
+      setRecyclePath(segs)
+      return
+    }
+    if (item.type === 'site') {
+      exitRecycleMode()
+      setBrowserLocation(item)
+    }
   }
 
   const handleNavigate = (nextPath) => {
     setCheckedIds([])
+    if (!nextPath?.length) {
+      exitRecycleMode()
+      setBrowserLocation(null)
+      return
+    }
+
+    if (inRecycle) {
+      const recycleIdx = nextPath.findIndex((c) => c?.id === RECYCLE_ROOT.id)
+      if (recycleIdx < 0) {
+        exitRecycleMode()
+        setBrowserLocation(nextPath[0]?.type === 'site' ? nextPath[0] : null)
+        return
+      }
+      const folderCrumbs = nextPath.slice(recycleIdx + 1)
+      setRecyclePath(folderCrumbs.map((c) => c.displayName).filter(Boolean))
+      return
+    }
+
     setBrowserLocation(nextPath?.[0] ?? null)
   }
 
-  const bulkActions = useMemo(
-    () => [
+  const handleModeChange = (_event, next) => {
+    if (!next) return
+    if (next === 'recycle') {
+      const seedLib = selected?.type === 'library' ? selected : null
+      enterRecycleMode(seedLib)
+    } else {
+      exitRecycleMode()
+    }
+  }
+
+  const runRestore = (items) => {
+    if (!items?.length || !openedSite?.webUrl) return
+    restoreApi.mutate({
+      url: '/api/ExecRestoreRecycleBinItems',
+      data: {
+        Ids: items.map((t) => t.id),
+        ItemNames: items.map((t) => t.leafName ?? t.displayName),
+        SiteUrl: openedSite.webUrl,
+        tenantFilter,
+      },
+    })
+    setRestoreTargets(null)
+    setFolderRestorePicker(null)
+    setCheckedIds([])
+  }
+
+  const requestRestore = (rows) => {
+    if (!canRestoreRecycleBin) return
+    const list = Array.isArray(rows) ? rows : [rows]
+    const hasFolder = list.some((row) => row?.type === 'recycleFolder')
+    const { items, folderLabel } = expandRecycleRestoreRows(
+      Array.isArray(rawRecycleResults) ? rawRecycleResults : [],
+      list,
+      {
+        siteWebUrl: openedSite?.webUrl,
+        recycleStage,
+      }
+    )
+    if (!items.length) return
+
+    // Folders (or bulk that includes a folder): pick from a flat explorer list first.
+    if (hasFolder) {
+      setFolderRestorePicker({
+        items,
+        folderLabel: folderLabel ?? 'Selected folders',
+      })
+      return
+    }
+
+    setRestoreTargets({ items })
+  }
+
+  const confirmRestore = () => {
+    runRestore(restoreTargets?.items)
+  }
+
+  const bulkActions = useMemo(() => {
+    if (inRecycle) {
+      return [
+        {
+          label: 'Restore',
+          icon: <RestoreFromTrash fontSize="small" />,
+          showInActionsMenu: true,
+          noConfirm: true,
+          customFunction: (rows) => requestRestore(rows),
+          condition: (rows) =>
+            canRestoreRecycleBin &&
+            (Array.isArray(rows) ? rows : [rows]).some(
+              (row) => row?.type === 'recycleItem' || row?.type === 'recycleFolder'
+            ),
+        },
+      ]
+    }
+    return [
       {
         label: 'Open in SharePoint',
         icon: <Launch fontSize="small" />,
@@ -309,20 +618,48 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         showInActionsMenu: true,
         noConfirm: true,
         condition: (rows) => {
+          if (!canReadSite) return false
           const list = Array.isArray(rows) ? rows : [rows]
-          return (
-            canReadSite &&
-            list.length === 1 &&
-            isSiteRow(list[0]) &&
-            Boolean(list[0]?.webUrl)
-          )
+          if (list.length === 1 && isSiteRow(list[0]) && Boolean(list[0]?.webUrl)) return true
+          return !atRoot && Boolean(openedSite?.webUrl)
         },
         customFunction: (rows) => {
           const list = Array.isArray(rows) ? rows : [rows]
-          if (list[0]?.id) setCheckedIds([list[0].id])
+          if (list[0] && isSiteRow(list[0]) && list[0]?.id) setCheckedIds([list[0].id])
           setStorageOpen(true)
         },
       },
+      {
+        label: 'Lock',
+        icon: <Lock fontSize="small" />,
+        showInActionsMenu: true,
+        noConfirm: true,
+        condition: (rows) => {
+          if (!canWriteSite) return false
+          const list = Array.isArray(rows) ? rows : [rows]
+          if (list.length === 1 && isSiteRow(list[0]) && Boolean(list[0]?.webUrl)) return true
+          return !atRoot && Boolean(openedSite?.webUrl)
+        },
+        customFunction: (rows) => {
+          const list = Array.isArray(rows) ? rows : [rows]
+          const site =
+            list.length === 1 && isSiteRow(list[0]) && list[0]?.webUrl ? list[0] : openedSite
+          if (site?.webUrl) lockDialog.handleOpen(site)
+        },
+      },
+      // Inside a site: Edit Site is secondary (Actions), not primary banner chrome.
+      ...(canWriteSite && !atRoot
+        ? [
+            {
+              label: 'Edit Site',
+              icon: <Edit fontSize="small" />,
+              showInActionsMenu: true,
+              noConfirm: true,
+              customFunction: () => {},
+              condition: () => Boolean(openedSite),
+            },
+          ]
+        : []),
       {
         label: 'Delete',
         icon: <Delete fontSize="small" />,
@@ -334,12 +671,33 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
           return canWriteSite && list.length === 1 && canDeleteSite(list[0])
         },
       },
-    ],
-    [canWriteSite, canReadSite]
-  )
+    ]
+  }, [inRecycle, canRestoreRecycleBin, canWriteSite, canReadSite, atRoot, openedSite, lockDialog.handleOpen])
 
-  const rowActions = useMemo(
-    () => [
+  const rowActions = useMemo(() => {
+    if (inRecycle) {
+      return [
+        {
+          label: 'Open folder',
+          icon: <FolderOpen fontSize="small" />,
+          condition: (item) => item?.type === 'recycleFolder',
+          onClick: handleOpen,
+        },
+        {
+          label: 'Restore…',
+          icon: <RestoreFromTrash fontSize="small" />,
+          condition: (item) => canRestoreRecycleBin && item?.type === 'recycleFolder',
+          onClick: (item) => requestRestore(item),
+        },
+        {
+          label: 'Restore',
+          icon: <RestoreFromTrash fontSize="small" />,
+          condition: (item) => canRestoreRecycleBin && item?.type === 'recycleItem',
+          onClick: (item) => requestRestore(item),
+        },
+      ]
+    }
+    return [
       {
         label: 'Open in SharePoint',
         icon: <Launch fontSize="small" />,
@@ -362,6 +720,12 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         },
       },
       {
+        label: 'Lock',
+        icon: <Lock fontSize="small" />,
+        condition: (item) => canWriteSite && isSiteRow(item) && Boolean(item?.webUrl),
+        onClick: (item) => lockDialog.handleOpen(item),
+      },
+      {
         label: 'Copy contents to library…',
         icon: <ContentCopy fontSize="small" />,
         condition: (item) =>
@@ -379,9 +743,68 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         condition: (item) => canWriteSite && canDeleteSite(item),
         onClick: () => {},
       },
-    ],
-    [canWriteSite, canReadSite, handleOpen]
-  )
+    ]
+  }, [inRecycle, canRestoreRecycleBin, canWriteSite, canReadSite, lockDialog.handleOpen])
+
+  const modeSwitch =
+    !atRoot && canReadRecycleBin ? (
+      <Stack
+        direction="row"
+        spacing={1}
+        alignItems="center"
+        useFlexGap
+        flexWrap="wrap"
+        sx={{ flexShrink: 0, maxWidth: '100%' }}
+      >
+        <ToggleButtonGroup
+          size="small"
+          exclusive
+          value={inRecycle ? 'recycle' : 'browse'}
+          onChange={handleModeChange}
+          aria-label="Explorer content mode"
+        >
+          <ToggleButton value="browse">Browse</ToggleButton>
+          <ToggleButton value="recycle">Recycle</ToggleButton>
+        </ToggleButtonGroup>
+        {inRecycle ? (
+          <ToggleButtonGroup
+            size="small"
+            exclusive
+            value={recycleView}
+            onChange={(_e, next) => {
+              if (!next) return
+              setCheckedIds([])
+              setRecycleView(next)
+            }}
+            aria-label="Recycle bin layout"
+          >
+            <ToggleButton value="folders">Folders</ToggleButton>
+            <ToggleButton value="list">List</ToggleButton>
+          </ToggleButtonGroup>
+        ) : null}
+      </Stack>
+    ) : null
+
+  const infoMessage = inRecycle
+    ? recycleProjection.capped ||
+      (Array.isArray(rawRecycleResults) && rawRecycleResults.length >= RECYCLE_BIN_CAP)
+      ? `Showing up to ${RECYCLE_BIN_CAP} newest deleted items (API cap). ${
+          recycleView === 'list'
+            ? 'List view shows every item under this location.'
+            : 'Folder view groups by path.'
+        }`
+      : recycleView === 'list'
+        ? 'Flat list of deleted items under this location. Switch to Folders to drill by path.'
+        : 'Deleted items from this site. Drill into folders by path; restore is the primary action.'
+    : null
+
+  const restoreItems = restoreTargets?.items ?? []
+  const restoreLabel = (() => {
+    if (!restoreItems.length) return ''
+    return restoreItems.length === 1
+      ? restoreItems[0].leafName ?? restoreItems[0].displayName
+      : `${restoreItems.length} items`
+  })()
 
   if (!tenantFilter || tenantFilter === 'AllTenants') {
     return (
@@ -396,37 +819,42 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         library={bannerLibrary}
         bulkActions={bulkActions}
         selectedRows={actionRows}
-        isFetching={browserApi.isFetching}
+        isFetching={isFetching}
         atRoot={atRoot}
+        path={path}
+        onNavigate={handleNavigate}
         showStorage={showStorage}
         onStorageClick={() => setStorageOpen(true)}
-        showPermissions={
-          canReadSite && (selected?.type === 'site' || selected?.type === 'library')
-        }
+        showPermissions={showPermissions}
         onPermissionsClick={() => setPermissionsOpen(true)}
-        showNew={canWriteSite}
-        showEditSite={canWriteSite && (Boolean(openedSite) || isSiteRow(selected))}
+        showNew={canWriteSite && !inRecycle}
+        showEditSite={canWriteSite && !inRecycle && atRoot && isSiteRow(selected)}
         queryKeys={
-          siteId
-            ? `ListSiteBrowser-${tenantFilter}-${siteId}`
-            : rootQueryKey
+          inRecycle
+            ? recycleQueryKey
+            : siteId
+              ? `ListSiteBrowser-${tenantFilter}-${siteId}`
+              : rootQueryKey
         }
-        onRefresh={() => browserApi.refetch()}
-        refreshDisabled={browserApi.isFetching}
+        onRefresh={() => (inRecycle ? recycleApi.refetch() : browserApi.refetch())}
+        refreshDisabled={isFetching}
       />
       <CippSharePointBrowserPermissions
         open={permissionsOpen}
         onClose={() => setPermissionsOpen(false)}
-        item={selected}
+        item={permissionsItem}
         tenantFilter={tenantFilter}
-        siteUrl={selected?.type === 'library' ? openedSite?.webUrl : selected?.webUrl}
-        siteId={selected?.type === 'library' ? openedSite?.id : selected?.id}
+        siteUrl={
+          permissionsItem?.type === 'library' ? openedSite?.webUrl : permissionsItem?.webUrl
+        }
+        siteId={permissionsItem?.type === 'library' ? openedSite?.id : permissionsItem?.id}
       />
       <CippSharePointBrowserStorage
         open={storageOpen}
         onClose={() => setStorageOpen(false)}
         item={storageSite}
         tenantFilter={tenantFilter}
+        focusLibraryId={focusLibraryId}
       />
       <CippSharePointLibraryCopyDialog
         open={libraryCopyOpen}
@@ -435,21 +863,99 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         sourceSite={openedSite}
         sourceLibrary={bannerLibrary ?? (selected?.type === 'library' ? selected : null)}
       />
+      <CippSharePointRecycleFolderRestoreDialog
+        open={Boolean(folderRestorePicker?.items?.length)}
+        onClose={() => setFolderRestorePicker(null)}
+        folderLabel={folderRestorePicker?.folderLabel ?? 'Folder'}
+        items={folderRestorePicker?.items ?? []}
+        isPending={restoreApi.isPending}
+        error={restoreApi.isError ? restoreApi.error : null}
+        onConfirm={(selected) => runRestore(selected)}
+      />
+      <CippApiDialog
+        createDialog={lockDialog}
+        title="Set Site Lock"
+        allowResubmit
+        defaultvalues={{ LockState: 'ReadOnly' }}
+        api={{
+          type: 'POST',
+          url: '/api/ExecSetSiteProperties',
+          confirmText: `Change lock state for ${
+            lockDialog.data?.displayName || lockDialog.data?.webUrl || 'this site'
+          }? Prefer Read only before No access. Teams-connected sites affect the whole team.`,
+          customDataformatter: (_row, _action, formData) => ({
+            tenantFilter,
+            SiteUrl: lockDialog.data?.webUrl,
+            LockState: optionValue(formData.LockState) || 'ReadOnly',
+          }),
+          multiPost: false,
+        }}
+        row={lockDialog.data ?? {}}
+      >
+        {({ formHook }) => (
+          <CippFormComponent
+            type="radio"
+            name="LockState"
+            label="Lock state"
+            formControl={formHook}
+            options={[
+              { label: 'Read only', value: 'ReadOnly' },
+              { label: 'No access', value: 'NoAccess' },
+              { label: 'Unlock', value: 'Unlock' },
+            ]}
+          />
+        )}
+      </CippApiDialog>
+      <Dialog
+        open={Boolean(restoreItems.length)}
+        onClose={() => setRestoreTargets(null)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Restore from recycle bin</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Restore {restoreLabel} from the recycle bin?
+          </DialogContentText>
+          {restoreApi.isError ? (
+            <Alert severity="error" sx={{ mt: 1.5 }}>
+              {restoreApi.error?.message ?? 'Restore failed.'}
+            </Alert>
+          ) : null}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setRestoreTargets(null)}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={confirmRestore}
+            disabled={restoreApi.isPending}
+            startIcon={<RestoreFromTrash />}
+          >
+            Restore
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Grid container spacing={2} alignItems="stretch">
         <Grid size={{ xs: 12, md: 4, lg: 3 }}>
           <CippSharePointBrowserProperties
             item={propertiesItem}
             tenantFilter={tenantFilter}
-            isFetching={browserApi.isFetching}
+            isFetching={isFetching}
             emptyMessage={
-              atRoot ? 'Select a site to view details.' : 'Select a library to view details.'
+              atRoot
+                ? 'Select a site to view details.'
+                : inRecycle
+                  ? 'Select a deleted item to view details.'
+                  : checkedItems.length > 1
+                    ? 'Select a single item to view details.'
+                    : 'Select a library to view details.'
             }
           />
         </Grid>
         <Grid size={{ xs: 12, md: 8, lg: 9 }}>
           <CippSharePointFolderView
             items={items}
-            isFetching={browserApi.isFetching}
+            isFetching={isFetching}
             error={errorMessage}
             path={path}
             onNavigate={handleNavigate}
@@ -457,10 +963,22 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
             onCheckedChange={handleCheckedChange}
             onOpen={handleOpen}
             rowActions={rowActions}
+            mode={inRecycle ? 'recycle' : 'browse'}
+            modeSwitch={modeSwitch}
+            recycleView={inRecycle ? recycleView : 'folders'}
+            recycleStage={inRecycle ? recycleStage : 'all'}
+            onRecycleStageChange={(next) => {
+              setCheckedIds([])
+              setRecycleStage(next)
+            }}
+            showBreadcrumbs={false}
+            infoMessage={infoMessage}
             emptyMessage={
               atRoot
                 ? 'No SharePoint sites found.'
-                : 'No root libraries found for this site.'
+                : inRecycle
+                  ? 'Recycle bin is empty.'
+                  : 'No root libraries found for this site.'
             }
           />
         </Grid>
@@ -496,7 +1014,7 @@ const Page = () => {
   return (
     <>
       <CippHead title="SharePoint Sites" />
-      <Container maxWidth="xl" sx={{ pt: 3, pb: 3 }}>
+      <Container maxWidth={false} sx={{ pt: 3, pb: 3, px: { xs: 2, sm: 3 } }}>
         <Stack spacing={2}>
           {isNarrow ? (
             <SharePointBrowserMobile

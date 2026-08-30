@@ -521,6 +521,7 @@ export const CippDataTable = (props) => {
     exportEnabled = true,
     simpleColumns = [],
     dataFilter,
+    dataMap,
     actions,
     title = 'Report',
     simple = false,
@@ -712,8 +713,13 @@ export const CippDataTable = (props) => {
         const nestedData = getNestedValue(page, api.dataKey)
         return nestedData !== undefined ? nestedData : []
       })
+      const filtered = dataFilter
+        ? combinedResults.filter(dataFilter)
+        : combinedResults
       setUsedData(
-        dataFilter ? combinedResults.filter(dataFilter) : combinedResults
+        typeof dataMap === 'function'
+          ? filtered.map((row) => dataMap(row, { parentRow }))
+          : filtered
       )
     }
   }, [
@@ -722,6 +728,9 @@ export const CippDataTable = (props) => {
     api.dataKey,
     getRequestData.isFetching,
     queryKey,
+    dataFilter,
+    dataMap,
+    parentRow,
   ])
 
   // Derive columns from data — only when the data schema actually changes.

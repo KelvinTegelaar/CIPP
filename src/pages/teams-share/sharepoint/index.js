@@ -12,6 +12,7 @@ import {
   CleaningServices,
   Assessment,
   FolderShared,
+  Launch,
   ManageAccounts,
   PersonSearch,
   RestoreFromTrash,
@@ -37,6 +38,27 @@ import {
   isReportAnonymized,
   useReportAnonymized,
 } from '../../../components/CippComponents/CippAnonymizedReportAlert'
+
+const percentOf = (part, whole) => {
+  const p = Number(part)
+  const w = Number(whole)
+  if (!Number.isFinite(p) || !Number.isFinite(w) || w <= 0) return null
+  return Math.round((p / w) * 1000) / 10
+}
+
+const siteUsedBytes = (row) => {
+  const bytes = Number(row?.storageUsedInBytes)
+  if (Number.isFinite(bytes)) return bytes
+  const gb = Number(row?.storageUsedInGigabytes)
+  if (Number.isFinite(gb)) return gb * 1024 ** 3
+  return null
+}
+
+/** Enrich ListSiteBrowser library rows with % of parent site used (storman-style). */
+const mapLibraryPercentOfSite = (library, { parentRow } = {}) => ({
+  ...library,
+  percentOfSite: percentOf(library?.storageUsedInBytes, siteUsedBytes(parentRow)),
+})
 
 // Friendly labels for the SharePoint version cleanup (trim) job progress fields.
 const VERSION_CLEANUP_LABELS = {
@@ -725,8 +747,50 @@ const Page = () => {
     size: 'lg', // Make the offcanvas extra large
   }
 
+  const librarySubTables = [
+    {
+      id: 'libraries',
+      header: 'Libraries',
+      label: 'View libraries',
+      table: {
+        title: 'Top-level libraries — [displayName]',
+        queryKey: `SiteBrowserLibs-${tenantFilter}-[siteId]-[webUrl]`,
+        api: {
+          url: '/api/ListSiteBrowser',
+          data: {
+            SiteUrl: '[webUrl]',
+          },
+          dataKey: 'Results',
+        },
+        dataMap: mapLibraryPercentOfSite,
+        defaultSorting: [{ id: 'storageUsedInBytes', desc: true }],
+        simpleColumns: [
+          'displayName',
+          'siteType',
+          'fileCount',
+          'storageUsedInBytes',
+          'versionEstimateBytes',
+          'percentOfSite',
+          'webUrl',
+        ],
+        actions: [
+          {
+            label: 'Open library',
+            link: '[webUrl]',
+            external: true,
+            target: '_blank',
+            icon: <Launch fontSize="small" />,
+            multiPost: false,
+            condition: (row) => Boolean(row?.webUrl),
+          },
+        ],
+      },
+    },
+  ]
+
   const simpleColumns = [
     ...reportDB.cacheColumns.filter((c) => c === 'Tenant'),
+    'libraries',
     'displayName',
     'createdDateTime',
     'ownerPrincipalName',
@@ -764,6 +828,7 @@ const Page = () => {
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
+        subTables={librarySubTables}
         cardButton={pageActions}
         dataSourceControls={reportDB.controls}
         tableFilter={
