@@ -582,15 +582,23 @@
     "name": "standards.AuthenticationMethods",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "helpText": "Configures all authentication methods for the tenant including Microsoft Authenticator, FIDO2, SMS, Voice, Email OTP, Temporary Access Pass, Software OATH, Hardware OATH, Certificate-based, and QR Code Pin. Enable or disable each method and optionally target specific groups.",
-    "docsDescription": "Unified standard to configure all authentication method policies in a single place. Each method can be independently enabled or disabled, targeted to all users or specific groups using group name wildcards, and configured with method-specific settings such as TAP lifetime, QR code pin length, and Authenticator software OTP.",
+    "helpText": "Configures all authentication methods for the tenant including Microsoft Authenticator, FIDO2, SMS, Voice, Email OTP, Temporary Access Pass, Software OATH, Hardware OATH, Certificate-based, and QR Code Pin. Set each method to Enabled, Disabled or Not Configured and optionally target specific groups. Methods set to Not Configured (or left blank) keep the tenant's current setting.",
+    "docsDescription": "Unified standard to configure all authentication method policies in a single place. Each method can be independently set to Enabled, Disabled or Not Configured (leaving the tenant's current configuration untouched), targeted to all users or specific groups using group name wildcards, and configured with method-specific settings such as TAP lifetime, QR code pin length, and Authenticator software OTP.",
     "executiveText": "Provides centralized control over all tenant authentication methods from a single standard. Administrators can enable phishing-resistant methods like FIDO2 and Microsoft Authenticator while disabling less secure options like SMS and Voice. Each method supports group-level targeting using wildcard group names, allowing staged rollouts and granular control.",
     "addedComponent": [
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
         "label": "Microsoft Authenticator",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -599,7 +607,7 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -610,7 +618,7 @@
         "defaultValue": false,
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -627,7 +635,7 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -644,7 +652,7 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -661,7 +669,7 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -678,15 +686,23 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.FIDO2Enabled",
         "label": "FIDO2 Security Keys",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -695,15 +711,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.FIDO2Enabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.TAPEnabled",
         "label": "Temporary Access Pass",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -712,7 +736,7 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -728,7 +752,7 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -739,7 +763,7 @@
         "defaultValue": 60,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -750,7 +774,7 @@
         "defaultValue": 60,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -761,7 +785,7 @@
         "defaultValue": 480,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -772,15 +796,23 @@
         "defaultValue": 8,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.SoftwareOathEnabled",
         "label": "Third-Party Software OATH Tokens",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -789,15 +821,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.SoftwareOathEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.HardwareOathEnabled",
         "label": "Hardware OATH Tokens",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -806,15 +846,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.HardwareOathEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.SMSEnabled",
         "label": "SMS",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -823,15 +871,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.SMSEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.VoiceEnabled",
         "label": "Voice Call",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -840,15 +896,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.VoiceEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.EmailEnabled",
         "label": "Email OTP",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -857,15 +921,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.EmailEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.x509CertificateEnabled",
         "label": "Certificate-Based Authentication",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -874,15 +946,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.x509CertificateEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.QRCodePinEnabled",
         "label": "QR Code Pin",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -891,7 +971,7 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.QRCodePinEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -902,7 +982,7 @@
         "defaultValue": 365,
         "condition": {
           "field": "standards.AuthenticationMethods.QRCodePinEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -913,7 +993,7 @@
         "defaultValue": 8,
         "condition": {
           "field": "standards.AuthenticationMethods.QRCodePinEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       }

@@ -376,6 +376,44 @@ describe('CippAutoComplete', () => {
       )
       expect(screen.getByText('Alpha')).toBeInTheDocument()
     })
+
+    // Legacy templates hold the raw boolean a former switch field saved; boolean-valued
+    // options (e.g. AuthenticationMethods Enabled/Disabled/Not Configured) must resolve it.
+    it('bare boolean true default resolves to the matching boolean-valued option', () => {
+      const BOOL_OPTIONS = [
+        { label: 'Enabled', value: true },
+        { label: 'Disabled', value: false },
+        { label: 'Not Configured', value: 'notConfigured' },
+      ]
+      renderWithProviders(
+        <CippAutoComplete
+          multiple={false}
+          creatable={false}
+          options={BOOL_OPTIONS}
+          onChange={() => {}}
+          defaultValue={true}
+        />
+      )
+      expect(screen.getByRole('combobox')).toHaveValue('Enabled')
+    })
+
+    it('bare boolean false default resolves to the matching boolean-valued option', () => {
+      const BOOL_OPTIONS = [
+        { label: 'Enabled', value: true },
+        { label: 'Disabled', value: false },
+        { label: 'Not Configured', value: 'notConfigured' },
+      ]
+      renderWithProviders(
+        <CippAutoComplete
+          multiple={false}
+          creatable={false}
+          options={BOOL_OPTIONS}
+          onChange={() => {}}
+          defaultValue={false}
+        />
+      )
+      expect(screen.getByRole('combobox')).toHaveValue('Disabled')
+    })
   })
 
   // TextField forwards what it doesn't consume to the FormControl root, so a leak lands as a DOM attr

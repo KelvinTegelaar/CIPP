@@ -400,12 +400,14 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
   )
 
   // shape the seed for MUI: option arrays stay arrays, everything else must become an array in
-  // multiple mode (a bare object crashes MUI's selected.some dedup), strings resolve to options.
+  // multiple mode (a bare object crashes MUI's selected.some dedup), strings and booleans resolve
+  // to options (booleans arrive from legacy data saved by a former switch field).
   // An unseeded RHF Controller hands back '' / null - in multiple mode that means "nothing selected".
   const normalizedDefaultValue = useMemo(() => {
+    const isBareValue = (item) => typeof item === 'string' || typeof item === 'boolean'
     if (Array.isArray(resolvedDefaultValue)) {
       return resolvedDefaultValue.map((item) =>
-        typeof item === 'string' ? lookupOptionByValue(item) : item
+        isBareValue(item) ? lookupOptionByValue(item) : item
       )
     }
     if (multiple) {
@@ -417,12 +419,12 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         return []
       }
       return [
-        typeof resolvedDefaultValue === 'string'
+        isBareValue(resolvedDefaultValue)
           ? lookupOptionByValue(resolvedDefaultValue)
           : resolvedDefaultValue,
       ]
     }
-    if (typeof resolvedDefaultValue === 'string') {
+    if (isBareValue(resolvedDefaultValue)) {
       return lookupOptionByValue(resolvedDefaultValue)
     }
     return resolvedDefaultValue
@@ -466,7 +468,11 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           )
         }
         isOptionEqualToValue={(option, val) => option.value === val.value}
-        value={typeof value === 'string' ? lookupOptionByValue(value) : value}
+        value={
+          typeof value === 'string' || typeof value === 'boolean'
+            ? lookupOptionByValue(value)
+            : value
+        }
         filterSelectedOptions
         disableClearable={disableClearable}
         multiple={multiple}

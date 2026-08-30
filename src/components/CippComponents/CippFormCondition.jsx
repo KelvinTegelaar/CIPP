@@ -175,7 +175,9 @@ export const CippFormCondition = (props) => {
         } else if (typeof watcher === "object" && watcher !== null) {
           return watcher?.value === compareValue;
         }
-        return false;
+        // Legacy templates can hold the raw value (e.g. a boolean saved by a former
+        // switch field) instead of an {label, value} option wrapper.
+        return watcher === compareValue;
       case "valueNotEq":
         if (Array.isArray(watcher)) {
           return watcher.some((item) => item?.value !== compareValue);

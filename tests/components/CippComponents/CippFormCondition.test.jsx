@@ -263,6 +263,62 @@ describe('CippFormCondition', () => {
     })
   })
 
+  it('shows children when "valueEq" matches an option wrapper', () => {
+    renderWithTheme(
+      <FormWrapper defaultValues={{ state: { label: 'Enabled', value: true } }}>
+        {(formControl) => (
+          <CippFormCondition
+            field="state"
+            compareType="valueEq"
+            compareValue={true}
+            formControl={formControl}
+          >
+            <div data-testid="child-content">ValueEq Content</div>
+          </CippFormCondition>
+        )}
+      </FormWrapper>
+    )
+    expect(screen.getByTestId('child-content')).toBeInTheDocument()
+  })
+
+  it('shows children when "valueEq" matches a legacy raw value (former switch boolean)', () => {
+    // A field migrated from switch to autoComplete still holds the raw boolean in
+    // templates saved before the migration; valueEq must fall back to comparing it.
+    renderWithTheme(
+      <FormWrapper defaultValues={{ state: true }}>
+        {(formControl) => (
+          <CippFormCondition
+            field="state"
+            compareType="valueEq"
+            compareValue={true}
+            formControl={formControl}
+          >
+            <div data-testid="child-content">Legacy ValueEq Content</div>
+          </CippFormCondition>
+        )}
+      </FormWrapper>
+    )
+    expect(screen.getByTestId('child-content')).toBeInTheDocument()
+  })
+
+  it('hides children when "valueEq" does not match a legacy raw value', () => {
+    renderWithTheme(
+      <FormWrapper defaultValues={{ state: false }}>
+        {(formControl) => (
+          <CippFormCondition
+            field="state"
+            compareType="valueEq"
+            compareValue={true}
+            formControl={formControl}
+          >
+            <div data-testid="child-content">Hidden ValueEq Content</div>
+          </CippFormCondition>
+        )}
+      </FormWrapper>
+    )
+    expect(screen.queryByTestId('child-content')).not.toBeInTheDocument()
+  })
+
   it('shows children when "greaterThan" condition is met', () => {
     renderWithTheme(
       <FormWrapper defaultValues={{ count: 10 }}>
