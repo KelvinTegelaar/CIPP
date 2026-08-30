@@ -242,11 +242,17 @@
         "inputName": "ExpiringLicensesDays"
       },
       {
+        "inputType": "number",
+        "inputLabel": "Minimum days until expiration (default: 0)",
+        "inputName": "ExpiringLicensesMinDays"
+      },
+      {
         "inputType": "switch",
         "inputLabel": "Alert only on unassigned licenses",
         "inputName": "ExpiringLicensesUnassignedOnly"
       }
-    ]
+    ],
+    "description": "Alerts on licenses with a renewal date within the selected number of days. Microsoft does not expose the actual commitment term, so monthly auto-renewing subscriptions also match; set the minimum days to 32 or higher to skip anything renewing sooner than that (such as monthly rollovers)."
   },
   {
     "name": "NewAppApproval",
