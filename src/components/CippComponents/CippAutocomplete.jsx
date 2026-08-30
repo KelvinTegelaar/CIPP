@@ -399,15 +399,28 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     [memoizedOptions]
   )
 
-  // shape the seed for MUI: option arrays stay arrays, single objects wrap in multiple mode, strings resolve to options
+  // shape the seed for MUI: option arrays stay arrays, everything else must become an array in
+  // multiple mode (a bare object crashes MUI's selected.some dedup), strings resolve to options.
+  // An unseeded RHF Controller hands back '' / null - in multiple mode that means "nothing selected".
   const normalizedDefaultValue = useMemo(() => {
     if (Array.isArray(resolvedDefaultValue)) {
       return resolvedDefaultValue.map((item) =>
         typeof item === 'string' ? lookupOptionByValue(item) : item
       )
     }
-    if (typeof resolvedDefaultValue === 'object' && multiple) {
-      return [resolvedDefaultValue]
+    if (multiple) {
+      if (
+        resolvedDefaultValue === null ||
+        resolvedDefaultValue === undefined ||
+        resolvedDefaultValue === ''
+      ) {
+        return []
+      }
+      return [
+        typeof resolvedDefaultValue === 'string'
+          ? lookupOptionByValue(resolvedDefaultValue)
+          : resolvedDefaultValue,
+      ]
     }
     if (typeof resolvedDefaultValue === 'string') {
       return lookupOptionByValue(resolvedDefaultValue)

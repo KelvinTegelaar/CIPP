@@ -346,6 +346,38 @@ describe('CippAutoComplete', () => {
     })
   })
 
+  // An unseeded RHF Controller registers with defaultValue '' - in multiple mode MUI needs an
+  // array seed or its filterSelectedOptions dedup crashes on selected.some the moment the popup opens
+  describe('multi-mode defaultValue normalization', () => {
+    it('empty-string default opens the popup without crashing and selects nothing', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <CippAutoComplete multiple creatable={false} options={OPTIONS} onChange={() => {}} defaultValue="" />
+      )
+      await user.click(screen.getByRole('combobox'))
+      const options = await screen.findAllByRole('option')
+      expect(options).toHaveLength(OPTIONS.length)
+      expect(document.querySelector('.MuiChip-root')).toBeNull()
+    })
+
+    it('null default opens the popup without crashing and selects nothing', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <CippAutoComplete multiple creatable={false} options={OPTIONS} onChange={() => {}} defaultValue={null} />
+      )
+      await user.click(screen.getByRole('combobox'))
+      expect(await screen.findByRole('listbox')).toBeInTheDocument()
+      expect(document.querySelector('.MuiChip-root')).toBeNull()
+    })
+
+    it('bare string default resolves to a single chip via option lookup', () => {
+      renderWithProviders(
+        <CippAutoComplete multiple creatable={false} options={OPTIONS} onChange={() => {}} defaultValue="a" />
+      )
+      expect(screen.getByText('Alpha')).toBeInTheDocument()
+    })
+  })
+
   // TextField forwards what it doesn't consume to the FormControl root, so a leak lands as a DOM attr
   describe('prop routing', () => {
     it('keeps autocomplete-only props off the DOM', () => {
