@@ -133,6 +133,7 @@ export const CippWizardOffboarding = (props) => {
       formControl.setValue('removePermissions', false)
       formControl.setValue('removeCalendarPermissions', false)
       formControl.setValue('RemoveRules', false)
+      formControl.setValue('WipeMobile', false)
       formControl.setValue('RemoveMobile', false)
       formControl.setValue('RemoveGroups', false)
       formControl.setValue('RemoveLicenses', false)
@@ -214,6 +215,13 @@ export const CippWizardOffboarding = (props) => {
               <CippFormComponent
                 name="RemoveRules"
                 label="Remove all Rules"
+                type="switch"
+                formControl={formControl}
+                disabled={!!deleteUser}
+              />
+              <CippFormComponent
+                name="WipeMobile"
+                label="Wipe Mobile Devices (account data only)"
                 type="switch"
                 formControl={formControl}
                 disabled={!!deleteUser}

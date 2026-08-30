@@ -160,6 +160,16 @@ export const CippOffboardingDefaultSettings = (props) => {
             ),
           },
           {
+            label: 'Wipe Mobile Devices (account data only)',
+            value: (
+              <CippFormComponent
+                type="switch"
+                name="offboardingDefaults.WipeMobile"
+                formControl={formControl}
+              />
+            ),
+          },
+          {
             label: 'Remove all Mobile Devices',
             value: (
               <CippFormComponent
@@ -222,7 +232,21 @@ export const CippOffboardingDefaultSettings = (props) => {
         ]}
         cardButton={
           <Box sx={{ width: '100%', px: 2, py: 1 }}>
-            <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Out of Office Message
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+              Leave blank to not set. CIPP %variable% tokens (for example %tenantname%) are resolved
+              when the offboarding job runs. %username% is not the offboarded user.
+            </Typography>
+            <CippFormComponent
+              type="richText"
+              name="offboardingDefaults.OOO"
+              label=""
+              fullWidth
+              formControl={formControl}
+            />
+            <Typography variant="subtitle2" sx={{ mt: 2, mb: 1.5 }}>
               Send results to
             </Typography>
             <Grid container spacing={2}>

@@ -143,12 +143,14 @@ const Page = () => {
         KeepCopy: false,
         DeleteUser: false,
         RemoveMobile: false,
+        WipeMobile: false,
         DisableSignIn: false,
         RemoveMFADevices: false,
         RemoveTeamsPhoneDID: false,
         ClearImmutableId: false,
         DisableOneDriveSharing: false,
         removeCalendarPermissions: false,
+        OOO: '',
       }
 
       let offboardingDefaults = {}
@@ -184,12 +186,14 @@ const Page = () => {
       KeepCopy: false,
       DeleteUser: false,
       RemoveMobile: false,
+      WipeMobile: false,
       DisableSignIn: false,
       RemoveMFADevices: false,
       RemoveTeamsPhoneDID: false,
       ClearImmutableId: false,
       DisableOneDriveSharing: false,
       removeCalendarPermissions: false,
+      OOO: '',
     }
 
     offboardingFormControl.reset({ offboardingDefaults: defaultOffboardingValues })
