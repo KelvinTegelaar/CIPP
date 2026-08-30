@@ -496,7 +496,7 @@ const CippAddEditUser = (props) => {
             : 'Distribution list'
           : 'Security'
       return {
-        label: g.displayName,
+        label: g.mail ? `${g.displayName} - ${g.mail}` : g.displayName,
         value: g.id,
         addedFields: { groupType },
       }
@@ -1079,7 +1079,7 @@ const CippAddEditUser = (props) => {
               ? filteredTenantGroups
               : tenantGroups?.data
             )?.map((group) => ({
-              label: group.displayName,
+              label: group.mail ? `${group.displayName} - ${group.mail}` : group.displayName,
               value: group.id,
               addedFields: {
                 groupType: group.groupType,

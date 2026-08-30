@@ -137,7 +137,8 @@ const Page = () => {
       type: 'autoComplete',
       api: {
         url: '/api/ListGroups',
-        labelField: 'displayName',
+        labelField: (option) =>
+          option?.mail ? `${option.displayName} - ${option.mail}` : option.displayName,
         valueField: 'id',
         queryKey: `ListGroups-${userSettings.currentTenant}`,
         addedField: {

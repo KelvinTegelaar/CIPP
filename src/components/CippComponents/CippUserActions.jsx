@@ -725,10 +725,14 @@ export const useCippUserActions = () => {
           validators: { required: 'Please select at least one group' },
           api: {
             url: '/api/ListGroups',
-            labelField: (option) =>
-              option?.calculatedGroupType
-                ? `${option.displayName} (${option.calculatedGroupType})`
-                : (option?.displayName ?? ''),
+            labelField: (option) => {
+              const name = option?.mail
+                ? `${option.displayName} - ${option.mail}`
+                : (option?.displayName ?? '')
+              return option?.calculatedGroupType
+                ? `${name} (${option.calculatedGroupType})`
+                : name
+            },
             valueField: 'id',
             addedField: {
               groupType: 'groupType',
