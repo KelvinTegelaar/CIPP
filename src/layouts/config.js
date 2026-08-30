@@ -138,6 +138,11 @@ export const nativeMenuItems = [
             path: '/identity/reports/risk-detections',
             permissions: ['Identity.User.*'],
           },
+          {
+            title: 'Group Usage Report',
+            path: '/identity/reports/group-usage',
+            permissions: ['Identity.Group.*'],
+          },
         ],
       },
     ],
