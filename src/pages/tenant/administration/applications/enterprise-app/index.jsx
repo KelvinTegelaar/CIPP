@@ -14,7 +14,7 @@ import { Grid } from '@mui/system'
 import { Typography, Card, CardHeader, Divider, Button, SvgIcon } from '@mui/material'
 import { CippBannerListCard } from '../../../../../components/CippCards/CippBannerListCard'
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { PropertyList } from '../../../../../components/property-list'
 import { PropertyListItem } from '../../../../../components/property-list-item'
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
@@ -77,13 +77,15 @@ const Page = () => {
   const spBulkRequest = ApiPostCall({
     urlFromData: true,
   })
+  const bulkFetchedForId = useRef(null)
 
   function refreshFunction() {
     if (!spObjectId) return
+    bulkFetchedForId.current = spObjectId
     spBulkRequest.mutate({
       url: '/api/ListGraphBulkRequest',
       data: {
-        tenantFilter: userSettingsDefaults.currentTenant,
+        tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
         Requests: [
           {
             id: 'owners',
@@ -101,7 +103,7 @@ const Page = () => {
       userSettingsDefaults.currentTenant &&
       spRequest.isSuccess &&
       spData?.id &&
-      !spBulkRequest.isSuccess
+      bulkFetchedForId.current !== spObjectId
     ) {
       refreshFunction()
     }
@@ -110,7 +112,6 @@ const Page = () => {
     userSettingsDefaults.currentTenant,
     spRequest.isSuccess,
     spData?.id,
-    spBulkRequest.isSuccess,
   ])
 
   const bulkData = getListGraphBulkRequestRows(spBulkRequest)

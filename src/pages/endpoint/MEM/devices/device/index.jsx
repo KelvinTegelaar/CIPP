@@ -61,6 +61,7 @@ const Page = () => {
   const deviceBulkRequest = ApiPostCall({
     urlFromData: true,
   })
+  const bulkFetchedForId = useRef(null)
 
   // Handle response structure - ListGraphRequest may wrap single items in Results array
   // Try Results array first, then Results as object, then data directly
@@ -114,11 +115,12 @@ const Page = () => {
       })
     }
 
+    bulkFetchedForId.current = deviceId
     deviceBulkRequest.mutate({
       url: '/api/ListGraphBulkRequest',
       data: {
         Requests: requests,
-        tenantFilter: userSettingsDefaults.currentTenant,
+        tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
       },
     })
   }
@@ -129,7 +131,7 @@ const Page = () => {
       deviceId &&
       userSettingsDefaults.currentTenant &&
       deviceRequest.isSuccess &&
-      !deviceBulkRequest.isSuccess
+      bulkFetchedForId.current !== deviceId
     ) {
       refreshFunction()
     }
@@ -137,7 +139,6 @@ const Page = () => {
     deviceId,
     userSettingsDefaults.currentTenant,
     deviceRequest.isSuccess,
-    deviceBulkRequest.isSuccess,
   ])
 
   const bulkData = deviceBulkRequest?.data?.data ?? []
