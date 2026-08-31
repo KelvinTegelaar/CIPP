@@ -19,6 +19,7 @@ import {
 } from "@mui/icons-material";
 import { useSettings } from "../../hooks/use-settings.js";
 import { useMemo } from "react";
+import { MfaVerifyForm } from "./CippMfaVerifyForm";
 
 export const CippExchangeActions = () => {
   const tenant = useSettings().currentTenant;
@@ -162,7 +163,8 @@ export const CippExchangeActions = () => {
       data: {
         UserEmail: "UPN",
       },
-      confirmText: "Are you sure you want to send an MFA request to [UPN]?",
+      children: ({ formHook, row }) => <MfaVerifyForm formControl={formHook} row={row} />,
+      confirmText: "Send an MFA request to [UPN]?",
       icon: <PhonelinkLock />,
     },
     {
