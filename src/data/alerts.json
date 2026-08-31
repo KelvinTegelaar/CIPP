@@ -446,17 +446,29 @@
   {
     "name": "ApnCertExpiry",
     "label": "Alert on expiring APN certificates",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days until expiry to alert (default: 30)",
+    "inputName": "DaysUntilExpiry"
   },
   {
     "name": "VppTokenExpiry",
     "label": "Alert on expiring VPP tokens",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days until expiry to alert (default: 30)",
+    "inputName": "DaysUntilExpiry"
   },
   {
     "name": "DepTokenExpiry",
     "label": "Alert on expiring DEP tokens",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days until expiry to alert (default: 30)",
+    "inputName": "DaysUntilExpiry"
   },
   {
     "name": "IntuneApprovalRequests",
