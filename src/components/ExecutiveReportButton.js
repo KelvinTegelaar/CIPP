@@ -576,7 +576,14 @@ export const ExecutiveReportDocument = ({
                 { value: userStats?.licensedUsers || '0', label: 'Licensed Users' },
                 { value: userStats?.unlicensedUsers || '0', label: 'Unlicensed Users' },
                 { value: userStats?.guests || '0', label: 'Guest Users' },
-                { value: userStats?.globalAdmins || '0', label: 'Global Admins' },
+                {
+                  value: userStats?.globalAdmins || '0',
+                  label: 'Global Admins',
+                  // PIM view on Entra ID P2 tenants: standing versus eligible administrators.
+                  caption: userStats?.pimCapable
+                    ? `${userStats.permanentGlobalAdmins} permanent, ${userStats.eligibleGlobalAdmins} eligible`
+                    : undefined,
+                },
               ]}
             />
           </Section>
@@ -1501,6 +1508,9 @@ export const ExecutiveReportButton = (props) => {
         : 0,
     guests: dashboard.data?.Guests || 0,
     globalAdmins: dashboard.data?.Gas || 0,
+    permanentGlobalAdmins: dashboard.data?.PermanentGas ?? 0,
+    eligibleGlobalAdmins: dashboard.data?.EligibleGas ?? 0,
+    pimCapable: dashboard.data?.PIMCapable === true,
   }
 
   const fileName = `Executive_Report_${tenantName?.replace(/[^a-zA-Z0-9]/g, '_') || 'Tenant'}_${

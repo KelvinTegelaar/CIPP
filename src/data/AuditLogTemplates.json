@@ -493,5 +493,92 @@
         }
       ]
     }
+  },
+  {
+    "value": "PIMPermanentAssignmentAdded",
+    "name": "A permanent role assignment was added in PIM (no end date)",
+    "template": {
+      "preset": {
+        "value": "PIMPermanentAssignmentAdded",
+        "label": "A permanent role assignment was added in PIM (no end date)"
+      },
+      "logbook": {
+        "value": "Audit.AzureActiveDirectory",
+        "label": "Azure AD"
+      },
+      "conditions": [
+        {
+          "Property": {
+            "value": "String",
+            "label": "Operation"
+          },
+          "Operator": {
+            "value": "like",
+            "label": "Like"
+          },
+          "Input": {
+            "value": "*role in PIM completed (permanent)*"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "PIMRoleActivated",
+    "name": "A PIM role was activated",
+    "template": {
+      "preset": {
+        "value": "PIMRoleActivated",
+        "label": "A PIM role was activated"
+      },
+      "logbook": {
+        "value": "Audit.AzureActiveDirectory",
+        "label": "Azure AD"
+      },
+      "conditions": [
+        {
+          "Property": {
+            "value": "String",
+            "label": "Operation"
+          },
+          "Operator": {
+            "value": "like",
+            "label": "Like"
+          },
+          "Input": {
+            "value": "*Add member to role completed (PIM activation)*"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "PIMRoleSettingChanged",
+    "name": "A PIM role setting was changed",
+    "template": {
+      "preset": {
+        "value": "PIMRoleSettingChanged",
+        "label": "A PIM role setting was changed"
+      },
+      "logbook": {
+        "value": "Audit.AzureActiveDirectory",
+        "label": "Azure AD"
+      },
+      "conditions": [
+        {
+          "Property": {
+            "value": "String",
+            "label": "Operation"
+          },
+          "Operator": {
+            "value": "like",
+            "label": "Like"
+          },
+          "Input": {
+            "value": "*Update role setting in PIM*"
+          }
+        }
+      ]
+    }
   }
 ]

@@ -149,8 +149,10 @@ export const CippApiDialog = (props) => {
 
   const tenantFilter = useSettings().currentTenant
 
-  const handleActionClick = (row, action, formData) => {
+  const handleActionClick = (row, action, rawFormData) => {
     setIsFormSubmitted(true)
+    // The typed-confirmation field only gates the submit button; it never reaches the API.
+    const { __confirmPhrase, ...formData } = rawFormData ?? {}
     const resolvedFormData = mergeCsvFormFields(formData, fields)
     let finalData = {}
     let isBulkRequest = false
@@ -383,6 +385,27 @@ export const CippApiDialog = (props) => {
     confirmText = replaceTextInElement(api?.confirmText)
   }
 
+  // Optional typed confirmation: api.confirmPhrase is a string (with [field] interpolation from
+  // the row) or a function of the row / selected rows returning the phrase, or null/'' to skip.
+  // While set, the Confirm button stays disabled until the user types the phrase exactly.
+  let confirmPhrase = null
+  if (api?.confirmPhrase) {
+    if (typeof api.confirmPhrase === 'function') {
+      confirmPhrase = api.confirmPhrase(row)
+    } else if (Array.isArray(row)) {
+      confirmPhrase =
+        row.length > 1
+          ? `CONFIRM ${row.length} ITEMS`
+          : api.confirmPhrase.replace(/\[([^\]]+)\]/g, (_, key) => getNestedValue(row[0], key) || '')
+    } else {
+      confirmPhrase = api.confirmPhrase.replace(
+        /\[([^\]]+)\]/g,
+        (_, key) => getNestedValue(row, key) || ''
+      )
+    }
+    if (typeof confirmPhrase !== 'string' || confirmPhrase.trim() === '') confirmPhrase = null
+  }
+
   return (
     <>
       {!api?.link && (
@@ -503,6 +526,22 @@ export const CippApiDialog = (props) => {
                 )}
               </Stack>
             </DialogContent>
+            {confirmPhrase && (
+              <DialogContent>
+                <CippFormComponent
+                  type="textField"
+                  name="__confirmPhrase"
+                  label={`Type ${confirmPhrase} to confirm`}
+                  formControl={formHook}
+                  autoComplete="off"
+                  validators={{
+                    validate: (value) =>
+                      (value ?? '').trim() === confirmPhrase ||
+                      `Type ${confirmPhrase} exactly to enable Confirm`,
+                  }}
+                />
+              </DialogContent>
+            )}
             <DialogContent>
               <CippApiResults apiObject={{ ...selectedType, data: partialResults }} />
             </DialogContent>

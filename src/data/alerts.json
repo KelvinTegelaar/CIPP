@@ -738,5 +738,25 @@
     "inputLabel": "Ignore sanctioned tools?",
     "inputName": "IgnoreSanctionedTools",
     "description": "Monitors the Shadow AI detection data (Intune detected apps and Entra consented applications) and alerts when an AI tool is seen in the tenant for the first time. The first run establishes a baseline without alerting. Uses the same cached data as the Shadow AI dashboard, so keep the Detected Apps and Service Principals caches syncing. Optionally ignores tools that have been marked as company sanctioned."
+  },
+  {
+    "name": "PermanentActiveAdminAssigned",
+    "label": "Alert on new permanent (no end date) admin role assignments",
+    "recommendedRunInterval": "1h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Approved break-glass accounts: UPN prefixes, UPNs or display names (comma separated)",
+        "inputName": "ApprovedAdmins"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Privileged roles only? (off = every directory role)",
+        "inputName": "PrivilegedRolesOnly"
+      }
+    ],
+    "description": "Alerts when a user, group or service principal gains a permanent active admin role assignment (no end date) that is not in the approved list. On Entra ID P2 tenants time-bound and PIM-activated assignments are ignored; elsewhere every assignment counts as permanent. The first run only records the current state."
   }
 ]

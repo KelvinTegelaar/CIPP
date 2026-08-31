@@ -58,6 +58,7 @@ export const templateTypeLabels = {
   AppTemplate: 'Application',
   ContactTemplate: 'Contact',
   JITAdminTemplate: 'JIT Admin',
+  PIMRoleSettingsTemplate: 'PIM Role Settings',
   UserDefaultTemplate: 'User Defaults',
   AssignmentFilterTemplate: 'Assignment Filter',
   IntuneReusableSettingTemplate: 'Intune Reusable Setting',

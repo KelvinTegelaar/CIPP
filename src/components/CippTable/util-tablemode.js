@@ -55,7 +55,9 @@ export const utilTableMode = (
 
     return {
       enableRowSelection: actions || onChange ? true : false,
-      enableRowActions: actions ? true : false,
+      // offCanvas alone still needs the actions column: it carries the More Info entry
+      // (renderRowActionMenuItems falls back to just that when there are no actions).
+      enableRowActions: actions || offCanvas ? true : false,
       enableSelectAll: true,
       enableFacetedValues: true,
       enableColumnFilterModes: true,

@@ -36,6 +36,7 @@ import { CippBannerListCard } from '../../../../../components/CippCards/CippBann
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
 import { Fragment, useEffect, useState, useRef } from 'react'
 import { useCippUserActions } from '../../../../../components/CippComponents/CippUserActions'
+import { useCippRoleAssignmentActions } from '../../../../../components/CippComponents/CippRoleAssignmentActions'
 import { EyeIcon, PencilIcon } from '@heroicons/react/24/outline'
 import { CippDataTable } from '../../../../../components/CippTable/CippDataTable'
 import dynamic from 'next/dynamic'
@@ -288,6 +289,15 @@ const Page = () => {
     urlFromData: true,
   })
   const bulkFetchedForId = useRef(null)
+
+  const roleAssignments = ApiGetCall({
+    url: `/api/ListRoleAssignments?principalId=${userId}&tenantFilter=${
+      router.query.tenantFilter ?? userSettingsDefaults.currentTenant
+    }`,
+    queryKey: `ListRoleAssignments-${userId}`,
+    waiting: waiting,
+  })
+  const roleAssignmentActions = useCippRoleAssignmentActions()
 
   const userPrincipalName = userRequest.data?.[0]?.userPrincipalName
 
@@ -885,7 +895,16 @@ const Page = () => {
       ]
     : []
 
-  const roleMembershipItems = userMemberOf
+  // Role assignments come from the PIM-aware endpoint so the card can tell a permanent
+  // assignment from an eligible or time-bound one and offer the secure-direction actions.
+  const roleAssignmentRows = roleAssignments.data ?? []
+  const permanentRoleCount = roleAssignmentRows.filter(
+    (row) => row.AssignmentType === 'Permanent'
+  ).length
+  const eligibleRoleCount = roleAssignmentRows.filter(
+    (row) => row.AssignmentType === 'Eligible'
+  ).length
+  const roleMembershipItems = roleAssignments.isSuccess
     ? [
         {
           id: 1,
@@ -893,53 +912,23 @@ const Page = () => {
             cardLabelBoxHeader: <AdminPanelSettings />,
           },
           text: 'Admin Roles',
-          subtext: 'List of roles the user is a member of',
-          statusText: ` ${
-            userMemberOf?.filter(
-              (item) =>
-                item?.['@odata.type'] === '#microsoft.graph.directoryRole'
-            ).length
-          } Role(s)`,
-          statusColor: 'info.main',
+          subtext:
+            'Directory roles held by this user and how they are assigned (permanent, eligible or time-bound)',
+          statusText: ` ${roleAssignmentRows.length} assignment(s) - ${permanentRoleCount} permanent, ${eligibleRoleCount} eligible`,
+          statusColor: permanentRoleCount > 0 ? 'warning.main' : 'info.main',
           table: {
             title: 'Admin Roles',
             hideTitle: true,
-            actions: [
-              {
-                label: 'Remove from Role',
-                type: 'POST',
-                icon: <PersonRemove />,
-                url: '/api/ExecRemoveAdminRole',
-                data: {
-                  RoleId: 'id',
-                  RoleName: 'displayName',
-                  Users: 'Users',
-                },
-                confirmText:
-                  'Are you sure you want to remove this user from [displayName]?',
-                allowResubmit: true,
-                onSuccess: refreshFunction,
-                condition: (row) => canWriteRole && !!row?.id,
-              },
+            actions: roleAssignmentActions,
+            data: roleAssignmentRows,
+            simpleColumns: [
+              'RoleDisplayName',
+              'AssignmentType',
+              'MemberType',
+              'Scope',
+              'EndDateTime',
+              'PolicySummary',
             ],
-            data: userMemberOf
-              ?.filter(
-                (item) =>
-                  item?.['@odata.type'] === '#microsoft.graph.directoryRole'
-              )
-              .map((role) => ({
-                ...role,
-                Users: [
-                  {
-                    value: userRequest.data?.[0]?.id ?? userId,
-                    label:
-                      userRequest.data?.[0]?.userPrincipalName ??
-                      userRequest.data?.[0]?.displayName ??
-                      userId,
-                  },
-                ],
-              })),
-            simpleColumns: ['displayName', 'description'],
             refreshFunction: refreshFunction,
           },
         },
@@ -1117,7 +1106,7 @@ const Page = () => {
                   isCollapsible={true}
                 />
                 <CippBannerListCard
-                  isFetching={userBulkRequest.isPending}
+                  isFetching={roleAssignments.isFetching}
                   items={roleMembershipItems}
                   isCollapsible={true}
                 />

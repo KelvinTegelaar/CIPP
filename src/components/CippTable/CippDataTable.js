@@ -1445,8 +1445,11 @@ export const CippDataTable = (props) => {
     }
 
     if (offCanvas) {
-      return ({ closeMenu, row }) => (
+      // Must return an array: MRT only renders the row-actions toggle when the
+      // returned value has a length.
+      return ({ closeMenu, row }) => [
         <MenuItem
+          key="actions-list-row-more"
           onClick={() => {
             closeMenu()
             openRowOffCanvas(row.original)
@@ -1456,8 +1459,8 @@ export const CippDataTable = (props) => {
             <More fontSize="small" />
           </ListItemIcon>
           More Info
-        </MenuItem>
-      )
+        </MenuItem>,
+      ]
     }
 
     return undefined
