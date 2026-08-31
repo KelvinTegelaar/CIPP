@@ -42,6 +42,48 @@ export const CippBaselineStandardSettings = ({
       : seed
   }
 
+  // Definitions carry the API's real constraints as JSON validators. Map them into
+  // react-hook-form rules: min/max/maxLength pass through as {value, message}, pattern
+  // compiles its string into a RegExp (JSON cannot hold one - react-hook-form silently
+  // ignores string patterns), and lessThanOrEqual/greaterThanOrEqual compare against a
+  // sibling variable of the same standard (e.g. TAP's minimum lifetime must not exceed
+  // its maximum). Blank values always pass the cross-field rules - omitWhenBlank fields
+  // express no opinion, and react-hook-form itself skips empties for the built-ins.
+  const resolveValidators = (definition) => {
+    const rules = definition.required
+      ? { required: `${definition.label} is required` }
+      : {}
+    const declared = definition.validators ?? {}
+    ;['min', 'max', 'maxLength'].forEach((rule) => {
+      if (declared[rule]) rules[rule] = declared[rule]
+    })
+    if (declared.pattern) {
+      rules.pattern = {
+        value: new RegExp(declared.pattern.value),
+        message: declared.pattern.message,
+      }
+    }
+    ;[
+      ['lessThanOrEqual', (value, sibling) => Number(value) <= Number(sibling)],
+      ['greaterThanOrEqual', (value, sibling) => Number(value) >= Number(sibling)],
+    ].forEach(([rule, satisfies]) => {
+      if (!declared[rule]) return
+      rules.validate = {
+        ...rules.validate,
+        [rule]: (value) => {
+          if (value === undefined || value === null || value === '') return true
+          const sibling = formControl.getValues(
+            `${namePrefix}.${declared[rule].field}`,
+          )
+          if (sibling === undefined || sibling === null || sibling === '')
+            return true
+          return satisfies(value, sibling) || declared[rule].message
+        },
+      }
+    })
+    return Object.keys(rules).length > 0 ? rules : undefined
+  }
+
   // The seed is ALSO passed as each field's defaultValue below - that is the load-bearing
   // path. CippFormComponent's Controllers register with defaultValue '' during render, so
   // by the time this effect runs on a lazily-mounted details pane (accordion expand), the
@@ -95,13 +137,11 @@ export const CippBaselineStandardSettings = ({
             multiple={definition.multiple === true}
             creatable={definition.creatable === true}
             disabled={definition.locked === true}
-            // A required variable has no safe fallback: saving without it leaves the
-            // raw %token% in the baseline, which the engine refuses to compare or apply.
-            validators={
-              definition.required
-                ? { required: `${definition.label} is required` }
-                : undefined
-            }
+            // Required-ness plus the definition's declared API constraints. A required
+            // variable has no safe fallback: saving without it leaves the raw %token% in
+            // the baseline, which the engine refuses to compare or apply - and a value
+            // outside the API's real bounds saves fine but fails at remediation time.
+            validators={resolveValidators(definition)}
           />
           {definition.locked && (
             <Stack direction="row" spacing={0.5} alignItems="center">
