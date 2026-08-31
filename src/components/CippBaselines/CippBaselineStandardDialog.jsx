@@ -167,6 +167,10 @@ export const CippBaselineStandardDialog = ({
       .length
 
   const filtered = catalog.filter((standard) => {
+    // A disabled definition is not ready for use: it never appears in the catalog, but
+    // baselines that already contain it still render in the editor (catalogByName keeps
+    // the full list) so existing configuration never turns invisible.
+    if (standard.disabled === true) return false
     const query = search.toLowerCase()
     const matchesSearch =
       !query ||
