@@ -10,9 +10,49 @@ import axios from 'axios'
 // cannot email, so recorded bodies are capped and flagged instead of stored whole.
 const MAX_BODY_CHARS = 262144
 
+// Response headers worth keeping for diagnosis: the size of what came back, throttling
+// hints, and every correlation/request id the platform (Craft / ASP.NET / App Service)
+// might stamp. A transport failure returns none of these, which is itself the signal -
+// the useful id then has to be found server-side, so we grab whichever the platform sets.
+const CAPTURED_RESPONSE_HEADERS = [
+  'content-length',
+  'content-type',
+  'retry-after',
+  'request-id',
+  'x-request-id',
+  'x-correlation-id',
+  'x-ms-request-id',
+  'x-ms-correlation-request-id',
+  'x-azure-ref',
+  'traceparent',
+]
+
+// axios v1 hands back an AxiosHeaders instance (case-insensitive .get) on success, but a
+// plain object survives some error paths - read both.
+const readHeader = (headers, name) => {
+  if (!headers) return undefined
+  const direct =
+    typeof headers.get === 'function' ? headers.get(name) : undefined
+  return direct ?? headers[name] ?? headers[name.toLowerCase()]
+}
+
+const pickHeaders = (headers) => {
+  if (!headers) return undefined
+  const picked = {}
+  for (const name of CAPTURED_RESPONSE_HEADERS) {
+    const value = readHeader(headers, name)
+    if (value != null && value !== '') picked[name] = String(value)
+  }
+  return Object.keys(picked).length ? picked : undefined
+}
+
 let armed = false
 let seq = 0
 let calls = []
+// One React Query key can fire several times in a capture window (retries, or the pages of
+// an infinite query). Counting them per key lets a retried failure read as one query
+// instead of four unrelated calls.
+let attemptCounts = new Map()
 
 const serializeValue = (data, responseType) => {
   if (data === null || data === undefined) return { value: null }
@@ -59,7 +99,7 @@ const record = (config, response, error) => {
   // HMR in dev can register the interceptors more than once; the per-request flag
   // keeps a call from being recorded twice.
   config.cippSupportRecorded = true
-  const { start, seq: n } = config.cippSupportMeta
+  const { start, seq: n, queryKey, attempt } = config.cippSupportMeta
   const entry = {
     seq: n,
     startedAt: new Date(start).toISOString(),
@@ -70,7 +110,23 @@ const record = (config, response, error) => {
     status: response?.status ?? null,
     success: !error,
   }
-  if (error) entry.errorMessage = String(error.message ?? error)
+  // The React Query key and attempt number turn seq 12/15/16/17 back into "one query,
+  // four attempts" rather than four separate mysteries.
+  if (queryKey) entry.queryKey = queryKey
+  if (attempt) entry.attempt = attempt
+  if (error) {
+    entry.errorMessage = String(error.message ?? error)
+    // axios's code (ERR_NETWORK vs ECONNABORTED vs ERR_CANCELED) is the one field that
+    // separates a dropped connection from a timeout from a client abort - a null status
+    // and "Network Error" alone cannot.
+    if (error.code) entry.errorCode = error.code
+  }
+  // Present on a completed response (success or HTTP-status error); absent on a transport
+  // failure, where the missing correlation id is the point.
+  const responseHeaders = pickHeaders(response?.headers)
+  if (responseHeaders) entry.responseHeaders = responseHeaders
+  const contentLength = Number(readHeader(response?.headers, 'content-length'))
+  if (Number.isFinite(contentLength)) entry.responseBytes = contentLength
   // The payload the client SENT matters as much as what came back - a failing write
   // usually fails because of what was in it.
   if (config.data !== undefined) {
@@ -86,7 +142,17 @@ const record = (config, response, error) => {
 
 axios.interceptors.request.use((config) => {
   if (armed) {
-    config.cippSupportMeta = { start: Date.now(), seq: ++seq }
+    const meta = { start: Date.now(), seq: ++seq }
+    // ApiCall stamps the React Query key onto the request config; carry it (and number
+    // this attempt) into the recording so retries of one query stay grouped.
+    if (config.cippQueryKey) {
+      const key = String(config.cippQueryKey)
+      const attempt = (attemptCounts.get(key) ?? 0) + 1
+      attemptCounts.set(key, attempt)
+      meta.queryKey = key
+      meta.attempt = attempt
+    }
+    config.cippSupportMeta = meta
   }
   return config
 })
@@ -105,6 +171,7 @@ axios.interceptors.response.use(
 export const armSupportRecorder = () => {
   calls = []
   seq = 0
+  attemptCounts = new Map()
   armed = true
 }
 

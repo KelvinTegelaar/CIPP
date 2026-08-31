@@ -88,6 +88,7 @@ export function ApiGetCall(props) {
             signal: signal,
             params: { ...element, ...impersonationCacheParams() },
             headers: await buildVersionedHeaders(),
+            cippQueryKey: queryKey,
           });
           results.push(response.data);
           if (onResult) {
@@ -127,6 +128,7 @@ export function ApiGetCall(props) {
           params: { ...data, ...impersonationCacheParams() },
           headers: await buildVersionedHeaders(),
           responseType: responseType,
+          cippQueryKey: queryKey,
         });
 
         let responseData = response.data;
@@ -310,6 +312,7 @@ export function ApiGetCallWithPagination({
         signal: signal,
         params: { ...data, ...pageParam, ...impersonationCacheParams() },
         headers: await buildVersionedHeaders(),
+        cippQueryKey: queryKey,
       });
       return response.data;
     },

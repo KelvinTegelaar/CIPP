@@ -3,6 +3,7 @@ import {
   Button,
   CardActions,
   CardContent,
+  IconButton,
   Stack,
   Skeleton,
   SvgIcon,
@@ -12,6 +13,7 @@ import {
 import { Grid } from "@mui/system";
 import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "../../data/Extensions.json";
@@ -26,6 +28,7 @@ import { ApiGetCallWithPagination } from "../../api/ApiCall";
 
 const CippIntegrationSettings = ({ children }) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [tableData, setTableData] = useState([]);
 
   const mappings = ApiGetCall({
@@ -234,16 +237,30 @@ const CippIntegrationSettings = ({ children }) => {
               }}
             >
               <Grid size={{ md: 4, xs: 12 }}>
-                <Box sx={{ my: "auto" }}>
-                  <CippFormTenantSelector
-                    formControl={formControl}
-                    multiple={false}
-                    required={false}
-                    disableClearable={false}
-                    removeOptions={removedTenantIds}
-                    valueField="customerId"
-                  />
-                </Box>
+                <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                  <Box sx={{ flexGrow: 1, my: "auto" }}>
+                    <CippFormTenantSelector
+                      formControl={formControl}
+                      multiple={false}
+                      required={false}
+                      disableClearable={false}
+                      removeOptions={removedTenantIds}
+                      valueField="customerId"
+                    />
+                  </Box>
+                  <Tooltip title="Refresh tenant list">
+                    <IconButton
+                      size="small"
+                      onClick={() =>
+                        queryClient.invalidateQueries({ queryKey: ["ListTenants-FormnotAllTenants"] })
+                      }
+                    >
+                      <SvgIcon>
+                        <Sync />
+                      </SvgIcon>
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
               </Grid>
               <Grid>
                 <Box sx={{ my: "auto" }}>
@@ -253,23 +270,34 @@ const CippIntegrationSettings = ({ children }) => {
                 </Box>
               </Grid>
               <Grid size={{ md: 4, xs: 12 }}>
-                <CippFormComponent
-                  type="autoComplete"
-                  fullWidth
-                  name="integrationCompany"
-                  formControl={formControl}
-                  label={`Select ${extension.name} Company`}
-                  options={mappings?.data?.Companies?.map((company) => {
-                    return {
-                      label: company.name,
-                      value: company.value,
-                    };
-                  })}
-                  creatable={false}
-                  multiple={false}
-                  isFetching={mappings.isFetching}
-                  sortOptions={true}
-                />
+                <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      fullWidth
+                      name="integrationCompany"
+                      formControl={formControl}
+                      label={`Select ${extension.name} Company`}
+                      options={mappings?.data?.Companies?.map((company) => {
+                        return {
+                          label: company.name,
+                          value: company.value,
+                        };
+                      })}
+                      creatable={false}
+                      multiple={false}
+                      isFetching={mappings.isFetching}
+                      sortOptions={true}
+                    />
+                  </Box>
+                  <Tooltip title={`Refresh ${extension.name} companies`}>
+                    <IconButton size="small" onClick={() => mappings.refetch()}>
+                      <SvgIcon>
+                        <Sync />
+                      </SvgIcon>
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
               </Grid>
               <Grid>
                 <Stack direction={"row"} spacing={1}>
