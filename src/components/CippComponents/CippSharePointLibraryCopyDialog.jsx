@@ -103,7 +103,7 @@ const LibraryCopyStatusPanel = ({ status, operationId, refreshing, onRefresh }) 
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" alignItems="center" spacing={1} flexWrap="wrap">
+      <Stack direction="row" alignItems="center" spacing={1} flexWrap="wrap" useFlexGap>
         <Chip
           size="small"
           color={statusMeta.chipColor}
@@ -220,7 +220,7 @@ const LibraryCopyStatusPanel = ({ status, operationId, refreshing, onRefresh }) 
         <Card variant="outlined">
           <Grid container>
             {metrics.map((metric) => (
-              <Grid key={metric.label} size={{ xs: 6, sm: 4 }} sx={{ p: 2 }}>
+              <Grid key={metric.label} size={{ xs: 12, sm: 4 }} sx={{ p: 2 }}>
                 <Typography variant="overline" color="text.secondary" display="block">
                   {metric.label}
                 </Typography>

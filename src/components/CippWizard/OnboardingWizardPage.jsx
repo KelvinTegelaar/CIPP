@@ -12,10 +12,12 @@ import { CippDirectTenantDeploy } from './CippDirectTenantDeploy.jsx'
 import { CippGDAPTenantSetup } from './CippGDAPTenantSetup.jsx'
 import { CippIndirectResellerLink } from './CippIndirectResellerLink.jsx'
 import { CippGDAPTenantOnboarding } from './CippGDAPTenantOnboarding.jsx'
+import { CippCertificateAuthStep } from './CippCertificateAuthStep.jsx'
 import {
   BuildingOfficeIcon,
   CloudIcon,
   CpuChipIcon,
+  KeyIcon,
 } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/router'
 
@@ -68,6 +70,13 @@ const OnboardingWizardPage = ({ mode, samAppPresent, completionButton }) => {
       icon: <BuildingOfficeIcon />,
       label: 'Manually enter credentials',
       value: 'Manual',
+    },
+    {
+      description:
+        'Switch an existing setup to authenticate with the SAM certificate instead of the client secret. The client secret is kept as a rollback.',
+      icon: <KeyIcon />,
+      label: 'Use certificate authentication',
+      value: 'CertificateAuth',
     },
   ]
 
@@ -181,6 +190,11 @@ const OnboardingWizardPage = ({ mode, samAppPresent, completionButton }) => {
       description: 'Manually enter credentials',
       component: CippDeploymentStep,
       showStepWhen: (values) => values?.selectedOption === 'Manual',
+    },
+    {
+      description: 'Certificate Authentication',
+      component: CippCertificateAuthStep,
+      showStepWhen: (values) => values?.selectedOption === 'CertificateAuth',
     },
     {
       description: 'Confirmation',
