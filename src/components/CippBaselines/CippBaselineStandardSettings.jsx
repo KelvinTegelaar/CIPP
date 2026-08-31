@@ -79,6 +79,9 @@ export const CippBaselineStandardSettings = ({
             type={definition.type}
             name={`${namePrefix}.${key}`}
             label={definition.label}
+            // Per-field guidance from the definition (e.g. an example version format).
+            // Renders below the field for text/number/select inputs.
+            helperText={definition.helperText}
             formControl={formControl}
             // Saved/recommended value rides the Controller's own defaultValue so a
             // lazily-mounted field initializes correctly regardless of effect order.

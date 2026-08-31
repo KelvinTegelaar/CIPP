@@ -4918,7 +4918,7 @@
     "cat": "Intune Standards",
     "tag": ["CIS M365 7.0.0 (4.2)", "CISA (MS.AAD.19.1v1)"],
     "appliesToTest": ["CIS_4_2"],
-    "helpText": "Sets the default platform restrictions for enrolling devices into Intune. Note: Do not block personally owned if platform is blocked.",
+    "helpText": "Sets the default platform restrictions for enrolling devices into Intune, including optional minimum and maximum OS version limits per platform (Android Enterprise, Android, iOS/iPadOS and Windows). Note: Do not block personally owned if platform is blocked.",
     "executiveText": "Controls which types of devices (iOS, Android, Windows, macOS) and ownership models (corporate vs. personal) can be enrolled in the company's device management system. This helps maintain security standards while supporting necessary business device types and usage scenarios.",
     "addedComponent": [
       {
@@ -4934,6 +4934,20 @@
         "default": false
       },
       {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMinimumVersionAndroidForWork",
+        "label": "Android Enterprise (work profile) minimum OS version",
+        "helperText": "Example: 11.0. Leave blank to not enforce a minimum.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMaximumVersionAndroidForWork",
+        "label": "Android Enterprise (work profile) maximum OS version",
+        "helperText": "Example: 14.0. Leave blank to not enforce a maximum.",
+        "required": false
+      },
+      {
         "type": "switch",
         "name": "standards.DefaultPlatformRestrictions.platformAndroidBlocked",
         "label": "Block platform Android",
@@ -4946,6 +4960,20 @@
         "default": false
       },
       {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMinimumVersionAndroid",
+        "label": "Android minimum OS version",
+        "helperText": "Example: 10.0. Leave blank to not enforce a minimum.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMaximumVersionAndroid",
+        "label": "Android maximum OS version",
+        "helperText": "Example: 13.0. Leave blank to not enforce a maximum.",
+        "required": false
+      },
+      {
         "type": "switch",
         "name": "standards.DefaultPlatformRestrictions.platformiOSBlocked",
         "label": "Block platform iOS",
@@ -4956,6 +4984,20 @@
         "name": "standards.DefaultPlatformRestrictions.personaliOSBlocked",
         "label": "Block personally owned iOS",
         "default": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMinimumVersioniOS",
+        "label": "iOS/iPadOS minimum OS version",
+        "helperText": "Example: 16.1. Leave blank to not enforce a minimum.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMaximumVersioniOS",
+        "label": "iOS/iPadOS maximum OS version",
+        "helperText": "Example: 18.0. Leave blank to not enforce a maximum.",
+        "required": false
       },
       {
         "type": "switch",
@@ -4980,6 +5022,20 @@
         "name": "standards.DefaultPlatformRestrictions.personalWindowsBlocked",
         "label": "Block personally owned Windows",
         "default": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMinimumVersionWindows",
+        "label": "Windows minimum OS version",
+        "helperText": "Example: 10.0.19045.0. Leave blank to not enforce a minimum.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMaximumVersionWindows",
+        "label": "Windows maximum OS version",
+        "helperText": "Example: 10.0.22631.0. Leave blank to not enforce a maximum.",
+        "required": false
       }
     ],
     "label": "Device enrollment restrictions",
