@@ -64,7 +64,9 @@ const Page = () => {
       'Name',
       'Comment',
       'Enabled',
-      'Workload',
+      'ScopedLocations',
+      'RetentionAction',
+      'RetentionDuration',
       'RestrictiveRetention',
       'ExchangeLocation',
       'SharePointLocation',
@@ -83,11 +85,12 @@ const Page = () => {
   const simpleColumns = [
     'Name',
     'Enabled',
-    'Workload',
+    'ScopedLocations',
     'RuleCount',
+    'RetentionAction',
+    'RetentionDuration',
     'RestrictiveRetention',
     'CreatedBy',
-    'WhenCreatedUTC',
     'WhenChangedUTC',
   ]
 
