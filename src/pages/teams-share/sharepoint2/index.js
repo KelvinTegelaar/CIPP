@@ -939,6 +939,9 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         <Grid size={{ xs: 12, md: 4, lg: 3 }}>
           <CippSharePointBrowserProperties
             item={propertiesItem}
+            summaryItems={
+              atRoot && !propertiesItem && checkedItems.length === 0 ? browseItems : undefined
+            }
             tenantFilter={tenantFilter}
             isFetching={isFetching}
             emptyMessage={

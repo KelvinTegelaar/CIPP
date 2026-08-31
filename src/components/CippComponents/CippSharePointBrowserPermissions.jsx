@@ -885,7 +885,7 @@ export const CippSharePointBrowserPermissions = ({
             <Chip size="small" label={targetType === 'library' ? 'Library' : 'Site'} />
             {inherits ? <Chip size="small" color="info" label="Inherits from site" /> : null}
             {hasUnique && targetType === 'library' ? (
-              <Chip size="small" color="warning" label="Unique permissions" />
+              <Chip size="small" color="warning" label="Broken inheritance" />
             ) : null}
             {data?.collectedAt ? (
               <Typography variant="caption" color="text.secondary">
@@ -959,12 +959,12 @@ export const CippSharePointBrowserPermissions = ({
                     disabled={!canWrite}
                     onClick={() => restoreInheritanceDialog.handleOpen()}
                   >
-                    Restore inheritance
+                    Fix inheritance
                   </Button>
                 }
               >
-                This library has unique permissions. Restoring inheritance discards them and
-                follows the site again.
+                This library has broken inheritance (unique permissions). Fixing inheritance
+                discards them and follows the site again.
               </Alert>
             ) : null}
 
@@ -991,6 +991,17 @@ export const CippSharePointBrowserPermissions = ({
                 }
                 count={accessRows.length}
                 actions={[
+                  ...(targetType === 'library' && hasUnique && !inherits
+                    ? [
+                        {
+                          label: 'Fix inheritance',
+                          icon: <LinkIcon />,
+                          onClick: () => restoreInheritanceDialog.handleOpen(),
+                          disabled: !canWrite,
+                          disabledTitle: writeDisabledTitle,
+                        },
+                      ]
+                    : []),
                   {
                     label: 'Grant user',
                     onClick: () => grantUserDialog.handleOpen(),
@@ -1586,8 +1597,9 @@ export const CippSharePointBrowserPermissions = ({
 
       <CippApiDialog
         createDialog={restoreInheritanceDialog}
-        title="Restore inheritance"
+        title="Fix inheritance"
         relatedQueryKeys={[permissionsQueryKey]}
+        allowResubmit
         api={{
           type: 'POST',
           url: '/api/ExecSiteBrowserPermissions',
