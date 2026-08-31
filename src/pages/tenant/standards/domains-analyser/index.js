@@ -51,6 +51,25 @@ const Page = () => {
   const offCanvas = {
     children: (extendedData) => <CippDomainCards domain={extendedData.Domain} fullwidth={true} />,
   }
+
+  const filters = [
+    {
+      filterName: 'Mail Provider is not Microsoft 365',
+      value: [{ id: 'MailProvider', value: 'Microsoft 365', filterFn: 'notEquals' }],
+      type: 'column',
+    },
+    {
+      filterName: 'onmicrosoft.com Domains',
+      value: [{ id: 'Domain', value: 'onmicrosoft.com' }],
+      type: 'column',
+    },
+    {
+      filterName: 'All Except onmicrosoft.com Domains',
+      value: [{ id: 'Domain', value: 'onmicrosoft.com', filterFn: 'notContains' }],
+      type: 'column',
+    },
+  ]
+
   return (
     <>
       <CippTablePage
@@ -72,6 +91,7 @@ const Page = () => {
         }
         prependComponents={<CippApiResults apiObject={apiGetCall} />}
         queryKey={`ListDomains-${currentTenant}`}
+        filters={filters}
         simpleColumns={[
           'Domain',
           'ScorePercentage',

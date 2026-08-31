@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import {
   Badge,
@@ -658,6 +658,26 @@ export const CIPPTableToptoolbar = React.memo(
       settings.setLastUsedFilter(pageName, updater(current))
     }
 
+    // Columns any preset drives with a non-default `filterFn` (e.g. 'notEquals', 'notContains'),
+    // mapped to a plain 'contains' baseline. material-react-table's per-column filter mode is a
+    // sticky mutation on the column definition — switching it away from the default only takes
+    // when the new state.columnFilterFns entry is itself explicit, so clearing to `{}` after a
+    // preset like this leaves the override stuck. Passing this map on every column-preset click
+    // (falling back to 'contains' for any id not driven by the current preset) forces that
+    // mutation to reset every time, so manual searches on the column behave normally again once
+    // a different preset — or Reset — is applied.
+    const filterFnDefaults = useMemo(() => {
+      const ids = new Set()
+      filters.forEach((f) => {
+        if (Array.isArray(f?.value)) {
+          f.value.forEach((v) => {
+            if (v?.id && v?.filterFn) ids.add(v.id)
+          })
+        }
+      })
+      return Object.fromEntries([...ids].map((id) => [id, 'contains']))
+    }, [filters])
+
     const setTableFilter = (filter, filterType, filterName, presetId) => {
       if (filterType === 'global' || filterType === undefined) {
         if (activeFilters.table?.type === 'column') {
@@ -700,6 +720,24 @@ export const CIPPTableToptoolbar = React.memo(
           // Card view renders no header row for the filter inputs to appear in
           table.setShowColumnFilters(true)
         }
+        // A preset can request a non-default comparison (e.g. 'notEquals', 'notContains')
+        // for a column via `filterFn` on its value entry. Start from filterFnDefaults so
+        // every column any preset ever overrides gets an explicit entry here — falling
+        // back to 'contains' — then layer this preset's own overrides on top.
+        // Built via Map.set + Object.fromEntries rather than a bracket-assignment reduce:
+        // a preset entry's id ends up as a computed object key, and `acc[f.id] = ...`
+        // resolves to Object.prototype's __proto__ setter for that one key value — Map
+        // keys never touch the prototype chain, and Object.fromEntries defines properties
+        // directly rather than going through a property setter.
+        const filterFnOverrides = Array.isArray(filter)
+          ? Object.fromEntries(
+              filter.reduce((acc, f) => {
+                if (f?.id && f?.filterFn) acc.set(f.id, f.filterFn)
+                return acc
+              }, new Map())
+            )
+          : {}
+        table.setColumnFilterFns({ ...filterFnDefaults, ...filterFnOverrides })
         table.setColumnFilters(filter)
         setActiveFilters((prev) => ({
           ...prev,
@@ -722,6 +760,7 @@ export const CIPPTableToptoolbar = React.memo(
       if (filterType === 'reset') {
         table.resetGlobalFilter()
         table.resetColumnFilters()
+        table.setColumnFilterFns(filterFnDefaults)
         if (searchDebounceRef.current) {
           clearTimeout(searchDebounceRef.current)
         }
@@ -1331,7 +1370,12 @@ export const CIPPTableToptoolbar = React.memo(
                 </ListItemText>
               </MenuItem>
               <Divider />
-              <MenuItem onClick={() => setTableFilter('', 'reset', '')}>
+              <MenuItem
+                onClick={() => {
+                  setTableFilter('', 'reset', '')
+                  setFiltersAnchor(null)
+                }}
+              >
                 <ListItemText primary="Reset all filters" />
               </MenuItem>
               {api?.url === '/api/ListGraphRequest' && (
