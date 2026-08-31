@@ -311,7 +311,23 @@ const TemporaryAccessPassForm = ({ formControl, row }) => {
 }
 
 // Separate component for Out of Office form to avoid hook issues
-const OutOfOfficeForm = ({ formControl }) => {
+export const OutOfOfficeForm = ({ formControl, row }) => {
+  const tenantFilter = useSettings().currentTenant
+  const rowData = Array.isArray(row) ? row[0] : row
+  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+  // Only prefill for a single selected user; with multiple users there is no single current value
+  const singleUserUpn =
+    (!Array.isArray(row) || row.length === 1) && rowData?.userPrincipalName
+      ? rowData.userPrincipalName
+      : null
+
+  const currentOoO = ApiGetCall({
+    url: '/api/ListOoO',
+    data: { UserId: singleUserUpn, tenantFilter: tenant },
+    queryKey: `ListOoO-${singleUserUpn}-${tenant}`,
+    waiting: !!singleUserUpn,
+  })
+
   // Send the browser's IANA timezone so the API can display local times in the response
   useEffect(() => {
     try {
@@ -321,6 +337,35 @@ const OutOfOfficeForm = ({ formControl }) => {
     }
   }, [])
 
+  useEffect(() => {
+    const data = currentOoO.data
+    if (!data?.AutoReplyState) return
+    // Deferred a tick: CippApiDialog resets the form in a mount effect that runs after
+    // this child effect, so an immediate setValue would be wiped when the query is cached
+    const timer = setTimeout(() => {
+      formControl.setValue('AutoReplyState', {
+        label: data.AutoReplyState,
+        value: data.AutoReplyState,
+      })
+      formControl.setValue('InternalMessage', data.InternalMessage || '')
+      formControl.setValue('ExternalMessage', data.ExternalMessage || '')
+      formControl.setValue(
+        'StartTime',
+        data.StartTime ? new Date(data.StartTime).getTime() / 1000 : null
+      )
+      formControl.setValue('EndTime', data.EndTime ? new Date(data.EndTime).getTime() / 1000 : null)
+      formControl.setValue('CreateOOFEvent', data.CreateOOFEvent === true)
+      formControl.setValue('OOFEventSubject', data.OOFEventSubject || '')
+      formControl.setValue(
+        'AutoDeclineFutureRequestsWhenOOF',
+        data.AutoDeclineFutureRequestsWhenOOF === true
+      )
+      formControl.setValue('DeclineEventsForScheduledOOF', data.DeclineEventsForScheduledOOF === true)
+      formControl.setValue('DeclineMeetingMessage', data.DeclineMeetingMessage || '')
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [currentOoO.dataUpdatedAt])
+
   // Watch the Auto Reply State value
   const autoReplyState = useWatch({
     control: formControl.control,
@@ -329,6 +374,18 @@ const OutOfOfficeForm = ({ formControl }) => {
 
   // Calculate if date fields should be disabled
   const areDateFieldsDisabled = autoReplyState?.value !== 'Scheduled'
+
+  if (singleUserUpn && currentOoO.isLoading) {
+    return (
+      <>
+        <Skeleton variant="rounded" height={40} />
+        <Skeleton variant="rounded" height={40} />
+        <Skeleton variant="rounded" height={40} />
+        <Skeleton variant="rounded" height={80} />
+        <Skeleton variant="rounded" height={80} />
+      </>
+    )
+  }
 
   return (
     <>
@@ -667,7 +724,9 @@ export const useCippUserActions = () => {
         userId: 'userPrincipalName',
         tenantFilter: 'Tenant',
       },
-      children: ({ formHook: formControl }) => <OutOfOfficeForm formControl={formControl} />,
+      children: ({ formHook: formControl, row }) => (
+        <OutOfOfficeForm formControl={formControl} row={row} />
+      ),
       confirmText: 'Are you sure you want to set the out of office?',
       multiPost: false,
       condition: () => canWriteMailbox,
