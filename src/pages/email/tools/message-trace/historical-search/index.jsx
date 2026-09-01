@@ -240,6 +240,7 @@ const Page = () => {
                 queryKey: `ListMailboxes-${tenantFilter}`,
                 manualSearch: true,
                 searchParam: 'Anr',
+                data: { Minimal: true },
               }}
               formControl={formControl}
             />
@@ -260,6 +261,7 @@ const Page = () => {
                 queryKey: `ListMailboxes-${tenantFilter}`,
                 manualSearch: true,
                 searchParam: 'Anr',
+                data: { Minimal: true },
               }}
               formControl={formControl}
             />
@@ -326,6 +328,7 @@ const Page = () => {
                 queryKey: `ListMailboxes-${tenantFilter}`,
                 manualSearch: true,
                 searchParam: 'Anr',
+                data: { Minimal: true },
               }}
               formControl={formControl}
             />
