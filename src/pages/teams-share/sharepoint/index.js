@@ -178,12 +178,9 @@ const Page = () => {
     allowAllTenantSync: true,
   })
 
-  // Two different faults produce empty usage columns here, and they need different advice.
-  //
-  // Anonymization: Microsoft 365 hashes the owner names in the SharePoint site usage report.
-  // Only hashed values prove this - absent usage data does not, because anonymization still
-  // returns rows, it just hashes them. Both the live and cached paths merge the same report,
-  // so this is not gated on cache mode.
+  // Anonymization: M365 "conceal names in reports" hashes owner fields in Graph usage reports.
+  // Live data and caches synced after the admin RLD migration use real SiteOwner* values from
+  // SPO admin; this banner only matters for legacy cached rows that still came from Graph D7.
   const anonymizedReport = useReportAnonymized({
     url: reportDB.resolvedApiUrl,
     data: reportDB.resolvedApiData,
@@ -191,15 +188,21 @@ const Page = () => {
     check: (rows) => isReportAnonymized(rows, ['ownerPrincipalName', 'ownerDisplayName']),
   })
 
-  // Empty usage report: getSharePointSiteUsageDetail returns no rows at all for tenants
-  // Microsoft has not generated a report for yet. The site listing still populates the table,
-  // so every usage-derived column is blank. reportRefreshDate comes only from that report, so
-  // an empty one across every row means the merge contributed nothing.
-  const noUsageData = useReportAnonymized({
+  // Usage metrics come from SPO admin RenderAdminListData (live and after cache sync). A populated
+  // site list with blank storage/activity on every row means the usage merge failed, admin access
+  // is partial, or the report cache predates a successful SharePointSiteUsage sync.
+  const noUsageMetrics = useReportAnonymized({
     url: reportDB.resolvedApiUrl,
     data: reportDB.resolvedApiData,
     queryKey: reportDB.resolvedQueryKey,
-    check: (rows) => rows.every((site) => !site?.reportRefreshDate),
+    check: (rows) =>
+      rows.length > 0 &&
+      rows.every(
+        (site) =>
+          site?.storageUsedInBytes == null &&
+          site?.fileCount == null &&
+          site?.lastActivityDate == null
+      ),
   })
 
   const actions = [
@@ -836,13 +839,14 @@ const Page = () => {
             <CippSharePointQuotaCard />
             <CippAnonymizedReportAlert show={anonymizedReport}>
               Site owner names in this report are pseudo-anonymised because Microsoft 365 report
-              anonymization is enabled for this tenant.
+              anonymization is enabled for this tenant. Re-sync the SharePoint Sites report after
+              enabling usernames in reports, or switch to live data for current SPO admin values.
             </CippAnonymizedReportAlert>
-            {!anonymizedReport && noUsageData && (
+            {!anonymizedReport && noUsageMetrics && (
               <Alert severity="info">
-                Microsoft returned no SharePoint usage report for this tenant, so activity,
-                storage and file count are blank. The site list itself is complete. Usage reports
-                can take up to 48 hours to appear on a new tenant.
+                Usage metrics (activity, storage, file count) are missing for every site. The site
+                list may still be complete. Sync the SharePoint Sites report or verify SharePoint
+                admin access for this tenant.
               </Alert>
             )}
           </>

@@ -51,6 +51,7 @@ import {
   expandRecycleRestoreRows,
   RECYCLE_BIN_CAP,
 } from '../../../utils/sharepoint-recycle-bin-tree'
+import { useSharePointBrowserRecents } from '../../../hooks/use-sharepoint-browser-recents'
 
 const optionValue = (value) =>
   value && typeof value === 'object' && 'value' in value ? value.value : value
@@ -263,6 +264,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
   const [restoreTargets, setRestoreTargets] = useState(null)
   const [folderRestorePicker, setFolderRestorePicker] = useState(null)
   const lockDialog = useDialog()
+  const { recent: recentSites, trackRecent } = useSharePointBrowserRecents(tenantFilter)
 
   const siteId = queryString(router.query.siteId)
   const siteUrlQuery = queryString(router.query.siteUrl)
@@ -298,6 +300,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     if (site?.id) {
       query.siteId = site.id
       setSiteMeta(site)
+      trackRecent(site)
     } else {
       delete query.siteId
       setSiteMeta(null)
@@ -331,6 +334,14 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
   }, [resolvingSiteUrl, resolveSiteApi.data?.Site?.id])
 
   const rootQueryKey = `ListSiteBrowser-${tenantFilter}-root`
+  // Keep the root catalog warm while drilled in so the site-crumb switcher can search.
+  // Shares react-query cache with browserApi when atRoot (same queryKey).
+  const rootCatalogApi = ApiGetCall({
+    url: '/api/ListSiteBrowser',
+    data: { tenantFilter },
+    queryKey: rootQueryKey,
+    waiting: router.isReady && !!tenantFilter && tenantFilter !== 'AllTenants' && !resolvingSiteUrl,
+  })
   const browserApi = ApiGetCall({
     url: '/api/ListSiteBrowser',
     data: {
@@ -371,8 +382,9 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         ...site,
         storageUsedInBytes: site.storageUsedInBytes ?? prev?.storageUsedInBytes,
       }))
+      trackRecent(site)
     }
-  }, [browserApi.data?.Site, siteId])
+  }, [browserApi.data?.Site, siteId, trackRecent])
 
   const rawBrowseResults = browserApi.data?.Results
   const browseItems = useMemo(() => {
@@ -382,6 +394,15 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       canOpen: row.type === 'site',
     }))
   }, [rawBrowseResults])
+
+  const rawRootResults = rootCatalogApi.data?.Results
+  const siteOptions = useMemo(() => {
+    if (atRoot) {
+      return browseItems.filter((row) => row.type === 'site')
+    }
+    if (!Array.isArray(rawRootResults)) return []
+    return rawRootResults.filter((row) => row?.type === 'site')
+  }, [atRoot, browseItems, rawRootResults])
 
   const rawRecycleResults = recycleApi.data?.Results
   const recycleProjection = useMemo(() => {
@@ -823,6 +844,13 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         atRoot={atRoot}
         path={path}
         onNavigate={handleNavigate}
+        siteOptions={siteOptions}
+        recentSites={recentSites}
+        onSiteSwitch={(nextSite) => {
+          if (!nextSite?.id) return
+          exitRecycleMode()
+          setBrowserLocation(nextSite)
+        }}
         showStorage={showStorage}
         onStorageClick={() => setStorageOpen(true)}
         showPermissions={showPermissions}
