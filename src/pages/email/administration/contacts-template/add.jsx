@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import ContactFormLayout from "../../../../components/CippFormPages/CippAddEditContact";
 

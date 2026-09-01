@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { DeleteForever, EventRepeat, ShoppingCart } from "@mui/icons-material";

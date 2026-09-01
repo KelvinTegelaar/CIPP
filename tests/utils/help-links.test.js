@@ -15,6 +15,7 @@ const NO_DOCS_YET = new Set([
   '/onboardingv2',
   '/identity/reports/group-usage',
   '/email/reports/mail-flow-statistics',
+  '/identity/administration/jit-role-templates',
 ])
 
 // Same resolution getHelpLinks uses: a nav item's docsPath overrides the pathname-derived

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 import { useSettings } from "../../../../hooks/use-settings";

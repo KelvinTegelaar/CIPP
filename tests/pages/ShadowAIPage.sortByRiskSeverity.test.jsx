@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sortByRiskSeverity } from '../../src/pages/copilot/shadow-ai/index.js'
+import { sortByRiskSeverity } from '../../src/pages/copilot/shadow-ai/index'
 
 describe('sortByRiskSeverity', () => {
   it('orders Low, Medium, High regardless of input order', () => {

@@ -13,7 +13,7 @@ import {
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 import { ApiGetCall } from "../../../../api/ApiCall";

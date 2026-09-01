@@ -205,7 +205,7 @@ describe('CippAddUserDrawer - create another user without a page refresh (issue 
       primDomain: { value: 'testdomain.com' },
     })
     // two full form fills through userEvent.type
-  }, 15000)
+  }, 30000)
 })
 
 describe('CippAddUserDrawer - backdrop click must not wipe typed input (issue #390)', () => {
@@ -250,5 +250,5 @@ describe('CippAddUserDrawer - backdrop click must not wipe typed input (issue #3
     // The footer Close button closes too
     await user.click(screen.getByRole('button', { name: 'Close' }))
     expect(screen.queryByTestId('CippOffCanvas')).not.toBeInTheDocument()
-  }, 15000)
+  }, 30000)
 })

@@ -9,7 +9,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 const nextAliases = {
   // stub for mui-tiptap's uninstalled required peer, see mocks/tiptap-extension-image.js
   '@tiptap/extension-image': path.resolve(dirname, 'tests/mocks/tiptap-extension-image.js'),
-  'next/dynamic': path.resolve(dirname, 'tests/mocks/next-dynamic.js'),
+  'next/dynamic': path.resolve(dirname, 'tests/mocks/next-dynamic.jsx'),
   'next/router': path.resolve(dirname, 'tests/mocks/next-router.js'),
   'next/navigation': path.resolve(dirname, 'tests/mocks/next-navigation.js'),
   'next/head': path.resolve(dirname, 'tests/mocks/next-head.js'),
@@ -35,13 +35,6 @@ const requireContextPlugin = {
 }
 
 export default defineConfig({
-  esbuild: {
-    jsx: 'automatic',
-    jsxImportSource: 'react',
-    loader: 'jsx',
-    include: /(src|tests|\.storybook)\/.*\.(js|jsx)$/,
-    exclude: [],
-  },
   resolve: { alias: nextAliases },
   define: { 'process.env': '{}' },
   test: {
@@ -58,13 +51,6 @@ export default defineConfig({
         plugins: [requireContextPlugin],
         resolve: { alias: nextAliases },
         define: { 'process.env': '{}' },
-        esbuild: {
-          jsx: 'automatic',
-          jsxImportSource: 'react',
-          loader: 'jsx',
-          include: /(src|tests|\.storybook)\/.*\.(js|jsx)$/,
-          exclude: [],
-        },
         test: {
           name: 'unit',
           environment: 'jsdom',
@@ -72,6 +58,10 @@ export default defineConfig({
           setupFiles: ['./vitest.setup.js'],
           include: ['tests/**/*.test.{js,jsx}'],
           css: false,
+          // vite 8's transform pipeline imports modules noticeably slower than
+          // vite 7's esbuild did; interaction-heavy tests need the headroom
+          // (the coverage script already runs with --testTimeout=30000)
+          testTimeout: 15000,
           teardownTimeout: 5000,
           forceExit: true,
         },
@@ -95,15 +85,17 @@ export default defineConfig({
             'msw/browser',
             'msw-storybook-addon/csf3',
           ],
-          esbuildOptions: {
-            jsx: 'automatic',
-            loader: { '.js': 'jsx' },
-          },
         },
         test: {
           name: 'storybook',
           globals: true,
           setupFiles: ['./.storybook/vitest.setup.js'],
+          // same vite 8 slowdown headroom as the unit project: the heaviest
+          // interaction stories exceed the 15s browser-mode default when the
+          // whole suite shares one chromium instance. Must stay above the 30s
+          // asyncUtilTimeout in .storybook/vitest.setup.js so a slow waitFor
+          // reports its own error instead of a bare test timeout
+          testTimeout: 60000,
           browser: {
             enabled: true,
             provider: playwright(),

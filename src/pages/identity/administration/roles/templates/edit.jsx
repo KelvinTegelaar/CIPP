@@ -8,7 +8,7 @@ import {
   CippPIMRoleSettingsTemplateForm,
   templateToFormValues,
 } from '../../../../../components/CippFormPages/CippPIMRoleSettingsTemplateForm'
-import { Layout as DashboardLayout } from '../../../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../../../layouts/index'
 
 const Page = () => {
   const router = useRouter()

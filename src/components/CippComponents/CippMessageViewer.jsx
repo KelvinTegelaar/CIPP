@@ -49,7 +49,7 @@ import { CippTimeAgo } from "./CippTimeAgo";
 import { CippCodeBlock } from "./CippCodeBlock";
 import DOMPurify from "dompurify";
 import ReactHtmlParser from "react-html-parser";
-import { FileDropzone } from "../file-dropzone.js";
+import { FileDropzone } from "../file-dropzone";
 import CippPageCard from "../CippCards/CippPageCard";
 import {
   MoonIcon,

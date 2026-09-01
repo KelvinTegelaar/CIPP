@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";

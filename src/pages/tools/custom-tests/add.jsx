@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from '../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../layouts/index'
 import { Controller, useForm, useFormState } from 'react-hook-form'
 import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
 import { useRouter } from 'next/router'

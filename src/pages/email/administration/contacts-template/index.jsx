@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { Button } from "@mui/material";
 import Link from "next/link";
 import { RocketLaunch } from "@mui/icons-material";

@@ -192,8 +192,8 @@ describe('what the not-a-preset option is called', () => {
     // The executive report used to carry its own copy of the option, which is how the two drifted.
     const { readFileSync } = await import('node:fs')
     for (const file of [
-      'src/components/ExecutiveReportButton.js',
-      'src/pages/tools/report-builder/builder/index.js',
+      'src/components/ExecutiveReportButton.jsx',
+      'src/pages/tools/report-builder/builder/index.jsx',
       'src/components/CippSettings/CippBrandingSettings.jsx',
     ]) {
       const source = readFileSync(file, 'utf8').replace(/\/\/[^\n]*/g, '')

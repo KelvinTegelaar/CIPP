@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
 import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";

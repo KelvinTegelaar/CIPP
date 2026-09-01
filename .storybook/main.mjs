@@ -51,7 +51,7 @@ const config = {
             dirname,
             '../tests/mocks/tiptap-extension-image.js',
           ),
-          'next/dynamic': path.resolve(dirname, '../tests/mocks/next-dynamic.js'),
+          'next/dynamic': path.resolve(dirname, '../tests/mocks/next-dynamic.jsx'),
           'next/router': path.resolve(dirname, '../tests/mocks/next-router.js'),
           'next/navigation': path.resolve(dirname, '../tests/mocks/next-navigation.js'),
           'next/head': path.resolve(dirname, '../tests/mocks/next-head.js'),
@@ -66,16 +66,6 @@ const config = {
         'process.env': '{}',
         global: 'window',
       },
-      esbuild: {
-        ...config.esbuild,
-        // The codebase uses .js files with JSX syntax. Vite's default esbuild loader
-        // only handles JSX in .jsx files, so we override the loader for all .js files.
-        jsx: 'automatic',
-        jsxImportSource: 'react',
-        loader: 'jsx',
-        include: /(src|tests|\.storybook)\/.*\.(js|jsx)$/,
-        exclude: [],
-      },
       build: {
         ...config.build,
         rollupOptions: {
@@ -86,20 +76,6 @@ const config = {
             // since everything runs client-side, but Rollup treats them as errors.
             if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return
             warn(warning)
-          },
-        },
-      },
-      optimizeDeps: {
-        ...config.optimizeDeps,
-        // Same JSX-in-.js fix as above, but for Vite's dependency pre-bundling step
-        // (esbuild runs separately for optimizeDeps vs transform).
-        esbuildOptions: {
-          ...config.optimizeDeps?.esbuildOptions,
-          jsx: 'automatic',
-          jsxImportSource: 'react',
-          loader: {
-            '.js': 'jsx',
-            '.jsx': 'jsx',
           },
         },
       },

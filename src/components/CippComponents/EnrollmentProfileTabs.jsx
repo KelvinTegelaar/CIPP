@@ -23,7 +23,7 @@ import {
 } from '@mui/icons-material'
 import { UserGroupIcon } from '@heroicons/react/24/outline'
 import { CippHead } from './CippHead.jsx'
-import { CippDataTable } from '../CippTable/CippDataTable.js'
+import { CippDataTable } from '../CippTable/CippDataTable'
 import { CippInfoBar } from '../CippCards/CippInfoBar.jsx'
 import { CippApiDialog } from './CippApiDialog.jsx'
 import { CippAutopilotProfileDrawer } from './CippAutopilotProfileDrawer.jsx'

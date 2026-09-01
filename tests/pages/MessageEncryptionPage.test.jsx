@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '../test-utils'
-import Page from '../../src/pages/email/tools/message-encryption/index.js'
+import Page from '../../src/pages/email/tools/message-encryption/index'
 
 vi.mock('../../src/api/ApiCall', async () =>
   (await import('../mocks/api-call')).apiCallMock()

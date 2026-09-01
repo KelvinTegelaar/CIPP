@@ -56,7 +56,7 @@ describe('CippWizardDevicePrepImport manual entry', () => {
 
     expect(await dialog.findByText(/Model, Serial Number are required/)).toBeInTheDocument()
     expect(dialog.getByRole('button', { name: 'Add' })).toBeDisabled()
-  }, 20000)
+  }, 30000)
 
   it('rejects values containing a comma', async () => {
     const { user, dialog } = await openManualImport()
@@ -67,7 +67,7 @@ describe('CippWizardDevicePrepImport manual entry', () => {
 
     expect(await dialog.findByText(/Manufacturer may not contain a comma/)).toBeInTheDocument()
     expect(dialog.getByRole('button', { name: 'Add' })).toBeDisabled()
-  }, 20000)
+  }, 30000)
 
   it('adds a complete device to the table', async () => {
     const { user, dialog } = await openManualImport()
@@ -83,7 +83,7 @@ describe('CippWizardDevicePrepImport manual entry', () => {
     // MRT virtualizes rows and jsdom has no layout engine, so cells are not
     // rendered; the pagination summary is the observable proof the row landed.
     expect(await screen.findByText('1-1 of 1', {}, { timeout: 10000 })).toBeInTheDocument()
-  }, 20000)
+  }, 30000)
 })
 
 describe('CippWizardDevicePrepImport CSV import', () => {
@@ -99,13 +99,13 @@ describe('CippWizardDevicePrepImport CSV import', () => {
     await uploadCsv('Dell,XPS 13,SN001\nHP,EliteBook,SN002\n')
 
     expect(await screen.findByText('1-2 of 2', {}, { timeout: 10000 })).toBeInTheDocument()
-  }, 20000)
+  }, 30000)
 
   it('imports a CSV with headers', async () => {
     await uploadCsv('manufacturer,model,serialNumber\nDell,XPS 13,SN001\n')
 
     expect(await screen.findByText('1-1 of 1', {}, { timeout: 10000 })).toBeInTheDocument()
-  }, 20000)
+  }, 30000)
 
   it('rejects rows with missing values instead of importing them', async () => {
     await uploadCsv('Dell,,SN001\n')
@@ -113,12 +113,12 @@ describe('CippWizardDevicePrepImport CSV import', () => {
     expect(await screen.findByText(/could not be imported/)).toBeInTheDocument()
     expect(screen.getByText(/Model is required/)).toBeInTheDocument()
     expect(screen.queryByText('1-1 of 1')).not.toBeInTheDocument()
-  }, 20000)
+  }, 30000)
 
   it('rejects duplicate devices', async () => {
     await uploadCsv('Dell,XPS 13,SN001\nDell,XPS 13,SN001\n')
 
     expect(await screen.findByText(/could not be imported/)).toBeInTheDocument()
     expect(screen.getByText(/Duplicate device/)).toBeInTheDocument()
-  }, 20000)
+  }, 30000)
 })

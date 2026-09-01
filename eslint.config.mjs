@@ -22,6 +22,9 @@ const eslintConfig = defineConfig([
           maximum: 10,
         },
       ],
+      // JSX must live in .jsx files: vite 8's oxc transform (vitest/storybook)
+      // decides JSX handling purely by file extension
+      'react/jsx-filename-extension': ['error', { extensions: ['.jsx'] }],
     },
   },
   {

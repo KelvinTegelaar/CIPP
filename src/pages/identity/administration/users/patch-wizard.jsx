@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
 import CippWizardPage from '../../../../components/CippWizard/CippWizardPage.jsx'
 import {
   Stack,

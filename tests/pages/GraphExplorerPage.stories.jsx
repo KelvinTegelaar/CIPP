@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
-import Page from '../../src/pages/tenant/tools/graph-explorer/index.js'
+import Page from '../../src/pages/tenant/tools/graph-explorer/index'
 
 const handlers = [
   http.get('/api/ListGraphExplorerPresets', () => HttpResponse.json({ Results: [] })),

@@ -1,6 +1,6 @@
 import { Box, Button, Container, Stack, Typography, SvgIcon, Skeleton } from '@mui/material'
 import { Grid } from '@mui/system'
-import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { useForm, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { Add, SaveRounded } from '@mui/icons-material'

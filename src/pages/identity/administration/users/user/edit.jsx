@@ -1,5 +1,5 @@
 import CippFormPage from '../../../../../components/CippFormPages/CippFormPage'
-import { Layout as DashboardLayout } from '../../../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../../../layouts/index'
 import { useForm, useFormState } from 'react-hook-form'
 import { useSettings } from '../../../../../hooks/use-settings'
 import CippAddEditUser from '../../../../../components/CippFormPages/CippAddEditUser'

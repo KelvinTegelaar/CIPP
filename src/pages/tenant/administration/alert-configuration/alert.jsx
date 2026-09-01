@@ -23,7 +23,7 @@ import alertList from '../../../../data/alerts.json'
 import auditLogTemplates from '../../../../data/AuditLogTemplates'
 import auditLogSchema from '../../../../data/AuditLogSchema.json'
 import { Save, Delete } from '@mui/icons-material'
-import { Layout as DashboardLayout } from '../../../../layouts/index.js' // Dashboard layout
+import { Layout as DashboardLayout } from '../../../../layouts/index' // Dashboard layout
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
 import { PlusIcon } from '@heroicons/react/24/outline'

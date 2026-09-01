@@ -220,7 +220,7 @@ describe("mobile layout patterns", () => {
   // disagree, and a width with no side nav and no way to open the drawer has no nav at all.
   it("keys layout chrome off the shared breakpoint hook, not its own media query", () => {
     const offenders = [];
-    for (const name of ["index.js", "top-nav.js"]) {
+    for (const name of ["index.jsx", "top-nav.jsx"]) {
       const source = stripComments(fs.readFileSync(path.join(SRC, "layouts", name), "utf8"));
       source.split("\n").forEach((line, i) => {
         if (/useMediaQuery\(.*breakpoints\.(down|up|between)\(/.test(line)) {

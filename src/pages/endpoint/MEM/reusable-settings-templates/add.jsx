@@ -14,7 +14,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useMemo } from "react";
 import { useSettings } from "../../../../hooks/use-settings";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 
 const Page = () => {

@@ -3,7 +3,7 @@ import { Alert, Box, Divider, IconButton, Tooltip, Typography } from "@mui/mater
 import { Sync } from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
 import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";

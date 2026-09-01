@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders, settingsWith } from '../test-utils'
-import Page from '../../src/pages/tenant/tools/graph-explorer/index.js'
+import Page from '../../src/pages/tenant/tools/graph-explorer/index'
 import { ApiGetCallWithPagination } from '../../src/api/ApiCall'
 
 vi.mock('../../src/api/ApiCall', async () => (await import('../mocks/api-call')).apiCallMock())
