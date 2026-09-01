@@ -136,7 +136,7 @@
     "eslint-config-next": "^16.2.10",
     "eslint-config-prettier": "^10.1.8",
     "jsdom": "30.0.1",
-    "msw": "2.12.14",
+    "msw": "2.15.0",
     "msw-storybook-addon": "3.0.0",
     "playwright": "1.59.1",
     "prettier": "^3.9.6",
