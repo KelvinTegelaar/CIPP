@@ -23,6 +23,8 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { riskChartColor, sortByRiskSeverity } from '../../../utils/shadow-ai'
 import { Grid } from '@mui/system'
 import {
   ArrowPathIcon,
@@ -203,20 +205,8 @@ const syncRows = [
   { Name: 'OAuth2PermissionGrants' },
 ]
 
-// CippChartCard colors slices by index (green, orange, red, neutral), but byRisk comes back
-// from the API in alphabetical order. Reorder to Low, Medium, High so severity lines up with
-// color; anything unrecognized sorts last and picks up the neutral color.
-const RISK_SEVERITY_ORDER = ['low', 'medium', 'high']
-export const sortByRiskSeverity = (byRisk) =>
-  [...byRisk].sort((a, b) => {
-    const severityIndex = (item) => {
-      const index = RISK_SEVERITY_ORDER.indexOf((item.risk ?? '').toLowerCase())
-      return index === -1 ? RISK_SEVERITY_ORDER.length : index
-    }
-    return severityIndex(a) - severityIndex(b)
-  })
-
 const Page = () => {
+  const theme = useTheme()
   const currentTenant = useSettings().currentTenant
   const syncDialog = useDialog()
   const queryKey = `ListShadowAI-${currentTenant}`
@@ -233,6 +223,7 @@ const Page = () => {
   const summary = data.summary ?? {}
   const byCategory = data.byCategory ?? []
   const byRisk = sortByRiskSeverity(data.byRisk ?? [])
+  const byRiskChartColors = byRisk.map((item) => riskChartColor(item.risk, theme))
   const topTools = data.topTools ?? []
   const needsSync = shadowAi.isSuccess && !summary.intuneSynced && !summary.entraSynced
   const showCharts = shadowAi.isFetching || byCategory.length > 0
@@ -423,6 +414,7 @@ const Page = () => {
                     chartType="pie"
                     labels={byRisk.map((item) => item.risk)}
                     chartSeries={byRisk.map((item) => item.tools)}
+                    colors={byRiskChartColors}
                     totalLabel="Tools"
                   />
                 </Grid>

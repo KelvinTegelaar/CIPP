@@ -13,7 +13,7 @@ import { useTheme } from "@mui/material/styles";
 import { ActionsMenu } from "../actions-menu";
 import { Chart } from "../chart";
 
-const useChartOptions = (labels, chartType) => {
+const useChartOptions = (labels, chartType, colors) => {
   const theme = useTheme();
 
   return {
@@ -32,7 +32,7 @@ const useChartOptions = (labels, chartType) => {
         },
       },
     },
-    colors: [
+    colors: colors ?? [
       theme.palette.success.main,
       theme.palette.warning.main,
       theme.palette.error.main,
@@ -104,10 +104,11 @@ export const CippChartCard = ({
   onClick,
   totalLabel = "Total",
   customTotal,
+  colors,
 }) => {
   const [range, setRange] = useState("Last 7 days");
   const [barSeries, setBarSeries] = useState([]);
-  const chartOptions = useChartOptions(labels, chartType);
+  const chartOptions = useChartOptions(labels, chartType, colors);
   chartSeries = chartSeries.filter((item) => item !== null);
   // Round to 2 decimals - summing fractional series values accumulates floating-point
   // artifacts (e.g. 175.73000000000002). Integer series are unaffected.
