@@ -174,7 +174,7 @@ export const Layout = (props) => {
                   }
 
                   return false
-                })
+                });
               })
               if (!hasPermission) {
                 return null
@@ -191,7 +191,7 @@ export const Layout = (props) => {
 
             return item
           })
-          .filter(Boolean)
+          .filter(Boolean);
       }
       const filteredMenu = filterItemsByRole(nativeMenuItems)
       setMenuItems(filteredMenu)

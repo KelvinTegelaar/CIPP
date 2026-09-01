@@ -91,7 +91,9 @@ const Page = () => {
                 checks every tenant against it twice a day, shows exactly what
                 deviates, and - if you want - fixes it automatically.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 1. Create a baseline and add standards from the catalog.
                 <br />
                 2. Assign the tenants or tenant groups it applies to.
@@ -117,7 +119,7 @@ const Page = () => {
           </Card>
         </Container>
       </>
-    )
+    );
   }
 
   return (
@@ -239,7 +241,9 @@ const Page = () => {
                   <CardHeader
                     title="Tenants Needing Attention"
                     subheader="Open a tenant to triage its deviations or generate a board-ready What-if report."
-                    subheaderTypographyProps={{ variant: 'caption' }}
+                    slotProps={{
+                      subheader: { variant: 'caption' }
+                    }}
                   />
                   <Divider />
                   <Stack spacing={2} sx={{ p: 2 }}>
@@ -258,10 +262,11 @@ const Page = () => {
                       >
                         <Stack
                           direction="row"
-                          alignItems="center"
-                          justifyContent="space-between"
                           spacing={1}
-                        >
+                          sx={{
+                            alignItems: "center",
+                            justifyContent: "space-between"
+                          }}>
                           <Tooltip title={tenant.tenantFilter}>
                             <Typography variant="body2" noWrap>
                               {tenant.displayName}
@@ -269,9 +274,10 @@ const Page = () => {
                           </Tooltip>
                           <Typography
                             variant="caption"
-                            color="text.secondary"
-                            sx={{ flexShrink: 0 }}
-                          >
+                            sx={{
+                              color: "text.secondary",
+                              flexShrink: 0
+                            }}>
                             {tenant.alignedPercentage}%
                           </Typography>
                         </Stack>
@@ -313,7 +319,7 @@ const Page = () => {
         </Stack>
       </Container>
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => (

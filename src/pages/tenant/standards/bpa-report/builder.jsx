@@ -230,7 +230,13 @@ const Page = () => {
             </Grid>
           </CippButtonCard>
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ my: 3 }}>
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              my: 3
+            }}>
             <Typography variant="h5">Fields</Typography>
             <Button variant="outlined" size="small" onClick={handleAddBlock} startIcon={<Add />}>
               Add Field

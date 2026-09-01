@@ -42,14 +42,23 @@ export const CippCertificateAuthStep = (props) => {
     <Stack spacing={3}>
       <Stack spacing={2}>
         <Typography variant="h6">Certificate authentication</Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Switch this existing install to authenticate CIPP's application with the SAM certificate
           instead of the client secret, for every Graph and Exchange Online call. The client secret
           is kept in Key Vault as a rollback - turn this off to switch back at any time.
         </Typography>
 
         {certStatus.isSuccess && (
-          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+          <Stack
+            direction="row"
+            spacing={1}
+            useFlexGap
+            sx={{
+              alignItems: "center",
+              flexWrap: "wrap"
+            }}>
             <Chip
               size="small"
               color={configured ? "success" : "warning"}

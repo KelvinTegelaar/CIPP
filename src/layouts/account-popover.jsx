@@ -107,23 +107,28 @@ export const AccountPopover = (props) => {
   return (
     <>
       <Stack
-        alignItems="center"
         direction="row"
         onClick={popover.handleOpen}
         ref={popover.anchorRef}
         spacing={2}
-        sx={{ cursor: "pointer" }}
         {...other}
-      >
+        sx={[{
+          alignItems: "center",
+          cursor: "pointer"
+        }, ...(Array.isArray(other.sx) ? other.sx : [other.sx])]}>
         {defaultAvatar}
         <>
           {!mdDown && (
             <>
               <Box sx={{ minWidth: 100 }}>
-                <Typography color="neutral.400" variant="caption">
+                <Typography variant="caption" sx={{
+                  color: "neutral.400"
+                }}>
                   {orgData.data?.clientPrincipal?.userDetails?.split("@")?.[1]}
                 </Typography>
-                <Typography color="inherit" variant="subtitle2">
+                <Typography variant="subtitle2" sx={{
+                  color: "inherit"
+                }}>
                   {orgData.data?.clientPrincipal?.userDetails ?? "Not logged in"}
                 </Typography>
               </Box>
@@ -166,7 +171,9 @@ export const AccountPopover = (props) => {
           disableScrollLock
           onClose={popover.handleClose}
           open={popover.open}
-          PaperProps={{ sx: { width: 260 } }}
+          slotProps={{
+            paper: { sx: { width: 260 } }
+          }}
         >
           <List>
             {/* Pairs with the trigger above: the identity is either beside the avatar or here. */}

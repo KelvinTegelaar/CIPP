@@ -129,7 +129,9 @@ const Page = () => {
       {appRequest.isLoading && <CippFormSkeleton layout={[1, 1, 1]} />}
       {appRequest.isSuccess && !appData && (
         <Box sx={{ flexGrow: 1, py: 4 }}>
-          <Typography color="text.secondary">
+          <Typography sx={{
+            color: "text.secondary"
+          }}>
             No application registration found for this Application (client) ID.
           </Typography>
         </Box>
@@ -141,7 +143,7 @@ const Page = () => {
         </Box>
       )}
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

@@ -23,19 +23,21 @@ export const CippWizardActionsRow = (props) => {
     <Stack
       spacing={2}
       direction={{ xs: "column-reverse", md: "row" }}
-      alignItems={{ xs: "stretch", md: "center" }}
-      justifyContent="flex-end"
       sx={{
+        alignItems: { xs: "stretch", md: "center" },
+        justifyContent: "flex-end",
+
         // In dialog mode this row is portalled into DialogActions, which is a flex
         // container that would otherwise size it to its widest label.
         width: { xs: "100%", md: "auto" },
+
         "& .MuiButton-root": {
           width: { xs: "100%", md: "auto" },
           minHeight: { xs: 44, md: "auto" },
         },
-        ...sx,
-      }}
-    >
+
+        ...sx
+      }}>
       {children}
     </Stack>
   );

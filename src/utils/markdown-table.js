@@ -97,5 +97,5 @@ export const normaliseTableRow = (cells, columnCount) => {
  */
 export const escapeTableCell = (value) => {
   if (value === null || value === undefined) return ''
-  return String(value).replace(/\|/g, '\\|').replace(/\r?\n/g, ' ').trim()
+  return String(value).replace(/\|/g, '\\|').replace(/\r?\n/g, ' ').trim();
 }

@@ -65,7 +65,9 @@ const Page = () => {
         onApply={setDateParams}
       />
       {!statsQuery.isFetching && health.total > 0 && (
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} useFlexGap sx={{
+          flexWrap: "wrap"
+        }}>
           {health.failed === 0 ? (
             <Chip size="small" color="success" label="All log searches healthy" />
           ) : (

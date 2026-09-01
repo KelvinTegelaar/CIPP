@@ -248,10 +248,11 @@ const Page = () => {
                 title={
                   <Stack
                     direction="row"
-                    sx={{ display: "flex" }}
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
+                    sx={{
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      display: "flex"
+                    }}>
                     <Box>Test Results</Box>
                     <IconButton variant="outlined" onClick={() => setTestRunning(false)}>
                       <SvgIcon fontSize="small">

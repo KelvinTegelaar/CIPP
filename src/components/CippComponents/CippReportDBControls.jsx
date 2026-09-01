@@ -130,7 +130,9 @@ export function useCippReportDB(config) {
 
   // The controls JSX
   const controls = (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction="row" spacing={1} sx={{
+      alignItems: "center"
+    }}>
       {useReportDB && (
         <>
           <CippQueueTracker queueId={syncQueueId} queryKey={resolvedQueryKey} title={syncTitle} />

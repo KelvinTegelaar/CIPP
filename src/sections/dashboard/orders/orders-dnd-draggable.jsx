@@ -29,16 +29,19 @@ export const OrdersDndDraggable = (props) => {
           }}
           {...provided.draggableProps}>
           <Stack
-            alignItems="center"
             direction="row"
-            justifyContent="space-between"
             spacing={1}
-            sx={{ p: 2 }}
-          >
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              p: 2
+            }}>
             <Stack
-              alignItems="center"
               direction="row"
               spacing={1}
+              sx={{
+                alignItems: "center"
+              }}
             >
               <IconButton
                 size="small"
@@ -47,10 +50,12 @@ export const OrdersDndDraggable = (props) => {
               </IconButton>
               <Link
                 href={paths.dashboard.orders.details}
-                color="text.primary"
                 component={NextLink}
                 underline="none"
                 variant="h5"
+                sx={{
+                  color: "text.primary"
+                }}
               >
                 #{order.id}
               </Link>

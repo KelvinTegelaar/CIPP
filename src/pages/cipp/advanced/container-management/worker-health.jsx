@@ -119,7 +119,9 @@ const WorkerTable = ({ workers, title }) => {
 
   return (
     <Card sx={{ width: "100%", height: "100%" }}>
-      <CardHeader title={title} titleTypographyProps={{ variant: "h6" }} />
+      <CardHeader title={title} slotProps={{
+        title: { variant: "h6" }
+      }} />
       <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
         <TableContainer>
           <Table size="small">
@@ -141,7 +143,9 @@ const WorkerTable = ({ workers, title }) => {
               {workers.map((w) => (
                 <TableRow key={w.WorkerId}>
                   <TableCell>
-                    <Typography variant="body2" fontFamily="monospace">
+                    <Typography variant="body2" sx={{
+                      fontFamily: "monospace"
+                    }}>
                       W{w.WorkerId}
                     </Typography>
                   </TableCell>
@@ -158,7 +162,9 @@ const WorkerTable = ({ workers, title }) => {
                   <TableCell align="right">{formatDuration(w.LastDurationMs)}</TableCell>
                   <TableCell align="right">
                     <Tooltip title={`Total ${w.TotalAllocMB ?? 0} MB • last ${w.LastAllocMB ?? 0} MB • avg ${w.AvgAllocMB ?? 0} MB / call`} arrow>
-                      <Typography variant="body2" fontWeight={500}>
+                      <Typography variant="body2" sx={{
+                        fontWeight: 500
+                      }}>
                         {w.TotalAllocMB != null ? `${w.TotalAllocMB} MB` : "—"}
                       </Typography>
                     </Tooltip>
@@ -235,12 +241,13 @@ const StartupTimingBar = ({ startup }) => {
     <Card>
       <CardHeader
         title="Startup Timing"
-        titleTypographyProps={{ variant: "subtitle1" }}
         avatar={<RocketLaunch fontSize="small" color="primary" />}
         subheader={`${startup.ReadinessMode} / ${startup.WarmupMode} — ${startup.CpuCount} CPUs, ${startup.HttpPoolSize}H + ${startup.BgPoolSize}BG — Total: ${formatDuration(totalMs)}`}
-        subheaderTypographyProps={{ variant: "caption" }}
         sx={{ pb: 0 }}
-      />
+        slotProps={{
+          title: { variant: "subtitle1" },
+          subheader: { variant: "caption" }
+        }} />
       <CardContent sx={{ pt: 1.5, pb: "12px !important" }}>
         {/* Single horizontal stacked bar */}
         <Box sx={{ display: "flex", height: 28, borderRadius: 1, overflow: "hidden", mb: 1.5 }}>
@@ -250,14 +257,18 @@ const StartupTimingBar = ({ startup }) => {
               arrow
               title={
                 <Box>
-                  <Typography variant="body2" fontWeight={600}>
+                  <Typography variant="body2" sx={{
+                    fontWeight: 600
+                  }}>
                     {seg.label}
                   </Typography>
                   <Typography variant="caption">
                     {formatDuration(seg.deltaMs)} (cumulative: {formatDuration(seg.cumMs)})
                   </Typography>
                   {seg.functions != null && (
-                    <Typography variant="caption" display="block">
+                    <Typography variant="caption" sx={{
+                      display: "block"
+                    }}>
                       {seg.functions} functions loaded
                     </Typography>
                   )}
@@ -290,17 +301,28 @@ const StartupTimingBar = ({ startup }) => {
           ))}
         </Box>
         {/* Legend */}
-        <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} useFlexGap sx={{
+          flexWrap: "wrap"
+        }}>
           {segments.map((seg) => (
-            <Stack key={seg.key} direction="row" alignItems="center" spacing={0.5}>
+            <Stack key={seg.key} direction="row" spacing={0.5} sx={{
+              alignItems: "center"
+            }}>
               <Box sx={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: seg.color, flexShrink: 0 }} />
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 {seg.label}
                 {seg.functions != null && ` (${seg.functions})`}
               </Typography>
             </Stack>
           ))}
-          <Typography variant="caption" color="text.secondary" sx={{ ml: "auto !important" }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              ml: "auto !important"
+            }}>
             Modules: {startup.SharedModuleCount} shared
             {startup.HttpOnlyModuleCount > 0 && `, ${startup.HttpOnlyModuleCount} HTTP`}
             {startup.BgOnlyModuleCount > 0 && `, ${startup.BgOnlyModuleCount} BG`}
@@ -405,10 +427,22 @@ const CompactStatsRow = ({ snapshot }) => {
                   </TableCell>
                   {sec.stats.map((s) => (
                     <TableCell key={s.k} align="center">
-                      <Typography variant="caption" color="text.secondary" display="block" lineHeight={1.2}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "text.secondary",
+                          display: "block",
+                          lineHeight: 1.2
+                        }}>
                         {s.k}
                       </Typography>
-                      <Typography variant="body2" fontWeight={600} color={s.w ? "error.main" : "text.primary"} lineHeight={1.3}>
+                      <Typography
+                        variant="body2"
+                        color={s.w ? "error.main" : "text.primary"}
+                        sx={{
+                          fontWeight: 600,
+                          lineHeight: 1.3
+                        }}>
                         {s.v}
                       </Typography>
                     </TableCell>
@@ -433,10 +467,14 @@ const HistoryChart = ({ data, rangeMinutes, title, icon, children }) => {
   if (!data || data.length === 0) {
     return (
       <Card>
-        <CardHeader title={title} titleTypographyProps={{ variant: "h6" }} avatar={icon} />
+        <CardHeader title={title} avatar={icon} slotProps={{
+          title: { variant: "h6" }
+        }} />
         <CardContent>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: 200 }}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               No historical data available yet — data collection starts after 60 seconds
             </Typography>
           </Box>
@@ -447,7 +485,9 @@ const HistoryChart = ({ data, rangeMinutes, title, icon, children }) => {
 
   return (
     <Card>
-      <CardHeader title={title} titleTypographyProps={{ variant: "h6" }} avatar={icon} />
+      <CardHeader title={title} avatar={icon} slotProps={{
+        title: { variant: "h6" }
+      }} />
       <CardContent sx={{ pt: 0 }}>
         <Box sx={{ height: 250 }}>
           {/* numeric height, recharts warns before its first measure when both sizes are percentages */}
@@ -723,11 +763,18 @@ const Page = () => {
         <Container maxWidth="xl">
           <Stack spacing={2}>
             {/* ── Header toolbar ── */}
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}>
               {/* Empty Box keeps the toolbar on the right when the mobile tab picker has
                   already said "Worker Health" directly above this row. */}
               {titleClaimed ? <Box /> : <Typography variant="h4">Worker Health</Typography>}
-              <Stack direction="row" alignItems="center" spacing={1}>
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 {isImported && (
                   <Chip
                     label={`Viewing imported data (${importedData.exportedAt ? new Date(importedData.exportedAt).toLocaleString() : "unknown"})`}
@@ -739,7 +786,9 @@ const Page = () => {
                 )}
                 {!isImported && healthQuery.isFetching && <CircularProgress size={16} />}
                 {!isImported && snapshot && (
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     Uptime: {formatUptime(snapshot.UptimeSeconds)}
                   </Typography>
                 )}
@@ -792,11 +841,15 @@ const Page = () => {
             {/* ── Job Queue ── */}
             {isImported && importedJobs ? (
               <Card>
-                <CardHeader title="Job Queue (imported)" titleTypographyProps={{ variant: "h6" }} />
+                <CardHeader title="Job Queue (imported)" slotProps={{
+                  title: { variant: "h6" }
+                }} />
                 <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
                   {importedJobs.length === 0 ? (
                     <Box sx={{ p: 3, textAlign: "center" }}>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         No job data was captured in this export
                       </Typography>
                     </Box>
@@ -894,10 +947,11 @@ const Page = () => {
             <Card>
               <CardHeader
                 title="Historical Trends"
-                titleTypographyProps={{ variant: "h6" }}
                 avatar={<Timeline color="primary" />}
                 action={
-                  <Stack direction="row" alignItems="center" spacing={1}>
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     {!isImported && (
                       <Tooltip title="Refresh history data">
                         <IconButton size="small" onClick={handleRefreshHistory}>
@@ -920,6 +974,9 @@ const Page = () => {
                     </ToggleButtonGroup>
                   </Stack>
                 }
+                slotProps={{
+                  title: { variant: "h6" }
+                }}
               />
             </Card>
 
@@ -1137,7 +1194,6 @@ const Page = () => {
                 <Card>
                   <CardHeader
                     title="TestData Cache"
-                    titleTypographyProps={{ variant: "h6" }}
                     subheader={`${diag.ActiveEntries ?? 0} active / ${diag.ExpiredEntries ?? 0} expired — ${diag.EstimatedTotalMB ?? 0} MB estimated`}
                     action={
                       <Chip
@@ -1146,15 +1202,27 @@ const Page = () => {
                         size="small"
                       />
                     }
+                    slotProps={{
+                      title: { variant: "h6" }
+                    }}
                   />
                   <CardContent sx={{ pt: 0, pb: types.length > 0 ? 2 : "12px !important" }}>
                     {/* Capacity bar */}
                     <Box sx={{ mb: 2 }}>
-                      <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
-                        <Typography variant="caption" color="text.secondary">
+                      <Stack
+                        direction="row"
+                        sx={{
+                          justifyContent: "space-between",
+                          mb: 0.5
+                        }}>
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           Capacity
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           {trackedMB} / {maxMB} MB ({Math.round(memPct)}%)
                         </Typography>
                       </Stack>
@@ -1170,15 +1238,22 @@ const Page = () => {
                       {cacheStats.map((s) => {
                         const cell = (
                           <Box sx={{ minWidth: 80 }}>
-                            <Typography variant="caption" color="text.secondary" display="block" lineHeight={1.2}>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: "text.secondary",
+                                display: "block",
+                                lineHeight: 1.2
+                              }}>
                               {s.k}
                             </Typography>
                             <Typography
                               variant="body2"
-                              fontWeight={600}
                               color={s.w ? "error.main" : "text.primary"}
-                              lineHeight={1.3}
-                            >
+                              sx={{
+                                fontWeight: 600,
+                                lineHeight: 1.3
+                              }}>
                               {s.v}
                             </Typography>
                           </Box>

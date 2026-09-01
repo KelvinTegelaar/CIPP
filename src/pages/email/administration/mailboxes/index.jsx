@@ -99,7 +99,9 @@ const Page = () => {
           </CippAnonymizedReportAlert>
         }
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <CippSharedMailboxDrawer />
           </Stack>
         }
@@ -107,7 +109,7 @@ const Page = () => {
       />
       {reportDB.syncDialog}
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>

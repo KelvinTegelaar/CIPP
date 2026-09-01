@@ -86,7 +86,9 @@ export const CippAlertSnoozeDialog = ({
               bgcolor: 'action.hover',
             }}
           >
-            <Typography variant="overline" color="text.secondary">
+            <Typography variant="overline" sx={{
+              color: "text.secondary"
+            }}>
               {alertLabel}
             </Typography>
             {fields.length > 0 ? (
@@ -95,9 +97,11 @@ export const CippAlertSnoozeDialog = ({
                   <Box key={field.label} sx={{ display: 'flex', gap: 1.5 }}>
                     <Typography
                       variant="caption"
-                      color="text.secondary"
-                      sx={{ minWidth: 104, flexShrink: 0 }}
-                    >
+                      sx={{
+                        color: "text.secondary",
+                        minWidth: 104,
+                        flexShrink: 0
+                      }}>
                       {field.label}
                     </Typography>
                     <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
@@ -115,7 +119,12 @@ export const CippAlertSnoozeDialog = ({
         )}
         {!submitted ? (
           <Box sx={{ mt: 1 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mb: 1
+              }}>
               Choose how long to snooze this specific alert item. It will not trigger notifications
               until the snooze expires.
             </Typography>
@@ -153,5 +162,5 @@ export const CippAlertSnoozeDialog = ({
         )}
       </DialogActions>
     </Dialog>
-  )
+  );
 }

@@ -197,7 +197,9 @@ const SingleTenantView = ({ tenant }) => {
             <CardHeader
               title="Microsoft Defender for Endpoint - Onboarding Status"
               action={
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
                   <CippQueueTracker
                     queueId={syncQueueId}
                     queryKey={`MDEOnboarding-${tenant}`}
@@ -222,7 +224,9 @@ const SingleTenantView = ({ tenant }) => {
                 <CircularProgress />
               ) : (
                 <Stack spacing={2}>
-                  <Stack direction="row" spacing={2} alignItems="center">
+                  <Stack direction="row" spacing={2} sx={{
+                    alignItems: "center"
+                  }}>
                     <Typography variant="body1">Status:</Typography>
                     <Chip
                       label={statusLabels[status] || status}
@@ -231,13 +235,17 @@ const SingleTenantView = ({ tenant }) => {
                     />
                   </Stack>
                   {item?.lastHeartbeatDateTime && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       Last heartbeat:{" "}
                       {new Date(item.lastHeartbeatDateTime).toLocaleString()}
                     </Typography>
                   )}
                   {item?.CacheTimestamp && (
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" sx={{
+                      color: "text.secondary"
+                    }}>
                       Last synced: {new Date(item.CacheTimestamp).toLocaleString()}
                     </Typography>
                   )}

@@ -22,65 +22,78 @@ export const PageHeading2 = () => (
       </Button>
     </div>
     <Stack
-      alignItems="center"
       direction="row"
-      flexWrap="wrap"
-      gap={2}
-      justifyContent="space-between"
-    >
+      sx={{
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 2,
+        justifyContent: "space-between"
+      }}>
       <Stack spacing={1}>
         <Typography variant="h4">
           Natalie Rusell
         </Typography>
         <Stack
-          alignItems="center"
           direction="row"
-          flexWrap="wrap"
-          gap={3}
-        >
+          sx={{
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 3
+          }}>
           <Stack
-            alignItems="center"
             direction="row"
             spacing={1}
+            sx={{
+              alignItems: "center"
+            }}
           >
             <SvgIcon fontSize="small">
               <CalendarIcon />
             </SvgIcon>
             <Typography
-              color="text.secondary"
               variant="body2"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               Since 14 Feb 2023
             </Typography>
           </Stack>
           <Stack
-            alignItems="center"
             direction="row"
             spacing={1}
+            sx={{
+              alignItems: "center"
+            }}
           >
             <SvgIcon fontSize="small">
               <BuildingOfficeIcon />
             </SvgIcon>
             <Typography
-              color="text.secondary"
               variant="body2"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               Berlin, Germany
             </Typography>
           </Stack>
           <Stack
-            alignItems="center"
             direction="row"
             spacing={1}
+            sx={{
+              alignItems: "center"
+            }}
           >
             <SvgIcon fontSize="small">
               <LinkIcon />
             </SvgIcon>
             <Typography
-              color="text.secondary"
-              sx={{ ml: 0.5 }}
               variant="body2"
-            >
+              sx={{
+                color: "text.secondary",
+                ml: 0.5
+              }}>
               Twitter
             </Typography>
           </Stack>

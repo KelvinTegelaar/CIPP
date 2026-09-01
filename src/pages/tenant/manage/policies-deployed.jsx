@@ -201,7 +201,7 @@ const PoliciesDeployedPage = () => {
   const getStandardName = (standardKey) => {
     const standardName = `standards.${standardKey}`
     const standard = getStandards().find((s) => s.name === standardName)
-    return standard?.label || standardKey.replace(/([A-Z])/g, ' $1').trim()
+    return standard?.label || standardKey.replace(/([A-Z])/g, ' $1').trim();
   }
 
   // Helper function to get template label from standards API data
@@ -536,7 +536,12 @@ const PoliciesDeployedPage = () => {
           {/* Standards Section */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Box display="flex" alignItems="center" gap={1}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1
+                }}>
                 <Security color="primary" />
                 <Typography variant="h6">Security Standards</Typography>
                 <Chip label={deployedStandards.length} size="small" color="primary" />
@@ -558,7 +563,12 @@ const PoliciesDeployedPage = () => {
           {/* Intune Policies Section */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Box display="flex" alignItems="center" gap={1}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1
+                }}>
                 <Devices color="primary" />
                 <Typography variant="h6">Intune Policies</Typography>
                 <Chip label={intunePolices.length} size="small" color="primary" />
@@ -587,7 +597,12 @@ const PoliciesDeployedPage = () => {
           {/* Conditional Access Policies Section */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Box display="flex" alignItems="center" gap={1}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1
+                }}>
                 <AdminPanelSettings color="primary" />
                 <Typography variant="h6">Conditional Access Policies</Typography>
                 <Chip label={conditionalAccessPolicies.length} size="small" color="primary" />
@@ -615,7 +630,7 @@ const PoliciesDeployedPage = () => {
         </Stack>
       </Box>
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 PoliciesDeployedPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

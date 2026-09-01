@@ -163,7 +163,9 @@ export const LicenseCard = ({ data, isLoading }) => {
                 height: "100%",
               }}
             >
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 No license data available
               </Typography>
             </Box>
@@ -192,28 +194,40 @@ export const LicenseCard = ({ data, isLoading }) => {
         ) : data && Array.isArray(data) && data.length > 0 ? (
           <Box sx={{ display: "flex", gap: 2 }}>
             <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Total Licenses
               </Typography>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" sx={{
+                fontWeight: "bold"
+              }}>
                 {stats.total.toLocaleString()}
               </Typography>
             </Box>
             <Divider orientation="vertical" flexItem />
             <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Assigned
               </Typography>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" sx={{
+                fontWeight: "bold"
+              }}>
                 {stats.assigned.toLocaleString()}
               </Typography>
             </Box>
             <Divider orientation="vertical" flexItem />
             <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Available
               </Typography>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" sx={{
+                fontWeight: "bold"
+              }}>
                 {stats.available.toLocaleString()}
               </Typography>
             </Box>
@@ -227,7 +241,9 @@ export const LicenseCard = ({ data, isLoading }) => {
               py: 2,
             }}
           >
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               No license statistics available
             </Typography>
           </Box>

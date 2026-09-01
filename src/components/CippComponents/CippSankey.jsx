@@ -159,9 +159,11 @@ export const CippSankey = ({ data, onNodeClick, onLinkClick }) => {
                 </Typography>
                 <Typography
                   variant="caption"
-                  color="text.secondary"
-                  sx={{ flexShrink: 0, fontVariantNumeric: "tabular-nums" }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    flexShrink: 0,
+                    fontVariantNumeric: "tabular-nums"
+                  }}>
                   {node.total}
                 </Typography>
               </ButtonBase>

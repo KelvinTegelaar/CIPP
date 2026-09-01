@@ -254,7 +254,9 @@ export const AuthMethodCard = ({ data, isLoading }) => {
                 width: "100%",
               }}
             >
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 No authentication method data available
               </Typography>
             </Box>
@@ -263,7 +265,9 @@ export const AuthMethodCard = ({ data, isLoading }) => {
       </CardContent>
       {!isLoading && processedData?.description && (
         <CardContent sx={{ pt: 2 }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             {processedData.description}
           </Typography>
         </CardContent>

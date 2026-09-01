@@ -280,9 +280,7 @@ const EditRoomMailbox = () => {
               label="Room Capacity"
               name="capacity"
               formControl={formControl}
-              InputProps={{
-                inputProps: { min: 0 },
-              }}
+              slotProps={{ htmlInput: { min: 0 } }}
             />
           </Grid>
           <Grid size={{ md: 4, xs: 12 }}>
@@ -295,9 +293,7 @@ const EditRoomMailbox = () => {
                 min: { value: 1, message: "Minimum duration is 1 minute" },
                 max: { value: 1440, message: "Maximum duration is 1440 minutes (24 hours)" },
               }}
-              InputProps={{
-                inputProps: { min: 1, max: 1440 },
-              }}
+              slotProps={{ htmlInput: { min: 1, max: 1440 } }}
               fullWidth
             />
           </Grid>
@@ -311,9 +307,7 @@ const EditRoomMailbox = () => {
                 min: { value: 0, message: "Minimum is 0 days" },
                 max: { value: 1080, message: "Maximum is 1080 days (3 years)" },
               }}
-              InputProps={{
-                inputProps: { min: 0, max: 1080 },
-              }}
+              slotProps={{ htmlInput: { min: 0, max: 1080 } }}
               fullWidth
             />
           </Grid>

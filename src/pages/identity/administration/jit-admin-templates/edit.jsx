@@ -343,7 +343,13 @@ const Page = () => {
               compareValue="create"
             >
               <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 2,
+                    mb: 1
+                  }}>
                   {isAllTenants
                     ? "Pre-fill user details (optional, for AllTenants templates)"
                     : "Pre-fill user details (optional, only for specific tenant templates)"}
@@ -409,7 +415,13 @@ const Page = () => {
               {!isAllTenants && (
                 <>
                   <Grid size={{ xs: 12 }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        mt: 2,
+                        mb: 1
+                      }}>
                       Select default user (optional, only for specific tenant templates)
                     </Typography>
                   </Grid>

@@ -54,7 +54,9 @@ const SourceSelector = ({ prefix, formControl, label }) => {
 
   return (
     <Card variant="outlined" sx={{ height: "100%" }}>
-      <CardHeader title={label} titleTypographyProps={{ variant: "h6" }} />
+      <CardHeader title={label} slotProps={{
+        title: { variant: "h6" }
+      }} />
       <CardContent>
         <Stack spacing={2}>
           <CippFormComponent

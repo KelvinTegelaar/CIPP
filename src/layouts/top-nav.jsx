@@ -263,21 +263,19 @@ export const TopNav = (props) => {
     >
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
         sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
           minHeight: TOP_NAV_HEIGHT,
           pt: SAFE_AREA_TOP_OFFSET,
+
           // Mobile: the 24px desktop inset pushed the hamburger far off the left edge —
           // an 8px inset puts the ☰ glyph on the content gutter line.
-          px: { xs: 1, md: 3 },
-        }}
-      >
+          px: { xs: 1, md: 3 }
+        }}>
         <Stack
-          alignItems="center"
           direction="row"
           spacing={navCollapsed ? 1 : 3}
-          sx={{ flex: 1, minWidth: 0, mr: navCollapsed ? 1 : 0 }}
           divider={
             navCollapsed ? undefined : (
               <Divider
@@ -289,7 +287,12 @@ export const TopNav = (props) => {
               />
             )
           }
-        >
+          sx={{
+            alignItems: "center",
+            flex: 1,
+            minWidth: 0,
+            mr: navCollapsed ? 1 : 0
+          }}>
           {/* On phones the logo gives way to the tenant chip — the app's primary scoping
               control earns the space a 24px decorative link was using. */}
           {!navCollapsed && (
@@ -333,7 +336,9 @@ export const TopNav = (props) => {
           )}
         </Stack>
         {/* 0.5 left the notification dot and the account avatar sharing the same few pixels */}
-        <Stack alignItems="center" direction="row" spacing={navCollapsed ? 1 : 1.5}>
+        <Stack direction="row" spacing={navCollapsed ? 1 : 1.5} sx={{
+          alignItems: "center"
+        }}>
           {!navCollapsed && (
             <Tooltip title="Search users & entities (Ctrl/Cmd+Shift+F)">
               <IconButton
@@ -668,13 +673,16 @@ export const TopNav = (props) => {
             <DialogTitle sx={{ px: navCollapsed ? 2 : 3, pt: 2, pb: 1 }}>
               <Stack
                 direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                flexWrap="wrap"
                 useFlexGap
                 spacing={1}
-              >
-                <Stack direction="row" alignItems="center" spacing={0.5}>
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap"
+                }}>
+                <Stack direction="row" spacing={0.5} sx={{
+                  alignItems: "center"
+                }}>
                   {/* Fullscreen on mobile leaves no backdrop to tap — provide a close button */}
                   {navCollapsed && (
                     <IconButton
@@ -688,7 +696,9 @@ export const TopNav = (props) => {
                   <span>Universal Search</span>
                 </Stack>
                 {!navCollapsed && (
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     Pages: Ctrl/Cmd+K · Users: Ctrl/Cmd+Shift+F · Tenant: Ctrl/Cmd+Alt+K
                   </Typography>
                 )}
@@ -728,7 +738,7 @@ export const TopNav = (props) => {
         </Stack>
       </Stack>
     </Box>
-  )
+  );
 }
 
 TopNav.propTypes = {

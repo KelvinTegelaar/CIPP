@@ -54,7 +54,13 @@ export const Stats1 = () => (
         return (
           <Grid size={{ md: 4, xs: 12 }} key={item.label}>
             <Card sx={{ height: "100%" }}>
-              <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  alignItems: "center",
+                  p: 2
+                }}>
                 <Avatar
                   sx={{
                     backgroundColor: "primary.main",
@@ -66,7 +72,9 @@ export const Stats1 = () => (
                   {item.icon}
                 </Avatar>
                 <div>
-                  <Typography color="text.secondary" variant="overline">
+                  <Typography variant="overline" sx={{
+                    color: "text.secondary"
+                  }}>
                     {item.label}
                   </Typography>
                   <Typography variant="h6">{item.value}</Typography>

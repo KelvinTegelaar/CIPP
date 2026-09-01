@@ -916,7 +916,9 @@ const CippBrandingSettings = () => {
         <Typography variant="h5" sx={{ fontWeight: "bold", mb: 0.5 }}>
           Branding
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Customize your organization&apos;s branding for reports and documents. The default applies
           to every report; presets can be assigned to individual report templates instead.
         </Typography>
@@ -926,7 +928,14 @@ const CippBrandingSettings = () => {
         <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
           Editing
         </Typography>
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap alignItems="center">
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{
+            flexWrap: "wrap",
+            alignItems: "center"
+          }}>
           <Chip
             label="Default"
             color={activePresetId ? "default" : "primary"}
@@ -972,7 +981,9 @@ const CippBrandingSettings = () => {
             </>
           )}
         </Stack>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           {activePreset
             ? `Changes below apply to the "${activePreset.name}" preset only.`
             : "Changes below apply to every report that has no preset assigned."}
@@ -980,7 +991,13 @@ const CippBrandingSettings = () => {
       </Box>
 
       <Box>
-        <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{
+            alignItems: "center",
+            mb: 1
+          }}>
           <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
             Default Preset Per Report
           </Typography>
@@ -1017,7 +1034,12 @@ const CippBrandingSettings = () => {
               : "New branding preset"}
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              mb: 2
+            }}>
             {nameDialog === "rename"
               ? "Templates already pointing at this preset keep pointing at it."
               : "The preset starts as a copy of what is currently on screen, so you only have to change what differs."}
@@ -1048,7 +1070,13 @@ const CippBrandingSettings = () => {
         <Grid size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             <Box>
-              <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+              <Stack
+                direction="row"
+                spacing={0.5}
+                sx={{
+                  alignItems: "center",
+                  mb: 1
+                }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                   Logo
                 </Typography>
@@ -1148,7 +1176,13 @@ const CippBrandingSettings = () => {
             </Box>
 
             <Box>
-              <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+              <Stack
+                direction="row"
+                spacing={0.5}
+                sx={{
+                  alignItems: "center",
+                  mb: 1
+                }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                   Cover Image
                 </Typography>
@@ -1264,11 +1298,14 @@ const CippBrandingSettings = () => {
               <Box>
                 <Stack
                   direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  sx={{ mb: 1.5 }}
-                >
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    mb: 1.5
+                  }}>
+                  <Stack direction="row" spacing={0.5} sx={{
+                    alignItems: "center"
+                  }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                       {livePreview ? "Full Report Preview" : "Cover Preview"}
                     </Typography>
@@ -1321,7 +1358,13 @@ const CippBrandingSettings = () => {
                 }}
               >
                 <Box sx={{ flex: "0 0 auto" }}>
-                  <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+                  <Stack
+                    direction="row"
+                    spacing={0.5}
+                    sx={{
+                      alignItems: "center",
+                      mb: 1
+                    }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                       Brand Color
                     </Typography>
@@ -1336,7 +1379,13 @@ const CippBrandingSettings = () => {
                 </Box>
 
                 <Box sx={{ flex: "0 0 auto" }}>
-                  <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+                  <Stack
+                    direction="row"
+                    spacing={0.5}
+                    sx={{
+                      alignItems: "center",
+                      mb: 1
+                    }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                       Accent Color
                     </Typography>
@@ -1367,7 +1416,13 @@ const CippBrandingSettings = () => {
               </Box>
 
               <Box>
-                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  sx={{
+                    alignItems: "center",
+                    mb: 1
+                  }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                     Report Colors
                   </Typography>
@@ -1380,7 +1435,13 @@ const CippBrandingSettings = () => {
                 <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
                   {REPORT_COLOUR_ROLES.map((role) => (
                     <Box key={role.setting} sx={{ flex: "0 0 auto" }}>
-                      <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+                      <Stack
+                        direction="row"
+                        spacing={0.5}
+                        sx={{
+                          alignItems: "center",
+                          mb: 1
+                        }}>
                         <Typography variant="caption" sx={{ fontWeight: "bold" }}>
                           {role.label}
                         </Typography>
@@ -1398,7 +1459,13 @@ const CippBrandingSettings = () => {
               </Box>
 
               <Box>
-                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  sx={{
+                    alignItems: "center",
+                    mb: 1
+                  }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                     Page Footer
                   </Typography>
@@ -1436,7 +1503,14 @@ const CippBrandingSettings = () => {
                       },
                     }}
                   />
-                  <Stack useFlexGap direction="row" columnGap={2} rowGap={1} flexWrap="wrap">
+                  <Stack
+                    useFlexGap
+                    direction="row"
+                    sx={{
+                      columnGap: 2,
+                      rowGap: 1,
+                      flexWrap: "wrap"
+                    }}>
                     <CippFormComponent
                       type="switch"
                       name="showFooter"
@@ -1454,7 +1528,13 @@ const CippBrandingSettings = () => {
               </Box>
 
               <Box>
-                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 1 }}>
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  sx={{
+                    alignItems: "center",
+                    mb: 1
+                  }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                     Watermark
                   </Typography>

@@ -260,7 +260,9 @@ const Page = () => {
                       .filter(([key]) => key !== "language")
                       .map(([key, value]) => (
                         <Stack spacing={0.5} key={key}>
-                          <Typography variant="subtitle2" color="text.secondary">
+                          <Typography variant="subtitle2" sx={{
+                            color: "text.secondary"
+                          }}>
                             {key
                               .replace(/([A-Z])/g, " $1")
                               .replace(/^./, (str) => str.toUpperCase())}

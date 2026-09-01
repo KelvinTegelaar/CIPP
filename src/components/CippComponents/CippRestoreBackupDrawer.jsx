@@ -380,5 +380,5 @@ export const CippRestoreBackupDrawer = ({
         <CippApiResults apiObject={restoreBackup} />
       </CippOffCanvas>
     </>
-  )
+  );
 }

@@ -15,15 +15,19 @@ export const CustomerLog = (props) => {
       }}
       {...other}>
       <Stack
-        alignItems="center"
         direction="row"
         spacing={2}
+        sx={{
+          alignItems: "center"
+        }}
       >
         <Avatar src={subjectAvatar} />
         <div>
           <Typography
-            color="text.secondary"
             variant="body2"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             <Typography
               component="span"
@@ -35,10 +39,11 @@ export const CustomerLog = (props) => {
             {message}
           </Typography>
           <Typography
-            color="text.secondary"
             variant="caption"
-            sx={{ fontWeight: 400 }}
-          >
+            sx={{
+              color: "text.secondary",
+              fontWeight: 400
+            }}>
             {ago} ago
           </Typography>
         </div>

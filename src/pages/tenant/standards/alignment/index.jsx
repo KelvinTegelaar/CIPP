@@ -474,7 +474,12 @@ const Page = () => {
                   py: 1,
                 }}
               >
-                <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    minWidth: 90
+                  }}>
                   {label}
                 </Typography>
                 {color ? (
@@ -680,7 +685,7 @@ const Page = () => {
             </Stack>
           )}
         </Stack>
-      )
+      );
     },
   }
 
@@ -730,7 +735,12 @@ const Page = () => {
                   py: 1,
                 }}
               >
-                <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    minWidth: 90
+                  }}>
                   {label}
                 </Typography>
                 <Typography variant="body2" sx={{ textAlign: 'right' }}>
@@ -780,9 +790,10 @@ const Page = () => {
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
               spacing={1}
-              alignItems={{ xs: 'stretch', sm: 'center' }}
-              justifyContent="space-between"
-            >
+              sx={{
+                alignItems: { xs: 'stretch', sm: 'center' },
+                justifyContent: "space-between"
+              }}>
               <Typography
                 variant="caption"
                 sx={{
@@ -814,7 +825,9 @@ const Page = () => {
               </ToggleButtonGroup>
             </Stack>
             {filteredTenants.length === 0 && (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 No tenants match this filter.
               </Typography>
             )}
@@ -832,14 +845,20 @@ const Page = () => {
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}>
                   <Box sx={{ minWidth: 0 }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }} noWrap>
                       {tenant.tenantFilter}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "text.secondary",
+                        display: 'block'
+                      }}>
                       Template: {tenant.templateName}
                     </Typography>
                   </Box>
@@ -852,9 +871,11 @@ const Page = () => {
                 </Stack>
                 <Typography
                   variant="caption"
-                  color="text.secondary"
-                  sx={{ display: 'block', mt: 1 }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    display: 'block',
+                    mt: 1
+                  }}>
                   Last Applied:{' '}
                   {tenant.latestDataCollection
                     ? new Date(tenant.latestDataCollection).toLocaleString()
@@ -865,7 +886,7 @@ const Page = () => {
             ))}
           </Stack>
         </Stack>
-      )
+      );
     },
   }
 

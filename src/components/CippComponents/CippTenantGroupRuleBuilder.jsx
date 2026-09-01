@@ -102,7 +102,9 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
           </Typography>
         )}
 
-        <Grid container spacing={2} alignItems="center">
+        <Grid container spacing={2} sx={{
+          alignItems: "center"
+        }}>
           {/* Property Selection */}
           <Grid size={{ md: 4, xs: 12 }}>
             <CippFormComponent

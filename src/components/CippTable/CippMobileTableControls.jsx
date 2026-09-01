@@ -186,7 +186,9 @@ export const CippMobileTableControls = (props) => {
             >
               <ListItemText
                 primary={getCippTranslation(column.id)}
-                primaryTypographyProps={{ fontWeight: current ? 600 : 400 }}
+                slotProps={{
+                  primary: { fontWeight: current ? 600 : 400 }
+                }}
               />
               {current && (
                 <SvgIcon fontSize="small" color="primary">

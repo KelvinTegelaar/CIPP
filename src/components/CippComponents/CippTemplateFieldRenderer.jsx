@@ -375,7 +375,12 @@ const CippTemplateFieldRenderer = ({
 
                     return (
                       <Grid size={{ xs: 12, md: 6 }} key={childPath}>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            fontStyle: "italic"
+                          }}>
                           Unsupported group entry type — edit in JSON if needed.
                         </Typography>
                       </Grid>
@@ -493,17 +498,20 @@ const CippTemplateFieldRenderer = ({
                       </Typography>
                       <Typography
                         variant="caption"
-                        color="text.secondary"
-                        sx={{ display: "block", mb: 1 }}
-                      >
+                        sx={{
+                          color: "text.secondary",
+                          display: "block",
+                          mb: 1
+                        }}>
                         Definition ID: {settingInstance.settingDefinitionId}
                       </Typography>
                       {/* Group collections are complex - show as read-only for now */}
                       <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{ fontStyle: "italic" }}
-                      >
+                        sx={{
+                          color: "text.secondary",
+                          fontStyle: "italic"
+                        }}>
                         Complex group setting collection - view in JSON mode for details
                       </Typography>
                     </Grid>
@@ -584,7 +592,12 @@ const CippTemplateFieldRenderer = ({
             Policy Configuration
           </Typography>
           <Divider sx={{ mb: 2 }} />
-          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              fontStyle: "italic"
+            }}>
             This policy structure is not supported for editing.
           </Typography>
         </Grid>
@@ -651,7 +664,9 @@ const CippTemplateFieldRenderer = ({
                 ))
             ) : (
               <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   No {getCippTranslation(key)} data available
                 </Typography>
               </Grid>

@@ -59,12 +59,14 @@ export const CippTableCardButton = ({ cardButton, row }) => {
   }
   if (Array.isArray(cardButton)) {
     return (
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{
+        alignItems: "center"
+      }}>
         {cardButton.map((item, index) => (
           <CippTableCardButton key={item?.label ?? index} cardButton={item} row={row} />
         ))}
       </Stack>
-    )
+    );
   }
   if (isActionConfig(cardButton)) {
     return <CippTableActionButton action={cardButton} row={row} />

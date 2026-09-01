@@ -1881,9 +1881,10 @@ export const CippDataTable = (props) => {
               {Array.isArray(usedData) && !showSkeletons && (
                 <Typography
                   variant="caption"
-                  color="text.secondary"
-                  sx={{ flexShrink: 0 }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    flexShrink: 0
+                  }}>
                   {table.getFilteredRowModel().rows.length} results
                 </Typography>
               )}
@@ -1993,7 +1994,9 @@ export const CippDataTable = (props) => {
                       />
                       {/* narrow viewports carry these in the Table options sheet */}
                       {dataSourceControls && !isNarrowViewport ? (
-                        <Stack direction='row' spacing={1} alignItems='center'>
+                        <Stack direction='row' spacing={1} sx={{
+                          alignItems: 'center'
+                        }}>
                           {dataSourceControls}
                           {headerAction}
                         </Stack>
@@ -2140,5 +2143,5 @@ export const CippDataTable = (props) => {
         title,
       ])}
     </>
-  )
+  );
 }

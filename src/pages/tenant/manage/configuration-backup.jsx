@@ -416,9 +416,10 @@ const Page = () => {
                     <Stack
                       direction="row"
                       spacing={2}
-                      alignItems="center"
-                      sx={{ width: { xs: "100%", md: "auto" } }}
-                    >
+                      sx={{
+                        alignItems: "center",
+                        width: { xs: "100%", md: "auto" }
+                      }}>
                       {settings.currentTenant === "AllTenants" && (
                         <Box sx={{ minWidth: { md: 250 }, flexGrow: 1 }}>
                           <CippFormTenantSelector
@@ -442,7 +443,9 @@ const Page = () => {
                     </Stack>
                   </Box>
 
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
                     {settings.currentTenant === "AllTenants"
                       ? "Viewing backups for all tenants."
                       : `Viewing backups for ${settings.currentTenant} and global backups.`}
@@ -487,7 +490,9 @@ const Page = () => {
                                           : backup.name;
                                       })()}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography variant="body2" sx={{
+                                      color: "text.secondary"
+                                    }}>
                                       <ReactTimeAgo date={backup.timestamp} />
                                     </Typography>
                                     {settings.currentTenant === "AllTenants" && (
@@ -550,18 +555,31 @@ const Page = () => {
         anchor="right"
         open={drawerOpen}
         onClose={handleCloseDrawer}
-        PaperProps={{
-          sx: {
-            width: { xs: "100%", sm: "80%", md: "60%" },
-          },
+        slotProps={{
+          paper: {
+            sx: {
+              width: { xs: "100%", sm: "80%", md: "60%" },
+            },
+          }
         }}
       >
         <Box sx={{ p: 3 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3
+            }}>
             <Typography variant="h5">
               Backup Preview
               {selectedBackup && (
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 0.5
+                  }}>
                   {(() => {
                     const match = selectedBackup.name.match(
                       /.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/,

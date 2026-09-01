@@ -152,7 +152,13 @@ const Page = () => {
       tableFilter={
         <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+                minWidth: 0
+              }}>
               <SvgIcon>
                 <FunnelIcon />
               </SvgIcon>
@@ -221,7 +227,9 @@ const Page = () => {
                   {/* Two full-width pickers side by side leaves each about 150px on a
                       phone, which is narrower than the date they have to show. */}
                   <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-                    <Box flexGrow={1}>
+                    <Box sx={{
+                      flexGrow: 1
+                    }}>
                       <CippFormComponent
                         type="datePicker"
                         name="startDate"
@@ -230,7 +238,9 @@ const Page = () => {
                         formControl={formControl}
                       />
                     </Box>
-                    <Box flexGrow={1}>
+                    <Box sx={{
+                      flexGrow: 1
+                    }}>
                       <CippFormComponent
                         type="datePicker"
                         name="endDate"
@@ -295,7 +305,9 @@ const Page = () => {
 
                 {/* Action Buttons */}
                 <Grid size={{ xs: 12 }}>
-                  <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                  <Stack direction="row" spacing={2} useFlexGap sx={{
+                    flexWrap: "wrap"
+                  }}>
                     <Button
                       type="submit"
                       variant="contained"
@@ -347,7 +359,7 @@ const Page = () => {
         condition: (row) => Boolean(row?.RowKey),
       }}
     />
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

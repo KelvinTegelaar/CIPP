@@ -92,7 +92,9 @@ export const CippSitTemplateDetails = ({ row }) => {
 
   return (
     <Stack spacing={2} sx={{ py: 1 }}>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" sx={{
+        color: "text.secondary"
+      }}>
         {isAdvanced
           ? 'Advanced template — the captured rule pack is stored as base64. The decoded detection config and XML below are exactly what gets deployed.'
           : 'Simple template — the backend synthesizes a rule pack from this pattern at deploy time.'}
@@ -136,5 +138,5 @@ export const CippSitTemplateDetails = ({ row }) => {
         </Alert>
       )}
     </Stack>
-  )
+  );
 }

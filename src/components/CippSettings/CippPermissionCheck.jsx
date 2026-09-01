@@ -57,11 +57,12 @@ const CippPermissionCheck = (props) => {
         <Stack
           direction="row"
           spacing={3}
-          display="flex"
-          alignItems="center"
-          justifyContent={"space-between"}
-          width={"100%"}
-        >
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%"
+          }}>
           <Stack direction="row" spacing={1}>
             <Button
               variant="contained"
@@ -130,10 +131,11 @@ const CippPermissionCheck = (props) => {
         title={
           <Stack
             direction="row"
-            alignContent="center"
-            justifyContent={"space-between"}
-            sx={{ mb: 0 }}
-          >
+            sx={{
+              alignContent: "center",
+              justifyContent: "space-between",
+              mb: 0
+            }}>
             <Box>{type} Check</Box>
             <Stack direction="row" spacing={2}>
               {importReport?.[type] && <Chip size="small" label="Imported" variant="outlined" />}

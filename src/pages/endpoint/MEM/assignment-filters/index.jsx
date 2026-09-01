@@ -85,7 +85,9 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <Button component={Link} href="assignment-filters/add" startIcon={<Add />}>
               Add Assignment Filter
             </Button>

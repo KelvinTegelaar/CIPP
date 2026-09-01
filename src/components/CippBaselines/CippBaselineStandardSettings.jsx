@@ -107,10 +107,11 @@ export const CippBaselineStandardSettings = ({
 
   if (variableEntries.length === 0) {
     return (
-      <Typography variant="caption" color="text.secondary">
-        This standard has no configurable settings - it enforces a fixed value.
-      </Typography>
-    )
+      <Typography variant="caption" sx={{
+        color: "text.secondary"
+      }}>This standard has no configurable settings - it enforces a fixed value.
+              </Typography>
+    );
   }
 
   return (
@@ -144,9 +145,13 @@ export const CippBaselineStandardSettings = ({
             validators={resolveValidators(definition)}
           />
           {definition.locked && (
-            <Stack direction="row" spacing={0.5} alignItems="center">
+            <Stack direction="row" spacing={0.5} sx={{
+              alignItems: "center"
+            }}>
               <Lock sx={{ fontSize: 14 }} color="disabled" />
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Enforced by the standard definition and cannot be changed.
               </Typography>
             </Stack>
@@ -154,7 +159,7 @@ export const CippBaselineStandardSettings = ({
         </Grid>
       ))}
     </Grid>
-  )
+  );
 }
 
 export default CippBaselineStandardSettings

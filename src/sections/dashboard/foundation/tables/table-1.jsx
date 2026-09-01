@@ -89,9 +89,11 @@ export const Table1 = () => (
             </TableCell>
             <TableCell>
               <Stack
-                alignItems="center"
                 direction="row"
                 spacing={1}
+                sx={{
+                  alignItems: "center"
+                }}
               >
                 <Box
                   sx={{
@@ -102,8 +104,10 @@ export const Table1 = () => (
                   }}
                 />
                 <Typography
-                  color="info.main"
                   variant="body2"
+                  sx={{
+                    color: "info.main"
+                  }}
                 >
                   Ongoing
                 </Typography>

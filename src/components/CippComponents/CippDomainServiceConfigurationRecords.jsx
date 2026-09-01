@@ -115,7 +115,9 @@ export const CippDomainServiceConfigurationRecords = ({ row }) => {
         <Card key={record.id} variant="outlined">
           <CardHeader
             title={
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 <Typography variant="subtitle1">{record.label}</Typography>
                 <Chip label={record.recordType} size="small" variant="outlined" />
                 <Chip label={record.supportedService} size="small" />

@@ -81,11 +81,22 @@ export const AllTenantsStatTile = ({
       >
         {isFetching ? <Skeleton width={64} /> : value}
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          mt: 0.75
+        }}>
         {isFetching ? <Skeleton width="80%" /> : label}
       </Typography>
       {(meta || isFetching) && (
-        <Typography variant="caption" color="text.disabled" sx={{ display: 'block', mt: 0.5 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.disabled",
+            display: 'block',
+            mt: 0.5
+          }}>
           {isFetching ? <Skeleton width="45%" /> : meta}
         </Typography>
       )}
@@ -118,10 +129,16 @@ export const AllTenantsBarList = ({ rows = [], max, isFetching, emptyText = 'No 
 
   if (!rows.length) {
     return (
-      <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          py: 2,
+          textAlign: 'center'
+        }}>
         {emptyText}
       </Typography>
-    )
+    );
   }
 
   const scale = max ?? Math.max(...rows.map((row) => row.total ?? 0), 1)
@@ -138,7 +155,9 @@ export const AllTenantsBarList = ({ rows = [], max, isFetching, emptyText = 'No 
             alignItems: 'center',
           }}
         >
-          <Typography variant="body2" color="text.secondary" noWrap title={row.label}>
+          <Typography variant="body2" noWrap title={row.label} sx={{
+            color: "text.secondary"
+          }}>
             {row.label}
           </Typography>
           <Box
@@ -174,7 +193,7 @@ export const AllTenantsBarList = ({ rows = [], max, isFetching, emptyText = 'No 
         </Box>
       ))}
     </Stack>
-  )
+  );
 }
 
 /**
@@ -194,10 +213,16 @@ export const AllTenantsRowList = ({ rows = [], isFetching, emptyText = 'Nothing 
 
   if (!rows.length) {
     return (
-      <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          py: 2,
+          textAlign: 'center'
+        }}>
         {emptyText}
       </Typography>
-    )
+    );
   }
 
   return (
@@ -206,17 +231,16 @@ export const AllTenantsRowList = ({ rows = [], isFetching, emptyText = 'Nothing 
         <Stack
           key={row.key ?? `${row.name}-${index}`}
           direction="row"
-          alignItems="center"
           spacing={1.5}
           sx={{
+            alignItems: "center",
             px: 1.25,
             py: 1.25,
             borderRadius: 1,
             borderLeft: 3,
             borderLeftColor: severityColor(row.severity),
-            backgroundColor: 'action.hover',
-          }}
-        >
+            backgroundColor: 'action.hover'
+          }}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="subtitle2" component="div" noWrap title={row.name}>
               {row.name}
@@ -228,9 +252,11 @@ export const AllTenantsRowList = ({ rows = [], isFetching, emptyText = 'Nothing 
               <Typography
                 variant="caption"
                 component="div"
-                color="text.secondary"
                 noWrap
                 title={row.detail}
+                sx={{
+                  color: "text.secondary"
+                }}
               >
                 {row.detail}
               </Typography>
@@ -248,7 +274,7 @@ export const AllTenantsRowList = ({ rows = [], isFetching, emptyText = 'Nothing 
         </Stack>
       ))}
     </Stack>
-  )
+  );
 }
 
 // Same 72-hour boundary the summary line uses, so a row reading "Oldest collection 60 hours old"
@@ -287,10 +313,16 @@ export const AllTenantsCacheList = ({
 
   if (!rows.length) {
     return (
-      <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          py: 2,
+          textAlign: 'center'
+        }}>
         {emptyText}
       </Typography>
-    )
+    );
   }
 
   return (
@@ -304,10 +336,13 @@ export const AllTenantsCacheList = ({
         const header = (
           <Stack
             direction="row"
-            alignItems="center"
             spacing={1.5}
-            sx={{ px: 1.25, py: 1.25, width: '100%' }}
-          >
+            sx={{
+              alignItems: "center",
+              px: 1.25,
+              py: 1.25,
+              width: '100%'
+            }}>
             <Box sx={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
               <Typography variant="subtitle2" component="div" noWrap title={row.name}>
                 {row.name}
@@ -316,9 +351,11 @@ export const AllTenantsCacheList = ({
                 <Typography
                   variant="caption"
                   component="div"
-                  color="text.secondary"
                   noWrap
                   title={row.detail}
+                  sx={{
+                    color: "text.secondary"
+                  }}
                 >
                   {row.detail}
                 </Typography>
@@ -374,10 +411,11 @@ export const AllTenantsCacheList = ({
                   <Stack
                     key={collection.type}
                     direction="row"
-                    alignItems="baseline"
                     spacing={1}
-                    sx={{ justifyContent: 'space-between' }}
-                  >
+                    sx={{
+                      alignItems: "baseline",
+                      justifyContent: 'space-between'
+                    }}>
                     <Typography
                       variant="caption"
                       component="div"
@@ -390,9 +428,11 @@ export const AllTenantsCacheList = ({
                     <Typography
                       variant="caption"
                       component="div"
-                      color="text.secondary"
-                      sx={{ flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}
-                    >
+                      sx={{
+                        color: "text.secondary",
+                        flexShrink: 0,
+                        fontVariantNumeric: 'tabular-nums'
+                      }}>
                       {parseCippDate(collection.lastRefresh).toLocaleString()} ·{' '}
                       {formatAge(collection.ageHours)}
                     </Typography>
@@ -401,10 +441,10 @@ export const AllTenantsCacheList = ({
               </Stack>
             </Collapse>
           </Box>
-        )
+        );
       })}
     </Stack>
-  )
+  );
 }
 
 /** Labelled percentage meters, for pass-rate style measures. */
@@ -423,8 +463,15 @@ export const AllTenantsMeterList = ({ meters = [], isFetching }) => {
     <Stack spacing={2}>
       {meters.map((meter) => (
         <Box key={meter.label}>
-          <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-            <Typography variant="body2" color="text.secondary">
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "baseline"
+            }}>
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               {meter.label}
             </Typography>
             <Typography
@@ -452,14 +499,16 @@ export const AllTenantsMeterList = ({ meters = [], isFetching }) => {
             }}
           />
           {meter.caption && (
-            <Typography variant="caption" color="text.disabled">
+            <Typography variant="caption" sx={{
+              color: "text.disabled"
+            }}>
               {meter.caption}
             </Typography>
           )}
         </Box>
       ))}
     </Stack>
-  )
+  );
 }
 
 /**
@@ -491,11 +540,13 @@ export const AllTenantsTrendChart = ({
           justifyContent: 'center',
         }}
       >
-        <Typography variant="caption" color="text.disabled">
+        <Typography variant="caption" sx={{
+          color: "text.disabled"
+        }}>
           Not enough history yet for a trend
         </Typography>
       </Box>
-    )
+    );
   }
 
   const values = points.map((point) => point.percent)
@@ -552,20 +603,22 @@ export const AllTenantsTrendChart = ({
 
 /** Band heading that separates the dashboard into Portfolio / Security / Operations. */
 export const AllTenantsBandHeading = ({ title, description }) => (
-  <Stack useFlexGap
+  <Stack
+    useFlexGap
     direction="row"
-    alignItems="baseline"
     spacing={1.5}
     sx={{
+      alignItems: "baseline",
       pb: 1,
       mb: 2,
       borderBottom: 1,
       borderColor: 'divider',
-      flexWrap: 'wrap',
-    }}
-  >
+      flexWrap: 'wrap'
+    }}>
     <Typography variant="h6">{title}</Typography>
-    <Typography variant="caption" color="text.disabled">
+    <Typography variant="caption" sx={{
+      color: "text.disabled"
+    }}>
       {description}
     </Typography>
   </Stack>

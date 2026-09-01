@@ -22,7 +22,12 @@ export const ResourceError = (props) => {
       <SvgIcon fontSize="large">
         <ExclamationTriangleIcon />
       </SvgIcon>
-      <Typography color="text.secondary" sx={{ mt: 2 }} variant="body2">
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          mt: 2
+        }}>
         {message}
       </Typography>
       {onReload && (

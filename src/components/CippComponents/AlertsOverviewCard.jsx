@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material'
 import {
-  DeleteOutline as DeleteIcon,
+  DeleteOutlined as DeleteIcon,
   NotificationsActive as AlertIcon,
   Settings as SettingsIcon,
   Snooze as SnoozeIcon,
@@ -182,10 +182,14 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                 return (
                   <Box key={`active-${item.CmdletName}-${item.ContentHash}-${index}`} sx={rowSx}>
                     <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="body2" fontWeight={500} noWrap title={title}>
+                      <Typography variant="body2" noWrap title={title} sx={{
+                        fontWeight: 500
+                      }}>
                         {title}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary" noWrap title={secondary}>
+                      <Typography variant="caption" noWrap title={secondary} sx={{
+                        color: "text.secondary"
+                      }}>
                         {secondary}
                       </Typography>
                     </Box>
@@ -195,18 +199,26 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                       </IconButton>
                     </Tooltip>
                   </Box>
-                )
+                );
               })}
             </Stack>
           ) : (
-            <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                py: 2,
+                textAlign: 'center'
+              }}>
               No active alerts for this tenant.
             </Typography>
           )}
 
           {sortedSnoozes.length > 0 && (
             <Box sx={{ mt: 1.5 }}>
-              <Typography variant="overline" color="text.secondary">
+              <Typography variant="overline" sx={{
+                color: "text.secondary"
+              }}>
                 Snoozed
               </Typography>
               <Stack divider={<Divider flexItem />}>
@@ -226,9 +238,11 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                         </Typography>
                         <Typography
                           variant="caption"
-                          color="text.secondary"
                           noWrap
                           title={secondary}
+                          sx={{
+                            color: "text.secondary"
+                          }}
                         >
                           {secondary}
                         </Typography>
@@ -236,9 +250,10 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                       <Stack
                         direction="row"
                         spacing={0.5}
-                        alignItems="center"
-                        sx={{ flexShrink: 0 }}
-                      >
+                        sx={{
+                          alignItems: "center",
+                          flexShrink: 0
+                        }}>
                         <SnoozeStatusChip snooze={snooze} />
                         <Tooltip title="Remove snooze">
                           <IconButton size="small" onClick={() => removeDialog.handleOpen(snooze)}>
@@ -247,14 +262,14 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                         </Tooltip>
                       </Stack>
                     </Box>
-                  )
+                  );
                 })}
               </Stack>
             </Box>
           )}
         </Box>
       </>
-    )
+    );
   }
 
   return (

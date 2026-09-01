@@ -516,7 +516,12 @@ const EditGroup = () => {
                 <>
                   <Grid size={{ xs: 12 }}>
                     <Typography variant="h6">Licenses</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        mb: 1
+                      }}>
                       Licenses assigned to this group are automatically applied to all members.
                       Changes can take 2-5 minutes to propagate.
                     </Typography>
@@ -572,7 +577,7 @@ const EditGroup = () => {
         )}
       </CippFormPage>
     </>
-  )
+  );
 }
 
 EditGroup.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

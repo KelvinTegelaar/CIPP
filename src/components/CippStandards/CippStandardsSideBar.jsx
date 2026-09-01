@@ -308,24 +308,40 @@ const CippStandardsSideBar = ({
         <Box sx={{ p: 2 }}>
           {isDriftMode ? (
             <Stack spacing={2}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Drift templates provide continuous monitoring of tenant configurations to detect
                 unauthorized changes. Each tenant can only have one drift template applied at a
                 time.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Remediation Options:</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  ml: 2
+                }}>
                 • <strong>Automatic Remediation:</strong> Immediately reverts unauthorized changes
                 back to the template configuration
                 <br />• <strong>Manual Remediation:</strong> Sends email notifications for review,
                 allowing you to accept or deny detected changes
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Key Features:</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  ml: 2
+                }}>
                 • Monitors all security standards, Conditional Access policies, and Intune policies
                 <br />
                 • Detects changes made outside of CIPP
@@ -336,28 +352,46 @@ const CippStandardsSideBar = ({
             </Stack>
           ) : (
             <Stack spacing={2}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Standard templates can be applied to multiple tenants and allow overlapping
                 configurations with intelligent merging based on specificity and timing.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Merge Priority (Specificity):</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  ml: 2
+                }}>
                 1. <strong>Individual Tenant</strong> - Highest priority, overrides all others
                 <br />
                 2. <strong>Tenant Group</strong> - Overrides "All Tenants" settings
                 <br />
                 3. <strong>All Tenants</strong> - Lowest priority, default baseline
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Conflict Resolution:</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  ml: 2
+                }}>
                 When multiple standards target the same scope (e.g., two tenant-specific templates),
                 the most recently created template takes precedence.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Example:</strong> An "All Tenants" template enables audit log retention for
                 90 days, but you need 365 days for one specific tenant. Create a tenant-specific
                 template with 365-day retention - it will override the global setting for that

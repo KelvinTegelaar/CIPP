@@ -15,9 +15,11 @@ export const CardHeading3 = () => (
     <CardHeader
       action={(
         <Stack
-          alignItems="center"
           direction="row"
           spacing={1}
+          sx={{
+            alignItems: "center"
+          }}
         >
           <Button
             color="inherit"

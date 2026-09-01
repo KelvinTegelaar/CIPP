@@ -163,7 +163,9 @@ const Page = () => {
       ]
 
   const pageActions = (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction="row" spacing={1} sx={{
+      alignItems: "center"
+    }}>
       <Tooltip
         title={
           byUser

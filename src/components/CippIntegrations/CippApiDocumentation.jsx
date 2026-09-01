@@ -119,9 +119,16 @@ const CippApiDocumentation = () => {
       )}
 
       {!mountError && !isMounted && (
-        <Stack alignItems="center" spacing={2} sx={{ py: 6 }}>
+        <Stack
+          spacing={2}
+          sx={{
+            alignItems: "center",
+            py: 6
+          }}>
           <CircularProgress />
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Loading API documentation…
           </Typography>
         </Stack>
@@ -161,7 +168,7 @@ const CippApiDocumentation = () => {
         }}
       />
     </Box>
-  )
+  );
 }
 
 export default CippApiDocumentation

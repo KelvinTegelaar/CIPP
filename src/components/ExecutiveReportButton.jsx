@@ -1705,7 +1705,12 @@ export const ExecutiveReportButton = (props) => {
           Report Sections
         </Typography>
       )}
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          mb: 3
+        }}>
         Configure which sections to include in your executive report. Changes are reflected in
         real-time.
       </Typography>
@@ -1724,7 +1729,9 @@ export const ExecutiveReportButton = (props) => {
           }
           onChange={(option) => setPresetOverride(option?.value ?? '')}
         />
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           Presets are managed in Settings → Branding
         </Typography>
       </Box>
@@ -1764,10 +1771,20 @@ export const ExecutiveReportButton = (props) => {
               }
             />
             <Box sx={{ ml: 1, flexGrow: 1, minWidth: 0 }}>
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ fontSize: '0.875rem' }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: '0.875rem'
+                }}>
                 {option.label}
               </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                  fontSize: '0.75rem'
+                }}>
                 {option.description}
               </Typography>
             </Box>
@@ -1776,10 +1793,21 @@ export const ExecutiveReportButton = (props) => {
       </Stack>
 
       <Box sx={{ mt: 3, p: 2, bgcolor: 'primary.50', borderRadius: 1 }}>
-        <Typography variant="caption" color="primary.main" fontWeight="bold">
+        <Typography
+          variant="caption"
+          sx={{
+            color: "primary.main",
+            fontWeight: "bold"
+          }}>
           💡 Pro Tip
         </Typography>
-        <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 0.5 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            display: "block",
+            color: "text.secondary",
+            mt: 0.5
+          }}>
           Enable only the sections relevant to your audience to create focused, impactful reports.
           At least one section must be enabled.
         </Typography>
@@ -1929,7 +1957,12 @@ export const ExecutiveReportButton = (props) => {
                 }}
               >
                 <Typography variant="h6">Loading Report Data...</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ maxWidth: '40ch' }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    maxWidth: '40ch'
+                  }}>
                   Fetching additional data for comprehensive report generation
                 </Typography>
               </Box>
@@ -1956,7 +1989,9 @@ export const ExecutiveReportButton = (props) => {
                   height: '100%',
                 }}
               >
-                <Typography variant="body1" color="text.secondary">
+                <Typography variant="body1" sx={{
+                  color: "text.secondary"
+                }}>
                   Report preview will appear here
                 </Typography>
               </Box>
@@ -1978,7 +2013,9 @@ export const ExecutiveReportButton = (props) => {
           }}
         >
           <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Sections enabled: {Object.values(sectionConfig).filter(Boolean).length} of{' '}
               {sectionOptions.length}
             </Typography>
@@ -2061,5 +2098,5 @@ export const ExecutiveReportButton = (props) => {
         </CippOffCanvas>
       </Dialog>
     </>
-  )
+  );
 }

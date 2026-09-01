@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Alert, Button, Link, SvgIcon, Typography } from "@mui/material";
-import { Add, Block, CheckCircleOutline } from "@mui/icons-material";
+import { Add, Block, CheckCircleOutlined } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
@@ -67,7 +67,7 @@ const Page = () => {
     },
     {
       label: "Set to Available",
-      icon: <CheckCircleOutline />,
+      icon: <CheckCircleOutlined />,
       url: "/api/ExecCustomData?Action=ChangeSchemaState",
       type: "POST",
       data: {

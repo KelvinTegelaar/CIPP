@@ -511,12 +511,15 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         // The None/Read/ReadWrite radio row is wider than a phone leaves beside the object
         // name, so the controls drop below it there.
         direction={{ xs: "column", md: "row" }}
-        alignItems={{ xs: "flex-start", md: "center" }}
-        justifyContent={"space-between"}
-        width={"100%"}
-      >
+        sx={{
+          alignItems: { xs: "flex-start", md: "center" },
+          justifyContent: "space-between",
+          width: "100%"
+        }}>
         <Typography variant="h6">{obj}</Typography>
-        <Stack direction="row" spacing={3} alignItems="center">
+        <Stack direction="row" spacing={3} sx={{
+          alignItems: "center"
+        }}>
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
               <InformationCircleIcon />
@@ -567,7 +570,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   <Typography variant="h4">{type}</Typography>
                   <Stack spacing={1}>
                     {items.map((item, idx) => (
-                      <Stack key={`${type}-${idx}`} direction="row" alignItems="center" spacing={1}>
+                      <Stack key={`${type}-${idx}`} direction="row" spacing={1} sx={{
+                        alignItems: "center"
+                      }}>
                         <Typography variant="body2" sx={{ fontWeight: "bold", flexGrow: 1 }}>
                           {item.name}
                         </Typography>
@@ -809,12 +814,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               </Typography>
               <Stack
                 direction="row"
-                display="flex"
-                alignItems="center"
-                justifyContent={"space-between"}
-                width={"100%"}
-                sx={{ my: 2 }}
-              >
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  my: 2
+                }}>
                 <Skeleton width={180} />
                 <Box sx={{ pr: 5 }}>
                   <Skeleton width={300} height={40} />
@@ -1006,7 +1012,14 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
                       Live result
                     </Typography>
-                    <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ mb: 1 }}>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      useFlexGap
+                      sx={{
+                        flexWrap: "wrap",
+                        mb: 1
+                      }}>
                       {currentRules.Include.map((pattern) => (
                         <Chip
                           key={`inc-${pattern}`}
@@ -1046,7 +1059,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                         access and cannot be saved.
                       </Alert>
                     ) : (
-                      <Stack direction="row" spacing={2} alignItems="center">
+                      <Stack direction="row" spacing={2} sx={{
+                        alignItems: "center"
+                      }}>
                         <Typography variant="body2">
                           <strong>{ruleExpansion.matched.length}</strong> of{" "}
                           {permissionUniverse.length} permissions granted
@@ -1105,11 +1120,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                               <Stack
                                 direction="row"
                                 spacing={1}
-                                alignItems="center"
                                 useFlexGap
-                                flexWrap="wrap"
-                                sx={{ minWidth: 0, width: "100%" }}
-                              >
+                                sx={{
+                                  alignItems: "center",
+                                  flexWrap: "wrap",
+                                  minWidth: 0,
+                                  width: "100%"
+                                }}>
                                 <Typography
                                   variant="body2"
                                   sx={{
@@ -1149,7 +1166,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                                             {apiFunction.Name}
                                           </Typography>
                                           {description && (
-                                            <Typography variant="caption" color="text.secondary">
+                                            <Typography variant="caption" sx={{
+                                              color: "text.secondary"
+                                            }}>
                                               {description}
                                             </Typography>
                                           )}
@@ -1185,12 +1204,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   {!isBaseRole && (
                     <Stack
                       direction="row"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent={"space-between"}
-                      width={"100%"}
-                      sx={{ mb: 2 }}
-                    >
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        mb: 2
+                      }}>
                       <Typography variant="body2">Set All Permissions</Typography>
 
                       <Box sx={{ pr: 5 }}>
@@ -1344,7 +1364,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       </Grid>
 
       <CippApiResults apiObject={updatePermissions} />
-      <Stack direction="row" spacing={2} justifyContent="flex-end">
+      <Stack direction="row" spacing={2} sx={{
+        justifyContent: "flex-end"
+      }}>
         <Button
           className="me-2"
           type="submit"

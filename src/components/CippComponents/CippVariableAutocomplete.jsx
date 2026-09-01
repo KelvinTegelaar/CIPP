@@ -242,9 +242,16 @@ export const CippVariableAutocomplete = React.memo(
               border: `1px solid ${theme.palette.divider}`,
             }}
           >
-            <Box display="flex" alignItems="center" gap={1}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1
+              }}>
               <CircularProgress size={16} />
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Loading variables...
               </Typography>
             </Box>
@@ -339,13 +346,12 @@ export const CippVariableAutocomplete = React.memo(
                 </Typography>
                 <Typography
                   variant="caption"
-                  color="text.secondary"
                   sx={{
+                    color: "text.secondary",
                     display: "block",
                     mt: 0.25,
-                    fontSize: "0.75rem",
-                  }}
-                >
+                    fontSize: "0.75rem"
+                  }}>
                   {variable.description}
                 </Typography>
               </Box>

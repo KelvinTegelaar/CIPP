@@ -98,26 +98,34 @@ export const OverviewOrdersSummary = (props) => {
       <CardContent>
         <Chart height={200} options={chartOptions} series={chartSeries} chartType="donut" />
         <Stack
-          alignItems="center"
           direction="row"
-          justifyContent="space-between"
           spacing={1}
-          sx={{ py: 1 }}
-        >
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            py: 1
+          }}>
           <Typography variant="h5">Total</Typography>
           <Typography variant="h5">{total}</Typography>
         </Stack>
         <Stack spacing={1}>
           {chartSeries.map((item, index) => (
             <Stack
-              alignItems="center"
               direction="row"
-              justifyContent="space-between"
               key={labels[index]}
               spacing={1}
-              sx={{ py: 1 }}
-            >
-              <Stack alignItems="center" direction="row" spacing={1} sx={{ flexGrow: 1 }}>
+              sx={{
+                alignItems: "center",
+                justifyContent: "space-between",
+                py: 1
+              }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                  alignItems: "center",
+                  flexGrow: 1
+                }}>
                 <Box
                   sx={{
                     backgroundColor: chartOptions.colors[index],
@@ -126,11 +134,15 @@ export const OverviewOrdersSummary = (props) => {
                     width: 8,
                   }}
                 />
-                <Typography color="text.secondary" variant="body2">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   {labels[index]}
                 </Typography>
               </Stack>
-              <Typography color="text.secondary" variant="body2">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 {item}
               </Typography>
             </Stack>

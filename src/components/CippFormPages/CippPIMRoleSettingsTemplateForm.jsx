@@ -388,5 +388,5 @@ export const CippPIMRoleSettingsTemplateForm = ({ formControl }) => {
         />
       </Grid>
     </Grid>
-  )
+  );
 }

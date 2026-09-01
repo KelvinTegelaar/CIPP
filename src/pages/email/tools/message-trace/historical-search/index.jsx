@@ -334,7 +334,9 @@ const Page = () => {
             />
           </Grid>
           <Grid size={12}>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Large searches can take several hours. Results stay available from
               this page for 10 days.
             </Typography>
@@ -345,7 +347,7 @@ const Page = () => {
         </Grid>
       </CippOffCanvas>
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => (

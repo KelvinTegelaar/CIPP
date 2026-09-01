@@ -222,8 +222,10 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
 
   if (!tenantFilter || tenantFilter === 'AllTenants') {
     return (
-      <Typography color="text.secondary">Select a tenant to browse SharePoint sites.</Typography>
-    )
+      <Typography sx={{
+        color: "text.secondary"
+      }}>Select a tenant to browse SharePoint sites.</Typography>
+    );
   }
 
   return (
@@ -772,11 +774,13 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       <Stack
         direction="row"
         spacing={1}
-        alignItems="center"
         useFlexGap
-        flexWrap="wrap"
-        sx={{ flexShrink: 0, maxWidth: '100%' }}
-      >
+        sx={{
+          alignItems: "center",
+          flexWrap: "wrap",
+          flexShrink: 0,
+          maxWidth: '100%'
+        }}>
         <ToggleButtonGroup
           size="small"
           exclusive
@@ -829,8 +833,10 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
 
   if (!tenantFilter || tenantFilter === 'AllTenants') {
     return (
-      <Typography color="text.secondary">Select a tenant to browse SharePoint sites.</Typography>
-    )
+      <Typography sx={{
+        color: "text.secondary"
+      }}>Select a tenant to browse SharePoint sites.</Typography>
+    );
   }
 
   return (
@@ -963,7 +969,9 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
           </Button>
         </DialogActions>
       </Dialog>
-      <Grid container spacing={2} alignItems="stretch">
+      <Grid container spacing={2} sx={{
+        alignItems: "stretch"
+      }}>
         <Grid size={{ xs: 12, md: 4, lg: 3 }}>
           <CippSharePointBrowserProperties
             item={propertiesItem}
@@ -1015,7 +1023,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         </Grid>
       </Grid>
     </>
-  )
+  );
 }
 
 const Page = () => {

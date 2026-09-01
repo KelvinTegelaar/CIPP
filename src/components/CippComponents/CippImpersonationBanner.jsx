@@ -82,7 +82,9 @@ export const CippImpersonationBanner = () => {
         pb: 1.5,
       }}
     >
-      <Stack direction="row" spacing={1.5} alignItems="center">
+      <Stack direction="row" spacing={1.5} sx={{
+        alignItems: "center"
+      }}>
         <TheaterComedy fontSize="small" sx={{ color: palette.main }} />
         <Typography variant="body2" sx={{ flexGrow: 1, minWidth: 0 }}>
           Impersonating <strong>{role}</strong> — you are seeing CIPP as this role sees it. API
@@ -100,5 +102,5 @@ export const CippImpersonationBanner = () => {
         </Button>
       </Stack>
     </Box>
-  )
+  );
 }

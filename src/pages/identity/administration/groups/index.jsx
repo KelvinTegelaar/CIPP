@@ -427,7 +427,9 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
               Add Group
             </Button>
@@ -616,7 +618,7 @@ const Page = () => {
       />
       {reportDB.syncDialog}
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

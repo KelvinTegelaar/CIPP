@@ -20,12 +20,12 @@ const WizardStepConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.vertical}`]: {
     marginLeft: 16,
   },
-  [`& .${stepConnectorClasses.lineVertical}`]: {
+  [`&.${stepConnectorClasses.vertical} > .${stepConnectorClasses.line}`]: {
     borderColor:
       theme.palette.mode === "dark" ? theme.palette.neutral[800] : theme.palette.neutral[200],
     borderLeftWidth: 2,
   },
-  [`& .${stepConnectorClasses.lineHorizontal}`]: {
+  [`&.${stepConnectorClasses.horizontal} > .${stepConnectorClasses.line}`]: {
     borderColor:
       theme.palette.mode === "dark" ? theme.palette.neutral[800] : theme.palette.neutral[200],
     borderTopWidth: 2,
@@ -167,7 +167,9 @@ export const WizardSteps = (props) => {
               <Typography variant="subtitle2">
                 {`Step ${steps.indexOf(step) ? steps.indexOf(step) + 1 : 1}`}
               </Typography>
-              <Typography color="text.secondary" variant="body2">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 {step.description}
               </Typography>
             </StepLabel>

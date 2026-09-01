@@ -23,7 +23,9 @@ export const CippWizardProgressHeader = (props) => {
 
   return (
     <Stack spacing={1}>
-      <Typography variant="overline" color="text.secondary">
+      <Typography variant="overline" sx={{
+        color: "text.secondary"
+      }}>
         {total > 0 ? `Step ${index + 1} of ${total}` : "No steps"}
       </Typography>
       <Typography variant="subtitle1">{current?.description ?? current?.title ?? ""}</Typography>

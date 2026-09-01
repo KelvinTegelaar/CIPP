@@ -208,7 +208,7 @@ const markdownToHtml = (md) => {
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/`(.*?)`/g, '<code>$1</code>')
-    .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
+    .replace(/\[(.*?)\]\((.*?)\)/g, '$1');
 }
 
 /* ── Table row/column controls ─────────────────────────────
@@ -277,7 +277,7 @@ const MarkdownPaste = Extension.create({
           },
         },
       }),
-    ]
+    ];
   },
 })
 
@@ -317,7 +317,9 @@ const ReportBlock = ({
     <CippButtonCard
       title={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant="subtitle2" fontWeight={600}>
+          <Typography variant="subtitle2" sx={{
+            fontWeight: 600
+          }}>
             {block.title || (block.type === 'blank' ? 'Custom Block' : 'Test Block')}
           </Typography>
           {isTestBlock && block.status && (
@@ -349,7 +351,9 @@ const ReportBlock = ({
         </Box>
       }
       cardActions={
-        <Stack direction="row" spacing={0.5} alignItems="center">
+        <Stack direction="row" spacing={0.5} sx={{
+          alignItems: "center"
+        }}>
           {isTestBlock && !editing && (
             <Tooltip title={isStatic ? 'Edit static content' : 'Edit (converts to static)'}>
               <IconButton size="small" onClick={handleStartEdit}>
@@ -469,7 +473,7 @@ const ReportBlock = ({
         </Box>
       )}
     </CippButtonCard>
-  )
+  );
 }
 
 /* ── Default excluded headers for database blocks ───────── */
@@ -585,7 +589,9 @@ const DatabaseBlock = ({
       title={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Storage fontSize="small" color="primary" />
-          <Typography variant="subtitle2" fontWeight={600}>
+          <Typography variant="subtitle2" sx={{
+            fontWeight: 600
+          }}>
             {block.title || dbTypeLabel}
           </Typography>
           <Chip label="Database" size="small" color="primary" variant="outlined" />
@@ -601,7 +607,9 @@ const DatabaseBlock = ({
         </Box>
       }
       cardActions={
-        <Stack direction="row" spacing={0.5} alignItems="center">
+        <Stack direction="row" spacing={0.5} sx={{
+          alignItems: "center"
+        }}>
           <Tooltip title="Refresh data">
             <span>
               <IconButton
@@ -658,8 +666,16 @@ const DatabaseBlock = ({
       )}
       {!dbCacheApi.isFetching && dbCacheApi.isSuccess && block.data && allHeaders.length > 0 && (
         <Box sx={{ mb: 2 }}>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-            <Typography variant="caption" fontWeight={600}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              mb: 1
+            }}>
+            <Typography variant="caption" sx={{
+              fontWeight: 600
+            }}>
               Format:
             </Typography>
             {['text', 'csv', 'json'].map((fmt) => (
@@ -674,7 +690,13 @@ const DatabaseBlock = ({
               />
             ))}
           </Stack>
-          <Typography variant="caption" fontWeight={600} sx={{ mb: 0.5, display: 'block' }}>
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 600,
+              mb: 0.5,
+              display: 'block'
+            }}>
             Columns ({(block.selectedHeaders || []).length}/{allHeaders.length}):
           </Typography>
           <Stack direction="row" spacing={1} sx={{ mb: 0.5 }}>
@@ -728,17 +750,21 @@ const DatabaseBlock = ({
         </Box>
       )}
       {!dbCacheApi.isFetching && dbCacheApi.isSuccess && block.data && !block.content && (
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           No data available for this tenant.
         </Typography>
       )}
       {!dbCacheApi.isFetching && !dbCacheApi.isSuccess && !error && (
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           {currentTenant ? 'Loading database data...' : 'Select a tenant to load database data.'}
         </Typography>
       )}
     </CippButtonCard>
-  )
+  );
 }
 
 /* ── Format database content helper ─────────────────────── */
@@ -780,7 +806,7 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
     const escaped = (val) => {
       const str = typeof val === 'object' ? JSON.stringify(val) : String(val ?? '')
       if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return `"${str.replace(/"/g, '""')}"`
+        return `"${str.replace(/"/g, '""')}"`;
       }
       return str
     }
@@ -1035,7 +1061,7 @@ const Page = () => {
         if (!removeRemediation) return text
         // Match all variants: **Remediation action**, **Remediation Action:**, **Remediation Action:**,
         // **Remediation actions**, **Remediation Resources**, with colon inside or outside bold
-        return text.split(/\*\*Remediation\s+(?:action|actions|resources):?\*\*:?/i)[0].trim()
+        return text.split(/\*\*Remediation\s+(?:action|actions|resources):?\*\*:?/i)[0].trim();
       }
 
       if (result.Description) {
@@ -1390,8 +1416,15 @@ const Page = () => {
         <Container maxWidth={false}>
           <Stack spacing={2}>
             {/* Header skeleton */}
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}>
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 <Skeleton variant="circular" width={32} height={32} />
                 <Skeleton variant="text" width={200} height={40} />
               </Stack>
@@ -1407,7 +1440,9 @@ const Page = () => {
             <Card>
               <CardHeader title={<Skeleton variant="text" width={100} />} />
               <CardContent>
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack direction="row" spacing={2} sx={{
+                  alignItems: "center"
+                }}>
                   <Skeleton variant="rounded" width="25%" height={40} />
                   <Skeleton variant="rounded" width={80} height={32} />
                 </Stack>
@@ -1431,7 +1466,7 @@ const Page = () => {
           </Stack>
         </Container>
       </Box>
-    )
+    );
   }
 
   /* ── Builder view ── */
@@ -1440,8 +1475,15 @@ const Page = () => {
       <Box sx={{ flexGrow: 1 }}>
         <Container maxWidth={false}>
           <Stack spacing={2}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}>
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 <IconButton size="small" onClick={handleBackClick}>
                   <ArrowBack />
                 </IconButton>
@@ -1502,7 +1544,9 @@ const Page = () => {
 
             {/* Report Settings */}
             <CippButtonCard title="Report Settings">
-              <Grid container spacing={2} alignItems="center">
+              <Grid container spacing={2} sx={{
+                alignItems: "center"
+              }}>
                 <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
                     type="autoComplete"
@@ -1883,7 +1927,7 @@ const Page = () => {
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

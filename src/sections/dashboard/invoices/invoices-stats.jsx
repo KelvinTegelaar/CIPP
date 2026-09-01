@@ -87,8 +87,10 @@ export const InvoicesStats = (props) => {
             size={{ md: 6, xs: 12 }}
           >
             <Typography
-              color="text.secondary"
               variant="overline"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               Total net income
             </Typography>
@@ -99,8 +101,10 @@ export const InvoicesStats = (props) => {
               $12,200.00
             </Typography>
             <Typography
-              color="text.secondary"
               variant="body2"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               From a total of
               {' '}
@@ -133,16 +137,19 @@ export const InvoicesStats = (props) => {
                 return (
                   <Stack
                     key={labels[index]}
-                    alignItems="center"
                     direction="row"
-                    justifyContent="space-between"
                     spacing={1}
-                    sx={{ py: 1 }}
-                  >
+                    sx={{
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      py: 1
+                    }}>
                     <Stack
-                      alignItems="center"
                       direction="row"
                       spacing={1}
+                      sx={{
+                        alignItems: "center"
+                      }}
                     >
                       <Box
                         sx={{
@@ -153,8 +160,10 @@ export const InvoicesStats = (props) => {
                         }}
                       />
                       <Typography
-                        color="text.secondary"
                         variant="body2"
+                        sx={{
+                          color: "text.secondary"
+                        }}
                       >
                         {labels[index]}
                       </Typography>

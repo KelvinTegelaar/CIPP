@@ -84,7 +84,14 @@ const AiToolDetail = ({ row }) => {
 
   return (
     <Stack spacing={2} sx={{ p: 2 }}>
-      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+      <Stack
+        direction="row"
+        spacing={1}
+        useFlexGap
+        sx={{
+          alignItems: "center",
+          flexWrap: "wrap"
+        }}>
         <Typography variant="h6">{row.aiTool}</Typography>
         <Chip size="small" variant="outlined" label={row.risk} color={riskChipColor(row.risk)} />
         <Chip
@@ -95,7 +102,9 @@ const AiToolDetail = ({ row }) => {
         />
       </Stack>
       {row.toolDescription && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           {row.toolDescription}
         </Typography>
       )}
@@ -116,7 +125,9 @@ const AiToolDetail = ({ row }) => {
           <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
             Why {row.aiTool} is rated {row.catalogRisk ?? row.risk} risk
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             {row.riskReason}
           </Typography>
         </Box>
@@ -139,7 +150,9 @@ const AiToolDetail = ({ row }) => {
           .filter((prop) => prop.value !== undefined && prop.value !== null && prop.value !== '')
           .map((prop) => (
             <Grid size={{ md: 4, xs: 12 }} key={prop.label}>
-              <Typography variant="subtitle2" color="text.secondary">
+              <Typography variant="subtitle2" sx={{
+                color: "text.secondary"
+              }}>
                 {prop.label}
               </Typography>
               <Typography variant="body2">{String(prop.value)}</Typography>
@@ -151,10 +164,14 @@ const AiToolDetail = ({ row }) => {
         row.approvedPermissions.length > 0 && (
           <>
             <Divider />
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant="subtitle2" sx={{
+              color: "text.secondary"
+            }}>
               Approved Permissions
             </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} useFlexGap sx={{
+              flexWrap: "wrap"
+            }}>
               {row.approvedPermissions.map((permission) => (
                 <Chip key={permission} size="small" variant="outlined" label={permission} />
               ))}
@@ -178,7 +195,7 @@ const AiToolDetail = ({ row }) => {
         />
       )}
     </Stack>
-  )
+  );
 }
 
 // Drawer listing the users who signed in to an AI application in the last 7 days.
@@ -307,11 +324,14 @@ const Page = () => {
             <Grid size={{ md: 12, xs: 12 }}>
               <Stack
                 direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ mb: 1 }}
-              >
-                <Typography variant="body2" color="text.secondary">
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 1
+                }}>
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   {summary.lastDataRefresh
                     ? `Last data refresh: ${new Date(summary.lastDataRefresh).toLocaleString()}`
                     : ''}
@@ -499,7 +519,7 @@ const Page = () => {
         )}
       </Grid>
     </Container>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

@@ -86,7 +86,12 @@ export const CippTenantModeDeploy = (props) => {
     <Stack spacing={2}>
       {/* Partner Tenant (GDAP) */}
       <Box>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction="row"
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
           <Typography variant="h6" gutterBottom>
             Partner Tenant
           </Typography>
@@ -134,7 +139,13 @@ export const CippTenantModeDeploy = (props) => {
                 borderColor: "divider",
               }}
             >
-              <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between"
+                }}>
                 <Stack direction="column" spacing={1} sx={{ flex: 1 }}>
                   <Skeleton variant="text" width="60%" height={24} />
                   <Skeleton variant="text" width="80%" height={20} />
@@ -161,36 +172,51 @@ export const CippTenantModeDeploy = (props) => {
                 <Stack
                   direction="row"
                   spacing={2}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}>
                   <Stack direction="column" spacing={0.5}>
-                    <Stack direction="row" spacing={0.75} alignItems="center">
+                    <Stack direction="row" spacing={0.75} sx={{
+                      alignItems: "center"
+                    }}>
                       <SvgIcon fontSize="small">
                         <Apartment />
                       </SvgIcon>
-                      <Typography variant="body2" fontWeight="medium">
+                      <Typography variant="body2" sx={{
+                        fontWeight: "medium"
+                      }}>
                         {partnerTenantInfo.data.orgName}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" sx={{
+                        color: "text.secondary"
+                      }}>
                         {partnerTenantInfo.data.tenantId}
                       </Typography>
                     </Stack>
                     {partnerTenantInfo.data.authenticatedUserDisplayName && (
-                      <Stack direction="row" spacing={0.75} alignItems="center">
+                      <Stack direction="row" spacing={0.75} sx={{
+                        alignItems: "center"
+                      }}>
                         <SvgIcon fontSize="small">
                           <Person />
                         </SvgIcon>
-                        <Typography variant="body2" fontWeight="medium">
+                        <Typography variant="body2" sx={{
+                          fontWeight: "medium"
+                        }}>
                           {partnerTenantInfo.data.authenticatedUserDisplayName}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           {partnerTenantInfo.data.authenticatedUserPrincipalName}
                         </Typography>
                       </Stack>
                     )}
                   </Stack>
-                  <Stack direction="row" spacing={1} alignItems="center">
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     {partnerTenantInfo.data.isPartnerTenant ? (
                       <Chip
                         label={getCippTranslation(partnerTenantInfo.data.partnerTenantType)}
@@ -219,8 +245,12 @@ export const CippTenantModeDeploy = (props) => {
                   borderColor: "warning.main",
                 }}
               >
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Typography variant="body2" color="warning.main">
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
+                  <Typography variant="body2" sx={{
+                    color: "warning.main"
+                  }}>
                     No partner tenant connected. Click the button below to authenticate with your
                     partner tenant.
                   </Typography>
@@ -292,14 +322,18 @@ export const CippTenantModeDeploy = (props) => {
 
         {!partnerTenantInfo?.data?.orgName && (
           <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" color="warning.main">
+            <Typography variant="body2" sx={{
+              color: "warning.main"
+            }}>
               Please connect to your partner tenant first before adding separate tenants.
             </Typography>
           </Box>
         )}
 
         <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{
+            alignItems: "center"
+          }}>
             <Box sx={{ position: "relative" }}>
               {!partnerTenantInfo?.data?.orgName && (
                 <Box

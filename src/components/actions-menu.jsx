@@ -37,15 +37,17 @@ export const ActionsMenu = (props) => {
           horizontal: "right",
           vertical: "bottom",
         }}
-        MenuListProps={{
-          dense: true,
-          sx: { p: 1 },
-        }}
         onClose={popover.handleClose}
         open={popover.open}
         transformOrigin={{
           horizontal: "right",
           vertical: "top",
+        }}
+        slotProps={{
+          list: {
+            dense: true,
+            sx: { p: 1 },
+          }
         }}
       >
         {visibleActions.map((action, index) => (

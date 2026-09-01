@@ -51,9 +51,7 @@ const CippAddGroupForm = (props) => {
           name="username"
           formControl={formControl}
           fullWidth
-          InputProps={{
-            endAdornment: <InputAdornment position="end">@</InputAdornment>,
-          }}
+          slotProps={{ input: { endAdornment: <InputAdornment position="end">@</InputAdornment> } }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>

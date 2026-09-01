@@ -77,7 +77,9 @@ const CippAliasDialog = ({ formHook }) => {
   return (
     <>
       <Stack spacing={3} sx={{ mt: 1 }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Add proxy addresses (aliases) for this user. Enter a prefix, choose a verified tenant
           domain, and click Add or press Enter.
         </Typography>
@@ -144,14 +146,13 @@ const CippAliasDialog = ({ formHook }) => {
           {aliasList.length === 0 ? (
             <Typography
               variant="body2"
-              color="text.secondary"
               sx={{
+                color: "text.secondary",
                 px: 2,
                 py: 1,
                 textAlign: "center",
-                width: "100%",
-              }}
-            >
+                width: "100%"
+              }}>
               No aliases added yet
             </Typography>
           ) : (

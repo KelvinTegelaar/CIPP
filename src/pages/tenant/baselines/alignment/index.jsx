@@ -200,21 +200,25 @@ const TierPolicyView = ({ source, templateRef }) => {
               />
             ))}
             {missingCount > 0 && (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 {missingCount} of the configured {noun.toLowerCase()}s could not
                 be found - possibly deleted from the template library.
               </Typography>
             )}
           </Stack>
         ) : (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             The template could not be found - it may have been deleted from the
             template library.
           </Typography>
         )}
       </CippOffCanvas>
     </>
-  )
+  );
 }
 
 // Detect-drift standards flag LIVE policies that no baseline covers. Their cards get a
@@ -270,14 +274,16 @@ const LivePolicyView = ({ standardName, tenantFilter, policyId }) => {
         ) : policy ? (
           <CippJsonView object={policy} defaultOpen={true} type={source.type} />
         ) : (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             The policy could not be found - it may already have been removed
             from the tenant.
           </Typography>
         )}
       </CippOffCanvas>
     </>
-  )
+  );
 }
 
 const propertyList = (properties) => (
@@ -299,9 +305,10 @@ const propertyList = (properties) => (
       >
         <Typography
           variant="body2"
-          color="text.secondary"
-          sx={{ minWidth: 90 }}
-        >
+          sx={{
+            color: "text.secondary",
+            minWidth: 90
+          }}>
           {label}
         </Typography>
         {color ? (
@@ -818,7 +825,9 @@ const Page = () => {
         if (!standard) return null
         return (
           <Stack spacing={2} sx={{ mt: 2 }}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               The settings below are pre-filled with what {row.sourceTemplate}{' '}
               currently applies to this tenant. Saving creates a tenant-specific
               override that replaces them.
@@ -833,7 +842,7 @@ const Page = () => {
               )}
             />
           </Stack>
-        )
+        );
       },
       confirmText:
         'Create a tenant-specific override of [standardLabel] for [tenantFilter]?',
@@ -1088,9 +1097,10 @@ const Page = () => {
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}>
                   <Box sx={{ minWidth: 0 }}>
                     <Typography
                       variant="subtitle2"
@@ -1099,7 +1109,9 @@ const Page = () => {
                     >
                       {tier.templateName}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" sx={{
+                      color: "text.secondary"
+                    }}>
                       Assigned to: {tier.assignedTo}
                     </Typography>
                   </Box>
@@ -1111,10 +1123,11 @@ const Page = () => {
                   <Stack
                     direction="row"
                     spacing={1}
-                    flexWrap="wrap"
                     useFlexGap
-                    sx={{ mt: 1 }}
-                  >
+                    sx={{
+                      flexWrap: "wrap",
+                      mt: 1
+                    }}>
                     <Tooltip
                       title={
                         tier.remediateEnabled
@@ -1217,7 +1230,9 @@ const Page = () => {
                 )}
               </Box>
             ))}
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               When multiple baselines configure the same standard, the baseline
               with the most specific assignment wins.
             </Typography>
@@ -1257,9 +1272,10 @@ const Page = () => {
                       <Stack
                         direction="row"
                         spacing={1}
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
+                        sx={{
+                          alignItems: "center",
+                          justifyContent: "space-between"
+                        }}>
                         <Typography
                           variant="subtitle2"
                           sx={{ fontWeight: 600, fontFamily: 'monospace' }}
@@ -1343,10 +1359,11 @@ const Page = () => {
                       <Stack
                         direction="row"
                         spacing={1}
-                        sx={{ mt: 1 }}
-                        flexWrap="wrap"
                         useFlexGap
-                      >
+                        sx={{
+                          flexWrap: "wrap",
+                          mt: 1
+                        }}>
                         {policyRef && (
                           <LivePolicyView
                             standardName={row.standardName}
@@ -1390,7 +1407,7 @@ const Page = () => {
                           )}
                       </Stack>
                     </Box>
-                  )
+                  );
                 })}
                 {orderedCardPaths.map((key) => {
                   const drifted = differences.includes(key)
@@ -1417,9 +1434,10 @@ const Page = () => {
                       <Stack
                         direction="row"
                         spacing={1}
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
+                        sx={{
+                          alignItems: "center",
+                          justifyContent: "space-between"
+                        }}>
                         <Typography
                           variant="subtitle2"
                           sx={{ fontWeight: 600, fontFamily: 'monospace' }}
@@ -1507,10 +1525,11 @@ const Page = () => {
                       <Stack
                         direction="row"
                         spacing={1}
-                        sx={{ mt: 1 }}
-                        flexWrap="wrap"
                         useFlexGap
-                      >
+                        sx={{
+                          flexWrap: "wrap",
+                          mt: 1
+                        }}>
                         {policyRef && (
                           <LivePolicyView
                             standardName={row.standardName}
@@ -1549,11 +1568,13 @@ const Page = () => {
                           )}
                       </Stack>
                     </Box>
-                  )
+                  );
                 })}
                 {(differences.length > 0 ||
                   unmatchedDiffEntries.length > 0) && (
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     Accepting a single property tolerates only that value -
                     drift on any other property still raises a deviation.
                   </Typography>
@@ -1562,7 +1583,9 @@ const Page = () => {
             ) : (
               <>
                 {jsonBox(row.expectedValue, true)}
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   No data has been collected for this standard yet - this is the
                   configuration that will apply.
                 </Typography>
@@ -1598,9 +1621,11 @@ const Page = () => {
                   {row.manual.instructions && (
                     <Typography
                       variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.5, whiteSpace: 'pre-wrap' }}
-                    >
+                      sx={{
+                        color: "text.secondary",
+                        mt: 0.5,
+                        whiteSpace: 'pre-wrap'
+                      }}>
                       {row.manual.instructions}
                     </Typography>
                   )}
@@ -1618,9 +1643,11 @@ const Page = () => {
                   {row.manual.reopen && row.manual.reopen !== 'once' && (
                     <Typography
                       variant="caption"
-                      color="text.secondary"
-                      sx={{ display: 'block', mt: 1 }}
-                    >
+                      sx={{
+                        color: "text.secondary",
+                        display: 'block',
+                        mt: 1
+                      }}>
                       Reopens {row.manual.reopen} after completion.
                     </Typography>
                   )}
@@ -1652,9 +1679,10 @@ const Page = () => {
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                     {parseCippDate(run.timestamp).toLocaleString()}
                   </Typography>
@@ -1667,9 +1695,11 @@ const Page = () => {
                 </Stack>
                 <Typography
                   variant="caption"
-                  color="text.secondary"
-                  sx={{ display: 'block', mt: 0.5 }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    display: 'block',
+                    mt: 0.5
+                  }}>
                   {runModeLabels[run.mode] ?? run.mode}, triggered by{' '}
                   {run.triggeredBy}
                   {run.remediated ? ', remediated' : ''}
@@ -1705,7 +1735,7 @@ const Page = () => {
             </Button>
           </Stack>
         </Stack>
-      )
+      );
     },
   }
 
@@ -1789,9 +1819,10 @@ const Page = () => {
               <Stack
                 direction="row"
                 spacing={1}
-                alignItems="center"
-                justifyContent="space-between"
-              >
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between"
+                }}>
                 <Box sx={{ minWidth: 0 }}>
                   <Typography
                     variant="subtitle2"
@@ -1802,9 +1833,10 @@ const Page = () => {
                   </Typography>
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    sx={{ display: 'block' }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      display: 'block'
+                    }}>
                     {tenantRow.tenantFilter}
                   </Typography>
                 </Box>
@@ -1818,9 +1850,11 @@ const Page = () => {
               {tenantRow.deviationReason && (
                 <Typography
                   variant="caption"
-                  color="text.secondary"
-                  sx={{ display: 'block', mt: 1 }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    display: 'block',
+                    mt: 1
+                  }}>
                   {tenantRow.deviationReason}
                 </Typography>
               )}
@@ -1953,7 +1987,9 @@ const Page = () => {
               Tenant Stage Progress
             </Typography>
             {tenantStates.length === 0 && (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 No tenants are currently tracked in this rollout.
               </Typography>
             )}
@@ -1971,9 +2007,10 @@ const Page = () => {
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}>
                   <Box sx={{ minWidth: 0 }}>
                     <Typography
                       variant="subtitle2"
@@ -1982,12 +2019,16 @@ const Page = () => {
                     >
                       {state.tenantName}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" sx={{
+                      color: "text.secondary"
+                    }}>
                       Entered{' '}
                       {parseCippDate(state.enteredStageAt).toLocaleDateString()}
                     </Typography>
                   </Box>
-                  <Stack direction="row" spacing={1} alignItems="center">
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     <Chip
                       variant="outlined"
                       size="small"
@@ -2017,9 +2058,11 @@ const Page = () => {
                 {state.nextStage ? (
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    sx={{ display: 'block', mt: 1 }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      display: 'block',
+                      mt: 1
+                    }}>
                     Next: Stage {state.currentStage + 1} ({state.nextStageName})
                     - advances when {describeStageConditions(state.nextStage)}
                     {state.estimatedAdvanceAt
@@ -2029,9 +2072,11 @@ const Page = () => {
                 ) : (
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    sx={{ display: 'block', mt: 1 }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      display: 'block',
+                      mt: 1
+                    }}>
                     Final stage - the full template is applied.
                   </Typography>
                 )}
@@ -2039,7 +2084,7 @@ const Page = () => {
             ))}
           </Stack>
         </Stack>
-      )
+      );
     },
   }
 
@@ -2151,7 +2196,9 @@ const Page = () => {
   const rolloutCard = (
     <CippButtonCard title={`Assigned Baselines - ${tenant.displayName}`}>
       {stageStates.length === 0 && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           No baselines are assigned to this tenant.
         </Typography>
       )}
@@ -2182,7 +2229,9 @@ const Page = () => {
                   >
                     {state.templateName}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     Entered{' '}
                     {parseCippDate(state.enteredStageAt).toLocaleDateString()}
                   </Typography>
@@ -2190,11 +2239,12 @@ const Page = () => {
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  flexWrap="wrap"
                   useFlexGap
-                  sx={{ mt: 1 }}
-                >
+                  sx={{
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    mt: 1
+                  }}>
                   {state.alignedPercentage !== null && (
                     <Tooltip title="Alignment against the standards this baseline has rolled out to this tenant so far">
                       <Chip
@@ -2237,9 +2287,11 @@ const Page = () => {
                 {state.nextStage && (
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    sx={{ display: 'block', mt: 1 }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      display: 'block',
+                      mt: 1
+                    }}>
                     Next: Stage {state.currentStage + 1} ({state.nextStageName})
                     - advances when {describeStageConditions(state.nextStage)}
                   </Typography>
@@ -2248,7 +2300,9 @@ const Page = () => {
                   <>
                     <Box sx={{ flexGrow: 1 }} />
                     <Divider sx={{ my: 1 }} />
-                    <Stack direction="row" justifyContent="flex-end">
+                    <Stack direction="row" sx={{
+                      justifyContent: "flex-end"
+                    }}>
                       <Button
                         size="small"
                         variant="contained"
@@ -2373,7 +2427,9 @@ const Page = () => {
           title="Create Tenant Override"
           children={({ formHook }) => (
             <Stack spacing={2} sx={{ mt: 2 }}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 The settings below are pre-filled with what{' '}
                 {overrideTarget.sourceTemplate} currently applies to{' '}
                 {overrideTarget.tenantName}. Saving creates a tenant-specific
@@ -2543,9 +2599,10 @@ const Page = () => {
           <Stack spacing={2}>
             <Stack
               direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-            >
+              sx={{
+                alignItems: "center",
+                justifyContent: "space-between"
+              }}>
               {modeToggle}
               <CippApiLogsDrawer
                 apiFilter="Baselines"
@@ -2555,7 +2612,9 @@ const Page = () => {
                 variant="outlined"
               />
             </Stack>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body1" sx={{
+              color: "text.secondary"
+            }}>
               This timeline shows every recorded baseline event for{' '}
               {tenant.displayName} - runs, operator decisions, stage changes,
               and deletions.
@@ -2571,10 +2630,12 @@ const Page = () => {
                   }
                   autoComplete="off"
                   placeholder="Search by standard, outcome, or operator..."
-                  InputProps={{
-                    startAdornment: (
-                      <Search sx={{ mr: 1, color: 'text.secondary' }} />
-                    ),
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <Search sx={{ mr: 1, color: 'text.secondary' }} />
+                      ),
+                    }
                   }}
                 />
               </Grid>
@@ -2646,7 +2707,12 @@ const Page = () => {
               </Grid>
             </Grid>
             {historyApi.isFetching && (
-              <Box display="flex" justifyContent="center" py={4}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  py: 4
+                }}>
                 <CircularProgress />
               </Box>
             )}
@@ -2712,16 +2778,20 @@ const Page = () => {
                         return (
                           <TimelineItem key={`group-${group.runId}`}>
                             <TimelineOppositeContent
-                              sx={{ m: 'auto 0', minWidth: 100, maxWidth: 100 }}
                               align="right"
                               variant="body2"
-                              color="text.secondary"
-                            >
+                              sx={{
+                                color: "text.secondary",
+                                m: 'auto 0',
+                                minWidth: 100,
+                                maxWidth: 100
+                              }}>
                               <Typography
                                 variant="caption"
-                                display="block"
-                                fontSize="0.7rem"
-                              >
+                                sx={{
+                                  display: "block",
+                                  fontSize: "0.7rem"
+                                }}>
                                 {groupDate.toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric',
@@ -2730,10 +2800,11 @@ const Page = () => {
                               </Typography>
                               <Typography
                                 variant="caption"
-                                display="block"
-                                fontWeight="bold"
-                                fontSize="0.75rem"
-                              >
+                                sx={{
+                                  display: "block",
+                                  fontWeight: "bold",
+                                  fontSize: "0.75rem"
+                                }}>
                                 {groupDate.toLocaleTimeString('en-US', {
                                   hour: '2-digit',
                                   minute: '2-digit',
@@ -2760,11 +2831,12 @@ const Page = () => {
                             <TimelineContent sx={{ py: '8px', px: 2 }}>
                               <Stack spacing={1}>
                                 <Box
-                                  display="flex"
-                                  alignItems="center"
-                                  gap={1}
-                                  flexWrap="wrap"
-                                >
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    flexWrap: "wrap"
+                                  }}>
                                   <Chip
                                     label={
                                       runModeLabels[first.mode] ?? first.mode
@@ -2808,13 +2880,19 @@ const Page = () => {
                                 </Box>
                                 <Typography
                                   variant="body2"
-                                  fontWeight="medium"
-                                  sx={{ fontSize: '0.875rem' }}
-                                >
+                                  sx={{
+                                    fontWeight: "medium",
+                                    fontSize: '0.875rem'
+                                  }}>
                                   Processed {group.events.length} standards in
                                   this run
                                 </Typography>
-                                <Box display="flex" alignItems="center" gap={2}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 2
+                                  }}>
                                   <Link
                                     component="button"
                                     variant="caption"
@@ -2846,15 +2924,16 @@ const Page = () => {
                                 </Box>
                                 <Typography
                                   variant="caption"
-                                  color="text.secondary"
-                                  sx={{ fontSize: '0.7rem' }}
-                                >
+                                  sx={{
+                                    color: "text.secondary",
+                                    fontSize: '0.7rem'
+                                  }}>
                                   Triggered by {first.triggeredBy}
                                 </Typography>
                               </Stack>
                             </TimelineContent>
                           </TimelineItem>
-                        )
+                        );
                       }
                       const event = row.event
                       const timelineConfig = outcomeTimeline[event.outcome] ?? {
@@ -2873,16 +2952,20 @@ const Page = () => {
                       return (
                         <TimelineItem key={`${eventKey}-${index}`}>
                           <TimelineOppositeContent
-                            sx={{ m: 'auto 0', minWidth: 100, maxWidth: 100 }}
                             align="right"
                             variant="body2"
-                            color="text.secondary"
-                          >
+                            sx={{
+                              color: "text.secondary",
+                              m: 'auto 0',
+                              minWidth: 100,
+                              maxWidth: 100
+                            }}>
                             <Typography
                               variant="caption"
-                              display="block"
-                              fontSize="0.7rem"
-                            >
+                              sx={{
+                                display: "block",
+                                fontSize: "0.7rem"
+                              }}>
                               {eventDate.toLocaleDateString('en-US', {
                                 month: 'short',
                                 day: 'numeric',
@@ -2891,10 +2974,11 @@ const Page = () => {
                             </Typography>
                             <Typography
                               variant="caption"
-                              display="block"
-                              fontWeight="bold"
-                              fontSize="0.75rem"
-                            >
+                              sx={{
+                                display: "block",
+                                fontWeight: "bold",
+                                fontSize: "0.75rem"
+                              }}>
                               {eventDate.toLocaleTimeString('en-US', {
                                 hour: '2-digit',
                                 minute: '2-digit',
@@ -2917,11 +3001,12 @@ const Page = () => {
                           <TimelineContent sx={{ py: '8px', px: 2 }}>
                             <Stack spacing={1}>
                               <Box
-                                display="flex"
-                                alignItems="center"
-                                gap={1}
-                                flexWrap="wrap"
-                              >
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                  flexWrap: "wrap"
+                                }}>
                                 <Chip
                                   label={timelineConfig.label ?? event.outcome}
                                   color={timelineConfig.chipColor}
@@ -2958,17 +3043,19 @@ const Page = () => {
                               <Box>
                                 <Typography
                                   variant="body2"
-                                  fontWeight="medium"
-                                  sx={{ fontSize: '0.875rem' }}
-                                >
+                                  sx={{
+                                    fontWeight: "medium",
+                                    fontSize: '0.875rem'
+                                  }}>
                                   {historyEventMessage(event)}
                                 </Typography>
                                 <Box
-                                  display="flex"
-                                  alignItems="center"
-                                  gap={2}
-                                  sx={{ mt: 0.5 }}
-                                >
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 2,
+                                    mt: 0.5
+                                  }}>
                                   <Link
                                     component="button"
                                     variant="caption"
@@ -3032,15 +3119,16 @@ const Page = () => {
                               </Box>
                               <Typography
                                 variant="caption"
-                                color="text.secondary"
-                                sx={{ fontSize: '0.7rem' }}
-                              >
+                                sx={{
+                                  color: "text.secondary",
+                                  fontSize: '0.7rem'
+                                }}>
                                 Triggered by {event.triggeredBy}
                               </Typography>
                             </Stack>
                           </TimelineContent>
                         </TimelineItem>
-                      )
+                      );
                     })}
                   </Timeline>
                 </CardContent>
@@ -3059,7 +3147,7 @@ const Page = () => {
           </Stack>
         </Container>
       </>
-    )
+    );
   }
 
   // Tenant view: custom layout so the deviation feed sits directly next to the
@@ -3072,11 +3160,14 @@ const Page = () => {
           <Stack spacing={2}>
             <Stack
               direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-            >
+              sx={{
+                alignItems: "center",
+                justifyContent: "space-between"
+              }}>
               {modeToggle}
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 <CippQueueTracker
                   queueId={latestBaselineQueueId}
                   queryKey={`ListBaselineAlignment-${currentTenant}`}
@@ -3119,7 +3210,7 @@ const Page = () => {
           </Stack>
         </Container>
       </>
-    )
+    );
   }
 
   return (
@@ -3136,9 +3227,10 @@ const Page = () => {
         <Stack spacing={2}>
           <Stack
             direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}>
             {modeToggle}
           </Stack>
           {dialogs}
@@ -3172,7 +3264,7 @@ const Page = () => {
       }
       queryKey={`ListBaselineAlignment-${viewMode}-table`}
     />
-  )
+  );
 }
 
 Page.getLayout = (page) => (

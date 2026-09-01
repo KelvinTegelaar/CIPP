@@ -115,7 +115,7 @@ const formatReleaseBody = (body) => {
 
   return body.replace(/(^|[^\w/])@([a-zA-Z0-9-]+)/g, (match, prefix, username) => {
     return `${prefix}[@${username}](https://github.com/${username})`
-  })
+  });
 }
 
 class MarkdownErrorBoundary extends Component {
@@ -394,17 +394,19 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
       onClose={handleRemindLater}
       open={open}
       scroll="paper"
-      PaperProps={{
-        sx: {
-          display: 'flex',
-          flexDirection: 'column',
-          ...(isExpanded && !isMobile
-            ? {
-                m: { sm: 2 },
-                height: { sm: 'calc(100% - 32px)' },
-              }
-            : {}),
-        },
+      slotProps={{
+        paper: {
+          sx: {
+            display: 'flex',
+            flexDirection: 'column',
+            ...(isExpanded && !isMobile
+              ? {
+                  m: { sm: 2 },
+                  height: { sm: 'calc(100% - 32px)' },
+                }
+              : {}),
+          },
+        }
       }}
     >
       <DialogTitle
@@ -442,7 +444,13 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
             <KeyboardArrowDown sx={{ flexShrink: 0, opacity: 0.7, fontSize: 20 }} />
           </ButtonBase>
         ) : (
-          <Stack alignItems="center" direction="row" spacing={1.5} sx={{ width: '100%' }}>
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{
+              alignItems: "center",
+              width: '100%'
+            }}>
             <Typography sx={{ flexGrow: 1 }} variant="h6" component="div">
               {`Release notes for ${releaseHeading}`}
             </Typography>
@@ -495,7 +503,12 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
             </Typography>
           ) : null}
           {gfmSupport.error ? (
-            <Typography color="warning.main" variant="body2" sx={{ px: { xs: 2, md: 3 } }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "warning.main",
+                px: { xs: 2, md: 3 }
+              }}>
               Displaying these release notes without GitHub-flavoured markdown enhancements due to a
               parsing issue. Formatting may look different.
             </Typography>
@@ -675,10 +688,12 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
                   if (!selected) handleReleaseChange(option)
                 }}
               >
-                <ListItemText primary={option.label} primaryTypographyProps={{ noWrap: true }} />
+                <ListItemText primary={option.label} slotProps={{
+                  primary: { noWrap: true }
+                }} />
                 {selected && <Check fontSize="small" color="primary" />}
               </ListItemButton>
-            )
+            );
           })}
         </List>
       </CippBottomSheet>
@@ -716,7 +731,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
         </List>
       </CippBottomSheet>
     </Dialog>
-  )
+  );
 })
 
 ReleaseNotesDialog.displayName = 'ReleaseNotesDialog'

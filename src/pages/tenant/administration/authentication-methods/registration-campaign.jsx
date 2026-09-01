@@ -135,7 +135,9 @@ const Page = () => {
     >
       <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Nudge users to set up Microsoft Authenticator or a passkey during sign-in. Users are
             prompted after completing MFA and can snooze the prompt for the configured number of
             days.

@@ -31,7 +31,7 @@ import {
 import {
   Add,
   Close,
-  DeleteOutline,
+  DeleteOutlined,
   EditOutlined,
   LinkOff,
   Link as LinkIcon,
@@ -68,16 +68,21 @@ const SectionToolbar = ({
   <Stack
     direction="row"
     spacing={1}
-    alignItems="center"
-    justifyContent="space-between"
-    sx={{ mb: 1.5 }}
-  >
-    <Stack direction="row" spacing={1} alignItems="center">
+    sx={{
+      alignItems: "center",
+      justifyContent: "space-between",
+      mb: 1.5
+    }}>
+    <Stack direction="row" spacing={1} sx={{
+      alignItems: "center"
+    }}>
       <Typography variant="subtitle2">{title}</Typography>
       {typeof count === 'number' ? <Chip size="small" label={count} sx={{ height: 22 }} /> : null}
     </Stack>
     {actions.length ? (
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{
+        alignItems: "center"
+      }}>
         {actions.map((action) => (
           <Tooltip
             key={action.label}
@@ -116,7 +121,9 @@ SectionToolbar.propTypes = {
 }
 
 const RowActions = ({ onEdit, onRemove, disableActions = true, disabledTitle = 'Coming soon' }) => (
-  <Stack direction="row" spacing={0.25} justifyContent="flex-end">
+  <Stack direction="row" spacing={0.25} sx={{
+    justifyContent: "flex-end"
+  }}>
     {onEdit ? (
       <Tooltip title={disableActions ? disabledTitle : 'Modify'}>
         <span>
@@ -130,7 +137,7 @@ const RowActions = ({ onEdit, onRemove, disableActions = true, disabledTitle = '
       <Tooltip title={disableActions ? disabledTitle : 'Remove'}>
         <span>
           <IconButton size="small" onClick={onRemove} disabled={disableActions} aria-label="Remove">
-            <DeleteOutline fontSize="small" />
+            <DeleteOutlined fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
@@ -146,7 +153,9 @@ RowActions.propTypes = {
 }
 
 const PrincipalChips = ({ row }) => (
-  <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap">
+  <Stack direction="row" spacing={0.5} useFlexGap sx={{
+    flexWrap: "wrap"
+  }}>
     {row.isGuest ? <Chip size="small" color="warning" label="Guest" /> : null}
     {row.isSiteAdmin ? <Chip size="small" label="Admin" /> : null}
     {row.isSystemGroup ? <Chip size="small" color="info" label="Associated" /> : null}
@@ -159,7 +168,12 @@ PrincipalChips.propTypes = {
 }
 
 const EmptyState = ({ message = 'None' }) => (
-  <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
+  <Typography
+    variant="body2"
+    sx={{
+      color: "text.secondary",
+      py: 2
+    }}>
     {message}
   </Typography>
 )
@@ -221,7 +235,9 @@ const AccessTable = ({ rows = EMPTY, canWrite = false, systemGroupIds = EMPTY, o
               >
                 <TableCell>
                   <Stack spacing={0.5}>
-                    <Typography variant="body2" fontWeight={500}>
+                    <Typography variant="body2" sx={{
+                      fontWeight: 500
+                    }}>
                       {row.title || '—'}
                     </Typography>
                     <PrincipalChips row={{ ...row, isSystemGroup }} />
@@ -231,7 +247,9 @@ const AccessTable = ({ rows = EMPTY, canWrite = false, systemGroupIds = EMPTY, o
                   <Typography variant="body2">{row.principalType || '—'}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap">
+                  <Stack direction="row" spacing={0.5} useFlexGap sx={{
+                    flexWrap: "wrap"
+                  }}>
                     {levels.length
                       ? levels.map((level) => (
                           <Chip
@@ -253,11 +271,12 @@ const AccessTable = ({ rows = EMPTY, canWrite = false, systemGroupIds = EMPTY, o
                 <TableCell>
                   <Typography
                     variant="body2"
-                    color="text.secondary"
                     noWrap
                     title={row.userPrincipalName || row.email || row.loginName}
-                    sx={{ maxWidth: 220 }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      maxWidth: 220
+                    }}>
                     {row.userPrincipalName || row.email || row.loginName || '—'}
                   </Typography>
                 </TableCell>
@@ -278,12 +297,12 @@ const AccessTable = ({ rows = EMPTY, canWrite = false, systemGroupIds = EMPTY, o
                   />
                 </TableCell>
               </TableRow>
-            )
+            );
           })}
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }
 
 AccessTable.propTypes = {
@@ -328,7 +347,9 @@ const MembersTable = ({
               <TableRow key={`${row.principalId}-${index}`} hover>
                 <TableCell>
                   <Stack spacing={0.5}>
-                    <Typography variant="body2" fontWeight={500}>
+                    <Typography variant="body2" sx={{
+                      fontWeight: 500
+                    }}>
                       {row.title || '—'}
                     </Typography>
                     <PrincipalChips row={row} />
@@ -340,11 +361,12 @@ const MembersTable = ({
                 <TableCell>
                   <Typography
                     variant="body2"
-                    color="text.secondary"
                     noWrap
                     title={row.userPrincipalName || row.email || row.loginName}
-                    sx={{ maxWidth: 240 }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      maxWidth: 240
+                    }}>
                     {row.userPrincipalName || row.email || row.loginName || '—'}
                   </Typography>
                 </TableCell>
@@ -366,12 +388,12 @@ const MembersTable = ({
                   />
                 </TableCell>
               </TableRow>
-            )
+            );
           })}
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }
 
 MembersTable.propTypes = {
@@ -407,7 +429,9 @@ const GraphSitePermissionsTable = ({ rows = EMPTY, canWrite = false, onRemove })
             return (
               <TableRow key={`${row.permissionId}-${index}`} hover>
                 <TableCell>
-                  <Typography variant="body2" fontWeight={500}>
+                  <Typography variant="body2" sx={{
+                    fontWeight: 500
+                  }}>
                     {row.title || '—'}
                   </Typography>
                 </TableCell>
@@ -417,7 +441,9 @@ const GraphSitePermissionsTable = ({ rows = EMPTY, canWrite = false, onRemove })
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap">
+                  <Stack direction="row" spacing={0.5} useFlexGap sx={{
+                    flexWrap: "wrap"
+                  }}>
                     {(row.roles ?? []).length
                       ? row.roles.map((role) => (
                           <Chip key={role} size="small" icon={<Security fontSize="small" />} label={role} />
@@ -428,11 +454,14 @@ const GraphSitePermissionsTable = ({ rows = EMPTY, canWrite = false, onRemove })
                 <TableCell>
                   <Typography
                     variant="body2"
-                    color="text.secondary"
                     noWrap
                     title={row.identityId}
-                    sx={{ maxWidth: 260, fontFamily: 'monospace', fontSize: '0.75rem' }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      maxWidth: 260,
+                      fontFamily: 'monospace',
+                      fontSize: '0.75rem'
+                    }}>
                     {row.identityId || '—'}
                   </Typography>
                 </TableCell>
@@ -446,12 +475,12 @@ const GraphSitePermissionsTable = ({ rows = EMPTY, canWrite = false, onRemove })
                   />
                 </TableCell>
               </TableRow>
-            )
+            );
           })}
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 }
 
 GraphSitePermissionsTable.propTypes = {
@@ -555,7 +584,9 @@ const CheckAccessPanel = ({
 
   return (
     <Stack spacing={2}>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" sx={{
+        color: "text.secondary"
+      }}>
         Pick a user to see every route that grants them access here — direct grants, SharePoint
         groups, nested Entra groups, tenant-wide claims, and (when cached) sharing links. This is
         the inverse of the Access tab: who can reach this place, and how.
@@ -564,7 +595,9 @@ const CheckAccessPanel = ({
       <Stack
         direction={{ xs: 'column', md: 'row' }}
         spacing={1.5}
-        alignItems={{ md: 'flex-start' }}
+        sx={{
+          alignItems: { md: 'flex-start' }
+        }}
       >
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <CippFormComponent
@@ -645,7 +678,9 @@ const CheckAccessPanel = ({
             </Alert>
           ) : null}
 
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={1} useFlexGap sx={{
+            flexWrap: "wrap"
+          }}>
             <Chip size="small" variant="outlined" label={`Scope: ${data.TargetLabel}`} />
             {data.IsGuest ? (
               <Chip size="small" variant="outlined" color="warning" label="Guest account" />
@@ -682,7 +717,9 @@ const CheckAccessPanel = ({
                       <TableCell>{path.PermissionLevel || '—'}</TableCell>
                       <TableCell>{path.AppliesTo || '—'}</TableCell>
                       <TableCell>
-                        <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
+                        <Stack direction="row" spacing={0.5} useFlexGap sx={{
+                          flexWrap: "wrap"
+                        }}>
                           {path.IsSystemManaged ? (
                             <Chip size="small" label="System" sx={{ height: 22 }} />
                           ) : null}
@@ -706,7 +743,7 @@ const CheckAccessPanel = ({
         </Stack>
       ) : null}
     </Stack>
-  )
+  );
 }
 
 CheckAccessPanel.propTypes = {
@@ -881,14 +918,23 @@ export const CippSharePointBrowserPermissions = ({
           <Typography variant="h6" component="span">
             Permissions — {titleName}
           </Typography>
-          <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap" alignItems="center">
+          <Stack
+            direction="row"
+            spacing={0.75}
+            useFlexGap
+            sx={{
+              flexWrap: "wrap",
+              alignItems: "center"
+            }}>
             <Chip size="small" label={targetType === 'library' ? 'Library' : 'Site'} />
             {inherits ? <Chip size="small" color="info" label="Inherits from site" /> : null}
             {hasUnique && targetType === 'library' ? (
               <Chip size="small" color="warning" label="Broken inheritance" />
             ) : null}
             {data?.collectedAt ? (
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Collected {new Date(data.collectedAt).toLocaleString()}
               </Typography>
             ) : null}
@@ -1062,9 +1108,10 @@ export const CippSharePointBrowserPermissions = ({
                             secondary={`${group.memberCount} member${group.memberCount === 1 ? '' : 's'}${
                               group.subtitle ? ` · ${group.subtitle}` : ''
                             }`}
-                            primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
-                            secondaryTypographyProps={{ variant: 'caption' }}
-                          />
+                            slotProps={{
+                              primary: { variant: 'body2', fontWeight: 500 },
+                              secondary: { variant: 'caption' }
+                            }} />
                         </ListItemButton>
                       ))}
                     </List>
@@ -1100,9 +1147,11 @@ export const CippSharePointBrowserPermissions = ({
                     {activeGroup?.subtitle ? (
                       <Typography
                         variant="caption"
-                        color="text.secondary"
-                        sx={{ display: 'block', mb: 1 }}
-                      >
+                        sx={{
+                          color: "text.secondary",
+                          display: 'block',
+                          mb: 1
+                        }}>
                         {activeGroup.subtitle}
                         {activeGroup.kind === 'associated' ? ' · Associated group' : ''}
                       </Typography>
@@ -1137,7 +1186,13 @@ export const CippSharePointBrowserPermissions = ({
                 disableRemoveTitle="Cannot remove the last site collection admin"
                 onRemoveMember={(row) => removeAdminDialog.handleOpen(row)}
               />
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                  display: 'block',
+                  mt: 1
+                }}>
                 Site collection admins are separate from Owners group membership.
               </Typography>
             </TabPanel>
@@ -1152,7 +1207,13 @@ export const CippSharePointBrowserPermissions = ({
                 canWrite={canWrite}
                 onRemove={(row) => removeGraphPermissionDialog.handleOpen(row)}
               />
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                  display: 'block',
+                  mt: 1
+                }}>
                 Site-scoped Graph grants (typically Sites.Selected app access). Separate from
                 SharePoint role assignments and sharing links.
               </Typography>
@@ -1581,7 +1642,12 @@ export const CippSharePointBrowserPermissions = ({
               label="Keep the permissions it currently inherits"
               formControl={formHook}
             />
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mb: 1
+              }}>
               Turn this off to start from an empty permission set. Only site collection admins can
               reach the library until permissions are granted.
             </Typography>
@@ -1636,7 +1702,7 @@ export const CippSharePointBrowserPermissions = ({
         row={graphPermissionRow ?? {}}
       />
     </Dialog>
-  )
+  );
 }
 
 CippSharePointBrowserPermissions.propTypes = {

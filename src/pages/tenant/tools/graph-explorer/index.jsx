@@ -70,7 +70,9 @@ const Page = () => {
                       }}
                     >
                       <CircularProgress size={60} />
-                      <Typography variant="body1" color="text.secondary">
+                      <Typography variant="body1" sx={{
+                        color: "text.secondary"
+                      }}>
                         Loading data...
                       </Typography>
                     </Box>

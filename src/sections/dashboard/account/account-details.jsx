@@ -63,7 +63,13 @@ export const AccountDetails = (props) => {
             <Typography variant="h6">Settings</Typography>
           </Grid>
           <Grid size={{ md: 7, xs: 12 }}>
-            <Stack alignItems="center" direction="row" spacing={2} sx={{ mb: 3 }}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                alignItems: "center",
+                mb: 3
+              }}>
               <Avatar
                 src={user.avatar}
                 sx={{
@@ -72,7 +78,9 @@ export const AccountDetails = (props) => {
                 }}
               />
               <Stack spacing={1}>
-                <Stack alignItems="center" direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
                   <Button size="small" type="button" variant="outlined">
                     Change
                   </Button>
@@ -80,7 +88,9 @@ export const AccountDetails = (props) => {
                     Delete
                   </Button>
                 </Stack>
-                <Typography color="text.secondary" variant="caption">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   Recommended dimensions: 200x200, maximum file size: 5MB
                 </Typography>
               </Stack>

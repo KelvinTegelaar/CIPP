@@ -69,7 +69,9 @@ const ReplicationScopeCard = ({ scope, label, description, config }) => {
         <Stack spacing={2}>
           <Box>
             <Typography variant="subtitle2">{label}</Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               {description}
             </Typography>
           </Box>

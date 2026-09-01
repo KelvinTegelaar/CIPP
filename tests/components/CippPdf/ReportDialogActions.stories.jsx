@@ -23,7 +23,9 @@ const ActionsRow = () => (
       }}
     >
       <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           Sections enabled: 7 of 9
         </Typography>
       </Box>

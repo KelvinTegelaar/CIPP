@@ -217,7 +217,13 @@ export const CippAuthShell = ({
               <Box sx={{ p: { xs: 3, md: 4 } }}>
                 {/* icon is a sibling of the title, never nested inside it, so the
                     heading stays a single unambiguous text node */}
-                <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 2 }}>
+                <Stack
+                  direction="row"
+                  spacing={1.5}
+                  sx={{
+                    alignItems: "center",
+                    mb: 2
+                  }}>
                   {titleIcon}
                   <Typography variant="h4" component="h1">
                     {title}
@@ -234,7 +240,14 @@ export const CippAuthShell = ({
                   ))}
 
                 {(hasPrimary || hasSecondary) && (
-                  <Stack direction="row" spacing={1.5} useFlexGap flexWrap="wrap" sx={{ mt: 4 }}>
+                  <Stack
+                    direction="row"
+                    spacing={1.5}
+                    useFlexGap
+                    sx={{
+                      flexWrap: "wrap",
+                      mt: 4
+                    }}>
                     {hasPrimary &&
                       (actionHref ? (
                         <Button
@@ -284,7 +297,7 @@ export const CippAuthShell = ({
         </Grid>
       </Grid>
     </Box>
-  )
+  );
 }
 
 CippAuthShell.propTypes = {

@@ -19,8 +19,10 @@ export const WidgetPreviewer = (props) => {
         {typeof description === 'string'
           ? (
             <Typography
-              color="text.secondary"
               variant="body2"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               {description}
             </Typography>

@@ -76,7 +76,7 @@ export const useActionsDispatch = ({ actions = [], data, queryKeys }) => {
           // ordering gave them — only the structural props above change hands.
           title={actionData.action?.title ?? "Confirmation"}
           relatedQueryKeys={actionData.action?.relatedQueryKeys ?? queryKeys}
-          TransitionProps={{ onExited: handleExited }}
+          slotProps={{ transition: { onExited: handleExited } }}
         />
       )}
       {customAction?.action?.customComponent(customAction.data, {

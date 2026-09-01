@@ -65,12 +65,14 @@ export const ImagesDialog = (props) => {
     <Dialog
       onClose={onClose}
       open={open}
-      PaperProps={{
-        sx: {
-          width: '100%'
+      {...other}
+      slotProps={{
+        paper: {
+          sx: {
+            width: '100%'
+          }
         }
-      }}
-      {...other}>
+      }}>
       <DialogTitle>
         <Typography
           sx={{ mb: 1 }}
@@ -79,8 +81,10 @@ export const ImagesDialog = (props) => {
           Upload Images
         </Typography>
         <Typography
-          color="text.secondary"
           variant="body2"
+          sx={{
+            color: "text.secondary"
+          }}
         >
           You can only choose images
         </Typography>
@@ -92,12 +96,14 @@ export const ImagesDialog = (props) => {
           onDrop={handleDrop}
           sx={{ mb: 3 }}
         />
-        <Stack useFlexGap
-          alignItems="center"
+        <Stack
+          useFlexGap
           direction="row"
-          flexWrap="wrap"
-          gap={2}
-        >
+          sx={{
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 2
+          }}>
           {uploaded.map((image) => {
             const isSelected = selected.includes(image);
 

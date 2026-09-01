@@ -71,7 +71,12 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                 <Skeleton variant="rectangular" width="100%" height={200} />
               </Box>
             </Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mt: 2
+              }}>
               The Secure Score measures your security posture across your tenant.
             </Typography>
           </>
@@ -86,12 +91,19 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                   height: '100%',
                 }}
               >
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   No secure score data available
                 </Typography>
               </Box>
             </Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mt: 2
+              }}>
               The Secure Score measures your security posture across your tenant.
             </Typography>
           </>
@@ -169,7 +181,12 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                 })()}
               </ResponsiveContainer>
             </Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mt: 2
+              }}>
               The Secure Score measures your security posture across your tenant.
             </Typography>
           </>
@@ -192,16 +209,22 @@ export const SecureScoreCard = ({ data, isLoading }) => {
             </Box>
           </Box>
         ) : !data || !Array.isArray(data) || data.length === 0 ? (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Enable secure score monitoring in your tenant
           </Typography>
         ) : (
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Latest %
               </Typography>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" sx={{
+                fontWeight: "bold"
+              }}>
                 {Math.round(
                   (data[data.length - 1].currentScore / data[data.length - 1].maxScore) * 100
                 )}
@@ -210,19 +233,27 @@ export const SecureScoreCard = ({ data, isLoading }) => {
             </Box>
             <Divider orientation="vertical" flexItem />
             <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Current Score
               </Typography>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" sx={{
+                fontWeight: "bold"
+              }}>
                 {data[data.length - 1].currentScore.toFixed(2)}
               </Typography>
             </Box>
             <Divider orientation="vertical" flexItem />
             <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Max Score
               </Typography>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" sx={{
+                fontWeight: "bold"
+              }}>
                 {data[data.length - 1].maxScore.toFixed(2)}
               </Typography>
             </Box>
@@ -230,5 +261,5 @@ export const SecureScoreCard = ({ data, isLoading }) => {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

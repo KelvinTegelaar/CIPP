@@ -27,13 +27,21 @@ export const CippSitRulePackDetails = ({ row, tenant }) => {
 
   if (rulePack.isLoading || rulePack.isFetching) {
     return (
-      <Stack direction="row" spacing={1.5} alignItems="center" sx={{ py: 2 }}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        sx={{
+          alignItems: "center",
+          py: 2
+        }}>
         <CircularProgress size={18} />
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Looking up rule pack {row?.RulePackId}...
         </Typography>
       </Stack>
-    )
+    );
   }
 
   if (rulePack.isError || !rulePack.data?.Xml) {

@@ -5,27 +5,40 @@ import { paths } from "../../../paths";
 
 export const OverviewAccountSetup = () => (
   <Stack
-    alignItems="center"
     direction="row"
     spacing={3}
     sx={{
+      alignItems: "center",
       backgroundColor: "neutral.900",
       borderRadius: 1,
       color: "common.white",
       height: "100%",
       px: 4,
-      py: 2,
-    }}
-  >
+      py: 2
+    }}>
     <div>
-      <Typography color="inherit" variant="h4">
+      <Typography variant="h4" sx={{
+        color: "inherit"
+      }}>
         Welcome!
       </Typography>
-      <Typography color="inherit" sx={{ mt: 2 }}>
+      <Typography
+        sx={{
+          color: "inherit",
+          mt: 2
+        }}>
         Lets setup your RMM or something something something?
       </Typography>
-      <Stack alignItems="center" direction="row" spacing={2} sx={{ my: 3 }}>
-        <Typography color="inherit" variant="subtitle2">
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          alignItems: "center",
+          my: 3
+        }}>
+        <Typography variant="subtitle2" sx={{
+          color: "inherit"
+        }}>
           2/5
         </Typography>
         <LinearProgress

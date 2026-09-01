@@ -136,9 +136,7 @@ export const CippAddRoomListDrawer = ({
                     "Username can only contain letters, numbers, hyphens, underscores, and periods",
                 },
               }}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">@</InputAdornment>,
-              }}
+              slotProps={{ input: { endAdornment: <InputAdornment position="end">@</InputAdornment> } }}
             />
           </Grid>
 

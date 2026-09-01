@@ -49,13 +49,15 @@ const tabOptions = [
   { label: "Devices", path: "/dashboardv2/devices", icon: "Devices" },
 ];
 
-const picker = () => screen.getByRole("button", { name: /switch view/i });
+// findByRole: MUI v9 no longer skips modal transitions in jsdom, so after closing the
+// sheet the page behind it stays aria-hidden until the exit transition finishes.
+const picker = () => screen.findByRole("button", { name: /switch view/i });
 const queryPickers = () => screen.queryAllByRole("button", { name: /switch view/i });
 
 // The trigger names the current view and so does its row in the sheet — scope sheet
 // assertions to the sheet, or every current-tab query matches twice.
 const openPicker = async (user) => {
-  await user.click(picker());
+  await user.click(await picker());
   const sheet = await screen.findByText("Views");
   return within(sheet.closest(".MuiDrawer-paper"));
 };
@@ -91,7 +93,7 @@ describe("TabbedLayout", () => {
 
     expect(screen.queryByRole("tab")).not.toBeInTheDocument();
     // the trigger names where you are; the sheet is where the rest live
-    expect(picker()).toHaveAccessibleName("Overview switch view");
+    expect(await picker()).toHaveAccessibleName("Overview switch view");
 
     const sheet = await openPicker(user);
     tabOptions.forEach((tab) => expect(sheet.getByText(tab.label)).toBeInTheDocument());
@@ -110,7 +112,7 @@ describe("TabbedLayout", () => {
       </TabbedLayout>
     );
 
-    expect(picker()).toHaveAccessibleName("Overview switch view");
+    expect(await picker()).toHaveAccessibleName("Overview switch view");
 
     const sheet = await openPicker(user);
     expect(sheet.getByText("Overview").closest('[role="button"]')).toHaveClass("Mui-selected");
@@ -195,7 +197,7 @@ describe("TabbedLayout", () => {
     await waitFor(() => expect(screen.getByText("Relationships")).toBeInTheDocument());
     expect(queryPickers()).toHaveLength(1);
     // the page's own heading is still a heading, not a control
-    expect(picker()).not.toHaveTextContent("Relationships");
+    expect(await picker()).not.toHaveTextContent("Relationships");
   });
 
   // Destinations used to ride in this sheet. A FAB is for a screen's primary action.
@@ -214,7 +216,7 @@ describe("TabbedLayout", () => {
     // sits in the content flow beside it
     const fabs = screen.getAllByRole("button", { name: /Page actions/ });
     expect(fabs).toHaveLength(1);
-    expect(picker()).toBeInTheDocument();
+    expect(await picker()).toBeInTheDocument();
 
     // the sheet is a modal, so it aria-hides the page behind it — assert on its contents only
     await user.click(fabs[0]);

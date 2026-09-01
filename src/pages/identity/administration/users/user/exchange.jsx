@@ -1433,7 +1433,11 @@ const Page = () => {
             {userRequest?.data?.[0]?.Mailbox?.[0]?.error && (
               <Grid size={12}>
                 <Alert severity="error">
-                  <Box display="flex" justifyContent="space-between">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between"
+                    }}>
                     <Typography variant="body2">
                       {userRequest?.data?.[0]?.Mailbox?.[0]?.error.includes(
                         'Microsoft.Exchange.Configuration.Tasks.ManagementObjectNotFoundException'
@@ -1450,7 +1454,9 @@ const Page = () => {
                     </Button>
                   </Box>
                   <Collapse in={showDetails}>
-                    <Box mt={2}>{userRequest?.data?.[0]?.Mailbox?.[0]?.error}</Box>
+                    <Box sx={{
+                      mt: 2
+                    }}>{userRequest?.data?.[0]?.Mailbox?.[0]?.error}</Box>
                   </Collapse>
                 </Alert>
               </Grid>
@@ -1593,7 +1599,7 @@ const Page = () => {
         )}
       </CippApiDialog>
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

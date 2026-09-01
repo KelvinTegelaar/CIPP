@@ -115,7 +115,9 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
       <Stack spacing={1} sx={{ mt: 1 }}>
         {sortedPath.map((step, index) => (
           <Box key={step.groupId || index}>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{
+              alignItems: "center"
+            }}>
               {hasMultipleGroups && step.sequence !== undefined && (
                 <Chip
                   label={`Step ${step.sequence + 1}`}
@@ -157,7 +159,9 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
             </Stack>
             {index < sortedPath.length - 1 && (
               <Box sx={{ pl: hasMultipleGroups ? 8 : 4, py: 0.5 }}>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   ↓
                 </Typography>
               </Box>
@@ -178,41 +182,53 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
           </Typography>
           <Divider sx={{ mb: 2 }} />
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" color="text.secondary">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Tenant
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: "medium" }}>
                 {tenantName}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" color="text.secondary">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 User
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: "medium" }}>
                 {userDisplayName || userUPN}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" color="text.secondary">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Total Relationships
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: "medium" }}>
                 {summary?.totalRelationships || 0}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" color="text.secondary">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Roles with Access
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: "medium", color: "success.main" }}>
                 {summary?.rolesWithAccess || 0} / {summary?.totalRoles || 15}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography variant="body2" color="text.secondary">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Stack direction="row" spacing={0.5} sx={{
+                alignItems: "center"
+              }}>
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Roles Assigned but No Access
                 </Typography>
                 <Tooltip
@@ -229,9 +245,13 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                 {summary?.rolesAssignedButNoAccess || 0}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography variant="body2" color="text.secondary">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Stack direction="row" spacing={0.5} sx={{
+                alignItems: "center"
+              }}>
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Roles In Relationship but Not Assigned
                 </Typography>
                 <Tooltip
@@ -248,9 +268,13 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                 {summary?.rolesInRelationshipButNotAssigned || 0}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography variant="body2" color="text.secondary">
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Stack direction="row" spacing={0.5} sx={{
+                alignItems: "center"
+              }}>
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Roles Not In Any Relationship
                 </Typography>
                 <Tooltip
@@ -296,7 +320,9 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                           {role.roleName}
                         </Typography>
                         {role.roleDescription && (
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                          }}>
                             {role.roleDescription}
                           </Typography>
                         )}
@@ -307,7 +333,12 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                     <Stack spacing={2}>
                       {role.isUserHasAccess && role.accessPaths && role.accessPaths.length > 0 ? (
                         <>
-                          <Typography variant="subtitle2" color="success.main" sx={{ mb: 2 }}>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              color: "success.main",
+                              mb: 2
+                            }}>
                             Access Paths ({role.accessPaths.length}):
                           </Typography>
                           {role.accessPaths.map((path, pathIndex) => (
@@ -375,7 +406,9 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
 
                       {role.relationshipsWithRole && role.relationshipsWithRole.length > 0 && (
                         <Box sx={{ mt: 2 }}>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                          }}>
                             All relationships with this role: {role.relationshipsWithRole.length}
                           </Typography>
                         </Box>
@@ -417,7 +450,12 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                       <Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
                         {relationship.relationshipName}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ ml: "auto" }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "text.secondary",
+                          ml: "auto"
+                        }}>
                         {relationship.groups?.length || 0} groups
                       </Typography>
                     </Box>
@@ -425,7 +463,9 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                   <AccordionDetails>
                     <Stack spacing={2}>
                       <Box>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                          color: "text.secondary"
+                        }}>
                           Customer Tenant: {relationship.customerTenantName || relationship.customerTenantId}
                         </Typography>
                       </Box>
@@ -463,12 +503,20 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                                   <Box sx={{ mt: 1, pl: 2 }}>
                                     <Typography
                                       variant="caption"
-                                      color="text.secondary"
-                                      sx={{ display: "block", mb: 0.5 }}
-                                    >
+                                      sx={{
+                                        color: "text.secondary",
+                                        display: "block",
+                                        mb: 0.5
+                                      }}>
                                       Additional Roles:
                                     </Typography>
-                                    <Stack useFlexGap direction="row" flexWrap="wrap" gap={0.5}>
+                                    <Stack
+                                      useFlexGap
+                                      direction="row"
+                                      sx={{
+                                        flexWrap: "wrap",
+                                        gap: 0.5
+                                      }}>
                                       {group.roles.slice(1).map((role, roleIndex) => (
                                         <Chip
                                           key={roleIndex}

@@ -40,9 +40,11 @@ export const FilterDialogItem = (props) => {
       </Typography>
       <Stack spacing={2}>
         <Stack
-          alignItems="center"
           direction="row"
           spacing={2}
+          sx={{
+            alignItems: "center"
+          }}
         >
           <Select
             fullWidth
@@ -106,11 +108,12 @@ export const FilterDialogItem = (props) => {
         )}
       </Stack>
       <Stack
-        alignItems="center"
         direction="row"
         spacing={2}
-        justifyContent="flex-end"
-      >
+        sx={{
+          alignItems: "center",
+          justifyContent: "flex-end"
+        }}>
         {displayAdd && (
           <Button
             disabled={disableAdd}

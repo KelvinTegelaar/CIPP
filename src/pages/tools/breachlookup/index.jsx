@@ -98,7 +98,9 @@ const Page = () => {
             <Grid size={{ xs: 12 }}>
               <CippButtonCard title="Fetching Results">
                 <Grid container spacing={2}>
-                  <Grid size={{ xs: 12 }} textAlign="center">
+                  <Grid size={{ xs: 12 }} sx={{
+                    textAlign: "center"
+                  }}>
                     <Skeleton width={"100%"} />
                   </Grid>
                 </Grid>

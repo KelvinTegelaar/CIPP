@@ -59,12 +59,14 @@ const CippWizardPage = (props) => {
         fullWidth
         maxWidth="xl"
         fullScreen={isMobile}
-        PaperProps={{
-          sx: {
-            display: "flex",
-            flexDirection: "column",
-            ...(!isMobile && { height: "90vh" }),
-          },
+        slotProps={{
+          paper: {
+            sx: {
+              display: "flex",
+              flexDirection: "column",
+              ...(!isMobile && { height: "90vh" }),
+            },
+          }
         }}
       >
         <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1, p: 2 }}>

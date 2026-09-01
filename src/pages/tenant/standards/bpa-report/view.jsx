@@ -119,7 +119,12 @@ const Page = () => {
       >
         <Container maxWidth={false}>
           <Stack spacing={4}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}>
               <Button
                 color="inherit"
                 onClick={() => router.back()}
@@ -164,7 +169,9 @@ const Page = () => {
                       cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
                       title={block.name}
                       CardButton={
-                        <Typography color="text.secondary" variant="body2">
+                        <Typography variant="body2" sx={{
+                          color: "text.secondary"
+                        }}>
                           {block.desc}
                         </Typography>
                       }

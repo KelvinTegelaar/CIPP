@@ -105,14 +105,22 @@ const Page = () => {
                 <Stack spacing={3}>
                   {/* Header with severity and timestamp */}
                   <Box>
-                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{
+                        alignItems: "center",
+                        mb: 2
+                      }}>
                       <Chip
                         icon={severityConfig.icon}
                         label={severityConfig.label}
                         color={severityConfig.color}
                         size="medium"
                       />
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         {new Date(timestamp).toLocaleString()}
                       </Typography>
                     </Stack>
@@ -121,7 +129,13 @@ const Page = () => {
 
                   {/* Message */}
                   <Box>
-                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        alignItems: "center",
+                        mb: 1
+                      }}>
                       <Typography variant="h6">Message</Typography>
                       {isJson && (
                         <Chip label="JSON" size="small" color="primary" variant="outlined" />
@@ -217,14 +231,22 @@ const Page = () => {
                 <Stack spacing={3}>
                   {/* Header */}
                   <Box>
-                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{
+                        alignItems: "center",
+                        mb: 2
+                      }}>
                       <Chip
                         label={isTaskCompleted ? "Task" : "Standard"}
                         color="success"
                         size="medium"
                       />
                       <Chip label={status} color="default" size="small" variant="outlined" />
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         {new Date(timestamp).toLocaleString()}
                       </Typography>
                     </Stack>
@@ -238,13 +260,17 @@ const Page = () => {
                     </Typography>
                     <Stack spacing={2}>
                       <Box>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           {isTaskCompleted ? "Task Name" : "Standard"}
                         </Typography>
                         <Typography variant="body1">{taskName}</Typography>
                       </Box>
                       <Box>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           Command
                         </Typography>
                         <Typography variant="body1" sx={{ fontFamily: "monospace" }}>
@@ -252,14 +278,18 @@ const Page = () => {
                         </Typography>
                       </Box>
                       <Box>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           Tenant
                         </Typography>
                         <Typography variant="body1">{tenant}</Typography>
                       </Box>
                       {count && (
                         <Box>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                          }}>
                             Count
                           </Typography>
                           <Typography variant="body1">{count}</Typography>
@@ -267,7 +297,9 @@ const Page = () => {
                       )}
                       {totalDuration && (
                         <Box>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                          }}>
                             Total Duration (ms)
                           </Typography>
                           <Typography variant="body1">{totalDuration.toFixed(2)}</Typography>
@@ -275,7 +307,9 @@ const Page = () => {
                       )}
                       {avgDuration && (
                         <Box>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                          }}>
                             Average Duration (ms)
                           </Typography>
                           <Typography variant="body1">{avgDuration.toFixed(2)}</Typography>
@@ -283,7 +317,9 @@ const Page = () => {
                       )}
                       {maxDuration && (
                         <Box>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                          }}>
                             Max Duration (ms)
                           </Typography>
                           <Typography variant="body1">{maxDuration.toFixed(2)}</Typography>
@@ -365,7 +401,13 @@ const Page = () => {
             <Box sx={{ p: 3 }}>
               <Stack spacing={3}>
                 <Box>
-                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: "center",
+                      mb: 2
+                    }}>
                     <Chip label={eventName || "Event"} color="default" size="medium" />
                   </Stack>
                 </Box>

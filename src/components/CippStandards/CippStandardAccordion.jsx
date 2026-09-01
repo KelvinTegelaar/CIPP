@@ -567,15 +567,20 @@ const CippStandardAccordion = ({
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={2}
-            flexWrap="wrap"
             useFlexGap
             sx={{
+              flexWrap: "wrap",
               mt: 2,
               mb: 3,
-              alignItems: { xs: "flex-start", sm: "center" },
-            }}
-          >
-            <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
+              alignItems: { xs: "flex-start", sm: "center" }
+            }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+                flexGrow: 1
+              }}>
               <TextField
                 size="small"
                 variant="filled"
@@ -713,7 +718,9 @@ const CippStandardAccordion = ({
 
           {!hasFilteredStandards && (
             <Box sx={{ textAlign: "center", my: 4 }}>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="body1" sx={{
+                color: "text.secondary"
+              }}>
                 No standards match the selected filter criteria or search query.
               </Typography>
             </Box>
@@ -735,22 +742,29 @@ const CippStandardAccordion = ({
                 <Card key={standardName} sx={{ mb: 2, borderLeft: "4px solid", borderColor: "warning.main" }}>
                   <Stack
                     direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ p: 2 }}
-                  >
-                    <Stack direction="row" alignItems="center" spacing={2}>
+                    sx={{
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      p: 2
+                    }}>
+                    <Stack direction="row" spacing={2} sx={{
+                      alignItems: "center"
+                    }}>
                       <Avatar sx={{ bgcolor: "warning.main" }}>
                         <Warning />
                       </Avatar>
                       <Stack>
                         <Typography variant="h6">{standard.label}</Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                          color: "text.secondary"
+                        }}>
                           This standard no longer exists and should be removed.
                         </Typography>
                       </Stack>
                     </Stack>
-                    <Stack direction="row" alignItems="center" spacing={1}>
+                    <Stack direction="row" spacing={1} sx={{
+                      alignItems: "center"
+                    }}>
                       <Tooltip title="Remove Unknown Standard">
                         <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
                           <Delete />
@@ -938,11 +952,14 @@ const CippStandardAccordion = ({
               <Card key={standardName} sx={{ mb: 2 }}>
                 <Stack
                   direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ p: 2 }}
-                >
-                  <Stack direction="row" alignItems="center" spacing={2}>
+                  sx={{
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    p: 2
+                  }}>
+                  <Stack direction="row" spacing={2} sx={{
+                    alignItems: "center"
+                  }}>
                     <Avatar>
                       {standard.cat === "Global Standards" ? (
                         <Public />
@@ -1033,7 +1050,9 @@ const CippStandardAccordion = ({
                       </Box>
                     </Stack>
                   </Stack>
-                  <Stack direction="row" alignItems="center" spacing={1}>
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     {standard.multiple && (
                       <Tooltip
                         title={
@@ -1235,7 +1254,9 @@ const CippStandardAccordion = ({
                   </Box>
                   <Divider sx={{ mt: 2 }} />
                   <Box sx={{ px: 3, py: 2 }}>
-                    <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                    <Stack direction="row" spacing={1} sx={{
+                      justifyContent: "flex-end"
+                    }}>
                       <Button
                         variant="outlined"
                         color="primary"

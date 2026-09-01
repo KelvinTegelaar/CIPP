@@ -33,7 +33,12 @@ const Page = () => {
       <CippHead title="Template Catalog" noTenant={true} />
       <Container maxWidth="xl">
         <Stack spacing={2}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="h4">Template Catalog</Typography>
             <Button
               variant="outlined"

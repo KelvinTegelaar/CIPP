@@ -105,16 +105,21 @@ const Page = () => {
             <Grid size={{ md: 12, xs: 12 }}>
               <Stack
                 direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ mb: 1 }}
-              >
-                <Typography variant="body2" color="text.secondary">
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 1
+                }}>
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   {summary.lastDataRefresh
                     ? `Last data refresh: ${new Date(summary.lastDataRefresh.UtcDateTime ?? summary.lastDataRefresh).toLocaleString()}`
                     : ''}
                 </Typography>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
                   <CippQueryRefreshButton
                     queryKeys={[queryKey, `${queryKey}-table`]}
                     isFetching={permissions.isFetching}
@@ -316,7 +321,7 @@ const Page = () => {
         )}
       </Grid>
     </Container>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

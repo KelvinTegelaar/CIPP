@@ -1251,14 +1251,21 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
         onClose={handleCloseDialog}
         maxWidth="lg"
         fullWidth
-        PaperProps={{
-          sx: {
-            height: '90vh',
-          },
+        slotProps={{
+          paper: {
+            sx: {
+              height: '90vh',
+            },
+          }
         }}
       >
         <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="h6" component="div">
               BEC Remediation Report Preview
             </Typography>
@@ -1313,5 +1320,5 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }

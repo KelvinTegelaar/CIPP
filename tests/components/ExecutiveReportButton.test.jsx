@@ -1,6 +1,7 @@
 import React from 'react'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MenuList } from '@mui/material'
 import { renderWithProviders } from '../test-utils'
 import { ExecutiveReportButton } from '../../src/components/ExecutiveReportButton'
 
@@ -91,7 +92,13 @@ describe('ExecutiveReportButton', () => {
 
   it('renders the menuItem variant and opens the dialog from it', async () => {
     const onClick = vi.fn()
-    renderWithProviders(<ExecutiveReportButton variant="menuItem" onClick={onClick} />)
+    // MUI v9: MenuItem must live under a Menu/MenuList; the variant is built for
+    // insertion into an action menu, so the test supplies that context.
+    renderWithProviders(
+      <MenuList>
+        <ExecutiveReportButton variant="menuItem" onClick={onClick} />
+      </MenuList>,
+    )
 
     const item = screen.getByRole('menuitem', { name: /executive summary/i })
     await userEvent.click(item)

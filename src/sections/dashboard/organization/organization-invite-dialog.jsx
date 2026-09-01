@@ -81,10 +81,12 @@ export const OrganizationInviteDialog = (props) => {
       maxWidth="sm"
       onClose={onClose}
       open={open}
-      TransitionProps={{
-        onExited: () => formik.resetForm()
-      }}
-      {...other}>
+      {...other}
+      slotProps={{
+        transition: {
+          onExited: () => formik.resetForm()
+        }
+      }}>
       <form onSubmit={formik.handleSubmit}>
         <DialogTitle>
           Invite a member
@@ -137,8 +139,10 @@ export const OrganizationInviteDialog = (props) => {
                                 {option.label}
                               </Typography>
                               <Typography
-                                color="text.secondary"
                                 variant="caption"
+                                sx={{
+                                  color: "text.secondary"
+                                }}
                               >
                                 {option.description}
                               </Typography>

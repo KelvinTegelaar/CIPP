@@ -104,7 +104,9 @@ export const CIPPM365OAuthButton = ({
             <strong>microsoft.com/devicelogin</strong> where you'd enter this code. Storybook mock:
             no popup opens, the outcome is simulated.
           </Typography>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
             Code expires in 15 minutes
           </Typography>
         </Alert>
@@ -128,7 +130,9 @@ export const CIPPM365OAuthButton = ({
         <Alert severity="error">
           <Typography variant="subtitle2">Authentication Error: {authError.errorCode}</Typography>
           <Typography variant="body2">{authError.errorMessage}</Typography>
-          <Box mt={1}>
+          <Box sx={{
+            mt: 1
+          }}>
             <Button
               size="small"
               variant="outlined"
@@ -144,7 +148,7 @@ export const CIPPM365OAuthButton = ({
         {useDeviceCode && deviceCode ? 'Authenticate with Code' : buttonText}
       </Button>
     </Stack>
-  )
+  );
 }
 
 export default CIPPM365OAuthButton

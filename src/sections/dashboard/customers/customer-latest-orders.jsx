@@ -91,14 +91,17 @@ export const CustomerLatestOrders = (props) => {
                   <li key={order.id}>
                     <Stack
                       direction="row"
-                      flexWrap="wrap"
-                      justifyContent="space-between"
-                      sx={{ p: 3 }}
-                    >
+                      sx={{
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                        p: 3
+                      }}>
                       <Stack
-                        alignItems="center"
                         direction="row"
                         spacing={3}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Box
                           sx={{
@@ -108,14 +111,18 @@ export const CustomerLatestOrders = (props) => {
                           }}
                         >
                           <Typography
-                            color="text.secondary"
                             variant="h5"
+                            sx={{
+                              color: "text.secondary"
+                            }}
                           >
                             {createdDate}
                           </Typography>
                           <Typography
-                            color="text.secondary"
                             variant="caption"
+                            sx={{
+                              color: "text.secondary"
+                            }}
                           >
                             {createdMonth}
                           </Typography>
@@ -126,29 +133,37 @@ export const CustomerLatestOrders = (props) => {
                           sx={{ textDecoration: 'none' }}
                         >
                           <Typography
-                            color="text.primary"
                             variant="h6"
+                            sx={{
+                              color: "text.primary"
+                            }}
                           >
                             Order
                           </Typography>
                           <Link
-                            color="text.secondary"
                             underline="none"
                             variant="body2"
+                            sx={{
+                              color: "text.secondary"
+                            }}
                           >
                             #{order.id}
                           </Link>
                         </Box>
                       </Stack>
                       <Stack
-                        alignItems="center"
                         direction="row"
                         spacing={3}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Stack
-                          alignItems="center"
                           direction="row"
                           spacing={1}
+                          sx={{
+                            alignItems: "center"
+                          }}
                         >
                           <Box
                             sx={{
@@ -204,9 +219,11 @@ export const CustomerLatestOrders = (props) => {
                                 <TableRow key={index}>
                                   <TableCell>
                                     <Stack
-                                      alignItems="center"
                                       direction="row"
                                       spacing={2}
+                                      sx={{
+                                        alignItems: "center"
+                                      }}
                                     >
                                       <Avatar
                                         src={lineItem.image}
@@ -221,8 +238,10 @@ export const CustomerLatestOrders = (props) => {
                                           {lineItem.name}
                                         </Typography>
                                         <Typography
-                                          color="text.secondary"
                                           variant="body2"
+                                          sx={{
+                                            color: "text.secondary"
+                                          }}
                                         >
                                           SKU: {lineItem.sku}
                                         </Typography>

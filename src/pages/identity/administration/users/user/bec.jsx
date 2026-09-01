@@ -32,10 +32,11 @@ const BecCheckCard = ({ title, count, children }) => (
       <Stack
         direction="row"
         spacing={2}
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ width: '100%' }}
-      >
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: '100%'
+        }}>
         <Box>{title}</Box>
         {typeof count === 'number' && (
           <Chip size="small" label={count} color={count > 0 ? 'warning' : 'default'} />
@@ -492,7 +493,9 @@ const Page = () => {
                 variant="outlined"
                 isFetching={false}
                 title={
-                  <Stack direction="row" justifyContent={'space-between'}>
+                  <Stack direction="row" sx={{
+                    justifyContent: 'space-between'
+                  }}>
                     <Box>Loading data</Box>
                     <CircularProgress size={20} />
                   </Stack>
@@ -549,7 +552,12 @@ const Page = () => {
                     {getRuleMessage()}
                   </Typography>
                   {becPollingCall.data?.NewRules?.length > 0 && (
-                    <Box mt={2} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        maxHeight: 300,
+                        overflowY: 'auto'
+                      }}>
                       <PropertyList>
                         {[...becPollingCall.data.NewRules]
                           .sort(
@@ -571,7 +579,9 @@ const Page = () => {
                     </Box>
                   )}
                   {becPollingCall.data?.InboxRuleChanges?.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <Typography variant="subtitle2" gutterBottom>
                         Rule changes in the last 7 days
                       </Typography>
@@ -608,7 +618,12 @@ const Page = () => {
                     {getUserMessage()}
                   </Typography>
                   {becPollingCall.data?.NewUsers?.length > 0 && (
-                    <Box mt={2} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        maxHeight: 300,
+                        overflowY: 'auto'
+                      }}>
                       <PropertyList>
                         {becPollingCall.data.NewUsers.map((user, index) => (
                           <PropertyListItem
@@ -636,7 +651,12 @@ const Page = () => {
                     {getAppMessage()}
                   </Typography>
                   {becPollingCall.data?.AddedApps?.length > 0 && (
-                    <Box mt={2} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        maxHeight: 300,
+                        overflowY: 'auto'
+                      }}>
                       <PropertyList>
                         {[...becPollingCall.data.AddedApps]
                           .sort((a, b) => !!b?.MaliciousMatch - !!a?.MaliciousMatch)
@@ -660,7 +680,9 @@ const Page = () => {
                     </Box>
                   )}
                   {becPollingCall.data?.MaliciousSPs?.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <Typography variant="subtitle2" gutterBottom>
                         Known-malicious applications present in the tenant (any age)
                       </Typography>
@@ -691,7 +713,12 @@ const Page = () => {
                     {getMailboxPermissionMessage()}
                   </Typography>
                   {becPollingCall.data?.MailboxPermissionChanges?.length > 0 && (
-                    <Box mt={2} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        maxHeight: 300,
+                        overflowY: 'auto'
+                      }}>
                       <PropertyList>
                         {[...becPollingCall.data.MailboxPermissionChanges]
                           .sort((a, b) => (b?.TargetsSuspect === true) - (a?.TargetsSuspect === true))
@@ -721,7 +748,9 @@ const Page = () => {
                     {getSentMessagesMessage()}
                   </Typography>
                   {becPollingCall.data?.SentMessageAnalysis?.RepeatedSubjects?.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <Typography variant="subtitle2" gutterBottom>
                         Repeated subjects
                       </Typography>
@@ -746,7 +775,9 @@ const Page = () => {
                     </Box>
                   )}
                   {becPollingCall.data?.SentMessageAnalysis?.Bursts?.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <Typography variant="subtitle2" gutterBottom>
                         Send bursts
                       </Typography>
@@ -767,7 +798,9 @@ const Page = () => {
                     </Box>
                   )}
                   {becPollingCall.data?.SentMessages?.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <CippDataTable
                         noCard={true}
                         hideTitle={true}
@@ -794,7 +827,12 @@ const Page = () => {
                     {getMfaMessage()}
                   </Typography>
                   {becPollingCall.data?.MFADevices?.length > 0 && (
-                    <Box mt={2} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        maxHeight: 300,
+                        overflowY: 'auto'
+                      }}>
                       <PropertyList>
                         {[...becPollingCall.data.MFADevices]
                           .sort(
@@ -832,7 +870,12 @@ const Page = () => {
                     Latest password changes for the tenant can be seen below
                   </Typography>
                   {becPollingCall.data?.ChangedPasswords?.length > 0 && (
-                    <Box mt={2} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        maxHeight: 300,
+                        overflowY: 'auto'
+                      }}>
                       <PropertyList>
                         {becPollingCall.data.ChangedPasswords.map((permission, index) => (
                           <PropertyListItem
@@ -867,7 +910,9 @@ const Page = () => {
                     {getSafelistMessage()}
                   </Typography>
                   {senderRows.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <CippDataTable
                         noCard={true}
                         hideTitle={true}
@@ -878,7 +923,9 @@ const Page = () => {
                     </Box>
                   )}
                   {becPollingCall.data?.SafelistChanges?.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <Typography variant="subtitle2" gutterBottom>
                         Changes in the last 7 days
                       </Typography>
@@ -922,7 +969,9 @@ const Page = () => {
                     {getIntuneDevicesMessage()}
                   </Typography>
                   {intuneDevices.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <CippDataTable
                         noCard={true}
                         hideTitle={true}
@@ -959,7 +1008,9 @@ const Page = () => {
                     {getSignInLocationMessage()}
                   </Typography>
                   {becPollingCall.data?.SuspectUserSignIns?.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <CippDataTable
                         noCard={true}
                         hideTitle={true}
@@ -988,7 +1039,9 @@ const Page = () => {
                     {getSharingMessage()}
                   </Typography>
                   {becPollingCall.data?.SharingChanges?.length > 0 && (
-                    <Box mt={2}>
+                    <Box sx={{
+                      mt: 2
+                    }}>
                       <CippDataTable
                         noCard={true}
                         hideTitle={true}
@@ -1056,7 +1109,7 @@ const Page = () => {
         </Box>
       )}
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

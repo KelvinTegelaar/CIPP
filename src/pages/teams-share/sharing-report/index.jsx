@@ -72,7 +72,14 @@ const SharingLinkDetail = ({ row }) => {
 
   return (
     <Stack spacing={2} sx={{ p: 2 }}>
-      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+      <Stack
+        direction="row"
+        spacing={1}
+        useFlexGap
+        sx={{
+          alignItems: "center",
+          flexWrap: "wrap"
+        }}>
         <Typography variant="h6">{row.fileName}</Typography>
         <Chip
           size="small"
@@ -88,7 +95,9 @@ const SharingLinkDetail = ({ row }) => {
           .filter((prop) => prop.value !== undefined && prop.value !== null && prop.value !== '')
           .map((prop) => (
             <Grid size={{ md: 4, xs: 12 }} key={prop.label}>
-              <Typography variant="subtitle2" color="text.secondary">
+              <Typography variant="subtitle2" sx={{
+                color: "text.secondary"
+              }}>
                 {prop.label}
               </Typography>
               <Typography variant="body2">{String(prop.value)}</Typography>
@@ -98,10 +107,14 @@ const SharingLinkDetail = ({ row }) => {
       {Array.isArray(row.sharedWith) && row.sharedWith.length > 0 && (
         <>
           <Divider />
-          <Typography variant="subtitle2" color="text.secondary">
+          <Typography variant="subtitle2" sx={{
+            color: "text.secondary"
+          }}>
             Shared With
           </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={1} useFlexGap sx={{
+            flexWrap: "wrap"
+          }}>
             {row.sharedWith.map((recipient) => (
               <Chip key={recipient} size="small" variant="outlined" label={recipient} />
             ))}
@@ -128,7 +141,7 @@ const SharingLinkDetail = ({ row }) => {
         )}
       </Stack>
     </Stack>
-  )
+  );
 }
 
 // Datasets in the CIPP reporting database this report is compiled from. Site and library
@@ -270,16 +283,21 @@ const Page = () => {
             <Grid size={{ md: 12, xs: 12 }}>
               <Stack
                 direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ mb: 1 }}
-              >
-                <Typography variant="body2" color="text.secondary">
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 1
+                }}>
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   {summary.lastDataRefresh
                     ? `Last data refresh: ${new Date(summary.lastDataRefresh.UtcDateTime).toLocaleString()}`
                     : ''}
                 </Typography>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
                   <CippQueryRefreshButton
                     queryKeys={[queryKey, `${queryKey}-table`]}
                     isFetching={sharing.isFetching}
@@ -525,7 +543,7 @@ const Page = () => {
         )}
       </Grid>
     </Container>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

@@ -29,7 +29,7 @@ const BUILTIN_RUN_PAYLOAD = {
 }
 
 async function pickBarPreset(user, label) {
-  await user.click(screen.getByRole('combobox', { name: 'Select a query' }))
+  await user.click(await screen.findByRole('combobox', { name: 'Select a query' }))
   await user.click(await screen.findByRole('option', { name: label }))
 }
 
@@ -49,9 +49,9 @@ describe('CippGraphExplorerSimpleFilter', { timeout: 15000 }, () => {
   it('Run is disabled until a preset is picked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<CippGraphExplorerSimpleFilter onSubmitFilter={vi.fn()} />)
-    expect(screen.getByRole('button', { name: 'Run' })).toBeDisabled()
+    expect(await screen.findByRole('button', { name: 'Run' })).toBeDisabled()
     await pickBarPreset(user, BUILTIN.name)
-    expect(screen.getByRole('button', { name: 'Run' })).toBeEnabled()
+    expect(await screen.findByRole('button', { name: 'Run' })).toBeEnabled()
   })
 
   it('Run converts built-in preset params for the API', async () => {
@@ -59,7 +59,7 @@ describe('CippGraphExplorerSimpleFilter', { timeout: 15000 }, () => {
     const user = userEvent.setup()
     renderWithProviders(<CippGraphExplorerSimpleFilter onSubmitFilter={onSubmitFilter} />)
     await pickBarPreset(user, BUILTIN.name)
-    await user.click(screen.getByRole('button', { name: 'Run' }))
+    await user.click(await screen.findByRole('button', { name: 'Run' }))
     expect(onSubmitFilter).toHaveBeenCalledTimes(1)
     expect(onSubmitFilter.mock.calls[0][0]).toEqual(BUILTIN_RUN_PAYLOAD)
   })
@@ -69,7 +69,7 @@ describe('CippGraphExplorerSimpleFilter', { timeout: 15000 }, () => {
     const user = userEvent.setup()
     renderWithProviders(<CippGraphExplorerSimpleFilter onSubmitFilter={vi.fn()} onPresetChange={onPresetChange} />)
     await pickBarPreset(user, BUILTIN.name)
-    await user.click(screen.getByRole('button', { name: 'Run' }))
+    await user.click(await screen.findByRole('button', { name: 'Run' }))
     expect(onPresetChange).toHaveBeenCalledWith(`Graph Explorer - ${BUILTIN.name}`)
   })
 
@@ -108,7 +108,7 @@ describe('CippGraphExplorerSimpleFilter', { timeout: 15000 }, () => {
     await waitFor(() => {
       expect(onSubmitFilter).toHaveBeenCalledTimes(1)
     })
-    await user.click(screen.getByRole('button', { name: 'Run' }))
+    await user.click(await screen.findByRole('button', { name: 'Run' }))
     expect(onSubmitFilter).toHaveBeenCalledTimes(2)
     expect(onSubmitFilter.mock.calls[1][0]).toEqual(onSubmitFilter.mock.calls[0][0])
   })
@@ -126,7 +126,7 @@ describe('CippGraphExplorerSimpleFilter', { timeout: 15000 }, () => {
     })
     // then a pristine preset from the bar
     await pickBarPreset(user, BUILTIN.name)
-    await user.click(screen.getByRole('button', { name: 'Run' }))
+    await user.click(await screen.findByRole('button', { name: 'Run' }))
     expect(onSubmitFilter).toHaveBeenCalledTimes(2)
     expect(onSubmitFilter.mock.calls[1][0]).toEqual(BUILTIN_RUN_PAYLOAD)
   })

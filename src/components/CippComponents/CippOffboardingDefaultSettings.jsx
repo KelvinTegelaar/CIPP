@@ -235,7 +235,13 @@ export const CippOffboardingDefaultSettings = (props) => {
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Out of Office Message
             </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                display: 'block',
+                mb: 1.5
+              }}>
               Leave blank to not set. CIPP %variable% tokens (for example %tenantname%) are resolved
               when the offboarding job runs. %username% is not the offboarded user.
             </Typography>
@@ -279,5 +285,5 @@ export const CippOffboardingDefaultSettings = (props) => {
         }
       />
     </>
-  )
+  );
 }

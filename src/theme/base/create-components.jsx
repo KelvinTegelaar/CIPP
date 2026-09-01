@@ -535,7 +535,7 @@ export const createComponents = () => {
       styleOverrides: {
         root: {
           // Remove height settings from root, handled in input styles
-          "& .MuiInputBase-inputMultiline": {
+          "&.MuiInputBase-multiline > .MuiInputBase-input": {
             height: "unset", // Exclude textareas from fixed height settings
           },
         },

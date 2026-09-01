@@ -21,7 +21,9 @@ import ReactTimeAgo from "react-time-ago";
 const getContent = (notification) => {
   return (
     <>
-      <Stack alignItems="center" direction="row" spacing={2}>
+      <Stack direction="row" spacing={2} sx={{
+        alignItems: "center"
+      }}>
         <SvgIcon
           color={
             notification.type === "error"
@@ -43,7 +45,12 @@ const getContent = (notification) => {
         <Typography variant="subtitle2">{notification.subtitle}</Typography>
       </Stack>
       {notification.content && (
-        <Typography color="text.secondary" sx={{ mt: 1 }} variant="body2">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mt: 1
+          }}>
           {notification.content}
         </Typography>
       )}
@@ -119,8 +126,10 @@ export const NotificationsPopover = () => {
         disableScrollLock
         onClose={popover.handleClose}
         open={popover.open}
-        PaperProps={{
-          sx: { width: 320 },
+        slotProps={{
+          paper: {
+            sx: { width: 320 },
+          }
         }}
       >
         <Box
@@ -144,11 +153,24 @@ export const NotificationsPopover = () => {
 
             return (
               <Stack key={notification.id} spacing={1} sx={{ p: 2 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                <Stack
+                  direction="row"
+                  sx={{
+                    justifyContent: "space-between",
+                    alignItems: "flex-start"
+                  }}>
                   <Box>
                     {getContent(notification)}
-                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
-                      <Typography color="text.secondary" variant="caption">
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        alignItems: "center",
+                        mt: 1
+                      }}>
+                      <Typography variant="caption" sx={{
+                        color: "text.secondary"
+                      }}>
                         {createdAt}
                       </Typography>
                       {notification.link && (
@@ -174,7 +196,13 @@ export const NotificationsPopover = () => {
             );
           })}
         </Stack>
-        <Stack sx={{ pb: 1 }} spacing={1} direction="row" justifyContent="center">
+        <Stack
+          spacing={1}
+          direction="row"
+          sx={{
+            justifyContent: "center",
+            pb: 1
+          }}>
           {notifications.length > notificationsToShow.length && (
             <Button onClick={() => setPage(page + 1)} variant="contained" size="small">
               Load More

@@ -51,7 +51,9 @@ export default {
   decorators: [
     (Story) => (
       <Box sx={{ minHeight: 320, position: 'relative' }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Page content. The FAB is fixed to the viewport's bottom-right corner — below md
           that corner belongs to page actions (CippSpeedDial hides itself there).
         </Typography>

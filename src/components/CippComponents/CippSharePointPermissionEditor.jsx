@@ -34,13 +34,20 @@ export const CippSharePointPermissionEditor = ({
         target tenant, so the same template works everywhere.
       </Alert>
       {fields.length === 0 && (
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 1
+          }}>
           {emptyText}
         </Typography>
       )}
       <Stack spacing={1}>
         {fields.map((field, index) => (
-          <Grid container spacing={1} key={field.id} alignItems="flex-start">
+          <Grid container spacing={1} key={field.id} sx={{
+            alignItems: "flex-start"
+          }}>
             <Grid size={{ xs: 12, md: 7 }}>
               <CippFormComponent
                 type="textField"

@@ -214,9 +214,11 @@ export const InvoicesTable = (props) => {
                     </TableCell>
                     <TableCell>
                       <Stack
-                        alignItems="center"
                         direction="row"
                         spacing={1}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Box
                           sx={{

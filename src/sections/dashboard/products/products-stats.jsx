@@ -54,10 +54,18 @@ export const ProductsStats = () => (
             },
           }}
         >
-          <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              alignItems: "center",
+              p: 2
+            }}>
             {item.icon}
             <div>
-              <Typography color="text.secondary" variant="overline">
+              <Typography variant="overline" sx={{
+                color: "text.secondary"
+              }}>
                 {item.name}
               </Typography>
               <Typography variant="h6">{item.data}</Typography>

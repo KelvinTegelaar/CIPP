@@ -161,12 +161,14 @@ const SiteCrumbSwitcher = ({
                       marginTop: '0 !important',
                     },
                   }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start" sx={{ ml: 0.25, mr: 0 }}>
-                        <SearchIcon sx={{ fontSize: 18, color: 'action.active' }} />
-                      </InputAdornment>
-                    ),
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start" sx={{ ml: 0.25, mr: 0 }}>
+                          <SearchIcon sx={{ fontSize: 18, color: 'action.active' }} />
+                        </InputAdornment>
+                      ),
+                    }
                   }}
                 />
               </ListSubheader>
@@ -205,7 +207,9 @@ const SiteCrumbSwitcher = ({
                 {site.displayName ?? site.name}
               </Typography>
               {site.siteType ? (
-                <Typography variant="caption" color="text.secondary" noWrap>
+                <Typography variant="caption" noWrap sx={{
+                  color: "text.secondary"
+                }}>
                   {site.siteType}
                 </Typography>
               ) : null}
@@ -215,7 +219,9 @@ const SiteCrumbSwitcher = ({
 
         {q && recentFiltered.length === 0 && catalogFiltered.length === 0 ? (
           <MenuItem disabled>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               No matching sites
             </Typography>
           </MenuItem>
@@ -232,7 +238,7 @@ const SiteCrumbSwitcher = ({
         </MenuItem>
       </Menu>
     </>
-  )
+  );
 }
 
 SiteCrumbSwitcher.propTypes = {
@@ -303,10 +309,11 @@ export const CippSharePointBrowserBanner = ({
       <Stack
         direction="row"
         spacing={2}
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ minHeight: 40 }}
-      >
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          minHeight: 40
+        }}>
         {usePath ? (
           <Breadcrumbs
             aria-label="SharePoint browser path"
@@ -347,13 +354,15 @@ export const CippSharePointBrowserBanner = ({
                 return (
                   <Typography
                     key={crumb.id ?? index}
-                    color="text.primary"
-                    sx={{ typography: 'h6', fontSize: '1.125rem' }}
                     noWrap
-                  >
+                    sx={{
+                      color: "text.primary",
+                      typography: 'h6',
+                      fontSize: '1.125rem'
+                    }}>
                     {isFetching && !label ? <Skeleton width={120} /> : label}
                   </Typography>
-                )
+                );
               }
               return (
                 <Link
@@ -390,13 +399,21 @@ export const CippSharePointBrowserBanner = ({
                 ) : null}
               </>
             ) : (
-              <Typography component="span" color="text.secondary" variant="h6">
+              <Typography component="span" variant="h6" sx={{
+                color: "text.secondary"
+              }}>
                 Select a site
               </Typography>
             )}
           </Typography>
         )}
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: "center",
+            flexShrink: 0
+          }}>
           {showActions ? (
             <ActionsMenu
               label={selectedRows.length > 1 ? 'Bulk Actions' : 'Actions'}
@@ -442,7 +459,7 @@ export const CippSharePointBrowserBanner = ({
         </Stack>
       </Stack>
     </Card>
-  )
+  );
 }
 
 CippSharePointBrowserBanner.propTypes = {

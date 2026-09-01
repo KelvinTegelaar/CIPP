@@ -88,7 +88,7 @@ const buildGraphFilterTemplate = (values) => {
   return compiled.replace(
     /createdDateTime ge [^\s]+/,
     `createdDateTime ge {DaysAgo:${Number(values.Days)}}`,
-  )
+  );
 }
 
 const USER_COLUMNS = [
@@ -242,7 +242,14 @@ const Page = () => {
           />
         </Grid>
         <Grid size={{ xs: 12 }}>
-          <Stack direction="row" spacing={2} alignItems="flex-start" flexWrap="wrap" useFlexGap>
+          <Stack
+            direction="row"
+            spacing={2}
+            useFlexGap
+            sx={{
+              alignItems: "flex-start",
+              flexWrap: "wrap"
+            }}>
             <Button
               variant="contained"
               color="primary"

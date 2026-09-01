@@ -238,7 +238,7 @@ const CippAddEditUser = (props) => {
       return firstName
         .split(/\s+/)
         .map((word) => word.substring(0, n))
-        .join('')
+        .join('');
     })
 
     // Replace %LastName[n]% patterns (extract first n characters per word)
@@ -247,7 +247,7 @@ const CippAddEditUser = (props) => {
       return lastName
         .split(/\s+/)
         .map((word) => word.substring(0, n))
-        .join('')
+        .join('');
     })
 
     // Replace %FirstName% and %LastName%
@@ -675,9 +675,7 @@ const CippAddEditUser = (props) => {
           type="textField"
           fullWidth
           label="Username"
-          InputProps={{
-            endAdornment: <InputAdornment position="end">@</InputAdornment>,
-          }}
+          slotProps={{ input: { endAdornment: <InputAdornment position="end">@</InputAdornment> } }}
           name="username"
           formControl={formControl}
           validators={{
@@ -1314,7 +1312,7 @@ const CippAddEditUser = (props) => {
         </Grid>
       </>
     </Grid>
-  )
+  );
 }
 
 export default CippAddEditUser

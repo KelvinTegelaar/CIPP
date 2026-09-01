@@ -130,7 +130,9 @@ const Page = () => {
                     <CippGeoLocation ipAddress={ipAddress} />
                   </Grid>
                 </Grid>
-                <Grid container spacing={2} mt={2}>
+                <Grid container spacing={2} sx={{
+                  mt: 2
+                }}>
                   <Grid size={12}>
                     <Stack direction="row" spacing={1}>
                       <Button variant="contained" color="primary" onClick={handleAddToWhitelist}>

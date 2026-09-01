@@ -773,7 +773,9 @@ const CippSchedulerForm = (props) => {
                 >
                   <Typography variant="h6">Trigger Configuration</Typography>
                   {getTriggerSummary() && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       - {getTriggerSummary()}
                     </Typography>
                   )}
@@ -928,9 +930,10 @@ const CippSchedulerForm = (props) => {
                         </Box>
                         <Typography
                           variant="body2"
-                          color="text.secondary"
-                          sx={{ mb: 2 }}
-                        >
+                          sx={{
+                            color: "text.secondary",
+                            mb: 2
+                          }}>
                           Create PowerShell-style Where-Object conditions to
                           filter delta query results. Each condition compares a
                           resource property against a specific value. Multiple
@@ -1055,7 +1058,9 @@ const CippSchedulerForm = (props) => {
                 >
                   <Typography variant="h6">Schedule Configuration</Typography>
                   {getScheduleSummary() && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       - {getScheduleSummary()}
                     </Typography>
                   )}
@@ -1136,7 +1141,9 @@ const CippSchedulerForm = (props) => {
               >
                 <Typography variant="h6">Command & Parameters</Typography>
                 {getCommandSummary() && (
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
                     - {getCommandSummary()}
                   </Typography>
                 )}
@@ -1146,7 +1153,9 @@ const CippSchedulerForm = (props) => {
               <Grid container spacing={2}>
                 {/* Command selection for both scheduled and triggered tasks */}
                 <Grid size={{ md: gridSize, xs: 12 }}>
-                  <Stack direction="row" alignItems="center" spacing={1}>
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     <Box sx={{ flexGrow: 1 }}>
                       <CippFormComponent
                         name="command"
@@ -1215,7 +1224,9 @@ const CippSchedulerForm = (props) => {
                   <Grid size={{ md: 12, xs: 12 }}>
                     <Box sx={{ my: 1 }}>
                       <Typography variant="h6">PowerShell Command:</Typography>
-                      <Typography variant="body2" color={'text.secondary'}>
+                      <Typography variant="body2" sx={{
+                        color: 'text.secondary'
+                      }}>
                         {selectedCommand.addedFields.Synopsis}
                       </Typography>
                     </Box>
@@ -1371,7 +1382,7 @@ const CippSchedulerForm = (props) => {
         </Grid>
       </Grid>
     </>
-  )
+  );
 }
 
 export default CippSchedulerForm

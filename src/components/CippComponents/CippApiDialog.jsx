@@ -372,9 +372,9 @@ export const CippApiDialog = (props) => {
             : element.replace(
                 /\[([^\]]+)\]/g,
                 (_, key) => getNestedValue(row[0], key) || `[${key}]`
-              )
+              );
         }
-        return element.replace(/\[([^\]]+)\]/g, (_, key) => getNestedValue(row, key) || `[${key}]`)
+        return element.replace(/\[([^\]]+)\]/g, (_, key) => getNestedValue(row, key) || `[${key}]`);
       }
       if (React.isValidElement(element)) {
         const newChildren = React.Children.map(element.props.children, replaceTextInElement)

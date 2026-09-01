@@ -524,7 +524,13 @@ export const CippWizardOffboarding = (props) => {
                   fullWidth
                   formControl={formControl}
                 />
-                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                    display: 'block',
+                    mt: 1
+                  }}>
                   CIPP %variable% tokens (for example %tenantname%) stay literal here and are
                   resolved when the offboarding job runs. %username% is not the offboarded user.
                 </Typography>
@@ -646,5 +652,5 @@ export const CippWizardOffboarding = (props) => {
         replacementBehaviour="removeNulls"
       />
     </Stack>
-  )
+  );
 }

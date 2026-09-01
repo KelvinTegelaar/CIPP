@@ -232,9 +232,10 @@ const Page = () => {
               >
                 <Typography
                   variant="body2"
-                  color="text.secondary"
-                  sx={{ minWidth: 90 }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    minWidth: 90
+                  }}>
                   {label}
                 </Typography>
                 <Typography variant="body2" sx={{ textAlign: 'right' }}>
@@ -270,9 +271,10 @@ const Page = () => {
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}>
                   <Chip
                     variant="outlined"
                     size="small"
@@ -281,7 +283,9 @@ const Page = () => {
                     }
                     label={`Stage ${stage.stage}: ${stage.name}`}
                   />
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {stage.tenants.length} tenant
                     {stage.tenants.length === 1 ? '' : 's'} -{' '}
                     {stage.standardsCount} standard
@@ -300,18 +304,20 @@ const Page = () => {
                 {stage.tenants.length > 0 && (
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    sx={{ display: 'block' }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      display: 'block'
+                    }}>
                     {stage.tenants.join(', ')}
                   </Typography>
                 )}
                 {stage.nextAdvanceAt && (
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    sx={{ display: 'block' }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      display: 'block'
+                    }}>
                     Next time-based advance out of this stage:{' '}
                     {parseCippDate(stage.nextAdvanceAt).toLocaleDateString()}
                   </Typography>
@@ -322,9 +328,10 @@ const Page = () => {
                   (row.stages ?? [])[stage.stage] && (
                     <Typography
                       variant="caption"
-                      color="text.secondary"
-                      sx={{ display: 'block' }}
-                    >
+                      sx={{
+                        color: "text.secondary",
+                        display: 'block'
+                      }}>
                       Tenants advance when{' '}
                       {describeStageConditions(row.stages[stage.stage])}.
                     </Typography>
@@ -342,7 +349,9 @@ const Page = () => {
             >
               Assigned Tenants
             </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} useFlexGap sx={{
+              flexWrap: "wrap"
+            }}>
               {(row.assignedTenants ?? []).map((assigned) => (
                 <Chip
                   key={assigned}
@@ -354,7 +363,7 @@ const Page = () => {
             </Stack>
           </Stack>
         </Stack>
-      )
+      );
     },
   }
 
@@ -405,7 +414,9 @@ const Page = () => {
             onClose={() => setMigrateVisible(false)}
             size="lg"
             footer={
-              <Stack direction="row" justifyContent="flex-start" spacing={2}>
+              <Stack direction="row" spacing={2} sx={{
+                justifyContent: "flex-start"
+              }}>
                 <Button
                   variant="contained"
                   disabled={
@@ -436,7 +447,9 @@ const Page = () => {
             }
           >
             <Stack spacing={2}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Converts your classic Standards templates (including drift
                 templates) into baselines. The originals are never modified,
                 but while the Baselines feature is enabled the classic
@@ -467,7 +480,12 @@ const Page = () => {
               />
               <CippApiResults apiObject={migrateCommit} />
               {migratePreview.isPending && (
-                <Box display="flex" justifyContent="center" py={4}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    py: 4
+                  }}>
                   <CircularProgress />
                 </Box>
               )}
@@ -540,7 +558,9 @@ const Page = () => {
                             />
                             <Typography
                               variant="caption"
-                              color="text.secondary"
+                              sx={{
+                                color: "text.secondary"
+                              }}
                             >
                               {template.standardsCount} standard
                               {template.standardsCount === 1 ? '' : 's'}
@@ -552,18 +572,20 @@ const Page = () => {
                             {(template.tenants ?? []).length > 0 && (
                               <Typography
                                 variant="caption"
-                                color="text.secondary"
-                                sx={{ display: 'block' }}
-                              >
+                                sx={{
+                                  color: "text.secondary",
+                                  display: 'block'
+                                }}>
                                 Tenants: {(template.tenants ?? []).join(', ')}
                               </Typography>
                             )}
                             {template.detail && (
                               <Typography
                                 variant="caption"
-                                color="text.secondary"
-                                sx={{ display: 'block' }}
-                              >
+                                sx={{
+                                  color: "text.secondary",
+                                  display: 'block'
+                                }}>
                                 {template.detail}
                               </Typography>
                             )}
@@ -571,9 +593,10 @@ const Page = () => {
                               <Typography
                                 key={warning}
                                 variant="caption"
-                                color="warning.main"
-                                sx={{ display: 'block' }}
-                              >
+                                sx={{
+                                  color: "warning.main",
+                                  display: 'block'
+                                }}>
                                 {warning}
                               </Typography>
                             ))}
@@ -581,7 +604,7 @@ const Page = () => {
                         }
                       />
                     </ListItem>
-                  )
+                  );
                 })}
               </List>
             </Stack>
@@ -592,7 +615,9 @@ const Page = () => {
             onClose={() => setCatalogVisible(false)}
             size="xl"
             footer={
-              <Stack direction="row" justifyContent="flex-start" spacing={2}>
+              <Stack direction="row" spacing={2} sx={{
+                justifyContent: "flex-start"
+              }}>
                 <Button
                   variant="outlined"
                   onClick={() => setCatalogVisible(false)}
@@ -631,7 +656,7 @@ const Page = () => {
       ]}
       queryKey="ListBaselines-table"
     />
-  )
+  );
 }
 
 Page.getLayout = (page) => (

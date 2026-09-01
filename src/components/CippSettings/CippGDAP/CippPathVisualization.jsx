@@ -84,7 +84,13 @@ export const CippPathVisualization = ({
     return (
       <Box sx={{ my: 2 }} {...other}>
         {relationshipName && (
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: "block" }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              mb: 1,
+              display: "block"
+            }}>
             Relationship: {relationshipName}
             {customerTenantName && ` → ${customerTenantName}`}
           </Typography>
@@ -243,16 +249,29 @@ export const CippPathVisualization = ({
     <Box sx={{ my: 2 }} {...other}>
       {relationshipName && (
         <Paper elevation={0} sx={{ p: 1, mb: 2, bgcolor: "background.default" }}>
-          <Stack useFlexGap direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-            <Typography variant="caption" color="text.secondary">
+          <Stack
+            useFlexGap
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              flexWrap: "wrap"
+            }}>
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               <strong>Relationship:</strong> {relationshipName}
             </Typography>
             {customerTenantName && (
               <>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   →
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   <strong>Customer:</strong> {customerTenantName}
                 </Typography>
               </>

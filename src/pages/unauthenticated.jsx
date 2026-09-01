@@ -133,8 +133,8 @@ const Page = ({ reason = 'session' }) => {
           <Stack
             direction="row"
             spacing={1.25}
-            alignItems="center"
             sx={{
+              alignItems: "center",
               mt: 2.5,
               px: 1.5,
               py: 1.25,
@@ -142,9 +142,8 @@ const Page = ({ reason = 'session' }) => {
               border: '1px solid',
               borderColor: 'divider',
               bgcolor: 'action.hover',
-              color: 'text.primary',
-            }}
-          >
+              color: 'text.primary'
+            }}>
             <SvgIcon fontSize="small" sx={{ color: 'text.secondary' }}>
               <PersonOutlineOutlined />
             </SvgIcon>
@@ -174,11 +173,12 @@ const Page = ({ reason = 'session' }) => {
         <Stack
           direction="row"
           spacing={1.5}
-          alignItems="center"
           useFlexGap
-          flexWrap="wrap"
-          sx={{ color: 'text.secondary' }}
-        >
+          sx={{
+            alignItems: "center",
+            flexWrap: "wrap",
+            color: 'text.secondary'
+          }}>
           <Button
             variant="outlined"
             startIcon={<Refresh />}

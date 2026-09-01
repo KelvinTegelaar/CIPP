@@ -10,11 +10,12 @@ export const CustomerNoteCard = (props) => {
   return (
     <Card {...other}>
       <Stack
-        alignItems="flex-start"
         direction="row"
         spacing={2}
-        sx={{ p: 2 }}
-      >
+        sx={{
+          alignItems: "flex-start",
+          p: 2
+        }}>
         <Avatar src={authorAvatar} />
         <Stack
           spacing={1}
@@ -27,14 +28,17 @@ export const CustomerNoteCard = (props) => {
             {content}
           </Typography>
           <Stack
-            alignItems="center"
             direction="row"
-            justifyContent="space-between"
             spacing={1}
-          >
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}>
             <Typography
-              color="text.secondary"
               variant="caption"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               {ago} ago
             </Typography>

@@ -44,7 +44,11 @@ const getRowColor = (row, theme) => {
 }
 
 export const formatDiffValue = (val) => {
-  if (val === null || val === undefined) return <Typography color="text.disabled">N/A</Typography>
+  if (val === null || val === undefined) return (
+    <Typography sx={{
+      color: "text.disabled"
+    }}>N/A</Typography>
+  );
   if (typeof val === 'object') {
     return (
       <Box

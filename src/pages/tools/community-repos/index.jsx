@@ -31,7 +31,7 @@ import {
   Add,
   AddBox,
   Close,
-  DeleteOutline,
+  DeleteOutlined,
   ForkLeft,
   MoreVert,
   OpenInNew,
@@ -198,7 +198,12 @@ const Page = () => {
       <CippHead title="Catalog" noTenant={true} />
       <Container maxWidth="xl">
         <Stack spacing={2}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="h4">Catalog</Typography>
             <Stack direction="row" spacing={1}>
               <Button
@@ -251,12 +256,16 @@ const Page = () => {
                     }}
                   >
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Stack direction="row" alignItems="flex-start" spacing={1}>
+                      <Stack direction="row" spacing={1} sx={{
+                        alignItems: "flex-start"
+                      }}>
                         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                           <Typography variant="h6" sx={{ wordBreak: "break-word" }}>
                             {repo.Name}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                          }}>
                             {repo.FullName}
                           </Typography>
                         </Box>
@@ -320,7 +329,9 @@ const Page = () => {
                       </Box>
                     </CardContent>
                     <CardContent sx={{ pt: 0, pb: 2 }}>
-                      <Stack direction="row" alignItems="center" spacing={1}>
+                      <Stack direction="row" spacing={1} sx={{
+                        alignItems: "center"
+                      }}>
                         {catalog.isSuccess ? (
                           <Box
                             sx={{
@@ -340,10 +351,12 @@ const Page = () => {
                       {latestCommit?.LatestCommitMessage && (
                         <Typography
                           variant="caption"
-                          color="text.secondary"
                           noWrap
-                          sx={{ display: "block", mt: 0.5 }}
-                        >
+                          sx={{
+                            color: "text.secondary",
+                            display: "block",
+                            mt: 0.5
+                          }}>
                           Latest update: {latestCommit.LatestCommitMessage}
                         </Typography>
                       )}
@@ -414,7 +427,7 @@ const Page = () => {
             }}
           >
             <ListItemIcon>
-              <DeleteOutline fontSize="small" />
+              <DeleteOutlined fontSize="small" />
             </ListItemIcon>
             <ListItemText>Remove Source</ListItemText>
           </MenuItem>
@@ -450,7 +463,9 @@ const Page = () => {
               label="Template Types"
               placeholder="What kind of templates does this repository contain?"
             />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               The template type is used to show templates from this repository in the right
               catalogs. Repositories that use CIPP folder names are detected automatically.
             </Typography>

@@ -78,11 +78,8 @@ export const CippMailboxRestoreDrawer = ({
   // Helper function to check if archive is active (GUID exists and is not all zeros)
   const hasActiveArchive = (mailbox) => {
     const archiveGuid = mailbox?.addedFields?.ArchiveGuid;
-    return (
-      archiveGuid &&
-      archiveGuid !== "00000000-0000-0000-0000-000000000000" &&
-      archiveGuid.replace(/0/g, "").replace(/-/g, "") !== ""
-    );
+    return (archiveGuid &&
+    archiveGuid !== "00000000-0000-0000-0000-000000000000" && archiveGuid.replace(/0/g, "").replace(/-/g, "") !== "");
   };
 
   useEffect(() => {
@@ -152,8 +149,10 @@ export const CippMailboxRestoreDrawer = ({
         anchor="right"
         open={drawerVisible}
         onClose={handleCloseDrawer}
-        PaperProps={{
-          sx: { width: { xs: "100%", sm: 600, md: 800 } },
+        slotProps={{
+          paper: {
+            sx: { width: { xs: "100%", sm: 600, md: 800 } },
+          }
         }}
       >
         <Box sx={{ p: 3, height: "100%", display: "flex", flexDirection: "column" }}>

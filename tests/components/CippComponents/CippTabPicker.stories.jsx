@@ -90,7 +90,13 @@ export const CompactInTitleRow = {
   decorators: [withTabs()],
   render: () => (
     <Box data-testid="title-row-host" sx={{ px: 2 }}>
-      <Stack alignItems="center" direction="row" justifyContent="space-between" spacing={1}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}>
         <Stack spacing={1} sx={{ minWidth: 0 }}>
           <Typography variant="h6" noWrap>
             Contoso Manufacturing Holdings GmbH

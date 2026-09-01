@@ -206,14 +206,18 @@ export const OrdersTable = (props) => {
                   </TableCell>
                   <TableCell>
                     <Typography
-                      color="inherit"
                       variant="inherit"
+                      sx={{
+                        color: "inherit"
+                      }}
                     >
                       {createdDate}
                     </Typography>
                     <Typography
-                      color="text.secondary"
                       variant="inherit"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       {createdTime}
                     </Typography>
@@ -233,23 +237,29 @@ export const OrdersTable = (props) => {
                   </TableCell>
                   <TableCell>
                     <Typography
-                      color="inherit"
                       variant="inherit"
+                      sx={{
+                        color: "inherit"
+                      }}
                     >
                       {address}
                     </Typography>
                     <Typography
-                      color="text.secondary"
                       variant="inherit"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       {order.courier}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Stack
-                      alignItems="center"
                       direction="row"
                       spacing={1}
+                      sx={{
+                        alignItems: "center"
+                      }}
                     >
                       <Box
                         sx={{

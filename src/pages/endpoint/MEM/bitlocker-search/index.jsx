@@ -49,7 +49,9 @@ const Page = () => {
           <Grid container spacing={3}>
             <Grid size={{ xs: 12 }}>
               <CippButtonCard title="BitLocker Key Search">
-                <Grid container spacing={2} alignItems="flex-end">
+                <Grid container spacing={2} sx={{
+                  alignItems: "flex-end"
+                }}>
                   <Grid size={{ xs: 12 }}>
                     <CippFormComponent
                       type="radio"

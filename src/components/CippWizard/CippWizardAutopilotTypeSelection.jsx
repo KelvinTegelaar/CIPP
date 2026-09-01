@@ -69,7 +69,9 @@ export const CippWizardAutopilotTypeSelection = (props) => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Select Deployment Type</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Choose how you want to register the devices for this tenant.
         </Typography>
       </Stack>
@@ -94,7 +96,9 @@ export const CippWizardAutopilotTypeSelection = (props) => {
               }}
             >
               <CardContent>
-                <Stack alignItems="center" direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} sx={{
+                  alignItems: "center"
+                }}>
                   <Avatar
                     variant="rounded"
                     sx={{
@@ -108,14 +112,16 @@ export const CippWizardAutopilotTypeSelection = (props) => {
                   </Avatar>
                   <Stack spacing={1}>
                     <Typography variant="h6">{option.label}</Typography>
-                    <Typography color="text.secondary">
+                    <Typography sx={{
+                      color: "text.secondary"
+                    }}>
                       {option.description}
                     </Typography>
                   </Stack>
                 </Stack>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </Stack>
       <CippWizardStepButtons
@@ -125,7 +131,7 @@ export const CippWizardAutopilotTypeSelection = (props) => {
         formControl={formControl}
       />
     </Stack>
-  )
+  );
 }
 
 export default CippWizardAutopilotTypeSelection

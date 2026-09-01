@@ -26,7 +26,9 @@ export default {
       // Stands in for the mobile top bar, where the chip takes the width a search icon
       // used to occupy (universal search moved into the account menu).
       <Paper sx={{ maxWidth: 390, p: 1 }}>
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{
+          alignItems: "center"
+        }}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Story />
           </Box>

@@ -63,7 +63,9 @@ const Page = () => {
         simpleColumns={simpleColumns}
         queryKey={reportDB.resolvedQueryKey}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <CippPolicyDeployDrawer
               buttonText="Deploy Policy"
               requiredPermissions={cardButtonPermissions}
@@ -75,7 +77,7 @@ const Page = () => {
       />
       {reportDB.syncDialog}
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

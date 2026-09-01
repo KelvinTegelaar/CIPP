@@ -210,21 +210,23 @@ export const CippTenantLookup = () => {
               placeholder="Domain name or tenant ID"
               value={domain || ""}
               onChange={(e) => formControl.setValue("domain", e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment
-                    position="start"
-                    sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
-                  >
-                    <Search color="action" sx={{ fontSize: 20 }} />
-                  </InputAdornment>
-                ),
-                sx: {
-                  "& .MuiInputAdornment-root": {
-                    marginTop: "0 !important",
-                    alignSelf: "center",
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
+                    >
+                      <Search color="action" sx={{ fontSize: 20 }} />
+                    </InputAdornment>
+                  ),
+                  sx: {
+                    "& .MuiInputAdornment-root": {
+                      marginTop: "0 !important",
+                      alignSelf: "center",
+                    },
                   },
-                },
+                }
               }}
             />
             <Button
@@ -306,7 +308,9 @@ export const CippTenantLookup = () => {
                     </Typography>
                     <Grid container spacing={2}>
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{
+                          color: "text.secondary"
+                        }}>
                           Tenant Name
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
@@ -317,7 +321,9 @@ export const CippTenantLookup = () => {
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{
+                          color: "text.secondary"
+                        }}>
                           Default Domain Name
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
@@ -328,7 +334,9 @@ export const CippTenantLookup = () => {
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{
+                          color: "text.secondary"
+                        }}>
                           Tenant ID
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
@@ -339,7 +347,9 @@ export const CippTenantLookup = () => {
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{
+                          color: "text.secondary"
+                        }}>
                           Tenant Region
                         </Typography>
                         {openIdData?.tenant_region_scope ? (
@@ -378,7 +388,9 @@ export const CippTenantLookup = () => {
                         alignSelf: { xs: "stretch", md: "stretch" },
                       }}
                     >
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                      <Typography variant="body2" gutterBottom sx={{
+                        color: "text.secondary"
+                      }}>
                         Tenant Logo
                       </Typography>
                       {tileLogoUrl ? (

@@ -31,7 +31,9 @@ export const CippDevOptions = () => {
       <CardHeader title="Developer Options" />
       <Divider />
       <CardContent>
-        <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={2} useFlexGap sx={{
+          flexWrap: "wrap"
+        }}>
           <Button
             color="inherit"
             onClick={handleDevToolsToggle}
@@ -55,7 +57,13 @@ export const CippDevOptions = () => {
             {settings.showAdvancedTools ? "Disable" : "Enable"} Advanced Views
           </Button>
         </Stack>
-        <Typography color="text.secondary" variant="caption" sx={{ display: "block", mt: 1 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            display: "block",
+            mt: 1
+          }}>
           Advanced Views reveal diagnostic pages (such as audit-log Search Coverage) that are hidden
           from day-to-day operations. This preference is per-user, stored in this browser.
         </Typography>

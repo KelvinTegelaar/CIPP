@@ -23,8 +23,10 @@ export const List5 = () => (
         secondary={(
           <Box sx={{ flex: 1 }}>
             <Typography
-              color="text.secondary"
               variant="body2"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               Natalie Rusell
             </Typography>
@@ -59,8 +61,10 @@ export const List5 = () => (
         secondary={(
           <Box sx={{ flex: 1 }}>
             <Typography
-              color="text.secondary"
               variant="body2"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               natalie.rusell@gmail.com
             </Typography>
@@ -94,8 +98,10 @@ export const List5 = () => (
         secondary={(
           <Box sx={{ flex: 1 }}>
             <Typography
-              color="text.secondary"
               variant="body2"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               Backend Developer
             </Typography>

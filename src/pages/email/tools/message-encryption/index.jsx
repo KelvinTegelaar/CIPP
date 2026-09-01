@@ -126,7 +126,9 @@ const Page = () => {
     >
       <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Microsoft Purview Message Encryption lets users send protected email
             to any recipient, including Gmail and Outlook.com. The only
             prerequisite is that Azure Rights Management is active for the
@@ -186,7 +188,9 @@ const Page = () => {
         </Grid>
         <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle2">Test the configuration</Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Runs Test-IRMConfiguration, which verifies that RMS templates can be
             acquired and that encryption and decryption both work. Use any
             mailbox in the tenant for both addresses.
@@ -229,7 +233,7 @@ const Page = () => {
         </Grid>
       </Grid>
     </CippFormPage>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

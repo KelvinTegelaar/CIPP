@@ -86,10 +86,11 @@ export const InvoicePaymentHistory = () => (
                   {getContent(log)}
                   <Typography
                     component="p"
-                    color="text.secondary"
-                    sx={{ whiteSpace: 'nowrap' }}
                     variant="caption"
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      whiteSpace: 'nowrap'
+                    }}>
                     {ago} ago
                   </Typography>
                 </TimelineContent>

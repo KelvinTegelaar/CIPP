@@ -103,12 +103,23 @@ const Page = () => {
           }
         }}
       >
-        <Box display="flex" width="100%" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h5" width="100%">
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2
+          }}>
+          <Typography variant="h5" sx={{
+            width: "100%"
+          }}>
             GDAP Roles
           </Typography>
           <Tooltip title="Advanced Mode">
-            <Stack direction="row" alignItems="center">
+            <Stack direction="row" sx={{
+              alignItems: "center"
+            }}>
               <SvgIcon fontSize="small">
                 <Settings />
               </SvgIcon>
@@ -246,7 +257,9 @@ const Page = () => {
                 </li>
               </ul>
             </CippExpandableAlert>
-            <Grid container spacing={2} alignItems="center">
+            <Grid container spacing={2} sx={{
+              alignItems: "center"
+            }}>
               <Grid size={{ md: 5, xs: 12 }}>
                 <CippFormComponent
                   formControl={formControl}

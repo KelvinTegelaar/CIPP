@@ -43,10 +43,11 @@ const QuotaMeter = ({ usedMB, totalMB, usedTooltip, freeTooltip, caption, loadin
   const hasQuota = Number.isFinite(usedMB) && Number.isFinite(totalMB) && totalMB > 0
   if (!hasQuota) {
     return (
-      <Typography variant="body2" color="text.secondary">
-        Unavailable
-      </Typography>
-    )
+      <Typography variant="body2" sx={{
+        color: "text.secondary"
+      }}>Unavailable
+              </Typography>
+    );
   }
 
   const quotaPct = Math.min(100, Math.round((usedMB / totalMB) * 1000) / 10)
@@ -55,7 +56,9 @@ const QuotaMeter = ({ usedMB, totalMB, usedTooltip, freeTooltip, caption, loadin
   return (
     <Stack spacing={0.75} sx={{ width: '100%', maxWidth: 320, pt: 0.25 }}>
       <LinearProgressWithLabel value={quotaPct} colourLevels="flipped" addedLabel="used" />
-      <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap">
+      <Stack direction="row" spacing={0.75} useFlexGap sx={{
+        flexWrap: "wrap"
+      }}>
         <Tooltip title={usedTooltip}>
           <Chip
             size="small"
@@ -68,12 +71,14 @@ const QuotaMeter = ({ usedMB, totalMB, usedTooltip, freeTooltip, caption, loadin
         </Tooltip>
       </Stack>
       {caption ? (
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           {caption}
         </Typography>
       ) : null}
     </Stack>
-  )
+  );
 }
 
 QuotaMeter.propTypes = {
@@ -285,7 +290,14 @@ export const CippSharePointBrowserProperties = ({
         {
           label: 'By type',
           value: rootSummary.typeEntries.length ? (
-            <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap" sx={{ pt: 0.25 }}>
+            <Stack
+              direction="row"
+              spacing={0.75}
+              useFlexGap
+              sx={{
+                flexWrap: "wrap",
+                pt: 0.25
+              }}>
               {rootSummary.typeEntries.map(([type, count], index) => (
                 <Chip
                   key={type}
@@ -423,11 +435,17 @@ export const CippSharePointBrowserProperties = ({
       <CardHeader
         title={title}
         subheader={subheader}
-        titleTypographyProps={{ variant: 'h6', noWrap: true }}
-        subheaderTypographyProps={{ variant: 'caption' }}
-      />
+        slotProps={{
+          title: { variant: 'h6', noWrap: true },
+          subheader: { variant: 'caption' }
+        }} />
       {showEmptyPrompt ? (
-        <Typography color="text.secondary" sx={{ px: 3, pb: 2 }}>
+        <Typography
+          sx={{
+            color: "text.secondary",
+            px: 3,
+            pb: 2
+          }}>
           {emptyMessage}
         </Typography>
       ) : (
@@ -458,7 +476,7 @@ export const CippSharePointBrowserProperties = ({
         />
       )}
     </Card>
-  )
+  );
 }
 
 CippSharePointBrowserProperties.propTypes = {

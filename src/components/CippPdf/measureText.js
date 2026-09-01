@@ -99,5 +99,5 @@ export const wrapLongTokens = (text, maxWidth, fontSize, bold = false) => {
       if (current) pieces.push(current)
       return pieces.join('\n')
     })
-    .join('')
+    .join('');
 }

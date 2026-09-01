@@ -70,7 +70,6 @@ export const ForcedSsoMigrationDialog = () => {
       open={open}
       maxWidth="sm"
       fullWidth
-      disableEscapeKeyDown
       slotProps={{ backdrop: { onClick: (e) => e.stopPropagation() } }}
     >
       <DialogTitle>Complete Authentication Setup</DialogTitle>
@@ -120,7 +119,12 @@ export const ForcedSsoMigrationDialog = () => {
                     list to decide their roles.
                   </li>
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mb: 1
+                  }}>
                   These grant no access to mail, files, Teams or directory data, and the app cannot
                   act without a signed-in user. Everything CIPP does against Microsoft 365 continues
                   to run through the existing CIPP-SAM app.
@@ -142,7 +146,12 @@ export const ForcedSsoMigrationDialog = () => {
               label="Multi-tenant mode (allow users from multiple Entra ID tenants to log in)"
               sx={{ mb: 1 }}
             />
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                display: 'block'
+              }}>
               Leave this off unless the people who sign in to CIPP have accounts in a tenant other
               than your partner tenant.
             </Typography>
@@ -172,16 +181,23 @@ export const ForcedSsoMigrationDialog = () => {
             <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
               If it keeps failing
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mb: 1
+              }}>
               The usual cause is a policy in your own tenant, not a problem with CIPP. Two to check
               with your Entra administrator:
             </Typography>
             <Typography
               component="ul"
               variant="body2"
-              color="text.secondary"
-              sx={{ pl: 3, mb: 2 }}
-            >
+              sx={{
+                color: "text.secondary",
+                pl: 3,
+                mb: 2
+              }}>
               <li>
                 An <strong>app management policy</strong> that blocks adding client secrets. CIPP
                 tries to exempt itself from it; where that is also blocked, an administrator has to
@@ -195,7 +211,12 @@ export const ForcedSsoMigrationDialog = () => {
             {/* This dialog can't be dismissed, so a policy-blocked secret leaves the admin with
                 nowhere to go. Resetting from the management portal drops the instance back to its
                 setup wizard, which is the only route to entering a hand-made app's credentials. */}
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mb: 2
+              }}>
               If neither applies, or your administrator has to create the app registration by hand,
               use <strong>Reset SSO</strong> in the{' '}
               <Link
@@ -235,5 +256,5 @@ export const ForcedSsoMigrationDialog = () => {
         ) : null}
       </DialogActions>
     </Dialog>
-  )
+  );
 }

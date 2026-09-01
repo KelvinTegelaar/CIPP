@@ -466,10 +466,11 @@ export const CippWizardAutopilotImport = (props) => {
                     <Stack
                       direction="row"
                       spacing={1}
-                      alignItems="center"
-                      sx={{ mb: 2 }}
                       useFlexGap
-                    >
+                      sx={{
+                        alignItems: "center",
+                        mb: 2
+                      }}>
                       {rowNumber}
                       <Typography variant="subtitle2" sx={{ flexGrow: 1, minWidth: 0 }} noWrap>
                         Device {rowIndex + 1}
@@ -485,7 +486,7 @@ export const CippWizardAutopilotImport = (props) => {
                     </Stack>
                     <Stack spacing={2}>{fieldInputs}</Stack>
                   </Paper>
-                )
+                );
               }
 
               return (
@@ -588,5 +589,5 @@ export const CippWizardAutopilotImport = (props) => {
         formControl={formControl}
       />
     </Stack>
-  )
+  );
 }

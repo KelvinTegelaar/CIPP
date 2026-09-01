@@ -55,9 +55,11 @@ const ProductVariantRow = (props) => {
     <TableRow {...other}>
       <TableCell>
         <Stack
-          alignItems="center"
           direction="row"
           spacing={2}
+          sx={{
+            alignItems: "center"
+          }}
         >
           <Avatar
             src={variant.image}
@@ -68,8 +70,10 @@ const ProductVariantRow = (props) => {
             </SvgIcon>
           </Avatar>
           <Typography
-            color="inherit"
             variant="body2"
+            sx={{
+              color: "inherit"
+            }}
           >
             {variant.name}
           </Typography>
@@ -86,9 +90,11 @@ const ProductVariantRow = (props) => {
       </TableCell>
       <TableCell sx={{ width: 333 }}>
         <Stack
-          alignItems="center"
           direction="row"
           spacing={1}
+          sx={{
+            alignItems: "center"
+          }}
         >
           <ToggleButtonGroup
             exclusive

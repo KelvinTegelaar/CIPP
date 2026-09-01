@@ -133,13 +133,17 @@ const Page = () => {
               </Typography>
             </Box>
 
-            <Grid container spacing={2} alignItems="stretch">
+            <Grid container spacing={2} sx={{
+              alignItems: "stretch"
+            }}>
               <Grid size={{ xs: 12, md: 8, lg: 9 }}>
                 <CippButtonCard
                   title="Template Settings"
                   isFetching={isLoadingTemplate}
                   CardButton={
-                    <Stack direction="row" spacing={2} alignItems="center">
+                    <Stack direction="row" spacing={2} sx={{
+                      alignItems: "center"
+                    }}>
                       <Button
                         variant="contained"
                         startIcon={<Save />}

@@ -114,7 +114,9 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
       >
         <Stack spacing={3}>
           <Box>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
+            <Typography variant="body2" gutterBottom sx={{
+              color: "text.secondary"
+            }}>
               {summary?.Status ?? 'Starting'} — {percent}% complete
             </Typography>
             <LinearProgress
@@ -124,7 +126,9 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
             />
           </Box>
 
-          <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={3} useFlexGap sx={{
+            flexWrap: "wrap"
+          }}>
             <Typography variant="body2">
               <strong>Caches:</strong> {summary?.FoundQueues ?? 0} of {summary?.TotalQueues ?? 0}
             </Typography>
@@ -146,8 +150,15 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
                 key={queue.RowKey}
                 sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}
               >
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Typography variant="body2" fontWeight="medium">
+                <Stack
+                  direction="row"
+                  sx={{
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}>
+                  <Typography variant="body2" sx={{
+                    fontWeight: "medium"
+                  }}>
                     {queue.Name}
                   </Typography>
                   <Chip
@@ -165,7 +176,9 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
                     }
                   />
                 </Stack>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   {queue.CompletedTasks ?? 0} of {queue.TotalTasks ?? 0} tasks
                   {queue.FailedTasks > 0 ? ` — ${queue.FailedTasks} failed` : ''}
                 </Typography>
@@ -177,14 +190,18 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
               </Box>
             ))}
             {queues.length === 0 && (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 {polling.isFetching ? 'Loading queue status…' : 'No queue data available yet.'}
               </Typography>
             )}
           </Stack>
 
           {summary?.TotalQueues > summary?.FoundQueues && (
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               {summary.TotalQueues - summary.FoundQueues} queue(s) could not be found. They may have
               finished and aged out of the queue history, or failed to start.
             </Typography>
@@ -192,7 +209,7 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
         </Stack>
       </CippOffCanvas>
     </>
-  )
+  );
 }
 
 export default CippMultiQueueTracker

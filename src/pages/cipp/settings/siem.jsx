@@ -44,7 +44,9 @@ const Page = () => {
                 <Typography variant="subtitle2" gutterBottom>
                   How Logs are Stored
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   CIPP writes all log entries to an Azure Table Storage table called{" "}
                   <code>CippLogs</code>. Each row is partitioned by date using the format{" "}
                   <code>YYYYMMDD</code> as the <code>PartitionKey</code>, with a unique GUID as the{" "}
@@ -67,7 +69,9 @@ const Page = () => {
                 <Typography variant="subtitle2" gutterBottom>
                   Available Columns
                 </Typography>
-                <Typography variant="body2" component="div" color="text.secondary">
+                <Typography variant="body2" component="div" sx={{
+                  color: "text.secondary"
+                }}>
                   <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
                     <li>
                       <code>PartitionKey</code> — Date in YYYYMMDD format
@@ -110,7 +114,12 @@ const Page = () => {
                 <Typography variant="subtitle2" gutterBottom>
                   Example $filter Queries
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mb: 1
+                  }}>
                   Append <code>&$filter=</code> to your SAS URL to filter results. Use{" "}
                   <code>eq</code>, <code>ne</code>, <code>gt</code>, <code>lt</code>,{" "}
                   <code>ge</code>, <code>le</code>, and combine with <code>and</code> /{" "}
@@ -118,7 +127,9 @@ const Page = () => {
                 </Typography>
                 {filterExamples.map((ex) => (
                   <div key={ex.label} style={{ marginBottom: "0.75rem" }}>
-                    <Typography variant="body2" fontWeight={600}>
+                    <Typography variant="body2" sx={{
+                      fontWeight: 600
+                    }}>
                       {ex.label}
                     </Typography>
                     <div
@@ -136,7 +147,9 @@ const Page = () => {
                       <CippCopyToClipBoard text={`$filter=${ex.filter}`} />
                     </div>
                     {ex.note && (
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" sx={{
+                        color: "text.secondary"
+                      }}>
                         {ex.note}
                       </Typography>
                     )}
@@ -150,7 +163,9 @@ const Page = () => {
                 <Typography variant="subtitle2" gutterBottom>
                   Azure Tables Documentation
                 </Typography>
-                <Typography variant="body2" component="div" color="text.secondary">
+                <Typography variant="body2" component="div" sx={{
+                  color: "text.secondary"
+                }}>
                   <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
                     <li>
                       <MuiLink

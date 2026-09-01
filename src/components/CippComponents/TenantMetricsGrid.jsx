@@ -2,7 +2,7 @@ import { Box, Grid, Tooltip, Avatar, Typography, Skeleton } from '@mui/material'
 import { useRouter } from 'next/router'
 import {
   Person as UserIcon,
-  PersonOutline as GuestIcon,
+  PersonOutlined as GuestIcon,
   Group as GroupIcon,
   Apps as AppsIcon,
   Devices as DevicesIcon,
@@ -122,15 +122,18 @@ export const TenantMetricsGrid = ({ data, isLoading }) => {
                 <Box sx={{ minWidth: 0 }}>
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    fontSize={{ xs: '0.6rem', sm: '0.65rem', md: '0.7rem' }}
                     noWrap
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      fontSize: { xs: '0.6rem', sm: '0.65rem', md: '0.7rem' }
+                    }}>
                     {metric.label}
                   </Typography>
                   <Typography
                     variant="h6"
-                    fontSize={{ xs: '0.9rem', sm: '1rem', md: '1.125rem' }}
+                    sx={{
+                      fontSize: { xs: '0.9rem', sm: '1rem', md: '1.125rem' }
+                    }}
                   >
                     {isLoading ? (
                       <Skeleton width={40} />
@@ -142,8 +145,8 @@ export const TenantMetricsGrid = ({ data, isLoading }) => {
               </Box>
             </Tooltip>
           </Grid>
-        )
+        );
       })}
     </Grid>
-  )
+  );
 }

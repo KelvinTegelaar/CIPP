@@ -42,8 +42,10 @@ export const Stats2 = () => (
             }}
           >
             <Typography
-              color="text.secondary"
               variant="overline"
+              sx={{
+                color: "text.secondary"
+              }}
             >
               {item.label}
             </Typography>

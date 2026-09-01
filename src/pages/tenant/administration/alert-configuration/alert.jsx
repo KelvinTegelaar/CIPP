@@ -652,7 +652,13 @@ const AlertWizard = () => {
       <Container maxWidth={'xl'}>
         <Stack spacing={4}>
           {existingAlert.isLoading && <Skeleton />}
-          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="h4">{editAlert ? 'Edit' : 'Add'} Alert</Typography>
           </Stack>
 
@@ -687,12 +693,16 @@ const AlertWizard = () => {
               <Grid
                 container
                 spacing={4}
-                sx={{ mt: 2, width: '100%' }}
-                justifyContent="space-around"
-              >
+                sx={{
+                  justifyContent: "space-around",
+                  mt: 2,
+                  width: '100%'
+                }}>
                 <Grid size={12}>
                   <form id="auditAlertForm" onSubmit={formControl.handleSubmit(handleAuditSubmit)}>
-                    <Grid container spacing={3} justifyContent="space-around">
+                    <Grid container spacing={3} sx={{
+                      justifyContent: "space-around"
+                    }}>
                       <Grid size={12}>
                         <CippButtonCard title="Tenant Selector" sx={{ mb: 3 }}>
                           <Grid container spacing={3}>
@@ -774,10 +784,11 @@ const AlertWizard = () => {
                             <Grid
                               container
                               spacing={2}
-                              justifyContent="space-around"
-                              sx={{ mb: 2 }}
                               key={event.id}
-                            >
+                              sx={{
+                                justifyContent: "space-around",
+                                mb: 2
+                              }}>
                               <Grid size={{ xs: 12, md: 4 }}>
                                 <CippFormComponent
                                   type="autoComplete"
@@ -1285,7 +1296,7 @@ const AlertWizard = () => {
         </Stack>
       </Container>
     </Box>
-  )
+  );
 }
 
 AlertWizard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

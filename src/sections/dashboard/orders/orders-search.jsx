@@ -194,12 +194,13 @@ export const OrdersSearch = (props) => {
         </Box>
         <Divider />
         <Stack
-          alignItems="center"
           direction="row"
-          flexWrap="wrap"
-          gap={2}
-          sx={{ p: 3 }}
-        >
+          sx={{
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 2,
+            p: 3
+          }}>
           {hasSelection && (
             <BulkActionsMenu
               disabled={disabled}

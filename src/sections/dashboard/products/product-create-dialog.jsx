@@ -51,10 +51,12 @@ export const ProductCreateDialog = (props) => {
       maxWidth="sm"
       onClose={onClose}
       open={open}
-      TransitionProps={{
-        onExited: () => formik.resetForm()
-      }}
-      {...other}>
+      {...other}
+      slotProps={{
+        transition: {
+          onExited: () => formik.resetForm()
+        }
+      }}>
       <DialogTitle>
         Create Product
       </DialogTitle>

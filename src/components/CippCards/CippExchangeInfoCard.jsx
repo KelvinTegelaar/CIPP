@@ -88,7 +88,9 @@ export const CippExchangeInfoCard = (props) => {
             ) : (
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
                     Mailbox Type:
                   </Typography>
                   <Typography variant="inherit">
@@ -96,7 +98,9 @@ export const CippExchangeInfoCard = (props) => {
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
                     Hidden from GAL:
                   </Typography>
                   <Typography variant="inherit">
@@ -107,7 +111,9 @@ export const CippExchangeInfoCard = (props) => {
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
                     Blocked For Spam:
                   </Typography>
                   <Typography variant="inherit">
@@ -115,7 +121,9 @@ export const CippExchangeInfoCard = (props) => {
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, md: 12 }}>
-                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
                     Retention Policy:
                   </Typography>
                   <Typography variant="inherit">
@@ -206,7 +214,9 @@ export const CippExchangeInfoCard = (props) => {
                 return (
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
-                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                      <Typography variant="inherit" gutterBottom sx={{
+                        color: "text.primary"
+                      }}>
                         Forwarding Status:
                       </Typography>
                       <Typography variant="inherit">
@@ -218,7 +228,9 @@ export const CippExchangeInfoCard = (props) => {
                     {forwardingType !== 'None' && (
                       <>
                         <Grid size={{ xs: 12, md: 6 }}>
-                          <Typography variant="inherit" color="text.primary" gutterBottom>
+                          <Typography variant="inherit" gutterBottom sx={{
+                            color: "text.primary"
+                          }}>
                             Keep Copy in Mailbox:
                           </Typography>
                           <Typography variant="inherit">
@@ -226,7 +238,9 @@ export const CippExchangeInfoCard = (props) => {
                           </Typography>
                         </Grid>
                         <Grid size={{ xs: 12, md: 12 }}>
-                          <Typography variant="inherit" color="text.primary" gutterBottom>
+                          <Typography variant="inherit" gutterBottom sx={{
+                            color: "text.primary"
+                          }}>
                             Forwarding Address:
                           </Typography>
                           <Typography variant="inherit">{cleanAddress}</Typography>
@@ -234,7 +248,7 @@ export const CippExchangeInfoCard = (props) => {
                       </>
                     )}
                   </Grid>
-                )
+                );
               })()
             )
           }
@@ -249,7 +263,9 @@ export const CippExchangeInfoCard = (props) => {
             ) : (
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
                     Archive Mailbox Enabled:
                   </Typography>
                   <Typography variant="inherit">
@@ -259,7 +275,9 @@ export const CippExchangeInfoCard = (props) => {
                 {exchangeData?.ArchiveMailBox && (
                   <>
                     <Grid size={{ xs: 12, md: 6 }}>
-                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                      <Typography variant="inherit" gutterBottom sx={{
+                        color: "text.primary"
+                      }}>
                         {exchangeData?.AutoExpandingArchiveScope === 'Organization'
                           ? 'Auto Expanding Archive: (org)'
                           : 'Auto Expanding Archive:'}
@@ -272,7 +290,9 @@ export const CippExchangeInfoCard = (props) => {
                       </Typography>
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                      <Typography variant="inherit" gutterBottom sx={{
+                        color: "text.primary"
+                      }}>
                         Total Archive Item Size:
                       </Typography>
                       <Typography variant="inherit">
@@ -282,7 +302,9 @@ export const CippExchangeInfoCard = (props) => {
                       </Typography>
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
-                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                      <Typography variant="inherit" gutterBottom sx={{
+                        color: "text.primary"
+                      }}>
                         Total Archive Item Count:
                       </Typography>
                       <Typography variant="inherit">
@@ -359,7 +381,7 @@ export const CippExchangeInfoCard = (props) => {
         />
       </PropertyList>
     </Card>
-  )
+  );
 }
 
 CippExchangeInfoCard.propTypes = {

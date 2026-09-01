@@ -489,10 +489,11 @@ export const CippWizardDevicePrepImport = (props) => {
                     <Stack
                       direction="row"
                       spacing={1}
-                      alignItems="center"
-                      sx={{ mb: 2 }}
                       useFlexGap
-                    >
+                      sx={{
+                        alignItems: "center",
+                        mb: 2
+                      }}>
                       {rowNumber}
                       <Typography
                         variant="subtitle2"
@@ -512,7 +513,7 @@ export const CippWizardDevicePrepImport = (props) => {
                     </Stack>
                     <Stack spacing={2}>{fieldInputs}</Stack>
                   </Paper>
-                )
+                );
               }
 
               return (
@@ -615,5 +616,5 @@ export const CippWizardDevicePrepImport = (props) => {
         formControl={formControl}
       />
     </Stack>
-  )
+  );
 }

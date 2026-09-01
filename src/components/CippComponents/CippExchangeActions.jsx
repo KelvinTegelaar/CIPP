@@ -1,7 +1,7 @@
 ﻿import { TrashIcon, MagnifyingGlassIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
 import {
   Archive,
-  MailOutline,
+  MailOutlined,
   Visibility,
   PhonelinkLock,
   Key,
@@ -302,7 +302,7 @@ export const CippExchangeActions = () => {
     {
       label: "Set Copy Sent Items for Delegated Mailboxes",
       type: "POST",
-      icon: <MailOutline />,
+      icon: <MailOutlined />,
       condition: (row) =>
         row.recipientTypeDetails === "UserMailbox" || row.recipientTypeDetails === "SharedMailbox",
       url: "/api/ExecCopyForSent",

@@ -230,7 +230,9 @@ export const CippDeployCompliancePolicyDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <Stack direction="row" spacing={2} justifyContent="flex-start">
+          <Stack direction="row" spacing={2} sx={{
+            justifyContent: "flex-start"
+          }}>
             <Button
               variant="contained"
               color="primary"

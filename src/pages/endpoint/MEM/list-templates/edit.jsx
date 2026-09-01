@@ -126,7 +126,9 @@ const EditIntuneTemplate = () => {
               <CardHeader
                 title="Template details"
                 action={templateData.Type ? <Chip label={templateData.Type} size="small" /> : null}
-                titleTypographyProps={{ variant: "h6" }}
+                slotProps={{
+                  title: { variant: "h6" }
+                }}
               />
               <CardContent>
                 <Grid container spacing={2}>
@@ -154,7 +156,9 @@ const EditIntuneTemplate = () => {
             </Card>
 
             <Card variant="outlined">
-              <CardHeader title="Policy settings" titleTypographyProps={{ variant: "h6" }} />
+              <CardHeader title="Policy settings" slotProps={{
+                title: { variant: "h6" }
+              }} />
               <CardContent>
                 {!originalPolicy ? (
                   <Alert severity="error">
@@ -167,9 +171,13 @@ const EditIntuneTemplate = () => {
                   </Alert>
                 ) : definitionsLoading ? (
                   <Box>
-                    <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Stack direction="row" spacing={1.5} sx={{
+                      alignItems: "center"
+                    }}>
                       <CircularProgress size={18} />
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         Resolving setting names and available values…
                       </Typography>
                     </Stack>

@@ -212,7 +212,12 @@ export const CippMobileCardList = (props) => {
             </Typography>
             {hasActiveFilter && (
               <>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 0.5
+                  }}>
                   Nothing matches the current search and filters.
                 </Typography>
                 <Button variant="contained" sx={{ mt: 2, minHeight: 44 }} onClick={onClearFilters}>
@@ -259,7 +264,9 @@ export const CippMobileCardList = (props) => {
                       checked={selected}
                       onChange={() => row.toggleSelected()}
                       sx={{ alignSelf: "flex-start", p: 1, m: -0.5 }}
-                      inputProps={{ "aria-label": `Select ${textValue(row, slots.primary) ?? row.id}` }}
+                      slotProps={{
+                        input: { "aria-label": `Select ${textValue(row, slots.primary) ?? row.id}` }
+                      }}
                     />
                   )}
                   <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -271,7 +278,9 @@ export const CippMobileCardList = (props) => {
                       {textValue(row, slots.primary) ?? "—"}
                     </Typography>
                     {slots.secondary && (
-                      <Typography variant="body2" color="text.secondary" noWrap>
+                      <Typography variant="body2" noWrap sx={{
+                        color: "text.secondary"
+                      }}>
                         {textValue(row, slots.secondary)}
                       </Typography>
                     )}
@@ -280,9 +289,11 @@ export const CippMobileCardList = (props) => {
                         direction="row"
                         spacing={0.75}
                         useFlexGap
-                        flexWrap="wrap"
-                        sx={{ mt: 1, alignItems: "center" }}
-                      >
+                        sx={{
+                          flexWrap: "wrap",
+                          mt: 1,
+                          alignItems: "center"
+                        }}>
                         {slots.chips.map((col) => {
                           // Booleans format as a bare ✓/✕ icon — meaningful under a column
                           // header, meaningless floating on a card. Give those chips their
@@ -312,7 +323,9 @@ export const CippMobileCardList = (props) => {
                               }}
                             >
                               {(isBareBoolean || isMuteAlone) && (
-                                <Typography variant="caption" color="text.secondary" noWrap>
+                                <Typography variant="caption" noWrap sx={{
+                                  color: "text.secondary"
+                                }}>
                                   {getCippTranslation(col.id)}
                                 </Typography>
                               )}
@@ -339,10 +352,11 @@ export const CippMobileCardList = (props) => {
                           <Box key={col.id} sx={{ display: "contents" }}>
                             <Typography
                               variant="caption"
-                              color="text.secondary"
                               noWrap
-                              sx={{ maxWidth: 150 }}
-                            >
+                              sx={{
+                                color: "text.secondary",
+                                maxWidth: 150
+                              }}>
                               {getCippTranslation(col.id)}
                             </Typography>
                             <Box
@@ -390,7 +404,9 @@ export const CippMobileCardList = (props) => {
               );
             })}
             <Box sx={{ textAlign: "center", pt: 0.5 }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Showing {loadedCount} of {totalFiltered}
                 {isStreaming ? " (loading…)" : ""}
               </Typography>

@@ -3,7 +3,7 @@ import {
   Check,
   CompassCalibration,
   LaptopWindows,
-  MailOutline,
+  MailOutlined,
   Shield,
   Description,
   GroupOutlined,
@@ -48,7 +48,7 @@ const getCountryNameFromCode = (countryCode) => {
 // same glyph the table cell uses.
 export const portalIcons = {
   portal_m365: CogIcon,
-  portal_exchange: MailOutline,
+  portal_exchange: MailOutlined,
   portal_entra: UserIcon,
   portal_teams: UsersIcon,
   portal_azure: ServerIcon,

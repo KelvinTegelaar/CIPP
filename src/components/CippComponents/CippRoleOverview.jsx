@@ -52,7 +52,7 @@ export const CippRoleOverview = ({ roles = [], onRoleClick }) => {
       {roles.map((role) => {
         const status = getRoleStatus(role);
         return (
-          <Grid item xs={12} sm={6} md={4} key={role.roleId}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={role.roleId}>
             <Tooltip title={role.roleDescription || role.roleName} arrow>
               <Paper
                 elevation={2}
@@ -104,12 +104,24 @@ export const CippRoleOverview = ({ roles = [], onRoleClick }) => {
                       sx={{ fontSize: "0.7rem" }}
                     />
                     {role.accessPaths && role.accessPaths.length > 0 && (
-                      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "text.secondary",
+                          display: "block",
+                          mt: 0.5
+                        }}>
                         {role.accessPaths.length} access path{role.accessPaths.length !== 1 ? "s" : ""}
                       </Typography>
                     )}
                     {role.relationshipsWithRole && role.relationshipsWithRole.length > 0 && (
-                      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "text.secondary",
+                          display: "block",
+                          mt: 0.5
+                        }}>
                         {role.relationshipsWithRole.length} group{role.relationshipsWithRole.length !== 1 ? "s" : ""}
                       </Typography>
                     )}

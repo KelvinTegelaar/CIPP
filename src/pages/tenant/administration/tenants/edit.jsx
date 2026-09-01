@@ -237,7 +237,9 @@ const Page = () => {
             <Grid size={{ xs: 12 }}>
               <Stack spacing={3}>
                 <Typography variant="h6">Tenant-Specific Offboarding Defaults</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Configure default offboarding settings specifically for this tenant. These settings will override user defaults when offboarding users in this tenant.
                 </Typography>
 
@@ -268,7 +270,12 @@ const Page = () => {
                     >
                       Reset All to Off
                     </Button>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        mt: 1
+                      }}>
                       Click "Reset All to Off" to turn off all options, then click "Save" to clear tenant defaults.
                     </Typography>
                   </Box>

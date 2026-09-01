@@ -183,7 +183,9 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
 
   return (
     <li>
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" sx={{
+        alignItems: "center"
+      }}>
         <ButtonBase
           onClick={handleToggle}
           sx={{
@@ -364,26 +366,28 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
               >
                 <Stack
                   direction="row"
-                  alignItems="center"
                   sx={{
+                    alignItems: "center",
                     position: "relative",
                     pl: "6px",
                     pr: "8px",
+
                     "&:hover .bookmark-controls": {
                       opacity: 1,
                     },
+
                     ...(reorderMode === "drag" &&
                       dragIndex === idx && {
                         opacity: 0.4,
                       }),
+
                     ...(reorderMode === "drag" &&
                       dragOverIndex === idx &&
                       dragIndex !== idx && {
                         borderTop: "2px solid",
                         borderColor: "primary.main",
-                      }),
-                  }}
-                >
+                      })
+                  }}>
                   {reorderMode === "drag" && !locked && (
                     <Box
                       onClick={(e) => e.preventDefault()}

@@ -59,7 +59,9 @@ const Page = () => {
         actions={actions}
         simpleColumns={simpleColumns}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <CippAddTenantAllowBlockListDrawer requiredPermissions={cardButtonPermissions} />
           </Stack>
         }
@@ -67,7 +69,7 @@ const Page = () => {
       />
       {reportDB.syncDialog}
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>

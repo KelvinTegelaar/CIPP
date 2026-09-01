@@ -63,7 +63,7 @@ export function libraryRecyclePathSeed(library, siteWebUrl) {
         const { pathname } = new URL(library.webUrl)
         // Drop /Forms/... list UI suffix if present
         const cleaned = pathname.replace(/\/Forms\/.*$/i, '')
-        return cleaned.replace(/^\//, '')
+        return cleaned.replace(/^\//, '');
       } catch {
         return ''
       }

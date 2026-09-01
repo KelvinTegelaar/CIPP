@@ -59,7 +59,9 @@ const Page = () => {
           "id",
         ]}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <Button component={Link} href="/teams-share/teams/list-team/add" startIcon={<GroupAdd />}>
               Add Team
             </Button>

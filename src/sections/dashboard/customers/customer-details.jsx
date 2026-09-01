@@ -50,14 +50,13 @@ export const CustomerDetails = (props) => {
         />
         <Divider />
         <Stack
-          alignItems="center"
           direction="row"
           spacing={1}
           sx={{
+            alignItems: "center",
             px: 3,
             py: 1.5
-          }}
-        >
+          }}>
           <Avatar
             src={customer.avatar}
             sx={{

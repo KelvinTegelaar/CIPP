@@ -56,15 +56,18 @@ const CippVariableUsage = ({ usage }) => {
 
   if (!usage) {
     return (
-      <Typography variant="body2" color="text.secondary">
-        This variable is not defined anywhere else yet.
-      </Typography>
-    )
+      <Typography variant="body2" sx={{
+        color: "text.secondary"
+      }}>This variable is not defined anywhere else yet.
+              </Typography>
+    );
   }
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={1} useFlexGap sx={{
+        flexWrap: "wrap"
+      }}>
         <Chip size="small" label={`Type: ${usage.SuggestedType}`} />
         <Chip
           size="small"
@@ -104,7 +107,7 @@ const CippVariableUsage = ({ usage }) => {
         </TableBody>
       </Table>
     </Stack>
-  )
+  );
 }
 
 const CippCustomVariables = ({ id }) => {

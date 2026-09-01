@@ -199,21 +199,26 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
             ) : (
               <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 2, width: "100%" }}>
                 <Box>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "text.secondary",
+                      display: "block",
+                      mb: 0.5
+                    }}>
                     Description
                   </Typography>
                   <Tooltip title={descriptionText} arrow placement="top-start">
                     <Typography
                       variant="caption"
-                      color="text.primary"
                       sx={{
+                        color: "text.primary",
                         display: "-webkit-box",
                         WebkitLineClamp: 6,
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
-                        lineHeight: 1.35,
-                      }}
-                    >
+                        lineHeight: 1.35
+                      }}>
                       {descriptionText}
                     </Typography>
                   </Tooltip>
@@ -296,7 +301,9 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
                           <Typography
                             className="assessment-category-label"
                             variant="caption"
-                            color="text.secondary"
+                            sx={{
+                              color: "text.secondary"
+                            }}
                           >
                             {category.label + ` (${category.total})`}
                           </Typography>
@@ -318,14 +325,13 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
                           </Box>
                           <Typography
                             variant="caption"
-                            color="text.secondary"
                             sx={{
+                              color: "text.secondary",
                               mt: 0.25,
                               display: "block",
                               whiteSpace: "normal",
-                              lineHeight: 1.25,
-                            }}
-                          >
+                              lineHeight: 1.25
+                            }}>
                             {statusItems.length > 0 ? (
                               statusItems.map((item, index) => (
                                 <Box key={item.key} component="span">
@@ -345,7 +351,9 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
                   </Box>
                 ) : (
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" sx={{
+                      color: "text.secondary"
+                    }}>
                       No assessment tests available
                     </Typography>
                   </Box>
@@ -363,10 +371,14 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
             }}
           >
             <Box>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Last Data Collection
               </Typography>
-              <Typography variant="body2" fontSize="0.75rem">
+              <Typography variant="body2" sx={{
+                fontSize: "0.75rem"
+              }}>
                 {isLoading ? (
                   <Skeleton width={100} />
                 ) : data?.ExecutedAt ? (
@@ -383,7 +395,9 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
               </Box>
             ) : overallCategory.show && (
               <Box sx={{ textAlign: "left", width: "100%" }}>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   {overallCategory.label + ` (${overallCategory.total})`}
                 </Typography>
                 <Box
@@ -413,7 +427,9 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
                       </Box>
                     ))
                   ) : (
-                    <Box component="span" color="text.secondary">
+                    <Box component="span" sx={{
+                      color: "text.secondary"
+                    }}>
                       No results
                     </Box>
                   )}

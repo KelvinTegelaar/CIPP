@@ -9,7 +9,7 @@ import {
   CloudOutlined,
   HomeRepairService,
   Laptop,
-  MailOutline,
+  MailOutlined,
   ShieldOutlined,
 } from '@mui/icons-material'
 import { SvgIcon } from '@mui/material'
@@ -800,7 +800,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <MailOutline />
+        <MailOutlined />
       </SvgIcon>
     ),
     permissions: [

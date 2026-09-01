@@ -1071,9 +1071,10 @@ const Page = () => {
                 />
                 <Stack
                   direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
+                  sx={{
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}>
                   <Typography variant="h6">
                     Multi-Factor Authentication Devices
                   </Typography>
@@ -1164,7 +1165,7 @@ const Page = () => {
         }}
       />
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

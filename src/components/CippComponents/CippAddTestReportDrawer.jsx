@@ -296,7 +296,9 @@ export const CippAddTestReportDrawer = ({
           {/* Selection Summary */}
           <Grid size={12}>
             <Paper sx={{ p: 2, backgroundColor: 'primary.50' }}>
-              <Stack direction="row" spacing={2} alignItems="center">
+              <Stack direction="row" spacing={2} sx={{
+                alignItems: "center"
+              }}>
                 <Typography variant="subtitle2" color="primary">
                   Selected Tests:
                 </Typography>
@@ -319,7 +321,9 @@ export const CippAddTestReportDrawer = ({
                   variant="outlined"
                 />
                 <Box sx={{ flex: 1 }} />
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   Total:{' '}
                   {selectedIdentityTests.length +
                     selectedDeviceTests.length +
@@ -406,11 +410,15 @@ export const CippAddTestReportDrawer = ({
               >
                 {availableTestsApi.isFetching ? (
                   <Box sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography color="text.secondary">Loading tests...</Typography>
+                    <Typography sx={{
+                      color: "text.secondary"
+                    }}>Loading tests...</Typography>
                   </Box>
                 ) : currentTests.length === 0 ? (
                   <Box sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography color="text.secondary">
+                    <Typography sx={{
+                      color: "text.secondary"
+                    }}>
                       {searchTerm ? 'No tests found matching your search' : 'No tests available'}
                     </Typography>
                   </Box>
@@ -467,14 +475,13 @@ export const CippAddTestReportDrawer = ({
                                   {test.description && (
                                     <Typography
                                       variant="caption"
-                                      color="text.secondary"
                                       sx={{
+                                        color: "text.secondary",
                                         display: '-webkit-box',
                                         WebkitLineClamp: 2,
                                         WebkitBoxOrient: 'vertical',
-                                        overflow: 'hidden',
-                                      }}
-                                    >
+                                        overflow: 'hidden'
+                                      }}>
                                       {test.description}
                                     </Typography>
                                   )}
@@ -483,7 +490,7 @@ export const CippAddTestReportDrawer = ({
                             </CardContent>
                           </Card>
                         </Grid>
-                      )
+                      );
                     })}
                   </Grid>
                 )}
@@ -493,5 +500,5 @@ export const CippAddTestReportDrawer = ({
         </Grid>
       </CippOffCanvas>
     </>
-  )
+  );
 }

@@ -229,7 +229,9 @@ const Page = () => {
                 <Typography variant="h5" gutterBottom>
                   Select a Specific Tenant
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
+                <Typography variant="body1" sx={{
+                  color: "text.secondary"
+                }}>
                   Tenant editing is not available when "All Tenants" is selected. Please select a
                   specific tenant to edit its configuration.
                 </Typography>
@@ -238,7 +240,7 @@ const Page = () => {
           </Card>
         </Box>
       </HeaderedTabbedLayout>
-    )
+    );
   }
 
   return (
@@ -451,7 +453,9 @@ const Page = () => {
               isFetching={tenantDetails.isFetching}
             >
               <Stack spacing={2}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Configure default offboarding settings specifically for this tenant. These
                   settings will override user defaults when offboarding users in this tenant.
                 </Typography>
@@ -470,7 +474,12 @@ const Page = () => {
                   >
                     Reset All to Off
                   </Button>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                      mt: 1
+                    }}>
                     Click "Reset All to Off" to turn off all options, then click "Save" to clear
                     tenant defaults.
                   </Typography>
@@ -494,7 +503,7 @@ const Page = () => {
         </Grid>
       </Box>
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

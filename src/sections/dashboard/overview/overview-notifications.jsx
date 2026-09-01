@@ -31,8 +31,12 @@ const getContent = (notification) => {
           </ListItemIcon>
           <ListItemText
             primary={
-              <Typography color="inherit" variant="body2">
-                <Typography color="inherit" component="span" variant="subtitle2">
+              <Typography variant="body2" sx={{
+                color: "inherit"
+              }}>
+                <Typography component="span" variant="subtitle2" sx={{
+                  color: "inherit"
+                }}>
                   {notification.orders} pending orders
                 </Typography>{" "}
                 needs your attention.
@@ -59,8 +63,12 @@ const getContent = (notification) => {
           </ListItemIcon>
           <ListItemText
             primary={
-              <Typography color="inherit" variant="body2">
-                <Typography color="inherit" component="span" variant="subtitle2">
+              <Typography variant="body2" sx={{
+                color: "inherit"
+              }}>
+                <Typography component="span" variant="subtitle2" sx={{
+                  color: "inherit"
+                }}>
                   {notification.transactions} pending transactions
                 </Typography>{" "}
                 needs your attention.
@@ -87,12 +95,18 @@ const getContent = (notification) => {
           </ListItemIcon>
           <ListItemText
             primary={
-              <Typography color="inherit" variant="body2">
-                <Typography color="inherit" component="span" variant="subtitle2">
+              <Typography variant="body2" sx={{
+                color: "inherit"
+              }}>
+                <Typography component="span" variant="subtitle2" sx={{
+                  color: "inherit"
+                }}>
                   {notification.notes} team notes
                 </Typography>{" "}
                 at the{" "}
-                <Typography color="inherit" component="span" variant="subtitle2">
+                <Typography component="span" variant="subtitle2" sx={{
+                  color: "inherit"
+                }}>
                   {notification.subject}.
                 </Typography>
               </Typography>

@@ -133,7 +133,9 @@ const Page = () => {
       {spRequest.isLoading && <CippFormSkeleton layout={[1, 1, 1]} />}
       {spRequest.isSuccess && !spData && (
         <Box sx={{ flexGrow: 1, py: 4 }}>
-          <Typography color="text.secondary">
+          <Typography sx={{
+            color: "text.secondary"
+          }}>
             No enterprise application found for this service principal ID.
           </Typography>
         </Box>
@@ -149,7 +151,7 @@ const Page = () => {
         </Box>
       )}
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

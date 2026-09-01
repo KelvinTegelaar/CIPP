@@ -19,7 +19,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
 import PublicIcon from "@mui/icons-material/Public";
 import { useWatch, useFieldArray } from "react-hook-form";
 import CippFormComponent from "./CippFormComponent";
@@ -89,7 +89,13 @@ function specialValueOptions(schemaProp) {
 
 function SectionHeader({ title, description, requiresLicense, icon }) {
   return (
-    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        mb: 1
+      }}>
       {icon}
       <Typography variant="h6">{title}</Typography>
       {requiresLicense && (
@@ -136,7 +142,9 @@ function GuestsOrExternalUsersFields({ formControl, disabled, prefix, direction,
     <>
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }}>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
             {Verb} Guests or External Users
           </Typography>
         </Divider>
@@ -153,7 +161,9 @@ function GuestsOrExternalUsersFields({ formControl, disabled, prefix, direction,
           options={typeOptions}
           placeholder="e.g. Service provider, B2B collaboration guest"
         />
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           Select one or more external user types to {direction} {direction === "include" ? "in" : "from"} this
           policy.
         </Typography>
@@ -184,7 +194,9 @@ function GuestsOrExternalUsersFields({ formControl, disabled, prefix, direction,
             ]}
             placeholder="Select tenant scope"
           />
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
             {scopeHelp}
           </Typography>
         </Grid>
@@ -205,7 +217,9 @@ function GuestsOrExternalUsersFields({ formControl, disabled, prefix, direction,
               disabled={disabled}
               placeholder="Enter tenant GUIDs"
             />
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Enter the tenant IDs to scope this to (e.g. your partner tenant ID for a service
               provider {direction === "include" ? "inclusion" : "exclusion"}).
             </Typography>
@@ -410,7 +424,9 @@ function ApplicationsSection({ formControl, disabled, prefix = "conditions.appli
           disabled={disabled}
           placeholder="Authentication context IDs (c1-c99) or display names"
         />
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           Used instead of cloud apps. In a template, deployment matches these by display name and
           creates the authentication context in the tenant if it is missing.
         </Typography>
@@ -419,7 +435,9 @@ function ApplicationsSection({ formControl, disabled, prefix = "conditions.appli
       {/* Application filter */}
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }}>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
             Application Filter
           </Typography>
         </Divider>
@@ -582,7 +600,9 @@ function ConditionsSection({ formControl, disabled }) {
       {/* Device filter */}
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }}>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
             Device Filter
           </Typography>
         </Divider>
@@ -615,8 +635,12 @@ function ConditionsSection({ formControl, disabled }) {
       {/* Risk levels */}
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }}>
-          <Stack direction="row" alignItems="center" spacing={0.5}>
-            <Typography variant="caption" color="text.secondary">
+          <Stack direction="row" spacing={0.5} sx={{
+            alignItems: "center"
+          }}>
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Risk Levels
             </Typography>
             <Chip label="Entra ID P2" size="small" color="warning" variant="outlined" />
@@ -686,8 +710,12 @@ function ConditionsSection({ formControl, disabled }) {
       {/* Workload identities */}
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }}>
-          <Stack direction="row" alignItems="center" spacing={0.5}>
-            <Typography variant="caption" color="text.secondary">
+          <Stack direction="row" spacing={0.5} sx={{
+            alignItems: "center"
+          }}>
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Workload Identities
             </Typography>
             <Chip label="Workload Identities Premium" size="small" color="warning" variant="outlined" />
@@ -706,7 +734,9 @@ function ConditionsSection({ formControl, disabled }) {
           options={includeSpOpts}
           placeholder="All service principals, or service principal object IDs"
         />
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           Scopes the policy to workload identities instead of users. Leave empty for a user policy.
         </Typography>
       </Grid>
@@ -863,7 +893,9 @@ function GrantControlsSection({ formControl, disabled }) {
           disabled={disabled}
           placeholder="Custom control IDs"
         />
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           Legacy custom controls from an external identity provider, referenced by ID.
         </Typography>
       </Grid>
@@ -908,7 +940,9 @@ function SessionControlsSection({ formControl, disabled }) {
         <Typography variant="subtitle2" sx={{ mt: 1 }}>
           Application Enforced Restrictions
         </Typography>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           Only Exchange Online and SharePoint Online support this control.
         </Typography>
       </Grid>
@@ -1043,7 +1077,9 @@ function SessionControlsSection({ formControl, disabled }) {
           formControl={formControl}
           disabled={disabled}
         />
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           When enabled, Entra ID will not extend existing sessions during outages.
         </Typography>
       </Grid>
@@ -1174,14 +1210,22 @@ function NamedLocationsSection({ formControl, disabled }) {
       </Alert>
 
       {fields.length === 0 && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           No named locations embedded in this template.
         </Typography>
       )}
 
       {fields.map((field, index) => (
         <Paper key={field.id} variant="outlined" sx={{ p: 2 }}>
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              mb: 1
+            }}>
             <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
               Named Location #{index + 1}
             </Typography>
@@ -1462,7 +1506,9 @@ const CippCAPolicyBuilder = ({
       {/* Users & Groups */}
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Users and Groups
           </Typography>
         </AccordionSummary>
@@ -1474,7 +1520,9 @@ const CippCAPolicyBuilder = ({
       {/* Cloud Apps or Actions */}
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Cloud Apps or Actions
           </Typography>
         </AccordionSummary>
@@ -1486,7 +1534,9 @@ const CippCAPolicyBuilder = ({
       {/* Conditions */}
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Conditions
           </Typography>
         </AccordionSummary>
@@ -1498,7 +1548,9 @@ const CippCAPolicyBuilder = ({
       {/* Grant Controls */}
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Grant Controls
           </Typography>
         </AccordionSummary>
@@ -1510,7 +1562,9 @@ const CippCAPolicyBuilder = ({
       {/* Session Controls */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Session Controls
           </Typography>
         </AccordionSummary>
@@ -1523,8 +1577,12 @@ const CippCAPolicyBuilder = ({
       {showNamedLocations && (
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <Typography variant="subtitle1" fontWeight={600}>
+            <Stack direction="row" spacing={1} sx={{
+              alignItems: "center"
+            }}>
+              <Typography variant="subtitle1" sx={{
+                fontWeight: 600
+              }}>
                 Named Locations
               </Typography>
               <Chip label="Template" size="small" variant="outlined" />

@@ -154,7 +154,9 @@ const Page = () => {
   )
 
   const cardButton = (
-    <Stack direction="row" spacing={2} alignItems="center">
+    <Stack direction="row" spacing={2} sx={{
+      alignItems: "center"
+    }}>
       {currencySelect}
       {addButton}
     </Stack>

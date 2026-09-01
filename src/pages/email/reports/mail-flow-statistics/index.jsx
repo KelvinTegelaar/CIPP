@@ -220,17 +220,19 @@ const Page = () => {
       <Stack
         direction="row"
         spacing={2}
-        alignItems="center"
-        justifyContent="space-between"
-      >
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}>
         <CippInfoBar data={infoBarData} isFetching={flowReport.isFetching} />
         <Stack
           direction="row"
           spacing={2}
-          alignItems="center"
           useFlexGap
-          sx={{ flexWrap: 'wrap' }}
-        >
+          sx={{
+            alignItems: "center",
+            flexWrap: 'wrap'
+          }}>
           <ButtonGroup size="small">
             {dayOptions.map((d) => (
               <Button
@@ -302,7 +304,7 @@ const Page = () => {
         </Grid>
       </Grid>
     </Stack>
-  )
+  );
 }
 
 Page.getLayout = (page) => (

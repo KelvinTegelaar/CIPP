@@ -190,9 +190,11 @@ export const CustomersTable = (props) => {
                     </TableCell>
                     <TableCell padding="none">
                       <Stack
-                        alignItems="center"
                         direction="row"
                         spacing={1}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Avatar
                           src={customer.avatar}

@@ -592,7 +592,7 @@ export const CIPPTableToptoolbar = React.memo(
           }
           return [k, v]
         })
-      )
+      );
     }
 
     // Shared function for setting nested column visibility
@@ -1180,13 +1180,13 @@ export const CIPPTableToptoolbar = React.memo(
                   anchorEl={columnsAnchor}
                   open={Boolean(columnsAnchor)}
                   onClose={() => setColumnsAnchor(null)}
-                  PaperProps={{
-                    sx: {
+                  slotProps={{
+                    paper: { sx: {
                       mt: 1,
                       borderRadius: 2,
                       minWidth: 250,
                       maxHeight: 400,
-                    },
+                    } },
                   }}
                 >
                   <MenuItem onClick={resetToPreferedVisibility}>
@@ -1292,12 +1292,12 @@ export const CIPPTableToptoolbar = React.memo(
               anchorEl={actionMenuAnchor}
               open={Boolean(actionMenuAnchor)}
               onClose={() => setActionMenuAnchor(null)}
-              PaperProps={{
-                sx: {
+              slotProps={{
+                paper: { sx: {
                   mt: 1,
                   borderRadius: 2,
                   minWidth: 180,
-                },
+                } },
               }}
             >
               {/* Anchor the nested menus to the stable overflow IconButton — anchoring to
@@ -1349,12 +1349,12 @@ export const CIPPTableToptoolbar = React.memo(
               anchorEl={filtersAnchor}
               open={Boolean(filtersAnchor)}
               onClose={() => setFiltersAnchor(null)}
-              PaperProps={{
-                sx: {
+              slotProps={{
+                paper: { sx: {
                   mt: 1,
                   borderRadius: 2,
                   minWidth: 200,
-                },
+                } },
               }}
             >
               <MenuItem
@@ -1413,13 +1413,13 @@ export const CIPPTableToptoolbar = React.memo(
               anchorEl={columnsAnchor}
               open={Boolean(columnsAnchor)}
               onClose={() => setColumnsAnchor(null)}
-              PaperProps={{
-                sx: {
+              slotProps={{
+                paper: { sx: {
                   mt: 1,
                   borderRadius: 2,
                   minWidth: 250,
                   maxHeight: 400,
-                },
+                } },
               }}
             >
               <MenuItem onClick={resetToPreferedVisibility}>
@@ -1460,12 +1460,12 @@ export const CIPPTableToptoolbar = React.memo(
                 anchorEl={exportAnchor}
                 open={Boolean(exportAnchor)}
                 onClose={() => setExportAnchor(null)}
-                PaperProps={{
-                  sx: {
+                slotProps={{
+                  paper: { sx: {
                     mt: 1,
                     borderRadius: 2,
                     minWidth: 180,
-                  },
+                  } },
                 }}
               >
                 <MenuItem
@@ -1626,15 +1626,17 @@ export const CIPPTableToptoolbar = React.memo(
             horizontal: 'right',
             vertical: 'bottom',
           }}
-          MenuListProps={{
-            dense: true,
-            sx: { p: 1 },
-          }}
           onClose={popover.handleClose}
           open={popover.open}
           transformOrigin={{
             horizontal: 'right',
             vertical: 'top',
+          }}
+          slotProps={{
+            list: {
+              dense: true,
+              sx: { p: 1 },
+            }
           }}
         >
           {actions &&
@@ -1778,7 +1780,7 @@ export const CIPPTableToptoolbar = React.memo(
           </Dialog>
         )}
       </>
-    )
+    );
   }
 )
 

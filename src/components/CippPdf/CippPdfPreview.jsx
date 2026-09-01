@@ -23,35 +23,56 @@ const MobileHandoff = ({ document, fileName, title, showDownload }) => {
 
   if (instance.loading) {
     return (
-      <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ height: '100%', p: 3 }}>
+      <Stack
+        spacing={2}
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+          height: '100%',
+          p: 3
+        }}>
         <CircularProgress />
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Building report…
         </Typography>
       </Stack>
-    )
+    );
   }
 
   if (instance.error || !instance.url) {
     return (
-      <Stack alignItems="center" justifyContent="center" spacing={1} sx={{ height: '100%', p: 3 }}>
+      <Stack
+        spacing={1}
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+          height: '100%',
+          p: 3
+        }}>
         <Typography variant="subtitle1">Report could not be generated</Typography>
-        <Typography variant="body2" color="text.secondary" align="center">
+        <Typography variant="body2" align="center" sx={{
+          color: "text.secondary"
+        }}>
           {instance.error ? String(instance.error) : 'No document was produced.'}
         </Typography>
       </Stack>
-    )
+    );
   }
 
   const size = formatSize(instance.blob?.size)
 
   return (
     <Stack
-      alignItems="center"
-      justifyContent="center"
       spacing={2}
-      sx={{ height: '100%', p: 3, textAlign: 'center' }}
-    >
+      sx={{
+        alignItems: "center",
+        justifyContent: "center",
+        height: '100%',
+        p: 3,
+        textAlign: 'center'
+      }}>
       <Box
         sx={{
           width: 72,
@@ -70,7 +91,9 @@ const MobileHandoff = ({ document, fileName, title, showDownload }) => {
           {title ?? 'Report'}
         </Typography>
         {size && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             PDF · {size}
           </Typography>
         )}
@@ -104,7 +127,7 @@ const MobileHandoff = ({ document, fileName, title, showDownload }) => {
         )}
       </Stack>
     </Stack>
-  )
+  );
 }
 
 /**

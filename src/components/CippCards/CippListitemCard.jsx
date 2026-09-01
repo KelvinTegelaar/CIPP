@@ -26,8 +26,12 @@ const getContent = (notification, textKey) => {
       </ListItemIcon>
       <ListItemText
         primary={
-          <Typography color="inherit" variant="body2">
-            <Typography color="inherit" component="span" variant="subtitle2">
+          <Typography variant="body2" sx={{
+            color: "inherit"
+          }}>
+            <Typography component="span" variant="subtitle2" sx={{
+              color: "inherit"
+            }}>
               {notification[textKey]}
             </Typography>
           </Typography>
@@ -76,7 +80,9 @@ export const CippListItemCard = ({
                   </SvgIcon>
                 </ListItemIcon>
                 <ListItemText>
-                  <Typography color="inherit" variant="body2">
+                  <Typography variant="body2" sx={{
+                    color: "inherit"
+                  }}>
                     <Skeleton height={30} />
                   </Typography>
                 </ListItemText>

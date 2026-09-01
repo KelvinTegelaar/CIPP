@@ -53,14 +53,18 @@ export const InvoiceLineItems = (props) => {
                 <TableRow key={index}>
                   <TableCell>
                     <Typography
-                      color="inherit"
                       variant="body2"
+                      sx={{
+                        color: "inherit"
+                      }}
                     >
                       {lineItem.name}
                     </Typography>
                     <Typography
-                      color="text.secondary"
                       variant="body2"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       {unitAmount}
                     </Typography>
@@ -83,13 +87,17 @@ export const InvoiceLineItems = (props) => {
               <TableCell />
               <TableCell>
                 <Stack
-                  alignItems="center"
                   direction="row"
                   spacing={1}
+                  sx={{
+                    alignItems: "center"
+                  }}
                 >
                   <Typography
-                    color="text.secondary"
                     variant="subtitle2"
+                    sx={{
+                      color: "text.secondary"
+                    }}
                   >
                     Tax
                   </Typography>
@@ -105,13 +113,17 @@ export const InvoiceLineItems = (props) => {
               <TableCell />
               <TableCell>
                 <Stack
-                  alignItems="center"
                   direction="row"
                   spacing={1}
+                  sx={{
+                    alignItems: "center"
+                  }}
                 >
                   <Typography
-                    color="text.secondary"
                     variant="subtitle2"
+                    sx={{
+                      color: "text.secondary"
+                    }}
                   >
                     Total
                   </Typography>

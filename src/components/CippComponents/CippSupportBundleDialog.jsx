@@ -233,14 +233,18 @@ const CippSupportBundleDialog = ({ open, onClose, onRecordingChange }) => {
         )}
         {phase === 'recording' && (
           <Stack spacing={2}>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{
+              alignItems: "center"
+            }}>
               <FiberManualRecord color="error" />
               <Typography variant="body2">
                 Recording — {progress} request{progress === 1 ? '' : 's'}{' '}
                 captured so far.
               </Typography>
             </Stack>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Close this dialog, reproduce the issue, then click the recording
               indicator to come back and stop. Reloading the browser discards
               the recording.
@@ -248,9 +252,16 @@ const CippSupportBundleDialog = ({ open, onClose, onRecordingChange }) => {
           </Stack>
         )}
         {phase === 'collecting' && (
-          <Stack spacing={2} alignItems="center" sx={{ py: 2 }}>
+          <Stack
+            spacing={2}
+            sx={{
+              alignItems: "center",
+              py: 2
+            }}>
             <CircularProgress />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Collecting — {progress} request{progress === 1 ? '' : 's'}{' '}
               captured...
             </Typography>
@@ -339,7 +350,7 @@ const CippSupportBundleDialog = ({ open, onClose, onRecordingChange }) => {
         )}
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
 export default CippSupportBundleDialog

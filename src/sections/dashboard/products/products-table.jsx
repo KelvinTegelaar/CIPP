@@ -166,9 +166,11 @@ export const ProductsTable = (props) => {
                     </TableCell>
                     <TableCell>
                       <Stack
-                        alignItems="center"
                         direction="row"
                         spacing={2}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Avatar
                           src={product.image}
@@ -189,8 +191,10 @@ export const ProductsTable = (props) => {
                             {product.name}
                           </Link>
                           <Typography
-                            color="text.secondary"
                             variant="body2"
+                            sx={{
+                              color: "text.secondary"
+                            }}
                           >
                             12 in stock for 1 variant
                           </Typography>
@@ -200,14 +204,18 @@ export const ProductsTable = (props) => {
                     <TableCell>
                       <div>
                         <Typography
-                          color="inherit"
                           variant="body2"
+                          sx={{
+                            color: "inherit"
+                          }}
                         >
                           {createdDate}
                         </Typography>
                         <Typography
-                          color="text.secondary"
                           variant="body2"
+                          sx={{
+                            color: "text.secondary"
+                          }}
                         >
                           {createdTime}
                         </Typography>
@@ -215,9 +223,11 @@ export const ProductsTable = (props) => {
                     </TableCell>
                     <TableCell>
                       <Stack
-                        alignItems="center"
                         direction="row"
                         spacing={1}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Box
                           sx={{

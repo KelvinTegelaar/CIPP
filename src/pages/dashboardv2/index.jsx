@@ -204,7 +204,13 @@ const Page = () => {
       <Box sx={{ width: '100%', mx: 'auto' }}>
         {/* xs has a single item (the portals cell is desktop-only), so grid spacing would
             only pad the toolbar down away from the title. */}
-        <Grid container spacing={{ xs: 0, md: 2 }} alignItems="center" sx={{ mb: 2 }}>
+        <Grid
+          container
+          spacing={{ xs: 0, md: 2 }}
+          sx={{
+            alignItems: "center",
+            mb: 2
+          }}>
           {!isMobile && (
           <Grid size={{ xs: 12, md: 4 }}>
             <Box
@@ -306,7 +312,9 @@ const Page = () => {
                     onClose={() => setReportsMenuAnchor(null)}
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                    MenuListProps={{ dense: true, sx: { p: 1 } }}
+                    slotProps={{
+                      list: { dense: true, sx: { p: 1 } }
+                    }}
                   >
                     <ExecutiveReportButton
                       variant="menuItem"
@@ -487,7 +495,7 @@ const Page = () => {
         </CippPageActionsFab>
       )}
     </Container>
-  )
+  );
 }
 
 // No allTenantsSupport={false} here: the page handles AllTenants itself (see isAllTenants above),

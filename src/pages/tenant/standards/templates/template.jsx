@@ -368,11 +368,12 @@ const Page = () => {
       <Stack spacing={2}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          justifyContent="space-between"
-          alignItems={{ xs: 'stretch', sm: 'center' }}
           spacing={{ xs: 2, sm: 4 }}
-          sx={{ mb: 3 }}
-        >
+          sx={{
+            justifyContent: "space-between",
+            alignItems: { xs: 'stretch', sm: 'center' },
+            mb: 3
+          }}>
           <Typography variant="h4">
             {editMode
               ? isDriftMode
@@ -479,7 +480,7 @@ const Page = () => {
         </Suspense>
       )}
     </Box>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

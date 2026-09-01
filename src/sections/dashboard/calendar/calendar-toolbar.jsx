@@ -65,11 +65,13 @@ export const CalendarToolbar = (props) => {
 
   return (
     <Stack
-      alignItems="center"
       direction="row"
-      justifyContent="space-between"
       spacing={3}
-      {...other}>
+      {...other}
+      sx={[{
+        alignItems: "center",
+        justifyContent: "space-between"
+      }, ...(Array.isArray(other.sx) ? other.sx : [other.sx])]}>
       <ButtonGroup size="small">
         <Button onClick={onDatePrev}>
           Prev

@@ -59,7 +59,9 @@ const Page = () => {
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <CippPolicyDeployDrawer
               buttonText="Deploy Policy"
               requiredPermissions={cardButtonPermissions}

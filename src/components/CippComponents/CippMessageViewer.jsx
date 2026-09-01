@@ -348,9 +348,19 @@ export const CippMessageViewer = ({ emailSource }) => {
                 }}
               >
                 <Grid size={{ xs: 12, md: 9 }}>
-                  <Box display="flex" alignItems="center">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center"
+                    }}>
                     <AccountCircle fontSize="large" sx={{ mr: 1 }} />
-                    <Stack direction="row" spacing={0.5} alignItems="center" display="flex">
+                    <Stack
+                      direction="row"
+                      spacing={0.5}
+                      sx={{
+                        alignItems: "center",
+                        display: "flex"
+                      }}>
                       <b>{emlContent?.from?.name}</b>
                       <Typography variant="subtitle2" color="textSecondary">
                         &lt;{emlContent?.from?.email}&gt;
@@ -432,7 +442,9 @@ export const CippMessageViewer = ({ emailSource }) => {
                   )}
                 </Grid>
                 <Grid size={{ xs: 12, md: 3 }}>
-                  <Stack direction="row" spacing={0.5} justifyContent="flex-end">
+                  <Stack direction="row" spacing={0.5} sx={{
+                    justifyContent: "flex-end"
+                  }}>
                     <Typography variant="subtitle2">
                       {emlContent.date && isValidDate(emlContent.date)
                         ? emlContent.date.toLocaleDateString()
@@ -504,7 +516,12 @@ export const CippMessageViewer = ({ emailSource }) => {
                         {emailStyle}
                         <Card variant="outlined">
                           <CardContent>
-                            <Box display="flex" justifyContent="flex-end" mb={1}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                mb: 1
+                              }}>
                               <IconButton variant="text" onClick={toggleDarkMode}>
                                 <SvgIcon>{darkMode ? <SunIcon /> : <MoonIcon />}</SvgIcon>
                               </IconButton>
@@ -602,10 +619,11 @@ const CippMessageViewerPage = () => {
       <Stack
         direction="row"
         spacing={2}
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ mb: 2 }}
-      >
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2
+        }}>
         <ToggleButtonGroup
           color="primary"
           exclusive
@@ -618,7 +636,9 @@ const CippMessageViewerPage = () => {
         </ToggleButtonGroup>
 
         {inputMode === "paste" && (
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <Button
               variant="contained"
               disabled={!pasteValue.trim()}

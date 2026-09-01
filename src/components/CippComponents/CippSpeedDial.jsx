@@ -144,7 +144,7 @@ const CippSpeedDial = ({
           <SpeedDialAction
             key={action.id}
             icon={action.icon}
-            tooltipTitle={action.name}
+            slotProps={{ tooltip: { title: action.name, open: true } }}
             onClick={() => {
               if (action.form) {
                 handleDialogOpen(action.id)
@@ -153,7 +153,6 @@ const CippSpeedDial = ({
               }
               setSpeedDialOpen(false)
             }}
-            tooltipOpen
             sx={{
               '&.MuiSpeedDialAction-fab': {
                 backgroundColor: 'background.paper',

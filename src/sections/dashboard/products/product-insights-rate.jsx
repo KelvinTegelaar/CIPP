@@ -69,15 +69,14 @@ export const ProductInsightsRate = (props) => {
       <CardHeader title="Return Rate" />
       <Divider />
       <Stack
-        alignItems="center"
         direction="row"
-        flexWrap="wrap"
         spacing={3}
         sx={{
+          alignItems: "center",
+          flexWrap: "wrap",
           pr: 3,
           py: 3
-        }}
-      >
+        }}>
         <div>
           <Chart
             options={chartOptions}
@@ -88,8 +87,10 @@ export const ProductInsightsRate = (props) => {
         </div>
         <div>
           <Typography
-            color="text.secondary"
             variant="subtitle2"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             Return rate
           </Typography>
@@ -102,10 +103,12 @@ export const ProductInsightsRate = (props) => {
           <Stack spacing={1}>
             {chartSeries.map((item, index) => (
               <Stack
-                alignItems="center"
                 direction="row"
                 key={labels[index]}
                 spacing={1}
+                sx={{
+                  alignItems: "center"
+                }}
               >
                 <Box
                   sx={{

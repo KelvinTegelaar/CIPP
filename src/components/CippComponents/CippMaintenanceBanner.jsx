@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import NextLink from 'next/link'
 import { Box, Button, Chip, IconButton, Link, Stack, Typography, useMediaQuery } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
-import { Close, ErrorOutline, InfoOutlined, WarningAmber } from '@mui/icons-material'
+import { Close, ErrorOutlined, InfoOutlined, WarningAmber } from '@mui/icons-material'
 import { formatDistanceStrict } from 'date-fns'
 
 // Dismissal is keyed on the notice id so that re-issuing an edited notice brings the banner back
@@ -15,7 +15,7 @@ const SEVERITIES = ['info', 'warning', 'error']
 const ICONS = {
   info: InfoOutlined,
   warning: WarningAmber,
-  error: ErrorOutline,
+  error: ErrorOutlined,
 }
 
 // localStorage throws in locked-down browsers - never let that break the layout.
@@ -228,16 +228,24 @@ export const CippMaintenanceBanner = ({ alert }) => {
       }}
     >
       {/* Top-aligned so the icon and actions sit level with the title when the message wraps. */}
-      <Stack direction="row" spacing={1.5} alignItems="flex-start">
+      <Stack direction="row" spacing={1.5} sx={{
+        alignItems: "flex-start"
+      }}>
         <Icon fontSize="small" sx={{ color: solid ? 'inherit' : palette.main, mt: 0.25 }} />
 
-        <Stack useFlexGap
+        <Stack
+          useFlexGap
           direction={{ xs: 'column', md: 'row' }}
           spacing={{ xs: 0.25, md: 1.5 }}
-          alignItems={{ xs: 'flex-start', md: 'baseline' }}
-          sx={{ flexGrow: 1, minWidth: 0, flexWrap: 'wrap' }}
-        >
-          <Stack direction="row" spacing={1} alignItems="center">
+          sx={{
+            alignItems: { xs: 'flex-start', md: 'baseline' },
+            flexGrow: 1,
+            minWidth: 0,
+            flexWrap: 'wrap'
+          }}>
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
               {alert.title}
             </Typography>
@@ -300,7 +308,13 @@ export const CippMaintenanceBanner = ({ alert }) => {
           )}
         </Stack>
 
-        <Stack direction="row" spacing={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{
+            alignItems: "center",
+            flexShrink: 0
+          }}>
           {link && (
             <Button
               size="small"
@@ -337,5 +351,5 @@ export const CippMaintenanceBanner = ({ alert }) => {
         </Stack>
       </Stack>
     </Box>
-  )
+  );
 }

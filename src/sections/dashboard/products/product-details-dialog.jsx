@@ -75,8 +75,10 @@ export const ProductDetailsDialog = (props) => {
       maxWidth="sm"
       onClose={onClose}
       open={open}
-      TransitionProps={{
-        onExited: () => formik.resetForm()
+      slotProps={{
+        transition: {
+          onExited: () => formik.resetForm()
+        }
       }}
     >
       <DialogTitle>
@@ -169,8 +171,10 @@ export const ProductDetailsDialog = (props) => {
             value={formik.values.tags}
           />
           <Stack
-            alignItems="center"
             direction="row"
+            sx={{
+              alignItems: "center"
+            }}
           >
             <Checkbox
               checked={formik.values.chargeTax}

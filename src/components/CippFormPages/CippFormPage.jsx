@@ -155,11 +155,13 @@ const CippFormPage = (props) => {
               <Stack spacing={2}>
                 <Stack
                   direction={{ xs: 'column', sm: 'row' }}
-                  justifyContent="space-between"
-                  alignItems={{ xs: 'stretch', sm: 'center' }}
                   useFlexGap
-                  sx={{ columnGap: 2, rowGap: 1 }}
-                >
+                  sx={{
+                    justifyContent: "space-between",
+                    alignItems: { xs: 'stretch', sm: 'center' },
+                    columnGap: 2,
+                    rowGap: 1
+                  }}>
                   <Typography variant="h4">
                     {!hidePageType && <>{formPageType} - </>}
                     {title}
@@ -205,7 +207,7 @@ const CippFormPage = (props) => {
         </Container>
       </Box>
     </CippFormPageContext.Provider>
-  )
+  );
 }
 
 export default CippFormPage

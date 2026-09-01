@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { DeleteOutline, Edit } from "@mui/icons-material";
+import { DeleteOutlined, Edit } from "@mui/icons-material";
 import tabOptions from "./tabOptions";
 
 const Page = () => {
@@ -43,7 +43,7 @@ const Page = () => {
       data: { defaultDomainName: "defaultDomainName" },
       confirmText: "Are you sure you want to delete the capabilities cache for this tenant?",
       color: "info",
-      icon: <DeleteOutline />,
+      icon: <DeleteOutlined />,
     },
   ];
 

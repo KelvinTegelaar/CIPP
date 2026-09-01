@@ -42,7 +42,9 @@ export const OverviewLatestCustomers = (props) => {
               return (
                 <TableRow key={customer.id}>
                   <TableCell>
-                    <Stack alignItems="center">
+                    <Stack sx={{
+                      alignItems: "center"
+                    }}>
                       <Typography variant="subtitle2">{createdDate}</Typography>
                     </Stack>
                   </TableCell>
@@ -52,14 +54,22 @@ export const OverviewLatestCustomers = (props) => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography color="text.secondary" noWrap variant="body2">
-                      <Typography color="text.primary" component="span" variant="subtitle2">
+                    <Typography noWrap variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
+                      <Typography component="span" variant="subtitle2" sx={{
+                        color: "text.primary"
+                      }}>
                         {customer.orders}
                       </Typography>{" "}
                       Devices Active{" "}
                     </Typography>
-                    <Typography color="text.secondary" noWrap variant="body2">
-                      <Typography color="text.primary" component="span" variant="subtitle2">
+                    <Typography noWrap variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
+                      <Typography component="span" variant="subtitle2" sx={{
+                        color: "text.primary"
+                      }}>
                         {amountSpent}
                       </Typography>{" "}
                       Opportunity Value

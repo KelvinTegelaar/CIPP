@@ -169,7 +169,7 @@ describe('CippApiResults', () => {
     expect(screen.getByText('All 2 actions completed successfully')).toBeInTheDocument()
     // individual alerts are variant="filled" with success severity
     const alert = screen.getByText('User created').closest('.MuiAlert-root')
-    expect(alert).toHaveClass('MuiAlert-filledSuccess')
+    expect(alert).toHaveClass('MuiAlert-colorSuccess')
     // success alerts have no Get Help button
     expect(screen.queryByText('Get Help')).not.toBeInTheDocument()
   })

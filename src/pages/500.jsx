@@ -21,7 +21,12 @@ const MinimalErrorFallback = ({ error, resetErrorBoundary, outerError }) => (
     }}
   >
     <Container maxWidth="sm">
-      <Stack spacing={3} alignItems="center" textAlign="center">
+      <Stack
+        spacing={3}
+        sx={{
+          alignItems: "center",
+          textAlign: "center"
+        }}>
         <Typography variant="h4">Error 500 - Something went wrong</Typography>
         <Typography>Oh no! It seems something went wrong.</Typography>
         <Typography

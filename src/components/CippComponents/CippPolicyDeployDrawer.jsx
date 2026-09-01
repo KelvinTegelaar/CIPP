@@ -137,7 +137,9 @@ export const CippPolicyDeployDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <Stack direction="row" justifyContent="flex-start" spacing={2}>
+          <Stack direction="row" spacing={2} sx={{
+            justifyContent: "flex-start"
+          }}>
             <Button
               variant="contained"
               color="primary"
@@ -326,5 +328,5 @@ export const CippPolicyDeployDrawer = ({
         </Stack>
       </CippOffCanvas>
     </>
-  )
+  );
 }

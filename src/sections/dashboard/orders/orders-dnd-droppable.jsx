@@ -20,14 +20,13 @@ export const OrdersDndDroppable = (props) => {
       }}
       {...other}>
       <Stack
-        alignItems="center"
         direction="row"
         spacing={2}
         sx={{
+          alignItems: "center",
           px: 3,
           py: 2.5
-        }}
-      >
+        }}>
         {color && (
           <Box
             sx={{
@@ -39,10 +38,11 @@ export const OrdersDndDroppable = (props) => {
           />
         )}
         <Typography
-          color="text.secondary"
           variant="overline"
-          whiteSpace="nowrap"
-        >
+          sx={{
+            color: "text.secondary",
+            whiteSpace: "nowrap"
+          }}>
           {title}
         </Typography>
       </Stack>

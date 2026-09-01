@@ -9,18 +9,22 @@ export const PageHeading3 = () => (
     <div>
       <Breadcrumbs separator="•">
         <Link
-          color="text.secondary"
           href="#"
           underline="hover"
           variant="subtitle2"
+          sx={{
+            color: "text.secondary"
+          }}
         >
           Home
         </Link>
         <Link
-          color="text.secondary"
           href="#"
           underline="hover"
           variant="subtitle2"
+          sx={{
+            color: "text.secondary"
+          }}
         >
           Customers
         </Link>
@@ -30,12 +34,13 @@ export const PageHeading3 = () => (
       </Breadcrumbs>
     </div>
     <Stack
-      alignItems="center"
       direction="row"
-      flexWrap="wrap"
-      gap={2}
-      justifyContent="space-between"
-    >
+      sx={{
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 2,
+        justifyContent: "space-between"
+      }}>
       <div>
         <Typography variant="h4">
           Natalie Rusell

@@ -743,7 +743,9 @@ export const CIPPM365OAuthButton = ({
         )}
 
       {showResults && (
-        <Box mb={2}>
+        <Box sx={{
+          mb: 2
+        }}>
           {deviceCodeInfo ? (
             <Alert severity="info">
               <Typography variant="subtitle2">Application Creation</Typography>
@@ -783,7 +785,9 @@ export const CIPPM365OAuthButton = ({
                   </>
                 )}
               </Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Code expires in {Math.round(deviceCodeInfo.expires_in / 60)} minutes
               </Typography>
             </Alert>
@@ -805,7 +809,9 @@ export const CIPPM365OAuthButton = ({
                       </>
                     )}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     Refresh token expires: {tokens.refreshTokenExpiresOn?.toLocaleString()}
                   </Typography>
                 </Alert>
@@ -831,10 +837,14 @@ export const CIPPM365OAuthButton = ({
                 Authentication Error: {authError.errorCode}
               </Typography>
               <Typography variant="body2">{authError.errorMessage}</Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Time: {authError.timestamp}
               </Typography>
-              <Box mt={1}>
+              <Box sx={{
+                mt: 1
+              }}>
                 <Button size="small" variant="outlined" color="error" onClick={handleCloseError}>
                   Dismiss
                 </Button>
@@ -916,5 +926,5 @@ export const CIPPM365OAuthButton = ({
               : buttonText}
       </Button>
     </div>
-  )
+  );
 }

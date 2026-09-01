@@ -621,7 +621,12 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
           Report Sections
         </Typography>
       )}
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          mb: 3
+        }}>
         Configure which sections to include in your Shadow AI report. Changes are reflected in
         real-time.
       </Typography>
@@ -661,10 +666,20 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
               }
             />
             <Box sx={{ ml: 1, flexGrow: 1, minWidth: 0 }}>
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ fontSize: '0.875rem' }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: '0.875rem'
+                }}>
                 {option.label}
               </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                  fontSize: '0.75rem'
+                }}>
                 {option.description}
               </Typography>
             </Box>
@@ -800,7 +815,9 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
           }}
         >
           <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Sections enabled: {Object.values(sectionConfig).filter(Boolean).length} of{' '}
               {sectionOptions.length}
             </Typography>
@@ -859,5 +876,5 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
         </CippOffCanvas>
       </Dialog>
     </>
-  )
+  );
 }

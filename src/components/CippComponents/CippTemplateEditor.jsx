@@ -171,7 +171,9 @@ const CippTemplateEditor = ({
                 ))
             ) : (
               <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   No {getCippTranslation(key)} data available
                 </Typography>
               </Grid>

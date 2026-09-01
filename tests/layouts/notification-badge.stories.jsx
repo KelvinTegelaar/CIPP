@@ -13,11 +13,13 @@ import { shrinkToPhoneViewport, growToDesktopViewport } from '../viewport'
 const Cluster = ({ mobile }) => (
   <Stack
     data-testid="nav-cluster"
-    alignItems="center"
     direction="row"
     spacing={mobile ? 1 : 1.5}
-    sx={{ p: 1, bgcolor: 'background.paper' }}
-  >
+    sx={{
+      alignItems: "center",
+      p: 1,
+      bgcolor: 'background.paper'
+    }}>
     <Badge
       color="error"
       variant="dot"

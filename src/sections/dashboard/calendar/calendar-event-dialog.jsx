@@ -241,12 +241,13 @@ export const CalendarEventDialog = (props) => {
         </Stack>
         <Divider />
         <Stack
-          alignItems="center"
           direction="row"
-          justifyContent="space-between"
           spacing={1}
-          sx={{ p: 2 }}
-        >
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            p: 2
+          }}>
           {action === 'update' && (
             <IconButton onClick={() => handleDelete()}>
               <SvgIcon>
@@ -255,9 +256,11 @@ export const CalendarEventDialog = (props) => {
             </IconButton>
           )}
           <Stack
-            alignItems="center"
             direction="row"
             spacing={1}
+            sx={{
+              alignItems: "center"
+            }}
           >
             <Button
               color="inherit"

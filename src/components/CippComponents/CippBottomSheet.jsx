@@ -21,19 +21,21 @@ export const CippBottomSheet = (props) => {
         keepMounted: false,
         ...ModalProps,
       }}
-      SlideProps={{ ...SlideProps, ...swipeClose.transitionProps, onExited }}
       sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
-      PaperProps={{
-        sx: {
-          borderTopLeftRadius: 14,
-          borderTopRightRadius: 14,
-          maxHeight: "85dvh",
-          display: "flex",
-          flexDirection: "column",
-        },
-      }}
       {...other}
-    >
+      slotProps={{
+        paper: {
+          sx: {
+            borderTopLeftRadius: 14,
+            borderTopRightRadius: 14,
+            maxHeight: "85dvh",
+            display: "flex",
+            flexDirection: "column",
+          },
+        },
+
+        transition: { ...SlideProps, ...swipeClose.transitionProps, onExited }
+      }}>
       <Box
         sx={{
           width: 36,
@@ -48,10 +50,13 @@ export const CippBottomSheet = (props) => {
       {title && (
         <Typography
           variant="subtitle2"
-          color="text.secondary"
           noWrap
-          sx={{ px: 2.25, pt: 1, flexShrink: 0 }}
-        >
+          sx={{
+            color: "text.secondary",
+            px: 2.25,
+            pt: 1,
+            flexShrink: 0
+          }}>
           {title}
         </Typography>
       )}

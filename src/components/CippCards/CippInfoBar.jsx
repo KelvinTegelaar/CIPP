@@ -49,11 +49,13 @@ export const CippInfoBar = ({ data, isFetching }) => {
               }}
             >
               <Stack
-                alignItems="center"
                 direction="row"
                 spacing={2}
-                sx={{ p: 2, minWidth: 0 }}
-              >
+                sx={{
+                  alignItems: "center",
+                  p: 2,
+                  minWidth: 0
+                }}>
                 {item?.icon && (
                   <SvgIcon
                     color={item.color ? item.color : 'primary'}
@@ -74,15 +76,14 @@ export const CippInfoBar = ({ data, isFetching }) => {
                       }}
                     >
                       <Typography
-                        color="text.secondary"
                         variant="overline"
                         sx={{
+                          color: "text.secondary",
                           display: 'block',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
+                          whiteSpace: 'nowrap'
+                        }}>
                         {item.name}
                       </Typography>
                       <Typography
@@ -107,15 +108,14 @@ export const CippInfoBar = ({ data, isFetching }) => {
                     }}
                   >
                     <Typography
-                      color="text.secondary"
                       variant="overline"
                       sx={{
+                        color: "text.secondary",
                         display: 'block',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                        whiteSpace: 'nowrap'
+                      }}>
                       {item.name}
                     </Typography>
                     <Typography
@@ -168,5 +168,5 @@ export const CippInfoBar = ({ data, isFetching }) => {
         ))}
       </Grid>
     </Card>
-  )
+  );
 }

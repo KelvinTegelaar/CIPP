@@ -125,8 +125,15 @@ const Page = () => {
         <Container maxWidth={false}>
           <Stack spacing={2}>
             {/* Header skeleton */}
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}>
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 <Skeleton variant="circular" width={32} height={32} />
                 <Skeleton variant="text" width={250} height={40} />
               </Stack>
@@ -154,7 +161,7 @@ const Page = () => {
           </Stack>
         </Container>
       </Box>
-    )
+    );
   }
 
   if (!reportId) {
@@ -165,8 +172,15 @@ const Page = () => {
     <Box sx={{ flexGrow: 1 }}>
       <Container maxWidth={false}>
         <Stack spacing={2}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Stack direction="row" spacing={1} alignItems="center">
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
+            <Stack direction="row" spacing={1} sx={{
+              alignItems: "center"
+            }}>
               <IconButton size="small" onClick={handleBackClick}>
                 <ArrowBack />
               </IconButton>
@@ -194,7 +208,9 @@ const Page = () => {
                 mode="preview"
               />
             ) : (
-              <Typography color="text.secondary">
+              <Typography sx={{
+                color: "text.secondary"
+              }}>
                 Report not found. It may have been deleted.
               </Typography>
             )}
@@ -202,7 +218,7 @@ const Page = () => {
         </Stack>
       </Container>
     </Box>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

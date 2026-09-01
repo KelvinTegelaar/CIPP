@@ -8,7 +8,7 @@ import {
   Edit,
   AlternateEmail,
   Receipt,
-  RemoveCircleOutline,
+  RemoveCircleOutlined,
   Reply,
 } from '@mui/icons-material'
 
@@ -136,7 +136,7 @@ const Page = () => {
       label: 'Remove Billing Policy',
       type: 'POST',
       url: '/api/ExecHVEUser',
-      icon: <RemoveCircleOutline />,
+      icon: <RemoveCircleOutlined />,
       data: { Identity: 'primarySmtpAddress', Action: 'RemoveBillingPolicy' },
       confirmText:
         'Remove billing policy [BillingPolicyName] from [primarySmtpAddress]?',
@@ -188,7 +188,9 @@ const Page = () => {
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <CippHVEUserDrawer />
           </Stack>
         }
@@ -196,7 +198,7 @@ const Page = () => {
       />
       {reportDB.syncDialog}
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

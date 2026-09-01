@@ -95,7 +95,15 @@ const Page = () => {
           <Stack spacing={2}>
             {/* Toolbar */}
             <Card sx={{ p: 2 }}>
-              <Stack useFlexGap direction="row" columnGap={2} rowGap={1} alignItems="flex-start" flexWrap="wrap">
+              <Stack
+                useFlexGap
+                direction="row"
+                sx={{
+                  columnGap: 2,
+                  rowGap: 1,
+                  alignItems: "flex-start",
+                  flexWrap: "wrap"
+                }}>
                 <Box sx={{ minWidth: 260 }}>
                   <CippFormComponent
                     name="source"
@@ -181,7 +189,7 @@ const Page = () => {
         </Container>
       </Box>
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

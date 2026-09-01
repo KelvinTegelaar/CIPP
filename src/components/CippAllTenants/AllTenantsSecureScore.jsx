@@ -57,9 +57,10 @@ const LeaderboardCard = ({ title, subheader, rows, isFetching }) => (
     <CardHeader
       title={title}
       subheader={subheader}
-      titleTypographyProps={{ variant: 'h6' }}
-      subheaderTypographyProps={{ variant: 'caption' }}
-    />
+      slotProps={{
+        title: { variant: 'h6' },
+        subheader: { variant: 'caption' }
+      }} />
     <Divider />
     <CardContent sx={{ flex: 1 }}>
       {isFetching ? (
@@ -69,7 +70,13 @@ const LeaderboardCard = ({ title, subheader, rows, isFetching }) => (
           ))}
         </Stack>
       ) : rows.length === 0 ? (
-        <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            py: 2,
+            textAlign: 'center'
+          }}>
           No scored tenants yet
         </Typography>
       ) : (
@@ -80,22 +87,24 @@ const LeaderboardCard = ({ title, subheader, rows, isFetching }) => (
               component={Link}
               href={`/tenant/administration/securescore?tenantFilter=${row.tenant}`}
               direction="row"
-              alignItems="center"
               spacing={1.5}
               sx={{
+                alignItems: "center",
                 px: 1,
                 py: 0.75,
                 borderRadius: 1,
                 textDecoration: 'none',
                 color: 'inherit',
-                '&:hover': { backgroundColor: 'action.hover' },
-              }}
-            >
+                '&:hover': { backgroundColor: 'action.hover' }
+              }}>
               <Typography
                 variant="caption"
-                color="text.disabled"
-                sx={{ width: 24, flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}
-              >
+                sx={{
+                  color: "text.disabled",
+                  width: 24,
+                  flexShrink: 0,
+                  fontVariantNumeric: 'tabular-nums'
+                }}>
                 #{row.rank}
               </Typography>
               <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -208,9 +217,10 @@ export const AllTenantsSecureScoreSummary = () => {
             <CardHeader
               title="Portfolio trend"
               subheader="Daily average of every tenant's cached score"
-              titleTypographyProps={{ variant: 'h6' }}
-              subheaderTypographyProps={{ variant: 'caption' }}
-            />
+              slotProps={{
+                title: { variant: 'h6' },
+                subheader: { variant: 'caption' }
+              }} />
             <Divider />
             <CardContent sx={{ flex: 1 }}>
               <AllTenantsTrendChart
@@ -240,7 +250,7 @@ export const AllTenantsSecureScoreSummary = () => {
         </Grid>
       </Grid>
     </Stack>
-  )
+  );
 }
 
 export const AllTenantsSecureScoreTable = () => {
@@ -252,12 +262,18 @@ export const AllTenantsSecureScoreTable = () => {
     return (
       <Card>
         <CardContent>
-          <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              py: 2,
+              textAlign: 'center'
+            }}>
             No cached secure scores yet. Scores appear after the nightly cache job has run.
           </Typography>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (

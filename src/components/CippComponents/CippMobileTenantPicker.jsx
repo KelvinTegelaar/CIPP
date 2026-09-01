@@ -136,10 +136,11 @@ export const CippMobileTenantPicker = () => {
         <ListItemText
           primary={tenant.displayName}
           secondary={value}
-          primaryTypographyProps={{ noWrap: true }}
-          secondaryTypographyProps={{ noWrap: true, variant: "caption" }}
           sx={{ minWidth: 0, my: 0 }}
-        />
+          slotProps={{
+            primary: { noWrap: true },
+            secondary: { noWrap: true, variant: "caption" }
+          }} />
         {isCurrent && (
           <Chip label="Current" size="small" variant="outlined" sx={{ flexShrink: 0, height: 22 }} />
         )}
@@ -240,8 +241,10 @@ export const CippMobileTenantPicker = () => {
                 </Avatar>
                 <ListItemText
                   primary="All Tenants"
-                  primaryTypographyProps={{ fontWeight: 600 }}
                   sx={{ my: 0 }}
+                  slotProps={{
+                    primary: { fontWeight: 600 }
+                  }}
                 />
                 {currentTenant === "AllTenants" && (
                   <Chip label="Current" size="small" variant="outlined" sx={{ height: 22 }} />
@@ -262,7 +265,13 @@ export const CippMobileTenantPicker = () => {
             )}
             <ListSubheader disableSticky>All tenants</ListSubheader>
             {tenantList.isFetching && groups.all.length === 0 && (
-              <Typography variant="body2" color="text.secondary" sx={{ px: 2, py: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  px: 2,
+                  py: 2
+                }}>
                 Loading tenants…
               </Typography>
             )}
@@ -270,7 +279,13 @@ export const CippMobileTenantPicker = () => {
             {!tenantList.isFetching &&
               search &&
               groups.all.length + groups.favorites.length + groups.recent.length === 0 && (
-                <Typography variant="body2" color="text.secondary" sx={{ px: 2, py: 2 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    px: 2,
+                    py: 2
+                  }}>
                   No tenants match “{search}”.
                 </Typography>
               )}

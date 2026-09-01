@@ -70,7 +70,9 @@ const Page = () => {
   return (
     <CippTablePage
       cardButton={
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{
+          alignItems: "center"
+        }}>
           <FormControlLabel
             control={
               <Switch

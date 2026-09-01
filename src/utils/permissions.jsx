@@ -44,8 +44,8 @@ export const hasPermission = (userPermissions, requiredPermissions) => {
       }
 
       return false
-    })
-  })
+    });
+  });
 }
 
 /**

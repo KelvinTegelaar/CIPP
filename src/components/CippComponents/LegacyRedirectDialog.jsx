@@ -137,7 +137,9 @@ export const LegacyRedirectDialog = () => {
           Once done you will need to clear your cache to clear the old redirect from your browser.
         </Typography>
         {currentHost && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Until then, use <strong>https://{currentHost}</strong> and update
             any bookmarks.
           </Typography>
@@ -158,5 +160,5 @@ export const LegacyRedirectDialog = () => {
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }

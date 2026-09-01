@@ -157,9 +157,17 @@ const Page = () => {
             <Card>
               <CardContent>
                 <Stack spacing={1.5}>
-                  <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: "center",
+                      justifyContent: "space-between"
+                    }}>
                     <Typography variant="subtitle2">Type</Typography>
-                    <Stack direction="row" alignItems="center" spacing={2}>
+                    <Stack direction="row" spacing={2} sx={{
+                      alignItems: "center"
+                    }}>
                       <ToggleButtonGroup
                         value={config.passwordType}
                         exclusive
@@ -181,7 +189,9 @@ const Page = () => {
                       </Button>
                     </Stack>
                   </Stack>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {isClassic
                       ? "Random characters from the selected classes. Good for systems requiring specific character types. 16+ characters recommended for strong security."
                       : "Random dictionary words joined together. Easier to remember and typically stronger at equal length. 5+ words recommended for high security."}
@@ -202,13 +212,15 @@ const Page = () => {
                           }}
                           size="small"
                           sx={{ width: 120 }}
-                          inputProps={{
-                            style: { height: "40px" },
-                            min: 8,
-                            max: 256
-                          }}
                           error={config.charCount === ''}
                           helperText={config.charCount === '' ? "Length cannot be empty" : ""}
+                          slotProps={{
+                            htmlInput: {
+                              style: { height: "40px" },
+                              min: 8,
+                              max: 256
+                            }
+                          }}
                         />
                       </Box>
                       <Grid container spacing={0}>
@@ -250,7 +262,9 @@ const Page = () => {
                     </>
                   ) : (
                     <>
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction="row" spacing={1} sx={{
+                        alignItems: "center"
+                      }}>
                         <TextField
                           label="Words"
                           value={config.wordCount}
@@ -262,13 +276,15 @@ const Page = () => {
                           }}
                           size="small"
                           sx={{ width: 120, maxWidth: 160 }}
-                          inputProps={{
-                            style: { height: "40px" },
-                            min: 2,
-                            max: 10
-                          }}
                           error={config.wordCount === ''}
                           helperText={config.wordCount === '' ? "Word count cannot be empty" : ""}
+                          slotProps={{
+                            htmlInput: {
+                              style: { height: "40px" },
+                              min: 2,
+                              max: 10
+                            }
+                          }}
                         />
                         <TextField
                           label="Separator"
@@ -277,7 +293,13 @@ const Page = () => {
                           size="small"
                           sx={{ maxWidth: 120 }}
                         />
-                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "text.secondary",
+                            fontSize: '0.75rem',
+                            whiteSpace: 'nowrap'
+                          }}>
                           Allowed: single space, empty, or !@#$%^&*()-_=+/
                         </Typography>
                       </Stack>

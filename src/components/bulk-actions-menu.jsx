@@ -34,15 +34,17 @@ export const BulkActionsMenu = (props) => {
           horizontal: 'right',
           vertical: 'bottom',
         }}
-        MenuListProps={{
-          dense: true,
-          sx: { p: 1 },
-        }}
         onClose={popover.handleClose}
         open={popover.open}
         transformOrigin={{
           horizontal: 'right',
           vertical: 'top',
+        }}
+        slotProps={{
+          list: {
+            dense: true,
+            sx: { p: 1 },
+          }
         }}
       >
         {actions.map((action, index) => {
@@ -81,7 +83,7 @@ export const BulkActionsMenu = (props) => {
         })}
       </Menu>
     </>
-  )
+  );
 }
 
 BulkActionsMenu.propTypes = {

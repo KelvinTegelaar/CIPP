@@ -72,15 +72,14 @@ export const CippSponsor = ({ compact = false }) => {
     <>
       <Divider />
       <Typography
-        color="text.secondary"
         variant="caption"
         sx={{
+          color: "text.secondary",
           lineHeight: compact ? 1.6 : 2,
           textAlign: "center",
           display: "block",
-          mt: compact ? 0.75 : 2,
-        }}
-      >
+          mt: compact ? 0.75 : 2
+        }}>
         This application is sponsored by
       </Typography>
       <Box

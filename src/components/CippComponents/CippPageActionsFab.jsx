@@ -8,6 +8,7 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  MenuList,
   Stack,
 } from '@mui/material'
 import { MoreHoriz } from '@mui/icons-material'
@@ -122,7 +123,11 @@ export const CippPageActionsFab = (props) => {
             }
           }}
         >
-          {children}
+          {/* Pages hand this sheet MenuItem children, which need a MenuList ancestor in
+              MUI v9. display: contents keeps them laid out as direct Stack items. */}
+          <MenuList disablePadding sx={{ display: 'contents' }}>
+            {children}
+          </MenuList>
         </Stack>
         {layoutActions.length > 0 && (
           <>

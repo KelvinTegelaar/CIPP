@@ -206,9 +206,7 @@ const EditEquipmentMailbox = () => {
                   message: "Maximum is 2,147,483,647 minutes",
                 },
               }}
-              InputProps={{
-                inputProps: { min: 0, max: 2147483647 },
-              }}
+              slotProps={{ htmlInput: { min: 0, max: 2147483647 } }}
               fullWidth
               helperText="Set to 0 for unlimited duration"
             />
@@ -224,9 +222,7 @@ const EditEquipmentMailbox = () => {
                 min: { value: 0, message: "Minimum is 0 days" },
                 max: { value: 1080, message: "Maximum is 1080 days (3 years)" },
               }}
-              InputProps={{
-                inputProps: { min: 0, max: 1080 },
-              }}
+              slotProps={{ htmlInput: { min: 0, max: 1080 } }}
               fullWidth
             />
           </Grid>

@@ -132,7 +132,9 @@ const CippRoles = () => {
         properties.push({
           label: "Permission Rules",
           value: (
-            <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap">
+            <Stack direction="row" spacing={0.5} useFlexGap sx={{
+              flexWrap: "wrap"
+            }}>
               {rules.Include.map((pattern, idx) => (
                 <Chip key={`inc-${idx}`} size="small" color="success" label={pattern} />
               ))}

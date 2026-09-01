@@ -142,7 +142,14 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
 
   return (
     <Box>
-      <Stack useFlexGap direction="row" spacing={0.5} alignItems="center" flexWrap="wrap">
+      <Stack
+        useFlexGap
+        direction="row"
+        spacing={0.5}
+        sx={{
+          alignItems: "center",
+          flexWrap: "wrap"
+        }}>
         <Tooltip
           title={leaf.helpText || leaf.definitionId || ''}
           placement="top"
@@ -150,10 +157,11 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
         >
           <Typography
             variant="caption"
-            color="text.secondary"
             noWrap
-            sx={{ maxWidth: '100%' }}
-          >
+            sx={{
+              color: "text.secondary",
+              maxWidth: '100%'
+            }}>
             {leaf.definitionId}
           </Typography>
         </Tooltip>
@@ -173,9 +181,10 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
           {usesVariable && (
             <Typography
               variant="caption"
-              color="text.secondary"
-              display="block"
-            >
+              sx={{
+                color: "text.secondary",
+                display: "block"
+              }}>
               This setting uses a variable. Set the variable's value to{' '}
               {valueRequirementForLeaf(leaf)}.
             </Typography>
@@ -195,14 +204,18 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
           ))}
 
           {!usesVariable && rawValues.length > 0 && (
-            <Stack useFlexGap
+            <Stack
+              useFlexGap
               direction="row"
               spacing={0.5}
-              alignItems="center"
-              flexWrap="wrap"
-              sx={{ mb: accepted.length ? 1 : 0 }}
-            >
-              <Typography variant="caption" color="text.secondary">
+              sx={{
+                alignItems: "center",
+                flexWrap: "wrap",
+                mb: accepted.length ? 1 : 0
+              }}>
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Stored as:
               </Typography>
               {rawValues.map((value) => (
@@ -215,12 +228,15 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
             <Box sx={{ mt: usesVariable ? 1 : 0 }}>
               <Typography
                 variant="caption"
-                color="text.secondary"
-                display="block"
-              >
+                sx={{
+                  color: "text.secondary",
+                  display: "block"
+                }}>
                 Accepted values — click to copy:
               </Typography>
-              <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={0.5} useFlexGap sx={{
+                flexWrap: "wrap"
+              }}>
                 {accepted.map((option) => (
                   <Tooltip
                     key={option.value}
@@ -240,16 +256,17 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
           {!accepted.length && !usesVariable && (
             <Typography
               variant="caption"
-              color="text.secondary"
-              display="block"
-            >
+              sx={{
+                color: "text.secondary",
+                display: "block"
+              }}>
               A variable here must resolve to {valueRequirementForLeaf(leaf)}.
             </Typography>
           )}
         </Box>
       </Collapse>
     </Box>
-  )
+  );
 }
 
 // Warns when a choice with dependent children is moved off its imported value, because the children
@@ -305,9 +322,10 @@ const LeafField = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
         <Typography variant="body2">{leaf.label}</Typography>
         <Typography
           variant="caption"
-          color="text.secondary"
-          sx={{ fontStyle: 'italic' }}
-        >
+          sx={{
+            color: "text.secondary",
+            fontStyle: 'italic'
+          }}>
           This setting type is not editable here. It is preserved exactly as
           imported.
         </Typography>
@@ -318,7 +336,7 @@ const LeafField = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
           variableOptions={variableOptions}
         />
       </Stack>
-    )
+    );
   }
 
   if (leaf.kind === 'choice') {
@@ -508,8 +526,12 @@ const CippIntuneSettingsEditor = ({
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" spacing={2} alignItems="center">
-        <Typography variant="caption" color="text.secondary">
+      <Stack direction="row" spacing={2} sx={{
+        alignItems: "center"
+      }}>
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           {sections.length} categories, {leaves.length} settings
         </Typography>
         <Link
@@ -540,10 +562,12 @@ const CippIntuneSettingsEditor = ({
             <Stack
               direction="row"
               spacing={1}
-              alignItems="center"
               onClick={() => toggleSection(section.key)}
-              sx={{ cursor: 'pointer', userSelect: 'none' }}
-            >
+              sx={{
+                alignItems: "center",
+                cursor: 'pointer',
+                userSelect: 'none'
+              }}>
               <KeyboardArrowDownIcon
                 fontSize="small"
                 sx={{
@@ -552,16 +576,20 @@ const CippIntuneSettingsEditor = ({
                 }}
               />
               <Typography variant="subtitle2">{section.heading}</Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 {section.leaves.length}
               </Typography>
               {showPath && (
                 <Typography
                   variant="caption"
-                  color="text.secondary"
                   noWrap
-                  sx={{ minWidth: 0, opacity: 0.8 }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    minWidth: 0,
+                    opacity: 0.8
+                  }}>
                   {path}
                 </Typography>
               )}
@@ -587,10 +615,10 @@ const CippIntuneSettingsEditor = ({
               </Grid>
             </Collapse>
           </Box>
-        )
+        );
       })}
     </Stack>
-  )
+  );
 }
 
 // One shared reference for the nothing-to-resolve case, so the hook below is not handed a fresh

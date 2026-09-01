@@ -54,11 +54,12 @@ export const ImagesUploader = () => {
                 </Button>
               </div>
               <Stack
-                alignItems="center"
                 direction="row"
-                flexWrap="wrap"
-                gap={2}
-              >
+                sx={{
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: 2
+                }}>
                 {images.map((image) => (
                   <Box
                     key={image}

@@ -311,7 +311,9 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                   }}
                 />
 
-                <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                <Stack direction="row" spacing={2} useFlexGap sx={{
+                  flexWrap: "wrap"
+                }}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -417,7 +419,6 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                         label="From (UTC)"
                         formControl={guidedForm}
                         placeholder="YYYY-MM-DD HH:mm"
-                        InputLabelProps={{ shrink: true }}
                       />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
@@ -427,7 +428,6 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                         label="To (UTC)"
                         formControl={guidedForm}
                         placeholder="YYYY-MM-DD HH:mm"
-                        InputLabelProps={{ shrink: true }}
                       />
                     </Grid>
                   </Grid>
@@ -455,7 +455,9 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                   </Grid>
                 </Grid>
 
-                <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                <Stack direction="row" spacing={2} useFlexGap sx={{
+                  flexWrap: "wrap"
+                }}>
                   <Button type="submit" variant="contained" startIcon={<Search />}>
                     Search Logs
                   </Button>
@@ -494,13 +496,21 @@ const Page = () => {
             <Box sx={{ p: 3 }}>
               <Stack spacing={3}>
                 <Box>
-                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                      alignItems: "center",
+                      mb: 2
+                    }}>
                     <Chip
                       label={getLevelLabel(row.Level)}
                       color={levelColor}
                       size="medium"
                     />
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       {row.Timestamp}
                     </Typography>
                   </Stack>

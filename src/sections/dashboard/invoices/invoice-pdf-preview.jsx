@@ -39,10 +39,11 @@ export const InvoicePdfPreview = (props) => {
         </Typography>
         <Typography
           align="right"
-          color="error.main"
-          sx={{ textTransform: 'uppercase' }}
           variant="h4"
-        >
+          sx={{
+            color: "error.main",
+            textTransform: 'uppercase'
+          }}>
           {invoice.status}
         </Typography>
       </Box>
@@ -68,8 +69,10 @@ export const InvoicePdfPreview = (props) => {
             Invoice to
           </Typography>
           <Typography
-            color="text.secondary"
             variant="body2"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             Acme LTD GB54423345
             <br />
@@ -95,8 +98,10 @@ export const InvoicePdfPreview = (props) => {
             Invoice for
           </Typography>
           <Typography
-            color="text.secondary"
             variant="body2"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             Natalie Rusell
             <br />
@@ -123,8 +128,10 @@ export const InvoicePdfPreview = (props) => {
             Invoice Date
           </Typography>
           <Typography
-            color="text.secondary"
             variant="body2"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             {issueDate}
           </Typography>
@@ -139,8 +146,10 @@ export const InvoicePdfPreview = (props) => {
           </Typography>
           <Typography
             align="right"
-            color="text.secondary"
             variant="body2"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             {dueDate}
           </Typography>
@@ -183,14 +192,18 @@ export const InvoicePdfPreview = (props) => {
                   <TableRow key={index}>
                     <TableCell>
                       <Typography
-                        color="inherit"
                         variant="body2"
+                        sx={{
+                          color: "inherit"
+                        }}
                       >
                         {lineItem.name}
                       </Typography>
                       <Typography
-                        color="text.secondary"
                         variant="body2"
+                        sx={{
+                          color: "text.secondary"
+                        }}
                       >
                         {unitAmount}
                       </Typography>
@@ -213,13 +226,17 @@ export const InvoicePdfPreview = (props) => {
                 <TableCell />
                 <TableCell>
                   <Stack
-                    alignItems="center"
                     direction="row"
                     spacing={1}
+                    sx={{
+                      alignItems: "center"
+                    }}
                   >
                     <Typography
-                      color="text.secondary"
                       variant="subtitle2"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       Tax
                     </Typography>
@@ -235,13 +252,17 @@ export const InvoicePdfPreview = (props) => {
                 <TableCell />
                 <TableCell>
                   <Stack
-                    alignItems="center"
                     direction="row"
                     spacing={1}
+                    sx={{
+                      alignItems: "center"
+                    }}
                   >
                     <Typography
-                      color="text.secondary"
                       variant="subtitle2"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       Total
                     </Typography>
@@ -262,8 +283,10 @@ export const InvoicePdfPreview = (props) => {
         Notes
       </Typography>
       <Typography
-        color="text.secondary"
         variant="body2"
+        sx={{
+          color: "text.secondary"
+        }}
       >
         &quot;{invoice.note}&quot;
       </Typography>

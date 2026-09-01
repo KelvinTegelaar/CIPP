@@ -32,11 +32,12 @@ export const CustomerNoteAdd = (props) => {
   return (
     <Card {...other}>
       <Stack
-        alignItems="flex-start"
         direction="row"
         spacing={2}
-        sx={{ p: 2 }}
-      >
+        sx={{
+          alignItems: "flex-start",
+          p: 2
+        }}>
         <InputBase
           multiline
           onChange={handleChange}
@@ -52,20 +53,23 @@ export const CustomerNoteAdd = (props) => {
       </Stack>
       <Divider />
       <Stack
-        alignItems="center"
         direction="row"
-        justifyContent="space-between"
         sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+
           backgroundColor: (theme) => theme.palette.mode === 'dark'
             ? 'neutral.900'
             : 'neutral.50',
+
           p: 2
-        }}
-      >
+        }}>
         <Stack
-          alignItems="center"
           direction="row"
           spacing={1}
+          sx={{
+            alignItems: "center"
+          }}
         >
           <SvgIcon fontSize="small">
             <EyeIcon />

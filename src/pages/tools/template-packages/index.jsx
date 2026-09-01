@@ -10,7 +10,9 @@ const Page = () => {
       <Container maxWidth="xl">
         <Stack spacing={2}>
           <Typography variant="h4">Template Package Manager</Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Rename, delete, and manage the members of Conditional Access and Policy (Intune)
             template packages.
           </Typography>
@@ -18,7 +20,7 @@ const Page = () => {
         </Stack>
       </Container>
     </Box>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

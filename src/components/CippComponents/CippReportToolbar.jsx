@@ -280,15 +280,17 @@ export const CippReportToolbar = () => {
                   <ListItemText
                     primary={report.name}
                     secondary={report.description}
-                    primaryTypographyProps={{ noWrap: true }}
-                    secondaryTypographyProps={{
-                      noWrap: true,
-                      variant: 'caption',
-                    }}
-                  />
+                    slotProps={{
+                      primary: { noWrap: true },
+
+                      secondary: {
+                        noWrap: true,
+                        variant: 'caption',
+                      }
+                    }} />
                   {selected && <Check fontSize="small" color="primary" sx={{ ml: 1 }} />}
                 </ListItemButton>
-              )
+              );
             })}
           </List>
         </CippBottomSheet>
@@ -414,5 +416,5 @@ export const CippReportToolbar = () => {
         }}
       />
     </>
-  )
+  );
 }

@@ -87,7 +87,9 @@ const Page = () => {
         </Box>
       </AccordionSummary>
       <AccordionDetails>
-        <Grid container spacing={2} alignItems="flex-end">
+        <Grid container spacing={2} sx={{
+          alignItems: "flex-end"
+        }}>
           <Grid size={{ xs: 12, md: 4 }}>
             <CippFormComponent
               type="datePicker"
@@ -107,7 +109,9 @@ const Page = () => {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} useFlexGap sx={{
+              flexWrap: "wrap"
+            }}>
               <Button variant="contained" onClick={formControl.handleSubmit(onSubmit)}>
                 Apply
               </Button>

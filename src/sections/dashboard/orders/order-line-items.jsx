@@ -57,9 +57,11 @@ export const OrderLineItems = (props) => {
                 <TableRow key={index}>
                   <TableCell>
                     <Stack
-                      alignItems="center"
                       direction="row"
                       spacing={2}
+                      sx={{
+                        alignItems: "center"
+                      }}
                     >
                       <Avatar
                         src={lineItem.image}
@@ -74,8 +76,10 @@ export const OrderLineItems = (props) => {
                           {lineItem.name}
                         </Typography>
                         <Typography
-                          color="text.secondary"
                           variant="body2"
+                          sx={{
+                            color: "text.secondary"
+                          }}
                         >
                           SKU: {lineItem.sku}
                         </Typography>

@@ -205,7 +205,9 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
                   />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Stack direction="row" spacing={1} alignItems="flex-start">
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "flex-start"
+                  }}>
                     <Box sx={{ flexGrow: 1 }}>
                       <CippFormComponent
                         type="textField"
@@ -284,7 +286,9 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
                 }}
               />
 
-              <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={2} useFlexGap sx={{
+                flexWrap: "wrap"
+              }}>
                 <Button
                   type="submit"
                   variant="contained"

@@ -97,7 +97,9 @@ export const CippCheckUserAccessDialog = ({
       </DialogTitle>
       <DialogContent dividers>
         <Stack spacing={2}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Shows every route by which a user can reach this site or one of its libraries, and what
             each route grants. Group memberships are resolved, including nested groups, so this
             answers whether someone actually has access rather than who holds the permissions.
@@ -137,7 +139,9 @@ export const CippCheckUserAccessDialog = ({
             isFetching={libraries.isFetching}
           />
 
-          <Stack direction="row" justifyContent="flex-end">
+          <Stack direction="row" sx={{
+            justifyContent: "flex-end"
+          }}>
             <Button
               variant="contained"
               size="small"
@@ -181,7 +185,9 @@ export const CippCheckUserAccessDialog = ({
                 </Alert>
               )}
 
-              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={1} useFlexGap sx={{
+                flexWrap: "wrap"
+              }}>
                 <Chip size="small" variant="outlined" label={`Scope: ${data.TargetLabel}`} />
                 {data.IsGuest && (
                   <Chip size="small" variant="outlined" color="warning" label="Guest account" />
@@ -214,7 +220,7 @@ export const CippCheckUserAccessDialog = ({
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
 export default CippCheckUserAccessDialog

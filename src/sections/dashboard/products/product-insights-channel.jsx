@@ -74,15 +74,14 @@ export const ProductInsightsChannel = (props) => {
       <CardHeader title="Channel" />
       <Divider />
       <Stack
-        alignItems="center"
         direction="row"
-        flexWrap="wrap"
         spacing={3}
         sx={{
+          alignItems: "center",
+          flexWrap: "wrap",
           pr: 3,
           py: 3
-        }}
-      >
+        }}>
         <div>
           <Chart
             options={chartOptions}
@@ -93,8 +92,10 @@ export const ProductInsightsChannel = (props) => {
         </div>
         <div>
           <Typography
-            color="text.secondary"
             variant="subtitle2"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             Total views
           </Typography>
@@ -107,10 +108,12 @@ export const ProductInsightsChannel = (props) => {
           <Stack spacing={1}>
             {chartSeries.map((item, index) => (
               <Stack
-                alignItems="center"
                 direction="row"
                 key={labels[index]}
                 spacing={1}
+                sx={{
+                  alignItems: "center"
+                }}
               >
                 <Box
                   sx={{

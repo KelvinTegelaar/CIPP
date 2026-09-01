@@ -650,7 +650,9 @@ const ManageDriftPage = () => {
               )}
 
               {description && description !== 'No description available' && (
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   {description}
                 </Typography>
               )}
@@ -665,7 +667,12 @@ const ManageDriftPage = () => {
                     borderColor: 'warning.main',
                   }}
                 >
-                  <Typography variant="body2" color="warning.dark" sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "warning.dark",
+                      fontWeight: 600
+                    }}>
                     ⚠️ This standard was skipped because the required license is not available for
                     this tenant.
                   </Typography>
@@ -1148,8 +1155,8 @@ const ManageDriftPage = () => {
               )}
             </Stack>
           ),
-        }
-      })
+        };
+      });
   }
 
   const deviationItems = createDeviationItems(processedDriftData.currentDeviations)
@@ -1680,7 +1687,12 @@ const ManageDriftPage = () => {
           if (groupedItems[category].length === 0) return null
           return (
             <Box key={category}>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1.5 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 600,
+                  mb: 1.5
+                }}>
                 {category}
               </Typography>
               <CippBannerListCard
@@ -1692,10 +1704,10 @@ const ManageDriftPage = () => {
                 selectedItems={selectedItems}
               />
             </Box>
-          )
+          );
         })}
       </Stack>
-    )
+    );
   }
 
   // Simple filter for drift templates
@@ -1741,24 +1753,42 @@ const ManageDriftPage = () => {
         {!driftApi.isFetching &&
         (!rawDriftData || rawDriftData.length === 0 || tenantDriftData.length === 0) ? (
           <Box sx={{ textAlign: 'center', py: 8 }}>
-            <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                color: "text.secondary",
+                mb: 2
+              }}>
               No Drift Data Available
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "text.secondary",
+                mb: 3
+              }}>
               This standard does not have any drift entries, or it is not a drift compatible
               standard.
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               To enable drift monitoring for this tenant, please ensure:
             </Typography>
             <Box component="ul" sx={{ textAlign: 'left', display: 'inline-block', mt: 2 }}>
-              <Typography component="li" variant="body2" color="text.secondary">
+              <Typography component="li" variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 A drift template has been created and assigned to this tenant
               </Typography>
-              <Typography component="li" variant="body2" color="text.secondary">
+              <Typography component="li" variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 The standard is configured for drift monitoring
               </Typography>
-              <Typography component="li" variant="body2" color="text.secondary">
+              <Typography component="li" variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Drift data collection has been completed for this tenant
               </Typography>
             </Box>
@@ -1771,8 +1801,15 @@ const ManageDriftPage = () => {
                 {/* Stats Card */}
                 <CippButtonCard title="Breakdown">
                   <Stack spacing={1.5}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         Aligned
                       </Typography>
                       <Chip
@@ -1782,8 +1819,15 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         Current
                       </Typography>
                       <Chip
@@ -1793,8 +1837,15 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         Accepted
                       </Typography>
                       <Chip
@@ -1804,8 +1855,15 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         Customer Specific
                       </Typography>
                       <Chip
@@ -1814,8 +1872,15 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         Denied
                       </Typography>
                       <Chip
@@ -1825,21 +1890,42 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         Skipped (No License)
                       </Typography>
                       <Chip label={licenseSkippedItems.length} size="small" variant="outlined" />
                     </Box>
                     <Divider />
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" fontWeight={600}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        fontWeight: 600
+                      }}>
                         Total
                       </Typography>
                       <Chip label={totalPolicies} size="small" variant="filled" />
                     </Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         Alignment Score
                       </Typography>
                       <Chip
@@ -1849,8 +1935,15 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography variant="body2" fontWeight={600}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                      <Typography variant="body2" sx={{
+                        fontWeight: 600
+                      }}>
                         Total Score
                       </Typography>
                       <Chip
@@ -1972,14 +2065,19 @@ const ManageDriftPage = () => {
                   <Box>
                     {/* Header with bulk actions */}
                     <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{ mb: 2 }}
-                    >
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 2
+                      }}>
                       <Typography variant="h6">New Deviations</Typography>
                       {selectedItems.length > 0 && (
-                        <Box display="flex" gap={1}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 1
+                          }}>
                           {/* Bulk Actions Dropdown */}
                           <Button
                             variant="outlined"
@@ -2089,7 +2187,12 @@ const ManageDriftPage = () => {
                     <Typography variant="h6" sx={{ mb: 2 }}>
                       Skipped - No License Available
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        mb: 2
+                      }}>
                       These standards were skipped because the required licenses are not available
                       for this tenant.
                     </Typography>
@@ -2393,7 +2496,7 @@ const ManageDriftPage = () => {
         />
       </Box>
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 ManageDriftPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

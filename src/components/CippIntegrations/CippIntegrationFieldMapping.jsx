@@ -88,7 +88,9 @@ const CippIntegrationFieldMapping = () => {
           <>
             {fieldMapping?.data?.CIPPFieldHeaders?.map((header, headerIndex) => (
               <React.Fragment key={`header-${headerIndex}`}>
-                <Stack direction="row" justifyContent="space-between">
+                <Stack direction="row" sx={{
+                  justifyContent: "space-between"
+                }}>
                   <Box>
                     <Typography variant="h4">{header.Title}</Typography>
                     <Typography variant="body2" sx={{ mb: 2 }}>

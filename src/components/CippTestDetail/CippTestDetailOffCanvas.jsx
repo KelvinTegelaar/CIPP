@@ -156,9 +156,17 @@ export const CippTestDetailOffCanvas = ({ row }) => {
               borderRight: (theme) => `1px solid ${theme.palette.divider}`,
             }}
           >
-            <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+                p: 1
+              }}>
               <Box>
-                <Typography color="text.secondary" variant="overline">
+                <Typography variant="overline" sx={{
+                  color: "text.secondary"
+                }}>
                   Risk
                 </Typography>
                 <Box>
@@ -180,9 +188,17 @@ export const CippTestDetailOffCanvas = ({ row }) => {
               }),
             }}
           >
-            <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+                p: 1
+              }}>
               <Box>
-                <Typography color="text.secondary" variant="overline">
+                <Typography variant="overline" sx={{
+                  color: "text.secondary"
+                }}>
                   User Impact
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
@@ -202,9 +218,17 @@ export const CippTestDetailOffCanvas = ({ row }) => {
               borderRight: (theme) => `1px solid ${theme.palette.divider}`,
             }}
           >
-            <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+                p: 1
+              }}>
               <Box>
-                <Typography color="text.secondary" variant="overline">
+                <Typography variant="overline" sx={{
+                  color: "text.secondary"
+                }}>
                   Effort
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
@@ -219,9 +243,17 @@ export const CippTestDetailOffCanvas = ({ row }) => {
           </Grid>
           {/* two-up by design: mobile-layout-ok */}
           <Grid size={{ xs: 6, md: 3 }}>
-            <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+                p: 1
+              }}>
               <Box>
-                <Typography color="text.secondary" variant="overline">
+                <Typography variant="overline" sx={{
+                  color: "text.secondary"
+                }}>
                   Standard Available
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
@@ -243,7 +275,12 @@ export const CippTestDetailOffCanvas = ({ row }) => {
             <Typography variant="h6" sx={{ mb: 1 }}>
               CIPP Standards that satisfy this test
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mb: 2
+              }}>
               The following CIPP standards can be deployed to remediate or enforce this test.
             </Typography>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -307,7 +344,9 @@ export const CippTestDetailOffCanvas = ({ row }) => {
 
             {row.Category && (
               <Box>
-                <Typography variant="caption" color="text.secondary" gutterBottom>
+                <Typography variant="caption" gutterBottom sx={{
+                  color: "text.secondary"
+                }}>
                   Category
                 </Typography>
                 <Typography variant="body2">{row.Category}</Typography>

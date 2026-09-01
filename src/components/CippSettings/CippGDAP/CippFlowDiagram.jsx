@@ -72,12 +72,22 @@ export const CippFlowDiagram = ({
               {node.label}
             </Typography>
             {node.subLabel && (
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 {node.subLabel}
               </Typography>
             )}
             {node.chips && node.chips.length > 0 && (
-              <Stack useFlexGap direction="row" justifyContent="center" sx={{ mt: 1 }} flexWrap="wrap" gap={0.5}>
+              <Stack
+                useFlexGap
+                direction="row"
+                sx={{
+                  justifyContent: "center",
+                  flexWrap: "wrap",
+                  gap: 0.5,
+                  mt: 1
+                }}>
                 {node.chips.map((chip, chipIndex) => (
                   <Chip key={chipIndex} {...chip} size="small" />
                 ))}
@@ -86,7 +96,9 @@ export const CippFlowDiagram = ({
             {node.details && (
               <Box sx={{ mt: 1, pt: 1, borderTop: 1, borderColor: "divider" }}>
                 {typeof node.details === "string" ? (
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {node.details}
                   </Typography>
                 ) : (

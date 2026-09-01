@@ -218,5 +218,5 @@ export const CippIntunePolicy = (props) => {
         noSubmitButton={true}
       />
     </Stack>
-  )
+  );
 }

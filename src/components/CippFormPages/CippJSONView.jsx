@@ -525,12 +525,16 @@ function CippJsonView({
                 {getStatusText(value.enabled)}
               </Typography>
               {categoryPath && (
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   {categoryPath}
                 </Typography>
               )}
               {!definition && definitionId && (
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   Definition ID: {definitionId}
                 </Typography>
               )}
@@ -744,7 +748,9 @@ function CippJsonView({
             key="added-loading"
             label="Administrative Template"
             value={
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 <CircularProgress size={16} />
                 <Typography variant="body2">Resolving administrative template settings...</Typography>
               </Stack>
@@ -1016,7 +1022,13 @@ function CippJsonView({
         expandIcon={<ExpandMoreIcon />}
         sx={{ display: 'flex', alignItems: 'center' }}
       >
-        <Stack direction="row" spacing={1} alignItems="space-between" sx={{ width: '100%' }}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: "space-between",
+            width: '100%'
+          }}>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
@@ -1077,7 +1089,7 @@ function CippJsonView({
         )}
       </AccordionDetails>
     </Accordion>
-  )
+  );
 }
 
 export default CippJsonView

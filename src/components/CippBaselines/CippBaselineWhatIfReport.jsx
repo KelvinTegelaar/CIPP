@@ -455,7 +455,9 @@ export const CippBaselineWhatIfReport = ({
           sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', gap: 1 }}
         >
           <Box sx={{ flex: 1 }}>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Exec-friendly preview - safe to send to customers. No changes are
               made.
             </Typography>
@@ -473,7 +475,7 @@ export const CippBaselineWhatIfReport = ({
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }
 
 export default CippBaselineWhatIfReport

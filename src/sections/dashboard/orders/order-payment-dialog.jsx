@@ -94,8 +94,10 @@ export const OrderPaymentDialog = (props) => {
       maxWidth="sm"
       onClose={onClose}
       open={open}
-      TransitionProps={{
-        onExited: () => formik.resetForm()
+      slotProps={{
+        transition: {
+          onExited: () => formik.resetForm()
+        }
       }}
     >
       <DialogTitle>

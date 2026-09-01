@@ -133,20 +133,22 @@ export const MobileNav = (props) => {
       onClose={swipeClose.onClose}
       onOpen={onOpen ?? (() => {})}
       open={open}
-      slotProps={{ transition: swipeClose.transitionProps }}
-      PaperProps={{
-        sx: {
-          // desktop side-nav renders on background.default, keep the drawer on the same surface
-          backgroundColor: "background.default",
-          width: MOBILE_NAV_WIDTH,
-          // Column layout so the sponsor footer pins to the bottom and the menu scrolls
-          // between it and the sticky header, rather than the footer riding the list.
-          display: "flex",
-          flexDirection: "column",
-        },
+      slotProps={{
+        transition: swipeClose.transitionProps,
+
+        paper: {
+          sx: {
+            // desktop side-nav renders on background.default, keep the drawer on the same surface
+            backgroundColor: "background.default",
+            width: MOBILE_NAV_WIDTH,
+            // Column layout so the sponsor footer pins to the bottom and the menu scrolls
+            // between it and the sticky header, rather than the footer riding the list.
+            display: "flex",
+            flexDirection: "column",
+          },
+        }
       }}
-      variant="temporary"
-    >
+      variant="temporary">
       {/* Sticky header: logo (relocated from the mobile top bar) + nav search */}
       <Box sx={{ px: 2, pt: 2, pb: 1, flexShrink: 0 }}>
         <Box
@@ -226,7 +228,13 @@ export const MobileNav = (props) => {
               forceOpen: Boolean(query),
             })}
             {query && visibleItems.length === 0 && (
-              <Typography variant="body2" color="text.secondary" sx={{ px: 1, py: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  px: 1,
+                  py: 2
+                }}>
                 No pages match “{search}”.
               </Typography>
             )}

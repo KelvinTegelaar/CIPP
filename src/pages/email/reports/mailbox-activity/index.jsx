@@ -73,7 +73,9 @@ const Page = () => {
   const tableFilter = (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{
+          alignItems: "center"
+        }}>
           <SvgIcon>
             <FunnelIcon />
           </SvgIcon>
@@ -101,7 +103,9 @@ const Page = () => {
             </Grid>
 
             <Grid size={{ xs: 12 }}>
-              <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={2} useFlexGap sx={{
+                flexWrap: "wrap"
+              }}>
                 <Button
                   type="submit"
                   variant="contained"

@@ -100,9 +100,6 @@ export const CippOffCanvas = (props) => {
   return (
     <>
       <Drawer
-        PaperProps={{
-          sx: { width: drawerWidth },
-        }}
         ModalProps={{
           keepMounted: keepMounted,
         }}
@@ -112,6 +109,11 @@ export const CippOffCanvas = (props) => {
         anchor={"right"}
         open={visible}
         onClose={onClose}
+        slotProps={{
+          paper: {
+            sx: { width: drawerWidth },
+          }
+        }}
       >
         <Box
           sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 1.5 }}
@@ -239,7 +241,12 @@ export const CippOffCanvas = (props) => {
                 Prev
               </Button>
               {navigationPosition?.total > 0 && (
-                <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                    whiteSpace: "nowrap"
+                  }}>
                   {navigationPosition.index} of {navigationPosition.total}
                 </Typography>
               )}

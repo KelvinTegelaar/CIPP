@@ -71,10 +71,13 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                   direction={{ xs: "column", md: "row" }}
                   spacing={0.5}
                   key={index}
-                  alignItems={{ xs: "stretch", md: "center" }}
-                  width="100%"
-                >
-                  <Box width={{ xs: "100%", md: "30%" }}>
+                  sx={{
+                    alignItems: { xs: "stretch", md: "center" },
+                    width: "100%"
+                  }}>
+                  <Box sx={{
+                    width: { xs: "100%", md: "30%" }
+                  }}>
                     <CippFormComponent
                       type="textField"
                       name={`fields[${index}].name`}
@@ -83,7 +86,9 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       disableVariables={true}
                     />
                   </Box>
-                  <Box width={{ xs: "100%", md: "10%" }}>
+                  <Box sx={{
+                    width: { xs: "100%", md: "10%" }
+                  }}>
                     <Select
                       value={field.type}
                       onChange={(e) => handleTypeChange(index, e.target.value)}
@@ -95,7 +100,9 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       <MenuItem value="switch">Boolean</MenuItem>
                     </Select>
                   </Box>
-                  <Box width={{ xs: "100%", md: "50%" }}>
+                  <Box sx={{
+                    width: { xs: "100%", md: "50%" }
+                  }}>
                     <CippFormComponent
                       type={field.type}
                       name={`fields[${index}].value`}
@@ -251,7 +258,13 @@ const Page = () => {
     {
       label: "",
       value: (
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ my: 1 }}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: "center",
+            my: 1
+          }}>
           <SvgIcon fontSize="small">
             <MagnifyingGlassIcon />
           </SvgIcon>

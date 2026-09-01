@@ -31,7 +31,10 @@ const MemoTextField = React.memo(function MemoTextField({
   required = false,
   htmlRequired = false,
 }) {
-  const { InputProps, ...otherParams } = params
+  // Autocomplete hands the input wiring (combobox role, refs, keyboard handlers,
+  // popup/clear adornments) to renderInput via params.slotProps — merge our styling
+  // into those slots instead of replacing them, or the field stops being a combobox.
+  const { slotProps: acSlotProps = {}, ...otherParams } = params
 
   return (
     <Tooltip title={label || ''} placement="top" arrow>
@@ -42,13 +45,15 @@ const MemoTextField = React.memo(function MemoTextField({
         variant={variant}
         required={htmlRequired}
         slotProps={{
+          ...acSlotProps,
           inputLabel: {
+            ...acSlotProps.inputLabel,
             shrink: true,
             sx: { transition: 'none' },
             required,
           },
           input: {
-            ...InputProps,
+            ...acSlotProps.input,
             sx: {
               transition: 'none',
               '& .MuiOutlinedInput-notchedOutline': {
@@ -623,8 +628,11 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         }}
         sx={sx}
         renderInput={(params) => {
-          // Handle custom action button inside the TextField
-          const { InputProps, ...otherParams } = params
+          // Handle custom action button inside the TextField.
+          // v9 Autocomplete delivers the input slot via params.slotProps.input
+          // (ref, popup/clear end-adornment) instead of params.InputProps.
+          const { slotProps: acSlotProps = {}, ...otherParams } = params
+          const InputProps = acSlotProps.input
           const baseInputProps =
             customAction && customAction.position === 'inside'
               ? {
@@ -708,7 +716,10 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
             <Stack direction="row" spacing={1}>
               {/* caller props stay on <Autocomplete>, anything spread here reaches the input as a DOM attr */}
               <MemoTextField
-                params={{ ...otherParams, InputProps: modifiedInputProps }}
+                params={{
+                  ...otherParams,
+                  slotProps: { ...acSlotProps, input: modifiedInputProps },
+                }}
                 label={label}
                 placeholder={placeholder}
                 variant={variant}
@@ -832,13 +843,18 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
               <Box>
                 <Typography variant="body1">{option.label}</Typography>
                 {option.description && (
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "text.secondary",
+                      display: 'block'
+                    }}>
                     {option.description}
                   </Typography>
                 )}
               </Box>
             </Box>
-          )
+          );
         }}
         {...other}
         onInputChange={(event, newInputValue, reason) => {
@@ -866,6 +882,6 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         </CippOffCanvas>
       )}
     </>
-  )
+  );
 })
 CippAutoComplete.displayName = 'CippAutoComplete'

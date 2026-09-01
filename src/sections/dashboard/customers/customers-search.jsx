@@ -152,12 +152,13 @@ export const CustomersSearch = (props) => {
         </Box>
         <Divider />
         <Stack
-          alignItems="center"
           direction="row"
-          flexWrap="wrap"
-          gap={3}
-          sx={{ p: 2 }}
-        >
+          sx={{
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 3,
+            p: 2
+          }}>
           {hasSelection && (
             <BulkActionsMenu
               disabled={disabled}

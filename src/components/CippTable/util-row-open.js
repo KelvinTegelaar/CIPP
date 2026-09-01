@@ -26,7 +26,7 @@ const applyTenantFallback = (link, row, options) => {
   }
   return link
     .replace(/\[Tenant\]/g, tenant)
-    .replace(/\[tenantId\]/g, tenant)
+    .replace(/\[tenantId\]/g, tenant);
 }
 
 export const rowOpenEnabled = (rowOpen, row) => {

@@ -227,7 +227,9 @@ export const CippCredentialExpandList = ({
     return (
       <Box sx={{ py: 2, px: 3 }}>
         {addSecretButton}
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           No {credentialType === "password" ? "secrets" : "certificates"} configured.
         </Typography>
         {addSecretDialog}
@@ -265,9 +267,10 @@ export const CippCredentialExpandList = ({
               <ListItemText
                 primary={credentialPrimaryLabel(cred, credentialType)}
                 secondary={keyId ? `keyId: ${keyId}` : undefined}
-                primaryTypographyProps={{ variant: "body2" }}
-                secondaryTypographyProps={{ variant: "caption" }}
-              />
+                slotProps={{
+                  primary: { variant: "body2" },
+                  secondary: { variant: "caption" }
+                }} />
             </ListItem>
           );
         })}

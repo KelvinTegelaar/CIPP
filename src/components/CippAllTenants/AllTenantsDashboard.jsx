@@ -33,9 +33,10 @@ const DashboardCard = ({ title, subheader, api, children, action }) => {
         title={title}
         subheader={subheader}
         action={action}
-        titleTypographyProps={{ variant: 'h6' }}
-        subheaderTypographyProps={{ variant: 'caption' }}
-      />
+        slotProps={{
+          title: { variant: 'h6' },
+          subheader: { variant: 'caption' }
+        }} />
       <Divider />
       <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {isError ? (
@@ -47,7 +48,7 @@ const DashboardCard = ({ title, subheader, api, children, action }) => {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }
 
 export const AllTenantsDashboard = () => {
@@ -122,7 +123,13 @@ export const AllTenantsDashboard = () => {
           data={portfolioBarItems}
         />
         {!countsApi.isLoading && !cache.hasData && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 1.5, display: 'block' }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              mt: 1.5,
+              display: 'block'
+            }}>
             No cached collections were returned. The nightly cache job may not have run yet.
           </Typography>
         )}
@@ -143,12 +150,20 @@ export const AllTenantsDashboard = () => {
                 </Button>
               }
             >
-              <Stack direction="row" spacing={3} alignItems="baseline" sx={{ mb: 2 }}>
+              <Stack
+                direction="row"
+                spacing={3}
+                sx={{
+                  alignItems: "baseline",
+                  mb: 2
+                }}>
                 <Box>
                   <Typography variant="h4" sx={{ fontVariantNumeric: 'tabular-nums' }}>
                     {secureScore.average}%
                   </Typography>
-                  <Typography variant="caption" color="text.disabled">
+                  <Typography variant="caption" sx={{
+                    color: "text.disabled"
+                  }}>
                     across {secureScore.scored} tenants
                   </Typography>
                 </Box>
@@ -170,7 +185,9 @@ export const AllTenantsDashboard = () => {
                       {secureScore.delta > 0 ? '▲' : secureScore.delta < 0 ? '▼' : '■'}{' '}
                       {Math.abs(secureScore.delta)} pts
                     </Typography>
-                    <Typography variant="caption" color="text.disabled">
+                    <Typography variant="caption" sx={{
+                      color: "text.disabled"
+                    }}>
                       over {secureScore.trend.length} days
                     </Typography>
                   </Box>
@@ -188,9 +205,16 @@ export const AllTenantsDashboard = () => {
                       }
                     />
                   </Box>
-                  <Stack direction="row" justifyContent="space-between" sx={{ mb: 2 }}>
+                  <Stack
+                    direction="row"
+                    sx={{
+                      justifyContent: "space-between",
+                      mb: 2
+                    }}>
                     <Box sx={{ minWidth: 0, pr: 1 }}>
-                      <Typography variant="caption" color="text.disabled">
+                      <Typography variant="caption" sx={{
+                        color: "text.disabled"
+                      }}>
                         Best
                       </Typography>
                       <Typography variant="body2" noWrap title={secureScore.best?.name}>
@@ -207,7 +231,9 @@ export const AllTenantsDashboard = () => {
                       </Typography>
                     </Box>
                     <Box sx={{ minWidth: 0, textAlign: 'right' }}>
-                      <Typography variant="caption" color="text.disabled">
+                      <Typography variant="caption" sx={{
+                        color: "text.disabled"
+                      }}>
                         Worst
                       </Typography>
                       <Typography variant="body2" noWrap title={secureScore.worst?.name}>
@@ -227,7 +253,9 @@ export const AllTenantsDashboard = () => {
                 </>
               ) : (
                 !secureScoreApi.isLoading && (
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
                     No cached secure scores yet.
                   </Typography>
                 )
@@ -257,7 +285,9 @@ export const AllTenantsDashboard = () => {
                   >
                     {tests.identityTenantCount}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     of {tenantCount} tenants failing
                     <br />
                     an identity check
@@ -266,15 +296,19 @@ export const AllTenantsDashboard = () => {
               </Stack>
               {tests.identityRows.length > 0 ? (
                 <Stack spacing={0.5}>
-                  <Typography variant="overline" color="text.disabled">
+                  <Typography variant="overline" sx={{
+                    color: "text.disabled"
+                  }}>
                     Most widespread
                   </Typography>
                   {tests.identityRows.map((row) => (
                     <Stack
                       key={row.label}
                       direction="row"
-                      justifyContent="space-between"
                       spacing={2}
+                      sx={{
+                        justifyContent: "space-between"
+                      }}
                     >
                       <Typography variant="body2" noWrap title={row.label}>
                         {row.label}
@@ -293,7 +327,9 @@ export const AllTenantsDashboard = () => {
                 </Stack>
               ) : (
                 !failedTestsApi.isLoading && (
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
                     No failing identity checks.
                   </Typography>
                 )
@@ -316,7 +352,9 @@ export const AllTenantsDashboard = () => {
                 <AllTenantsMeterList meters={mail.meters} isFetching={domainsApi.isLoading} />
               ) : (
                 !domainsApi.isLoading && (
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
                     No analysed domains yet.
                   </Typography>
                 )
@@ -334,12 +372,20 @@ export const AllTenantsDashboard = () => {
                 </Button>
               }
             >
-              <Stack direction="row" spacing={3} alignItems="center" sx={{ mb: 2 }}>
+              <Stack
+                direction="row"
+                spacing={3}
+                sx={{
+                  alignItems: "center",
+                  mb: 2
+                }}>
                 <Box>
                   <Typography variant="h4" sx={{ fontVariantNumeric: 'tabular-nums' }}>
                     {alignment.average}%
                   </Typography>
-                  <Typography variant="caption" color="text.disabled">
+                  <Typography variant="caption" sx={{
+                    color: "text.disabled"
+                  }}>
                     portfolio average
                   </Typography>
                 </Box>
@@ -356,7 +402,9 @@ export const AllTenantsDashboard = () => {
               />
               {alignment.lowest.length > 0 && (
                 <Box sx={{ mt: 2 }}>
-                  <Typography variant="overline" color="text.disabled">
+                  <Typography variant="overline" sx={{
+                    color: "text.disabled"
+                  }}>
                     Lowest scoring
                   </Typography>
                   <Stack spacing={0.5} sx={{ mt: 0.5 }}>
@@ -364,8 +412,10 @@ export const AllTenantsDashboard = () => {
                       <Stack
                         key={item.tenant}
                         direction="row"
-                        justifyContent="space-between"
                         spacing={2}
+                        sx={{
+                          justifyContent: "space-between"
+                        }}
                       >
                         <Typography variant="body2" noWrap title={item.name}>
                           {item.name}
@@ -513,7 +563,9 @@ export const AllTenantsDashboard = () => {
                   <Typography variant="subtitle2" color="error">
                     {delegation.noAutoExtendSoon} expiring without auto-extend
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {delegation.urgent
                       .filter((item) => !item.hasAutoExtend)
                       .slice(0, 3)
@@ -544,7 +596,9 @@ export const AllTenantsDashboard = () => {
                       >
                         {cache.freshness.fresh}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" sx={{
+                        color: "text.secondary"
+                      }}>
                         fresh
                       </Typography>
                     </Box>
@@ -558,7 +612,9 @@ export const AllTenantsDashboard = () => {
                       >
                         {cache.freshness.stale}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" sx={{
+                        color: "text.secondary"
+                      }}>
                         stale
                       </Typography>
                     </Box>
@@ -572,7 +628,9 @@ export const AllTenantsDashboard = () => {
                       >
                         {cache.freshness.missing}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" sx={{
+                        color: "text.secondary"
+                      }}>
                         never cached
                       </Typography>
                     </Box>
@@ -591,5 +649,5 @@ export const AllTenantsDashboard = () => {
         </Grid>
       </Box>
     </Stack>
-  )
+  );
 }

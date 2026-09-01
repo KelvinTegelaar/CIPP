@@ -175,7 +175,9 @@ const Page = () => {
               </Grid>
               <Grid size={12}>
                 <Typography variant="h6">Offboarding actions to perform</Typography>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant="subtitle2" sx={{
+                  color: "text.secondary"
+                }}>
                   The tenant will not be fully offboarded unless all the relationships/contracts are
                   terminated.
                 </Typography>

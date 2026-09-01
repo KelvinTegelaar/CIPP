@@ -60,11 +60,12 @@ const ExpandableListItem = (props) => {
       }}
     >
       <Stack
-        alignItems="center"
         direction="row"
         spacing={2}
-        sx={{ p: 2 }}
-      >
+        sx={{
+          alignItems: "center",
+          p: 2
+        }}>
         <Box
           sx={{
             alignItems: 'center',
@@ -73,14 +74,18 @@ const ExpandableListItem = (props) => {
           }}
         >
           <Typography
-            color="text.secondary"
             variant="h5"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             {createdDay}
           </Typography>
           <Typography
-            color="text.secondary"
             variant="caption"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             {createdMonth}
           </Typography>
@@ -90,8 +95,10 @@ const ExpandableListItem = (props) => {
             {transaction.company}
           </Typography>
           <Typography
-            color="text.secondary"
             variant="body2"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             {transaction.bankAccount}
           </Typography>

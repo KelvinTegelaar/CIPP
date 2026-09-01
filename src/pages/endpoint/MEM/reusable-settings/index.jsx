@@ -75,7 +75,9 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <CippReusableSettingsDeployDrawer requiredPermissions={["Endpoint.MEM.ReadWrite"]} />
           </Stack>
         }

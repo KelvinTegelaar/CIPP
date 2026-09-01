@@ -156,7 +156,9 @@ const Page = () => {
                 sx={{ maxWidth: "50%", mx: "auto", maxHeight: "125px" }}
               />
             )}
-            <Typography variant="body2" paragraph style={{ marginTop: "1em" }}>
+            <Typography variant="body2" style={{ marginTop: "1em" }} sx={{
+              marginBottom: "16px"
+            }}>
               {extension.helpText}
             </Typography>
             {extension?.alertText && (

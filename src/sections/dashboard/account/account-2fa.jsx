@@ -14,7 +14,9 @@ export const Account2FA = () => {
         <Grid container spacing={4}>
           <Grid size={{ md: 5, xs: 12 }}>
             <Typography variant="h6">Two-factor authentication (2FA)</Typography>
-            <Typography color="text.secondary" variant="body2">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Enhanced security for your mention account
             </Typography>
           </Grid>

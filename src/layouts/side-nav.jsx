@@ -202,21 +202,23 @@ export const SideNav = (props) => {
           open
           variant="permanent"
           data-tutorial="side-nav"
-          PaperProps={{
-            ref: paperRef,
-            onMouseEnter: () => setHovered(true),
-            onMouseLeave: () => setHovered(false),
-            sx: {
-              backgroundColor: 'background.default',
-              height: `calc(100% - (${CHROME_TOP_OFFSET}))`,
-              overflowX: 'hidden',
-              overflowY: 'auto',
-              scrollbarGutter: 'stable',
-              top: CHROME_TOP_OFFSET,
-              transition: 'width 250ms ease-in-out',
-              width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
-              zIndex: (theme) => theme.zIndex.appBar - 100,
-            },
+          slotProps={{
+            paper: {
+              ref: paperRef,
+              onMouseEnter: () => setHovered(true),
+              onMouseLeave: () => setHovered(false),
+              sx: {
+                backgroundColor: 'background.default',
+                height: `calc(100% - (${CHROME_TOP_OFFSET}))`,
+                overflowX: 'hidden',
+                overflowY: 'auto',
+                scrollbarGutter: 'stable',
+                top: CHROME_TOP_OFFSET,
+                transition: 'width 250ms ease-in-out',
+                width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
+                zIndex: (theme) => theme.zIndex.appBar - 100,
+              },
+            }
           }}
         >
           <Box
@@ -269,7 +271,7 @@ export const SideNav = (props) => {
         </Drawer>
       )}
     </>
-  )
+  );
 }
 
 SideNav.propTypes = {

@@ -54,7 +54,12 @@ export const CippSharePointRecycleFolderRestoreDialog = ({
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
       <DialogTitle>Restore from recycle bin</DialogTitle>
       <DialogContent dividers sx={{ pt: 2 }}>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 1.5
+          }}>
           Select one or more deleted items under this folder to restore. Everything matching this
           path in the loaded recycle bin is listed (API cap applies).
         </Typography>
@@ -95,7 +100,7 @@ export const CippSharePointRecycleFolderRestoreDialog = ({
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
 CippSharePointRecycleFolderRestoreDialog.propTypes = {

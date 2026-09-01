@@ -348,9 +348,10 @@ export const CippSharePointBrowserStorage = ({
                         direction="row"
                         spacing={0.75}
                         useFlexGap
-                        flexWrap="wrap"
-                        alignItems="center"
-                      >
+                        sx={{
+                          flexWrap: "wrap",
+                          alignItems: "center"
+                        }}>
                         <Chip
                           size="small"
                           icon={<StorageIcon />}
@@ -393,7 +394,9 @@ export const CippSharePointBrowserStorage = ({
                             color={quotaBarColor}
                             sx={{ height: 8, borderRadius: 1 }}
                           />
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                          }}>
                             {nearWarning
                               ? 'Near quota warning — reclaim recycle (explorer Recycle mode) or trim versions before the site locks writes.'
                               : 'Quota usage from site properties (live).'}
@@ -414,7 +417,9 @@ export const CippSharePointBrowserStorage = ({
                         </Alert>
                       )}
 
-                      <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                      <Stack direction="row" spacing={1} useFlexGap sx={{
+                        flexWrap: "wrap"
+                      }}>
                         <Button
                           size="small"
                           variant="outlined"
@@ -443,10 +448,11 @@ export const CippSharePointBrowserStorage = ({
                     <Stack
                       direction="row"
                       spacing={1}
-                      alignItems="center"
-                      justifyContent="space-between"
-                      sx={{ mb: 1 }}
-                    >
+                      sx={{
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        mb: 1
+                      }}>
                       <Typography variant="subtitle2">Largest libraries</Typography>
                       {libsLoading ? <CircularProgress size={18} /> : null}
                     </Stack>
@@ -455,7 +461,9 @@ export const CippSharePointBrowserStorage = ({
                         Could not load library sizes. You can still use Versions cleanup.
                       </Alert>
                     ) : !libsLoading && !topLibraries.length ? (
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         No document libraries returned for this site.
                       </Typography>
                     ) : (
@@ -502,19 +510,25 @@ export const CippSharePointBrowserStorage = ({
                                     </Typography>
                                   </TableCell>
                                   <TableCell>
-                                    <Typography variant="body2" color="text.secondary" noWrap>
+                                    <Typography variant="body2" noWrap sx={{
+                                      color: "text.secondary"
+                                    }}>
                                       {lib.siteType || '—'}
                                     </Typography>
                                   </TableCell>
                                   <TableCell align="right">
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography variant="body2" sx={{
+                                      color: "text.secondary"
+                                    }}>
                                       {lib.fileCount != null
                                         ? Number(lib.fileCount).toLocaleString()
                                         : '—'}
                                     </Typography>
                                   </TableCell>
                                   <TableCell align="right">
-                                    <Stack spacing={0.5} alignItems="flex-end">
+                                    <Stack spacing={0.5} sx={{
+                                      alignItems: "flex-end"
+                                    }}>
                                       <Typography variant="body2">
                                         {formatBytes(lib.storageUsedInBytes) || '—'}
                                       </Typography>
@@ -528,7 +542,7 @@ export const CippSharePointBrowserStorage = ({
                                     </Stack>
                                   </TableCell>
                                 </TableRow>
-                              )
+                              );
                             })}
                           </TableBody>
                         </Table>
@@ -536,9 +550,11 @@ export const CippSharePointBrowserStorage = ({
                     )}
                     <Typography
                       variant="caption"
-                      color="text.secondary"
-                      sx={{ display: 'block', mt: 0.75 }}
-                    >
+                      sx={{
+                        color: "text.secondary",
+                        display: 'block',
+                        mt: 0.75
+                      }}>
                       Library size = root folder StorageMetrics (live). Site used may be higher —
                       recycle, versions, and other lists are not in this table.
                       {libraryRows.length > TOP_LIBRARIES
@@ -553,11 +569,14 @@ export const CippSharePointBrowserStorage = ({
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  justifyContent="space-between"
-                  sx={{ mb: 1.5 }}
-                >
-                  <Stack direction="row" spacing={1} alignItems="center">
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    mb: 1.5
+                  }}>
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     <Typography variant="subtitle2">Version history trim</Typography>
                     <Chip size="small" color={chip.color} label={chip.label} />
                   </Stack>
@@ -672,7 +691,7 @@ export const CippSharePointBrowserStorage = ({
         {({ formHook }) => <CippSharePointVersionCleanupFields formHook={formHook} />}
       </CippApiDialog>
     </>
-  )
+  );
 }
 
 CippSharePointBrowserStorage.propTypes = {

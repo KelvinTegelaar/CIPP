@@ -169,7 +169,7 @@ const resolveVariables = (columnName, dataSample) => {
       return resolved
     }
     return match // return original if no resolver found
-  })
+  });
 }
 
 const getAtPath = (obj, path) => {

@@ -297,11 +297,15 @@ const SiteTypeDialog = ({ formControl, name, overrideActive, onClose }) => (
             disabled={overrideActive}
           />
           {overrideActive ? (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Template override is active — all sites use the template site type at deploy.
             </Typography>
           ) : (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Choose whether this entry provisions a SharePoint site or a Microsoft Team.
             </Typography>
           )}
@@ -344,7 +348,9 @@ const SiteLanguageDialog = ({ formControl, name, onClose }) => {
               creatable={false}
               disableClearable={true}
             />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Tenant default follows each target tenant&apos;s SharePoint root site language
               (the SPO default for new sites) at deploy. A specific language is applied when
               the SharePoint site is created.
@@ -384,7 +390,9 @@ const CreateAsDialog = ({ formControl, name, onClose }) => {
               formControl={formControl}
               options={CREATE_AS_OPTIONS}
             />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Team site is a collaboration workspace. Communication site is for publishing
               (intranet, news). Only applies when this card deploys as a SharePoint site.
             </Typography>
@@ -747,7 +755,9 @@ const AddSiteCard = ({ onAddSharePoint, onAddTeams }) => (
       borderWidth: 2,
     }}
   >
-    <Typography variant="subtitle2" textAlign="center">
+    <Typography variant="subtitle2" sx={{
+      textAlign: "center"
+    }}>
       Add New Site Template
     </Typography>
     <Box sx={{ display: "flex", gap: 1.5 }}>
@@ -792,7 +802,9 @@ const AddSiteCard = ({ onAddSharePoint, onAddTeams }) => (
 // Small stat tile used by the Quick Stats panel.
 const Stat = ({ label, value }) => (
   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", py: 0.5 }}>
-    <Typography variant="body2" color="text.secondary">
+    <Typography variant="body2" sx={{
+      color: "text.secondary"
+    }}>
       {label}
     </Typography>
     <Typography variant="h6">{value}</Typography>
@@ -886,7 +898,9 @@ const SiteTypeOverrideDialog = ({ formControl, open, onClose }) => {
       <DialogTitle>Override site types</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={1.5}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Force every site in this template to deploy as the same type, ignoring each card&apos;s
             own site type.
           </Typography>
@@ -905,7 +919,9 @@ const SiteTypeOverrideDialog = ({ formControl, open, onClose }) => {
             disabled={!overrideActive}
           />
           {!overrideActive && (
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Turn on the override to choose the type applied to every site.
             </Typography>
           )}
@@ -948,16 +964,22 @@ export const CippSharePointTemplateBuilder = ({ formControl }) => {
       >
         <Box sx={{ minWidth: 0 }}>
           <Typography variant="h5">Site Templates</Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Each site template provisions a SharePoint site or Microsoft Team and its document
             libraries.
           </Typography>
           {overrideActive && (
             <Typography
               variant="caption"
-              color="warning.main"
-              sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.75 }}
-            >
+              sx={{
+                color: "warning.main",
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                mt: 0.75
+              }}>
               <OverrideIcon sx={{ fontSize: 14 }} />
               Site type override active — all sites deploy as{" "}
               {resolveSiteType(templateSiteType) === "teams" ? "Microsoft Teams" : "SharePoint sites"}.

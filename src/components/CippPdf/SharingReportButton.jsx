@@ -454,10 +454,17 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
         onClose={() => setDialogOpen(false)}
         maxWidth="lg"
         fullWidth
-        PaperProps={{ sx: { height: '90vh' } }}
+        slotProps={{
+          paper: { sx: { height: '90vh' } }
+        }}
       >
         <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="h6" component="div">
               Sharing Report Preview
             </Typography>
@@ -498,7 +505,7 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }
 
 export default SharingReportButton

@@ -76,7 +76,12 @@ const Page = () => {
           {parseError}
         </Alert>
       ) : !submitted ? (
-        <Stack spacing={2} alignItems="center" sx={{ p: 4 }}>
+        <Stack
+          spacing={2}
+          sx={{
+            alignItems: "center",
+            p: 4
+          }}>
           <CircularProgress />
           <Typography>Processing snooze request...</Typography>
         </Stack>
@@ -90,12 +95,16 @@ const Page = () => {
             </Alert>
           )}
           {tenant && (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Tenant: {tenant}
             </Typography>
           )}
           {duration && (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Duration: {durationLabel(parseInt(duration, 10))}
             </Typography>
           )}
@@ -113,7 +122,7 @@ const Page = () => {
         </Stack>
       )}
     </CippPageCard>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

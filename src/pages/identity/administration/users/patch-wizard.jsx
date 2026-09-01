@@ -166,7 +166,9 @@ const UsersDisplayStep = (props) => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Users to be updated</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           The following users will be updated with the properties you select in the next step. You
           can remove users from this list if needed.
         </Typography>
@@ -189,7 +191,13 @@ const UsersDisplayStep = (props) => {
       ) : (
         <Card variant="outlined">
           <CardContent>
-            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                textAlign: 'center',
+                py: 2
+              }}>
               No users selected. Please go back and select users from the main table.
             </Typography>
           </CardContent>
@@ -204,7 +212,7 @@ const UsersDisplayStep = (props) => {
         noNextButton={!users || users.length === 0}
       />
     </Stack>
-  )
+  );
 }
 
 // Step 2: Property selection and input
@@ -367,14 +375,21 @@ const PropertySelectionStep = (props) => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Select Properties to update</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Choose which user properties you want to modify and provide the new values.
           {customDataProperties.length > 0 && (
             <> Custom data fields are available based on your tenant's manual entry mappings.</>
           )}
         </Typography>
         {customDataMappings.isLoading && (
-          <Typography color="text.secondary" variant="body2" sx={{ fontStyle: 'italic' }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              fontStyle: 'italic'
+            }}>
             Loading custom data mappings...
           </Typography>
         )}
@@ -473,28 +488,31 @@ const PropertySelectionStep = (props) => {
             label="Properties to update"
             placeholder="Select properties to update..."
             slotProps={{
+              ...params.slotProps,
+
               inputLabel: {
                 shrink: true,
                 sx: { transition: 'none' },
               },
+
               input: {
-                ...params.InputProps,
+                ...params.slotProps.input,
                 sx: {
                   transition: 'none',
                   '& .MuiOutlinedInput-notchedOutline': {
                     transition: 'none',
                   },
                 },
-              },
+              }
             }}
           />
         )}
-        renderTags={(value, getTagProps) =>
+        renderValue={(value, getItemProps) =>
           value
             .filter((option) => !option.isSelectAll)
             .map((option, index) => (
               <Chip
-                {...getTagProps({ index })}
+                {...getItemProps({ index })}
                 key={option.property}
                 label={option.label}
                 size="small"
@@ -527,7 +545,7 @@ const PropertySelectionStep = (props) => {
         formControl={formControl}
       />
     </Stack>
-  )
+  );
 }
 
 // Step 3: Confirmation
@@ -629,7 +647,9 @@ const ConfirmationStep = (props) => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Confirm User Updates</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Review the users that will be updated with {selectedProperties.length} selected{' '}
           {selectedProperties.length === 1 ? 'property' : 'properties'}, then click Submit to apply
           the changes.
@@ -666,11 +686,16 @@ const ConfirmationStep = (props) => {
                     >
                       {property?.label || propName}:
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        flex: 1
+                      }}>
                       {displayValue}
                     </Typography>
                   </Box>
-                )
+                );
               })}
             </Stack>
           </CardContent>
@@ -693,7 +718,13 @@ const ConfirmationStep = (props) => {
       ) : (
         <Card variant="outlined">
           <CardContent>
-            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                textAlign: 'center',
+                py: 2
+              }}>
               No users to update. Please go back and select users.
             </Typography>
           </CardContent>
@@ -703,12 +734,13 @@ const ConfirmationStep = (props) => {
       <CippApiResults apiObject={patchUsersApi} />
 
       <Stack
-        alignItems="center"
         direction="row"
-        justifyContent="flex-end"
         spacing={2}
-        sx={{ mt: 3 }}
-      >
+        sx={{
+          alignItems: "center",
+          justifyContent: "flex-end",
+          mt: 3
+        }}>
         {currentStep > 0 && (
           <Button color="inherit" onClick={onPreviousStep} size="large" type="button">
             Back
@@ -730,7 +762,7 @@ const ConfirmationStep = (props) => {
         </Button>
       </Stack>
     </Stack>
-  )
+  );
 }
 
 const Page = () => {

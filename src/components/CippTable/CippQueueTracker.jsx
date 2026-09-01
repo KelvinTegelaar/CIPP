@@ -247,7 +247,9 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
               <Typography variant="h6">{(persistentQueueData || queueData).Name}</Typography>
 
               <Box>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Typography variant="body2" gutterBottom sx={{
+                  color: "text.secondary"
+                }}>
                   Progress: {(persistentQueueData || queueData).PercentComplete?.toFixed(1)}%
                   complete
                 </Typography>
@@ -258,7 +260,14 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                 />
               </Box>
 
-              <Stack useFlexGap direction="row" columnGap={4} rowGap={1} sx={{ flexWrap: "wrap" }}>
+              <Stack
+                useFlexGap
+                direction="row"
+                sx={{
+                  columnGap: 4,
+                  rowGap: 1,
+                  flexWrap: "wrap"
+                }}>
                 <Typography variant="body2">
                   <strong>Total Tasks:</strong> {(persistentQueueData || queueData).TotalTasks || 0}
                 </Typography>
@@ -362,18 +371,21 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                           >
                             <Stack
                               direction="row"
-                              justifyContent="space-between"
-                              alignItems="center"
                               spacing={1}
-                            >
+                              sx={{
+                                justifyContent: "space-between",
+                                alignItems: "center"
+                              }}>
                               {/* Task names are tenant domains — one unbreakable token — so
                                   without minWidth: 0 the row's min-content width exceeds a
                                   phone-width card and shoves the status pill off its edge. */}
                               <Typography
                                 variant="body2"
-                                fontWeight="medium"
-                                sx={{ minWidth: 0, overflowWrap: "anywhere" }}
-                              >
+                                sx={{
+                                  fontWeight: "medium",
+                                  minWidth: 0,
+                                  overflowWrap: "anywhere"
+                                }}>
                                 {task.Name}
                               </Typography>
                               <Typography
@@ -412,13 +424,12 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                             {task.Timestamp && (
                               <Typography
                                 variant="caption"
-                                color="text.secondary"
                                 sx={{
+                                  color: "text.secondary",
                                   mt: 0.5,
                                   display: "block",
-                                  fontStyle: "italic",
-                                }}
-                              >
+                                  fontStyle: "italic"
+                                }}>
                                 {new Date(task.Timestamp).toLocaleDateString(undefined, {
                                   year: "numeric",
                                   month: "short",

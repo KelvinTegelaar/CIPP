@@ -42,9 +42,11 @@ export const ProductInsightsReviews = () => {
     <Card>
       <CardContent>
         <Stack
-          alignItems="center"
           direction="row"
           spacing={1}
+          sx={{
+            alignItems: "center"
+          }}
         >
           <SvgIcon
             fontSize="large"
@@ -57,13 +59,12 @@ export const ProductInsightsReviews = () => {
           </Typography>
         </Stack>
         <Typography
-          color="text.secondary"
+          variant="subtitle2"
           sx={{
+            color: "text.secondary",
             mb: 2,
             mt: 1
-          }}
-          variant="subtitle2"
-        >
+          }}>
           14 reviews in total based on 122 reviews
         </Typography>
         <Card variant="outlined">
@@ -78,17 +79,18 @@ export const ProductInsightsReviews = () => {
                   key={review.score}
                 >
                   <Stack
-                    alignItems="center"
                     direction="row"
                     spacing={1}
                     sx={{
+                      alignItems: "center",
                       flexGrow: 1,
                       p: 1
-                    }}
-                  >
+                    }}>
                     <Typography
-                      color="text.secondary"
                       variant="body2"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       x{review.score}
                     </Typography>
@@ -102,8 +104,10 @@ export const ProductInsightsReviews = () => {
                       variant="determinate"
                     />
                     <Typography
-                      color="text.secondary"
                       variant="body2"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       {percentage}%
                     </Typography>

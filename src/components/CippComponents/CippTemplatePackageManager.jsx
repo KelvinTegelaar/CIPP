@@ -127,7 +127,9 @@ export const CippTemplatePackageManager = () => {
       )}
 
       {packages.isSuccess && packageList.length === 0 && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           No packages yet for {typeConfig.label.toLowerCase()}. Use the "Add to package" action on
           the template list to create one.
         </Typography>
@@ -140,11 +142,15 @@ export const CippTemplatePackageManager = () => {
               <Stack
                 direction="row"
                 spacing={1}
-                alignItems="center"
-                sx={{ width: '100%', pr: 1 }}
-                justifyContent="space-between"
-              >
-                <Stack direction="row" spacing={1} alignItems="center">
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: '100%',
+                  pr: 1
+                }}>
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
                   <LocalOffer fontSize="small" color="action" />
                   <Typography variant="subtitle1">{pkg.value}</Typography>
                   <Chip size="small" label={`${pkg.templateCount} templates`} />
@@ -171,7 +177,9 @@ export const CippTemplatePackageManager = () => {
             </AccordionSummary>
             <AccordionDetails>
               <Stack spacing={2}>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
                   <Box sx={{ flexGrow: 1 }}>
                     <CippAutoComplete
                       size="small"
@@ -217,9 +225,10 @@ export const CippTemplatePackageManager = () => {
                     <Stack
                       key={tpl.GUID}
                       direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
+                      sx={{
+                        alignItems: "center",
+                        justifyContent: "space-between"
+                      }}>
                       <Typography variant="body2">{getDisplayName(tpl, typeConfig)}</Typography>
                       <Tooltip title="Remove from package">
                         <IconButton
@@ -250,7 +259,9 @@ export const CippTemplatePackageManager = () => {
         <DialogTitle>Rename Package</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Renames the package tag on all {renameTarget?.templateCount} member template(s).
             </Typography>
             <CippAutoComplete
@@ -328,5 +339,5 @@ export const CippTemplatePackageManager = () => {
         </DialogActions>
       </Dialog>
     </Stack>
-  )
+  );
 }

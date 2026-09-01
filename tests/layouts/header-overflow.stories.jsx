@@ -17,19 +17,23 @@ const GUEST_UPN = 'jduprey_7ngn50.onmicrosoft.com#EXT#@1h81wz.onmicrosoft.com'
 
 const SubtitleItem = ({ icon, children }) => (
   <Stack
-    alignItems="center"
     direction="row"
     spacing={1}
-    sx={{ minWidth: 0, maxWidth: '100%' }}
-  >
+    sx={{
+      alignItems: "center",
+      minWidth: 0,
+      maxWidth: '100%'
+    }}>
     <SvgIcon fontSize="small" sx={{ flexShrink: 0 }}>
       {icon}
     </SvgIcon>
     <Typography
-      color="text.secondary"
       variant="body2"
-      sx={{ minWidth: 0, '& .MuiChip-root': { maxWidth: '100%' } }}
-    >
+      sx={{
+        color: "text.secondary",
+        minWidth: 0,
+        '& .MuiChip-root': { maxWidth: '100%' }
+      }}>
       {children}
     </Typography>
   </Stack>
@@ -44,7 +48,13 @@ export const GuestUpnDoesNotSpill = {
   render: () => (
     <Box data-testid="header-host" sx={{ px: 2, overflowX: 'visible' }}>
       <Stack spacing={1}>
-        <Stack alignItems="center" direction="row" justifyContent="space-between" spacing={1}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}>
           <Stack spacing={1} sx={{ minWidth: 0 }}>
             <Typography variant="h6" noWrap>
               jduprey
@@ -52,12 +62,15 @@ export const GuestUpnDoesNotSpill = {
           </Stack>
         </Stack>
         <Stack
-          alignItems="center"
-          flexWrap="wrap"
           useFlexGap
           direction="row"
-          sx={{ columnGap: 2, rowGap: 0.5, minWidth: 0 }}
-        >
+          sx={{
+            alignItems: "center",
+            flexWrap: "wrap",
+            columnGap: 2,
+            rowGap: 0.5,
+            minWidth: 0
+          }}>
           <SubtitleItem icon={<Mail />}>
             <CippCopyToClipBoard type="chip" text={GUEST_UPN} />
           </SubtitleItem>

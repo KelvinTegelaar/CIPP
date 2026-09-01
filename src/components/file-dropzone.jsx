@@ -57,10 +57,11 @@ export const FileDropzone = (props) => {
       {caption && (
         <Typography
           align="center"
-          color="text.secondary"
-          sx={{ mt: 1 }}
           variant="caption"
-        >
+          sx={{
+            color: "text.secondary",
+            mt: 1
+          }}>
           {caption}
         </Typography>
       )}

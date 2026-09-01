@@ -290,7 +290,9 @@ const Page = () => {
             ))}
           </Stack>
         ) : (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             No specific users — this is a seat-count finding.
           </Typography>
         )}
@@ -307,9 +309,10 @@ const Page = () => {
           <Stack spacing={2}>
             <Stack
               direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-            >
+              sx={{
+                justifyContent: "flex-end",
+                alignItems: "center"
+              }}>
               <CippAutoComplete
                 label="Currency"
                 options={currencies.map((c) => ({ label: c, value: c }))}
@@ -361,10 +364,12 @@ const Page = () => {
                   />
                 ) : (
                   <Typography
-                    color="text.secondary"
                     variant="body2"
-                    sx={{ py: 6, textAlign: 'center' }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      py: 6,
+                      textAlign: 'center'
+                    }}>
                     {opportunities.length
                       ? 'No cost is estimated for these SKUs, so there is nothing to chart. Set a price on the opportunities below to see reclaimable spend.'
                       : 'No reclaim opportunities found for this tenant.'}
@@ -388,7 +393,7 @@ const Page = () => {
         </Container>
       </Box>
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => (

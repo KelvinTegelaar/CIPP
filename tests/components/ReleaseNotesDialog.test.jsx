@@ -149,7 +149,7 @@ describe('ReleaseNotesDialog', () => {
     await user.click(sheet.getByText('v10.8.2 - Hotfix'))
 
     expect(await screen.findByText('Notes for the hotfix that is actually running')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /switch release/i })).toHaveTextContent(
+    expect(await screen.findByRole('button', { name: /switch release/i })).toHaveTextContent(
       'v10.8.2 - Hotfix'
     )
   })

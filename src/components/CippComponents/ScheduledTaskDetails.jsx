@@ -82,7 +82,12 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
   return (
     <>
       <Stack spacing={2}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Stack
+          direction="row"
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "flex-start"
+          }}>
           <Typography variant="h5">
             {showTitle && (taskDetailResults.isLoading ? <Skeleton width="250px" /> : taskDetails?.Task?.Name)}
           </Typography>
@@ -191,14 +196,18 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
               <>
                 <Stack
                   direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ mt: 4, mb: 2 }}
-                >
+                  sx={{
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mt: 4,
+                    mb: 2
+                  }}>
                   <Typography variant="h6">
                     Execution Results{" "}
                     {filteredDetails && (
-                      <Typography component="span" variant="body2" color="text.secondary">
+                      <Typography component="span" variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         ({filteredDetails.length} of {taskDetails.Details.length})
                       </Typography>
                     )}
@@ -210,25 +219,27 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                     placeholder="Search results..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search />
-                        </InputAdornment>
-                      ),
-                      endAdornment: searchQuery && (
-                        <InputAdornment position="end">
-                          <Tooltip title="Clear search">
-                            <IconButton
-                              size="small"
-                              onClick={() => setSearchQuery("")}
-                              aria-label="Clear search"
-                            >
-                              <Close />
-                            </IconButton>
-                          </Tooltip>
-                        </InputAdornment>
-                      ),
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Search />
+                          </InputAdornment>
+                        ),
+                        endAdornment: searchQuery && (
+                          <InputAdornment position="end">
+                            <Tooltip title="Clear search">
+                              <IconButton
+                                size="small"
+                                onClick={() => setSearchQuery("")}
+                                aria-label="Clear search"
+                              >
+                                <Close />
+                              </IconButton>
+                            </Tooltip>
+                          </InputAdornment>
+                        ),
+                      }
                     }}
                   />
                 </Stack>
@@ -266,7 +277,9 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                         </AccordionSummary>
                         <AccordionDetails>
                           {result.Results === "null" || !result.Results ? (
-                            <Typography color="text.secondary">No data available</Typography>
+                            <Typography sx={{
+                              color: "text.secondary"
+                            }}>No data available</Typography>
                           ) : Array.isArray(result.Results) ? (
                             <CippDataTable
                               noCard
@@ -300,7 +313,9 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                         textAlign: "center",
                       }}
                     >
-                      <Typography color="text.secondary">
+                      <Typography sx={{
+                        color: "text.secondary"
+                      }}>
                         No results match your search criteria
                       </Typography>
                     </Box>

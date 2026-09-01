@@ -38,7 +38,7 @@ const extractAllResults = (data, extraIgnoreKeys = []) => {
 
   const getSeverity = (text) => {
     if (typeof text !== 'string') return 'success'
-    return /error|failed|exception|not found|invalid_grant/i.test(text) ? 'error' : 'success'
+    return /error|failed|exception|not found|invalid_grant/i.test(text) ? 'error' : 'success';
   }
 
   const processResultItem = (item) => {
@@ -155,7 +155,13 @@ const CippJobProgress = ({ rows }) => (
   <Stack spacing={2}>
     {rows.map((row, rowIndex) => (
       <Box key={row.Tenant ?? row.Name ?? rowIndex}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+        <Stack
+          direction="row"
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            mb: 1
+          }}>
           <Typography variant="subtitle2">{row.Tenant ?? row.Name}</Typography>
           <Chip
             size="small"
@@ -166,13 +172,17 @@ const CippJobProgress = ({ rows }) => (
         </Stack>
         <Stack spacing={1}>
           {(row.Steps || []).map((step, index) => (
-            <Stack direction="row" spacing={1} alignItems="flex-start" key={index}>
+            <Stack direction="row" spacing={1} key={index} sx={{
+              alignItems: "flex-start"
+            }}>
               <Box sx={{ pt: 0.25 }}>
                 <JobStepIcon status={step.Status} />
               </Box>
               <Box sx={{ minWidth: 0 }}>
                 <Typography variant="body2">{step.Title}</Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   {step.Message}
                 </Typography>
               </Box>
@@ -510,7 +520,11 @@ export const CippApiResults = (props) => {
                     <Typography variant="body2">{resultObj.text}</Typography>
                     {resultObj.details && (
                       <Collapse in={showDetails[resultObj.id]}>
-                        <Box mt={2} sx={{ width: '100%' }}>
+                        <Box
+                          sx={{
+                            mt: 2,
+                            width: '100%'
+                          }}>
                           <CippCodeBlock
                             code={
                               typeof resultObj.details === 'string'
@@ -535,7 +549,11 @@ export const CippApiResults = (props) => {
       {(apiObject.isSuccess || apiObject.isError) &&
       finalResults?.length > 0 &&
       hasVisibleResults ? (
-        <Box display="flex" flexDirection="row">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row"
+          }}>
           <Tooltip title="View Results">
             <IconButton onClick={() => tableDialog.handleOpen()}>
               <SvgIcon>
@@ -553,12 +571,20 @@ export const CippApiResults = (props) => {
       {/* Live job progress (opt-in via the jobProgress prop) */}
       {jobProgress && jobId && (
         <Box>
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              mb: 2
+            }}>
             <Typography variant="h6">{jobProgress.title ?? 'Progress'}</Typography>
             {jobPollActive && <CircularProgress size={16} />}
           </Stack>
           {jobRows.length === 0 ? (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Waiting for the first status update...
             </Typography>
           ) : (
@@ -576,5 +602,5 @@ export const CippApiResults = (props) => {
         />
       )}
     </Stack>
-  )
+  );
 }

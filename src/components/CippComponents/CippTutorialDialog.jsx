@@ -92,14 +92,25 @@ const CippTutorialDialog = ({ open, onClose }) => {
         />
 
         {categoryKeys.length === 0 && (
-          <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+          <Typography
+            sx={{
+              color: "text.secondary",
+              textAlign: 'center',
+              py: 4
+            }}>
             No tutorials found.
           </Typography>
         )}
 
         {categoryKeys.map((category) => (
           <Box key={category} sx={{ mb: 2 }}>
-            <Typography variant="subtitle2" color="text.secondary" sx={{ px: 2, py: 0.5 }}>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                color: "text.secondary",
+                px: 2,
+                py: 0.5
+              }}>
               {category}
             </Typography>
             <List dense disablePadding>
@@ -148,13 +159,19 @@ const CippTutorialDialog = ({ open, onClose }) => {
         ))}
       </DialogContent>
       <DialogActions>
-        <Typography variant="caption" color="text.secondary" sx={{ mr: 'auto', pl: 2 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            mr: 'auto',
+            pl: 2
+          }}>
           {completedIds.length} of {tutorials.length} completed
         </Typography>
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
 export default CippTutorialDialog

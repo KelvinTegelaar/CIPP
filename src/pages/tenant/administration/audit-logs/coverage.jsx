@@ -313,7 +313,13 @@ const Page = () => {
         {statsQuery.isFetching ? (
           <Skeleton variant="rounded" sx={{ height: 280 }} />
         ) : !ready ? (
-          <Typography color="text.secondary" variant="body2" sx={{ py: 6, textAlign: "center" }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              py: 6,
+              textAlign: "center"
+            }}>
             No search windows in this period.
           </Typography>
         ) : (
@@ -401,7 +407,13 @@ const Page = () => {
                 {statsQuery.isFetching ? (
                   <Skeleton variant="rounded" sx={{ height: 120 }} />
                 ) : problems.length === 0 ? (
-                  <Typography color="text.secondary" variant="body2" sx={{ py: 3, textAlign: "center" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                      py: 3,
+                      textAlign: "center"
+                    }}>
                     No problems in this period — everything processed cleanly.
                   </Typography>
                 ) : (
@@ -421,18 +433,31 @@ const Page = () => {
                         <Stack
                           key={`${r.Tenant}-${r.WindowStart}-${i}`}
                           direction="row"
-                          alignItems="center"
                           spacing={1.5}
-                          sx={{ py: 1 }}
-                        >
+                          sx={{
+                            alignItems: "center",
+                            py: 1
+                          }}>
                           <Typography variant="body2" sx={{ minWidth: 160 }} noWrap title={r.Tenant}>
                             {String(r.Tenant || "").replace(/\.onmicrosoft\.com$/, "")}
                           </Typography>
                           <Chip size="small" label={badge.label} color={badge.color} variant="outlined" />
-                          <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }} noWrap title={r.LastError}>
+                          <Typography
+                            variant="body2"
+                            noWrap
+                            title={r.LastError}
+                            sx={{
+                              color: "text.secondary",
+                              flexGrow: 1
+                            }}>
                             {r.LastError || "—"}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "text.secondary",
+                              whiteSpace: "nowrap"
+                            }}>
                             {when ? new Date(when).toLocaleString() : "—"}
                           </Typography>
                         </Stack>
@@ -446,8 +471,17 @@ const Page = () => {
             <Card>
               <Divider />
               {tableFilterTenant && (
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ px: 2, pt: 1 }}>
-                  <Typography variant="body2" color="text.secondary">
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{
+                    alignItems: "center",
+                    px: 2,
+                    pt: 1
+                  }}>
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
                     Filtered to {tableFilterTenant.replace(/\.onmicrosoft\.com$/, "")}
                   </Typography>
                   <Button size="small" onClick={() => setTableFilterTenant(null)}>

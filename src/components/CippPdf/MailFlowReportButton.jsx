@@ -397,10 +397,17 @@ export const MailFlowReportButton = ({ mailFlowData, tenantName, disabled = fals
         onClose={() => setDialogOpen(false)}
         maxWidth="lg"
         fullWidth
-        PaperProps={{ sx: { height: '90vh' } }}
+        slotProps={{
+          paper: { sx: { height: '90vh' } }
+        }}
       >
         <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="h6" component="div">
               Mail Flow Report Preview
             </Typography>
@@ -441,7 +448,7 @@ export const MailFlowReportButton = ({ mailFlowData, tenantName, disabled = fals
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }
 
 export default MailFlowReportButton

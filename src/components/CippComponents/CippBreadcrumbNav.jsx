@@ -34,7 +34,7 @@ const loadTabOptions = () => {
         type: 'tab',
         basePath,
       }))
-  })
+  });
 }
 
 export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
@@ -69,7 +69,7 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
       .replace(/\s*-\s*AllTenants\s*/, '')
       .replace(/AllTenants\s*-\s*/, '')
       .replace(/AllTenants/, '')
-      .trim()
+      .trim();
   }
 
   useEffect(() => {
@@ -131,7 +131,7 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
       // Normalize URL for comparison (remove trailing slashes and query params)
       const normalizeUrl = (url) => {
         // Remove query params and trailing slashes for comparison
-        return url.split('?')[0].replace(/\/$/, '').toLowerCase()
+        return url.split('?')[0].replace(/\/$/, '').toLowerCase();
       }
 
       const currentPage = {
@@ -689,13 +689,14 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
               return (
                 <Typography
                   key={index}
-                  color="text.secondary"
                   variant="subtitle2"
-                  sx={{ fontWeight: isLast ? 500 : 400 }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    fontWeight: isLast ? 500 : 400
+                  }}>
                   {displayTitle}
                 </Typography>
-              )
+              );
             }
 
             // Items with valid paths are clickable
@@ -749,7 +750,7 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
             the crumb text. Desktop keeps it directly after the last crumb. */}
         <Box sx={{ ml: { xs: "auto", md: 0 }, display: "inline-flex" }}>{bookmarkStar}</Box>
       </Box>
-    )
+    );
   }
 
   // Default mode: history-based breadcrumbs
@@ -797,13 +798,14 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
             return (
               <Typography
                 key={index}
-                color="text.primary"
                 variant="subtitle2"
-                sx={{ fontWeight: 500 }}
-              >
+                sx={{
+                  color: "text.primary",
+                  fontWeight: 500
+                }}>
                 {page.title}
               </Typography>
-            )
+            );
           }
 
           return (
@@ -838,5 +840,5 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
       </Breadcrumbs>
       <Box sx={{ ml: { xs: "auto", md: 0 }, display: "inline-flex" }}>{bookmarkStar}</Box>
     </Box>
-  )
+  );
 }

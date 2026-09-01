@@ -18,7 +18,13 @@ export const CippInfoCard = (props) => {
 
   return (
     <Card {...other}>
-      <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          alignItems: "center",
+          p: 2
+        }}>
         <Avatar
           sx={{
             backgroundColor: "primary.alpha12",
@@ -28,7 +34,9 @@ export const CippInfoCard = (props) => {
           <SvgIcon fontSize="small">{icon ? icon : <CubeIcon />}</SvgIcon>
         </Avatar>
         <div>
-          <Typography color="text.secondary" variant="overline">
+          <Typography variant="overline" sx={{
+            color: "text.secondary"
+          }}>
             {isFetching ? <Skeleton width={150} /> : label}
           </Typography>
           <Typography variant="h6">{isFetching ? <Skeleton width={200} /> : value}</Typography>

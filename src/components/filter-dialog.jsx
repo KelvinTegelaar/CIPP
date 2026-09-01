@@ -41,11 +41,13 @@ export const FilterDialog = (props) => {
     <Dialog
       onClose={onClose}
       open={open}
-      PaperProps={{
-        sx: {
-          maxWidth: 500,
-          width: "100%",
-        },
+      slotProps={{
+        paper: {
+          sx: {
+            maxWidth: 500,
+            width: "100%",
+          },
+        }
       }}
     >
       <DialogTitle

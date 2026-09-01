@@ -336,7 +336,7 @@ export const applyReportVariables = (template, variables = {}) => {
   return String(template).replace(/%([\w()]+)%/g, (match, key) => {
     const value = lookup[key.toLowerCase()]
     return value == null ? match : String(value)
-  })
+  });
 }
 
 /**

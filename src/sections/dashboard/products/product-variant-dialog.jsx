@@ -141,12 +141,14 @@ export const ProductVariantDialog = (props) => {
       maxWidth="sm"
       onClose={onClose}
       open={open}
-      TransitionProps={{
-        onExited: () => {
-          formik.resetForm();
+      {...other}
+      slotProps={{
+        transition: {
+          onExited: () => {
+            formik.resetForm();
+          }
         }
-      }}
-      {...other}>
+      }}>
       <DialogTitle>
         {action === 'update' ? 'Update Variant' : 'Add Variant'}
       </DialogTitle>
@@ -217,12 +219,14 @@ export const ProductVariantDialog = (props) => {
             type="number"
             sx={{ maxWidth: 236 }}
             value={formik.values.price}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {currencyLabel}
-                </InputAdornment>
-              )
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    {currencyLabel}
+                  </InputAdornment>
+                )
+              }
             }}
           />
           <Stack spacing={2}>

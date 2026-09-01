@@ -108,7 +108,9 @@ export const CippWizardConfirmation = (props) => {
     <Stack spacing={3}>
       {filteredEntries.length === 0 ? (
         <Card variant="outlined">
-          <Stack p={3}>
+          <Stack sx={{
+            p: 3
+          }}>
             <Typography variant="h6">
               You've completed the steps in this wizard. Hit submit to save your changes.
             </Typography>

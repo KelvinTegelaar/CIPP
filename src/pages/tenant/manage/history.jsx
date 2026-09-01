@@ -158,13 +158,20 @@ const Page = () => {
       <Box sx={{ py: 2 }}>
         <Stack spacing={4}>
           <Typography variant="h6">Activity Timeline</Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" sx={{
+            color: "text.secondary"
+          }}>
             This timeline shows the history of actions taken on this tenant, by CIPP for the last{" "}
             {daysToLoad} days.
           </Typography>
 
           {logsData.isLoading && (
-            <Box display="flex" justifyContent="center" py={4}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                py: 4
+              }}>
               <CircularProgress />
             </Box>
           )}
@@ -200,20 +207,29 @@ const Page = () => {
                     return (
                       <TimelineItem key={index}>
                         <TimelineOppositeContent
-                          sx={{ m: "auto 0", minWidth: 100, maxWidth: 100 }}
                           align="right"
                           variant="body2"
-                          color="text.secondary"
-                        >
-                          <Typography variant="caption" display="block" fontSize="0.7rem">
+                          sx={{
+                            color: "text.secondary",
+                            m: "auto 0",
+                            minWidth: 100,
+                            maxWidth: 100
+                          }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              display: "block",
+                              fontSize: "0.7rem"
+                            }}>
                             {date}
                           </Typography>
                           <Typography
                             variant="caption"
-                            display="block"
-                            fontWeight="bold"
-                            fontSize="0.75rem"
-                          >
+                            sx={{
+                              display: "block",
+                              fontWeight: "bold",
+                              fontSize: "0.75rem"
+                            }}>
                             {time}
                           </Typography>
                         </TimelineOppositeContent>
@@ -227,7 +243,13 @@ const Page = () => {
 
                         <TimelineContent sx={{ py: "8px", px: 2 }}>
                           <Stack spacing={1}>
-                            <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                flexWrap: "wrap"
+                              }}>
                               <Chip
                                 label={log.Severity}
                                 color={chipColor}
@@ -254,9 +276,10 @@ const Page = () => {
                             <Box>
                               <Typography
                                 variant="body2"
-                                fontWeight="medium"
-                                sx={{ fontSize: "0.875rem" }}
-                              >
+                                sx={{
+                                  fontWeight: "medium",
+                                  fontSize: "0.875rem"
+                                }}>
                                 {isExpanded ? fullText : text}
                               </Typography>
                               {isTruncated && (
@@ -279,9 +302,10 @@ const Page = () => {
                             {log.User && (
                               <Typography
                                 variant="caption"
-                                color="text.secondary"
-                                sx={{ fontSize: "0.7rem" }}
-                              >
+                                sx={{
+                                  color: "text.secondary",
+                                  fontSize: "0.7rem"
+                                }}>
                                 User: {log.User}
                               </Typography>
                             )}
@@ -292,7 +316,12 @@ const Page = () => {
                   })}
                 </Timeline>
 
-                <Box display="flex" justifyContent="center" mt={3}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 3
+                  }}>
                   <Button
                     variant="outlined"
                     startIcon={<ExpandMore />}

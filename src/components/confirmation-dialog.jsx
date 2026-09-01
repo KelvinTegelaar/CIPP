@@ -72,9 +72,11 @@ export const ConfirmationDialog = (props) => {
       {...other}>
       <DialogTitle>
         <Stack
-          alignItems="center"
           direction="row"
           spacing={2}
+          sx={{
+            alignItems: "center"
+          }}
         >
           {icon}
           <Typography variant="inherit">

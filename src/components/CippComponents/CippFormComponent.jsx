@@ -53,6 +53,14 @@ const CippRichTextField = dynamic(() => import("./CippRichTextField"), {
   loading: () => null,
 });
 
+// Merges caller-supplied slotProps (arriving via {...other}) with the wrapper's
+// shrink-label default, so a caller's slotProps.input/htmlInput survive and the
+// shrink default stays overridable per call site.
+const withShrinkLabel = (slotProps) => ({
+  ...slotProps,
+  inputLabel: { shrink: true, ...slotProps?.inputLabel },
+});
+
 // Helper function to convert bracket notation to dot notation
 // Improved to correctly handle nested bracket notations
 const convertBracketsToDots = (name) => {
@@ -151,7 +159,9 @@ export const CippFormComponent = (props) => {
           </Typography>
         )}
         {helperText && (
-          <Typography variant="subtitle3" color="text.secondary">
+          <Typography variant="subtitle3" sx={{
+            color: "text.secondary"
+          }}>
             {helperText}
           </Typography>
         )}
@@ -227,9 +237,7 @@ export const CippFormComponent = (props) => {
                       {...other}
                       variant="filled"
                       fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
+                      slotProps={withShrinkLabel(other.slotProps)}
                       label={label}
                       value={field.value || ""}
                       onChange={field.onChange}
@@ -240,15 +248,12 @@ export const CippFormComponent = (props) => {
                     <TextField
                       variant="filled"
                       fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
                       {...other}
                       label={label}
                       value={field.value || ""}
                       onChange={field.onChange}
                       onBlur={field.onBlur}
-                    />
+                      slotProps={withShrinkLabel(other.slotProps)} />
                   )
                 }
               />
@@ -260,7 +265,9 @@ export const CippFormComponent = (props) => {
             </Typography>
           )}
           {helperText && (
-            <Typography variant="subtitle3" color="text.secondary">
+            <Typography variant="subtitle3" sx={{
+              color: "text.secondary"
+            }}>
               {helperText}
             </Typography>
           )}
@@ -298,16 +305,13 @@ export const CippFormComponent = (props) => {
                   />
                   <TextField
                     variant="filled"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                     sx={{ width: "150px" }}
                     {...other}
                     label={label}
                     value={field.value || ""}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
-                  />
+                    slotProps={withShrinkLabel(other.slotProps)} />
                 </Box>
               )}
             />
@@ -318,7 +322,9 @@ export const CippFormComponent = (props) => {
             </Typography>
           )}
           {helperText && (
-            <Typography variant="subtitle3" color="text.secondary">
+            <Typography variant="subtitle3" sx={{
+              color: "text.secondary"
+            }}>
               {helperText}
             </Typography>
           )}
@@ -343,9 +349,7 @@ export const CippFormComponent = (props) => {
                     {...other}
                     variant="filled"
                     fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    slotProps={withShrinkLabel(other.slotProps)}
                     label={label}
                     value={field.value || ""}
                     onChange={field.onChange}
@@ -362,7 +366,9 @@ export const CippFormComponent = (props) => {
             </Typography>
           )}
           {helperText && (
-            <Typography variant="subtitle3" color="text.secondary">
+            <Typography variant="subtitle3" sx={{
+              color: "text.secondary"
+            }}>
               {helperText}
             </Typography>
           )}
@@ -383,9 +389,6 @@ export const CippFormComponent = (props) => {
                     type="password"
                     variant="filled"
                     fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                     {...other}
                     label={label}
                     value={field.value ?? ""}
@@ -393,7 +396,7 @@ export const CippFormComponent = (props) => {
                     onBlur={field.onBlur}
                     name={field.name}
                     inputRef={field.ref}
-                  />
+                    slotProps={withShrinkLabel(other.slotProps)} />
                 </Tooltip>
               )}
             />
@@ -404,7 +407,9 @@ export const CippFormComponent = (props) => {
             </Typography>
           )}
           {helperText && (
-            <Typography variant="subtitle3" color="text.secondary">
+            <Typography variant="subtitle3" sx={{
+              color: "text.secondary"
+            }}>
               {helperText}
             </Typography>
           )}
@@ -418,9 +423,6 @@ export const CippFormComponent = (props) => {
               <TextField
                 type="number"
                 variant="filled"
-                InputLabelProps={{
-                  shrink: true,
-                }}
                 {...other}
                 {...formControl.register(convertedName, {
                   setValueAs: (v) =>
@@ -429,7 +431,7 @@ export const CippFormComponent = (props) => {
                 })}
                 label={label}
                 defaultValue={defaultValue}
-              />
+                slotProps={withShrinkLabel(other.slotProps)} />
             </Tooltip>
           </div>
           {get(errors, convertedName, {})?.message && (
@@ -438,7 +440,9 @@ export const CippFormComponent = (props) => {
             </Typography>
           )}
           {helperText && (
-            <Typography variant="subtitle3" color="text.secondary">
+            <Typography variant="subtitle3" sx={{
+              color: "text.secondary"
+            }}>
               {helperText}
             </Typography>
           )}
@@ -470,7 +474,9 @@ export const CippFormComponent = (props) => {
             </Typography>
           )}
           {helperText && (
-            <Typography variant="subtitle3" color="text.secondary">
+            <Typography variant="subtitle3" sx={{
+              color: "text.secondary"
+            }}>
               {helperText}
             </Typography>
           )}
@@ -500,7 +506,9 @@ export const CippFormComponent = (props) => {
               <Stack>
                 {label}
                 {helperText && (
-                  <Typography variant="subtitle3" color="text.secondary">
+                  <Typography variant="subtitle3" sx={{
+                    color: "text.secondary"
+                  }}>
                     {helperText}
                   </Typography>
                 )}
@@ -746,7 +754,9 @@ export const CippFormComponent = (props) => {
             />
           </div>
           {helperText && (
-            <Typography variant="subtitle3" color="text.secondary">
+            <Typography variant="subtitle3" sx={{
+              color: "text.secondary"
+            }}>
               {helperText}
             </Typography>
           )}
@@ -784,11 +794,15 @@ export const CippFormComponent = (props) => {
                     onClick={() => document.getElementById(`file-input-${convertedName}`).click()}
                   >
                     <CloudUpload sx={{ fontSize: 40, color: "grey.500", mb: 1 }} />
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       {field.value ? field.value.name : "Click to upload file or drag and drop"}
                     </Typography>
                     {field.value && (
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" sx={{
+                        color: "text.secondary"
+                      }}>
                         Size: {(field.value.size / 1024).toFixed(2)} KB
                       </Typography>
                     )}
@@ -817,7 +831,9 @@ export const CippFormComponent = (props) => {
             </Typography>
           )}
           {helperText && (
-            <Typography variant="subtitle3" color="text.secondary">
+            <Typography variant="subtitle3" sx={{
+              color: "text.secondary"
+            }}>
               {helperText}
             </Typography>
           )}

@@ -55,7 +55,9 @@ const Page = () => {
         }}
         simpleColumns={simpleColumns}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <Button onClick={depSyncDialog.handleOpen} startIcon={<Sync />}>
               Sync DEP
             </Button>
@@ -73,7 +75,7 @@ const Page = () => {
         }}
       />
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

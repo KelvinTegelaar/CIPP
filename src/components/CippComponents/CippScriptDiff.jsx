@@ -56,11 +56,15 @@ export const CippScriptDiff = ({ oldScript, newScript, oldLabel = "Old", newLabe
   return (
     <Box>
       <Stack direction="row" spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Comparing:
         </Typography>
         <Chip label={oldLabel} size="small" variant="outlined" />
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           →
         </Typography>
         <Chip label={newLabel} size="small" variant="outlined" color="primary" />

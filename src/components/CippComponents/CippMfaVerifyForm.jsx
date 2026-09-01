@@ -102,7 +102,13 @@ export const MfaVerifyForm = ({ formControl, row }) => {
     <>
       {registered.length > 0 && (
         <Box sx={{ mb: 2 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              display: 'block',
+              mb: 0.5
+            }}>
             Registered MFA methods
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -151,5 +157,5 @@ export const MfaVerifyForm = ({ formControl, row }) => {
         </Alert>
       )}
     </>
-  )
+  );
 }

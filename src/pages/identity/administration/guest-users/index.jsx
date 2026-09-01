@@ -53,7 +53,9 @@ const SummaryCard = ({
   >
     <CardActionArea onClick={onClick} sx={{ height: '100%' }}>
       <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
-        <Stack direction="row" alignItems="center" spacing={1.5}>
+        <Stack direction="row" spacing={1.5} sx={{
+          alignItems: "center"
+        }}>
           <Icon color={color} sx={{ fontSize: 28 }} />
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="h5" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
@@ -61,10 +63,11 @@ const SummaryCard = ({
             </Typography>
             <Typography
               variant="caption"
-              color="text.secondary"
               noWrap
-              sx={{ display: 'block' }}
-            >
+              sx={{
+                color: "text.secondary",
+                display: 'block'
+              }}>
               {title}
             </Typography>
           </Box>

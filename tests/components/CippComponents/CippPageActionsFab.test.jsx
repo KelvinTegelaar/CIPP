@@ -80,7 +80,7 @@ describe("CippPageActionsFab", () => {
       window.getComputedStyle(outside).color
     );
     // a deliberate call to action keeps its branding
-    expect(screen.getByText("Add User").closest("button").className).toMatch(/containedPrimary/);
+    expect(screen.getByText("Add User").closest("button").className).toMatch(/MuiButton-colorPrimary/);
   });
 
   it("uses custom title and aria-label", async () => {

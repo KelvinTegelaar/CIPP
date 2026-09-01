@@ -114,7 +114,9 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
           borderRadius: 1,
         }}
       >
-        <Typography variant="body2" color="text.secondary" gutterBottom>
+        <Typography variant="body2" gutterBottom sx={{
+          color: "text.secondary"
+        }}>
           Rule {rules.length > 1 ? `${index + 1}:` : "Configuration:"}
         </Typography>
         <Typography variant="body1">
@@ -225,7 +227,9 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
                 color={isDynamic ? "primary" : "secondary"}
                 variant="filled"
               />
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 ID: {data.Id}
               </Typography>
             </Box>
@@ -267,13 +271,17 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
               }}
             >
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Group Type
                 </Typography>
                 <Typography variant="body1">{isDynamic ? "Dynamic" : "Static"}</Typography>
               </Box>
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Member Count
                 </Typography>
                 <Typography variant="body1">
@@ -283,7 +291,9 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
               {isDynamic && (
                 <>
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       Rule Logic
                     </Typography>
                     <Typography variant="body1">
@@ -291,7 +301,9 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
                     </Typography>
                   </Box>
                   <Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       Has Rules
                     </Typography>
                     <Typography variant="body1">{hasDynamicRules ? "Yes" : "No"}</Typography>

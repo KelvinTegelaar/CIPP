@@ -37,7 +37,7 @@ const getAppAssignmentSettingsType = (odataType) => {
     return undefined
   }
 
-  return odataType.replace('#microsoft.graph.', '').replace(/App$/i, '')
+  return odataType.replace('#microsoft.graph.', '').replace(/App$/i, '');
 }
 
 const mapOdataToAppType = (odataType) => {
@@ -382,7 +382,9 @@ const Page = () => {
         simpleColumns={simpleColumns}
         queryKey={reportDB.resolvedQueryKey}
         cardButton={
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <CippApplicationDeployDrawer />
             <Button onClick={vppSyncDialog.handleOpen} startIcon={<Sync />}>
               Sync VPP
@@ -403,7 +405,7 @@ const Page = () => {
       />
       {reportDB.syncDialog}
     </>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>

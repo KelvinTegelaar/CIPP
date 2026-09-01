@@ -116,14 +116,18 @@ export const CustomerOrdersTable = (props) => {
                 <TableCell>
                   <div>
                     <Typography
-                      color="inherit"
                       variant="inherit"
+                      sx={{
+                        color: "inherit"
+                      }}
                     >
                       {createdDate}
                     </Typography>
                     <Typography
-                      color="text.secondary"
                       variant="inherit"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       {createdTime}
                     </Typography>
@@ -131,15 +135,19 @@ export const CustomerOrdersTable = (props) => {
                 </TableCell>
                 <TableCell>
                   <Typography
-                    color="inherit"
                     variant="inherit"
+                    sx={{
+                      color: "inherit"
+                    }}
                   >
                     {address}
                   </Typography>
                   {order.courier && (
                     <Typography
-                      color="text.secondary"
                       variant="inherit"
+                      sx={{
+                        color: "text.secondary"
+                      }}
                     >
                       {order.courier}
                     </Typography>
@@ -148,9 +156,11 @@ export const CustomerOrdersTable = (props) => {
                 <TableCell>
                   {status && (
                     <Stack
-                      alignItems="center"
                       direction="row"
                       spacing={1}
+                      sx={{
+                        alignItems: "center"
+                      }}
                     >
                       <Box
                         sx={{

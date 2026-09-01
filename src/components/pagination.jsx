@@ -29,14 +29,13 @@ export const Pagination = (props) => {
     <PaginationRoot {...other}>
       <Box sx={{ flexGrow: 1 }}>
         <Typography
-          color="text.secondary"
+          variant="body2"
           sx={{
+            color: "text.secondary",
+            whiteSpace: "nowrap",
             alignItems: 'center',
             display: 'flex'
-          }}
-          variant="body2"
-          whiteSpace="nowrap"
-        >
+          }}>
           Page
           {' '}
           <Typography
@@ -58,9 +57,11 @@ export const Pagination = (props) => {
         </Typography>
       </Box>
       <Stack
-        alignItems="center"
         direction="row"
         spacing={1}
+        sx={{
+          alignItems: "center"
+        }}
       >
         <IconButton
           disabled={isFirstPage || disabled}

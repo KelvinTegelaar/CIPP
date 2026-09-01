@@ -27,7 +27,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { CheckCircle, Cancel, HelpOutline, Lock, LockOpen, Refresh } from "@mui/icons-material";
+import { CheckCircle, Cancel, HelpOutlined, Lock, LockOpen, Refresh } from "@mui/icons-material";
 import { PlusIcon, TrashIcon, WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import CippButtonCard from "../CippCards/CippButtonCard";
@@ -84,14 +84,20 @@ const computeRecordPlan = (hostname, siteInfo) => {
 const HOSTNAME_REGEX = /^(\*\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
 
 const InfoRow = ({ label, value, copy = true }) => (
-  <Grid container spacing={2} alignItems="center">
+  <Grid container spacing={2} sx={{
+    alignItems: "center"
+  }}>
     <Grid size={{ xs: 12, md: 4 }}>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" sx={{
+        color: "text.secondary"
+      }}>
         {label}
       </Typography>
     </Grid>
     <Grid size={{ xs: 12, md: 8 }}>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{
+        alignItems: "center"
+      }}>
         <Typography variant="body2" sx={{ fontFamily: "monospace", wordBreak: "break-all" }}>
           {value || "—"}
         </Typography>
@@ -118,7 +124,7 @@ const VerifyIcon = ({ state }) => {
   }
   return (
     <Tooltip title="Not checked yet">
-      <HelpOutline color="disabled" fontSize="small" />
+      <HelpOutlined color="disabled" fontSize="small" />
     </Tooltip>
   );
 };
@@ -498,7 +504,9 @@ export const CippAppServiceDomains = () => {
     children: (row) => (
       <Stack spacing={2} sx={{ p: 2 }}>
         <Box>
-          <Typography variant="subtitle2" color="text.secondary">
+          <Typography variant="subtitle2" sx={{
+            color: "text.secondary"
+          }}>
             Hostname
           </Typography>
           <Typography variant="body1" sx={{ fontFamily: "monospace" }}>
@@ -506,7 +514,9 @@ export const CippAppServiceDomains = () => {
           </Typography>
         </Box>
         <Divider />
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{
+          alignItems: "center"
+        }}>
           {row.Secured ? (
             <Lock color="success" fontSize="small" />
           ) : (
@@ -515,7 +525,9 @@ export const CippAppServiceDomains = () => {
           <Typography variant="body2">{sslStateLabel(row.SslState)}</Typography>
         </Stack>
         {row.HostNameType && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Binding type: {row.HostNameType}
           </Typography>
         )}
@@ -523,7 +535,9 @@ export const CippAppServiceDomains = () => {
           <>
             <Divider />
             <Box>
-              <Typography variant="subtitle2" color="text.secondary">
+              <Typography variant="subtitle2" sx={{
+                color: "text.secondary"
+              }}>
                 Certificate thumbprint
               </Typography>
               <Typography variant="body2" sx={{ fontFamily: "monospace", wordBreak: "break-all" }}>
@@ -531,7 +545,9 @@ export const CippAppServiceDomains = () => {
               </Typography>
             </Box>
             {row.CertExpiration && (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Expires: {new Date(row.CertExpiration).toLocaleString()}
               </Typography>
             )}
@@ -571,7 +587,9 @@ export const CippAppServiceDomains = () => {
                 <InfoRow label="Site name" value={siteInfo?.SiteName} copy={false} />
                 <InfoRow label="Default hostname" value={siteInfo?.DefaultHostName} />
                 <InfoRow label="Inbound IP (A record)" value={siteInfo?.InboundIpAddress} />
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   Use the default hostname as the CNAME target for subdomains, and the inbound IP as
                   the A record for apex domains. CIPP no longer uses domain-verification TXT
                   records — remove any leftover <code>asuid.&lt;domain&gt;</code> record.

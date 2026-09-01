@@ -54,7 +54,15 @@ export const CippTableFilterSheet = (props) => {
   } = props;
 
   const renderPresetChips = (items, layer) => (
-    <Stack direction="row" useFlexGap flexWrap="wrap" spacing={1} sx={{ px: 2.25, py: 1 }}>
+    <Stack
+      direction="row"
+      useFlexGap
+      spacing={1}
+      sx={{
+        flexWrap: "wrap",
+        px: 2.25,
+        py: 1
+      }}>
       {items.map((filter) => {
         const key = presetKey(filter);
         const active = activeFilters[layer]?.id === key;
@@ -192,7 +200,15 @@ export const CippTableFilterSheet = (props) => {
           <ListSubheader disableSticky sx={{ bgcolor: "transparent" }}>
             Rows per page
           </ListSubheader>
-          <Stack direction="row" useFlexGap flexWrap="wrap" spacing={1} sx={{ px: 2.25, py: 1 }}>
+          <Stack
+            direction="row"
+            useFlexGap
+            spacing={1}
+            sx={{
+              flexWrap: "wrap",
+              px: 2.25,
+              py: 1
+            }}>
             {pageSizeOptions.map((option) => {
               const active = option === pageSize;
               return (

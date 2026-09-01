@@ -240,13 +240,17 @@ export const CippLibraryPermissionsDialog = ({
           )}
 
           {isSiteRoot && (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               These are the permissions on the site itself. Every library that still inherits gets
               its permissions from here.
             </Typography>
           )}
 
-          <Stack direction="row" justifyContent="flex-end">
+          <Stack direction="row" sx={{
+            justifyContent: "flex-end"
+          }}>
             <Button
               size="small"
               startIcon={<Add />}
@@ -399,7 +403,12 @@ export const CippLibraryPermissionsDialog = ({
               label="Keep the permissions it currently inherits"
               formControl={formHook}
             />
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                mb: 1
+              }}>
               Turn this off to start from an empty permission set. Nobody but site collection admins
               will reach the library until permissions are granted.
             </Typography>
@@ -427,7 +436,7 @@ export const CippLibraryPermissionsDialog = ({
         row={siteRow ?? {}}
       />
     </Dialog>
-  )
+  );
 }
 
 export default CippLibraryPermissionsDialog

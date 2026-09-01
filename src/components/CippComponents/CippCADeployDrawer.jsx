@@ -107,7 +107,9 @@ export const CippCADeployDrawer = ({
         footer={
           <Stack spacing={2}>
             <CippApiResults apiObject={deployPolicy} />
-            <Stack direction="row" justifyContent="flex-start" spacing={2}>
+            <Stack direction="row" spacing={2} sx={{
+              justifyContent: "flex-start"
+            }}>
               <Button
                 variant="contained"
                 color="primary"
@@ -227,5 +229,5 @@ export const CippCADeployDrawer = ({
         </Stack>
       </CippOffCanvas>
     </>
-  )
+  );
 }

@@ -94,9 +94,11 @@ export const ProductVariants = (props) => {
                   <TableRow key={variant.id}>
                     <TableCell>
                       <Stack
-                        alignItems="center"
                         direction="row"
                         spacing={2}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Avatar
                           src={variant.image}
@@ -116,8 +118,10 @@ export const ProductVariants = (props) => {
                             {variant.name}
                           </Typography>
                           <Typography
-                            color="text.secondary"
                             variant="body2"
+                            sx={{
+                              color: "text.secondary"
+                            }}
                           >
                             {price}
                           </Typography>
@@ -132,7 +136,6 @@ export const ProductVariants = (props) => {
                     </TableCell>
                     <TableCell sx={{ width: 135 }}>
                       <Stack
-                        alignItems="center"
                         direction="row"
                         divider={(
                           <Divider
@@ -141,6 +144,9 @@ export const ProductVariants = (props) => {
                           />
                         )}
                         spacing={2}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Button
                           onClick={() => updateDialog.handleOpen(variant.id)}

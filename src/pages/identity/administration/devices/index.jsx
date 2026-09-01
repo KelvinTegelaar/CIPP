@@ -3,7 +3,7 @@ import { Layout as DashboardLayout } from "../../../../layouts/index"; // had to
 import { useSettings } from "../../../../hooks/use-settings";
 import {
   Visibility,
-  CheckCircleOutline,
+  CheckCircleOutlined,
   Block,
   VpnKey,
   DeleteForever,
@@ -36,7 +36,7 @@ const Page = () => {
       confirmText: "Are you sure you want to enable this device?",
       multiPost: false,
       condition: (row) => !row.accountEnabled,
-      icon: <CheckCircleOutline />,
+      icon: <CheckCircleOutlined />,
     },
     {
       label: "Disable Device",

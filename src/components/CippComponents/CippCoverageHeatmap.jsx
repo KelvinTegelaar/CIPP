@@ -19,9 +19,14 @@ export const CippCoverageHeatmap = ({ rows = [], onCellClick }) => {
 
   if (!columns.length || !grid.length) {
     return (
-      <Typography color="text.secondary" variant="body2" sx={{ py: 4, textAlign: "center" }}>
-        No coverage data in this period.
-      </Typography>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          py: 4,
+          textAlign: "center"
+        }}>No coverage data in this period.
+              </Typography>
     );
   }
 
@@ -76,9 +81,12 @@ export const CippCoverageHeatmap = ({ rows = [], onCellClick }) => {
               <Typography
                 key={i}
                 variant="caption"
-                color="text.secondary"
-                sx={{ fontSize: 10, whiteSpace: "nowrap", overflow: "visible" }}
-              >
+                sx={{
+                  color: "text.secondary",
+                  fontSize: 10,
+                  whiteSpace: "nowrap",
+                  overflow: "visible"
+                }}>
                 {i % headerStep === 0 ? fmtTime(ms) : ""}
               </Typography>
             ))}

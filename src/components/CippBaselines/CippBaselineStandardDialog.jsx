@@ -83,10 +83,11 @@ const StandardTagChips = ({ tags, max = 4 }) => {
     <Stack
       direction="row"
       spacing={0.5}
-      flexWrap="wrap"
       useFlexGap
-      sx={{ mt: 1 }}
-    >
+      sx={{
+        flexWrap: "wrap",
+        mt: 1
+      }}>
       {visible.map((tag) => (
         <Chip
           key={tag}
@@ -107,7 +108,7 @@ const StandardTagChips = ({ tags, max = 4 }) => {
         />
       )}
     </Stack>
-  )
+  );
 }
 
 // Browse-and-add picker for Baseline standard definitions. The filters stay
@@ -304,10 +305,12 @@ export const CippBaselineStandardDialog = ({
                 onChange={(event) => setSearch(event.target.value)}
                 autoComplete="off"
                 placeholder="Search by name, description, or benchmark tag..."
-                InputProps={{
-                  startAdornment: (
-                    <Search sx={{ mr: 1, color: 'text.secondary' }} />
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <Search sx={{ mr: 1, color: 'text.secondary' }} />
+                    ),
+                  }
                 }}
               />
             </Grid>
@@ -387,14 +390,19 @@ export const CippBaselineStandardDialog = ({
 
           <Stack
             direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            flexWrap="wrap"
             useFlexGap
             spacing={1.5}
-          >
-            <Stack direction="row" alignItems="center" spacing={1.5}>
-              <Typography variant="body2" color="text.secondary">
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap"
+            }}>
+            <Stack direction="row" spacing={1.5} sx={{
+              alignItems: "center"
+            }}>
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Showing {sorted.length} of {catalog.length} standards
               </Typography>
               {hasActiveFilters && (
@@ -409,11 +417,12 @@ export const CippBaselineStandardDialog = ({
             </Stack>
             <Stack
               direction="row"
-              alignItems="center"
               spacing={1.5}
-              flexWrap="wrap"
               useFlexGap
-            >
+              sx={{
+                alignItems: "center",
+                flexWrap: "wrap"
+              }}>
               <ToggleButtonGroup
                 value={statusFilter}
                 exclusive
@@ -464,10 +473,17 @@ export const CippBaselineStandardDialog = ({
 
           {sorted.length === 0 && (
             <Box sx={{ textAlign: 'center', p: 4 }}>
-              <Typography variant="h6" color="text.secondary">
+              <Typography variant="h6" sx={{
+                color: "text.secondary"
+              }}>
                 No standards match your search and filter criteria
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  mt: 1
+                }}>
                 Try adjusting your search terms or clearing some filters
               </Typography>
             </Box>
@@ -501,18 +517,21 @@ export const CippBaselineStandardDialog = ({
                         </Typography>
                         <Typography
                           variant="caption"
-                          color="text.secondary"
-                          sx={{ display: 'block', mb: 1 }}
-                        >
+                          sx={{
+                            color: "text.secondary",
+                            display: 'block',
+                            mb: 1
+                          }}>
                           {standard.cat}
                         </Typography>
                         <Stack
                           direction="row"
                           spacing={1}
-                          flexWrap="wrap"
                           useFlexGap
-                          sx={{ mb: 1 }}
-                        >
+                          sx={{
+                            flexWrap: "wrap",
+                            mb: 1
+                          }}>
                           <Chip
                             variant="outlined"
                             size="small"
@@ -548,14 +567,13 @@ export const CippBaselineStandardDialog = ({
                         </Stack>
                         <Typography
                           variant="body2"
-                          color="text.secondary"
                           sx={{
+                            color: "text.secondary",
                             display: '-webkit-box',
                             WebkitLineClamp: 3,
                             WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                          }}
-                        >
+                            overflow: 'hidden'
+                          }}>
                           {standard.helpText}
                         </Typography>
                         <StandardTagChips tags={benchmarkTags} />
@@ -565,7 +583,7 @@ export const CippBaselineStandardDialog = ({
                       </CardActions>
                     </Card>
                   </Grid>
-                )
+                );
               })}
             </Grid>
           ) : (
@@ -633,15 +651,14 @@ export const CippBaselineStandardDialog = ({
                         <Box>
                           <Typography
                             variant="body2"
-                            color="text.secondary"
                             sx={{
+                              color: "text.secondary",
                               display: '-webkit-box',
                               WebkitLineClamp: 2,
                               WebkitBoxOrient: 'vertical',
                               overflow: 'hidden',
-                              mb: 1,
-                            }}
-                          >
+                              mb: 1
+                            }}>
                             {standard.helpText}
                           </Typography>
                           <Box
@@ -670,7 +687,9 @@ export const CippBaselineStandardDialog = ({
                             {(standard.recommendedBy ?? []).length > 0 && (
                               <Typography
                                 variant="caption"
-                                color="text.secondary"
+                                sx={{
+                                  color: "text.secondary"
+                                }}
                               >
                                 • Recommended by:{' '}
                                 {standard.recommendedBy.join(', ')}
@@ -679,7 +698,9 @@ export const CippBaselineStandardDialog = ({
                             {standard.secureScoreImpact > 0 && (
                               <Typography
                                 variant="caption"
-                                color="text.secondary"
+                                sx={{
+                                  color: "text.secondary"
+                                }}
                               >
                                 • +{standard.secureScoreImpact} Secure Score pts
                               </Typography>
@@ -693,7 +714,7 @@ export const CippBaselineStandardDialog = ({
                       {addButton(standard, instanceCount)}
                     </ListItemSecondaryAction>
                   </ListItem>
-                )
+                );
               })}
             </List>
           )}
@@ -701,7 +722,9 @@ export const CippBaselineStandardDialog = ({
       </DialogContent>
       <DialogActions>
         <Box sx={{ flexGrow: 1, pl: 2 }}>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
             {selectedCount} standard{selectedCount === 1 ? '' : 's'} in this
             stage
           </Typography>
@@ -711,7 +734,7 @@ export const CippBaselineStandardDialog = ({
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
 export default CippBaselineStandardDialog

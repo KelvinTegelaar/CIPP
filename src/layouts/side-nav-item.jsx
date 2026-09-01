@@ -57,9 +57,11 @@ export const SideNavItem = (props) => {
       <li>
         <Stack
           direction="row"
-          alignItems="center"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
+          sx={{
+            alignItems: "center"
+          }}
         >
           <ButtonBase
             onClick={handleToggle}

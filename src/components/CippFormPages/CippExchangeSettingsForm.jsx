@@ -427,7 +427,9 @@ const CippExchangeSettingsForm = (props) => {
               onClick={() => handleExpand(section.id)}
             >
               {/* Left Side: cardLabelBox, text, subtext */}
-              <Stack direction="row" spacing={2} alignItems="center">
+              <Stack direction="row" spacing={2} sx={{
+                alignItems: "center"
+              }}>
                 {/* cardLabelBox */}
                 <Box
                   sx={{
@@ -454,7 +456,9 @@ const CippExchangeSettingsForm = (props) => {
                 </Box>
               </Stack>
 
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 {section.action && (
                   <Tooltip title={section.action.tooltip} placement="left">
                     <span>

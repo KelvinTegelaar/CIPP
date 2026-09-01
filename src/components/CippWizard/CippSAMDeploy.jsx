@@ -93,7 +93,9 @@ export const CippSAMDeploy = (props) => {
         <Typography variant="h6" id="auth-method-heading">
           Authentication method
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Choose how CIPP authenticates its application registration to Microsoft. This determines
           whether a client secret is created during setup.
         </Typography>
@@ -153,7 +155,9 @@ export const CippSAMDeploy = (props) => {
         </Alert>
       )}
       <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{
+          alignItems: "center"
+        }}>
           <CIPPM365OAuthButton
             onAuthSuccess={handleAuthSuccess}
             onAuthError={handleAuthError}

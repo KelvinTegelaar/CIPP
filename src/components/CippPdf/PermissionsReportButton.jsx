@@ -463,10 +463,17 @@ export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
         onClose={() => setDialogOpen(false)}
         maxWidth="lg"
         fullWidth
-        PaperProps={{ sx: { height: '90vh' } }}
+        slotProps={{
+          paper: { sx: { height: '90vh' } }
+        }}
       >
         <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="h6" component="div">
               Permissions Report Preview
             </Typography>
@@ -507,7 +514,7 @@ export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }
 
 export default PermissionsReportButton

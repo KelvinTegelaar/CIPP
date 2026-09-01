@@ -169,9 +169,10 @@ const PermissionLine = ({
       <ListItemText
         primary={primary}
         secondary={secondary || undefined}
-        primaryTypographyProps={{ variant: "body2", fontWeight: "medium" }}
-        secondaryTypographyProps={{ variant: "caption" }}
-      />
+        slotProps={{
+          primary: { variant: "body2", fontWeight: "medium" },
+          secondary: { variant: "caption" }
+        }} />
     </ListItem>
   );
 };
@@ -200,9 +201,13 @@ const ResourceAccordion = ({ title, resourceId, chipLabel, children, riskSummary
           direction="row"
           spacing={2}
           useFlexGap
-          alignItems="center"
-          sx={{ width: "100%", pr: 1, flexWrap: "wrap", rowGap: 1 }}
-        >
+          sx={{
+            alignItems: "center",
+            width: "100%",
+            pr: 1,
+            flexWrap: "wrap",
+            rowGap: 1
+          }}>
           <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
@@ -400,7 +405,12 @@ const CippEnterpriseAppPermissions = ({ servicePrincipalId, tenantFilter }) => {
         <Typography variant="h6" sx={{ mb: 0.5 }}>
           Application permissions
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 2
+          }}>
           App roles assigned to this enterprise application (app-only), grouped by resource API.
         </Typography>
         {permLoading && <Skeleton variant="rectangular" height={80} />}
@@ -451,7 +461,12 @@ const CippEnterpriseAppPermissions = ({ servicePrincipalId, tenantFilter }) => {
         <Typography variant="h6" sx={{ mb: 0.5 }}>
           Delegated permissions
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 2
+          }}>
           OAuth2 delegated permission grants for this enterprise application, grouped by resource API.
         </Typography>
         {permLoading && <Skeleton variant="rectangular" height={80} />}

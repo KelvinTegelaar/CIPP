@@ -168,7 +168,9 @@ const Page = () => {
                 <Divider />
                 {properties &&
                   properties.map((property, index) => (
-                    <Stack direction="row" spacing={1} key={index} alignItems="center">
+                    <Stack direction="row" spacing={1} key={index} sx={{
+                      alignItems: "center"
+                    }}>
                       <Box sx={{ width: "300px" }}>
                         <CippFormComponent
                           type="textField"

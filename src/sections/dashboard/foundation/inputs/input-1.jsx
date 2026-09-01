@@ -20,12 +20,14 @@ export const Input1 = () => (
     <TextField
       fullWidth
       label="With Prefix"
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            https://
-          </InputAdornment>
-        )
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              https://
+            </InputAdornment>
+          )
+        }
       }}
     />
   </Stack>

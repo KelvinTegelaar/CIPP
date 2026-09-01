@@ -41,7 +41,9 @@ export const CippWizardOptionsList = (props) => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">{title}</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           {subtext}
         </Typography>
       </Stack>
@@ -65,7 +67,9 @@ export const CippWizardOptionsList = (props) => {
               }}
             >
               <CardContent>
-                <Stack alignItems="center" direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} sx={{
+                  alignItems: "center"
+                }}>
                   <Avatar
                     variant="rounded"
                     sx={{
@@ -79,7 +83,9 @@ export const CippWizardOptionsList = (props) => {
                   </Avatar>
                   <Stack spacing={1}>
                     <Typography variant="h6">{option.label}</Typography>
-                    <Typography color="text.secondary">{option.description}</Typography>
+                    <Typography sx={{
+                      color: "text.secondary"
+                    }}>{option.description}</Typography>
                   </Stack>
                 </Stack>
               </CardContent>

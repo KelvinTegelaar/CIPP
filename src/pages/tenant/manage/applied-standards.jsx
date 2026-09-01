@@ -1608,11 +1608,15 @@ const Page = () => {
                 <Grid size={12}>
                   <Stack
                     direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 2, px: 1 }}
-                  >
-                    <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center" spacing={2}>
+                    sx={{
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 2,
+                      px: 1
+                    }}>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{
+                      alignItems: "center"
+                    }}>
                       <Skeleton variant="circular" width={40} height={40} />
                       <Skeleton variant="text" width={200} height={32} />
                     </Stack>
@@ -1624,14 +1628,17 @@ const Page = () => {
                   <Card sx={{ height: '100%' }}>
                     <Stack
                       direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{ p: 3 }}
-                    >
+                      sx={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        p: 3
+                      }}>
                       <Stack
                         direction={{ xs: 'column', sm: 'row' }}
-                        alignItems="center"
                         spacing={3}
+                        sx={{
+                          alignItems: "center"
+                        }}
                       >
                         <Skeleton variant="circular" width={40} height={40} />
                         <Stack>
@@ -1653,11 +1660,14 @@ const Page = () => {
                   <Card sx={{ height: '100%' }}>
                     <Stack
                       direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{ p: 3 }}
-                    >
-                      <Stack direction="row" alignItems="center" spacing={3}>
+                      sx={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        p: 3
+                      }}>
+                      <Stack direction="row" spacing={3} sx={{
+                        alignItems: "center"
+                      }}>
                         <Skeleton variant="circular" width={40} height={40} />
                         <Stack>
                           <Skeleton variant="text" width={150} height={32} />
@@ -1690,7 +1700,14 @@ const Page = () => {
                 mt: 2,
               }}
             >
-              <Stack useFlexGap direction="row" alignItems="center" spacing={1} sx={{ flexWrap: 'wrap' }}>
+              <Stack
+                useFlexGap
+                direction="row"
+                spacing={1}
+                sx={{
+                  alignItems: "center",
+                  flexWrap: 'wrap'
+                }}>
                 <CippAutoComplete
                   options={templateOptions}
                   label="Template"
@@ -2007,17 +2024,21 @@ const Page = () => {
                         <Card sx={{ height: '100%', borderRadius: 2, boxShadow: 2 }}>
                           <Stack
                             direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            sx={{ p: 3 }}
-                          >
+                            sx={{
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              p: 3
+                            }}>
                             <Stack
                               direction="row"
-                              justifyContent="space-between"
-                              alignItems="center"
-                              sx={{ width: '100%' }}
-                            >
-                              <Stack direction="row" alignItems="center" spacing={3}>
+                              sx={{
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: '100%'
+                              }}>
+                              <Stack direction="row" spacing={3} sx={{
+                                alignItems: "center"
+                              }}>
                                 <Box
                                   sx={{
                                     width: 40,
@@ -2268,17 +2289,21 @@ const Page = () => {
                         <Card sx={{ height: '100%', borderRadius: 2, boxShadow: 2 }}>
                           <Stack
                             direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            sx={{ p: 3 }}
-                          >
+                            sx={{
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              p: 3
+                            }}>
                             <Stack
                               direction="row"
-                              justifyContent="space-between"
-                              alignItems="center"
-                              sx={{ width: '100%' }}
-                            >
-                              <Stack direction="row" alignItems="center" spacing={3}>
+                              sx={{
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: '100%'
+                              }}>
+                              <Stack direction="row" spacing={3} sx={{
+                                alignItems: "center"
+                              }}>
                                 <Box
                                   sx={{
                                     width: 40,
@@ -3173,10 +3198,11 @@ const Page = () => {
                           <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
                             <Stack
                               direction="row"
-                              alignItems="flex-start"
                               spacing={2}
-                              sx={{ p: 3 }}
-                            >
+                              sx={{
+                                alignItems: "flex-start",
+                                p: 3
+                              }}>
                               <Box
                                 sx={{
                                   display: 'flex',
@@ -3260,7 +3286,7 @@ const Page = () => {
         />
       </Box>
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

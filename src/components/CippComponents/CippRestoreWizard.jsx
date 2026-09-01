@@ -278,7 +278,9 @@ export const CippRestoreWizard = ({
             {validationResult.warnings?.length > 0 && (
               <Box sx={{ mt: 1 }}>
                 {validationResult.warnings.map((w, i) => (
-                  <Typography key={i} variant="body2" color="warning.main">
+                  <Typography key={i} variant="body2" sx={{
+                    color: "warning.main"
+                  }}>
                     ⚠ {w}
                   </Typography>
                 ))}
@@ -305,7 +307,9 @@ export const CippRestoreWizard = ({
   const StepSelectCategories = () => (
     <Stack spacing={2}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           {selectedCount} of {totalCount} categories selected ({filteredData.length} items)
         </Typography>
         <Stack direction="row" spacing={1}>
@@ -415,15 +419,14 @@ export const CippRestoreWizard = ({
                           {sub && (
                             <Typography
                               variant="caption"
-                              color="text.secondary"
                               title={sub}
                               sx={{
+                                color: "text.secondary",
                                 display: "block",
                                 whiteSpace: "nowrap",
                                 overflow: "hidden",
-                                textOverflow: "ellipsis",
-                              }}
-                            >
+                                textOverflow: "ellipsis"
+                              }}>
                               {sub}
                             </Typography>
                           )}
@@ -455,7 +458,14 @@ export const CippRestoreWizard = ({
           {selectedCount} {selectedCount === 1 ? "category" : "categories"} ({filteredData.length}{" "}
           items) selected for restore:
         </Typography>
-        <Stack useFlexGap direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
+        <Stack
+          useFlexGap
+          direction="row"
+          sx={{
+            flexWrap: "wrap",
+            gap: 1,
+            mt: 1
+          }}>
           {categories
             .filter((c) => selectedCategories[c.key])
             .map((c) => (
@@ -512,7 +522,9 @@ export const CippRestoreWizard = ({
             }}
           >
             <CircularProgress />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Loading backup&hellip;
             </Typography>
           </Box>

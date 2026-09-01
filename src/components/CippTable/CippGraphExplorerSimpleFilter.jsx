@@ -165,7 +165,14 @@ const CippGraphExplorerSimpleFilter = ({
             placeholder="Select a query to run"
           />
         </Box>
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ pb: 0.25 }}>
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{
+            flexWrap: "wrap",
+            pb: 0.25
+          }}>
           <Button
             variant="contained"
             color="primary"

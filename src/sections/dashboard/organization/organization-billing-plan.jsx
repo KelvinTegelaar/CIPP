@@ -64,14 +64,13 @@ export const OrganizationBillingPlan = () => {
       <CardHeader title="Subscription Plan" />
       <Divider />
       <Stack
-        alignItems="center"
         direction="row"
         spacing={3}
         sx={{
+          alignItems: "center",
           px: 3,
           py: 2
-        }}
-      >
+        }}>
         <Typography variant="subtitle2">
           Billing
         </Typography>
@@ -105,18 +104,21 @@ export const OrganizationBillingPlan = () => {
                 control={<Radio />}
                 label={(
                   <Stack
-                    alignItems="center"
                     direction="row"
-                    justifyContent="space-between"
-                    sx={{ width: '100%' }}
-                  >
+                    sx={{
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      width: '100%'
+                    }}>
                     <div>
                       <Typography>
                         {option.label}
                       </Typography>
                       <Typography
-                        color="text.secondary"
                         variant="caption"
+                        sx={{
+                          color: "text.secondary"
+                        }}
                       >
                         {option.description}
                       </Typography>

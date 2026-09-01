@@ -7,11 +7,12 @@ export const OverviewSummary = (props) => {
   return (
     <Card {...other}>
       <Stack
-        alignItems="center"
         direction="row"
         spacing={2}
-        sx={{ p: 2 }}
-      >
+        sx={{
+          alignItems: "center",
+          p: 2
+        }}>
         <Avatar
           sx={{
             backgroundColor: 'primary.alpha12',
@@ -22,8 +23,10 @@ export const OverviewSummary = (props) => {
         </Avatar>
         <div>
           <Typography
-            color="text.secondary"
             variant="overline"
+            sx={{
+              color: "text.secondary"
+            }}
           >
             {label}
           </Typography>

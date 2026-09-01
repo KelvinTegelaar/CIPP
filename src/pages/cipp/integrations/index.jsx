@@ -35,11 +35,12 @@ const Page = () => {
       <CippHead title="Integrations" noTenant={true} />
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
         spacing={4}
-        sx={{ mb: 3 }}
-      >
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3
+        }}>
         <Typography variant="h4">Integrations</Typography>
         <Button
           variant="contained"
@@ -124,13 +125,17 @@ const Page = () => {
                     />
                   )}
                 </Box>
-                <Typography variant="body2" color="textSecondary" paragraph>
+                <Typography variant="body2" color="textSecondary" sx={{
+                  marginBottom: "16px"
+                }}>
                   {extension.description}
                 </Typography>
               </CardContent>
               <div style={{ flexGrow: 1 }} />
               <CardActions>
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
                   {extension.comingSoon ? (
                     <>
                       <Box
@@ -190,7 +195,7 @@ const Page = () => {
         })}
       </Grid>
     </Container>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

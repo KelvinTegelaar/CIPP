@@ -110,7 +110,9 @@ export const CippAddTenantTypeSelection = (props) => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Select Tenant Type</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Choose how you want to add the tenant to your CIPP environment.
         </Typography>
       </Stack>
@@ -137,7 +139,9 @@ export const CippAddTenantTypeSelection = (props) => {
               }}
             >
               <CardContent>
-                <Stack alignItems="center" direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} sx={{
+                  alignItems: "center"
+                }}>
                   <Avatar
                     variant="rounded"
                     sx={{
@@ -151,12 +155,14 @@ export const CippAddTenantTypeSelection = (props) => {
                   </Avatar>
                   <Stack spacing={1}>
                     <Typography variant="h6">{option.label}</Typography>
-                    <Typography color="text.secondary">{option.description}</Typography>
+                    <Typography sx={{
+                      color: "text.secondary"
+                    }}>{option.description}</Typography>
                   </Stack>
                 </Stack>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </Stack>
       <CippWizardStepButtons
@@ -166,7 +172,7 @@ export const CippAddTenantTypeSelection = (props) => {
         formControl={formControl}
       />
     </Stack>
-  )
+  );
 }
 
 export default CippAddTenantTypeSelection

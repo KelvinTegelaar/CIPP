@@ -195,7 +195,9 @@ export const CippUserPhotoManager = ({
           />
 
           {/* Action buttons */}
-          <Stack direction="row" spacing={1} flexGrow={1}>
+          <Stack direction="row" spacing={1} sx={{
+            flexGrow: 1
+          }}>
             {!selectedFile ? (
               <>
                 <Button
@@ -245,12 +247,16 @@ export const CippUserPhotoManager = ({
           {/* Status indicator */}
           <Box sx={{ minWidth: 200 }}>
             {setPhotoMutation.isSuccess && (
-              <Typography variant="caption" color="success.main">
+              <Typography variant="caption" sx={{
+                color: "success.main"
+              }}>
                 ✓ Photo updated
               </Typography>
             )}
             {removePhotoMutation.isSuccess && (
-              <Typography variant="caption" color="success.main">
+              <Typography variant="caption" sx={{
+                color: "success.main"
+              }}>
                 ✓ Photo removed
               </Typography>
             )}
@@ -271,7 +277,13 @@ export const CippUserPhotoManager = ({
             )}
           </Box>
         </Box>
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, ml: 1 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            mt: 0.5,
+            ml: 1
+          }}>
           Supported: JPEG, PNG (Max 4MB)
         </Typography>
       </FormControl>
@@ -281,9 +293,13 @@ export const CippUserPhotoManager = ({
   // Full mode - standalone card view
   return (
     <Box>
-      <Stack spacing={2} alignItems="center">
+      <Stack spacing={2} sx={{
+        alignItems: "center"
+      }}>
         {/* Avatar Preview */}
-        <Box position="relative">
+        <Box sx={{
+          position: "relative"
+        }}>
           <Avatar
             src={previewUrl || currentPhotoUrl}
             sx={{
@@ -402,7 +418,12 @@ export const CippUserPhotoManager = ({
         )}
 
         {/* Helper text */}
-        <Typography variant="caption" color="text.secondary" textAlign="center">
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            textAlign: "center"
+          }}>
           Supported formats: JPEG, PNG (Max size: 4MB)
         </Typography>
       </Stack>
