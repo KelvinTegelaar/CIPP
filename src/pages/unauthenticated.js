@@ -17,6 +17,33 @@ const loginUrl = () =>
     ? LOGIN_BASE
     : `${LOGIN_BASE}&post_login_redirect_uri=${encodeURIComponent(window.location.href)}`
 
+// EasyAuth returns the signed-in identity in one of two shapes depending on the host:
+//   Static Web Apps:      { clientPrincipal: { userDetails, userRoles, ... } }
+//   App Service EasyAuth: [ { user_id, user_claims: [{ typ, val }], ... } ]
+// A signed-in identity has to be recognised from either shape, or an App Service host
+// looks signed-out and the denial screen can't name the account.
+const hasAuthIdentity = (authMe) =>
+  Boolean(authMe?.clientPrincipal) || (Array.isArray(authMe) && authMe.length > 0)
+
+// Pull the display identity from whichever shape came back, mirroring the claim priority
+// the backend uses (Test-CIPPAccess). Falls through to the array shape's user_claims.
+const claimVal = (claims, typ) => claims?.find((c) => c.typ === typ)?.val
+const readAuthIdentity = (authMe) => {
+  if (authMe?.clientPrincipal?.userDetails) return authMe.clientPrincipal.userDetails
+  if (Array.isArray(authMe) && authMe.length > 0) {
+    const claims = authMe[0]?.user_claims
+    return (
+      claimVal(claims, 'preferred_username') ||
+      claimVal(claims, 'upn') ||
+      claimVal(claims, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn') ||
+      claimVal(claims, 'email') ||
+      claimVal(claims, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress') ||
+      authMe[0]?.user_id
+    )
+  }
+  return undefined
+}
+
 // Two different failures wearing one face until now. No identity at all is not a
 // denial — there is nothing to explain and one thing to do. A real identity CIPP
 // won't let through is, and it needs the account named.
@@ -48,8 +75,10 @@ const Page = ({ reason = 'session' }) => {
   }, [orgData.isSuccess, orgData.data?.clientPrincipal?.userRoles])
 
   const canReturnHome =
-    swaStatus.isSuccess && !!swaStatus?.data?.clientPrincipal && userRoles.length > 0
-  const signedInAs = swaStatus?.data?.clientPrincipal?.userDetails
+    swaStatus.isSuccess && hasAuthIdentity(swaStatus?.data) && userRoles.length > 0
+  // Prefer the platform identity; fall back to CIPP's own /api/me, which always carries a
+  // computed userDetails even when the host's /.auth/me shape omits one (e.g. App Service).
+  const signedInAs = readAuthIdentity(swaStatus?.data) ?? orgData?.data?.clientPrincipal?.userDetails
 
   // Server-side re-check of Entra group membership, for roles granted through a PIM-activated
   // group. Invalidating authmecipp makes PrivateRoute refetch /api/me, so a successful
@@ -75,7 +104,7 @@ const Page = ({ reason = 'session' }) => {
   // server explained (e.g. "your IP is not in the allowed range"). Show the explanation
   // instead of the generic sign-in prompt, whatever reason the caller guessed. Without a
   // SWA identity there is nobody to deny, so a stale message must not hide the sign-in.
-  const hasIdentity = Boolean(swaStatus?.data?.clientPrincipal)
+  const hasIdentity = hasAuthIdentity(swaStatus?.data)
   const isSessionEnded = reason === 'session' && !(hasIdentity && orgData?.data?.message)
 
   const sessionProps = {
