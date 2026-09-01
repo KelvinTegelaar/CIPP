@@ -64,6 +64,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       BlockedEndpoints: [],
       IPRange: [],
       Permissions: {},
+      AllowedRolesTemplate: null,
       PermissionRulesInclude: [],
       PermissionRulesExclude: [],
     },
@@ -94,6 +95,10 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   const setDefaults = useWatch({ control: formControl.control, name: "Defaults" });
   const selectedPermissions = useWatch({ control: formControl.control, name: "Permissions" });
   const selectedEntraGroup = useWatch({ control: formControl.control, name: "EntraGroup" });
+  const selectedRolesTemplate = useWatch({
+    control: formControl.control,
+    name: "AllowedRolesTemplate",
+  });
   const ipRanges = useWatch({ control: formControl.control, name: "IPRange" });
   const includeRules = useWatch({ control: formControl.control, name: "PermissionRulesInclude" });
   const excludeRules = useWatch({ control: formControl.control, name: "PermissionRulesExclude" });
@@ -354,6 +359,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         BlockedEndpoints: processedBlockedEndpoints,
         IPRange: processedIPRanges,
         EntraGroup: currentPermissions?.EntraGroup,
+        AllowedRolesTemplate: currentPermissions?.AllowedRolesTemplate || null,
         PermissionRulesInclude: toRuleOptions(storedRules?.Include),
         PermissionRulesExclude: toRuleOptions(storedRules?.Exclude),
       });
@@ -485,6 +491,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         BlockedTenants: processedBlockedTenants,
         BlockedEndpoints: processedBlockedEndpoints,
         IPRange: processedIPRanges,
+        AllowedRolesTemplate: selectedRolesTemplate || null,
       },
     });
   };
@@ -657,6 +664,26 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               multiple={false}
               creatable={false}
               helperText="Assigning an Entra group will automatically assign this role to all users in that group. This does not work with users invited directly to Static Web App."
+            />
+            <CippFormComponent
+              type="autoComplete"
+              name="AllowedRolesTemplate"
+              label="JIT Role Template"
+              placeholder="Select a JIT Role Template to restrict which roles this role can assign, leave blank for all roles."
+              api={{
+                url: "/api/ListJITRoleTemplates",
+                type: "GET",
+                queryKey: "ListJITRoleTemplates",
+                labelField: "templateName",
+                valueField: "GUID",
+                showRefresh: true,
+              }}
+              formControl={formControl}
+              fullWidth={true}
+              sortOptions={true}
+              multiple={false}
+              creatable={false}
+              helperText="Restricts which directory roles members of this role can grant via JIT Admin. Leave blank to allow all roles."
             />
           </Stack>
           {!isBaseRole && (

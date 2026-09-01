@@ -11,10 +11,13 @@ import { CippFormGroupSelector } from "../../../../components/CippComponents/Cip
 import jitAdminRoles from "../../../../data/JitAdminRoles.json";
 import countryList from "../../../../data/countryList.json";
 import { useSettings } from "../../../../hooks/use-settings";
+import { useJitAllowedRoles } from "../../../../hooks/use-jit-allowed-roles";
+import { CippJitRoleTemplateApply } from "../../../../components/CippComponents/CippJitRoleTemplateApply";
 import { useEffect } from "react";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
+  const { filterRoles } = useJitAllowedRoles();
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
@@ -127,13 +130,19 @@ const Page = () => {
               compareValue={true}
             >
               <Grid size={{ xs: 12 }}>
+                <CippJitRoleTemplateApply formControl={formControl} targetField="defaultRoles" />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   fullWidth
                   label="Default Roles"
                   name="defaultRoles"
                   creatable={false}
-                  options={jitAdminRoles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                  options={filterRoles(jitAdminRoles).map((role) => ({
+                    label: role.Name,
+                    value: role.ObjectId,
+                  }))}
                   formControl={formControl}
                   required={true}
                   validators={{

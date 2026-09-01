@@ -92,6 +92,12 @@ export const nativeMenuItems = [
             scope: 'global',
           },
           {
+            title: 'JIT Role Templates',
+            path: '/identity/administration/jit-role-templates',
+            permissions: ['Identity.Role.*'],
+            scope: 'global',
+          },
+          {
             title: 'Vacation Mode',
             path: '/identity/administration/vacation-mode',
             permissions: ['Identity.User.*'],
