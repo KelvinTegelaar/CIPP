@@ -35,7 +35,7 @@ const sharedMailboxPermissionOptions = [
 const sharedMailboxApi = (tenantDomain) => ({
   queryKey: `SharedMailboxes-${tenantDomain}`,
   url: '/api/ListMailboxes',
-  data: { RecipientTypeDetails: 'SharedMailbox' },
+  data: { RecipientTypeDetails: 'SharedMailbox', Minimal: true },
   labelField: (option) => `${option.displayName} (${option.UPN})`,
   valueField: 'UPN',
 })

@@ -154,7 +154,7 @@ const Page = () => {
       type: 'autoComplete',
       api: {
         url: '/api/ListMailboxes',
-        data: { RecipientTypeDetails: 'SharedMailbox' },
+        data: { RecipientTypeDetails: 'SharedMailbox', Minimal: true },
         labelField: (option) => `${option.displayName} (${option.UPN})`,
         valueField: 'UPN',
         queryKey: `SharedMailboxes-${userSettings.currentTenant}`,
@@ -184,7 +184,7 @@ const Page = () => {
       type: 'autoComplete',
       api: {
         url: '/api/ListMailboxes',
-        data: { RecipientTypeDetails: 'SharedMailbox' },
+        data: { RecipientTypeDetails: 'SharedMailbox', Minimal: true },
         labelField: (option) => `${option.displayName} (${option.UPN})`,
         valueField: 'UPN',
         queryKey: `SharedMailboxes-${userSettings.currentTenant}`,
