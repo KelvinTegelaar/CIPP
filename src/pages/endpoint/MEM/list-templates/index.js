@@ -85,16 +85,23 @@ const Page = () => {
       data: { GUID: 'GUID' },
       fields: [
         {
-          type: 'textField',
+          type: 'select',
           name: 'Package',
           label: 'Package Name',
           required: true,
+          creatable: true,
           validators: {
             required: { value: true, message: 'Package name is required' },
           },
+          api: {
+            url: '/api/ListIntuneTemplates?mode=Tag',
+            queryKey: 'ListIntuneTemplates-tag-autcomplete',
+            labelField: 'label',
+            valueField: 'value',
+          },
         },
       ],
-      confirmText: 'Enter the package name to assign to the selected template(s).',
+      confirmText: 'Select an existing package, or type a new package name.',
       multiPost: true,
       icon: <LocalOffer />,
       color: 'info',

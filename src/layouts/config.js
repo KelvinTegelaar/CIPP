@@ -1190,6 +1190,13 @@ export const nativeMenuItems = [
         scope: 'global',
       },
       {
+        title: 'Template Package Manager',
+        path: '/tools/template-packages',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['Tenant.ConditionalAccess.*', 'Endpoint.MEM.*'],
+        scope: 'global',
+      },
+      {
         title: 'Scheduler',
         path: '/cipp/scheduler',
         docsPath: 'tools/scheduler',
