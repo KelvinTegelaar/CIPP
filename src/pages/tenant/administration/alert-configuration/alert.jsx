@@ -79,6 +79,60 @@ const AlertWizard = () => {
           : 'One consolidated ticket per tenant',
     },
   ]
+
+  // The PSA Ticket Priority dropdown is API-backed, so hide it entirely when HaloPSA is off -
+  // ExecExtensionMapping needs the Extension role that an alert editor may not have, and calling
+  // it with the integration disabled just returns an error row. PsaTicketStrategy above has static
+  // options and degrades harmlessly, which is why it is not gated the same way.
+  const haloEnabled = integrationsConfig?.data?.HaloPSA?.Enabled === true
+  // Priorities are fetched here rather than by the autocomplete itself for two reasons: the field
+  // has to react to what Halo returns (a Ticket Type with no SLA has no priorities to offer, and
+  // the field is shown disabled with the reason instead of an empty dropdown), and loading at page
+  // level means the list is ready before the field is revealed rather than on first render of it.
+  // No TicketType param - Get-HaloPriority falls back to the integration's saved ticket type, which
+  // is the one these tickets will use anyway.
+  // Default refetch-on-mount is kept (unlike the integrations config above): nothing invalidates
+  // this query key when the integration's Ticket Type changes, so remounting the page is the only
+  // moment stale priorities can catch up with the integration settings.
+  const haloPriorityRequest = ApiGetCall({
+    url: '/api/ExecExtensionMapping',
+    data: { List: 'HaloPSAFields' },
+    queryKey: 'HaloPriorities-AlertConfig',
+    waiting: haloEnabled,
+  })
+  // Get-HaloPriority answers with explanatory rows instead of priorities when it has nothing real
+  // to offer - a hint row carries priorityid -1, the error row carries no priorityid at all. Those
+  // are messages, not choices, so they never become options.
+  // Normalise before use: PowerShell unrolls a single-element array, so an endpoint returning one
+  // priority (or one hint row) serialises it as a bare object rather than a list.
+  const haloPriorityRows = [].concat(haloPriorityRequest?.data?.Priorities ?? [])
+  const psaPriorityOptions = haloPriorityRows
+    .filter((priority) => Number(priority?.priorityid) > 0)
+    .map((priority) => ({ value: Number(priority.priorityid), label: priority.name }))
+  // Settled with nothing pickable, whether that is Halo's own explanatory row (which comes back
+  // 200 OK) or the request failing outright. Either way there is no choice to offer, so disable
+  // rather than leave an empty dropdown that looks broken.
+  const psaPriorityUnavailable =
+    (haloPriorityRequest.isSuccess || haloPriorityRequest.isError) &&
+    !haloPriorityRequest.isFetching &&
+    psaPriorityOptions.length === 0
+  // Prefer Halo's own explanation ("no SLA attached", "select a Ticket Type first") over a generic
+  // one - it names the thing an admin has to go and fix, and already states what happens to the
+  // tickets. The generic fallback only shows when the request itself failed and no rows came back.
+  const psaPriorityHelperText = psaPriorityUnavailable
+    ? (haloPriorityRows.find((priority) => priority?.name)?.name ??
+      'Could not load HaloPSA priorities, so none can be chosen here. Tickets from this alert will be created without a per-alert priority.')
+    : "Optional. Overrides the HaloPSA Default Priority for tickets raised by this alert. Restricted to the priorities on the integration Ticket Type's SLA. Leave blank to use the integration default."
+  // Stored as a bare id string on the alert row. Seed the form with {value: <number>} so
+  // CippAutoComplete's resolvedDefaultValue can swap in the real priority name once the options
+  // load - it matches on === against a number, so the string form would never resolve. Non-positive
+  // ids are hint rows saved before they were filtered out; treat them as unset.
+  const toPsaPriorityValue = (stored) => {
+    if (stored === undefined || stored === null || stored === '') return null
+    const numeric = Number(stored)
+    if (!Number.isFinite(numeric) || numeric <= 0) return null
+    return { value: numeric, label: String(stored) }
+  }
   const [recurrenceOptions, setRecurrenceOptions] = useState([
     { value: '30m', label: 'Every 30 minutes' },
     { value: '1h', label: 'Every hour' },
@@ -252,6 +306,7 @@ const AlertWizard = () => {
           CustomSubject: alert.RawAlert.CustomSubject || '',
           AlertComment: alert.RawAlert.AlertComment || '',
           PsaTicketStrategy: psaStrategyValue,
+          PsaTicketPriority: toPsaPriorityValue(alert.RawAlert.PsaTicketPriority),
         }
         if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
           try {
@@ -324,6 +379,7 @@ const AlertWizard = () => {
           logbook: foundLogbook,
           AlertComment: alert.RawAlert.AlertComment || '',
           CustomSubject: alert.RawAlert.CustomSubject || '',
+          PsaTicketPriority: toPsaPriorityValue(alert.RawAlert.PsaTicketPriority),
           conditions: [], // Include empty array to register field structure
         }
         // Reset first without spawning rows to avoid rendering empty operator fields
@@ -560,6 +616,7 @@ const AlertWizard = () => {
       AlertComment: values.AlertComment,
       CustomSubject: values.CustomSubject,
       PsaTicketStrategy: values.PsaTicketStrategy?.value ?? values.PsaTicketStrategy ?? '',
+      PsaTicketPriority: values.PsaTicketPriority?.value ?? values.PsaTicketPriority ?? '',
     }
     apiRequest.mutate(
       { url: '/api/AddScriptedAlert', data: postObject },
@@ -902,6 +959,29 @@ const AlertWizard = () => {
                                 options={actionsToTake}
                               />
                             </Grid>
+                            {haloEnabled && (
+                              <CippFormCondition
+                                field="Actions"
+                                compareType="valueEq"
+                                compareValue="generatePSA"
+                                formControl={formControl}
+                              >
+                                <Grid size={12}>
+                                  <CippFormComponent
+                                    type="autoComplete"
+                                    name="PsaTicketPriority"
+                                    label="PSA Ticket Priority"
+                                    formControl={formControl}
+                                    multiple={false}
+                                    creatable={false}
+                                    options={psaPriorityOptions}
+                                    disabled={psaPriorityUnavailable}
+                                    isFetching={haloPriorityRequest.isFetching}
+                                    helperText={psaPriorityHelperText}
+                                  />
+                                </Grid>
+                              </CippFormCondition>
+                            )}
                             <Grid size={12}>
                               <CippFormComponent
                                 type="textField"
@@ -1144,6 +1224,30 @@ const AlertWizard = () => {
                                 />
                               </Grid>
                             </CippFormCondition>
+
+                            {haloEnabled && (
+                              <CippFormCondition
+                                field="postExecution"
+                                compareType="valueEq"
+                                compareValue="PSA"
+                                formControl={formControl}
+                              >
+                                <Grid size={12}>
+                                  <CippFormComponent
+                                    type="autoComplete"
+                                    name="PsaTicketPriority"
+                                    label="PSA Ticket Priority"
+                                    formControl={formControl}
+                                    multiple={false}
+                                    creatable={false}
+                                    options={psaPriorityOptions}
+                                    disabled={psaPriorityUnavailable}
+                                    isFetching={haloPriorityRequest.isFetching}
+                                    helperText={psaPriorityHelperText}
+                                  />
+                                </Grid>
+                              </CippFormCondition>
+                            )}
 
                             <Grid size={12}>
                               <CippFormComponent
