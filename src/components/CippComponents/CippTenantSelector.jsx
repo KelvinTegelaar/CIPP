@@ -71,7 +71,6 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
 
     const favoriteValues = new Set(favorites.map((item) => item.value).filter((value) => value !== "AllTenants"));
     const recentValues = recent.map((item) => item.value).filter((value) => value !== "AllTenants" && !favoriteValues.has(value));
-    const recentSet = new Set(recentValues);
     const byValue = new Map(selectableOptions.map((option) => [option.value, option]));
 
     const favoriteOptions = favorites
@@ -84,8 +83,9 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
       .filter(Boolean)
       .map((option) => ({ ...option, group: "Recent" }));
 
+    // Favorites/Recent are shortcuts, not removals: every tenant stays in "All tenants"
+    // so it can still be found in its alphabetical position.
     const allOptions = selectableOptions
-      .filter((option) => !favoriteValues.has(option.value) && !recentSet.has(option.value))
       .slice()
       .sort((a, b) => a.label.localeCompare(b.label))
       .map((option) => ({ ...option, group: "All tenants" }));
@@ -450,7 +450,9 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
             const isAllTenants = option.value === "AllTenants";
             const favourited = !isAllTenants && isFavorite(option.value);
             return (
-              <Box component="li" key={key ?? `${option.group}-${option.value}`} {...optionProps}>
+              // Group-scoped key: a tenant now appears in both Favorites/Recent and
+              // "All tenants", so MUI's option key alone would collide.
+              <Box component="li" key={`${option.group}-${option.value}`} {...optionProps}>
                 <Box
                   sx={{
                     display: "flex",

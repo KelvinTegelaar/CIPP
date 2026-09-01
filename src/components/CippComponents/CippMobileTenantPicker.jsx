@@ -69,14 +69,14 @@ export const CippMobileTenantPicker = () => {
 
     const favoriteValues = new Set(favorites.map((f) => f.value));
     const recentValues = recent.map((r) => r.value).filter((v) => !favoriteValues.has(v));
-    const recentSet = new Set(recentValues);
     const byValue = new Map(matches.map((t) => [t.defaultDomainName, t]));
 
     return {
       favorites: favorites.map((f) => byValue.get(f.value)).filter(Boolean),
       recent: recentValues.map((v) => byValue.get(v)).filter(Boolean),
+      // Favorites/Recent are shortcuts, not removals: every tenant stays in "All tenants"
+      // so it can still be found in its alphabetical position.
       all: matches
-        .filter((t) => !favoriteValues.has(t.defaultDomainName) && !recentSet.has(t.defaultDomainName))
         .slice()
         .sort((a, b) => (a.displayName ?? "").localeCompare(b.displayName ?? "")),
     };
@@ -111,13 +111,15 @@ export const CippMobileTenantPicker = () => {
     setSearch("");
   };
 
-  const renderTenantRow = (tenant) => {
+  // Group-scoped key: a tenant now appears in both Favorites/Recent and "All tenants",
+  // and every row is a sibling in the same <List>, so the domain alone would collide.
+  const renderTenantRow = (tenant, group) => {
     const value = tenant.defaultDomainName;
     const favorited = isFavorite(value);
     const isCurrent = value === currentTenant;
     return (
       <ListItemButton
-        key={value}
+        key={`${group}-${value}`}
         onClick={() => selectTenant(value, tenant)}
         sx={{ minHeight: 52, gap: 1.5 }}
       >
@@ -254,13 +256,13 @@ export const CippMobileTenantPicker = () => {
             {groups.favorites.length > 0 && (
               <>
                 <ListSubheader disableSticky>Favorites</ListSubheader>
-                {groups.favorites.map(renderTenantRow)}
+                {groups.favorites.map((tenant) => renderTenantRow(tenant, "favorites"))}
               </>
             )}
             {groups.recent.length > 0 && (
               <>
                 <ListSubheader disableSticky>Recent</ListSubheader>
-                {groups.recent.map(renderTenantRow)}
+                {groups.recent.map((tenant) => renderTenantRow(tenant, "recent"))}
               </>
             )}
             <ListSubheader disableSticky>All tenants</ListSubheader>
@@ -275,7 +277,7 @@ export const CippMobileTenantPicker = () => {
                 Loading tenants…
               </Typography>
             )}
-            {groups.all.map(renderTenantRow)}
+            {groups.all.map((tenant) => renderTenantRow(tenant, "all"))}
             {!tenantList.isFetching &&
               search &&
               groups.all.length + groups.favorites.length + groups.recent.length === 0 && (
