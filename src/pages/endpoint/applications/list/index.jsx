@@ -46,6 +46,7 @@ const mapOdataToAppType = (odataType) => {
   if (type.includes('wingetapp')) return 'StoreApp'
   if (type.includes('win32lobapp')) return 'chocolateyApp'
   if (type.includes('officesuiteapp')) return 'officeApp'
+  if (type.includes('microsoftedgeapp')) return 'edgeApp'
   return 'win32ScriptApp'
 }
 

@@ -60,6 +60,7 @@ export const CippApplicationDeployDrawer = ({
     winGetApp: '/api/AddwinGetApp',
     chocolateyApp: '/api/AddChocoApp',
     officeApp: '/api/AddOfficeApp',
+    edgeApp: '/api/AddEdgeApp',
     win32ScriptApp: '/api/AddWin32ScriptApp',
   }
 
@@ -161,6 +162,7 @@ export const CippApplicationDeployDrawer = ({
                 // uncomment after release { label: "WinGet App", value: "winGetApp" },
                 { label: 'Chocolatey App', value: 'chocolateyApp' },
                 { label: 'Microsoft Office', value: 'officeApp' },
+                { label: 'Microsoft Edge', value: 'edgeApp' },
                 { label: 'Custom Application', value: 'win32ScriptApp' },
               ]}
               multiple={false}
@@ -851,6 +853,91 @@ export const CippApplicationDeployDrawer = ({
                 </Alert>
               </Grid>
             </CippFormCondition>
+
+            {/* Assign To Options */}
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="radio"
+                name="AssignTo"
+                options={[
+                  { label: 'Do not assign', value: 'On' },
+                  { label: 'Assign to all users', value: 'allLicensedUsers' },
+                  { label: 'Assign to all devices', value: 'AllDevices' },
+                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Assign to Custom Group', value: 'customGroup' },
+                ]}
+                formControl={formControl}
+                row
+              />
+            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="is"
+              compareValue="customGroup"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+                  name="customGroup"
+                  formControl={formControl}
+                  validators={{ required: 'Please specify custom group names' }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="isNot"
+              compareValue="On"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                  name="excludeGroup"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+          </CippFormCondition>
+
+          {/* Edge App Section */}
+          <CippFormCondition
+            formControl={formControl}
+            field="appType.value"
+            compareType="is"
+            compareValue="edgeApp"
+          >
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Edge Channel"
+                name="edgeChannel"
+                options={[
+                  { value: 'stable', label: 'Stable' },
+                  { value: 'beta', label: 'Beta' },
+                  { value: 'dev', label: 'Dev' },
+                ]}
+                multiple={false}
+                formControl={formControl}
+                validators={{ required: 'Please select an Edge channel' }}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Display Language (optional)"
+                name="displayLanguageLocale"
+                options={languageList.map(({ language, tag }) => ({
+                  value: tag,
+                  label: `${language} (${tag})`,
+                }))}
+                multiple={false}
+                formControl={formControl}
+              />
+            </Grid>
 
             {/* Assign To Options */}
             <Grid size={{ xs: 12 }}>

@@ -26,6 +26,7 @@ const appTypeLabels = {
   StoreApp: 'Store App',
   chocolateyApp: 'Chocolatey App',
   officeApp: 'Microsoft Office',
+  edgeApp: 'Microsoft Edge',
   win32ScriptApp: 'Custom Application',
 }
 
@@ -146,6 +147,7 @@ export const CippAppTemplateDrawer = ({
     const type = formData.appType?.value
     if (type === 'mspApp') return formData.displayName || formData.rmmname?.label || 'MSP App'
     if (type === 'officeApp') return 'Microsoft 365 Apps'
+    if (type === 'edgeApp') return 'Microsoft Edge'
     return formData.applicationName || formData.packagename || 'Unnamed App'
   }
 
@@ -383,6 +385,7 @@ export const CippAppTemplateDrawer = ({
                 { label: 'Store App', value: 'StoreApp' },
                 { label: 'Chocolatey App', value: 'chocolateyApp' },
                 { label: 'Microsoft Office', value: 'officeApp' },
+                { label: 'Microsoft Edge', value: 'edgeApp' },
                 { label: 'Custom Application', value: 'win32ScriptApp' },
               ]}
               multiple={false}
@@ -854,6 +857,43 @@ export const CippAppTemplateDrawer = ({
                 </Alert>
               </Grid>
             </CippFormCondition>
+          </CippFormCondition>
+
+          {/* Edge App Fields */}
+          <CippFormCondition
+            formControl={formControl}
+            field="appType.value"
+            compareType="is"
+            compareValue="edgeApp"
+          >
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Edge Channel"
+                name="edgeChannel"
+                options={[
+                  { value: 'stable', label: 'Stable' },
+                  { value: 'beta', label: 'Beta' },
+                  { value: 'dev', label: 'Dev' },
+                ]}
+                multiple={false}
+                formControl={formControl}
+                validators={{ required: 'Please select an Edge channel' }}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Display Language (optional)"
+                name="displayLanguageLocale"
+                options={languageList.map(({ language, tag }) => ({
+                  value: tag,
+                  label: `${language} (${tag})`,
+                }))}
+                multiple={false}
+                formControl={formControl}
+              />
+            </Grid>
           </CippFormCondition>
 
           {/* Win32 Script App Fields */}
