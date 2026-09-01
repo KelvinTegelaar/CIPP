@@ -636,6 +636,57 @@ export const SAMPLE_PERMISSIONS = {
 }
 
 /**
+ * Exchange mail flow report. Fourteen days of daily disposition counts, shaped as the page hands
+ * them over: totals per event type, direction totals, and the per-day rows behind them.
+ */
+export const SAMPLE_MAIL_FLOW = {
+  days: 14,
+  totals: {
+    GoodMail: 48210,
+    TransportRules: 1340,
+    SpamDetections: 6120,
+    EdgeBlockSpam: 3980,
+    EmailPhish: 412,
+    EmailMalware: 37,
+  },
+  directionTotals: {
+    Inbound: 39280,
+    Outbound: 8940,
+    IntraOrg: 11879,
+  },
+  daily: [
+    { date: '2026-08-04', GoodMail: 3410, TransportRules: 96, SpamDetections: 430, EdgeBlockSpam: 281, EmailPhish: 29, EmailMalware: 3 },
+    { date: '2026-08-05', GoodMail: 3688, TransportRules: 104, SpamDetections: 468, EdgeBlockSpam: 302, EmailPhish: 33, EmailMalware: 2 },
+    { date: '2026-08-06', GoodMail: 3572, TransportRules: 88, SpamDetections: 451, EdgeBlockSpam: 295, EmailPhish: 31, EmailMalware: 4 },
+    { date: '2026-08-07', GoodMail: 3740, TransportRules: 112, SpamDetections: 502, EdgeBlockSpam: 318, EmailPhish: 38, EmailMalware: 1 },
+    { date: '2026-08-08', GoodMail: 3495, TransportRules: 97, SpamDetections: 476, EdgeBlockSpam: 304, EmailPhish: 35, EmailMalware: 3 },
+    { date: '2026-08-09', GoodMail: 1180, TransportRules: 21, SpamDetections: 268, EdgeBlockSpam: 174, EmailPhish: 12, EmailMalware: 0 },
+    { date: '2026-08-10', GoodMail: 1042, TransportRules: 18, SpamDetections: 251, EdgeBlockSpam: 166, EmailPhish: 10, EmailMalware: 1 },
+    { date: '2026-08-11', GoodMail: 3820, TransportRules: 118, SpamDetections: 529, EdgeBlockSpam: 341, EmailPhish: 41, EmailMalware: 5 },
+    { date: '2026-08-12', GoodMail: 3903, TransportRules: 121, SpamDetections: 544, EdgeBlockSpam: 352, EmailPhish: 44, EmailMalware: 4 },
+    { date: '2026-08-13', GoodMail: 3766, TransportRules: 109, SpamDetections: 511, EdgeBlockSpam: 329, EmailPhish: 36, EmailMalware: 2 },
+    { date: '2026-08-14', GoodMail: 3841, TransportRules: 114, SpamDetections: 498, EdgeBlockSpam: 321, EmailPhish: 34, EmailMalware: 3 },
+    { date: '2026-08-15', GoodMail: 3612, TransportRules: 102, SpamDetections: 470, EdgeBlockSpam: 303, EmailPhish: 30, EmailMalware: 4 },
+    { date: '2026-08-16', GoodMail: 1214, TransportRules: 22, SpamDetections: 264, EdgeBlockSpam: 172, EmailPhish: 20, EmailMalware: 3 },
+    { date: '2026-08-17', GoodMail: 1127, TransportRules: 18, SpamDetections: 258, EdgeBlockSpam: 322, EmailPhish: 19, EmailMalware: 2 },
+  ],
+  topSenders: [
+    { Name: 'notifications@sample-crm.example.com', Count: 4820 },
+    { Name: 'billing@example.com', Count: 3115 },
+    { Name: 'scanner-3f@example.com', Count: 2064 },
+    { Name: 'sample.user@example.com', Count: 1893 },
+    { Name: 'helpdesk@example.com', Count: 1477 },
+  ],
+  topSpamRecipients: [
+    { Name: 'info@example.com', Count: 1840 },
+    { Name: 'sales@example.com', Count: 1226 },
+    { Name: 'sample.user@example.com', Count: 744 },
+    { Name: 'accounts@example.com', Count: 517 },
+    { Name: 'careers@example.com', Count: 388 },
+  ],
+}
+
+/**
  * Which sample set feeds which report, keyed by the ids in REPORT_COVER_PRESETS so the preview's
  * report picker and its data stay in step.
  */
@@ -648,4 +699,5 @@ export const SAMPLE_DATA_BY_REPORT = {
   bec: SAMPLE_BEC,
   sharing: { sharingData: SAMPLE_SHARING },
   permissions: { permissionsData: SAMPLE_PERMISSIONS },
+  mailFlow: { mailFlowData: SAMPLE_MAIL_FLOW },
 }

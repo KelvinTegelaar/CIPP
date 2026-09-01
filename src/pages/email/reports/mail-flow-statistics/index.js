@@ -25,6 +25,7 @@ import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
+import { MailFlowReportButton } from '../../../../components/CippPdf/MailFlowReportButton'
 
 const dayOptions = [7, 14, 30, 90]
 
@@ -83,7 +84,7 @@ const Page = () => {
     [flowReport.data]
   )
 
-  const { chartLabels, chartSeries, totals, directionSeries } = useMemo(() => {
+  const { chartLabels, chartSeries, dailyTotals, totals, directionSeries } = useMemo(() => {
     const dates = [...new Set(flowRows.map((r) => r.Date))].sort()
     const byDateAndType = {}
     const typeTotals = {}
@@ -107,6 +108,11 @@ const Page = () => {
         name: t.label,
         data: dates.map((d) => byDateAndType[`${d}|${t.key}`] ?? 0),
       })),
+      dailyTotals: dates.map((d) =>
+        eventTypes.reduce((row, t) => ({ ...row, [t.key]: byDateAndType[`${d}|${t.key}`] ?? 0 }), {
+          date: d,
+        })
+      ),
       totals: typeTotals,
       directionSeries: dirTotals,
     }
@@ -116,6 +122,25 @@ const Page = () => {
   const goodMailPct = totalMail
     ? Math.round(((totals.GoodMail ?? 0) / totalMail) * 1000) / 10
     : 0
+
+  const mailFlowData = useMemo(
+    () => ({
+      days,
+      totals,
+      directionTotals: directionSeries,
+      daily: dailyTotals,
+      topSenders: topSenders.data?.Results ?? [],
+      topSpamRecipients: topSpamRecipients.data?.Results ?? [],
+    }),
+    [
+      days,
+      totals,
+      directionSeries,
+      dailyTotals,
+      topSenders.data,
+      topSpamRecipients.data,
+    ]
+  )
 
   const infoBarData = [
     {
@@ -199,17 +224,30 @@ const Page = () => {
         justifyContent="space-between"
       >
         <CippInfoBar data={infoBarData} isFetching={flowReport.isFetching} />
-        <ButtonGroup size="small">
-          {dayOptions.map((d) => (
-            <Button
-              key={d}
-              variant={days === d ? 'contained' : 'outlined'}
-              onClick={() => setDays(d)}
-            >
-              {d}d
-            </Button>
-          ))}
-        </ButtonGroup>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          useFlexGap
+          sx={{ flexWrap: 'wrap' }}
+        >
+          <ButtonGroup size="small">
+            {dayOptions.map((d) => (
+              <Button
+                key={d}
+                variant={days === d ? 'contained' : 'outlined'}
+                onClick={() => setDays(d)}
+              >
+                {d}d
+              </Button>
+            ))}
+          </ButtonGroup>
+          <MailFlowReportButton
+            mailFlowData={mailFlowData}
+            tenantName={tenantFilter}
+            disabled={flowReport.isFetching || totalMail === 0}
+          />
+        </Stack>
       </Stack>
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, lg: 8 }}>

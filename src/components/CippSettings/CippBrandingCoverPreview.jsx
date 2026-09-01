@@ -4,6 +4,7 @@ import { createReportStyles } from "../CippPdf/reportPdfStyles";
 import { applyFooterText, applyWatermarkText, createReportTheme } from "../CippPdf/reportTheme";
 import {
   SAMPLE_BEC,
+  SAMPLE_MAIL_FLOW,
   SAMPLE_PERMISSIONS,
   SAMPLE_SHARING,
   SAMPLE_TENANT_NAME,
@@ -20,6 +21,8 @@ const SAMPLE_ANALYSIS_DATE = new Date(SAMPLE_BEC.becData.ExtractedAt).toLocaleSt
   hour: "2-digit",
   minute: "2-digit",
 });
+
+const SAMPLE_MAIL_FLOW_TOTAL = Object.values(SAMPLE_MAIL_FLOW.totals).reduce((a, b) => a + b, 0);
 
 /**
  * Every report CIPP can produce, in the order they are offered everywhere: the built-in reports
@@ -101,6 +104,21 @@ export const REPORT_COVER_PRESETS = [
       "Who is structurally allowed into SharePoint sites and document libraries, and where that access reaches further than intended.",
     metaPrimary: SAMPLE_TENANT_NAME,
     metaSecondary: `${SAMPLE_PERMISSIONS.summary.sitesScanned} sites · ${SAMPLE_PERMISSIONS.summary.librariesScanned} libraries · ${SAMPLE_PERMISSIONS.summary.totalAssignments} permission assignments`,
+    footer: "Confidential — For Internal Use Only",
+  },
+  {
+    id: "mailFlow",
+    label: "Mail Flow Report",
+    reportName: "Mail Flow Report",
+    coverLabel: "Email Traffic Review",
+    title: "Mail Flow",
+    accent: "Report",
+    subtitle:
+      "Where email came from, how much of it was delivered, and what was stopped before it reached a mailbox.",
+    metaPrimary: SAMPLE_TENANT_NAME,
+    metaSecondary: `${SAMPLE_MAIL_FLOW_TOTAL.toLocaleString()} messages · ${SAMPLE_MAIL_FLOW.days} days · ${(
+      SAMPLE_MAIL_FLOW.totals.EmailPhish + SAMPLE_MAIL_FLOW.totals.EmailMalware
+    ).toLocaleString()} threats caught`,
     footer: "Confidential — For Internal Use Only",
   },
   {
