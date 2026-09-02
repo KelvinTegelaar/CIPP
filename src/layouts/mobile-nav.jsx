@@ -164,14 +164,15 @@ export const MobileNav = (props) => {
         >
           <Logo />
         </Box>
-        <OutlinedInput
-          fullWidth
-          size="small"
-          type="search"
-          placeholder="Search navigation…"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          inputProps={{ enterKeyHint: "search", "aria-label": "Search navigation" }}
+          <OutlinedInput
+            fullWidth
+            size="small"
+            type="search"
+            placeholder="Search navigation…"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            aria-label="Search navigation"
+            slotProps={{ input: { enterKeyHint: "search" } }}
           startAdornment={
             <InputAdornment position="start">
               <Search fontSize="small" />

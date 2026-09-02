@@ -211,7 +211,7 @@ export const CippMobileTenantPicker = () => {
             placeholder={`Search ${tenants.length ? tenants.length - 1 : ""} tenants…`}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            inputProps={{ enterKeyHint: "search", "aria-label": "Search tenants" }}
+            slotProps={{ input: { enterKeyHint: "search", "aria-label": "Search tenants" } }}
             startAdornment={
               <InputAdornment position="start">
                 <Search fontSize="small" />

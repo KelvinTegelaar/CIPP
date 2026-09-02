@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
+import axios from 'axios'
 import { ApiGetCall } from '../../api/ApiCall'
+import { buildVersionedHeaders } from '../../utils/cippVersion'
+import { impersonationCacheParams } from '../../utils/impersonation'
 import { DEFAULT_COVER_STOCK } from './resolveCoverImage'
 
 /**
@@ -35,6 +38,13 @@ export const DEFAULT_BRANDING = Object.freeze({
 export const BRANDING_QUERY_KEY = 'BrandingSettings'
 export const BRANDING_GALLERY_QUERY_KEY = 'BrandingSettings-gallery'
 
+// Matches ApiGetCall's default, so the hook and the on-demand read agree on one cache entry.
+const BRANDING_STALE_TIME = 300000
+
+// The endpoint answers 200 with no body when branding cannot be read.
+const normalizeBranding = (data) =>
+  !data || typeof data !== 'object' || Array.isArray(data) ? DEFAULT_BRANDING : data
+
 /**
  * Read the report branding. Replaces `useSettings().customBranding`, which carried inline images
  * on every page load and kept report and settings state in the same mutable blob.
@@ -48,12 +58,33 @@ export const useBrandingSettings = ({ waiting = true, includeGallery = false } =
     waiting,
   })
 
-  return useMemo(() => {
-    const data = branding.data
-    // The endpoint answers 200 with no body when branding cannot be read.
-    if (!data || typeof data !== 'object' || Array.isArray(data)) return DEFAULT_BRANDING
-    return data
-  }, [branding.data])
+  return useMemo(() => normalizeBranding(branding.data), [branding.data])
+}
+
+/**
+ * Read the branding at the moment an export runs, for the table toolbar's PDF buttons: those sit on
+ * every grid, so holding the hook there fetched branding - logo and cover images inline - on every
+ * table mount. Shares the hook's cache entry, so a page that already read branding costs no request.
+ */
+export const fetchBrandingSettings = async (queryClient) => {
+  try {
+    const data = await queryClient.fetchQuery({
+      queryKey: [BRANDING_QUERY_KEY],
+      queryFn: async () => {
+        const response = await axios.get('/api/ListBrandingSettings', {
+          params: impersonationCacheParams(),
+          headers: await buildVersionedHeaders(),
+          cippQueryKey: BRANDING_QUERY_KEY,
+        })
+        return response.data
+      },
+      staleTime: BRANDING_STALE_TIME,
+    })
+    return normalizeBranding(data)
+  } catch {
+    // An export in CIPP's own colours beats no export at all.
+    return DEFAULT_BRANDING
+  }
 }
 
 export default useBrandingSettings

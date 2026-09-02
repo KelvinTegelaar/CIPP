@@ -1,8 +1,9 @@
 import { IconButton, Tooltip } from '@mui/material'
 import { PictureAsPdf } from '@mui/icons-material'
+import { useQueryClient } from '@tanstack/react-query'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
 import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
-import { useBrandingSettings } from './CippPdf/useBrandingSettings'
+import { fetchBrandingSettings } from './CippPdf/useBrandingSettings'
 
 // Flatten nested objects so deeply nested properties export properly.
 // This function only restructures data without formatting - formatting happens later in one pass.
@@ -158,20 +159,20 @@ export const exportRowsToPdf = async ({
 
 export const PDFExportButton = (props) => {
   const { rows = [], columns = [], reportName, columnVisibility = {}, ...other } = props
-  const brandingSettings = useBrandingSettings()
+  const queryClient = useQueryClient()
 
   return (
     <Tooltip title="Export to PDF">
       <span>
         <IconButton
           disabled={rows.length === 0}
-          onClick={() =>
+          onClick={async () =>
             exportRowsToPdf({
               rows,
               columns,
               reportName,
               columnVisibility,
-              brandingSettings,
+              brandingSettings: await fetchBrandingSettings(queryClient),
             })
           }
           {...other}

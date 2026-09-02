@@ -69,7 +69,7 @@ export const QueryField = (props) => {
       </SvgIcon>
       <InputBase
         disabled={disabled}
-        inputProps={{ ref: inputRef }}
+        slotProps={{ input: { ref: inputRef } }}
         onBlur={handleBlur}
         onChange={handleChange}
         onFocus={handleFocus}

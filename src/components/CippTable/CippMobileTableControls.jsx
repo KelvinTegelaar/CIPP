@@ -125,7 +125,7 @@ export const CippMobileTableControls = (props) => {
               placeholder="Search…"
               value={searchValue}
               onChange={onSearchChange}
-              inputProps={{ enterKeyHint: "search", "aria-label": "Search" }}
+              slotProps={{ input: { enterKeyHint: "search", "aria-label": "Search" } }}
             />
           </ModernSearchContainer>
         </Box>

@@ -20,6 +20,18 @@ import React from 'react'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippJsonView from '../CippFormPages/CippJSONView'
 
+// MUI v9 TextField no longer accepts top-level inputProps/InputProps — they end up on a DOM
+// node and React warns. Flatten any legacy nested keys into the correct slot objects.
+const flattenTextFieldSlot = (slot) => {
+  if (!slot || typeof slot !== 'object') return slot
+  const { inputProps, InputProps, ...rest } = slot
+  return {
+    ...rest,
+    ...(inputProps ?? {}),
+    ...(InputProps ?? {}),
+  }
+}
+
 const MemoTextField = React.memo(function MemoTextField({
   params,
   label,
@@ -34,34 +46,52 @@ const MemoTextField = React.memo(function MemoTextField({
   // Autocomplete hands the input wiring (combobox role, refs, keyboard handlers,
   // popup/clear adornments) to renderInput via params.slotProps — merge our styling
   // into those slots instead of replacing them, or the field stops being a combobox.
-  const { slotProps: acSlotProps = {}, ...otherParams } = params
+  const {
+    slotProps: acSlotProps = {},
+    inputProps: legacyInputProps,
+    InputProps: legacyInputPropsCapital,
+    id,
+    disabled,
+    fullWidth,
+    size,
+  } = params
+
+  const slotProps = {
+    htmlInput: flattenTextFieldSlot({
+      ...acSlotProps.htmlInput,
+      ...legacyInputProps,
+    }),
+    input: flattenTextFieldSlot({
+      ...acSlotProps.input,
+      ...legacyInputPropsCapital,
+      sx: {
+        transition: 'none',
+        ...(variant === 'outlined'
+          ? { '& .MuiOutlinedInput-notchedOutline': { transition: 'none' } }
+          : {}),
+        ...acSlotProps.input?.sx,
+      },
+    }),
+    inputLabel: {
+      ...acSlotProps.inputLabel,
+      shrink: true,
+      sx: { transition: 'none' },
+      required,
+    },
+  }
 
   return (
     <Tooltip title={label || ''} placement="top" arrow>
       <TextField
-        {...otherParams}
+        id={id}
+        disabled={disabled}
+        fullWidth={fullWidth}
+        size={size}
         label={label}
         placeholder={placeholder}
         variant={variant}
         required={htmlRequired}
-        slotProps={{
-          ...acSlotProps,
-          inputLabel: {
-            ...acSlotProps.inputLabel,
-            shrink: true,
-            sx: { transition: 'none' },
-            required,
-          },
-          input: {
-            ...acSlotProps.input,
-            sx: {
-              transition: 'none',
-              '& .MuiOutlinedInput-notchedOutline': {
-                transition: 'none',
-              },
-            },
-          },
-        }}
+        slotProps={slotProps}
       />
     </Tooltip>
   )
@@ -93,8 +123,10 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     renderGroup,
     customAction,
     handleHomeEndKeys = false,
-    // TextField-bound, MUI Autocomplete would pass it through to its root div
+    // TextField-bound — Autocomplete forwards unknown props to its root element.
     variant,
+    inputProps: _legacyInputProps,
+    InputProps: _legacyInputPropsCapital,
     ...other
   } = props
 
@@ -497,7 +529,6 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         disableClearable={disableClearable}
         multiple={multiple}
         fullWidth
-        placeholder={placeholder}
         filterOptions={(options, params) => {
           // Server-side search already returned only matches; client-side substring filtering would
           // wrongly hide ANR results (a display-name match whose address lacks the typed text).
@@ -651,7 +682,12 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           // Handle custom action button inside the TextField.
           // v9 Autocomplete delivers the input slot via params.slotProps.input
           // (ref, popup/clear end-adornment) instead of params.InputProps.
-          const { slotProps: acSlotProps = {}, ...otherParams } = params
+          const {
+            slotProps: acSlotProps = {},
+            inputProps: legacyInputProps,
+            InputProps: legacyInputPropsCapital,
+            ...otherParams
+          } = params
           const InputProps = acSlotProps.input
           const baseInputProps =
             customAction && customAction.position === 'inside'
@@ -738,6 +774,8 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
               <MemoTextField
                 params={{
                   ...otherParams,
+                  ...(legacyInputProps ? { inputProps: legacyInputProps } : {}),
+                  ...(legacyInputPropsCapital ? { InputProps: legacyInputPropsCapital } : {}),
                   slotProps: { ...acSlotProps, input: modifiedInputProps },
                 }}
                 label={label}

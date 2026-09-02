@@ -89,6 +89,7 @@ export {
 export { useReportVariables } from './useReportVariables'
 export {
   useBrandingSettings,
+  fetchBrandingSettings,
   BRANDING_QUERY_KEY,
   BRANDING_GALLERY_QUERY_KEY,
   DEFAULT_BRANDING,
