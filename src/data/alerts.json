@@ -210,6 +210,16 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "OneDriveLongPaths",
+    "label": "Alert on OneDrive accounts with over-long paths",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Minimum paths over inferred 260-character limit (default: 1)",
+    "inputName": "OneDriveLongPaths",
+    "recommendedRunInterval": "7d",
+    "description": "Uses the OneDriveLongPaths Report DB cache (run ExecCIPPDBCache OneDriveLongPaths first). Signals users who may hit OneDrive sync or Office path errors. Alert and cache store owner UPN and counts only — never file or folder names."
+  },
+  {
     "name": "UnlicensedOneDriveData",
     "label": "Alert on leftover unlicensed OneDrive data nearing deletion",
     "recommendedRunInterval": "7d",

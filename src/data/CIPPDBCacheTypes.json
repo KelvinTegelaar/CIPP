@@ -270,6 +270,11 @@
     "description": "OneDrive usage statistics"
   },
   {
+    "type": "OneDriveLongPaths",
+    "friendlyName": "OneDrive Long Paths",
+    "description": "Per-user counts of OneDrive paths that may exceed Windows 260-character sync limits or the cloud 400-character ceiling (no file or folder names stored)"
+  },
+  {
     "type": "SharePointSiteListing",
     "friendlyName": "SharePoint Site Listing",
     "description": "SharePoint site listing details used for usage reporting"
