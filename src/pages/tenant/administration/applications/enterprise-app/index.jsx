@@ -11,7 +11,7 @@ import tabOptions from './tabOptions'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { Box, Stack } from '@mui/system'
 import { Grid } from '@mui/system'
-import { Typography, Card, CardHeader, Divider, Button, SvgIcon } from '@mui/material'
+import { Typography, Card, CardHeader, Divider, Button, SvgIcon, Alert } from '@mui/material'
 import { CippBannerListCard } from '../../../../../components/CippCards/CippBannerListCard'
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
 import { useEffect, useMemo, useState, useRef } from 'react'
@@ -118,9 +118,13 @@ const Page = () => {
   const ownersData = bulkData.find((item) => item.id === 'owners')
   const owners = ownersData?.body?.value ?? []
 
-  const title = !spRequest.isSuccess
-    ? 'Loading...'
-    : spData?.displayName || spData?.appId || spObjectId || 'Enterprise application'
+  // Without a spId nothing is ever fetched, so falling back to the loading label here
+  // would leave it stuck forever.
+  const title = !spObjectId
+    ? 'No Enterprise Application Selected'
+    : !spRequest.isSuccess
+      ? 'Loading...'
+      : spData?.displayName || spData?.appId || spObjectId || 'Enterprise application'
 
   const data = spData
 
@@ -301,9 +305,15 @@ const Page = () => {
       subtitle={subtitle}
       actions={spData ? appActions : []}
       actionsData={actionsData}
-      isFetching={spRequest.isLoading}
+      isFetching={!!spObjectId && spRequest.isLoading}
     >
-      {spRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
+      {!spObjectId && (
+        <Alert severity="info" sx={{ m: 2 }}>
+          No enterprise application selected. Open this page from the Enterprise Apps list, or
+          pick one from the switcher above.
+        </Alert>
+      )}
+      {spObjectId && spRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
       {spRequest.isSuccess && !spData && (
         <Box sx={{ flexGrow: 1, py: 4 }}>
           <Typography sx={{

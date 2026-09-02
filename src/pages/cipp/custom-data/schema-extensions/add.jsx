@@ -37,6 +37,9 @@ const Page = () => {
     defaultValues: {
       properties: [],
       status: "InDevelopment",
+      // Without a default, targetTypes.validate ran against undefined the moment the DOM-leak
+      // stopped swallowing the `validate` prop below.
+      targetTypes: [],
     },
   });
 

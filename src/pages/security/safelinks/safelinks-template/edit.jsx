@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
@@ -28,7 +28,7 @@ const Page = () => {
   const templateData = ApiGetCall({
     url: `/api/ListSafeLinksPolicyTemplateDetails?ID=${ID}`,
     queryKey: `SafeLinksTemplate-${ID}`,
-    enabled: !!ID,
+    waiting: !!ID,
   });
 
   // Populate forms with existing data when available
@@ -60,16 +60,25 @@ const Page = () => {
         queryKey={`SafeLinksTemplate-${ID}`}
         isLoading={templateData.isFetching}
         allowResubmit={true}
+        hideSubmit={!ID}
       >
-        <Box sx={{ my: 2 }}>
-          <Box sx={{ mb: 4 }}>
-            <SafeLinksForm
-              formControl={formControl}
-              PolicyName={watchPolicyName}
-              formType="template" 
-            />
+        {!ID && (
+          <Alert severity="info" sx={{ m: 2 }}>
+            No template selected. Open this page from the Safe Links Templates list to edit a
+            template.
+          </Alert>
+        )}
+        {ID && (
+          <Box sx={{ my: 2 }}>
+            <Box sx={{ mb: 4 }}>
+              <SafeLinksForm
+                formControl={formControl}
+                PolicyName={watchPolicyName}
+                formType="template"
+              />
+            </Box>
           </Box>
-        </Box>
+        )}
       </CippFormPage>
     </>
   );

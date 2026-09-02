@@ -6,6 +6,7 @@ import { ApiGetCall } from "../../../../api/ApiCall";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { ApiGetCallWithPagination } from "../../../../api/ApiCall";
+import { Alert } from "@mui/material";
 
 const Page = () => {
   const router = useRouter();
@@ -28,6 +29,10 @@ const Page = () => {
       const template = availableTemplates?.data?.pages?.[0]?.Results.find(
         (template) => template.TemplateId === templateId
       );
+      // No templateId, or it no longer matches a template: nothing to populate.
+      if (!template) {
+        return;
+      }
       var newRoleMappings = [];
       template.RoleMappings.map((roleMapping) =>
         newRoleMappings.push({
@@ -63,8 +68,17 @@ const Page = () => {
           };
           return shippedValues;
         }}
+        hideSubmit={!templateId}
       >
-        <CippAddEditGdapRoleTemplate formControl={formControl} availableRoles={availableRoles} />
+        {!templateId && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            No template selected. Open this page from the GDAP Role Templates list to edit a
+            template.
+          </Alert>
+        )}
+        {templateId && (
+          <CippAddEditGdapRoleTemplate formControl={formControl} availableRoles={availableRoles} />
+        )}
       </CippFormPage>
     </>
   );

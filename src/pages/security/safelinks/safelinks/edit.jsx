@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
@@ -29,7 +29,7 @@ const Page = () => {
   const policyData = ApiGetCall({
     url: `/api/ListSafeLinksPolicyDetails?PolicyName=${PolicyName}&RuleName=${RuleName}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `SafeLinksPolicy-${PolicyName}`,
-    enabled: !!PolicyName,
+    waiting: !!PolicyName,
   });
 
   // Populate forms with existing data when available
@@ -68,16 +68,24 @@ const Page = () => {
         queryKey={`SafeLinks-${userSettingsDefaults.currentTenant}-${PolicyName}`}
         isLoading={policyData.isFetching}
         allowResubmit={true}
+        hideSubmit={!PolicyName}
       >
-        <Box sx={{ my: 2 }}>
-          <Box sx={{ mb: 4 }}>
-            <SafeLinksForm
-              formControl={formControl}
-              PolicyName={watchPolicyName} 
-              formType="edit" 
-            />
+        {!PolicyName && (
+          <Alert severity="info" sx={{ m: 2 }}>
+            No policy selected. Open this page from the Safe Links Overview list to edit a policy.
+          </Alert>
+        )}
+        {PolicyName && (
+          <Box sx={{ my: 2 }}>
+            <Box sx={{ mb: 4 }}>
+              <SafeLinksForm
+                formControl={formControl}
+                PolicyName={watchPolicyName}
+                formType="edit"
+              />
+            </Box>
           </Box>
-        </Box>
+        )}
       </CippFormPage>
     </>
   );

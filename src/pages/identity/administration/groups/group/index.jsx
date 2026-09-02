@@ -24,7 +24,7 @@ import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
 import { Grid } from "@mui/system";
-import { SvgIcon, Typography, Card, CardHeader, Divider } from "@mui/material";
+import { SvgIcon, Typography, Card, CardHeader, Divider, Alert } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { useEffect, useState, useRef } from "react";
@@ -126,8 +126,13 @@ const Page = () => {
   const groupOwners = groupOwnersData?.body?.value || [];
   const groupMemberOf = groupMemberOfData?.body?.value || [];
 
-  // Set the title and subtitle for the layout
-  const title = groupRequest.isSuccess ? groupData?.displayName : "Loading...";
+  // Set the title and subtitle for the layout. Without a groupId nothing is ever fetched,
+  // so falling back to the loading label here would leave it stuck forever.
+  const title = !groupId
+    ? "No Group Selected"
+    : groupRequest.isSuccess
+      ? groupData?.displayName
+      : "Loading...";
 
   const subtitle = groupRequest.isSuccess
     ? [
@@ -715,9 +720,15 @@ const Page = () => {
       actions={groupActions}
       actionsData={data}
       subtitle={subtitle}
-      isFetching={groupRequest.isLoading}
+      isFetching={!!groupId && groupRequest.isLoading}
     >
-      {groupRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
+      {!groupId && (
+        <Alert severity="info" sx={{ m: 2 }}>
+          No group selected. Open this page from the Groups list, or pick one from the switcher
+          above.
+        </Alert>
+      )}
+      {groupId && groupRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
       {groupRequest.isSuccess && (
         <Box
           sx={{

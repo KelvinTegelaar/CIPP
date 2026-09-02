@@ -82,7 +82,7 @@ const MemoizedCippAutoComplete = React.memo((props) => {
 
 export const CippFormComponent = (props) => {
   const {
-    validators,
+    validators: validatorsProp,
     formControl,
     type = "textField",
     name, // The name that may have bracket notation
@@ -96,8 +96,15 @@ export const CippFormComponent = (props) => {
     // Consumed by the autoComplete-backed and table types below; every other type renders a
     // MUI input that would forward it to the DOM.
     isFetching,
+    // A bare react-hook-form rule some callers pass alongside `validators` instead of nesting
+    // it under `validators.validate`; strip it here and fold it in, or it falls into `...other`
+    // and reaches the DOM as an unknown attribute.
+    validate,
     ...other
   } = props;
+  const validators = validate
+    ? { ...validatorsProp, validate: validatorsProp?.validate ?? validate }
+    : validatorsProp;
   const { errors } = useFormState({ control: formControl.control });
   // Convert the name from bracket notation to dot notation
   const convertedName = convertBracketsToDots(name);
