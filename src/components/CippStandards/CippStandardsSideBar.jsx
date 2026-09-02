@@ -553,10 +553,13 @@ const CippStandardsSideBar = ({
             <CardContent>
               <Timeline
                 sx={{
-                  [`& .${timelineItemClasses.root}:before`]: {
-                    flex: 0,
-                    p: 0,
-                  },
+                  // lab 9's `:not(:has(.opposite-content))::before` spacer outranks a bare
+                  // `.root:before` override; match its specificity via the missing-opposite class
+                  [`& .${timelineItemClasses.root}.${timelineItemClasses.missingOppositeContent}:before`]:
+                    {
+                      flex: 0,
+                      p: 0,
+                    },
                 }}
               >
                 {steps.map((step, index) => (

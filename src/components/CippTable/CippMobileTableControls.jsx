@@ -104,6 +104,7 @@ export const CippMobileTableControls = (props) => {
           top: 0,
           zIndex: 10,
           display: "flex",
+          flexWrap: "wrap",
           gap: 1,
           px: embedded ? 0 : 1,
           py: 1,
@@ -113,55 +114,62 @@ export const CippMobileTableControls = (props) => {
           borderColor: "divider",
         }}
       >
-        <ModernSearchContainer elevation={0} sx={{ height: 44, flex: 1, minWidth: 0 }}>
-          <Search fontSize="small" sx={{ color: "text.secondary" }} />
-          <ModernSearchInput
-            type="search"
-            placeholder="Search…"
-            value={searchValue}
-            onChange={onSearchChange}
-            inputProps={{ enterKeyHint: "search", "aria-label": "Search" }}
-          />
-        </ModernSearchContainer>
-        {selectionEnabled && !selectModeLocked && (
-          <ModernButton
-            onClick={() => onSelectModeChange?.(!selectMode)}
-            sx={{ height: 44, flexShrink: 0 }}
-          >
-            {selectMode ? "Cancel" : "Select"}
-          </ModernButton>
-        )}
-        <ModernIconButton
-          aria-label="Sort"
-          onClick={() => setSortOpen(true)}
-          sx={sorting.length ? { borderColor: "primary.main", color: "primary.main" } : undefined}
-        >
-          <SwapVert fontSize="small" />
-        </ModernIconButton>
-        {/* kebab, the sheet is a grab-bag (presets, fields, export, refresh), not just filters */}
-        <ModernIconButton
-          aria-label="Table options"
-          onClick={() => setFilterOpen(true)}
-          sx={
-            activeSlotCount > 0
-              ? { borderColor: "primary.main", color: "primary.main" }
-              : undefined
-          }
-        >
-          <Badge badgeContent={activeSlotCount} color="primary">
-            <MoreVert fontSize="small" />
-          </Badge>
-        </ModernIconButton>
-        {onViewToggle && (
+        {/* Search keeps a legible floor and the controls wrap below it when the row no longer
+            fits. The sizing sits on this wrapper: ModernSearchContainer's own down('md') rule
+            (flex: 1, minWidth: 0) outranks an sx prop on it. */}
+        <Box sx={{ display: "flex", flex: "1 1 180px", minWidth: 160 }}>
+          <ModernSearchContainer elevation={0} sx={{ height: 44 }}>
+            <Search fontSize="small" sx={{ color: "text.secondary" }} />
+            <ModernSearchInput
+              type="search"
+              placeholder="Search…"
+              value={searchValue}
+              onChange={onSearchChange}
+              inputProps={{ enterKeyHint: "search", "aria-label": "Search" }}
+            />
+          </ModernSearchContainer>
+        </Box>
+        <Box sx={{ display: "flex", gap: 1, flexShrink: 0, ml: "auto" }}>
+          {selectionEnabled && !selectModeLocked && (
+            <ModernButton
+              onClick={() => onSelectModeChange?.(!selectMode)}
+              sx={{ height: 44, flexShrink: 0 }}
+            >
+              {selectMode ? "Cancel" : "Select"}
+            </ModernButton>
+          )}
           <ModernIconButton
-            aria-label="Toggle table view"
-            aria-pressed={false}
-            onClick={onViewToggle}
+            aria-label="Sort"
+            onClick={() => setSortOpen(true)}
+            sx={sorting.length ? { borderColor: "primary.main", color: "primary.main" } : undefined}
           >
-            {/* destination icon: tapping here opens the table */}
-            <TableChart fontSize="small" />
+            <SwapVert fontSize="small" />
           </ModernIconButton>
-        )}
+          {/* kebab, the sheet is a grab-bag (presets, fields, export, refresh), not just filters */}
+          <ModernIconButton
+            aria-label="Table options"
+            onClick={() => setFilterOpen(true)}
+            sx={
+              activeSlotCount > 0
+                ? { borderColor: "primary.main", color: "primary.main" }
+                : undefined
+            }
+          >
+            <Badge badgeContent={activeSlotCount} color="primary">
+              <MoreVert fontSize="small" />
+            </Badge>
+          </ModernIconButton>
+          {onViewToggle && (
+            <ModernIconButton
+              aria-label="Toggle table view"
+              aria-pressed={false}
+              onClick={onViewToggle}
+            >
+              {/* destination icon: tapping here opens the table */}
+              <TableChart fontSize="small" />
+            </ModernIconButton>
+          )}
+        </Box>
       </Box>
       {queueTracker && <Box sx={{ px: 1.5, py: 0.5 }}>{queueTracker}</Box>}
 

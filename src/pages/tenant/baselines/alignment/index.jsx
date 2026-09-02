@@ -2139,6 +2139,8 @@ const Page = () => {
         if (newViewMode !== null) setViewMode(newViewMode)
       }}
       sx={{
+        // Four options do not fit a phone viewport on one line, so wrap below md.
+        flexWrap: { xs: 'wrap', md: 'nowrap' },
         '& .MuiToggleButton-root': { py: 0.5, px: 1.5, fontSize: '0.8125rem' },
       }}
     >
@@ -2598,9 +2600,10 @@ const Page = () => {
         <Container maxWidth={false}>
           <Stack spacing={2}>
             <Stack
-              direction="row"
+              direction={{ xs: 'column', md: 'row' }}
+              spacing={2}
               sx={{
-                alignItems: "center",
+                alignItems: { xs: 'stretch', md: 'center' },
                 justifyContent: "space-between"
               }}>
               {modeToggle}
@@ -3159,9 +3162,10 @@ const Page = () => {
         <Container maxWidth={false}>
           <Stack spacing={2}>
             <Stack
-              direction="row"
+              direction={{ xs: 'column', md: 'row' }}
+              spacing={2}
               sx={{
-                alignItems: "center",
+                alignItems: { xs: 'stretch', md: 'center' },
                 justifyContent: "space-between"
               }}>
               {modeToggle}

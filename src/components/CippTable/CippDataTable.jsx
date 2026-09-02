@@ -1,9 +1,15 @@
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  getColumnId,
+  getDefaultColumnFilterFn,
+} from 'material-react-table'
 import {
   alpha,
   Card,
   CardContent,
   CardHeader,
+  Chip,
   Divider,
   ListItemIcon,
   ListItemText,
@@ -11,6 +17,7 @@ import {
   MenuItem,
   MenuList,
   SvgIcon,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import { ResourceUnavailable } from '../resource-unavailable'
@@ -35,6 +42,7 @@ import { useSettings } from '../../hooks/use-settings'
 import { parseCippDate } from '../../utils/parse-cipp-date'
 import { isEqual } from 'lodash' // Import lodash for deep comparison
 import { useLicenseBackfill } from '../../hooks/use-license-backfill'
+import { licenseIncludesFilterFn } from '../../utils/get-cipp-filter-variant'
 import { useTableViewMode, useIsNarrowForTables } from '../../hooks/use-breakpoint'
 import { CippMobileCardList } from './CippMobileCardList'
 import { CippPageActionsFab } from '../CippComponents/CippPageActionsFab'
@@ -238,6 +246,16 @@ const SORTING_FNS = {
 }
 
 const FILTER_FNS = {
+  // TanStack has no built-in "includes" filter fn (only "includesString"); columns built by
+  // get-cipp-filter-variant.js use this name, so it must be registered here to resolve.
+  includes: (row, columnId, value) => {
+    const rowValue = row.getValue(columnId)
+    if (rowValue === null || rowValue === undefined) {
+      return false
+    }
+    return String(rowValue).toLowerCase().includes(String(value).toLowerCase())
+  },
+  licenseIncludes: licenseIncludesFilterFn,
   notContains: (row, columnId, value) => {
     const rowValue = row.getValue(columnId)
     if (rowValue === null || rowValue === undefined) {
@@ -270,6 +288,89 @@ const FILTER_FNS = {
       return true
     }
   },
+}
+
+// Labels for the filterFn names in FILTER_FNS above (and MRT's own custom filter modes) that
+// MRT's built-in localization has no entry for — without these the filter helper text reads
+// "Filter Mode: undefined".
+const MRT_LOCALIZATION_OVERRIDES = {
+  filterIncludes: 'Contains',
+  filterNotContains: 'Does Not Contain',
+  filterRegex: 'Regex',
+  filterLicenseIncludes: 'Includes',
+  filterCustom: 'Custom',
+}
+
+// A multi-select column filter (e.g. Assigned Licenses) is a native MUI Select under the
+// hood, not an Autocomplete — filterVariant only switches to the Autocomplete component for
+// 'autocomplete'. MRT's own multi-select renderValue draws one Chip per pick with no
+// wrapping room, so past the first chip the rest are clipped from the header. Override it
+// (via the Select's slotProps.select.renderValue MRT forwards from muiFilterTextFieldProps)
+// to collapse 2+ picks into a single "N selected" chip whose Tooltip lists every label.
+const getFilterSelectOptionLabel = (options, value) => {
+  const match = options?.find((opt) =>
+    typeof opt === 'string' ? opt === value : opt?.value === value
+  )
+  if (match === undefined) {
+    return String(value)
+  }
+  return typeof match === 'string' ? match : match.label ?? String(value)
+}
+
+const MUI_FILTER_TEXT_FIELD_PROPS = ({ column }) => {
+  if (column.columnDef.filterVariant !== 'multi-select') {
+    return {}
+  }
+  const options = column.columnDef.filterSelectOptions
+  const clearSelection = () => column.setFilterValue([])
+  const stopMouseDown = (e) => e.stopPropagation()
+  return {
+    slotProps: {
+      select: {
+        renderValue: (selected) => {
+          if (!Array.isArray(selected) || selected.length === 0) {
+            return (
+              <Box sx={{ opacity: 0.5 }}>
+                {`Filter by ${column.columnDef.header ?? column.id}`}
+              </Box>
+            )
+          }
+          if (selected.length === 1) {
+            return (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
+                <Chip
+                  label={getFilterSelectOptionLabel(options, selected[0])}
+                  onDelete={clearSelection}
+                  onMouseDown={stopMouseDown}
+                />
+              </Box>
+            )
+          }
+          const labels = selected.map((value) => getFilterSelectOptionLabel(options, value))
+          return (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
+              <Tooltip title={labels.map((label, index) => <div key={index}>{label}</div>)}>
+                <Chip
+                  label={`${selected.length} selected`}
+                  onDelete={clearSelection}
+                  onMouseDown={stopMouseDown}
+                />
+              </Tooltip>
+            </Box>
+          )
+        },
+      },
+    },
+  }
+}
+
+// Mirrors MRT's own columnFilterFns seeding (useMaterialReactTable's initial useState),
+// so a column not yet in state resolves to the same mode name MRT would have picked itself.
+const resolveColumnFilterFnName = (col) => {
+  if (typeof col.filterFn === 'function') {
+    return col.filterFn.name || 'custom'
+  }
+  return col.filterFn ?? getDefaultColumnFilterFn(col)
 }
 
 const MUI_TABLE_HEAD_CELL_PROPS = {
@@ -328,6 +429,12 @@ const MUI_TABLE_HEAD_CELL_PROPS = {
         whiteSpace: 'nowrap',
         zIndex: 9999,
       },
+    },
+    // MRT gives pinned cells `opacity: 0.97` (getCommonMRTCellStyles) so the row scrolling
+    // underneath a sticky column shows faintly through it; pin it back to opaque here.
+    '&[data-pinned="true"]': {
+      opacity: 1,
+      backgroundColor: 'background.paper',
     },
   },
 }
@@ -401,11 +508,34 @@ const MUI_TABLE_BODY_CELL_PROPS = {
       {
         cursor: 'pointer',
       },
+    // MRT gives pinned cells `opacity: 0.97` (getCommonMRTCellStyles) so the row scrolling
+    // underneath a sticky column shows faintly through it; pin it back to opaque here.
+    '&[data-pinned="true"]': {
+      opacity: 1,
+      backgroundColor: 'background.paper',
+    },
   },
 }
 
 const MRT_THEME = (theme) => ({
   baseBackgroundColor: theme.palette.background.paper,
+})
+
+// MUI 9 dropped Checkbox's legacy `inputProps`, but MRT_SelectCheckbox still sets it —
+// it leaks onto the DOM as `inputprops="[object Object]"` and the real `<input>` loses
+// its aria-label. Null it out and restore the label via `slotProps.input` instead.
+const MUI_SELECT_CHECKBOX_PROPS = ({ table }) => ({
+  inputProps: undefined,
+  slotProps: {
+    input: { 'aria-label': table.options.localization.toggleSelectRow },
+  },
+})
+
+const MUI_SELECT_ALL_CHECKBOX_PROPS = ({ table }) => ({
+  inputProps: undefined,
+  slotProps: {
+    input: { 'aria-label': table.options.localization.toggleSelectAll },
+  },
 })
 
 // Compute a lightweight "schema key" from data to decide whether columns need recomputing.
@@ -593,6 +723,11 @@ export const CippDataTable = (props) => {
   const [graphFilterData, setGraphFilterData] = useState({})
   const [sorting, setSorting] = useState([])
   const [columnFilters, setColumnFilters] = useState([])
+  // MRT seeds its own columnFilterFns state once, from whatever `columns` it was given on
+  // the very first render — here that's always [] (columns arrive async from the API), so
+  // it's permanently stuck at {} and every filter's helper text reads "Filter Mode:
+  // undefined". Track and control it ourselves so it re-derives as real columns arrive.
+  const [columnFilterFns, setColumnFilterFns] = useState({})
   const waitingBool = api?.url ? true : false
 
   // The cards branch and the renderTopToolbar branch are two alternating CIPPTableToptoolbar
@@ -1009,6 +1144,36 @@ export const CippDataTable = (props) => {
     [displayColumns]
   )
 
+  // The default filter-mode name for every currently-displayed column (see
+  // resolveColumnFilterFnName above). Recomputed whenever the column set changes so newly
+  // arrived columns get a mode name without waiting on a user click.
+  const derivedColumnFilterFns = useMemo(() => {
+    const map = {}
+    for (const col of displayColumns) {
+      const id = col.id ?? getColumnId(col)
+      if (id) {
+        map[id] = resolveColumnFilterFnName(col)
+      }
+    }
+    return map
+  }, [displayColumns])
+
+  // Seed columnFilterFns for ids that don't have one yet — a user-picked mode (from the
+  // filter-mode menu, via onColumnFilterFnsChange below) is never overwritten here.
+  useEffect(() => {
+    setColumnFilterFns((prev) => {
+      let changed = false
+      const next = { ...prev }
+      for (const [id, fn] of Object.entries(derivedColumnFilterFns)) {
+        if (next[id] === undefined) {
+          next[id] = fn
+          changed = true
+        }
+      }
+      return changed ? next : prev
+    })
+  }, [derivedColumnFilterFns])
+
   // Remount MRT when the visible column identity set changes (cache↔live). MRT's
   // column virtualizer memoizes pinned indexes without depending on column count;
   // without a remount, TableHeadRow maps a sparse virtual item and reads `.index`
@@ -1140,9 +1305,17 @@ export const CippDataTable = (props) => {
       columnOrder: safeColumnOrder,
       sorting,
       columnFilters,
+      columnFilterFns,
       showSkeletons,
     }),
-    [sanitizedColumnVisibility, safeColumnOrder, sorting, columnFilters, showSkeletons]
+    [
+      sanitizedColumnVisibility,
+      safeColumnOrder,
+      sorting,
+      columnFilters,
+      columnFilterFns,
+      showSkeletons,
+    ]
   )
 
   // Single row-action dispatch used by BOTH the desktop row menu and the mobile action
@@ -1661,6 +1834,7 @@ export const CippDataTable = (props) => {
     state: tableState,
     onSortingChange: handleSortingChange,
     onColumnFiltersChange: setColumnFilters,
+    onColumnFilterFnsChange: setColumnFilterFns,
     renderEmptyRowsFallback,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
@@ -1685,6 +1859,10 @@ export const CippDataTable = (props) => {
     enableGlobalFilterModes: true,
     renderGlobalFilterModeMenuItems: renderGlobalFilterModeMenuItemsFn,
     renderColumnFilterModeMenuItems: renderColumnFilterModeMenuItemsFn,
+    localization: MRT_LOCALIZATION_OVERRIDES,
+    muiSelectCheckboxProps: MUI_SELECT_CHECKBOX_PROPS,
+    muiSelectAllCheckboxProps: MUI_SELECT_ALL_CHECKBOX_PROPS,
+    muiFilterTextFieldProps: MUI_FILTER_TEXT_FIELD_PROPS,
   })
 
   // deselect all rows when the underlying data set actually changes, guarded so a toolbar

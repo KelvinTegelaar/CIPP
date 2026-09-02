@@ -1475,14 +1475,17 @@ const Page = () => {
       <Box sx={{ flexGrow: 1 }}>
         <Container maxWidth={false}>
           <Stack spacing={2}>
+            {/* Title, tenant chip and actions each take their own row on phones. */}
             <Stack
-              direction="row"
+              direction={{ xs: "column", md: "row" }}
+              spacing={2}
               sx={{
                 justifyContent: "space-between",
-                alignItems: "center"
+                alignItems: { xs: "stretch", md: "center" }
               }}>
-              <Stack direction="row" spacing={1} sx={{
-                alignItems: "center"
+              <Stack direction="row" spacing={1} useFlexGap sx={{
+                alignItems: "center",
+                flexWrap: "wrap"
               }}>
                 <IconButton size="small" onClick={handleBackClick}>
                   <ArrowBack />
@@ -1490,9 +1493,16 @@ const Page = () => {
                 <Typography variant="h4">
                   {saveForm.watch('templateName') || 'New Report'}
                 </Typography>
-                {currentTenant && <Chip label={currentTenant} size="small" variant="outlined" />}
+                {currentTenant && (
+                  <Chip
+                    label={currentTenant}
+                    size="small"
+                    variant="outlined"
+                    sx={{ maxWidth: "100%" }}
+                  />
+                )}
               </Stack>
-              <Stack direction="row" spacing={1}>
+              <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
                 <Button
                   size="small"
                   variant="outlined"

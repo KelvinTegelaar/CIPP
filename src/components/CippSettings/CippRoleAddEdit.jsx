@@ -38,6 +38,9 @@ import {
   buildRuleSuggestions,
 } from "../../utils/permission-rules";
 
+// Stable reference so the ApiGetCall default doesn't retrigger effects every render.
+const EMPTY_PERMISSIONS = [];
+
 export const CippRoleAddEdit = ({ selectedRole }) => {
   const updatePermissions = ApiPostCall({
     urlFromData: true,
@@ -116,7 +119,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   }, [baseRoleTemplate]);
 
   const {
-    data: apiPermissions = [],
+    data: apiPermissions = EMPTY_PERMISSIONS,
     isFetching: apiPermissionFetching,
     isSuccess: apiPermissionSuccess,
   } = ApiGetCall({
@@ -230,10 +233,15 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
   useEffect(() => {
     if (selectedRole && cippRoles[selectedRole]) {
-      setBaseRolePermissions(getBaseRolePermissions(selectedRole));
+      // Skip the setState when both the old and new value are empty (e.g. apiPermissions
+      // still pending) so this doesn't create a fresh {} reference on every render.
+      setBaseRolePermissions((prev) => {
+        const next = getBaseRolePermissions(selectedRole);
+        return Object.keys(prev).length === 0 && Object.keys(next).length === 0 ? prev : next;
+      });
       setIsBaseRole(true);
     } else {
-      setBaseRolePermissions({});
+      setBaseRolePermissions((prev) => (Object.keys(prev).length === 0 ? prev : {}));
       setIsBaseRole(false);
     }
   }, [selectedRole, apiPermissions]);
@@ -244,7 +252,8 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         tenantsSuccess &&
         selectedRole &&
         selectedRoleState !== selectedRole) ||
-      baseRolePermissions
+      // An empty {} isn't a real change — only a populated baseRolePermissions should retrigger this.
+      Object.keys(baseRolePermissions).length > 0
     ) {
       setSelectedRoleState(selectedRole);
       const isApiRole = selectedRole === "api-role";

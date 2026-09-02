@@ -1,5 +1,5 @@
 import {
-  Cancel,
+  Close,
   Check,
   CompassCalibration,
   LaptopWindows,
@@ -892,7 +892,7 @@ export const getCippFormatting = (
     ) : data.enabled ? (
       <Check fontSize="10" />
     ) : (
-      <Cancel fontSize="10" />
+      <Close fontSize="10" />
     )
   }
 
@@ -1222,7 +1222,7 @@ export const getCippFormatting = (
           ) : parsedData[0] ? (
             <Check fontSize="10" />
           ) : (
-            <Cancel fontSize="10" />
+            <Close fontSize="10" />
           )
         }
 
@@ -1308,7 +1308,7 @@ export const getCippFormatting = (
       )
     ) : (
       <Box component="span">
-        {data ? <Check fontSize="10" /> : <Cancel fontSize="10" />}
+        {data ? <Check fontSize="10" /> : <Close fontSize="10" />}
       </Box>
     )
   }

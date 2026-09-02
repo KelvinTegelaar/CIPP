@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import {
+  Box,
   Button,
   ButtonGroup,
   Card,
@@ -217,14 +218,17 @@ const Page = () => {
 
   return (
     <Stack spacing={2} sx={{ px: 3 }}>
+      {/* KPI tiles take the full width on phones; the period selector and export drop to their own row. */}
       <Stack
-        direction="row"
+        direction={{ xs: 'column', md: 'row' }}
         spacing={2}
         sx={{
-          alignItems: "center",
+          alignItems: { xs: 'stretch', md: 'center' },
           justifyContent: "space-between"
         }}>
-        <CippInfoBar data={infoBarData} isFetching={flowReport.isFetching} />
+        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+          <CippInfoBar data={infoBarData} isFetching={flowReport.isFetching} />
+        </Box>
         <Stack
           direction="row"
           spacing={2}

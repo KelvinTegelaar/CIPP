@@ -199,13 +199,19 @@ const Page = () => {
       <Container maxWidth="xl">
         <Stack spacing={2}>
           <Stack
-            direction="row"
+            direction={{ xs: "column", md: "row" }}
+            spacing={2}
             sx={{
               justifyContent: "space-between",
-              alignItems: "center"
+              alignItems: { xs: "stretch", md: "center" }
             }}>
             <Typography variant="h4">Catalog</Typography>
-            <Stack direction="row" spacing={1}>
+            {/* Actions stack full width under the title on phones so they never clip the viewport. */}
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={1}
+              sx={{ "& > *": { flex: { sm: 1, md: "0 0 auto" } } }}
+            >
               <Button
                 variant="outlined"
                 startIcon={<Search />}
