@@ -216,17 +216,30 @@ describe('MyComponent', () => {
 
 ### Why @storybook/react-vite instead of @storybook/nextjs?
 `@storybook/nextjs` uses webpack + babel under the hood. Many dependencies in this project are
-ESM-only (heroicons, MUI v7, tiptap, etc.), and webpack's babel transpilation fails on them
-without explicit per-package config. The codebase also uses JSX syntax in `.js` files, which
-needs another babel plugin. With `@storybook/react-vite`, Vite handles ESM natively and the
-esbuild loader override handles JSX-in-.js, no transpilation config needed. The tradeoff is
-manually mocking Next.js modules (router, navigation, head, image, link) via Vite aliases in
-`.storybook/main.mjs`.
+ESM-only (heroicons, MUI v9, tiptap, etc.), and webpack's babel transpilation fails on them
+without explicit per-package config. With `@storybook/react-vite`, Vite handles ESM natively,
+no transpilation config needed. The tradeoff is manually mocking Next.js modules (router,
+navigation, head, image, link) via Vite aliases in `.storybook/main.mjs`.
 
-### Why .js files need JSX loader config?
-The codebase uses JSX syntax in `.js` files (not `.jsx`). Vite's esbuild only handles JSX
-in `.jsx` files by default, so both `.storybook/main.mjs` and `vitest.config.mjs` override the
-esbuild loader to treat `.js` files as JSX.
+### Shared execution contexts
+Both projects run without per-file isolation for speed: unit files share worker threads
+(`pool: 'threads'`, `isolate: false` in `vitest.config.mjs`) and story files share one
+chromium page (`browser.isolate: false`). `vitest.setup.js` flushes the module registry,
+`history.state`, storage, and fake timers at every file boundary, so `vi.mock` factories
+and jsdom state stay per-file. What it cannot do for you:
+
+- Stub globals with `Object.defineProperty(target, key, { value, configurable: true })`.
+  Plain assignment throws once another file's `userEvent.setup()` has installed its
+  getter-only `navigator.clipboard`.
+- Remove `window`/`document` listeners a test adds itself; unmount cleanup only covers
+  component listeners.
+- A story that measures layout must claim its viewport (`shrinkToPhoneViewport` /
+  `growToDesktopViewport` from `tests/viewport.js`), the page keeps whatever width the
+  previous story set.
+
+A test that passes alone but fails in the full run is reading a neighbor's leftovers.
+Re-run with `--isolate` to confirm the diagnosis, then fix the leak rather than
+re-isolating the suite.
 
 ### How storybook tests contribute to coverage
 The `@storybook/addon-vitest` plugin converts stories into vitest browser tests

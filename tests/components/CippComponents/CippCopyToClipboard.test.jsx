@@ -5,11 +5,15 @@ import { renderWithTheme } from '../../test-utils'
 import { CippCopyToClipBoard } from '../../../src/components/CippComponents/CippCopyToClipboard'
 
 describe('CippCopyToClipboard', () => {
+  // userEvent.setup() elsewhere in the worker leaves a getter-only navigator.clipboard,
+  // plain assignment throws on it; defineProperty replaces it either way
+  const stubClipboard = (writeText) => {
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
+  }
+
   it('renders button and copies text on click', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined)
-    Object.assign(navigator, {
-      clipboard: { writeText },
-    })
+    stubClipboard(writeText)
 
     const onClick = vi.fn()
     renderWithTheme(
@@ -33,9 +37,7 @@ describe('CippCopyToClipboard', () => {
 
   it('copies text when chip is clicked', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined)
-    Object.assign(navigator, {
-      clipboard: { writeText },
-    })
+    stubClipboard(writeText)
 
     renderWithTheme(
       <CippCopyToClipBoard text="cipp-secret-key" type="chip" visible={true} />

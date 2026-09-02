@@ -56,6 +56,12 @@ export default defineConfig({
           setupFiles: ['./vitest.setup.js'],
           include: ['tests/**/*.test.{js,jsx}'],
           css: false,
+          // the suite is import-bound: isolating each test file re-imports the whole
+          // module graph (~5x the time spent in tests), threads + shared context cut
+          // the unit wall clock by more than half. shared context means globals, DOM,
+          // and storage survive across files in a worker; vitest.setup.js resets them
+          pool: 'threads',
+          isolate: false,
           // vite 8's transform pipeline imports modules noticeably slower than
           // vite 7's esbuild did; interaction-heavy tests need the headroom
           // (the coverage script already runs with --testTimeout=30000)
@@ -98,6 +104,10 @@ export default defineConfig({
             enabled: true,
             provider: playwright(),
             headless: true,
+            // all story files run in one shared chromium page, per-file iframe
+            // setup is the suite's dominant cost. msw-storybook-addon re-registers
+            // handlers per story, so request mocking stays scoped
+            isolate: false,
             // dockerized runs (cipp-storybook) have the default 64MB /dev/shm, which
             // chromium exhausts on heavier story trees and dies mid-run - use /tmp
             instances: [

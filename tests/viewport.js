@@ -4,9 +4,9 @@
  * Three things this exists to get right:
  *  - The VIEWPORT has to shrink, not a wrapper element. MUI breakpoints are media queries,
  *    so a 390px-wide Box inside a desktop-width iframe still renders every `md` branch.
- *  - The import has to be lazy. At module scope `@vitest/browser/context` throws
- *    "can be imported only inside the Browser Mode", which breaks the story for anyone who
- *    opens it in the Storybook app rather than the test runner.
+ *  - The import has to be lazy. `vitest/browser` only serves the page API inside Browser
+ *    Mode; at module scope it breaks the story for anyone who opens it in the Storybook
+ *    app rather than the test runner.
  *  - Every story shares one page. A story that shrinks the viewport and never restores it
  *    leaves the next story running at phone width — which is an ordering-dependent failure,
  *    so a desktop story must claim its width rather than assume it.
@@ -23,7 +23,7 @@
  */
 const resize = async (width, height) => {
   try {
-    const { page } = await import("@vitest/browser/context");
+    const { page } = await import("vitest/browser");
     await page.viewport(width, height);
     // Measured: window.innerWidth is ALREADY the new value when this resolves — the width is
     // not what lags. What lags is React: matchMedia listeners fire, useMediaQuery setStates,
