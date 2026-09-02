@@ -65,6 +65,7 @@ import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import tabOptions from "./tabOptions";
 import { useTitleClaimedByTabPicker } from "../../../../layouts/tab-navigation-context";
+import { useIsNarrowForTables } from "../../../../hooks/use-breakpoint";
 
 const formatDuration = (ms) => {
   if (ms === 0 || ms == null) return "—";
@@ -90,7 +91,7 @@ const WorkerStatusChip = ({ isBusy, currentFunction }) => {
           color="warning"
           size="small"
           icon={<PlayArrow />}
-          sx={{ maxWidth: 420 }}
+          sx={{ maxWidth: { xs: "100%", md: 420 } }}
         />
       </Tooltip>
     );
@@ -114,7 +115,75 @@ const UtilizationBar = ({ value }) => (
   </Box>
 );
 
+// Stat pairs shared by the worker table columns and the narrow-screen cards.
+const workerStats = (w) => [
+  { k: "Invocations", v: w.TotalInvocations?.toLocaleString() ?? 0 },
+  { k: "Avg", v: formatDuration(w.AvgDurationMs) },
+  { k: "Min", v: formatDuration(w.MinDurationMs) },
+  { k: "Max", v: formatDuration(w.MaxDurationMs) },
+  { k: "Last", v: formatDuration(w.LastDurationMs) },
+  { k: "Alloc", v: w.TotalAllocMB != null ? `${w.TotalAllocMB} MB` : "—" },
+  { k: "Faults", v: w.TotalFaults ?? 0, w: w.TotalFaults > 0 },
+];
+
+const StatPair = ({ label, value, warn }) => (
+  <Box sx={{ minWidth: 72 }}>
+    <Typography
+      variant="caption"
+      sx={{
+        color: "text.secondary",
+        display: "block",
+        lineHeight: 1.2
+      }}>
+      {label}
+    </Typography>
+    <Typography
+      variant="body2"
+      color={warn ? "error.main" : "text.primary"}
+      sx={{
+        fontWeight: 600,
+        lineHeight: 1.3,
+        wordBreak: "break-word"
+      }}>
+      {value}
+    </Typography>
+  </Box>
+);
+
+const WorkerCards = ({ workers }) => (
+  <Stack spacing={1} sx={{ px: 2, pb: 2 }}>
+    {workers.map((w) => (
+      <Box
+        key={w.WorkerId}
+        sx={{ border: (t) => `1px solid ${t.palette.divider}`, borderRadius: 1, p: 1.5 }}
+      >
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{ alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", mb: 1 }}
+        >
+          <Typography variant="body2" sx={{
+            fontFamily: "monospace"
+          }}>
+            W{w.WorkerId}
+          </Typography>
+          <WorkerStatusChip isBusy={w.IsBusy} currentFunction={w.CurrentFunction} />
+        </Stack>
+        <UtilizationBar value={w.UtilizationPct ?? 0} />
+        <Stack direction="row" useFlexGap sx={{ flexWrap: "wrap", gap: 1.5, mt: 1 }}>
+          {workerStats(w).map((s) => (
+            <StatPair key={s.k} label={s.k} value={s.v} warn={s.w} />
+          ))}
+        </Stack>
+      </Box>
+    ))}
+  </Stack>
+);
+
 const WorkerTable = ({ workers, title }) => {
+  const isNarrow = useIsNarrowForTables();
+
   if (!workers || workers.length === 0) return null;
 
   return (
@@ -123,6 +192,9 @@ const WorkerTable = ({ workers, title }) => {
         title: { variant: "h6" }
       }} />
       <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+        {isNarrow ? (
+          <WorkerCards workers={workers} />
+        ) : (
         <TableContainer>
           <Table size="small">
             <TableHead>
@@ -181,6 +253,7 @@ const WorkerTable = ({ workers, title }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        )}
       </CardContent>
     </Card>
   );
@@ -334,6 +407,8 @@ const StartupTimingBar = ({ startup }) => {
 };
 
 const CompactStatsRow = ({ snapshot }) => {
+  const isNarrow = useIsNarrowForTables();
+
   if (!snapshot) return null;
 
   const http = snapshot.HttpPool || {};
@@ -414,6 +489,35 @@ const CompactStatsRow = ({ snapshot }) => {
     },
   ];
 
+  if (isNarrow) {
+    // Six aligned stat columns do not survive a phone — stack the sections and let the
+    // stats wrap instead of scrolling them off the right edge.
+    return (
+      <Card>
+        <CardContent sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}>
+          <Stack spacing={1.5}>
+            {sections.map((sec) => (
+              <Box key={sec.label}>
+                <Chip
+                  label={sec.label}
+                  size="small"
+                  color={sec.color}
+                  variant="outlined"
+                  sx={{ fontWeight: 600, mb: 0.75 }}
+                />
+                <Stack direction="row" useFlexGap sx={{ flexWrap: "wrap", gap: 1.5 }}>
+                  {sec.stats.map((s) => (
+                    <StatPair key={s.k} label={s.k} value={s.v} warn={s.w} />
+                  ))}
+                </Stack>
+              </Box>
+            ))}
+          </Stack>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardContent sx={{ py: 1, px: 0, "&:last-child": { pb: 1 } }}>
@@ -460,6 +564,14 @@ const CompactStatsRow = ({ snapshot }) => {
     </Card>
   );
 };
+
+// CippInfoBar renders its value slot nowrap + ellipsis; a block child re-enables wrapping
+// so long memory/CPU strings stay whole instead of truncating mid-number.
+const WrappedStat = ({ children }) => (
+  <Box component="span" sx={{ display: "block", whiteSpace: "normal", wordBreak: "break-word" }}>
+    {children}
+  </Box>
+);
 
 const HistoryChart = ({ data, rangeMinutes, title, icon, children }) => {
   const theme = useTheme();
@@ -673,13 +785,17 @@ const Page = () => {
       {
         icon: <Memory />,
         name: "Memory",
-        data: `${snapshot.Memory?.ContainerUsedMB ?? snapshot.Memory?.RssMB ?? 0}MB / ${snapshot.Memory?.ContainerLimitMB ?? 0}MB (${snapshot.Memory?.UsagePct ?? 0}%)`,
+        data: (
+          <WrappedStat>{`${snapshot.Memory?.ContainerUsedMB ?? snapshot.Memory?.RssMB ?? 0}MB / ${snapshot.Memory?.ContainerLimitMB ?? 0}MB (${snapshot.Memory?.UsagePct ?? 0}%)`}</WrappedStat>
+        ),
         color: (snapshot.Memory?.UsagePct ?? 0) > 85 ? "error" : (snapshot.Memory?.UsagePct ?? 0) > 70 ? "warning" : "primary",
       },
       {
         icon: <Speed />,
         name: "CPU",
-        data: `${snapshot.Memory?.ContainerCpuPct ?? snapshot.Memory?.CpuPct ?? 0}% container / ${snapshot.Memory?.CpuPct ?? 0}% app`,
+        data: (
+          <WrappedStat>{`${snapshot.Memory?.ContainerCpuPct ?? snapshot.Memory?.CpuPct ?? 0}% container / ${snapshot.Memory?.CpuPct ?? 0}% app`}</WrappedStat>
+        ),
         color: (snapshot.Memory?.ContainerCpuPct ?? snapshot.Memory?.CpuPct ?? 0) > 80 ? "error" : (snapshot.Memory?.ContainerCpuPct ?? snapshot.Memory?.CpuPct ?? 0) > 50 ? "warning" : "primary",
       },
     ];
@@ -759,7 +875,7 @@ const Page = () => {
       <Head>
         <title>Worker Health | CIPP</title>
       </Head>
-      <Box sx={{ flexGrow: 1, pb: 4 }}>
+      <Box sx={{ flexGrow: 1, pb: { xs: 10, md: 4 } }}>
         <Container maxWidth="xl">
           <Stack spacing={2}>
             {/* ── Header toolbar ── */}

@@ -140,8 +140,12 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={2}>
             <Stack spacing={2}>
-              <div
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+              {/* wraps on narrow widths instead of clipping the title */}
+              <Stack
+                direction="row"
+                spacing={2}
+                useFlexGap
+                sx={{ flexWrap: "wrap", justifyContent: "space-between", alignItems: "center" }}
               >
                 <Typography variant="h4">Password Configuration</Typography>
                 <Button
@@ -151,7 +155,7 @@ const Page = () => {
                 >
                   Settings
                 </Button>
-              </div>
+              </Stack>
             </Stack>
 
             <Card>
@@ -262,43 +266,48 @@ const Page = () => {
                     </>
                   ) : (
                     <>
-                      <Stack direction="row" spacing={1} sx={{
-                        alignItems: "center"
-                      }}>
-                        <TextField
-                          label="Words"
-                          value={config.wordCount}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === '' || /^\d+$/.test(value)) {
-                              set("wordCount", value);
-                            }
-                          }}
-                          size="small"
-                          sx={{ width: 120, maxWidth: 160 }}
-                          error={config.wordCount === ''}
-                          helperText={config.wordCount === '' ? "Word count cannot be empty" : ""}
-                          slotProps={{
-                            htmlInput: {
-                              style: { height: "40px" },
-                              min: 2,
-                              max: 10
-                            }
-                          }}
-                        />
-                        <TextField
-                          label="Separator"
-                          value={config.separator}
-                          onChange={(e) => set("separator", e.target.value)}
-                          size="small"
-                          sx={{ maxWidth: 120 }}
-                        />
+                      {/* full width fields stacked on xs; helper text moves below instead of squeezing inline */}
+                      <Stack spacing={1}>
+                        <Stack
+                          direction={{ xs: "column", sm: "row" }}
+                          spacing={1}
+                          useFlexGap
+                          sx={{ alignItems: { xs: "stretch", sm: "center" }, flexWrap: "wrap" }}
+                        >
+                          <TextField
+                            label="Words"
+                            value={config.wordCount}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === '' || /^\d+$/.test(value)) {
+                                set("wordCount", value);
+                              }
+                            }}
+                            size="small"
+                            sx={{ width: { xs: "100%", sm: 120 }, maxWidth: { xs: "100%", sm: 160 } }}
+                            error={config.wordCount === ''}
+                            helperText={config.wordCount === '' ? "Word count cannot be empty" : ""}
+                            slotProps={{
+                              htmlInput: {
+                                style: { height: "40px" },
+                                min: 2,
+                                max: 10
+                              }
+                            }}
+                          />
+                          <TextField
+                            label="Separator"
+                            value={config.separator}
+                            onChange={(e) => set("separator", e.target.value)}
+                            size="small"
+                            sx={{ width: { xs: "100%", sm: "auto" }, maxWidth: { xs: "100%", sm: 120 } }}
+                          />
+                        </Stack>
                         <Typography
                           variant="caption"
                           sx={{
                             color: "text.secondary",
-                            fontSize: '0.75rem',
-                            whiteSpace: 'nowrap'
+                            fontSize: '0.75rem'
                           }}>
                           Allowed: single space, empty, or !@#$%^&*()-_=+/
                         </Typography>
