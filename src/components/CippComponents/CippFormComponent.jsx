@@ -700,7 +700,18 @@ export const CippFormComponent = (props) => {
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Box sx={{ flexGrow: 1 }}>
                     <DateTimePicker
-                      slotProps={{ textField: { fullWidth: true } }}
+                      // renderInput/inputFormat were removed from x-date-pickers; the text field
+                      // is now configured through slotProps.textField instead. The shrink label
+                      // is a sub-slot of that TextField, so it nests under textField.slotProps.
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          variant: "filled",
+                          error: !!errors[convertedName],
+                          helperText: get(errors, convertedName, {})?.message,
+                          slotProps: withShrinkLabel(),
+                        },
+                      }}
                       sx={{
                         "& .MuiPickersSectionList-root": {
                           paddingTop: "10px",
@@ -712,6 +723,7 @@ export const CippFormComponent = (props) => {
                           ? ["year", "month", "day"]
                           : ["year", "month", "day", "hours", "minutes"]
                       }
+                      format="yyyy/MM/dd HH:mm" // Display format
                       label={label}
                       value={field.value ? new Date(field.value * 1000) : null} // Convert Unix timestamp to Date object
                       onChange={(date) => {
@@ -725,17 +737,6 @@ export const CippFormComponent = (props) => {
                       onClose={field.onBlur}
                       ampm={false}
                       minutesStep={15}
-                      inputFormat="yyyy/MM/dd HH:mm" // Display format
-                      renderInput={(inputProps) => (
-                        <TextField
-                          {...inputProps}
-                          {...other}
-                          fullWidth
-                          error={!!errors[convertedName]}
-                          helperText={get(errors, convertedName, {})?.message}
-                          variant="filled"
-                        />
-                      )}
                       {...other}
                     />
                   </Box>
