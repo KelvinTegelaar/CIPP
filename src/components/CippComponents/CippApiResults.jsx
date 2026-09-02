@@ -4,9 +4,6 @@ import {
   Help,
   ExpandMore,
   ExpandLess,
-  CheckCircle,
-  Error as ErrorIcon,
-  RadioButtonUnchecked,
 } from '@mui/icons-material'
 import {
   Alert,
@@ -22,7 +19,7 @@ import {
   Button,
   keyframes,
 } from '@mui/material'
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippError } from '../../utils/get-cipp-error'
 import { CippCopyToClipBoard } from './CippCopyToClipboard'
@@ -30,6 +27,7 @@ import { CippDocsLookup } from './CippDocsLookup'
 import { CippCodeBlock } from './CippCodeBlock'
 import React from 'react'
 import { CippTableDialog } from './CippTableDialog'
+import { CippJobProgress, formatJobProgressText } from './CippJobProgress'
 import { EyeIcon } from '@heroicons/react/24/outline'
 import { useDialog } from '../../hooks/use-dialog'
 
@@ -131,69 +129,6 @@ const extractAllResults = (data, extraIgnoreKeys = []) => {
   return results
 }
 
-const capitalize = (text) =>
-  typeof text === 'string' && text.length > 0 ? text.charAt(0).toUpperCase() + text.slice(1) : text
-
-const JOB_STATUS_CHIP_COLORS = {
-  queued: 'default',
-  running: 'info',
-  succeeded: 'success',
-  failed: 'error',
-}
-
-// Status icon for a single job step.
-const JobStepIcon = ({ status }) => {
-  if (status === 'succeeded') return <CheckCircle fontSize="small" color="success" />
-  if (status === 'failed') return <ErrorIcon fontSize="small" color="error" />
-  if (status === 'running') return <CircularProgress size={16} />
-  return <RadioButtonUnchecked fontSize="small" color="disabled" />
-}
-
-// Live job progress rows (GDAP-onboarding style): one block per row (usually a tenant) with
-// its steps, driven by the jobProgress polling in CippApiResults.
-const CippJobProgress = ({ rows }) => (
-  <Stack spacing={2}>
-    {rows.map((row, rowIndex) => (
-      <Box key={row.Tenant ?? row.Name ?? rowIndex}>
-        <Stack
-          direction="row"
-          sx={{
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 1
-          }}>
-          <Typography variant="subtitle2">{row.Tenant ?? row.Name}</Typography>
-          <Chip
-            size="small"
-            label={capitalize(row.Status)}
-            color={JOB_STATUS_CHIP_COLORS[row.Status] || 'default'}
-            variant={row.Status === 'queued' ? 'outlined' : 'filled'}
-          />
-        </Stack>
-        <Stack spacing={1}>
-          {(row.Steps || []).map((step, index) => (
-            <Stack direction="row" spacing={1} key={index} sx={{
-              alignItems: "flex-start"
-            }}>
-              <Box sx={{ pt: 0.25 }}>
-                <JobStepIcon status={step.Status} />
-              </Box>
-              <Box sx={{ minWidth: 0 }}>
-                <Typography variant="body2">{step.Title}</Typography>
-                <Typography variant="caption" sx={{
-                  color: "text.secondary"
-                }}>
-                  {step.Message}
-                </Typography>
-              </Box>
-            </Stack>
-          ))}
-        </Stack>
-      </Box>
-    ))}
-  </Stack>
-)
-
 export const CippApiResults = (props) => {
   const { apiObject, errorsOnly = false, alertSx = {}, jobProgress = null } = props
 
@@ -233,15 +168,22 @@ export const CippApiResults = (props) => {
     staleTime: 0,
   })
   const jobRows = Array.isArray(jobStatus.data) ? jobStatus.data : []
+  // After a re-run the finished rows stay as they are until the job rewrites them, so keep polling
+  // until a row goes active again, or give up after 90 s if the re-run never started.
+  const restartedAt = useRef(null)
+  const handleRerun = useCallback(() => {
+    restartedAt.current = Date.now()
+    setJobPollActive(true)
+  }, [])
   useEffect(() => {
-    if (
-      jobPollActive &&
-      jobRows.length > 0 &&
-      jobRows.every((row) => row.Status === 'succeeded' || row.Status === 'failed')
-    ) {
-      setJobPollActive(false)
+    if (!jobPollActive || jobRows.length === 0) return
+    if (jobRows.some((row) => row.Status !== 'succeeded' && row.Status !== 'failed')) {
+      restartedAt.current = null
+      return
     }
-  }, [jobPollActive, jobRows])
+    if (restartedAt.current && Date.now() - restartedAt.current < 90000) return
+    setJobPollActive(false)
+  }, [jobPollActive, jobRows, jobStatus.dataUpdatedAt])
   const pageTitle = `${document.title} - Results`
   const correctResultObj = useMemo(() => {
     if (!apiObject.isSuccess) return
@@ -349,6 +291,10 @@ export const CippApiResults = (props) => {
     setFinalResults((prev) => prev.map((r) => (r.id === id ? { ...r, visible: false } : r)))
   }, [])
 
+  const handleCloseAllResults = useCallback(() => {
+    setFinalResults((prev) => prev.map((r) => ({ ...r, visible: false })))
+  }, [])
+
   const toggleDetails = useCallback((id) => {
     setShowDetails((prev) => ({ ...prev, [id]: !prev[id] }))
   }, [])
@@ -414,6 +360,18 @@ export const CippApiResults = (props) => {
           variant="outlined"
           severity={
             failedActionCount === 0 ? 'success' : successActionCount === 0 ? 'error' : 'warning'
+          }
+          action={
+            <Tooltip title="Dismiss all results">
+              <IconButton
+                aria-label="dismiss all results"
+                color="inherit"
+                size="small"
+                onClick={handleCloseAllResults}
+              >
+                <Close fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
           }
         >
           <Typography variant="body2">
@@ -580,6 +538,9 @@ export const CippApiResults = (props) => {
             }}>
             <Typography variant="h6">{jobProgress.title ?? 'Progress'}</Typography>
             {jobPollActive && <CircularProgress size={16} />}
+            {jobRows.length > 0 && (
+              <CippCopyToClipBoard text={formatJobProgressText(jobRows)} type="button" />
+            )}
           </Stack>
           {jobRows.length === 0 ? (
             <Typography variant="body2" sx={{
@@ -588,7 +549,11 @@ export const CippApiResults = (props) => {
               Waiting for the first status update...
             </Typography>
           ) : (
-            <CippJobProgress rows={jobRows} />
+            <CippJobProgress
+              rows={jobRows}
+              onRerun={handleRerun}
+              actions={jobProgress.actions}
+            />
           )}
         </Box>
       )}

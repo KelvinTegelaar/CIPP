@@ -12,6 +12,7 @@ import { useState } from "react";
 import ScheduledTaskDetails from "../../../../components/CippComponents/ScheduledTaskDetails";
 import { CippScheduledTaskActions } from "../../../../components/CippComponents/CippScheduledTaskActions";
 import { CippSchedulerDrawer } from "../../../../components/CippComponents/CippSchedulerDrawer";
+import { OFFBOARDING_PROGRESS_ACTIONS } from "../../../../components/CippComponents/CippJobProgress";
 
 const Page = () => {
   const [wizardOpen, setWizardOpen] = useState(false);
@@ -78,6 +79,14 @@ const Page = () => {
       maxWidth: "lg",
       componentProps: {
         columns: 3,
+        // A run-now job returns a DeploymentId; polling it shows each user's steps live in the wizard.
+        // Progress and re-runs go through offboarding endpoints, so the wizard's permission is enough.
+        jobProgress: {
+          idField: "DeploymentId",
+          title: "Offboarding Progress",
+          url: (id) => `/api/ListOffboardingProgress?DeploymentId=${id}`,
+          actions: OFFBOARDING_PROGRESS_ACTIONS,
+        },
       },
     },
   ];

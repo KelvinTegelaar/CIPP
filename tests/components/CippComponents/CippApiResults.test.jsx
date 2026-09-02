@@ -1,5 +1,6 @@
 import React from 'react'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '../../test-utils'
 import { CippApiResults } from '../../../src/components/CippComponents/CippApiResults'
 
@@ -172,6 +173,32 @@ describe('CippApiResults', () => {
     expect(alert).toHaveClass('MuiAlert-colorSuccess')
     // success alerts have no Get Help button
     expect(screen.queryByText('Get Help')).not.toBeInTheDocument()
+  })
+
+  it('dismisses every result from the summary rollup close button', async () => {
+    const apiObject = {
+      data: {
+        Results: [
+          { resultText: 'User created', copyField: 'user@example.com', state: 'success' },
+          { resultText: 'Mailbox converted', copyField: 'mbx', state: 'success' },
+        ],
+      },
+      isFetching: false,
+      isSuccess: true,
+      isError: false,
+      error: null,
+    }
+    renderWithProviders(<CippApiResults apiObject={apiObject} />)
+    expect(screen.getByText('All 2 actions completed successfully')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'dismiss all results' }))
+    // the rollup and the view/download toolbar go with the last visible row
+    expect(screen.queryByText('All 2 actions completed successfully')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('download-csv')).not.toBeInTheDocument()
+    // individual rows leave once their Collapse finishes
+    await waitFor(() => {
+      expect(screen.queryByText('User created')).not.toBeInTheDocument()
+      expect(screen.queryByText('Mailbox converted')).not.toBeInTheDocument()
+    })
   })
 
   it('renders error message when isError is true and error has response data', () => {

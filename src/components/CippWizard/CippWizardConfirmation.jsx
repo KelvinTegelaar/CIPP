@@ -1,4 +1,13 @@
-import { Card, Stack, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Card,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import { useState } from "react";
 import { Grid } from "@mui/system";
 import { PropertyList } from "../property-list";
 import { PropertyListItem } from "../property-list-item";
@@ -14,6 +23,7 @@ export const CippWizardConfirmation = (props) => {
     onPreviousStep, 
     onNextStep, 
     currentStep,
+    jobProgress, // Optional live progress polling after submit, see CippApiResults
     columns = 2 // Default to 2 columns for backward compatibility
   } = props;
   
@@ -104,6 +114,9 @@ export const CippWizardConfirmation = (props) => {
 
   const gridSize = getGridSize();
 
+  // The summary folds away on submit so the results and any live progress take the space.
+  const [summaryOpen, setSummaryOpen] = useState(true);
+
   return (
     <Stack spacing={3}>
       {filteredEntries.length === 0 ? (
@@ -117,7 +130,15 @@ export const CippWizardConfirmation = (props) => {
           </Stack>
         </Card>
       ) : (
-        <Card variant="outlined">
+        <Accordion
+          variant="outlined"
+          expanded={summaryOpen}
+          onChange={(_, open) => setSummaryOpen(open)}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography variant="h6">Selected options</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
           <Grid container spacing={3}>
             {columnEntries.map((columnData, index) => (
               <Grid key={index} size={gridSize}>
@@ -133,7 +154,8 @@ export const CippWizardConfirmation = (props) => {
               </Grid>
             ))}
           </Grid>
-        </Card>
+          </AccordionDetails>
+        </Accordion>
       )}
 
       <CippWizardStepButtons
@@ -144,6 +166,8 @@ export const CippWizardConfirmation = (props) => {
         onNextStep={onNextStep}
         formControl={formControl}
         noSubmitButton={formValues?.noSubmitButton}
+        jobProgress={jobProgress}
+        onSubmit={() => setSummaryOpen(false)}
       />
     </Stack>
   );
