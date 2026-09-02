@@ -184,6 +184,7 @@ const Page = () => {
       }
       title={pageTitle}
       apiUrl={apiUrl}
+      apiData={{ manualPagination: true }}
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}

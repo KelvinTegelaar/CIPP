@@ -317,10 +317,11 @@ export function ApiGetCallWithPagination({
       return response.data;
     },
     getNextPageParam: (lastPage) => {
+      // AllTenants pages only when the page opted into manualPagination.
       if (
         data?.noPagination ||
         data?.manualPagination === false ||
-        data?.tenantFilter === "AllTenants"
+        (data?.tenantFilter === "AllTenants" && data?.manualPagination !== true)
       ) {
         return undefined;
       }

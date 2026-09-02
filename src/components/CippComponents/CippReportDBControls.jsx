@@ -23,6 +23,8 @@ import { CippQueueTracker } from "../CippTable/CippQueueTracker";
  * @param {string[]} [config.cacheColumns=["CacheTimestamp"]] - Extra columns to show when in cached mode.
  * @param {string} [config.tenantColumn="Tenant"] - Column name for tenant (shown in AllTenants mode).
  * @param {Object} [config.apiData]       - Additional static API data to merge (e.g. extra params).
+ * @param {boolean} [config.serverPagination=false] - Server-side paging for cached reads; the
+ *   endpoint must support manualPagination and the page must pass apiDataKey={reportDB.apiDataKey}.
  *
  * @returns {Object}
  *   - useReportDB {boolean}          - Current cache mode
@@ -31,6 +33,7 @@ import { CippQueueTracker } from "../CippTable/CippQueueTracker";
  *   - resolvedApiUrl {string}        - API URL with ?UseReportDB=true appended when needed
  *   - resolvedApiData {Object|undefined} - Merged apiData (for pages that use apiData instead of URL params)
  *   - resolvedQueryKey {string}      - Query key including tenant and cache mode
+ *   - apiDataKey {string|undefined}  - Pass as apiDataKey when serverPagination is set ('Results' in cached mode)
  *   - cacheColumns {string[]}        - Columns to prepend/append when cached (includes Tenant for AllTenants)
  *   - controls {JSX.Element}         - Ready-to-render JSX for the cache toggle, sync button, and queue tracker
  *   - syncDialog {JSX.Element}       - The CippApiDialog element to render alongside CippTablePage
@@ -49,6 +52,7 @@ export function useCippReportDB(config) {
     cacheColumns = ['CacheTimestamp'],
     tenantColumn = 'Tenant',
     apiData: extraApiData,
+    serverPagination = false,
   } = config
 
   const currentTenant = useSettings().currentTenant;
@@ -85,12 +89,18 @@ export function useCippReportDB(config) {
   }, [apiUrl, useReportDB])
 
   // Keep mode flag in the URL only; CippTablePage merges apiData into query params.
+  // serverPagination adds manualPagination on cached reads.
   const resolvedApiData = useMemo(() => {
-    if (!extraApiData) return undefined
+    const paging = serverPagination && useReportDB ? { manualPagination: true } : {}
+    if (!extraApiData && !serverPagination) return undefined
     return {
+      ...paging,
       ...extraApiData,
     }
-  }, [extraApiData])
+  }, [extraApiData, serverPagination, useReportDB])
+
+  // Paged responses nest rows under Results; the legacy bare array needs no dataKey.
+  const apiDataKey = serverPagination && useReportDB ? 'Results' : undefined
 
   // Query key that includes tenant + mode for proper cache separation
   const resolvedQueryKey = useMemo(() => {
@@ -195,6 +205,7 @@ export function useCippReportDB(config) {
     resolvedApiUrl,
     resolvedApiData,
     resolvedQueryKey,
+    apiDataKey,
     cacheColumns: extraColumns,
     controls,
     syncDialog: syncDialogElement,

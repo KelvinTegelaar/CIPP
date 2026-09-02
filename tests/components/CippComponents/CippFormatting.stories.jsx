@@ -153,7 +153,7 @@ export const Booleans = {
       await expect(canvasElement.textContent).toContain('Yes')
       await expect(canvasElement.textContent).toContain('No')
       expect(canvasElement.querySelector('[data-testid="CheckIcon"]')).not.toBeNull()
-      expect(canvasElement.querySelector('[data-testid="CancelIcon"]')).not.toBeNull()
+      expect(canvasElement.querySelector('[data-testid="CloseIcon"]')).not.toBeNull()
     })
 
     await step('enabled+date renders the scheduled variant', async () => {

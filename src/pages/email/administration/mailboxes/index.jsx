@@ -19,6 +19,7 @@ const Page = () => {
     syncTitle: 'Sync Mailboxes',
     allowToggle: true,
     defaultCached: true,
+    serverPagination: true,
   })
 
   // Anonymized report names break the usage merge in the Mailboxes cache sync, leaving
@@ -87,11 +88,15 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={CippExchangeActions()}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         filters={filterList}
+        // Paged cache reads arrive in table walk order, not sorted like the unpaged report.
+        defaultSorting={[{ id: 'displayName', desc: false }]}
         tableFilter={
           <CippAnonymizedReportAlert show={reportDB.useReportDB && allZeroStorage}>
             All mailboxes report 0 storage used, which usually means Microsoft 365 report

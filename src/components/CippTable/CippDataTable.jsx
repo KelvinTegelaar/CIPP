@@ -847,7 +847,11 @@ export const CippDataTable = (props) => {
 
       const combinedResults = allPages.flatMap((page) => {
         const nestedData = getNestedValue(page, api.dataKey)
-        return nestedData !== undefined ? nestedData : []
+        if (nestedData !== undefined) {
+          return nestedData
+        }
+        // dataKey miss on a bare-array page: the endpoint served the legacy shape.
+        return Array.isArray(page) ? page : []
       })
       const filtered = dataFilter
         ? combinedResults.filter(dataFilter)

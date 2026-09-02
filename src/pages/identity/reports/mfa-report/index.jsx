@@ -16,6 +16,7 @@ const Page = () => {
     syncTitle: 'Sync MFA Report',
     allowToggle: false,
     defaultCached: true,
+    serverPagination: true,
   })
 
   const simpleColumns = [
@@ -113,12 +114,15 @@ const Page = () => {
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
         apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         simpleColumns={simpleColumns}
         filters={filters}
         actions={actions}
         dataSourceControls={reportDB.controls}
         initialFilters={urlFilters}
+        // Paged cache reads arrive in table walk order, not sorted like the unpaged report.
+        defaultSorting={[{ id: 'UPN', desc: false }]}
       />
       {reportDB.syncDialog}
     </>

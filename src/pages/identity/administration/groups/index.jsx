@@ -37,6 +37,7 @@ const Page = () => {
     defaultCached: false,
     allowAllTenantSync: true,
     cacheColumns: ['CacheTimestamp'],
+    serverPagination: true,
   })
 
   const actions = [
@@ -444,7 +445,10 @@ const Page = () => {
         }
         dataSourceControls={reportDB.controls}
         apiUrl={reportDB.resolvedApiUrl}
-        apiData={reportDB.useReportDB ? undefined : {}}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
+        // Paged cache reads arrive in table walk order, not sorted like the unpaged report.
+        defaultSorting={[{ id: 'displayName', desc: false }]}
         queryKey={
           reportDB.useReportDB ? reportDB.resolvedQueryKey : `groups-${currentTenant}`
         }

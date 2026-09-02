@@ -341,9 +341,11 @@ const Page = () => {
       }
       title={pageTitle}
       apiUrl={apiUrl}
+      apiDataKey="Results"
       simpleColumns={simpleColumns}
       queryKey={`Listlogs-${startDate}-${endDate}-${username}-${severity}-${filterEnabled}-${currentTenant}`}
       tenantInTitle={false}
+      defaultSorting={[{ id: 'DateTime', desc: true }]}
       apiData={{
         StartDate: startDate, // Pass start date filter from state
         EndDate: endDate, // Pass end date filter from state
@@ -351,6 +353,11 @@ const Page = () => {
         Severity: severity, // Pass severity filter from state
         Filter: filterEnabled, // Pass filter toggle state
         Tenant: currentTenant, // Pass current tenant from settings
+        manualPagination: true, // Page through ListLogs via Metadata.nextLink
+        // CippTablePage injects tenantFilter from the tenant selector, but ListLogs reads
+        // Tenant instead, and a literal 'AllTenants' tenantFilter would stop
+        // ApiGetCallWithPagination from ever fetching page two. Null drops the param.
+        tenantFilter: null,
       }}
       actions={actions}
       offCanvas={offcanvas}
