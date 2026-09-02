@@ -42,6 +42,9 @@ import countryList from "../../data/countryList.json";
  *   formControl   — react-hook-form's return from useForm()
  *   existingPolicy — optional JSON to pre-populate fields (edit mode)
  *   disabled       — optional boolean to make the form read-only
+ *   directorySearch — optional boolean; back the user and group pickers with a type-ahead search
+ *                    of the selected tenant's directory. For editing a tenant's policy, not a
+ *                    template, which has no tenant to search.
  */
 
 // ---------------------------------------------------------------------------
@@ -81,6 +84,48 @@ function specialValueOptions(schemaProp) {
   const vals = schemaProp?.specialValues ?? [];
   const labels = schemaProp?.specialValueLabels ?? {};
   return vals.map((v) => ({ label: labels[v] ?? v, value: v }));
+}
+
+/** Label for a directory object: "Name (upn)" for a user, the display name for a group. */
+export function directoryObjectLabel(obj) {
+  if (!obj?.displayName) return obj?.userPrincipalName || obj?.mail || obj?.id || "";
+  return obj.userPrincipalName ? `${obj.displayName} (${obj.userPrincipalName})` : obj.displayName;
+}
+
+/**
+ * Type-ahead search of the selected tenant's directory for the user and group pickers.
+ * Graph's $search tokenises names, so "smi" finds "John Smith", and each keystroke fetches one
+ * bounded page instead of the whole user list. The special tokens stay available as static
+ * options next to the search results.
+ */
+function directorySearchApi(kind) {
+  const isUser = kind === "users";
+  const searchFields = isUser
+    ? ["displayName", "userPrincipalName", "mail"]
+    : ["displayName", "mail"];
+  return {
+    url: "/api/ListGraphRequest",
+    dataKey: "Results",
+    queryKey: `CADirectorySearch-${kind}`,
+    data: {
+      Endpoint: kind,
+      $select: isUser ? "id,displayName,userPrincipalName" : "id,displayName,mail",
+      $top: 25,
+      // One page only; also stops the client from following nextLink.
+      noPagination: true,
+    },
+    labelField: directoryObjectLabel,
+    valueField: "id",
+    descriptionField: isUser ? undefined : "mail",
+    manualSearch: true,
+    searchParam: "$search",
+    // Double quotes delimit each clause, so they cannot appear inside the term.
+    searchFormatter: (term) => {
+      const safeTerm = term.replace(/"/g, "");
+      return searchFields.map((field) => `"${field}:${safeTerm}"`).join(" OR ");
+    },
+    mergeOptions: true,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -233,7 +278,12 @@ function GuestsOrExternalUsersFields({ formControl, disabled, prefix, direction,
 // ---------------------------------------------------------------------------
 // Users & Groups section
 // ---------------------------------------------------------------------------
-function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
+function UsersSection({
+  formControl,
+  disabled,
+  prefix = "conditions.users",
+  directorySearch = false,
+}) {
   const schemaDef = resolveRef("#/$defs/conditionalAccessUsers");
   const guestSchema = resolveRef("#/$defs/conditionalAccessGuestsOrExternalUsers");
   const roleOptions = useMemo(
@@ -243,6 +293,14 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
   const specialUserOpts = useMemo(
     () => specialValueOptions(schemaDef?.properties?.includeUsers),
     [schemaDef]
+  );
+  const userSearchApi = useMemo(
+    () => (directorySearch ? directorySearchApi("users") : undefined),
+    [directorySearch]
+  );
+  const groupSearchApi = useMemo(
+    () => (directorySearch ? directorySearchApi("groups") : undefined),
+    [directorySearch]
   );
 
   const guestTypeOpts = useMemo(() => {
@@ -266,8 +324,14 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
           multiple
           freeSolo
           disabled={disabled}
+          clearOnBlur
           options={specialUserOpts}
-          placeholder="All, None, GuestsOrExternalUsers, or user display names/IDs"
+          api={userSearchApi}
+          placeholder={
+            directorySearch
+              ? "All, None, GuestsOrExternalUsers, or search for users"
+              : "All, None, GuestsOrExternalUsers, or user display names/IDs"
+          }
         />
       </Grid>
       {/* Exclude users */}
@@ -280,8 +344,10 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
           multiple
           freeSolo
           disabled={disabled}
+          clearOnBlur
           options={[{ label: "GuestsOrExternalUsers", value: "GuestsOrExternalUsers" }]}
-          placeholder="User display names or IDs"
+          api={userSearchApi}
+          placeholder={directorySearch ? "Search for users" : "User display names or IDs"}
         />
       </Grid>
       {/* Include groups */}
@@ -294,7 +360,9 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
           multiple
           freeSolo
           disabled={disabled}
-          placeholder="Group display names or IDs"
+          clearOnBlur
+          api={groupSearchApi}
+          placeholder={directorySearch ? "Search for groups" : "Group display names or IDs"}
         />
       </Grid>
       {/* Exclude groups */}
@@ -307,7 +375,9 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
           multiple
           freeSolo
           disabled={disabled}
-          placeholder="Group display names or IDs"
+          clearOnBlur
+          api={groupSearchApi}
+          placeholder={directorySearch ? "Search for groups" : "Group display names or IDs"}
         />
       </Grid>
       {/* Include roles */}
@@ -1378,6 +1448,7 @@ const CippCAPolicyBuilder = ({
   existingPolicy,
   disabled = false,
   showNamedLocations = false,
+  directorySearch = false,
 }) => {
   const policySchema = caSchema;
 
@@ -1513,7 +1584,11 @@ const CippCAPolicyBuilder = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <UsersSection formControl={formControl} disabled={disabled} />
+          <UsersSection
+            formControl={formControl}
+            disabled={disabled}
+            directorySearch={directorySearch}
+          />
         </AccordionDetails>
       </Accordion>
 

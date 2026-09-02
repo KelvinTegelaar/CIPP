@@ -205,7 +205,15 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         data: {
           ...(tenantScoped ? { tenantFilter: currentTenant } : null),
           ...currentApi.data,
-          ...(manualSearch && searchTerm ? { [searchParam]: searchTerm } : null),
+          // api.searchFormatter shapes the typed text into what the endpoint expects (e.g. a Graph
+          // $search clause); the raw term still keys the cache.
+          ...(manualSearch && searchTerm
+            ? {
+                [searchParam]: currentApi.searchFormatter
+                  ? currentApi.searchFormatter(searchTerm)
+                  : searchTerm,
+              }
+            : null),
         },
         waiting: manualSearch ? enoughChars : true,
         queryKey: manualSearch ? `${baseQueryKey}-${searchParam}-${searchTerm}` : baseQueryKey,
@@ -299,8 +307,15 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     }
   }, [actionGetRequest.data, actionGetRequest.isSuccess, actionGetRequest.isError, actionGetRequest.error, apiRef])
 
+  // api.mergeOptions keeps the static `options` prop alongside the API results, for fixed tokens
+  // (e.g. "All") that a server-side search would never return.
+  const mergeOptions = !!api?.mergeOptions
+  const staticOptionRefs = useMemo(
+    () => new Set(mergeOptions ? options : []),
+    [mergeOptions, options]
+  )
   const memoizedOptions = useMemo(() => {
-    let finalOptions = api ? usedOptions : options
+    let finalOptions = api ? (mergeOptions ? [...options, ...usedOptions] : usedOptions) : options
     if (removeOptions && removeOptions.length) {
       finalOptions = finalOptions.filter((o) => !removeOptions.includes(o.value))
     }
@@ -308,7 +323,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
       finalOptions.sort((a, b) => String(a.label ?? "").localeCompare(String(b.label ?? "")))
     }
     return finalOptions
-  }, [api, usedOptions, options, removeOptions, sortOptions])
+  }, [api, usedOptions, options, removeOptions, sortOptions, mergeOptions])
 
   // Dedicated effect for handling preselected value or auto-select first item - only runs once
   useEffect(() => {
@@ -486,7 +501,12 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         filterOptions={(options, params) => {
           // Server-side search already returned only matches; client-side substring filtering would
           // wrongly hide ANR results (a display-name match whose address lacks the typed text).
-          const filtered = manualSearch ? [...options] : filter(options, params)
+          // Merged static options never went through the server, so they still get filtered here.
+          const filtered = manualSearch
+            ? options.filter(
+                (option) => !staticOptionRefs.has(option) || filter([option], params).length > 0
+              )
+            : filter(options, params)
           const isExisting =
             options?.length > 0 &&
             options.some(
@@ -857,6 +877,16 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           );
         }}
         {...other}
+        onBlur={(event) => {
+          other.onBlur?.(event)
+          // clearOnBlur discards text left behind without a pick; drop the results that went with
+          // it too, so the field reopens with a clean list instead of the last search.
+          if (manualSearch && other.clearOnBlur) {
+            setSearchInput('')
+            setSearchTerm('')
+            setUsedOptions([])
+          }
+        }}
         onInputChange={(event, newInputValue, reason) => {
           other.onInputChange?.(event, newInputValue, reason)
           if (!manualSearch) return
