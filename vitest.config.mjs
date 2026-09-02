@@ -7,8 +7,6 @@ import { fileURLToPath } from 'node:url'
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const nextAliases = {
-  // stub for mui-tiptap's uninstalled required peer, see mocks/tiptap-extension-image.js
-  '@tiptap/extension-image': path.resolve(dirname, 'tests/mocks/tiptap-extension-image.js'),
   'next/dynamic': path.resolve(dirname, 'tests/mocks/next-dynamic.jsx'),
   'next/router': path.resolve(dirname, 'tests/mocks/next-router.js'),
   'next/navigation': path.resolve(dirname, 'tests/mocks/next-navigation.js'),

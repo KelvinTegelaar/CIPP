@@ -46,11 +46,6 @@ const config = {
         // lightweight mocks so components render without a Next.js runtime.
         alias: {
           ...config.resolve?.alias,
-          // stub for mui-tiptap's uninstalled required peer @tiptap/extension-image
-          '@tiptap/extension-image': path.resolve(
-            dirname,
-            '../tests/mocks/tiptap-extension-image.js',
-          ),
           'next/dynamic': path.resolve(dirname, '../tests/mocks/next-dynamic.jsx'),
           'next/router': path.resolve(dirname, '../tests/mocks/next-router.js'),
           'next/navigation': path.resolve(dirname, '../tests/mocks/next-navigation.js'),
