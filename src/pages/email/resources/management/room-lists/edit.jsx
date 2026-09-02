@@ -95,9 +95,13 @@ const EditRoomList = () => {
       <CippFormPage
         formControl={formControl}
         queryKey={[`ListRoomLists-${groupId}`]}
-        title={`Room List: ${
-          groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName || ""
-        }`}
+        title={
+          groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName
+            ? `Room List: ${
+                groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName
+              }`
+            : "Room List"
+        }
         formPageType="Edit"
         backButtonTitle="Room Lists"
         postUrl="/api/EditRoomList"

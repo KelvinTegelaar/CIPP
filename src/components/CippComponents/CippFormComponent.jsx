@@ -61,6 +61,14 @@ const withShrinkLabel = (slotProps) => ({
   inputLabel: { shrink: true, ...slotProps?.inputLabel },
 });
 
+// Switch, Checkbox and RadioGroup have no fullWidth prop; MUI would hand it to the DOM as an
+// unknown attribute, so drop it before spreading a field's remaining props onto them.
+const omitFullWidth = (fieldProps) => {
+  const rest = { ...fieldProps };
+  delete rest.fullWidth;
+  return rest;
+};
+
 // Helper function to convert bracket notation to dot notation
 // Improved to correctly handle nested bracket notations
 const convertBracketsToDots = (name) => {
@@ -85,6 +93,9 @@ export const CippFormComponent = (props) => {
     disableVariables = false,
     includeSystemVariables = false,
     row,
+    // Consumed by the autoComplete-backed and table types below; every other type renders a
+    // MUI input that would forward it to the DOM.
+    isFetching,
     ...other
   } = props;
   const { errors } = useFormState({ control: formControl.control });
@@ -143,7 +154,7 @@ export const CippFormComponent = (props) => {
             <MemoizedCippAutoComplete
               {...autoCompleteProps}
               options={resolvedOptions}
-              isFetching={autoCompleteProps.isFetching}
+              isFetching={isFetching}
               variant="filled"
               defaultValue={field.value}
               label={label}
@@ -206,6 +217,7 @@ export const CippFormComponent = (props) => {
                   <CippDataTable
                     noCard={true}
                     {...other}
+                    isFetching={isFetching}
                     onChange={(value) => field.onChange(value)}
                     simple={false}
                   />
@@ -461,7 +473,7 @@ export const CippFormComponent = (props) => {
                 renderSwitchWithLabel(
                   <Switch
                     checked={Boolean(field.value)}
-                    {...other}
+                    {...omitFullWidth(other)}
                     {...formControl.register(convertedName, { ...validators })}
                   />,
                 )
@@ -487,7 +499,10 @@ export const CippFormComponent = (props) => {
       return (
         <>
           <div>
-            <Checkbox {...other} {...formControl.register(convertedName, { ...validators })} />
+            <Checkbox
+              {...omitFullWidth(other)}
+              {...formControl.register(convertedName, { ...validators })}
+            />
             <label>{label}</label>
           </div>
           {get(errors, convertedName, {})?.message && (
@@ -534,7 +549,7 @@ export const CippFormComponent = (props) => {
                     value={field.value || ""}
                     onChange={(e) => field.onChange(e.target.value)}
                     onBlur={field.onBlur}
-                    {...other}
+                    {...omitFullWidth(other)}
                   >
                     {props.options.map((option, idx) => (
                       <FormControlLabel
@@ -568,7 +583,7 @@ export const CippFormComponent = (props) => {
               render={({ field }) => (
                 <MemoizedCippAutoComplete
                   {...other}
-                  isFetching={other.isFetching}
+                  isFetching={isFetching}
                   variant="filled"
                   defaultValue={field.value}
                   label={label}

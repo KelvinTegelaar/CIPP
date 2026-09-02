@@ -61,7 +61,7 @@ export const CippSchedulerDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
         startIcon={<CalendarDaysIcon />}
       >

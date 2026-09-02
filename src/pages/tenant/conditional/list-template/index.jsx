@@ -150,7 +150,7 @@ const Page = () => {
         queryKey="ListCATemplates-table"
         actions={actions}
         offCanvas={offCanvas}
-        simpleColumns={["displayName", "package", "GUID"]}
+        simpleColumns={["displayName", "source", "package", "GUID"]}
         cardButton={
           <Box sx={{ display: "flex", gap: 1 }}>
             <Button

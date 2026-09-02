@@ -1,6 +1,6 @@
 import React from 'react'
 import { Edit, Sync, PlayArrow, PictureAsPdf } from '@mui/icons-material'
-import { CippFormTemplateTenantSelector } from '../../../components/CippComponents/CippFormTemplateTenantSelector.jsx'
+import { CippFormTemplateTenantSelector } from './CippFormTemplateTenantSelector.jsx'
 
 /**
  * Creates the standard drift management actions array

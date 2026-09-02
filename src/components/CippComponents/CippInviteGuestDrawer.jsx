@@ -85,7 +85,7 @@ export const CippInviteGuestDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
         startIcon={<Send />}
       >

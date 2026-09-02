@@ -510,7 +510,7 @@ const AppApprovalTemplateForm = ({
                 name="appType"
                 label="Application Type"
                 type="select"
-                clearable={false}
+                disableClearable={true}
                 options={[
                   { label: "Enterprise Application", value: "EnterpriseApp" },
                   { label: "Gallery Template", value: "GalleryTemplate" },

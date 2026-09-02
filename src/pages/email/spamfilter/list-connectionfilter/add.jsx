@@ -29,7 +29,7 @@ const AddPolicy = () => {
     <CippFormPage
       formControl={formControl}
       queryKey="AddConnectionFilter"
-      title="Add Connection Filter"
+      title="Connection Filter"
       backButtonTitle="Connection Filter Overview"
       postUrl="/api/AddConnectionFilter"
     >

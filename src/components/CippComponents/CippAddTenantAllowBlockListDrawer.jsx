@@ -210,7 +210,7 @@ export const CippAddTenantAllowBlockListDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
         startIcon={<PlaylistAdd />}
       >

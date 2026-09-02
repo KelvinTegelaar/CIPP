@@ -138,6 +138,23 @@ export const CippPolicyCompareDialog = ({
               </Alert>
             )}
 
+            {results.assignmentComparison?.matched === false && (
+              <Alert severity="warning" icon={<CompareArrowsIcon />}>
+                <AlertTitle>Assignments differ</AlertTitle>
+                The comparison above covers the policy settings only. This
+                standard also verifies assignments, and they do not match what
+                the standard expects, which is why the drift report still lists
+                this policy as a deviation:
+                <Box component="ul" sx={{ mt: 1, mb: 0, pl: 3 }}>
+                  {(results.assignmentComparison.reasons || []).map(
+                    (reason, index) => (
+                      <li key={index}>{reason}</li>
+                    )
+                  )}
+                </Box>
+              </Alert>
+            )}
+
             {!results.identical && comparisonRows.length > 0 && (
               <CippPolicyDiffTable rows={comparisonRows} labelA="Baseline" labelB="Tenant" />
             )}

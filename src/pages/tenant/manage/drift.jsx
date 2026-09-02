@@ -41,7 +41,7 @@ import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
 import { useDialog } from '../../../hooks/use-dialog'
 import tabOptions from './tabOptions.json'
 import { getStandards } from '../../../utils/standards-data'
-import { createDriftManagementActions } from './driftManagementActions'
+import { createDriftManagementActions } from '../../../components/CippComponents/CippDriftManagementActions'
 import { ExecutiveReportButton } from '../../../components/ExecutiveReportButton'
 import { CippAutoComplete } from '../../../components/CippComponents/CippAutocomplete'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
@@ -2479,21 +2479,10 @@ const ManageDriftPage = () => {
         </Menu>
       ))}
 
-      {/* Hidden ExecutiveReportButton that gets triggered programmatically */}
+      {/* Hidden ExecutiveReportButton that gets triggered programmatically; it loads its own
+          report data, so it takes no tenant props. */}
       <Box sx={{ position: 'absolute', top: -9999, left: -9999 }}>
-        <ExecutiveReportButton
-          ref={reportButtonRef}
-          tenantName={currentTenantData?.displayName || tenantFilter}
-          tenantId={currentTenantData?.customerId}
-          userStats={{
-            licensedUsers: 0, // These would come from actual user data APIs
-            unlicensedUsers: 0,
-            guests: 0,
-            globalAdmins: 0,
-          }}
-          standardsData={standardsApi.data}
-          organizationData={currentTenantData}
-        />
+        <ExecutiveReportButton ref={reportButtonRef} />
       </Box>
     </HeaderedTabbedLayout>
   );

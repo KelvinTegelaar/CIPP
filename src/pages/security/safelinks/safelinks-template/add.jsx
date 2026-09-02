@@ -60,5 +60,5 @@ const DeploySafeLinksPolicyTemplate = () => {
   );
 };
 
-DeploySafeLinksPolicyTemplate.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+DeploySafeLinksPolicyTemplate.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 export default DeploySafeLinksPolicyTemplate;

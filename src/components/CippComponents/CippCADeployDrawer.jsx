@@ -92,7 +92,7 @@ export const CippCADeployDrawer = ({
     <>
       {!isExternallyControlled && (
         <PermissionButton
-          requiredPermissions={requiredPermissions}
+          {...(PermissionButton !== Button ? { requiredPermissions } : {})}
           onClick={() => setInternalDrawerVisible(true)}
           startIcon={<RocketLaunch />}
         >

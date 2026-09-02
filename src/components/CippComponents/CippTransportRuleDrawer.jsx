@@ -1385,7 +1385,7 @@ export const CippTransportRuleDrawer = ({
     <>
       {rowAction === false && !drawerVisible && (
         <PermissionButton
-          requiredPermissions={requiredPermissions}
+          {...(PermissionButton !== Button ? { requiredPermissions } : {})}
           onClick={() => setDrawerVisible(true)}
           startIcon={isEditMode ? <Edit /> : <RocketLaunch />}
         >

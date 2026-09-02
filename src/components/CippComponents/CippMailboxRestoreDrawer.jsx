@@ -140,7 +140,7 @@ export const CippMailboxRestoreDrawer = ({
       <PermissionButton
         startIcon={<RestoreFromTrash />}
         onClick={() => setDrawerVisible(true)}
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
       >
         {buttonText}
       </PermissionButton>

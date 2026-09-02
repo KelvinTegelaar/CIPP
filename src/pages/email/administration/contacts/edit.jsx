@@ -137,7 +137,7 @@ const EditContact = () => {
     <CippFormPage
       formControl={formControl}
       queryKey={`ListContacts-${id}`}
-      title={`Contact: ${contact?.displayName || ""}`}
+      title={contact?.displayName ? `Contact: ${contact.displayName}` : "Contact"}
       backButtonTitle="Contacts Overview"
       formPageType="Edit"
       postUrl="/api/EditContact"

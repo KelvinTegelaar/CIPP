@@ -1,30 +1,30 @@
-import "@mui/material";
-import { Layout as DashboardLayout } from "../layouts/index";
-import Head from "next/head.js";
-import { Box, Container, Stack, Grid } from "@mui/system";
+import Head from 'next/head.js'
+import { Box, CircularProgress, Stack, Typography } from '@mui/material'
+import { Layout as DashboardLayout } from '../layouts/index'
+
 const FullPageLoading = () => {
   return (
     <DashboardLayout>
       <Head>
-        <title>Devices</title>
+        <title>Loading</title>
       </Head>
-      <Box
-        sx={{
-          flexGrow: 1,
-          py: 4,
-        }}
-      >
-        <Container maxWidth={false}>
-          <Stack spacing={6}>
-            <Grid container spacing={3}>
-              <Grid style={{ display: "flex" }} size={{ md: 6, xs: 12 }}></Grid>
-              Loading... #Todo: Make pretty, make it obey user settings for theme.
-            </Grid>
-          </Stack>
-        </Container>
+      <Box sx={{ flexGrow: 1, py: 4 }}>
+        <Stack
+          spacing={2}
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '50vh',
+          }}
+        >
+          <CircularProgress />
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Loading...
+          </Typography>
+        </Stack>
       </Box>
     </DashboardLayout>
-  );
-};
+  )
+}
 
-export default FullPageLoading;
+export default FullPageLoading

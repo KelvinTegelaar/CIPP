@@ -79,7 +79,7 @@ export const CippAddEquipmentDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
         startIcon={<AddBusiness />}
       >

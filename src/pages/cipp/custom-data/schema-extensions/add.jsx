@@ -192,9 +192,11 @@ const Page = () => {
                           onChange={(e) => handlePropertyChange(index, "type", e.target.value)}
                           options={propertyTypeOptions}
                           required={true}
-                          validate={(value) => {
-                            if (value) return true;
-                            return "Please select a property type.";
+                          validators={{
+                            validate: (value) => {
+                              if (value) return true;
+                              return "Please select a property type.";
+                            },
                           }}
                         />
                       </Box>

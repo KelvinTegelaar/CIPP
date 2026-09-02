@@ -742,7 +742,7 @@ const CippAppPermissionBuilder = ({
                           label="Add a Service Principal (optional)"
                           placeholder="Select a Service Principal or enter an AppId if not listed"
                           name="servicePrincipal"
-                          createOption={true}
+                          creatable={true}
                           onCreateOption={onCreateServicePrincipal}
                           isFetching={spFetching}
                           options={servicePrincipals?.Results.map((sp) => {

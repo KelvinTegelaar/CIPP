@@ -127,7 +127,7 @@ export const CippAppApprovalTemplateDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
         startIcon={isEditMode ? <Edit /> : <Add />}
       >

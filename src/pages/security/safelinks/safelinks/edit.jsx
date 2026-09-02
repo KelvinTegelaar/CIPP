@@ -59,7 +59,7 @@ const Page = () => {
   return (
     <>
       <CippFormPage
-        title={`Edit Safe Links Policy: ${PolicyName}`}
+        title={PolicyName ? `Safe Links Policy: ${PolicyName}` : "Safe Links Policy"}
         backButtonTitle="Safe Links Overview"
         formPageType="Edit"
         formControl={formControl}
@@ -83,6 +83,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

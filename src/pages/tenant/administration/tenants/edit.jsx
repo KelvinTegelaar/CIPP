@@ -4,7 +4,7 @@ import { ApiGetCall } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
-import { Stack, Box, Tab, Tabs, Typography, Button } from "@mui/material";
+import { Alert, Stack, Box, Tab, Tabs, Typography, Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippCardTabPanel } from "../../../../components/CippComponents/CippCardTabPanel";
 import CippFormSection from "../../../../components/CippFormPages/CippFormSection";
@@ -36,6 +36,8 @@ const Page = () => {
   const tenantDetails = ApiGetCall({
     url: id ? `/api/ListTenantDetails?tenantFilter=${id}` : null,
     queryKey: id ? `TenantProperties_${id}` : null,
+    // Opened without a tenant: nothing to fetch, and the title must not read "undefined".
+    waiting: !!id,
   });
 
   useEffect(() => {
@@ -139,16 +141,25 @@ const Page = () => {
   return (
     <CippPageCard
       title={
-        tenantDetails.isSuccess
-          ? `Edit Tenant - ${
-              tenantDetails?.data?.customProperties?.Alias ?? tenantDetails?.data?.displayName
-            }`
-          : "Loading..."
+        !id
+          ? "Edit Tenant"
+          : tenantDetails.isSuccess
+            ? `Edit Tenant - ${
+                tenantDetails?.data?.customProperties?.Alias ??
+                tenantDetails?.data?.displayName ??
+                id
+              }`
+            : "Loading..."
       }
       backButtonTitle="Tenants"
       noTenantInHead={true}
     >
       <Box sx={{ width: "100%" }}>
+        {!id && (
+          <Alert severity="info" sx={{ m: 2 }}>
+            No tenant selected. Open this page from the Tenants list to edit a tenant.
+          </Alert>
+        )}
         <Box sx={{ borderBottom: 1, borderColor: "divider", px: "24px", m: "auto" }}>
           <Tabs value={value} onChange={handleTabChange} aria-label="Edit Tenant Tabs">
             <Tab label="General" {...tabProps(0)} />

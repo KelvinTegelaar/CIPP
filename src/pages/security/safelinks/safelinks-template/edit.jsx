@@ -47,7 +47,11 @@ const Page = () => {
   return (
     <>
       <CippFormPage
-        title={`Edit Safe Links Template: ${templateData.data?.Results?.name || ID}`}
+        title={
+          templateData.data?.Results?.name || ID
+            ? `Safe Links Template: ${templateData.data?.Results?.name || ID}`
+            : "Safe Links Template"
+        }
         backButtonTitle="Safe Links Templates Overview"
         formPageType="Edit"
         formControl={formControl}

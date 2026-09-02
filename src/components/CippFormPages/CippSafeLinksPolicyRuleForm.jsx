@@ -516,7 +516,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
       <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="autoComplete"
-          createable={true}
+          creatable={true}
           formControl={formControl}
           name="DoNotRewriteUrls"
           label="Do Not Rewrite URLs"
@@ -593,7 +593,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           name="RecipientDomainIs"
           label="Domains"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -602,7 +602,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           name="SentToMemberOf"
           label="Groups"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -612,7 +612,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           label="Recipients"
           valueField="userPrincipalName"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -624,7 +624,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           name="ExceptIfRecipientDomainIs"
           label="Domains"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -633,7 +633,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           name="ExceptIfSentToMemberOf"
           label="Groups"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -643,7 +643,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           label="Recipients"
           valueField="userPrincipalName"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
 

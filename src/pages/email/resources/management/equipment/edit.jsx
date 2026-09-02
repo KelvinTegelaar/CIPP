@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Divider, Typography } from "@mui/material";
+import { Alert, Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
@@ -113,7 +113,9 @@ const EditEquipmentMailbox = () => {
     <CippFormPage
       formControl={formControl}
       queryKey={`Equipment-${equipmentId}`}
-      title="Edit Equipment Mailbox"
+      title="Equipment Mailbox"
+      formPageType="Edit"
+      hideSubmit={!equipmentId}
       backButtonTitle="Equipment Mailboxes Overview"
       postUrl="/api/EditEquipmentMailbox"
       customDataformatter={(values) => ({
@@ -152,6 +154,11 @@ const EditEquipmentMailbox = () => {
         workingHoursTimeZone: values.workingHoursTimeZone?.value || values.workingHoursTimeZone,
       })}
     >
+      {!equipmentId && (
+        <Alert severity="info">
+          No equipment mailbox selected. Open this page from the Equipment Mailboxes list.
+        </Alert>
+      )}
       {equipmentInfo.isLoading && (
         <CippFormSkeleton layout={[2, 3, 2, 2, 2, 1, 2, 2, 2, 3, 1, 1]} />
       )}

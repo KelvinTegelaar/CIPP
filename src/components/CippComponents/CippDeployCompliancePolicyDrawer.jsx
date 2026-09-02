@@ -218,7 +218,7 @@ export const CippDeployCompliancePolicyDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
         startIcon={<RocketLaunch />}
       >

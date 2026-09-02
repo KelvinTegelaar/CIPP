@@ -222,6 +222,14 @@ const syncRows = [
   { Name: 'OAuth2PermissionGrants' },
 ]
 
+// The summary stamp arrives as an ISO string or as the backend's { UtcDateTime } object;
+// anything unparseable must not render as "Invalid Date".
+const formatLastDataRefresh = (value) => {
+  if (!value) return "";
+  const date = new Date(value?.UtcDateTime ?? value);
+  return Number.isNaN(date.getTime()) ? "" : `Last data refresh: ${date.toLocaleString()}`;
+};
+
 const Page = () => {
   const theme = useTheme()
   const currentTenant = useSettings().currentTenant
@@ -332,9 +340,7 @@ const Page = () => {
                 <Typography variant="body2" sx={{
                   color: "text.secondary"
                 }}>
-                  {summary.lastDataRefresh
-                    ? `Last data refresh: ${new Date(summary.lastDataRefresh).toLocaleString()}`
-                    : ''}
+                  {formatLastDataRefresh(summary.lastDataRefresh)}
                 </Typography>
                 <Stack direction="row" spacing={1}>
                   <ShadowAIReportButton

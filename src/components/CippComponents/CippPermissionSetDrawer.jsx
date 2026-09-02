@@ -137,7 +137,7 @@ export const CippPermissionSetDrawer = ({
         <PermissionButton
           onClick={() => setDrawerVisible(true)}
           startIcon={isEditMode ? <Edit /> : <Add />}
-          requiredPermissions={requiredPermissions}
+          {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         >
           {buttonText}
         </PermissionButton>

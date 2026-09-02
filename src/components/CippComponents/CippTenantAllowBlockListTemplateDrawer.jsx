@@ -248,7 +248,7 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
     <>
       {!isEditMode && controlledDrawerVisible === undefined && (
         <PermissionButton
-          requiredPermissions={requiredPermissions}
+          {...(PermissionButton !== Button ? { requiredPermissions } : {})}
           onClick={() => setDrawerVisible(true)}
           startIcon={<SaveAlt />}
         >

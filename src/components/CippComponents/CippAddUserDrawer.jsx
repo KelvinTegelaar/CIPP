@@ -143,7 +143,7 @@ export const CippAddUserDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
         startIcon={<PersonAdd />}
       >

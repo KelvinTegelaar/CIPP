@@ -27,12 +27,15 @@ export const CippApiLogsDrawer = ({
     setDrawerVisible(true)
   }
 
-  // Build the API URL with the filter
+  // Build the API URL with the filter. Scoped drawers (a standard template, a scheduled task or a
+  // baseline run) cover the last 7 days: their runs are scheduled, so "today only" is empty for
+  // most of the day after a run that finished overnight.
+  const isScoped = Boolean(standardFilter || scheduledTaskFilter || baselineRunFilter)
   const apiUrl = `/api/ListLogs?Filter=true${apiFilter ? `&API=${apiFilter}` : ''}${
     tenantFilter ? `&Tenant=${tenantFilter}` : ''
   }${standardFilter ? `&StandardTemplateId=${standardFilter}` : ''}${
     scheduledTaskFilter ? `&ScheduledTaskId=${scheduledTaskFilter}` : ''
-  }${baselineRunFilter ? `&BaselineRunId=${baselineRunFilter}` : ''}`
+  }${baselineRunFilter ? `&BaselineRunId=${baselineRunFilter}` : ''}${isScoped ? '&Days=7' : ''}`
 
   // Define the columns for the logs table
   const simpleColumns = [

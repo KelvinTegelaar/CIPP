@@ -174,7 +174,9 @@ const EditRoomMailbox = () => {
     <CippFormPage
       formControl={formControl}
       queryKey={`Room-${roomId}`}
-      title="Edit Room Mailbox"
+      title="Room Mailbox"
+      formPageType="Edit"
+      hideSubmit={!roomId}
       backButtonTitle="Room Mailboxes Overview"
       postUrl="/api/EditRoomMailbox"
       customDataformatter={(values) => ({
@@ -232,6 +234,11 @@ const EditRoomMailbox = () => {
         WorkingHoursTimeZone: values.WorkingHoursTimeZone?.value || values.WorkingHoursTimeZone,
       })}
     >
+      {!roomId && (
+        <Alert severity="info">
+          No room mailbox selected. Open this page from the Room Mailboxes list.
+        </Alert>
+      )}
       {roomInfo.isFetching && (
         <CippFormSkeleton layout={[2, 3, 1, 2, 3, 2, 1, 2, 3, 1, 3, 1, 3, 1]} />
       )}

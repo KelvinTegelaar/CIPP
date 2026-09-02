@@ -9,7 +9,7 @@ const EditRolePage = () => {
   const { role } = router.query;
 
   return (
-    <CippPageCard hideBackButton={false} title={`Edit Role: ${role}`}>
+    <CippPageCard hideBackButton={false} title={role ? `Edit Role: ${role}` : "Edit Role"}>
       <CardContent>
         <Stack spacing={2}>
           <Alert color="info">
