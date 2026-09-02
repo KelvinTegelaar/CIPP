@@ -1,4 +1,5 @@
 import {
+  chipClasses,
   filledInputClasses,
   paperClasses,
   radioClasses,
@@ -54,6 +55,31 @@ export const createComponents = ({ palette }) => {
       styleOverrides: {
         avatar: {
           backgroundColor: palette.neutral[800],
+        },
+        // The status colours are bright fills, so their white contrastText lands near 2:1.
+        // Filled status chips take the page ink instead; primary is left alone because the
+        // colour preset can be a dark blue that needs white on it.
+        root: {
+          [`&.${chipClasses.filled}`]: {
+            [`&.${chipClasses.colorInfo}, &.${chipClasses.colorSuccess}, &.${chipClasses.colorWarning}, &.${chipClasses.colorError}`]:
+              {
+                color: palette.background.default,
+                [`& .${chipClasses.icon}, & .${chipClasses.deleteIcon}`]: {
+                  color: "inherit",
+                },
+              },
+          },
+        },
+      },
+    },
+    MuiCssBaseline: {
+      styleOverrides: {
+        // Bare <a> in helper text falls back to the UA link colour, which is an unreadable
+        // navy on a dark surface. Components that render as an anchor are excluded: they
+        // carry their own ink, and a contained Button would end up orange on orange.
+        [`a:link:not(.MuiButtonBase-root):not(.MuiLink-root):not(.MuiChip-root),
+          a:visited:not(.MuiButtonBase-root):not(.MuiLink-root):not(.MuiChip-root)`]: {
+          color: palette.primary.main,
         },
       },
     },
@@ -150,7 +176,9 @@ export const createComponents = ({ palette }) => {
     MuiSkeleton: {
       styleOverrides: {
         root: {
-          backgroundColor: palette.neutral[600],
+          // One step above the card, mirroring the light theme's neutral[200] on white.
+          // neutral[600] read as a bright block sitting on top of the card.
+          backgroundColor: palette.neutral[800],
         },
       },
     },

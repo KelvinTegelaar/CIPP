@@ -42,9 +42,10 @@ export const FileDropzone = (props) => {
         ...sx
       }}
       {...getRootProps()}>
+      {/* No backgroundColor: the theme's Avatar override already picks a surface per mode,
+          and the hard-coded neutral.200 was an off-white disc on a dark card. */}
       <Avatar
         sx={{
-          backgroundColor: 'neutral.200',
           color: 'text.secondary',
           height: 42,
           width: 42

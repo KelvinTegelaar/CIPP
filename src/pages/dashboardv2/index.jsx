@@ -186,8 +186,9 @@ const Page = () => {
 
   if (isAllTenants) {
     // No top margin, matching CippTablePage: the layout's breadcrumb Divider already carries mb: 2.
+    // xs bottom margin clears the mobile page-actions FAB (~76px), matching CippMobileCardList's pb: 10.
     return (
-      <Container maxWidth={false} sx={{ mb: 6 }}>
+      <Container maxWidth={false} sx={{ mb: { xs: 10, md: 6 } }}>
         <CippHead title="Dashboard" />
         <AllTenantsDashboard />
       </Container>
@@ -199,7 +200,8 @@ const Page = () => {
     // desktop spacing kept for now. Mobile adds nothing — the breadcrumb rail no longer
     // renders on the dashboard, and the sibling views (identity/devices/custom) start their
     // toolbar straight after the layout's own 16px gap, so this view must too.
-    <Container maxWidth={false} sx={{ mt: { xs: 0, md: 12 }, mb: 6 }}>
+    // mb xs clears the mobile page-actions FAB (~76px), matching CippMobileCardList's pb: 10.
+    <Container maxWidth={false} sx={{ mt: { xs: 0, md: 12 }, mb: { xs: 10, md: 6 } }}>
       <CippHead title="Dashboard" />
       <Box sx={{ width: '100%', mx: 'auto' }}>
         {/* xs has a single item (the portals cell is desktop-only), so grid spacing would

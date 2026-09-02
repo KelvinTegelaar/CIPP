@@ -110,6 +110,14 @@ const Page = () => {
                     justifyContent: 'center',
                     height: 80,
                     mb: 1,
+                    // Some vendor marks are dark ink with no light-on-dark variant shipped;
+                    // those get a light plate to sit on rather than vanishing into the card.
+                    ...(preferredTheme === 'dark' &&
+                      extension?.logoNeedsLightBacking && {
+                        backgroundColor: 'common.white',
+                        borderRadius: 1,
+                        px: 2,
+                      }),
                   }}
                 >
                   {extension?.logo && (
@@ -183,6 +191,9 @@ const Page = () => {
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
+                    // ButtonBase centers its children; stretch so a short description
+                    // cannot shrink the card below the column width.
+                    alignItems: 'stretch',
                     height: '100%',
                   }}
                   href={`/cipp/integrations/configure?id=${extension.id}`}

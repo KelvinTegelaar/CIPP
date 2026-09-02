@@ -181,7 +181,8 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                 const secondary = detail ? `${label} · ${detail}` : label
                 return (
                   <Box key={`active-${item.CmdletName}-${item.ContentHash}-${index}`} sx={rowSx}>
-                    <Box sx={{ minWidth: 0 }}>
+                    {/* flex: 1 + minWidth: 0 lets the ellipsis engage before the row runs under the icon */}
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
                       <Typography variant="body2" noWrap title={title} sx={{
                         fontWeight: 500
                       }}>
@@ -194,7 +195,7 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                       </Typography>
                     </Box>
                     <Tooltip title="Snooze this alert">
-                      <IconButton size="small" onClick={() => setSnoozeTarget(item)}>
+                      <IconButton size="small" onClick={() => setSnoozeTarget(item)} sx={{ flexShrink: 0 }}>
                         <SnoozeIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
@@ -232,7 +233,8 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                       key={`snoozed-${snooze.PartitionKey}-${snooze.RowKey}`}
                       sx={{ ...rowSx, opacity: 0.55 }}
                     >
-                      <Box sx={{ minWidth: 0 }}>
+                      {/* flex: 1 + minWidth: 0 lets the ellipsis engage before the row runs under the icons */}
+                      <Box sx={{ minWidth: 0, flex: 1 }}>
                         <Typography variant="body2" noWrap title={title}>
                           {title}
                         </Typography>

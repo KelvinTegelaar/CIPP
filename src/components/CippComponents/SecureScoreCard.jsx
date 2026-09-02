@@ -1,4 +1,5 @@
 import { Box, Card, CardHeader, CardContent, Typography, Divider, Skeleton } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { Security as SecurityIcon } from '@mui/icons-material'
 import { useRouter } from 'next/router'
 import {
@@ -42,6 +43,9 @@ export const secureScoreAxisProps = ({ isMobile, ticks }) => ({
 export const SecureScoreCard = ({ data, isLoading }) => {
   const router = useRouter()
   const isMobile = useIsMobileLayout()
+  // recharts has no theme; hard-coded light greys drew a near-white grid and a white tooltip
+  // over the dark card, so grid, reference line and tooltip come off the palette.
+  const theme = useTheme()
   return (
     <Card sx={{ flex: 1, height: '100%' }}>
       <CardHeader
@@ -132,7 +136,7 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                       data={chartData}
                       margin={{ left: 12, right: 12, top: 10, bottom: 10 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                      <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                       <XAxis dataKey="date" {...axis.x} />
                       <YAxis
                         {...axis.y}
@@ -141,26 +145,25 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                       />
                       <ReferenceLine
                         y={maxScore}
-                        stroke="#94a3b8"
+                        stroke={theme.palette.text.secondary}
                         strokeDasharray="0"
                         label={{
                           value: `Max: ${Math.round(maxScore)}`,
                           position: 'insideTopRight',
                           fontSize: 11,
-                          fill: '#64748b',
+                          fill: theme.palette.text.secondary,
                         }}
                       />
                       <RechartsTooltip
                         contentStyle={{
-                          backgroundColor: 'rgba(255,255,255,0.85)',
-                          color: 'inherit',
-                          border: '1px solid #bbb',
+                          backgroundColor: theme.palette.background.paper,
+                          color: theme.palette.text.primary,
+                          border: `1px solid ${theme.palette.divider}`,
                           borderRadius: '4px',
                           boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                          backdropFilter: 'blur(2px)',
                         }}
                         labelStyle={{
-                          color: '#000000',
+                          color: theme.palette.text.primary,
                         }}
                         formatter={(value, name) => {
                           if (name === 'score') return [value.toFixed(2), 'Score']

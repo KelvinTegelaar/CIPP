@@ -1,4 +1,5 @@
 import { Box, Typography, Divider, Skeleton } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import {
   LineChart,
   Line,
@@ -10,6 +11,10 @@ import {
 } from "recharts";
 
 export const SecureScoreChart = ({ data, isLoading }) => {
+  // recharts has no theme; hard-coded light greys drew a near-white grid and a white tooltip
+  // over the dark card.
+  const theme = useTheme();
+
   if (isLoading) {
     return (
       <>
@@ -104,13 +109,14 @@ export const SecureScoreChart = ({ data, isLoading }) => {
       <Box sx={{ height: 250 }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ left: 12, right: 12, top: 10, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+            <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
             <XAxis dataKey="date" tick={{ fontSize: 12 }} tickMargin={8} />
             <YAxis tick={{ fontSize: 12 }} tickMargin={8} domain={[0, "dataMax + 20"]} />
             <RechartsTooltip
               contentStyle={{
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                border: "1px solid #ccc",
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                border: `1px solid ${theme.palette.divider}`,
                 borderRadius: "4px",
               }}
               formatter={(value, name) => {

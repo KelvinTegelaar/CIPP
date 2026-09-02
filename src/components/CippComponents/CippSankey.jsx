@@ -22,7 +22,8 @@ export const CippSankey = ({ data, onNodeClick, onLinkClick }) => {
   // resolves dark/light from the OS preference, so checking the setting for "dark" said
   // light while the page was dark — and a "multiply" blend over a dark card composites the
   // link ribbons to black.
-  const isDark = useTheme().palette.mode === "dark";
+  const muiTheme = useTheme();
+  const isDark = muiTheme.palette.mode === "dark";
   // A sankey is three columns of nodes plus their labels. At desktop widths the labels sit
   // horizontally inside an 18px-thick node and still read. On a ~350px card they cannot: a
   // node carrying a handful of users is a couple of pixels tall, and its label — rotated or
@@ -47,6 +48,15 @@ export const CippSankey = ({ data, onNodeClick, onLinkClick }) => {
     labels: {
       text: {
         fontSize: isMobile ? 9 : 12,
+        // A label sits on whichever band it belongs to, and those run from bright green to
+        // deep blue, so no single ink contrasts with all of them. A halo in the card colour
+        // separates the glyphs from the band underneath.
+        ...(isDark && {
+          stroke: muiTheme.palette.background.paper,
+          strokeWidth: 3,
+          paintOrder: "stroke",
+          strokeLinejoin: "round",
+        }),
       },
     },
   };

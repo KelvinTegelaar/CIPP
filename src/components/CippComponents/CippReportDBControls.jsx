@@ -160,6 +160,8 @@ export function useCippReportDB(config) {
           </Button>
         </>
       )}
+      {/* Not `disabled` when it cannot be toggled: this is a status badge, and MUI's disabled
+          fade drops the label to ~2:1. Not clickable and without onClick it is already inert. */}
       <Tooltip title={tooltipText}>
         <span>
           <Chip
@@ -169,7 +171,6 @@ export function useCippReportDB(config) {
             size="small"
             onClick={canToggle ? () => setUseReportDB((prev) => !prev) : undefined}
             clickable={canToggle}
-            disabled={!canToggle}
             variant="outlined"
           />
         </span>

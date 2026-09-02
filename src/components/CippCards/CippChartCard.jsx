@@ -41,6 +41,11 @@ const useChartOptions = (labels, chartType, colors) => {
     dataLabels: {
       enabled: false,
     },
+    // ApexCharts' theme.mode does not touch the grid, so its #e0e0e0 default draws
+    // near-white rules on a dark card. Both are the theme's own divider instead.
+    grid: {
+      borderColor: theme.palette.divider,
+    },
 
     xaxis: {
       // Categories drive the bar/line axis labels and the tooltip title. Without this, a bar
@@ -52,6 +57,12 @@ const useChartOptions = (labels, chartType, colors) => {
         style: {
           fontSize: "12px",
         },
+      },
+      axisBorder: {
+        color: theme.palette.divider,
+      },
+      axisTicks: {
+        color: theme.palette.divider,
       },
       tickPlacement: "on",
     },

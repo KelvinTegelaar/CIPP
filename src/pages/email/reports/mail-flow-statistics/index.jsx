@@ -204,9 +204,14 @@ const Page = () => {
       theme.palette.error.main,
     ],
     dataLabels: { enabled: false },
+    // ApexCharts' theme.mode leaves the grid at its #e0e0e0 default, which draws near-white
+    // rules on a dark card; the theme's divider is correct in both modes.
+    grid: { borderColor: theme.palette.divider },
     xaxis: {
       categories: chartLabels,
       labels: { show: true, rotate: 0, style: { fontSize: '12px' } },
+      axisBorder: { color: theme.palette.divider },
+      axisTicks: { color: theme.palette.divider },
       tickPlacement: 'on',
     },
     legend: { show: true, position: 'bottom' },
