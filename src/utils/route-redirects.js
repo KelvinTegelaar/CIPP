@@ -1,0 +1,23 @@
+// Central client-side redirect map for routes that have moved or been retired.
+//
+// The frontend is a static export (next.config.js sets output: 'export'), so the
+// redirects() block in next.config.js and Next middleware never run — there is no
+// server to do the redirect. Instead the host serves 404.html for an unknown path,
+// and the 404 page (src/pages/404.jsx) consults this map before showing its error
+// state: a request for an old path is replaced with its destination in the browser.
+//
+// To retire or move a route, add one entry here — 'old path': 'new path'. Use a
+// leading slash and no trailing slash on both; the lookup tolerates a trailing slash.
+export const routeRedirects = {
+  // The standalone Add User / Bulk Add User pages were removed — both flows now live
+  // in drawers on the Users list page.
+  '/identity/administration/users/add': '/identity/administration/users',
+  '/identity/administration/users/bulk-add': '/identity/administration/users',
+}
+
+export const getRedirectTarget = (pathname) => {
+  if (!pathname) return undefined
+  const normalized =
+    pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
+  return routeRedirects[normalized]
+}
