@@ -1420,7 +1420,9 @@ const Page = () => {
       actionsData={userRequest.data?.[0]?.MailboxActionsData}
       isFetching={graphUserRequest.isLoading}
     >
-      <CippApiResults apiObject={userRequest} errorsOnly={true} />
+      {userRequest.isError && (
+        <CippApiResults apiObject={userRequest} errorsOnly={true} />
+      )}
       {graphUserRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
       {graphUserRequest.isSuccess && (
         <Box
@@ -1435,9 +1437,10 @@ const Page = () => {
                 <Alert severity="error">
                   <Box
                     sx={{
-                      display: "flex",
-                      justifyContent: "space-between"
-                    }}>
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <Typography variant="body2">
                       {userRequest?.data?.[0]?.Mailbox?.[0]?.error.includes(
                         'Microsoft.Exchange.Configuration.Tasks.ManagementObjectNotFoundException'
@@ -1454,9 +1457,13 @@ const Page = () => {
                     </Button>
                   </Box>
                   <Collapse in={showDetails}>
-                    <Box sx={{
-                      mt: 2
-                    }}>{userRequest?.data?.[0]?.Mailbox?.[0]?.error}</Box>
+                    <Box
+                      sx={{
+                        mt: 2,
+                      }}
+                    >
+                      {userRequest?.data?.[0]?.Mailbox?.[0]?.error}
+                    </Box>
                   </Collapse>
                 </Alert>
               </Grid>
@@ -1599,7 +1606,7 @@ const Page = () => {
         )}
       </CippApiDialog>
     </HeaderedTabbedLayout>
-  );
+  )
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
