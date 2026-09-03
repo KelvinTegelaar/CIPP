@@ -130,6 +130,7 @@ const CACHE_TYPE_COLLECTIONS = {
   ],
   SharePoint: [
     "SPOTenant",
+    "SPOSites",
     "SPOTenantSyncClientRestriction",
     "SharePointAdminSettings",
     "SharePointSiteUsage",

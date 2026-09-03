@@ -285,6 +285,11 @@
     "description": "SharePoint site usage statistics"
   },
   {
+    "type": "SPOSites",
+    "friendlyName": "SharePoint Site Settings",
+    "description": "Per-site SharePoint admin settings (sharing, lifecycle, version policy, People Picker, unmanaged-device access) for every site collection, keyed by site id"
+  },
+  {
     "type": "SiteActivity",
     "friendlyName": "Site Activity",
     "description": "Per-site activity with siteType classification (SharePoint, SharePointAndTeams, OneDrive) and workload activity columns"
