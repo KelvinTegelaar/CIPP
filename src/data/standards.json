@@ -5466,7 +5466,7 @@
     "name": "standards.SPGuestPeoplePicker",
     "cat": "SharePoint Standards",
     "tag": [],
-    "helpText": "Controls whether guest (external) users already in the tenant appear as suggestions in the SharePoint and OneDrive People Picker. Enforces the wanted state on both the tenant default and every existing site collection - they are set independently, so changing the tenant default does not update existing sites. This classic standard reads and writes SharePoint live; on large tenants prefer the cache-backed baseline version.",
+    "helpText": "Controls whether guest (external) users already in the tenant appear as suggestions in the SharePoint and OneDrive People Picker. Enforces the wanted state on BOTH the tenant default and every existing site collection - they are set independently, so changing the tenant default does not update existing sites. The per-site picture is read from the SharePoint reporting cache (refreshed daily), so a large tenant is never enumerated live during a run; a 24h rerun guard stops the write sweep from repeating before that cache refreshes and re-evaluates the result.",
     "executiveText": "Makes existing external collaborators discoverable (or hidden) when sharing SharePoint and OneDrive content, consistently across the tenant default and every existing site. This keeps the sharing experience predictable and prevents individual sites from drifting away from the agreed collaboration posture.",
     "addedComponent": [
       {
