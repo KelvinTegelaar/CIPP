@@ -411,3 +411,68 @@ describe('CIPPTableToptoolbar desktop export', () => {
     await screen.findByText('API Response')
   })
 })
+
+describe('CIPPTableToptoolbar bulk noConfirm customFunction', () => {
+  it('passes the full selection once when multiPost is true', async () => {
+    const user = userEvent.setup()
+    const customFunction = vi.fn()
+
+    renderWithProviders(
+      <CippDataTable
+        data={rows}
+        simpleColumns={['displayName', 'mail']}
+        title="Users"
+        maxHeightOffset="100px"
+        actions={[
+          {
+            label: 'Edit Properties',
+            multiPost: true,
+            noConfirm: true,
+            customFunction,
+          },
+        ]}
+      />
+    )
+    await screen.findByText('Users')
+
+    await user.click(screen.getByRole('checkbox', { name: 'Select Alice Smith' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Select Bob Johnson' }))
+    await user.click(await screen.findByRole('button', { name: 'Bulk Actions' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Edit Properties' }))
+
+    await waitFor(() => expect(customFunction).toHaveBeenCalledTimes(1))
+    const [passedUsers] = customFunction.mock.calls[0]
+    expect(Array.isArray(passedUsers)).toBe(true)
+    expect(passedUsers).toHaveLength(2)
+    expect(passedUsers.map((u) => u.displayName)).toEqual(['Alice Smith', 'Bob Johnson'])
+  })
+
+  it('still invokes customFunction once per row when multiPost is false', async () => {
+    const user = userEvent.setup()
+    const customFunction = vi.fn()
+
+    renderWithProviders(
+      <CippDataTable
+        data={rows}
+        simpleColumns={['displayName', 'mail']}
+        title="Users"
+        maxHeightOffset="100px"
+        actions={[
+          {
+            label: 'Per-row Action',
+            noConfirm: true,
+            customFunction,
+          },
+        ]}
+      />
+    )
+    await screen.findByText('Users')
+
+    await user.click(screen.getByRole('checkbox', { name: 'Select Alice Smith' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Select Bob Johnson' }))
+    await user.click(await screen.findByRole('button', { name: 'Bulk Actions' }))
+    await user.click(await screen.findByRole('menuitem', { name: 'Per-row Action' }))
+
+    await waitFor(() => expect(customFunction).toHaveBeenCalledTimes(2))
+  })
+})

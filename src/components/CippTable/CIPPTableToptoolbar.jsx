@@ -233,7 +233,16 @@ export const CIPPTableToptoolbar = React.memo(
       // api.noConfirm true, and its mount effect auto-submits into the same customFunction
       // being called here — every selected row's action fired twice.
       if (action?.noConfirm && action.customFunction) {
-        eligibleRows.forEach((row) => action.customFunction(wrapActionRow(row.original.original ?? row.original), action, {}))
+        // multiPost actions expect the full selection in one call (e.g. Edit Properties
+        // stores users in sessionStorage then navigates). Per-row invocation would
+        // overwrite that state with only the last selected row.
+        if (action.multiPost) {
+          action.customFunction(selectedData, action, {})
+        } else {
+          eligibleRows.forEach((row) =>
+            action.customFunction(wrapActionRow(row.original.original ?? row.original), action, {})
+          )
+        }
         // Deliberately no closeMenu() here — that matches the behaviour this branch had
         // before; the only thing being fixed is the duplicate invocation.
         return
