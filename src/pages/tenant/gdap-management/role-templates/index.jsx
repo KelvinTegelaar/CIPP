@@ -190,17 +190,19 @@ const Page = () => {
           <>
             <Button
               component={Link}
-              href="/tenant/gdap-management/role-templates/mappings"
-              startIcon={<AccountTree />}
-            >
-              Group Mappings
-            </Button>
-            <Button
-              component={Link}
+              variant="contained"
+              size="small"
               href="/tenant/gdap-management/role-templates/add"
               startIcon={<AddBox />}
             >
               Add Template
+            </Button>
+            <Button
+              component={Link}
+              href="/tenant/gdap-management/role-templates/mappings"
+              startIcon={<AccountTree />}
+            >
+              Group Mappings
             </Button>
           </>
         }
