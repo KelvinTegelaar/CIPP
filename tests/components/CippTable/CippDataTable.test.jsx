@@ -424,10 +424,13 @@ describe('CippDataTable card view without an offCanvas', () => {
     await waitFor(() => expect(screen.getByText('Alice Smith')).toBeInTheDocument())
     await user.click(screen.getByText('Alice Smith'))
 
-    // 'text' mode would flatten the boolean to the string "Yes"; the cell renderer uses an icon.
+    // 'text' mode would flatten the boolean to a plain "Yes" text node; the cell renderer uses
+    // an icon instead — an SVG with role=img whose accessible name is "Yes" (titleAccess), which
+    // is what a table cell renders too. Assert the icon is present rather than the absence of the
+    // word, since that accessible name legitimately contains "Yes".
     // Anchored: unanchored, this would also pass on "notcontoso.com" — and CodeQL flags it.
     await waitFor(() => expect(screen.getAllByText(/^contoso\.com$/).length).toBeGreaterThan(0))
-    expect(screen.queryByText('Yes')).toBeNull()
+    expect(screen.getAllByRole('img', { name: 'Yes' }).length).toBeGreaterThan(0)
   })
 
   it('spells out portal links instead of showing a bare icon', async () => {
