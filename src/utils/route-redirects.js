@@ -28,6 +28,9 @@ export const routeRedirects = {
   // the add flow now lives in a drawer on the Vacation Mode list.
   '/tenant/conditional/deploy-vacation/add':
     '/identity/administration/vacation-mode',
+  // User Templates moved from Manage Tenant tabs to the Users tabbed layout.
+  '/tenant/manage/user-defaults':
+    '/identity/administration/users/user-defaults',
 }
 
 export const getRedirectTarget = (pathname) => {

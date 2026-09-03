@@ -1,17 +1,17 @@
-import { Layout as DashboardLayout } from '../../../layouts/index'
-import { CippIcons } from '../../../utils/icon-registry'
-import { HeaderedTabbedLayout } from '../../../layouts/HeaderedTabbedLayout'
-import { CippDataTable } from '../../../components/CippTable/CippDataTable'
-import { CippHead } from '../../../components/CippComponents/CippHead'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import { CippIcons } from '../../../../utils/icon-registry'
+import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { Box, Button } from '@mui/material'
-import { useDialog } from '../../../hooks/use-dialog'
-import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
-import countryList from '../../../data/countryList.json'
+import { useDialog } from '../../../../hooks/use-dialog'
+import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
+import countryList from '../../../../data/countryList.json'
 import tabOptions from './tabOptions.json'
-import { useSettings } from '../../../hooks/use-settings'
+import { useSettings } from '../../../../hooks/use-settings'
 
 const Page = () => {
-  const pageTitle = 'New User Default Templates'
+  const pageTitle = 'User Templates'
   const createDialog = useDialog()
   const userSettings = useSettings()
 
@@ -93,7 +93,7 @@ const Page = () => {
         valueField: 'id',
         queryKey: `ListGraphRequest-domains-${userSettings.currentTenant}`,
         dataFilter: (options) =>
-          options.filter((option) => option?.addedFields?.isVerified === true), // Only include verified domains
+          options.filter((option) => option?.addedFields?.isVerified === true),
       },
       multiple: false,
       creatable: false,
@@ -198,7 +198,6 @@ const Page = () => {
       label: 'Shared Calendar Permission',
       name: 'sharedCalendarPermission',
       type: 'autoComplete',
-      // Exchange only sends a sharing invitation for these access levels.
       options: [
         { label: 'Editor', value: 'Editor' },
         { label: 'Reviewer', value: 'Reviewer' },
@@ -291,7 +290,7 @@ const Page = () => {
       url: '/api/RemoveUserDefaultTemplate',
       icon: <CippIcons.Delete />,
       data: { ID: 'GUID' },
-      confirmText: 'Do you want to delete this User Default template?',
+      confirmText: 'Do you want to delete this User Template?',
       multiPost: false,
     },
   ]
@@ -331,7 +330,7 @@ const Page = () => {
   }
 
   const createTemplateAction = {
-    label: 'Create User Default Template',
+    label: 'Create User Template',
     type: 'POST',
     url: '/api/AddUserDefaults',
 
@@ -339,16 +338,15 @@ const Page = () => {
   }
 
   return (
-    <HeaderedTabbedLayout tabOptions={tabOptions} title={pageTitle}>
+    <>
       <CippHead title={pageTitle} />
       <Box sx={{ py: 2 }}>
         <CippDataTable
-          title="User Default Templates"
+          title="User Templates"
           api={{ url: '/api/ListNewUserDefaults?includeAllTenants=false' }}
           queryKey={`ListNewUserDefaults-${userSettings.currentTenant}`}
           actions={actions}
           offCanvas={offCanvas}
-          // displayName wins the default title slot but is unset on most templates.
           mobileCard={{ primary: 'templateName' }}
           simpleColumns={[
             'templateName',
@@ -369,7 +367,7 @@ const Page = () => {
 
       <CippApiDialog
         createDialog={createDialog}
-        title="Create User Default Template"
+        title="Create User Template"
         api={createTemplateAction}
         defaultvalues={{ tenantFilter: userSettings.currentTenant }}
         fields={[
@@ -380,10 +378,14 @@ const Page = () => {
           ...templateFields,
         ]}
       />
-    </HeaderedTabbedLayout>
+    </>
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+)
 
 export default Page
