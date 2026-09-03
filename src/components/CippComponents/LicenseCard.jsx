@@ -1,5 +1,5 @@
 import { Box, Card, CardHeader, CardContent, Typography, Divider, Skeleton } from "@mui/material";
-import { CardMembership as CardMembershipIcon } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippSankey } from "./CippSankey";
 import { useRouter } from "next/router";
 
@@ -138,7 +138,7 @@ export const LicenseCard = ({ data, isLoading }) => {
               "&:hover": { textDecoration: "underline" },
             }}
           >
-            <CardMembershipIcon sx={{ fontSize: 24 }} />
+            <CippIcons.CardMembership sx={{ fontSize: 24 }} />
             <Typography variant="h6">License Overview</Typography>
           </Box>
         }

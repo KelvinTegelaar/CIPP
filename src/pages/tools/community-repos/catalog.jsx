@@ -1,8 +1,8 @@
 import { useMemo } from "react";
+import { CippIcons } from "../../../utils/icon-registry";
 import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "../../../layouts/index";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
 import Link from "next/link";
 import { CippHead } from "../../../components/CippComponents/CippHead";
 import { CippTemplateCatalog } from "../../../components/CippComponents/CippTemplateCatalog";
@@ -42,7 +42,7 @@ const Page = () => {
             <Typography variant="h4">Template Catalog</Typography>
             <Button
               variant="outlined"
-              startIcon={<ArrowBack />}
+              startIcon={<CippIcons.ArrowBack />}
               component={Link}
               href="/tools/community-repos"
             >

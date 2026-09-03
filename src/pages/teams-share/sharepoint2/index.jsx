@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CippIcons } from '../../../utils/icon-registry'
 import { useRouter } from 'next/router'
 import {
   Alert,
@@ -15,18 +16,6 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import {
-  Add,
-  ContentCopy,
-  Delete,
-  Edit,
-  FolderOpen,
-  Launch,
-  Lock,
-  ManageAccounts,
-  RestoreFromTrash,
-  Storage as StorageIcon,
-} from '@mui/icons-material'
 import Link from 'next/link'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { CippHead } from '../../../components/CippComponents/CippHead'
@@ -114,7 +103,7 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
     () => [
       {
         label: 'Open in SharePoint',
-        icon: <Launch />,
+        icon: <CippIcons.Launch />,
         noConfirm: true,
         customFunction: (row) => openUrls(row),
         condition: (row) => {
@@ -124,7 +113,7 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
       },
       {
         label: 'Storage',
-        icon: <StorageIcon />,
+        icon: <CippIcons.Storage />,
         condition: () => canReadSite,
         customComponent: (row, { drawerVisible, setDrawerVisible }) => {
           const site = Array.isArray(row) ? row[0] : row
@@ -142,7 +131,7 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
       },
       {
         label: 'Permissions',
-        icon: <ManageAccounts />,
+        icon: <CippIcons.ManageAccounts />,
         condition: () => canReadSite,
         customComponent: (row, { drawerVisible, setDrawerVisible }) => {
           const site = Array.isArray(row) ? row[0] : row
@@ -163,7 +152,7 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
       {
         label: 'Lock',
         type: 'POST',
-        icon: <Lock />,
+        icon: <CippIcons.Lock />,
         url: '/api/ExecSetSiteProperties',
         confirmText:
           'Change lock state for [displayName]? Prefer Read only before No access. Teams-connected sites affect the whole team.',
@@ -195,7 +184,7 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
       },
       {
         label: 'Delete',
-        icon: <Delete />,
+        icon: <CippIcons.Delete />,
         noConfirm: true,
         customFunction: () => {},
         condition: (row) => {
@@ -212,7 +201,7 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
     <Button
       component={Link}
       href="/teams-share/sharepoint/add-site"
-      startIcon={<Add />}
+      startIcon={<CippIcons.Add />}
       variant="contained"
       size="small"
     >
@@ -613,7 +602,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       return [
         {
           label: 'Restore',
-          icon: <RestoreFromTrash fontSize="small" />,
+          icon: <CippIcons.RestoreFromTrash />,
           showInActionsMenu: true,
           noConfirm: true,
           customFunction: (rows) => requestRestore(rows),
@@ -628,7 +617,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     return [
       {
         label: 'Open in SharePoint',
-        icon: <Launch fontSize="small" />,
+        icon: <CippIcons.Launch />,
         showInActionsMenu: true,
         noConfirm: true,
         customFunction: (rows) => openUrls(rows),
@@ -637,7 +626,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       },
       {
         label: 'Storage',
-        icon: <StorageIcon fontSize="small" />,
+        icon: <CippIcons.Storage fontSize="small" />,
         showInActionsMenu: true,
         noConfirm: true,
         condition: (rows) => {
@@ -654,7 +643,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       },
       {
         label: 'Lock',
-        icon: <Lock fontSize="small" />,
+        icon: <CippIcons.Lock />,
         showInActionsMenu: true,
         noConfirm: true,
         condition: (rows) => {
@@ -675,7 +664,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         ? [
             {
               label: 'Edit Site',
-              icon: <Edit fontSize="small" />,
+              icon: <CippIcons.Edit />,
               showInActionsMenu: true,
               noConfirm: true,
               customFunction: () => {},
@@ -685,7 +674,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
         : []),
       {
         label: 'Delete',
-        icon: <Delete fontSize="small" />,
+        icon: <CippIcons.Delete />,
         showInActionsMenu: true,
         noConfirm: true,
         customFunction: () => {},
@@ -702,19 +691,19 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       return [
         {
           label: 'Open folder',
-          icon: <FolderOpen fontSize="small" />,
+          icon: <CippIcons.FolderOpen fontSize="small" />,
           condition: (item) => item?.type === 'recycleFolder',
           onClick: handleOpen,
         },
         {
           label: 'Restore…',
-          icon: <RestoreFromTrash fontSize="small" />,
+          icon: <CippIcons.RestoreFromTrash />,
           condition: (item) => canRestoreRecycleBin && item?.type === 'recycleFolder',
           onClick: (item) => requestRestore(item),
         },
         {
           label: 'Restore',
-          icon: <RestoreFromTrash fontSize="small" />,
+          icon: <CippIcons.RestoreFromTrash />,
           condition: (item) => canRestoreRecycleBin && item?.type === 'recycleItem',
           onClick: (item) => requestRestore(item),
         },
@@ -723,19 +712,19 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     return [
       {
         label: 'Open in SharePoint',
-        icon: <Launch fontSize="small" />,
+        icon: <CippIcons.Launch />,
         condition: (item) => Boolean(item?.webUrl),
         href: (item) => item.webUrl,
       },
       {
         label: 'Browse',
-        icon: <FolderOpen fontSize="small" />,
+        icon: <CippIcons.FolderOpen fontSize="small" />,
         condition: (item) => Boolean(item?.canOpen),
         onClick: handleOpen,
       },
       {
         label: 'Storage',
-        icon: <StorageIcon fontSize="small" />,
+        icon: <CippIcons.Storage fontSize="small" />,
         condition: (item) => canReadSite && isSiteRow(item) && Boolean(item?.webUrl),
         onClick: (item) => {
           if (item?.id) setCheckedIds([item.id])
@@ -744,13 +733,13 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       },
       {
         label: 'Lock',
-        icon: <Lock fontSize="small" />,
+        icon: <CippIcons.Lock />,
         condition: (item) => canWriteSite && isSiteRow(item) && Boolean(item?.webUrl),
         onClick: (item) => lockDialog.handleOpen(item),
       },
       {
         label: 'Copy contents to library…',
-        icon: <ContentCopy fontSize="small" />,
+        icon: <CippIcons.ContentCopy />,
         condition: (item) =>
           canWriteSite &&
           item?.type === 'library' &&
@@ -762,7 +751,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       },
       {
         label: 'Delete',
-        icon: <Delete fontSize="small" />,
+        icon: <CippIcons.Delete />,
         condition: (item) => canWriteSite && canDeleteSite(item),
         onClick: () => {},
       },
@@ -963,7 +952,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
             variant="contained"
             onClick={confirmRestore}
             disabled={restoreApi.isPending}
-            startIcon={<RestoreFromTrash />}
+            startIcon={<CippIcons.RestoreFromTrash />}
           >
             Restore
           </Button>

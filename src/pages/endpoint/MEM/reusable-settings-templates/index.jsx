@@ -1,9 +1,9 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { AddBox, GitHub, Delete, Edit } from "@mui/icons-material";
 import { ApiGetCall } from "../../../../api/ApiCall";
 
 const Page = () => {
@@ -20,14 +20,14 @@ const Page = () => {
     {
       label: "Edit Template",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       link: "/endpoint/MEM/reusable-settings-templates/edit?id=[GUID]",
     },
     {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -71,7 +71,7 @@ const Page = () => {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveIntuneReusableSettingTemplate",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: "GUID",
       },
@@ -91,7 +91,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       cardButton={
-        <Button component={Link} href="reusable-settings-templates/add" startIcon={<AddBox />}>
+        <Button component={Link} href="reusable-settings-templates/add" startIcon={<CippIcons.AddBox />}>
           Add Reusable Settings Template
         </Button>
       }

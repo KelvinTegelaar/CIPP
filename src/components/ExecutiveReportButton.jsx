@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { CippIcons } from '../utils/icon-registry'
 import {
   Button,
   Tooltip,
@@ -17,7 +18,6 @@ import {
   ListItemText,
   TextField,
 } from '@mui/material'
-import { PictureAsPdf, Download, Close, Settings } from '@mui/icons-material'
 import { CippAutoComplete } from './CippComponents/CippAutocomplete'
 import { CippOffCanvas } from './CippComponents/CippOffCanvas'
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
@@ -1701,7 +1701,7 @@ export const ExecutiveReportButton = (props) => {
           gutterBottom
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
-          <Settings size={20} />
+          <CippIcons.Settings size={20} />
           Report Sections
         </Typography>
       )}
@@ -1827,7 +1827,7 @@ export const ExecutiveReportButton = (props) => {
           {...other}
         >
           <ListItemIcon>
-            <PictureAsPdf fontSize="small" />
+            <CippIcons.PictureAsPdf fontSize="small" />
           </ListItemIcon>
           <ListItemText>Executive Summary</ListItemText>
         </MenuItem>
@@ -1836,7 +1836,7 @@ export const ExecutiveReportButton = (props) => {
           <Box component="span" sx={{ display: 'inline-flex', width: '100%', minWidth: 0 }}>
             <Button
               variant="contained"
-              startIcon={<PictureAsPdf />}
+              startIcon={<CippIcons.PictureAsPdf />}
               onClick={() => setPreviewOpen(true)}
               sx={{
                 minWidth: 0,
@@ -1914,10 +1914,10 @@ export const ExecutiveReportButton = (props) => {
               aria-label="Report sections"
               sx={{ display: { xs: 'inline-flex', md: 'none' } }}
             >
-              <Settings />
+              <CippIcons.Settings />
             </IconButton>
             <IconButton onClick={handleClose} size="small" aria-label="Close preview">
-              <Close />
+              <CippIcons.Close />
             </IconButton>
           </Stack>
         </DialogTitle>
@@ -2023,7 +2023,7 @@ export const ExecutiveReportButton = (props) => {
 
           <Button
             variant="contained"
-            startIcon={<Download />}
+            startIcon={<CippIcons.Download />}
             disabled={isDataLoading}
             sx={{ minWidth: 140 }}
             onClick={() => {

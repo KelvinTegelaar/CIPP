@@ -1,9 +1,9 @@
 import { useEffect } from "react";
+import { CippIcons } from "../../../utils/icon-registry";
 import { useRouter } from "next/router";
 import { useForm, useWatch } from "react-hook-form";
 import { Box, Button, Container, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
-import { ArrowBack, InfoOutlined, Save } from "@mui/icons-material";
 import { Layout as DashboardLayout } from "../../../layouts/index";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { CippHead } from "../../../components/CippComponents/CippHead";
@@ -123,7 +123,7 @@ const Page = () => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Button
                 color="inherit"
-                startIcon={<ArrowBack />}
+                startIcon={<CippIcons.ArrowBack />}
                 onClick={() => router.push("/teams-share/sharepoint-templates")}
               >
                 Back
@@ -146,7 +146,7 @@ const Page = () => {
                     }}>
                       <Button
                         variant="contained"
-                        startIcon={<Save />}
+                        startIcon={<CippIcons.Save />}
                         onClick={formControl.handleSubmit(handleSubmit)}
                         disabled={
                           isLoadingTemplate ||
@@ -172,7 +172,7 @@ const Page = () => {
                             aria-label="What needs fixing before save"
                             sx={{ color: "error.main" }}
                           >
-                            <InfoOutlined fontSize="small" />
+                            <CippIcons.InfoOutlined fontSize="small" />
                           </IconButton>
                         </Tooltip>
                       )}

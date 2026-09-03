@@ -1,6 +1,3 @@
-import ArrowRightIcon from "@heroicons/react/24/outline/ArrowRightIcon";
-import CubeIcon from "@heroicons/react/24/outline/CubeIcon";
-import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
 import {
   Box,
   Button,
@@ -17,12 +14,13 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 
 const getContent = (notification, textKey) => {
   return (
     <>
       <ListItemIcon>
-        <SvgIcon fontSize="small">{notification.icon ? notification.icon : <CubeIcon />}</SvgIcon>
+        <SvgIcon fontSize="small">{notification.icon ? notification.icon : <CippIcons.CubeIcon />}</SvgIcon>
       </ListItemIcon>
       <ListItemText
         primary={
@@ -40,7 +38,7 @@ const getContent = (notification, textKey) => {
       <ListItemSecondaryAction>
         <IconButton size="small">
           <SvgIcon fontSize="small">
-            <ArrowRightIcon />
+            <CippIcons.ArrowRightIcon />
           </SvgIcon>
         </IconButton>
       </ListItemSecondaryAction>
@@ -61,7 +59,7 @@ export const CippListItemCard = ({
     listitems = [
       {
         id: "no-messages",
-        icon: <UsersIcon />,
+        icon: <CippIcons.UsersIcon />,
         [textKey]: "No messages found. You're good to go!",
       },
     ];
@@ -76,7 +74,7 @@ export const CippListItemCard = ({
               <ListItem divider key={`listitem-placeholder-${index}`}>
                 <ListItemIcon>
                   <SvgIcon fontSize="small">
-                    <CubeIcon />
+                    <CippIcons.CubeIcon />
                   </SvgIcon>
                 </ListItemIcon>
                 <ListItemText>
@@ -89,7 +87,7 @@ export const CippListItemCard = ({
                 <ListItemSecondaryAction>
                   <IconButton size="small">
                     <SvgIcon fontSize="small">
-                      <ArrowRightIcon />
+                      <CippIcons.ArrowRightIcon />
                     </SvgIcon>
                   </IconButton>
                 </ListItemSecondaryAction>
@@ -117,7 +115,7 @@ export const CippListItemCard = ({
             color="inherit"
             endIcon={
               <SvgIcon fontSize="small">
-                <ArrowRightIcon />
+                <CippIcons.ArrowRightIcon />
               </SvgIcon>
             }
           >

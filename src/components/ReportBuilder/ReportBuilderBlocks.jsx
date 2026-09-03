@@ -1,15 +1,5 @@
 import { Box, Chip, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material'
-import {
-  Add,
-  ArrowDownward,
-  ArrowUpward,
-  BarChart as BarChartIcon,
-  Delete,
-  HorizontalRule,
-  Speed,
-  ViewCarousel,
-  Assessment,
-} from '@mui/icons-material'
+import { CippIcons } from '../../utils/icon-registry'
 import CippButtonCard from '../CippCards/CippButtonCard'
 import { CippAutoComplete } from '../CippComponents/CippAutocomplete'
 import { CHART_KINDS, COVER_STOCK_OPTIONS } from '../CippPdf'
@@ -31,11 +21,11 @@ export const STRUCTURED_BLOCK_TYPES = [
 ]
 
 const BLOCK_META = {
-  chart: { label: 'Chart', Icon: BarChartIcon, colour: 'primary' },
-  scorecard: { label: 'Score Cards', Icon: Assessment, colour: 'success' },
-  progress: { label: 'Progress Bars', Icon: Speed, colour: 'info' },
-  hero: { label: 'Section Divider', Icon: ViewCarousel, colour: 'warning' },
-  pagebreak: { label: 'Page Break', Icon: HorizontalRule, colour: 'default' },
+  chart: { label: 'Chart', Icon: CippIcons.BarChart, colour: 'primary' },
+  scorecard: { label: 'Score Cards', Icon: CippIcons.Assessment, colour: 'success' },
+  progress: { label: 'Progress Bars', Icon: CippIcons.Speed, colour: 'info' },
+  hero: { label: 'Section Divider', Icon: CippIcons.ViewCarousel, colour: 'warning' },
+  pagebreak: { label: 'Page Break', Icon: CippIcons.HorizontalRule, colour: 'default' },
 }
 
 export const isStructuredBlock = (type) => Object.prototype.hasOwnProperty.call(BLOCK_META, type)
@@ -134,7 +124,7 @@ const BlockShell = ({ block, index, totalBlocks, onRemove, onMoveUp, onMoveDown,
                 onClick={() => onMoveUp(index)}
                 disabled={index === 0}
               >
-                <ArrowUpward fontSize="small" />
+                <CippIcons.ArrowUpward fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
@@ -146,7 +136,7 @@ const BlockShell = ({ block, index, totalBlocks, onRemove, onMoveUp, onMoveDown,
                 onClick={() => onMoveDown(index)}
                 disabled={index === totalBlocks - 1}
               >
-                <ArrowDownward fontSize="small" />
+                <CippIcons.ArrowDownward fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
@@ -157,7 +147,7 @@ const BlockShell = ({ block, index, totalBlocks, onRemove, onMoveUp, onMoveDown,
               aria-label="Remove block"
               onClick={() => onRemove(index)}
             >
-              <Delete fontSize="small" />
+              <CippIcons.Delete fontSize="small" />
             </IconButton>
           </Tooltip>
         </Stack>
@@ -210,7 +200,7 @@ const RowsEditor = ({ rows, columns, onChange, addLabel = 'Add row', minRows = 1
                 onClick={() => remove(rowIndex)}
                 disabled={rows.length <= minRows}
               >
-                <Delete fontSize="small" />
+                <CippIcons.Delete fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
@@ -218,7 +208,7 @@ const RowsEditor = ({ rows, columns, onChange, addLabel = 'Add row', minRows = 1
       ))}
       <Box>
         <IconButton size="small" onClick={add} aria-label={addLabel}>
-          <Add fontSize="small" />
+          <CippIcons.Add fontSize="small" />
         </IconButton>
         <Typography variant="caption" sx={{
           color: "text.secondary"

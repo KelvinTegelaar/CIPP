@@ -14,6 +14,7 @@ import {
   Tooltip,
   Alert,
 } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { useTheme } from "@mui/material/styles";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { CippTextFieldWithVariables } from "./CippTextFieldWithVariables";
@@ -24,7 +25,6 @@ import get from "lodash/get";
 import dynamic from "next/dynamic";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import React from "react";
-import { CloudUpload } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import countryList from "../../data/countryList";
 import languageList from "../../data/languageList";
@@ -860,7 +860,7 @@ export const CippFormComponent = (props) => {
                     }}
                     onClick={() => document.getElementById(`file-input-${convertedName}`).click()}
                   >
-                    <CloudUpload sx={{ fontSize: 40, color: "grey.500", mb: 1 }} />
+                    <CippIcons.CloudUpload sx={{ fontSize: 40, color: "grey.500", mb: 1 }} />
                     <Typography variant="body2" sx={{
                       color: "text.secondary"
                     }}>

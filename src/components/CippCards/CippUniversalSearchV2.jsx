@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   TextField,
   Box,
@@ -19,7 +20,6 @@ import {
   ListSubheader,
   Stack,
 } from "@mui/material";
-import { Search as SearchIcon, Star as StarIcon } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
 import { BulkActionsMenu } from "../bulk-actions-menu";
@@ -706,7 +706,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
                     position="start"
                     sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
                   >
-                    <SearchIcon color="action" sx={{ fontSize: 20 }} />
+                    <CippIcons.Search color="action" sx={{ fontSize: 20 }} />
                   </InputAdornment>
                 ),
                 endAdornment: activeSearch?.isFetching ? (
@@ -728,12 +728,12 @@ export const CippUniversalSearchV2 = React.forwardRef(
               variant="contained"
               onClick={handleSearch}
               disabled={searchValue.length === 0 || activeSearch?.isFetching}
-              startIcon={isMobile ? undefined : <SearchIcon />}
+              startIcon={isMobile ? undefined : <CippIcons.Search />}
               aria-label="Search"
               // Icon-only on phones: the label costs the field width it needs more
               sx={{ flexShrink: 0, minWidth: isMobile ? 48 : undefined, px: isMobile ? 0 : undefined }}
             >
-              {isMobile ? <SearchIcon /> : "Search"}
+              {isMobile ? <CippIcons.Search /> : "Search"}
             </Button>
           )}
         </Box>
@@ -824,7 +824,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>
-                  <StarIcon fontSize="small" color="primary" />
+                  <CippIcons.Star fontSize="small" color="primary" />
                 </ListItemIcon>
                 <ListItemText
                   primary={bookmark.label}

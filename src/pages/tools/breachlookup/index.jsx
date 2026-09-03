@@ -9,11 +9,11 @@ import {
   Avatar,
   Alert,
 } from "@mui/material";
+import { CippIcons } from "../../../utils/icon-registry"
 import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
-import { Search } from "@mui/icons-material";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
 import DOMPurify from "dompurify";
@@ -76,7 +76,7 @@ const Page = () => {
                       type="submit"
                       onClick={() => getGeoIP.refetch()}
                       variant="contained"
-                      startIcon={<Search />}
+                      startIcon={<CippIcons.MagnifyingGlassIcon />}
                     >
                       Check
                     </Button>

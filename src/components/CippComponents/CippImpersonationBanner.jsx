@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Box, Button, Stack, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
-import { Logout, TheaterComedy } from '@mui/icons-material'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   exitImpersonation,
@@ -85,7 +85,7 @@ export const CippImpersonationBanner = () => {
       <Stack direction="row" spacing={1.5} sx={{
         alignItems: "center"
       }}>
-        <TheaterComedy fontSize="small" sx={{ color: palette.main }} />
+        <CippIcons.TheaterComedy fontSize="small" sx={{ color: palette.main }} />
         <Typography variant="body2" sx={{ flexGrow: 1, minWidth: 0 }}>
           Impersonating <strong>{role}</strong> — you are seeing CIPP as this role sees it. API
           access is enforced under this role until you exit.
@@ -94,7 +94,7 @@ export const CippImpersonationBanner = () => {
           size="small"
           variant="outlined"
           color="warning"
-          startIcon={<Logout fontSize="small" />}
+          startIcon={<CippIcons.Logout fontSize="small" />}
           onClick={() => exitImpersonation(queryClient)}
           sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}
         >

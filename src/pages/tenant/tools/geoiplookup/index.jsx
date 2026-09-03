@@ -1,9 +1,9 @@
 import { Box, Button, Container } from "@mui/material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Grid, Stack } from "@mui/system";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
-import { Add, Delete, Search } from "@mui/icons-material";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { ApiPostCall } from "../../../../api/ApiCall";
 import { getCippValidator } from "../../../../utils/get-cipp-validator";
@@ -12,7 +12,6 @@ import { useSettings } from "../../../../hooks/use-settings";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 import { useState } from "react";
-import { MapPinIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant;
@@ -25,7 +24,7 @@ const Page = () => {
       label: "View Location",
       customFunction: (row) => setIpAddress(row.RowKey),
       noConfirm: true,
-      icon: <MapPinIcon />,
+      icon: <CippIcons.MapPinIcon />,
       hideBulk: true,
     },
     {
@@ -36,7 +35,7 @@ const Page = () => {
         IP: "RowKey",
         State: "!Trusted",
       },
-      icon: <Add />,
+      icon: <CippIcons.Add />,
       confirmText: "Are you sure you want to add this IP to the whitelist?",
       multiPost: false,
       condition: (row) => row.state !== "Trusted",
@@ -49,7 +48,7 @@ const Page = () => {
         IP: "RowKey",
         State: "!NotTrusted",
       },
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       confirmText: "Are you sure you want to remove this IP from the whitelist?",
       multiPost: false,
       condition: (row) => row.state !== "NotTrusted",
@@ -111,7 +110,7 @@ const Page = () => {
                     type="submit"
                     onClick={() => setIpAddress(ip)}
                     variant="contained"
-                    startIcon={<Search />}
+                    startIcon={<CippIcons.MagnifyingGlassIcon />}
                   >
                     Check
                   </Button>

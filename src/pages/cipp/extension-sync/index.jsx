@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry"
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Refresh } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Extension Sync";
@@ -26,7 +26,7 @@ const Page = () => {
       ]}
       cardButton={
         <Button
-          startIcon={<Refresh />}
+          startIcon={<CippIcons.Refresh />}
           onClick={() => {
             /* Developer Note: Implement refresh functionality to refetch data */
           }}

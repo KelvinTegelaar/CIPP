@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { Edit, GitHub, LocalOffer, LocalOfferOutlined, CopyAll } from '@mui/icons-material'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { CippPolicyImportDrawer } from '../../../../components/CippComponents/CippPolicyImportDrawer.jsx'
@@ -36,7 +35,7 @@ const Page = () => {
       label: 'Edit Template',
       link: `/endpoint/MEM/list-templates/edit?id=[GUID]`,
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'info',
       condition: (row) => row.isSynced === false,
     },
@@ -64,7 +63,7 @@ const Page = () => {
       confirmText:
         'Enter the new name and description for the template. Warning: This will disconnect the template from a template library if applied.',
       multiPost: false,
-      icon: <PencilIcon />,
+      icon: <CippIcons.Edit />,
       color: 'info',
     },
     {
@@ -75,7 +74,7 @@ const Page = () => {
       confirmText:
         'Are you sure you want to clone [displayName]? Cloned template are no longer synced with a template library.',
       multiPost: false,
-      icon: <CopyAll />,
+      icon: <CippIcons.CopyAll />,
       color: 'info',
     },
     {
@@ -103,7 +102,7 @@ const Page = () => {
       ],
       confirmText: 'Select an existing package, or type a new package name.',
       multiPost: true,
-      icon: <LocalOffer />,
+      icon: <CippIcons.LocalOffer />,
       color: 'info',
     },
     {
@@ -113,14 +112,14 @@ const Page = () => {
       data: { GUID: 'GUID', Remove: true },
       confirmText: 'Are you sure you want to remove the selected template(s) from their package?',
       multiPost: true,
-      icon: <LocalOfferOutlined />,
+      icon: <CippIcons.LocalOfferOutlined />,
       color: 'warning',
     },
     {
       label: 'Save to GitHub',
       type: 'POST',
       url: '/api/ExecCommunityRepo',
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: 'UploadTemplate',
         GUID: 'GUID',
@@ -167,7 +166,7 @@ const Page = () => {
       data: { ID: 'GUID' },
       confirmText: 'Do you want to delete the template?',
       multiPost: false,
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       color: 'danger',
     },
   ]
@@ -216,7 +215,7 @@ const Page = () => {
                             label={u.package}
                             size="small"
                             color="warning"
-                            icon={<LocalOffer style={{ fontSize: 14 }} />}
+                            icon={<CippIcons.LocalOffer style={{ fontSize: 14 }} />}
                           />
                         </Tooltip>
                       ) : (

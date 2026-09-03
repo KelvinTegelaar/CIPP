@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Box, Typography, Alert, AlertTitle } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
-import { Backup } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
@@ -120,7 +120,7 @@ export const CippBackupScheduleDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Backup />}
+        startIcon={<CippIcons.Backup />}
       >
         {buttonText}
       </PermissionButton>

@@ -1,13 +1,8 @@
 import { useCallback, useState } from "react";
+import { CippIcons } from "../utils/icon-registry";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
-import ChevronRightIcon from "@heroicons/react/24/outline/ChevronRightIcon";
-import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
-import ArrowTopRightOnSquareIcon from "@heroicons/react/24/outline/ArrowTopRightOnSquareIcon";
 import { Box, ButtonBase, Collapse, SvgIcon, Stack } from "@mui/material";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
-import LanguageIcon from "@mui/icons-material/Language";
 import { useUserBookmarks } from "../hooks/use-user-bookmarks";
 import { useSettings } from "../hooks/use-settings";
 
@@ -123,7 +118,7 @@ export const SideNavItem = (props) => {
                 }),
               }}
             >
-              {open ? <ChevronDownIcon /> : <ChevronRightIcon />}
+              {open ? <CippIcons.ChevronDownIcon /> : <CippIcons.ChevronRightIcon />}
             </SvgIcon>
           </ButtonBase>
         </Stack>
@@ -230,7 +225,7 @@ export const SideNavItem = (props) => {
               }}
             >
               <SvgIcon sx={{ color: "neutral.400", fontSize: 14 }}>
-                <LanguageIcon />
+                <CippIcons.Language />
               </SvgIcon>
             </Box>
           )}
@@ -245,7 +240,7 @@ export const SideNavItem = (props) => {
                 }),
               }}
             >
-              <ArrowTopRightOnSquareIcon />
+              <CippIcons.ArrowTopRightOnSquareIcon />
             </SvgIcon>
           )}
         </ButtonBase>
@@ -260,7 +255,7 @@ export const SideNavItem = (props) => {
             display: hovered ? "block" : "none",
           }}
         >
-          {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+          {isBookmarked ? <CippIcons.Bookmark /> : <CippIcons.BookmarkBorder />}
         </SvgIcon>
       </Stack>
     </li>

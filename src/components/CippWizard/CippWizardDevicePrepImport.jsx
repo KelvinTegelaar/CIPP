@@ -13,11 +13,11 @@ import {
   Paper,
   IconButton,
 } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import { CippWizardStepButtons } from './CippWizardStepButtons'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { useWatch } from 'react-hook-form'
-import { Delete, FileDownload, Upload, Add } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { useIsMobileLayout } from '../../hooks/use-breakpoint'
@@ -317,7 +317,7 @@ export const CippWizardDevicePrepImport = (props) => {
 
   const actions = [
     {
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       label: 'Delete Row',
       confirmText: 'Are you sure you want to delete this row?',
       customFunction: handleRemoveItem,
@@ -353,7 +353,7 @@ export const CippWizardDevicePrepImport = (props) => {
                 fields.map((f) => f.propertyName).join(',') + '\n'
               )}`}
               download={`${fileName}.csv`}
-              startIcon={<FileDownload />}
+              startIcon={<CippIcons.FileDownload />}
               size="small"
             >
               Download Template
@@ -366,14 +366,14 @@ export const CippWizardDevicePrepImport = (props) => {
               onChange={handleFileSelect}
             />
             <Button
-              startIcon={<Upload />}
+              startIcon={<CippIcons.Upload />}
               onClick={() => fileInputRef.current?.click()}
               size="small"
             >
               Import from CSV
             </Button>
             <Button
-              startIcon={<Add />}
+              startIcon={<CippIcons.Add />}
               onClick={() => setManualDialogOpen(true)}
               size="small"
             >
@@ -508,7 +508,7 @@ export const CippWizardDevicePrepImport = (props) => {
                         color="error"
                         aria-label={`Remove device ${rowIndex + 1}`}
                       >
-                        <Delete />
+                        <CippIcons.Delete />
                       </IconButton>
                     </Stack>
                     <Stack spacing={2}>{fieldInputs}</Stack>

@@ -1,5 +1,5 @@
-import { OpenInNew } from "@mui/icons-material";
 import CippButtonCard from "../CippCards/CippButtonCard";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Stack, SvgIcon, Typography } from "@mui/material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useState } from "react";
@@ -24,7 +24,7 @@ export const CippBackendCard = ({ backendComponents, item }) => {
           {...item?.linkProps}
         >
           <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-            <OpenInNew />
+            <CippIcons.OpenInNew />
           </SvgIcon>
           Launch
         </Button>

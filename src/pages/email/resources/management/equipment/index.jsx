@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
-import { Edit, Block, LockOpen, Key } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippAddEquipmentDrawer } from "../../../../../components/CippComponents/CippAddEquipmentDrawer";
 
 const Page = () => {
@@ -13,7 +12,7 @@ const Page = () => {
       label: "Edit Equipment",
       link: `/email/resources/management/equipment/edit?equipmentId=[ExternalDirectoryObjectId]`,
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "info",
       // ListEquipment returns the raw Get-Mailbox object, so these are PascalCase like the
       // columns below - reading row.isDirSynced here is always undefined and never gates.
@@ -23,12 +22,12 @@ const Page = () => {
       label: "Edit permissions",
       link: "/identity/administration/users/user/exchange?userId=[ExternalDirectoryObjectId]",
       color: "info",
-      icon: <Key />,
+      icon: <CippIcons.Key />,
     },
     {
       label: "Block Sign In",
       type: "POST",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: "/api/ExecDisableUser",
       data: { ID: "ExternalDirectoryObjectId" },
       confirmText: "Are you sure you want to block the sign-in for this equipment mailbox?",
@@ -38,7 +37,7 @@ const Page = () => {
     {
       label: "Unblock Sign In",
       type: "POST",
-      icon: <LockOpen />,
+      icon: <CippIcons.LockOpen />,
       url: "/api/ExecDisableUser",
       data: { ID: "ExternalDirectoryObjectId", Enable: true },
       confirmText: "Are you sure you want to unblock sign-in for this equipment mailbox?",
@@ -48,7 +47,7 @@ const Page = () => {
     {
       label: "Delete Equipment",
       type: "POST",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: "/api/RemoveUser",
       data: { ID: "ExternalDirectoryObjectId" },
       confirmText: "Are you sure you want to delete this equipment mailbox?",

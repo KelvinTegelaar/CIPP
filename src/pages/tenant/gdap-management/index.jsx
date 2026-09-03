@@ -1,17 +1,11 @@
 import { TabbedLayout } from '../../../layouts/TabbedLayout'
+import { CippIcons } from '../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import tabOptions from './tabOptions'
 import { Container } from '@mui/system'
 import { Grid } from '@mui/system'
 import { CippInfoBar } from '../../../components/CippCards/CippInfoBar'
 import { ApiPostCall, ApiGetCallWithPagination } from '../../../api/ApiCall'
-import {
-  Add,
-  AdminPanelSettings,
-  HourglassBottom,
-  Layers,
-  SupervisorAccount,
-} from '@mui/icons-material'
 import CippPermissionCheck from '../../../components/CippSettings/CippPermissionCheck'
 import { Button } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -116,7 +110,7 @@ const Page = () => {
             }
             data={[
               {
-                icon: <SupervisorAccount />,
+                icon: <CippIcons.SupervisorAccount />,
                 data:
                   relationships.data?.pages
                     ?.map((page) => page?.Results?.length || 0)
@@ -125,7 +119,7 @@ const Page = () => {
                 color: 'secondary',
               },
               {
-                icon: <AdminPanelSettings />,
+                icon: <CippIcons.AdminPanelSettings />,
                 data:
                   mappedRoles.data?.pages
                     ?.map((page) => page?.length || 0)
@@ -134,7 +128,7 @@ const Page = () => {
                 color: 'green',
               },
               {
-                icon: <Layers />,
+                icon: <CippIcons.Layers />,
                 data:
                   roleTemplates.data?.pages
                     ?.map((page) => page?.Results?.length || 0)
@@ -142,7 +136,7 @@ const Page = () => {
                 name: 'Role Templates',
               },
               {
-                icon: <HourglassBottom />,
+                icon: <CippIcons.HourglassBottom />,
                 data:
                   pendingInvites.data?.pages
                     ?.map((page) => page?.length || 0)
@@ -156,7 +150,7 @@ const Page = () => {
           <Button
             LinkComponent={Link}
             href="/onboardingv2?selectedOption=AddTenant"
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
             variant="contained"
           >
             Add a Tenant

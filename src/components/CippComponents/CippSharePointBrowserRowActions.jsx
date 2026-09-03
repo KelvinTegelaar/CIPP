@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import PropTypes from 'prop-types'
 import {
   IconButton,
@@ -7,7 +8,6 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material'
-import { MoreVert } from '@mui/icons-material'
 
 /**
  * Filter SharePoint browser row actions by optional per-item condition.
@@ -66,7 +66,7 @@ export const CippSharePointBrowserRowActions = ({ item, actions = [] }) => {
           setAnchorEl(event.currentTarget)
         }}
       >
-        <MoreVert fontSize="small" />
+        <CippIcons.MoreVert fontSize="small" />
       </IconButton>
       <Menu
         anchorEl={anchorEl}

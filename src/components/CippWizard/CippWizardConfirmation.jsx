@@ -6,7 +6,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { useState } from "react";
 import { Grid } from "@mui/system";
 import { PropertyList } from "../property-list";
@@ -135,7 +135,7 @@ export const CippWizardConfirmation = (props) => {
           expanded={summaryOpen}
           onChange={(_, open) => setSummaryOpen(open)}
         >
-          <AccordionSummary expandIcon={<ExpandMore />}>
+          <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
             <Typography variant="h6">Selected options</Typography>
           </AccordionSummary>
           <AccordionDetails>

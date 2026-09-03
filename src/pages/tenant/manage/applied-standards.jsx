@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import { CippIcons } from '../../../utils/icon-registry'
 import { CippAutoComplete } from '../../../components/CippComponents/CippAutocomplete'
 import {
   Button,
@@ -20,25 +21,6 @@ import {
 } from '@mui/material'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { HeaderedTabbedLayout } from '../../../layouts/HeaderedTabbedLayout'
-import {
-  CheckCircle,
-  Cancel,
-  Info,
-  Microsoft,
-  FilterAlt,
-  Close,
-  Search,
-  FactCheck,
-  Policy,
-  ArrowDropDown,
-  Assignment,
-  NotificationImportant,
-  Construction,
-  Schedule,
-  Check,
-  Warning,
-  CompareArrows,
-} from '@mui/icons-material'
 import { getStandards } from '../../../utils/standards-data'
 import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
 import { SvgIcon } from '@mui/material'
@@ -49,7 +31,6 @@ import { useRouter } from 'next/router'
 import { useDialog } from '../../../hooks/use-dialog'
 import { Grid } from '@mui/system'
 import DOMPurify from 'dompurify'
-import { ClockIcon } from '@heroicons/react/24/outline'
 import ReactMarkdown from 'react-markdown'
 import tabOptions from './tabOptions.json'
 import { createDriftManagementActions } from '../../../components/CippComponents/CippDriftManagementActions'
@@ -1747,7 +1728,7 @@ const Page = () => {
                     input: {
                       startAdornment: (
                         <InputAdornment position="start" sx={{ margin: '0 !important' }}>
-                          <Search />
+                          <CippIcons.Search />
                         </InputAdornment>
                       ),
                       endAdornment: searchQuery && (
@@ -1758,7 +1739,7 @@ const Page = () => {
                               onClick={() => setSearchQuery('')}
                               aria-label="Clear search"
                             >
-                              <Close />
+                              <CippIcons.Close />
                             </IconButton>
                           </Tooltip>
                         </InputAdornment>
@@ -1779,12 +1760,12 @@ const Page = () => {
               <ButtonGroup variant="outlined" color="primary">
                 <Button disabled={true} color="primary">
                   <SvgIcon fontSize="small">
-                    <FilterAlt />
+                    <CippIcons.FilterAlt />
                   </SvgIcon>
                 </Button>
                 <Button
                   onClick={(e) => setFilterMenuAnchor(e.currentTarget)}
-                  endIcon={<ArrowDropDown />}
+                  endIcon={<CippIcons.ArrowDropDown />}
                 >
                   {filter === 'all' && `All Standards (${allCount})`}
                   {filter === 'compliant' && `Compliant (${compliantCount})`}
@@ -1807,7 +1788,7 @@ const Page = () => {
                     variant="outlined"
                     icon={
                       <SvgIcon fontSize="small">
-                        <Schedule />
+                        <CippIcons.Schedule />
                       </SvgIcon>
                     }
                   />
@@ -1815,7 +1796,7 @@ const Page = () => {
                 <Chip
                   icon={
                     <SvgIcon fontSize="small">
-                      <FactCheck />
+                      <CippIcons.FactCheck />
                     </SvgIcon>
                   }
                   label={`${compliancePercentage}% Compliant`}
@@ -1852,7 +1833,7 @@ const Page = () => {
                 <Chip
                   icon={
                     <SvgIcon fontSize="small">
-                      {isDriftTemplate ? <Policy /> : <FactCheck />}
+                      {isDriftTemplate ? <CippIcons.Policy /> : <CippIcons.FactCheck />}
                     </SvgIcon>
                   }
                   label={isDriftTemplate ? 'Drift Standard' : 'Classic Standard'}
@@ -2064,16 +2045,16 @@ const Page = () => {
                                   }}
                                 >
                                   {standard.complianceStatus === 'Compliant' ? (
-                                    <CheckCircle sx={{ color: 'white' }} />
+                                    <CippIcons.CheckCircle sx={{ color: 'white' }} />
                                   ) : standard.complianceStatus === 'Overridden' ? (
-                                    <Info sx={{ color: 'white' }} />
+                                    <CippIcons.Info sx={{ color: 'white' }} />
                                   ) : standard.complianceStatus === 'Reporting Disabled' ? (
-                                    <Info sx={{ color: 'white' }} />
+                                    <CippIcons.Info sx={{ color: 'white' }} />
                                   ) : standard.complianceStatus === 'Accepted Deviation' ||
                                     standard.complianceStatus === 'Customer Specific' ? (
-                                    <Check sx={{ color: 'white' }} />
+                                    <CippIcons.Check sx={{ color: 'white' }} />
                                   ) : (
-                                    <Cancel sx={{ color: 'white' }} />
+                                    <CippIcons.Cancel sx={{ color: 'white' }} />
                                   )}
                                 </Box>
                                 <Stack sx={{ minWidth: 0, flex: 1 }}>
@@ -2111,11 +2092,11 @@ const Page = () => {
                                               variant="outlined"
                                               icon={
                                                 <SvgIcon>
-                                                  {actionValue === 'Report' && <Assignment />}
+                                                  {actionValue === 'Report' && <CippIcons.Assignment />}
                                                   {actionValue === 'warn' && (
-                                                    <NotificationImportant />
+                                                    <CippIcons.NotificationImportant />
                                                   )}
-                                                  {actionValue === 'Remediate' && <Construction />}
+                                                  {actionValue === 'Remediate' && <CippIcons.Construction />}
                                                 </SvgIcon>
                                               }
                                             />
@@ -2128,7 +2109,7 @@ const Page = () => {
                                             color="success"
                                             variant="outlined"
                                             sx={{ px: 1 }}
-                                            icon={<Construction />}
+                                            icon={<CippIcons.Construction />}
                                           />
                                         )}
                                       </>
@@ -2148,7 +2129,7 @@ const Page = () => {
                                 <Button
                                   variant="outlined"
                                   size="small"
-                                  startIcon={<CompareArrows />}
+                                  startIcon={<CippIcons.CompareArrows />}
                                   sx={{ flexShrink: 0, ml: 2 }}
                                   onClick={() =>
                                     setCompareTarget({
@@ -2165,7 +2146,7 @@ const Page = () => {
                           <Divider />
                           <Box sx={{ p: 3 }}>
                             {standard.currentTenantValue?.LicenseAvailable === false ? (
-                              <Alert severity="warning" icon={<Warning />}>
+                              <Alert severity="warning" icon={<CippIcons.Warning />}>
                                 {typeof standard.currentTenantValue?.Value === 'string' &&
                                 standard.currentTenantValue.Value.startsWith('License Missing:')
                                   ? standard.currentTenantValue.Value
@@ -2315,7 +2296,7 @@ const Page = () => {
                                     bgcolor: 'primary.main',
                                   }}
                                 >
-                                  <Microsoft sx={{ color: 'white' }} />
+                                  <CippIcons.Microsoft sx={{ color: 'white' }} />
                                 </Box>
                                 <Stack>
                                   <Typography variant="h6">{currentTenant}</Typography>
@@ -2367,7 +2348,7 @@ const Page = () => {
                                   <Chip
                                     icon={
                                       <SvgIcon fontSize="small">
-                                        <ClockIcon />
+                                        <CippIcons.ClockIcon />
                                       </SvgIcon>
                                     }
                                     size="small"
@@ -2383,7 +2364,7 @@ const Page = () => {
                           <Divider />
                           <Box sx={{ p: 3 }}>
                             {standard.currentTenantValue?.LicenseAvailable === false ? (
-                              <Alert severity="warning" icon={<Warning />}>
+                              <Alert severity="warning" icon={<CippIcons.Warning />}>
                                 {typeof standard.currentTenantValue?.Value === 'string' &&
                                 standard.currentTenantValue.Value.startsWith('License Missing:')
                                   ? standard.currentTenantValue.Value
@@ -2474,7 +2455,7 @@ const Page = () => {
                                                             justifyContent: 'center',
                                                           }}
                                                         >
-                                                          <Check
+                                                          <CippIcons.Check
                                                             sx={{ color: 'white', fontSize: 16 }}
                                                           />
                                                         </Box>
@@ -2655,7 +2636,7 @@ const Page = () => {
                                                                 justifyContent: 'center',
                                                               }}
                                                             >
-                                                              <Check
+                                                              <CippIcons.Check
                                                                 sx={{
                                                                   color: 'white',
                                                                   fontSize: 16,
@@ -2934,7 +2915,7 @@ const Page = () => {
                                                         justifyContent: 'center',
                                                       }}
                                                     >
-                                                      <Check
+                                                      <CippIcons.Check
                                                         sx={{ color: 'white', fontSize: 16 }}
                                                       />
                                                     </Box>
@@ -3096,7 +3077,7 @@ const Page = () => {
                                                             justifyContent: 'center',
                                                           }}
                                                         >
-                                                          <Check
+                                                          <CippIcons.Check
                                                             sx={{ color: 'white', fontSize: 16 }}
                                                           />
                                                         </Box>
@@ -3211,7 +3192,7 @@ const Page = () => {
                                   color: 'info.main',
                                 }}
                               >
-                                <Info />
+                                <CippIcons.Info />
                               </Box>
                               <Box
                                 sx={{

@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { useSettings } from '../../../../hooks/use-settings.js'
-import { Tune } from '@mui/icons-material'
 
 // CAS protocols that can be toggled, keyed by their Set-CASMailbox parameter.
 // Most flags follow "*Enabled" (true = on). The inverted "*Disabled" flag
@@ -27,7 +27,7 @@ const Page = () => {
     {
       label: 'Set Client Access Protocols',
       type: 'POST',
-      icon: <Tune />,
+      icon: <CippIcons.Tune />,
       url: '/api/ExecSetCASMailbox',
       fields: [
         {

@@ -1,5 +1,5 @@
 import { Link, SvgIcon } from "@mui/material";
-import OpenInNew from "@mui/icons-material/OpenInNew";
+import { CippIcons } from "./icon-registry";
 import { portalIcons } from "./get-cipp-formatting";
 
 const ABSOLUTE_URL = /^https?:\/\//i;
@@ -51,7 +51,7 @@ export const renderUrlValue = (value, field = "") => {
       )}
       {isPortal ? "Open portal" : trimmed}
       <SvgIcon fontSize="inherit" sx={{ flexShrink: 0 }}>
-        <OpenInNew fontSize="inherit" />
+        <CippIcons.OpenInNew fontSize="inherit" />
       </SvgIcon>
     </Link>
   );

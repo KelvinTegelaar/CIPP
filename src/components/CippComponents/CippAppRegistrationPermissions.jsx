@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Accordion,
   AccordionSummary,
@@ -14,7 +15,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ExpandMore, WarningAmber } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { ApiGetCall } from "../../api/ApiCall";
 import riskyPermissionsJson from "../../data/RiskyPermissions.json";
@@ -162,7 +162,7 @@ const ResourcePermissionsAccordion = ({
       disableGutters
     >
       <AccordionSummary
-        expandIcon={<ExpandMore />}
+        expandIcon={<CippIcons.ExpandMore />}
         // summary is a centered ButtonBase, an unshrinkable row spills both edges
         sx={{ "& .MuiAccordionSummary-content": { minWidth: 0 } }}
       >
@@ -186,7 +186,7 @@ const ResourcePermissionsAccordion = ({
             >
               <Chip
                 size="small"
-                icon={<WarningAmber sx={{ fontSize: 18 }} />}
+                icon={<CippIcons.WarningAmber sx={{ fontSize: 18 }} />}
                 label={`${accordionRisk.worst} (${accordionRisk.count})`}
                 color={riskChipColor(accordionRisk.worst)}
                 variant={accordionRisk.worst === "Low" ? "outlined" : "filled"}

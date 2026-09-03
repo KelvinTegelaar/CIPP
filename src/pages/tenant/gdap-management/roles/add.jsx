@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { CippIcons } from "../../../../utils/icon-registry";
 import { Alert, Button, SvgIcon, Typography, Tooltip, Link } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
@@ -6,11 +7,8 @@ import { useForm } from "react-hook-form";
 import { CippFormComponent } from "../../../../components/CippComponents/CippFormComponent";
 import GDAPRoles from "../../../../data/GDAPRoles";
 import { Box, Stack, Grid } from "@mui/system";
-import { PlusSmallIcon } from "@heroicons/react/24/outline";
 import { ApiGetCall } from "../../../../api/ApiCall";
-import { SyncAlt } from "@mui/icons-material";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
-import { TrashIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const formControl = useForm({
@@ -127,7 +125,7 @@ const Page = () => {
             <Grid>
               <Box sx={{ my: "auto" }}>
                 <SvgIcon>
-                  <SyncAlt />
+                  <CippIcons.SyncAlt />
                 </SvgIcon>
               </Box>
             </Grid>
@@ -152,7 +150,7 @@ const Page = () => {
               <Tooltip title="Add Mapping">
                 <Button size="small" onClick={handleAddMapping} variant="contained">
                   <SvgIcon fontSize="small">
-                    <PlusSmallIcon />
+                    <CippIcons.PlusSmallIcon />
                   </SvgIcon>
                 </Button>
               </Tooltip>
@@ -168,7 +166,7 @@ const Page = () => {
                 label: "Remove",
                 icon: (
                   <SvgIcon fontSize="small">
-                    <TrashIcon />
+                    <CippIcons.TrashIcon />
                   </SvgIcon>
                 ),
                 customFunction: handleRemoveMapping,

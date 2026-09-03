@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Box } from '@mui/material'
-import { PostAdd } from '@mui/icons-material'
 import { useSettings } from '../../../../hooks/use-settings'
 import { usePermissions } from '../../../../hooks/use-permissions'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
@@ -60,7 +60,7 @@ const Page = () => {
     {
       label: 'Create template from role settings',
       type: 'POST',
-      icon: <PostAdd />,
+      icon: <CippIcons.PostAdd />,
       url: '/api/AddPIMRoleSettingsTemplate',
       data: {
         captureRoleId: 'RoleDefinitionId',
@@ -71,7 +71,7 @@ const Page = () => {
         {
           type: 'textField',
           name: 'templateName',
-          label: 'Template name',
+          label: 'Template Name',
           required: true,
           validators: { required: 'A template name is required' },
         },

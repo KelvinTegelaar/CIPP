@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
+import { CippIcons } from '../utils/icon-registry';
 import { useDropzone } from 'react-dropzone';
-import ArrowUpOnSquareIcon from '@heroicons/react/24/outline/ArrowUpOnSquareIcon';
 import { Avatar, Box, SvgIcon, Typography } from '@mui/material';
 
 export const FileDropzone = (props) => {
@@ -52,7 +52,7 @@ export const FileDropzone = (props) => {
         }}
       >
         <SvgIcon fontSize="small">
-          <ArrowUpOnSquareIcon />
+          <CippIcons.ArrowUpOnSquareIcon />
         </SvgIcon>
       </Avatar>
       {caption && (

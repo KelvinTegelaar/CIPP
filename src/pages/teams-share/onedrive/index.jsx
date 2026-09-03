@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
-import { PersonAdd, PersonRemove, Settings, Unarchive } from '@mui/icons-material'
 import { useCippReportDB } from '../../../components/CippComponents/CippReportDBControls'
 import { useSettings } from '../../../hooks/use-settings'
 import { usePermissions } from '../../../hooks/use-permissions'
@@ -25,7 +25,7 @@ const Page = () => {
   const actions = [
     {
       label: 'Add permissions to OneDrive',
-      icon: <PersonAdd />,
+      icon: <CippIcons.PersonAdd />,
       type: 'POST',
       url: '/api/ExecSharePointPerms',
       data: {
@@ -63,7 +63,7 @@ const Page = () => {
     },
     {
       label: 'Remove permissions from OneDrive',
-      icon: <PersonRemove />,
+      icon: <CippIcons.PersonRemove />,
       type: 'POST',
       url: '/api/ExecSharePointPerms',
       data: {
@@ -103,7 +103,7 @@ const Page = () => {
     {
       label: 'Edit OneDrive Site',
       type: 'POST',
-      icon: <Settings />,
+      icon: <CippIcons.Settings />,
       url: '/api/ExecSetSiteProperties',
       confirmText:
         'Edit OneDrive site properties for [displayName]. Fields are prefilled with the current values.',
@@ -164,7 +164,7 @@ const Page = () => {
     {
       label: 'Reactivate Archived OneDrive',
       type: 'POST',
-      icon: <Unarchive />,
+      icon: <CippIcons.Unarchive />,
       url: '/api/ExecReactivateSite',
       confirmText:
         'Reactivate the archived OneDrive for [displayName] ([ownerPrincipalName])? ' +

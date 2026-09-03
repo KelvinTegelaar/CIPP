@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry";
 import { useForm, useWatch } from "react-hook-form";
 import { ApiPostCall } from "../../../../api/ApiCall";
 import { CippFormComponent } from "../../../../components/CippComponents/CippFormComponent";
@@ -16,11 +17,6 @@ import {
   Skeleton,
 } from "@mui/material";
 import { CippPolicyDiffTable } from "../../../../components/CippComponents/CippPolicyDiffTable";
-import {
-  CompareArrows as CompareArrowsIcon,
-  CheckCircle as CheckCircleIcon,
-  Error as ErrorIcon,
-} from "@mui/icons-material";
 import { useEffect, useMemo } from "react";
 import { Grid } from "@mui/system";
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
@@ -322,7 +318,7 @@ const Page = () => {
             <Button
               variant="contained"
               size="large"
-              startIcon={<CompareArrowsIcon />}
+              startIcon={<CippIcons.CompareArrows />}
               onClick={handleCompare}
               disabled={!canCompare || compareApi.isPending}
             >
@@ -342,7 +338,7 @@ const Page = () => {
           )}
 
           {errorMessage && (
-            <Alert severity="error" icon={<ErrorIcon />}>
+            <Alert severity="error" icon={<CippIcons.Error />}>
               {errorMessage}
             </Alert>
           )}
@@ -351,7 +347,7 @@ const Page = () => {
             <Stack spacing={3}>
               <Alert
                 severity={results.identical ? "success" : "warning"}
-                icon={results.identical ? <CheckCircleIcon /> : <CompareArrowsIcon />}
+                icon={results.identical ? <CippIcons.CheckCircle /> : <CippIcons.CompareArrows />}
               >
                 {results.identical
                   ? "Policies are identical - no differences found."

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Card,
   CardHeader,
@@ -13,7 +14,6 @@ import {
 import { PropertyList } from '../property-list'
 import { PropertyListItem } from '../property-list-item'
 import { getCippFormatting } from '../../utils/get-cipp-formatting'
-import { Check as CheckIcon, Close as CloseIcon, Sync } from '@mui/icons-material'
 import { LinearProgressWithLabel } from '../linearProgressWithLabel'
 import { Stack, Grid } from '@mui/system'
 
@@ -67,7 +67,7 @@ export const CippExchangeInfoCard = (props) => {
               <CircularProgress size={20} />
             ) : (
               <IconButton onClick={handleRefresh} size="small">
-                <Sync />
+                <CippIcons.Sync />
               </IconButton>
             )}
           </Stack>
@@ -332,7 +332,7 @@ export const CippExchangeInfoCard = (props) => {
                   <Chip
                     key={hold.name}
                     label={hold.name}
-                    icon={hold.enabled ? <CheckIcon /> : <CloseIcon />}
+                    icon={hold.enabled ? <CippIcons.Check /> : <CippIcons.Close />}
                     color={hold.enabled ? 'success' : 'default'}
                     variant="outlined"
                     size="small"
@@ -359,7 +359,7 @@ export const CippExchangeInfoCard = (props) => {
                     <Chip
                       key={protocol.name}
                       label={protocol.name}
-                      icon={protocol.unknown ? undefined : isGood ? <CheckIcon /> : <CloseIcon />}
+                      icon={protocol.unknown ? undefined : isGood ? <CippIcons.Check /> : <CippIcons.Close />}
                       color={
                         protocol.unknown
                           ? 'default'

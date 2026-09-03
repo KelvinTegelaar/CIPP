@@ -1,22 +1,9 @@
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
+import { CippIcons } from '../../../../../utils/icon-registry'
 import { useSettings } from '../../../../../hooks/use-settings'
 import { useRouter } from 'next/router'
 import { ApiGetCall, ApiPostCall } from '../../../../../api/ApiCall'
 import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSkeleton'
-import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
-import {
-  PhoneAndroid,
-  Computer,
-  PhoneIphone,
-  Laptop,
-  Launch,
-  Security,
-  CheckCircle,
-  Warning,
-  Sync,
-  Fingerprint,
-  Group,
-} from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import { CippEntitySwitcher } from '../../../../../components/CippComponents/CippEntitySwitcher'
 import tabOptions from './tabOptions'
@@ -34,7 +21,6 @@ import { CippDataTable } from '../../../../../components/CippTable/CippDataTable
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
 import { Button } from '@mui/material'
 import { getCippFormatting } from '../../../../../utils/get-cipp-formatting'
-import { PencilIcon, EyeIcon } from '@heroicons/react/24/outline'
 
 const Page = () => {
   const userSettingsDefaults = useSettings()
@@ -167,15 +153,15 @@ const Page = () => {
   const subtitle = deviceRequest.isSuccess
     ? [
         {
-          icon: <Computer />,
+          icon: <CippIcons.Computer />,
           text: <CippCopyToClipBoard type="chip" text={deviceData?.deviceName} />,
         },
         {
-          icon: <Fingerprint />,
+          icon: <CippIcons.Fingerprint />,
           text: <CippCopyToClipBoard type="chip" text={deviceData?.id} />,
         },
         {
-          icon: <CalendarIcon />,
+          icon: <CippIcons.CalendarIcon />,
           text: (
             <>
               Last Sync: <CippTimeAgo data={deviceData?.lastSyncDateTime} />
@@ -183,7 +169,7 @@ const Page = () => {
           ),
         },
         {
-          icon: <Launch style={{ color: '#667085' }} />,
+          icon: <CippIcons.Launch />,
           text: (
             <Button
               color="muted"
@@ -208,12 +194,12 @@ const Page = () => {
 
   // Get device icon based on OS
   const getDeviceIcon = () => {
-    if (!data?.operatingSystem) return <Computer />
+    if (!data?.operatingSystem) return <CippIcons.Computer />
     const os = data.operatingSystem.toLowerCase()
-    if (os.includes('android')) return <PhoneAndroid />
-    if (os.includes('ios') || os.includes('iphone') || os.includes('ipad')) return <PhoneIphone />
-    if (os.includes('windows') || os.includes('macos')) return <Laptop />
-    return <Computer />
+    if (os.includes('android')) return <CippIcons.PhoneAndroid />
+    if (os.includes('ios') || os.includes('iphone') || os.includes('ipad')) return <CippIcons.PhoneIphone />
+    if (os.includes('windows') || os.includes('macos')) return <CippIcons.Laptop />
+    return <CippIcons.Computer />
   }
 
   // Prepare compliance policy items
@@ -222,7 +208,7 @@ const Page = () => {
     compliancePolicyItems = deviceCompliance.map((policy, index) => ({
       id: index,
       cardLabelBox: {
-        cardLabelBoxHeader: policy.complianceState === 'compliant' ? <CheckCircle /> : <Warning />,
+        cardLabelBoxHeader: policy.complianceState === 'compliant' ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
       },
       text: policy.displayName || 'Unknown Policy',
       subtext: `State: ${policy.complianceState || 'Unknown'}`,
@@ -271,7 +257,7 @@ const Page = () => {
     configurationPolicyItems = deviceConfiguration.map((policy, index) => ({
       id: index,
       cardLabelBox: {
-        cardLabelBoxHeader: policy.state === 'compliant' ? <CheckCircle /> : <Warning />,
+        cardLabelBoxHeader: policy.state === 'compliant' ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
       },
       text: policy.displayName || 'Unknown Policy',
       subtext: `State: ${policy.state || 'Unknown'}`,
@@ -321,7 +307,7 @@ const Page = () => {
       {
         id: 1,
         cardLabelBox: {
-          cardLabelBoxHeader: <CheckCircle />,
+          cardLabelBoxHeader: <CippIcons.CheckCircle />,
         },
         text: 'Detected Applications',
         subtext: `${detectedApps.length} application(s) detected`,
@@ -369,7 +355,7 @@ const Page = () => {
       {
         id: 1,
         cardLabelBox: {
-          cardLabelBoxHeader: <CheckCircle />,
+          cardLabelBoxHeader: <CippIcons.CheckCircle />,
         },
         text: 'Device Users',
         subtext: `${users.length} user(s) associated with this device`,
@@ -383,7 +369,7 @@ const Page = () => {
           refreshFunction: refreshFunction,
           actions: [
             {
-              icon: <EyeIcon />,
+              icon: <CippIcons.EyeIcon />,
               label: 'View User',
               link: `/identity/administration/users/user?userId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
               pinned: true,
@@ -425,7 +411,7 @@ const Page = () => {
           {
             id: 1,
             cardLabelBox: {
-              cardLabelBoxHeader: <Group />,
+              cardLabelBoxHeader: <CippIcons.Group />,
             },
             text: 'Groups',
             subtext: 'List of groups the device is a member of',
@@ -439,7 +425,7 @@ const Page = () => {
               hideTitle: true,
               actions: [
                 {
-                  icon: <PencilIcon />,
+                  icon: <CippIcons.Edit />,
                   label: 'Edit Group',
                   link: '/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]',
                   pinned: true,
@@ -531,7 +517,7 @@ const Page = () => {
                           refreshFunction()
                         }}
                       >
-                        <Sync fontSize="small" />
+                        <CippIcons.Sync fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   }

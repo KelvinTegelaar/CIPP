@@ -1,5 +1,3 @@
-import BellIcon from "@heroicons/react/24/outline/BellIcon";
-import SparklesIcon from "@heroicons/react/24/outline/SparklesIcon";
 import {
   Badge,
   Box,
@@ -11,8 +9,8 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
+import { CippIcons } from "../utils/icon-registry";
 import { usePopover } from "../hooks/use-popover";
-import { Error, Update, Close as CloseIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { closeToast, resetToast } from "../store/toasts";
 import { useEffect, useState } from "react";
@@ -35,11 +33,11 @@ const getContent = (notification) => {
           fontSize="small"
         >
           {notification.type === "update" ? (
-            <Update />
+            <CippIcons.Update />
           ) : notification.type === "error" ? (
-            <Error />
+            <CippIcons.Error />
           ) : (
-            <SparklesIcon />
+            <CippIcons.SparklesIcon />
           )}
         </SvgIcon>
         <Typography variant="subtitle2">{notification.subtitle}</Typography>
@@ -111,9 +109,15 @@ export const NotificationsPopover = () => {
           },
         }}
       >
-        <IconButton color="inherit" onClick={popover.handleOpen} ref={popover.anchorRef}>
+        <IconButton
+          color="inherit"
+          onClick={popover.handleOpen}
+          ref={popover.anchorRef}
+          aria-label="Notifications"
+          title="Notifications"
+        >
           <SvgIcon color="action" fontSize="small">
-            <BellIcon />
+            <CippIcons.BellIcon />
           </SvgIcon>
         </IconButton>
       </Badge>
@@ -188,8 +192,10 @@ export const NotificationsPopover = () => {
                   <IconButton
                     size="small"
                     onClick={() => dispatch(closeToast({ index: notification.id }))}
+                    aria-label="Dismiss notification"
+                    title="Dismiss notification"
                   >
-                    <CloseIcon fontSize="small" />
+                    <CippIcons.Close fontSize="small" />
                   </IconButton>
                 </Stack>
               </Stack>
@@ -217,7 +223,7 @@ export const NotificationsPopover = () => {
             }}
             startIcon={
               <SvgIcon fontSize="small">
-                <CloseIcon />
+                <CippIcons.Close />
               </SvgIcon>
             }
           >

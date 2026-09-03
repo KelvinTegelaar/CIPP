@@ -1,21 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { CippIcons } from '../utils/icon-registry'
 import NextLink from 'next/link'
 import PropTypes from 'prop-types'
-import Bars3Icon from '@heroicons/react/24/outline/Bars3Icon'
-import MagnifyingGlassIcon from '@heroicons/react/24/outline/MagnifyingGlassIcon'
-import MoonIcon from '@heroicons/react/24/outline/MoonIcon'
-import SunIcon from '@heroicons/react/24/outline/SunIcon'
-import BookmarkIcon from '@mui/icons-material/Bookmark'
-import TravelExploreIcon from '@mui/icons-material/TravelExplore'
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import CloseIcon from '@mui/icons-material/Close'
-import SwapVertIcon from '@mui/icons-material/SwapVert'
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
-import LockIcon from '@mui/icons-material/Lock'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
 import {
   Box,
   Divider,
@@ -46,7 +32,6 @@ import { useDialog } from '../hooks/use-dialog'
 import { CippUniversalSearchV2 } from '../components/CippCards/CippUniversalSearchV2'
 import { CippOffCanvas } from '../components/CippComponents/CippOffCanvas'
 import { CippLicenseDetailsDrawer } from '../components/CippComponents/CippLicenseDetailsDrawer'
-
 import { BANNER_HEIGHT_VAR, SAFE_AREA_TOP_OFFSET, TOP_NAV_HEIGHT } from './constants'
 
 export const TopNav = (props) => {
@@ -325,7 +310,7 @@ export const TopNav = (props) => {
               sx={{ minWidth: 44, minHeight: 44 }}
             >
               <SvgIcon color="action" fontSize="small">
-                <Bars3Icon />
+                <CippIcons.Bars3Icon />
               </SvgIcon>
             </IconButton>
           )}
@@ -346,16 +331,28 @@ export const TopNav = (props) => {
                 onClick={() => openUniversalSearch('Users')}
                 aria-label="Open universal search (Ctrl/Cmd+Shift+F)"
               >
-                <TravelExploreIcon color="action" fontSize="small" />
+                <CippIcons.TravelExplore color="action" fontSize="small" />
               </IconButton>
             </Tooltip>
           )}
           {!navCollapsed && (
-            <IconButton color="inherit" onClick={handleThemeSwitch}>
-              <SvgIcon color="action" fontSize="small">
-                {effectivePaletteMode === 'dark' ? <SunIcon /> : <MoonIcon />}
-              </SvgIcon>
-            </IconButton>
+            <Tooltip
+              title={
+                effectivePaletteMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+              }
+            >
+              <IconButton
+                color="inherit"
+                onClick={handleThemeSwitch}
+                aria-label={
+                  effectivePaletteMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+                }
+              >
+                <SvgIcon color="action" fontSize="small">
+                  {effectivePaletteMode === 'dark' ? <CippIcons.SunIcon /> : <CippIcons.MoonIcon />}
+                </SvgIcon>
+              </IconButton>
+            </Tooltip>
           )}
           {!navCollapsed && (
             <Tooltip title="Search pages (Ctrl/Cmd+K)">
@@ -365,7 +362,7 @@ export const TopNav = (props) => {
                 aria-label="Open page search (Ctrl/Cmd+K)"
               >
                 <SvgIcon color="action" fontSize="small">
-                  <MagnifyingGlassIcon />
+                  <CippIcons.MagnifyingGlassIcon />
                 </SvgIcon>
               </IconButton>
             </Tooltip>
@@ -374,11 +371,17 @@ export const TopNav = (props) => {
               control and gets the width. Universal search lives in the account menu. */}
           {showPopoverBookmarks && (
             <>
-              <IconButton color="inherit" onClick={handleBookmarkClick}>
-                <SvgIcon color="action" fontSize="small">
-                  <BookmarkIcon />
-                </SvgIcon>
-              </IconButton>
+              <Tooltip title="Bookmarks">
+                <IconButton
+                  color="inherit"
+                  onClick={handleBookmarkClick}
+                  aria-label="Bookmarks"
+                >
+                  <SvgIcon color="action" fontSize="small">
+                    <CippIcons.Bookmark />
+                  </SvgIcon>
+                </IconButton>
+              </Tooltip>
               <Popover
                 id={popoverId}
                 open={popoverOpen}
@@ -413,8 +416,9 @@ export const TopNav = (props) => {
                         }),
                       }}
                       title={locked ? 'Unlock bookmarks' : 'Lock bookmarks'}
+                      aria-label={locked ? 'Unlock bookmarks' : 'Lock bookmarks'}
                     >
-                      {locked ? <LockIcon fontSize="small" /> : <LockOpenIcon fontSize="small" />}
+                      {locked ? <CippIcons.Lock fontSize="small" /> : <CippIcons.LockOpen fontSize="small" />}
                     </IconButton>
                     <IconButton
                       size="small"
@@ -439,10 +443,17 @@ export const TopNav = (props) => {
                             ? 'A > Z'
                             : 'Z > A'
                       }
+                      aria-label={
+                        sortOrder === 'custom'
+                          ? 'Bookmark sort: custom order'
+                          : sortOrder === 'asc'
+                            ? 'Bookmark sort: A to Z'
+                            : 'Bookmark sort: Z to A'
+                      }
                     >
-                      {sortOrder === 'custom' && <SwapVertIcon fontSize="small" />}
-                      {sortOrder === 'asc' && <ArrowUpwardIcon fontSize="small" />}
-                      {sortOrder === 'desc' && <ArrowDownwardIcon fontSize="small" />}
+                      {sortOrder === 'custom' && <CippIcons.SwapVert fontSize="small" />}
+                      {sortOrder === 'asc' && <CippIcons.ArrowUpward fontSize="small" />}
+                      {sortOrder === 'desc' && <CippIcons.ArrowDownward fontSize="small" />}
                     </IconButton>
                     <Typography
                       variant="body2"
@@ -570,7 +581,7 @@ export const TopNav = (props) => {
                               mr: 1,
                             }}
                           >
-                            <DragIndicatorIcon fontSize="small" />
+                            <CippIcons.DragIndicator fontSize="small" />
                           </Box>
                         )}
                         <Box
@@ -612,8 +623,10 @@ export const TopNav = (props) => {
                                 }}
                                 disabled={sortOrder === 'custom' && idx === 0}
                                 sx={{ opacity: sortOrder !== 'custom' || locked ? 0.4 : 1 }}
+                                aria-label="Move bookmark up"
+                                title="Move bookmark up"
                               >
-                                <KeyboardArrowUpIcon fontSize="small" />
+                                <CippIcons.KeyboardArrowUp fontSize="small" />
                               </IconButton>
                               <IconButton
                                 size="small"
@@ -631,8 +644,10 @@ export const TopNav = (props) => {
                                   sortOrder === 'custom' && idx === displayBookmarks.length - 1
                                 }
                                 sx={{ opacity: sortOrder !== 'custom' || locked ? 0.4 : 1 }}
+                                aria-label="Move bookmark down"
+                                title="Move bookmark down"
                               >
-                                <KeyboardArrowDownIcon fontSize="small" />
+                                <CippIcons.KeyboardArrowDown fontSize="small" />
                               </IconButton>
                             </>
                           )}
@@ -643,8 +658,10 @@ export const TopNav = (props) => {
                                 e.preventDefault()
                                 removeBookmark(bookmark.path)
                               }}
+                              aria-label="Remove bookmark"
+                              title="Remove bookmark"
                             >
-                              <CloseIcon fontSize="small" />
+                              <CippIcons.Close fontSize="small" />
                             </IconButton>
                           )}
                         </Stack>
@@ -690,7 +707,7 @@ export const TopNav = (props) => {
                       aria-label="Close search"
                       sx={{ ml: -1, minWidth: 44, minHeight: 44 }}
                     >
-                      <CloseIcon />
+                      <CippIcons.Close />
                     </IconButton>
                   )}
                   <span>Universal Search</span>

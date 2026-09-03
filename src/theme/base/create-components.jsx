@@ -1,4 +1,3 @@
-import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
 import {
   createTheme,
   filledInputClasses,
@@ -7,6 +6,7 @@ import {
   switchClasses,
   tableCellClasses,
 } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 
 // Used only to create transitions
 const muiTheme = createTheme();
@@ -159,7 +159,7 @@ export const createComponents = () => {
       defaultProps: {
         deleteIcon: (
           <SvgIcon>
-            <XCircleIcon />
+            <CippIcons.XCircleIcon />
           </SvgIcon>
         ),
       },

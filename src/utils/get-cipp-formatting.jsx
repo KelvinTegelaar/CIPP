@@ -1,20 +1,12 @@
-import {
-  Close,
-  Check,
-  CompassCalibration,
-  LaptopWindows,
-  MailOutlined,
-  Shield,
-  Description,
-  GroupOutlined,
-  PrecisionManufacturing,
-  BarChart,
-} from '@mui/icons-material'
 import { Chip, Link, SvgIcon, Tooltip } from '@mui/material'
+import { CippIcons } from './icon-registry'
 import NextLink from 'next/link'
 import { alpha } from '@mui/material/styles'
 import { Box } from '@mui/system'
-import { formatCellText, CippCellText } from '../components/CippTable/CippCellText'
+import {
+  formatCellText,
+  CippCellText,
+} from '../components/CippTable/CippCellText'
 import { CippCopyToClipBoard } from '../components/CippComponents/CippCopyToClipboard'
 import { getCippLicenseTranslation } from './get-cipp-license-translation'
 import CippDataTableButton from '../components/CippTable/CippDataTableButton'
@@ -23,13 +15,6 @@ import { CippLocationDialog } from '../components/CippComponents/CippLocationDia
 import { isoDuration, en } from '@musement/iso-duration'
 import { CippTimeAgo } from '../components/CippComponents/CippTimeAgo'
 import { getCippRoleTranslation } from './get-cipp-role-translation'
-import {
-  BuildingOfficeIcon,
-  CogIcon,
-  ServerIcon,
-  UserIcon,
-  UsersIcon,
-} from '@heroicons/react/24/outline'
 import { getCippTranslation } from './get-cipp-translation'
 import DOMPurify from 'dompurify'
 import { getSignInErrorCodeTranslation } from './get-cipp-signin-errorcode-translation'
@@ -47,17 +32,17 @@ const getCountryNameFromCode = (countryCode) => {
 // Shared so the card list and the extended-info drawer can label a portal link with the
 // same glyph the table cell uses.
 export const portalIcons = {
-  portal_m365: CogIcon,
-  portal_exchange: MailOutlined,
-  portal_entra: UserIcon,
-  portal_teams: UsersIcon,
-  portal_azure: ServerIcon,
-  portal_intune: LaptopWindows,
-  portal_security: Shield,
-  portal_compliance: CompassCalibration,
-  portal_sharepoint: Description,
-  portal_platform: PrecisionManufacturing,
-  portal_bi: BarChart,
+  portal_m365: CippIcons.CogIcon,
+  portal_exchange: CippIcons.MailOutlined,
+  portal_entra: CippIcons.UserIcon,
+  portal_teams: CippIcons.UsersIcon,
+  portal_azure: CippIcons.ServerIcon,
+  portal_intune: CippIcons.LaptopWindows,
+  portal_security: CippIcons.Shield,
+  portal_compliance: CippIcons.CompassCalibration,
+  portal_sharepoint: CippIcons.Description,
+  portal_platform: CippIcons.PrecisionManufacturing,
+  portal_bi: CippIcons.BarChart,
 }
 
 // Intune policy families the backend has no name for fall back to the raw Graph assignments
@@ -141,7 +126,11 @@ export const getCippFormatting = (
 
   // A country-based named location carries every ISO code — chipped with an expander it
   // stays a few lines tall instead of a ~600px wall of text on a card.
-  if (cellName === 'rangeOrLocation' && typeof data === 'string' && data.includes(',')) {
+  if (
+    cellName === 'rangeOrLocation' &&
+    typeof data === 'string' &&
+    data.includes(',')
+  ) {
     const entries = data
       .split(',')
       .map((entry) => entry.trim())
@@ -288,7 +277,11 @@ export const getCippFormatting = (
   }
 
   if (cellName === 'cleanupSignals') {
-    const labels = Array.isArray(data) ? data.filter(Boolean) : data ? [String(data)] : []
+    const labels = Array.isArray(data)
+      ? data.filter(Boolean)
+      : data
+        ? [String(data)]
+        : []
     if (labels.length === 0) {
       return isText ? '—' : formatCellText('—', isText)
     }
@@ -332,7 +325,10 @@ export const getCippFormatting = (
     // receive a rendered node ('both': off-canvas, card views) or explicitly wants a
     // string (false: CSV export); a raw Date is not a valid React child.
     // cell mode: long absolute string in the browser's locale + timezone.
-    if (isText) return canReceive === 'both' || canReceive === false ? dt.toLocaleString() : dt
+    if (isText)
+      return canReceive === 'both' || canReceive === false
+        ? dt.toLocaleString()
+        : dt
     return dt.toLocaleString()
   }
 
@@ -629,13 +625,13 @@ export const getCippFormatting = (
               if (item?.type === 'Group') {
                 icon = (
                   <SvgIcon sx={{ ml: 0.25 }}>
-                    <GroupOutlined />
+                    <CippIcons.GroupOutlined />
                   </SvgIcon>
                 )
               } else {
                 icon = (
                   <SvgIcon sx={{ ml: 0.25 }}>
-                    <BuildingOfficeIcon />
+                    <CippIcons.BuildingOfficeIcon />
                   </SvgIcon>
                 )
               }
@@ -663,13 +659,13 @@ export const getCippFormatting = (
       if (data?.type === 'Group') {
         icon = (
           <SvgIcon sx={{ ml: 0.25 }}>
-            <GroupOutlined />
+            <CippIcons.GroupOutlined />
           </SvgIcon>
         )
       } else {
         icon = (
           <SvgIcon sx={{ ml: 0.25 }}>
-            <BuildingOfficeIcon />
+            <CippIcons.BuildingOfficeIcon />
           </SvgIcon>
         )
       }
@@ -823,8 +819,7 @@ export const getCippFormatting = (
 
   if (cellName === 'standardName') {
     // Already resolved for templates; do a standards.json lookup for classic standards
-    if (!data?.startsWith('standards.'))
-      return formatCellText(data, isText)
+    if (!data?.startsWith('standards.')) return formatCellText(data, isText)
     const baseName = data.split('.').slice(0, -1).join('.')
     const label =
       getStandards().find((s) => s.name === data)?.label ??
@@ -936,9 +931,9 @@ export const getCippFormatting = (
         'No'
       )
     ) : data.enabled ? (
-      <Check fontSize="10" />
+      <CippIcons.Check fontSize="10" titleAccess="Yes" />
     ) : (
-      <Close fontSize="10" />
+      <CippIcons.Close fontSize="10" titleAccess="No" />
     )
   }
 
@@ -1151,7 +1146,10 @@ export const getCippFormatting = (
   if (cellName === 'Members' && Array.isArray(data)) {
     return isText ? (
       data
-        .map((member) => member?.displayName || member?.userPrincipalName || member?.id)
+        .map(
+          (member) =>
+            member?.displayName || member?.userPrincipalName || member?.id
+        )
         .filter(Boolean)
         .join(', ')
     ) : (
@@ -1266,9 +1264,9 @@ export const getCippFormatting = (
               'No'
             )
           ) : parsedData[0] ? (
-            <Check fontSize="10" />
+            <CippIcons.Check fontSize="10" titleAccess="Yes" />
           ) : (
-            <Close fontSize="10" />
+            <CippIcons.Close fontSize="10" titleAccess="No" />
           )
         }
 
@@ -1354,7 +1352,11 @@ export const getCippFormatting = (
       )
     ) : (
       <Box component="span">
-        {data ? <Check fontSize="10" /> : <Close fontSize="10" />}
+        {data ? (
+          <CippIcons.Check fontSize="10" titleAccess="Yes" />
+        ) : (
+          <CippIcons.Close fontSize="10" titleAccess="No" />
+        )}
       </Box>
     )
   }

@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry"
 import {
   Alert,
   Button,
@@ -17,7 +18,6 @@ import { ApiPostCall } from "../../../api/ApiCall";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { useState, useEffect } from "react";
-import { Search, Close } from "@mui/icons-material";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
 import { CippHead } from "../../../components/CippComponents/CippHead";
 
@@ -131,7 +131,7 @@ const Page = () => {
             </Grid>
             {/* Submit Button */}
             <Grid size={{ xs: 12 }}>
-              <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
+              <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<CippIcons.MagnifyingGlassIcon />}>
                 Search
               </Button>
             </Grid>
@@ -154,7 +154,7 @@ const Page = () => {
             onClick={() => setDialogOpen(false)}
             sx={{ position: "absolute", right: 8, top: 8 }}
           >
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>

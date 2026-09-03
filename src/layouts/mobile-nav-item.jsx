@@ -1,11 +1,8 @@
 import { useCallback, useState } from 'react';
+import { CippIcons } from '../utils/icon-registry';
 import NextLink from 'next/link';
 import PropTypes from 'prop-types';
-import ChevronRightIcon from '@heroicons/react/24/outline/ChevronRightIcon';
-import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon';
 import { Box, ButtonBase, Collapse, SvgIcon } from '@mui/material';
-import ArrowTopRightOnSquareIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon';
-import LanguageIcon from '@mui/icons-material/Language';
 
 export const MobileNavItem = (props) => {
   const {
@@ -83,7 +80,7 @@ export const MobileNavItem = (props) => {
             {title}
           </Box>
           <SvgIcon sx={{ fontSize: 16 }}>
-            {open ? <ChevronDownIcon /> : <ChevronRightIcon />}
+            {open ? <CippIcons.ChevronDownIcon /> : <CippIcons.ChevronRightIcon />}
           </SvgIcon>
         </ButtonBase>
         <Collapse
@@ -169,13 +166,13 @@ export const MobileNavItem = (props) => {
             }}
           >
             <SvgIcon sx={{ color: "neutral.400", fontSize: 14 }}>
-              <LanguageIcon />
+              <CippIcons.Language />
             </SvgIcon>
           </Box>
         )}
         {external && (
           <SvgIcon sx={{ fontSize: 18 }}>
-            <ArrowTopRightOnSquareIcon />
+            <CippIcons.ArrowTopRightOnSquareIcon />
           </SvgIcon>
         )}
       </ButtonBase>

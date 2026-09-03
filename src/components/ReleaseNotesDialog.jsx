@@ -8,6 +8,7 @@
   useRef,
   useState,
 } from 'react'
+import { CippIcons } from '../utils/icon-registry'
 import {
   Box,
   ButtonBase,
@@ -37,7 +38,6 @@ import rehypeRaw from 'rehype-raw'
 import { unified } from 'unified'
 import packageInfo from '../../public/version.json'
 import { ApiGetCall } from '../api/ApiCall'
-import { Check, Close, GitHub, KeyboardArrowDown, MoreHoriz } from '@mui/icons-material'
 import { CippAutoComplete } from './CippComponents/CippAutocomplete'
 
 const RELEASE_COOKIE_KEY = 'cipp_release_notice'
@@ -441,7 +441,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
             <Box component="span" sx={visuallyHidden}>
               switch release
             </Box>
-            <KeyboardArrowDown sx={{ flexShrink: 0, opacity: 0.7, fontSize: 20 }} />
+            <CippIcons.KeyboardArrowDown sx={{ flexShrink: 0, opacity: 0.7, fontSize: 20 }} />
           </ButtonBase>
         ) : (
           <Stack
@@ -479,7 +479,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
           onClick={handleRemindLater}
           sx={{ display: { xs: 'inline-flex', md: 'none' }, ml: 1 }}
         >
-          <Close fontSize="small" />
+          <CippIcons.Close fontSize="small" />
         </IconButton>
       </DialogTitle>
       <DialogContent
@@ -621,7 +621,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
             target="_blank"
             variant="text"
             size="small"
-            startIcon={<GitHub />}
+            startIcon={<CippIcons.GitHub />}
             sx={{ mr: { md: 'auto' } }}
           >
             View release notes on GitHub
@@ -666,7 +666,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
               borderRadius: 1,
             }}
           >
-            <MoreHoriz />
+            <CippIcons.MoreHoriz />
           </IconButton>
         </Box>
       </DialogActions>
@@ -691,7 +691,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
                 <ListItemText primary={option.label} slotProps={{
                   primary: { noWrap: true }
                 }} />
-                {selected && <Check fontSize="small" color="primary" />}
+                {selected && <CippIcons.Check fontSize="small" color="primary" />}
               </ListItemButton>
             );
           })}
@@ -712,7 +712,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
             sx={{ minHeight: 48 }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <GitHub fontSize="small" />
+              <CippIcons.GitHub fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="View release notes on GitHub" />
           </ListItemButton>
@@ -724,7 +724,7 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
             sx={{ minHeight: 48 }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <Close fontSize="small" />
+              <CippIcons.Close fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Don't show again" />
           </ListItemButton>

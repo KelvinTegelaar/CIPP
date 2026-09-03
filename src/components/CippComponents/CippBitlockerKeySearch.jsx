@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Button,
   Box,
@@ -11,7 +12,6 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { VpnKey, Computer, CheckCircle, Cancel, Info, Key } from "@mui/icons-material";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 
@@ -111,7 +111,7 @@ export const CippBitlockerKeySearch = ({
                     {/* BitLocker Key Information */}
                     <Grid size={{ xs: 12 }}>
                       <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                        <VpnKey sx={{ fontSize: 18, mr: 1, verticalAlign: "middle" }} />
+                        <CippIcons.VpnKey sx={{ fontSize: 18, mr: 1, verticalAlign: "middle" }} />
                         BitLocker Key Information
                       </Typography>
                     </Grid>
@@ -189,7 +189,7 @@ export const CippBitlockerKeySearch = ({
                             size="small"
                             variant="outlined"
                             startIcon={
-                              loadingKeys[result.keyId] ? <CircularProgress size={16} /> : <Key />
+                              loadingKeys[result.keyId] ? <CircularProgress size={16} /> : <CippIcons.Key />
                             }
                             onClick={() =>
                               handleRetrieveKey(result.keyId, result.deviceId, result.tenant)
@@ -208,7 +208,7 @@ export const CippBitlockerKeySearch = ({
                         <Grid size={{ xs: 12 }}>
                           <Divider sx={{ my: 2 }} />
                           <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                            <Computer sx={{ fontSize: 18, mr: 1, verticalAlign: "middle" }} />
+                            <CippIcons.Computer sx={{ fontSize: 18, mr: 1, verticalAlign: "middle" }} />
                             Device Information
                           </Typography>
                         </Grid>
@@ -259,9 +259,9 @@ export const CippBitlockerKeySearch = ({
                           <Chip
                             icon={
                               result.accountEnabled ? (
-                                <CheckCircle sx={{ fontSize: 16 }} />
+                                <CippIcons.CheckCircle sx={{ fontSize: 16 }} />
                               ) : (
-                                <Cancel sx={{ fontSize: 16 }} />
+                                <CippIcons.Cancel sx={{ fontSize: 16 }} />
                               )
                             }
                             label={result.accountEnabled ? "Enabled" : "Disabled"}
@@ -294,7 +294,7 @@ export const CippBitlockerKeySearch = ({
 
                     {!result.deviceFound && (
                       <Grid size={{ xs: 12 }}>
-                        <Alert severity="warning" icon={<Info />}>
+                        <Alert severity="warning" icon={<CippIcons.Info />}>
                           Device information not found in cache. The device may have been deleted or
                           not yet synced.
                         </Alert>

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
   Box,
@@ -10,7 +11,6 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useWatch } from 'react-hook-form'
 import CippFormComponent from './CippFormComponent'
 import { CippCopyToClipBoard } from './CippCopyToClipboard'
@@ -568,7 +568,7 @@ const CippIntuneSettingsEditor = ({
                 cursor: 'pointer',
                 userSelect: 'none'
               }}>
-              <KeyboardArrowDownIcon
+              <CippIcons.KeyboardArrowDown
                 fontSize="small"
                 sx={{
                   transition: 'transform 150ms',

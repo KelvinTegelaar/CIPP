@@ -1,10 +1,9 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Alert, Button, Link, SvgIcon, Typography } from "@mui/material";
-import { Add, Block, CheckCircleOutlined } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
 import { CippExpandableAlert } from "../../../../components/CippComponents/CippExpandableAlert";
 
@@ -23,7 +22,7 @@ const Page = () => {
   const actions = [
     {
       label: "Add Property",
-      icon: <Add />,
+      icon: <CippIcons.Add />,
       url: "/api/ExecCustomData?Action=AddSchemaProperty",
       type: "POST",
       data: {
@@ -67,7 +66,7 @@ const Page = () => {
     },
     {
       label: "Set to Available",
-      icon: <CheckCircleOutlined />,
+      icon: <CippIcons.CheckCircleOutlined />,
       url: "/api/ExecCustomData?Action=ChangeSchemaState",
       type: "POST",
       data: {
@@ -80,7 +79,7 @@ const Page = () => {
     },
     {
       label: "Set to Deprecated",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: "/api/ExecCustomData?Action=ChangeSchemaState",
       type: "POST",
       data: {
@@ -92,7 +91,7 @@ const Page = () => {
     },
     {
       label: "Delete Schema",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: "/api/ExecCustomData?Action=DeleteSchema",
       type: "POST",
       data: {
@@ -136,7 +135,7 @@ const Page = () => {
             href="/cipp/custom-data/schema-extensions/add"
           >
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-              <Add />
+              <CippIcons.Add />
             </SvgIcon>
             Add Schema Extensions
           </Button>

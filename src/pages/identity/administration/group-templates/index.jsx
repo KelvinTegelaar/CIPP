@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
-import { AddBox, RocketLaunch, Delete, GitHub, Edit } from "@mui/icons-material";
 import Link from "next/link";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
@@ -20,14 +20,14 @@ const Page = () => {
     {
       label: "Edit Template",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       link: "/identity/administration/group-templates/edit?id=[GUID]",
     },
     {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -71,7 +71,7 @@ const Page = () => {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveGroupTemplate",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: "GUID",
       },
@@ -115,10 +115,10 @@ const Page = () => {
       actions={actions}
       cardButton={
         <>
-          <Button component={Link} href="group-templates/add" startIcon={<AddBox />}>
+          <Button component={Link} href="group-templates/add" startIcon={<CippIcons.AddBox />}>
             Add Group Template
           </Button>
-          <Button component={Link} href="group-templates/deploy" startIcon={<RocketLaunch />}>
+          <Button component={Link} href="group-templates/deploy" startIcon={<CippIcons.RocketLaunch />}>
             Deploy Group Template
           </Button>
         </>

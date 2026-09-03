@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { RocketLaunch } from '@mui/icons-material'
 import { usePermissions } from '../../../../hooks/use-permissions.js'
 import tabOptions from './tabOptions'
 import { Button } from '@mui/material'
@@ -81,7 +81,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/tenant/tools/appapproval"
-            startIcon={<RocketLaunch />}
+            startIcon={<CippIcons.RocketLaunch />}
           >
             Deploy Template
           </Button>

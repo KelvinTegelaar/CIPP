@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
-import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
-import ExclamationTriangleIcon from "@heroicons/react/24/outline/ExclamationTriangleIcon";
+import { CippIcons } from "../utils/icon-registry";
 import { Button, SvgIcon, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -20,7 +19,7 @@ export const ResourceError = (props) => {
   return (
     <ResourceErrorRoot sx={sx}>
       <SvgIcon fontSize="large">
-        <ExclamationTriangleIcon />
+        <CippIcons.ExclamationTriangleIcon />
       </SvgIcon>
       <Typography
         variant="body2"
@@ -35,7 +34,7 @@ export const ResourceError = (props) => {
           onClick={onReload}
           startIcon={
             <SvgIcon fontSize="small">
-              <ArrowPathIcon />
+              <CippIcons.ArrowPathIcon />
             </SvgIcon>
           }
           sx={{ mt: 2 }}

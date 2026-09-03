@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions } from "@mui/material";
-import { Refresh } from "@mui/icons-material";
 import { useForm, FormProvider } from "react-hook-form";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 import { ApiPostCall } from "../../api/ApiCall";
@@ -67,7 +67,7 @@ export const DomainAnalyserDialog = ({ createDialog }) => {
               type="submit"
               variant="contained"
               disabled={isRunning || domainAnalyserResults.isLoading}
-              startIcon={<Refresh />}
+              startIcon={<CippIcons.Refresh />}
             >
               Run Analysis
             </Button>

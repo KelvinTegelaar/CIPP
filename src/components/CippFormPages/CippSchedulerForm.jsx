@@ -12,6 +12,7 @@ import {
   IconButton,
   Alert,
 } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import { Grid, Stack } from '@mui/system'
 import { useWatch } from 'react-hook-form'
 import CippFormComponent from '../CippComponents/CippFormComponent'
@@ -26,8 +27,6 @@ import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { useEffect, useState } from 'react'
 import CippFormInputArray from '../CippComponents/CippFormInputArray'
 import { CippApiResults } from '../CippComponents/CippApiResults'
-import { CalendarDaysIcon } from '@heroicons/react/24/outline'
-import { ExpandMoreOutlined, Delete, Add, Sync } from '@mui/icons-material'
 
 const CippSchedulerForm = (props) => {
   const {
@@ -762,7 +761,7 @@ const CippSchedulerForm = (props) => {
         >
           <Grid size={{ md: 12, xs: 12 }}>
             <Accordion defaultExpanded variant="outlined">
-              <AccordionSummary expandIcon={<ExpandMoreOutlined />}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMoreOutlined />}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -920,7 +919,7 @@ const CippSchedulerForm = (props) => {
                             Delta Query Conditions
                           </Typography>
                           <Button
-                            startIcon={<Add />}
+                            startIcon={<CippIcons.Add />}
                             onClick={handleAddCondition}
                             variant="outlined"
                             size="small"
@@ -980,7 +979,7 @@ const CippSchedulerForm = (props) => {
                               onClick={() => handleRemoveCondition(index)}
                               color="error"
                             >
-                              <Delete />
+                              <CippIcons.Delete />
                             </IconButton>
                           </Grid>
                         </Grid>
@@ -1047,7 +1046,7 @@ const CippSchedulerForm = (props) => {
         >
           <Grid size={{ md: 12, xs: 12 }}>
             <Accordion defaultExpanded variant="outlined">
-              <AccordionSummary expandIcon={<ExpandMoreOutlined />}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMoreOutlined />}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -1130,7 +1129,7 @@ const CippSchedulerForm = (props) => {
         {/* Command & Parameters - For both scheduled and triggered tasks */}
         <Grid size={{ md: 12, xs: 12 }}>
           <Accordion defaultExpanded variant="outlined">
-            <AccordionSummary expandIcon={<ExpandMoreOutlined />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMoreOutlined />}>
               <Box
                 sx={{
                   display: 'flex',
@@ -1215,7 +1214,7 @@ const CippSchedulerForm = (props) => {
                       />
                     </Box>
                     <IconButton onClick={() => commands.refetch()}>
-                      <Sync />
+                      <CippIcons.Sync />
                     </IconButton>
                   </Stack>
                 </Grid>
@@ -1370,7 +1369,7 @@ const CippSchedulerForm = (props) => {
             type="submit"
             startIcon={
               <SvgIcon fontSize="small">
-                <CalendarDaysIcon />
+                <CippIcons.CalendarDaysIcon />
               </SvgIcon>
             }
           >

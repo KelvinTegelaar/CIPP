@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { TrashIcon } from '@heroicons/react/24/outline'
-import { Book } from '@mui/icons-material'
 import { CippDeployCompliancePolicyDrawer } from '../../../../components/CippComponents/CippDeployCompliancePolicyDrawer.jsx'
 import { CippSitRulePackDetails } from '../../../../components/CippComponents/CippSitRulePackDetails.jsx'
 import { PermissionButton } from '../../../../utils/permissions'
@@ -17,7 +16,7 @@ const Page = () => {
     {
       label: 'Create template based on SIT',
       type: 'POST',
-      icon: <Book />,
+      icon: <CippIcons.Book />,
       url: '/api/AddSensitiveInfoTypeTemplate',
       data: {
         Identity: 'Name',
@@ -30,7 +29,7 @@ const Page = () => {
     {
       label: 'Delete SIT',
       type: 'POST',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: '/api/RemoveSensitiveInfoType',
       data: {
         Identity: 'Name',

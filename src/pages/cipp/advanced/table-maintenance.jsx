@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry";
 import { useEffect, useState } from "react";
 import { ApiPostCall } from "../../../api/ApiCall";
 import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard"; // Fixed import
@@ -21,8 +22,6 @@ import {
   Select,
   Alert,
 } from "@mui/material";
-import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Add, AddCircle, RemoveCircle, Sync, WarningAmber } from "@mui/icons-material";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { useForm, useWatch } from "react-hook-form";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
@@ -122,13 +121,13 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                   </Box>
 
                   <IconButton onClick={() => removeField(index)}>
-                    <RemoveCircle />
+                    <CippIcons.RemoveCircle />
                   </IconButton>
                 </Stack>
               ))}
             </>
           )}
-          <Button onClick={addField} startIcon={<AddCircle />}>
+          <Button onClick={addField} startIcon={<CippIcons.AddCircle />}>
             Add Property
           </Button>
         </Stack>
@@ -266,7 +265,7 @@ const Page = () => {
             my: 1
           }}>
           <SvgIcon fontSize="small">
-            <MagnifyingGlassIcon />
+            <CippIcons.MagnifyingGlassIcon />
           </SvgIcon>
           <CippFormComponent type="textField" name="tableFilter" formControl={formControl} />
         </Stack>
@@ -324,7 +323,7 @@ const Page = () => {
                     onClick={addTableDialog.handleOpen} // Open add table dialog
                   >
                     <SvgIcon fontSize="small">
-                      <Add />
+                      <CippIcons.Add />
                     </SvgIcon>
                   </IconButton>
                 </Tooltip>
@@ -336,7 +335,7 @@ const Page = () => {
                     onClick={handleTableRefresh}
                   >
                     <SvgIcon fontSize="small">
-                      <Sync />
+                      <CippIcons.Sync />
                     </SvgIcon>
                   </IconButton>
                 </Tooltip>
@@ -425,7 +424,7 @@ const Page = () => {
                         }} // Open add/edit row dialog
                         startIcon={
                           <SvgIcon fontSize="small">
-                            <Add />
+                            <CippIcons.Add />
                           </SvgIcon>
                         }
                       >
@@ -438,7 +437,7 @@ const Page = () => {
                         onClick={deleteTableDialog.handleOpen} // Open delete table dialog
                         startIcon={
                           <SvgIcon fontSize="small">
-                            <TrashIcon />
+                            <CippIcons.TrashIcon />
                           </SvgIcon>
                         }
                       >
@@ -452,7 +451,7 @@ const Page = () => {
                       type: "POST",
                       icon: (
                         <SvgIcon fontSize="small">
-                          <PencilIcon />
+                          <CippIcons.PencilIcon />
                         </SvgIcon>
                       ),
                       customFunction: (row) => {
@@ -480,7 +479,7 @@ const Page = () => {
                       type: "POST",
                       icon: (
                         <SvgIcon fontSize="small">
-                          <TrashIcon />
+                          <CippIcons.TrashIcon />
                         </SvgIcon>
                       ),
                       url: apiUrl,
@@ -543,7 +542,7 @@ const Page = () => {
           url: apiUrl,
           confirmText: (
             <Stack direction="row" spacing={1}>
-              <WarningAmber />
+              <CippIcons.WarningAmber />
               <Typography variant="body1">
                 Are you sure you want to delete this table? This is a destructive action that cannot
                 be undone.

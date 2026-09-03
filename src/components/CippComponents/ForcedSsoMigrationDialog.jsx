@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Accordion,
   AccordionDetails,
@@ -16,7 +17,6 @@ import {
   Typography,
   Button,
 } from '@mui/material'
-import { ExpandMore } from '@mui/icons-material'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 
 const SSO_DOCS_URL = 'https://docs.cipp.app/user-documentation/cipp/advanced/authentication/sso'
@@ -95,7 +95,7 @@ export const ForcedSsoMigrationDialog = () => {
                 just click through, but the ones who have to justify it to a security team need the
                 scopes and the reason for each without leaving the dialog. */}
             <Accordion disableGutters elevation={0} sx={{ mb: 2, '&:before': { display: 'none' } }}>
-              <AccordionSummary expandIcon={<ExpandMore />} sx={{ px: 0 }}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMore />} sx={{ px: 0 }}>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                   What gets created, and what permissions it asks for
                 </Typography>

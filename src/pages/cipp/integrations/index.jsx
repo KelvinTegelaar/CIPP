@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import {
   Box,
   Button,
@@ -12,7 +13,6 @@ import {
   Typography,
 } from '@mui/material'
 import extensions from '../../../data/Extensions'
-import { Sync } from '@mui/icons-material'
 import { useSettings } from '../../../hooks/use-settings'
 import { ApiGetCall } from '../../../api/ApiCall'
 import Link from 'next/link'
@@ -45,7 +45,7 @@ const Page = () => {
         <Button
           variant="contained"
           color="primary"
-          startIcon={<Sync />}
+          startIcon={<CippIcons.Sync />}
           LinkComponent={Link}
           href="/cipp/integrations/sync"
         >

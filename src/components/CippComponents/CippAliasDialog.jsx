@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Typography, Box, Button, TextField, Chip, Stack } from "@mui/material";
-import { Add } from "@mui/icons-material";
 import { useWatch } from "react-hook-form";
 import { CippFormDomainSelector } from "./CippFormDomainSelector";
 
@@ -123,7 +123,7 @@ const CippAliasDialog = ({ formHook }) => {
             onClick={handleAddAlias}
             variant="contained"
             disabled={!aliasPrefix.trim() || !selectedDomainValue || isPending}
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
             size="small"
           >
             Add

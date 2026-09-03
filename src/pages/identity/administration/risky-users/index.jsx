@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Clear, Search } from "@mui/icons-material";
+import { CippIcons } from "../../../../utils/icon-registry"
 
 const Page = () => {
   const pageTitle = "Risky Users";
@@ -9,7 +9,7 @@ const Page = () => {
     {
       label: "Dismiss Risk",
       type: "POST",
-      icon: <Clear />,
+      icon: <CippIcons.Clear />,
       url: "/api/ExecDismissRiskyUser",
       data: { userId: "id", userDisplayName: "userDisplayName" },
       confirmText: "Are you sure you want to dismiss the risk for this user?",
@@ -18,7 +18,7 @@ const Page = () => {
     {
       label: "Research Compromised Account",
       type: "GET",
-      icon: <Search />,
+      icon: <CippIcons.MagnifyingGlassIcon />,
       link: "/identity/administration/users/user/bec?userId=[id]",
       confirmText: "Are you sure you want to research this compromised account?",
       multiPost: false,

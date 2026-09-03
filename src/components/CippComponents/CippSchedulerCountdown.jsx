@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Avatar, Box, Card, Chip, Divider, Skeleton, Typography } from '@mui/material'
-import { AccessTime } from '@mui/icons-material'
 import { ApiGetCallWithPagination } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
 import { parseCippDate } from '../../utils/parse-cipp-date'
@@ -165,7 +165,7 @@ export const CippSchedulerCountdown = ({ apiUrl, queryKey }) => {
             flexShrink: 0,
           }}
         >
-          <AccessTime sx={{ fontSize: { xs: 20, md: 22 }, color: 'inherit' }} />
+          <CippIcons.AccessTime sx={{ fontSize: { xs: 20, md: 22 }, color: 'inherit' }} />
         </Avatar>
 
         <Box sx={{ minWidth: 0 }}>

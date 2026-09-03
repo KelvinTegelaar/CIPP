@@ -150,7 +150,7 @@ export const CippOffboardingDefaultSettings = (props) => {
             ),
           },
           {
-            label: 'Delete user',
+            label: 'Delete User',
             value: (
               <CippFormComponent
                 type="switch"

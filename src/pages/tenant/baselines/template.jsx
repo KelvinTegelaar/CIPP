@@ -19,18 +19,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { CippIcons } from '../../../utils/icon-registry'
 import { Grid } from '@mui/system'
-import {
-  Add,
-  CheckCircle,
-  ContentCopy,
-  Delete,
-  ExpandMore,
-  PlayArrow,
-  RadioButtonUnchecked,
-  SaveRounded,
-} from '@mui/icons-material'
-import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
@@ -322,7 +312,7 @@ const StagePanel = ({
                 onClick={() => onRemoveStage(stageIndex)}
                 color="error"
               >
-                <Delete />
+                <CippIcons.Delete />
               </IconButton>
             </Tooltip>
           )}
@@ -397,7 +387,7 @@ const StagePanel = ({
                             size="small"
                             onClick={() => handleRemoveCondition(conditionId)}
                           >
-                            <Delete fontSize="small" />
+                            <CippIcons.Delete fontSize="small" />
                           </IconButton>
                         </Tooltip>
                       </Stack>
@@ -502,7 +492,7 @@ const StagePanel = ({
               <Button
                 variant="outlined"
                 size="small"
-                startIcon={<Add />}
+                startIcon={<CippIcons.Add />}
                 onClick={handleAddCondition}
               >
                 Add Condition
@@ -520,7 +510,7 @@ const StagePanel = ({
           </Typography>
           <Button
             variant="outlined"
-            endIcon={<ExpandMore />}
+            endIcon={<CippIcons.ExpandMore />}
             disabled={stageStandards.length === 0}
             onClick={(event) => setBulkAnchor(event.currentTarget)}
           >
@@ -545,7 +535,7 @@ const StagePanel = ({
           </Menu>
           <Button
             variant="outlined"
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
             onClick={() => onOpenDialog(stageIndex)}
           >
             Add Standards
@@ -934,7 +924,7 @@ const Page = () => {
             onClick={() => router.back()}
             startIcon={
               <SvgIcon fontSize="small">
-                <ArrowLeftIcon />
+                <CippIcons.ArrowLeft />
               </SvgIcon>
             }
           >
@@ -960,7 +950,7 @@ const Page = () => {
               requiredPermissions={['Tenant.Standards.ReadWrite']}
               variant="contained"
               color="primary"
-              startIcon={<SaveRounded />}
+              startIcon={<CippIcons.SaveRounded />}
               disabled={isSaveDisabled}
               onClick={handleSave}
             >
@@ -969,8 +959,8 @@ const Page = () => {
             <Button
               variant="outlined"
               color="primary"
-              startIcon={<Add />}
-              endIcon={<ExpandMore />}
+              startIcon={<CippIcons.Add />}
+              endIcon={<CippIcons.ExpandMore />}
               onClick={(event) => setAddStageAnchor(event.currentTarget)}
             >
               Add Stage
@@ -987,7 +977,7 @@ const Page = () => {
                 }}
               >
                 <ListItemIcon>
-                  <Add fontSize="small" />
+                  <CippIcons.Add fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Add empty stage</ListItemText>
               </MenuItem>
@@ -998,7 +988,7 @@ const Page = () => {
                 }}
               >
                 <ListItemIcon>
-                  <ContentCopy fontSize="small" />
+                  <CippIcons.ContentCopy fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>
                   Copy currently selected stage ({stages[activeStage]?.name})
@@ -1016,7 +1006,7 @@ const Page = () => {
               <Button
                 color="inherit"
                 size="small"
-                startIcon={<PlayArrow />}
+                startIcon={<CippIcons.PlayArrow />}
                 disabled={runAfterSave.isPending}
                 onClick={() =>
                   runAfterSave.mutate({
@@ -1124,9 +1114,9 @@ const Page = () => {
                       }}
                     >
                       {step.done ? (
-                        <CheckCircle fontSize="small" color="success" />
+                        <CippIcons.CheckCircle fontSize="small" color="success" />
                       ) : (
-                        <RadioButtonUnchecked
+                        <CippIcons.RadioButtonUnchecked
                           fontSize="small"
                           color="disabled"
                         />

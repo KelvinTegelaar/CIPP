@@ -1,4 +1,5 @@
-import { EyeIcon } from "@heroicons/react/24/outline";
+
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -14,7 +15,7 @@ const Page = () => {
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
       pinned: true,
       color: "info",
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       target: "_blank",
       multiPost: false,
       external: true,

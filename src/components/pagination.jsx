@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
+import { CippIcons } from '../utils/icon-registry';
 import PropTypes from 'prop-types';
-import ChevronLeftIcon from '@heroicons/react/24/outline/ChevronLeftIcon';
-import ChevronRightIcon from '@heroicons/react/24/outline/ChevronRightIcon';
 import { Box, IconButton, Stack, SvgIcon, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -68,7 +67,7 @@ export const Pagination = (props) => {
           onClick={handlePreviousPage}
         >
           <SvgIcon fontSize="small">
-            <ChevronLeftIcon />
+            <CippIcons.ChevronLeftIcon />
           </SvgIcon>
         </IconButton>
         <IconButton
@@ -76,7 +75,7 @@ export const Pagination = (props) => {
           onClick={handleNextPage}
         >
           <SvgIcon fontSize="small">
-            <ChevronRightIcon />
+            <CippIcons.ChevronRightIcon />
           </SvgIcon>
         </IconButton>
       </Stack>

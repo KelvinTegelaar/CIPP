@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Alert, Button, Typography, CircularProgress, Box } from '@mui/material'
-import { Microsoft, Login, Refresh } from '@mui/icons-material'
 import { ApiGetCall } from '../../api/ApiCall'
 import { CippCopyToClipBoard } from './CippCopyToClipboard'
 import { CippApiDialog } from './CippApiDialog'
@@ -907,13 +907,13 @@ export const CIPPM365OAuthButton = ({
         color="primary"
         startIcon={
           canRestartDeviceLogin ? (
-            <Refresh />
+            <CippIcons.Refresh />
           ) : authInProgress || codeRetrievalInProgress ? (
             <CircularProgress size="1rem" color="inherit" />
           ) : tokens.accessToken ? (
-            <Refresh />
+            <CippIcons.Refresh />
           ) : (
-            <Microsoft />
+            <CippIcons.Microsoft />
           )
         }
       >

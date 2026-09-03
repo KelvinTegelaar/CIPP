@@ -16,18 +16,9 @@ import {
   Switch,
   Typography,
 } from '@mui/material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import Link from 'next/link'
 import { useState } from 'react'
-import {
-  AddBox,
-  CloudDownload,
-  CopyAll,
-  Delete,
-  Edit,
-  GitHub,
-  PlayArrow,
-  Upgrade,
-} from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import tabOptions from '../tabOptions.json'
@@ -101,14 +92,14 @@ const Page = () => {
       label: 'Edit Baseline',
       link: '/tenant/baselines/template?id=[GUID]',
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'success',
       target: '_self',
     },
     {
       label: 'Clone & Edit Baseline',
       link: '/tenant/baselines/template?id=[GUID]&clone=true',
-      icon: <CopyAll />,
+      icon: <CippIcons.CopyAll />,
       color: 'success',
       target: '_self',
     },
@@ -116,7 +107,7 @@ const Page = () => {
       label: 'Run Baseline Now',
       type: 'POST',
       url: '/api/ExecBaselineRun',
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       color: 'info',
       data: { mode: '!run', templateId: 'GUID' },
       children: ({ formHook, row }) => (
@@ -139,7 +130,7 @@ const Page = () => {
       label: 'Save to GitHub',
       type: 'POST',
       url: '/api/ExecCommunityRepo',
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: { Action: 'UploadBaseline', GUID: 'GUID' },
       fields: [
         {
@@ -176,7 +167,7 @@ const Page = () => {
       label: 'Delete Baseline',
       type: 'POST',
       url: '/api/RemoveBaseline',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       color: 'error',
       data: { ID: 'GUID' },
       confirmText:
@@ -382,7 +373,7 @@ const Page = () => {
             href="/tenant/baselines/template"
             startIcon={
               <SvgIcon fontSize="small">
-                <AddBox />
+                <CippIcons.AddBox />
               </SvgIcon>
             }
           >
@@ -392,7 +383,7 @@ const Page = () => {
             onClick={() => setCatalogVisible(true)}
             startIcon={
               <SvgIcon fontSize="small">
-                <CloudDownload />
+                <CippIcons.CloudDownload />
               </SvgIcon>
             }
           >
@@ -402,7 +393,7 @@ const Page = () => {
             onClick={openMigrate}
             startIcon={
               <SvgIcon fontSize="small">
-                <Upgrade />
+                <CippIcons.Upgrade />
               </SvgIcon>
             }
           >

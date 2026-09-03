@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Button,
@@ -15,16 +15,12 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-
 import { Grid } from "@mui/system";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
-import { Save, WarningOutlined } from "@mui/icons-material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm, useFormState, useWatch } from "react-hook-form";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import cippRoles from "../../data/cipp-roles.json";
 import { GroupHeader, GroupItems } from "../CippComponents/CippAutocompleteGrouping";
@@ -531,7 +527,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         }}>
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
-              <InformationCircleIcon />
+              <CippIcons.InformationCircleIcon />
             </SvgIcon>
           </Button>
           <CippFormComponent
@@ -592,7 +588,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                             sx={{ minWidth: "auto", p: 0.5 }}
                           >
                             <SvgIcon fontSize="small" color="info">
-                              <InformationCircleIcon />
+                              <CippIcons.InformationCircleIcon />
                             </SvgIcon>
                           </Button>
                         )}
@@ -646,7 +642,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               />
             )}
             {selectedRole && isBaseRole && ["admin", "superadmin"].includes(selectedRole) && (
-              <Alert color="warning" icon={<WarningOutlined />}>
+              <Alert color="warning" icon={<CippIcons.WarningOutlined />}>
                 This is a highly privileged role and overrides any custom role restrictions.
               </Alert>
             )}
@@ -1041,7 +1037,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                           }
                           icon={
                             (ruleExpansion.includeCounts[pattern] ?? 0) === 0 ? (
-                              <WarningOutlined />
+                              <CippIcons.WarningOutlined />
                             ) : undefined
                           }
                         />
@@ -1056,7 +1052,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                           }
                           icon={
                             (ruleExpansion.excludeCounts[pattern] ?? 0) === 0 ? (
-                              <WarningOutlined />
+                              <CippIcons.WarningOutlined />
                             ) : undefined
                           }
                         />
@@ -1123,7 +1119,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                         return (
                           <Accordion variant="outlined" disableGutters key={permission}>
                             <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
+                              expandIcon={<CippIcons.ExpandMore />}
                               sx={{ "& .MuiAccordionSummary-content": { minWidth: 0 } }}
                             >
                               <Stack
@@ -1249,7 +1245,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                         .sort()
                         .map((cat, catIndex) => (
                           <Accordion variant="outlined" key={`accordion-item-${catIndex}`}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                               {cat}
                             </AccordionSummary>
                             <AccordionDetails>
@@ -1395,7 +1391,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           }
           startIcon={
             <SvgIcon fontSize="small">
-              <Save />
+              <CippIcons.Save />
             </SvgIcon>
           }
           onClick={handleSubmit}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Button, Stack, IconButton } from '@mui/material'
-import { RocketLaunch, Sync } from '@mui/icons-material'
 import { useForm, useWatch, useFormState } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
@@ -127,7 +127,7 @@ export const CippPolicyDeployDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<RocketLaunch />}
+        startIcon={<CippIcons.RocketLaunch />}
       >
         {buttonText}
       </PermissionButton>
@@ -186,7 +186,7 @@ export const CippPolicyDeployDrawer = ({
             customAction={{
               position: 'outside',
               label: 'Refresh Templates',
-              icon: <Sync />,
+              icon: <CippIcons.Sync />,
               onClick: () => {
                 CATemplates.refetch()
               },
@@ -210,10 +210,10 @@ export const CippPolicyDeployDrawer = ({
               type="radio"
               name="AssignTo"
               options={[
-                { label: 'Do not assign', value: 'On' },
-                { label: 'Assign to all users', value: 'allLicensedUsers' },
-                { label: 'Assign to all devices', value: 'AllDevices' },
-                { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                { label: 'Do Not Assign', value: 'On' },
+                { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                { label: 'Assign to All Devices', value: 'AllDevices' },
+                { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                 { label: 'Assign to Custom Group', value: 'customGroup' },
               ]}
               formControl={formControl}

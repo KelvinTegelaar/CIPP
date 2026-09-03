@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -18,15 +19,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import {
-  Add,
-  ArrowDropDown,
-  Edit,
-  Refresh,
-  Search as SearchIcon,
-  Security,
-  Storage as StorageIcon,
-} from '@mui/icons-material'
 import { ActionsMenu } from '../actions-menu'
 
 const siteSearchText = (site) =>
@@ -115,7 +107,7 @@ const SiteCrumbSwitcher = ({
         >
           {isFetching && !label ? <Skeleton width={120} /> : label}
         </Typography>
-        <ArrowDropDown fontSize="small" sx={{ flexShrink: 0, opacity: 0.7 }} />
+        <CippIcons.ArrowDropDown fontSize="small" sx={{ flexShrink: 0, opacity: 0.7 }} />
       </Box>
       <Menu
         anchorEl={anchorEl}
@@ -165,7 +157,7 @@ const SiteCrumbSwitcher = ({
                     input: {
                       startAdornment: (
                         <InputAdornment position="start" sx={{ ml: 0.25, mr: 0 }}>
-                          <SearchIcon sx={{ fontSize: 18, color: 'action.active' }} />
+                          <CippIcons.Search sx={{ fontSize: 18, color: 'action.active' }} />
                         </InputAdornment>
                       ),
                     }
@@ -423,22 +415,22 @@ export const CippSharePointBrowserBanner = ({
             />
           ) : null}
           {showStorage ? (
-            <Button variant="outlined" startIcon={<StorageIcon />} onClick={onStorageClick}>
+            <Button variant="outlined" startIcon={<CippIcons.Storage />} onClick={onStorageClick}>
               Storage
             </Button>
           ) : null}
           {showPermissions ? (
-            <Button variant="outlined" startIcon={<Security />} onClick={onPermissionsClick}>
+            <Button variant="outlined" startIcon={<CippIcons.Security />} onClick={onPermissionsClick}>
               Permissions
             </Button>
           ) : null}
           {showNew ? (
-            <Button variant="contained" startIcon={<Add />}>
+            <Button variant="contained" startIcon={<CippIcons.Add />}>
               {newLabel}
             </Button>
           ) : null}
           {showEditSite ? (
-            <Button variant="outlined" startIcon={<Edit />} onClick={onEditSiteClick}>
+            <Button variant="outlined" startIcon={<CippIcons.Edit />} onClick={onEditSiteClick}>
               Edit Site
             </Button>
           ) : null}
@@ -451,7 +443,7 @@ export const CippSharePointBrowserBanner = ({
                   onClick={onRefresh}
                   disabled={refreshDisabled}
                 >
-                  <Refresh />
+                  <CippIcons.Refresh />
                 </IconButton>
               </span>
             </Tooltip>

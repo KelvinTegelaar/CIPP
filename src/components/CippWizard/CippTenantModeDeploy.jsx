@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Alert,
   Stack,
@@ -11,7 +12,6 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { Person, Apartment, Sync } from "@mui/icons-material";
 import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
@@ -102,7 +102,7 @@ export const CippTenantModeDeploy = (props) => {
                 onClick={() => partnerTenantInfo.refetch()}
                 disabled={partnerTenantInfo.isLoading}
               >
-                <Sync fontSize="small" />
+                <CippIcons.Sync fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
@@ -181,7 +181,7 @@ export const CippTenantModeDeploy = (props) => {
                       alignItems: "center"
                     }}>
                       <SvgIcon fontSize="small">
-                        <Apartment />
+                        <CippIcons.Apartment />
                       </SvgIcon>
                       <Typography variant="body2" sx={{
                         fontWeight: "medium"
@@ -199,7 +199,7 @@ export const CippTenantModeDeploy = (props) => {
                         alignItems: "center"
                       }}>
                         <SvgIcon fontSize="small">
-                          <Person />
+                          <CippIcons.Person />
                         </SvgIcon>
                         <Typography variant="body2" sx={{
                           fontWeight: "medium"

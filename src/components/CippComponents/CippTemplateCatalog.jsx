@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, memo } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
   Box,
@@ -29,13 +30,6 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import {
-  CloudDownload,
-  Search,
-  ViewList,
-  ViewModule,
-  Visibility,
-} from '@mui/icons-material'
 import { Virtuoso } from 'react-virtuoso'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { CippApiResults } from './CippApiResults'
@@ -214,7 +208,7 @@ const TemplateCard = memo(
             <CardActions sx={{ justifyContent: 'flex-end', px: 2, py: 1 }}>
               <Button
                 size="small"
-                startIcon={<Visibility />}
+                startIcon={<CippIcons.EyeIcon />}
                 onClick={() => onPreview(item)}
               >
                 Preview
@@ -222,7 +216,7 @@ const TemplateCard = memo(
               <Button
                 size="small"
                 variant="contained"
-                startIcon={<CloudDownload />}
+                startIcon={<CippIcons.CloudDownload />}
                 onClick={() => onImport(item)}
                 disabled={isImporting}
               >
@@ -660,7 +654,7 @@ export const CippTemplateCatalog = ({
               slotProps={{
                 input: {
                   startAdornment: (
-                    <Search sx={{ mr: 1, color: 'text.secondary' }} />
+                    <CippIcons.Search sx={{ mr: 1, color: 'text.secondary' }} />
                   ),
                 }
               }}
@@ -746,10 +740,10 @@ export const CippTemplateCatalog = ({
             }}
           >
             <ToggleButton value="card" aria-label="card view">
-              <ViewModule fontSize="small" />
+              <CippIcons.ViewModule fontSize="small" />
             </ToggleButton>
             <ToggleButton value="list" aria-label="list view">
-              <ViewList fontSize="small" />
+              <CippIcons.ViewList fontSize="small" />
             </ToggleButton>
           </ToggleButtonGroup>
 
@@ -799,7 +793,7 @@ export const CippTemplateCatalog = ({
               importMutation.isPending ? (
                 <CircularProgress size={16} />
               ) : (
-                <CloudDownload />
+                <CippIcons.CloudDownload />
               )
             }
             onClick={handleImportSelected}
@@ -893,7 +887,7 @@ export const CippTemplateCatalog = ({
         <DialogActions>
           <Button
             variant="contained"
-            startIcon={<CloudDownload />}
+            startIcon={<CippIcons.CloudDownload />}
             onClick={() => {
               importItems([previewItem])
               setPreviewItem(null)

@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { RestoreFromTrash, Warning } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Deleted Items";
@@ -9,7 +9,7 @@ const Page = () => {
     {
       label: "Restore Object",
       type: "POST",
-      icon: <RestoreFromTrash />,
+      icon: <CippIcons.RestoreFromTrash />,
       url: "/api/ExecRestoreDeleted",
       data: { ID: "id", userPrincipalName: "userPrincipalName", displayName: "displayName" },
       confirmText: "Are you sure you want to restore this object?",
@@ -18,7 +18,7 @@ const Page = () => {
     {
       label: "Permanently Delete Object",
       type: "POST",
-      icon: <Warning />,
+      icon: <CippIcons.Warning />,
       url: "/api/RemoveDeletedObject",
       data: { ID: "id", userPrincipalName: "userPrincipalName", displayName: "displayName" },
       confirmText:

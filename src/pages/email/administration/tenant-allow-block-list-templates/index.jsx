@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { Delete, Edit } from '@mui/icons-material'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 import { CippTenantAllowBlockListTemplateDrawer } from '../../../../components/CippComponents/CippTenantAllowBlockListTemplateDrawer.jsx'
 
@@ -18,7 +18,7 @@ const Page = () => {
         setEditData(row)
         setEditDrawerVisible(true)
       },
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'primary',
     },
     {
@@ -28,7 +28,7 @@ const Page = () => {
       data: { ID: 'GUID' },
       confirmText: 'Do you want to delete this template?',
       multiPost: false,
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       color: 'danger',
     },
   ]

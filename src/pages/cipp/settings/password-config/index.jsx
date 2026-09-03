@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { CippIcons } from "../../../../utils/icon-registry";
 import {
   Alert,
   Box,
@@ -20,7 +21,6 @@ import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useRouter } from "next/router";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
-import { ArrowLeftIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 
@@ -53,7 +53,6 @@ function normalizeConfigForBackend(config) {
     appendSpecialChar: Boolean(config.appendSpecialChar),
   };
 }
-
 
 const DEFAULT_CONFIG = {
   passwordType: PASSWORD_TYPES.CLASSIC,
@@ -150,7 +149,7 @@ const Page = () => {
                 <Typography variant="h4">Password Configuration</Typography>
                 <Button
                   size="small"
-                  startIcon={<SvgIcon fontSize="small"><ArrowLeftIcon /></SvgIcon>}
+                  startIcon={<SvgIcon fontSize="small"><CippIcons.ArrowLeftIcon /></SvgIcon>}
                   onClick={handleBackToSettings}
                 >
                   Settings
@@ -187,7 +186,7 @@ const Page = () => {
                         color="primary"
                         onClick={handleSave}
                         disabled={passwordSave.isPending}
-                        startIcon={<SvgIcon fontSize="small"><CheckIcon /></SvgIcon>}
+                        startIcon={<SvgIcon fontSize="small"><CippIcons.CheckIcon /></SvgIcon>}
                       >
                         {passwordSave.isPending ? "Saving..." : "Save"}
                       </Button>

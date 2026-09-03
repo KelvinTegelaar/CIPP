@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Accordion,
   AccordionSummary,
@@ -13,10 +14,6 @@ import {
   Stack,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { PropertyListItem } from '../property-list-item'
 import { PropertyList } from '../property-list'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
@@ -395,7 +392,7 @@ function CippJsonView({
               sx={{ p: 0.25, color: 'text.secondary' }}
               onClick={(event) => event.stopPropagation()}
             >
-              <InfoOutlinedIcon fontSize="inherit" />
+              <CippIcons.InfoOutlined fontSize="inherit" />
             </IconButton>
           </Tooltip>
         </Box>
@@ -1019,7 +1016,7 @@ function CippJsonView({
       onChange={() => setAccordionOpen(!accordionOpen)}
     >
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={<CippIcons.ExpandMore />}
         sx={{ display: 'flex', alignItems: 'center' }}
       >
         <Stack
@@ -1041,7 +1038,7 @@ function CippJsonView({
       </AccordionSummary>
       <AccordionDetails>
         <IconButton onClick={toggleView} sx={{ ml: 1 }}>
-          {viewJson ? <VisibilityOffIcon /> : <VisibilityIcon />}
+          {viewJson ? <CippIcons.VisibilityOff /> : <CippIcons.Visibility />}
         </IconButton>
         {viewJson ? (
           <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object), null, 2)} />

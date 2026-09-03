@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { Delete } from '@mui/icons-material'
 import { CippAddTenantAllowBlockListDrawer } from '../../../../components/CippComponents/CippAddTenantAllowBlockListDrawer.jsx'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import { Stack } from '@mui/system'
@@ -33,7 +33,7 @@ const Page = () => {
       // Every row carries Tenant, which CippApiDialog uses as the tenantFilter in AllTenants mode.
       confirmText: 'Are you sure you want to delete this entry?',
       color: 'danger',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
     },
   ]
 

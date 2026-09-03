@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry";
 import { useForm, useWatch, useFormState } from "react-hook-form";
 import { ApiPostCall } from "../../../../api/ApiCall";
 import { useRouter } from "next/router";
@@ -12,8 +13,6 @@ import {
   Divider,
   CardActions,
 } from "@mui/material";
-import { AddCircle, RemoveCircle } from "@mui/icons-material";
-
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
@@ -204,12 +203,12 @@ const Page = () => {
                         />
                       </Box>
                       <IconButton onClick={() => removeProperty(index)}>
-                        <RemoveCircle />
+                        <CippIcons.RemoveCircle />
                       </IconButton>
                     </Stack>
                   ))}
                 <Box>
-                  <Button onClick={addProperty} startIcon={<AddCircle />}>
+                  <Button onClick={addProperty} startIcon={<CippIcons.AddCircle />}>
                     Add Property
                   </Button>
                   {formControl.formState.errors.properties && (

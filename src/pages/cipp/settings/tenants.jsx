@@ -1,4 +1,5 @@
 import { Button, SvgIcon } from "@mui/material";
+import { CippIcons } from "../../../utils/icon-registry"
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { useCippGDAPTrace } from "../../../components/CippSettings/CippGDAP/CippGDAPTrace";
@@ -6,16 +7,6 @@ import { Layout as DashboardLayout } from "../../../layouts/index";
 import { TabbedLayout } from "../../../layouts/TabbedLayout";
 import tabOptions from "./tabOptions";
 import { useDialog } from "../../../hooks/use-dialog";
-import {
-  Sync,
-  Block,
-  PlayArrow,
-  RestartAlt,
-  Delete,
-  Add,
-  Refresh,
-  VpnKey,
-} from "@mui/icons-material";
 import cacheTypes from "../../../data/CIPPDBCacheTypes.json";
 
 const Page = () => {
@@ -28,7 +19,7 @@ const Page = () => {
       label: "Exclude Tenants",
       type: "POST",
       url: "/api/ExecExcludeTenant?AddExclusion=true",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       data: { value: "customerId" },
       confirmText: "Are you sure you want to exclude [displayName]?",
       multiPost: false,
@@ -38,7 +29,7 @@ const Page = () => {
       label: "Include Tenants",
       type: "POST",
       url: "/api/ExecExcludeTenant?RemoveExclusion=true",
-      icon: <Add />,
+      icon: <CippIcons.Add />,
       data: { value: "customerId" },
       confirmText: "Are you sure you want to include [displayName]?",
       multiPost: false,
@@ -48,7 +39,7 @@ const Page = () => {
       label: "Refresh CPV Permissions",
       type: "POST",
       url: "/api/ExecCPVPermissions",
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       data: { tenantFilter: "customerId" },
       confirmText: "Are you sure you want to refresh the CPV permissions for [displayName]?",
       multiPost: false,
@@ -58,14 +49,14 @@ const Page = () => {
     {
       label: "Re-authenticate Connection",
       link: "/onboardingv2?selectedOption=AddTenant&tenantType=Direct",
-      icon: <VpnKey />,
+      icon: <CippIcons.Key />,
       condition: (row) => row.delegatedPrivilegeStatus === "directTenant",
     },
     {
       label: "Reset CPV Permissions",
       type: "POST",
       url: "/api/ExecCPVPermissions?&ResetSP=true",
-      icon: <RestartAlt />,
+      icon: <CippIcons.RestartAlt />,
       data: { tenantFilter: "customerId" },
       confirmText:
         "Are you sure you want to reset the CPV permissions for [displayName]? (This will delete the Service Principal and re-add it.)",
@@ -77,7 +68,7 @@ const Page = () => {
       label: "Remove Tenant",
       type: "POST",
       url: "/api/ExecRemoveTenant",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: { TenantID: "customerId" },
       confirmText:
         "Are you sure you want to remove [displayName]? If this is a Direct Tenant, this will no longer be accessible until you add it via the Setup Wizard.",
@@ -88,7 +79,7 @@ const Page = () => {
       label: "Refresh CIPPDB Cache",
       type: "GET",
       url: "/api/ExecCIPPDBCache",
-      icon: <Refresh />,
+      icon: <CippIcons.Refresh />,
       data: { Name: "Name", TenantFilter: "customerId" },
       confirmText: "Select the cache type to refresh for [displayName]:",
       multiPost: false,
@@ -189,7 +180,7 @@ const Page = () => {
             onClick={createDialog.handleOpen}
           >
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-              <Sync />
+              <CippIcons.Sync />
             </SvgIcon>
             Force Refresh
           </Button>

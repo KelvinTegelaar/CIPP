@@ -1,9 +1,8 @@
 import { Button } from "@mui/material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Delete, Edit, AddBox, GitHub, Sync } from "@mui/icons-material";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { Stack } from "@mui/system";
 import { BPASyncDialog } from "../../../../components/CippComponents/BPASyncDialog";
@@ -24,7 +23,7 @@ const Page = () => {
       label: "View Report",
       link: "/tenant/standards/bpa-report/view?id=[Name]",
       pinned: true,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: "success",
       target: "_self",
     },
@@ -33,14 +32,14 @@ const Page = () => {
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
       link: "/tenant/standards/bpa-report/builder?id=[Name]",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "success",
       target: "_self",
     },
     {
       label: "Clone & Edit Template",
       link: "/tenant/standards/bpa-report/builder?id=[Name]&clone=true",
-      icon: <CopyAll />,
+      icon: <CippIcons.CopyAll />,
       color: "success",
       target: "_self",
     },
@@ -48,7 +47,7 @@ const Page = () => {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -95,7 +94,7 @@ const Page = () => {
       data: {
         TemplateName: "Name",
       },
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       confirmText: "Are you sure you want to delete this template?",
       multiPost: false,
     },
@@ -108,10 +107,10 @@ const Page = () => {
         apiUrl="/api/listBPATemplates"
         cardButton={
           <Stack direction="row" spacing={1}>
-            <Button component={Link} href="bpa-report/builder" startIcon={<AddBox />}>
+            <Button component={Link} href="bpa-report/builder" startIcon={<CippIcons.AddBox />}>
               Add Template
             </Button>
-            <Button onClick={bpaDialog.handleOpen} startIcon={<Sync />}>
+            <Button onClick={bpaDialog.handleOpen} startIcon={<CippIcons.Sync />}>
               Force Sync
             </Button>
           </Stack>

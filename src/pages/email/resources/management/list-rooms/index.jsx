@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
-import { Edit, Block, LockOpen, Key } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippAddRoomDrawer } from "../../../../../components/CippComponents/CippAddRoomDrawer";
 
 const Page = () => {
@@ -13,7 +12,7 @@ const Page = () => {
       label: "Edit Room",
       link: `/email/resources/management/list-rooms/edit?roomId=[id]`,
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "info",
       condition: (row) => !row.isDirSynced,
     },
@@ -21,12 +20,12 @@ const Page = () => {
       label: "Edit permissions",
       link: "/identity/administration/users/user/exchange?userId=[id]",
       color: "info",
-      icon: <Key />,
+      icon: <CippIcons.Key />,
     },
     {
       label: "Block Sign In",
       type: "POST",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: "/api/ExecDisableUser",
       data: { ID: "id" },
       confirmText: "Are you sure you want to block the sign-in for this room mailbox?",
@@ -36,7 +35,7 @@ const Page = () => {
     {
       label: "Unblock Sign In",
       type: "POST",
-      icon: <LockOpen />,
+      icon: <CippIcons.LockOpen />,
       url: "/api/ExecDisableUser",
       data: { ID: "id", Enable: true },
       confirmText: "Are you sure you want to unblock sign-in for this room mailbox?",
@@ -46,7 +45,7 @@ const Page = () => {
     {
       label: "Delete Room",
       type: "POST",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: "/api/RemoveUser",
       data: { ID: "id" },
       confirmText: "Are you sure you want to delete this room mailbox?",

@@ -1,12 +1,9 @@
 import { Drawer, Box, Button, IconButton, Typography, Divider } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { useMediaQuery, Grid } from "@mui/system";
-import CloseIcon from "@mui/icons-material/Close";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { renderUrlValue } from "../../utils/render-url-value";
 import { useHistoryDismiss } from "../../hooks/use-history-dismiss";
 
@@ -122,7 +119,7 @@ export const CippOffCanvas = (props) => {
           {mdDown ? (
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, minWidth: 0 }}>
               <IconButton onClick={onClose} aria-label="Back" sx={{ ml: -0.5 }}>
-                <ArrowBackIosNewIcon fontSize="small" />
+                <CippIcons.ArrowBackIosNew fontSize="small" />
               </IconButton>
               <Typography variant="h6" noWrap>
                 {title}
@@ -140,7 +137,7 @@ export const CippOffCanvas = (props) => {
                   size="small"
                   title="Previous row"
                 >
-                  <KeyboardArrowUpIcon />
+                  <CippIcons.KeyboardArrowUp />
                 </IconButton>
                 <IconButton
                   onClick={onNavigateDown}
@@ -148,13 +145,13 @@ export const CippOffCanvas = (props) => {
                   size="small"
                   title="Next row"
                 >
-                  <KeyboardArrowDownIcon />
+                  <CippIcons.KeyboardArrowDown />
                 </IconButton>
               </>
             )}
             {!mdDown && (
-              <IconButton onClick={onClose}>
-                <CloseIcon />
+              <IconButton onClick={onClose} aria-label="Close" title="Close">
+                <CippIcons.Close />
               </IconButton>
             )}
           </Box>
@@ -233,7 +230,7 @@ export const CippOffCanvas = (props) => {
               <Button
                 variant="outlined"
                 color="inherit"
-                startIcon={<KeyboardArrowUpIcon />}
+                startIcon={<CippIcons.KeyboardArrowUp />}
                 onClick={onNavigateUp}
                 disabled={!canNavigateUp}
                 sx={{ flex: 1, minHeight: 44, borderColor: "divider" }}
@@ -253,7 +250,7 @@ export const CippOffCanvas = (props) => {
               <Button
                 variant="outlined"
                 color="inherit"
-                endIcon={<KeyboardArrowDownIcon />}
+                endIcon={<CippIcons.KeyboardArrowDown />}
                 onClick={onNavigateDown}
                 disabled={!canNavigateDown}
                 sx={{ flex: 1, minHeight: 44, borderColor: "divider" }}

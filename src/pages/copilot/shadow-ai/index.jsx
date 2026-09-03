@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { CippInfoBar } from '../../../components/CippCards/CippInfoBar'
 import { CippChartCard } from '../../../components/CippCards/CippChartCard'
@@ -26,16 +27,6 @@ import {
 import { useTheme } from '@mui/material/styles'
 import { riskChartColor, sortByRiskSeverity } from '../../../utils/shadow-ai'
 import { Grid } from '@mui/system'
-import {
-  ArrowPathIcon,
-  CheckCircleIcon,
-  CpuChipIcon,
-  ComputerDesktopIcon,
-  KeyIcon,
-  ExclamationTriangleIcon,
-  NoSymbolIcon,
-  UserGroupIcon,
-} from '@heroicons/react/24/outline'
 
 const riskChipColor = (risk) => {
   switch (String(risk).toLowerCase()) {
@@ -265,7 +256,7 @@ const Page = () => {
       url: '/api/ExecShadowAISanction',
       icon: (
         <SvgIcon fontSize="small">
-          <CheckCircleIcon />
+          <CippIcons.CheckCircleIcon />
         </SvgIcon>
       ),
       data: { Tool: 'aiTool', Action: '!Sanction' },
@@ -281,7 +272,7 @@ const Page = () => {
       url: '/api/ExecShadowAISanction',
       icon: (
         <SvgIcon fontSize="small">
-          <NoSymbolIcon />
+          <CippIcons.NoSymbolIcon />
         </SvgIcon>
       ),
       data: { Tool: 'aiTool', Action: '!Unsanction' },
@@ -356,7 +347,7 @@ const Page = () => {
                     onClick={syncDialog.handleOpen}
                     startIcon={
                       <SvgIcon fontSize="small">
-                        <ArrowPathIcon />
+                        <CippIcons.ArrowPathIcon />
                       </SvgIcon>
                     }
                   >
@@ -376,22 +367,22 @@ const Page = () => {
                 isFetching={shadowAi.isFetching}
                 data={[
                   {
-                    icon: <CpuChipIcon />,
+                    icon: <CippIcons.CpuChipIcon />,
                     name: 'AI Tools Detected',
                     data: `${summary.aiToolsDetected ?? 0}`,
                   },
                   {
-                    icon: <ComputerDesktopIcon />,
+                    icon: <CippIcons.ComputerDesktopIcon />,
                     name: 'Device Installs',
                     data: `${summary.deviceInstalls ?? 0}`,
                   },
                   {
-                    icon: <KeyIcon />,
+                    icon: <CippIcons.Key />,
                     name: 'AI Apps in Entra',
                     data: `${summary.consentedAiApps ?? 0}`,
                   },
                   {
-                    icon: <ExclamationTriangleIcon />,
+                    icon: <CippIcons.ExclamationTriangleIcon />,
                     name: 'High-Risk AI Tools',
                     data: `${summary.highRiskTools ?? 0}`,
                     color: 'error',
@@ -480,7 +471,7 @@ const Page = () => {
                   ...sanctionActions,
                   {
                     label: 'Application Users',
-                    icon: <UserGroupIcon />,
+                    icon: <CippIcons.UserGroupIcon />,
                     customComponent: (row, { drawerVisible, setDrawerVisible }) => (
                       <ApplicationUsersDrawer
                         row={row}

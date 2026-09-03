@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Edit, Block } from "@mui/icons-material";
 import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const Page = () => {
@@ -23,34 +22,48 @@ const Page = () => {
       link: "/identity/administration/users/user?userId=[azureAdUserId]&tenantFilter=[tenantId]",
       pinned: true,
       multiPost: false,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: "success",
     },
     {
       label: "Edit User",
       link: "/identity/administration/users/user/edit?userId=[azureAdUserId]&tenantFilter=[tenantId]",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "success",
       target: "_self",
     },
     {
       label: "Block Sign In",
       type: "POST",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: "/api/ExecDisableUser",
       data: { ID: "azureAdUserId" },
       confirmText: "Are you sure you want to block the sign-in for this user?",
       multiPost: false,
+      condition: (row) => row.accountEnabled !== false,
     },
     {
       label: "Delete User",
       type: "POST",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: "/api/RemoveUser",
       data: { ID: "azureAdUserId" },
       confirmText: "Are you sure you want to delete this user?",
       multiPost: false,
+    },
+  ];
+
+  const filters = [
+    {
+      filterName: "Sign-in allowed",
+      value: [{ id: "accountEnabled", value: "Yes" }],
+      type: "column",
+    },
+    {
+      filterName: "Sign-in blocked",
+      value: [{ id: "accountEnabled", value: "No" }],
+      type: "column",
     },
   ];
 
@@ -59,6 +72,7 @@ const Page = () => {
       "tenantDisplayName",
       "displayName",
       "userPrincipalName",
+      "accountEnabled",
       "userType",
       "createdDateTime",
       "lastSignInDateTime",
@@ -76,6 +90,7 @@ const Page = () => {
     "tenantDisplayName",
     "userPrincipalName",
     "displayName",
+    "accountEnabled",
     "lastSignInDateTime",
     "lastNonInteractiveSignInDateTime",
     "lastSuccessfulSignInDateTime",
@@ -97,6 +112,7 @@ const Page = () => {
           condition: (row) => Boolean(row?.azureAdUserId),
         }}
         simpleColumns={simpleColumns}
+        filters={filters}
         dataSourceControls={reportDB.controls}
       />
       {reportDB.syncDialog}

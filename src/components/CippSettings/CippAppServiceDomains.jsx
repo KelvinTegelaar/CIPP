@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Alert,
   Box,
@@ -27,8 +28,6 @@ import {
   Typography,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { CheckCircle, Cancel, HelpOutlined, Lock, LockOpen, Refresh } from "@mui/icons-material";
-import { PlusIcon, TrashIcon, WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -123,20 +122,20 @@ const VerifyIcon = ({ state }) => {
   if (state === true) {
     return (
       <Tooltip title="Verified">
-        <CheckCircle color="success" fontSize="small" />
+        <CippIcons.CheckCircle color="success" fontSize="small" />
       </Tooltip>
     );
   }
   if (state === false) {
     return (
       <Tooltip title="Not found yet">
-        <Cancel color="error" fontSize="small" />
+        <CippIcons.Cancel color="error" fontSize="small" />
       </Tooltip>
     );
   }
   return (
     <Tooltip title="Not checked yet">
-      <HelpOutlined color="disabled" fontSize="small" />
+      <CippIcons.HelpOutlined color="disabled" fontSize="small" />
     </Tooltip>
   );
 };
@@ -365,7 +364,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
               re-validates the DNS records during this step.
             </Alert>
             {bindingDone ? (
-              <Alert severity="success" icon={<CheckCircle fontSize="inherit" />}>
+              <Alert severity="success" icon={<CippIcons.CheckCircle fontSize="inherit" />}>
                 The hostname binding for <strong>{hostname}</strong> exists.
               </Alert>
             ) : null}
@@ -396,7 +395,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
         {activeStep === 2 && (
           <Stack spacing={2}>
             {certDone ? (
-              <Alert severity="success" icon={<Lock fontSize="inherit" />}>
+              <Alert severity="success" icon={<CippIcons.Lock fontSize="inherit" />}>
                 <strong>{hostname}</strong> is fully configured and secured with a managed
                 certificate.
               </Alert>
@@ -455,7 +454,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
                 variant="outlined"
                 onClick={runDnsCheck}
                 disabled={!hostnameValid || dnsCheck.isPending}
-                startIcon={dnsCheck.isPending ? <CircularProgress size={16} /> : <Refresh />}
+                startIcon={dnsCheck.isPending ? <CircularProgress size={16} /> : <CippIcons.Refresh />}
               >
                 {dnsCheck.isPending ? "Checking..." : "Check DNS"}
               </Button>
@@ -481,7 +480,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
               variant="contained"
               onClick={runAddCertificate}
               disabled={certAction.isPending}
-              startIcon={certAction.isPending ? <CircularProgress size={16} /> : <Lock />}
+              startIcon={certAction.isPending ? <CircularProgress size={16} /> : <CippIcons.Lock />}
             >
               {certAction.isPending ? "Provisioning..." : "Provision certificate & enable HTTPS"}
             </Button>
@@ -535,7 +534,7 @@ export const CippAppServiceDomains = () => {
       label: "Manage / Fix",
       icon: (
         <SvgIcon>
-          <WrenchScrewdriverIcon />
+          <CippIcons.WrenchScrewdriverIcon />
         </SvgIcon>
       ),
       noConfirm: true,
@@ -546,7 +545,7 @@ export const CippAppServiceDomains = () => {
       label: "Remove domain",
       icon: (
         <SvgIcon>
-          <TrashIcon />
+          <CippIcons.TrashIcon />
         </SvgIcon>
       ),
       color: "error.main",
@@ -578,9 +577,9 @@ export const CippAppServiceDomains = () => {
           alignItems: "center"
         }}>
           {row.Secured ? (
-            <Lock color="success" fontSize="small" />
+            <CippIcons.Lock color="success" fontSize="small" />
           ) : (
-            <LockOpen color="disabled" fontSize="small" />
+            <CippIcons.LockOpen color="disabled" fontSize="small" />
           )}
           <Typography variant="body2">{sslStateLabel(row.SslState)}</Typography>
         </Stack>
@@ -708,7 +707,7 @@ export const CippAppServiceDomains = () => {
                 size="small"
                 startIcon={
                   <SvgIcon>
-                    <PlusIcon />
+                    <CippIcons.PlusIcon />
                   </SvgIcon>
                 }
                 onClick={openAddWizard}

@@ -1,18 +1,7 @@
 import { useCallback, useMemo, useState, useEffect, useRef } from "react";
+import { CippIcons } from "../utils/icon-registry";
 import NextLink from "next/link";
 import { Box, ButtonBase, Collapse, IconButton, Stack, SvgIcon, Typography } from "@mui/material";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import CloseIcon from "@mui/icons-material/Close";
-import SwapVertIcon from "@mui/icons-material/SwapVert";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import ChevronRightIcon from "@heroicons/react/24/outline/ChevronRightIcon";
-import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { useSettings } from "../hooks/use-settings";
 import { useUserBookmarks } from "../hooks/use-user-bookmarks";
 
@@ -217,7 +206,7 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
             }}
           >
             <SvgIcon fontSize="small">
-              <BookmarkIcon />
+              <CippIcons.Bookmark />
             </SvgIcon>
           </Box>
           <Box
@@ -258,7 +247,7 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
               }}
               title={locked ? "Unlock bookmarks" : "Lock bookmarks"}
             >
-              {locked ? <LockIcon sx={{ fontSize: 16 }} /> : <LockOpenIcon sx={{ fontSize: 16 }} />}
+              {locked ? <CippIcons.Lock sx={{ fontSize: 16 }} /> : <CippIcons.LockOpen sx={{ fontSize: 16 }} />}
             </IconButton>
             <IconButton
               size="small"
@@ -282,9 +271,9 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
                 sortOrder === "custom" ? "Custom order" : sortOrder === "asc" ? "A > Z" : "Z > A"
               }
             >
-              {sortOrder === "custom" && <SwapVertIcon sx={{ fontSize: 16 }} />}
-              {sortOrder === "asc" && <ArrowUpwardIcon sx={{ fontSize: 16 }} />}
-              {sortOrder === "desc" && <ArrowDownwardIcon sx={{ fontSize: 16 }} />}
+              {sortOrder === "custom" && <CippIcons.SwapVert sx={{ fontSize: 16 }} />}
+              {sortOrder === "asc" && <CippIcons.ArrowUpward sx={{ fontSize: 16 }} />}
+              {sortOrder === "desc" && <CippIcons.ArrowDownward sx={{ fontSize: 16 }} />}
             </IconButton>
           </>
         )}
@@ -304,7 +293,7 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
           }}
         >
           <SvgIcon sx={{ fontSize: 16 }}>
-            {open ? <ChevronDownIcon /> : <ChevronRightIcon />}
+            {open ? <CippIcons.ChevronDownIcon /> : <CippIcons.ChevronRightIcon />}
           </SvgIcon>
         </Box>
       </Stack>
@@ -439,7 +428,7 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
                         cursor: "grab",
                       }}
                     >
-                      <DragIndicatorIcon sx={{ fontSize: 16 }} />
+                      <CippIcons.DragIndicator sx={{ fontSize: 16 }} />
                     </Box>
                   )}
                   <ButtonBase
@@ -512,7 +501,7 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
                           disabled={sortOrder === "custom" && idx === 0}
                           sx={{ p: "2px", opacity: sortOrder !== "custom" || locked ? 0.4 : 1 }}
                         >
-                          <KeyboardArrowUpIcon sx={{ fontSize: 16 }} />
+                          <CippIcons.KeyboardArrowUp sx={{ fontSize: 16 }} />
                         </IconButton>
                         <IconButton
                           size="small"
@@ -527,7 +516,7 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
                           disabled={sortOrder === "custom" && idx === displayBookmarks.length - 1}
                           sx={{ p: "2px", opacity: sortOrder !== "custom" || locked ? 0.4 : 1 }}
                         >
-                          <KeyboardArrowDownIcon sx={{ fontSize: 16 }} />
+                          <CippIcons.KeyboardArrowDown sx={{ fontSize: 16 }} />
                         </IconButton>
                       </>
                     )}
@@ -540,7 +529,7 @@ export const SideNavBookmarks = ({ collapse = false, alignWithRail = false }) =>
                         }}
                         sx={{ p: "2px" }}
                       >
-                        <CloseIcon sx={{ fontSize: 16 }} />
+                        <CippIcons.Close sx={{ fontSize: 16 }} />
                       </IconButton>
                     )}
                   </Stack>

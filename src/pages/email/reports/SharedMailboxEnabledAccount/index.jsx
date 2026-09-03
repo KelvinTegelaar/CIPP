@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Block } from "@mui/icons-material";
 import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const Page = () => {
@@ -34,7 +34,7 @@ const Page = () => {
           {
             label: "Block Sign In",
             type: "POST",
-            icon: <Block />,
+            icon: <CippIcons.Block />,
             url: "/api/ExecDisableUser",
             data: { ID: "id" },
             confirmText: "Are you sure you want to block the sign-in for this mailbox?",

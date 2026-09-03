@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { useForm, useWatch } from "react-hook-form";
 import {
   Box,
@@ -14,7 +15,6 @@ import {
   Tooltip,
   CircularProgress,
 } from "@mui/material";
-import { ExpandMore, Search, Save, Delete } from "@mui/icons-material";
 import { CippFormComponent } from "../CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { Grid } from "@mui/system";
@@ -175,7 +175,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
 
   return (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-      <AccordionSummary expandIcon={<ExpandMore />}>
+      <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
         <Typography variant="h6">Query</Typography>
       </AccordionSummary>
       <AccordionDetails>
@@ -234,7 +234,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
                               onClick={handleSavePreset}
                               disabled={!presetName || !queryValue || savePresetApi.isPending}
                             >
-                              {savePresetApi.isPending ? <CircularProgress size={24} /> : <Save />}
+                              {savePresetApi.isPending ? <CircularProgress size={24} /> : <CippIcons.Save />}
                             </IconButton>
                           </span>
                         </Tooltip>
@@ -258,7 +258,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
                               {deletePresetApi.isPending ? (
                                 <CircularProgress size={24} />
                               ) : (
-                                <Delete />
+                                <CippIcons.Delete />
                               )}
                             </IconButton>
                           </span>
@@ -292,7 +292,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
                 <Button
                   type="submit"
                   variant="contained"
-                  startIcon={<Search />}
+                  startIcon={<CippIcons.MagnifyingGlassIcon />}
                   disabled={!queryValue || !queryValue.trim()}
                 >
                   Execute Query

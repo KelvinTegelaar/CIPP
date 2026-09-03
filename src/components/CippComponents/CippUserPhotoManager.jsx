@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import {
   Box,
   Button,
@@ -12,7 +13,6 @@ import {
   FormControl,
   FormLabel,
 } from "@mui/material";
-import { PhotoCamera, Delete, AccountCircle } from "@mui/icons-material";
 import { ApiPostCall } from "../../api/ApiCall";
 import PropTypes from "prop-types";
 
@@ -182,7 +182,7 @@ export const CippUserPhotoManager = ({
               borderColor: "divider",
             }}
           >
-            <AccountCircle sx={{ fontSize: 40 }} />
+            <CippIcons.AccountCircle sx={{ fontSize: 40 }} />
           </Avatar>
 
           {/* Hidden file input */}
@@ -203,7 +203,7 @@ export const CippUserPhotoManager = ({
                 <Button
                   size="small"
                   variant="outlined"
-                  startIcon={<PhotoCamera />}
+                  startIcon={<CippIcons.PhotoCamera />}
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isLoading}
                 >
@@ -214,7 +214,7 @@ export const CippUserPhotoManager = ({
                     size="small"
                     variant="outlined"
                     color="error"
-                    startIcon={<Delete />}
+                    startIcon={<CippIcons.Delete />}
                     onClick={handleRemovePhoto}
                     disabled={isLoading}
                   >
@@ -309,7 +309,7 @@ export const CippUserPhotoManager = ({
               borderColor: "divider",
             }}
           >
-            <AccountCircle sx={{ fontSize: 80 }} />
+            <CippIcons.AccountCircle sx={{ fontSize: 80 }} />
           </Avatar>
 
           {/* Camera overlay button when not in upload mode */}
@@ -331,7 +331,7 @@ export const CippUserPhotoManager = ({
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isLoading}
                 >
-                  <PhotoCamera fontSize="small" />
+                  <CippIcons.PhotoCamera fontSize="small" />
                 </IconButton>
               </span>
             </Tooltip>
@@ -352,7 +352,7 @@ export const CippUserPhotoManager = ({
           <Stack direction="row" spacing={1}>
             <Button
               variant="outlined"
-              startIcon={<PhotoCamera />}
+              startIcon={<CippIcons.PhotoCamera />}
               onClick={() => fileInputRef.current?.click()}
               disabled={isLoading}
             >
@@ -362,7 +362,7 @@ export const CippUserPhotoManager = ({
               <Button
                 variant="outlined"
                 color="error"
-                startIcon={<Delete />}
+                startIcon={<CippIcons.Delete />}
                 onClick={handleRemovePhoto}
                 disabled={isLoading}
               >

@@ -1,13 +1,12 @@
 import { Alert, Button } from '@mui/material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { Layout as DashboardLayout } from '../../../../layouts/index' // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import Link from 'next/link'
-import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub, ContentCopy, Schedule } from '@mui/icons-material'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
 import { Grid } from '@mui/system'
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
-import { EyeIcon } from '@heroicons/react/24/outline'
 import tabOptions from '../tabOptions.json'
 import { CippPolicyImportDrawer } from '../../../../components/CippComponents/CippPolicyImportDrawer.jsx'
 import { PermissionButton } from '../../../../utils/permissions'
@@ -29,7 +28,7 @@ const Page = () => {
       label: 'View Tenant Report',
       link: '/tenant/manage/applied-standards/?templateId=[GUID]',
       pinned: true,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: 'info',
       target: '_self',
     },
@@ -38,14 +37,14 @@ const Page = () => {
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
       link: '/tenant/standards/templates/template?id=[GUID]&type=[type]',
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'success',
       target: '_self',
     },
     {
       label: 'Clone & Edit Template',
       link: '/tenant/standards/templates/template?id=[GUID]&clone=true&type=[type]',
-      icon: <CopyAll />,
+      icon: <CippIcons.CopyAll />,
       color: 'success',
       target: '_self',
     },
@@ -53,7 +52,7 @@ const Page = () => {
       label: 'Create Drift Clone',
       type: 'POST',
       url: '/api/ExecDriftClone',
-      icon: <ContentCopy />,
+      icon: <CippIcons.ContentCopy />,
       color: 'warning',
       data: {
         id: 'GUID',
@@ -66,7 +65,7 @@ const Page = () => {
       label: 'Run Template Now',
       type: 'GET',
       url: '/api/ExecStandardsRun',
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       data: {
         TemplateId: 'GUID',
       },
@@ -90,7 +89,7 @@ const Page = () => {
       title: 'Set Schedule',
       type: 'POST',
       url: '/api/ExecStandardTemplateSchedule',
-      icon: <Schedule />,
+      icon: <CippIcons.Schedule />,
       data: {
         TemplateId: 'GUID',
       },
@@ -117,7 +116,7 @@ const Page = () => {
       label: 'Save to GitHub',
       type: 'POST',
       url: '/api/ExecCommunityRepo',
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: 'UploadTemplate',
         GUID: 'GUID',
@@ -161,7 +160,7 @@ const Page = () => {
       label: 'Delete Template',
       type: 'POST',
       url: '/api/RemoveStandardTemplate',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: 'GUID',
       },
@@ -215,7 +214,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/tenant/standards/templates/template"
-            startIcon={<AddBox />}
+            startIcon={<CippIcons.AddBox />}
             sx={{ mr: 1 }}
           >
             Add Template
@@ -223,7 +222,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/tenant/standards/templates/template?type=drift"
-            startIcon={<AddBox />}
+            startIcon={<CippIcons.AddBox />}
             sx={{ mr: 1 }}
           >
             Create Drift Template

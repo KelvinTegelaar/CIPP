@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { CippIcons } from "../utils/icon-registry";
 import { useCSVReader, lightenDarkenColor, formatFileSize } from "react-papaparse";
 import { Box, Typography, useTheme } from "@mui/material";
-import { CloudUpload } from "@mui/icons-material";
 
 /*
  * These colors define our remove button states. The light version is
@@ -94,7 +94,7 @@ export default function CSVReader({ config, onDrop, onRemove }) {
           {(acceptedFile || storedFile) ? (
             <Box sx={{ textAlign: 'center', position: 'relative', width: '100%' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-                <CloudUpload sx={{ color: '#f5a815', fontSize: 24, mr: 1 }} />
+                <CippIcons.CloudUpload sx={{ color: '#f5a815', fontSize: 24, mr: 1 }} />
                 <Box sx={{ textAlign: 'left' }}>
                   <Typography variant="body2" sx={{ color: '#fff' }}>
                     {acceptedFile?.name || storedFile?.name}
@@ -139,7 +139,7 @@ export default function CSVReader({ config, onDrop, onRemove }) {
             </Box>
           ) : (
             <Box sx={{ textAlign: 'center' }}>
-              <CloudUpload
+              <CippIcons.CloudUpload
                 sx={{
                   fontSize: 40,
                   color: 'rgba(255, 255, 255, 0.5)',

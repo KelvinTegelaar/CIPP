@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from '../../layouts/index'
+import { CippIcons } from '../../utils/icon-registry'
 import { usePermissions } from '../../hooks/use-permissions'
 import { CippTablePage } from '../../components/CippComponents/CippTablePage.jsx'
-import { RestoreFromTrash } from '@mui/icons-material'
 
 const Page = () => {
   const { checkPermissions } = usePermissions()
@@ -11,7 +11,7 @@ const Page = () => {
     {
       label: 'Restore Site',
       type: 'POST',
-      icon: <RestoreFromTrash />,
+      icon: <CippIcons.RestoreFromTrash />,
       url: '/api/ExecRestoreDeletedSite',
       data: {
         SiteUrl: 'Url',

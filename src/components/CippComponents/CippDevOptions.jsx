@@ -1,4 +1,5 @@
 import { useSettings } from "../../hooks/use-settings";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Button,
   Card,
@@ -9,7 +10,6 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import { CodeBracketIcon, BeakerIcon } from "@heroicons/react/24/outline";
 
 export const CippDevOptions = () => {
   const settings = useSettings();
@@ -39,7 +39,7 @@ export const CippDevOptions = () => {
             onClick={handleDevToolsToggle}
             startIcon={
               <SvgIcon fontSize="small">
-                <CodeBracketIcon />
+                <CippIcons.CodeBracketIcon />
               </SvgIcon>
             }
           >
@@ -50,7 +50,7 @@ export const CippDevOptions = () => {
             onClick={handleAdvancedToggle}
             startIcon={
               <SvgIcon fontSize="small">
-                <BeakerIcon />
+                <CippIcons.BeakerIcon />
               </SvgIcon>
             }
           >

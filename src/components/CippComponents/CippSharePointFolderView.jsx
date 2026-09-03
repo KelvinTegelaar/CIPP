@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import PropTypes from 'prop-types'
 import {
   Alert,
@@ -31,18 +32,6 @@ import {
   Typography,
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
-import {
-  ArrowUpward,
-  Clear,
-  Description,
-  FilterList,
-  Folder,
-  FolderOpen,
-  FolderShared,
-  InsertDriveFile,
-  OpenInNew,
-  Search as SearchIcon,
-} from '@mui/icons-material'
 import { hasTextSelection } from '../CippTable/util-row-text-interaction'
 import {
   CippSharePointBrowserContextMenu,
@@ -533,7 +522,7 @@ export const CippSharePointFolderView = ({
                   input: {
                     startAdornment: (
                       <InputAdornment position="start" sx={{ ml: 0.25, mr: 0 }}>
-                        <SearchIcon sx={{ fontSize: 18, color: 'action.active' }} />
+                        <CippIcons.Search sx={{ fontSize: 18, color: 'action.active' }} />
                       </InputAdornment>
                     ),
                     endAdornment: searchQuery ? (
@@ -545,7 +534,7 @@ export const CippSharePointFolderView = ({
                           edge="end"
                           sx={{ p: 0.5 }}
                         >
-                          <Clear sx={{ fontSize: 16 }} />
+                          <CippIcons.Clear sx={{ fontSize: 16 }} />
                         </IconButton>
                       </InputAdornment>
                     ) : null,
@@ -556,7 +545,7 @@ export const CippSharePointFolderView = ({
                 <Button
                   size="small"
                   variant={filtersActive ? 'contained' : 'outlined'}
-                  startIcon={<FilterList />}
+                  startIcon={<CippIcons.FilterList />}
                   onClick={(event) => setFilterAnchor(event.currentTarget)}
                   disabled={isFetching || (items.length === 0 && !filtersActive)}
                   sx={{
@@ -848,7 +837,7 @@ export const CippSharePointFolderView = ({
                             alignItems: "center",
                             minWidth: 0
                           }}>
-                          <ArrowUpward
+                          <CippIcons.ArrowUpward
                             fontSize="small"
                             sx={{ color: 'text.secondary', flexShrink: 0 }}
                           />
@@ -916,15 +905,15 @@ export const CippSharePointFolderView = ({
                       (item.canOpen && item.type !== 'recycleItem')
                     const Icon = isFolderish
                       ? checked
-                        ? FolderOpen
-                        : Folder
+                        ? CippIcons.FolderOpen
+                        : CippIcons.Folder
                       : isRecycle
                         ? item.siteType === 'Folder'
-                          ? FolderShared
+                          ? CippIcons.FolderShared
                           : item.siteType === 'List' || item.siteType === 'List Item'
-                            ? Description
-                            : InsertDriveFile
-                        : FolderShared
+                            ? CippIcons.Description
+                            : CippIcons.InsertDriveFile
+                        : CippIcons.FolderShared
 
                     return (
                       <TableRow
@@ -1092,7 +1081,7 @@ export const CippSharePointFolderView = ({
                                     rel="noopener noreferrer"
                                     aria-label={`Open ${item.displayName ?? item.name} in SharePoint`}
                                   >
-                                    <OpenInNew fontSize="inherit" />
+                                    <CippIcons.OpenInNew fontSize="inherit" />
                                   </IconButton>
                                 </Tooltip>
                               ) : (

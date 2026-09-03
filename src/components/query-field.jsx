@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { CippIcons } from '../utils/icon-registry';
 import PropTypes from 'prop-types';
-import MagnifyingGlassIcon from '@heroicons/react/24/outline/MagnifyingGlassIcon';
 import { InputBase, SvgIcon } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -65,7 +65,7 @@ export const QueryField = (props) => {
         fontSize="small"
         sx={{ mr: 1 }}
       >
-        <MagnifyingGlassIcon />
+        <CippIcons.MagnifyingGlassIcon />
       </SvgIcon>
       <InputBase
         disabled={disabled}

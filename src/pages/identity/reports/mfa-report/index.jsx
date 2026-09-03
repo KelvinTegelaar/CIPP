@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { LockPerson } from '@mui/icons-material'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
@@ -86,7 +86,7 @@ const Page = () => {
     {
       label: 'Set Per-User MFA',
       type: 'POST',
-      icon: <LockPerson />,
+      icon: <CippIcons.LockPerson />,
       url: '/api/ExecPerUserMFA',
       data: { userId: 'ID', userPrincipalName: 'UPN' },
       fields: [

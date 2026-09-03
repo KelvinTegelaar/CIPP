@@ -2,7 +2,6 @@ import { useCallback, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import ArrowLeftIcon from "@heroicons/react/24/outline/ArrowLeftIcon";
 import {
   Box,
   Container,
@@ -15,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ActionsMenu } from "../components/actions-menu";
-import { getIconByName } from "../utils/icon-registry";
+import { CippIcons, getIconByName } from "../utils/icon-registry"
 import { useIsMobileLayout } from "../hooks/use-breakpoint";
 import { useActionsDispatch } from "../hooks/use-actions-dispatch";
 import { TabNavigationContext, useTabNavigationValue } from "./tab-navigation-context";

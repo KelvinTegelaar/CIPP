@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
 import { useSettings } from '../../../hooks/use-settings'
-import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
@@ -12,7 +12,7 @@ const Page = () => {
       label: 'Set Status',
       type: 'POST',
       url: '/api/ExecCopilotSettings',
-      icon: <Cog6ToothIcon />,
+      icon: <CippIcons.Cog6ToothIcon />,
       data: { settingId: 'settingId' },
       condition: (row) =>
         ![
@@ -41,7 +41,7 @@ const Page = () => {
       label: 'Set Status',
       type: 'POST',
       url: '/api/ExecCopilotSettings',
-      icon: <Cog6ToothIcon />,
+      icon: <CippIcons.Cog6ToothIcon />,
       data: { settingId: 'settingId' },
       condition: (row) => row.settingId === 'microsoft.copilot.imagegeneration',
       fields: [
@@ -66,7 +66,7 @@ const Page = () => {
       label: 'Set Status',
       type: 'POST',
       url: '/api/ExecCopilotSettings',
-      icon: <Cog6ToothIcon />,
+      icon: <CippIcons.Cog6ToothIcon />,
       data: { settingId: 'settingId' },
       condition: (row) => row.settingId === 'microsoft.copilot.allowwebsearch',
       fields: [

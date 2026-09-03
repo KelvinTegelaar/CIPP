@@ -1,4 +1,5 @@
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import tabOptions from "./tabOptions";
 import CippTablePage from "../../../../components/CippComponents/CippTablePage";
@@ -7,7 +8,6 @@ import { Grid } from "@mui/system";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import NextLink from "next/link";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 
 const Page = () => {
@@ -104,7 +104,7 @@ const Page = () => {
       actions={[
         {
           label: "Delete Offloading Entry",
-          icon: <TrashIcon />,
+          icon: <CippIcons.Delete />,
           url: "/api/ExecAzBobbyTables",
           type: "POST",
           customFunction: handleDeleteOffloadEntry,

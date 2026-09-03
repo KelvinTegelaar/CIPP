@@ -1,10 +1,8 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Book, Block, Check } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { RocketLaunch } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Spam Filters";
@@ -14,7 +12,7 @@ const Page = () => {
     {
       label: "Create template based on rule",
       type: "POST",
-      icon: <Book />,
+      icon: <CippIcons.Book />,
       url: "/api/AddSpamfilterTemplate",
       dataFunction: (data) => {
         return { ...data };
@@ -24,7 +22,7 @@ const Page = () => {
     {
       label: "Enable Rule",
       type: "POST",
-      icon: <Check />,
+      icon: <CippIcons.Check />,
       url: "/api/EditSpamfilter",
       data: {
         State: "!enable",
@@ -36,7 +34,7 @@ const Page = () => {
     {
       label: "Disable Rule",
       type: "POST",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: "/api/EditSpamfilter",
       data: {
         State: "!disable",
@@ -48,7 +46,7 @@ const Page = () => {
     {
       label: "Delete Rule",
       type: "POST",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: "/api/RemoveSpamFilter",
       data: {
         name: "Name",
@@ -104,7 +102,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/email/spamfilter/list-spamfilter/add"
-            startIcon={<RocketLaunch />}
+            startIcon={<CippIcons.RocketLaunch />}
           >
             Deploy Spamfilter
           </Button>

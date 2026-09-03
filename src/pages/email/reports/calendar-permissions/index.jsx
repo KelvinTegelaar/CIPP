@@ -1,9 +1,9 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { useState } from 'react'
 import { Tooltip, Chip } from '@mui/material'
 import { Stack } from '@mui/system'
-import { Person, CalendarMonth } from '@mui/icons-material'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 
 const Page = () => {
@@ -49,7 +49,7 @@ const Page = () => {
         }
       >
         <Chip
-          icon={byUser ? <Person /> : <CalendarMonth />}
+          icon={byUser ? <CippIcons.Person /> : <CippIcons.CalendarMonth />}
           label={byUser ? 'By User' : 'By Calendar'}
           color="primary"
           size="small"

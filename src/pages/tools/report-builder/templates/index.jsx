@@ -1,8 +1,8 @@
 import { Button, Box } from '@mui/material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { Add, Delete, OpenInNew, Upload } from '@mui/icons-material'
 import { useRouter } from 'next/router'
 import { CippPolicyImportDrawer } from '../../../../components/CippComponents/CippPolicyImportDrawer.jsx'
 import tabOptions from '../tabOptions.json'
@@ -13,7 +13,7 @@ const Page = () => {
   const actions = [
     {
       label: 'Open in Builder',
-      icon: <OpenInNew />,
+      icon: <CippIcons.Launch />,
       noConfirm: true,
       customFunction: (row) => {
         router.push(`/tools/report-builder/builder?id=${row.GUID || row.RowKey}`)
@@ -22,7 +22,7 @@ const Page = () => {
     {
       label: 'Upload to Repository',
       type: 'POST',
-      icon: <Upload />,
+      icon: <CippIcons.Upload />,
       url: '/api/ExecCommunityRepo',
       data: {
         Action: 'UploadTemplate',
@@ -69,7 +69,7 @@ const Page = () => {
       url: '/api/ExecReportBuilderTemplate',
       data: { Action: 'delete', GUID: 'RowKey' },
       confirmText: 'Are you sure you want to delete this template?',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       multiPost: false,
       relatedQueryKeys: ['ListReportBuilderTemplates'],
     },
@@ -92,7 +92,7 @@ const Page = () => {
       cardButton={
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
             size="small"
             onClick={() => router.push('/tools/report-builder/builder')}
           >

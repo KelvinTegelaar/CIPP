@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { useRouter } from 'next/router'
 import { Breadcrumbs, Divider, Link, Typography, Box, IconButton, Tooltip, useMediaQuery } from '@mui/material'
-import { History, AccountTree } from '@mui/icons-material'
 import { nativeMenuItems } from '../../layouts/config'
 import { useSettings } from '../../hooks/use-settings'
 import { CippBookmarkStar } from './CippBookmarkStar'
@@ -650,7 +650,7 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
       >
         <Tooltip title="Switch to history mode">
           <IconButton size="small" onClick={toggleMode} sx={{ p: 0.5 }}>
-            <AccountTree fontSize="small" />
+            <CippIcons.AccountTree fontSize="small" />
           </IconButton>
         </Tooltip>
         <Breadcrumbs
@@ -769,7 +769,7 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
     >
       <Tooltip title="Switch to hierarchy mode">
         <IconButton size="small" onClick={toggleMode} sx={{ p: 0.5 }}>
-          <History fontSize="small" />
+          <CippIcons.History fontSize="small" />
         </IconButton>
       </Tooltip>
       <Breadcrumbs

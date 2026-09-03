@@ -1,14 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import {
-  Block,
-  Check,
-  Delete,
-  MenuBook,
-  Visibility,
-  Edit,
-  VerifiedUser,
-} from "@mui/icons-material";
 import { Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer";
@@ -29,7 +21,7 @@ const Page = () => {
       label: "Edit Policy",
       link: "/tenant/conditional/list-policies/edit?id=[id]",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "info",
       hideBulk: true,
     },
@@ -45,7 +37,7 @@ const Page = () => {
       },
       hideBulk: true,
       confirmText: `Are you sure you want to create a template based on "[displayName]"?`,
-      icon: <MenuBook />,
+      icon: <CippIcons.Book />,
       color: "info",
     },
     {
@@ -56,7 +48,7 @@ const Page = () => {
         GUID: "id",
       },
       confirmText: `What do you want to change the display name of "[displayName]" to?`,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "info",
       hideBulk: true,
       fields: [
@@ -75,7 +67,7 @@ const Page = () => {
       ],
     },
     {
-      label: "Enable policy",
+      label: "Enable Policy",
       type: "POST",
       url: "/api/EditCAPolicy",
       data: {
@@ -84,11 +76,11 @@ const Page = () => {
       },
       confirmText: `Are you sure you want to enable "[displayName]"?`,
       condition: (row) => row.state !== "enabled",
-      icon: <Check />,
+      icon: <CippIcons.Check />,
       color: "info",
     },
     {
-      label: "Disable policy",
+      label: "Disable Policy",
       type: "POST",
       url: "/api/EditCAPolicy",
       data: {
@@ -97,7 +89,7 @@ const Page = () => {
       },
       confirmText: `Are you sure you want to disable "[displayName]"?`,
       condition: (row) => row.state !== "disabled",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       color: "info",
     },
     {
@@ -110,7 +102,7 @@ const Page = () => {
       },
       confirmText: `Are you sure you want to set "[displayName]" to report only?`,
       condition: (row) => row.state !== "enabledForReportingButNotEnforced",
-      icon: <Visibility />,
+      icon: <CippIcons.EyeIcon />,
       color: "info",
     },
     {
@@ -121,18 +113,18 @@ const Page = () => {
         GUID: "id",
       },
       confirmText: `Are you sure you want to add the service provider exception to "[displayName]"?`,
-      icon: <VerifiedUser />,
+      icon: <CippIcons.VerifiedUser />,
       color: "warning",
     },
     {
-      label: "Delete policy",
+      label: "Delete Policy",
       type: "POST",
       url: "/api/RemoveCAPolicy",
       data: {
         GUID: "id",
       },
       confirmText: `Are you sure you want to delete "[displayName]"?`,
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       color: "danger",
     },
   ];

@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry"
 import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -18,21 +19,6 @@ import {
   Drawer,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import {
-  Storage,
-  History,
-  EventRepeat,
-  Schedule,
-  SettingsBackupRestore,
-  Settings,
-  CheckCircle,
-  Cancel,
-  Delete,
-  Sync,
-  CloudDownload,
-  Visibility,
-  Close,
-} from "@mui/icons-material";
 import { useSettings } from "../../../hooks/use-settings";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
@@ -256,12 +242,12 @@ const Page = () => {
   // Info bar data following CIPP patterns
   const infoBarData = [
     {
-      icon: <Storage />,
+      icon: <CippIcons.Storage />,
       name: "Total Backups",
       data: filteredBackupData?.length || 0,
     },
     {
-      icon: <History />,
+      icon: <CippIcons.History />,
       name: "Last Backup",
       data: filteredBackupData?.[0]?.Timestamp ? (
         <ReactTimeAgo date={filteredBackupData[0].Timestamp} />
@@ -270,12 +256,12 @@ const Page = () => {
       ),
     },
     {
-      icon: <EventRepeat />,
+      icon: <CippIcons.EventRepeat />,
       name: "Tenant Scope",
       data: settings.currentTenant === "AllTenants" ? "All Tenants" : settings.currentTenant,
     },
     {
-      icon: <Schedule />,
+      icon: <CippIcons.Schedule />,
       name: "Configuration",
       data: hasExistingConfig ? "Configured" : "Not Configured",
     },
@@ -304,7 +290,7 @@ const Page = () => {
                     sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
                   >
                     <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Settings color="primary" />
+                      <CippIcons.Settings color="primary" />
                       Current Configuration
                     </Typography>
                     {!hasExistingConfig ? (
@@ -321,7 +307,7 @@ const Page = () => {
                     ) : (
                       <Button
                         onClick={removeDialog.handleOpen}
-                        startIcon={<Delete />}
+                        startIcon={<CippIcons.Delete />}
                         color="error"
                       >
                         Remove Backup Schedule
@@ -349,7 +335,7 @@ const Page = () => {
                         size="small"
                         title="Refresh Configuration"
                       >
-                        <Sync />
+                        <CippIcons.Sync />
                       </IconButton>
                     }
                   />
@@ -365,7 +351,7 @@ const Page = () => {
                             label={component}
                             color="success"
                             size="small"
-                            icon={<CheckCircle />}
+                            icon={<CippIcons.CheckCircle />}
                           />
                         ))}
                         {getEnabledComponents().length === 0 && (
@@ -373,7 +359,7 @@ const Page = () => {
                             label="No components configured"
                             color="default"
                             size="small"
-                            icon={<Cancel />}
+                            icon={<CippIcons.Cancel />}
                           />
                         )}
                       </Box>
@@ -410,7 +396,7 @@ const Page = () => {
                     }}
                   >
                     <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <History color="primary" />
+                      <CippIcons.History color="primary" />
                       Backup History
                     </Typography>
                     <Stack
@@ -438,7 +424,7 @@ const Page = () => {
                         size="small"
                         title="Refresh Backup History"
                       >
-                        <Sync />
+                        <CippIcons.Sync />
                       </IconButton>
                     </Stack>
                   </Box>
@@ -513,7 +499,7 @@ const Page = () => {
                                     <Button
                                       size="small"
                                       variant="outlined"
-                                      startIcon={<Visibility />}
+                                      startIcon={<CippIcons.EyeIcon />}
                                       onClick={() => handleOpenBackupPreview(backup)}
                                     >
                                       Preview
@@ -521,7 +507,7 @@ const Page = () => {
                                     <Button
                                       size="small"
                                       variant="outlined"
-                                      startIcon={<CloudDownload />}
+                                      startIcon={<CippIcons.CloudDownload />}
                                       onClick={() => handleDownloadBackup(backup)}
                                     >
                                       Download
@@ -532,7 +518,7 @@ const Page = () => {
                                       backupData={backup}
                                       size="small"
                                       variant="contained"
-                                      startIcon={<SettingsBackupRestore />}
+                                      startIcon={<CippIcons.SettingsBackupRestore />}
                                     />
                                   </Stack>
                                 </Box>
@@ -590,7 +576,7 @@ const Page = () => {
               )}
             </Typography>
             <IconButton onClick={handleCloseDrawer}>
-              <Close />
+              <CippIcons.Close />
             </IconButton>
           </Stack>
           {isLoadingBackup ? (

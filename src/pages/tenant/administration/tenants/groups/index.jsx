@@ -1,9 +1,8 @@
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
 import tabOptions from "../tabOptions";
-import { Edit, PlayArrow, GroupAdd, ViewList } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippAddTenantGroupDrawer } from "../../../../../components/CippComponents/CippAddTenantGroupDrawer";
 import { CippApiLogsDrawer } from "../../../../../components/CippComponents/CippApiLogsDrawer";
 import { CippTenantGroupOffCanvas } from "../../../../../components/CippComponents/CippTenantGroupOffCanvas";
@@ -32,11 +31,11 @@ const Page = () => {
       label: "Edit Group",
       link: "/tenant/administration/tenants/groups/edit?id=[Id]",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
     },
     {
       label: "Run Dynamic Rules",
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       url: "/api/ExecRunTenantGroupRule",
       type: "POST",
       data: { groupId: "Id" },
@@ -46,7 +45,7 @@ const Page = () => {
     },
     {
       label: "Delete Group",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: "/api/ExecTenantGroup",
       type: "POST",
       data: { action: "Delete", groupId: "Id" },
@@ -69,10 +68,10 @@ const Page = () => {
         cardButton={
           <Box sx={{ display: "flex", gap: 1 }}>
             <CippAddTenantGroupDrawer />
-            <Button onClick={() => setShowUsage(!showUsage)} startIcon={<ViewList />}>
+            <Button onClick={() => setShowUsage(!showUsage)} startIcon={<CippIcons.ViewList />}>
               {showUsage ? "Hide Usage" : "Show Usage"}
             </Button>
-            <Button onClick={createDefaultGroupsDialog.handleOpen} startIcon={<GroupAdd />}>
+            <Button onClick={createDefaultGroupsDialog.handleOpen} startIcon={<CippIcons.GroupAdd />}>
               Create Default Groups
             </Button>
             <CippApiLogsDrawer

@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { DeleteOutlined, Edit } from "@mui/icons-material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import tabOptions from "./tabOptions";
 
 const Page = () => {
@@ -29,21 +29,21 @@ const Page = () => {
       label: "Edit Tenant",
       link: "/tenant/manage/edit?tenantFilter=[defaultDomainName]",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
     },
     {
       label: "Configure Backup",
       link: "/tenant/manage/configuration-backup?tenantFilter=[defaultDomainName]",
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
     },
     {
       label: "Delete Capabilities Cache",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveTenantCapabilitiesCache",
       data: { defaultDomainName: "defaultDomainName" },
       confirmText: "Are you sure you want to delete the capabilities cache for this tenant?",
       color: "info",
-      icon: <DeleteOutlined />,
+      icon: <CippIcons.Delete />,
     },
   ];
 

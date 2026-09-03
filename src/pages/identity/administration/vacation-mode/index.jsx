@@ -1,10 +1,8 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import CippTablePage from "../../../../components/CippComponents/CippTablePage";
-import { Delete } from "@mui/icons-material";
-import { EyeIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { EventAvailable } from "@mui/icons-material";
 import { useSettings } from "../../../../hooks/use-settings.js";
 import ScheduledTaskDetails from "../../../../components/CippComponents/ScheduledTaskDetails";
 
@@ -17,7 +15,7 @@ const Page = () => {
       label: "View Task Details",
       link: "/cipp/scheduler/task?id=[RowKey]",
       pinned: true,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
     },
     {
       label: "Cancel Vacation Mode",
@@ -26,7 +24,7 @@ const Page = () => {
       data: { ID: "RowKey" },
       confirmText:
         "Are you sure you want to cancel this vacation mode entry? This might mean the user will remain in vacation mode permanently.",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       multiPost: false,
     },
   ];
@@ -85,7 +83,7 @@ const Page = () => {
         <Button
           component={Link}
           href="/identity/administration/vacation-mode/add"
-          startIcon={<EventAvailable />}
+          startIcon={<CippIcons.EventAvailable />}
         >
           Add Vacation Schedule
         </Button>

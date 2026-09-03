@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Alert,
   Skeleton,
@@ -17,8 +18,6 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import { ShieldCheckIcon } from "@heroicons/react/24/outline";
-import { ExpandMore } from "@mui/icons-material";
 import { CippCardTabPanel } from "./CippCardTabPanel";
 import { ApiGetCall } from "../../api/ApiCall";
 
@@ -347,7 +346,7 @@ const CippPermissionPreview = ({
           }`}
           icon={
             <SvgIcon fontSize="small">
-              <ShieldCheckIcon />
+              <CippIcons.ShieldCheckIcon />
             </SvgIcon>
           }
           title="Application/Delegated Permissions"
@@ -642,7 +641,7 @@ const ServicePrincipalResourceDetails = ({
       variant="outlined"
       sx={{ mb: 1 }}
     >
-      <AccordionSummary expandIcon={<ExpandMore />}>
+      <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
         <Stack
           direction="row"
           spacing={2}
@@ -665,7 +664,7 @@ const ServicePrincipalResourceDetails = ({
               label={`${appPermissions.length}/${delegatedPermissions.length}`}
               icon={
                 <SvgIcon fontSize="small">
-                  <ShieldCheckIcon />
+                  <CippIcons.ShieldCheckIcon />
                 </SvgIcon>
               }
               title="Application/Delegated Permissions"

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { CippIcons } from "../../../../utils/icon-registry"
 import {
   Button,
   Card,
@@ -13,12 +14,6 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Box, Container, Grid } from "@mui/system";
-import {
-  ShieldCheckIcon,
-  ClockIcon,
-  ExclamationTriangleIcon,
-  BoltIcon,
-} from "@heroicons/react/24/outline";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
@@ -111,28 +106,28 @@ const Page = () => {
     const attention = stats.deadletter + stats.skipped + stats.gaps;
     return [
       {
-        icon: <ShieldCheckIcon />,
+        icon: <CippIcons.ShieldCheckIcon />,
         data: `${pct}%`,
         name: "Processed",
         color: pct >= 95 ? "success" : "warning",
         toolTip: `${stats.processed} of ${stats.total} windows · ${stats.totalRecords} records, ${stats.matched} matched`,
       },
       {
-        icon: <ClockIcon />,
+        icon: <CippIcons.ClockIcon />,
         data: stats.medianLatency != null ? `${Math.round(stats.medianLatency)}m` : "—",
         name: "Median latency",
         color: "secondary",
         toolTip: "Median window close → processed (regular windows)",
       },
       {
-        icon: <ExclamationTriangleIcon />,
+        icon: <CippIcons.ExclamationTriangleIcon />,
         data: attention,
         name: "Needs attention",
         color: attention > 0 ? "error" : "success",
         toolTip: `${stats.deadletter} dead-lettered · ${stats.skipped} skipped · ${stats.gaps} gaps`,
       },
       {
-        icon: <BoltIcon />,
+        icon: <CippIcons.BoltIcon />,
         data: stats.throttleEvents,
         name: "Throttle / retries",
         color: stats.throttleEvents > 0 || stats.retriedWindows > 0 ? "warning" : "secondary",

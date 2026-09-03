@@ -1,8 +1,8 @@
 import { Alert, Box, Button, SvgIcon, Typography } from '@mui/material'
+import { CippIcons } from '../utils/icon-registry'
 import Head from 'next/head'
 import { useState } from 'react'
 import axios from 'axios'
-import { ErrorOutlineOutlined } from '@mui/icons-material'
 import { CippAuthShell } from '../components/CippComponents/CippAuthShell'
 import { ApiGetCall } from '../api/ApiCall'
 
@@ -66,7 +66,7 @@ const ApiOfflinePage = () => {
         version={version?.data?.version}
         titleIcon={
           <SvgIcon sx={{ color: 'error.main' }}>
-            <ErrorOutlineOutlined />
+            <CippIcons.ErrorOutlineOutlined />
           </SvgIcon>
         }
         title="CIPP API Unreachable"

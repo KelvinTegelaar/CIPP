@@ -1,5 +1,5 @@
 import { IconButton, Tooltip } from '@mui/material'
-import { PictureAsPdf } from '@mui/icons-material'
+import { CippIcons } from '../utils/icon-registry'
 import { useQueryClient } from '@tanstack/react-query'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
 import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
@@ -177,7 +177,7 @@ export const PDFExportButton = (props) => {
           }
           {...other}
         >
-          <PictureAsPdf />
+          <CippIcons.PictureAsPdf />
         </IconButton>
       </span>
     </Tooltip>

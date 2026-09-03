@@ -3,7 +3,7 @@ import { CippTablePage } from '../../../../components/CippComponents/CippTablePa
 import { getCippTranslation } from '../../../../utils/get-cipp-translation'
 import { getCippFormatting } from '../../../../utils/get-cipp-formatting'
 import { CippPropertyListCard } from '../../../../components/CippCards/CippPropertyListCard'
-import { Block, PlayArrow, DeleteForever } from '@mui/icons-material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 
 const Page = () => {
@@ -33,7 +33,7 @@ const Page = () => {
     {
       label: 'Enable Mailbox Rule',
       type: 'POST',
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       url: '/api/ExecSetMailboxRule',
       data: {
         ruleId: 'Identity',
@@ -49,7 +49,7 @@ const Page = () => {
     {
       label: 'Disable Mailbox Rule',
       type: 'POST',
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: '/api/ExecSetMailboxRule',
       data: {
         ruleId: 'Identity',
@@ -65,7 +65,7 @@ const Page = () => {
     {
       label: 'Remove Mailbox Rule',
       type: 'POST',
-      icon: <DeleteForever />,
+      icon: <CippIcons.Delete />,
       url: '/api/ExecRemoveMailboxRule',
       data: {
         ruleId: 'Identity',

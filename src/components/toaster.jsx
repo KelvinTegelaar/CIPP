@@ -1,5 +1,5 @@
-import { CloseSharp } from "@mui/icons-material";
 import { Alert, IconButton, Snackbar } from "@mui/material";
+import { CippIcons } from "../utils/icon-registry";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { closeToast } from "../store/toasts";
@@ -27,7 +27,7 @@ const Toasts = () => {
                   color="inherit"
                   onClick={() => dispatch(closeToast({ index: toast.index }))}
                 >
-                  <CloseSharp fontSize="small" />
+                  <CippIcons.CloseSharp fontSize="small" />
                 </IconButton>
               </>
             }

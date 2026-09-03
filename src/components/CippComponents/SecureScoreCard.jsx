@@ -1,6 +1,6 @@
 import { Box, Card, CardHeader, CardContent, Typography, Divider, Skeleton } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import { useTheme } from '@mui/material/styles'
-import { Security as SecurityIcon } from '@mui/icons-material'
 import { useRouter } from 'next/router'
 import {
   LineChart,
@@ -62,7 +62,7 @@ export const SecureScoreCard = ({ data, isLoading }) => {
               '&:hover': { textDecoration: 'underline' },
             }}
           >
-            <SecurityIcon sx={{ fontSize: 24 }} />
+            <CippIcons.Security sx={{ fontSize: 24 }} />
             <Typography variant="h6">Secure Score</Typography>
           </Box>
         }

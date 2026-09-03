@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippWizardPage from "../../../../components/CippWizard/CippWizardPage.jsx";
 import { CippWizardOptionsList } from "../../../../components/CippWizard/CippWizardOptionsList.jsx";
@@ -6,6 +8,13 @@ import { BuildingOfficeIcon } from "@heroicons/react/24/outline";
 import CippWizardConfirmation from "../../../../components/CippWizard/CippWizardConfirmation.jsx";
 
 const Page = () => {
+  // Tenant onboarding runs through the setup wizard, so send visitors there.
+  const router = useRouter();
+  useEffect(() => {
+    if (!router.isReady) return;
+    router.replace("/onboardingv2");
+  }, [router]);
+
   const steps = [
     {
       title: "Step 1",

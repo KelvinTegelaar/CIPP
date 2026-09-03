@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import PropTypes from 'prop-types'
 import {
   Alert,
@@ -9,7 +10,6 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material'
-import { RestoreFromTrash } from '@mui/icons-material'
 import { CippSharePointFolderView } from './CippSharePointFolderView'
 
 /**
@@ -91,7 +91,7 @@ export const CippSharePointRecycleFolderRestoreDialog = ({
         </Button>
         <Button
           variant="contained"
-          startIcon={<RestoreFromTrash />}
+          startIcon={<CippIcons.RestoreFromTrash />}
           onClick={handleConfirm}
           disabled={isPending || selectedItems.length === 0}
         >

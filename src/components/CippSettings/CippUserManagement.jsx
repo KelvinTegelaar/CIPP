@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Alert,
   Box,
@@ -17,7 +18,6 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { TrashIcon, PlusIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -96,7 +96,7 @@ export const CippUserManagement = () => {
       label: "Edit Roles",
       icon: (
         <SvgIcon>
-          <PencilIcon />
+          <CippIcons.PencilIcon />
         </SvgIcon>
       ),
       noConfirm: true,
@@ -112,7 +112,7 @@ export const CippUserManagement = () => {
       label: "Delete User",
       icon: (
         <SvgIcon>
-          <TrashIcon />
+          <CippIcons.TrashIcon />
         </SvgIcon>
       ),
       confirmText: "Are you sure you want to remove this user's access to CIPP?",
@@ -251,7 +251,7 @@ export const CippUserManagement = () => {
             size="small"
             startIcon={
               <SvgIcon>
-                <PlusIcon />
+                <CippIcons.PlusIcon />
               </SvgIcon>
             }
             onClick={openAddDialog}

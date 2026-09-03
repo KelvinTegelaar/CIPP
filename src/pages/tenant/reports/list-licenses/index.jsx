@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { AssignmentInd } from '@mui/icons-material'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
@@ -40,7 +40,7 @@ const Page = () => {
       label: 'Assign License to User',
       type: 'POST',
       url: '/api/ExecBulkLicense',
-      icon: <AssignmentInd />,
+      icon: <CippIcons.AssignmentInd />,
       confirmText:
         'Are you sure you want to assign [License] to the selected user?',
       multiPost: false,

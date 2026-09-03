@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../utils/icon-registry'
 import {
   Button,
   Tooltip,
@@ -11,7 +12,6 @@ import {
   IconButton,
   CircularProgress,
 } from '@mui/material'
-import { PictureAsPdf, Download, Close } from '@mui/icons-material'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import { CippPdfPreview } from './CippPdf/CippPdfPreview'
 import { useReportVariables } from './CippPdf/useReportVariables'
@@ -48,7 +48,6 @@ export const BECRemediationReportDocument = ({
     month: 'long',
     day: 'numeric',
   })
-
 
   // Helper function to format dates
   const formatDate = (dateString) => {
@@ -1237,7 +1236,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
       <Tooltip title="Generate BEC Remediation Report PDF">
         <Button
           variant="contained"
-          startIcon={<PictureAsPdf />}
+          startIcon={<CippIcons.PictureAsPdf />}
           onClick={handleOpenDialog}
           disabled={!hasData}
           color="primary"
@@ -1270,7 +1269,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
               BEC Remediation Report Preview
             </Typography>
             <IconButton onClick={handleCloseDialog} size="small">
-              <Close />
+              <CippIcons.Close />
             </IconButton>
           </Box>
         </DialogTitle>
@@ -1310,7 +1309,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
             {({ loading }) => (
               <Button
                 variant="contained"
-                startIcon={loading ? <CircularProgress size={20} /> : <Download />}
+                startIcon={loading ? <CircularProgress size={20} /> : <CippIcons.Download />}
                 disabled={loading}
               >
                 {loading ? 'Generating...' : 'Download PDF'}

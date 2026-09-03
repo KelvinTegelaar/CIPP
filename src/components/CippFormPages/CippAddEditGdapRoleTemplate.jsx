@@ -11,8 +11,7 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { CippIcons } from "../../utils/icon-registry";
 import { useMemo, useState } from "react";
 import { useWatch } from "react-hook-form";
 import CippFormComponent from "../CippComponents/CippFormComponent";
@@ -98,7 +97,7 @@ export const CippAddEditGdapRoleTemplate = (props) => {
           onClick={handleDefaults}
           startIcon={
             <SvgIcon fontSize="small">
-              <ShieldCheckIcon />
+              <CippIcons.ShieldCheckIcon />
             </SvgIcon>
           }
         >
@@ -180,7 +179,7 @@ export const CippAddEditGdapRoleTemplate = (props) => {
         expanded={advancedOpen}
         onChange={(event, expanded) => setAdvancedOpen(expanded)}
       >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>Advanced</AccordionSummary>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>Advanced</AccordionSummary>
         <AccordionDetails>
           <Stack spacing={2}>
             <Alert severity="info">

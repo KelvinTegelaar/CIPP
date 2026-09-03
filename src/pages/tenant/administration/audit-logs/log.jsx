@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { ApiGetCall } from "../../../../api/ApiCall";
@@ -19,7 +20,6 @@ import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 import { Grid } from "@mui/system";
-import { OpenInNew } from "@mui/icons-material";
 import auditLogTranslation from "../../../../data/audit-log-translations.json";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 
@@ -170,7 +170,7 @@ const Page = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      startIcon={<OpenInNew />}
+                      startIcon={<CippIcons.Launch />}
                       onClick={() => window.open(logData.Data.ActionUrl, "_blank")}
                     >
                       {logData.Data.ActionText}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Accordion,
   AccordionSummary,
@@ -14,7 +15,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ExpandMore, WarningAmber } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { ApiPostCall } from "../../api/ApiCall";
 import { getListGraphBulkRequestRows } from "../../utils/getListGraphBulkRequestRows.js";
@@ -193,7 +193,7 @@ const ResourceAccordion = ({ title, resourceId, chipLabel, children, riskSummary
       disableGutters
     >
       <AccordionSummary
-        expandIcon={<ExpandMore />}
+        expandIcon={<CippIcons.ExpandMore />}
         // summary is a centered ButtonBase, an unshrinkable row spills both edges
         sx={{ "& .MuiAccordionSummary-content": { minWidth: 0 } }}
       >
@@ -217,7 +217,7 @@ const ResourceAccordion = ({ title, resourceId, chipLabel, children, riskSummary
             >
               <Chip
                 size="small"
-                icon={<WarningAmber sx={{ fontSize: 18 }} />}
+                icon={<CippIcons.WarningAmber sx={{ fontSize: 18 }} />}
                 label={`${riskSummary.worst} (${riskSummary.count})`}
                 color={riskChipColor(riskSummary.worst)}
                 variant={riskSummary.worst === "Low" ? "outlined" : "filled"}

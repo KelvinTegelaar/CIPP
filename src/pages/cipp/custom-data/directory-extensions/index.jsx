@@ -1,11 +1,10 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Alert, Button, Link, SvgIcon } from "@mui/material";
-import { Add } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
 import NextLink from "next/link";
-import { TrashIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Directory Extensions";
@@ -21,7 +20,7 @@ const Page = () => {
   const actions = [
     {
       label: "Delete Directory Extension",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: "/api/ExecCustomData?Action=DeleteDirectoryExtension",
       type: "POST",
       data: {
@@ -68,7 +67,7 @@ const Page = () => {
             href="/cipp/custom-data/directory-extensions/add"
           >
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-              <Add />
+              <CippIcons.Add />
             </SvgIcon>
             Add Directory Extension
           </Button>

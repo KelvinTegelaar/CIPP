@@ -1,9 +1,8 @@
 import { Button, Typography, List, ListItem, SvgIcon } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import CippButtonCard from './CippButtonCard' // Adjust the import path as needed
 import { CippApiDialog } from '../CippComponents/CippApiDialog'
 import { useDialog } from '../../hooks/use-dialog'
-import { Sync } from '@mui/icons-material'
-import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 export default function CippRemediationCard(props) {
   const { userPrincipalName, isFetching, userId, tenantFilter, restartProcess } = props
@@ -23,7 +22,7 @@ export default function CippRemediationCard(props) {
           disabled={isFetching}
           startIcon={
             <SvgIcon fontSize="small">
-              <Sync />
+              <CippIcons.Sync />
             </SvgIcon>
           }
         >
@@ -37,7 +36,7 @@ export default function CippRemediationCard(props) {
           onClick={() => createDialog.handleOpen()}
           startIcon={
             <SvgIcon fontSize="small">
-              <ShieldCheckIcon />
+              <CippIcons.ShieldCheckIcon />
             </SvgIcon>
           }
         >

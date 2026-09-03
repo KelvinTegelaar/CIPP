@@ -1,4 +1,5 @@
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import tabOptions from "../tabOptions";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
@@ -6,9 +7,6 @@ import { Alert, Button, Link as MuiLink, SvgIcon, Tooltip, Typography } from "@m
 import { Box, Stack } from "@mui/system";
 import Link from "next/link";
 import { useCallback, useMemo } from "react";
-import { Healing, Tune } from "@mui/icons-material";
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import { CippPropertyList } from "../../../../components/CippComponents/CippPropertyList";
@@ -22,7 +20,7 @@ const repairQueryKeys = ["ListGDAPRoles", "ListGDAPRolesValidated", "ListGDAPRol
 const actions = [
   {
     label: "Delete Mapping",
-    icon: <TrashIcon />,
+    icon: <CippIcons.Delete />,
     type: "POST",
     url: "/api/ExecDeleteGDAPRoleMapping",
     data: {
@@ -97,7 +95,7 @@ const Page = () => {
   );
 
   const repairButton = (
-    <Button startIcon={<Healing />} disabled={nothingToRepair} onClick={() => repairDialog.handleOpen()}>
+    <Button startIcon={<CippIcons.Healing />} disabled={nothingToRepair} onClick={() => repairDialog.handleOpen()}>
       Repair mappings
     </Button>
   );
@@ -143,7 +141,7 @@ const Page = () => {
             ) : (
               repairButton
             )}
-            <Button component={Link} href="/tenant/gdap-management/roles/add" startIcon={<Tune />}>
+            <Button component={Link} href="/tenant/gdap-management/roles/add" startIcon={<CippIcons.Tune />}>
               Map an existing group (Advanced)
             </Button>
             {/* The parent tab stays highlighted here, so it cannot be clicked to go back. */}
@@ -152,7 +150,7 @@ const Page = () => {
               href="/tenant/gdap-management/role-templates"
               startIcon={
                 <SvgIcon fontSize="small">
-                  <ArrowLeftIcon />
+                  <CippIcons.ArrowLeft />
                 </SvgIcon>
               }
             >

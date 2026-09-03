@@ -1,6 +1,6 @@
 import { Card, Chip, Skeleton, Stack, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import { Box } from '@mui/system'
-import { Storage } from '@mui/icons-material'
 import { ApiGetCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
 import { usePermissions } from '../../hooks/use-permissions'
@@ -74,7 +74,7 @@ export const CippSharePointQuotaCard = () => {
             minWidth: 180
           }}>
           <SvgIcon fontSize="small" color="primary">
-            <Storage />
+            <CippIcons.Storage />
           </SvgIcon>
           <Typography variant="subtitle2" noWrap>
             Tenant Storage

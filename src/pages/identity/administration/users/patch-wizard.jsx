@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { useRouter } from 'next/router'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import CippWizardPage from '../../../../components/CippWizard/CippWizardPage.jsx'
@@ -23,7 +24,6 @@ import { CippApiResults } from '../../../../components/CippComponents/CippApiRes
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
-import { Delete } from '@mui/icons-material'
 
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
@@ -155,7 +155,7 @@ const UsersDisplayStep = (props) => {
   const rowActions = [
     {
       label: 'Remove from List',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       color: 'error',
       customFunction: (user) => handleRemoveUser(user),
       noConfirm: true,

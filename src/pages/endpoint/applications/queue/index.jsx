@@ -1,8 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { PlayArrow } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import { useDialog } from "../../../../hooks/use-dialog";
@@ -15,7 +14,7 @@ const Page = () => {
     {
       label: "Delete Application",
       type: "POST",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: "/api/RemoveQueuedApp",
       data: { ID: "id" },
       confirmText: "Do you want to delete the queued application?",
@@ -35,7 +34,7 @@ const Page = () => {
         tenantInTitle={false}
         cardButton={
           <>
-            <Button onClick={runQueueDialog.handleOpen} startIcon={<PlayArrow />}>
+            <Button onClick={runQueueDialog.handleOpen} startIcon={<CippIcons.PlayArrow />}>
               Run Queue now
             </Button>
             <CippApplicationDeployDrawer />

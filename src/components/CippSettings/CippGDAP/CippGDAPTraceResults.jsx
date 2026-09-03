@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { CippIcons } from "../../../utils/icon-registry"
 import {
   Box,
   Card,
@@ -16,16 +17,6 @@ import {
   Tooltip,
   IconButton,
 } from "@mui/material";
-import {
-  ExpandMore,
-  CheckCircle,
-  Cancel,
-  Warning,
-  Security,
-  Group,
-  AccountTree,
-  InfoOutlined,
-} from "@mui/icons-material";
 import { CippCodeBlock } from "../../CippComponents/CippCodeBlock";
 import { CippPathVisualization } from "./CippPathVisualization";
 import { getCippRoleTranslation } from "../../../utils/get-cipp-role-translation";
@@ -89,13 +80,13 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
 
   const getRoleStatusChip = (role) => {
     if (role.isUserHasAccess) {
-      return <Chip icon={<CheckCircle />} label="Has Access" color="success" size="small" />;
+      return <Chip icon={<CippIcons.CheckCircle />} label="Has Access" color="success" size="small" />;
     } else if (role.isAssigned) {
-      return <Chip icon={<Warning />} label="Assigned but No Access" color="warning" size="small" />;
+      return <Chip icon={<CippIcons.Warning />} label="Assigned but No Access" color="warning" size="small" />;
     } else if (role.roleExistsInRelationship) {
-      return <Chip icon={<Warning />} label="In Relationship but Not Assigned" color="info" size="small" />;
+      return <Chip icon={<CippIcons.Warning />} label="In Relationship but Not Assigned" color="info" size="small" />;
     } else {
-      return <Chip icon={<Cancel />} label="Not In Any Relationship" color="default" size="small" />;
+      return <Chip icon={<CippIcons.Cancel />} label="Not In Any Relationship" color="default" size="small" />;
     }
   };
 
@@ -128,7 +119,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
               )}
               {step.membershipType === "direct" && (
                 <Chip
-                  icon={<Group />}
+                  icon={<CippIcons.Group />}
                   label="Direct"
                   color="success"
                   size="small"
@@ -137,7 +128,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
               )}
               {step.membershipType === "nested" && (
                 <Chip
-                  icon={<AccountTree />}
+                  icon={<CippIcons.AccountTree />}
                   label="Nested"
                   color="info"
                   size="small"
@@ -146,7 +137,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
               )}
               {step.membershipType === "not_member" && (
                 <Chip
-                  icon={<Cancel />}
+                  icon={<CippIcons.Cancel />}
                   label="Not Member"
                   color="error"
                   size="small"
@@ -237,7 +228,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                   arrow
                 >
                   <IconButton size="small" sx={{ p: 0.25 }}>
-                    <InfoOutlined sx={{ fontSize: 16 }} />
+                    <CippIcons.InfoOutlined sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Tooltip>
               </Stack>
@@ -260,7 +251,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                   arrow
                 >
                   <IconButton size="small" sx={{ p: 0.25 }}>
-                    <InfoOutlined sx={{ fontSize: 16 }} />
+                    <CippIcons.InfoOutlined sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Tooltip>
               </Stack>
@@ -283,7 +274,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                   arrow
                 >
                   <IconButton size="small" sx={{ p: 0.25 }}>
-                    <InfoOutlined sx={{ fontSize: 16 }} />
+                    <CippIcons.InfoOutlined sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Tooltip>
               </Stack>
@@ -299,7 +290,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            <Security sx={{ verticalAlign: "middle", mr: 1 }} />
+            <CippIcons.Security sx={{ verticalAlign: "middle", mr: 1 }} />
             GDAP Roles Access
           </Typography>
           <Divider sx={{ mb: 2 }} />
@@ -312,7 +303,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                   expanded={expandedRoles[role.roleId] || false}
                   onChange={() => handleRoleExpand(role.roleId)}
                 >
-                  <AccordionSummary expandIcon={<ExpandMore />}>
+                  <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                     <Box sx={{ display: "flex", alignItems: "center", width: "100%", gap: 2 }}>
                       {getRoleStatusChip(role)}
                       <Box sx={{ flex: 1 }}>
@@ -429,7 +420,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              <AccountTree sx={{ verticalAlign: "middle", mr: 1 }} />
+              <CippIcons.AccountTree sx={{ verticalAlign: "middle", mr: 1 }} />
               GDAP Relationships
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -440,7 +431,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
                   expanded={expandedRelationships[relationship.relationshipId] || false}
                   onChange={() => handleRelationshipExpand(relationship.relationshipId)}
                 >
-                  <AccordionSummary expandIcon={<ExpandMore />}>
+                  <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                     <Box sx={{ display: "flex", alignItems: "center", width: "100%", gap: 2 }}>
                       <Chip
                         label={relationship.relationshipStatus}
@@ -554,7 +545,7 @@ export const CippGDAPTraceResults = ({ data, isLoading, error }) => {
       <Card sx={{ mt: 3 }}>
         <CardContent>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Typography variant="subtitle2">View Raw JSON</Typography>
             </AccordionSummary>
             <AccordionDetails>

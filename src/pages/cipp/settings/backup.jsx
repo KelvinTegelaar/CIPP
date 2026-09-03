@@ -16,22 +16,12 @@ import {
   FormControl,
   FormLabel,
 } from "@mui/material";
+import { CippIcons } from "../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../layouts/index";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
-import {
-  ArrowCircleRight,
-  CloudDownload,
-  CloudUpload,
-  EventRepeat,
-  History,
-  ManageHistory,
-  NextPlan,
-  SettingsBackupRestore,
-  Storage,
-} from "@mui/icons-material";
 import ReactTimeAgo from "react-time-ago";
 import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
@@ -277,14 +267,14 @@ const Page = () => {
   const actions = [
     {
       label: "Restore Backup",
-      icon: <SettingsBackupRestore />,
+      icon: <CippIcons.SettingsBackupRestore />,
       noConfirm: true,
       customFunction: handleTableRestoreAction,
       hideBulk: true,
     },
     {
       label: "Download Backup",
-      icon: <CloudDownload />,
+      icon: <CippIcons.CloudDownload />,
       noConfirm: true,
       customFunction: handleDownloadBackupAction,
     },
@@ -306,12 +296,12 @@ const Page = () => {
               isFetching={backupList.isFetching}
               data={[
                 {
-                  icon: <Storage />,
+                  icon: <CippIcons.Storage />,
                   name: "Backup Count",
                   data: backupList.data?.length,
                 },
                 {
-                  icon: <History />,
+                  icon: <CippIcons.History />,
                   name: "Last Backup",
                   data: backupList.data?.[0]?.Timestamp ? (
                     <ReactTimeAgo date={backupList.data?.[0]?.Timestamp} />
@@ -320,7 +310,7 @@ const Page = () => {
                   ),
                 },
                 {
-                  icon: <EventRepeat />,
+                  icon: <CippIcons.EventRepeat />,
                   name: "Automatic Backups",
                   data:
                     scheduledBackup.data?.[0]?.Name === "Automated CIPP Backup"
@@ -328,7 +318,7 @@ const Page = () => {
                       : "Disabled",
                 },
                 {
-                  icon: <NextPlan />,
+                  icon: <CippIcons.NextPlan />,
                   name: "Next Backup",
                   data: <NextBackupRun date={scheduledBackup.data?.[0]?.ScheduledTime} />,
                 },
@@ -352,12 +342,12 @@ const Page = () => {
                     <Stack spacing={2} direction="row">
                       <Button
                         color="primary"
-                        startIcon={<ArrowCircleRight />}
+                        startIcon={<CippIcons.ArrowCircleRight />}
                         onClick={runBackupDialog.handleOpen}
                       >
                         Run Backup
                       </Button>
-                      <Button component="label" color="primary" startIcon={<CloudUpload />}>
+                      <Button component="label" color="primary" startIcon={<CippIcons.CloudUpload />}>
                         Restore From File
                         <input
                           hidden
@@ -371,7 +361,7 @@ const Page = () => {
                         scheduledBackup.data?.[0]?.Name !== "Automated CIPP Backup" && (
                           <Button
                             color="primary"
-                            startIcon={<ManageHistory />}
+                            startIcon={<CippIcons.ManageHistory />}
                             onClick={enableBackupDialog.handleOpen}
                           >
                             Schedule Backups
@@ -381,7 +371,7 @@ const Page = () => {
                         scheduledBackup.data?.[0]?.Name === "Automated CIPP Backup" && (
                           <Button
                             color="error"
-                            startIcon={<ManageHistory />}
+                            startIcon={<CippIcons.ManageHistory />}
                             onClick={disableBackupDialog.handleOpen}
                           >
                             Remove Schedule

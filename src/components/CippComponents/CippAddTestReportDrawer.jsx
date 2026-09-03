@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Button,
   Card,
@@ -14,7 +15,6 @@ import {
 } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useFormState, useWatch } from 'react-hook-form'
-import { Add, Edit } from '@mui/icons-material'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippApiResults } from './CippApiResults'
@@ -205,7 +205,7 @@ export const CippAddTestReportDrawer = ({
             px: 2,
           }}
           onClick={() => setDrawerVisible(true)}
-          startIcon={isEditMode ? <Edit /> : <Add />}
+          startIcon={isEditMode ? <CippIcons.Edit /> : <CippIcons.Add />}
           disabled={disabled}
         >
           <Box

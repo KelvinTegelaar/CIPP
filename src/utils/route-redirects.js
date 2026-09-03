@@ -13,6 +13,21 @@ export const routeRedirects = {
   // in drawers on the Users list page.
   '/identity/administration/users/add': '/identity/administration/users',
   '/identity/administration/users/bulk-add': '/identity/administration/users',
+  // Tenant onboarding runs through the setup wizard. The Add Tenant page redirects there
+  // in-page; this entry is the fallback for the same route.
+  '/tenant/administration/tenants/add': '/onboardingv2',
+  // CIPP Roles moved out of the Super Admin area when it was split into Super Admin /
+  // Container Management / Authentication.
+  '/cipp/advanced/super-admin/cipp-roles':
+    '/cipp/advanced/authentication/cipp-roles',
+  '/cipp/advanced/super-admin/cipp-roles/add':
+    '/cipp/advanced/authentication/cipp-roles/add',
+  '/cipp/advanced/super-admin/cipp-roles/edit':
+    '/cipp/advanced/authentication/cipp-roles/edit',
+  // Vacation Mode moved to Identity Management; its standalone add page went with it, and
+  // the add flow now lives in a drawer on the Vacation Mode list.
+  '/tenant/conditional/deploy-vacation/add':
+    '/identity/administration/vacation-mode',
 }
 
 export const getRedirectTarget = (pathname) => {

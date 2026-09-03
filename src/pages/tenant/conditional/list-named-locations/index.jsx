@@ -1,16 +1,8 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import {
-  MinusIcon,
-  PlusIcon,
-  PencilIcon,
-  ShieldCheckIcon,
-  ShieldExclamationIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
-import { LocationOn } from "@mui/icons-material";
 import countryList from "../../../../data/countryList.json";
 
 const Page = () => {
@@ -21,7 +13,7 @@ const Page = () => {
       label: "Rename named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
-      icon: <PencilIcon />,
+      icon: <CippIcons.Edit />,
       data: {
         namedLocationId: "id",
         change: "!rename",
@@ -33,7 +25,7 @@ const Page = () => {
       label: "Mark as Trusted",
       type: "POST",
       url: "/api/ExecNamedLocation",
-      icon: <ShieldCheckIcon />,
+      icon: <CippIcons.ShieldCheckIcon />,
       data: {
         namedLocationId: "id",
         change: "!setTrusted",
@@ -46,7 +38,7 @@ const Page = () => {
       label: "Mark as Untrusted",
       type: "POST",
       url: "/api/ExecNamedLocation",
-      icon: <ShieldExclamationIcon />,
+      icon: <CippIcons.ShieldExclamationIcon />,
       data: {
         namedLocationId: "id",
         change: "!setUntrusted",
@@ -58,7 +50,7 @@ const Page = () => {
       label: "Add location to named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
-      icon: <PlusIcon />,
+      icon: <CippIcons.PlusIcon />,
       data: {
         namedLocationId: "id",
         change: "!addLocation",
@@ -89,7 +81,7 @@ const Page = () => {
       label: "Remove location from named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
-      icon: <MinusIcon />,
+      icon: <CippIcons.MinusIcon />,
       data: {
         namedLocationId: "id",
         change: "!removeLocation",
@@ -132,7 +124,7 @@ const Page = () => {
       label: "Add IP to named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
-      icon: <PlusIcon />,
+      icon: <CippIcons.PlusIcon />,
       data: {
         namedLocationId: "id",
         change: "!addIp",
@@ -184,7 +176,7 @@ const Page = () => {
       label: "Remove IP from named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
-      icon: <MinusIcon />,
+      icon: <CippIcons.MinusIcon />,
       data: {
         namedLocationId: "id",
         change: "!removeIp",
@@ -224,7 +216,7 @@ const Page = () => {
       label: "Delete named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       data: {
         namedLocationId: "id",
         change: "!delete",
@@ -242,7 +234,7 @@ const Page = () => {
       actions={actions}
       cardButton={
         <>
-          <Button component={Link} href="list-named-locations/add" startIcon={<LocationOn />}>
+          <Button component={Link} href="list-named-locations/add" startIcon={<CippIcons.LocationOn />}>
             Add Named Location
           </Button>
         </>

@@ -1,14 +1,7 @@
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import { useSettings } from "../../../../hooks/use-settings";
-import {
-  Visibility,
-  CheckCircleOutlined,
-  Block,
-  VpnKey,
-  DeleteForever,
-  Password,
-} from "@mui/icons-material";
+import { CippIcons } from "../../../../utils/icon-registry"
 
 const Page = () => {
   const pageTitle = "Devices";
@@ -20,7 +13,7 @@ const Page = () => {
       link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/[id]/deviceId/`,
       pinned: true,
       color: "info",
-      icon: <Visibility />,
+      icon: <CippIcons.Launch />,
       target: "_blank",
       multiPost: false,
       external: true,
@@ -36,7 +29,7 @@ const Page = () => {
       confirmText: "Are you sure you want to enable this device?",
       multiPost: false,
       condition: (row) => !row.accountEnabled,
-      icon: <CheckCircleOutlined />,
+      icon: <CippIcons.CheckCircleOutlined />,
     },
     {
       label: "Disable Device",
@@ -49,7 +42,7 @@ const Page = () => {
       confirmText: "Are you sure you want to disable this device?",
       multiPost: false,
       condition: (row) => row.accountEnabled,
-      icon: <Block />,
+      icon: <CippIcons.Block />,
     },
     {
       label: "Retrieve BitLocker Keys",
@@ -60,7 +53,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to retrieve the BitLocker keys?",
       multiPost: false,
-      icon: <VpnKey />,
+      icon: <CippIcons.Key />,
     },
     {
       label: "Retrieve LAPS password",
@@ -72,7 +65,7 @@ const Page = () => {
       confirmText: "Are you sure you want to retrieve the local admin password for [displayName]?",
       multiPost: false,
       condition: (row) => row.operatingSystem === "Windows",
-      icon: <Password />,
+      icon: <CippIcons.Password />,
     },
     {
       label: "Delete Device",
@@ -84,7 +77,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to delete this device?",
       multiPost: false,
-      icon: <DeleteForever />,
+      icon: <CippIcons.Delete />,
     },
   ];
 

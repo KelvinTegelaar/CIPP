@@ -1,6 +1,6 @@
 import { useCallback } from "react";
+import { CippIcons } from "../utils/icon-registry";
 import PropTypes from "prop-types";
-import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon";
 import {
   Button,
   Chip,
@@ -60,7 +60,7 @@ export const FilterDialog = (props) => {
         <Typography variant="inherit">Filter</Typography>
         <IconButton onClick={onClose} size="small">
           <SvgIcon fontSize="small">
-            <XMarkIcon />
+            <CippIcons.XMarkIcon />
           </SvgIcon>
         </IconButton>
       </DialogTitle>

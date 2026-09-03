@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material'
-import { Download, OpenInNew, PictureAsPdf } from '@mui/icons-material'
+import { CippIcons } from '../../utils/icon-registry'
 import { PDFViewer, usePDF } from '@react-pdf/renderer'
 import { useIsMobileLayout } from '../../hooks/use-breakpoint'
 
@@ -83,7 +83,7 @@ const MobileHandoff = ({ document, fileName, title, showDownload }) => {
           bgcolor: 'action.hover',
         }}
       >
-        <PictureAsPdf sx={{ fontSize: 34, color: 'text.secondary' }} />
+        <CippIcons.PictureAsPdf sx={{ fontSize: 34, color: 'text.secondary' }} />
       </Box>
 
       <Stack spacing={0.5} sx={{ minWidth: 0, maxWidth: '100%' }}>
@@ -106,7 +106,7 @@ const MobileHandoff = ({ document, fileName, title, showDownload }) => {
           target="_blank"
           rel="noopener noreferrer"
           variant="contained"
-          startIcon={<OpenInNew />}
+          startIcon={<CippIcons.Launch />}
           sx={{ minHeight: 44 }}
         >
           Open report
@@ -119,7 +119,7 @@ const MobileHandoff = ({ document, fileName, title, showDownload }) => {
             href={instance.url}
             download={fileName ?? 'report.pdf'}
             variant="outlined"
-            startIcon={<Download />}
+            startIcon={<CippIcons.Download />}
             sx={{ minHeight: 44 }}
           >
             Download

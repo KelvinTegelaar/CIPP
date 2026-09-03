@@ -10,6 +10,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry"
 import { Grid } from "@mui/system";
 import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
@@ -19,9 +20,7 @@ import { useRouter } from "next/router";
 import extensions from "../../data/Extensions.json";
 import { useEffect } from "react";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { PlusSmallIcon, SparklesIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
-import { Sync, SyncAlt } from "@mui/icons-material";
 import { CippFormComponent } from "../CippComponents/CippFormComponent";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
@@ -191,7 +190,7 @@ const CippIntegrationSettings = ({ children }) => {
       label: "Sync Now",
       icon: (
         <SvgIcon>
-          <Sync />
+          <CippIcons.Sync />
         </SvgIcon>
       ),
       confirmText: "Queue a NinjaOne sync for [Tenant]?",
@@ -199,7 +198,7 @@ const CippIntegrationSettings = ({ children }) => {
     },
     {
       label: "Delete Mapping",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       confirmText: "Are you sure you want to delete this mapping?",
       customFunction: handleRemoveItem,
     },
@@ -256,7 +255,7 @@ const CippIntegrationSettings = ({ children }) => {
                       }
                     >
                       <SvgIcon>
-                        <Sync />
+                        <CippIcons.Sync />
                       </SvgIcon>
                     </IconButton>
                   </Tooltip>
@@ -265,7 +264,7 @@ const CippIntegrationSettings = ({ children }) => {
               <Grid>
                 <Box sx={{ my: "auto" }}>
                   <SvgIcon>
-                    <SyncAlt />
+                    <CippIcons.SyncAlt />
                   </SvgIcon>
                 </Box>
               </Grid>
@@ -293,7 +292,7 @@ const CippIntegrationSettings = ({ children }) => {
                   <Tooltip title={`Refresh ${extension.name} companies`}>
                     <IconButton size="small" onClick={() => mappings.refetch()}>
                       <SvgIcon>
-                        <Sync />
+                        <CippIcons.Sync />
                       </SvgIcon>
                     </IconButton>
                   </Tooltip>
@@ -304,14 +303,14 @@ const CippIntegrationSettings = ({ children }) => {
                   <Tooltip title="Add Mapping">
                     <Button size="small" onClick={() => handleAddItem()} variant="contained">
                       <SvgIcon>
-                        <PlusSmallIcon />
+                        <CippIcons.PlusSmallIcon />
                       </SvgIcon>
                     </Button>
                   </Tooltip>
                   <Tooltip title="Automap Companies">
                     <Button size="small" onClick={() => handleAutoMap()} variant="contained">
                       <SvgIcon>
-                        <SparklesIcon />
+                        <CippIcons.SparklesIcon />
                       </SvgIcon>
                     </Button>
                   </Tooltip>
@@ -324,7 +323,7 @@ const CippIntegrationSettings = ({ children }) => {
                       variant="contained"
                     >
                       <SvgIcon>
-                        <Sync />
+                        <CippIcons.Sync />
                       </SvgIcon>
                     </Button>
                   </Tooltip>

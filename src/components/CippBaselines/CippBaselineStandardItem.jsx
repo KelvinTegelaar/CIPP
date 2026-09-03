@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Accordion,
   AccordionDetails,
@@ -13,7 +14,6 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import { AutoFixHigh, Delete, ExpandMore } from '@mui/icons-material'
 import { useWatch } from 'react-hook-form'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import CippBaselineStandardSettings from './CippBaselineStandardSettings'
@@ -165,7 +165,7 @@ export const CippBaselineStandardItem = ({
         transition: { unmountOnExit: true }
       }}
     >
-      <AccordionSummary expandIcon={<ExpandMore />}>
+      <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
         <Stack
           direction="row"
           spacing={2}
@@ -260,7 +260,7 @@ export const CippBaselineStandardItem = ({
                   onRemove(fieldBase)
                 }}
               >
-                <Delete fontSize="small" />
+                <CippIcons.Delete fontSize="small" />
               </IconButton>
             </Tooltip>
           </Stack>
@@ -319,7 +319,7 @@ export const CippBaselineStandardItem = ({
                   <Button
                     size="small"
                     variant="outlined"
-                    startIcon={<AutoFixHigh />}
+                    startIcon={<CippIcons.AutoFixHigh />}
                     onClick={applyRecommended}
                   >
                     Use recommended values

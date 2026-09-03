@@ -8,6 +8,7 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
@@ -21,7 +22,6 @@ import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { router } from "next/router";
 import cippDefaults from "../../../../data/CIPPDefaultGDAPRoles";
 import { WizardSteps } from "../../../../components/CippWizard/wizard-steps";
-import { ExpandMore, PlayArrow, Replay } from "@mui/icons-material";
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import CippDataTableButton from "../../../../components/CippTable/CippDataTableButton";
@@ -444,7 +444,7 @@ const Page = () => {
                         <Alert severity="success">All roles are mapped correctly</Alert>
                       )}
                     <Accordion variant="outlined" defaultExpanded={true}>
-                      <AccordionSummary expandIcon={<ExpandMore />}>
+                      <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                         <Typography variant="h6">Current Relationship Details</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
@@ -563,7 +563,7 @@ const Page = () => {
                   formControl.trigger();
                   handleRetry();
                 }}
-                startIcon={<Replay />}
+                startIcon={<CippIcons.Replay />}
                 disabled={!formControl.formState.isValid || currentOnboarding?.Status === "running"}
               >
                 Retry
@@ -575,7 +575,7 @@ const Page = () => {
                 formControl.trigger();
                 handleSubmit();
               }}
-              startIcon={<PlayArrow />}
+              startIcon={<CippIcons.PlayArrow />}
               disabled={
                 !formControl.formState.isValid ||
                 currentOnboarding?.Status === "succeeded" ||

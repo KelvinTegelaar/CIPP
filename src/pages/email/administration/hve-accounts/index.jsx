@@ -1,16 +1,9 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippHVEUserDrawer } from '../../../../components/CippComponents/CippHVEUserDrawer.jsx'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import { Stack } from '@mui/system'
-import { TrashIcon } from '@heroicons/react/24/outline'
-import {
-  Edit,
-  AlternateEmail,
-  Receipt,
-  RemoveCircleOutlined,
-  Reply,
-} from '@mui/icons-material'
 
 const Page = () => {
   const pageTitle = 'HVE Accounts'
@@ -29,7 +22,7 @@ const Page = () => {
       label: 'Edit Display Name',
       type: 'POST',
       url: '/api/ExecHVEUser',
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       data: { Identity: 'primarySmtpAddress', Action: 'Edit' },
       fields: [
         {
@@ -45,7 +38,7 @@ const Page = () => {
       label: 'Set Reply-To Address',
       type: 'POST',
       url: '/api/ExecHVEUser',
-      icon: <Reply />,
+      icon: <CippIcons.Reply />,
       data: { Identity: 'primarySmtpAddress', Action: 'Edit' },
       fields: [
         {
@@ -62,7 +55,7 @@ const Page = () => {
       label: 'Change Primary SMTP Address',
       type: 'POST',
       url: '/api/ExecHVEUser',
-      icon: <AlternateEmail />,
+      icon: <CippIcons.AlternateEmail />,
       data: { Identity: 'primarySmtpAddress', Action: 'Edit' },
       fields: [
         {
@@ -109,7 +102,7 @@ const Page = () => {
       label: 'Assign Billing Policy',
       type: 'POST',
       url: '/api/ExecHVEUser',
-      icon: <Receipt />,
+      icon: <CippIcons.Receipt />,
       data: { Identity: 'primarySmtpAddress', Action: 'AssignBillingPolicy' },
       fields: [
         {
@@ -136,7 +129,7 @@ const Page = () => {
       label: 'Remove Billing Policy',
       type: 'POST',
       url: '/api/ExecHVEUser',
-      icon: <RemoveCircleOutlined />,
+      icon: <CippIcons.RemoveCircleOutlined />,
       data: { Identity: 'primarySmtpAddress', Action: 'RemoveBillingPolicy' },
       confirmText:
         'Remove billing policy [BillingPolicyName] from [primarySmtpAddress]?',
@@ -146,7 +139,7 @@ const Page = () => {
     {
       label: 'Delete HVE Account',
       type: 'POST',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: '/api/ExecHVEUser',
       data: { Identity: 'primarySmtpAddress', Action: 'Remove' },
       confirmText: 'Are you sure you want to delete HVE account [primarySmtpAddress]?',

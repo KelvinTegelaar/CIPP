@@ -1,13 +1,8 @@
 import { Box, Card, CardContent, CardHeader, Divider, Stack, Typography } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import { Grid } from '@mui/system'
 import Link from 'next/link'
 import { Button } from '@mui/material'
-import {
-  BuildingOffice2Icon,
-  DevicePhoneMobileIcon,
-  EnvelopeIcon,
-  UsersIcon,
-} from '@heroicons/react/24/outline'
 import { getCippError } from '../../utils/get-cipp-error'
 import { CippInfoBar } from '../CippCards/CippInfoBar'
 import { useAllTenantsDashboard } from './useAllTenantsDashboard'
@@ -83,7 +78,7 @@ export const AllTenantsDashboard = () => {
     {
       name: 'Tenants',
       data: tenantCount.toLocaleString(),
-      icon: <BuildingOffice2Icon />,
+      icon: <CippIcons.BuildingOffice2Icon />,
       toolTip: 'Tenants under management. Select to open the tenant list.',
       link: '/tenant/administration/tenants',
     },
@@ -92,11 +87,11 @@ export const AllTenantsDashboard = () => {
       data: item.value.toLocaleString(),
       icon:
         item.label === 'Users' ? (
-          <UsersIcon />
+          <CippIcons.UsersIcon />
         ) : item.label === 'Mailboxes' ? (
-          <EnvelopeIcon />
+          <CippIcons.EnvelopeIcon />
         ) : (
-          <DevicePhoneMobileIcon />
+          <CippIcons.DevicePhoneMobileIcon />
         ),
       toolTip: `${item.average.toLocaleString()} per tenant on average. Select to open the list.`,
       link: scaleLinks[item.label],

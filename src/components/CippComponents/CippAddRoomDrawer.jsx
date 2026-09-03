@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect } from "react";
 import { Button, Divider } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
-import { AddHomeWork } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormDomainSelector } from "./CippFormDomainSelector";
@@ -89,7 +89,7 @@ export const CippAddRoomDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<AddHomeWork />}
+        startIcon={<CippIcons.AddHomeWork />}
       >
         {buttonText}
       </PermissionButton>

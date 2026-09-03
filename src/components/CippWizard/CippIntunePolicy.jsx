@@ -93,10 +93,10 @@ export const CippIntunePolicy = (props) => {
             type="radio"
             name="AssignTo"
             options={[
-              { label: 'Do not assign', value: 'On' },
-              { label: 'Assign to all users', value: 'allLicensedUsers' },
-              { label: 'Assign to all devices', value: 'AllDevices' },
-              { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+              { label: 'Do Not Assign', value: 'On' },
+              { label: 'Assign to All Users', value: 'allLicensedUsers' },
+              { label: 'Assign to All Devices', value: 'AllDevices' },
+              { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
               { label: 'Assign to Custom Group', value: 'customGroup' },
             ]}
             formControl={formControl}

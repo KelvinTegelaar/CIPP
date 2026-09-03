@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import {
   Button,
   Typography,
@@ -14,7 +15,6 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
-import { Add, Delete, Palette } from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
@@ -156,7 +156,7 @@ const GalleryTile = ({
       }}
     >
       {add ? (
-        <Add sx={{ fontSize: 32, color: "text.secondary" }} />
+        <CippIcons.Add sx={{ fontSize: 32, color: "text.secondary" }} />
       ) : empty ? (
         <Typography
           variant="caption"
@@ -214,7 +214,7 @@ const GalleryTile = ({
           "&.Mui-disabled": { bgcolor: "rgba(0, 0, 0, 0.35)", color: "rgba(255,255,255,0.5)" },
         }}
       >
-        <Delete sx={{ fontSize: 16 }} />
+        <CippIcons.Delete sx={{ fontSize: 16 }} />
       </IconButton>
     )}
   </Box>
@@ -822,7 +822,6 @@ const CippBrandingSettings = () => {
 
     const brandingData = buildLocalBranding();
 
-
     brandingApi.mutate({
       url: "/api/ExecBrandingSettings",
       data: {
@@ -883,7 +882,6 @@ const CippBrandingSettings = () => {
       ...reportChromeValues({}),
       previewReportType: formControl.getValues("previewReportType") || reportTypeOptions[0],
     });
-
 
     brandingApi.mutate({
       url: "/api/ExecBrandingSettings",
@@ -955,7 +953,7 @@ const CippBrandingSettings = () => {
           ))}
           <Button
             size="small"
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
             onClick={() => openNameDialog("create")}
             disabled={busy}
           >
@@ -972,7 +970,7 @@ const CippBrandingSettings = () => {
               <Button
                 size="small"
                 color="error"
-                startIcon={<Delete />}
+                startIcon={<CippIcons.Delete />}
                 onClick={handleDeletePreset}
                 disabled={busy}
               >
@@ -1570,7 +1568,7 @@ const CippBrandingSettings = () => {
                   size="small"
                   onClick={handleSave}
                   disabled={busy}
-                  startIcon={<Palette />}
+                  startIcon={<CippIcons.Palette />}
                 >
                   {activePreset ? `Save "${activePreset.name}"` : "Save Branding"}
                 </Button>

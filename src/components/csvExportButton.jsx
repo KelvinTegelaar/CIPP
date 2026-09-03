@@ -1,5 +1,5 @@
-import { BackupTableTwoTone } from '@mui/icons-material'
 import { IconButton, Tooltip } from '@mui/material'
+import { CippIcons } from '../utils/icon-registry'
 import { mkConfig, generateCsv, download } from 'export-to-csv'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
 import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
@@ -105,7 +105,7 @@ export const CSVExportButton = (props) => {
           onClick={() => exportRowsToCsv({ rows, columns, reportName, columnVisibility })}
           {...other}
         >
-          <BackupTableTwoTone />
+          <CippIcons.BackupTableTwoTone />
         </IconButton>
       </span>
     </Tooltip>

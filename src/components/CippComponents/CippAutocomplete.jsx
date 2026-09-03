@@ -1,4 +1,3 @@
-import { ArrowDropDown, Visibility } from '@mui/icons-material'
 import {
   Autocomplete,
   CircularProgress,
@@ -9,12 +8,12 @@ import {
   Box,
   Typography,
 } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import Link from 'next/link'
 import { useEffect, useState, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
 import { useSettings } from '../../hooks/use-settings'
 import { getCippError } from '../../utils/get-cipp-error'
 import { ApiGetCallWithPagination } from '../../api/ApiCall'
-import { Sync } from '@mui/icons-material'
 import { Stack } from '@mui/system'
 import React from 'react'
 import { CippOffCanvas } from './CippOffCanvas'
@@ -516,7 +515,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           actionGetRequest.isFetching || isFetching ? (
             <CircularProgress color="inherit" size={20} />
           ) : (
-            <ArrowDropDown />
+            <CippIcons.ArrowDropDown />
           )
         }
         isOptionEqualToValue={(option, val) => option.value === val.value}
@@ -792,7 +791,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
                       actionGetRequest.refetch()
                     }}
                   >
-                    <Sync />
+                    <CippIcons.Sync />
                   </IconButton>
                 </Tooltip>
               )}
@@ -859,7 +858,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
                     }}
                     title={api?.templateView.title || 'View details'}
                   >
-                    <Visibility />
+                    <CippIcons.Visibility />
                   </IconButton>
                 </Tooltip>
               )}

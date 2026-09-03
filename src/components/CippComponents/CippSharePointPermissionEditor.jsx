@@ -1,7 +1,7 @@
 import { useFieldArray } from "react-hook-form";
+import { CippIcons } from "../../utils/icon-registry"
 import { Alert, Box, Button, IconButton, Stack, Typography, Tooltip } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Add, Delete } from "@mui/icons-material";
 import CippFormComponent from "./CippFormComponent";
 
 // SharePoint built-in permission levels. Used for both site-root and per-library grants.
@@ -74,7 +74,7 @@ export const CippSharePointPermissionEditor = ({
                   size="small"
                   onClick={() => remove(index)}
                 >
-                  <Delete fontSize="small" />
+                  <CippIcons.Delete fontSize="small" />
                 </IconButton>
               </Tooltip>
             </Grid>
@@ -83,7 +83,7 @@ export const CippSharePointPermissionEditor = ({
       </Stack>
       <Button
         size="small"
-        startIcon={<Add />}
+        startIcon={<CippIcons.Add />}
         onClick={() => append({ principal: "", permissionLevel: "read" })}
         sx={{ mt: fields.length > 0 ? 1 : 0 }}
       >

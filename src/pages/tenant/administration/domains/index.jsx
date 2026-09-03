@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { CheckCircle, Star, Delete } from "@mui/icons-material";
 import { CippAddDomainDrawer } from "../../../../components/CippComponents/CippAddDomainDrawer.jsx";
 import { CippDomainVerificationRecords } from "../../../../components/CippComponents/CippDomainVerificationRecords.jsx";
 import { CippDomainServiceConfigurationRecords } from "../../../../components/CippComponents/CippDomainServiceConfigurationRecords.jsx";
@@ -82,7 +82,7 @@ const Page = () => {
           label: "Verify Domain",
           condition: (row) => !row.isVerified,
           type: "POST",
-          icon: <CheckCircle />,
+          icon: <CippIcons.CheckCircle />,
           url: "/api/ExecDomainAction",
           data: { domain: "id", Action: "verify" },
           confirmText:
@@ -94,7 +94,7 @@ const Page = () => {
           label: "Set as Default",
           condition: (row) => !row.isDefault && row.isVerified,
           type: "POST",
-          icon: <Star />,
+          icon: <CippIcons.Star />,
           url: "/api/ExecDomainAction",
           data: { domain: "id", Action: "setDefault" },
           confirmText: "Are you sure you want to set [id] as the default domain?",
@@ -105,7 +105,7 @@ const Page = () => {
           label: "Delete Domain",
           condition: (row) => !row.isDefault && !row.isInitial,
           type: "POST",
-          icon: <Delete />,
+          icon: <CippIcons.Delete />,
           url: "/api/ExecDomainAction",
           data: { domain: "id", Action: "delete" },
           confirmText: "Are you sure you want to delete [id]? This action cannot be undone.",

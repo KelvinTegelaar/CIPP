@@ -1,10 +1,9 @@
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
+import { CippIcons } from '../../../../../utils/icon-registry'
 import { useSettings } from '../../../../../hooks/use-settings'
 import { useRouter } from 'next/router'
 import { ApiGetCall, ApiPostCall } from '../../../../../api/ApiCall'
 import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSkeleton'
-import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
-import { Fingerprint, Launch, Apps, Group, CheckCircle, Warning, Badge } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import { CippEnterpriseAppSwitcher } from '../../../../../components/CippComponents/CippEnterpriseAppSwitcher'
 import tabOptions from './tabOptions'
@@ -18,7 +17,6 @@ import { useEffect, useMemo, useState, useRef } from 'react'
 import { PropertyList } from '../../../../../components/property-list'
 import { PropertyListItem } from '../../../../../components/property-list-item'
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
-import { EyeIcon } from '@heroicons/react/24/outline'
 import { usePermissions } from '../../../../../hooks/use-permissions.js'
 import { getEnterpriseAppDetailHeaderActions } from '../../../../../components/CippComponents/EnterpriseAppActions.jsx'
 import Link from 'next/link'
@@ -132,15 +130,15 @@ const Page = () => {
     spRequest.isSuccess && spData
       ? [
           {
-            icon: <Badge />,
+            icon: <CippIcons.Badge />,
             text: <CippCopyToClipBoard type="chip" text={spData?.appId || 'N/A'} />,
           },
           {
-            icon: <Fingerprint />,
+            icon: <CippIcons.Fingerprint />,
             text: <CippCopyToClipBoard type="chip" text={spData?.id || 'N/A'} />,
           },
           {
-            icon: <CalendarIcon />,
+            icon: <CippIcons.CalendarIcon />,
             text: (
               <>
                 Created: <CippTimeAgo data={spData?.createdDateTime} />
@@ -148,7 +146,7 @@ const Page = () => {
             ),
           },
           {
-            icon: <Launch style={{ color: '#667085' }} />,
+            icon: <CippIcons.Launch />,
             text: (
               <Button
                 color="muted"
@@ -184,7 +182,7 @@ const Page = () => {
           {
             id: 1,
             cardLabelBox: {
-              cardLabelBoxHeader: <Group />,
+              cardLabelBoxHeader: <CippIcons.Group />,
             },
             text: 'Owners',
             subtext: 'Directory objects that own this service principal',
@@ -198,7 +196,7 @@ const Page = () => {
               simpleColumns: ['displayName', 'userPrincipalName', 'mail', '@odata.type'],
               actions: [
                 {
-                  icon: <EyeIcon />,
+                  icon: <CippIcons.EyeIcon />,
                   label: 'View User',
                   link: `/identity/administration/users/user?userId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
                   pinned: true,
@@ -238,7 +236,7 @@ const Page = () => {
     {
       id: 1,
       cardLabelBox: {
-        cardLabelBoxHeader: data?.passwordCredentials?.length > 0 ? <CheckCircle /> : <Warning />,
+        cardLabelBoxHeader: data?.passwordCredentials?.length > 0 ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
       },
       text: 'Password Credentials',
       subtext: `${data?.passwordCredentials?.length || 0} secret(s)`,
@@ -263,7 +261,7 @@ const Page = () => {
     {
       id: 2,
       cardLabelBox: {
-        cardLabelBoxHeader: data?.keyCredentials?.length > 0 ? <CheckCircle /> : <Warning />,
+        cardLabelBoxHeader: data?.keyCredentials?.length > 0 ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
       },
       text: 'Certificate Credentials',
       subtext: `${data?.keyCredentials?.length || 0} certificate(s)`,
@@ -339,7 +337,7 @@ const Page = () => {
                         alignItems: "center"
                       }}>
                         <SvgIcon sx={{ fontSize: 64 }}>
-                          <Apps />
+                          <CippIcons.Apps />
                         </SvgIcon>
                         <Typography variant="h6">{data?.displayName || 'N/A'}</Typography>
                         <Typography variant="body2" sx={{

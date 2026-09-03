@@ -1,6 +1,6 @@
 import React from "react";
+import { CippIcons } from "../../../utils/icon-registry";
 import { Box, Typography, Chip, Stack, Paper } from "@mui/material";
-import { ArrowForward, ArrowDownward } from "@mui/icons-material";
 
 /**
  * Generic Flow Diagram Component
@@ -21,7 +21,7 @@ export const CippFlowDiagram = ({
   if (!nodes || nodes.length === 0) return null;
 
   const isHorizontal = direction === "horizontal";
-  const ArrowIcon = isHorizontal ? ArrowForward : ArrowDownward;
+  const ArrowIcon = isHorizontal ? CippIcons.ArrowForward : CippIcons.ArrowDownward;
 
   return (
     <Box

@@ -1,11 +1,4 @@
 import {
-  Close,
-  Download,
-  Help,
-  ExpandMore,
-  ExpandLess,
-} from '@mui/icons-material'
-import {
   Alert,
   Chip,
   CircularProgress,
@@ -19,6 +12,7 @@ import {
   Button,
   keyframes,
 } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippError } from '../../utils/get-cipp-error'
@@ -28,7 +22,6 @@ import { CippCodeBlock } from './CippCodeBlock'
 import React from 'react'
 import { CippTableDialog } from './CippTableDialog'
 import { CippJobProgress, formatJobProgressText } from './CippJobProgress'
-import { EyeIcon } from '@heroicons/react/24/outline'
 import { useDialog } from '../../hooks/use-dialog'
 
 const extractAllResults = (data, extraIgnoreKeys = []) => {
@@ -341,7 +334,7 @@ export const CippApiResults = (props) => {
                 size="small"
                 onClick={() => setFetchingVisible(false)}
               >
-                <Close fontSize="inherit" />
+                <CippIcons.Close fontSize="inherit" />
               </IconButton>
             }
             variant="outlined"
@@ -369,7 +362,7 @@ export const CippApiResults = (props) => {
                 size="small"
                 onClick={handleCloseAllResults}
               >
-                <Close fontSize="inherit" />
+                <CippIcons.Close fontSize="inherit" />
               </IconButton>
             </Tooltip>
           }
@@ -414,7 +407,7 @@ export const CippApiResults = (props) => {
                           size="small"
                           variant="contained"
                           color="secondary"
-                          startIcon={<Help />}
+                          startIcon={<CippIcons.Help />}
                           onClick={() => {
                             const searchUrl = `https://docs.cipp.app/?q=Help+with:+${encodeURIComponent(
                               resultObj.copyField || resultObj.text
@@ -455,9 +448,9 @@ export const CippApiResults = (props) => {
                             aria-label={showDetails[resultObj.id] ? 'Hide Details' : 'Show Details'}
                           >
                             {showDetails[resultObj.id] ? (
-                              <ExpandLess fontSize="inherit" />
+                              <CippIcons.ExpandLess fontSize="inherit" />
                             ) : (
-                              <ExpandMore fontSize="inherit" />
+                              <CippIcons.ExpandMore fontSize="inherit" />
                             )}
                           </IconButton>
                         </Tooltip>
@@ -469,7 +462,7 @@ export const CippApiResults = (props) => {
                         size="small"
                         onClick={() => handleCloseResult(resultObj.id)}
                       >
-                        <Close fontSize="inherit" />
+                        <CippIcons.Close fontSize="inherit" />
                       </IconButton>
                     </>
                   }
@@ -515,13 +508,13 @@ export const CippApiResults = (props) => {
           <Tooltip title="View Results">
             <IconButton onClick={() => tableDialog.handleOpen()}>
               <SvgIcon>
-                <EyeIcon />
+                <CippIcons.EyeIcon />
               </SvgIcon>
             </IconButton>
           </Tooltip>
           <Tooltip title="Download Results">
             <IconButton aria-label="download-csv" onClick={handleDownloadCsv}>
-              <Download />
+              <CippIcons.Download />
             </IconButton>
           </Tooltip>
         </Box>

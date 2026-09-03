@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Autocomplete,
   Box,
@@ -11,7 +12,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { Download, PictureAsPdf } from '@mui/icons-material'
 import {
   Document,
   Page,
@@ -401,7 +401,7 @@ export const CippBaselineWhatIfReport = ({
       <Tooltip title="Preview what applying the configured standards would change for this tenant, including upcoming stages">
         <Button
           variant="contained"
-          startIcon={<PictureAsPdf />}
+          startIcon={<CippIcons.PictureAsPdf />}
           onClick={() => setOpen(true)}
         >
           What-If Report
@@ -464,7 +464,7 @@ export const CippBaselineWhatIfReport = ({
           </Box>
           <Button
             variant="contained"
-            startIcon={<Download />}
+            startIcon={<CippIcons.Download />}
             onClick={handleDownload}
           >
             Download PDF

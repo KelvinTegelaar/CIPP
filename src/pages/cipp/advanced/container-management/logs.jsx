@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { useForm, useWatch } from "react-hook-form";
 import {
   Box,
@@ -14,7 +15,6 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { ExpandMore, Search, Refresh, PlayArrow } from "@mui/icons-material";
 import { CippFormComponent } from "../../../../components/CippComponents/CippFormComponent";
 import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
@@ -232,7 +232,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
 
   return (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-      <AccordionSummary expandIcon={<ExpandMore />}>
+      <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
         <Typography variant="h6">Log Query</Typography>
       </AccordionSummary>
       <AccordionDetails>
@@ -317,7 +317,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                   <Button
                     type="submit"
                     variant="contained"
-                    startIcon={<PlayArrow />}
+                    startIcon={<CippIcons.PlayArrow />}
                     disabled={!queryValue || !queryValue.trim()}
                   >
                     Run Query
@@ -458,7 +458,7 @@ const ContainerLogsFilter = ({ onSubmitFilter }) => {
                 <Stack direction="row" spacing={2} useFlexGap sx={{
                   flexWrap: "wrap"
                 }}>
-                  <Button type="submit" variant="contained" startIcon={<Search />}>
+                  <Button type="submit" variant="contained" startIcon={<CippIcons.MagnifyingGlassIcon />}>
                     Search Logs
                   </Button>
                   <Button variant="outlined" onClick={handleClear}>

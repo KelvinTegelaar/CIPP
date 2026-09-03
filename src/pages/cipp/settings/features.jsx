@@ -1,8 +1,8 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry"
 import { TabbedLayout } from "../../../layouts/TabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage";
-import { CheckCircle, Cancel } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Features";
@@ -19,7 +19,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to enable this feature?",
       condition: (item) => item.AllowUserToggle && !item.Enabled,
-      icon: <CheckCircle />,
+      icon: <CippIcons.CheckCircle />,
     },
     {
       label: "Disable Feature",
@@ -32,7 +32,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to disable this feature?",
       condition: (item) => item.AllowUserToggle && item.Enabled,
-      icon: <Cancel />,
+      icon: <CippIcons.Cancel />,
     },
   ];
 

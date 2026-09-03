@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { PersonAdd, PlayArrow, Assignment, Done, Warning } from '@mui/icons-material'
 import {
   Button,
   Accordion,
@@ -13,10 +13,8 @@ import {
   Box,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm } from 'react-hook-form'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
-import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useSettings } from '../../../../hooks/use-settings'
 
 const defaultStartDate = (() => {
@@ -70,10 +68,10 @@ const Page = () => {
 
   const tableFilter = (
     <Accordion expanded={expanded} onChange={(_, v) => setExpanded(v)}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <SvgIcon fontSize="small">
-            <FunnelIcon />
+            <CippIcons.FunnelIcon />
           </SvgIcon>
           <Typography variant="body2">
             {filterEnabled && (startDate || endDate)
@@ -119,7 +117,7 @@ const Page = () => {
                 variant="outlined"
                 startIcon={
                   <SvgIcon fontSize="small">
-                    <XMarkIcon />
+                    <CippIcons.XMarkIcon />
                   </SvgIcon>
                 }
                 onClick={clearFilters}
@@ -138,7 +136,7 @@ const Page = () => {
     {
       label: 'Assign to self',
       type: 'POST',
-      icon: <PersonAdd />,
+      icon: <CippIcons.PersonAdd />,
       url: '/api/ExecSetSecurityIncident',
       data: {
         GUID: 'Id',
@@ -149,7 +147,7 @@ const Page = () => {
     {
       label: 'Set status to active',
       type: 'POST',
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       url: '/api/ExecSetSecurityIncident',
       data: {
         GUID: 'Id',
@@ -160,7 +158,7 @@ const Page = () => {
     {
       label: 'Set status to in progress',
       type: 'POST',
-      icon: <Assignment />,
+      icon: <CippIcons.Assignment />,
       url: '/api/ExecSetSecurityIncident',
       data: {
         GUID: 'Id',
@@ -171,7 +169,7 @@ const Page = () => {
     {
       label: 'Set status to resolved',
       type: 'POST',
-      icon: <Done />,
+      icon: <CippIcons.Done />,
       url: '/api/ExecSetSecurityIncident',
       data: {
         GUID: 'Id',
@@ -191,7 +189,7 @@ const Page = () => {
     {
       label: 'Set severity',
       type: 'POST',
-      icon: <Warning />,
+      icon: <CippIcons.Warning />,
       url: '/api/ExecSetSecurityIncident',
       data: {
         GUID: 'Id',

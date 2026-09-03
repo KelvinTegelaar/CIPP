@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Card,
   Stack,
@@ -21,19 +22,6 @@ import {
   Checkbox,
   ListItemText,
 } from "@mui/material";
-import {
-  ExpandMore as ExpandMoreIcon,
-  Delete,
-  Add,
-  Public,
-  Search,
-  Close,
-  FilterAlt,
-  NotificationImportant,
-  Assignment,
-  Construction,
-  Warning,
-} from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useWatch, useFormState } from "react-hook-form";
@@ -599,7 +587,7 @@ const CippStandardAccordion = ({
                   input: {
                     startAdornment: (
                       <InputAdornment position="start" sx={{ margin: "0 !important" }}>
-                        <Search />
+                        <CippIcons.Search />
                       </InputAdornment>
                     ),
                     endAdornment: searchQuery && (
@@ -616,7 +604,7 @@ const CippStandardAccordion = ({
                             }}
                             aria-label="Clear search"
                           >
-                            <Close />
+                            <CippIcons.Close />
                           </IconButton>
                         </Tooltip>
                       </InputAdornment>
@@ -628,7 +616,7 @@ const CippStandardAccordion = ({
             <ButtonGroup variant="outlined" color="primary" size="small">
               <Button disabled={true} color="primary">
                 <SvgIcon fontSize="small">
-                  <FilterAlt />
+                  <CippIcons.FilterAlt />
                 </SvgIcon>
               </Button>
               <Button
@@ -751,7 +739,7 @@ const CippStandardAccordion = ({
                       alignItems: "center"
                     }}>
                       <Avatar sx={{ bgcolor: "warning.main" }}>
-                        <Warning />
+                        <CippIcons.Warning />
                       </Avatar>
                       <Stack>
                         <Typography variant="h6">{standard.label}</Typography>
@@ -767,12 +755,12 @@ const CippStandardAccordion = ({
                     }}>
                       <Tooltip title="Remove Unknown Standard">
                         <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
-                          <Delete />
+                          <CippIcons.Delete />
                         </IconButton>
                       </Tooltip>
                       <IconButton onClick={() => handleAccordionToggle(standardName)}>
                         <SvgIcon
-                          component={ExpandMoreIcon}
+                          component={CippIcons.ExpandMore}
                           sx={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0)" }}
                         />
                       </IconButton>
@@ -962,7 +950,7 @@ const CippStandardAccordion = ({
                   }}>
                     <Avatar>
                       {standard.cat === "Global Standards" ? (
-                        <Public />
+                        <CippIcons.Public />
                       ) : standard.cat === "Entra (AAD) Standards" ? (
                         <Azure />
                       ) : standard.cat === "Exchange Standards" ? (
@@ -999,9 +987,9 @@ const CippStandardAccordion = ({
                                   sx={{ mr: 1 }}
                                   icon={
                                     <SvgIcon>
-                                      {action.value === "Report" && <Assignment />}
-                                      {action.value === "warn" && <NotificationImportant />}
-                                      {action.value === "Remediate" && <Construction />}
+                                      {action.value === "Report" && <CippIcons.Assignment />}
+                                      {action.value === "warn" && <CippIcons.NotificationImportant />}
+                                      {action.value === "Remediate" && <CippIcons.Construction />}
                                     </SvgIcon>
                                   }
                                 />
@@ -1066,7 +1054,7 @@ const CippStandardAccordion = ({
                             onClick={() => handleAddMultipleStandard(standardName)}
                             disabled={standard.deprecated}
                           >
-                            <SvgIcon component={Add} />
+                            <SvgIcon component={CippIcons.Add} />
                           </IconButton>
                         </span>
                       </Tooltip>
@@ -1084,13 +1072,13 @@ const CippStandardAccordion = ({
                     </Typography>
                     <Tooltip title="Remove Standard">
                       <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
-                        <Delete />
+                        <CippIcons.Delete />
                       </IconButton>
                     </Tooltip>
 
                     <IconButton onClick={() => handleAccordionToggle(standardName)}>
                       <SvgIcon
-                        component={ExpandMoreIcon}
+                        component={CippIcons.ExpandMore}
                         sx={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0)" }}
                       />
                     </IconButton>

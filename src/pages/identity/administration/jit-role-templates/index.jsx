@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
-import { AddBox, Delete, Edit } from "@mui/icons-material";
 import Link from "next/link";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
@@ -13,14 +13,14 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Template",
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       link: "/identity/administration/jit-role-templates/edit?id=[GUID]",
     },
     {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveJITRoleTemplate",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: "GUID",
       },
@@ -63,7 +63,7 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       cardButton={
-        <Button component={Link} href="jit-role-templates/add" startIcon={<AddBox />}>
+        <Button component={Link} href="jit-role-templates/add" startIcon={<CippIcons.AddBox />}>
           Add JIT Role Template
         </Button>
       }

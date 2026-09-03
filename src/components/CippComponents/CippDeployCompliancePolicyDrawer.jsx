@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Divider, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState, useWatch } from "react-hook-form";
-import { RocketLaunch } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
@@ -220,7 +220,7 @@ export const CippDeployCompliancePolicyDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<RocketLaunch />}
+        startIcon={<CippIcons.RocketLaunch />}
       >
         {buttonText ?? config.buttonLabel}
       </PermissionButton>

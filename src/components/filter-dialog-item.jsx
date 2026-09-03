@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
+import { CippIcons } from '../utils/icon-registry';
 import PropTypes from 'prop-types';
-import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import { Button, FilledInput, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 
@@ -119,7 +119,7 @@ export const FilterDialogItem = (props) => {
             disabled={disableAdd}
             onClick={() => onAdd?.(index + 1)}
             size="small"
-            startIcon={<PlusIcon />}
+            startIcon={<CippIcons.PlusIcon />}
           >
             Add
           </Button>

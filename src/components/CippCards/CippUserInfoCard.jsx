@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Avatar,
   Card,
@@ -11,7 +12,6 @@ import {
   Tooltip,
   CircularProgress,
 } from "@mui/material";
-import { AccountCircle, PhotoCamera, Delete } from "@mui/icons-material";
 import { PropertyList } from "../property-list";
 import { PropertyListItem } from "../property-list-item";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
@@ -157,7 +157,7 @@ export const CippUserInfoCard = (props) => {
                         variant="circular"
                         src={imageUrl}
                       >
-                        <AccountCircle sx={{ fontSize: 40 }} />
+                        <CippIcons.AccountCircle sx={{ fontSize: 40 }} />
                       </Avatar>
                       {isLoading && (
                         <CircularProgress
@@ -190,7 +190,7 @@ export const CippUserInfoCard = (props) => {
                             "&:hover": { backgroundColor: "action.selected" },
                           }}
                         >
-                          <PhotoCamera fontSize="small" />
+                          <CippIcons.PhotoCamera fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Remove Photo">
@@ -206,7 +206,7 @@ export const CippUserInfoCard = (props) => {
                             },
                           }}
                         >
-                          <Delete fontSize="small" />
+                          <CippIcons.Delete fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </Stack>

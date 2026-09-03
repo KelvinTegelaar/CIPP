@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Typography, Alert, Box, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Edit, Add } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
@@ -136,7 +136,7 @@ export const CippPermissionSetDrawer = ({
       {!rowAction && (
         <PermissionButton
           onClick={() => setDrawerVisible(true)}
-          startIcon={isEditMode ? <Edit /> : <Add />}
+          startIcon={isEditMode ? <CippIcons.Edit /> : <CippIcons.Add />}
           {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         >
           {buttonText}

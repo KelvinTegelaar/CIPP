@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { CippIcons } from '../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { CippInfoBar } from '../../../components/CippCards/CippInfoBar'
 import { CippChartCard } from '../../../components/CippCards/CippChartCard'
@@ -14,17 +15,6 @@ import { useSettings } from '../../../hooks/use-settings'
 import { Alert, Button, Container, Stack, SvgIcon, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import { CippExpandableAlert } from '../../../components/CippComponents/CippExpandableAlert'
-import {
-  BuildingOfficeIcon,
-  CloudArrowDownIcon,
-  DocumentTextIcon,
-  ExclamationTriangleIcon,
-  FolderIcon,
-  GlobeAltIcon,
-  KeyIcon,
-  LockOpenIcon,
-  UserPlusIcon,
-} from '@heroicons/react/24/outline'
 
 // This report is compiled from one cache, so Sync starts a single queue.
 const syncRows = [{ Name: 'SharePointPermissions' }]
@@ -139,7 +129,7 @@ const Page = () => {
                     }}
                     startIcon={
                       <SvgIcon fontSize="small">
-                        <CloudArrowDownIcon />
+                        <CippIcons.CloudArrowDownIcon />
                       </SvgIcon>
                     }
                   >
@@ -168,25 +158,25 @@ const Page = () => {
                 isFetching={permissions.isFetching}
                 data={[
                   {
-                    icon: <GlobeAltIcon />,
+                    icon: <CippIcons.GlobeAltIcon />,
                     name: 'Tenant-Wide Grants',
                     data: `${summary.broadClaimGrants ?? 0}`,
                     color: 'error',
                   },
                   {
-                    icon: <UserPlusIcon />,
+                    icon: <CippIcons.UserPlusIcon />,
                     name: 'External Grants',
                     data: `${summary.externalGrants ?? 0}`,
                     color: 'warning',
                   },
                   {
-                    icon: <KeyIcon />,
+                    icon: <CippIcons.Key />,
                     name: 'Direct Full Control',
                     data: `${summary.directFullControlGrants ?? 0}`,
                     color: 'warning',
                   },
                   {
-                    icon: <LockOpenIcon />,
+                    icon: <CippIcons.LockOpenIcon />,
                     name: 'Detached Libraries',
                     data: `${summary.uniquePermissionLibraries ?? 0}`,
                   },
@@ -199,22 +189,22 @@ const Page = () => {
                 isFetching={permissions.isFetching}
                 data={[
                   {
-                    icon: <BuildingOfficeIcon />,
+                    icon: <CippIcons.BuildingOfficeIcon />,
                     name: 'Sites Scanned',
                     data: `${summary.sitesScanned ?? 0}`,
                   },
                   {
-                    icon: <FolderIcon />,
+                    icon: <CippIcons.FolderIcon />,
                     name: 'Libraries Scanned',
                     data: `${summary.librariesScanned ?? 0}`,
                   },
                   {
-                    icon: <DocumentTextIcon />,
+                    icon: <CippIcons.DocumentTextIcon />,
                     name: 'Permission Assignments',
                     data: `${summary.totalAssignments ?? 0}`,
                   },
                   {
-                    icon: <ExclamationTriangleIcon />,
+                    icon: <CippIcons.ExclamationTriangleIcon />,
                     name: 'Sites Not Read',
                     data: `${summary.sitesSkipped ?? 0}`,
                     color: summary.sitesSkipped > 0 ? 'warning' : undefined,

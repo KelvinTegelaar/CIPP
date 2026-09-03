@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Book, AddModerator } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -15,7 +15,7 @@ const Page = () => {
       dataFunction: (data) => {
         return { ...data };
       },
-      icon: <Book />,
+      icon: <CippIcons.Book />,
       confirmText: "Are you sure you want to create a template based on this filter?",
     },
   ];
@@ -48,7 +48,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/email/spamfilter/list-connectionfilter/add"
-            startIcon={<AddModerator />}
+            startIcon={<CippIcons.AddModerator />}
           >
             Deploy ConnectionFilter
           </Button>

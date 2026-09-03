@@ -1,8 +1,8 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog.jsx'
 import { Button } from '@mui/material'
-import { PersonAdd, Delete, Sync, Add, Edit, Sell } from '@mui/icons-material'
 import { useDialog } from '../../../../hooks/use-dialog'
 import Link from 'next/link'
 
@@ -13,7 +13,7 @@ const Page = () => {
   const actions = [
     {
       label: 'Assign device',
-      icon: <PersonAdd />,
+      icon: <CippIcons.PersonAdd />,
       type: 'POST',
       url: '/api/ExecAssignAPDevice',
       data: {
@@ -52,7 +52,7 @@ const Page = () => {
     },
     {
       label: 'Rename Device',
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       type: 'POST',
       url: '/api/ExecRenameAPDevice',
       data: {
@@ -90,7 +90,7 @@ const Page = () => {
     },
     {
       label: 'Edit Group Tag',
-      icon: <Sell />,
+      icon: <CippIcons.Sell />,
       type: 'POST',
       url: '/api/ExecSetAPDeviceGroupTag',
       data: {
@@ -115,7 +115,7 @@ const Page = () => {
     },
     {
       label: 'Delete Device',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       type: 'POST',
       url: '/api/RemoveAPDevice',
       data: { ID: 'id' },
@@ -160,10 +160,10 @@ const Page = () => {
         simpleColumns={simpleColumns}
         cardButton={
           <>
-            <Button component={Link} href="/endpoint/autopilot/add-device" startIcon={<Add />}>
+            <Button component={Link} href="/endpoint/autopilot/add-device" startIcon={<CippIcons.Add />}>
               Add Autopilot Devices
             </Button>
-            <Button onClick={createDialog.handleOpen} startIcon={<Sync />}>
+            <Button onClick={createDialog.handleOpen} startIcon={<CippIcons.Sync />}>
               Sync Devices
             </Button>
           </>

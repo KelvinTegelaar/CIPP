@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { differenceInDays } from 'date-fns'
 import {
   Box,
@@ -23,14 +24,6 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import {
-  Add,
-  Check,
-  Clear,
-  Search,
-  ViewList,
-  ViewModule,
-} from '@mui/icons-material'
 import { CippAutoComplete } from '../CippComponents/CippAutocomplete'
 
 const impactColors = {
@@ -277,7 +270,7 @@ export const CippBaselineStandardDialog = ({
         fullWidth
         size="small"
         variant={isSelected ? 'contained' : 'outlined'}
-        startIcon={isSelected && !standard.multiple ? <Check /> : <Add />}
+        startIcon={isSelected && !standard.multiple ? <CippIcons.Check /> : <CippIcons.Add />}
         onClick={() => onToggle(standard.name)}
       >
         {standard.multiple
@@ -308,7 +301,7 @@ export const CippBaselineStandardDialog = ({
                 slotProps={{
                   input: {
                     startAdornment: (
-                      <Search sx={{ mr: 1, color: 'text.secondary' }} />
+                      <CippIcons.Search sx={{ mr: 1, color: 'text.secondary' }} />
                     ),
                   }
                 }}
@@ -408,7 +401,7 @@ export const CippBaselineStandardDialog = ({
               {hasActiveFilters && (
                 <Button
                   size="small"
-                  startIcon={<Clear />}
+                  startIcon={<CippIcons.Clear />}
                   onClick={clearAllFilters}
                 >
                   Clear filters
@@ -459,12 +452,12 @@ export const CippBaselineStandardDialog = ({
               >
                 <ToggleButton value="card" aria-label="card view">
                   <Tooltip title="Card view">
-                    <ViewModule fontSize="small" />
+                    <CippIcons.ViewModule fontSize="small" />
                   </Tooltip>
                 </ToggleButton>
                 <ToggleButton value="list" aria-label="list view">
                   <Tooltip title="List view">
-                    <ViewList fontSize="small" />
+                    <CippIcons.ViewList fontSize="small" />
                   </Tooltip>
                 </ToggleButton>
               </ToggleButtonGroup>

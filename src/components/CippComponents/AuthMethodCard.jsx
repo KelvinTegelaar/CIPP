@@ -1,5 +1,5 @@
 import { Box, Card, CardHeader, CardContent, Typography, Skeleton } from "@mui/material";
-import { People as UsersIcon } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippSankey } from "./CippSankey";
 import { useRouter } from "next/router";
 
@@ -228,7 +228,7 @@ export const AuthMethodCard = ({ data, isLoading }) => {
               "&:hover": { textDecoration: "underline" },
             }}
           >
-            <UsersIcon sx={{ fontSize: 24 }} />
+            <CippIcons.People sx={{ fontSize: 24 }} />
             <Typography variant="h6">All users auth methods</Typography>
           </Box>
         }

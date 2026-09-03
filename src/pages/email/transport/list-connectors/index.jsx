@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Book, Check, Block, Delete } from "@mui/icons-material";
 import { CippAddConnectorDrawer } from "../../../../components/CippComponents/CippAddConnectorDrawer";
 
 const Page = () => {
@@ -12,7 +12,7 @@ const Page = () => {
       label: "Create template based on connector",
       type: "POST",
       url: "/api/AddExConnectorTemplate",
-      icon: <Book />,
+      icon: <CippIcons.Book />,
       postEntireRow: true,
       confirmText: "Are you sure you want to create a template based on this connector?",
       color: "info",
@@ -21,7 +21,7 @@ const Page = () => {
       label: "Enable Connector",
       type: "POST",
       url: "/api/EditExConnector",
-      icon: <Check />,
+      icon: <CippIcons.Check />,
       condition: (row) => !row.Enabled,
       data: {
         State: "!Enable",
@@ -35,7 +35,7 @@ const Page = () => {
       label: "Disable Connector",
       type: "POST",
       url: "/api/EditExConnector",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       condition: (row) => row.Enabled,
       data: {
         State: "!Disable",
@@ -49,7 +49,7 @@ const Page = () => {
       label: "Delete Connector",
       type: "POST",
       url: "/api/RemoveExConnector",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         GUID: "Guid",
         Type: "cippconnectortype",

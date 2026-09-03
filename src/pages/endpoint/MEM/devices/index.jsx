@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog.jsx'
 import { getIntuneDeviceActions } from '../../../../components/CippComponents/CippIntuneDeviceActions.jsx'
@@ -6,7 +7,6 @@ import { useSettings } from '../../../../hooks/use-settings'
 import { useDialog } from '../../../../hooks/use-dialog.js'
 import { Button } from '@mui/material'
 import { Stack } from '@mui/system'
-import { Sync } from '@mui/icons-material'
 
 const Page = () => {
   const pageTitle = 'Devices'
@@ -58,7 +58,7 @@ const Page = () => {
           <Stack direction="row" spacing={1} sx={{
             alignItems: "center"
           }}>
-            <Button onClick={depSyncDialog.handleOpen} startIcon={<Sync />}>
+            <Button onClick={depSyncDialog.handleOpen} startIcon={<CippIcons.Sync />}>
               Sync DEP
             </Button>
           </Stack>

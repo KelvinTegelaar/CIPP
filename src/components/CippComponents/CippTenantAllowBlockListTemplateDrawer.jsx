@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Button, Divider } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useFormState, useWatch } from 'react-hook-form'
-import { SaveAlt } from '@mui/icons-material'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippApiResults } from './CippApiResults'
@@ -250,7 +250,7 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
         <PermissionButton
           {...(PermissionButton !== Button ? { requiredPermissions } : {})}
           onClick={() => setDrawerVisible(true)}
-          startIcon={<SaveAlt />}
+          startIcon={<CippIcons.SaveAlt />}
         >
           {buttonText}
         </PermissionButton>

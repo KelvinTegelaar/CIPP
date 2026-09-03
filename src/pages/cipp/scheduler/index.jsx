@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry";
 import CippTablePage from "../../../components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
-import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 import { CippScheduledTaskActions } from "../../../components/CippComponents/CippScheduledTaskActions";

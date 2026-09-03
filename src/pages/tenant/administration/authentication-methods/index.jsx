@@ -1,11 +1,10 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import tabOptions from "./tabOptions.json";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent.jsx";
 import { Box } from "@mui/material";
-import { Check, Block, Settings, Public } from "@mui/icons-material";
-import { UserGroupIcon } from "@heroicons/react/24/outline";
 import { useSettings } from "../../../../hooks/use-settings.js";
 
 const Page = () => {
@@ -235,7 +234,7 @@ const Page = () => {
     {
       label: "Enable Policy",
       type: "POST",
-      icon: <Check />,
+      icon: <CippIcons.Check />,
       url: "/api/SetAuthMethod",
       data: { state: "!enabled", id: "id" },
       confirmText: "Are you sure you want to enable this policy?",
@@ -244,7 +243,7 @@ const Page = () => {
     {
       label: "Disable Policy",
       type: "POST",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: "/api/SetAuthMethod",
       data: { state: "!disabled", id: "id" },
       confirmText: "Are you sure you want to disable this policy?",
@@ -253,7 +252,7 @@ const Page = () => {
     {
       label: "Deploy to Custom Group",
       type: "POST",
-      icon: <UserGroupIcon />,
+      icon: <CippIcons.UserGroupIcon />,
       url: "/api/SetAuthMethod",
       confirmText: 'Select one or more groups for "[id]".',
       fields: [
@@ -282,7 +281,7 @@ const Page = () => {
     {
       label: "Assign to All Users",
       type: "POST",
-      icon: <Public />,
+      icon: <CippIcons.Public />,
       url: "/api/SetAuthMethod",
       hideBulk: true,
       confirmText: 'Are you sure you want to scope "[id]" to all users?',
@@ -297,7 +296,7 @@ const Page = () => {
     {
       label: "Configure",
       type: "POST",
-      icon: <Settings />,
+      icon: <CippIcons.Settings />,
       url: "/api/SetAuthMethod",
       hideBulk: true,
       condition: (row) => row?.state === "enabled" && configurableMethods.some((m) => isId(row, m)),

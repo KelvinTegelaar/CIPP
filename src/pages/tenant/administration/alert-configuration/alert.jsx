@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import {
   Box,
   Button,
@@ -22,11 +23,9 @@ import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import alertList from '../../../../data/alerts.json'
 import auditLogTemplates from '../../../../data/AuditLogTemplates'
 import auditLogSchema from '../../../../data/AuditLogSchema.json'
-import { Save, Delete } from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index' // Dashboard layout
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
-import { PlusIcon } from '@heroicons/react/24/outline'
 import { CippFormCondition } from '../../../../components/CippComponents/CippFormCondition'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -773,7 +772,7 @@ const AlertWizard = () => {
                               onClick={() => handleAddCondition()}
                               startIcon={
                                 <SvgIcon>
-                                  <PlusIcon />
+                                  <CippIcons.PlusIcon />
                                 </SvgIcon>
                               }
                             >
@@ -932,7 +931,7 @@ const AlertWizard = () => {
                                     color="error"
                                     onClick={() => handleRemoveCondition(event.id)}
                                   >
-                                    <Delete />
+                                    <CippIcons.Delete />
                                   </IconButton>
                                 </Tooltip>
                               </Grid>
@@ -949,7 +948,7 @@ const AlertWizard = () => {
                             <Button
                               disabled={isValid ? false : true}
                               type="submit"
-                              startIcon={<Save />}
+                              startIcon={<CippIcons.Save />}
                             >
                               Save Alert
                             </Button>
@@ -1194,7 +1193,7 @@ const AlertWizard = () => {
                             <Button
                               disabled={isValid ? false : true}
                               type="submit"
-                              startIcon={<Save />}
+                              startIcon={<CippIcons.Save />}
                             >
                               Save Alert
                             </Button>

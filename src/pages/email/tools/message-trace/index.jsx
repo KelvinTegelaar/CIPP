@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { Alert, Button, Stack, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
@@ -9,9 +10,7 @@ import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanvas'
 import { useState } from 'react'
-import { Search, ClearAll } from '@mui/icons-material'
 import { Grid } from '@mui/system'
-import { DocumentTextIcon } from '@heroicons/react/24/outline'
 import tabOptions from './tabOptions.json'
 
 const simpleColumns = [
@@ -103,13 +102,13 @@ const Page = () => {
         startMessageTraceDetail(row)
         setDetailVisible(true)
       },
-      icon: <DocumentTextIcon />,
+      icon: <CippIcons.DocumentTextIcon />,
     },
     {
       label: 'View in Explorer',
       noConfirm: true,
       link: `https://security.microsoft.com/realtimereportsv3?tid=${tenantFilter}&dltarget=Explorer&dlstorage=Url&viewid=allemail&query-NetworkMessageId=[MessageTraceId]`,
-      icon: <DocumentTextIcon />,
+      icon: <CippIcons.DocumentTextIcon />,
     },
   ]
 
@@ -341,14 +340,14 @@ const Page = () => {
                 onClick={onSubmit}
                 variant="contained"
                 color="primary"
-                startIcon={<Search />}
+                startIcon={<CippIcons.MagnifyingGlassIcon />}
               >
                 Search
               </Button>
               <Button
                 onClick={onClear}
                 variant="outlined"
-                startIcon={<ClearAll />}
+                startIcon={<CippIcons.ClearAll />}
               >
                 Clear
               </Button>

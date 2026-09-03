@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import {
@@ -11,8 +12,6 @@ import {
   Stack,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Visibility, CheckCircle, ExpandMore, Security } from "@mui/icons-material";
-import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -72,7 +71,7 @@ const Page = () => {
       link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AccessRequests`,
       pinned: true,
       color: "info",
-      icon: <Visibility />,
+      icon: <CippIcons.EyeIcon />,
       target: "_blank",
       external: true,
     },
@@ -81,7 +80,7 @@ const Page = () => {
       link: "[consentUrl]",
       pinned: true,
       color: "info",
-      icon: <CheckCircle />,
+      icon: <CippIcons.CheckCircle />,
       target: "_blank",
       external: true,
     },
@@ -136,12 +135,12 @@ const Page = () => {
     <CippTablePage
       tableFilter={
         <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-          <AccordionSummary expandIcon={<ExpandMore />}>
+          <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
             <Stack direction="row" spacing={1} sx={{
               alignItems: "center"
             }}>
               <SvgIcon>
-                <FunnelIcon />
+                <CippIcons.FunnelIcon />
               </SvgIcon>
               <Typography variant="h6">
                 App Consent Request Filters
@@ -186,7 +185,7 @@ const Page = () => {
                       color="primary"
                       startIcon={
                         <SvgIcon>
-                          <FunnelIcon />
+                          <CippIcons.FunnelIcon />
                         </SvgIcon>
                       }
                     >
@@ -197,7 +196,7 @@ const Page = () => {
                       color="primary"
                       startIcon={
                         <SvgIcon>
-                          <XMarkIcon />
+                          <CippIcons.XMarkIcon />
                         </SvgIcon>
                       }
                       onClick={clearFilters}

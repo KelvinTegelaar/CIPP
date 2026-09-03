@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Box, ButtonBase, Typography } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
-import { KeyboardArrowDown } from '@mui/icons-material'
 import { CippBottomSheet } from './CippBottomSheet'
 import { CippTabNavigationSection } from './CippTabNavigationSection'
-import { getIconByName } from '../../utils/icon-registry'
+import { CippIcons, getIconByName } from '../../utils/icon-registry'
 import { useTabNavigation } from '../../layouts/tab-navigation-context'
 
 /**
@@ -88,7 +87,7 @@ export const CippTabPicker = (props) => {
         </Box>
         {/* Compact rides the control's right edge; the heading form keeps the chevron
             beside the text, where a title's disclosure affordance belongs. */}
-        <KeyboardArrowDown
+        <CippIcons.KeyboardArrowDown
           sx={{ flexShrink: 0, ml: isCompact ? 'auto' : 0, opacity: 0.7, fontSize: isCompact ? 18 : 20 }}
         />
       </ButtonBase>

@@ -1,5 +1,5 @@
 import { IconButton, SvgIcon, Tooltip } from '@mui/material'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { CippIcons } from '../../utils/icon-registry'
 import { useQueryClient } from '@tanstack/react-query'
 
 /**
@@ -37,7 +37,7 @@ export const CippQueryRefreshButton = ({
               },
             }}
           >
-            <ArrowPathIcon />
+            <CippIcons.ArrowPathIcon />
           </SvgIcon>
         </IconButton>
       </span>

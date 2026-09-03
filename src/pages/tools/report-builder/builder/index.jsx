@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import {
   Button,
   Typography,
@@ -42,24 +43,6 @@ import {
   normaliseTableRow,
   parseTableRow,
 } from '../../../../utils/markdown-table'
-import {
-  Add,
-  Delete,
-  Edit,
-  Lock,
-  PictureAsPdf,
-  Download,
-  Schedule,
-  Save,
-  Close,
-  ArrowBack,
-  ArrowUpward,
-  ArrowDownward,
-  Refresh,
-  Storage,
-  GridOff,
-} from '@mui/icons-material'
-
 import {
   MenuButtonAddTable,
   MenuButtonBold,
@@ -226,9 +209,9 @@ const TABLE_ACTIONS = [
   null,
   { label: 'Insert row above', Icon: InsertRowTop, command: 'addRowBefore' },
   { label: 'Insert row below', Icon: InsertRowBottom, command: 'addRowAfter' },
-  { label: 'Delete row', Icon: DeleteRow, command: 'deleteRow' },
+  { label: 'Delete Row', Icon: DeleteRow, command: 'deleteRow' },
   null,
-  { label: 'Delete table', Icon: GridOff, command: 'deleteTable' },
+  { label: 'Delete table', Icon: CippIcons.GridOff, command: 'deleteTable' },
 ]
 
 const TableControls = ({ editor }) => {
@@ -357,14 +340,14 @@ const ReportBlock = ({
           {isTestBlock && !editing && (
             <Tooltip title={isStatic ? 'Edit static content' : 'Edit (converts to static)'}>
               <IconButton size="small" onClick={handleStartEdit}>
-                <Edit fontSize="small" />
+                <CippIcons.Edit fontSize="small" />
               </IconButton>
             </Tooltip>
           )}
           {isTestBlock && isStatic && !editing && (
             <Tooltip title="Revert to live data">
               <IconButton size="small" color="info" onClick={() => onRevert(index)}>
-                <Refresh fontSize="small" />
+                <CippIcons.Refresh fontSize="small" />
               </IconButton>
             </Tooltip>
           )}
@@ -381,7 +364,7 @@ const ReportBlock = ({
           <Tooltip title="Move up">
             <span>
               <IconButton size="small" onClick={() => onMoveUp(index)} disabled={index === 0}>
-                <ArrowUpward fontSize="small" />
+                <CippIcons.ArrowUpward fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
@@ -392,13 +375,13 @@ const ReportBlock = ({
                 onClick={() => onMoveDown(index)}
                 disabled={index === totalBlocks - 1}
               >
-                <ArrowDownward fontSize="small" />
+                <CippIcons.ArrowDownward fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
           <Tooltip title="Remove block">
             <IconButton size="small" color="error" onClick={() => onRemove(index)}>
-              <Delete fontSize="small" />
+              <CippIcons.Delete fontSize="small" />
             </IconButton>
           </Tooltip>
         </Stack>
@@ -460,7 +443,7 @@ const ReportBlock = ({
         />
       ) : isLocked ? (
         <Box sx={{ position: 'relative' }}>
-          <Lock
+          <CippIcons.Lock
             sx={{ position: 'absolute', top: 0, right: 0, color: 'text.disabled', fontSize: 14 }}
           />
           <Box sx={{ ...markdownStyles, opacity: 0.9, pointerEvents: 'none', userSelect: 'none' }}>
@@ -588,7 +571,7 @@ const DatabaseBlock = ({
     <CippButtonCard
       title={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Storage fontSize="small" color="primary" />
+          <CippIcons.Storage fontSize="small" color="primary" />
           <Typography variant="subtitle2" sx={{
             fontWeight: 600
           }}>
@@ -620,7 +603,7 @@ const DatabaseBlock = ({
                 {dbCacheApi.isFetching ? (
                   <CircularProgress size={16} />
                 ) : (
-                  <Refresh fontSize="small" />
+                  <CippIcons.Refresh fontSize="small" />
                 )}
               </IconButton>
             </span>
@@ -628,7 +611,7 @@ const DatabaseBlock = ({
           <Tooltip title="Move up">
             <span>
               <IconButton size="small" onClick={() => onMoveUp(index)} disabled={index === 0}>
-                <ArrowUpward fontSize="small" />
+                <CippIcons.ArrowUpward fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
@@ -639,13 +622,13 @@ const DatabaseBlock = ({
                 onClick={() => onMoveDown(index)}
                 disabled={index === totalBlocks - 1}
               >
-                <ArrowDownward fontSize="small" />
+                <CippIcons.ArrowDownward fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
           <Tooltip title="Remove block">
             <IconButton size="small" color="error" onClick={() => onRemove(index)}>
-              <Delete fontSize="small" />
+              <CippIcons.Delete fontSize="small" />
             </IconButton>
           </Tooltip>
         </Stack>
@@ -1488,7 +1471,7 @@ const Page = () => {
                 flexWrap: "wrap"
               }}>
                 <IconButton size="small" onClick={handleBackClick}>
-                  <ArrowBack />
+                  <CippIcons.ArrowBack />
                 </IconButton>
                 <Typography variant="h4">
                   {saveForm.watch('templateName') || 'New Report'}
@@ -1506,7 +1489,7 @@ const Page = () => {
                 <Button
                   size="small"
                   variant="outlined"
-                  startIcon={<Save />}
+                  startIcon={<CippIcons.Save />}
                   onClick={() => setSaveOpen(true)}
                   disabled={blocks.length === 0}
                 >
@@ -1515,7 +1498,7 @@ const Page = () => {
                 <Button
                   size="small"
                   variant="outlined"
-                  startIcon={<Schedule />}
+                  startIcon={<CippIcons.Schedule />}
                   onClick={() => {
                     const tplName = saveForm.getValues('templateName') || 'Report'
                     scheduleForm.setValue('scheduleName', `Scheduled ${tplName} - ${currentTenant}`)
@@ -1528,7 +1511,7 @@ const Page = () => {
                 <Button
                   size="small"
                   variant="contained"
-                  startIcon={<Download />}
+                  startIcon={<CippIcons.Download />}
                   onClick={handleDownload}
                   disabled={blocks.length === 0}
                 >
@@ -1537,7 +1520,7 @@ const Page = () => {
                 <Button
                   size="small"
                   variant="contained"
-                  startIcon={<PictureAsPdf />}
+                  startIcon={<CippIcons.PictureAsPdf />}
                   onClick={() => setPreviewOpen(true)}
                   disabled={blocks.length === 0}
                 >
@@ -1609,7 +1592,7 @@ const Page = () => {
                     <Button
                       variant="outlined"
                       size="small"
-                      startIcon={<Add />}
+                      startIcon={<CippIcons.Add />}
                       onClick={handleAddAllSuiteTests}
                       disabled={!watchTestSuite?.value || filteredTestOptions.length === 0}
                     >
@@ -1656,7 +1639,7 @@ const Page = () => {
                   <Button
                     variant="outlined"
                     size="small"
-                    startIcon={<Add />}
+                    startIcon={<CippIcons.Add />}
                     onClick={handleAddBlock}
                     disabled={addDisabled}
                   >
@@ -1822,7 +1805,7 @@ const Page = () => {
             Report Preview
           </Typography>
           <IconButton onClick={() => setPreviewOpen(false)} size="small">
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <Divider />
@@ -1840,7 +1823,7 @@ const Page = () => {
         </DialogContent>
         <Divider />
         <DialogActions sx={{ p: 2 }}>
-          <Button variant="contained" startIcon={<Download />} onClick={handleDownload}>
+          <Button variant="contained" startIcon={<CippIcons.Download />} onClick={handleDownload}>
             Download PDF
           </Button>
           <Button onClick={() => setPreviewOpen(false)} variant="outlined">

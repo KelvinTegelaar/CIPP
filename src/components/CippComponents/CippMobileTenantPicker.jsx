@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Avatar,
   Box,
@@ -14,7 +15,6 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
-import { Close, KeyboardArrowDown, Public, Search, Star, StarBorder } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiGetCall } from "../../api/ApiCall";
@@ -162,7 +162,7 @@ export const CippMobileTenantPicker = () => {
             minHeight: 44,
           }}
         >
-          {favorited ? <Star fontSize="small" /> : <StarBorder fontSize="small" />}
+          {favorited ? <CippIcons.Star fontSize="small" /> : <CippIcons.StarBorder fontSize="small" />}
         </IconButton>
       </ListItemButton>
     );
@@ -187,19 +187,19 @@ export const CippMobileTenantPicker = () => {
           color: "common.white",
         }}
       >
-        {currentTenant === "AllTenants" && <Public sx={{ fontSize: 16, flexShrink: 0 }} />}
+        {currentTenant === "AllTenants" && <CippIcons.Public sx={{ fontSize: 16, flexShrink: 0 }} />}
         <Typography variant="body2" noWrap sx={{ fontWeight: 500, minWidth: 0, flex: 1, textAlign: "left" }}>
           {currentDisplayName}
         </Typography>
         {/* Pinned to the chip's right edge so it reads as the control's affordance rather
             than punctuation trailing whatever the tenant happens to be called */}
-        <KeyboardArrowDown sx={{ fontSize: 16, flexShrink: 0, opacity: 0.7, ml: "auto" }} />
+        <CippIcons.KeyboardArrowDown sx={{ fontSize: 16, flexShrink: 0, opacity: 0.7, ml: "auto" }} />
       </ButtonBase>
 
       <Dialog fullScreen open={open} onClose={() => setOpen(false)}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, p: 1, pb: 0 }}>
           <IconButton onClick={() => setOpen(false)} aria-label="Close" sx={{ minWidth: 44, minHeight: 44 }}>
-            <Close />
+            <CippIcons.Close />
           </IconButton>
           <Typography variant="h6">Select tenant</Typography>
         </Box>
@@ -214,7 +214,7 @@ export const CippMobileTenantPicker = () => {
             slotProps={{ input: { enterKeyHint: "search", "aria-label": "Search tenants" } }}
             startAdornment={
               <InputAdornment position="start">
-                <Search fontSize="small" />
+                <CippIcons.Search fontSize="small" />
               </InputAdornment>
             }
             sx={{ minHeight: 44 }}
@@ -239,7 +239,7 @@ export const CippMobileTenantPicker = () => {
                     color: (theme) => theme.palette.getContrastText(theme.palette.primary.main),
                   }}
                 >
-                  <Public fontSize="small" />
+                  <CippIcons.Public fontSize="small" />
                 </Avatar>
                 <ListItemText
                   primary="All Tenants"

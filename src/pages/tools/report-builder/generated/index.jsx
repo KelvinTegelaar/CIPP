@@ -1,7 +1,7 @@
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
-import { Delete, OpenInNew } from '@mui/icons-material'
 import { useSettings } from '../../../../hooks/use-settings'
 import tabOptions from '../tabOptions.json'
 
@@ -14,7 +14,7 @@ const Page = () => {
   const actions = [
     {
       label: 'View Report',
-      icon: <OpenInNew />,
+      icon: <CippIcons.Launch />,
       link: reportViewLink,
       pinned: true,
       noConfirm: true,
@@ -25,7 +25,7 @@ const Page = () => {
       url: '/api/ExecGenerateReportBuilderReport',
       data: { Action: 'delete', ReportGUID: 'RowKey' },
       confirmText: 'Are you sure you want to delete this generated report?',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       multiPost: false,
     },
   ]

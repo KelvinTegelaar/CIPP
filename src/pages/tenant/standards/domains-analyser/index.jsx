@@ -6,7 +6,7 @@ import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { CippDomainCards } from '../../../../components/CippCards/CippDomainCards'
-import { DeleteForever, TravelExplore, Refresh, Settings } from '@mui/icons-material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { DomainAnalyserDialog } from '../../../../components/CippComponents/DomainAnalyserDialog'
 import { useDialog } from '../../../../hooks/use-dialog'
 
@@ -22,7 +22,7 @@ const Page = () => {
     {
       label: 'Add/Modify DKIM Selectors',
       type: 'POST',
-      icon: <Settings />,
+      icon: <CippIcons.Settings />,
       url: '/api/ExecDnsConfig',
       data: { Action: '!SetDkimConfig', Domain: 'Domain' },
       confirmText: 'Enter the DKIM selectors for [Domain] (comma-separated)',
@@ -40,7 +40,7 @@ const Page = () => {
     {
       label: 'Delete from analyser',
       type: 'POST',
-      icon: <DeleteForever />,
+      icon: <CippIcons.Delete />,
       url: '/api/ExecDnsConfig',
       data: { Action: '!RemoveDomain', Domain: 'Domain' },
       confirmText: 'Are you sure you want to delete this domain from the analyser?',
@@ -80,11 +80,11 @@ const Page = () => {
             <Button
               component={Link}
               href="/tenant/tools/individual-domains"
-              startIcon={<TravelExplore />}
+              startIcon={<CippIcons.TravelExplore />}
             >
               Check Individual Domain
             </Button>
-            <Button onClick={analyserDialog.handleOpen} startIcon={<Refresh />}>
+            <Button onClick={analyserDialog.handleOpen} startIcon={<CippIcons.Refresh />}>
               Run Analysis Now
             </Button>
           </>

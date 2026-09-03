@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
 import { useState, useCallback } from "react";
 import {
   Box,
@@ -12,7 +13,6 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { CippPropertyListCard } from "./CippPropertyListCard";
 import { CippDataTable } from "../CippTable/CippDataTable";
 
@@ -233,7 +233,7 @@ export const CippBannerListCard = (props) => {
                               transform: isExpanded ? "rotate(180deg)" : "none",
                             }}
                           >
-                            <ChevronDownIcon />
+                            <CippIcons.ChevronDownIcon />
                           </SvgIcon>
                         </IconButton>
                       )}

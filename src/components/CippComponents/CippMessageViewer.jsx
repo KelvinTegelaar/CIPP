@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { readEml } from "eml-parse-js";
-
 import {
   Button,
   Card,
@@ -23,40 +23,12 @@ import {
 } from "@mui/material";
 import { Box, Grid, Stack, ThemeProvider } from "@mui/system";
 import { createTheme } from "@mui/material/styles";
-
-import {
-  Image,
-  VolumeUp,
-  VideoFile,
-  FileCopy,
-  PictureAsPdf,
-  Archive,
-  Description,
-  TableChart,
-  Slideshow,
-  Code,
-  Email,
-  Download,
-  Visibility,
-  AccountCircle,
-  Close,
-  ReceiptLong,
-  ExpandLess,
-  ExpandMore,
-} from "@mui/icons-material";
-
 import { CippTimeAgo } from "./CippTimeAgo";
 import { CippCodeBlock } from "./CippCodeBlock";
 import DOMPurify from "dompurify";
 import ReactHtmlParser from "react-html-parser";
 import { FileDropzone } from "../file-dropzone";
 import CippPageCard from "../CippCards/CippPageCard";
-import {
-  MoonIcon,
-  ShieldCheckIcon,
-  ShieldExclamationIcon,
-  SunIcon,
-} from "@heroicons/react/24/outline";
 import { useSettings } from "../../hooks/use-settings";
 import CippForefrontHeaderDialog from "./CippForefrontHeaderDialog";
 import { CippMessageDeliveryInfo } from "./CippMessageDeliveryInfo";
@@ -100,34 +72,34 @@ export const CippMessageViewer = ({ emailSource }) => {
 
   const getAttachmentIcon = (contentType) => {
     if (contentType.includes("image")) {
-      return <Image />;
+      return <CippIcons.Image />;
     } else if (contentType.includes("audio")) {
-      return <VolumeUp />;
+      return <CippIcons.VolumeUp />;
     } else if (contentType.includes("video")) {
-      return <VideoFile />;
+      return <CippIcons.VideoFile />;
     } else if (contentType.includes("text")) {
-      return <FileCopy />;
+      return <CippIcons.FileCopy />;
     } else if (contentType.includes("pdf")) {
-      return <PictureAsPdf />;
+      return <CippIcons.PictureAsPdf />;
     } else if (
       contentType.includes("zip") ||
       contentType.includes("compressed") ||
       contentType.includes("tar") ||
       contentType.includes("gzip")
     ) {
-      return <Archive />;
+      return <CippIcons.Archive />;
     } else if (contentType.includes("msword")) {
-      return <Description />;
+      return <CippIcons.Description />;
     } else if (contentType.includes("spreadsheet")) {
-      return <TableChart />;
+      return <CippIcons.TableChart />;
     } else if (contentType.includes("presentation")) {
-      return <Slideshow />;
+      return <CippIcons.Slideshow />;
     } else if (contentType.includes("json") || contentType.includes("xml")) {
-      return <Code />;
+      return <CippIcons.Code />;
     } else if (contentType.includes("rfc822")) {
-      return <Email />;
+      return <CippIcons.Email />;
     } else {
-      return <FileCopy />;
+      return <CippIcons.FileCopy />;
     }
   };
 
@@ -224,7 +196,7 @@ export const CippMessageViewer = ({ emailSource }) => {
             onClick={() => showEmailModal(emailHeaders, "Email Headers")}
             startIcon={
               <SvgIcon fontSize="small">
-                <Code />
+                <CippIcons.Code />
               </SvgIcon>
             }
           >
@@ -238,7 +210,7 @@ export const CippMessageViewer = ({ emailSource }) => {
             onClick={() => showForefrontDialog(forefrontHeader)}
             startIcon={
               <SvgIcon fontSize="small">
-                <ReceiptLong />
+                <CippIcons.ReceiptLong />
               </SvgIcon>
             }
           >
@@ -251,7 +223,7 @@ export const CippMessageViewer = ({ emailSource }) => {
           onClick={() => showEmailModal(emailSource)}
           startIcon={
             <SvgIcon fontSize="small">
-              <Email />
+              <CippIcons.Email />
             </SvgIcon>
           }
         >
@@ -353,7 +325,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                       display: "flex",
                       alignItems: "center"
                     }}>
-                    <AccountCircle fontSize="large" sx={{ mr: 1 }} />
+                    <CippIcons.AccountCircle fontSize="large" sx={{ mr: 1 }} />
                     <Stack
                       direction="row"
                       spacing={0.5}
@@ -383,13 +355,13 @@ export const CippMessageViewer = ({ emailSource }) => {
                               ? "orange"
                               : "red";
                         const icon = noResults ? (
-                          <ShieldExclamationIcon />
+                          <CippIcons.ShieldExclamationIcon />
                         ) : allPass ? (
-                          <ShieldCheckIcon />
+                          <CippIcons.ShieldCheckIcon />
                         ) : somePass ? (
-                          <ShieldExclamationIcon />
+                          <CippIcons.ShieldExclamationIcon />
                         ) : (
-                          <ShieldExclamationIcon />
+                          <CippIcons.ShieldExclamationIcon />
                         );
 
                         return (
@@ -487,7 +459,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                             onClose={() => setAnchorEl({ ...anchorEl, [index]: null })}
                           >
                             <MenuItem onClick={() => downloadAttachment(attachment)}>
-                              <Download sx={{ mr: 1 }} />
+                              <CippIcons.Download sx={{ mr: 1 }} />
                               Download
                             </MenuItem>
                             {(attachment?.contentType === undefined ||
@@ -496,7 +468,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                               attachment?.contentType?.includes("image") ||
                               attachment?.contentType?.includes("rfc822")) && (
                               <MenuItem onClick={() => downloadAttachment(attachment, true)}>
-                                <Visibility sx={{ mr: 1 }} />
+                                <CippIcons.Visibility sx={{ mr: 1 }} />
                                 View
                               </MenuItem>
                             )}
@@ -523,7 +495,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                                 mb: 1
                               }}>
                               <IconButton variant="text" onClick={toggleDarkMode}>
-                                <SvgIcon>{darkMode ? <SunIcon /> : <MoonIcon />}</SvgIcon>
+                                <SvgIcon>{darkMode ? <CippIcons.SunIcon /> : <CippIcons.MoonIcon />}</SvgIcon>
                               </IconButton>
                             </Box>
                             {/* Sanitized but untrusted layout: marketing mail ships fixed
@@ -569,7 +541,7 @@ export const CippMessageViewer = ({ emailSource }) => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>{dialogContent}</DialogContent>
@@ -645,7 +617,7 @@ const CippMessageViewerPage = () => {
               onClick={handleAnalyze}
               startIcon={
                 <SvgIcon fontSize="small">
-                  <ReceiptLong />
+                  <CippIcons.ReceiptLong />
                 </SvgIcon>
               }
             >
@@ -654,7 +626,7 @@ const CippMessageViewerPage = () => {
             <Tooltip title={pasteCollapsed ? "Show input" : "Hide input"}>
               <IconButton size="small" onClick={() => setPasteCollapsed((prev) => !prev)}>
                 <SvgIcon fontSize="small">
-                  {pasteCollapsed ? <ExpandMore /> : <ExpandLess />}
+                  {pasteCollapsed ? <CippIcons.ExpandMore /> : <CippIcons.ExpandLess />}
                 </SvgIcon>
               </IconButton>
             </Tooltip>

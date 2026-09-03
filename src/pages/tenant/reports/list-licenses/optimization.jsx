@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import {
   Alert,
   Box,
@@ -13,12 +14,6 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Container } from '@mui/system'
-import {
-  BanknotesIcon,
-  ArrowTrendingDownIcon,
-  UsersIcon,
-  CurrencyDollarIcon,
-} from '@heroicons/react/24/outline'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
@@ -132,21 +127,21 @@ const Page = () => {
     const coverage = Math.round((s.PriceCoverage ?? 0) * 100)
     return [
       {
-        icon: <BanknotesIcon />,
+        icon: <CippIcons.BanknotesIcon />,
         name: 'Monthly spend',
         data: fmt(s.MonthlySpend),
         color: 'primary',
         toolTip: `${s.AssignedSeats ?? 0} assigned seats · ${coverage}% priced`,
       },
       {
-        icon: <ArrowTrendingDownIcon />,
+        icon: <CippIcons.ArrowTrendingDownIcon />,
         name: 'Reclaimable / mo',
         data: fmt(s.ReclaimableMonthly),
         color: 'success',
         toolTip: `${pctOfSpend}% of monthly spend`,
       },
       {
-        icon: <UsersIcon />,
+        icon: <CippIcons.UsersIcon />,
         name: 'Reclaimable seats',
         data: s.ReclaimableSeats ?? 0,
         color: 'warning',
@@ -175,7 +170,7 @@ const Page = () => {
       url: '/api/ExecLicensePricing',
       icon: (
         <SvgIcon fontSize="small">
-          <CurrencyDollarIcon />
+          <CippIcons.CurrencyDollarIcon />
         </SvgIcon>
       ),
       fields: [

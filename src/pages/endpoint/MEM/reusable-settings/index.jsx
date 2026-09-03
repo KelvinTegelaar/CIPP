@@ -1,4 +1,5 @@
-import { Book, DeleteForever } from "@mui/icons-material";
+
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippReusableSettingsDeployDrawer } from "../../../../components/CippComponents/CippReusableSettingsDeployDrawer.jsx";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
@@ -20,7 +21,6 @@ const Page = () => {
   });
   const isAllTenants = reportDB.isAllTenants;
 
-
   const actions = [
     {
       label: "Edit Reusable Setting",
@@ -33,7 +33,7 @@ const Page = () => {
       label: "Delete Reusable Setting",
       type: "POST",
       url: "/api/RemoveIntuneReusableSetting",
-      icon: <DeleteForever />,
+      icon: <CippIcons.Delete />,
       color: "error",
       data: {
         ID: "id",
@@ -46,7 +46,7 @@ const Page = () => {
       label: "Create Template from Setting",
       type: "POST",
       url: "/api/AddIntuneReusableSettingTemplate",
-      icon: <Book />,
+      icon: <CippIcons.Book />,
       data: {
         displayName: "displayName",
         description: "description",

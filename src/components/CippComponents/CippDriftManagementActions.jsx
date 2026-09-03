@@ -1,5 +1,5 @@
 import React from 'react'
-import { Edit, Sync, PlayArrow, PictureAsPdf } from '@mui/icons-material'
+import { CippIcons } from '../../utils/icon-registry'
 import { CippFormTemplateTenantSelector } from './CippFormTemplateTenantSelector.jsx'
 
 /**
@@ -23,7 +23,7 @@ export const createDriftManagementActions = ({
   const actions = [
     {
       label: 'Refresh Data',
-      icon: <Sync />,
+      icon: <CippIcons.Sync />,
       noConfirm: true,
       customFunction: onRefresh,
     },
@@ -33,7 +33,7 @@ export const createDriftManagementActions = ({
   if (onGenerateReport) {
     actions.push({
       label: 'Generate Report',
-      icon: <PictureAsPdf />,
+      icon: <CippIcons.PictureAsPdf />,
       noConfirm: true,
       customFunction: onGenerateReport,
     })
@@ -46,7 +46,7 @@ export const createDriftManagementActions = ({
       actions.push({
         label: 'Edit Template',
         pinned: true,
-        icon: <Edit />,
+        icon: <CippIcons.Edit />,
         color: 'info',
         noConfirm: true,
         customFunction: () => {
@@ -69,7 +69,7 @@ export const createDriftManagementActions = ({
       label: 'Run Standard Now',
       type: 'GET',
       url: '/api/ExecStandardsRun',
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       data: {
         TemplateId: templateId,
       },

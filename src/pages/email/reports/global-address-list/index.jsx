@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Page = () => {
   const actions = [
@@ -8,7 +8,7 @@ const Page = () => {
       label: "Unhide from Global Address List",
       type: "POST",
       url: "/api/ExecHideFromGAL",
-      icon: <Visibility />,
+      icon: <CippIcons.EyeIcon />,
       data: {
         HideFromGAL: false,
         ID: "PrimarySmtpAddress",
@@ -20,7 +20,7 @@ const Page = () => {
       label: "Hide from Global Address List",
       type: "POST",
       url: "/api/ExecHideFromGAL",
-      icon: <VisibilityOff />,
+      icon: <CippIcons.VisibilityOff />,
       data: {
         HideFromGAL: true,
         ID: "PrimarySmtpAddress",

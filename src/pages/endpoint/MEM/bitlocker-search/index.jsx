@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Box, Button, Container } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Search } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -88,7 +88,7 @@ const Page = () => {
                     <Button
                       fullWidth
                       variant="contained"
-                      startIcon={<Search />}
+                      startIcon={<CippIcons.MagnifyingGlassIcon />}
                       onClick={handleSearch}
                       disabled={!searchTerm?.trim()}
                     >

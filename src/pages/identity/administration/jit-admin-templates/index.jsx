@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
-import { AddBox, Delete, GitHub, Edit } from "@mui/icons-material";
 import Link from "next/link";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
@@ -22,14 +22,14 @@ const Page = () => {
     {
       label: "Edit Template",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       link: "/identity/administration/jit-admin-templates/edit?id=[GUID]",
     },
     {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -73,7 +73,7 @@ const Page = () => {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveJITAdminTemplate",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: "GUID",
       },
@@ -116,7 +116,7 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       cardButton={
-        <Button component={Link} href="jit-admin-templates/add" startIcon={<AddBox />}>
+        <Button component={Link} href="jit-admin-templates/add" startIcon={<CippIcons.AddBox />}>
           Add JIT Admin Template
         </Button>
       }

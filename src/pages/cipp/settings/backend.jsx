@@ -1,4 +1,5 @@
 import { Container } from "@mui/material";
+import { CippIcons } from "../../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { TabbedLayout } from "../../../layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "../../../layouts/index";
@@ -6,7 +7,6 @@ import tabOptions from "./tabOptions";
 import { ApiGetCall } from "../../../api/ApiCall.jsx";
 import { CippBackendCard } from "../../../components/CippSettings/CippBackendCard";
 import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
-import { CommandLineIcon } from "@heroicons/react/24/outline";
 import { usePermissions } from "../../../hooks/use-permissions";
 
 const Page = () => {
@@ -130,7 +130,7 @@ const Page = () => {
     },
     offcanvas: true,
     offcanvasTitle: "Command Reference",
-    offcanvasIcon: <CommandLineIcon />,
+    offcanvasIcon: <CippIcons.CommandLineIcon />,
     offcanvasData: isNg ? ngCommands : legacyCommands,
   };
 

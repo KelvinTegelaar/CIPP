@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Stack, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
-import { Lock } from '@mui/icons-material'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 
 // Map an effective expected value back onto the standard's variables, so forms can be
@@ -148,7 +148,7 @@ export const CippBaselineStandardSettings = ({
             <Stack direction="row" spacing={0.5} sx={{
               alignItems: "center"
             }}>
-              <Lock sx={{ fontSize: 14 }} color="disabled" />
+              <CippIcons.Lock sx={{ fontSize: 14 }} color="disabled" />
               <Typography variant="caption" sx={{
                 color: "text.secondary"
               }}>

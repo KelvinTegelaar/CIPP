@@ -12,7 +12,8 @@ export const utilTableMode = (
   maxHeightOffset = '380px',
   settings = {},
   viewMode = 'table',
-  narrowTable = false
+  narrowTable = false,
+  exportEnabled = true
 ) => {
   if (mode === true) {
     return {
@@ -54,7 +55,10 @@ export const utilTableMode = (
     const isCards = viewMode === 'cards'
 
     return {
-      enableRowSelection: actions || onChange ? true : false,
+      // Row checkboxes drive both bulk actions and Export Selected. Report-style pages have
+      // no actions but still export, so gate selection on export too — otherwise it is the
+      // whole table or nothing (no way to export a chosen subset).
+      enableRowSelection: actions || onChange || exportEnabled ? true : false,
       // offCanvas alone still needs the actions column: it carries the More Info entry
       // (renderRowActionMenuItems falls back to just that when there are no actions).
       enableRowActions: actions || offCanvas ? true : false,

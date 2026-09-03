@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Stack, Box } from "@mui/material";
-import { PlayCircle, ManageSearch, TableChart, Code } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../api/ApiCall";
@@ -176,7 +176,7 @@ const CippGraphExplorerSimpleFilter = ({
           <Button
             variant="contained"
             color="primary"
-            startIcon={<PlayCircle />}
+            startIcon={<CippIcons.PlayCircle />}
             onClick={handleRunPreset}
             disabled={!selectedPreset && !currentFilterValues}
             sx={{ minWidth: { md: "100px" } }}
@@ -185,7 +185,7 @@ const CippGraphExplorerSimpleFilter = ({
           </Button>
           <Button
             variant="outlined"
-            startIcon={<ManageSearch />}
+            startIcon={<CippIcons.ManageSearch />}
             onClick={() => setOffCanvasVisible(true)}
             sx={{ minWidth: { md: "120px" } }}
           >
@@ -194,7 +194,7 @@ const CippGraphExplorerSimpleFilter = ({
           {onViewModeChange && (
             <Button
               variant="outlined"
-              startIcon={viewMode === "table" ? <Code /> : <TableChart />}
+              startIcon={viewMode === "table" ? <CippIcons.Code /> : <CippIcons.TableChart />}
               onClick={() => onViewModeChange(viewMode === "table" ? "json" : "table")}
               sx={{ minWidth: { md: "120px" } }}
             >

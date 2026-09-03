@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
 import {
@@ -13,11 +14,8 @@ import {
   Box,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm } from 'react-hook-form'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
-import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { EyeIcon } from '@heroicons/react/24/outline'
 import { useSettings } from '../../../hooks/use-settings.js'
 
 const simpleColumns = [
@@ -44,7 +42,7 @@ const actions = [
     label: 'View Log Entry',
     link: '/cipp/logs/logentry?logentry=[RowKey]&dateFilter=[DateFilter]',
     pinned: true,
-    icon: <EyeIcon />,
+    icon: <CippIcons.EyeIcon />,
     color: 'primary',
   },
 ]
@@ -151,7 +149,7 @@ const Page = () => {
     <CippTablePage
       tableFilter={
         <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
             <Stack
               direction="row"
               spacing={1}
@@ -160,7 +158,7 @@ const Page = () => {
                 minWidth: 0
               }}>
               <SvgIcon>
-                <FunnelIcon />
+                <CippIcons.FunnelIcon />
               </SvgIcon>
               <Typography variant="h6" sx={{ minWidth: 0, overflowWrap: "anywhere" }}>
                 Logbook Filters
@@ -314,7 +312,7 @@ const Page = () => {
                       color="primary"
                       startIcon={
                         <SvgIcon>
-                          <FunnelIcon />
+                          <CippIcons.FunnelIcon />
                         </SvgIcon>
                       }
                     >
@@ -325,7 +323,7 @@ const Page = () => {
                       color="primary"
                       startIcon={
                         <SvgIcon>
-                          <XMarkIcon />
+                          <CippIcons.XMarkIcon />
                         </SvgIcon>
                       }
                       onClick={clearFilters}

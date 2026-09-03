@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Dialog, DialogContent, DialogTitle, IconButton, Button, useMediaQuery } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import { CippDataTable } from "./CippDataTable";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { resolveRowTemplates, getRowTenant } from "../../utils/resolve-row-templates";
@@ -151,7 +151,7 @@ const CippDataTableButton = ({
                 aria-label="Close"
                 sx={{ minWidth: 44, minHeight: 44 }}
               >
-                <CloseIcon />
+                <CippIcons.Close />
               </IconButton>
               {dialogTitle}
             </DialogTitle>
@@ -181,7 +181,7 @@ const CippDataTableButton = ({
                   aria-label="Close"
                   sx={{ minWidth: 44, minHeight: 44 }}
                 >
-                  <CloseIcon />
+                  <CippIcons.Close />
                 </IconButton>
                 {tableTitle}
               </DialogTitle>

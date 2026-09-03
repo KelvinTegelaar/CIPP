@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { Button, SvgIcon, Box, Stack } from '@mui/material'
-import { TrashIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
 import { CippAutoComplete } from '../../../../components/CippComponents/CippAutocomplete'
 import { useDialog } from '../../../../hooks/use-dialog'
@@ -64,7 +64,7 @@ const Page = () => {
       url: '/api/ExecLicensePricing',
       icon: (
         <SvgIcon fontSize="small">
-          <CurrencyDollarIcon />
+          <CippIcons.CurrencyDollarIcon />
         </SvgIcon>
       ),
       fields: [
@@ -101,7 +101,7 @@ const Page = () => {
       color: 'error',
       icon: (
         <SvgIcon fontSize="small">
-          <TrashIcon />
+          <CippIcons.TrashIcon />
         </SvgIcon>
       ),
       condition: (row) => row.Source === 'Override',
@@ -145,7 +145,7 @@ const Page = () => {
       onClick={addDialog.handleOpen}
       startIcon={
         <SvgIcon fontSize="small">
-          <CurrencyDollarIcon />
+          <CippIcons.CurrencyDollarIcon />
         </SvgIcon>
       }
     >

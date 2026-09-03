@@ -1,10 +1,10 @@
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import tabOptions from "../tabOptions";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { Cancel, PlayArrow, Replay } from "@mui/icons-material";
 
 const pageTitle = "Tenant Onboarding";
 
@@ -16,7 +16,7 @@ const actions = [
     data: { id: "RowKey", Cancel: true },
     confirmText: "Are you sure you want to cancel these onboardings?",
     multiPost: false,
-    icon: <Cancel />,
+    icon: <CippIcons.Cancel />,
   },
   {
     label: "Retry Onboarding",
@@ -25,7 +25,7 @@ const actions = [
     data: { id: "RowKey", Retry: true },
     confirmText: "Are you sure you want to retry these onboardings?",
     multiPost: false,
-    icon: <Replay />,
+    icon: <CippIcons.Replay />,
   },
 ];
 
@@ -54,7 +54,7 @@ const Page = () => {
         <Button
           component={Link}
           href="/tenant/gdap-management/onboarding/start"
-          startIcon={<PlayArrow />}
+          startIcon={<CippIcons.PlayArrow />}
         >
           Start Tenant Onboarding
         </Button>

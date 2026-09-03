@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Block, Check } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "List of Safe Attachment Filters";
@@ -11,7 +11,7 @@ const Page = () => {
     {
       label: "Enable Rule",
       type: "POST",
-      icon: <Check />,
+      icon: <CippIcons.Check />,
       url: "/api/EditSafeAttachmentsFilter",
       data: {
         State: "!enable",
@@ -24,7 +24,7 @@ const Page = () => {
     {
       label: "Disable Rule",
       type: "POST",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: "/api/EditSafeAttachmentsFilter",
       data: {
         State: "Disable",
@@ -38,7 +38,7 @@ const Page = () => {
     /*
     {
       label: "Delete Rule",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveSafeAttachmentsFilter",
       data: {
         RuleName: "RuleName",

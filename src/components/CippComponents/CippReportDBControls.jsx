@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Chip, SvgIcon, Tooltip } from "@mui/material";
 import { Stack } from "@mui/system";
-import { Sync, CloudDone, Bolt } from "@mui/icons-material";
 import { useSettings } from "../../hooks/use-settings";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "./CippApiDialog";
@@ -149,7 +149,7 @@ export function useCippReportDB(config) {
           <Button
             startIcon={
               <SvgIcon fontSize="small">
-                <Sync />
+                <CippIcons.Sync />
               </SvgIcon>
             }
             size="xs"
@@ -165,7 +165,7 @@ export function useCippReportDB(config) {
       <Tooltip title={tooltipText}>
         <span>
           <Chip
-            icon={useReportDB ? <CloudDone /> : <Bolt />}
+            icon={useReportDB ? <CippIcons.CloudDone /> : <CippIcons.Bolt />}
             label={useReportDB ? 'Cached' : 'Live'}
             color="primary"
             size="small"

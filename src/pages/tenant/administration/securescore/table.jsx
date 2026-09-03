@@ -1,11 +1,10 @@
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import tabOptions from './tabOptions'
 import CippTablePage from '../../../../components/CippComponents/CippTablePage'
 import { useSecureScore } from '../../../../hooks/use-securescore'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
-import { CheckCircleIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
-import { Map, Score } from '@mui/icons-material'
 import { Container } from '@mui/material'
 import { useSettings } from '../../../../hooks/use-settings'
 import { AllTenantsSecureScoreTable } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
@@ -40,24 +39,24 @@ const Page = () => {
           isFetching={secureScore.isFetching}
           data={[
             {
-              icon: <CheckCircleIcon />,
+              icon: <CippIcons.CheckCircleIcon />,
               data: secureScore.translatedData.percentageCurrent + '%',
               name: 'Current Score',
               color: 'secondary',
             },
             {
-              icon: <GlobeAltIcon />,
+              icon: <CippIcons.GlobeAltIcon />,
               data: secureScore.translatedData.percentageVsAllTenants + '%',
               name: 'Compared score (All Tenants)',
               color: 'green',
             },
             {
-              icon: <Map />,
+              icon: <CippIcons.Map />,
               data: secureScore.translatedData.percentageVsSimilar + '%',
               name: 'Compared score (Similar Tenants)',
             },
             {
-              icon: <Score />,
+              icon: <CippIcons.Score />,
               data: `${secureScore.translatedData.currentScore} of ${secureScore.translatedData.maxScore}`,
               name: 'Score in points',
             },

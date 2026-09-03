@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { useSettings } from "../../../../hooks/use-settings";
 import {
@@ -13,7 +14,6 @@ import {
   Button,
   SvgIcon,
 } from "@mui/material";
-import { Sync, OpenInNew } from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
@@ -208,7 +208,7 @@ const SingleTenantView = ({ tenant }) => {
                   <Button
                     startIcon={
                       <SvgIcon fontSize="small">
-                        <Sync />
+                        <CippIcons.Sync />
                       </SvgIcon>
                     }
                     size="small"
@@ -257,7 +257,7 @@ const SingleTenantView = ({ tenant }) => {
                   {tenantId && status !== "enabled" && status !== "available" && (
                     <Button
                       variant="contained"
-                      startIcon={<OpenInNew />}
+                      startIcon={<CippIcons.Launch />}
                       href={`https://security.microsoft.com/securitysettings/endpoints/onboarding?tid=${tenantId}`}
                       target="_blank"
                       rel="noopener noreferrer"

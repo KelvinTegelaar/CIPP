@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { createPortal } from 'react-dom'
 import {
   Badge,
@@ -20,25 +21,6 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material'
-import {
-  Search as SearchIcon,
-  FilterList as FilterListIcon,
-  ViewColumn as ViewColumnIcon,
-  FileDownload as ExportIcon,
-  KeyboardArrowDown as ArrowDownIcon,
-  Code as CodeIcon,
-  PictureAsPdf as PdfIcon,
-  TableChart as CsvIcon,
-  Sync,
-  Check as CheckIcon,
-  MoreVert as MoreVertIcon,
-  Fullscreen as FullscreenIcon,
-  ViewAgenda,
-} from '@mui/icons-material'
-import {
-  ExclamationCircleIcon,
-  ChevronDownIcon,
-} from '@heroicons/react/24/outline'
 import { PDFExportButton, exportRowsToPdf } from '../pdfExportButton'
 import { CSVExportButton, exportRowsToCsv } from '../csvExportButton'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
@@ -61,7 +43,6 @@ import { Stack } from '@mui/system'
 import { CippMobileTableControls } from './CippMobileTableControls'
 import { CippTableFilterSheet } from './CippTableFilterSheet'
 import { useSheetHandoff } from '../../hooks/use-sheet-handoff'
-
 import {
   ModernSearchContainer,
   ModernSearchInput,
@@ -936,7 +917,7 @@ export const CIPPTableToptoolbar = React.memo(
           primary={
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {activeFilters[layer]?.id === presetKey(filter) && (
-                <CheckIcon sx={{ fontSize: 16, color: 'primary.main' }} />
+                <CippIcons.Check sx={{ fontSize: 16, color: 'primary.main' }} />
               )}
               {filter.filterName}
             </Box>
@@ -968,7 +949,7 @@ export const CIPPTableToptoolbar = React.memo(
             ref={popover.anchorRef}
             startIcon={
               <SvgIcon fontSize="small">
-                <ChevronDownIcon />
+                <CippIcons.ChevronDownIcon />
               </SvgIcon>
             }
             variant="outlined"
@@ -1116,9 +1097,9 @@ export const CIPPTableToptoolbar = React.memo(
                       }}
                     >
                       {getRequestData?.isFetchNextPageError ? (
-                        <ExclamationCircleIcon color="red" />
+                        <CippIcons.ExclamationCircleIcon color="red" />
                       ) : (
-                        <Sync />
+                        <CippIcons.Sync />
                       )}
                     </SvgIcon>
                   </RefreshButton>
@@ -1128,7 +1109,7 @@ export const CIPPTableToptoolbar = React.memo(
 
             {/* Search Input */}
             <ModernSearchContainer elevation={0}>
-              <SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
+              <CippIcons.Search sx={{ color: 'text.secondary', fontSize: 20 }} />
               <ModernSearchInput
                 placeholder="Search..."
                 value={searchValue}
@@ -1154,8 +1135,8 @@ export const CIPPTableToptoolbar = React.memo(
               >
                 {/* Filters Button */}
                 <ModernButton
-                  startIcon={<FilterListIcon />}
-                  endIcon={<ArrowDownIcon />}
+                  startIcon={<CippIcons.FilterList />}
+                  endIcon={<CippIcons.KeyboardArrowDown />}
                   onClick={(event) => setFiltersAnchor(event.currentTarget)}
                   sx={{
                     color:
@@ -1171,8 +1152,8 @@ export const CIPPTableToptoolbar = React.memo(
 
                 {/* Columns Button */}
                 <ModernButton
-                  startIcon={<ViewColumnIcon />}
-                  endIcon={<ArrowDownIcon />}
+                  startIcon={<CippIcons.ViewColumn />}
+                  endIcon={<CippIcons.KeyboardArrowDown />}
                   onClick={(event) => setColumnsAnchor(event.currentTarget)}
                 >
                   Columns
@@ -1225,8 +1206,8 @@ export const CIPPTableToptoolbar = React.memo(
                 {/* Export Button */}
                 {exportEnabled && (
                   <ModernButton
-                    startIcon={<ExportIcon />}
-                    endIcon={<ArrowDownIcon />}
+                    startIcon={<CippIcons.FileDownload />}
+                    endIcon={<CippIcons.KeyboardArrowDown />}
                     onClick={(event) => setExportAnchor(event.currentTarget)}
                   >
                     Export
@@ -1237,12 +1218,15 @@ export const CIPPTableToptoolbar = React.memo(
 
             {/* Compact Action Button — desktop compact mode only, the phone table uses the filter sheet */}
             {!mdDown && useCompactMode && !hasSelection && (
-              <IconButton
-                onClick={(event) => setActionMenuAnchor(event.currentTarget)}
-                sx={{ flexShrink: 0 }}
-              >
-                <MoreVertIcon />
-              </IconButton>
+              <Tooltip title="Actions">
+                <IconButton
+                  aria-label="Actions"
+                  onClick={(event) => setActionMenuAnchor(event.currentTarget)}
+                  sx={{ flexShrink: 0 }}
+                >
+                  <CippIcons.MoreVert />
+                </IconButton>
+              </Tooltip>
             )}
 
             {/* phones keep the kebab open regardless of selection, the only route to the
@@ -1264,10 +1248,10 @@ export const CIPPTableToptoolbar = React.memo(
               >
                 {mdDown ? (
                   <Badge badgeContent={activeSlotCount} color="primary">
-                    <MoreVertIcon />
+                    <CippIcons.MoreVert />
                   </Badge>
                 ) : (
-                  <FilterListIcon />
+                  <CippIcons.FilterList />
                 )}
               </IconButton>
             )}
@@ -1282,7 +1266,7 @@ export const CIPPTableToptoolbar = React.memo(
                 >
                   <SvgIcon fontSize="small">
                     {/* destination icon: tapping here returns to cards */}
-                    <ViewAgenda />
+                    <CippIcons.ViewAgenda />
                   </SvgIcon>
                 </RefreshButton>
               </Tooltip>
@@ -1311,7 +1295,7 @@ export const CIPPTableToptoolbar = React.memo(
                 }}
               >
                 <ListItemIcon>
-                  <ViewColumnIcon />
+                  <CippIcons.ViewColumn />
                 </ListItemIcon>
                 <ListItemText>Columns</ListItemText>
               </MenuItem>
@@ -1323,7 +1307,7 @@ export const CIPPTableToptoolbar = React.memo(
                   }}
                 >
                   <ListItemIcon>
-                    <ExportIcon />
+                    <CippIcons.FileDownload />
                   </ListItemIcon>
                   <ListItemText>Export</ListItemText>
                 </MenuItem>
@@ -1335,7 +1319,7 @@ export const CIPPTableToptoolbar = React.memo(
                 }}
               >
                 <ListItemIcon>
-                  <FullscreenIcon />
+                  <CippIcons.Fullscreen />
                 </ListItemIcon>
                 <ListItemText>
                   {table.getState().isFullScreen
@@ -1480,7 +1464,7 @@ export const CIPPTableToptoolbar = React.memo(
                   }}
                 >
                   <ListItemIcon>
-                    <CsvIcon />
+                    <CippIcons.TableChart />
                   </ListItemIcon>
                   <ListItemText primary="Export to CSV" />
                 </MenuItem>
@@ -1495,7 +1479,7 @@ export const CIPPTableToptoolbar = React.memo(
                   }}
                 >
                   <ListItemIcon>
-                    <PdfIcon />
+                    <CippIcons.PictureAsPdf />
                   </ListItemIcon>
                   <ListItemText primary="Export to PDF" />
                 </MenuItem>
@@ -1509,7 +1493,7 @@ export const CIPPTableToptoolbar = React.memo(
                       }}
                     >
                       <ListItemIcon>
-                        <CsvIcon />
+                        <CippIcons.TableChart />
                       </ListItemIcon>
                       <ListItemText primary="Export Selected to CSV" />
                     </MenuItem>
@@ -1520,7 +1504,7 @@ export const CIPPTableToptoolbar = React.memo(
                       }}
                     >
                       <ListItemIcon>
-                        <PdfIcon />
+                        <CippIcons.PictureAsPdf />
                       </ListItemIcon>
                       <ListItemText primary="Export Selected to PDF" />
                     </MenuItem>
@@ -1538,7 +1522,7 @@ export const CIPPTableToptoolbar = React.memo(
                   }}
                 >
                   <ListItemIcon>
-                    <CodeIcon />
+                    <CippIcons.Code />
                   </ListItemIcon>
                   <ListItemText primary="View API Response" />
                 </MenuItem>

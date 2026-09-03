@@ -1,10 +1,9 @@
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
+import { CippIcons } from '../../../../../utils/icon-registry'
 import { useSettings } from '../../../../../hooks/use-settings'
 import { useRouter } from 'next/router'
 import { ApiGetCall } from '../../../../../api/ApiCall'
 import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSkeleton'
-import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
-import { Fingerprint, Launch, Badge } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import { CippAppRegistrationSwitcher } from '../../../../../components/CippComponents/CippAppRegistrationSwitcher'
 import tabOptions from './tabOptions'
@@ -68,15 +67,15 @@ const Page = () => {
     appRequest.isSuccess && appData
       ? [
           {
-            icon: <Badge />,
+            icon: <CippIcons.Badge />,
             text: <CippCopyToClipBoard type="chip" text={appData?.appId || 'N/A'} />,
           },
           {
-            icon: <Fingerprint />,
+            icon: <CippIcons.Fingerprint />,
             text: <CippCopyToClipBoard type="chip" text={appData?.id || 'N/A'} />,
           },
           {
-            icon: <CalendarIcon />,
+            icon: <CippIcons.CalendarIcon />,
             text: (
               <>
                 Created: <CippTimeAgo data={appData?.createdDateTime} />
@@ -84,7 +83,7 @@ const Page = () => {
             ),
           },
           {
-            icon: <Launch style={{ color: '#667085' }} />,
+            icon: <CippIcons.Launch />,
             text: (
               <Button
                 color="muted"

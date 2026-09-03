@@ -1,4 +1,5 @@
 import { Alert, Divider, InputAdornment, Typography } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { getCippValidator } from '../../utils/get-cipp-validator'
 import { toAutoCompleteOptions } from '../../utils/to-autocomplete-options'
@@ -14,7 +15,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useWatch } from 'react-hook-form'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Sync } from '@mui/icons-material'
 
 // Exchange only sends a sharing invitation for these calendar access levels.
 const sharedCalendarPermissionOptions = [
@@ -627,7 +627,7 @@ const CippAddEditUser = (props) => {
                   : []
               }
               customAction={{
-                icon: <Sync />,
+                icon: <CippIcons.Sync />,
                 tooltip: 'Refresh templates',
                 onClick: () => {
                   userTemplates.refetch()
@@ -1109,7 +1109,7 @@ const CippAddEditUser = (props) => {
           creatable={false}
           formControl={formControl}
           customAction={{
-            icon: <Sync />,
+            icon: <CippIcons.Sync />,
             tooltip: 'Refresh groups',
             onClick: () => {
               tenantGroups.refetch()
@@ -1191,7 +1191,7 @@ const CippAddEditUser = (props) => {
             creatable={false}
             formControl={formControl}
             customAction={{
-              icon: <Sync />,
+              icon: <CippIcons.Sync />,
               tooltip: 'Refresh groups',
               onClick: () => {
                 tenantGroups.refetch()

@@ -1,7 +1,6 @@
 import { Alert, Button, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
-import { Cancel, CheckCircle } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippPropertyList } from "../CippComponents/CippPropertyList";
-import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippDataTable } from "../CippTable/CippDataTable";
@@ -33,9 +32,9 @@ export const CippPermissionResults = (props) => {
       results?.Results?.MissingPermissions?.length > 0 ||
       results?.Results?.ErrorMessages?.length > 0
     ) {
-      setCardIcon(<Cancel />);
+      setCardIcon(<CippIcons.Cancel />);
     } else {
-      setCardIcon(<CheckCircle />);
+      setCardIcon(<CippIcons.CheckCircle />);
     }
   }, [results]);
 
@@ -119,7 +118,7 @@ export const CippPermissionResults = (props) => {
               <ListItem key={index} sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                    <CheckCircle />
+                    <CippIcons.CheckCircle />
                   </SvgIcon>
                   {message}
                 </Typography>
@@ -129,7 +128,7 @@ export const CippPermissionResults = (props) => {
               <ListItem key={index} sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                    <XMarkIcon />
+                    <CippIcons.XMarkIcon />
                   </SvgIcon>
                   {error}
                 </Typography>
@@ -139,7 +138,7 @@ export const CippPermissionResults = (props) => {
               <ListItem sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                    <XMarkIcon />
+                    <CippIcons.XMarkIcon />
                   </SvgIcon>
                   There are new permissions to apply. Please click "Details" to review and apply the new permissions.
                 </Typography>
@@ -188,7 +187,7 @@ export const CippPermissionResults = (props) => {
                       onClick={handleAddMissingPermissions}
                       startIcon={
                         <SvgIcon fontSize="sm">
-                          <WrenchIcon />
+                          <CippIcons.WrenchIcon />
                         </SvgIcon>
                       }
                     >
@@ -212,7 +211,7 @@ export const CippPermissionResults = (props) => {
                     onClick={handleStartCPVRefresh}
                     startIcon={
                       <SvgIcon fontSize="sm">
-                        <WrenchIcon />
+                        <CippIcons.WrenchIcon />
                       </SvgIcon>
                     }
                   >

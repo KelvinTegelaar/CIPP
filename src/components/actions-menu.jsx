@@ -1,5 +1,5 @@
-import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import PropTypes from "prop-types";
+import { CippIcons } from "../utils/icon-registry";
 import { Button, ListItemText, Menu, MenuItem, SvgIcon } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
 import { useActionsDispatch } from "../hooks/use-actions-dispatch";
@@ -20,7 +20,7 @@ export const ActionsMenu = (props) => {
         ref={popover.anchorRef}
         startIcon={
           <SvgIcon fontSize="small">
-            <ChevronDownIcon />
+            <CippIcons.ChevronDownIcon />
           </SvgIcon>
         }
         variant="outlined"

@@ -1,4 +1,5 @@
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import tabOptions from "../tabOptions";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
@@ -7,10 +8,8 @@ import Link from "next/link";
 import { ApiGetCallWithPagination, ApiPostCall } from "../../../../api/ApiCall";
 import { useCallback, useEffect, useState } from "react";
 import { Box, Container, Stack } from "@mui/system";
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
-import { AccountTree, AddBox, ContentCopy, Edit, Mail } from "@mui/icons-material";
 
 const pageTitle = "GDAP Role Templates";
 const apiUrl = "/api/ExecGDAPRoleTemplate";
@@ -20,13 +19,13 @@ const actions = [
     label: "Edit Template",
     link: "/tenant/gdap-management/role-templates/edit?templateId=[TemplateId]",
     pinned: true,
-    icon: <Edit />,
+    icon: <CippIcons.Edit />,
   },
   {
     label: "Clone Template",
     url: "/api/ExecGDAPRoleTemplate?Action=Add",
     type: "POST",
-    icon: <ContentCopy />,
+    icon: <CippIcons.ContentCopy />,
     data: { RoleMappings: "RoleMappings" },
     confirmText: "Enter a name for the copy of [TemplateId].",
     fields: [
@@ -45,13 +44,13 @@ const actions = [
   {
     label: "Create Invite",
     link: "/tenant/gdap-management/invites/add?templateId=[TemplateId]",
-    icon: <Mail />,
+    icon: <CippIcons.Mail />,
   },
   {
     label: "Delete Template",
     url: "/api/ExecGDAPRoleTemplate?Action=Delete",
     type: "POST",
-    icon: <TrashIcon />,
+    icon: <CippIcons.Delete />,
     data: { TemplateId: "TemplateId" },
     confirmText: "Are you sure you want to delete this Role Template?",
   },
@@ -121,7 +120,7 @@ const Page = () => {
                     }
                     startIcon={
                       <SvgIcon fontSize="small">
-                        <PlusIcon />
+                        <CippIcons.PlusIcon />
                       </SvgIcon>
                     }
                   >
@@ -131,7 +130,7 @@ const Page = () => {
                     component={Link}
                     variant="outlined"
                     href="/tenant/gdap-management/role-templates/add"
-                    startIcon={<AddBox />}
+                    startIcon={<CippIcons.AddBox />}
                   >
                     Build a custom template
                   </Button>
@@ -164,7 +163,7 @@ const Page = () => {
                 sx={{ ml: 2 }}
                 startIcon={
                   <SvgIcon fontSize="small">
-                    <PlusIcon />
+                    <CippIcons.PlusIcon />
                   </SvgIcon>
                 }
               >
@@ -193,14 +192,14 @@ const Page = () => {
               variant="contained"
               size="small"
               href="/tenant/gdap-management/role-templates/add"
-              startIcon={<AddBox />}
+              startIcon={<CippIcons.AddBox />}
             >
               Add Template
             </Button>
             <Button
               component={Link}
               href="/tenant/gdap-management/role-templates/mappings"
-              startIcon={<AccountTree />}
+              startIcon={<CippIcons.AccountTree />}
             >
               Group Mappings
             </Button>

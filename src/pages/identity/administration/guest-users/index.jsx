@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { ApiGetCallWithPagination } from '../../../../api/ApiCall'
@@ -14,24 +15,13 @@ import {
   Typography,
 } from '@mui/material'
 import { Box, Grid } from '@mui/system'
-import { EyeIcon, TrashIcon } from '@heroicons/react/24/outline'
-import {
-  Block,
-  CheckCircle,
-  GroupOutlined,
-  HourglassEmpty,
-  LockPerson,
-  PersonOff,
-  Send,
-  WarningAmber,
-} from '@mui/icons-material'
 
 const GUEST_STATUSES = [
-  { status: 'Active', color: 'success', icon: CheckCircle },
-  { status: 'Stale', color: 'error', icon: WarningAmber },
-  { status: 'Pending Acceptance', color: 'warning', icon: HourglassEmpty },
-  { status: 'Never Signed In', color: 'info', icon: PersonOff },
-  { status: 'Disabled', color: 'secondary', icon: Block },
+  { status: 'Active', color: 'success', icon: CippIcons.CheckCircle },
+  { status: 'Stale', color: 'error', icon: CippIcons.WarningAmber },
+  { status: 'Pending Acceptance', color: 'warning', icon: CippIcons.HourglassEmpty },
+  { status: 'Never Signed In', color: 'info', icon: CippIcons.PersonOff },
+  { status: 'Disabled', color: 'secondary', icon: CippIcons.Block },
 ]
 
 const SummaryCard = ({
@@ -151,7 +141,7 @@ const Page = () => {
         <SummaryCard
           title="Total Guests"
           count={guests.length}
-          icon={GroupOutlined}
+          icon={CippIcons.GroupOutlined}
           color="primary"
           selected={statusFilter === null}
           isFetching={guestData.isFetching}
@@ -181,13 +171,13 @@ const Page = () => {
       link: userHubLink,
       pinned: true,
       multiPost: false,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: 'success',
     },
     {
       label: 'Re-invite Guest',
       type: 'POST',
-      icon: <Send />,
+      icon: <CippIcons.Send />,
       url: '/api/AddGuest',
       data: { displayName: 'displayName', mail: 'mail', sendInvite: '!true' },
       confirmText: 'Are you sure you want to re-send the invitation to [mail]?',
@@ -199,7 +189,7 @@ const Page = () => {
     {
       label: 'Set Sign In State',
       type: 'POST',
-      icon: <LockPerson />,
+      icon: <CippIcons.LockPerson />,
       url: '/api/ExecDisableUser',
       data: { ID: 'id' },
       fields: [
@@ -222,7 +212,7 @@ const Page = () => {
     {
       label: 'Delete Guest',
       type: 'POST',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: '/api/RemoveUser',
       data: { ID: 'id', userPrincipalName: 'userPrincipalName' },
       confirmText: 'Are you sure you want to delete [userPrincipalName]?',

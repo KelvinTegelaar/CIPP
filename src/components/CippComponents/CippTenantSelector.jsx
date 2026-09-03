@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { CippAutoComplete } from "../CippComponents/CippAutocomplete";
 import { ApiGetCall } from "../../api/ApiCall";
 import { IconButton, Tooltip, Box, Chip, Typography } from "@mui/material";
-import { Refresh, Star, StarBorder } from "@mui/icons-material";
 import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -10,7 +9,7 @@ import { useSettings } from "../../hooks/use-settings";
 import { useTenantPreferences } from "../../hooks/use-tenant-preferences";
 import { getCippError } from "../../utils/get-cipp-error";
 import { useQueryClient } from "@tanstack/react-query";
-import { getIconByName } from "../../utils/icon-registry";
+import { CippIcons, getIconByName } from "../../utils/icon-registry"
 
 export const CippTenantSelector = React.forwardRef((props, ref) => {
   const { width, allTenants = false, multiple = false, refreshButton, tenantButton } = props;
@@ -491,7 +490,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
                         onMouseDown={(event) => event.preventDefault()}
                         sx={{ color: favourited ? "warning.main" : "action.active", flexShrink: 0 }}
                       >
-                        {favourited ? <Star fontSize="small" /> : <StarBorder fontSize="small" />}
+                        {favourited ? <CippIcons.Star fontSize="small" /> : <CippIcons.StarBorder fontSize="small" />}
                       </IconButton>
                     </Tooltip>
                   )}
@@ -515,7 +514,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
             }}
           >
             <Tooltip title="Refresh tenant list">
-              <Refresh />
+              <CippIcons.Refresh />
             </Tooltip>
           </IconButton>
         )}

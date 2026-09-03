@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Button, Box } from "@mui/material";
 import { useForm, useWatch, useFormState } from "react-hook-form";
-import { PersonAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
@@ -145,7 +145,7 @@ export const CippAddUserDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
-        startIcon={<PersonAdd />}
+        startIcon={<CippIcons.PersonAdd />}
       >
         {buttonText}
       </PermissionButton>

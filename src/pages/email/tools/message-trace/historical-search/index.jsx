@@ -1,10 +1,10 @@
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
+import { CippIcons } from '../../../../../utils/icon-registry'
 import { TabbedLayout } from '../../../../../layouts/TabbedLayout'
 import { Alert, Button, Stack, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { Grid } from '@mui/system'
-import { Add, Block, Download } from '@mui/icons-material'
 import { CippTablePage } from '../../../../../components/CippComponents/CippTablePage.jsx'
 import { CippOffCanvas } from '../../../../../components/CippComponents/CippOffCanvas'
 import CippFormComponent from '../../../../../components/CippComponents/CippFormComponent'
@@ -77,7 +77,7 @@ const Page = () => {
       link: '[FileUrl]',
       external: true,
       noConfirm: true,
-      icon: <Download />,
+      icon: <CippIcons.Download />,
       condition: (row) => !!row.FileUrl && row.Status === 'Done',
     },
     {
@@ -87,7 +87,7 @@ const Page = () => {
       data: { Action: '!Stop', jobId: 'JobId' },
       confirmText:
         'Cancel this historical search? Cancelled searches still count toward the 250 searches per day quota.',
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       color: 'danger',
       condition: (row) => row.Status === 'NotStarted',
       relatedQueryKeys: [queryKey],
@@ -115,7 +115,7 @@ const Page = () => {
         cardButton={
           <Button
             variant="contained"
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
             onClick={() => setDrawerVisible(true)}
           >
             New Historical Search

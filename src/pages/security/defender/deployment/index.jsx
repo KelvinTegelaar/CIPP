@@ -210,11 +210,11 @@ const DeployDefenderForm = () => {
                           label="Assignment"
                           name="EDR.AssignTo"
                           options={[
-                            { label: 'Do not assign', value: 'none' },
-                            { label: 'Assign to all users', value: 'allLicensedUsers' },
-                            { label: 'Assign to all devices', value: 'AllDevices' },
+                            { label: 'Do Not Assign', value: 'none' },
+                            { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                            { label: 'Assign to All Devices', value: 'AllDevices' },
                             {
-                              label: 'Assign to all users and devices',
+                              label: 'Assign to All Users and Devices',
                               value: 'AllDevicesAndUsers',
                             },
                           ]}
@@ -717,10 +717,10 @@ const DeployDefenderForm = () => {
                 label=""
                 name="Policy.AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'none' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'none' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                 ]}
                 formControl={formControl}
                 validators={{ required: 'Assignment must be selected' }}
@@ -788,10 +788,10 @@ const DeployDefenderForm = () => {
                 label=""
                 name="Exclusion.AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'none' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'none' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                 ]}
                 formControl={formControl}
                 validators={{ required: 'Assignment must be selected' }}
@@ -965,10 +965,10 @@ const DeployDefenderForm = () => {
                     label=""
                     name="ASR.AssignTo"
                     options={[
-                      { label: 'Do not assign', value: 'none' },
-                      { label: 'Assign to all users', value: 'allLicensedUsers' },
-                      { label: 'Assign to all devices', value: 'AllDevices' },
-                      { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                      { label: 'Do Not Assign', value: 'none' },
+                      { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                      { label: 'Assign to All Devices', value: 'AllDevices' },
+                      { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                     ]}
                     formControl={formControl}
                     validators={{ required: 'Assignment must be selected' }}

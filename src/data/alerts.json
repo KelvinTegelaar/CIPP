@@ -192,6 +192,25 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "ArchiveQuota",
+    "label": "Alert on % online archive quota used",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Archive quota percentage threshold (default: 90)",
+        "inputName": "ArchiveQuotaThreshold"
+      },
+      {
+        "inputType": "textField",
+        "inputLabel": "Excluded mailbox UPNs (comma-separated). Supports custom variables like %excludefromarchivealert% defined under CIPP > Settings > Custom Variables at tenant or AllTenants scope.",
+        "inputName": "ArchiveQuotaExcludedMailboxes"
+      }
+    ],
+    "recommendedRunInterval": "7d"
+  },
+  {
     "name": "SharePointQuota",
     "label": "Alert on % SharePoint quota used",
     "requiresInput": true,

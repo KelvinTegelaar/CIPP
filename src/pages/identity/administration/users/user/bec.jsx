@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CippIcons } from '../../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
 import { useSettings } from '../../../../../hooks/use-settings'
 import { useRouter } from 'next/router'
 import { ApiGetCall } from '../../../../../api/ApiCall'
-import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
-import { Download, Mail, Fingerprint, Launch } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import tabOptions from './tabOptions'
 import { CippUserSwitcher } from '../../../../../components/CippComponents/CippUserSwitcher'
@@ -420,15 +419,15 @@ const Page = () => {
   const subtitle = userRequest.isSuccess
     ? [
         {
-          icon: <Mail />,
+          icon: <CippIcons.Mail />,
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
         },
         {
-          icon: <Fingerprint />,
+          icon: <CippIcons.Fingerprint />,
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
         },
         {
-          icon: <CalendarIcon />,
+          icon: <CippIcons.CalendarIcon />,
           text: (
             <>
               Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
@@ -436,7 +435,7 @@ const Page = () => {
           ),
         },
         {
-          icon: <Launch style={{ color: '#667085' }} />,
+          icon: <CippIcons.Launch />,
           text: (
             <Button
               color="muted"
@@ -1093,7 +1092,7 @@ const Page = () => {
                           variant="outlined"
                           startIcon={
                             <SvgIcon fontSize="small">
-                              <Download />
+                              <CippIcons.Download />
                             </SvgIcon>
                           }
                         >

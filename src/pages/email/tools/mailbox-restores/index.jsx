@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { RestoreFromTrash, PlayArrow, Pause, Delete } from "@mui/icons-material";
 import MailboxRestoreDetails from "../../../../components/CippComponents/MailboxRestoreDetails";
 import { CippMailboxRestoreDrawer } from "../../../../components/CippComponents/CippMailboxRestoreDrawer";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -13,7 +13,7 @@ const Page = () => {
       label: "Resume Restore Request",
       type: "POST",
       url: "/api/ExecMailboxRestore",
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       data: {
         Identity: "Identity",
         Action: "!Resume",
@@ -25,7 +25,7 @@ const Page = () => {
       label: "Suspend Restore Request",
       type: "POST",
       url: "/api/ExecMailboxRestore",
-      icon: <Pause />,
+      icon: <CippIcons.Pause />,
       data: {
         Identity: "Identity",
         Action: "!Suspend",
@@ -37,7 +37,7 @@ const Page = () => {
       label: "Remove Restore Request",
       type: "POST",
       url: "/api/ExecMailboxRestore",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         Identity: "Identity",
         Action: "!Remove",

@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import {
   Box,
   Button,
@@ -13,12 +14,6 @@ import {
 import { useTheme } from '@mui/material/styles'
 import { Grid } from '@mui/system'
 import { useMemo, useState } from 'react'
-import {
-  CheckCircleIcon,
-  EnvelopeIcon,
-  ExclamationTriangleIcon,
-  ShieldExclamationIcon,
-} from '@heroicons/react/24/outline'
 import { SvgIcon } from '@mui/material'
 import { Chart } from '../../../../components/chart'
 import { CippChartCard } from '../../../../components/CippCards/CippChartCard'
@@ -147,7 +142,7 @@ const Page = () => {
     {
       icon: (
         <SvgIcon>
-          <EnvelopeIcon />
+          <CippIcons.EnvelopeIcon />
         </SvgIcon>
       ),
       name: `Total mail - ${days} days`,
@@ -156,7 +151,7 @@ const Page = () => {
     {
       icon: (
         <SvgIcon>
-          <CheckCircleIcon />
+          <CippIcons.CheckCircleIcon />
         </SvgIcon>
       ),
       name: 'Good mail',
@@ -166,7 +161,7 @@ const Page = () => {
     {
       icon: (
         <SvgIcon>
-          <ShieldExclamationIcon />
+          <CippIcons.ShieldExclamationIcon />
         </SvgIcon>
       ),
       name: 'Phish caught',
@@ -178,7 +173,7 @@ const Page = () => {
     {
       icon: (
         <SvgIcon>
-          <ExclamationTriangleIcon />
+          <CippIcons.ExclamationTriangleIcon />
         </SvgIcon>
       ),
       name: 'Malware blocked',

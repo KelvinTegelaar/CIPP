@@ -1,9 +1,9 @@
 import { Box, Button, Container, Stack, Typography, SvgIcon, Skeleton } from '@mui/material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Grid } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { useForm, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { Add, SaveRounded } from '@mui/icons-material'
 import { useEffect, useState, useCallback, useMemo, useRef, lazy, Suspense } from 'react'
 import standards from '../../../../data/standards'
 import CippStandardAccordion from '../../../../components/CippStandards/CippStandardAccordion'
@@ -393,7 +393,7 @@ const Page = () => {
               variant="contained"
               color="primary"
               onClick={handleSave}
-              startIcon={<SaveRounded />}
+              startIcon={<CippIcons.SaveRounded />}
               disabled={isSaveDisabled}
             >
               Save Template
@@ -402,7 +402,7 @@ const Page = () => {
               variant="outlined"
               color="primary"
               onClick={handleOpenDialog}
-              startIcon={<Add />}
+              startIcon={<CippIcons.Add />}
             >
               Add Standard to Template
             </Button>

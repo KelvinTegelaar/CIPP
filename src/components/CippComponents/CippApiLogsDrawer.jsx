@@ -1,7 +1,6 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Button, Box } from '@mui/material'
-import { ReceiptLongOutlined } from '@mui/icons-material'
-import { EyeIcon } from '@heroicons/react/24/outline'
 import { CippOffCanvas } from './CippOffCanvas'
 import { CippDataTable } from '../CippTable/CippDataTable'
 
@@ -56,7 +55,7 @@ export const CippApiLogsDrawer = ({
       label: 'View Log Entry',
       link: '/cipp/logs/logentry?logentry=[RowKey]',
       pinned: true,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: 'primary',
     },
   ]
@@ -66,7 +65,7 @@ export const CippApiLogsDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
-        startIcon={<ReceiptLongOutlined />}
+        startIcon={<CippIcons.ReceiptLongOutlined />}
         {...props}
       >
         {buttonText}

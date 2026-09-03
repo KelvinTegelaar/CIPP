@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Divider, Button, Alert } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch, useFormState } from 'react-hook-form'
-import { AccountCircle } from '@mui/icons-material'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippFormTenantSelector } from './CippFormTenantSelector'
@@ -120,7 +120,7 @@ export const CippAutopilotProfileDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<AccountCircle />}
+        startIcon={<CippIcons.AccountCircle />}
       >
         {buttonText}
       </PermissionButton>

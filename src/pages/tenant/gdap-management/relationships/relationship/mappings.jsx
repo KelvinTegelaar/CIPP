@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../../api/ApiCall";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
@@ -6,7 +7,6 @@ import { CippGdapRelationshipSwitcher } from "../../../../../components/CippComp
 import tabOptions from "./tabOptions.json";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
-import { Schedule } from "@mui/icons-material";
 
 const Page = () => {
   const router = useRouter();
@@ -27,7 +27,7 @@ const Page = () => {
   const subtitle = relationshipRequest.isSuccess
     ? [
         {
-          icon: <Schedule />,
+          icon: <CippIcons.Schedule />,
           text: (
             <>
               Created{" "}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { useForm, useWatch } from 'react-hook-form'
 import {
   CardContent,
@@ -14,14 +15,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
-import {
-  PlusIcon,
-  TrashIcon,
-  PencilIcon,
-  GlobeAltIcon,
-  DocumentDuplicateIcon,
-  ArrowUturnLeftIcon,
-} from '@heroicons/react/24/outline'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { CippApiResults } from './CippApiResults'
 import { CippApiDialog } from './CippApiDialog'
@@ -284,7 +277,7 @@ const CippCustomVariables = ({ id }) => {
       label: 'Edit',
       icon: (
         <SvgIcon>
-          <PencilIcon />
+          <CippIcons.PencilIcon />
         </SvgIcon>
       ),
       confirmText: "Update the custom variable '[RowKey]'?",
@@ -330,7 +323,7 @@ const CippCustomVariables = ({ id }) => {
       label: 'Override for this tenant',
       icon: (
         <SvgIcon>
-          <DocumentDuplicateIcon />
+          <CippIcons.DocumentDuplicateIcon />
         </SvgIcon>
       ),
       hideBulk: true,
@@ -375,7 +368,7 @@ const CippCustomVariables = ({ id }) => {
       label: 'Revert to global',
       icon: (
         <SvgIcon>
-          <ArrowUturnLeftIcon />
+          <CippIcons.ArrowUturnLeftIcon />
         </SvgIcon>
       ),
       hideBulk: true,
@@ -398,7 +391,7 @@ const CippCustomVariables = ({ id }) => {
       label: 'View usage',
       icon: (
         <SvgIcon>
-          <GlobeAltIcon />
+          <CippIcons.GlobeAltIcon />
         </SvgIcon>
       ),
       noConfirm: true,
@@ -407,7 +400,7 @@ const CippCustomVariables = ({ id }) => {
     },
     {
       label: 'Delete',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       confirmText: 'Are you sure you want to delete [RowKey]?',
       // An overridden row gets 'Revert to global' instead, which says what actually happens.
       condition: (row) =>
@@ -459,7 +452,7 @@ const CippCustomVariables = ({ id }) => {
             onClick={handleAddVariable}
             startIcon={
               <SvgIcon fontSize="small">
-                <PlusIcon />
+                <CippIcons.PlusIcon />
               </SvgIcon>
             }
           >

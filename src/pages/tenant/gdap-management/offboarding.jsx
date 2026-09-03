@@ -1,4 +1,5 @@
 import CippFormPage from "../../../components/CippFormPages/CippFormPage";
+import { CippIcons } from "../../../utils/icon-registry"
 import { TabbedLayout } from "../../../layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "../../../layouts/index";
 import tabOptions from "./tabOptions";
@@ -9,8 +10,6 @@ import { Box, Grid, Stack } from "@mui/system";
 import { Alert, Divider, Typography } from "@mui/material";
 import { ApiGetCall, ApiGetCallWithPagination } from "../../../api/ApiCall";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
-import { ShieldCheckIcon } from "@heroicons/react/24/outline";
-import { Apps, Description, Widgets } from "@mui/icons-material";
 
 const Page = () => {
   const formControl = useForm({
@@ -119,7 +118,7 @@ const Page = () => {
                         gdapRelationships.data?.Results?.filter(
                           (relationship) => relationship?.customer?.tenantId === tenantId.value
                         )?.length ?? 0,
-                      icon: <ShieldCheckIcon />,
+                      icon: <CippIcons.ShieldCheckIcon />,
                       offcanvas: {
                         title: "GDAP Relationships",
                         propertyItems: gdapRelationships.data?.Results?.filter(
@@ -138,12 +137,12 @@ const Page = () => {
                         )?.length === 1
                           ? "Yes"
                           : "No",
-                      icon: <Description />,
+                      icon: <CippIcons.Description />,
                     },
                     {
                       name: "MSP Applications",
                       data: mspApps.data?.Results?.length ?? 0,
-                      icon: <Widgets />,
+                      icon: <CippIcons.Widgets />,
                       offcanvas: {
                         title: "MSP Applications",
                         propertyItems: mspApps.data?.Results?.map((app) => ({
@@ -159,7 +158,7 @@ const Page = () => {
                           (sum, page) => sum + (page?.Results?.length ?? 0),
                           0
                         ) ?? 0,
-                      icon: <Apps />,
+                      icon: <CippIcons.Apps />,
                       offcanvas: {
                         title: "Vendor Applications",
                         propertyItems: vendorApps.data?.pages

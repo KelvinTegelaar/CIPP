@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import { AddBox, Delete, Edit, GitHub } from '@mui/icons-material'
+import { CippIcons } from '../../../../../utils/icon-registry'
 import Link from 'next/link'
 import { ApiGetCall } from '../../../../../api/ApiCall'
 import { useSettings } from '../../../../../hooks/use-settings'
@@ -24,14 +24,14 @@ const Page = () => {
   const actions = [
     {
       label: 'Edit Template',
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       link: '/identity/administration/roles/templates/edit?id=[GUID]',
     },
     {
       label: 'Save to GitHub',
       type: 'POST',
       url: '/api/ExecCommunityRepo',
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: 'UploadTemplate',
         GUID: 'GUID',
@@ -77,7 +77,7 @@ const Page = () => {
       label: 'Delete Template',
       type: 'POST',
       url: '/api/RemovePIMRoleSettingsTemplate',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: 'GUID',
       },
@@ -123,7 +123,7 @@ const Page = () => {
         <Button
           component={Link}
           href="/identity/administration/roles/templates/add"
-          startIcon={<AddBox />}
+          startIcon={<CippIcons.AddBox />}
         >
           Add PIM Template
         </Button>

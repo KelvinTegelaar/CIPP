@@ -1,6 +1,6 @@
 import React from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Card, CardContent, Box, Stack, Chip, Typography } from "@mui/material";
-import { KeyboardArrowRight } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
@@ -302,7 +302,7 @@ export const CippTestDetailOffCanvas = ({ row }) => {
         <Card variant="outlined">
           <CardContent>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Typography variant="h6">{row.Name}</Typography> <KeyboardArrowRight />
+              <Typography variant="h6">{row.Name}</Typography> <CippIcons.KeyboardArrowRight />
               <Chip
                 label={row.Status || "Unknown"}
                 color={getStatusColor(row.Status)}

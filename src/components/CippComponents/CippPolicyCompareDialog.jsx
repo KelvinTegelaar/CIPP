@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
   AlertTitle,
@@ -12,13 +13,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import {
-  CheckCircle as CheckCircleIcon,
-  CompareArrows as CompareArrowsIcon,
-  Error as ErrorIcon,
-  Info as InfoIcon,
-  PolicyOutlined as PolicyOffIcon,
-} from '@mui/icons-material'
 import { ApiPostCall } from '../../api/ApiCall'
 import CippJsonView from '../CippFormPages/CippJSONView'
 import { CippPolicyDiffTable } from './CippPolicyDiffTable'
@@ -90,7 +84,7 @@ export const CippPolicyCompareDialog = ({
         )}
 
         {errorMessage && (
-          <Alert severity="error" icon={<ErrorIcon />}>
+          <Alert severity="error" icon={<CippIcons.Error />}>
             {errorMessage}
           </Alert>
         )}
@@ -98,7 +92,7 @@ export const CippPolicyCompareDialog = ({
         {results && (
           <Stack spacing={3}>
             {results.policyMissing ? (
-              <Alert severity="warning" icon={<PolicyOffIcon />}>
+              <Alert severity="warning" icon={<CippIcons.PolicyOutlined />}>
                 <AlertTitle>Not deployed to {tenantFilter}</AlertTitle>
                 <Typography variant="body2" sx={{ mb: 1 }}>
                   No Intune policy named{' '}
@@ -117,7 +111,7 @@ export const CippPolicyCompareDialog = ({
             ) : (
               <Alert
                 severity={results.identical ? 'success' : 'warning'}
-                icon={results.identical ? <CheckCircleIcon /> : <CompareArrowsIcon />}
+                icon={results.identical ? <CippIcons.CheckCircle /> : <CippIcons.CompareArrows />}
               >
                 {results.identical
                   ? 'The tenant policy matches the baseline template - no differences found.'
@@ -128,7 +122,7 @@ export const CippPolicyCompareDialog = ({
             )}
 
             {results.matchType === 'fuzzy' && (
-              <Alert severity="info" icon={<InfoIcon />}>
+              <Alert severity="info" icon={<CippIcons.Info />}>
                 <AlertTitle>Matched by similar name</AlertTitle>
                 No policy exactly named{' '}
                 <Box component="strong">{templateName || 'the template'}</Box> exists in this tenant,
@@ -139,7 +133,7 @@ export const CippPolicyCompareDialog = ({
             )}
 
             {results.assignmentComparison?.matched === false && (
-              <Alert severity="warning" icon={<CompareArrowsIcon />}>
+              <Alert severity="warning" icon={<CippIcons.CompareArrows />}>
                 <AlertTitle>Assignments differ</AlertTitle>
                 The comparison above covers the policy settings only. This
                 standard also verifies assignments, and they do not match what

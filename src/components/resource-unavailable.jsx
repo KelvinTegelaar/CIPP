@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
+import { CippIcons } from "../utils/icon-registry";
 import { Box, Button, SvgIcon, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useTheme } from "@emotion/react";
@@ -49,7 +49,7 @@ export const ResourceUnavailable = (props) => {
           onClick={onCreate}
           startIcon={
             <SvgIcon fontSize="small">
-              <PlusIcon />
+              <CippIcons.PlusIcon />
             </SvgIcon>
           }
           sx={{ mt: 2 }}

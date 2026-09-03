@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Button, Stack } from '@mui/material'
-import { RocketLaunch } from '@mui/icons-material'
 import { useForm, useWatch } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
@@ -94,7 +94,7 @@ export const CippCADeployDrawer = ({
         <PermissionButton
           {...(PermissionButton !== Button ? { requiredPermissions } : {})}
           onClick={() => setInternalDrawerVisible(true)}
-          startIcon={<RocketLaunch />}
+          startIcon={<CippIcons.RocketLaunch />}
         >
           {buttonText}
         </PermissionButton>

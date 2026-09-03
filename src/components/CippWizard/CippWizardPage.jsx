@@ -10,7 +10,7 @@ import {
   IconButton,
   SvgIcon,
 } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippWizard } from "./CippWizard";
 import { useRouter } from "next/router";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
@@ -73,7 +73,7 @@ const CippWizardPage = (props) => {
           {dialogIcon}
           {wizardTitle}
           <IconButton aria-label="close" onClick={onClose} sx={{ ml: "auto" }}>
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <Divider />

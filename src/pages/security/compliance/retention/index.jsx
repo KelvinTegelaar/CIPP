@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { Book, Block, Check } from '@mui/icons-material'
-import { TrashIcon } from '@heroicons/react/24/outline'
 import { CippDeployCompliancePolicyDrawer } from '../../../../components/CippComponents/CippDeployCompliancePolicyDrawer.jsx'
 import { PermissionButton } from '../../../../utils/permissions'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -16,7 +15,7 @@ const Page = () => {
     {
       label: 'Create template based on policy',
       type: 'POST',
-      icon: <Book />,
+      icon: <CippIcons.Book />,
       url: '/api/AddRetentionCompliancePolicyTemplate',
       data: { Identity: 'Name' },
       confirmText: 'Are you sure you want to create a template based on this retention policy?',
@@ -25,7 +24,7 @@ const Page = () => {
     {
       label: 'Enable Policy',
       type: 'POST',
-      icon: <Check />,
+      icon: <CippIcons.Check />,
       url: '/api/EditRetentionCompliancePolicy',
       data: {
         State: '!enable',
@@ -37,7 +36,7 @@ const Page = () => {
     {
       label: 'Disable Policy',
       type: 'POST',
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: '/api/EditRetentionCompliancePolicy',
       data: {
         State: '!disable',
@@ -49,7 +48,7 @@ const Page = () => {
     {
       label: 'Delete Policy',
       type: 'POST',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: '/api/RemoveRetentionCompliancePolicy',
       data: {
         Identity: 'Name',

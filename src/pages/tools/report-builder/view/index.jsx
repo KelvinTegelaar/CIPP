@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import {
   Button,
   Typography,
@@ -15,7 +16,6 @@ import { useSettings } from '../../../../hooks/use-settings'
 import { useBrandingSettings } from '../../../../components/CippPdf/useBrandingSettings'
 import { ApiGetCall } from '../../../../api/ApiCall.jsx'
 import { ReportBuilderPDF } from '../../../../components/ReportBuilder/ReportBuilderPDF'
-import { Download, ArrowBack } from '@mui/icons-material'
 import { useRouter } from 'next/router'
 
 const Page = () => {
@@ -182,13 +182,13 @@ const Page = () => {
               alignItems: "center"
             }}>
               <IconButton size="small" onClick={handleBackClick}>
-                <ArrowBack />
+                <CippIcons.ArrowBack />
               </IconButton>
               <Typography variant="h4">{reportName}</Typography>
             </Stack>
             <Button
               variant="contained"
-              startIcon={<Download />}
+              startIcon={<CippIcons.Download />}
               onClick={handleDownload}
               disabled={blocks.length === 0 || reportApi.isFetching}
             >

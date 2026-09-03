@@ -1,13 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Box, Button, Link, Typography } from '@mui/material'
-import {
-  Save as SaveIcon,
-  Delete,
-  CalendarMonthTwoTone,
-  CopyAll,
-  ImportExport,
-  PlayCircle,
-} from '@mui/icons-material'
 import { useForm, useWatch } from 'react-hook-form'
 import { debounce } from 'lodash'
 import CippButtonCard from '../CippCards/CippButtonCard'
@@ -804,14 +797,14 @@ const CippGraphExplorerFilter = ({
                     variant="contained"
                     color="primary"
                     type="submit"
-                    startIcon={<PlayCircle />}
+                    startIcon={<CippIcons.PlayCircle />}
                     fullWidth
                   >
                     Apply Filter
                   </Button>
 
                   <Button
-                    startIcon={<CalendarMonthTwoTone />}
+                    startIcon={<CippIcons.CalendarMonthTwoTone />}
                     variant="outlined"
                     onClick={handleScheduleReport}
                     fullWidth
@@ -822,14 +815,14 @@ const CippGraphExplorerFilter = ({
                   <Button
                     variant="outlined"
                     onClick={handleSavePreset}
-                    startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
+                    startIcon={<>{presetOwner ? <CippIcons.Save /> : <CippIcons.CopyAll />}</>}
                     fullWidth
                   >
                     {presetOwner || !selectedPreset ? 'Save' : 'Copy'} Preset
                   </Button>
 
                   <Button
-                    startIcon={<Delete />}
+                    startIcon={<CippIcons.Delete />}
                     variant="outlined"
                     onClick={() => deletePreset(selectedPresetState)}
                     disabled={!presetOwner}
@@ -842,7 +835,7 @@ const CippGraphExplorerFilter = ({
                     onClick={handleImport}
                     variant="outlined"
                     color="primary"
-                    startIcon={<ImportExport />}
+                    startIcon={<CippIcons.ImportExport />}
                     fullWidth
                   >
                     Import/Export
@@ -863,7 +856,7 @@ const CippGraphExplorerFilter = ({
                       variant="contained"
                       color="primary"
                       type="submit"
-                      startIcon={<PlayCircle />}
+                      startIcon={<CippIcons.PlayCircle />}
                       fullWidth
                     >
                       Apply Filter
@@ -871,7 +864,7 @@ const CippGraphExplorerFilter = ({
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <Button
-                      startIcon={<CalendarMonthTwoTone />}
+                      startIcon={<CippIcons.CalendarMonthTwoTone />}
                       variant="outlined"
                       onClick={handleScheduleReport}
                       fullWidth
@@ -883,7 +876,7 @@ const CippGraphExplorerFilter = ({
                     <Button
                       variant="outlined"
                       onClick={handleSavePreset}
-                      startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
+                      startIcon={<>{presetOwner ? <CippIcons.Save /> : <CippIcons.CopyAll />}</>}
                       fullWidth
                     >
                       {presetOwner || !selectedPreset ? 'Save' : 'Copy'} Preset
@@ -892,7 +885,7 @@ const CippGraphExplorerFilter = ({
 
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <Button
-                      startIcon={<Delete />}
+                      startIcon={<CippIcons.Delete />}
                       variant="outlined"
                       onClick={() => deletePreset(selectedPresetState)}
                       disabled={!presetOwner}
@@ -907,7 +900,7 @@ const CippGraphExplorerFilter = ({
                       onClick={handleImport}
                       variant="outlined"
                       color="primary"
-                      startIcon={<ImportExport />}
+                      startIcon={<CippIcons.ImportExport />}
                       fullWidth
                     >
                       Import/Export

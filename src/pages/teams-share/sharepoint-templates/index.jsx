@@ -1,9 +1,9 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
 import { CippSharePointTemplateDeployDrawer } from '../../../components/CippComponents/CippSharePointTemplateDeployDrawer.jsx'
 import { usePermissions } from '../../../hooks/use-permissions'
 import { PermissionButton } from '../../../utils/permissions'
-import { Edit, ContentCopy, Delete, Add } from '@mui/icons-material'
 import { Stack } from '@mui/system'
 import Link from 'next/link'
 
@@ -17,21 +17,21 @@ const Page = () => {
     {
       label: 'Edit Template',
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'warning',
       link: '/teams-share/sharepoint-templates/add?template=[TemplateId]&name=[templateName]',
       condition: () => canWrite,
     },
     {
       label: 'Copy Template',
-      icon: <ContentCopy />,
+      icon: <CippIcons.ContentCopy />,
       color: 'info',
       link: '/teams-share/sharepoint-templates/add?template=[TemplateId]&copy=true&name=[templateName]',
       condition: () => canWrite,
     },
     {
       label: 'Delete Template',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       color: 'danger',
       type: 'POST',
       url: '/api/ExecSharePointTemplate',
@@ -77,7 +77,7 @@ const Page = () => {
             requiredPermissions={writePermissions}
             component={Link}
             href="/teams-share/sharepoint-templates/add"
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
           >
             Create New Template
           </PermissionButton>

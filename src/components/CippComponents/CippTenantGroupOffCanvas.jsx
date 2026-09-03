@@ -1,4 +1,5 @@
 import React from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Typography,
@@ -10,7 +11,6 @@ import {
   useTheme,
   Stack,
 } from "@mui/material";
-import { Groups, Business, Rule, Info } from "@mui/icons-material";
 import { CippDataTable } from "../CippTable/CippDataTable";
 
 export const CippTenantGroupOffCanvas = ({ data }) => {
@@ -163,7 +163,7 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
             gutterBottom
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
-            <Rule color="primary" />
+            <CippIcons.Rule color="primary" />
             Dynamic Rules
             {rules.length > 1 && (
               <Chip
@@ -204,7 +204,7 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
           }}
           title={"Members"}
           cardHeaderProps={{
-            avatar: <Business color="primary" />,
+            avatar: <CippIcons.Business color="primary" />,
           }}
         />
       </Box>
@@ -216,7 +216,7 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
       {/* Header Section */}
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <Groups color="primary" fontSize="large" />
+          <CippIcons.Groups color="primary" fontSize="large" />
           <Box>
             <Typography variant="h4" gutterBottom>
               {data.Name}
@@ -260,7 +260,7 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
               gutterBottom
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
-              <Info color="primary" />
+              <CippIcons.Info color="primary" />
               Additional Information
             </Typography>
             <Box

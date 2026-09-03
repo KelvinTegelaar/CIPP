@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
@@ -7,7 +8,6 @@ import CippPageCard from "../../../../../components/CippCards/CippPageCard";
 import { Alert, CardContent, Stack, Typography, Button, Box } from "@mui/material";
 import { CippFormComponent } from "../../../../../components/CippComponents/CippFormComponent";
 import { useEffect, useState } from "react";
-import { CopyAll } from "@mui/icons-material";
 
 const Page = () => {
   const router = useRouter();
@@ -189,7 +189,7 @@ const Page = () => {
                   <Button
                     variant="outlined"
                     onClick={handleImportTemplate}
-                    startIcon={<CopyAll />}
+                    startIcon={<CippIcons.CopyAll />}
                     disabled={!formControl.watch("importTemplate")}
                   >
                     Import

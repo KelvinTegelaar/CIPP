@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Button,
@@ -15,7 +16,6 @@ import {
   Typography,
 } from "@mui/material";
 import { flexRender } from "material-react-table";
-import { Info, MoreVert, MoreHoriz, SearchOff } from "@mui/icons-material";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { renderUrlValue } from "../../utils/render-url-value";
 import { getMobileCardSlots } from "./util-mobile-card-slots";
@@ -214,7 +214,7 @@ export const CippMobileCardList = (props) => {
         ) : totalFiltered === 0 ? (
           <Box sx={{ py: 5, textAlign: "center" }}>
             <SvgIcon sx={{ fontSize: 36, color: "text.secondary" }}>
-              {queueMessage ? <Info /> : <SearchOff />}
+              {queueMessage ? <CippIcons.Info /> : <CippIcons.SearchOff />}
             </SvgIcon>
             <Typography variant="subtitle1" sx={{ mt: 1 }}>
               {queueMessage ?? "No results"}
@@ -411,7 +411,7 @@ export const CippMobileCardList = (props) => {
                       }}
                       sx={{ position: "absolute", top: 4, right: 4, minWidth: 44, minHeight: 44 }}
                     >
-                      <MoreVert />
+                      <CippIcons.MoreVert />
                     </IconButton>
                   )}
                 </Card>
@@ -477,7 +477,7 @@ export const CippMobileCardList = (props) => {
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
               <SvgIcon fontSize="small">
-                <MoreHoriz />
+                <CippIcons.MoreHoriz />
               </SvgIcon>
             </ListItemIcon>
             <ListItemText primary="More Info" />

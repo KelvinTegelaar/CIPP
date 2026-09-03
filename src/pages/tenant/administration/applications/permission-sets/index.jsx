@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
-import { Edit, Delete, ContentCopy, Add } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
 import { Button } from "@mui/material";
 import Link from "next/link";
@@ -22,7 +22,7 @@ const Page = () => {
 
   const actions = [
     {
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       label: "Edit Permission Set",
       color: "warning",
       customComponent: (row, { drawerVisible, setDrawerVisible }) => (
@@ -37,13 +37,13 @@ const Page = () => {
       multiPost: false,
     },
     {
-      icon: <ContentCopy />,
+      icon: <CippIcons.ContentCopy />,
       label: "Copy Permission Set",
       color: "info",
       link: "/tenant/administration/applications/permission-sets/add?template=[TemplateId]&copy=true&name=[TemplateName]",
     },
     {
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       label: "Delete Permission Set",
       color: "danger",
       url: apiUrl,

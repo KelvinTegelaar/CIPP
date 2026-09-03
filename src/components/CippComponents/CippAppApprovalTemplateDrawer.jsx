@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Add, Edit } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import AppApprovalTemplateForm from "./AppApprovalTemplateForm";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
@@ -129,7 +129,7 @@ export const CippAppApprovalTemplateDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={isEditMode ? <Edit /> : <Add />}
+        startIcon={isEditMode ? <CippIcons.Edit /> : <CippIcons.Add />}
       >
         {buttonText}
       </PermissionButton>

@@ -1,20 +1,13 @@
 import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert, Tooltip } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry"
 import { useState, useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import {
-  ChevronDownIcon,
-  ClipboardDocumentIcon,
-  PencilIcon,
-  PlusSmallIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { Create, InfoOutlined, Key, Save, Sync } from "@mui/icons-material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { Box } from "@mui/system";
@@ -142,7 +135,7 @@ const CippApiClientManagement = () => {
       label: "Edit",
       icon: (
         <SvgIcon>
-          <PencilIcon />
+          <CippIcons.PencilIcon />
         </SvgIcon>
       ),
       confirmText: "Update the API client settings for [AppName]?",
@@ -202,7 +195,7 @@ const CippApiClientManagement = () => {
     },
     {
       label: "Reset Application Secret",
-      icon: <Key />,
+      icon: <CippIcons.Key />,
       confirmText: "Are you sure you want to reset the application secret for [AppName]?",
       type: "POST",
       url: "/api/ExecApiClient",
@@ -214,7 +207,7 @@ const CippApiClientManagement = () => {
     },
     {
       label: "Copy API Scope",
-      icon: <ClipboardDocumentIcon />,
+      icon: <CippIcons.ClipboardDocumentIcon />,
       noConfirm: true,
       customFunction: (row, action, formData) => {
         var scope = `api://${row.ClientId}/.default`;
@@ -224,7 +217,7 @@ const CippApiClientManagement = () => {
     },
     {
       label: "Delete Client",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       confirmText: "Are you sure you want to delete [AppName]?",
       type: "POST",
       url: "/api/ExecApiClient",
@@ -256,7 +249,7 @@ const CippApiClientManagement = () => {
                 variant="outlined"
                 startIcon={
                   <SvgIcon>
-                    <ChevronDownIcon />
+                    <CippIcons.ChevronDownIcon />
                   </SvgIcon>
                 }
               >
@@ -271,7 +264,7 @@ const CippApiClientManagement = () => {
                   }}
                 >
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                    <Create />
+                    <CippIcons.Create />
                   </SvgIcon>
                   <ListItemText>Create New Client</ListItemText>
                 </MenuItem>
@@ -282,7 +275,7 @@ const CippApiClientManagement = () => {
                   }}
                 >
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                    <PlusSmallIcon />
+                    <CippIcons.PlusSmallIcon />
                   </SvgIcon>
                   <ListItemText>Add Existing Client</ListItemText>
                 </MenuItem>
@@ -293,13 +286,13 @@ const CippApiClientManagement = () => {
                   }}
                 >
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                    <Sync />
+                    <CippIcons.Sync />
                   </SvgIcon>
                   <ListItemText>Refresh Configuration</ListItemText>
                 </MenuItem>
                 <MenuItem onClick={handleSaveToAzure}>
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                    <Save />
+                    <CippIcons.Save />
                   </SvgIcon>
                   <ListItemText>Save to Azure</ListItemText>
                 </MenuItem>
@@ -328,7 +321,7 @@ const CippApiClientManagement = () => {
                     text={`${azureConfig.data.Results.ApiUrl.replace(/\/+$/, "")}/api/ExecMcp`}
                   />
                   <Tooltip title="Use this full URL when adding CIPP as an MCP connector in an AI client (e.g. Claude custom connectors).">
-                    <InfoOutlined color="action" sx={{ fontSize: 16, verticalAlign: "middle" }} />
+                    <CippIcons.InfoOutlined color="action" sx={{ fontSize: 16, verticalAlign: "middle" }} />
                   </Tooltip>
                 </>
               ) : (

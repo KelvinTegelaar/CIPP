@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { CippIcons } from '../utils/icon-registry';
 import PropTypes from 'prop-types';
-import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import {
   Box,
   Button,
@@ -155,7 +155,7 @@ export const ImagesDialog = (props) => {
                     }}
                   >
                     <SvgIcon fontSize="small">
-                      <TrashIcon />
+                      <CippIcons.TrashIcon />
                     </SvgIcon>
                   </IconButton>
                 </Box>

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Box,
   Card,
@@ -12,14 +13,6 @@ import {
 } from '@mui/material'
 import { Grid } from '@mui/system'
 import Link from 'next/link'
-import {
-  ArrowTrendingDownIcon,
-  ArrowTrendingUpIcon,
-  EyeIcon,
-  ExclamationTriangleIcon,
-  ShieldCheckIcon,
-  TrophyIcon,
-} from '@heroicons/react/24/outline'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
 import { getCippError } from '../../utils/get-cipp-error'
 import { CippInfoBar } from '../CippCards/CippInfoBar'
@@ -166,20 +159,20 @@ export const AllTenantsSecureScoreSummary = () => {
     {
       name: 'Portfolio average',
       data: `${summary.average}%`,
-      icon: <ShieldCheckIcon />,
+      icon: <CippIcons.ShieldCheckIcon />,
       toolTip: `Average of each tenant's latest cached score, across ${summary.scored} tenants`,
     },
     {
       name: summary.trend.length > 1 ? `Change over ${summary.trend.length} days` : 'Change',
       data: deltaLabel,
-      icon: summary.delta < 0 ? <ArrowTrendingDownIcon /> : <ArrowTrendingUpIcon />,
+      icon: summary.delta < 0 ? <CippIcons.ArrowTrendingDownIcon /> : <CippIcons.ArrowTrendingUpIcon />,
       color: summary.delta < 0 ? 'error' : summary.delta > 0 ? 'success' : 'primary',
       toolTip: 'Movement of the portfolio average across the retained history window',
     },
     {
       name: 'Highest',
       data: summary.best ? `${summary.best.percent}%` : '—',
-      icon: <TrophyIcon />,
+      icon: <CippIcons.TrophyIcon />,
       color: 'success',
       toolTip: summary.best
         ? `${summary.best.name} — ${summary.best.current} of ${summary.best.max} points`
@@ -188,7 +181,7 @@ export const AllTenantsSecureScoreSummary = () => {
     {
       name: 'Lowest',
       data: summary.worst ? `${summary.worst.percent}%` : '—',
-      icon: <ExclamationTriangleIcon />,
+      icon: <CippIcons.ExclamationTriangleIcon />,
       color: 'error',
       toolTip: summary.worst
         ? `${summary.worst.name} — ${summary.worst.current} of ${summary.worst.max} points`
@@ -295,7 +288,7 @@ export const AllTenantsSecureScoreTable = () => {
         {
           label: 'View tenant secure score',
           link: '/tenant/administration/securescore?tenantFilter=[Tenant]',
-          icon: <EyeIcon />,
+          icon: <CippIcons.EyeIcon />,
         },
       ]}
     />

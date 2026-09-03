@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Delete } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { CippAutopilotProfileDrawer } from "../../../../components/CippComponents/CippAutopilotProfileDrawer";
 
@@ -10,7 +10,7 @@ const Page = () => {
   const actions = [
     {
       label: "Delete Profile",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       type: "POST",
       url: "/api/RemoveAutopilotConfig",
       data: { ID: "id", displayName: "displayName", assignments: "assignments" },

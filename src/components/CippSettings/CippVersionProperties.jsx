@@ -1,6 +1,6 @@
 import { Box, Button, Stack, SvgIcon } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
-import { CheckCircle, ContentCopy, SystemUpdateAlt, Warning } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useEffect, useState } from "react";
 
@@ -36,7 +36,7 @@ const CippVersionProperties = () => {
     return (
       <Box>
         <SvgIcon fontSize="inherit" style={{ marginRight: 3 }}>
-          {outOfDate === true ? <Warning color="warning" /> : <CheckCircle color="success" />}
+          {outOfDate === true ? <CippIcons.Warning color="warning" /> : <CippIcons.CheckCircle color="success" />}
         </SvgIcon>
         <span style={{ marginRight: 10 }}>v{version}</span>{" "}
         {outOfDate === true ? `(v${availableVersion} is available)` : ""}
@@ -96,7 +96,7 @@ const CippVersionProperties = () => {
         <Stack direction="row" spacing={1}>
           <Button variant="outlined" size="small" onClick={handleCopy}>
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-              <ContentCopy />
+              <CippIcons.ContentCopy />
             </SvgIcon>
             {copied ? "Copied!" : "Copy for Ticket"}
           </Button>
@@ -110,7 +110,7 @@ const CippVersionProperties = () => {
             }}
           >
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-              <SystemUpdateAlt />
+              <CippIcons.SystemUpdateAlt />
             </SvgIcon>
             Check For Updates
           </Button>

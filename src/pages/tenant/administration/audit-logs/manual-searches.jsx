@@ -1,9 +1,8 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { CippAuditLogSearchDrawer } from "../../../../components/CippComponents/CippAuditLogSearchDrawer.jsx";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { ManageSearch } from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "../../../../hooks/use-settings";
 
@@ -18,7 +17,7 @@ const actions = [
     link: "/tenant/administration/audit-logs/search-results?id=[id]&name=[displayName]",
     pinned: true,
     color: "primary",
-    icon: <EyeIcon />,
+    icon: <CippIcons.EyeIcon />,
   },
   {
     label: "Process Logs",
@@ -30,7 +29,7 @@ const actions = [
       Action: "ProcessLogs",
       SearchId: "id",
     },
-    icon: <ManageSearch />,
+    icon: <CippIcons.ManageSearch />,
   },
 ];
 

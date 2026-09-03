@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Avatar,
   Button,
@@ -11,7 +12,6 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import { ArrowRightIcon, CubeIcon } from "@heroicons/react/24/outline";
 
 export const CippInfoCard = (props) => {
   const { isFetching, actionLink, actionText, value, icon, label, cardSize, ...other } = props;
@@ -31,7 +31,7 @@ export const CippInfoCard = (props) => {
             color: "primary.main",
           }}
         >
-          <SvgIcon fontSize="small">{icon ? icon : <CubeIcon />}</SvgIcon>
+          <SvgIcon fontSize="small">{icon ? icon : <CippIcons.CubeIcon />}</SvgIcon>
         </Avatar>
         <div>
           <Typography variant="overline" sx={{
@@ -56,7 +56,7 @@ export const CippInfoCard = (props) => {
               component={Link}
               endIcon={
                 <SvgIcon fontSize="small">
-                  <ArrowRightIcon />
+                  <CippIcons.ArrowRightIcon />
                 </SvgIcon>
               }
               href={actionLink}

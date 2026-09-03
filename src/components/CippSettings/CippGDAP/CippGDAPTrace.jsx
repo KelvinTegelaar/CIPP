@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useMemo } from "react";
-import { Security } from "@mui/icons-material";
+import { CippIcons } from "../../../utils/icon-registry"
 import { useDialog } from "../../../hooks/use-dialog";
 import { CippGDAPTraceDialog } from "./CippGDAPTraceDialog";
 
@@ -42,7 +42,7 @@ export function useCippGDAPTrace() {
   const traceGdapAction = useMemo(
     () => ({
       label: "Trace GDAP",
-      icon: <Security />,
+      icon: <CippIcons.Security />,
       noConfirm: true,
       customFunction: (row) => ref.current?.open(row),
       // Direct tenants have no GDAP relationship to trace.

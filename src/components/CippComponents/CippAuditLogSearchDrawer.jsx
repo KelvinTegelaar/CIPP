@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Button, Stack, Box } from "@mui/material";
-import { Add } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
@@ -418,7 +418,7 @@ export const CippAuditLogSearchDrawer = ({
 
   return (
     <>
-      <Button onClick={() => setDrawerVisible(true)} startIcon={<Add />}>
+      <Button onClick={() => setDrawerVisible(true)} startIcon={<CippIcons.Add />}>
         {buttonText}
       </Button>
       <CippOffCanvas

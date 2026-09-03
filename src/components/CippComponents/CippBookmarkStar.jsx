@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import { IconButton, Tooltip } from '@mui/material'
-import BookmarkIcon from '@mui/icons-material/Bookmark'
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import { MAX_BOOKMARKS, useUserBookmarks } from '../../hooks/use-user-bookmarks'
 
 /**
@@ -52,9 +51,9 @@ export const CippBookmarkStar = ({ label, category = '' }) => {
           sx={{ p: 0.5, color: bookmarked ? 'primary.main' : 'neutral.500' }}
         >
           {bookmarked ? (
-            <BookmarkIcon fontSize="small" />
+            <CippIcons.Bookmark fontSize="small" />
           ) : (
-            <BookmarkBorderIcon fontSize="small" />
+            <CippIcons.BookmarkBorder fontSize="small" />
           )}
         </IconButton>
       </span>

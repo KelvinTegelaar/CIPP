@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
   Box,
@@ -11,19 +12,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import {
-  CheckCircle,
-  NewReleases,
-  Schedule,
-  Layers,
-  Sell,
-  HelpOutlined,
-  Refresh,
-  CloudSync,
-  RestartAlt,
-  Save,
-  SwapHoriz,
-} from '@mui/icons-material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch } from 'react-hook-form'
 import CippFormComponent from '../CippComponents/CippFormComponent'
@@ -280,21 +268,21 @@ export const CippContainerManagement = () => {
     ])
 
     const updateState = !updateSettings?.LastCheck
-      ? { label: 'Never checked', color: 'primary', icon: <HelpOutlined /> }
+      ? { label: 'Never checked', color: 'primary', icon: <CippIcons.HelpOutlined /> }
       : updateSettings.UpdateAvailable
-        ? { label: 'Update available', color: 'info', icon: <NewReleases /> }
-        : { label: 'Up to date', color: 'success', icon: <CheckCircle /> }
+        ? { label: 'Update available', color: 'info', icon: <CippIcons.NewReleases /> }
+        : { label: 'Up to date', color: 'success', icon: <CippIcons.CheckCircle /> }
 
     return [
       {
-        icon: <Layers />,
+        icon: <CippIcons.Layers />,
         name: 'Release Channel',
         data: channelInfo.label,
         color: channelInfo.color === 'default' ? 'primary' : channelInfo.color,
         toolTip: `Running image tag: ${data?.ImageTag ?? 'unknown'}`,
       },
       {
-        icon: <Sell />,
+        icon: <CippIcons.Sell />,
         name: 'App Version',
         data: commit ? `${version} @${commit}` : version,
         color: 'primary',
@@ -312,7 +300,7 @@ export const CippContainerManagement = () => {
           : undefined,
       },
       {
-        icon: <Schedule />,
+        icon: <CippIcons.Schedule />,
         name: 'Last Checked',
         data: relativeTime(updateSettings?.LastCheck) ?? 'Never',
         color: 'primary',
@@ -377,7 +365,7 @@ export const CippContainerManagement = () => {
               container registry and can trip auto-restart when an update is found. */}
           <Button
             variant="text"
-            startIcon={<Refresh />}
+            startIcon={<CippIcons.Refresh />}
             onClick={() => containerStatus.refetch()}
             disabled={containerStatus.isFetching}
           >
@@ -385,7 +373,7 @@ export const CippContainerManagement = () => {
           </Button>
           <Button
             variant="outlined"
-            startIcon={<CloudSync />}
+            startIcon={<CippIcons.CloudSync />}
             onClick={() => checkDialog.handleOpen()}
             disabled={updateCheckAction.isPending}
           >
@@ -394,7 +382,7 @@ export const CippContainerManagement = () => {
           <Button
             variant="outlined"
             color="warning"
-            startIcon={<RestartAlt />}
+            startIcon={<CippIcons.RestartAlt />}
             onClick={() => restartDialog.handleOpen()}
             disabled={restartAction.isPending}
           >
@@ -417,7 +405,7 @@ export const CippContainerManagement = () => {
                 >
                   <Button
                     variant="contained"
-                    startIcon={<SwapHoriz />}
+                    startIcon={<CippIcons.SwapHoriz />}
                     onClick={handleUpdateChannel}
                     disabled={channelAction.isPending}
                   >
@@ -487,7 +475,7 @@ export const CippContainerManagement = () => {
                 >
                   <Button
                     variant="contained"
-                    startIcon={<Save />}
+                    startIcon={<CippIcons.Save />}
                     onClick={handleSaveUpdateSettings}
                     disabled={updateSettingsAction.isPending}
                   >
@@ -604,7 +592,7 @@ export const CippContainerManagement = () => {
           <Button
             variant="contained"
             color={autoUpdateEnabled ? 'warning' : 'primary'}
-            startIcon={autoUpdateEnabled ? <RestartAlt /> : <CloudSync />}
+            startIcon={autoUpdateEnabled ? <CippIcons.RestartAlt /> : <CippIcons.CloudSync />}
             onClick={handleCheckUpdate}
             disabled={updateCheckAction.isPending}
           >
@@ -638,7 +626,7 @@ export const CippContainerManagement = () => {
           <Button
             variant="contained"
             color="warning"
-            startIcon={<RestartAlt />}
+            startIcon={<CippIcons.RestartAlt />}
             onClick={handleRestart}
             disabled={restartAction.isPending}
           >

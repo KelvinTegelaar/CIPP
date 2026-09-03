@@ -1,12 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage'
-import {
-  TrashIcon,
-  PencilIcon,
-  UserIcon,
-  UserGroupIcon,
-  GlobeAltIcon,
-} from '@heroicons/react/24/outline'
 import { showToast } from '../../../../store/toasts'
 import {
   Alert,
@@ -24,7 +18,6 @@ import {
 import { CippCodeBlock } from '../../../../components/CippComponents/CippCodeBlock'
 import { useState, useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
-import { Close, Save, LaptopChromebook } from '@mui/icons-material'
 import { useSettings } from '../../../../hooks/use-settings'
 import { Stack } from '@mui/system'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -296,7 +289,7 @@ const Page = () => {
       type: 'POST',
       url: '/api/ExecAssignPolicy',
       allowResubmit: true,
-      icon: <UserIcon />,
+      icon: <CippIcons.UserIcon />,
       color: 'info',
       fields: [
         {
@@ -323,7 +316,7 @@ const Page = () => {
       type: 'POST',
       url: '/api/ExecAssignPolicy',
       allowResubmit: true,
-      icon: <LaptopChromebook />,
+      icon: <CippIcons.LaptopChromebook />,
       color: 'info',
       fields: [
         {
@@ -350,7 +343,7 @@ const Page = () => {
       type: 'POST',
       url: '/api/ExecAssignPolicy',
       allowResubmit: true,
-      icon: <GlobeAltIcon />,
+      icon: <CippIcons.GlobeAltIcon />,
       color: 'info',
       fields: [
         {
@@ -377,7 +370,7 @@ const Page = () => {
       type: 'POST',
       url: '/api/ExecAssignPolicy',
       allowResubmit: true,
-      icon: <UserGroupIcon />,
+      icon: <CippIcons.UserGroupIcon />,
       color: 'info',
       confirmText: 'Select the target groups for "[displayName]".',
       fields: [
@@ -445,7 +438,7 @@ const Page = () => {
     },
     {
       label: 'Edit Script',
-      icon: <PencilIcon />,
+      icon: <CippIcons.Edit />,
       color: 'primary',
       noConfirm: true,
       customFunction: handleScriptEdit,
@@ -460,7 +453,7 @@ const Page = () => {
         ScriptType: 'scriptType',
       },
       confirmText: 'Are you sure you want to delete this script?',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       color: 'danger',
     },
   ]
@@ -514,7 +507,7 @@ const Page = () => {
               onClick={codeClosed}
               sx={{ position: 'absolute', right: 8, top: 8 }}
             >
-              <Close />
+              <CippIcons.Close />
             </IconButton>
           )}
           {!isSaving && !isReadOnly && contentFields.length > 0 && (
@@ -523,7 +516,7 @@ const Page = () => {
               onClick={saveCode}
               sx={{ position: 'absolute', right: 50, top: 8 }}
             >
-              <Save />
+              <CippIcons.Save />
             </IconButton>
           )}
           {isSaving && (

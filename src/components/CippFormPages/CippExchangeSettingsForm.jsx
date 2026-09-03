@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Button,
@@ -12,7 +13,6 @@ import {
   CircularProgress,
   IconButton,
 } from "@mui/material";
-import { Check, Error, Sync } from "@mui/icons-material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
@@ -20,7 +20,6 @@ import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useWatch } from "react-hook-form";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import CippForwardingSection from "../CippComponents/CippForwardingSection";
 
 const CippExchangeSettingsForm = (props) => {
@@ -167,9 +166,9 @@ const CippExchangeSettingsForm = (props) => {
         cardLabelBoxHeader: isFetching ? (
           <CircularProgress size="25px" color="inherit" />
         ) : currentSettings?.ForwardingAddress ? (
-          <Check />
+          <CippIcons.Check />
         ) : (
-          <Error />
+          <CippIcons.Error />
         ),
       },
       text: "Mailbox Forwarding",
@@ -485,7 +484,7 @@ const CippExchangeSettingsForm = (props) => {
                             },
                           }}
                         >
-                          <Sync />
+                          <CippIcons.Sync />
                         </SvgIcon>
                       </IconButton>
                     </span>
@@ -498,7 +497,7 @@ const CippExchangeSettingsForm = (props) => {
                     transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
                   }}
                 >
-                  <ChevronDownIcon />
+                  <CippIcons.ChevronDownIcon />
                 </SvgIcon>
               </Stack>
             </Box>

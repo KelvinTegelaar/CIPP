@@ -1,23 +1,7 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import {
-  Add,
-  AddToPhotos,
-  PersonAdd,
-  PersonRemove,
-  AdminPanelSettings,
-  NoAccounts,
-  Delete,
-  CleaningServices,
-  Assessment,
-  FolderShared,
-  Launch,
-  ManageAccounts,
-  PersonSearch,
-  RestoreFromTrash,
-  Settings,
-} from '@mui/icons-material'
 import Link from 'next/link'
 import { Stack } from '@mui/system'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
@@ -209,7 +193,7 @@ const Page = () => {
     {
       label: 'Add Member',
       type: 'POST',
-      icon: <PersonAdd />,
+      icon: <CippIcons.PersonAdd />,
       url: '/api/ExecSetSharePointMember',
       data: {
         groupId: 'ownerPrincipalName',
@@ -264,7 +248,7 @@ const Page = () => {
     {
       label: 'Remove Member',
       type: 'POST',
-      icon: <PersonRemove />,
+      icon: <CippIcons.PersonRemove />,
       url: '/api/ExecSetSharePointMember',
       data: {
         groupId: 'ownerPrincipalName',
@@ -323,7 +307,7 @@ const Page = () => {
     {
       label: 'Remove User From Site',
       type: 'POST',
-      icon: <NoAccounts />,
+      icon: <CippIcons.NoAccounts />,
       url: '/api/ExecRemoveSiteUser',
       data: {
         SiteUrl: 'webUrl',
@@ -375,7 +359,7 @@ const Page = () => {
     {
       label: 'Revoke Sharing Links',
       type: 'POST',
-      icon: <FolderShared />,
+      icon: <CippIcons.FolderShared />,
       url: '/api/ExecBulkRemoveSharingLinks',
       data: {
         SiteUrl: 'webUrl',
@@ -403,7 +387,7 @@ const Page = () => {
     {
       label: 'Edit Site',
       type: 'POST',
-      icon: <Settings />,
+      icon: <CippIcons.Settings />,
       url: '/api/ExecSetSiteProperties',
       confirmText:
         'Edit site properties for [displayName]. Fields are prefilled with the current values.',
@@ -467,7 +451,7 @@ const Page = () => {
     {
       label: 'Add Site Admin',
       type: 'POST',
-      icon: <AdminPanelSettings />,
+      icon: <CippIcons.AdminPanelSettings />,
       url: '/api/ExecSharePointPerms',
       data: {
         UPN: 'ownerPrincipalName',
@@ -507,7 +491,7 @@ const Page = () => {
     {
       label: 'Remove Site Admin',
       type: 'POST',
-      icon: <NoAccounts />,
+      icon: <CippIcons.NoAccounts />,
       url: '/api/ExecSharePointPerms',
       data: {
         UPN: 'ownerPrincipalName',
@@ -548,7 +532,7 @@ const Page = () => {
       // Read access is enough to open this: the dialog gates every change on write access,
       // so a read-only admin can still inspect who has what.
       label: 'Manage Permissions',
-      icon: <ManageAccounts />,
+      icon: <CippIcons.ManageAccounts />,
       condition: () => canReadSite,
       customComponent: (row, { drawerVisible, setDrawerVisible }) => (
         <CippLibraryPermissionsDialog
@@ -564,7 +548,7 @@ const Page = () => {
     {
       // Answers "does this person have access, and how" rather than "who holds permissions".
       label: 'Check User Access',
-      icon: <PersonSearch />,
+      icon: <CippIcons.PersonSearch />,
       condition: () => canReadSite,
       customComponent: (row, { drawerVisible, setDrawerVisible }) => (
         <CippCheckUserAccessDialog
@@ -580,7 +564,7 @@ const Page = () => {
     {
       label: 'Delete Site',
       type: 'POST',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       url: '/api/DeleteSharepointSite',
       data: {
         SiteId: 'siteId',
@@ -609,7 +593,7 @@ const Page = () => {
     {
       label: 'Start Version Cleanup Job',
       type: 'POST',
-      icon: <CleaningServices />,
+      icon: <CippIcons.CleaningServices />,
       url: '/api/ExecSPOVersionCleanup',
       data: {
         SiteUrl: 'webUrl',
@@ -698,7 +682,7 @@ const Page = () => {
     },
     {
       label: 'Recycle Bin',
-      icon: <RestoreFromTrash />,
+      icon: <CippIcons.RestoreFromTrash />,
       condition: () => canReadRecycleBin,
       customComponent: (row, { drawerVisible, setDrawerVisible }) => (
         <CippSiteRecycleBinDialog
@@ -713,7 +697,7 @@ const Page = () => {
     },
     {
       label: 'Check Cleanup Job Status',
-      icon: <Assessment />,
+      icon: <CippIcons.Assessment />,
       condition: () => canReadSite,
       customComponent: (row, { drawerVisible, setDrawerVisible }) => (
         <VersionCleanupStatusModal
@@ -782,7 +766,7 @@ const Page = () => {
             link: '[webUrl]',
             external: true,
             target: '_blank',
-            icon: <Launch fontSize="small" />,
+            icon: <CippIcons.Launch />,
             multiPost: false,
             condition: (row) => Boolean(row?.webUrl),
           },
@@ -810,13 +794,13 @@ const Page = () => {
     <Stack direction="row" spacing={1} sx={{
       alignItems: "center"
     }}>
-      <Button component={Link} href="/teams-share/sharepoint/add-site" startIcon={<Add />}>
+      <Button component={Link} href="/teams-share/sharepoint/add-site" startIcon={<CippIcons.Add />}>
         Add Site
       </Button>
       <Button
         component={Link}
         href="/teams-share/sharepoint/bulk-add-site"
-        startIcon={<AddToPhotos />}
+        startIcon={<CippIcons.AddToPhotos />}
       >
         Bulk Add Sites
       </Button>

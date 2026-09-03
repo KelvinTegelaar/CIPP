@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Box,
   Button,
@@ -11,7 +12,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { Close, Download, PictureAsPdf } from '@mui/icons-material'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import { CippPdfPreview } from './CippPdfPreview'
 import {
@@ -440,7 +440,7 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
           <Button
             size="small"
             variant="outlined"
-            startIcon={<PictureAsPdf />}
+            startIcon={<CippIcons.PictureAsPdf />}
             onClick={handleOpen}
             disabled={!hasData}
           >
@@ -469,7 +469,7 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
               Sharing Report Preview
             </Typography>
             <IconButton onClick={() => setDialogOpen(false)} size="small">
-              <Close />
+              <CippIcons.Close />
             </IconButton>
           </Box>
         </DialogTitle>
@@ -495,7 +495,7 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
             {({ loading }) => (
               <Button
                 variant="contained"
-                startIcon={loading ? <CircularProgress size={20} /> : <Download />}
+                startIcon={loading ? <CircularProgress size={20} /> : <CippIcons.Download />}
                 disabled={loading}
               >
                 {loading ? 'Generating…' : 'Download PDF'}

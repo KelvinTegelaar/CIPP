@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { useFieldArray, useWatch, Controller } from "react-hook-form";
 import {
   Box,
@@ -20,19 +21,6 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import {
-  Add,
-  Category,
-  Delete,
-  Folder,
-  Label,
-  Lock,
-  MoreVert,
-  Translate,
-  VpnKey,
-  ViewColumn,
-  Web,
-} from "@mui/icons-material";
 import CippFormComponent from "./CippFormComponent";
 import { CippSharePointPermissionEditor } from "./CippSharePointPermissionEditor";
 import SharePointIcon from "../../icons/iconly/bulk/sharepoint";
@@ -201,7 +189,7 @@ const LibraryRow = ({ formControl, name, onRemove, onConfigurePermissions }) => 
       }}
     >
       <Tooltip title={missingName ? "Library name required" : "Document library"}>
-        <Folder fontSize="small" sx={{ color: missingName ? "error.main" : "text.secondary" }} />
+        <CippIcons.Folder fontSize="small" sx={{ color: missingName ? "error.main" : "text.secondary" }} />
       </Tooltip>
       <Controller
         name={`${name}.name`}
@@ -219,7 +207,7 @@ const LibraryRow = ({ formControl, name, onRemove, onConfigurePermissions }) => 
       />
       {permCount > 0 && (
         <Tooltip title={`${permCount} unique permission${permCount > 1 ? "s" : ""}`}>
-          <Lock fontSize="small" sx={{ color: "warning.main" }} />
+          <CippIcons.Lock fontSize="small" sx={{ color: "warning.main" }} />
         </Tooltip>
       )}
       <Tooltip title="Library actions">
@@ -228,7 +216,7 @@ const LibraryRow = ({ formControl, name, onRemove, onConfigurePermissions }) => 
           aria-label="Library actions"
           onClick={(e) => setAnchorEl(e.currentTarget)}
         >
-          <MoreVert fontSize="small" />
+          <CippIcons.MoreVert fontSize="small" />
         </IconButton>
       </Tooltip>
       <Menu anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
@@ -239,7 +227,7 @@ const LibraryRow = ({ formControl, name, onRemove, onConfigurePermissions }) => 
           }}
         >
           <ListItemIcon>
-            <VpnKey fontSize="small" />
+            <CippIcons.VpnKey fontSize="small" />
           </ListItemIcon>
           <ListItemText>{permCount > 0 ? "Edit Permissions" : "Add Permissions"}</ListItemText>
         </MenuItem>
@@ -247,7 +235,7 @@ const LibraryRow = ({ formControl, name, onRemove, onConfigurePermissions }) => 
           <span>
             <MenuItem disabled>
               <ListItemIcon>
-                <ViewColumn fontSize="small" />
+                <CippIcons.ViewColumn fontSize="small" />
               </ListItemIcon>
               <ListItemText>Add Column</ListItemText>
             </MenuItem>
@@ -257,7 +245,7 @@ const LibraryRow = ({ formControl, name, onRemove, onConfigurePermissions }) => 
           <span>
             <MenuItem disabled>
               <ListItemIcon>
-                <Label fontSize="small" />
+                <CippIcons.Label fontSize="small" />
               </ListItemIcon>
               <ListItemText>Manage Metadata</ListItemText>
             </MenuItem>
@@ -272,7 +260,7 @@ const LibraryRow = ({ formControl, name, onRemove, onConfigurePermissions }) => 
           sx={{ color: "error.main" }}
         >
           <ListItemIcon>
-            <Delete fontSize="small" sx={{ color: "error.main" }} />
+            <CippIcons.Delete fontSize="small" sx={{ color: "error.main" }} />
           </ListItemIcon>
           <ListItemText>Remove Library</ListItemText>
         </MenuItem>
@@ -546,7 +534,7 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
               onClick={() => onConfigurePermissions()}
               sx={{ color: permCount > 0 ? "#fff" : "error.main" }}
             >
-              <Lock fontSize="small" />
+              <CippIcons.Lock fontSize="small" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Site actions">
@@ -556,7 +544,7 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
               onClick={(e) => setAnchorEl(e.currentTarget)}
               sx={{ color: "#fff" }}
             >
-              <MoreVert fontSize="small" />
+              <CippIcons.MoreVert fontSize="small" />
             </IconButton>
           </Tooltip>
         </Box>
@@ -587,7 +575,7 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
             }}
           >
             <ListItemIcon>
-              <VpnKey fontSize="small" />
+              <CippIcons.VpnKey fontSize="small" />
             </ListItemIcon>
             <ListItemText>{permCount > 0 ? "Edit Site Permissions" : "Add Site Permissions"}</ListItemText>
           </MenuItem>
@@ -600,7 +588,7 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
             }}
           >
             <ListItemIcon>
-              <Category fontSize="small" />
+              <CippIcons.Category fontSize="small" />
             </ListItemIcon>
             <ListItemText
               primary="Change Site Type"
@@ -615,7 +603,7 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
               }}
             >
               <ListItemIcon>
-                <Translate fontSize="small" />
+                <CippIcons.Translate fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Site Language" />
             </MenuItem>
@@ -628,7 +616,7 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
               }}
             >
               <ListItemIcon>
-                <Web fontSize="small" />
+                <CippIcons.Web fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Create as" />
             </MenuItem>
@@ -642,7 +630,7 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
             sx={{ color: "error.main" }}
           >
             <ListItemIcon>
-              <Delete fontSize="small" sx={{ color: "error.main" }} />
+              <CippIcons.Delete fontSize="small" sx={{ color: "error.main" }} />
             </ListItemIcon>
             <ListItemText>Remove Site Template</ListItemText>
           </MenuItem>
@@ -710,7 +698,7 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
               "&:hover": { bgcolor: "action.hover" },
             }}
           >
-            <Add fontSize="small" />
+            <CippIcons.Add fontSize="small" />
             <Typography variant="body2">Add Library</Typography>
           </Box>
         </Stack>
@@ -992,7 +980,7 @@ export const CippSharePointTemplateBuilder = ({ formControl }) => {
               aria-label="Site template actions"
               onClick={(e) => setActionsAnchor(e.currentTarget)}
             >
-              <MoreVert />
+              <CippIcons.MoreVert />
             </IconButton>
           </Tooltip>
           <Menu
@@ -1007,7 +995,7 @@ export const CippSharePointTemplateBuilder = ({ formControl }) => {
               }}
             >
               <ListItemIcon>
-                <Category fontSize="small" />
+                <CippIcons.Category fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Override site types…" />
             </MenuItem>

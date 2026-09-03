@@ -1,8 +1,8 @@
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
 import CippPermissionPreview from "../../../../../components/CippComponents/CippPermissionPreview.jsx";
-import { Edit, Delete, ContentCopy, Add, GitHub, RocketLaunch } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
 import { ApiGetCall } from "../../../../../api/ApiCall";
 import { Button } from "@mui/material";
@@ -23,20 +23,20 @@ const Page = () => {
 
   const actions = [
     {
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       label: "Edit Template",
       pinned: true,
       color: "warning",
       link: "/tenant/administration/applications/templates/edit?template=[TemplateId]&name=[TemplateName]",
     },
     {
-      icon: <ContentCopy />,
+      icon: <CippIcons.ContentCopy />,
       label: "Copy Template",
       color: "info",
       link: "/tenant/administration/applications/templates/add?template=[TemplateId]&copy=true&name=[TemplateName]",
     },
     {
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
@@ -81,7 +81,7 @@ const Page = () => {
       condition: () => integrations.isSuccess && integrations?.data?.GitHub?.Enabled,
     },
     {
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       label: "Delete Template",
       color: "danger",
       url: "/api/ExecAppApprovalTemplate",
@@ -227,7 +227,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/tenant/administration/applications/templates/add"
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
             sx={{ mr: 1 }}
           >
             Add Template
@@ -235,7 +235,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/tenant/tools/appapproval"
-            startIcon={<RocketLaunch />}
+            startIcon={<CippIcons.RocketLaunch />}
             sx={{ mr: 1 }}
           >
             Deploy Template

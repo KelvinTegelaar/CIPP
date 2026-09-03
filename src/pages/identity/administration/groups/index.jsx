@@ -1,20 +1,8 @@
 import { Button } from '@mui/material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import Link from 'next/link'
-import { TrashIcon, EyeIcon } from '@heroicons/react/24/outline'
-import {
-  Visibility,
-  GroupAdd,
-  Edit,
-  LockOpen,
-  Lock,
-  GroupSharp,
-  CloudSync,
-  RocketLaunch,
-  PersonAdd,
-  PersonRemove,
-} from '@mui/icons-material'
 import { Stack } from '@mui/system'
 import { useSettings } from '../../../../hooks/use-settings'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
@@ -46,7 +34,7 @@ const Page = () => {
       link: `/identity/administration/groups/group?groupId=[id]&tenantFilter=${tenantQuery}`,
       pinned: true,
       color: 'info',
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       multiPost: false,
     },
     {
@@ -55,14 +43,14 @@ const Page = () => {
       link: '/identity/administration/groups/edit?groupId=[id]&groupType=[groupType]',
       pinned: true,
       multiPost: false,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'success',
     },
     {
       label: 'Add Member',
       type: 'POST',
       url: '/api/EditGroup',
-      icon: <PersonAdd />,
+      icon: <CippIcons.PersonAdd />,
       customDataformatter: (row, action, formData) => {
         // Members picked in the dialog already carry {label, value: id, addedFields}
         const addMember = [...(formData.AddMember ?? [])]
@@ -139,7 +127,7 @@ const Page = () => {
       label: 'Set Global Address List Visibility',
       type: 'POST',
       url: '/api/ExecGroupsHideFromGAL',
-      icon: <Visibility />,
+      icon: <CippIcons.EyeIcon />,
       data: {
         ID: 'mail',
         GroupType: 'groupType',
@@ -164,7 +152,7 @@ const Page = () => {
       label: 'Only allow messages from people inside the organisation',
       type: 'POST',
       url: '/api/ExecGroupsDeliveryManagement',
-      icon: <Lock />,
+      icon: <CippIcons.Lock />,
       data: {
         ID: 'mail',
         GroupType: 'groupType',
@@ -177,7 +165,7 @@ const Page = () => {
     {
       label: 'Allow messages from people inside and outside the organisation',
       type: 'POST',
-      icon: <LockOpen />,
+      icon: <CippIcons.LockOpen />,
       url: '/api/ExecGroupsDeliveryManagement',
       data: {
         ID: 'mail',
@@ -192,7 +180,7 @@ const Page = () => {
       label: 'Set Source of Authority',
       type: 'POST',
       url: '/api/ExecSetCloudManaged',
-      icon: <CloudSync />,
+      icon: <CippIcons.CloudSync />,
       data: {
         ID: 'id',
         displayName: 'displayName',
@@ -245,7 +233,7 @@ const Page = () => {
       label: 'Create template based on group',
       type: 'POST',
       url: '/api/AddGroupTemplate',
-      icon: <GroupSharp />,
+      icon: <CippIcons.GroupSharp />,
       data: {
         displayName: 'displayName',
         description: 'description',
@@ -261,7 +249,7 @@ const Page = () => {
       label: 'Create Team from Group',
       type: 'POST',
       url: '/api/AddGroupTeam',
-      icon: <GroupAdd />,
+      icon: <CippIcons.GroupAdd />,
       data: {
         GroupId: 'id',
       },
@@ -395,7 +383,7 @@ const Page = () => {
       label: 'Delete Group',
       type: 'POST',
       url: '/api/ExecGroupsDelete',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: 'id',
         GroupType: 'groupType',
@@ -431,13 +419,13 @@ const Page = () => {
           <Stack direction="row" spacing={1} sx={{
             alignItems: "center"
           }}>
-            <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
+            <Button component={Link} href="groups/add" startIcon={<CippIcons.GroupAdd />}>
               Add Group
             </Button>
             <Button
               component={Link}
               href="/identity/administration/group-templates/deploy"
-              startIcon={<RocketLaunch />}
+              startIcon={<CippIcons.RocketLaunch />}
             >
               Deploy Group Template
             </Button>
@@ -497,7 +485,7 @@ const Page = () => {
                   link: `/identity/administration/users/user?userId=[id]&tenantFilter=${nestedTenantQuery}`,
                   pinned: true,
                   color: 'info',
-                  icon: <EyeIcon />,
+                  icon: <CippIcons.EyeIcon />,
                   condition: (row) =>
                     !row?.['@odata.type'] || row['@odata.type'] === '#microsoft.graph.user',
                 },
@@ -506,14 +494,14 @@ const Page = () => {
                   link: `/identity/administration/groups/group?groupId=[id]&tenantFilter=${nestedTenantQuery}`,
                   pinned: true,
                   color: 'info',
-                  icon: <EyeIcon />,
+                  icon: <CippIcons.EyeIcon />,
                   condition: (row) => row?.['@odata.type'] === '#microsoft.graph.group',
                 },
                 {
                   label: 'Remove Member',
                   type: 'POST',
                   url: '/api/ExecGroupMembers',
-                  icon: <PersonRemove />,
+                  icon: <CippIcons.PersonRemove />,
                   data: { action: '!removeMember', groupId: 'parent.id', users: 'id' },
                   confirmText: 'Remove [displayName] from [parent.displayName]?',
                   condition: (row) =>
@@ -522,7 +510,7 @@ const Page = () => {
               ],
               cardButton: {
                 label: 'Add Members',
-                icon: <GroupAdd />,
+                icon: <CippIcons.GroupAdd />,
                 url: '/api/ExecGroupMembers',
                 allowResubmit: true,
                 relatedQueryKeys: 'group-members-[id]',
@@ -569,7 +557,7 @@ const Page = () => {
                   link: `/identity/administration/users/user?userId=[id]&tenantFilter=${nestedTenantQuery}`,
                   pinned: true,
                   color: 'info',
-                  icon: <EyeIcon />,
+                  icon: <CippIcons.EyeIcon />,
                   condition: (row) =>
                     !row?.['@odata.type'] || row['@odata.type'] === '#microsoft.graph.user',
                 },
@@ -577,14 +565,14 @@ const Page = () => {
                   label: 'Remove Owner',
                   type: 'POST',
                   url: '/api/ExecGroupMembers',
-                  icon: <PersonRemove />,
+                  icon: <CippIcons.PersonRemove />,
                   data: { action: '!removeOwner', groupId: 'parent.id', users: 'id' },
                   confirmText: 'Remove [displayName] as owner of [parent.displayName]?',
                 },
               ],
               cardButton: {
                 label: 'Add Owners',
-                icon: <GroupAdd />,
+                icon: <CippIcons.GroupAdd />,
                 url: '/api/ExecGroupMembers',
                 allowResubmit: true,
                 relatedQueryKeys: 'group-owners-[id]',

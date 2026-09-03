@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import PropTypes from 'prop-types'
 import {
   Alert,
@@ -28,17 +29,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import {
-  Add,
-  Close,
-  DeleteOutlined,
-  EditOutlined,
-  LinkOff,
-  Link as LinkIcon,
-  PersonSearch,
-  Refresh,
-  Security,
-} from '@mui/icons-material'
 import { useForm } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { CippApiDialog } from './CippApiDialog'
@@ -92,7 +82,7 @@ const SectionToolbar = ({
               <Button
                 size="small"
                 variant="outlined"
-                startIcon={action.icon ?? <Add />}
+                startIcon={action.icon ?? <CippIcons.Add />}
                 onClick={action.onClick}
                 disabled={action.disabled}
               >
@@ -128,7 +118,7 @@ const RowActions = ({ onEdit, onRemove, disableActions = true, disabledTitle = '
       <Tooltip title={disableActions ? disabledTitle : 'Modify'}>
         <span>
           <IconButton size="small" onClick={onEdit} disabled={disableActions} aria-label="Modify">
-            <EditOutlined fontSize="small" />
+            <CippIcons.EditOutlined fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
@@ -137,7 +127,7 @@ const RowActions = ({ onEdit, onRemove, disableActions = true, disabledTitle = '
       <Tooltip title={disableActions ? disabledTitle : 'Remove'}>
         <span>
           <IconButton size="small" onClick={onRemove} disabled={disableActions} aria-label="Remove">
-            <DeleteOutlined fontSize="small" />
+            <CippIcons.DeleteOutlined fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
@@ -255,7 +245,7 @@ const AccessTable = ({ rows = EMPTY, canWrite = false, systemGroupIds = EMPTY, o
                           <Chip
                             key={level.roleDefinitionId || level.name}
                             size="small"
-                            icon={level.isSystemManaged ? undefined : <Security fontSize="small" />}
+                            icon={level.isSystemManaged ? undefined : <CippIcons.Security fontSize="small" />}
                             variant={level.isSystemManaged ? 'outlined' : 'filled'}
                             label={level.name || '—'}
                             title={
@@ -446,7 +436,7 @@ const GraphSitePermissionsTable = ({ rows = EMPTY, canWrite = false, onRemove })
                   }}>
                     {(row.roles ?? []).length
                       ? row.roles.map((role) => (
-                          <Chip key={role} size="small" icon={<Security fontSize="small" />} label={role} />
+                          <Chip key={role} size="small" icon={<CippIcons.Security fontSize="small" />} label={role} />
                         ))
                       : '—'}
                   </Stack>
@@ -637,7 +627,7 @@ const CheckAccessPanel = ({
         </Box>
         <Button
           variant="contained"
-          startIcon={<PersonSearch />}
+          startIcon={<CippIcons.PersonSearch />}
           disabled={!optionValue(selectedUser) || access.isFetching}
           onClick={runCheck}
           sx={{ mt: { md: 1 }, flexShrink: 0 }}
@@ -948,12 +938,12 @@ export const CippSharePointBrowserPermissions = ({
                 onClick={() => api.refetch()}
                 disabled={!effectiveSiteUrl || api.isFetching}
               >
-                <Refresh />
+                <CippIcons.Refresh />
               </IconButton>
             </span>
           </Tooltip>
           <IconButton aria-label="Close" onClick={handleClose}>
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </Stack>
       </DialogTitle>
@@ -981,7 +971,7 @@ export const CippSharePointBrowserPermissions = ({
                   <Button
                     color="inherit"
                     size="small"
-                    startIcon={<LinkOff />}
+                    startIcon={<CippIcons.LinkOff />}
                     disabled={!canWrite}
                     onClick={() => breakInheritanceDialog.handleOpen()}
                   >
@@ -1001,7 +991,7 @@ export const CippSharePointBrowserPermissions = ({
                   <Button
                     color="inherit"
                     size="small"
-                    startIcon={<LinkIcon />}
+                    startIcon={<CippIcons.Link />}
                     disabled={!canWrite}
                     onClick={() => restoreInheritanceDialog.handleOpen()}
                   >
@@ -1041,7 +1031,7 @@ export const CippSharePointBrowserPermissions = ({
                     ? [
                         {
                           label: 'Fix inheritance',
-                          icon: <LinkIcon />,
+                          icon: <CippIcons.Link />,
                           onClick: () => restoreInheritanceDialog.handleOpen(),
                           disabled: !canWrite,
                           disabledTitle: writeDisabledTitle,
@@ -1123,7 +1113,7 @@ export const CippSharePointBrowserPermissions = ({
                       count={activeGroup?.members?.length ?? 0}
                       actions={[
                         {
-                          label: 'Add user',
+                          label: 'Add User',
                           onClick: () => addUserDialog.handleOpen(),
                           disabled: !canNestIntoActiveGroup,
                           disabledTitle: !canWrite
@@ -1133,7 +1123,7 @@ export const CippSharePointBrowserPermissions = ({
                               : 'Unavailable',
                         },
                         {
-                          label: 'Add group',
+                          label: 'Add Group',
                           onClick: () => addGroupDialog.handleOpen(),
                           disabled: !canNestIntoActiveGroup,
                           disabledTitle: !canWrite

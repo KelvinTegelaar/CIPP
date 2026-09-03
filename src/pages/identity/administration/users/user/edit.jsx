@@ -1,4 +1,5 @@
 import CippFormPage from '../../../../../components/CippFormPages/CippFormPage'
+import { CippIcons } from '../../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
 import { useForm, useFormState } from 'react-hook-form'
 import { useSettings } from '../../../../../hooks/use-settings'
@@ -8,8 +9,6 @@ import { ApiGetCall } from '../../../../../api/ApiCall'
 import { useState, useEffect } from 'react'
 import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSkeleton'
 import { getCippLicenseTranslation } from '../../../../../utils/get-cipp-license-translation'
-import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
-import { Mail, Fingerprint, Launch } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
 import tabOptions from './tabOptions'
 import { CippUserSwitcher } from '../../../../../components/CippComponents/CippUserSwitcher'
@@ -128,15 +127,15 @@ const Page = () => {
   const subtitle = userRequest.isSuccess
     ? [
         {
-          icon: <Mail />,
+          icon: <CippIcons.Mail />,
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
         },
         {
-          icon: <Fingerprint />,
+          icon: <CippIcons.Fingerprint />,
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
         },
         {
-          icon: <CalendarIcon />,
+          icon: <CippIcons.CalendarIcon />,
           text: (
             <>
               Created: <CippTimeAgo data={userRequest.data?.[0]?.createdDateTime} />
@@ -144,7 +143,7 @@ const Page = () => {
           ),
         },
         {
-          icon: <Launch style={{ color: '#667085' }} />,
+          icon: <CippIcons.Launch />,
           text: (
             <Button
               color="muted"

@@ -1,9 +1,9 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { useState } from 'react'
 import { Tooltip, Chip } from '@mui/material'
 import { Stack } from '@mui/system'
-import { Person, Inbox, Delete } from '@mui/icons-material'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 
 const Page = () => {
@@ -31,7 +31,7 @@ const Page = () => {
       label: 'Bulk Remove Mailbox Permissions',
       type: 'POST',
       url: '/api/ExecModifyMBPerms',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       confirmText: 'Remove the selected permissions from the selected mailboxes?',
       multiPost: false,
       relatedQueryKeys,
@@ -90,7 +90,7 @@ const Page = () => {
       label: 'Bulk Remove Mailbox Permissions',
       type: 'POST',
       url: '/api/ExecModifyMBPerms',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       confirmText: "Remove the selected users' permissions from the selected mailboxes?",
       multiPost: false,
       relatedQueryKeys,
@@ -174,7 +174,7 @@ const Page = () => {
         }
       >
         <Chip
-          icon={byUser ? <Person /> : <Inbox />}
+          icon={byUser ? <CippIcons.Person /> : <CippIcons.Inbox />}
           label={byUser ? 'By User' : 'By Mailbox'}
           color="primary"
           size="small"

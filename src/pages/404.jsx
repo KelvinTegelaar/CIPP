@@ -23,6 +23,13 @@ const Page = () => {
     getServerPathname
   )
   const target = pathname ? getRedirectTarget(pathname) : null
+  // Carry the query string and hash across the redirect so retired routes that take
+  // params (e.g. an edit page's ?id=…) still resolve. target is only ever set client-side
+  // (pathname comes from window.location), so window is available here.
+  const targetWithParams =
+    target && typeof window !== 'undefined'
+      ? `${target}${window.location.search}${window.location.hash}`
+      : target
   const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS)
 
   // Static export (output: 'export') has no server-side redirects, so retired routes
@@ -30,14 +37,14 @@ const Page = () => {
   // replacement after a short visible countdown. setSecondsLeft runs in the timeout
   // callback, so no state is set synchronously in the effect body.
   useEffect(() => {
-    if (!target) return
+    if (!targetWithParams) return
     if (secondsLeft <= 0) {
-      router.replace(target)
+      router.replace(targetWithParams)
       return
     }
     const timer = setTimeout(() => setSecondsLeft((s) => s - 1), 1000)
     return () => clearTimeout(timer)
-  }, [target, secondsLeft, router])
+  }, [targetWithParams, secondsLeft, router])
 
   if (target) {
     return (
@@ -50,7 +57,7 @@ const Page = () => {
           description={`Taking you to ${target} in ${Math.max(secondsLeft, 0)}…`}
           imageUrl="/cippy-404.png"
           actionText="Go there now"
-          actionHref={target}
+          actionHref={targetWithParams}
         />
       </DashboardLayout>
     )

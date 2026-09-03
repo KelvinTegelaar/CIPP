@@ -1,18 +1,5 @@
-import {
-  BuildingOfficeIcon,
-  HomeIcon,
-  SparklesIcon,
-  UsersIcon,
-  WrenchIcon,
-} from '@heroicons/react/24/outline'
-import {
-  CloudOutlined,
-  HomeRepairService,
-  Laptop,
-  MailOutlined,
-  ShieldOutlined,
-} from '@mui/icons-material'
 import { SvgIcon } from '@mui/material'
+import { CippIcons } from '../utils/icon-registry'
 
 export const nativeMenuItems = [
   {
@@ -20,7 +7,7 @@ export const nativeMenuItems = [
     path: '/',
     icon: (
       <SvgIcon>
-        <HomeIcon />
+        <CippIcons.HomeIcon />
       </SvgIcon>
     ),
     permissions: ['CIPP.Core.*'],
@@ -30,7 +17,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <UsersIcon />
+        <CippIcons.UsersIcon />
       </SvgIcon>
     ),
     permissions: ['Identity.*'],
@@ -158,7 +145,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <BuildingOfficeIcon />
+        <CippIcons.BuildingOfficeIcon />
       </SvgIcon>
     ),
     permissions: [
@@ -328,7 +315,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <ShieldOutlined />
+        <CippIcons.ShieldOutlined />
       </SvgIcon>
     ),
     permissions: [
@@ -494,7 +481,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <SparklesIcon />
+        <CippIcons.SparklesIcon />
       </SvgIcon>
     ),
     permissions: ['Tenant.Standards.*'],
@@ -548,7 +535,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <Laptop />
+        <CippIcons.Laptop />
       </SvgIcon>
     ),
     permissions: [
@@ -703,7 +690,7 @@ export const nativeMenuItems = [
             permissions: ['Endpoint.Device.*'],
           },
           {
-            title: 'Work from anywhere',
+            title: 'Work from Anywhere',
             path: '/endpoint/reports/workfromanywhere',
             permissions: ['Endpoint.Device.*'],
           },
@@ -726,7 +713,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <CloudOutlined />
+        <CippIcons.CloudOutlined />
       </SvgIcon>
     ),
     permissions: [
@@ -800,7 +787,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <MailOutlined />
+        <CippIcons.MailOutlined />
       </SvgIcon>
     ),
     permissions: [
@@ -885,7 +872,7 @@ export const nativeMenuItems = [
         permissions: ['Exchange.TransportRule.*', 'Exchange.Connector.*'],
         items: [
           {
-            title: 'Transport rules',
+            title: 'Transport Rules',
             path: '/email/transport/list-rules',
             permissions: ['Exchange.TransportRule.*'],
           },
@@ -918,18 +905,18 @@ export const nativeMenuItems = [
             permissions: ['Exchange.SpamFilter.*'],
           },
           {
-            title: 'Spamfilter templates',
+            title: 'Spamfilter Templates',
             path: '/email/spamfilter/list-templates',
             permissions: ['Exchange.SpamFilter.*'],
             scope: 'global',
           },
           {
-            title: 'Connection filter',
+            title: 'Connection Filter',
             path: '/email/spamfilter/list-connectionfilter',
             permissions: ['Exchange.ConnectionFilter.*'],
           },
           {
-            title: 'Connection filter templates',
+            title: 'Connection Filter Templates',
             path: '/email/spamfilter/list-connectionfilter-templates',
             permissions: ['Exchange.ConnectionFilter.*'],
             scope: 'global',
@@ -1046,7 +1033,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <HomeRepairService />
+        <CippIcons.HomeRepairService />
       </SvgIcon>
     ),
     permissions: [
@@ -1210,7 +1197,7 @@ export const nativeMenuItems = [
     type: 'header',
     icon: (
       <SvgIcon>
-        <WrenchIcon />
+        <CippIcons.WrenchIcon />
       </SvgIcon>
     ),
     permissions: [

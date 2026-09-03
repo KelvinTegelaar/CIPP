@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Card,
@@ -11,7 +12,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { styled } from "@mui/material/styles";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import {
@@ -25,8 +25,6 @@ import {
 } from "@mui/lab";
 import { ActionList } from "../action-list";
 import { ActionListItem } from "../action-list-item";
-import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
-import CloseIcon from "@mui/icons-material/Close";
 import { useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { get } from "lodash";
@@ -54,7 +52,7 @@ const StyledTimelineDot = (props) => {
         color: complete ? "success.contrastText" : "error.contrastText",
       }}
     >
-      <SvgIcon fontSize="small">{complete ? <CheckIcon /> : <CloseIcon />}</SvgIcon>
+      <SvgIcon fontSize="small">{complete ? <CippIcons.CheckIcon /> : <CippIcons.Close />}</SvgIcon>
     </TimelineDot>
   );
 };
@@ -410,7 +408,7 @@ const CippStandardsSideBar = ({
               arrow
             >
               <IconButton onClick={() => setAboutOpen(true)} color="primary">
-                <InfoOutlinedIcon />
+                <CippIcons.InfoOutlined />
               </IconButton>
             </Tooltip>
           }

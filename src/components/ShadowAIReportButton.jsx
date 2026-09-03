@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CippIcons } from '../utils/icon-registry'
 import {
   Box,
   Button,
@@ -14,7 +15,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { Close, Download, PictureAsPdf, Settings } from '@mui/icons-material'
 import { CippPdfPreview } from './CippPdf/CippPdfPreview'
 import { CippOffCanvas } from './CippComponents/CippOffCanvas'
 import { useReportVariables } from './CippPdf/useReportVariables'
@@ -617,7 +617,7 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
           gutterBottom
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
-          <Settings size={20} />
+          <CippIcons.Settings size={20} />
           Report Sections
         </Typography>
       )}
@@ -714,7 +714,7 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
             onClick={() => setPreviewOpen(true)}
             startIcon={
               <SvgIcon fontSize="small">
-                <PictureAsPdf />
+                <CippIcons.PictureAsPdf />
               </SvgIcon>
             }
           >
@@ -758,14 +758,14 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
               aria-label="Report sections"
               sx={{ display: { xs: 'inline-flex', md: 'none' } }}
             >
-              <Settings />
+              <CippIcons.Settings />
             </IconButton>
             <IconButton
               onClick={() => setPreviewOpen(false)}
               size="small"
               aria-label="Close preview"
             >
-              <Close />
+              <CippIcons.Close />
             </IconButton>
           </Stack>
         </DialogTitle>
@@ -825,7 +825,7 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
 
           <Button
             variant="contained"
-            startIcon={<Download />}
+            startIcon={<CippIcons.Download />}
             onClick={() => {
               const downloadDocument = (
                 <ShadowAIReportDocument

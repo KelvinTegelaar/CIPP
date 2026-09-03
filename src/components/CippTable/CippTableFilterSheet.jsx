@@ -10,15 +10,7 @@ import {
   ListSubheader,
   Stack,
 } from "@mui/material";
-import {
-  Check,
-  DataObject,
-  FileDownload,
-  FilterList,
-  PictureAsPdf,
-  RestartAlt,
-  Sync,
-} from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { CippBottomSheet } from "../CippComponents/CippBottomSheet";
 
@@ -72,7 +64,7 @@ export const CippTableFilterSheet = (props) => {
             label={filter.filterName}
             color={active ? "primary" : "default"}
             variant={active ? "filled" : "outlined"}
-            icon={active ? <Check /> : undefined}
+            icon={active ? <CippIcons.Check /> : undefined}
             onClick={() => onPresetClick(filter)}
             sx={{ height: 36, borderRadius: 999 }}
           />
@@ -129,14 +121,14 @@ export const CippTableFilterSheet = (props) => {
         sx={{ minHeight: 48 }}
       >
         <ListItemIcon sx={{ minWidth: 40 }}>
-          <RestartAlt fontSize="small" />
+          <CippIcons.RestartAlt fontSize="small" />
         </ListItemIcon>
         <ListItemText primary="Reset all filters" />
       </ListItemButton>
       {onEditGraphFilters && (
         <ListItemButton onClick={() => run(onEditGraphFilters)} sx={{ minHeight: 48 }}>
           <ListItemIcon sx={{ minWidth: 40 }}>
-            <FilterList fontSize="small" />
+            <CippIcons.FilterList fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Edit graph filters" />
         </ListItemButton>
@@ -145,13 +137,13 @@ export const CippTableFilterSheet = (props) => {
         <>
           <ListItemButton onClick={onExportCsv} sx={{ minHeight: 48 }}>
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <FileDownload fontSize="small" />
+              <CippIcons.FileDownload fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Export to CSV" />
           </ListItemButton>
           <ListItemButton onClick={onExportPdf} sx={{ minHeight: 48 }}>
             <ListItemIcon sx={{ minWidth: 40 }}>
-              <PictureAsPdf fontSize="small" />
+              <CippIcons.PictureAsPdf fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Export to PDF" />
           </ListItemButton>
@@ -159,7 +151,7 @@ export const CippTableFilterSheet = (props) => {
       )}
       <ListItemButton onClick={() => run(onViewApiResponse)} sx={{ minHeight: 48 }}>
         <ListItemIcon sx={{ minWidth: 40 }}>
-          <DataObject fontSize="small" />
+          <CippIcons.DataObject fontSize="small" />
         </ListItemIcon>
         <ListItemText primary="View API response" />
       </ListItemButton>
@@ -172,7 +164,7 @@ export const CippTableFilterSheet = (props) => {
         sx={{ minHeight: 48 }}
       >
         <ListItemIcon sx={{ minWidth: 40 }}>
-          <Sync fontSize="small" />
+          <CippIcons.Sync fontSize="small" />
         </ListItemIcon>
         <ListItemText primary={isRefreshing ? "Refreshing…" : "Refresh data"} />
       </ListItemButton>
@@ -217,7 +209,7 @@ export const CippTableFilterSheet = (props) => {
                   label={String(option)}
                   color={active ? "primary" : "default"}
                   variant={active ? "filled" : "outlined"}
-                  icon={active ? <Check /> : undefined}
+                  icon={active ? <CippIcons.Check /> : undefined}
                   onClick={() => onPageSizeChange(option)}
                   sx={{ height: 36, borderRadius: 999 }}
                 />

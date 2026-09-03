@@ -1,5 +1,5 @@
 import { Box, Card, CardHeader, CardContent, Typography, Skeleton } from "@mui/material";
-import { Business as BuildingIcon } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 
 export const TenantInfoCard = ({ data, isLoading }) => {
@@ -8,7 +8,7 @@ export const TenantInfoCard = ({ data, isLoading }) => {
       <CardHeader
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <BuildingIcon sx={{ fontSize: 20 }} />
+            <CippIcons.Business sx={{ fontSize: 20 }} />
             <Typography variant="subtitle1">Tenant</Typography>
           </Box>
         }

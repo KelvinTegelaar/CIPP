@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Accordion,
   AccordionDetails,
@@ -20,7 +21,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
@@ -322,7 +322,7 @@ export const CippSSOSettings = () => {
               defaultExpanded={false}
               sx={{ "&:before": { display: "none" } }}
             >
-              <AccordionSummary expandIcon={<ExpandMore />} sx={{ px: 0 }}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMore />} sx={{ px: 0 }}>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                   About the CIPP-SSO app registration
                 </Typography>
@@ -601,7 +601,7 @@ export const CippSSOSettings = () => {
             <CippApiResults apiObject={ssoAction} />
 
             <Accordion disableGutters elevation={0} sx={{ "&:before": { display: "none" } }}>
-              <AccordionSummary expandIcon={<ExpandMore />} sx={{ px: 0 }}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMore />} sx={{ px: 0 }}>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                   Manual configuration (advanced)
                 </Typography>

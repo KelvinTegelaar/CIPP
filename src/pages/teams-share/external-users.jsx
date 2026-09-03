@@ -1,8 +1,8 @@
 import { Layout as DashboardLayout } from '../../layouts/index'
+import { CippIcons } from '../../utils/icon-registry'
 import { usePermissions } from '../../hooks/use-permissions'
 import { useSettings } from '../../hooks/use-settings'
 import { CippTablePage } from '../../components/CippComponents/CippTablePage.jsx'
-import { NoAccounts } from '@mui/icons-material'
 
 /*
  * Lists SharePoint Online's tenant external users store (live) and classifies every entry:
@@ -19,7 +19,7 @@ const Page = () => {
     {
       label: 'Remove Guest Access',
       type: 'POST',
-      icon: <NoAccounts />,
+      icon: <CippIcons.NoAccounts />,
       url: '/api/ExecRemoveSPOExternalUser',
       customDataformatter: (row) => {
         const formatRow = (r) => ({

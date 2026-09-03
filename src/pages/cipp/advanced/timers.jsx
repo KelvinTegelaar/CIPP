@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry"
 import { SvgIcon, Button } from "@mui/material";
-import { Refresh, PlayArrow } from "@mui/icons-material";
 import { ApiPostCall } from "../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage";
@@ -53,7 +53,7 @@ const Page = () => {
         onClick={createDialog.handleOpen}
         startIcon={
           <SvgIcon fontSize="small">
-            <Refresh />
+            <CippIcons.Refresh />
           </SvgIcon>
         }
       >
@@ -81,7 +81,7 @@ const Page = () => {
             data: { FunctionName: "Command", Parameters: "Parameters" },
             confirmText: "Do you want to run this task now?",
             allowResubmit: true,
-            icon: <PlayArrow />,
+            icon: <CippIcons.PlayArrow />,
           },
         ]}
       />

@@ -1,10 +1,9 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import { Stack } from "@mui/system";
-import { Delete, GroupAdd } from "@mui/icons-material";
 import Link from "next/link";
-import { Edit } from "@mui/icons-material";
 import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
 const Page = () => {
@@ -26,13 +25,13 @@ const Page = () => {
       pinned: true,
       multiPost: false,
       color: "warning",
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
     },
     {
       label: "Delete Team",
       type: "POST",
       url: "/api/ExecGroupsDelete",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: "id",
         GroupType: "!Microsoft 365",
@@ -62,7 +61,7 @@ const Page = () => {
           <Stack direction="row" spacing={1} sx={{
             alignItems: "center"
           }}>
-            <Button component={Link} href="/teams-share/teams/list-team/add" startIcon={<GroupAdd />}>
+            <Button component={Link} href="/teams-share/teams/list-team/add" startIcon={<CippIcons.GroupAdd />}>
               Add Team
             </Button>
           </Stack>

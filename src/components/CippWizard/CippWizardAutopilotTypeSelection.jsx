@@ -6,12 +6,9 @@ import {
   SvgIcon,
   Typography,
 } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import { useState, useEffect } from 'react'
 import { CippWizardStepButtons } from './CippWizardStepButtons'
-import {
-  IdentificationIcon,
-  RocketLaunchIcon,
-} from '@heroicons/react/24/outline'
 
 export const CippWizardAutopilotTypeSelection = (props) => {
   const { onNextStep, formControl, currentStep, onPreviousStep } = props
@@ -54,14 +51,14 @@ export const CippWizardAutopilotTypeSelection = (props) => {
       label: 'Windows Autopilot',
       description:
         'Upload devices to Windows Autopilot using their serial number, product ID or hardware hash.',
-      icon: <RocketLaunchIcon />,
+      icon: <CippIcons.RocketLaunchIcon />,
     },
     {
       value: 'devicePrep',
       label: 'Device Preparation (Corporate Identifiers)',
       description:
         'Upload corporate device identifiers (manufacturer, model and serial number) so devices are recognized as corporate-owned and can enroll using Windows Autopilot device preparation.',
-      icon: <IdentificationIcon />,
+      icon: <CippIcons.IdentificationIcon />,
     },
   ]
 

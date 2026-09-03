@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { CippIcons } from '../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { CippInfoBar } from '../../../components/CippCards/CippInfoBar'
 import { CippMultiQueueTracker } from '../../../components/CippComponents/CippMultiQueueTracker'
@@ -24,15 +25,6 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import {
-  CloudArrowDownIcon,
-  DocumentTextIcon,
-  GlobeAltIcon,
-  LinkIcon,
-  LinkSlashIcon,
-  ShieldCheckIcon,
-  UserPlusIcon,
-} from '@heroicons/react/24/outline'
 
 const classificationChipColor = (classification) => {
   switch (String(classification).toLowerCase()) {
@@ -189,7 +181,7 @@ const Page = () => {
       url: '/api/ExecRemoveSharingLink',
       icon: (
         <SvgIcon fontSize="small">
-          <LinkSlashIcon />
+          <CippIcons.LinkSlashIcon />
         </SvgIcon>
       ),
       data: {
@@ -212,7 +204,7 @@ const Page = () => {
       target: '_blank',
       icon: (
         <SvgIcon fontSize="small">
-          <DocumentTextIcon />
+          <CippIcons.DocumentTextIcon />
         </SvgIcon>
       ),
       multiPost: false,
@@ -317,7 +309,7 @@ const Page = () => {
                     }}
                     startIcon={
                       <SvgIcon fontSize="small">
-                        <CloudArrowDownIcon />
+                        <CippIcons.CloudArrowDownIcon />
                       </SvgIcon>
                     }
                   >
@@ -338,24 +330,24 @@ const Page = () => {
                 isFetching={sharing.isFetching}
                 data={[
                   {
-                    icon: <LinkIcon />,
+                    icon: <CippIcons.LinkIcon />,
                     name: 'Sharing Links',
                     data: `${summary.totalLinks ?? 0}`,
                   },
                   {
-                    icon: <GlobeAltIcon />,
+                    icon: <CippIcons.GlobeAltIcon />,
                     name: 'Anonymous Links',
                     data: `${summary.anonymousLinks ?? 0}`,
                     color: 'error',
                   },
                   {
-                    icon: <UserPlusIcon />,
+                    icon: <CippIcons.UserPlusIcon />,
                     name: 'External Links & Shares',
                     data: `${summary.externalLinks ?? 0}`,
                     color: 'warning',
                   },
                   {
-                    icon: <ShieldCheckIcon />,
+                    icon: <CippIcons.ShieldCheckIcon />,
                     name: 'Internal Links',
                     data: `${summary.internalLinks ?? 0}`,
                     color: 'success',

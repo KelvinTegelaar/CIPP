@@ -10,14 +10,9 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { CippIcons } from '../../../utils/icon-registry'
 import { Grid } from '@mui/system'
 import { useRouter } from 'next/router'
-import {
-  CheckBadgeIcon,
-  ExclamationTriangleIcon,
-  KeyIcon,
-  ShieldCheckIcon,
-} from '@heroicons/react/24/outline'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { TabbedLayout } from '../../../layouts/TabbedLayout'
 import tabOptions from './tabOptions.json'
@@ -131,21 +126,21 @@ const Page = () => {
             isFetching={aggregate.isFetching}
             data={[
               {
-                icon: <CheckBadgeIcon />,
+                icon: <CippIcons.CheckBadgeIcon />,
                 name: 'Compliant with accepted deviations',
                 data: `${fleetScore?.alignedPercentage ?? 0}%`,
                 color: 'success',
                 toolTip: `${fleetScore?.acceptedPercentage ?? 0}% of this score comes from accepted deviations`,
               },
               {
-                icon: <ShieldCheckIcon />,
+                icon: <CippIcons.ShieldCheckIcon />,
                 name: 'Compliant with baseline',
                 data: `${fleetScore?.verifiedPercentage ?? 0}%`,
                 toolTip:
                   'Standards currently in their expected state, with accepted deviations NOT counted.',
               },
               {
-                icon: <ExclamationTriangleIcon />,
+                icon: <CippIcons.ExclamationTriangleIcon />,
                 name: 'Open Deviations',
                 data: fleetScore?.drift ?? 0,
                 color: 'error',
@@ -155,7 +150,7 @@ const Page = () => {
                   router.push('/tenant/baselines/alignment?status=Drift'),
               },
               {
-                icon: <KeyIcon />,
+                icon: <CippIcons.Key />,
                 name: 'License Missing',
                 data: `${licenseMissingPercentage}%`,
                 color: 'warning',

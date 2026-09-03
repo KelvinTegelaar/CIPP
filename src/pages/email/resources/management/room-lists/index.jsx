@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
-import { Edit } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippAddRoomListDrawer } from "../../../../../components/CippComponents/CippAddRoomListDrawer";
 
 const Page = () => {
@@ -15,14 +14,14 @@ const Page = () => {
       link: "/email/resources/management/room-lists/edit?groupId=[PrimarySmtpAddress]",
       pinned: true,
       multiPost: false,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "success",
     },
     {
       label: "Delete Room List",
       type: "POST",
       url: "/api/ExecGroupsDelete",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       data: {
         id: "Guid",
         displayName: "DisplayName",

@@ -1,9 +1,9 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import { HeaderedTabbedLayout } from '../../../layouts/HeaderedTabbedLayout'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { CippHead } from '../../../components/CippComponents/CippHead'
 import { Box, Button } from '@mui/material'
-import { Delete, Add, Edit } from '@mui/icons-material'
 import { useDialog } from '../../../hooks/use-dialog'
 import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
 import countryList from '../../../data/countryList.json'
@@ -278,7 +278,7 @@ const Page = () => {
       label: 'Edit Template',
       type: 'POST',
       url: '/api/AddUserDefaults',
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       setDefaultValues: true,
       data: { GUID: 'GUID', tenantFilter: 'tenantFilter' },
       confirmText: 'Edit the template and click Confirm to save.',
@@ -289,7 +289,7 @@ const Page = () => {
       label: 'Delete Template',
       type: 'POST',
       url: '/api/RemoveUserDefaultTemplate',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: { ID: 'GUID' },
       confirmText: 'Do you want to delete this User Default template?',
       multiPost: false,
@@ -360,7 +360,7 @@ const Page = () => {
             'department',
           ]}
           cardButton={
-            <Button startIcon={<Add />} onClick={createDialog.handleOpen} sx={{ mr: 1 }}>
+            <Button startIcon={<CippIcons.Add />} onClick={createDialog.handleOpen} sx={{ mr: 1 }}>
               Add Template
             </Button>
           }

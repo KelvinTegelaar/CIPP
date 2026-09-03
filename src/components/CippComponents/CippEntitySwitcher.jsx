@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { useRouter } from "next/router";
 import {
   Box,
@@ -13,7 +14,6 @@ import {
   Typography,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
-import { Check, KeyboardArrowDown, Search } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { CippBottomSheet } from "./CippBottomSheet";
 import { useIsMobileLayout } from "../../hooks/use-breakpoint";
@@ -106,7 +106,7 @@ export const CippEntitySwitcher = ({
             input: {
               startAdornment: (
                 <InputAdornment position="start">
-                  <Search fontSize="small" />
+                  <CippIcons.Search fontSize="small" />
                 </InputAdornment>
               ),
             }
@@ -151,7 +151,7 @@ export const CippEntitySwitcher = ({
                   secondary: { noWrap: true, variant: "caption" }
                 }} />
               {getId(row) === currentId && (
-                <Check fontSize="small" color="primary" sx={{ flexShrink: 0 }} />
+                <CippIcons.Check fontSize="small" color="primary" sx={{ flexShrink: 0 }} />
               )}
             </ListItemButton>
           ))}
@@ -190,13 +190,13 @@ export const CippEntitySwitcher = ({
             <Box component="span" sx={visuallyHidden}>
               switch {entityName}
             </Box>
-            <KeyboardArrowDown sx={{ flexShrink: 0, opacity: 0.7, fontSize: 20 }} />
+            <CippIcons.KeyboardArrowDown sx={{ flexShrink: 0, opacity: 0.7, fontSize: 20 }} />
           </>
         ) : (
           <>
             <Typography variant="h4" sx={{ minWidth: 0 }}>
               {title}
-              <KeyboardArrowDown
+              <CippIcons.KeyboardArrowDown
                 sx={{ opacity: 0.7, fontSize: 24, verticalAlign: "middle", ml: 0.75 }}
               />
             </Typography>

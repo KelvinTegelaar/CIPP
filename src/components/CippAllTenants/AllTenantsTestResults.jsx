@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Button,
   Card,
@@ -8,7 +9,6 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import { EyeIcon } from '@heroicons/react/24/outline'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
 import { getCippError } from '../../utils/get-cipp-error'
 import { CippDataTable } from '../CippTable/CippDataTable'
@@ -247,7 +247,7 @@ export const AllTenantsTestResults = ({ testType, title, perTenantPath }) => {
                 {
                   label: 'View tenant dashboard',
                   link: `${perTenantPath}?tenantFilter=[Tenant]`,
-                  icon: <EyeIcon />,
+                  icon: <CippIcons.EyeIcon />,
                 },
               ]
             : []

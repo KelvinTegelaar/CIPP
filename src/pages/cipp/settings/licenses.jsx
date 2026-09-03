@@ -1,10 +1,9 @@
 import tabOptions from './tabOptions'
+import { CippIcons } from '../../../utils/icon-registry'
 import { TabbedLayout } from '../../../layouts/TabbedLayout'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
 import { Button, SvgIcon, Stack, Box } from '@mui/material'
-import { TrashIcon } from '@heroicons/react/24/outline'
-import { Add, RestartAlt, NotificationsOff, Visibility, VisibilityOff } from '@mui/icons-material'
 import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
 import { useDialog } from '../../../hooks/use-dialog'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
@@ -55,7 +54,7 @@ const Page = () => {
       data: { Action: '!AlertOnly', GUID: 'GUID', SKUName: 'Product_Display_Name' },
       confirmText:
         'This license will remain visible in CIPP but will be excluded from alerts. Continue?',
-      icon: <NotificationsOff fontSize="small" />,
+      icon: <CippIcons.NotificationsOff fontSize="small" />,
     },
     {
       label: 'Show in License Dropdowns',
@@ -68,7 +67,7 @@ const Page = () => {
         ShowInDropdown: true,
       },
       confirmText: '[Product_Display_Name] will be available in license dropdowns. Continue?',
-      icon: <Visibility fontSize="small" />,
+      icon: <CippIcons.EyeIcon />,
       condition: (row) => row.ShowInLicenseDropdown !== true,
     },
     {
@@ -82,7 +81,7 @@ const Page = () => {
         ShowInDropdown: false,
       },
       confirmText: '[Product_Display_Name] will be hidden from license dropdowns. Continue?',
-      icon: <VisibilityOff fontSize="small" />,
+      icon: <CippIcons.VisibilityOff fontSize="small" />,
       condition: (row) => row.ShowInLicenseDropdown === true,
     },
     {
@@ -94,7 +93,7 @@ const Page = () => {
       color: 'error',
       icon: (
         <SvgIcon fontSize="small">
-          <TrashIcon />
+          <CippIcons.TrashIcon />
         </SvgIcon>
       ),
     },
@@ -110,7 +109,7 @@ const Page = () => {
           onClick={createDialog.handleOpen}
           startIcon={
             <SvgIcon fontSize="small">
-              <Add />
+              <CippIcons.Add />
             </SvgIcon>
           }
         >
@@ -121,7 +120,7 @@ const Page = () => {
           size="small"
           color="primary"
           onClick={resetDialog.handleOpen}
-          startIcon={<RestartAlt />}
+          startIcon={<CippIcons.RestartAlt />}
         >
           Restore Defaults
         </Button>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { get } from 'lodash'
 import {
   Dialog,
@@ -20,54 +21,39 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material'
-import {
-  Close as CloseIcon,
-  Info as InfoIcon,
-  Warning as WarningIcon,
-  CheckCircle as CheckCircleIcon,
-  Assignment as AssignmentIcon,
-  Notifications as NotificationsIcon,
-  Construction as ConstructionIcon,
-  Public as PublicIcon,
-  Cloud as CloudIcon,
-  Email as EmailIcon,
-  Security as SecurityIcon,
-  PhoneAndroid as PhoneAndroidIcon,
-  ExpandMore as ExpandMoreIcon,
-} from '@mui/icons-material'
 import { SvgIcon } from '@mui/material'
 import { getStandards } from '../../utils/standards-data'
 
 const getCategoryIcon = (category) => {
   switch (category) {
     case 'Global Standards':
-      return <PublicIcon fontSize="small" />
+      return <CippIcons.Public fontSize="small" />
     case 'Entra (AAD) Standards':
-      return <CloudIcon fontSize="small" />
+      return <CippIcons.Cloud fontSize="small" />
     case 'Exchange Standards':
-      return <EmailIcon fontSize="small" />
+      return <CippIcons.Email fontSize="small" />
     case 'Defender Standards':
-      return <SecurityIcon fontSize="small" />
+      return <CippIcons.Security fontSize="small" />
     case 'Intune Standards':
-      return <PhoneAndroidIcon fontSize="small" />
+      return <CippIcons.PhoneAndroid fontSize="small" />
     case 'Templates':
-      return <ConstructionIcon fontSize="small" />
+      return <CippIcons.Construction fontSize="small" />
     default:
-      return <PublicIcon fontSize="small" />
+      return <CippIcons.Public fontSize="small" />
   }
 }
 
 const getActionIcon = (action) => {
   switch (action?.toLowerCase()) {
     case 'report':
-      return <AssignmentIcon fontSize="small" />
+      return <CippIcons.Assignment fontSize="small" />
     case 'alert':
     case 'warn':
-      return <NotificationsIcon fontSize="small" />
+      return <CippIcons.Notifications fontSize="small" />
     case 'remediate':
-      return <ConstructionIcon fontSize="small" />
+      return <CippIcons.Construction fontSize="small" />
     default:
-      return <InfoIcon fontSize="small" />
+      return <CippIcons.Info fontSize="small" />
   }
 }
 
@@ -188,7 +174,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon />
+          <CippIcons.Close />
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>
@@ -230,7 +216,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+                  expandIcon={<CippIcons.ExpandMore />}
                   aria-controls={`${category}-content`}
                   id={`${category}-header`}
                   sx={{

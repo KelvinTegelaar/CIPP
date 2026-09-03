@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 import { CippFormComponent } from '../../../../components/CippComponents/CippFormComponent.jsx'
@@ -6,7 +7,6 @@ import { CippApiDialog } from '../../../../components/CippComponents/CippApiDial
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, Stack } from '@mui/material'
-import { FilterList as FilterListIcon, Save as SaveIcon } from '@mui/icons-material'
 import { Grid } from '@mui/system'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import { useSettings } from '../../../../hooks/use-settings.js'
@@ -254,14 +254,14 @@ const Page = () => {
               variant="contained"
               color="primary"
               onClick={handleFilterSubmit}
-              startIcon={<FilterListIcon />}
+              startIcon={<CippIcons.FilterList />}
             >
               Apply Filter
             </Button>
             <Button
               variant="outlined"
               onClick={savePresetDialog.handleOpen}
-              startIcon={<SaveIcon />}
+              startIcon={<CippIcons.Save />}
             >
               Save as Preset
             </Button>

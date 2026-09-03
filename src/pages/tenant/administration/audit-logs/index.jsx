@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { CippDateRangeFilter } from "../../../../components/CippComponents/CippDateRangeFilter";
-import { EyeIcon } from "@heroicons/react/24/outline";
 import tabOptions from "./tabOptions.json";
 
 // Saved Logs Configuration
@@ -16,7 +16,7 @@ const savedLogsActions = [
     link: savedLogViewLink,
     pinned: true,
     color: "primary",
-    icon: <EyeIcon />,
+    icon: <CippIcons.EyeIcon />,
   },
 ];
 

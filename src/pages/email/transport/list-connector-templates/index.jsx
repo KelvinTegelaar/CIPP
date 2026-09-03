@@ -1,10 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
-import { Button } from "@mui/material";
-import Link from "next/link";
-import { RocketLaunch } from "@mui/icons-material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { GitHub } from "@mui/icons-material";
 import ConnectorTemplateDetails from "../../../../components/CippComponents/ConnectorTemplateDetails";
 import { CippAddConnectorDrawer } from "../../../../components/CippComponents/CippAddConnectorDrawer";
 import { ApiGetCall } from "../../../../api/ApiCall";
@@ -23,7 +19,7 @@ const Page = () => {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -71,7 +67,7 @@ const Page = () => {
         ID: "GUID",
       },
       confirmText: "Do you want to delete the template?",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       color: "danger",
     },
   ];
@@ -91,10 +87,6 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      titleButton={{
-        label: "Add Template",
-        href: "/email/connectors/add-connector-templates",
-      }}
       cardButton={<CippAddConnectorDrawer requiredPermissions={cardButtonPermissions} />}
     />
   );

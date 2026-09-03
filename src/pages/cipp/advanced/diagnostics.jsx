@@ -1,16 +1,11 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import CippDiagnosticsFilter from "../../../components/CippTable/CippDiagnosticsFilter";
 import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
 import { useState } from "react";
 import { Grid } from "@mui/system";
 import { Box, Typography, Chip, Stack, Divider } from "@mui/material";
-import {
-  Error as ErrorIcon,
-  Warning as WarningIcon,
-  Info as InfoIcon,
-  BugReport as DebugIcon,
-} from "@mui/icons-material";
 
 const Page = () => {
   const [apiFilter, setApiFilter] = useState({ query: "", presetDisplayName: null, columns: null });
@@ -49,18 +44,18 @@ const Page = () => {
               switch (levelStr) {
                 case "error":
                 case "4":
-                  return { icon: <ErrorIcon />, color: "error", label: "Error" };
+                  return { icon: <CippIcons.Error />, color: "error", label: "Error" };
                 case "warning":
                 case "3":
-                  return { icon: <WarningIcon />, color: "warning", label: "Warning" };
+                  return { icon: <CippIcons.Warning />, color: "warning", label: "Warning" };
                 case "debug":
                 case "0":
-                  return { icon: <DebugIcon />, color: "default", label: "Debug" };
+                  return { icon: <CippIcons.BugReport />, color: "default", label: "Debug" };
                 case "verbose":
                 case "1":
-                  return { icon: <InfoIcon />, color: "info", label: "Verbose" };
+                  return { icon: <CippIcons.Info />, color: "info", label: "Verbose" };
                 default:
-                  return { icon: <InfoIcon />, color: "info", label: "Information" };
+                  return { icon: <CippIcons.Info />, color: "info", label: "Information" };
               }
             };
 

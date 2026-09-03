@@ -1,10 +1,4 @@
-import {
-  Autorenew,
-  HourglassBottom,
-  MoreTime,
-  PersonRemove,
-  SwapHoriz,
-} from '@mui/icons-material'
+import { CippIcons } from '../../utils/icon-registry'
 import { usePermissions } from '../../hooks/use-permissions'
 
 const GLOBAL_ADMIN_TEMPLATE_ID = '62e90394-69f5-4237-9190-012177145e10'
@@ -112,7 +106,7 @@ export const useCippRoleAssignmentActions = ({
     {
       label: 'Convert to eligible',
       type: 'POST',
-      icon: <SwapHoriz />,
+      icon: <CippIcons.SwapHoriz />,
       url: '/api/ExecPIMRoleAssignment',
       data: { ...baseData, ...timeZoneData, Action: '!ConvertToEligible' },
       fields: [eligibilityDurationField, justificationField],
@@ -130,7 +124,7 @@ export const useCippRoleAssignmentActions = ({
     {
       label: 'Grant time-bound active assignment',
       type: 'POST',
-      icon: <HourglassBottom />,
+      icon: <CippIcons.HourglassBottom />,
       url: '/api/ExecPIMRoleAssignment',
       data: { ...baseData, ...timeZoneData, Action: '!GrantActive' },
       fields: [activeDurationField, customEndField, justificationField],
@@ -147,7 +141,7 @@ export const useCippRoleAssignmentActions = ({
     {
       label: 'Extend',
       type: 'POST',
-      icon: <MoreTime />,
+      icon: <CippIcons.MoreTime />,
       url: '/api/ExecPIMRoleAssignment',
       data: { ...baseData, ...timeZoneData, Action: '!Extend' },
       fields: [activeDurationField, customEndField, justificationField],
@@ -165,7 +159,7 @@ export const useCippRoleAssignmentActions = ({
     {
       label: 'Renew',
       type: 'POST',
-      icon: <Autorenew />,
+      icon: <CippIcons.Autorenew />,
       url: '/api/ExecPIMRoleAssignment',
       data: { ...baseData, ...timeZoneData, Action: '!Renew' },
       fields: [activeDurationField, customEndField, justificationField],
@@ -184,7 +178,7 @@ export const useCippRoleAssignmentActions = ({
     {
       label: 'Remove assignment',
       type: 'POST',
-      icon: <PersonRemove />,
+      icon: <CippIcons.PersonRemove />,
       url: '/api/ExecPIMRoleAssignment',
       data: { ...baseData, ...timeZoneData, Action: '!Remove' },
       fields: [justificationField],
@@ -199,7 +193,7 @@ export const useCippRoleAssignmentActions = ({
       // member endpoint the Roles page has always used.
       label: 'Remove assignment',
       type: 'POST',
-      icon: <PersonRemove />,
+      icon: <CippIcons.PersonRemove />,
       url: '/api/ExecRemoveAdminRole',
       customDataformatter: (row) => {
         const rows = Array.isArray(row) ? row : [row]

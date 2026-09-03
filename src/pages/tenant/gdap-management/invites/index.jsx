@@ -1,11 +1,10 @@
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import tabOptions from "../tabOptions";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Add } from "@mui/icons-material";
 import Link from "next/link";
-import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 const pageTitle = "GDAP Invites";
 const simpleColumns = ["Timestamp", "RowKey", "Reference", "Technician", "InviteUrl", "OnboardingUrl", "RoleMappings"];
@@ -16,7 +15,7 @@ const actions = [
     label: "Update Internal Reference",
     url: "/api/ExecGDAPInvite",
     type: "POST",
-    icon: <PencilIcon />,
+    icon: <CippIcons.Edit />,
     confirmText: "Are you sure you want to update the internal reference for this invite?",
     data: {
       Action: "Update",
@@ -37,7 +36,7 @@ const actions = [
     label: "Delete Invite",
     url: "/api/ExecGDAPInvite",
     type: "POST",
-    icon: <TrashIcon />,
+    icon: <CippIcons.Delete />,
     confirmText:
       "Are you sure you want to delete this invite? This only removes the entry from the database, GDAP relationships cannot be terminated once they are in approval pending status.",
     data: {
@@ -52,7 +51,7 @@ const Page = () => {
   return (
     <CippTablePage
       cardButton={
-        <Button component={Link} href="/tenant/gdap-management/invites/add" startIcon={<Add />}>
+        <Button component={Link} href="/tenant/gdap-management/invites/add" startIcon={<CippIcons.Add />}>
           New Invite
         </Button>
       }

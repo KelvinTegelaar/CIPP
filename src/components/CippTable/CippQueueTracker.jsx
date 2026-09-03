@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { IconButton, Tooltip, Badge, Typography, LinearProgress, Box, Stack } from "@mui/material";
-import { Timeline, Circle } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useQueryClient } from "@tanstack/react-query";
@@ -177,15 +177,15 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
         <Badge
           badgeContent={
             (persistentQueueData || queueData)?.Status === "Completed" ? (
-              <Circle sx={{ fontSize: 8, color: "success.main" }} />
+              <CippIcons.Circle sx={{ fontSize: 8, color: "success.main" }} />
             ) : (persistentQueueData || queueData)?.Status === "Completed (with errors)" ? (
-              <Circle sx={{ fontSize: 8, color: "warning.main" }} />
+              <CippIcons.Circle sx={{ fontSize: 8, color: "warning.main" }} />
             ) : (persistentQueueData || queueData)?.Status === "Failed" ? (
-              <Circle sx={{ fontSize: 8, color: "error.main" }} />
+              <CippIcons.Circle sx={{ fontSize: 8, color: "error.main" }} />
             ) : (persistentQueueData || queueData)?.RunningTasks > 0 ? (
-              <Circle sx={{ fontSize: 8, color: "warning.main" }} />
+              <CippIcons.Circle sx={{ fontSize: 8, color: "warning.main" }} />
             ) : (
-              <Circle sx={{ fontSize: 8, color: "info.main" }} />
+              <CippIcons.Circle sx={{ fontSize: 8, color: "info.main" }} />
             )
           }
           overlap="circular"
@@ -229,7 +229,7 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                         : "primary.main",
             }}
           >
-            <Timeline />
+            <CippIcons.Timeline />
           </IconButton>
         </Badge>
       </Tooltip>

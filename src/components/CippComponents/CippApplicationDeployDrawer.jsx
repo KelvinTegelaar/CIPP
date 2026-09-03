@@ -1,8 +1,8 @@
 import React, { useEffect, useCallback, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Divider, Button, Alert, CircularProgress } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch } from 'react-hook-form'
-import { Add } from '@mui/icons-material'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippFormTenantSelector } from './CippFormTenantSelector'
@@ -121,7 +121,7 @@ export const CippApplicationDeployDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Add />}
+        startIcon={<CippIcons.Add />}
       >
         {buttonText}
       </PermissionButton>
@@ -383,10 +383,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -521,10 +521,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -682,10 +682,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -860,10 +860,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -945,10 +945,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -1133,10 +1133,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}

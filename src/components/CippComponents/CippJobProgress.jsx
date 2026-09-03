@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Accordion,
   AccordionDetails,
@@ -12,13 +13,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import {
-  CheckCircle,
-  Error as ErrorIcon,
-  ExpandMore,
-  RadioButtonUnchecked,
-  Replay,
-} from '@mui/icons-material'
 import { CippCopyToClipBoard } from './CippCopyToClipboard'
 import { CippApiDialog } from './CippApiDialog'
 import { useDialog } from '../../hooks/use-dialog'
@@ -78,10 +72,10 @@ export const formatJobProgressText = (rows) =>
 
 const StepIcon = ({ status }) => {
   if (status === 'succeeded')
-    return <CheckCircle fontSize="small" color="success" />
-  if (status === 'failed') return <ErrorIcon fontSize="small" color="error" />
+    return <CippIcons.CheckCircle fontSize="small" color="success" />
+  if (status === 'failed') return <CippIcons.Error fontSize="small" color="error" />
   if (status === 'running') return <CircularProgress size={16} />
-  return <RadioButtonUnchecked fontSize="small" color="disabled" />
+  return <CippIcons.RadioButtonUnchecked fontSize="small" color="disabled" />
 }
 
 // Live job progress: one collapsible block per row (a tenant, or a user for offboarding) with its
@@ -113,7 +107,7 @@ export const CippJobProgress = ({ rows, onRerun, actions }) => {
             variant="outlined"
             defaultExpanded
           >
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Stack
                 direction="row"
                 spacing={1}
@@ -145,7 +139,7 @@ export const CippJobProgress = ({ rows, onRerun, actions }) => {
                   {rerunnable && actions.rerun && (
                     <Button
                       size="small"
-                      startIcon={<Replay />}
+                      startIcon={<CippIcons.Replay />}
                       disabled={!done}
                       onClick={() => openRerun(row, actions.rerun)}
                     >
@@ -210,7 +204,7 @@ export const CippJobProgress = ({ rows, onRerun, actions }) => {
                                 )
                               }
                             >
-                              <Replay fontSize="inherit" />
+                              <CippIcons.Replay fontSize="inherit" />
                             </IconButton>
                           </span>
                         </Tooltip>

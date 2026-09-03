@@ -16,6 +16,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import {
   Timeline,
   TimelineConnector,
@@ -28,35 +29,6 @@ import {
 import { Grid } from '@mui/system'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import {
-  BuildingOfficeIcon,
-  CheckBadgeIcon,
-  ClockIcon,
-  ExclamationTriangleIcon,
-  KeyIcon,
-  RectangleStackIcon,
-  ShieldCheckIcon,
-  Squares2X2Icon,
-} from '@heroicons/react/24/outline'
-import {
-  ArrowForward,
-  BuildOutlined,
-  Cancel,
-  CheckCircle,
-  CheckCircleOutlined,
-  Compare,
-  Edit,
-  ErrorOutlineOutlined,
-  InfoOutlined,
-  LayersClear,
-  PlayArrow,
-  RemoveCircle,
-  Search,
-  TaskAlt,
-  Tune,
-  Visibility,
-  WarningAmberOutlined,
-} from '@mui/icons-material'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import tabOptions from '../tabOptions.json'
@@ -176,7 +148,7 @@ const TierPolicyView = ({ source, templateRef }) => {
       <Button
         size="small"
         variant="outlined"
-        startIcon={<Visibility />}
+        startIcon={<CippIcons.EyeIcon />}
         onClick={() => setVisible(true)}
       >
         View {rawRefs.length > 1 ? `${noun}s (${rawRefs.length})` : noun}
@@ -258,7 +230,7 @@ const LivePolicyView = ({ standardName, tenantFilter, policyId }) => {
       <Button
         size="small"
         variant="outlined"
-        startIcon={<Visibility />}
+        startIcon={<CippIcons.EyeIcon />}
         onClick={() => setVisible(true)}
       >
         View Policy
@@ -348,73 +320,73 @@ const outcomeTimeline = {
   Compliant: {
     color: 'success',
     chipColor: 'success',
-    icon: <CheckCircleOutlined />,
+    icon: <CippIcons.CheckCircleOutlined />,
   },
-  Remediated: { color: 'info', chipColor: 'info', icon: <BuildOutlined /> },
+  Remediated: { color: 'info', chipColor: 'info', icon: <CippIcons.BuildOutlined /> },
   Drift: {
     color: 'warning',
     chipColor: 'error',
-    icon: <WarningAmberOutlined />,
+    icon: <CippIcons.WarningAmberOutlined />,
   },
-  Error: { color: 'error', chipColor: 'error', icon: <ErrorOutlineOutlined /> },
+  Error: { color: 'error', chipColor: 'error', icon: <CippIcons.ErrorOutlineOutlined /> },
   'Skipped-NoCache': {
     color: 'grey',
     chipColor: 'default',
-    icon: <InfoOutlined />,
+    icon: <CippIcons.InfoOutlined />,
     label: 'Skipped - No Data',
   },
   'Skipped-License': {
     color: 'grey',
     chipColor: 'default',
-    icon: <InfoOutlined />,
+    icon: <CippIcons.InfoOutlined />,
     label: 'Skipped - No License',
   },
   // Operator/system audit events (triage verdicts, overrides, stage changes,
   // deletions carried out for denied deviations).
-  Accepted: { color: 'info', chipColor: 'info', icon: <TaskAlt /> },
-  'Property Accepted': { color: 'info', chipColor: 'info', icon: <TaskAlt /> },
+  Accepted: { color: 'info', chipColor: 'info', icon: <CippIcons.TaskAlt /> },
+  'Property Accepted': { color: 'info', chipColor: 'info', icon: <CippIcons.TaskAlt /> },
   'Denied - Remediation Ordered': {
     color: 'warning',
     chipColor: 'warning',
-    icon: <Cancel />,
+    icon: <CippIcons.Cancel />,
   },
   'Denied - Delete Ordered': {
     color: 'warning',
     chipColor: 'warning',
-    icon: <Cancel />,
+    icon: <CippIcons.Cancel />,
   },
   'Property Denied': {
     color: 'warning',
     chipColor: 'warning',
-    icon: <Cancel />,
+    icon: <CippIcons.Cancel />,
   },
-  'Triage Cleared': { color: 'grey', chipColor: 'default', icon: <Edit /> },
+  'Triage Cleared': { color: 'grey', chipColor: 'default', icon: <CippIcons.Edit /> },
   'Property Triage Cleared': {
     color: 'grey',
     chipColor: 'default',
-    icon: <Edit />,
+    icon: <CippIcons.Edit />,
   },
   'Task Completed': {
     color: 'success',
     chipColor: 'success',
-    icon: <TaskAlt />,
+    icon: <CippIcons.TaskAlt />,
   },
-  'Override Created': { color: 'info', chipColor: 'info', icon: <Tune /> },
+  'Override Created': { color: 'info', chipColor: 'info', icon: <CippIcons.Tune /> },
   'Override Removed': {
     color: 'grey',
     chipColor: 'default',
-    icon: <LayersClear />,
+    icon: <CippIcons.LayersClear />,
   },
   'Stage Advanced': {
     color: 'primary',
     chipColor: 'primary',
-    icon: <ArrowForward />,
+    icon: <CippIcons.ArrowForward />,
   },
-  Deleted: { color: 'error', chipColor: 'error', icon: <RemoveCircle /> },
+  Deleted: { color: 'error', chipColor: 'error', icon: <CippIcons.RemoveCircle /> },
   'Delete Failed': {
     color: 'error',
     chipColor: 'error',
-    icon: <ErrorOutlineOutlined />,
+    icon: <CippIcons.ErrorOutlineOutlined />,
   },
 }
 
@@ -668,7 +640,7 @@ const Page = () => {
       label: 'Compare Now',
       type: 'POST',
       url: '/api/ExecBaselineRun',
-      icon: <Compare />,
+      icon: <CippIcons.Compare />,
       color: 'info',
       data: {
         mode: '!compare',
@@ -689,7 +661,7 @@ const Page = () => {
       label: 'Remediate Now',
       type: 'POST',
       url: '/api/ExecBaselineRun',
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       color: 'success',
       data: {
         mode: '!oneoff',
@@ -712,7 +684,7 @@ const Page = () => {
       label: 'Accept Deviation',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
-      icon: <CheckCircle />,
+      icon: <CippIcons.CheckCircle />,
       color: 'info',
       data: {
         action: '!Accept',
@@ -734,7 +706,7 @@ const Page = () => {
       label: 'Deny & Fix Deviation',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
-      icon: <Cancel />,
+      icon: <CippIcons.Cancel />,
       color: 'warning',
       data: {
         action: '!Deny',
@@ -765,7 +737,7 @@ const Page = () => {
       label: 'Undo Accept/Deny',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
-      icon: <RemoveCircle />,
+      icon: <CippIcons.RemoveCircle />,
       color: 'error',
       data: {
         action: '!Clear',
@@ -790,7 +762,7 @@ const Page = () => {
       label: 'Mark Task Complete',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
-      icon: <TaskAlt />,
+      icon: <CippIcons.TaskAlt />,
       color: 'success',
       data: {
         action: '!CompleteTask',
@@ -809,7 +781,7 @@ const Page = () => {
       label: 'Create Tenant Override',
       type: 'POST',
       url: '/api/ExecBaselineOverride',
-      icon: <Tune />,
+      icon: <CippIcons.Tune />,
       color: 'info',
       // Overrides configure ONE tenant's settings in a dialog - meaningless as a bulk action.
       hideBulk: true,
@@ -864,7 +836,7 @@ const Page = () => {
       label: 'Remove Tenant Override',
       type: 'POST',
       url: '/api/ExecBaselineOverride',
-      icon: <LayersClear />,
+      icon: <CippIcons.LayersClear />,
       color: 'error',
       hideBulk: true,
       data: {
@@ -886,7 +858,7 @@ const Page = () => {
       label: 'Deploy To All Tenants',
       type: 'POST',
       url: '/api/ExecBaselineRun',
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       color: 'success',
       data: {
         mode: '!oneoff',
@@ -904,7 +876,7 @@ const Page = () => {
       label: 'Mark Task Complete (All Tenants)',
       type: 'POST',
       url: '/api/ExecUpdateBaselineDeviation',
-      icon: <TaskAlt />,
+      icon: <CippIcons.TaskAlt />,
       color: 'success',
       data: {
         action: '!CompleteTask',
@@ -921,7 +893,7 @@ const Page = () => {
       label: 'Compare All Tenants',
       type: 'POST',
       url: '/api/ExecBaselineRun',
-      icon: <Compare />,
+      icon: <CippIcons.Compare />,
       color: 'info',
       data: {
         mode: '!compare',
@@ -937,7 +909,7 @@ const Page = () => {
       label: 'Edit Baseline',
       link: '/tenant/baselines/template?id=[templateId]',
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'success',
       target: '_self',
     },
@@ -1218,7 +1190,7 @@ const Page = () => {
                     size="small"
                     variant="outlined"
                     color="error"
-                    startIcon={<LayersClear />}
+                    startIcon={<CippIcons.LayersClear />}
                     sx={{ mt: 1 }}
                     onClick={() => {
                       setRemoveOverrideTarget(row)
@@ -1375,7 +1347,7 @@ const Page = () => {
                           <Button
                             size="small"
                             variant="outlined"
-                            startIcon={<CheckCircle />}
+                            startIcon={<CippIcons.CheckCircle />}
                             onClick={() => {
                               setAcceptPathTarget({
                                 ...row,
@@ -1393,7 +1365,7 @@ const Page = () => {
                               size="small"
                               variant="outlined"
                               color="error"
-                              startIcon={<RemoveCircle />}
+                              startIcon={<CippIcons.RemoveCircle />}
                               onClick={() => {
                                 setDenyPathTarget({
                                   ...row,
@@ -1541,7 +1513,7 @@ const Page = () => {
                           <Button
                             size="small"
                             variant="outlined"
-                            startIcon={<CheckCircle />}
+                            startIcon={<CippIcons.CheckCircle />}
                             onClick={() => {
                               setAcceptPathTarget({ ...row, path: key })
                               acceptPathDialog.handleOpen()
@@ -1557,7 +1529,7 @@ const Page = () => {
                               size="small"
                               variant="outlined"
                               color="error"
-                              startIcon={<RemoveCircle />}
+                              startIcon={<CippIcons.RemoveCircle />}
                               onClick={() => {
                                 setDenyPathTarget({ ...row, path: key })
                                 denyPathDialog.handleOpen()
@@ -1718,7 +1690,7 @@ const Page = () => {
             <Button
               size="small"
               variant="outlined"
-              startIcon={<Visibility />}
+              startIcon={<CippIcons.EyeIcon />}
               sx={{ alignSelf: 'flex-start' }}
               onClick={() => {
                 setHistoryFilters({
@@ -1874,7 +1846,7 @@ const Page = () => {
                       <Button
                         size="small"
                         variant="outlined"
-                        startIcon={<CheckCircle />}
+                        startIcon={<CippIcons.CheckCircle />}
                         onClick={() => {
                           setTriageTarget(tenantRow)
                           triageDialog.handleOpen()
@@ -1886,7 +1858,7 @@ const Page = () => {
                         <Button
                           size="small"
                           variant="outlined"
-                          startIcon={<Tune />}
+                          startIcon={<CippIcons.Tune />}
                           onClick={() => {
                             setOverrideTarget(tenantRow)
                             overrideDialog.handleOpen()
@@ -1902,7 +1874,7 @@ const Page = () => {
                       size="small"
                       variant="outlined"
                       color="error"
-                      startIcon={<LayersClear />}
+                      startIcon={<CippIcons.LayersClear />}
                       onClick={() => {
                         setRemoveOverrideTarget(tenantRow)
                         removeOverrideDialog.handleOpen()
@@ -1925,7 +1897,7 @@ const Page = () => {
       label: 'Edit Baseline',
       link: '/tenant/baselines/template?id=[GUID]',
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'success',
       target: '_self',
     },
@@ -1933,7 +1905,7 @@ const Page = () => {
       label: 'Run Baseline Now',
       type: 'POST',
       url: '/api/ExecBaselineRun',
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       color: 'info',
       data: { mode: '!run', templateId: 'GUID' },
       children: ({ formHook, row }) => (
@@ -2039,7 +2011,7 @@ const Page = () => {
                       <Button
                         size="small"
                         variant="outlined"
-                        startIcon={<ArrowForward />}
+                        startIcon={<CippIcons.ArrowForward />}
                         onClick={() => {
                           setAdvanceTarget({
                             tenantFilter: state.tenantFilter,
@@ -2150,7 +2122,7 @@ const Page = () => {
           placement="top"
         >
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <BuildingOfficeIcon
+            <CippIcons.BuildingOfficeIcon
               style={{ width: 16, height: 16, marginRight: 6 }}
             />
             Tenant View
@@ -2163,7 +2135,7 @@ const Page = () => {
           placement="top"
         >
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <Squares2X2Icon style={{ width: 16, height: 16, marginRight: 6 }} />
+            <CippIcons.Squares2X2Icon style={{ width: 16, height: 16, marginRight: 6 }} />
             Standard View
           </Box>
         </Tooltip>
@@ -2174,7 +2146,7 @@ const Page = () => {
           placement="top"
         >
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <RectangleStackIcon
+            <CippIcons.RectangleStackIcon
               style={{ width: 16, height: 16, marginRight: 6 }}
             />
             Baseline View
@@ -2187,7 +2159,7 @@ const Page = () => {
           placement="top"
         >
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <ClockIcon style={{ width: 16, height: 16, marginRight: 6 }} />
+            <CippIcons.ClockIcon style={{ width: 16, height: 16, marginRight: 6 }} />
             Historic View
           </Box>
         </Tooltip>
@@ -2308,7 +2280,7 @@ const Page = () => {
                       <Button
                         size="small"
                         variant="contained"
-                        startIcon={<ArrowForward />}
+                        startIcon={<CippIcons.ArrowForward />}
                         onClick={() => {
                           setAdvanceTarget({
                             tenantFilter: tenant.tenantId,
@@ -2335,25 +2307,25 @@ const Page = () => {
     <CippInfoBar
       data={[
         {
-          icon: <CheckBadgeIcon />,
+          icon: <CippIcons.CheckBadgeIcon />,
           name: 'Compliant with accepted deviations',
           data: `${tenant.alignedPercentage}%`,
           color: 'success',
           toolTip: `${tenant.acceptedPercentage}% of this score comes from accepted deviations`,
         },
         {
-          icon: <ShieldCheckIcon />,
+          icon: <CippIcons.ShieldCheckIcon />,
           name: 'Compliant with baseline',
           data: `${tenant.verifiedPercentage}%`,
         },
         {
-          icon: <ExclamationTriangleIcon />,
+          icon: <CippIcons.ExclamationTriangleIcon />,
           name: 'Open Deviations',
           data: tenant.drift,
           color: 'error',
         },
         {
-          icon: <KeyIcon />,
+          icon: <CippIcons.Key />,
           name: 'License Missing',
           data: `${tenant.total ? Math.round((tenant.licenseMissing / tenant.total) * 100) : 0}%`,
           color: 'warning',
@@ -2636,7 +2608,7 @@ const Page = () => {
                   slotProps={{
                     input: {
                       startAdornment: (
-                        <Search sx={{ mr: 1, color: 'text.secondary' }} />
+                        <CippIcons.Search sx={{ mr: 1, color: 'text.secondary' }} />
                       ),
                     }
                   }}
@@ -2822,9 +2794,9 @@ const Page = () => {
                                 size="small"
                               >
                                 {first.mode === 'compare' ? (
-                                  <Compare />
+                                  <CippIcons.Compare />
                                 ) : (
-                                  <PlayArrow />
+                                  <CippIcons.PlayArrow />
                                 )}
                               </TimelineDot>
                               {index < renderRows.length - 1 && (
@@ -2942,7 +2914,7 @@ const Page = () => {
                       const timelineConfig = outcomeTimeline[event.outcome] ?? {
                         color: 'grey',
                         chipColor: 'default',
-                        icon: <InfoOutlined />,
+                        icon: <CippIcons.InfoOutlined />,
                       }
                       const eventDate = parseCippDate(event.timestamp)
                       const eventKey = `${event.runId}-${event.standardName}-${event.outcome}-${event.timestamp}`

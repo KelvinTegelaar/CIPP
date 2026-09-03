@@ -1,4 +1,5 @@
 import { CippWizardConfirmation } from './CippWizardConfirmation.jsx'
+import { CippIcons } from '../../utils/icon-registry'
 import { CippDeploymentStep } from './CIPPDeploymentStep.jsx'
 import CippWizardPage from './CippWizardPage.jsx'
 import { CippWizardOptionsList } from './CippWizardOptionsList.jsx'
@@ -13,12 +14,6 @@ import { CippGDAPTenantSetup } from './CippGDAPTenantSetup.jsx'
 import { CippIndirectResellerLink } from './CippIndirectResellerLink.jsx'
 import { CippGDAPTenantOnboarding } from './CippGDAPTenantOnboarding.jsx'
 import { CippCertificateAuthStep } from './CippCertificateAuthStep.jsx'
-import {
-  BuildingOfficeIcon,
-  CloudIcon,
-  CpuChipIcon,
-  KeyIcon,
-} from '@heroicons/react/24/outline'
 import { useRouter } from 'next/router'
 
 const OnboardingWizardPage = ({ mode, samAppPresent, completionButton }) => {
@@ -38,21 +33,21 @@ const OnboardingWizardPage = ({ mode, samAppPresent, completionButton }) => {
     {
       description:
         "Choose this option if this is your first setup, or if you'd like to redo the previous setup.",
-      icon: <CpuChipIcon />,
+      icon: <CippIcons.CpuChipIcon />,
       label: 'First Setup',
       value: 'FirstSetup',
     },
     {
       description:
         'Choose this option if you would like to add a tenant to your environment.',
-      icon: <CpuChipIcon />,
+      icon: <CippIcons.CpuChipIcon />,
       label: 'Add a tenant',
       value: 'AddTenant',
     },
     {
       description:
         'Choose this option if you want to setup which application registration is used to connect to your tenants.',
-      icon: <CpuChipIcon />,
+      icon: <CippIcons.CpuChipIcon />,
       label:
         'Create a new application registration for me and connect to my tenants',
       value: 'CreateApp',
@@ -60,21 +55,21 @@ const OnboardingWizardPage = ({ mode, samAppPresent, completionButton }) => {
     {
       description:
         "I would like to refresh my token or replace the account I've used.",
-      icon: <CloudIcon />,
+      icon: <CippIcons.CloudIcon />,
       label: 'Refresh Tokens for existing application registration',
       value: 'UpdateTokens',
     },
     {
       description:
         'I have an existing application and would like to manually enter my token, or update them. This is only recommended for advanced users.',
-      icon: <BuildingOfficeIcon />,
+      icon: <CippIcons.BuildingOfficeIcon />,
       label: 'Manually enter credentials',
       value: 'Manual',
     },
     {
       description:
         'Switch an existing setup to authenticate with the SAM certificate instead of the client secret. The client secret is kept as a rollback.',
-      icon: <KeyIcon />,
+      icon: <CippIcons.Key />,
       label: 'Use certificate authentication',
       value: 'CertificateAuth',
     },

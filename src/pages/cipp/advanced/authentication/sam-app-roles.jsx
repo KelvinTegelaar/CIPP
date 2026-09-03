@@ -1,9 +1,9 @@
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippIcons } from "../../../../utils/icon-registry";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import tabOptions from "./tabOptions";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Alert, CardContent, Stack, Typography } from "@mui/material";
-import { WarningAmberOutlined } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiGetCallWithPagination } from "../../../../api/ApiCall";
 import { useEffect } from "react";
@@ -70,7 +70,7 @@ const Page = () => {
             This is an advanced use case where you need access to additional Graph endpoints or
             Exchange Cmdlets otherwise unavailable via Delegated permissions.
           </Typography>
-          <Alert color="warning" icon={<WarningAmberOutlined />}>
+          <Alert color="warning" icon={<CippIcons.WarningAmberOutlined />}>
             This functionality is in beta and should be treated as such. Roles are added during the
             Update Permissions process or a CPV refresh.
           </Alert>

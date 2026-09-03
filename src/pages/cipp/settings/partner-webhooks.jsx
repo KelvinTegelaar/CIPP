@@ -1,4 +1,5 @@
 import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { CippIcons } from "../../../utils/icon-registry";
 import { Layout as DashboardLayout } from "../../../layouts/index";
 import tabOptions from "./tabOptions";
 import CippFormPage from "../../../components/CippFormPages/CippFormPage";
@@ -25,7 +26,6 @@ import { CippPropertyList } from "../../../components/CippComponents/CippPropert
 import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
 import { CippTimeAgo } from "../../../components/CippComponents/CippTimeAgo";
 import { useState } from "react";
-import { Close } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Automated Onboarding";
@@ -271,7 +271,7 @@ const Page = () => {
                     <Box>Test Results</Box>
                     <IconButton variant="outlined" onClick={() => setTestRunning(false)}>
                       <SvgIcon fontSize="small">
-                        <Close />
+                        <CippIcons.Close />
                       </SvgIcon>
                     </IconButton>
                   </Stack>

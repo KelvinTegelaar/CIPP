@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Container, Box, Button, SvgIcon } from '@mui/material'
-import { PlayArrow } from '@mui/icons-material'
 import { useForm, useWatch } from 'react-hook-form'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { ApiGetCall } from '../../../../api/ApiCall.jsx'
@@ -89,7 +89,7 @@ const Page = () => {
           color="primary"
           startIcon={
             <SvgIcon fontSize="small">
-              <PlayArrow />
+              <CippIcons.PlayArrow />
             </SvgIcon>
           }
           onClick={() =>

@@ -1,8 +1,7 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry"
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
-import { EyeIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";
-import { Search } from "@mui/icons-material";
 import { BreachSearchDialog } from "../../../components/CippComponents/BreachSearchDialog";
 import { useDialog } from "../../../hooks/use-dialog";
 
@@ -16,7 +15,7 @@ const Page = () => {
       label: "View User",
       link: "/tools/breachlookup?account=[email]",
       multiPost: false,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: "success",
     },
   ];
@@ -31,7 +30,7 @@ const Page = () => {
         tenantInTitle={false}
         cardButton={
           <>
-            <Button onClick={breachSearchDialog.handleOpen} startIcon={<Search />}>
+            <Button onClick={breachSearchDialog.handleOpen} startIcon={<CippIcons.MagnifyingGlassIcon />}>
               Run Breach Check
             </Button>
           </>

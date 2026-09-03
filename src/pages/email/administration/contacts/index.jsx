@@ -1,8 +1,7 @@
 import { useMemo } from "react";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { CloudSync, Edit } from "@mui/icons-material";
-import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import { CippAddContactDrawer } from "../../../../components/CippComponents/CippAddContactDrawer";
 import { CippDeployContactTemplateDrawer } from "../../../../components/CippComponents/CippDeployContactTemplateDrawer";
 
@@ -17,7 +16,7 @@ const Page = () => {
         pinned: true,
         multiPost: false,
         postEntireRow: true,
-        icon: <Edit />,
+        icon: <CippIcons.Edit />,
         color: "warning",
         condition: (row) => !row.IsDirSynced,
       },
@@ -25,7 +24,7 @@ const Page = () => {
         label: "Set Source of Authority",
         type: "POST",
         url: "/api/ExecSetCloudManaged",
-        icon: <CloudSync />,
+        icon: <CippIcons.CloudSync />,
         data: {
           ID: "graphId",
           displayName: "DisplayName",
@@ -83,7 +82,7 @@ const Page = () => {
         confirmText:
           "Are you sure you want to delete this contact? Remember this will not work if the contact is AD Synced.",
         color: "danger",
-        icon: <TrashIcon />,
+        icon: <CippIcons.Delete />,
         condition: (row) => !row.IsDirSynced,
       },
     ],

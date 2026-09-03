@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
+import { CippIcons } from "../../utils/icon-registry";
 import { Box, Container, Stack, Button, SvgIcon, Typography, Card } from "@mui/material";
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import { CippHead } from "../CippComponents/CippHead";
 import { useTitleClaimedByTabPicker } from "../../layouts/tab-navigation-context";
 const CippPageCard = (props) => {

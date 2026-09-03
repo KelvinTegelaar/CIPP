@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Button,
   Divider,
@@ -13,7 +14,6 @@ import {
 } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch } from 'react-hook-form'
-import { Add, Delete, Edit, Save } from '@mui/icons-material'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
@@ -284,7 +284,7 @@ export const CippAppTemplateDrawer = ({
   return (
     <>
       {!onClose && (
-        <Button onClick={() => setDrawerVisible(true)} startIcon={<Add />}>
+        <Button onClick={() => setDrawerVisible(true)} startIcon={<CippIcons.Add />}>
           {buttonText}
         </Button>
       )}
@@ -300,7 +300,7 @@ export const CippAppTemplateDrawer = ({
               color="primary"
               onClick={handleSaveTemplate}
               disabled={getTotalApps() === 0 || saveTemplate.isPending}
-              startIcon={<Save />}
+              startIcon={<CippIcons.Save />}
             >
               {saveTemplate.isPending
                 ? 'Saving...'
@@ -355,10 +355,10 @@ export const CippAppTemplateDrawer = ({
                     <ListItemText primary={app.appName} />
                     <ListItemSecondaryAction>
                       <IconButton onClick={() => handleEditApp(index)} size="small">
-                        <Edit fontSize="small" />
+                        <CippIcons.Edit fontSize="small" />
                       </IconButton>
                       <IconButton edge="end" onClick={() => handleRemoveApp(index)} size="small">
-                        <Delete fontSize="small" />
+                        <CippIcons.Delete fontSize="small" />
                       </IconButton>
                     </ListItemSecondaryAction>
                   </ListItem>
@@ -1042,10 +1042,10 @@ export const CippAppTemplateDrawer = ({
                 name="AssignTo"
                 label="Assignment"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -1087,7 +1087,7 @@ export const CippAppTemplateDrawer = ({
           {/* Add App Button */}
           {applicationType?.value && (
             <Grid size={{ xs: 12 }}>
-              <Button variant="outlined" onClick={handleAddApp} startIcon={<Add />}>
+              <Button variant="outlined" onClick={handleAddApp} startIcon={<CippIcons.Add />}>
                 Add App to Template
               </Button>
             </Grid>

@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useMemo, useRef, useState } from "react";
+import { CippIcons } from "../../../../utils/icon-registry"
 import Head from "next/head";
 import {
   Box,
@@ -23,24 +24,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  Memory,
-  Speed,
-  PlayArrow,
-  HourglassEmpty,
-  CheckCircle,
-  Warning,
-  Cancel,
-  Delete,
-  LowPriority,
-  Timeline,
-  RocketLaunch,
-  Pause,
-  FileDownload,
-  FileUpload,
-  Refresh,
-  Close,
-} from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
 import { useQueryClient } from "@tanstack/react-query";
@@ -90,13 +73,13 @@ const WorkerStatusChip = ({ isBusy, currentFunction }) => {
           label={currentFunction || "Busy"}
           color="warning"
           size="small"
-          icon={<PlayArrow />}
+          icon={<CippIcons.PlayArrow />}
           sx={{ maxWidth: { xs: "100%", md: 420 } }}
         />
       </Tooltip>
     );
   }
-  return <Chip label="Idle" color="success" size="small" icon={<CheckCircle />} />;
+  return <Chip label="Idle" color="success" size="small" icon={<CippIcons.CheckCircle />} />;
 };
 
 const UtilizationBar = ({ value }) => (
@@ -314,7 +297,7 @@ const StartupTimingBar = ({ startup }) => {
     <Card>
       <CardHeader
         title="Startup Timing"
-        avatar={<RocketLaunch fontSize="small" color="primary" />}
+        avatar={<CippIcons.RocketLaunch fontSize="small" color="primary" />}
         subheader={`${startup.ReadinessMode} / ${startup.WarmupMode} — ${startup.CpuCount} CPUs, ${startup.HttpPoolSize}H + ${startup.BgPoolSize}BG — Total: ${formatDuration(totalMs)}`}
         sx={{ pb: 0 }}
         slotProps={{
@@ -757,25 +740,25 @@ const Page = () => {
 
     return [
       {
-        icon: <Memory />,
+        icon: <CippIcons.Memory />,
         name: "HTTP Workers",
         data: `${http.BusyCount ?? 0} / ${http.PoolSize ?? 0} busy`,
         color: http.BusyCount >= http.PoolSize ? "error" : "primary",
       },
       {
-        icon: <Speed />,
+        icon: <CippIcons.Speed />,
         name: "BG Workers",
         data: `${bg.BusyCount ?? 0} / ${bg.PoolSize ?? 0} busy`,
         color: bg.BusyCount >= bg.PoolSize ? "error" : "primary",
       },
       {
-        icon: jobs.Running > 0 ? <PlayArrow /> : <HourglassEmpty />,
+        icon: jobs.Running > 0 ? <CippIcons.PlayArrow /> : <CippIcons.HourglassEmpty />,
         name: "Job Queue",
         data: `${jobs.Running ?? 0} running, ${jobs.Queued ?? 0} queued`,
         color: jobs.Queued > 10 ? "warning" : "primary",
       },
       {
-        icon: limiter.IsHttpThrottled ? <Warning /> : <CheckCircle />,
+        icon: limiter.IsHttpThrottled ? <CippIcons.Warning /> : <CippIcons.CheckCircle />,
         name: "BG Limiter",
         data: limiter.IsHttpThrottled
           ? "HTTP Throttled"
@@ -783,7 +766,7 @@ const Page = () => {
         color: limiter.IsHttpThrottled ? "error" : "primary",
       },
       {
-        icon: <Memory />,
+        icon: <CippIcons.Memory />,
         name: "Memory",
         data: (
           <WrappedStat>{`${snapshot.Memory?.ContainerUsedMB ?? snapshot.Memory?.RssMB ?? 0}MB / ${snapshot.Memory?.ContainerLimitMB ?? 0}MB (${snapshot.Memory?.UsagePct ?? 0}%)`}</WrappedStat>
@@ -791,7 +774,7 @@ const Page = () => {
         color: (snapshot.Memory?.UsagePct ?? 0) > 85 ? "error" : (snapshot.Memory?.UsagePct ?? 0) > 70 ? "warning" : "primary",
       },
       {
-        icon: <Speed />,
+        icon: <CippIcons.Speed />,
         name: "CPU",
         data: (
           <WrappedStat>{`${snapshot.Memory?.ContainerCpuPct ?? snapshot.Memory?.CpuPct ?? 0}% container / ${snapshot.Memory?.CpuPct ?? 0}% app`}</WrappedStat>
@@ -807,7 +790,7 @@ const Page = () => {
     () => [
       {
         label: "Cancel Job",
-        icon: <Cancel />,
+        icon: <CippIcons.Cancel />,
         color: "error.main",
         noConfirm: true,
         customFunction: (row) => {
@@ -820,7 +803,7 @@ const Page = () => {
       },
       {
         label: "Change Priority",
-        icon: <LowPriority />,
+        icon: <CippIcons.LowPriority />,
         fields: [
           {
             type: "textField",
@@ -841,7 +824,7 @@ const Page = () => {
       },
       {
         label: "Cancel Run",
-        icon: <Cancel />,
+        icon: <CippIcons.Cancel />,
         color: "error.main",
         noConfirm: true,
         customFunction: (row) => {
@@ -856,7 +839,7 @@ const Page = () => {
       },
       {
         label: "Delete",
-        icon: <Delete />,
+        icon: <CippIcons.Delete />,
         noConfirm: true,
         customFunction: (row) => {
           jobAction.mutate({
@@ -897,7 +880,7 @@ const Page = () => {
                     color="info"
                     size="small"
                     onDelete={handleClearImport}
-                    deleteIcon={<Close />}
+                    deleteIcon={<CippIcons.Close />}
                   />
                 )}
                 {!isImported && healthQuery.isFetching && <CircularProgress size={16} />}
@@ -917,21 +900,21 @@ const Page = () => {
                       disabled={isImported}
                     >
                       {effectivePaused ? (
-                        <PlayArrow fontSize="small" />
+                        <CippIcons.PlayArrow fontSize="small" />
                       ) : (
-                        <Pause fontSize="small" />
+                        <CippIcons.Pause fontSize="small" />
                       )}
                     </IconButton>
                   </span>
                 </Tooltip>
                 <Tooltip title="Export page data as JSON">
                   <IconButton size="small" onClick={handleExport}>
-                    <FileDownload fontSize="small" />
+                    <CippIcons.FileDownload fontSize="small" />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Import page data from JSON">
                   <IconButton size="small" onClick={() => fileInputRef.current?.click()}>
-                    <FileUpload fontSize="small" />
+                    <CippIcons.FileUpload fontSize="small" />
                   </IconButton>
                 </Tooltip>
                 <input
@@ -1063,7 +1046,7 @@ const Page = () => {
             <Card>
               <CardHeader
                 title="Historical Trends"
-                avatar={<Timeline color="primary" />}
+                avatar={<CippIcons.Timeline color="primary" />}
                 action={
                   <Stack direction="row" spacing={1} sx={{
                     alignItems: "center"
@@ -1071,7 +1054,7 @@ const Page = () => {
                     {!isImported && (
                       <Tooltip title="Refresh history data">
                         <IconButton size="small" onClick={handleRefreshHistory}>
-                          <Refresh fontSize="small" />
+                          <CippIcons.Refresh fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     )}
@@ -1102,7 +1085,7 @@ const Page = () => {
                   data={historyData}
                   rangeMinutes={historyRange}
                   title="Worker Utilization %"
-                  icon={<Speed color="primary" />}
+                  icon={<CippIcons.Speed color="primary" />}
                 >
                   {(data, t) => (
                     <LineChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
@@ -1128,7 +1111,7 @@ const Page = () => {
                   data={historyData}
                   rangeMinutes={historyRange}
                   title="Invocations / Interval"
-                  icon={<PlayArrow color="primary" />}
+                  icon={<CippIcons.PlayArrow color="primary" />}
                 >
                   {(data, t) => (
                     <BarChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
@@ -1157,7 +1140,7 @@ const Page = () => {
                   data={historyData}
                   rangeMinutes={historyRange}
                   title="Memory Usage (MB)"
-                  icon={<Memory color="primary" />}
+                  icon={<CippIcons.Memory color="primary" />}
                 >
                   {(data, t) => (
                     <AreaChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
@@ -1186,7 +1169,7 @@ const Page = () => {
                   data={historyData}
                   rangeMinutes={historyRange}
                   title="CPU Usage %"
-                  icon={<Speed color="primary" />}
+                  icon={<CippIcons.Speed color="primary" />}
                 >
                   {(data, t) => (
                     <LineChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
@@ -1216,7 +1199,7 @@ const Page = () => {
                   data={historyData}
                   rangeMinutes={historyRange}
                   title="Job Queue Depth"
-                  icon={<HourglassEmpty color="primary" />}
+                  icon={<CippIcons.HourglassEmpty color="primary" />}
                 >
                   {(data, t) => (
                     <AreaChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
@@ -1242,7 +1225,7 @@ const Page = () => {
                   data={historyData}
                   rangeMinutes={historyRange}
                   title="Faults & Avg Duration"
-                  icon={<Warning color="primary" />}
+                  icon={<CippIcons.Warning color="primary" />}
                 >
                   {(data, t) => (
                     <LineChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>

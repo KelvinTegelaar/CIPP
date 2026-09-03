@@ -1,9 +1,8 @@
 import { Button } from "@mui/material";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import Link from "next/link";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { Edit, Add, Book } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 
@@ -24,7 +23,7 @@ const Page = () => {
       label: "Create template based on filter",
       type: "POST",
       url: "/api/AddAssignmentFilterTemplate",
-      icon: <Book />,
+      icon: <CippIcons.Book />,
       data: {
         displayName: "displayName",
         description: "description",
@@ -40,14 +39,14 @@ const Page = () => {
       link: "/endpoint/MEM/assignment-filters/edit?filterId=[id]",
       pinned: true,
       multiPost: false,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "success",
     },
     {
       label: "Delete Filter",
       type: "POST",
       url: "/api/ExecAssignmentFilter",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       data: {
         ID: "id",
         Action: "Delete",
@@ -88,7 +87,7 @@ const Page = () => {
           <Stack direction="row" spacing={1} sx={{
             alignItems: "center"
           }}>
-            <Button component={Link} href="assignment-filters/add" startIcon={<Add />}>
+            <Button component={Link} href="assignment-filters/add" startIcon={<CippIcons.Add />}>
               Add Assignment Filter
             </Button>
           </Stack>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { useSheetHandoff } from '../../hooks/use-sheet-handoff'
 import {
   Divider,
@@ -11,7 +12,6 @@ import {
   MenuList,
   Stack,
 } from '@mui/material'
-import { MoreHoriz } from '@mui/icons-material'
 import { CippBottomSheet } from './CippBottomSheet'
 import {
   useActionCornerClaim,
@@ -33,7 +33,7 @@ export const CippPageActionsFab = (props) => {
     // One glyph for every page-actions FAB. A "+" only ever told the truth on pages whose
     // sheet creates things — on a report page the single action is a sync. MoreVert is the
     // row kebab, so the FAB takes the horizontal variant.
-    icon = <MoreHoriz />,
+    icon = <CippIcons.MoreHoriz />,
     ariaLabel = 'Page actions',
     restackButtons = true,
     sheetProps,

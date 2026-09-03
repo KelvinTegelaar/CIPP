@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
   AlertTitle,
@@ -13,7 +14,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { Search } from '@mui/icons-material'
 import { useForm } from 'react-hook-form'
 import CippFormComponent from './CippFormComponent'
 import { CippDataTable } from '../CippTable/CippDataTable'
@@ -145,7 +145,7 @@ export const CippCheckUserAccessDialog = ({
             <Button
               variant="contained"
               size="small"
-              startIcon={<Search />}
+              startIcon={<CippIcons.MagnifyingGlassIcon />}
               disabled={!optionValue(selectedUser) || access.isFetching}
               onClick={runCheck}
             >

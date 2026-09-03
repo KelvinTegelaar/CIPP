@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { RestoreFromTrash } from '@mui/icons-material'
+import { CippIcons } from '../../utils/icon-registry'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { usePermissions } from '../../hooks/use-permissions'
 
@@ -21,7 +21,7 @@ export const CippSiteRecycleBinDialog = ({
     {
       label: 'Restore Item',
       type: 'POST',
-      icon: <RestoreFromTrash />,
+      icon: <CippIcons.RestoreFromTrash />,
       url: '/api/ExecRestoreRecycleBinItems',
       data: {
         Ids: 'Id',

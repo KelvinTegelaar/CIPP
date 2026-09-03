@@ -1,10 +1,9 @@
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { ApiGetCallWithPagination } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
-import { Delete, Edit } from '@mui/icons-material'
-import { EyeIcon, ListBulletIcon, ChartBarIcon, Squares2X2Icon } from '@heroicons/react/24/outline'
 import tabOptions from '../tabOptions.json'
 import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
@@ -313,7 +312,7 @@ const Page = () => {
       label: 'View Tenant Report',
       link: '/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[standardId]',
       pinned: true,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: 'info',
       target: '_self',
     },
@@ -321,14 +320,14 @@ const Page = () => {
       label: 'Edit Template',
       link: '/tenant/standards/templates/template?id=[standardId]&type=[standardType]',
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'success',
       target: '_self',
     },
     {
       label: 'Manage Drift',
       link: '/tenant/manage/drift?templateId=[standardId]&tenantFilter=[tenantFilter]',
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: 'info',
       target: '_self',
       condition: (row) => row.standardType === 'drift',
@@ -337,7 +336,7 @@ const Page = () => {
       label: 'Remove Drift Customization',
       type: 'POST',
       url: '/api/ExecUpdateDriftDeviation',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: {
         RemoveDriftCustomization: 'true',
         tenantFilter: 'tenantFilter',
@@ -354,7 +353,7 @@ const Page = () => {
       label: 'View Tenant Report',
       link: '/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[templateId]',
       pinned: true,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: 'info',
       target: '_self',
     },
@@ -362,14 +361,14 @@ const Page = () => {
       label: 'Edit Template',
       link: '/tenant/standards/templates/template?id=[templateId]&type=[templateType]',
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: 'success',
       target: '_self',
     },
     {
       label: 'Manage Drift',
       link: '/tenant/manage/drift?templateId=[templateId]&tenantFilter=[tenantFilter]',
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: 'info',
       target: '_self',
       condition: (row) => row.templateType === 'drift',
@@ -904,7 +903,7 @@ const Page = () => {
         <ToggleButton value="summary" aria-label="summary view">
           <Tooltip title="Tenant/template summary" placement="top">
             <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-              <ChartBarIcon style={{ width: 16, height: 16, marginRight: 6 }} />
+              <CippIcons.ChartBarIcon style={{ width: 16, height: 16, marginRight: 6 }} />
               Summary
             </Box>
           </Tooltip>
@@ -912,7 +911,7 @@ const Page = () => {
         <ToggleButton value="granular" aria-label="per standard view">
           <Tooltip title="Tenant rows for each standard" placement="top">
             <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-              <ListBulletIcon style={{ width: 16, height: 16, marginRight: 6 }} />
+              <CippIcons.ListBulletIcon style={{ width: 16, height: 16, marginRight: 6 }} />
               Per Standard
             </Box>
           </Tooltip>
@@ -920,7 +919,7 @@ const Page = () => {
         <ToggleButton value="byStandard" aria-label="by standard summary view">
           <Tooltip title="Aggregate tenant compliance by standard" placement="top">
             <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-              <Squares2X2Icon style={{ width: 16, height: 16, marginRight: 6 }} />
+              <CippIcons.Squares2X2Icon style={{ width: 16, height: 16, marginRight: 6 }} />
               By Standard
             </Box>
           </Tooltip>

@@ -8,6 +8,7 @@ import {
   Button,
   Alert,
 } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import CippFormSection from "../CippFormPages/CippFormSection";
 import { useForm } from "react-hook-form";
 import { ApiGetCall } from "../../api/ApiCall";
@@ -15,7 +16,6 @@ import { useRouter } from "next/router";
 import extensions from "../../data/Extensions.json";
 import React, { useEffect, useState } from "react";
 import CippFormComponent from "../CippComponents/CippFormComponent";
-import { Sync } from "@mui/icons-material";
 import { Stack, Grid } from "@mui/system";
 
 const CippIntegrationFieldMapping = () => {
@@ -106,7 +106,7 @@ const CippIntegrationFieldMapping = () => {
                           }}
                           variant="contained"
                         >
-                          <Sync />
+                          <CippIcons.Sync />
                         </Button>
                       </Tooltip>
                     </Box>

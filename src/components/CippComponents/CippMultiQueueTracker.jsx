@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Badge,
   Box,
@@ -9,7 +10,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { Circle, Timeline } from '@mui/icons-material'
 import { useQueryClient } from '@tanstack/react-query'
 import { CippOffCanvas } from './CippOffCanvas'
 import { ApiGetCall } from '../../api/ApiCall'
@@ -85,7 +85,7 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
     <>
       <Tooltip title={tooltip}>
         <Badge
-          badgeContent={<Circle sx={{ fontSize: 8, color: statusColour(summary?.Status) }} />}
+          badgeContent={<CippIcons.Circle sx={{ fontSize: 8, color: statusColour(summary?.Status) }} />}
           overlap="circular"
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
@@ -101,7 +101,7 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
               },
             }}
           >
-            <Timeline />
+            <CippIcons.Timeline />
           </IconButton>
         </Badge>
       </Tooltip>

@@ -1,8 +1,8 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Box, Container, Typography, Button, IconButton, Stack, SvgIcon } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useEffect, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
@@ -12,7 +12,6 @@ import { CippFormCondition } from "../../../../components/CippComponents/CippFor
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
-import { Add, Save } from "@mui/icons-material";
 
 const Page = () => {
   const router = useRouter();
@@ -199,7 +198,7 @@ const Page = () => {
           <CippButtonCard
             CardButton={
               <>
-                <Button variant="contained" onClick={saveConfig} startIcon={<Save />}>
+                <Button variant="contained" onClick={saveConfig} startIcon={<CippIcons.Save />}>
                   Save Report
                 </Button>
               </>
@@ -238,7 +237,7 @@ const Page = () => {
               my: 3
             }}>
             <Typography variant="h5">Fields</Typography>
-            <Button variant="outlined" size="small" onClick={handleAddBlock} startIcon={<Add />}>
+            <Button variant="outlined" size="small" onClick={handleAddBlock} startIcon={<CippIcons.Add />}>
               Add Field
             </Button>
           </Stack>
@@ -262,7 +261,7 @@ const Page = () => {
                       aria-label="delete"
                       onClick={() => handleRemoveBlock(block.id)} // Remove block on click
                     >
-                      <DeleteIcon />
+                      <CippIcons.Delete />
                     </IconButton>
                   }
                 >

@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../../api/ApiCall";
 import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
@@ -14,7 +15,6 @@ import { CippDataTable } from "../../../../../components/CippTable/CippDataTable
 import { Alert, Link } from "@mui/material";
 import CIPPDefaultGDAPRoles from "../../../../../data/CIPPDefaultGDAPRoles.json";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
-import { Schedule } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import CippGdapActions from "../../../../../components/CippComponents/CippGdapActions";
 
@@ -54,7 +54,7 @@ const Page = () => {
   const subtitle = relationshipRequest.isSuccess
     ? [
         {
-          icon: <Schedule />,
+          icon: <CippIcons.Schedule />,
           text: (
             <>
               Created{" "}

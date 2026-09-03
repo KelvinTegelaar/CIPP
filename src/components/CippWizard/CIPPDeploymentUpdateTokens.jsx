@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Stack, Typography, CircularProgress, SvgIcon, Box, Chip, Skeleton } from "@mui/material";
-import { CheckCircle, Person, Apartment } from "@mui/icons-material";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -36,7 +36,7 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
                 <CircularProgress size="1rem" />
               ) : (
                 <SvgIcon color="primary">
-                  <CheckCircle />
+                  <CippIcons.CheckCircle />
                 </SvgIcon>
               )}
             </Stack>
@@ -89,7 +89,7 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
                 alignItems: "center"
               }}>
                 <SvgIcon fontSize="small">
-                  <Apartment />
+                  <CippIcons.Apartment />
                 </SvgIcon>
                 <Typography variant="body2" sx={{
                   fontWeight: "medium"
@@ -107,7 +107,7 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
                   alignItems: "center"
                 }}>
                   <SvgIcon fontSize="small">
-                    <Person />
+                    <CippIcons.Person />
                   </SvgIcon>
                   <Typography variant="body2" sx={{
                     fontWeight: "medium"

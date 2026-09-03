@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import CippTablePage from "../../../../components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
-import { AdminPanelSettings } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -34,7 +34,7 @@ const Page = () => {
     <CippTablePage
       cardButton={
         <>
-          <Button component={Link} href="jit-admin/add" startIcon={<AdminPanelSettings />}>
+          <Button component={Link} href="jit-admin/add" startIcon={<CippIcons.AdminPanelSettings />}>
             Add JIT Admin
           </Button>
         </>

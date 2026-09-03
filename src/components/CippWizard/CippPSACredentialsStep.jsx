@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Alert,
   Button,
@@ -11,7 +12,6 @@ import {
 } from "@mui/material";
 import CSVReader from "../CSVReader";
 import { LoadingButton } from "@mui/lab";
-import { Quiz } from "@mui/icons-material";
 import { ApiPostCall } from "../../api/ApiCall";
 import { Box } from "@mui/system";
 import { CippWizardActionsRow } from "./CippWizardActionsRow";
@@ -206,7 +206,7 @@ export const CippPSACredentialsStep = (props) => {
                   size="small"
                   startIcon={
                     <SvgIcon fontSize="small">
-                      <Quiz />
+                      <CippIcons.Quiz />
                     </SvgIcon>
                   }
                   variant="contained"

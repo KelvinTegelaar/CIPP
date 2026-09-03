@@ -10,7 +10,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { ExpandMore } from '@mui/icons-material'
+import { CippIcons } from '../../utils/icon-registry'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -370,7 +370,7 @@ export const AllTenantsCacheList = ({
                   label={`${collections.length} stale`}
                   sx={{ flexShrink: 0 }}
                 />
-                <ExpandMore
+                <CippIcons.ExpandMore
                   fontSize="small"
                   sx={{
                     flexShrink: 0,

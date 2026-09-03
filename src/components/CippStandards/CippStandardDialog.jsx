@@ -1,4 +1,5 @@
 import { differenceInDays } from "date-fns";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Dialog,
   DialogActions,
@@ -30,16 +31,6 @@ import {
   ListItemSecondaryAction,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import {
-  Add,
-  Sort,
-  Clear,
-  FilterList,
-  ExpandMore,
-  ExpandLess,
-  ViewModule,
-  ViewList,
-} from "@mui/icons-material";
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { debounce } from "lodash";
 import { Virtuoso } from "react-virtuoso";
@@ -297,7 +288,7 @@ const StandardCard = memo(
                   disabled={isButtonDisabled}
                   onClick={() => handleAddClick(standard.name)}
                 >
-                  <Add />
+                  <CippIcons.Add />
                 </IconButton>
               ) : (
                 <FormControlLabel
@@ -603,7 +594,7 @@ const CompactStandardList = memo(
                     onClick={() => handleAddClick(standard.name)}
                     sx={{ mr: 1 }}
                   >
-                    <Add />
+                    <CippIcons.Add />
                   </IconButton>
                 ) : (
                   <FormControlLabel
@@ -1122,7 +1113,7 @@ const CippStandardDialog = ({
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <FilterList sx={{ color: "text.secondary", fontSize: "1.1rem" }} />
+                <CippIcons.FilterList sx={{ color: "text.secondary", fontSize: "1.1rem" }} />
                 <Typography variant="body2" sx={{ color: "text.primary", fontWeight: "medium" }}>
                   View, Sort & Filter Options
                 </Typography>
@@ -1142,7 +1133,7 @@ const CippStandardDialog = ({
                   </Typography>
                 )}
               </Box>
-              {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
+              {filtersExpanded ? <CippIcons.ExpandLess /> : <CippIcons.ExpandMore />}
             </Box>
 
             {/* Single line controls when expanded */}
@@ -1172,11 +1163,11 @@ const CippStandardDialog = ({
                   }}
                 >
                   <ToggleButton value="card" aria-label="card view">
-                    <ViewModule sx={{ mr: 1 }} />
+                    <CippIcons.ViewModule sx={{ mr: 1 }} />
                     Cards
                   </ToggleButton>
                   <ToggleButton value="list" aria-label="list view">
-                    <ViewList sx={{ mr: 1 }} />
+                    <CippIcons.ViewList sx={{ mr: 1 }} />
                     List
                   </ToggleButton>
                 </ToggleButtonGroup>
@@ -1320,7 +1311,7 @@ const CippStandardDialog = ({
                 {activeFiltersCount > 0 && (
                   <Button
                     variant="outlined"
-                    startIcon={<Clear />}
+                    startIcon={<CippIcons.Clear />}
                     onClick={clearAllFilters}
                     sx={{ ml: "auto", height: 45 }}
                   >

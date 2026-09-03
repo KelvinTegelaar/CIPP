@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import { useRouter } from 'next/router'
-import { Policy, Security, AdminPanelSettings, Devices, ExpandMore } from '@mui/icons-material'
 import {
   Box,
   Stack,
@@ -535,14 +535,14 @@ const PoliciesDeployedPage = () => {
         <Stack spacing={3} sx={{ pr: 2 }}>
           {/* Standards Section */}
           <Accordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   gap: 1
                 }}>
-                <Security color="primary" />
+                <CippIcons.Security color="primary" />
                 <Typography variant="h6">Security Standards</Typography>
                 <Chip label={deployedStandards.length} size="small" color="primary" />
               </Box>
@@ -562,14 +562,14 @@ const PoliciesDeployedPage = () => {
 
           {/* Intune Policies Section */}
           <Accordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   gap: 1
                 }}>
-                <Devices color="primary" />
+                <CippIcons.Devices color="primary" />
                 <Typography variant="h6">Intune Policies</Typography>
                 <Chip label={intunePolices.length} size="small" color="primary" />
               </Box>
@@ -596,14 +596,14 @@ const PoliciesDeployedPage = () => {
 
           {/* Conditional Access Policies Section */}
           <Accordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   gap: 1
                 }}>
-                <AdminPanelSettings color="primary" />
+                <CippIcons.AdminPanelSettings color="primary" />
                 <Typography variant="h6">Conditional Access Policies</Typography>
                 <Chip label={conditionalAccessPolicies.length} size="small" color="primary" />
               </Box>

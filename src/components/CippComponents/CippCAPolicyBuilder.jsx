@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Typography,
   Divider,
@@ -15,12 +16,6 @@ import {
   Box,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
-import PublicIcon from "@mui/icons-material/Public";
 import { useWatch, useFieldArray } from "react-hook-form";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormCondition } from "./CippFormCondition";
@@ -151,7 +146,7 @@ function SectionHeader({ title, description, requiresLicense, icon }) {
       {description && (
         <Tooltip title={description}>
           <IconButton size="small">
-            <InfoOutlinedIcon fontSize="small" />
+            <CippIcons.InfoOutlined fontSize="small" />
           </IconButton>
         </Tooltip>
       )}
@@ -1272,7 +1267,7 @@ function NamedLocationsSection({ formControl, disabled }) {
 
   return (
     <Stack spacing={2}>
-      <Alert severity="info" icon={<PublicIcon fontSize="small" />}>
+      <Alert severity="info" icon={<CippIcons.Public fontSize="small" />}>
         Named locations defined here are stored inside the template and recreated (or matched by
         display name) in the target tenant when the template is deployed. Reference them by name
         in the <strong>Include Locations</strong> / <strong>Exclude Locations</strong> fields
@@ -1307,7 +1302,7 @@ function NamedLocationsSection({ formControl, disabled }) {
                   disabled={disabled}
                   aria-label="remove named location"
                 >
-                  <DeleteOutlineIcon fontSize="small" />
+                  <CippIcons.DeleteOutlined fontSize="small" />
                 </IconButton>
               </span>
             </Tooltip>
@@ -1422,7 +1417,7 @@ function NamedLocationsSection({ formControl, disabled }) {
 
       <Box>
         <Button
-          startIcon={<AddIcon />}
+          startIcon={<CippIcons.Add />}
           variant="outlined"
           size="small"
           disabled={disabled}
@@ -1576,7 +1571,7 @@ const CippCAPolicyBuilder = ({
 
       {/* Users & Groups */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle1" sx={{
             fontWeight: 600
           }}>
@@ -1594,7 +1589,7 @@ const CippCAPolicyBuilder = ({
 
       {/* Cloud Apps or Actions */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle1" sx={{
             fontWeight: 600
           }}>
@@ -1608,7 +1603,7 @@ const CippCAPolicyBuilder = ({
 
       {/* Conditions */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle1" sx={{
             fontWeight: 600
           }}>
@@ -1622,7 +1617,7 @@ const CippCAPolicyBuilder = ({
 
       {/* Grant Controls */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle1" sx={{
             fontWeight: 600
           }}>
@@ -1636,7 +1631,7 @@ const CippCAPolicyBuilder = ({
 
       {/* Session Controls */}
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle1" sx={{
             fontWeight: 600
           }}>
@@ -1651,7 +1646,7 @@ const CippCAPolicyBuilder = ({
       {/* Named Locations (template only) */}
       {showNamedLocations && (
         <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
             <Stack direction="row" spacing={1} sx={{
               alignItems: "center"
             }}>

@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import { CippInfoBar } from "../../../../components/CippCards/CippInfoBar";
@@ -6,16 +7,6 @@ import { CippApiDialog } from "../../../../components/CippComponents/CippApiDial
 import { Alert, Typography, Stack, Tooltip, IconButton, SvgIcon, Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import Link from "next/link";
-import {
-  AccessTime,
-  CorporateFare,
-  AlternateEmail,
-  Language,
-  Sync,
-  RocketLaunch,
-  Edit,
-  Delete,
-} from "@mui/icons-material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { ApiGetCall } from "../../../../api/ApiCall";
@@ -85,7 +76,7 @@ const Page = () => {
 
   const buttonCardActions = [
     <>
-      <Button onClick={createDialog.handleOpen} startIcon={<Edit />}>
+      <Button onClick={createDialog.handleOpen} startIcon={<CippIcons.Edit />}>
         Edit Settings
       </Button>
       <Tooltip title="Refresh Data">
@@ -107,7 +98,7 @@ const Page = () => {
                 },
               }}
             >
-              <Sync />
+              <CippIcons.Sync />
             </SvgIcon>
           </IconButton>
         </span>
@@ -174,14 +165,14 @@ const Page = () => {
       data: { Identity: "Guid", Action: "!Edit" },
       confirmText: "Update Quarantine Policy '[Name]'? Policy Name cannot be changed.",
       multiPost: false,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "info",
       condition: (row) => row.Guid != "00000000-0000-0000-0000-000000000000",
     },
     {
       label: "Delete Policy",
       type: "POST",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       url: "/api/RemoveQuarantinePolicy",
       data: {
         Name: "Name",
@@ -249,7 +240,7 @@ const Page = () => {
                 <CippButtonCard
                   title={
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <Language style={{ marginRight: "8px" }} />
+                      <CippIcons.Language style={{ marginRight: "8px" }} />
                       {item.language}
                     </div>
                   }
@@ -295,12 +286,12 @@ const Page = () => {
   // Prepare data for CippInfoBar as a const to clean up the code
   const infoBarData = [
     {
-      icon: <AccessTime />,
+      icon: <CippIcons.AccessTime />,
       data: globalQuarantineData?.EndUserSpamNotificationFrequency ?? "n/a",
       name: "Notification Frequency",
     },
     {
-      icon: <CorporateFare />,
+      icon: <CippIcons.CorporateFare />,
       data: hasGlobalQuarantinePolicyData
         ? globalQuarantineData?.OrganizationBrandingEnabled
           ? "Enabled"
@@ -309,7 +300,7 @@ const Page = () => {
       name: "Branding",
     },
     {
-      icon: <AlternateEmail />,
+      icon: <CippIcons.AlternateEmail />,
       data: hasGlobalQuarantinePolicyData
         ? globalQuarantineData?.EndUserSpamNotificationCustomFromAddress
           ? globalQuarantineData?.EndUserSpamNotificationCustomFromAddress
@@ -318,7 +309,7 @@ const Page = () => {
       name: "Custom Sender Address",
     },
     {
-      icon: <Language />,
+      icon: <CippIcons.Language />,
       toolTip: "More Info",
       data: hasGlobalQuarantinePolicyData
         ? multiLanguagePropertyItems.length > 0
@@ -358,7 +349,7 @@ const Page = () => {
             <Button
               component={Link}
               href="/email/spamfilter/list-quarantine-policies/add"
-              startIcon={<RocketLaunch />}
+              startIcon={<CippIcons.RocketLaunch />}
             >
               Deploy Custom Policy
             </Button>

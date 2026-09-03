@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
-import { RocketLaunch } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
@@ -60,7 +60,7 @@ export const CippSharePointTemplateDeployDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<RocketLaunch />}
+        startIcon={<CippIcons.RocketLaunch />}
       >
         {buttonText}
       </PermissionButton>

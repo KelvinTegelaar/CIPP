@@ -1,8 +1,8 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button, Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
-import { Add, Delete, GitHub, Edit, RocketLaunch, LocalOffer, LocalOfferOutlined } from "@mui/icons-material";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
 import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer.jsx";
@@ -34,14 +34,14 @@ const Page = () => {
       label: "Deploy Template",
       customFunction: handleDeployTemplate,
       noConfirm: true,
-      icon: <RocketLaunch />,
+      icon: <CippIcons.RocketLaunch />,
       color: "success",
     },
     {
       label: "Edit Template",
       link: "/tenant/conditional/list-template/edit?GUID=[GUID]",
       pinned: true,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "info",
     },
     {
@@ -69,7 +69,7 @@ const Page = () => {
       ],
       confirmText: "Select an existing package, or type a new package name.",
       multiPost: true,
-      icon: <LocalOffer />,
+      icon: <CippIcons.LocalOffer />,
       color: "info",
     },
     {
@@ -79,14 +79,14 @@ const Page = () => {
       data: { GUID: "GUID", Remove: true },
       confirmText: "Are you sure you want to remove the selected template(s) from their package?",
       multiPost: true,
-      icon: <LocalOfferOutlined />,
+      icon: <CippIcons.LocalOfferOutlined />,
       color: "warning",
     },
     {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -130,7 +130,7 @@ const Page = () => {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveCATemplate",
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       data: { ID: "GUID" },
       confirmText: "Do you want to delete the template?",
       multiPost: false,
@@ -156,7 +156,7 @@ const Page = () => {
             <Button
               component={Link}
               href="/tenant/conditional/list-template/create"
-              startIcon={<Add />}
+              startIcon={<CippIcons.Add />}
             >
               Create Template
             </Button>

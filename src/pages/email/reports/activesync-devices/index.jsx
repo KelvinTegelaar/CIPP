@@ -1,14 +1,13 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { Block, CheckCircle } from '@mui/icons-material'
-import { TrashIcon } from '@heroicons/react/24/outline'
 
 const Page = () => {
   const actions = [
     {
       label: 'Allow Device',
-      type: 'GET',
-      icon: <CheckCircle />,
+      type: 'POST',
+      icon: <CippIcons.CheckCircle />,
       url: '/api/ExecMailboxMobileDevices',
       data: {
         Userid: 'userPrincipalName',
@@ -24,8 +23,8 @@ const Page = () => {
     },
     {
       label: 'Block Device',
-      type: 'GET',
-      icon: <Block />,
+      type: 'POST',
+      icon: <CippIcons.Block />,
       url: '/api/ExecMailboxMobileDevices',
       data: {
         Userid: 'userPrincipalName',
@@ -41,8 +40,8 @@ const Page = () => {
     },
     {
       label: 'Delete Device',
-      type: 'GET',
-      icon: <TrashIcon />,
+      type: 'POST',
+      icon: <CippIcons.Delete />,
       url: '/api/ExecMailboxMobileDevices',
       data: {
         Userid: 'userPrincipalName',

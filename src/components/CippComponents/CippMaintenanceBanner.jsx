@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import NextLink from 'next/link'
 import { Box, Button, Chip, IconButton, Link, Stack, Typography, useMediaQuery } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
-import { Close, ErrorOutlined, InfoOutlined, WarningAmber } from '@mui/icons-material'
 import { formatDistanceStrict } from 'date-fns'
 
 // Dismissal is keyed on the notice id so that re-issuing an edited notice brings the banner back
@@ -13,9 +13,9 @@ const DISMISS_DURATION_MS = 24 * 60 * 60 * 1000 // 1 day, matching FailedPayment
 const SEVERITIES = ['info', 'warning', 'error']
 
 const ICONS = {
-  info: InfoOutlined,
-  warning: WarningAmber,
-  error: ErrorOutlined,
+  info: CippIcons.InfoOutlined,
+  warning: CippIcons.WarningAmber,
+  error: CippIcons.ErrorOutlined,
 }
 
 // localStorage throws in locked-down browsers - never let that break the layout.
@@ -345,7 +345,7 @@ export const CippMaintenanceBanner = ({ alert }) => {
                 '&:hover': { backgroundColor: alpha(solid ? '#FFFFFF' : palette.main, 0.16) },
               }}
             >
-              <Close fontSize="inherit" />
+              <CippIcons.Close fontSize="inherit" />
             </IconButton>
           )}
         </Stack>

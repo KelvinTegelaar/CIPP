@@ -9,15 +9,14 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { CippPermissionResults } from "./CippPermissionResults";
 import { CippGDAPResults } from "./CippGDAPResults";
-import { Close, Sync } from "@mui/icons-material";
 import { CippTenantResults } from "./CippTenantResults";
 import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
-import { Description } from "@mui/icons-material";
 
 const CippPermissionCheck = (props) => {
   const { type, importReport = false, variant } = props;
@@ -69,7 +68,7 @@ const CippPermissionCheck = (props) => {
               size="small"
               startIcon={
                 <SvgIcon fontSize="small">
-                  <Sync />
+                  <CippIcons.Sync />
                 </SvgIcon>
               }
               onClick={handlePermissionCheck}
@@ -88,7 +87,7 @@ const CippPermissionCheck = (props) => {
                 disabled={executeCheck.isPending || executeCheck.isFetching}
               >
                 <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-                  <Description />
+                  <CippIcons.Description />
                 </SvgIcon>
                 Details
               </Button>
@@ -171,7 +170,7 @@ const CippPermissionCheck = (props) => {
                       size="small"
                       onClick={() => setShowAlertMessage(false)}
                     >
-                      <Close fontSize="inherit" />
+                      <CippIcons.Close fontSize="inherit" />
                     </IconButton>
                   }
                 >

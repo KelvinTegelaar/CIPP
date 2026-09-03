@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   CircularProgress,
   Dialog,
@@ -8,14 +9,6 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material'
-import { Close } from '@mui/icons-material'
-import {
-  ArrowDownTrayIcon,
-  CodeBracketIcon,
-  DocumentTextIcon,
-  EyeIcon,
-  NoSymbolIcon,
-} from '@heroicons/react/24/outline'
 import { CippTablePage } from './CippTablePage.jsx'
 import { CippMessageViewer } from './CippMessageViewer.jsx'
 import { CippDataTable } from '../CippTable/CippDataTable'
@@ -186,7 +179,7 @@ export const CippUserReportedMessagesTable = () => {
       label: 'Preview Message',
       noConfirm: true,
       customFunction: viewMessage,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       hideBulk: true,
       condition: (row) => Boolean(row.InternetMessageId),
     },
@@ -194,7 +187,7 @@ export const CippUserReportedMessagesTable = () => {
       label: 'View Message Headers',
       noConfirm: true,
       customFunction: viewHeaders,
-      icon: <CodeBracketIcon />,
+      icon: <CippIcons.CodeBracketIcon />,
       hideBulk: true,
       condition: (row) => Boolean(row.InternetMessageId),
     },
@@ -202,7 +195,7 @@ export const CippUserReportedMessagesTable = () => {
       label: 'Download Message (.eml)',
       noConfirm: true,
       customFunction: downloadMessage,
-      icon: <ArrowDownTrayIcon />,
+      icon: <CippIcons.ArrowDownTrayIcon />,
       hideBulk: true,
       condition: (row) => Boolean(row.InternetMessageId),
     },
@@ -210,7 +203,7 @@ export const CippUserReportedMessagesTable = () => {
       label: 'View Message Trace',
       noConfirm: true,
       customFunction: viewMessageTrace,
-      icon: <DocumentTextIcon />,
+      icon: <CippIcons.DocumentTextIcon />,
       hideBulk: true,
       condition: (row) => Boolean(row.InternetMessageId),
     },
@@ -238,7 +231,7 @@ export const CippUserReportedMessagesTable = () => {
       ],
       confirmText:
         'Block sender [Sender] by adding an entry to the Tenant Allow/Block List?',
-      icon: <NoSymbolIcon />,
+      icon: <CippIcons.NoSymbolIcon />,
       condition: (row) => Boolean(row.Sender),
     },
   ]
@@ -313,7 +306,7 @@ export const CippUserReportedMessagesTable = () => {
             onClick={() => setDialogOpen(false)}
             sx={{ position: 'absolute', right: 8, top: 8 }}
           >
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
@@ -335,7 +328,7 @@ export const CippUserReportedMessagesTable = () => {
             onClick={() => setHeaderDialogOpen(false)}
             sx={{ position: 'absolute', right: 8, top: 8 }}
           >
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
@@ -367,7 +360,7 @@ export const CippUserReportedMessagesTable = () => {
             onClick={() => setTraceDialogOpen(false)}
             sx={{ position: 'absolute', right: 8, top: 8 }}
           >
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>

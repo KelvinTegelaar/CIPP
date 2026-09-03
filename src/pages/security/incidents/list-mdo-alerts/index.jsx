@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { PersonAdd, PlayArrow, Assignment, Done } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Defender Alerts";
@@ -10,7 +10,7 @@ const Page = () => {
     {
       label: "Assign to self",
       type: "POST",
-      icon: <PersonAdd />,
+      icon: <CippIcons.PersonAdd />,
       url: "/api/ExecSetMdoAlert",
       data: {
         GUID: "id",
@@ -20,7 +20,7 @@ const Page = () => {
     {
       label: "Set status to active",
       type: "POST",
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       url: "/api/ExecSetMdoAlert",
       data: {
         GUID: "id",
@@ -32,7 +32,7 @@ const Page = () => {
     {
       label: "Set status to in progress",
       type: "POST",
-      icon: <Assignment />,
+      icon: <CippIcons.Assignment />,
       url: "/api/ExecSetMdoAlert",
       data: {
         GUID: "id",
@@ -44,7 +44,7 @@ const Page = () => {
     {
       label: "Set status to resolved",
       type: "POST",
-      icon: <Done />,
+      icon: <CippIcons.Done />,
       url: "/api/ExecSetMdoAlert",
       data: {
         GUID: "id",

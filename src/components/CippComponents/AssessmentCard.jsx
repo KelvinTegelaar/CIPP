@@ -7,7 +7,7 @@ import {
   Skeleton,
   Tooltip,
 } from "@mui/material";
-import { Security as SecurityIcon } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { useRouter } from "next/router";
 import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 
@@ -164,7 +164,7 @@ export const AssessmentCard = ({ data, isLoading, title, description }) => {
       <CardHeader
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "fit-content" }}>
-            <SecurityIcon sx={{ fontSize: 20 }} />
+            <CippIcons.Security sx={{ fontSize: 20 }} />
             <Typography variant="subtitle1">{title || "Assessment"}</Typography>
           </Box>
         }

@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import ExclamationCircleIcon from '@heroicons/react/24/outline/ExclamationCircleIcon';
-import ExclamationTriangleIcon from '@heroicons/react/24/outline/ExclamationTriangleIcon';
+import { CippIcons } from '../utils/icon-registry';
 import {
   Button,
   CircularProgress,
@@ -19,7 +18,7 @@ const iconMap = {
       color="error"
       fontSize="large"
     >
-      <ExclamationCircleIcon />
+      <CippIcons.ExclamationCircleIcon />
     </SvgIcon>
   ),
   warning: (
@@ -27,7 +26,7 @@ const iconMap = {
       color="warning"
       fontSize="large"
     >
-      <ExclamationTriangleIcon />
+      <CippIcons.ExclamationTriangleIcon />
     </SvgIcon>
   ),
   info: (
@@ -35,7 +34,7 @@ const iconMap = {
       color="info"
       fontSize="large"
     >
-      <ExclamationCircleIcon />
+      <CippIcons.ExclamationCircleIcon />
     </SvgIcon>
   )
 };

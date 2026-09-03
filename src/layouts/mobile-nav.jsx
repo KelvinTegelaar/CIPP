@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
+import { CippIcons } from "../utils/icon-registry";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
 import { Box, Divider, InputAdornment, OutlinedInput, Stack, SwipeableDrawer, Typography } from "@mui/material";
-import { Search } from "@mui/icons-material";
 import { Logo } from "../components/logo";
 import { CippSponsor } from "../components/CippComponents/CippSponsor";
 import { Scrollbar } from "../components/scrollbar";
@@ -175,7 +175,7 @@ export const MobileNav = (props) => {
             slotProps={{ input: { enterKeyHint: "search" } }}
           startAdornment={
             <InputAdornment position="start">
-              <Search fontSize="small" />
+              <CippIcons.Search fontSize="small" />
             </InputAdornment>
           }
           sx={{ minHeight: 44 }}

@@ -1,4 +1,5 @@
 import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippIcons } from "../../../../utils/icon-registry";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import tabOptions from "./tabOptions";
 import { useForm } from "react-hook-form";
@@ -9,7 +10,6 @@ import CippPageCard from "../../../../components/CippCards/CippPageCard";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { ConfirmationDialog } from "../../../../components/confirmation-dialog";
 import { Alert, Button, CardContent, Skeleton, Stack, SvgIcon, Typography } from "@mui/material";
-import { SettingsBackupRestore, WarningAmberOutlined } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "SAM App Permissions";
@@ -63,7 +63,7 @@ const Page = () => {
             This is an advanced setting that allows you to modify the permissions used for CPV
             consent on customer tenants.
           </Typography>
-          <Alert color="warning" icon={<WarningAmberOutlined />}>
+          <Alert color="warning" icon={<CippIcons.WarningAmberOutlined />}>
             The default CIPP-SAM permissions are always applied and cannot be removed - you
             can only layer additional permissions on top of them. Use "Reset to CIPP Defaults"
             to remove all additional permissions and return to the built-in defaults.
@@ -74,7 +74,7 @@ const Page = () => {
               color="error"
               startIcon={
                 <SvgIcon fontSize="small">
-                  <SettingsBackupRestore />
+                  <CippIcons.SettingsBackupRestore />
                 </SvgIcon>
               }
               onClick={() => setResetDialogOpen(true)}

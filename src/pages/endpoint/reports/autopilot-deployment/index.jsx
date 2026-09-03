@@ -1,8 +1,8 @@
-import { EyeIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
+
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { useSettings } from "../../../../hooks/use-settings";
-import { CheckCircle, Error, Warning, Refresh } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Autopilot Deployments";
@@ -15,7 +15,7 @@ const Page = () => {
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[deviceId]`,
       pinned: true,
       color: "info",
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       target: "_blank",
       multiPost: false,
       external: true,
@@ -25,7 +25,7 @@ const Page = () => {
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_DeviceSettings/DeploymentOverviewMenuBlade/~/autopilotDeployment/deploymentProfileId/[windowsAutopilotDeploymentProfileDisplayName]`,
       pinned: true,
       color: "info",
-      icon: <DocumentTextIcon />,
+      icon: <CippIcons.DocumentTextIcon />,
       target: "_blank",
       multiPost: false,
       external: true,

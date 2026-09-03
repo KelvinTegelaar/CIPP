@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
   AlertTitle,
@@ -10,7 +11,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { Add, Delete, LinkOff, Link as LinkIcon, Tune } from '@mui/icons-material'
 import { useForm } from 'react-hook-form'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { CippApiDialog } from './CippApiDialog'
@@ -132,7 +132,7 @@ export const CippLibraryPermissionsDialog = ({
     {
       label: 'Change Permission Level',
       type: 'POST',
-      icon: <Tune />,
+      icon: <CippIcons.Tune />,
       url: '/api/ExecSetLibraryPermission',
       confirmText: `Set the permission level [Title] holds on ${scopeLabel}. Any other level they hold here is removed.${inheritanceWarning}`,
       condition: (assignment) => canWrite && !assignment.IsSystemManaged,
@@ -165,7 +165,7 @@ export const CippLibraryPermissionsDialog = ({
     {
       label: 'Remove Permission',
       type: 'POST',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       url: '/api/ExecRemoveLibraryPermission',
       confirmText: `Remove [PermissionLevel] from [Title] on ${scopeLabel}?${inheritanceWarning}`,
       color: 'error',
@@ -218,7 +218,7 @@ export const CippLibraryPermissionsDialog = ({
                     size="small"
                     variant="outlined"
                     color="warning"
-                    startIcon={<LinkIcon />}
+                    startIcon={<CippIcons.Link />}
                     disabled={!canWrite}
                     onClick={resetDialog.handleOpen}
                   >
@@ -228,7 +228,7 @@ export const CippLibraryPermissionsDialog = ({
                   <Button
                     size="small"
                     variant="outlined"
-                    startIcon={<LinkOff />}
+                    startIcon={<CippIcons.LinkOff />}
                     disabled={!canWrite}
                     onClick={breakDialog.handleOpen}
                   >
@@ -253,7 +253,7 @@ export const CippLibraryPermissionsDialog = ({
           }}>
             <Button
               size="small"
-              startIcon={<Add />}
+              startIcon={<CippIcons.Add />}
               disabled={!canWrite}
               onClick={addDialog.handleOpen}
             >

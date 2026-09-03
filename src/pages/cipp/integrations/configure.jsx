@@ -10,6 +10,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+import { CippIcons } from "../../../utils/icon-registry";
 import CippIntegrationSettings from "../../../components/CippIntegrations/CippIntegrationSettings";
 import { Layout as DashboardLayout } from "../../../layouts/index";
 import { useForm } from "react-hook-form";
@@ -18,7 +19,6 @@ import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "../../../data/Extensions.json";
 import { useEffect } from "react";
-import { ArrowPathIcon, ArrowTopRightOnSquareIcon, BeakerIcon } from "@heroicons/react/24/outline";
 import { SvgIcon } from "@mui/material";
 import { useState } from "react";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
@@ -186,7 +186,7 @@ const Page = () => {
                     }
                   >
                     <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                      <BeakerIcon />
+                      <CippIcons.BeakerIcon />
                     </SvgIcon>
                     Test
                   </Button>
@@ -207,7 +207,7 @@ const Page = () => {
                     }
                   >
                     <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                      <ArrowPathIcon />
+                      <CippIcons.ArrowPathIcon />
                     </SvgIcon>
                     Force Sync
                   </Button>
@@ -225,7 +225,7 @@ const Page = () => {
                     }
                   >
                     <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                      <BeakerIcon />
+                      <CippIcons.BeakerIcon />
                     </SvgIcon>
                     Create Test Ticket
                   </Button>
@@ -254,7 +254,7 @@ const Page = () => {
                     <Box key={index}>
                       <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
                         <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                          <ArrowTopRightOnSquareIcon />
+                          <CippIcons.ArrowTopRightOnSquareIcon />
                         </SvgIcon>
                         {link.name}
                       </Button>

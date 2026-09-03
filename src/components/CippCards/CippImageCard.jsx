@@ -1,5 +1,5 @@
 import NextLink from "next/link";
-import ArrowRightIcon from "@heroicons/react/24/outline/ArrowRightIcon";
+import { CippIcons } from "../../utils/icon-registry";
 import { Box, Button, LinearProgress, Skeleton, Stack, SvgIcon, Typography } from "@mui/material";
 
 export const CippImageCard = ({
@@ -70,7 +70,7 @@ export const CippImageCard = ({
           component={NextLink}
           endIcon={
             <SvgIcon fontSize="small">
-              <ArrowRightIcon />
+              <CippIcons.ArrowRightIcon />
             </SvgIcon>
           }
           href={link}
@@ -83,7 +83,7 @@ export const CippImageCard = ({
         <Button
           endIcon={
             <SvgIcon fontSize="small">
-              <ArrowRightIcon />
+              <CippIcons.ArrowRightIcon />
             </SvgIcon>
           }
           onClick={onButtonClick}

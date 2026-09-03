@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Badge,
   Box,
@@ -16,15 +17,6 @@ import {
   ModernButton,
   ModernIconButton,
 } from "./toolbar-primitives";
-import {
-  ArrowDownward,
-  ArrowUpward,
-  MoreVert,
-  RestartAlt,
-  Search,
-  SwapVert,
-  TableChart,
-} from "@mui/icons-material";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { CippBottomSheet } from "../CippComponents/CippBottomSheet";
 import { CippTableFilterSheet } from "./CippTableFilterSheet";
@@ -119,7 +111,7 @@ export const CippMobileTableControls = (props) => {
             (flex: 1, minWidth: 0) outranks an sx prop on it. */}
         <Box sx={{ display: "flex", flex: "1 1 180px", minWidth: 160 }}>
           <ModernSearchContainer elevation={0} sx={{ height: 44 }}>
-            <Search fontSize="small" sx={{ color: "text.secondary" }} />
+            <CippIcons.Search fontSize="small" sx={{ color: "text.secondary" }} />
             <ModernSearchInput
               type="search"
               placeholder="Search…"
@@ -143,7 +135,7 @@ export const CippMobileTableControls = (props) => {
             onClick={() => setSortOpen(true)}
             sx={sorting.length ? { borderColor: "primary.main", color: "primary.main" } : undefined}
           >
-            <SwapVert fontSize="small" />
+            <CippIcons.SwapVert fontSize="small" />
           </ModernIconButton>
           {/* kebab, the sheet is a grab-bag (presets, fields, export, refresh), not just filters */}
           <ModernIconButton
@@ -156,7 +148,7 @@ export const CippMobileTableControls = (props) => {
             }
           >
             <Badge badgeContent={activeSlotCount} color="primary">
-              <MoreVert fontSize="small" />
+              <CippIcons.MoreVert fontSize="small" />
             </Badge>
           </ModernIconButton>
           {onViewToggle && (
@@ -166,7 +158,7 @@ export const CippMobileTableControls = (props) => {
               onClick={onViewToggle}
             >
               {/* destination icon: tapping here opens the table */}
-              <TableChart fontSize="small" />
+              <CippIcons.TableChart fontSize="small" />
             </ModernIconButton>
           )}
         </Box>
@@ -200,7 +192,7 @@ export const CippMobileTableControls = (props) => {
               />
               {current && (
                 <SvgIcon fontSize="small" color="primary">
-                  {current.desc ? <ArrowDownward /> : <ArrowUpward />}
+                  {current.desc ? <CippIcons.ArrowDownward /> : <CippIcons.ArrowUpward />}
                 </SvgIcon>
               )}
             </ListItemButton>
@@ -211,7 +203,7 @@ export const CippMobileTableControls = (props) => {
             <Divider />
             <ListItemButton onClick={() => table.setSorting([])} sx={{ minHeight: 48 }}>
               <ListItemIcon sx={{ minWidth: 40 }}>
-                <RestartAlt fontSize="small" />
+                <CippIcons.RestartAlt fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Clear sorting" />
             </ListItemButton>

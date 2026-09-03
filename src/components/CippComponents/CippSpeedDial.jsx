@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   SpeedDial,
   SpeedDialAction,
@@ -13,7 +14,6 @@ import {
   CircularProgress,
   useMediaQuery,
 } from '@mui/material'
-import { Close as CloseIcon } from '@mui/icons-material'
 import { useForm } from 'react-hook-form'
 import { CippFormComponent } from '../../components/CippComponents/CippFormComponent'
 
@@ -21,7 +21,7 @@ const CippSpeedDial = ({
   actions = [],
   position = { bottom: 16, right: 16 },
   icon,
-  openIcon = <CloseIcon />,
+  openIcon = <CippIcons.Close />,
 }) => {
   const [openDialogs, setOpenDialogs] = useState({})
   const [loading, setLoading] = useState(false)

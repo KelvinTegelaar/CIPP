@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
+import { CippIcons } from "../../utils/icon-registry";
 import { useIsMobileLayout } from "../../hooks/use-breakpoint";
 import { CippWizardProgressHeader } from "./CippWizardProgressHeader";
 import {
@@ -117,7 +117,7 @@ const WizardStepIcon = (props) => {
         }}
       >
         <SvgIcon fontSize="small">
-          <CheckIcon />
+          <CippIcons.CheckIcon />
         </SvgIcon>
       </Box>
     );

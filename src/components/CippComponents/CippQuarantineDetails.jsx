@@ -12,8 +12,8 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
 import NextLink from 'next/link'
-import { ExpandMore } from '@mui/icons-material'
 import { CippPropertyList } from './CippPropertyList'
 import { CippCopyToClipBoard } from './CippCopyToClipboard'
 import { getCippFormatting } from '../../utils/get-cipp-formatting'
@@ -97,7 +97,7 @@ const Section = ({
       defaultExpanded={defaultExpanded}
       sx={{ '&:before': { display: 'none' } }}
     >
-      <AccordionSummary expandIcon={<ExpandMore />}>
+      <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
         <Typography variant="subtitle1">{title}</Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ p: 0, pb: 1 }}>

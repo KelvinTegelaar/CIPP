@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { CippIcons } from '../../utils/icon-registry'
 import { useTabNavigation, useTitleClaimedByTabPicker } from '../../layouts/tab-navigation-context'
 import {
   Box,
@@ -11,7 +12,6 @@ import {
   CardContent,
   CardActions,
 } from '@mui/material'
-import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
 import { ApiPostCall } from '../../api/ApiCall'
 import { CippApiResults } from '../CippComponents/CippApiResults'
 import { createContext, useContext, useEffect } from 'react'

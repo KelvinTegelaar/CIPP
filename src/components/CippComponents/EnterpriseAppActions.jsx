@@ -1,21 +1,11 @@
-import {
-  Launch,
-  Delete,
-  Key,
-  Security,
-  Block,
-  CheckCircle,
-  ContentCopy,
-  Visibility,
-  VisibilityOff,
-} from '@mui/icons-material'
+import { CippIcons } from '../../utils/icon-registry'
 import { CippFormComponent } from './CippFormComponent.jsx'
 import { CertificateCredentialRemovalForm } from './CertificateCredentialRemovalForm.jsx'
 
 const headerLinkProps = { showInActionsMenu: true }
 
 const viewInEntraAction = {
-  icon: <Launch />,
+  icon: <CippIcons.Launch />,
   label: 'View Application',
   link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/[id]/appId/[appId]`,
   pinned: true,
@@ -27,7 +17,7 @@ const viewInEntraAction = {
 
 export const getEnterpriseAppPostActions = (canWriteApplication) => [
   {
-    icon: <ContentCopy />,
+    icon: <CippIcons.ContentCopy />,
     label: 'Create Template from App',
     type: 'POST',
     color: 'info',
@@ -51,7 +41,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
       canWriteApplication && row?.signInAudience === 'AzureADMultipleOrgs',
   },
   {
-    icon: <Key />,
+    icon: <CippIcons.Key />,
     label: 'Remove Password Credentials',
     type: 'POST',
     color: 'warning',
@@ -91,7 +81,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
       canWriteApplication && row?.passwordCredentials?.length > 0,
   },
   {
-    icon: <Security />,
+    icon: <CippIcons.Security />,
     label: 'Remove Certificate Credentials',
     type: 'POST',
     color: 'warning',
@@ -110,7 +100,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
     condition: (row) => canWriteApplication && row?.keyCredentials?.length > 0,
   },
   {
-    icon: <Block />,
+    icon: <CippIcons.Block />,
     label: 'Disable Service Principal',
     type: 'POST',
     color: 'warning',
@@ -129,7 +119,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
     condition: (row) => canWriteApplication && row?.accountEnabled === true,
   },
   {
-    icon: <CheckCircle />,
+    icon: <CippIcons.CheckCircle />,
     label: 'Enable Service Principal',
     type: 'POST',
     color: 'success',
@@ -147,7 +137,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
     condition: (row) => canWriteApplication && row?.accountEnabled === false,
   },
   {
-    icon: <VisibilityOff />,
+    icon: <CippIcons.VisibilityOff />,
     label: 'Hide from MyApps portal',
     type: 'POST',
     color: 'warning',
@@ -164,7 +154,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
       canWriteApplication && !(row?.tags ?? []).includes('HideApp'),
   },
   {
-    icon: <Visibility />,
+    icon: <CippIcons.EyeIcon />,
     label: 'Show in MyApps portal',
     type: 'POST',
     color: 'success',
@@ -180,7 +170,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
       canWriteApplication && (row?.tags ?? []).includes('HideApp'),
   },
   {
-    icon: <Delete />,
+    icon: <CippIcons.Delete />,
     label: 'Delete Service Principal',
     type: 'POST',
     color: 'error',
@@ -199,7 +189,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
 
 export const getEnterpriseAppListActions = (canWriteApplication) => [
   {
-    icon: <Visibility />,
+    icon: <CippIcons.EyeIcon />,
     label: 'View in CIPP',
     link: '/tenant/administration/applications/enterprise-app?spId=[id]&tenantFilter=[Tenant]',
     pinned: true,

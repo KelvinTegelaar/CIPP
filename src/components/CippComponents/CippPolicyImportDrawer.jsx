@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Button,
   Stack,
@@ -13,7 +14,6 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from '@mui/material'
-import { CloudUpload, Search, Visibility } from '@mui/icons-material'
 import { useForm, useWatch } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
@@ -232,7 +232,7 @@ export const CippPolicyImportDrawer = ({
       <PermissionButton
         {...(PermissionButton === Button ? {} : { requiredPermissions })}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<CloudUpload />}
+        startIcon={<CippIcons.CloudUpload />}
       >
         {buttonText}
       </PermissionButton>
@@ -298,7 +298,7 @@ export const CippPolicyImportDrawer = ({
                 sx={{ mb: 2 }}
                 slotProps={{
                   input: {
-                    startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
+                    startAdornment: <CippIcons.Search sx={{ mr: 1, color: 'text.secondary' }} />,
                   }
                 }}
               />
@@ -350,7 +350,7 @@ export const CippPolicyImportDrawer = ({
                           </Button>
                           <Button
                             variant="outlined"
-                            startIcon={<Visibility />}
+                            startIcon={<CippIcons.EyeIcon />}
                             onClick={() => handleViewPolicy(policy)}
                             sx={{ minWidth: 120, flexShrink: 0 }}
                           >

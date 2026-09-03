@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../../utils/icon-registry"
 import {
   Box,
   Stack,
@@ -24,15 +25,6 @@ import { Layout as DashboardLayout } from "../../../layouts/index";
 import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
 import { ApiGetCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
-import {
-  Policy,
-  Error as ErrorIcon,
-  Warning as WarningIcon,
-  Info as InfoIcon,
-  CheckCircle as SuccessIcon,
-  ExpandMore,
-  Sync,
-} from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "../../../hooks/use-settings";
 
@@ -94,15 +86,15 @@ const Page = () => {
     const severityLower = severity?.toLowerCase();
     switch (severityLower) {
       case "error":
-        return { icon: <ErrorIcon />, color: "error", chipColor: "error" };
+        return { icon: <CippIcons.Error />, color: "error", chipColor: "error" };
       case "warning":
-        return { icon: <WarningIcon />, color: "warning", chipColor: "warning" };
+        return { icon: <CippIcons.Warning />, color: "warning", chipColor: "warning" };
       case "info":
-        return { icon: <InfoIcon />, color: "info", chipColor: "info" };
+        return { icon: <CippIcons.Info />, color: "info", chipColor: "info" };
       case "success":
-        return { icon: <SuccessIcon />, color: "success", chipColor: "success" };
+        return { icon: <CippIcons.CheckCircle />, color: "success", chipColor: "success" };
       default:
-        return { icon: <InfoIcon />, color: "grey", chipColor: "default" };
+        return { icon: <CippIcons.Info />, color: "grey", chipColor: "default" };
     }
   };
 
@@ -132,7 +124,7 @@ const Page = () => {
   const actions = [
     {
       label: "Refresh Data",
-      icon: <Sync />,
+      icon: <CippIcons.Sync />,
       noConfirm: true,
       customFunction: () => {
         logsData.refetch();
@@ -324,7 +316,7 @@ const Page = () => {
                   }}>
                   <Button
                     variant="outlined"
-                    startIcon={<ExpandMore />}
+                    startIcon={<CippIcons.ExpandMore />}
                     onClick={handleLoadMore}
                     disabled={logsData.isLoading}
                   >

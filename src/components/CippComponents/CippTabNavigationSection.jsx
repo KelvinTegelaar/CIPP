@@ -5,8 +5,7 @@ import {
   ListItemText,
   ListSubheader,
 } from '@mui/material'
-import { Check } from '@mui/icons-material'
-import { getIconByName } from '../../utils/icon-registry'
+import { CippIcons, getIconByName } from '../../utils/icon-registry'
 import { useTabNavigation } from '../../layouts/tab-navigation-context'
 
 /**
@@ -48,7 +47,7 @@ export const CippTabNavigationSection = ({ title = 'Views', onNavigate }) => {
               {getIconByName(tab.icon, { fontSize: 'small' })}
             </ListItemIcon>
             <ListItemText primary={tab.label} />
-            {selected && <Check fontSize="small" color="primary" />}
+            {selected && <CippIcons.Check fontSize="small" color="primary" />}
           </ListItemButton>
         )
       })}

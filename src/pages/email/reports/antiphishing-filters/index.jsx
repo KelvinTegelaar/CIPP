@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Block, Check } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "List of Anti-Phishing Filters";
@@ -10,7 +10,7 @@ const Page = () => {
     {
       label: "Enable Rule",
       type: "POST",
-      icon: <Check />,
+      icon: <CippIcons.Check />,
       url: "/api/EditAntiPhishingFilter",
       data: {
         State: "!Enable",
@@ -22,7 +22,7 @@ const Page = () => {
     {
       label: "Disable Rule",
       type: "POST",
-      icon: <Block />,
+      icon: <CippIcons.Block />,
       url: "/api/EditAntiPhishingFilter",
       data: {
         State: "!Disable",

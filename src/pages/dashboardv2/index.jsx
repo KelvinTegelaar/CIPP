@@ -20,7 +20,7 @@ import { useSettings } from '../../hooks/use-settings'
 import { useIsMobileLayout } from '../../hooks/use-breakpoint'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
 import { getFilteredPortals } from '../../utils/get-filtered-portals'
-import { getIconByName } from '../../utils/icon-registry'
+import { CippIcons, getIconByName } from '../../utils/icon-registry'
 import { BulkActionsMenu } from '../../components/bulk-actions-menu'
 import { CippPageActionsFab } from '../../components/CippComponents/CippPageActionsFab'
 import { ExecutiveReportButton } from '../../components/ExecutiveReportButton'
@@ -37,8 +37,6 @@ import { TenantMetricsGrid } from '../../components/CippComponents/TenantMetrics
 import { AssessmentCard } from '../../components/CippComponents/AssessmentCard'
 import { AlertsOverviewCard } from '../../components/CippComponents/AlertsOverviewCard'
 import { CippReportToolbar } from '../../components/CippComponents/CippReportToolbar'
-import { Assessment as AssessmentIcon } from '@mui/icons-material'
-import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
 import { AllTenantsDashboard } from '../../components/CippAllTenants/AllTenantsDashboard'
 
@@ -263,7 +261,7 @@ const Page = () => {
                       component={Link}
                       href="/tools/report-builder/generated"
                       variant="contained"
-                      startIcon={<AssessmentIcon />}
+                      startIcon={<CippIcons.Assessment />}
                       sx={{
                         width: '100%',
                         minWidth: 0,
@@ -291,7 +289,7 @@ const Page = () => {
                       onClick={(e) => setReportsMenuAnchor(e.currentTarget)}
                       startIcon={
                         <SvgIcon fontSize="small">
-                          <ChevronDownIcon />
+                          <CippIcons.ChevronDownIcon />
                         </SvgIcon>
                       }
                       sx={{
@@ -329,7 +327,7 @@ const Page = () => {
                       onClick={() => setReportsMenuAnchor(null)}
                     >
                       <ListItemIcon>
-                        <AssessmentIcon fontSize="small" />
+                        <CippIcons.Assessment fontSize="small" />
                       </ListItemIcon>
                       <ListItemText>Report Builder</ListItemText>
                     </MenuItem>
@@ -489,7 +487,7 @@ const Page = () => {
               sx={{ minHeight: 48 }}
             >
               <ListItemIcon sx={{ minWidth: 40 }}>
-                <AssessmentIcon fontSize="small" />
+                <CippIcons.Assessment fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Report Builder" />
             </ListItemButton>

@@ -1,4 +1,4 @@
-import { OpenInNew } from '@mui/icons-material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import {
   Alert,
   Button,
@@ -59,7 +59,7 @@ const Page = () => {
         title={pageTitle}
         cardButton={
           <Button
-            startIcon={<OpenInNew />}
+            startIcon={<CippIcons.Launch />}
             onClick={() => handoffDialog.handleOpen()}
           >
             Action in Intune
@@ -119,7 +119,7 @@ const Page = () => {
             target="_blank"
             rel="noreferrer"
             variant="contained"
-            startIcon={<OpenInNew />}
+            startIcon={<CippIcons.Launch />}
             onClick={handoffDialog.handleClose}
           >
             Open Intune

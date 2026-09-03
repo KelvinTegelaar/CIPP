@@ -1,12 +1,11 @@
 import { useRouter } from "next/router";
+import { CippIcons } from "../../../../utils/icon-registry";
 import { useState, useEffect } from "react";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
-import { EyeIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import CippAuditLogDetails from "../../../../components/CippComponents/CippAuditLogDetails.jsx";
 import { Button, SvgIcon, Box } from "@mui/material";
-import { ManageSearch } from "@mui/icons-material";
 import { useDialog } from "../../../../hooks/use-dialog";
 
 const searchResultsColumns = [
@@ -80,7 +79,7 @@ const Page = () => {
               onClick={handleBackClick}
               startIcon={
                 <SvgIcon fontSize="small">
-                  <ArrowLeftIcon />
+                  <CippIcons.ArrowLeftIcon />
                 </SvgIcon>
               }
             >
@@ -89,7 +88,7 @@ const Page = () => {
             <Button
               color="primary"
               onClick={() => processLogsDialog.handleOpen()}
-              startIcon={<ManageSearch />}
+              startIcon={<CippIcons.ManageSearch />}
             >
               Process Logs
             </Button>

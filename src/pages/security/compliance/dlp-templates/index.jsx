@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { GitHub } from "@mui/icons-material";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
 import { CippDeployCompliancePolicyDrawer } from "../../../../components/CippComponents/CippDeployCompliancePolicyDrawer.jsx";
@@ -23,7 +22,7 @@ const Page = () => {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -65,7 +64,7 @@ const Page = () => {
       url: "/api/RemoveDlpCompliancePolicyTemplate",
       data: { ID: "GUID" },
       confirmText: "Do you want to delete the template?",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       color: "danger",
     },
   ];

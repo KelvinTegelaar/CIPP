@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import {
   Box,
   Button,
@@ -12,13 +13,6 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import {
-  Search,
-  Public,
-  Language,
-  LocationOn,
-  Cloud,
-} from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall } from "../../api/ApiCall";
@@ -29,20 +23,20 @@ const getRegionIcon = (region) => {
   const regionUpper = region?.toUpperCase();
   switch (regionUpper) {
     case "EU":
-      return <Language sx={{ fontSize: 20 }} />;
+      return <CippIcons.Language sx={{ fontSize: 20 }} />;
     case "US":
-      return <Public sx={{ fontSize: 20 }} />;
+      return <CippIcons.Public sx={{ fontSize: 20 }} />;
     case "ASIA":
-      return <Language sx={{ fontSize: 20 }} />;
+      return <CippIcons.Language sx={{ fontSize: 20 }} />;
     case "GCC":
     case "GCC-HIGH":
-      return <Cloud sx={{ fontSize: 20 }} />;
+      return <CippIcons.Cloud sx={{ fontSize: 20 }} />;
     case "DE":
-      return <Language sx={{ fontSize: 20 }} />;
+      return <CippIcons.Language sx={{ fontSize: 20 }} />;
     case "CN":
-      return <Language sx={{ fontSize: 20 }} />;
+      return <CippIcons.Language sx={{ fontSize: 20 }} />;
     default:
-      return <LocationOn sx={{ fontSize: 20 }} />;
+      return <CippIcons.LocationOn sx={{ fontSize: 20 }} />;
   }
 };
 
@@ -217,7 +211,7 @@ export const CippTenantLookup = () => {
                       position="start"
                       sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
                     >
-                      <Search color="action" sx={{ fontSize: 20 }} />
+                      <CippIcons.Search color="action" sx={{ fontSize: 20 }} />
                     </InputAdornment>
                   ),
                   sx: {
@@ -233,7 +227,7 @@ export const CippTenantLookup = () => {
               variant="contained"
               onClick={() => getTenant.refetch()}
               disabled={!domain || getTenant.isFetching}
-              startIcon={<Search />}
+              startIcon={<CippIcons.MagnifyingGlassIcon />}
               sx={{ flexShrink: 0 }}
             >
               Check

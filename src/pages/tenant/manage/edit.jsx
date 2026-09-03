@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import { HeaderedTabbedLayout } from '../../../layouts/HeaderedTabbedLayout'
 import { useForm, useFormState } from 'react-hook-form'
 import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
@@ -25,8 +26,6 @@ import CippCustomVariables from '../../../components/CippComponents/CippCustomVa
 import { CippOffboardingDefaultSettings } from '../../../components/CippComponents/CippOffboardingDefaultSettings'
 import { CippApiResults } from '../../../components/CippComponents/CippApiResults'
 import { useSettings } from '../../../hooks/use-settings'
-import { Business, Save, Sync } from '@mui/icons-material'
-import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import tabOptions from './tabOptions.json'
 import { CippHead } from '../../../components/CippComponents/CippHead'
@@ -225,7 +224,7 @@ const Page = () => {
           <Card>
             <CardContent>
               <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Business sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+                <CippIcons.Business sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
                 <Typography variant="h5" gutterBottom>
                   Select a Specific Tenant
                 </Typography>
@@ -268,7 +267,7 @@ const Page = () => {
                       sx={{ mt: 0.25 }}
                     >
                       <SvgIcon fontSize="small">
-                        <Sync />
+                        <CippIcons.Sync />
                       </SvgIcon>
                     </IconButton>
                   </span>
@@ -327,7 +326,7 @@ const Page = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  startIcon={<Save />}
+                  startIcon={<CippIcons.Save />}
                   onClick={formControl.handleSubmit((values) => {
                     const formattedValues = {
                       tenantAlias: values.Alias,
@@ -392,7 +391,7 @@ const Page = () => {
                           sx={{ mb: 0.5 }}
                         >
                           <SvgIcon fontSize="small">
-                            <PlusIcon />
+                            <CippIcons.PlusIcon />
                           </SvgIcon>
                         </Button>
                       </span>
@@ -407,7 +406,7 @@ const Page = () => {
                     actions={[
                       {
                         label: 'Remove',
-                        icon: <TrashIcon />,
+                        icon: <CippIcons.Delete />,
                         confirmText: 'Remove this tenant from [Name]?',
                         customFunction: handleRemoveGroup,
                         condition: (row) => row.GroupType !== 'dynamic',
@@ -428,7 +427,7 @@ const Page = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  startIcon={<Save />}
+                  startIcon={<CippIcons.Save />}
                   onClick={offboardingFormControl.handleSubmit((values) => {
                     const offboardingSettings = values.offboardingDefaults || values
                     const formattedValues = {

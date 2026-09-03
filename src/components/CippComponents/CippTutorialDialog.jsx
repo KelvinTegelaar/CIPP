@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Dialog,
   DialogTitle,
@@ -18,13 +19,6 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material'
-import {
-  PlayArrow as PlayIcon,
-  CheckCircle as CompletedIcon,
-  School as TutorialIcon,
-  Search as SearchIcon,
-  Replay as ResetIcon,
-} from '@mui/icons-material'
 import { useTutorials } from '../../contexts/tutorial-context'
 import { useRouter } from 'next/router'
 
@@ -63,12 +57,12 @@ const CippTutorialDialog = ({ open, onClose }) => {
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <TutorialIcon color="primary" />
+          <CippIcons.School color="primary" />
           <Typography variant="h6">Tutorials</Typography>
         </Box>
         <Tooltip title="Reset all progress">
           <IconButton size="small" onClick={resetProgress}>
-            <ResetIcon fontSize="small" />
+            <CippIcons.Replay fontSize="small" />
           </IconButton>
         </Tooltip>
       </DialogTitle>
@@ -84,7 +78,7 @@ const CippTutorialDialog = ({ open, onClose }) => {
             input: {
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
+                  <CippIcons.Search fontSize="small" />
                 </InputAdornment>
               ),
             },
@@ -126,9 +120,9 @@ const CippTutorialDialog = ({ open, onClose }) => {
                   >
                     <ListItemIcon sx={{ minWidth: 36 }}>
                       {isCompleted ? (
-                        <CompletedIcon color="success" fontSize="small" />
+                        <CippIcons.CheckCircle color="success" fontSize="small" />
                       ) : (
-                        <PlayIcon color="primary" fontSize="small" />
+                        <CippIcons.PlayArrow color="primary" fontSize="small" />
                       )}
                     </ListItemIcon>
                     <ListItemText

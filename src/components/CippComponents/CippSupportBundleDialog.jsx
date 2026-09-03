@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
   Button,
@@ -13,12 +14,6 @@ import {
   Switch,
   Typography,
 } from '@mui/material'
-import {
-  Download,
-  FiberManualRecord,
-  PlayArrow,
-  Stop,
-} from '@mui/icons-material'
 import { useQueryClient } from '@tanstack/react-query'
 import { useSettings } from '../../hooks/use-settings'
 import {
@@ -236,7 +231,7 @@ const CippSupportBundleDialog = ({ open, onClose, onRecordingChange }) => {
             <Stack direction="row" spacing={1} sx={{
               alignItems: "center"
             }}>
-              <FiberManualRecord color="error" />
+              <CippIcons.FiberManualRecord color="error" />
               <Typography variant="body2">
                 Recording — {progress} request{progress === 1 ? '' : 's'}{' '}
                 captured so far.
@@ -305,14 +300,14 @@ const CippSupportBundleDialog = ({ open, onClose, onRecordingChange }) => {
           <>
             <Button onClick={onClose}>Cancel</Button>
             <Button
-              startIcon={<FiberManualRecord />}
+              startIcon={<CippIcons.FiberManualRecord />}
               onClick={handleStartRecording}
             >
               Record Actions
             </Button>
             <Button
               variant="contained"
-              startIcon={<PlayArrow />}
+              startIcon={<CippIcons.PlayArrow />}
               onClick={handleCapturePage}
             >
               Capture This Page
@@ -326,7 +321,7 @@ const CippSupportBundleDialog = ({ open, onClose, onRecordingChange }) => {
             <Button
               variant="contained"
               color="error"
-              startIcon={<Stop />}
+              startIcon={<CippIcons.Stop />}
               onClick={handleStopRecording}
             >
               Stop &amp; Generate
@@ -340,7 +335,7 @@ const CippSupportBundleDialog = ({ open, onClose, onRecordingChange }) => {
             </Button>
             <Button
               variant="contained"
-              startIcon={<Download />}
+              startIcon={<CippIcons.Download />}
               disabled={phase !== 'ready'}
               onClick={() => downloadSupportBundle(bundle)}
             >

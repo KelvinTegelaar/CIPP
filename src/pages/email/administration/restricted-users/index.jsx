@@ -1,7 +1,7 @@
 ﻿import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { CippIcons } from "../../../../utils/icon-registry";
 import { Alert, Link, Typography, List, ListItem, ListItemText } from "@mui/material";
-import { Block as BlockIcon } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Restricted Users";
@@ -10,7 +10,7 @@ const Page = () => {
     {
       label: "Unblock User",
       type: "POST",
-      icon: <BlockIcon />,
+      icon: <CippIcons.Block />,
       confirmText:
         "Are you sure you want to unblock [SenderAddress]? Unblocking can take up to 1 hour. Make sure you have secured the account before proceeding.",
       url: "/api/ExecRemoveRestrictedUser",

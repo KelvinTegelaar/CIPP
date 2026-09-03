@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Restore, Backup } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -14,11 +14,11 @@ const Page = () => {
           <Button
             component={Link}
             href="/tenant/backup/backup-wizard/restore"
-            startIcon={<Restore />}
+            startIcon={<CippIcons.Restore />}
           >
             Restore Configuration Backup
           </Button>
-          <Button component={Link} href="/tenant/backup/backup-wizard/add" startIcon={<Backup />}>
+          <Button component={Link} href="/tenant/backup/backup-wizard/add" startIcon={<CippIcons.Backup />}>
             Add Configuration Backup Task
           </Button>
         </>

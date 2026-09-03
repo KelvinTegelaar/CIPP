@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Typography,
@@ -17,7 +18,6 @@ import {
 import { ApiGetCall } from "../../api/ApiCall";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
-import { ExpandMore, Sync, Search, Close } from "@mui/icons-material";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { CippTimeAgo } from "./CippTimeAgo";
@@ -136,7 +136,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
           actionButton={
             <Tooltip title="Refresh">
               <IconButton size="small" onClick={() => taskDetailResults.refetch()}>
-                <Sync />
+                <CippIcons.Sync />
               </IconButton>
             </Tooltip>
           }
@@ -157,7 +157,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
 
         {deploymentId && (inFlight || progressRows.length > 0) && (
           <Accordion variant="outlined" defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                 <Typography variant="h6">Progress</Typography>
                 {inFlight && <CircularProgress size={16} />}
@@ -208,7 +208,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
             expanded={expanded === "task-trigger"}
             onChange={handleChange("task-trigger")}
           >
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Typography variant="h6">Trigger Configuration</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -237,7 +237,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                 expanded={expanded === "task-parameters"}
                 onChange={handleChange("task-parameters")}
               >
-                <AccordionSummary expandIcon={<ExpandMore />}>
+                <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                   <Typography variant="h6">Task Parameters</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -295,7 +295,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                       input: {
                         startAdornment: (
                           <InputAdornment position="start">
-                            <Search />
+                            <CippIcons.Search />
                           </InputAdornment>
                         ),
                         endAdornment: searchQuery && (
@@ -306,7 +306,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                                 onClick={() => setSearchQuery("")}
                                 aria-label="Clear search"
                               >
-                                <Close />
+                                <CippIcons.Close />
                               </IconButton>
                             </Tooltip>
                           </InputAdornment>
@@ -326,7 +326,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                         sx={{ mb: 2 }}
                       >
                         <AccordionSummary
-                          expandIcon={<ExpandMore />}
+                          expandIcon={<CippIcons.ExpandMore />}
                           sx={{
                             "& .MuiAccordionSummary-content": {
                               display: "flex",

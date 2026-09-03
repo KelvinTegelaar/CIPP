@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Accordion,
   AccordionDetails,
@@ -19,14 +20,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import {
-  Add,
-  Close,
-  Delete,
-  DriveFileRenameOutline,
-  ExpandMore,
-  LocalOffer,
-} from '@mui/icons-material'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { CippAutoComplete } from './CippAutocomplete'
 import { CippApiResults } from './CippApiResults'
@@ -138,7 +131,7 @@ export const CippTemplatePackageManager = () => {
       {packages.isSuccess &&
         packageList.map((pkg) => (
           <Accordion key={pkg.value} disableGutters>
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Stack
                 direction="row"
                 spacing={1}
@@ -151,7 +144,7 @@ export const CippTemplatePackageManager = () => {
                 <Stack direction="row" spacing={1} sx={{
                   alignItems: "center"
                 }}>
-                  <LocalOffer fontSize="small" color="action" />
+                  <CippIcons.LocalOffer fontSize="small" color="action" />
                   <Typography variant="subtitle1">{pkg.value}</Typography>
                   <Chip size="small" label={`${pkg.templateCount} templates`} />
                 </Stack>
@@ -164,12 +157,12 @@ export const CippTemplatePackageManager = () => {
                         setRenameValue(pkg.value)
                       }}
                     >
-                      <DriveFileRenameOutline fontSize="small" />
+                      <CippIcons.DriveFileRenameOutline fontSize="small" />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete package">
                     <IconButton size="small" color="error" onClick={() => setDeleteTarget(pkg)}>
-                      <Delete fontSize="small" />
+                      <CippIcons.Delete fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 </Stack>
@@ -198,7 +191,7 @@ export const CippTemplatePackageManager = () => {
                   </Box>
                   <Button
                     variant="outlined"
-                    startIcon={<Add />}
+                    startIcon={<CippIcons.Add />}
                     disabled={
                       addMemberTarget !== pkg.value ||
                       !addMemberSelection?.value ||
@@ -240,7 +233,7 @@ export const CippTemplatePackageManager = () => {
                             })
                           }
                         >
-                          <Close fontSize="small" />
+                          <CippIcons.Close fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </Stack>
@@ -280,7 +273,7 @@ export const CippTemplatePackageManager = () => {
           <CippApiResults apiObject={renameMutation} />
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => setRenameTarget(null)} startIcon={<Close />}>
+          <Button variant="outlined" onClick={() => setRenameTarget(null)} startIcon={<CippIcons.Close />}>
             Close
           </Button>
           <Button
@@ -317,7 +310,7 @@ export const CippTemplatePackageManager = () => {
           <CippApiResults apiObject={deleteMutation} />
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => setDeleteTarget(null)} startIcon={<Close />}>
+          <Button variant="outlined" onClick={() => setDeleteTarget(null)} startIcon={<CippIcons.Close />}>
             Close
           </Button>
           <Button

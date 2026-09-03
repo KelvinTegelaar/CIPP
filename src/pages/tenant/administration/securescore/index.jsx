@@ -1,12 +1,11 @@
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import tabOptions from './tabOptions'
 import { useSecureScore } from '../../../../hooks/use-securescore'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
 import { Box, Button, Chip, Container, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
-import { CheckCircleIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
-import { Map, Score } from '@mui/icons-material'
 import { CippChartCard } from '../../../../components/CippCards/CippChartCard'
 import TimeAgo from 'javascript-time-ago'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
@@ -16,7 +15,6 @@ import { useDialog } from '../../../../hooks/use-dialog'
 import { useState } from 'react'
 import { CippTableDialog } from '../../../../components/CippComponents/CippTableDialog'
 import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
-import { FilterList } from '@mui/icons-material'
 import { AllTenantsSecureScoreSummary } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
 import { useSettings } from '../../../../hooks/use-settings'
 import { useRouter } from 'next/navigation'
@@ -99,7 +97,7 @@ const Page = () => {
               size={{ md: 12, xs: 12 }}
               sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}
             >
-              <Button variant="outlined" startIcon={<FilterList />} onClick={handleFilterClick}>
+              <Button variant="outlined" startIcon={<CippIcons.FilterList />} onClick={handleFilterClick}>
                 Filter: {filterOptions.find((opt) => opt.value === selectedFilter)?.label}
               </Button>
               <Menu
@@ -123,24 +121,24 @@ const Page = () => {
                 isFetching={secureScore.isFetching}
                 data={[
                   {
-                    icon: <CheckCircleIcon />,
+                    icon: <CippIcons.CheckCircleIcon />,
                     data: secureScore.translatedData.percentageCurrent + '%',
                     name: 'Current Score',
                     color: 'secondary',
                   },
                   {
-                    icon: <GlobeAltIcon />,
+                    icon: <CippIcons.GlobeAltIcon />,
                     data: secureScore.translatedData.percentageVsAllTenants + '%',
                     name: 'Compared score (All Tenants)',
                     color: 'green',
                   },
                   {
-                    icon: <Map />,
+                    icon: <CippIcons.Map />,
                     data: secureScore.translatedData.percentageVsSimilar + '%',
                     name: 'Compared score (Similar Tenants)',
                   },
                   {
-                    icon: <Score />,
+                    icon: <CippIcons.Score />,
                     data: `${secureScore.translatedData.currentScore} of ${secureScore.translatedData.maxScore}`,
                     name: 'Score in points',
                   },

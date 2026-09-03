@@ -1,15 +1,7 @@
 import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry"
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Button, SvgIcon, Stack } from "@mui/material";
-import {
-  Add,
-  ToggleOn,
-  ToggleOff,
-  NotificationsActive,
-  NotificationsOff,
-  GitHub,
-} from "@mui/icons-material";
-import { TrashIcon, PencilIcon, ClockIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
 import { ApiGetCall } from "../../../api/ApiCall";
 import { CippPolicyImportDrawer } from "../../../components/CippComponents/CippPolicyImportDrawer.jsx";
@@ -56,7 +48,7 @@ const Page = () => {
             href="/tools/custom-tests/add"
           >
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-              <Add />
+              <CippIcons.Add />
             </SvgIcon>
             Add Test
           </Button>
@@ -68,18 +60,18 @@ const Page = () => {
       actions={[
         {
           label: "Edit Test",
-          icon: <PencilIcon />,
+          icon: <CippIcons.Edit />,
           link: "/tools/custom-tests/add?ScriptGuid=[ScriptGuid]",
           pinned: true,
         },
         {
           label: "View Versions",
-          icon: <ClockIcon />,
+          icon: <CippIcons.ClockIcon />,
           link: "/tools/custom-tests/versions?ScriptGuid=[ScriptGuid]",
         },
         {
           label: "Enable Test",
-          icon: <ToggleOn />,
+          icon: <CippIcons.ToggleOn />,
           type: "POST",
           url: "/api/AddCustomScript",
           multiPost: false,
@@ -92,7 +84,7 @@ const Page = () => {
         },
         {
           label: "Disable Test",
-          icon: <ToggleOff />,
+          icon: <CippIcons.ToggleOff />,
           type: "POST",
           url: "/api/AddCustomScript",
           multiPost: false,
@@ -105,7 +97,7 @@ const Page = () => {
         },
         {
           label: "Enable Alerts",
-          icon: <NotificationsActive />,
+          icon: <CippIcons.NotificationsActive />,
           type: "POST",
           url: "/api/AddCustomScript",
           multiPost: false,
@@ -118,7 +110,7 @@ const Page = () => {
         },
         {
           label: "Disable Alerts",
-          icon: <NotificationsOff />,
+          icon: <CippIcons.NotificationsOff />,
           type: "POST",
           url: "/api/AddCustomScript",
           multiPost: false,
@@ -131,7 +123,7 @@ const Page = () => {
         },
         {
           label: "Delete Test",
-          icon: <TrashIcon />,
+          icon: <CippIcons.Delete />,
           url: "/api/RemoveCustomScript",
           type: "POST",
           relatedquerykeys: ["ListAvailableTests"],
@@ -145,7 +137,7 @@ const Page = () => {
           label: "Save to GitHub",
           type: "POST",
           url: "/api/ExecCommunityRepo",
-          icon: <GitHub />,
+          icon: <CippIcons.GitHub />,
           data: {
             Action: "UploadScript",
             GUID: "ScriptGuid",

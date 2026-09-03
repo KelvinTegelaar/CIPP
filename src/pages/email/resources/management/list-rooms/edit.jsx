@@ -1,6 +1,6 @@
 import { useEffect } from "react";
+import { CippIcons } from "../../../../../utils/icon-registry";
 import { Alert, Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
-import { Sync } from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "../../../../../layouts/index";
@@ -250,7 +250,7 @@ const EditRoomMailbox = () => {
               <Typography variant="subtitle1">Basic Information</Typography>
               <Tooltip title="Refresh">
                 <IconButton size="small" onClick={() => roomInfo.refetch()}>
-                  <Sync fontSize="small" />
+                  <CippIcons.Sync fontSize="small" />
                 </IconButton>
               </Tooltip>
             </Box>

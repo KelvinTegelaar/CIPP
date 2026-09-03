@@ -1,4 +1,5 @@
 import { Layout as DashboardLayout } from '../../../layouts/index'
+import { CippIcons } from '../../../utils/icon-registry'
 import { Controller, useForm, useFormState } from 'react-hook-form'
 import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
 import { useRouter } from 'next/router'
@@ -25,13 +26,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Stack, Grid } from '@mui/system'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import {
-  ExpandMore,
-  NotificationsActive,
-  Code,
-  TableChart,
-  Visibility,
-} from '@mui/icons-material'
 import cacheTypes from '../../../data/CIPPDBCacheTypes.json'
 import { renderCustomScriptMarkdownTemplate } from '../../../utils/customScriptTemplate'
 import { useSettings } from '../../../hooks/use-settings'
@@ -737,7 +731,7 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
         expanded={guidanceExpanded}
         onChange={(_, expanded) => setGuidanceExpanded(expanded)}
       >
-        <AccordionSummary expandIcon={<ExpandMore />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle2">Test Guidance</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -862,7 +856,7 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                       alignItems: "center",
                       mb: 0.5
                     }}>
-                    <NotificationsActive sx={{ fontSize: 16 }} color="warning" />
+                    <CippIcons.NotificationsActive sx={{ fontSize: 16 }} color="warning" />
                     <Typography variant="body2" sx={{
                       fontWeight: 600
                     }}>
@@ -894,7 +888,7 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                       alignItems: "center",
                       mb: 0.5
                     }}>
-                    <Code sx={{ fontSize: 16 }} color="info" />
+                    <CippIcons.Code sx={{ fontSize: 16 }} color="info" />
                     <Typography variant="body2" sx={{
                       fontWeight: 600
                     }}>
@@ -930,7 +924,7 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                       alignItems: "center",
                       mb: 0.5
                     }}>
-                    <TableChart sx={{ fontSize: 16 }} color="info" />
+                    <CippIcons.TableChart sx={{ fontSize: 16 }} color="info" />
                     <Typography variant="body2" sx={{
                       fontWeight: 600
                     }}>
@@ -981,7 +975,7 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
               variant="outlined"
               sx={{ '&:before': { display: 'none' }, boxShadow: 'none' }}
             >
-              <AccordionSummary expandIcon={<ExpandMore />}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                 <Typography variant="body2" sx={{
                   fontWeight: 600
                 }}>
@@ -1044,7 +1038,7 @@ $md = @($header) + @($rows) -join "\\n"
               variant="outlined"
               sx={{ '&:before': { display: 'none' }, boxShadow: 'none', mt: 1 }}
             >
-              <AccordionSummary expandIcon={<ExpandMore />}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                 <Typography variant="body2" sx={{
                   fontWeight: 600
                 }}>
@@ -1085,7 +1079,7 @@ $Users | Where-Object {
               variant="outlined"
               sx={{ '&:before': { display: 'none' }, boxShadow: 'none', mt: 1 }}
             >
-              <AccordionSummary expandIcon={<ExpandMore />}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                 <Typography variant="body2" sx={{
                   fontWeight: 600
                 }}>
@@ -1142,7 +1136,7 @@ if ($count -gt 0) {
               variant="outlined"
               sx={{ '&:before': { display: 'none' }, boxShadow: 'none', mt: 1 }}
             >
-              <AccordionSummary expandIcon={<ExpandMore />}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                 <Typography variant="body2" sx={{
                   fontWeight: 600
                 }}>
@@ -1186,7 +1180,7 @@ $Guests | Where-Object {
               variant="outlined"
               sx={{ '&:before': { display: 'none' }, boxShadow: 'none', mt: 1 }}
             >
-              <AccordionSummary expandIcon={<ExpandMore />}>
+              <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                 <Typography variant="body2" sx={{
                   fontWeight: 600
                 }}>
@@ -1286,7 +1280,7 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
                       onClick={() => handleExploreCache(cacheType.type)}
                       color={expandedCacheType === cacheType.type ? 'primary' : 'default'}
                     >
-                      <Visibility fontSize="small" />
+                      <CippIcons.Visibility fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 </Stack>
@@ -1348,7 +1342,7 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
       </Dialog>
 
       <Accordion expanded={configExpanded} onChange={(_, expanded) => setConfigExpanded(expanded)}>
-        <AccordionSummary expandIcon={<ExpandMore />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle2">Configuration Options</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -1454,7 +1448,7 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
         expanded={scriptContentExpanded}
         onChange={(_, expanded) => setScriptContentExpanded(expanded)}
       >
-        <AccordionSummary expandIcon={<ExpandMore />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle2">Markdown / PowerShell</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -1583,7 +1577,7 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
         onChange={(_, expanded) => setTesterExpanded(expanded)}
         slotProps={{ transition: { unmountOnExit: true, timeout: 150 } }}
       >
-        <AccordionSummary expandIcon={<ExpandMore />}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
           <Typography variant="subtitle2">Test Script Output</Typography>
         </AccordionSummary>
         <AccordionDetails>

@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { Book, Palette } from '@mui/icons-material'
-import { TrashIcon } from '@heroicons/react/24/outline'
 import { CippDeployCompliancePolicyDrawer } from '../../../../components/CippComponents/CippDeployCompliancePolicyDrawer.jsx'
 import { PermissionButton } from '../../../../utils/permissions'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -16,7 +15,7 @@ const Page = () => {
     {
       label: 'Create template based on label',
       type: 'POST',
-      icon: <Book />,
+      icon: <CippIcons.Book />,
       url: '/api/AddSensitivityLabelTemplate',
       dataFunction: (data) => {
         return { ...data }
@@ -27,7 +26,7 @@ const Page = () => {
     {
       label: 'Set Label Color',
       type: 'POST',
-      icon: <Palette />,
+      icon: <CippIcons.Palette />,
       url: '/api/EditSensitivityLabel',
       data: {
         Identity: 'Guid',
@@ -49,7 +48,7 @@ const Page = () => {
     {
       label: 'Delete Label',
       type: 'POST',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: '/api/RemoveSensitivityLabel',
       data: {
         Identity: 'Guid',

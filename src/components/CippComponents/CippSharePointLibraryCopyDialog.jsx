@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import {
@@ -21,15 +22,6 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
-import {
-  ArrowBack,
-  ArrowForward,
-  ContentCopy,
-  ErrorOutlined,
-  Refresh,
-  TaskAlt,
-  WarningAmber,
-} from '@mui/icons-material'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { usePermissions } from '../../hooks/use-permissions'
 import { buildVersionedHeaders } from '../../utils/cippVersion'
@@ -116,11 +108,11 @@ const LibraryCopyStatusPanel = ({ status, operationId, refreshing, onRefresh }) 
           color={statusMeta.chipColor}
           icon={
             statusKey === 'CompletedWithErrors' ? (
-              <WarningAmber />
+              <CippIcons.WarningAmber />
             ) : statusKey === 'Failed' ? (
-              <ErrorOutlined />
+              <CippIcons.ErrorOutlined />
             ) : isTerminal ? (
-              <TaskAlt />
+              <CippIcons.TaskAlt />
             ) : undefined
           }
           label={statusMeta.label}
@@ -129,7 +121,7 @@ const LibraryCopyStatusPanel = ({ status, operationId, refreshing, onRefresh }) 
         <Button
           size="small"
           variant="outlined"
-          startIcon={<Refresh />}
+          startIcon={<CippIcons.Refresh />}
           disabled={refreshing}
           onClick={onRefresh}
         >
@@ -200,7 +192,7 @@ const LibraryCopyStatusPanel = ({ status, operationId, refreshing, onRefresh }) 
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 2 }} sx={{ textAlign: { xs: 'left', md: 'center' } }}>
-            <ArrowForward color="action" />
+            <CippIcons.ArrowForward color="action" />
           </Grid>
           <Grid size={{ xs: 12, md: 5 }}>
             <Typography variant="overline" sx={{
@@ -376,7 +368,7 @@ const LibraryCopyPane = ({
               alignItems: "center",
               mb: 1
             }}>
-            <Button size="small" startIcon={<ArrowBack />} onClick={() => setView('sites')}>
+            <Button size="small" startIcon={<CippIcons.ArrowBack />} onClick={() => setView('sites')}>
               Sites
             </Button>
             <Typography variant="body2" noWrap sx={{
@@ -732,7 +724,7 @@ export const CippSharePointLibraryCopyDialog = ({
             <Button
               variant="contained"
               color={conflictBehavior === 'Replace' ? 'warning' : 'primary'}
-              startIcon={<ContentCopy />}
+              startIcon={<CippIcons.ContentCopy />}
               disabled={!readyForReview || execApi.isPending}
               onClick={handleReview}
             >
