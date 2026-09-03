@@ -10,7 +10,9 @@ import { TabNavigationContext, useTabNavigationValue } from './tab-navigation-co
 import { CippTabPicker } from '../components/CippComponents/CippTabPicker'
 
 export const TabbedLayout = (props) => {
-  const { tabOptions, children } = props
+  // `activePath` lets a page reached from a tab (rather than being one) keep its parent tab
+  // highlighted; the tab itself still navigates to its own path.
+  const { tabOptions, children, activePath } = props
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -60,7 +62,8 @@ export const TabbedLayout = (props) => {
 
   const handleTabsChange = (event, value) => navigateToTab(value)
 
-  const currentTab = visibleTabs.find((option) => option.path === pathname)
+  const resolvedPath = activePath ?? pathname
+  const currentTab = visibleTabs.find((option) => option.path === resolvedPath)
 
   // Below md the tab row scrolls horizontally and still hides tabs off the right edge, so
   // navigation collapses to a full-width picker in the slot the tab bar occupied. Always the
@@ -69,7 +72,7 @@ export const TabbedLayout = (props) => {
   const isMobile = useIsMobileLayout()
   const tabNavValue = useTabNavigationValue({
     tabs: visibleTabs,
-    currentPath: pathname,
+    currentPath: resolvedPath,
     onNavigate: navigateToTab,
     enabled: isMobile,
   })

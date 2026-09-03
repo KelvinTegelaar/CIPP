@@ -123,6 +123,17 @@ describe('getCippFormatting (component mode)', () => {
     expect(() => getCippFormatting(undefined, 'logsToInclude')).not.toThrow()
     expect(getCippFormatting(null, 'Severity', 'text')).toBe('No data')
   })
+
+  it('colours GDAP GroupStatus by severity', () => {
+    const colorOf = (value) => getCippFormatting(value, 'GroupStatus').props.color
+    expect(colorOf('Valid')).toBe('success')
+    expect(colorOf('Created')).toBe('success')
+    expect(colorOf('Stale')).toBe('warning')
+    expect(colorOf('Missing')).toBe('error')
+    expect(colorOf('Unknown')).toBe('default')
+    expect(getCippFormatting('Stale', 'GroupStatus').props.label).toBe('Stale')
+    expect(getCippFormatting('Stale', 'GroupStatus', 'text')).toBe('Stale')
+  })
 })
 
 // Role members exported as raw JSON instead of a name list.

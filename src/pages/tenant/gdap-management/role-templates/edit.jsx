@@ -3,19 +3,26 @@ import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm } from "react-hook-form";
 import { CippAddEditGdapRoleTemplate } from "../../../../components/CippFormPages/CippAddEditGdapRoleTemplate";
 import { ApiGetCall } from "../../../../api/ApiCall";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ApiGetCallWithPagination } from "../../../../api/ApiCall";
 import { Alert } from "@mui/material";
+import GDAPRoles from "../../../../data/GDAPRoles";
+import {
+  buildGdapTemplatePayload,
+  buildGdapTemplateSelection,
+} from "../../../../utils/gdap-role-options";
 
 const Page = () => {
   const router = useRouter();
   const { templateId } = router.query;
+  const [extraOptions, setExtraOptions] = useState([]);
+  const [mixedSuffixes, setMixedSuffixes] = useState(false);
   const formControl = useForm({
     mode: "onChange",
   });
   const availableRoles = ApiGetCall({
-    url: "/api/ListGDAPRoles",
+    url: "/api/ListGDAPRoles?validate=true",
     queryKey: "ListGDAPRolesAutocomplete",
   });
 
@@ -25,7 +32,7 @@ const Page = () => {
   });
 
   useEffect(() => {
-    if (availableTemplates.isSuccess) {
+    if (availableTemplates.isSuccess && availableRoles.isSuccess) {
       const template = availableTemplates?.data?.pages?.[0]?.Results.find(
         (template) => template.TemplateId === templateId
       );
@@ -33,41 +40,37 @@ const Page = () => {
       if (!template) {
         return;
       }
-      var newRoleMappings = [];
-      template.RoleMappings.map((roleMapping) =>
-        newRoleMappings.push({
-          label: roleMapping.GroupName,
-          value: roleMapping.GroupId,
-        })
+      const selection = buildGdapTemplateSelection(
+        template.RoleMappings,
+        GDAPRoles,
+        availableRoles.data
       );
+      setExtraOptions(selection.extraOptions);
+      setMixedSuffixes(selection.mixedSuffixes);
       formControl.reset({
         templateId: template.TemplateId,
-        roleMappings: newRoleMappings,
+        roleMappings: selection.selected,
+        customSuffix: selection.customSuffix ?? "",
       });
     }
-  }, [availableTemplates.isSuccess, availableTemplates.data]);
+  }, [
+    availableTemplates.isSuccess,
+    availableTemplates.data,
+    availableRoles.isSuccess,
+    availableRoles.data,
+  ]);
 
   return (
     <>
       <CippFormPage
-        queryKey="ListGDAPRoleTemplates"
+        queryKey={["ListGDAPRoleTemplates", "ListGDAPRoles"]}
         formControl={formControl}
         title="GDAP Role Template"
-        backButtonTitle="GDAP Role Templates"
-        postUrl="/api/ExecGDAPRoleTemplate?Action=Edit"
-        customDataformatter={(values) => {
-          var newRoleMappings = [];
-          values.roleMappings.map((roleMapping) => {
-            var role = availableRoles.data.find((role) => role.GroupId === roleMapping.value);
-            newRoleMappings.push(role);
-          });
-          const shippedValues = {
-            originalTemplateId: templateId, // Pass the original template ID
-            templateId: values.templateId,
-            roleMappings: newRoleMappings,
-          };
-          return shippedValues;
-        }}
+        backButtonTitle="Role Templates"
+        postUrl="/api/ExecGDAPRoleTemplate?Action=Save"
+        customDataformatter={(values) =>
+          buildGdapTemplatePayload(values, availableRoles.data, templateId)
+        }
         hideSubmit={!templateId}
       >
         {!templateId && (
@@ -77,7 +80,12 @@ const Page = () => {
           </Alert>
         )}
         {templateId && (
-          <CippAddEditGdapRoleTemplate formControl={formControl} availableRoles={availableRoles} />
+          <CippAddEditGdapRoleTemplate
+            formControl={formControl}
+            availableRoles={availableRoles}
+            extraOptions={extraOptions}
+            mixedSuffixes={mixedSuffixes}
+          />
         )}
       </CippFormPage>
     </>

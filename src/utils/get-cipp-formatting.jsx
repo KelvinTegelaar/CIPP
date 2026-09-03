@@ -709,6 +709,19 @@ export const getCippFormatting = (
     }
   }
 
+  // GDAP role mapping group health, from ListGDAPRoles?validate=true
+  if (cellName === 'GroupStatus') {
+    if (isText) return data
+    const groupStatusColors = {
+      valid: 'success',
+      stale: 'warning',
+      created: 'success',
+      missing: 'error',
+    }
+    const color = groupStatusColors[String(data).toLowerCase()] ?? 'default'
+    return <Chip variant="outlined" label={data} size="small" color={color} />
+  }
+
   if (cellName === 'outcome') {
     // Baseline run outcomes in the historic view
     if (isText) return data

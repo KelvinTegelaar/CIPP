@@ -27,8 +27,11 @@ import { useEffect, useState } from "react";
 import { CippPropertyList } from "../../../../components/CippComponents/CippPropertyList";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 
 const Page = () => {
+  const router = useRouter();
+  const { templateId } = router.query;
   const [inviteData, setInviteData] = useState([]);
   const [createDefaults, setCreateDefaults] = useState(false);
 
@@ -57,6 +60,20 @@ const Page = () => {
       setCreateDefaults(false);
     }
   }, [templateList.isSuccess]);
+
+  // Arriving from a role template's "Create Invite" action: preselect that template.
+  useEffect(() => {
+    if (!templateId || !templateList.isSuccess) return;
+    const template = (templateList?.data?.Results ?? []).find(
+      (t) => t.TemplateId === templateId
+    );
+    if (template) {
+      formControl.setValue("roleMappings", {
+        label: template.TemplateId,
+        value: template.RoleMappings,
+      });
+    }
+  }, [templateId, templateList.isSuccess, templateList.data]);
 
   const addInvites = ApiPostCall({
     urlFromData: true,
