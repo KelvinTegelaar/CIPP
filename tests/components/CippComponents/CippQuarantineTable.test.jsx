@@ -1,7 +1,7 @@
 import React from 'react'
 import { act, screen } from '@testing-library/react'
 import { renderWithProviders, settingsWith } from '../../test-utils'
-import { api, apiCallMock, getResult } from '../../mocks/api-call'
+import { api, apiCallMock, getResult, postResult } from '../../mocks/api-call'
 import { CippQuarantineTable } from '../../../src/components/CippComponents/CippQuarantineTable'
 
 const tableProps = vi.hoisted(() => ({ current: null }))
@@ -94,5 +94,29 @@ describe('CippQuarantineTable', () => {
     await act(async () => viewHeaders.customFunction(quarantineRow))
 
     expect(screen.getByText(/X-CIPP-Test: present/)).toBeInTheDocument()
+  })
+
+  it('requests a message trace window pinned to the received time, not the ~48h Graph default', async () => {
+    const mutate = vi.fn()
+    api.get = () => getResult()
+    api.post = postResult({ mutate })
+    const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+    const row = { ...quarantineRow, ReceivedTime: fiveDaysAgo }
+    renderWithProviders(<CippQuarantineTable entityType="Email" />)
+
+    const trace = tableProps.current.actions.find(
+      (action) => action.label === 'View Message Trace'
+    )
+    await act(async () => trace.customFunction(row))
+
+    const call = mutate.mock.calls.find(
+      ([opts]) => opts.url === '/api/ListMessageTrace'
+    )
+    expect(call).toBeTruthy()
+    const { data } = call[0]
+    expect(data.messageId).toBe(row.MessageId)
+    expect(data.endDate - data.startDate).toBe(172800)
+    const expectedStart = Math.floor(new Date(fiveDaysAgo).getTime() / 1000) - 86400
+    expect(Math.abs(data.startDate - expectedStart)).toBeLessThan(60)
   })
 })

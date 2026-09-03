@@ -91,7 +91,18 @@ export const CippQuarantineTable = ({ entityType = 'Email' }) => {
   const [traceDetails, setTraceDetails] = useState([])
   const [traceMessageId, setTraceMessageId] = useState(null)
   const [traceTenant, setTraceTenant] = useState(null)
+  const [traceWindow, setTraceWindow] = useState(null)
   const [messageSubject, setMessageSubject] = useState(null)
+
+  // Graph's message trace window caps at 10 days and defaults to ~48h with none supplied,
+  // so pin an explicit +/-1 day window around the message's received time when we have one.
+  const getTraceWindow = (receivedTime) => {
+    if (!receivedTime) return null
+    const receivedMs = new Date(receivedTime).getTime()
+    if (Number.isNaN(receivedMs)) return null
+    const receivedSeconds = Math.floor(receivedMs / 1000)
+    return { startDate: receivedSeconds - 86400, endDate: receivedSeconds + 86400 }
+  }
 
   const messageTenant = resolveTenant(messageRow)
   const getMessageContents = ApiGetCall({
@@ -158,13 +169,16 @@ export const CippQuarantineTable = ({ entityType = 'Email' }) => {
   const viewMessageTrace = (...args) => {
     const row = resolveRow(...args)
     const rowTenant = resolveTenant(row)
+    const window = getTraceWindow(row.ReceivedTime)
     setTraceTenant(rowTenant)
     setTraceMessageId(row.MessageId)
+    setTraceWindow(window)
     getMessageTraceDetails.mutate({
       url: '/api/ListMessageTrace',
       data: {
         tenantFilter: rowTenant,
         messageId: row.MessageId,
+        ...(window ?? {}),
       },
     })
     setMessageSubject(row.Subject)
@@ -530,6 +544,7 @@ export const CippQuarantineTable = ({ entityType = 'Email' }) => {
                   data: {
                     tenantFilter: traceTenant,
                     messageId: traceMessageId,
+                    ...(traceWindow ?? {}),
                   },
                 })
               }
