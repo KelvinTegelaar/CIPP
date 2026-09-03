@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useWatch } from 'react-hook-form'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { useRouter } from 'next/router'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
@@ -24,6 +25,7 @@ import { CippApiResults } from '../../../../components/CippComponents/CippApiRes
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
+import { useSettings } from '../../../../hooks/use-settings'
 
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
@@ -132,10 +134,59 @@ const PATCHABLE_PROPERTIES = [
 // Step 1: Display users to be updated
 const UsersDisplayStep = (props) => {
   const { onNextStep, onPreviousStep, formControl, currentStep, users, onUsersChange } = props
+  const settings = useSettings()
+  const usersToAdd = useWatch({ control: formControl.control, name: 'usersToAdd' })
+
+  const existingUserIds = useMemo(
+    () => new Set((users || []).map((user) => user.id).filter(Boolean)),
+    [users]
+  )
+
+  // Prefer the tenant already represented in the selection; otherwise the active tenant.
+  const tenantForAdd = useMemo(() => {
+    const fromUsers = [
+      ...new Set((users || []).map((user) => user.Tenant || user.tenantFilter).filter(Boolean)),
+    ]
+    if (fromUsers.length === 1) return fromUsers[0]
+    if (settings.currentTenant && settings.currentTenant !== 'AllTenants') {
+      return settings.currentTenant
+    }
+    return null
+  }, [users, settings.currentTenant])
+
+  useEffect(() => {
+    if (!tenantForAdd) return
+    const currentTenantFilter = formControl.getValues('tenantFilter')
+    if (currentTenantFilter?.value !== tenantForAdd) {
+      formControl.setValue('tenantFilter', { value: tenantForAdd })
+    }
+  }, [tenantForAdd, formControl])
 
   const handleRemoveUser = (userToRemove) => {
     const updatedUsers = users.filter((user) => user.id !== userToRemove.id)
     onUsersChange(updatedUsers)
+  }
+
+  const handleAddUsers = () => {
+    const selected = Array.isArray(usersToAdd) ? usersToAdd : usersToAdd ? [usersToAdd] : []
+    if (!selected.length || !tenantForAdd) return
+
+    const newUsers = selected
+      .filter((option) => option?.value && !existingUserIds.has(option.value))
+      .map((option) => ({
+        id: option.value,
+        displayName: option.addedFields?.displayName || option.label,
+        userPrincipalName: option.addedFields?.userPrincipalName,
+        jobTitle: option.addedFields?.jobTitle,
+        department: option.addedFields?.department,
+        Tenant: tenantForAdd,
+        tenantFilter: tenantForAdd,
+      }))
+
+    if (newUsers.length) {
+      onUsersChange([...(users || []), ...newUsers])
+    }
+    formControl.setValue('usersToAdd', [])
   }
 
   // Clean user data without circular references
@@ -162,6 +213,11 @@ const UsersDisplayStep = (props) => {
     },
   ]
 
+  const canAddUsers = Boolean(tenantForAdd)
+  const hasUsersToAdd = Array.isArray(usersToAdd)
+    ? usersToAdd.length > 0
+    : Boolean(usersToAdd?.value)
+
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
@@ -170,8 +226,50 @@ const UsersDisplayStep = (props) => {
           color: "text.secondary"
         }}>
           The following users will be updated with the properties you select in the next step. You
-          can remove users from this list if needed.
+          can remove users from this list or add more without returning to the Users page.
         </Typography>
+      </Stack>
+
+      <Stack spacing={1}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          sx={{ alignItems: { sm: 'flex-start' } }}
+        >
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <CippFormUserSelector
+              formControl={formControl}
+              name="usersToAdd"
+              label="Add users"
+              multiple={true}
+              disabled={!canAddUsers}
+              select="id,userPrincipalName,displayName,jobTitle,department"
+              addedField={{
+                id: 'id',
+                userPrincipalName: 'userPrincipalName',
+                displayName: 'displayName',
+                jobTitle: 'jobTitle',
+                department: 'department',
+              }}
+              dataFilter={(option) => !existingUserIds.has(option.value)}
+              showRefresh={true}
+            />
+          </Box>
+          <Button
+            variant="outlined"
+            onClick={handleAddUsers}
+            disabled={!canAddUsers || !hasUsersToAdd}
+            sx={{ flexShrink: 0, mt: { sm: 0.5 } }}
+          >
+            Add
+          </Button>
+        </Stack>
+        {!canAddUsers && (
+          <Alert severity="info">
+            Select a specific tenant in CIPP to add users from here, or go back to the Users page
+            with a tenant selected.
+          </Alert>
+        )}
       </Stack>
 
       {users && users.length > 0 ? (
@@ -198,7 +296,8 @@ const UsersDisplayStep = (props) => {
                 textAlign: 'center',
                 py: 2
               }}>
-              No users selected. Please go back and select users from the main table.
+              No users selected yet. Use the picker above to add users, or go back and select them
+              from the Users table.
             </Typography>
           </CardContent>
         </Card>
