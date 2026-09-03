@@ -494,7 +494,7 @@ const Page = () => {
           GroupType: "groupType",
           DisplayName: "displayName",
         },
-        confirmText: "Are you sure you want to delete this group.",
+        confirmText: "Are you sure you want to delete [displayName]?",
         multiPost: false,
       },
     ];
