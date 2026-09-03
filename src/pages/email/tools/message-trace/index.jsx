@@ -12,6 +12,7 @@ import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanv
 import { useState } from 'react'
 import { Grid } from '@mui/system'
 import tabOptions from './tabOptions.json'
+import { getCippError } from '../../../../utils/get-cipp-error'
 
 const simpleColumns = [
   'Received',
@@ -35,6 +36,12 @@ const statusOptions = [
   { label: 'Pending', value: 'Pending' },
   { label: 'Quarantined', value: 'Quarantined' },
 ]
+
+// Backend errors carry Metadata.Error; fall back to a Results string, then the generic axios message.
+const getMessageTraceError = (error) => {
+  const body = error?.response?.data
+  return body?.Metadata?.Error || (typeof body?.Results === 'string' ? body.Results : null) || getCippError(error)
+}
 
 const subjectHelp = {
   Contains:
@@ -135,7 +142,15 @@ const Page = () => {
   }
 
   const onSubmit = () => {
-    messageTrace.mutate({ url: apiUrl, data: buildSearchData() })
+    messageTrace.mutate(
+      { url: apiUrl, data: buildSearchData() },
+      {
+        onError: (error) => {
+          setSearchResults([])
+          setMetadata({ Error: getMessageTraceError(error) })
+        },
+      }
+    )
     setFilterExpanded(false)
   }
 
