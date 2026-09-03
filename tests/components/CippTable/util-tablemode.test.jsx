@@ -20,8 +20,13 @@ describe('utilTableMode', () => {
     expect(result.enableRowSelection).toBe(true)
   })
 
-  it('full mode disables selection when no actions or onChange', () => {
+  it('full mode enables selection when export is available even without actions or onChange', () => {
     const result = utilTableMode({}, false, null, [], false, null, '380px', defaultSettings)
+    expect(result.enableRowSelection).toBe(true)
+  })
+
+  it('full mode disables selection when no actions, onChange, or export', () => {
+    const result = utilTableMode({}, false, null, [], false, null, '380px', defaultSettings, 'table', false, false)
     expect(result.enableRowSelection).toBe(false)
   })
 
