@@ -7,13 +7,20 @@ import { ApiGetCall } from "../../../api/ApiCall.jsx";
 import { CippBackendCard } from "../../../components/CippSettings/CippBackendCard";
 import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
 import { CommandLineIcon } from "@heroicons/react/24/outline";
+import { usePermissions } from "../../../hooks/use-permissions";
 
 const Page = () => {
   const backendComponents = ApiGetCall({
     url: "/api/ExecBackendURLs",
     queryKey: "ExecBackendURLs",
   });
-  const backendInfo = [
+  // CIPP-NG runs as a container web app on an App Service plan; a legacy instance is a function
+  // app plus a static web app. The cards and shell commands follow whichever this instance is.
+  const { isNg } = usePermissions();
+  const results = backendComponents?.data?.Results;
+  const shell = (code) => <CippCodeBlock language="powershell" code={code} />;
+
+  const commonCards = [
     {
       id: "ResourceGroup",
       name: "Resource Group",
@@ -26,6 +33,9 @@ const Page = () => {
       description:
         "The key vault allows you to retrieve saved authentication details. By default you do not have access.",
     },
+  ];
+
+  const legacyCards = [
     {
       id: "SWARoles",
       name: "Static Web App (Role Management)",
@@ -50,67 +60,88 @@ const Page = () => {
       description:
         "The Function App Overview allows you to monitor your function app's performance and usage. You can also stop and start the function app here.",
     },
+  ];
+
+  // Same ARM site as the legacy function app, so the overview/configuration links are shared.
+  const ngCards = [
     {
-      id: "CloudShell",
-      name: "Cloud Shell",
-      description: "Launch an Azure Cloud Shell Window",
-      linkProps: {
-        onClick: (e) => {
-          e.preventDefault();
-          window.open(
-            "https://shell.azure.com/powershell",
-            "_blank",
-            "toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no"
-          );
-        },
-      },
-      offcanvas: true,
-      offcanvasTitle: "Command Reference",
-      offcanvasIcon: <CommandLineIcon />,
-      offcanvasData: {
-        FunctionAppConfig: (
-          <CippCodeBlock
-            language="powershell"
-            code={`$Function = Get-AzFunctionApp -ResourceGroupName ${backendComponents?.data?.Results?.RGName} -Name ${backendComponents?.data?.Results?.FunctionName}; $Function | select Name, Status, Location, Runtime, ApplicationSettings`}
-          />
-        ),
-        FunctionAppDeployment: (
-          <CippCodeBlock
-            language="powershell"
-            code={`$FunctionDeployment = az webapp deployment source show --resource-group ${backendComponents?.data?.Results?.RGName} --name ${backendComponents?.data?.Results?.FunctionName} | ConvertFrom-Json; $FunctionDeployment | Select-Object repoUrl, branch, isGitHubAction, isManualIntegration, githubActionConfiguration`}
-          />
-        ),
-        WatchFunctionLogs: (
-          <CippCodeBlock
-            language="powershell"
-            code={`az webapp log tail --name ${backendComponents?.data?.Results?.FunctionName} --resource-group ${backendComponents?.data?.Results?.RGName}`}
-          />
-        ),
-        StaticWebAppConfig: (
-          <CippCodeBlock
-            language="powershell"
-            code={`$SWA = Get-AzStaticWebApp -ResourceGroupName ${backendComponents?.data?.Results?.RGName} -Name ${backendComponents?.data?.Results?.SWAName}; $SWA | Select-Object Name, CustomDomain, DefaultHostname, RepositoryUrls`}
-          />
-        ),
-        ListCIPPUsers: (
-          <CippCodeBlock
-            language="powershell"
-            code={`Get-AzStaticWebAppUser -ResourceGroupName ${backendComponents?.data?.Results?.RGName} -Name ${backendComponents?.data?.Results?.SWAName} -AuthProvider all | Select-Object DisplayName, Role`}
-          />
-        ),
-      },
+      id: "FunctionApp",
+      name: "Web App (Overview)",
+      description:
+        "The Web App Overview shows the container's status, performance and usage. You can also stop, start and restart the instance here.",
+    },
+    {
+      id: "FunctionConfig",
+      name: "Web App (Configuration)",
+      description:
+        "The Web App Configuration holds the application settings (environment variables) for this instance.",
+    },
+    {
+      id: "AppServicePlan",
+      name: "App Service Plan",
+      description:
+        "The App Service Plan provides the compute for the web app. Scale it up or out here.",
     },
   ];
+
+  const legacyCommands = {
+    FunctionAppConfig: shell(
+      `$Function = Get-AzFunctionApp -ResourceGroupName ${results?.RGName} -Name ${results?.FunctionName}; $Function | select Name, Status, Location, Runtime, ApplicationSettings`
+    ),
+    FunctionAppDeployment: shell(
+      `$FunctionDeployment = az webapp deployment source show --resource-group ${results?.RGName} --name ${results?.FunctionName} | ConvertFrom-Json; $FunctionDeployment | Select-Object repoUrl, branch, isGitHubAction, isManualIntegration, githubActionConfiguration`
+    ),
+    WatchFunctionLogs: shell(
+      `az webapp log tail --name ${results?.FunctionName} --resource-group ${results?.RGName}`
+    ),
+    StaticWebAppConfig: shell(
+      `$SWA = Get-AzStaticWebApp -ResourceGroupName ${results?.RGName} -Name ${results?.SWAName}; $SWA | Select-Object Name, CustomDomain, DefaultHostname, RepositoryUrls`
+    ),
+    ListCIPPUsers: shell(
+      `Get-AzStaticWebAppUser -ResourceGroupName ${results?.RGName} -Name ${results?.SWAName} -AuthProvider all | Select-Object DisplayName, Role`
+    ),
+  };
+
+  const ngCommands = {
+    WebAppConfig: shell(
+      `$WebApp = Get-AzWebApp -ResourceGroupName ${results?.RGName} -Name ${results?.FunctionName}; $WebApp | Select-Object Name, State, Location, Kind`
+    ),
+    ContainerConfig: shell(
+      `az webapp config container show --resource-group ${results?.RGName} --name ${results?.FunctionName}`
+    ),
+    WatchWebAppLogs: shell(
+      `az webapp log tail --name ${results?.FunctionName} --resource-group ${results?.RGName}`
+    ),
+  };
+
+  const cloudShellCard = {
+    id: "CloudShell",
+    name: "Cloud Shell",
+    description: "Launch an Azure Cloud Shell Window",
+    linkProps: {
+      onClick: (e) => {
+        e.preventDefault();
+        window.open(
+          "https://shell.azure.com/powershell",
+          "_blank",
+          "toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no"
+        );
+      },
+    },
+    offcanvas: true,
+    offcanvasTitle: "Command Reference",
+    offcanvasIcon: <CommandLineIcon />,
+    offcanvasData: isNg ? ngCommands : legacyCommands,
+  };
+
+  const backendInfo = [...commonCards, ...(isNg ? ngCards : legacyCards), cloudShellCard];
+
   return (
     <Container sx={{ pt: { xs: 0, md: 3 }, px: { xs: 1.5, md: 3 } }} maxWidth="xl">
       <Grid container spacing={2}>
         {backendInfo.map((item) => (
           <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }} key={item.id}>
-            <CippBackendCard
-              backendComponents={backendComponents}
-              item={item}
-              hosted={backendComponents?.data?.Results?.Hosted}
-            />
+            <CippBackendCard backendComponents={backendComponents} item={item} />
           </Grid>
         ))}
       </Grid>

@@ -34,6 +34,9 @@ import CippButtonCard from "../CippCards/CippButtonCard";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { usePermissions } from "../../hooks/use-permissions";
+
+const MANAGEMENT_PORTAL_URL = "https://management.cipp.app/";
 
 const LIST_QUERY_KEY = "AppServiceDomains";
 
@@ -46,6 +49,15 @@ const sslStateLabel = (state) => {
     default:
       return "Not secured";
   }
+};
+
+const domainStatus = (d) => {
+  if (d.IsDefault) return "Default (Azure-managed)";
+  if (d.Secured) return sslStateLabel(d.SslState);
+  if (d.CertJobActive) {
+    return `Provisioning certificate (attempt ${d.CertJobAttempt} of ${d.CertJobMaxAttempts})`;
+  }
+  return d.CertJobResult ? "Certificate not issued (see details)" : "Not secured";
 };
 
 // Client-side mirror of the backend Get-DomainRecordPlan so the required DNS record renders the
@@ -138,6 +150,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
   const [hostname, setHostname] = useState("");
   const [bindingDone, setBindingDone] = useState(false);
   const [certDone, setCertDone] = useState(false);
+  const [certPending, setCertPending] = useState(false);
   const [dnsResult, setDnsResult] = useState(null);
 
   const dnsCheck = ApiPostCall({
@@ -150,9 +163,15 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
       setActiveStep(2);
     },
   });
+  // Issuance can outlive the request: the backend then keeps retrying in the background and the
+  // response says whether the domain is secured yet.
   const certAction = ApiPostCall({
     relatedQueryKeys: [LIST_QUERY_KEY],
-    onResult: () => setCertDone(true),
+    onResult: (body) => {
+      const secured = Boolean(body?.Secured);
+      setCertDone(secured);
+      setCertPending(!secured);
+    },
   });
 
   // (Re)initialize whenever the dialog opens so a reopened domain resumes at the right step.
@@ -162,6 +181,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
     bindingAction.reset();
     certAction.reset();
     setDnsResult(null);
+    setCertPending(false);
     if (managing) {
       setHostname(initialDomain.Hostname);
       setBindingDone(true);
@@ -191,6 +211,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
 
   const legacyAsuid = dnsResult?.LegacyAsuid ?? false;
   const canProceed = dnsResult?.CanProceed ?? false;
+  const certJobActive = managing && Boolean(initialDomain?.CertJobActive);
 
   const runDnsCheck = () => {
     dnsCheck.mutate({
@@ -202,7 +223,12 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
   const runAddBinding = () => {
     bindingAction.mutate({
       url: "/api/ExecAppServiceDomains",
-      data: { Action: "AddBinding", Hostname: hostname.trim() },
+      data: {
+        Action: "AddBinding",
+        Hostname: hostname.trim(),
+        // Validate against the record CheckDns actually saw resolve (A or CNAME)
+        DnsRecordType: dnsResult?.AliasType,
+      },
     });
   };
 
@@ -314,10 +340,10 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
                 )}
                 {dnsResult && !canProceed && (
                   <Alert severity="warning">
-                    The alias record hasn't propagated yet — DNS changes can take a few minutes. If
-                    the record is proxied (e.g. Cloudflare orange-cloud), Azure can't see it: set it
-                    to DNS-only until the domain is bound and the certificate is issued.{" "}
-                    {dnsResult.AliasDetail}
+                    The alias record hasn't propagated yet — DNS changes can take a few minutes. The
+                    record must point directly at the App Service: a proxy or CDN in front of it
+                    (e.g. a Cloudflare proxied record) hides it from Azure and blocks certificate
+                    issuance, so use a DNS-only record. {dnsResult.AliasDetail}
                   </Alert>
                 )}
                 {dnsCheck.isError && (
@@ -344,6 +370,25 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
               </Alert>
             ) : null}
             <CippApiResults apiObject={bindingAction} />
+            {bindingAction.isError && siteInfo?.AzurePortalDomainsUrl ? (
+              <Alert
+                severity="info"
+                action={
+                  <Button
+                    color="inherit"
+                    size="small"
+                    href={siteInfo.AzurePortalDomainsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Open Azure portal
+                  </Button>
+                }
+              >
+                If Azure keeps rejecting the binding, add the domain on the App Service&apos;s
+                Custom domains page instead, then reopen it here to provision the certificate.
+              </Alert>
+            ) : null}
           </Stack>
         )}
 
@@ -360,17 +405,29 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
                 App Service Managed Certificates don't support wildcard domains. Upload your own
                 certificate and binding from the Azure Portal to secure <strong>{hostname}</strong>.
               </Alert>
+            ) : certJobActive ? (
+              <Alert severity="info">
+                A certificate for <strong>{hostname}</strong> is being issued in the background
+                (attempt {initialDomain.CertJobAttempt} of {initialDomain.CertJobMaxAttempts}
+                {initialDomain.CertJobNextRun
+                  ? `, next try at ${new Date(initialDomain.CertJobNextRun).toLocaleString()}`
+                  : ""}
+                ). Close this dialog; the table updates as it progresses.
+              </Alert>
             ) : (
               <>
                 <Alert severity="info">
                   Provision a free App Service Managed Certificate for <strong>{hostname}</strong>{" "}
-                  and enable the SNI SSL binding. This can take a minute or two.
+                  and enable the SNI SSL binding. Issuance usually takes a minute or two; if it takes
+                  longer, CIPP keeps retrying in the background every 15 minutes.
                 </Alert>
                 <Alert severity="warning">
-                  If the domain's alias is proxied through a CDN (e.g. Cloudflare orange-cloud),
-                  temporarily set it to DNS-only while the certificate is issued, then re-enable the
-                  proxy afterwards. Certificate issuance validates the domain directly.
+                  The domain must point directly at the App Service. A proxy or CDN in front of it
+                  (e.g. a Cloudflare proxied record) blocks certificate issuance and renewal.
                 </Alert>
+                {managing && initialDomain?.CertJobResult ? (
+                  <Alert severity="warning">Last attempt: {initialDomain.CertJobResult}</Alert>
+                ) : null}
               </>
             )}
             <CippApiResults apiObject={certAction} />
@@ -419,7 +476,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
             </Button>
           )}
 
-          {activeStep === 2 && !certDone && !isWildcard && (
+          {activeStep === 2 && !certDone && !certPending && !certJobActive && !isWildcard && (
             <Button
               variant="contained"
               onClick={runAddCertificate}
@@ -430,7 +487,7 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
             </Button>
           )}
 
-          {activeStep === 2 && (certDone || isWildcard) && (
+          {activeStep === 2 && (certDone || certPending || certJobActive || isWildcard) && (
             <Button variant="contained" onClick={onClose}>
               Done
             </Button>
@@ -444,6 +501,9 @@ const DomainWizard = ({ open, onClose, siteInfo, initialDomain }) => {
 export const CippAppServiceDomains = () => {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [managingDomain, setManagingDomain] = useState(null);
+  // Hosted instances sit on a shared App Service plan the instance identity cannot change, so
+  // domains are managed in the management portal and this page is read-only.
+  const { isHosted } = usePermissions();
 
   const domainsQuery = ApiGetCall({
     url: "/api/ExecAppServiceDomains",
@@ -456,7 +516,7 @@ export const CippAppServiceDomains = () => {
     const list = siteInfo?.Domains ?? [];
     return list.map((d) => ({
       ...d,
-      Status: d.IsDefault ? "Default (Azure-managed)" : sslStateLabel(d.SslState),
+      Status: domainStatus(d),
     }));
   }, [siteInfo]);
 
@@ -531,6 +591,16 @@ export const CippAppServiceDomains = () => {
             Binding type: {row.HostNameType}
           </Typography>
         )}
+        {row.CertJobNextRun && (
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Next certificate attempt: {new Date(row.CertJobNextRun).toLocaleString()}
+          </Typography>
+        )}
+        {row.CertJobResult && !row.Secured && (
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Last certificate attempt: {row.CertJobResult}
+          </Typography>
+        )}
         {row.CertThumbprint && (
           <>
             <Divider />
@@ -560,12 +630,34 @@ export const CippAppServiceDomains = () => {
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12 }}>
-        <Alert severity="info">
-          Map custom domains to the App Service that hosts this CIPP instance. Each domain needs a
-          DNS alias record, a hostname binding, and (optionally) a free managed TLS certificate —
-          the wizard walks through all three and can be reopened at any time to finish or fix a
-          domain. The default <code>*.azurewebsites.net</code> hostname always remains available.
-        </Alert>
+        {isHosted ? (
+          <Alert
+            severity="info"
+            action={
+              <Button
+                color="inherit"
+                size="small"
+                href={MANAGEMENT_PORTAL_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open management portal
+              </Button>
+            }
+          >
+            Custom domains for hosted instances are managed in the management portal. This list
+            is read-only.
+          </Alert>
+        ) : (
+          <Alert severity="info">
+            Map custom domains to the App Service that hosts this CIPP instance. Each domain needs a
+            DNS alias record, a hostname binding, and (optionally) a free managed TLS certificate —
+            the wizard walks through all three and can be reopened at any time to finish or fix a
+            domain. The default <code>*.azurewebsites.net</code> hostname always remains available.
+            Point the domain directly at the App Service — a proxy or CDN in front of CIPP blocks
+            certificate issuance and renewal.
+          </Alert>
+        )}
       </Grid>
 
       <Grid size={{ xs: 12, md: 5 }}>
@@ -607,21 +699,23 @@ export const CippAppServiceDomains = () => {
           isFetching={domainsQuery.isFetching}
           refreshFunction={domainsQuery.refetch}
           simpleColumns={["Hostname", "Status"]}
-          actions={actions}
+          actions={isHosted ? [] : actions}
           offCanvas={offCanvas}
           cardButton={
-            <Button
-              variant="contained"
-              size="small"
-              startIcon={
-                <SvgIcon>
-                  <PlusIcon />
-                </SvgIcon>
-              }
-              onClick={openAddWizard}
-            >
-              Add Custom Domain
-            </Button>
+            isHosted ? null : (
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={
+                  <SvgIcon>
+                    <PlusIcon />
+                  </SvgIcon>
+                }
+                onClick={openAddWizard}
+              >
+                Add Custom Domain
+              </Button>
+            )
           }
         />
       </Grid>
