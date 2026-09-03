@@ -261,6 +261,7 @@
   },
   {
     "type": "OneDriveSiteListing",
+    "collectedBy": "OneDriveUsage",
     "friendlyName": "OneDrive Site Listing",
     "description": "OneDrive personal site listing details used for usage reporting"
   },
@@ -276,6 +277,7 @@
   },
   {
     "type": "SharePointSiteListing",
+    "collectedBy": "SharePointSiteUsage",
     "friendlyName": "SharePoint Site Listing",
     "description": "SharePoint site listing details used for usage reporting"
   },
