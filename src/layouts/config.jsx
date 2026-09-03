@@ -1292,6 +1292,13 @@ export const nativeMenuItems = [
             scope: 'global',
           },
           {
+            title: 'CIPPDB Cache',
+            path: '/cipp/advanced/cippdb-cache',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
             title: 'Diagnostics',
             path: '/cipp/advanced/diagnostics',
             roles: ['superadmin'],
