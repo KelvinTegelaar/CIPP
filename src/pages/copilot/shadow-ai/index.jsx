@@ -330,10 +330,12 @@ const Page = () => {
         ) : (
           <>
             <Grid size={{ md: 12, xs: 12 }}>
+              {/* Both buttons beside the refresh stamp squeeze to three lines on a phone. */}
               <Stack
-                direction="row"
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={{ xs: 1, sm: 0 }}
                 sx={{
-                  alignItems: "center",
+                  alignItems: { xs: "flex-start", sm: "center" },
                   justifyContent: "space-between",
                   mb: 1
                 }}>
@@ -342,7 +344,7 @@ const Page = () => {
                 }}>
                   {formatLastDataRefresh(summary.lastDataRefresh)}
                 </Typography>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
                   <ShadowAIReportButton
                     data={data}
                     tenantName={currentTenant}

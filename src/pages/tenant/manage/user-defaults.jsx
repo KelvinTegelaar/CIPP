@@ -348,6 +348,8 @@ const Page = () => {
           queryKey={`ListNewUserDefaults-${userSettings.currentTenant}`}
           actions={actions}
           offCanvas={offCanvas}
+          // displayName wins the default title slot but is unset on most templates.
+          mobileCard={{ primary: 'templateName' }}
           simpleColumns={[
             'templateName',
             'defaultForTenant',

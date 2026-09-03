@@ -104,17 +104,20 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
   return (
     <>
       <Stack spacing={2}>
+        {/* Title and actions together exceed a phone width, so they stack below sm. */}
         <Stack
-          direction="row"
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1, sm: 0 }}
           sx={{
             justifyContent: "space-between",
-            alignItems: "flex-start"
+            alignItems: { xs: "stretch", sm: "flex-start" }
           }}>
-          <Typography variant="h5">
+          {/* Task names embed UPNs, which are unbreakable tokens wider than a phone. */}
+          <Typography variant="h5" sx={{ minWidth: 0, overflowWrap: "anywhere" }}>
             {showTitle && (taskDetailResults.isLoading ? <Skeleton width="250px" /> : taskDetails?.Task?.Name)}
           </Typography>
           {showActions && (
-            <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
+            <Box sx={{ display: "flex", gap: 1, flexShrink: 0, flexWrap: "wrap" }}>
               <CippApiLogsDrawer
                 scheduledTaskFilter={data?.RowKey}
                 buttonText="View Logs"

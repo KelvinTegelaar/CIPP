@@ -46,6 +46,8 @@ const Page = () => {
       apiUrl={apiUrl}
       actions={actions}
       simpleColumns={simpleColumns}
+      // The default title slot would pick Timestamp, which has no text form.
+      mobileCard={{ primary: "Relationship.customer.displayName" }}
       tenantInTitle={false}
       queryKey="ListTenantOnboarding"
       cardButton={

@@ -60,6 +60,25 @@ export const portalIcons = {
   portal_bi: BarChart,
 }
 
+// Intune policy families the backend has no name for fall back to the raw Graph assignments
+// URL — read the @odata type out of it rather than printing the URL in the cell.
+const INTUNE_POLICY_TYPE_NAMES = {
+  macOSSoftwareUpdateConfiguration: 'macOS Update Configuration',
+}
+const readablePolicyTypeName = (value) => {
+  if (typeof value !== 'string' || !/^https?:\/\//i.test(value)) return value
+  const type = value.match(/microsoft\.graph\.([A-Za-z0-9]+)/)?.[1]
+  if (!type) return value
+  return (
+    INTUNE_POLICY_TYPE_NAMES[type] ??
+    type
+      .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+      .replace(/([A-Za-z])(\d)/g, '$1 $2')
+      .replace(/^./, (c) => c.toUpperCase())
+  )
+}
+
 export const getCippFormatting = (
   data,
   cellName,
@@ -118,6 +137,20 @@ export const getCippFormatting = (
 
   if (cellName === 'baselineOption') {
     return 'Download Baseline'
+  }
+
+  // A country-based named location carries every ISO code — chipped with an expander it
+  // stays a few lines tall instead of a ~600px wall of text on a card.
+  if (cellName === 'rangeOrLocation' && typeof data === 'string' && data.includes(',')) {
+    const entries = data
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+    return isText ? data : renderChipList(entries, 6)
+  }
+
+  if (cellName === 'PolicyTypeName') {
+    return formatCellText(readablePolicyTypeName(data), isText)
   }
 
   if (cellName === 'Severity' || cellName === 'logsToInclude') {

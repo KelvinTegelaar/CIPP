@@ -25,6 +25,8 @@ const DirectoryAuditsPage = () => {
       apiDataKey="Results"
       actions={[]}
       offCanvas={offCanvas}
+      // The default title slot would pick activityDateTime, which has no text form.
+      mobileCard={{ primary: "activityDisplayName" }}
       simpleColumns={[
         "activityDateTime",
         "activityDisplayName",

@@ -181,7 +181,22 @@ const Page = () => {
                 label: "Webhook URL",
                 value: (
                   <Stack spacing={1}>
-                    <CippCodeBlock code={subscription?.webhookUrl} />
+                    {/* The URL is one unbreakable token and the copy button floats over the
+                        block's top-right — wrap it and keep the text clear of the button. */}
+                    <Box
+                      sx={{
+                        minWidth: 0,
+                        // the highlighter theme sets pre padding inline, so reserving the
+                        // copy button's corner needs to win over it
+                        "& pre": {
+                          paddingRight: "56px !important",
+                          overflowWrap: "anywhere",
+                          whiteSpace: "pre-wrap",
+                        },
+                      }}
+                    >
+                      <CippCodeBlock code={subscription?.webhookUrl} />
+                    </Box>
                     {webhookUrlIsStale && (
                       <Alert severity="warning">
                         This subscription points at a different URL than the one this instance is

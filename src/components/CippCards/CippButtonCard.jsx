@@ -44,7 +44,13 @@ export default function CippButtonCard({
         <>
           {title && (
             <>
-              <CardHeader action={cardActions} title={title} />
+              {/* Long titles (tenant domains) are one unbreakable token: without this they
+                  push the header action past the card edge at phone widths. */}
+              <CardHeader
+                action={cardActions}
+                title={title}
+                sx={{ '& .MuiCardHeader-content': { minWidth: 0, overflowWrap: 'anywhere' } }}
+              />
               <Divider />
             </>
           )}

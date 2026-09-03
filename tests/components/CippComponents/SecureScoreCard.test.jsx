@@ -28,24 +28,23 @@ describe('SecureScoreCard', () => {
 
   // recharts reads its axis children's props without mounting them, so there is no element to
   // assert against — the config is exported and tested directly.
-  const ticks = ['Jul 1', 'Jul 15', 'Jul 29']
 
-  // interval 0 draws a label for every point. Thirteen dates fit across a desktop card and
-  // overlap into one smear at 390px, which is what "Jul 27Jul 28Jul 29" looks like.
-  it('labels every point on desktop', () => {
-    const axis = secureScoreAxisProps({ isMobile: false, ticks })
+  // A fixed interval drew a label for every point regardless of card width, which overlapped
+  // into an unreadable run whenever the card was narrower than a full desktop column (e.g. the
+  // dashboard's third-width layout). preserveStartEnd lets recharts thin labels at any width.
+  it('hands x-axis spacing back to recharts on desktop', () => {
+    const axis = secureScoreAxisProps({ isMobile: false })
 
-    expect(axis.x.interval).toBe(0)
-    expect(axis.x.ticks).toBe(ticks)
+    expect(axis.x.interval).toBe('preserveStartEnd')
+    expect(axis.x.minTickGap).toBeGreaterThanOrEqual(32)
     expect(axis.x.tick.fontSize).toBe(12)
     expect(axis.y.width).toBeUndefined()
   })
 
   it('hands x-axis spacing back to recharts on a narrow chart', () => {
-    const axis = secureScoreAxisProps({ isMobile: true, ticks })
+    const axis = secureScoreAxisProps({ isMobile: true })
 
     expect(axis.x.interval).toBe('preserveStartEnd')
-    expect(axis.x.ticks).toBeUndefined()
     expect(axis.x.minTickGap).toBeGreaterThan(5)
     expect(axis.x.tick.fontSize).toBeLessThan(12)
     // and the y-axis gutter narrows so the plot keeps the width it has

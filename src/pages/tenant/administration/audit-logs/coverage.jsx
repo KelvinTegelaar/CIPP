@@ -9,6 +9,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Box, Container, Grid } from "@mui/system";
@@ -70,6 +71,8 @@ const bucketLabel = (ms) =>
 
 const Page = () => {
   const theme = useTheme();
+  // Rotated bucket labels need fewer ticks and a capped label band on a phone.
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const tenant = useSettings().currentTenant;
   const [dateParams, setDateParams] = useState({ RelativeTime: "48h" });
   const [tableFilterTenant, setTableFilterTenant] = useState(null);
@@ -181,8 +184,14 @@ const Page = () => {
       dataLabels: { enabled: false },
       xaxis: {
         categories: labels,
-        tickAmount: Math.min(12, b.count),
-        labels: { rotate: -45, hideOverlappingLabels: true, style: { fontSize: "10px" } },
+        tickAmount: Math.min(isMobile ? 4 : 12, b.count),
+        labels: {
+          rotate: -45,
+          hideOverlappingLabels: true,
+          trim: isMobile,
+          maxHeight: isMobile ? 56 : undefined,
+          style: { fontSize: isMobile ? "9px" : "10px" },
+        },
       },
       yaxis: { min: 0, forceNiceScale: true, labels: { formatter: (v) => Math.round(v) } },
       legend: { show: true, position: "top" },
@@ -211,7 +220,7 @@ const Page = () => {
       },
     };
     return { series, options };
-  }, [rows, theme]);
+  }, [rows, theme, isMobile]);
 
   // Latency stage breakdown + audit volume over the same buckets.
   const trendCharts = useMemo(() => {
@@ -242,8 +251,14 @@ const Page = () => {
     const axis = {
       xaxis: {
         categories: labels,
-        tickAmount: Math.min(10, b.count),
-        labels: { rotate: -45, hideOverlappingLabels: true, style: { fontSize: "10px" } },
+        tickAmount: Math.min(isMobile ? 4 : 10, b.count),
+        labels: {
+          rotate: -45,
+          hideOverlappingLabels: true,
+          trim: isMobile,
+          maxHeight: isMobile ? 56 : undefined,
+          style: { fontSize: isMobile ? "9px" : "10px" },
+        },
       },
       yaxis: { min: 0, forceNiceScale: true, labels: { formatter: (v) => Math.round(v) } },
       legend: { show: true, position: "top" },
@@ -278,7 +293,7 @@ const Page = () => {
         tooltip: { theme: theme.palette.mode },
       },
     };
-  }, [rows, theme]);
+  }, [rows, theme, isMobile]);
 
   // Triage feed: windows that errored, retried, throttled, were skipped or dead-lettered. Newest first.
   const problems = useMemo(() => {
@@ -309,7 +324,9 @@ const Page = () => {
     <Card>
       <CardHeader title={title} subheader={subheader} />
       <Divider />
-      <CardContent>
+      {/* Apex sizes itself from its parent: without minWidth the canvas keeps its
+          desktop width and the rotated labels spill past the card. */}
+      <CardContent sx={{ minWidth: 0, overflow: "hidden", "& .apexcharts-canvas": { maxWidth: "100%" } }}>
         {statsQuery.isFetching ? (
           <Skeleton variant="rounded" sx={{ height: 280 }} />
         ) : !ready ? (

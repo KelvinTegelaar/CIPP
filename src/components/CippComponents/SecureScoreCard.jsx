@@ -21,17 +21,18 @@ import { useIsMobileLayout } from '../../hooks/use-breakpoint'
  * assert against: recharts reads its axis children's props directly rather than mounting them,
  * so an XAxis cannot be captured by wrapping it.
  *
- * `interval: 0` draws a label for every point. Thirteen dates fit across a desktop card and
- * overlap into one smear at 390px — "Jul 27Jul 28Jul 29". A narrow chart hands spacing back to
- * recharts and lets it drop whatever will not fit.
+ * A fixed `interval: 0` drew a label for every point regardless of card width, which overlapped
+ * into an unreadable run whenever the card was narrower than a full desktop column (e.g. the
+ * dashboard's third-width layout). `interval="preserveStartEnd"` with a minimum pixel gap lets
+ * recharts drop whatever labels do not fit, at any width, while a short tickFormatter keeps more
+ * of them legible before that thinning kicks in.
  */
-export const secureScoreAxisProps = ({ isMobile, ticks }) => ({
+export const secureScoreAxisProps = ({ isMobile }) => ({
   x: {
     tick: { fontSize: isMobile ? 10 : 12 },
     tickMargin: 8,
-    ticks: isMobile ? undefined : ticks,
-    interval: isMobile ? 'preserveStartEnd' : 0,
-    minTickGap: isMobile ? 28 : 5,
+    interval: 'preserveStartEnd',
+    minTickGap: isMobile ? 28 : 32,
   },
   y: {
     tick: { fontSize: isMobile ? 10 : 12 },
@@ -129,8 +130,7 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                     score: score.currentScore,
                     percentage: Math.round((score.currentScore / score.maxScore) * 100),
                   }))
-                  const ticks = chartData.map((d) => d.date)
-                  const axis = secureScoreAxisProps({ isMobile, ticks })
+                  const axis = secureScoreAxisProps({ isMobile })
                   return (
                     <LineChart
                       data={chartData}

@@ -86,12 +86,15 @@ export const CippInfoBar = ({ data, isFetching }) => {
                         }}>
                         {item.name}
                       </Typography>
+                      {/* One tile spans the full width on a phone, so the value wraps there
+                          instead of ellipsizing an address that would otherwise fit. */}
                       <Typography
                         variant="h6"
                         sx={{
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
+                          whiteSpace: { xs: 'normal', md: 'nowrap' },
+                          overflowWrap: 'anywhere',
                         }}
                       >
                         {isFetching ? <Skeleton width={'100%'} /> : item.data}
@@ -123,7 +126,8 @@ export const CippInfoBar = ({ data, isFetching }) => {
                       sx={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
+                        whiteSpace: { xs: 'normal', md: 'nowrap' },
+                        overflowWrap: 'anywhere',
                       }}
                     >
                       {isFetching ? <Skeleton width={'100%'} /> : item.data}
