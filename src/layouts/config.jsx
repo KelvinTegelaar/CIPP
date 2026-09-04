@@ -251,11 +251,6 @@ export const nativeMenuItems = [
             permissions: ['Tenant.ConditionalAccess.*'],
           },
           {
-            title: 'CA Vacation Mode',
-            path: '/tenant/conditional/deploy-vacation',
-            permissions: ['Tenant.ConditionalAccess.*'],
-          },
-          {
             title: 'CA Templates',
             path: '/tenant/conditional/list-template',
             permissions: ['Tenant.ConditionalAccess.*'],

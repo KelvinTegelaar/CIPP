@@ -13,6 +13,8 @@ export const routeRedirects = {
   // in drawers on the Users list page.
   '/identity/administration/users/add': '/identity/administration/users',
   '/identity/administration/users/bulk-add': '/identity/administration/users',
+  // Vacation mode now lives under Identity Management. Its standalone add page is retired.
+  '/tenant/conditional/deploy-vacation': '/identity/administration/vacation-mode',
   // Tenant onboarding runs through the setup wizard. The Add Tenant page redirects there
   // in-page; this entry is the fallback for the same route.
   '/tenant/administration/tenants/add': '/onboardingv2',
