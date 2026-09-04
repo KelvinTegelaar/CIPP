@@ -254,6 +254,42 @@ const Page = () => {
         multiPost: false,
       },
       {
+        label: "Set Group Visibility",
+        type: "POST",
+        url: "/api/EditGroup",
+        icon: <CippIcons.Visibility />,
+        data: {
+          groupId: "id",
+          groupType: "groupType",
+          groupName: "displayName",
+        },
+        // Pre-select when visibility is Public or Private (not HiddenMembership)
+        defaultvalues: (row) => {
+          const states = [
+            ...new Set((Array.isArray(row) ? row : [row]).map((r) => r?.visibility)),
+          ];
+          return states.length === 1 && (states[0] === "Public" || states[0] === "Private")
+            ? { visibility: states[0] }
+            : {};
+        },
+        fields: [
+          {
+            type: "radio",
+            name: "visibility",
+            label: "Group Visibility",
+            options: [
+              { label: "Public", value: "Public" },
+              { label: "Private", value: "Private" },
+            ],
+            validators: { required: "Please select a visibility option" },
+          },
+        ],
+        confirmText:
+          "Are you sure you want to set the visibility for [displayName]? This only applies to Microsoft 365 groups.",
+        condition: (row) => row?.groupType === "Microsoft 365",
+        multiPost: false,
+      },
+      {
         label: "Only allow messages from people inside the organisation",
         type: "POST",
         url: "/api/ExecGroupsDeliveryManagement",
