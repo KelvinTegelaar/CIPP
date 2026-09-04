@@ -405,22 +405,13 @@ export const CippSharePointBrowserStorage = ({
                         </Alert>
                       ) : (
                         <Alert severity="info">
-                          Site capacity triage for this site. For tenant-wide health use the Storage
-                          Report. Recycle is in the explorer Recycle mode.
+                          Site capacity triage for this site. Recycle is in the explorer Recycle mode.
                         </Alert>
                       )}
 
                       <Stack direction="row" spacing={1} useFlexGap sx={{
                         flexWrap: "wrap"
                       }}>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          href="/teams-share/storage-report"
-                          startIcon={<CippIcons.Launch />}
-                        >
-                          Storage Report
-                        </Button>
                         {stormanHref ? (
                           <Button
                             size="small"

@@ -1,5 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
-import axios from 'axios'
+import { useMemo, useRef, useState } from 'react'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { CippInfoBar } from '../../../components/CippCards/CippInfoBar'
 import { CippMultiQueueTracker } from '../../../components/CippComponents/CippMultiQueueTracker'
@@ -22,9 +21,7 @@ import {
   Alert,
   Button,
   Chip,
-  CircularProgress,
   Container,
-  LinearProgress,
   Stack,
   SvgIcon,
   Tab,
@@ -49,21 +46,21 @@ import {
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 import { CippHead } from '../../../components/CippComponents/CippHead'
-import { buildVersionedHeaders } from '../../../utils/cippVersion'
 import {
   buildCleanupOpportunities,
   formatCleanupBytes,
-  pickSitesToScan,
   rollupCleanupBySite,
   summarizeCleanupSites,
 } from '../../../utils/storage-cleanup-opportunities'
 
 const EMPTY_ROWS = []
+const EMPTY_SCANS = {}
 const INACTIVE_DAYS = 90
 const NEAR_QUOTA_PCT = 80
 const TOP_SITES_CHART = 10
 
 const syncRows = [{ Name: 'SharePointSiteUsage' }, { Name: 'OneDriveUsage' }]
+const cleanupScanRows = [{ Name: 'StorageCleanupScan' }]
 
 /** Teams-connected SPO sites — same heuristic as Sharing Report (Group) plus channel sites. */
 const isTeamsConnectedSite = (row) => {
@@ -292,13 +289,17 @@ const Page = () => {
   const { checkPermissions } = usePermissions()
   const canReadQuota = checkPermissions(['Sharepoint.Admin.Read', 'Sharepoint.Admin.ReadWrite'])
   const syncDialog = useDialog()
+  const cleanupScanDialog = useDialog()
   const [syncQueueIds, setSyncQueueIds] = useState([])
+  const [cleanupQueueIds, setCleanupQueueIds] = useState([])
   const newSyncRunRef = useRef(false)
+  const newCleanupRunRef = useRef(false)
   const [inventoryTab, setInventoryTab] = useState(0)
 
   const waiting = !!currentTenant && currentTenant !== 'AllTenants'
   const spQueryKey = `ListSites-SharePointSiteUsage-${currentTenant}-true`
   const odQueryKey = `ListSites-OneDriveUsageAccount-${currentTenant}-true`
+  const cleanupQueryKey = `ListStorageCleanupScan-${currentTenant}`
 
   const spUsage = ApiGetCall({
     url: '/api/ListSites?type=SharePointSiteUsage&UseReportDB=true',
@@ -319,6 +320,13 @@ const Page = () => {
     data: { tenantFilter: currentTenant },
     queryKey: `${currentTenant}-ListSharepointQuota`,
     waiting: waiting && canReadQuota,
+  })
+
+  const cleanupScan = ApiGetCall({
+    url: '/api/ListStorageCleanupScan',
+    data: { tenantFilter: currentTenant },
+    queryKey: cleanupQueryKey,
+    waiting,
   })
 
   const rawSpRows = useMemo(
@@ -380,101 +388,26 @@ const Page = () => {
   const [selectedSites, setSelectedSites] = useState([])
   const [cleanupOpen, setCleanupOpen] = useState(false)
   const [cleanupFocus, setCleanupFocus] = useState(null)
-  const [scanState, setScanState] = useState({
-    scanning: false,
-    progress: 0,
-    total: 0,
-    currentSite: null,
-    scans: {},
-    error: null,
-  })
 
   const canWriteSite = checkPermissions(['Sharepoint.Site.ReadWrite'])
-  const canReadRecycle = checkPermissions([
-    'Sharepoint.SiteRecycleBin.Read',
-    'Sharepoint.SiteRecycleBin.ReadWrite',
-  ])
 
-  const runOpportunityScan = useCallback(async () => {
-    const toScan = pickSitesToScan(spRows, { isSystemSite })
-    if (toScan.length === 0) return
-    setInventoryTab(0)
-    const nextScans = {}
-    setScanState({
-      scanning: true,
-      progress: 0,
-      total: toScan.length,
-      currentSite: toScan[0]?.displayName || toScan[0]?.webUrl || null,
-      scans: {},
-      error: null,
-    })
-    const headers = await buildVersionedHeaders()
-    try {
-      for (let i = 0; i < toScan.length; i++) {
-        const site = toScan[i]
-        const siteUrl = site.webUrl
-        setScanState((prev) => ({
-          ...prev,
-          currentSite: site.displayName || siteUrl,
-          progress: i,
-        }))
-        try {
-          const libRes = await axios.get('/api/ListSiteBrowser', {
-            params: { tenantFilter: currentTenant, SiteUrl: siteUrl },
-            headers,
-          })
-          const libraries = Array.isArray(libRes.data?.Results) ? libRes.data.Results : []
-          let recycle = null
-          if (canReadRecycle) {
-            try {
-              const recRes = await axios.get('/api/ListSiteRecycleBinSummary', {
-                params: { tenantFilter: currentTenant, SiteUrl: siteUrl },
-                headers,
-              })
-              recycle =
-                recRes.data?.Results && typeof recRes.data.Results === 'object'
-                  ? recRes.data.Results
-                  : null
-            } catch {
-              recycle = null
-            }
-          }
-          nextScans[siteUrl] = { libraries, recycle }
-        } catch {
-          nextScans[siteUrl] = { libraries: [], recycle: null }
-        }
-        setScanState((prev) => ({
-          ...prev,
-          progress: i + 1,
-          scans: { ...nextScans },
-        }))
-      }
-      setScanState((prev) => ({
-        ...prev,
-        scanning: false,
-        currentSite: null,
-        scans: nextScans,
-      }))
-    } catch (err) {
-      setScanState((prev) => ({
-        ...prev,
-        scanning: false,
-        currentSite: null,
-        error: err?.message || 'Scan failed',
-      }))
-    }
-  }, [spRows, currentTenant, canReadRecycle])
+  const cleanupSummary = cleanupScan.data?.summary ?? {}
+  const cleanupScans = useMemo(() => {
+    const raw = cleanupScan.data?.scans
+    return raw && typeof raw === 'object' ? raw : EMPTY_SCANS
+  }, [cleanupScan.data?.scans])
 
   const opportunities = useMemo(
-    () => buildCleanupOpportunities(spRows, scanState.scans),
-    [spRows, scanState.scans]
+    () => buildCleanupOpportunities(spRows, cleanupScans),
+    [spRows, cleanupScans]
   )
   const opportunitySites = useMemo(() => rollupCleanupBySite(opportunities), [opportunities])
   const opportunitySummary = useMemo(
     () => summarizeCleanupSites(opportunitySites),
     [opportunitySites]
   )
-  const hasScanned = Object.keys(scanState.scans).length > 0
+  const hasScanned = Boolean(cleanupSummary.cleanupSynced) || Object.keys(cleanupScans).length > 0
+  const needsCleanupScan = cleanupScan.isSuccess && !cleanupSummary.cleanupSynced
 
   const opportunityByUrl = useMemo(() => {
     const map = new Map()
@@ -544,6 +477,7 @@ const Page = () => {
     (spUsage.isSuccess && spRows.length === 0) || (odUsage.isSuccess && odRows.length === 0)
 
   const refreshKeys = [spQueryKey, odQueryKey, `${spQueryKey}-table`, `${odQueryKey}-table`]
+  const cleanupRefreshKeys = [cleanupQueryKey]
 
   const siteFilters = [
     {
@@ -767,13 +701,18 @@ const Page = () => {
                   </Stack>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <CippQueryRefreshButton
-                      queryKeys={refreshKeys}
-                      isFetching={isFetching}
+                      queryKeys={[...refreshKeys, ...cleanupRefreshKeys]}
+                      isFetching={isFetching || cleanupScan.isFetching}
                     />
                     <CippMultiQueueTracker
                       queueIds={syncQueueIds}
                       relatedQueryKeys={refreshKeys}
                       label="Storage sync"
+                    />
+                    <CippMultiQueueTracker
+                      queueIds={cleanupQueueIds}
+                      relatedQueryKeys={cleanupRefreshKeys}
+                      label="Cleanup scan"
                     />
                     <Button
                       size="small"
@@ -796,6 +735,13 @@ const Page = () => {
                   <Alert severity="info" sx={{ mb: 1 }}>
                     No cached usage data found yet (or a workload is empty). Click Sync data to
                     refresh SharePoint site usage from SharePoint admin and OneDrive usage reports.
+                  </Alert>
+                )}
+                {needsCleanupScan && (
+                  <Alert severity="info" sx={{ mb: 1 }}>
+                    No cleanup scan cached for this tenant yet. Click Scan cleanup to queue library
+                    version estimates and recycle totals; reclaim columns appear when the queue
+                    finishes.
                   </Alert>
                 )}
                 <CippAnonymizedReportAlert show={anonymized} />
@@ -914,11 +860,6 @@ const Page = () => {
                     />
                   ) : null}
                 </Stack>
-                {scanState.error ? (
-                  <Alert severity="error" sx={{ mt: 1 }}>
-                    {scanState.error}
-                  </Alert>
-                ) : null}
               </Grid>
 
               <Grid size={{ md: 4, xs: 12 }}>
@@ -971,29 +912,6 @@ const Page = () => {
                   <Tab label={`SharePoint Sites (${spRows.length})`} />
                   <Tab label={`OneDrive (${odRows.length})`} />
                 </Tabs>
-                {scanState.scanning ? (
-                  <Alert
-                    severity="info"
-                    icon={<CircularProgress size={20} />}
-                    sx={{ mb: 1 }}
-                  >
-                    <Stack spacing={0.75}>
-                      <Typography variant="body2">
-                        Scanning cleanup signals — {scanState.progress} of {scanState.total}{' '}
-                        sites
-                        {scanState.currentSite ? `: ${scanState.currentSite}` : '…'}
-                      </Typography>
-                      <LinearProgress
-                        variant="determinate"
-                        value={
-                          scanState.total
-                            ? Math.round((scanState.progress / scanState.total) * 100)
-                            : 0
-                        }
-                      />
-                    </Stack>
-                  </Alert>
-                ) : null}
               </Grid>
 
               {inventoryTab === 0 ? (
@@ -1016,21 +934,15 @@ const Page = () => {
                       <Button
                         size="small"
                         variant="contained"
-                        disabled={scanState.scanning || spRows.length === 0}
-                        onClick={runOpportunityScan}
-                        startIcon={
-                          scanState.scanning ? (
-                            <CircularProgress color="inherit" size={16} />
-                          ) : (
-                            <CleaningServices fontSize="small" />
-                          )
-                        }
+                        disabled={spRows.length === 0}
+                        onClick={() => {
+                          setInventoryTab(0)
+                          newCleanupRunRef.current = true
+                          cleanupScanDialog.handleOpen()
+                        }}
+                        startIcon={<CleaningServices fontSize="small" />}
                       >
-                        {scanState.scanning
-                          ? `Scanning ${scanState.progress}/${scanState.total}`
-                          : hasScanned
-                            ? 'Rescan cleanup'
-                            : 'Scan cleanup'}
+                        {hasScanned ? 'Rescan cleanup' : 'Scan cleanup'}
                       </Button>
                     }
                     simpleColumns={[
@@ -1105,6 +1017,32 @@ const Page = () => {
                   },
                 }}
                 row={syncRows}
+              />
+
+              <CippApiDialog
+                createDialog={cleanupScanDialog}
+                title="Scan cleanup signals"
+                api={{
+                  type: 'GET',
+                  url: '/api/ExecCIPPDBCache',
+                  data: { Name: 'Name' },
+                  confirmText:
+                    'Queue a cleanup scan for this tenant? CIPP collects library version estimates and recycle-bin totals for every SharePoint site (hold-only for this report). Progress shows next to Cleanup scan; reclaim columns refresh when the queue finishes.',
+                  relatedQueryKeys: cleanupRefreshKeys,
+                  onSuccess: (result) => {
+                    const queueId = result?.Metadata?.QueueId
+                    if (!queueId) return
+                    if (newCleanupRunRef.current) {
+                      newCleanupRunRef.current = false
+                      setCleanupQueueIds([queueId])
+                      return
+                    }
+                    setCleanupQueueIds((previous) =>
+                      previous.includes(queueId) ? previous : [...previous, queueId]
+                    )
+                  },
+                }}
+                row={cleanupScanRows}
               />
 
               <CippStorageCleanupDrawer

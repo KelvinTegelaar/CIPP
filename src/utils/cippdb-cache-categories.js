@@ -141,6 +141,7 @@ const CACHE_TYPE_COLLECTIONS = {
     "SharePointSiteListing",
     "SharePointSharingLinks",
     "SharePointPermissions",
+    "StorageCleanupScan",
   ],
   Teams: [
     "CsTeamsMeetingPolicy",
