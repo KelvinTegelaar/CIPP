@@ -30,6 +30,8 @@ export const CippTranslations = {
   baselineName: 'Baseline',
   secureScoreImpact: 'Secure Score Impact',
   userPrincipalName: 'User Principal Name',
+  includeReasons: 'Included via',
+  excludeReasons: 'Excluded via',
   aadRegistered: 'Microsoft Entra Registered',
   azureADRegistered: 'Microsoft Entra Registered',
   azureActiveDirectoryDeviceId: 'Microsoft Entra Device ID',
