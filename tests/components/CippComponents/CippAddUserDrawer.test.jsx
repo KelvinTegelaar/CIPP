@@ -252,3 +252,50 @@ describe('CippAddUserDrawer - backdrop click must not wipe typed input (issue #3
     expect(screen.queryByTestId('CippOffCanvas')).not.toBeInTheDocument()
   }, 30000)
 })
+
+describe('CippAddUserDrawer - user creation is refused under All Tenants (ticket 48312738612)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    postState = { isPending: false, isSuccess: false, isError: false }
+    mutateSpy = vi.fn()
+    mockApis()
+  })
+
+  it('warns and keeps Create disabled under All Tenants even with the form complete', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Harness />, {
+      settings: settingsWith({
+        currentTenant: 'AllTenants',
+        usageLocation: { value: 'US', label: 'United States' },
+      }),
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Add User' }))
+    await waitFor(() => {
+      expect(getDomainInput()).toHaveValue('testdomain.com')
+    })
+    await fillRequiredFields(user, { displayName: 'Blocked User', username: 'blocked.user' })
+
+    // The single-tenant warning is shown...
+    expect(screen.getByText(/single-tenant only/i)).toBeInTheDocument()
+
+    // ...and the guard keeps submit disabled despite a complete, valid, dirty form - the exact
+    // state that enables the button under a specific tenant (the create-another-user test above),
+    // so this fails if the isAllTenants guard is dropped from the disabled condition.
+    expect(screen.getByRole('button', { name: 'Create User' })).toBeDisabled()
+  }, 30000)
+
+  it('shows no single-tenant warning once a specific tenant is selected', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Harness />, {
+      settings: settingsWith({ usageLocation: { value: 'US', label: 'United States' } }),
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Add User' }))
+    await waitFor(() => {
+      expect(getDomainInput()).toHaveValue('testdomain.com')
+    })
+
+    expect(screen.queryByText(/single-tenant only/i)).not.toBeInTheDocument()
+  }, 30000)
+})

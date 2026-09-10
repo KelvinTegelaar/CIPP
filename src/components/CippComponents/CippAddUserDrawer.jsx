@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CippIcons } from "../../utils/icon-registry"
-import { Button, Box } from "@mui/material";
+import { Alert, Button, Box } from "@mui/material";
 import { useForm, useWatch, useFormState } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { CippApiResults } from "./CippApiResults";
@@ -21,6 +21,13 @@ export const CippAddUserDrawer = ({
   // Create button stays disabled. Remounting restores the same state as a fresh open.
   const [formResetKey, setFormResetKey] = useState(0);
   const userSettingsDefaults = useSettings();
+
+  // User creation targets a single tenant. Under "All Tenants" the tenant does not resolve, and
+  // the Graph write helpers silently no-op while /api/AddUser still reports success, so guard the
+  // submit rather than letting it appear to succeed while creating nothing.
+  const isAllTenants =
+    !userSettingsDefaults?.currentTenant ||
+    userSettingsDefaults.currentTenant === "AllTenants";
 
   const formControl = useForm({
     mode: "onChange",
@@ -162,7 +169,12 @@ export const CippAddUserDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={formControl.handleSubmit(handleSubmit)}
-                disabled={createUser.isPending || !isValid || (!isDirty && !createUser.isSuccess)}
+                disabled={
+                  isAllTenants ||
+                  createUser.isPending ||
+                  !isValid ||
+                  (!isDirty && !createUser.isSuccess)
+                }
               >
                 {createUser.isPending
                   ? "Creating User..."
@@ -178,6 +190,12 @@ export const CippAddUserDrawer = ({
         }
       >
         <Box sx={{ my: 2 }}>
+          {isAllTenants && (
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              User creation is single-tenant only. Select a specific tenant using the tenant
+              selector before adding a user — with "All Tenants" selected no user will be created.
+            </Alert>
+          )}
           <CippAddEditUser
             key={formResetKey}
             formControl={formControl}
