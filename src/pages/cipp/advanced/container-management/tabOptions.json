@@ -18,5 +18,10 @@
     "label": "Worker Health",
     "path": "/cipp/advanced/container-management/worker-health",
     "icon": "Timeline"
+  },
+  {
+    "label": "Diagnostics",
+    "path": "/cipp/advanced/container-management/diagnostics",
+    "icon": "FactCheck"
   }
 ]
