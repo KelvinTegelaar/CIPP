@@ -52,3 +52,30 @@ describe("CippRoleAddEdit render stability", () => {
     consoleError.mockRestore();
   });
 });
+
+// Regression: the "Set All Permissions" effect used to fire on mount with an undefined
+// selection. With the permissions list already cached that overwrote the loaded role
+// with "Cat.Obj.undefined" for every row.
+const loadedPermissions = { CIPP: { Alert: { Read: [], ReadWrite: [] } } };
+const technicianRole = {
+  RowKey: "technician",
+  Permissions: { CIPPAlert: "CIPP.Alert.Read" },
+  PermissionRules: { Include: ["CIPP.Alert.Read"], Exclude: [] },
+};
+
+describe("CippRoleAddEdit custom role advanced view", () => {
+  it("shows the saved permission levels instead of undefined", async () => {
+    pendingPermissions.data = loadedPermissions;
+    pendingPermissions.isFetching = false;
+    pendingPermissions.isSuccess = true;
+    idlePagination.data = { pages: [[technicianRole]] };
+    idlePagination.isSuccess = true;
+
+    const { findByText, queryByText } = renderWithProviders(
+      <CippRoleAddEdit selectedRole="technician" />
+    );
+
+    expect(await findByText("CIPP.Alert.Read")).toBeTruthy();
+    expect(queryByText(/\.undefined/)).toBeNull();
+  });
+});

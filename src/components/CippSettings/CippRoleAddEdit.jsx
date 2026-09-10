@@ -46,7 +46,6 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   const [allTenantSelected, setAllTenantSelected] = useState(false);
   const [cippApiRoleSelected, setCippApiRoleSelected] = useState(false);
   const [selectedRoleState, setSelectedRoleState] = useState(null);
-  const [updateDefaults, setUpdateDefaults] = useState(false);
   const [baseRolePermissions, setBaseRolePermissions] = useState({});
   const [isBaseRole, setIsBaseRole] = useState(false);
   // New roles start in simple (pattern) mode; existing roles pick their mode in the
@@ -329,7 +328,10 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           Object.keys(apiPermissions[cat]).forEach((obj) => {
             const key = `${cat}${obj}`;
             const existingPerm = permissions?.[key];
-            processed[key] = existingPerm || `${cat}.${obj}.None`;
+            // Roles saved while the bug above was live hold ".undefined"; treat as None.
+            processed[key] = /\.(None|Read|ReadWrite)$/.test(existingPerm)
+              ? existingPerm
+              : `${cat}.${obj}.None`;
           });
         });
         return processed;
@@ -379,8 +381,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   }, [customRoleList, customRoleListSuccess, tenantsSuccess, baseRolePermissions]);
 
   useEffect(() => {
-    if (updateDefaults !== setDefaults) {
-      setUpdateDefaults(setDefaults);
+    // Only a real "Set All" selection applies; the watched field is undefined on mount
+    // and after reset(), and applying that wrote "Cat.Obj.undefined" for every row.
+    if (setDefaults) {
       var newPermissions = {};
       Object.keys(apiPermissions).forEach((cat) => {
         Object.keys(apiPermissions[cat]).forEach((obj) => {
@@ -395,7 +398,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       });
       formControl.setValue("Permissions", newPermissions);
     }
-  }, [setDefaults, updateDefaults]);
+  }, [setDefaults]);
 
   useEffect(() => {
     var alltenant = false;
