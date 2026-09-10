@@ -1,0 +1,561 @@
+{
+  "_metadata": {
+    "endpoint": "ListExtensionCacheData",
+    "generatedAt": "2026-04-03T23:42:28.3002761+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AllRoles": {
+      "_type": "array",
+      "_element": {
+        "deletedDateTime": "null",
+        "description": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "roleTemplateId": "truncated"
+      }
+    },
+    "AllRoles_01261149-b2bf-41ef-b179-aece71d1b760": "null",
+    "AllRoles_014003df-7923-45d5-80f6-7d9a80217002": "null",
+    "AllRoles_07b9b25f-e19c-4a93-8529-2a5bb542c60a": {
+      "@odata.type": "string",
+      "displayName": "string",
+      "id": "string"
+    },
+    "AllRoles_10c85f49-4386-4316-b86c-b31d1b41c07f": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "AllRoles_1c3d5d51-32b9-4b13-a238-5f005d3df6cd": "null",
+    "AllRoles_2f130545-a8f4-4d17-ba37-67955adbcd7f": "null",
+    "AllRoles_394dab2f-200a-432f-8e82-2574790be643": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated"
+      }
+    },
+    "AllRoles_4279d1d7-d44a-4172-8a59-84a8b4d86a74": "null",
+    "AllRoles_4f820435-6936-44cf-88e8-e7aca7ade225": "null",
+    "AllRoles_52d3a037-ef63-4799-aa33-964a086760f1": "null",
+    "AllRoles_56216f63-4923-445f-9bb5-45329de6d673": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "AllRoles_5dc2b105-260c-4fce-b95f-572c69f0615f": "null",
+    "AllRoles_6d7ca563-f415-4175-ba67-fb5ee8ea75a0": "null",
+    "AllRoles_97dc5f36-0edd-488b-b7a7-2dd751b05b50": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated"
+      }
+    },
+    "AllRoles_ba53dfb5-2013-475a-bc5a-4147d28ff28b": {
+      "@odata.type": "string",
+      "displayName": "string",
+      "id": "string"
+    },
+    "AllRoles_c77e4401-614b-4b47-bb38-8099f921dfa5": "null",
+    "AllRoles_cc28e354-ab66-4e0b-a433-845d95085a08": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "AllRoles_cd0c6bf4-8b5f-4c74-8828-34ace7055cf2": "null",
+    "AllRoles_f0ceafe4-47de-4b6d-ac4c-233a33a6871c": "null",
+    "CASMailbox": {
+      "_type": "array",
+      "_element": {
+        "@odata.editLink": "truncated",
+        "@odata.id": "truncated",
+        "ActiveSyncEnabled": "truncated",
+        "DisplayName": "truncated",
+        "ECPEnabled": "truncated",
+        "EmailAddresses": "truncated",
+        "EwsEnabled": "truncated",
+        "ExchangeVersion": "truncated",
+        "ExternalDirectoryObjectId": "truncated",
+        "Guid": "truncated",
+        "Identity": "truncated",
+        "ImapEnabled": "truncated",
+        "MAPIEnabled": "truncated",
+        "Name": "truncated",
+        "ObjectKey": "truncated",
+        "OrganizationId": "truncated",
+        "OWAEnabled": "truncated",
+        "PopEnabled": "truncated",
+        "PrimarySmtpAddress": "truncated",
+        "ServerLegacyDN": "truncated"
+      }
+    },
+    "ConditionalAccess": {
+      "_type": "array",
+      "_element": {
+        "conditions": "truncated",
+        "createdDateTime": "truncated",
+        "deletedDateTime": "null",
+        "displayName": "truncated",
+        "grantControls": "truncated",
+        "id": "truncated",
+        "modifiedDateTime": "truncated",
+        "partialEnablementStrategy": "null",
+        "sessionControls": "null",
+        "state": "truncated",
+        "templateId": "null"
+      }
+    },
+    "DeviceApps": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "createdDateTime": "truncated",
+        "description": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "isAssigned": "truncated",
+        "lastModifiedDateTime": "truncated",
+        "publisher": "null"
+      }
+    },
+    "DeviceCompliancePolicies": "null",
+    "DeviceCompliancePolicies_df556623-85f1-4be6-9aa9-2acc70fa9b5f": "null",
+    "Devices": "null",
+    "Domains": {
+      "_type": "array",
+      "_element": {
+        "authenticationType": "truncated",
+        "availabilityStatus": "null",
+        "id": "truncated",
+        "isAdminManaged": "truncated",
+        "isDefault": "truncated",
+        "isInitial": "truncated",
+        "isRoot": "truncated",
+        "isVerified": "truncated",
+        "passwordNotificationWindowInDays": "null",
+        "passwordValidityPeriodInDays": "null",
+        "state": "null",
+        "supportedServices": "null"
+      }
+    },
+    "Groups": {
+      "_type": "array",
+      "_element": {
+        "createdDateTime": "truncated",
+        "description": "truncated",
+        "displayName": "truncated",
+        "groupTypes": "truncated",
+        "id": "truncated",
+        "mail": "null",
+        "mailEnabled": "truncated",
+        "mailNickname": "truncated",
+        "membershipRule": "truncated",
+        "onPremisesSamAccountName": "null",
+        "onPremisesSyncEnabled": "null",
+        "organizationId": "truncated",
+        "resourceProvisioningOptions": "null",
+        "securityEnabled": "truncated",
+        "visibility": "null"
+      }
+    },
+    "Groups_050dd2e6-9047-4c21-8fbb-9ca228cb226e": "null",
+    "Groups_0ab73631-5cd7-46ef-95f0-20617a978019": "null",
+    "Groups_15282c83-5fd5-4f1b-866d-c78b1ae6ddef": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_2267c5f3-cd23-4ccd-bcd2-05067d592bca": {
+      "@odata.type": "string",
+      "displayName": "string",
+      "id": "string",
+      "userPrincipalName": "string"
+    },
+    "Groups_298659eb-7c2b-4cac-9610-a613ba130a11": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_29d0d220-1c71-4907-80ab-663041b12296": {
+      "@odata.type": "string",
+      "displayName": "string",
+      "id": "string",
+      "userPrincipalName": "string"
+    },
+    "Groups_2c851bac-ea1d-4481-a870-644a93063354": "null",
+    "Groups_32a0d260-c5e6-4cfa-a97c-0a4331a51ddf": "null",
+    "Groups_354e0c8e-4f0f-44db-bb71-1962346f9dfe": "null",
+    "Groups_3679f7b3-66a6-43ce-a404-b9243c95d8c5": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_47733010-21df-44f9-9e61-157bc32743ec": "null",
+    "Groups_5e81b640-b614-422d-a8a4-cd58167af8c2": "null",
+    "Groups_5ee0dfe9-bf82-4ae5-bc05-9172a3b33b66": {
+      "@odata.type": "string",
+      "displayName": "string",
+      "id": "string",
+      "userPrincipalName": "string"
+    },
+    "Groups_62092ce4-ad27-460c-950d-2dfda668069a": "null",
+    "Groups_6ba8371e-e8b0-49af-8a85-e96d206ca0b2": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_6d989ed9-289f-4fd6-b5c0-828397da7227": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_7901e7a2-1139-48f3-a21c-e73a1aba5992": "null",
+    "Groups_79ed3598-3f17-464f-88ae-98d2a964ed7f": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_7f0d5349-6622-4447-931d-50c3a327a5dc": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_85e19417-d8f8-43fe-8a8c-8c5760580378": "null",
+    "Groups_8fd9c508-e2d0-4b50-ac87-61d4ac169704": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_a143372a-dbd5-4834-85a8-81c780709b5f": "null",
+    "Groups_a9a00ac0-947c-4058-a3a7-d9eaf7cfa01e": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_b1d8904f-3297-4d60-8d17-7a01da3b1779": "null",
+    "Groups_bccd4820-49cb-4740-a589-e059ed68a938": "null",
+    "Groups_c554a7b1-d645-4d68-a8dc-2852e16cc810": {
+      "_type": "array",
+      "_element": {
+        "@odata.type": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "Groups_ced5b7cd-b182-4d1a-9246-c120e37aae90": "null",
+    "Groups_d5196069-5001-4fa8-ad82-02e2e8f5f7be": "null",
+    "Groups_e91fc9e9-bac1-496c-ad97-8c6ac869e582": "null",
+    "Groups_f0c3d5f2-a3eb-4b35-9c02-eab18e4ac8cd": "null",
+    "Groups_f5cb0bbf-0a71-4317-b5df-9c0874092b8a": "null",
+    "Groups_ff26e185-9fc1-4d57-b745-95abfa44df22": {
+      "@odata.type": "string",
+      "displayName": "string",
+      "id": "string",
+      "userPrincipalName": "string"
+    },
+    "Licenses": {
+      "_type": "array",
+      "_element": {
+        "accountId": "truncated",
+        "accountName": "truncated",
+        "appliesTo": "truncated",
+        "capabilityStatus": "truncated",
+        "consumedUnits": "truncated",
+        "id": "truncated",
+        "prepaidUnits": "truncated",
+        "servicePlans": "truncated",
+        "skuId": "truncated",
+        "skuPartNumber": "truncated",
+        "subscriptionIds": "truncated"
+      }
+    },
+    "Mailboxes": {
+      "_type": "array",
+      "_element": {
+        "AdditionalEmailAddresses": "null",
+        "ArchiveGuid": "truncated",
+        "DeliverToMailboxAndForward": "truncated",
+        "displayName": "truncated",
+        "ExchangeGuid": "truncated",
+        "ExternalDirectoryObjectId": "truncated",
+        "ForwardingSmtpAddress": "truncated",
+        "HiddenFromAddressListsEnabled": "truncated",
+        "Id": "truncated",
+        "InternalForwardingAddress": "null",
+        "MessageCopyForSendOnBehalfEnabled": "truncated",
+        "MessageCopyForSentAsEnabled": "truncated",
+        "primarySmtpAddress": "truncated",
+        "recipientType": "truncated",
+        "recipientTypeDetails": "truncated",
+        "UPN": "truncated",
+        "WhenSoftDeleted": "null"
+      }
+    },
+    "MailboxPermissions": {
+      "_type": "array",
+      "_element": {
+        "AccessRights": "truncated",
+        "AccessRights@odata.type": "truncated",
+        "Deny": "truncated",
+        "Identity": "truncated",
+        "InheritanceType": "truncated",
+        "IsInherited": "truncated",
+        "IsOwner": "truncated",
+        "IsValid": "truncated",
+        "User": "truncated",
+        "UserSid": "truncated",
+        "UserWithDisplayName": "null",
+        "UserWithDisplayName@odata.type": "truncated"
+      }
+    },
+    "MailboxUsage": {
+      "_type": "array",
+      "_element": {
+        "createdDate": "truncated",
+        "deletedDate": "null",
+        "deletedItemCount": "truncated",
+        "deletedItemQuota": "truncated",
+        "deletedItemSizeInBytes": "truncated",
+        "displayName": "truncated",
+        "hasArchive": "truncated",
+        "isDeleted": "truncated",
+        "issueWarningQuotaInBytes": "truncated",
+        "itemCount": "truncated",
+        "lastActivityDate": "null",
+        "prohibitSendQuotaInBytes": "truncated",
+        "prohibitSendReceiveQuotaInBytes": "truncated",
+        "recipientType": "truncated",
+        "reportPeriod": "truncated",
+        "reportRefreshDate": "truncated",
+        "storageUsedInBytes": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "OneDriveUsage": {
+      "_type": "array",
+      "_element": {
+        "activeFileCount": "truncated",
+        "fileCount": "truncated",
+        "isDeleted": "truncated",
+        "lastActivityDate": "null",
+        "ownerDisplayName": "truncated",
+        "ownerPrincipalName": "truncated",
+        "reportPeriod": "truncated",
+        "reportRefreshDate": "truncated",
+        "siteId": "truncated",
+        "siteUrl": "truncated",
+        "storageAllocatedInBytes": "truncated",
+        "storageUsedInBytes": "truncated"
+      }
+    },
+    "SecureScore": {
+      "activeUserCount": "number",
+      "averageComparativeScores": {
+        "_type": "array",
+        "_element": "truncated"
+      },
+      "azureTenantId": "string",
+      "controlScores": {
+        "_type": "array",
+        "_element": "truncated"
+      },
+      "createdDateTime": "datetime",
+      "currentScore": "number",
+      "enabledServices": {
+        "_type": "array",
+        "_element": "truncated"
+      },
+      "id": "string",
+      "licensedUserCount": "number",
+      "maxScore": "number",
+      "vendorInformation": {
+        "provider": "truncated",
+        "providerVersion": "null",
+        "subProvider": "null",
+        "vendor": "truncated"
+      }
+    },
+    "SecureScoreControlProfiles": {
+      "_type": "array",
+      "_element": {
+        "actionType": "truncated",
+        "actionUrl": "truncated",
+        "azureTenantId": "truncated",
+        "complianceInformation": "null",
+        "controlCategory": "truncated",
+        "controlStateUpdates": "truncated",
+        "deprecated": "truncated",
+        "id": "truncated",
+        "implementationCost": "truncated",
+        "lastModifiedDateTime": "null",
+        "maxScore": "truncated",
+        "rank": "truncated",
+        "remediation": "truncated",
+        "remediationImpact": "truncated",
+        "service": "truncated",
+        "threats": "truncated",
+        "tier": "truncated",
+        "title": "truncated",
+        "userImpact": "truncated",
+        "vendorInformation": "truncated"
+      }
+    },
+    "Subscriptions": {
+      "_type": "array",
+      "_element": {
+        "commerceSubscriptionId": "truncated",
+        "createdDateTime": "truncated",
+        "id": "truncated",
+        "isTrial": "truncated",
+        "nextLifecycleDateTime": "null",
+        "ocpSubscriptionId": "truncated",
+        "ownerId": "null",
+        "ownerTenantId": "null",
+        "ownerType": "null",
+        "serviceStatus": "truncated",
+        "skuId": "truncated",
+        "skuPartNumber": "truncated",
+        "status": "truncated",
+        "totalLicenses": "truncated"
+      }
+    },
+    "TenantDetails": {
+      "assignedPlans": {
+        "_type": "array",
+        "_element": "truncated"
+      },
+      "businessPhones": "string",
+      "city": "string",
+      "country": "null",
+      "countryLetterCode": "string",
+      "createdDateTime": "datetime",
+      "defaultUsageLocation": "null",
+      "deletedDateTime": "null",
+      "directorySizeQuota": {
+        "total": "truncated",
+        "used": "truncated"
+      },
+      "displayName": "string",
+      "id": "string",
+      "isMultipleDataLocationsForServicesEnabled": "null",
+      "marketingNotificationEmails": "string",
+      "onPremisesLastPasswordSyncDateTime": "null",
+      "onPremisesLastSyncDateTime": "null",
+      "onPremisesSyncEnabled": "null",
+      "onPremisesSyncStatus": "null",
+      "partnerTenantType": "null",
+      "postalCode": "string",
+      "preferredLanguage": "string",
+      "privacyProfile": {
+        "contactEmail": "truncated",
+        "statementUrl": "null"
+      },
+      "provisionedPlans": {
+        "_type": "array",
+        "_element": "truncated"
+      },
+      "securityComplianceNotificationMails": "null",
+      "securityComplianceNotificationPhones": "null",
+      "state": "string",
+      "street": "string",
+      "technicalNotificationMails": "string",
+      "tenantType": "string",
+      "verifiedDomains": {
+        "_type": "array",
+        "_element": "truncated"
+      }
+    },
+    "Users": {
+      "_type": "array",
+      "_element": {
+        "accountEnabled": "truncated",
+        "assignedLicenses": "null",
+        "businessPhones": "null",
+        "city": "null",
+        "companyName": "null",
+        "country": "null",
+        "createdDateTime": "truncated",
+        "department": "null",
+        "displayName": "truncated",
+        "faxNumber": "null",
+        "givenName": "null",
+        "id": "truncated",
+        "isResourceAccount": "null",
+        "jobTitle": "null",
+        "mail": "truncated",
+        "mailNickname": "truncated",
+        "mobilePhone": "null",
+        "officeLocation": "null",
+        "onPremisesDistinguishedName": "null",
+        "onPremisesLastSyncDateTime": "null",
+        "onPremisesSyncEnabled": "null",
+        "otherMails": "null",
+        "postalCode": "null",
+        "preferredDataLocation": "null",
+        "preferredLanguage": "truncated",
+        "proxyAddresses": "truncated",
+        "showInAddressList": "null",
+        "state": "null",
+        "streetAddress": "null",
+        "surname": "truncated",
+        "usageLocation": "null",
+        "userPrincipalName": "truncated",
+        "userType": "truncated"
+      }
+    }
+  }
+}

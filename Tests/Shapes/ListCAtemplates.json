@@ -1,0 +1,55 @@
+{
+  "_metadata": {
+    "endpoint": "ListCAtemplates",
+    "generatedAt": "2026-04-03T23:40:07.1076349+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "conditions": {
+      "@odata.type": "string",
+      "agents": "null",
+      "applications": {
+        "@odata.type": "truncated",
+        "applicationFilter": "null",
+        "excludeApplications": "null",
+        "includeApplications": "truncated",
+        "includeAuthenticationContextClassReferences": "null",
+        "includeUserActions": "null"
+      },
+      "clientApplications": "null",
+      "clientAppTypes": "string",
+      "devices": "null",
+      "deviceStates": "null",
+      "locations": "null",
+      "platforms": "null",
+      "signInRiskLevels": "null",
+      "times": "null",
+      "userRiskLevels": "null",
+      "users": {
+        "@odata.type": "truncated",
+        "excludeGroups": "truncated",
+        "excludeGuestsOrExternalUsers": "null",
+        "excludeRoles": "truncated",
+        "excludeUsers": "null",
+        "includeGroups": "null",
+        "includeGuestsOrExternalUsers": "null",
+        "includeRoles": "null",
+        "includeUsers": "truncated"
+      }
+    },
+    "displayName": "string",
+    "grantControls": {
+      "@odata.type": "string",
+      "authenticationStrength": "null",
+      "builtInControls": "string",
+      "customAuthenticationFactors": "null",
+      "operator": "string",
+      "termsOfUse": "null"
+    },
+    "GUID": "string",
+    "isSynced": "bool",
+    "source": "string",
+    "state": "string"
+  }
+}

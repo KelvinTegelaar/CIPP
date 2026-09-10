@@ -1,0 +1,22 @@
+{
+  "_metadata": {
+    "endpoint": "ListBPATemplates",
+    "generatedAt": "2026-04-03T23:40:05.8565442+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "Data": {
+      "_type": "array",
+      "_element": {
+        "FrontendFields": "truncated",
+        "name": "truncated",
+        "StoreAs": "truncated",
+        "UseExistingInfo": "truncated"
+      }
+    },
+    "GUID": "string",
+    "Name": "string",
+    "Style": "string"
+  }
+}

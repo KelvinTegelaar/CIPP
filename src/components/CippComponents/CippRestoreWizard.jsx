@@ -23,19 +23,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import {
-  CheckCircle,
-  DeselectOutlined,
-  DoneAll,
-  Error as ErrorIcon,
-  ExpandLess,
-  ExpandMore,
-  NavigateBefore,
-  NavigateNext,
-  SettingsBackupRestore,
-  UploadFile,
-  Warning,
-} from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry"
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "./CippApiResults";
 import { useState, useEffect, useMemo } from "react";
@@ -44,6 +32,7 @@ const TABLE_LABELS = {
   AppPermissions: "App Permissions",
   CommunityRepos: "Community Repositories",
   Config: "CIPP Configuration",
+  CustomPowershellScripts: "Custom PowerShell/Test Scripts",
   CustomData: "Custom Data",
   CustomRoles: "Custom Roles",
   Domains: "Domains",
@@ -236,7 +225,7 @@ export const CippRestoreWizard = ({
             variant="subtitle1"
             sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
           >
-            <UploadFile color="primary" fontSize="small" />
+            <CippIcons.UploadFile color="primary" fontSize="small" />
             <strong>Backup Source</strong>
           </Typography>
           <Box
@@ -268,7 +257,7 @@ export const CippRestoreWizard = ({
 
       {validationResult &&
         (validationResult.isValid ? (
-          <Alert severity="success" icon={<CheckCircle />}>
+          <Alert severity="success" icon={<CippIcons.CheckCircle />}>
             <AlertTitle>Validation Passed</AlertTitle>
             <Typography variant="body2">
               {validationResult.validRows} valid rows across {categories.length} categories.
@@ -277,7 +266,9 @@ export const CippRestoreWizard = ({
             {validationResult.warnings?.length > 0 && (
               <Box sx={{ mt: 1 }}>
                 {validationResult.warnings.map((w, i) => (
-                  <Typography key={i} variant="body2" color="warning.main">
+                  <Typography key={i} variant="body2" sx={{
+                    color: "warning.main"
+                  }}>
                     ⚠ {w}
                   </Typography>
                 ))}
@@ -285,7 +276,7 @@ export const CippRestoreWizard = ({
             )}
           </Alert>
         ) : (
-          <Alert severity="error" icon={<ErrorIcon />}>
+          <Alert severity="error" icon={<CippIcons.Error />}>
             <AlertTitle>Validation Failed</AlertTitle>
             <Typography variant="body2" sx={{ mb: 1 }}>
               This backup cannot be restored safely.
@@ -304,13 +295,15 @@ export const CippRestoreWizard = ({
   const StepSelectCategories = () => (
     <Stack spacing={2}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           {selectedCount} of {totalCount} categories selected ({filteredData.length} items)
         </Typography>
         <Stack direction="row" spacing={1}>
           <Button
             size="small"
-            startIcon={<DoneAll />}
+            startIcon={<CippIcons.DoneAll />}
             onClick={handleSelectAll}
             disabled={selectedCount === totalCount}
           >
@@ -318,7 +311,7 @@ export const CippRestoreWizard = ({
           </Button>
           <Button
             size="small"
-            startIcon={<DeselectOutlined />}
+            startIcon={<CippIcons.DeselectOutlined />}
             onClick={handleDeselectAll}
             disabled={selectedCount === 0}
           >
@@ -371,9 +364,9 @@ export const CippRestoreWizard = ({
                   <Tooltip title={isExpanded ? "Hide items" : "Preview items"}>
                     <IconButton size="small" onClick={() => handleToggleExpand(cat.key)}>
                       {isExpanded ? (
-                        <ExpandLess fontSize="small" />
+                        <CippIcons.ExpandLess fontSize="small" />
                       ) : (
-                        <ExpandMore fontSize="small" />
+                        <CippIcons.ExpandMore fontSize="small" />
                       )}
                     </IconButton>
                   </Tooltip>
@@ -414,15 +407,14 @@ export const CippRestoreWizard = ({
                           {sub && (
                             <Typography
                               variant="caption"
-                              color="text.secondary"
                               title={sub}
                               sx={{
+                                color: "text.secondary",
                                 display: "block",
                                 whiteSpace: "nowrap",
                                 overflow: "hidden",
-                                textOverflow: "ellipsis",
-                              }}
-                            >
+                                textOverflow: "ellipsis"
+                              }}>
                               {sub}
                             </Typography>
                           )}
@@ -443,7 +435,7 @@ export const CippRestoreWizard = ({
   const StepConfirm = () => (
     <Stack spacing={2}>
       {!restoreAction.isSuccess && (
-        <Alert severity="warning" icon={<Warning />}>
+        <Alert severity="warning" icon={<CippIcons.Warning />}>
           <AlertTitle>Confirm Restore</AlertTitle>
           This will overwrite your current CIPP configuration for the selected categories. This
           action cannot be undone.
@@ -454,7 +446,14 @@ export const CippRestoreWizard = ({
           {selectedCount} {selectedCount === 1 ? "category" : "categories"} ({filteredData.length}{" "}
           items) selected for restore:
         </Typography>
-        <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
+        <Stack
+          useFlexGap
+          direction="row"
+          sx={{
+            flexWrap: "wrap",
+            gap: 1,
+            mt: 1
+          }}>
           {categories
             .filter((c) => selectedCategories[c.key])
             .map((c) => (
@@ -481,7 +480,7 @@ export const CippRestoreWizard = ({
   return (
     <Dialog open={open} onClose={onClose} fullWidth size="lg" fullScreen={mdDown}>
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1, p: 2 }}>
-        <SettingsBackupRestore />
+        <CippIcons.SettingsBackupRestore />
         Restore Backup
       </DialogTitle>
       {!isLoading && (
@@ -511,7 +510,9 @@ export const CippRestoreWizard = ({
             }}
           >
             <CircularProgress />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Loading backup&hellip;
             </Typography>
           </Box>
@@ -524,14 +525,14 @@ export const CippRestoreWizard = ({
           {restoreAction.isSuccess ? "Close" : "Cancel"}
         </Button>
         {!isLoading && step > 0 && !restoreAction.isSuccess && (
-          <Button startIcon={<NavigateBefore />} onClick={() => setStep((s) => s - 1)}>
+          <Button startIcon={<CippIcons.NavigateBefore />} onClick={() => setStep((s) => s - 1)}>
             Back
           </Button>
         )}
         {!isLoading && step < WIZARD_STEPS.length - 1 && (
           <Button
             variant="contained"
-            endIcon={<NavigateNext />}
+            endIcon={<CippIcons.NavigateNext />}
             onClick={() => setStep((s) => s + 1)}
             disabled={!canProceed}
           >
@@ -542,7 +543,7 @@ export const CippRestoreWizard = ({
           <Button
             variant="contained"
             color="warning"
-            startIcon={<SettingsBackupRestore />}
+            startIcon={<CippIcons.SettingsBackupRestore />}
             onClick={handleConfirmRestore}
             disabled={selectedCount === 0 || restoreAction.isPending}
           >

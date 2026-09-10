@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
 import { useSettings } from "../../../../../hooks/use-settings";
@@ -134,7 +134,7 @@ const RetentionTag = () => {
             ? values.RetentionAction 
             : values.RetentionAction.value;
         }
-        if (values.AgeLimitForRetention) {
+        if (values.AgeLimitForRetention != null) {
           tagData.AgeLimitForRetention = parseInt(values.AgeLimitForRetention);
         }
         if (values.LocalizedComment) {

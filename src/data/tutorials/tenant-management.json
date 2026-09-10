@@ -1,0 +1,39 @@
+{
+  "id": "tenant-management",
+  "title": "Managing Tenants",
+  "description": "Learn how to view tenant details, manage tenant settings, and navigate tenant-specific pages.",
+  "category": "Administration",
+  "pages": ["/tenant/administration/tenants"],
+  "steps": [
+    {
+      "popover": {
+        "title": "Tenant Management",
+        "description": "This page shows all your managed tenants. Let's walk through the key features."
+      }
+    },
+    {
+      "element": "[data-tutorial='breadcrumb-nav']",
+      "popover": {
+        "title": "Breadcrumb Navigation",
+        "description": "Use the breadcrumb trail to see where you are and quickly navigate back to parent pages.",
+        "side": "bottom",
+        "align": "start"
+      }
+    },
+    {
+      "element": ".MuiTableContainer-root",
+      "popover": {
+        "title": "Tenant List",
+        "description": "Here you'll find all your managed tenants. Click on any row to see detailed information about that tenant.",
+        "side": "top",
+        "align": "center"
+      }
+    },
+    {
+      "popover": {
+        "title": "That's it!",
+        "description": "You now know how to manage your tenants. Check out other tutorials for more advanced features."
+      }
+    }
+  ]
+}

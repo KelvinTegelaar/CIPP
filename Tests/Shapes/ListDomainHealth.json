@@ -1,0 +1,9 @@
+{
+  "_metadata": {
+    "endpoint": "ListDomainHealth",
+    "generatedAt": "2026-04-03T23:40:11.6325606+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": "string"
+}

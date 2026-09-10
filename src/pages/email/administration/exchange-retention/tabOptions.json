@@ -1,10 +1,12 @@
 [
   {
     "label": "Policies",
-    "path": "/email/administration/exchange-retention/policies"
+    "path": "/email/administration/exchange-retention/policies",
+    "icon": "Policy"
   },
   {
     "label": "Tags",
-    "path": "/email/administration/exchange-retention/tags"
+    "path": "/email/administration/exchange-retention/tags",
+    "icon": "Label"
   }
 ]

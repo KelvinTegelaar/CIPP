@@ -1,18 +1,22 @@
 [
   {
     "label": "Enterprise Apps",
-    "path": "/tenant/administration/applications/enterprise-apps"
+    "path": "/tenant/administration/applications/enterprise-apps",
+    "icon": "Business"
   },
   {
     "label": "App Registrations",
-    "path": "/tenant/administration/applications/app-registrations"
+    "path": "/tenant/administration/applications/app-registrations",
+    "icon": "Apps"
   },
   {
     "label": "Permission Sets",
-    "path": "/tenant/administration/applications/permission-sets"
+    "path": "/tenant/administration/applications/permission-sets",
+    "icon": "Key"
   },
   {
     "label": "Application Templates",
-    "path": "/tenant/administration/applications/templates"
+    "path": "/tenant/administration/applications/templates",
+    "icon": "Description"
   }
 ]

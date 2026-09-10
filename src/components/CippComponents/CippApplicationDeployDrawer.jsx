@@ -1,126 +1,127 @@
-import React, { useEffect, useCallback, useState } from "react";
-import { Divider, Button, Alert, CircularProgress } from "@mui/material";
-import { Grid } from "@mui/system";
-import { useForm, useWatch } from "react-hook-form";
-import { Add } from "@mui/icons-material";
-import { CippOffCanvas } from "./CippOffCanvas";
-import CippFormComponent from "./CippFormComponent";
-import { CippFormTenantSelector } from "./CippFormTenantSelector";
-import { CippFormCondition } from "./CippFormCondition";
-import { CippApiResults } from "./CippApiResults";
-import languageList from "../../data/languageList.json";
-import { ApiPostCall } from "../../api/ApiCall";
+import React, { useEffect, useCallback, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
+import { Divider, Button, Alert, CircularProgress } from '@mui/material'
+import { Grid } from '@mui/system'
+import { useForm, useWatch } from 'react-hook-form'
+import { CippOffCanvas } from './CippOffCanvas'
+import CippFormComponent from './CippFormComponent'
+import { CippFormTenantSelector } from './CippFormTenantSelector'
+import { CippFormCondition } from './CippFormCondition'
+import { CippApiResults } from './CippApiResults'
+import languageList from '../../data/languageList.json'
+import { ApiPostCall } from '../../api/ApiCall'
 
 export const CippApplicationDeployDrawer = ({
-  buttonText = "Add Application",
+  buttonText = 'Add Application',
   requiredPermissions = [],
   PermissionButton = Button,
 }) => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const formControl = useForm({
-    mode: "onChange",
-  });
+    mode: 'onChange',
+  })
 
   const selectedTenants = useWatch({
     control: formControl.control,
-    name: "selectedTenants",
-  });
+    name: 'selectedTenants',
+  })
 
   const applicationType = useWatch({
     control: formControl.control,
-    name: "appType",
-  });
+    name: 'appType',
+  })
 
   const searchQuerySelection = useWatch({
     control: formControl.control,
-    name: "packageSearch",
-  });
+    name: 'packageSearch',
+  })
 
   const updateSearchSelection = useCallback(
     (searchQuerySelection) => {
       if (searchQuerySelection) {
-        formControl.setValue("packagename", searchQuerySelection.value.packagename);
-        formControl.setValue("applicationName", searchQuerySelection.value.applicationName);
-        formControl.setValue("description", searchQuerySelection.value.description);
+        formControl.setValue('packagename', searchQuerySelection.value.packagename)
+        formControl.setValue('applicationName', searchQuerySelection.value.applicationName)
+        formControl.setValue('description', searchQuerySelection.value.description)
         searchQuerySelection.value.customRepo
-          ? formControl.setValue("customRepo", searchQuerySelection.value.customRepo)
-          : null;
+          ? formControl.setValue('customRepo', searchQuerySelection.value.customRepo)
+          : null
       }
     },
-    [formControl.setValue],
-  );
+    [formControl.setValue]
+  )
 
   useEffect(() => {
-    updateSearchSelection(searchQuerySelection);
-  }, [updateSearchSelection, searchQuerySelection]);
+    updateSearchSelection(searchQuerySelection)
+  }, [updateSearchSelection, searchQuerySelection])
 
   const postUrl = {
-    mspApp: "/api/AddMSPApp",
-    StoreApp: "/api/AddStoreApp",
-    winGetApp: "/api/AddwinGetApp",
-    chocolateyApp: "/api/AddChocoApp",
-    officeApp: "/api/AddOfficeApp",
-    win32ScriptApp: "/api/AddWin32ScriptApp",
-  };
+    mspApp: '/api/AddMSPApp',
+    StoreApp: '/api/AddStoreApp',
+    winGetApp: '/api/AddwinGetApp',
+    chocolateyApp: '/api/AddChocoApp',
+    officeApp: '/api/AddOfficeApp',
+    edgeApp: '/api/AddEdgeApp',
+    win32ScriptApp: '/api/AddWin32ScriptApp',
+  }
 
   const ChocosearchResults = ApiPostCall({
     urlFromData: true,
-  });
+  })
 
   const winGetSearchResults = ApiPostCall({
     urlFromData: true,
-  });
+  })
 
   const deployApplication = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["Queued Applications"],
-  });
+    relatedQueryKeys: ['Queued Applications'],
+  })
 
   const searchApp = (searchText, type) => {
-    if (type === "choco") {
+    if (type === 'choco') {
       ChocosearchResults.mutate({
         url: `/api/ListAppsRepository`,
         data: { search: searchText },
         queryKey: `SearchApp-${searchText}-${type}`,
-      });
+      })
     }
 
-    if (type === "StoreApp") {
+    if (type === 'StoreApp') {
       winGetSearchResults.mutate({
         url: `/api/ListPotentialApps`,
-        data: { searchString: searchText, type: "WinGet" },
+        data: { searchString: searchText, type: 'WinGet' },
         queryKey: `SearchApp-${searchText}-${type}`,
-      });
+      })
     }
-  };
+  }
 
   const handleSubmit = () => {
-    const formData = formControl.getValues();
-    const formattedData = { ...formData };
-    formattedData.tenantFilter = "allTenants"; //added to prevent issues with location check. temp fix
+    const formData = formControl.getValues()
+    const formattedData = { ...formData }
+    formattedData.tenantFilter = 'allTenants' //added to prevent issues with location check. temp fix
     formattedData.selectedTenants = selectedTenants.map((tenant) => ({
       defaultDomainName: tenant.value,
       customerId: tenant.addedFields.customerId,
-    }));
+    }))
 
     deployApplication.mutate({
       url: postUrl[applicationType?.value],
       data: formattedData,
-      relatedQueryKeys: ["Queued Applications"],
-    });
-  };
+      relatedQueryKeys: ['Queued Applications'],
+    })
+  }
 
   const handleCloseDrawer = () => {
-    setDrawerVisible(false);
-    formControl.reset();
-  };
+    setDrawerVisible(false)
+    formControl.reset()
+  }
 
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Add />}
+        startIcon={<CippIcons.Add />}
       >
         {buttonText}
       </PermissionButton>
@@ -130,7 +131,7 @@ export const CippApplicationDeployDrawer = ({
         onClose={handleCloseDrawer}
         size="xl"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
             <Button
               variant="contained"
               color="primary"
@@ -138,10 +139,10 @@ export const CippApplicationDeployDrawer = ({
               disabled={deployApplication.isLoading}
             >
               {deployApplication.isLoading
-                ? "Deploying..."
+                ? 'Deploying...'
                 : deployApplication.isSuccess
-                  ? "Deploy Another"
-                  : "Deploy Application"}
+                  ? 'Deploy Another'
+                  : 'Deploy Application'}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
@@ -156,16 +157,17 @@ export const CippApplicationDeployDrawer = ({
               label="Select Application Type"
               name="appType"
               options={[
-                { label: "MSP Vendor App", value: "mspApp" },
-                { label: "Store App", value: "StoreApp" },
+                { label: 'MSP Vendor App', value: 'mspApp' },
+                { label: 'Store App', value: 'StoreApp' },
                 // uncomment after release { label: "WinGet App", value: "winGetApp" },
-                { label: "Chocolatey App", value: "chocolateyApp" },
-                { label: "Microsoft Office", value: "officeApp" },
-                { label: "Custom Application", value: "win32ScriptApp" },
+                { label: 'Chocolatey App', value: 'chocolateyApp' },
+                { label: 'Microsoft Office', value: 'officeApp' },
+                { label: 'Microsoft Edge', value: 'edgeApp' },
+                { label: 'Custom Application', value: 'win32ScriptApp' },
               ]}
               multiple={false}
               formControl={formControl}
-              validators={{ required: "Please select an application type" }}
+              validators={{ required: 'Please select an application type' }}
             />
           </Grid>
           {/* Tenant Selector */}
@@ -177,7 +179,7 @@ export const CippApplicationDeployDrawer = ({
               type="multiple"
               allTenants={true}
               preselectedEnabled={true}
-              validators={{ required: "At least one tenant must be selected" }}
+              validators={{ required: 'At least one tenant must be selected' }}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
@@ -195,23 +197,23 @@ export const CippApplicationDeployDrawer = ({
                 label="Select MSP Tool"
                 name="rmmname"
                 options={[
-                  { value: "datto", label: "Datto RMM", isSponsor: false },
-                  { value: "syncro", label: "Syncro RMM", isSponsor: true },
-                  { value: "huntress", label: "Huntress", isSponsor: true },
+                  { value: 'datto', label: 'Datto RMM', isSponsor: false },
+                  { value: 'syncro', label: 'Syncro RMM', isSponsor: true },
+                  { value: 'huntress', label: 'Huntress', isSponsor: true },
                   {
-                    value: "automate",
-                    label: "CW Automate",
+                    value: 'automate',
+                    label: 'CW Automate',
                     isSponsor: false,
                   },
                   {
-                    value: "cwcommand",
-                    label: "CW Command",
+                    value: 'cwcommand',
+                    label: 'CW Command',
                     isSponsor: false,
                   },
                 ]}
                 formControl={formControl}
                 multiple={false}
-                validators={{ required: "Please select an MSP Tool" }}
+                validators={{ required: 'Please select an MSP Tool' }}
               />
             </Grid>
             <CippFormCondition
@@ -231,7 +233,7 @@ export const CippApplicationDeployDrawer = ({
                 label="Intune Application Display Name"
                 name="displayName"
                 formControl={formControl}
-                validators={{ required: "Display name is required" }}
+                validators={{ required: 'Display name is required' }}
               />
             </Grid>
 
@@ -247,7 +249,7 @@ export const CippApplicationDeployDrawer = ({
                   label="Server URL (e.g., https://pinotage.rmm.datto.com)"
                   name="params.dattoUrl"
                   formControl={formControl}
-                  validators={{ required: "Server URL is required" }}
+                  validators={{ required: 'Server URL is required' }}
                 />
               </Grid>
               {selectedTenants?.map((tenant, index) => (
@@ -296,7 +298,7 @@ export const CippApplicationDeployDrawer = ({
                   label="Account Key"
                   name="params.AccountKey"
                   formControl={formControl}
-                  validators={{ required: "Account Key is required" }}
+                  validators={{ required: 'Account Key is required' }}
                 />
               </Grid>
               {selectedTenants?.map((tenant, index) => (
@@ -325,7 +327,7 @@ export const CippApplicationDeployDrawer = ({
                   label="Automate Server (including HTTPS)"
                   name="params.Server"
                   formControl={formControl}
-                  validators={{ required: "Automate Server is required" }}
+                  validators={{ required: 'Automate Server is required' }}
                 />
               </Grid>
               {selectedTenants?.map((tenant, index) => (
@@ -376,16 +378,16 @@ export const CippApplicationDeployDrawer = ({
             </CippFormCondition>
 
             {/* Assign To Options */}
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12, md: 5 }}>
               <CippFormComponent
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: "Do not assign", value: "On" },
-                  { label: "Assign to all users", value: "allLicensedUsers" },
-                  { label: "Assign to all devices", value: "AllDevices" },
-                  { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
-                  { label: "Assign to Custom Group", value: "customGroup" },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
                 row
@@ -397,13 +399,28 @@ export const CippApplicationDeployDrawer = ({
               compareType="is"
               compareValue="customGroup"
             >
-              <Grid size={{ xs: 12 }}>
+              <Grid size={{ xs: 12, md: 5 }}>
                 <CippFormComponent
                   type="textField"
                   label="Custom Group Names separated by comma. Wildcards (*) are allowed"
                   name="customGroup"
                   formControl={formControl}
-                  validators={{ required: "Please specify custom group names" }}
+                  validators={{ required: 'Please specify custom group names' }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="isNot"
+              compareValue="On"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                  name="excludeGroup"
+                  formControl={formControl}
                 />
               </Grid>
             </CippFormCondition>
@@ -424,10 +441,10 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 5 }}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 onClick={() => {
-                  searchApp(formControl.getValues("searchQuery"), "StoreApp");
+                  searchApp(formControl.getValues('searchQuery'), 'StoreApp')
                 }}
                 disabled={winGetSearchResults.isPending}
               >
@@ -460,7 +477,7 @@ export const CippApplicationDeployDrawer = ({
                 label="WinGet Package Identifier"
                 name="packagename"
                 formControl={formControl}
-                validators={{ required: "Package Identifier is required" }}
+                validators={{ required: 'Package Identifier is required' }}
               />
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
@@ -469,7 +486,7 @@ export const CippApplicationDeployDrawer = ({
                 label="Application Name"
                 name="applicationName"
                 formControl={formControl}
-                validators={{ required: "Application Name is required" }}
+                validators={{ required: 'Application Name is required' }}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -485,6 +502,13 @@ export const CippApplicationDeployDrawer = ({
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="switch"
+                label="Install as system"
+                name="InstallAsSystem"
+                formControl={formControl}
+                defaultValue={true}
+              />
+              <CippFormComponent
+                type="switch"
                 label="Mark for Uninstallation"
                 name="InstallationIntent"
                 formControl={formControl}
@@ -497,11 +521,11 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: "Do not assign", value: "On" },
-                  { label: "Assign to all users", value: "allLicensedUsers" },
-                  { label: "Assign to all devices", value: "AllDevices" },
-                  { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
-                  { label: "Assign to Custom Group", value: "customGroup" },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
                 row
@@ -519,7 +543,22 @@ export const CippApplicationDeployDrawer = ({
                   label="Custom Group Names separated by comma. Wildcards (*) are allowed"
                   name="customGroup"
                   formControl={formControl}
-                  validators={{ required: "Please specify custom group names" }}
+                  validators={{ required: 'Please specify custom group names' }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="isNot"
+              compareValue="On"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                  name="excludeGroup"
+                  formControl={formControl}
                 />
               </Grid>
             </CippFormCondition>
@@ -540,10 +579,10 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 5 }}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 onClick={() => {
-                  searchApp(formControl.getValues("searchQuery"), "choco");
+                  searchApp(formControl.getValues('searchQuery'), 'choco')
                 }}
                 disabled={ChocosearchResults.isPending}
               >
@@ -576,7 +615,7 @@ export const CippApplicationDeployDrawer = ({
                 label="Chocolatey Package Name"
                 name="packagename"
                 formControl={formControl}
-                validators={{ required: "Package Name is required" }}
+                validators={{ required: 'Package Name is required' }}
               />
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
@@ -585,7 +624,7 @@ export const CippApplicationDeployDrawer = ({
                 label="Application Name"
                 name="applicationName"
                 formControl={formControl}
-                validators={{ required: "Application Name is required" }}
+                validators={{ required: 'Application Name is required' }}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -643,11 +682,11 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: "Do not assign", value: "On" },
-                  { label: "Assign to all users", value: "allLicensedUsers" },
-                  { label: "Assign to all devices", value: "AllDevices" },
-                  { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
-                  { label: "Assign to Custom Group", value: "customGroup" },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
                 row
@@ -665,7 +704,22 @@ export const CippApplicationDeployDrawer = ({
                   label="Custom Group Names separated by comma. Wildcards (*) are allowed"
                   name="customGroup"
                   formControl={formControl}
-                  validators={{ required: "Please specify custom group names" }}
+                  validators={{ required: 'Please specify custom group names' }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="isNot"
+              compareValue="On"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                  name="excludeGroup"
+                  formControl={formControl}
                 />
               </Grid>
             </CippFormCondition>
@@ -684,15 +738,16 @@ export const CippApplicationDeployDrawer = ({
                 label="Excluded Apps"
                 name="excludedApps"
                 options={[
-                  { value: "access", label: "Access" },
-                  { value: "excel", label: "Excel" },
-                  { value: "oneNote", label: "OneNote" },
-                  { value: "outlook", label: "Outlook" },
-                  { value: "powerPoint", label: "PowerPoint" },
-                  { value: "teams", label: "Teams" },
-                  { value: "word", label: "Word" },
-                  { value: "lync", label: "Skype For Business" },
-                  { value: "bing", label: "Bing" },
+                  { value: 'access', label: 'Access' },
+                  { value: 'excel', label: 'Excel' },
+                  { value: 'oneNote', label: 'OneNote' },
+                  { value: 'outlook', label: 'Outlook' },
+                  { value: 'powerPoint', label: 'PowerPoint' },
+                  { value: 'publisher', label: 'Publisher' },
+                  { value: 'teams', label: 'Teams' },
+                  { value: 'word', label: 'Word' },
+                  { value: 'lync', label: 'Skype For Business' },
+                  { value: 'bing', label: 'Bing' },
                 ]}
                 multiple={true}
                 formControl={formControl}
@@ -704,15 +759,15 @@ export const CippApplicationDeployDrawer = ({
                 label="Update Channel"
                 name="updateChannel"
                 options={[
-                  { value: "current", label: "Current Channel" },
-                  { value: "firstReleaseCurrent", label: "Current (Preview)" },
-                  { value: "monthlyEnterprise", label: "Monthly Enterprise" },
-                  { value: "deferred", label: "Semi-Annual Enterprise" },
-                  { value: "firstReleaseDeferred", label: "Semi-Annual Enterprise (Preview)" },
+                  { value: 'current', label: 'Current Channel' },
+                  { value: 'firstReleaseCurrent', label: 'Current (Preview)' },
+                  { value: 'monthlyEnterprise', label: 'Monthly Enterprise' },
+                  { value: 'deferred', label: 'Semi-Annual Enterprise' },
+                  { value: 'firstReleaseDeferred', label: 'Semi-Annual Enterprise (Preview)' },
                 ]}
                 multiple={false}
                 formControl={formControl}
-                validators={{ required: "Please select an update channel" }}
+                validators={{ required: 'Please select an update channel' }}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -726,7 +781,7 @@ export const CippApplicationDeployDrawer = ({
                 }))}
                 multiple={true}
                 formControl={formControl}
-                validators={{ required: "Please select at least one language" }}
+                validators={{ required: 'Please select at least one language' }}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -786,14 +841,14 @@ export const CippApplicationDeployDrawer = ({
                   formControl={formControl}
                   multiline
                   rows={10}
-                  validators={{ required: "Please provide custom XML configuration" }}
+                  validators={{ required: 'Please provide custom XML configuration' }}
                 />
                 <Alert severity="info" sx={{ mt: 1 }}>
                   Provide a custom Office Configuration XML. When using custom XML, all other Office
-                  configuration options above will be ignored. See{" "}
+                  configuration options above will be ignored. See{' '}
                   <a href="https://config.office.com/" target="_blank" rel="noopener noreferrer">
                     Office Customization Tool
-                  </a>{" "}
+                  </a>{' '}
                   to generate XML.
                 </Alert>
               </Grid>
@@ -805,15 +860,132 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: "Do not assign", value: "On" },
-                  { label: "Assign to all users", value: "allLicensedUsers" },
-                  { label: "Assign to all devices", value: "AllDevices" },
-                  { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
                 row
               />
             </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="is"
+              compareValue="customGroup"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+                  name="customGroup"
+                  formControl={formControl}
+                  validators={{ required: 'Please specify custom group names' }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="isNot"
+              compareValue="On"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                  name="excludeGroup"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+          </CippFormCondition>
+
+          {/* Edge App Section */}
+          <CippFormCondition
+            formControl={formControl}
+            field="appType.value"
+            compareType="is"
+            compareValue="edgeApp"
+          >
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Edge Channel"
+                name="edgeChannel"
+                options={[
+                  { value: 'stable', label: 'Stable' },
+                  { value: 'beta', label: 'Beta' },
+                  { value: 'dev', label: 'Dev' },
+                ]}
+                multiple={false}
+                formControl={formControl}
+                validators={{ required: 'Please select an Edge channel' }}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Display Language (optional)"
+                name="displayLanguageLocale"
+                options={languageList.map(({ language, tag }) => ({
+                  value: tag,
+                  label: `${language} (${tag})`,
+                }))}
+                multiple={false}
+                formControl={formControl}
+              />
+            </Grid>
+
+            {/* Assign To Options */}
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="radio"
+                name="AssignTo"
+                options={[
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Assign to Custom Group', value: 'customGroup' },
+                ]}
+                formControl={formControl}
+                row
+              />
+            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="is"
+              compareValue="customGroup"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+                  name="customGroup"
+                  formControl={formControl}
+                  validators={{ required: 'Please specify custom group names' }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="isNot"
+              compareValue="On"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                  name="excludeGroup"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
           </CippFormCondition>
 
           {/* Win32 Script App Section */}
@@ -829,7 +1001,7 @@ export const CippApplicationDeployDrawer = ({
                 label="Application Name"
                 name="applicationName"
                 formControl={formControl}
-                validators={{ required: "Application Name is required" }}
+                validators={{ required: 'Application Name is required' }}
               />
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
@@ -856,7 +1028,7 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
                 multiline
                 rows={8}
-                validators={{ required: "Install script is required" }}
+                validators={{ required: 'Install script is required' }}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -869,22 +1041,57 @@ export const CippApplicationDeployDrawer = ({
                 rows={6}
               />
             </Grid>
-            <Grid size={{ md: 6, xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
-                type="textField"
-                label="Detection Path (e.g., C:\Program Files\MyApp or %ProgramData%\MyApp)"
-                name="detectionPath"
+                type="switch"
+                label="Use Detection Script instead of file/path detection"
+                name="useDetectionScript"
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ md: 6, xs: 12 }}>
-              <CippFormComponent
-                type="textField"
-                label="Detection File/Folder Name (Optional, e.g., app.exe)"
-                name="detectionFile"
-                formControl={formControl}
-              />
-            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="useDetectionScript"
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Detection Script (PowerShell — exit 0 with STDOUT = detected)"
+                  name="detectionScript"
+                  formControl={formControl}
+                  multiline
+                  rows={6}
+                  validators={{
+                    required: 'Detection script is required when using script detection',
+                  }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="useDetectionScript"
+              compareType="is"
+              compareValue={false}
+            >
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Detection Path (e.g., C:\Program Files\MyApp or %ProgramData%\MyApp)"
+                  name="detectionPath"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Detection File/Folder Name (Optional, e.g., app.exe)"
+                  name="detectionFile"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="switch"
@@ -926,11 +1133,11 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: "Do not assign", value: "On" },
-                  { label: "Assign to all users", value: "allLicensedUsers" },
-                  { label: "Assign to all devices", value: "AllDevices" },
-                  { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
-                  { label: "Assign to Custom Group", value: "customGroup" },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
                 row
@@ -948,7 +1155,22 @@ export const CippApplicationDeployDrawer = ({
                   label="Custom Group Names separated by comma. Wildcards (*) are allowed"
                   name="customGroup"
                   formControl={formControl}
-                  validators={{ required: "Please specify custom group names" }}
+                  validators={{ required: 'Please specify custom group names' }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="isNot"
+              compareValue="On"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                  name="excludeGroup"
+                  formControl={formControl}
                 />
               </Grid>
             </CippFormCondition>
@@ -958,5 +1180,5 @@ export const CippApplicationDeployDrawer = ({
         </Grid>
       </CippOffCanvas>
     </>
-  );
-};
+  )
+}

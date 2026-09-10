@@ -1,14 +1,17 @@
 [
   {
     "label": "Tenants",
-    "path": "/tenant/administration/tenants"
+    "path": "/tenant/administration/tenants",
+    "icon": "Domain"
   },
   {
     "label": "Groups",
-    "path": "/tenant/administration/tenants/groups"
+    "path": "/tenant/administration/tenants/groups",
+    "icon": "Groups"
   },
   {
     "label": "Global Variables",
-    "path": "/tenant/administration/tenants/global-variables"
+    "path": "/tenant/administration/tenants/global-variables",
+    "icon": "Settings"
   }
 ]

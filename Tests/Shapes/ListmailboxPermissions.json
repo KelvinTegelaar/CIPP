@@ -1,0 +1,12 @@
+{
+  "_metadata": {
+    "endpoint": "ListmailboxPermissions",
+    "generatedAt": "2026-04-03T23:48:41.6210602+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "Permissions": "string",
+    "User": "string"
+  }
+}

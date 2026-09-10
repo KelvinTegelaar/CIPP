@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { Alert, Stack, Box, Link } from "@mui/material";
+import { Alert, Stack, Box, Link, Typography } from "@mui/material";
+import { useWatch } from "react-hook-form";
 import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 
@@ -12,6 +14,8 @@ export const CippSAMDeploy = (props) => {
     error: null,
     loading: false,
   });
+
+  const authMethod = useWatch({ control: formControl.control, name: "authMethod" });
 
   // Block next step until SAM app is created
   formControl.register("SAMWizard", {
@@ -37,7 +41,12 @@ export const CippSAMDeploy = (props) => {
 
     createSamApp.mutate({
       url: "/api/ExecCreateSamApp",
-      data: { access_token: tokenData.accessToken },
+      data: {
+        access_token: tokenData.accessToken,
+        // Certificate-only setups create no client secret; the backend registers the SAM
+        // certificate and enables certificate authentication instead.
+        certificateOnly: formControl.getValues("authMethod") === "certificate",
+      },
     });
   };
 
@@ -80,6 +89,35 @@ export const CippSAMDeploy = (props) => {
 
   return (
     <Stack spacing={2}>
+      <Stack spacing={2}>
+        <Typography variant="h6" id="auth-method-heading">
+          Authentication method
+        </Typography>
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
+          Choose how CIPP authenticates its application registration to Microsoft. This determines
+          whether a client secret is created during setup.
+        </Typography>
+        <CippFormComponent
+          type="radio"
+          name="authMethod"
+          formControl={formControl}
+          defaultValue="certificate"
+          aria-labelledby="auth-method-heading"
+          options={[
+            {
+              value: "certificate",
+              label:
+                "Certificate (recommended) - no client secret; CIPP generates and auto-rotates it.",
+            },
+            {
+              value: "secret",
+              label: "Client secret - a shared secret; newer Entra tenants may block creating one.",
+            },
+          ]}
+        />
+      </Stack>
       <Alert severity="info">
         To run this setup you will need the following prerequisites:
         <li>
@@ -100,6 +138,15 @@ export const CippSAMDeploy = (props) => {
           Multi-factor authentication enabled for the CIPP Service Account, with no trusted
           locations or other exclusions.
         </li>
+        <li>
+          Device code sign-in permitted in your partner tenant. Security defaults and Conditional
+          Access authentication flow policies can block it, which will stop this step from
+          completing.
+        </li>
+      </Alert>
+      <Alert severity="info">
+        This step only creates the CIPP-SAM application registration. The token CIPP runs on is
+        created by the sign-in on the next step.
       </Alert>
 
       {authStatus.error && (
@@ -108,7 +155,9 @@ export const CippSAMDeploy = (props) => {
         </Alert>
       )}
       <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{
+          alignItems: "center"
+        }}>
           <CIPPM365OAuthButton
             onAuthSuccess={handleAuthSuccess}
             onAuthError={handleAuthError}

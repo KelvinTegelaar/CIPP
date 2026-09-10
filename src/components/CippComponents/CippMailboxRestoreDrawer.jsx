@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { useForm, useWatch, useFormState } from "react-hook-form";
 import {
   Button,
@@ -15,14 +16,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import {
-  Close as CloseIcon,
-  RestoreFromTrash,
-  DeleteForever,
-  Archive,
-  Storage,
-  AccountBox,
-} from "@mui/icons-material";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import CippFormComponent from "./CippFormComponent";
@@ -78,11 +71,8 @@ export const CippMailboxRestoreDrawer = ({
   // Helper function to check if archive is active (GUID exists and is not all zeros)
   const hasActiveArchive = (mailbox) => {
     const archiveGuid = mailbox?.addedFields?.ArchiveGuid;
-    return (
-      archiveGuid &&
-      archiveGuid !== "00000000-0000-0000-0000-000000000000" &&
-      archiveGuid.replace(/0/g, "").replace(/-/g, "") !== ""
-    );
+    return (archiveGuid &&
+    archiveGuid !== "00000000-0000-0000-0000-000000000000" && archiveGuid.replace(/0/g, "").replace(/-/g, "") !== "");
   };
 
   useEffect(() => {
@@ -141,9 +131,9 @@ export const CippMailboxRestoreDrawer = ({
   return (
     <>
       <PermissionButton
-        startIcon={<RestoreFromTrash />}
+        startIcon={<CippIcons.RestoreFromTrash />}
         onClick={() => setDrawerVisible(true)}
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
       >
         {buttonText}
       </PermissionButton>
@@ -152,8 +142,10 @@ export const CippMailboxRestoreDrawer = ({
         anchor="right"
         open={drawerVisible}
         onClose={handleCloseDrawer}
-        PaperProps={{
-          sx: { width: { xs: "100%", sm: 600, md: 800 } },
+        slotProps={{
+          paper: {
+            sx: { width: { xs: "100%", sm: 600, md: 800 } },
+          }
         }}
       >
         <Box sx={{ p: 3, height: "100%", display: "flex", flexDirection: "column" }}>
@@ -162,7 +154,7 @@ export const CippMailboxRestoreDrawer = ({
           >
             <Typography variant="h5">New Mailbox Restore</Typography>
             <IconButton onClick={handleCloseDrawer}>
-              <CloseIcon />
+              <CippIcons.Close />
             </IconButton>
           </Box>
 
@@ -220,7 +212,7 @@ export const CippMailboxRestoreDrawer = ({
                         title={`Mailbox type: ${sourceMailbox.addedFields.recipientTypeDetails}`}
                       >
                         <Chip
-                          icon={<AccountBox />}
+                          icon={<CippIcons.AccountBox />}
                           label={sourceMailbox.addedFields.recipientTypeDetails}
                           size="small"
                           color="info"
@@ -236,7 +228,7 @@ export const CippMailboxRestoreDrawer = ({
                       }
                     >
                       <Chip
-                        icon={<Archive />}
+                        icon={<CippIcons.Archive />}
                         label={
                           hasActiveArchive(sourceMailbox)
                             ? "Archive Active"
@@ -292,7 +284,7 @@ export const CippMailboxRestoreDrawer = ({
                         title={`Target mailbox type: ${targetMailbox.addedFields.recipientTypeDetails}`}
                       >
                         <Chip
-                          icon={<AccountBox />}
+                          icon={<CippIcons.AccountBox />}
                           label={targetMailbox.addedFields.recipientTypeDetails}
                           size="small"
                           color="info"
@@ -308,7 +300,7 @@ export const CippMailboxRestoreDrawer = ({
                       }
                     >
                       <Chip
-                        icon={<Archive />}
+                        icon={<CippIcons.Archive />}
                         label={
                           hasActiveArchive(targetMailbox)
                             ? "Archive Active"
@@ -324,7 +316,7 @@ export const CippMailboxRestoreDrawer = ({
                         title={`Current mailbox size: ${targetMailbox.addedFields.TotalItemSize}`}
                       >
                         <Chip
-                          icon={<Storage />}
+                          icon={<CippIcons.Storage />}
                           label={targetMailbox.addedFields.TotalItemSize}
                           size="small"
                           color="info"
@@ -355,7 +347,7 @@ export const CippMailboxRestoreDrawer = ({
                 <Typography variant="h6">Optional Settings</Typography>
               </Grid>
 
-              <Grid size={{ xs: 6, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormComponent
                   type="number"
                   label="Bad Item Limit"
@@ -364,7 +356,7 @@ export const CippMailboxRestoreDrawer = ({
                 />
               </Grid>
 
-              <Grid size={{ xs: 6, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormComponent
                   type="number"
                   label="Large Item Limit"
@@ -525,7 +517,7 @@ export const CippMailboxRestoreDrawer = ({
                 onClick={handleSubmit}
                 disabled={!isValid || !isDirty || createRestore.isPending}
                 startIcon={
-                  createRestore.isPending ? <CircularProgress size={16} /> : <RestoreFromTrash />
+                  createRestore.isPending ? <CircularProgress size={16} /> : <CippIcons.RestoreFromTrash />
                 }
               >
                 {createRestore.isPending ? "Creating..." : "Create Restore Job"}

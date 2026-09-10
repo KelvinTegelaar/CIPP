@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import {
   Stack,
   Box,
@@ -17,8 +18,6 @@ import { WizardSteps } from "./wizard-steps";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import CippDataTableButton from "../CippTable/CippDataTableButton";
-import { PlayArrow, Replay } from "@mui/icons-material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CippPropertyList } from "../CippComponents/CippPropertyList";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 
@@ -45,11 +44,7 @@ export const CippGDAPTenantOnboarding = (props) => {
   });
 
   const relationshipList = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    data: {
-      TenantFilter: "",
-      Endpoint: "tenantRelationships/delegatedAdminRelationships",
-    },
+    url: "/api/ListGDAPRelationships",
     queryKey: "GDAPRelationshipOnboarding-wizard",
   });
 
@@ -247,7 +242,7 @@ export const CippGDAPTenantOnboarding = (props) => {
 
       {!isLoading && relationshipId && currentRelationship && (
         <Accordion variant="outlined" defaultExpanded={false}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
             <Typography variant="subtitle1">Relationship Details</Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -295,7 +290,7 @@ export const CippGDAPTenantOnboarding = (props) => {
               <Button
                 variant="contained"
                 onClick={handleStartOnboarding}
-                startIcon={<PlayArrow />}
+                startIcon={<CippIcons.PlayArrow />}
                 disabled={startOnboarding.isLoading}
               >
                 Start Onboarding
@@ -337,7 +332,7 @@ export const CippGDAPTenantOnboarding = (props) => {
                     <Button
                       variant="outlined"
                       onClick={handleRetryOnboarding}
-                      startIcon={<Replay />}
+                      startIcon={<CippIcons.Replay />}
                       disabled={currentOnboarding?.Status === "running"}
                       sx={{ mr: 2 }}
                     >

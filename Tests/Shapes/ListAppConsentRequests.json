@@ -1,0 +1,25 @@
+{
+  "_metadata": {
+    "endpoint": "ListAppConsentRequests",
+    "generatedAt": "2026-04-03T23:40:59.3076014+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "appDisplayName": "string",
+    "appId": "string",
+    "consentUrl": "string",
+    "requestDate": "datetime",
+    "requestReason": "string",
+    "requestStatus": "string",
+    "requestUser": "string",
+    "reviewedBy": "string",
+    "reviewedDate": "null",
+    "reviewedJustification": "string",
+    "reviewedStatus": "string",
+    "scopes": {
+      "_type": "array",
+      "_element": "string"
+    }
+  }
+}

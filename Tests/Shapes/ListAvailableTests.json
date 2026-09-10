@@ -1,0 +1,29 @@
+{
+  "_metadata": {
+    "endpoint": "ListAvailableTests",
+    "generatedAt": "2026-04-03T22:07:37.5221655+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "CustomTests": "null",
+    "DevicesTests": {
+      "_type": "array",
+      "_element": {
+        "category": "truncated",
+        "id": "truncated",
+        "name": "truncated",
+        "testFolder": "truncated"
+      }
+    },
+    "IdentityTests": {
+      "_type": "array",
+      "_element": {
+        "category": "truncated",
+        "id": "truncated",
+        "name": "truncated",
+        "testFolder": "truncated"
+      }
+    }
+  }
+}

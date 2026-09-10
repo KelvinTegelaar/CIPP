@@ -1,10 +1,8 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { RocketLaunch } from "@mui/icons-material";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { GitHub, Edit } from "@mui/icons-material";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippDeployContactTemplateDrawer } from "../../../../components/CippComponents/CippDeployContactTemplateDrawer";
 
@@ -22,7 +20,7 @@ const Page = () => {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -70,18 +68,26 @@ const Page = () => {
         ID: "GUID",
       },
       confirmText: "Do you want to delete the template?",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       color: "danger",
     },
     {
       label: "Edit Contact Template",
       link: "/email/administration/contacts-template/edit?id=[GUID]",
-      icon: <Edit />,
+      pinned: true,
+      icon: <CippIcons.Edit />,
       color: "success",
       target: "_self",
     },
   ];
-  const simpleColumns = ["name", "contactTemplateName", "GUID"];
+  const simpleColumns = [
+    "displayName",
+    "email",
+    "companyName",
+    "jobTitle",
+    "hidefromGAL",
+    "GUID",
+  ];
 
   return (
     <CippTablePage
@@ -92,11 +98,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <CippDeployContactTemplateDrawer permissions={cardButtonPermissions} />
+          <CippDeployContactTemplateDrawer requiredPermissions={cardButtonPermissions} />
           <Button
             component={Link}
             href="/email/administration/contacts-template/add"
-            startIcon={<RocketLaunch />}
+            startIcon={<CippIcons.RocketLaunch />}
           >
             New Contact Template
           </Button>

@@ -1,7 +1,6 @@
 import { Alert, Button, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
-import { Cancel, CheckCircle } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippPropertyList } from "../CippComponents/CippPropertyList";
-import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippDataTable } from "../CippTable/CippDataTable";
@@ -33,9 +32,9 @@ export const CippPermissionResults = (props) => {
       results?.Results?.MissingPermissions?.length > 0 ||
       results?.Results?.ErrorMessages?.length > 0
     ) {
-      setCardIcon(<Cancel />);
+      setCardIcon(<CippIcons.Cancel />);
     } else {
-      setCardIcon(<CheckCircle />);
+      setCardIcon(<CippIcons.CheckCircle />);
     }
   }, [results]);
 
@@ -98,7 +97,15 @@ export const CippPermissionResults = (props) => {
         />
       )}
       {!importReport && executeCheck?.isFetching ? (
-        <Skeleton variant="rectangular" height={100} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
+        <List>
+          {[70, 85, 60, 75].map((width, index) => (
+            <ListItem key={index} sx={{ py: 0 }}>
+              <Typography variant="body2" sx={{ width: `${width}%` }}>
+                <Skeleton />
+              </Typography>
+            </ListItem>
+          ))}
+        </List>
       ) : !importReport && executeCheck?.isError ? (
         <Alert severity="error" sx={{ ml: 3, mr: 1 }}>
           Failed to load permission check results. Please try refreshing or contact support if the
@@ -111,7 +118,7 @@ export const CippPermissionResults = (props) => {
               <ListItem key={index} sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                    <CheckCircle />
+                    <CippIcons.CheckCircle />
                   </SvgIcon>
                   {message}
                 </Typography>
@@ -121,7 +128,7 @@ export const CippPermissionResults = (props) => {
               <ListItem key={index} sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                    <XMarkIcon />
+                    <CippIcons.XMarkIcon />
                   </SvgIcon>
                   {error}
                 </Typography>
@@ -131,9 +138,9 @@ export const CippPermissionResults = (props) => {
               <ListItem sx={{ py: 0 }}>
                 <Typography variant="body2">
                   <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                    <XMarkIcon />
+                    <CippIcons.XMarkIcon />
                   </SvgIcon>
-                  There are new permissions to apply.
+                  There are new permissions to apply. Please click "Details" to review and apply the new permissions.
                 </Typography>
               </ListItem>
             )}
@@ -180,7 +187,7 @@ export const CippPermissionResults = (props) => {
                       onClick={handleAddMissingPermissions}
                       startIcon={
                         <SvgIcon fontSize="sm">
-                          <WrenchIcon />
+                          <CippIcons.WrenchIcon />
                         </SvgIcon>
                       }
                     >
@@ -204,7 +211,7 @@ export const CippPermissionResults = (props) => {
                     onClick={handleStartCPVRefresh}
                     startIcon={
                       <SvgIcon fontSize="sm">
-                        <WrenchIcon />
+                        <CippIcons.WrenchIcon />
                       </SvgIcon>
                     }
                   >

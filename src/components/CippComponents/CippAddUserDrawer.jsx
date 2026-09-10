@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Button, Box } from "@mui/material";
 import { useForm, useWatch, useFormState } from "react-hook-form";
-import { PersonAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
@@ -15,6 +15,11 @@ export const CippAddUserDrawer = ({
   PermissionButton = Button,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
+  // Bumped after each successful create. The form fields only auto-populate on mount
+  // (domain selector's auto-select of the default domain, template auto-apply), so an
+  // in-place reset leaves the required primDomain empty with no visible error and the
+  // Create button stays disabled. Remounting restores the same state as a fresh open.
+  const [formResetKey, setFormResetKey] = useState(0);
   const userSettingsDefaults = useSettings();
 
   const formControl = useForm({
@@ -76,6 +81,7 @@ export const CippAddUserDrawer = ({
       }
 
       formControl.reset(resetValues);
+      setFormResetKey((key) => key + 1);
     }
   }, [createUser.isSuccess]);
 
@@ -96,7 +102,14 @@ export const CippAddUserDrawer = ({
     });
   };
 
-  const handleCloseDrawer = () => {
+  const handleCloseDrawer = (event, reason) => {
+    // Closing resets the form, so a stray backdrop click or Escape would silently wipe
+    // everything typed so far (#390). A dirty-check is no help: the domain selector
+    // auto-picks the default domain on open, so the form is dirty before the user types.
+    // Ignore those dismissals — the X and Close buttons call this without a reason.
+    if (reason === "backdropClick" || reason === "escapeKeyDown") {
+      return;
+    }
     setDrawerVisible(false);
     const resetValues = {
       tenantFilter: userSettingsDefaults.currentTenant,
@@ -130,9 +143,9 @@ export const CippAddUserDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
-        startIcon={<PersonAdd />}
+        startIcon={<CippIcons.PersonAdd />}
       >
         {buttonText}
       </PermissionButton>
@@ -166,6 +179,7 @@ export const CippAddUserDrawer = ({
       >
         <Box sx={{ my: 2 }}>
           <CippAddEditUser
+            key={formResetKey}
             formControl={formControl}
             userSettingsDefaults={userSettingsDefaults}
             formType="add"

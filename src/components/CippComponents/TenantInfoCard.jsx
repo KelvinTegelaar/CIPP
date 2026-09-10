@@ -1,5 +1,5 @@
 import { Box, Card, CardHeader, CardContent, Typography, Skeleton } from "@mui/material";
-import { Business as BuildingIcon } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 
 export const TenantInfoCard = ({ data, isLoading }) => {
@@ -8,7 +8,7 @@ export const TenantInfoCard = ({ data, isLoading }) => {
       <CardHeader
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <BuildingIcon sx={{ fontSize: 20 }} />
+            <CippIcons.Business sx={{ fontSize: 20 }} />
             <Typography variant="subtitle1">Tenant</Typography>
           </Box>
         }
@@ -17,19 +17,25 @@ export const TenantInfoCard = ({ data, isLoading }) => {
       <CardContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <Box>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Name
             </Typography>
             {isLoading ? (
               <Skeleton width={150} height={24} />
             ) : (
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" sx={{
+                fontWeight: 500
+              }}>
                 {data?.displayName || "Not Available"}
               </Typography>
             )}
           </Box>
           <Box>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Tenant ID
             </Typography>
             <Box sx={{ mt: 0.5 }}>
@@ -38,14 +44,18 @@ export const TenantInfoCard = ({ data, isLoading }) => {
               ) : data?.id ? (
                 <CippCopyToClipBoard text={data.id} type="chip" />
               ) : (
-                <Typography variant="body2" fontSize="0.75rem">
+                <Typography variant="body2" sx={{
+                  fontSize: "0.75rem"
+                }}>
                   Not Available
                 </Typography>
               )}
             </Box>
           </Box>
           <Box>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Primary Domain
             </Typography>
             <Box sx={{ mt: 0.5 }}>
@@ -57,7 +67,9 @@ export const TenantInfoCard = ({ data, isLoading }) => {
                   type="chip"
                 />
               ) : (
-                <Typography variant="body2" fontSize="0.75rem">
+                <Typography variant="body2" sx={{
+                  fontSize: "0.75rem"
+                }}>
                   Not Available
                 </Typography>
               )}

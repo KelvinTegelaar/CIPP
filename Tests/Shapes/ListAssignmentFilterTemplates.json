@@ -1,0 +1,16 @@
+{
+  "_metadata": {
+    "endpoint": "ListAssignmentFilterTemplates",
+    "generatedAt": "2026-04-03T23:40:04.7013725+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "assignmentFilterManagementType": "string",
+    "description": "string",
+    "displayName": "string",
+    "GUID": "string",
+    "platform": "string",
+    "rule": "string"
+  }
+}

@@ -1,58 +1,52 @@
-import { EyeIcon } from "@heroicons/react/24/outline";
-import {
-  AdminPanelSettings,
-  GppBad,
-  HourglassBottom,
-  LockReset,
-  OpenInNew,
-  PlayArrow,
-} from "@mui/icons-material";
+
+import { CippIcons } from "../../utils/icon-registry"
 import { Alert, Typography } from "@mui/material";
 
 export const CippGdapActions = () => [
   {
     label: "View Relationship",
     link: "/tenant/gdap-management/relationships/relationship?id=[id]",
+    pinned: true,
     color: "primary",
-    icon: <EyeIcon />,
+    icon: <CippIcons.EyeIcon />,
   },
   {
     label: "Start Onboarding",
     link: "/tenant/gdap-management/onboarding/start?id=[id]",
     color: "primary",
-    icon: <PlayArrow />,
+    icon: <CippIcons.PlayArrow />,
     showInActionsMenu: true,
   },
   {
     label: "Open Relationship in Partner Center",
     link: "https://partner.microsoft.com/en-us/dashboard/commerce2/customers/[customer.tenantId]/adminrelationships/[id]",
     color: "info",
-    icon: <OpenInNew />,
+    icon: <CippIcons.Launch />,
     showInActionsMenu: true,
   },
   {
     label: "Enable automatic extension",
-    type: "GET",
+    type: "POST",
     url: "/api/ExecAutoExtendGDAP",
     data: { ID: "id" },
     confirmText: "Are you sure you want to enable auto-extend for this relationship?",
     color: "info",
-    icon: <HourglassBottom />,
+    icon: <CippIcons.HourglassBottom />,
   },
   {
     label: "Remove Global Administrator from Relationship",
-    type: "GET",
+    type: "POST",
     url: "/api/ExecGDAPRemoveGArole",
     data: { GDAPID: "id" },
     confirmText: "Are you sure you want to remove Global Administrator from this relationship?",
     color: "danger",
-    icon: <AdminPanelSettings />,
+    icon: <CippIcons.AdminPanelSettings />,
   },
   {
     label: "Reset Role Mapping",
     type: "POST",
     url: "/api/ExecGDAPAccessAssignment",
-    icon: <LockReset />,
+    icon: <CippIcons.LockReset />,
     data: { Id: "id", Action: "ResetMappings" },
     fields: [
       {
@@ -101,12 +95,12 @@ export const CippGdapActions = () => [
   },
   {
     label: "Terminate Relationship",
-    type: "GET",
+    type: "POST",
     url: "/api/ExecDeleteGDAPRelationship",
     data: { GDAPID: "id" },
     confirmText: "Are you sure you want to terminate this relationship?",
     color: "error",
-    icon: <GppBad />,
+    icon: <CippIcons.GppBad />,
   },
 ];
 

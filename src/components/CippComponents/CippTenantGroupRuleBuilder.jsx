@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Box, Button, IconButton, Typography, Alert, Paper } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormCondition } from "./CippFormCondition";
 import { useWatch } from "react-hook-form";
@@ -40,9 +40,11 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
       // Flatten all pages and extract Results
       const allGroups = tenantGroupsQuery.data.pages.flatMap((page) => page?.Results || []);
       return allGroups
-        .filter((group) => group.GroupType === "static")
         .map((group) => ({
-          label: group.Name || group.displayName,
+          label:
+            group.GroupType === "dynamic"
+              ? `${group.Name || group.displayName} (dynamic)`
+              : group.Name || group.displayName,
           value: group.Id || group.RowKey,
           type: group.GroupType,
         }))
@@ -100,7 +102,9 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
           </Typography>
         )}
 
-        <Grid container spacing={2} alignItems="center">
+        <Grid container spacing={2} sx={{
+          alignItems: "center"
+        }}>
           {/* Property Selection */}
           <Grid size={{ md: 4, xs: 12 }}>
             <CippFormComponent
@@ -149,7 +153,7 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
               {/* Custom Variable - Two-field input */}
               {watchedRules?.[ruleIndex]?.property?.type === "customVariable" ? (
                 <Grid container spacing={2}>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <CippFormComponent
                       type="autoComplete"
                       name={`${name}.${ruleIndex}.value.variableName`}
@@ -176,7 +180,7 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
                       }}
                     />
                   </Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <CippFormComponent
                       type="textField"
                       name={`${name}.${ruleIndex}.value.value`}
@@ -188,6 +192,16 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
                     />
                   </Grid>
                 </Grid>
+              ) : watchedRules?.[ruleIndex]?.property?.type === "gdapAge" ? (
+                <CippFormComponent
+                  type="number"
+                  name={`${name}.${ruleIndex}.value.value`}
+                  label="Days"
+                  formControl={formControl}
+                  required
+                  placeholder="e.g. 14"
+                  fullWidth
+                />
               ) : (
                 <CippFormComponent
                   type="autoComplete"
@@ -210,7 +224,7 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
           <Grid size={{ md: 1, xs: 12 }} sx={{ display: "flex", justifyContent: "center" }}>
             {canRemove && (
               <IconButton color="error" onClick={() => removeRule(ruleIndex)} size="small">
-                <DeleteIcon />
+                <CippIcons.Delete />
               </IconButton>
             )}
           </Grid>
@@ -233,6 +247,8 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
         "Member of Tenant Group equals 'Production Tenants'"
         {" | "}
         "Custom Variable: Environment equals Production"
+        {" | "}
+        "GDAP Relationship Age (days) Greater Than or Equal 14"
       </Alert>
 
       {/* Logic Operator Selection */}
@@ -255,7 +271,7 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
 
       {/* Add Rule Button */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <Button variant="outlined" startIcon={<AddIcon />} onClick={addRule}>
+        <Button variant="outlined" startIcon={<CippIcons.Add />} onClick={addRule}>
           Add Rule
         </Button>
       </Box>

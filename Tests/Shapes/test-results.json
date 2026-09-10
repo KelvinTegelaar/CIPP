@@ -1,0 +1,704 @@
+[
+  {
+    "Endpoint": "GetCippAlerts",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.39
+  },
+  {
+    "Endpoint": "GetVersion",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.73
+  },
+  {
+    "Endpoint": "ListAppApprovalTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.88
+  },
+  {
+    "Endpoint": "ListAppTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.91
+  },
+  {
+    "Endpoint": "ListApplicationQueue",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.9
+  },
+  {
+    "Endpoint": "ListAssignmentFilterTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.95
+  },
+  {
+    "Endpoint": "ListBPATemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.9
+  },
+  {
+    "Endpoint": "ListCAtemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.53
+  },
+  {
+    "Endpoint": "ListCommunityRepos",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.55
+  },
+  {
+    "Endpoint": "ListConnectionFilterTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.56
+  },
+  {
+    "Endpoint": "ListContactTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.62
+  },
+  {
+    "Endpoint": "ListCustomRole",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.74
+  },
+  {
+    "Endpoint": "ListCustomScripts",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 0.89
+  },
+  {
+    "Endpoint": "ListDiagnosticsPresets",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.92
+  },
+  {
+    "Endpoint": "ListDomainHealth",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.82
+  },
+  {
+    "Endpoint": "ListExConnectorTemplates",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.02
+  },
+  {
+    "Endpoint": "ListExcludedLicenses",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.95
+  },
+  {
+    "Endpoint": "ListExtensionSync",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.65
+  },
+  {
+    "Endpoint": "ListFeatureFlags",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.78
+  },
+  {
+    "Endpoint": "ListGDAPInvite",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.38
+  },
+  {
+    "Endpoint": "ListGDAPRoles",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 8.8
+  },
+  {
+    "Endpoint": "ListGitHubReleaseNotes",
+    "Status": "ERROR",
+    "Message": "Could not connect (HTTP 500)",
+    "Duration": 0.87
+  },
+  {
+    "Endpoint": "ListGroupTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.67
+  },
+  {
+    "Endpoint": "ListIntuneReusableSettingTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.86
+  },
+  {
+    "Endpoint": "ListIntuneTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.77
+  },
+  {
+    "Endpoint": "ListReportBuilderTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.59
+  },
+  {
+    "Endpoint": "ListSafeLinksPolicyTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.77
+  },
+  {
+    "Endpoint": "ListSharepointSettings",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.85
+  },
+  {
+    "Endpoint": "ListSnoozedAlerts",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 0.56
+  },
+  {
+    "Endpoint": "ListSpamFilterTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.97
+  },
+  {
+    "Endpoint": "ListTenantAllowBlockListTemplates",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.55
+  },
+  {
+    "Endpoint": "ListTenantOnboarding",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.89
+  },
+  {
+    "Endpoint": "ListTestReports",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.59
+  },
+  {
+    "Endpoint": "ListTransportRulesTemplates",
+    "Status": "ERROR",
+    "Message": "Changed Shape ($.AttachmentExtensionMatchesWords : removed; $.SetAuditSeverity : removed; $.applyome : added; $.attachmenthasexecutablecontent : added; $.attachmentispasswordprotected : added ... and 27 more)",
+    "Duration": 0.97
+  },
+  {
+    "Endpoint": "ListUserPhoto",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.36
+  },
+  {
+    "Endpoint": "ListUserSettings",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.73
+  },
+  {
+    "Endpoint": "ListWebhookAlert",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 0.88
+  },
+  {
+    "Endpoint": "ListAPDevices",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 2.57
+  },
+  {
+    "Endpoint": "ListAdminPortalLicenses",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 5.12
+  },
+  {
+    "Endpoint": "ListAlertsQueue",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.41
+  },
+  {
+    "Endpoint": "ListAntiPhishingFilters",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.63
+  },
+  {
+    "Endpoint": "ListAppConsentRequests",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 3.65
+  },
+  {
+    "Endpoint": "ListAppProtectionPolicies",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 4.65
+  },
+  {
+    "Endpoint": "ListApps",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.15
+  },
+  {
+    "Endpoint": "ListAssignmentFilters",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.13
+  },
+  {
+    "Endpoint": "ListAuditLogSearches",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 17.49
+  },
+  {
+    "Endpoint": "ListAuditLogs",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.05
+  },
+  {
+    "Endpoint": "ListAutopilotconfig",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 0.73
+  },
+  {
+    "Endpoint": "ListAzureADConnectStatus",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 17.0
+  },
+  {
+    "Endpoint": "ListBPA",
+    "Status": "ERROR",
+    "Message": "Changed Shape ($.System.Management.Automation.OrderedHashtable : removed; $.System.Collections.Specialized.OrderedDictionary : added)",
+    "Duration": 2.27
+  },
+  {
+    "Endpoint": "ListBasicAuth",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 15.79
+  },
+  {
+    "Endpoint": "ListCompliancePolicies",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.05
+  },
+  {
+    "Endpoint": "ListConditionalAccessPolicies",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 7.81
+  },
+  {
+    "Endpoint": "ListConditionalAccessPolicyChanges",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.22
+  },
+  {
+    "Endpoint": "ListConnectionFilter",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.53
+  },
+  {
+    "Endpoint": "ListContacts",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.16
+  },
+  {
+    "Endpoint": "ListCustomDataMappings",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.73
+  },
+  {
+    "Endpoint": "ListCustomVariables",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.7
+  },
+  {
+    "Endpoint": "ListDefenderState",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 2.76
+  },
+  {
+    "Endpoint": "ListDeletedItems",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.83
+  },
+  {
+    "Endpoint": "ListDomainAnalyser",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.02
+  },
+  {
+    "Endpoint": "ListDomains",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.79
+  },
+  {
+    "Endpoint": "ListEquipment",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.5
+  },
+  {
+    "Endpoint": "ListExchangeConnectors",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.54
+  },
+  {
+    "Endpoint": "ListExtensionCacheData",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 10.02
+  },
+  {
+    "Endpoint": "ListGeneratedReports",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.65
+  },
+  {
+    "Endpoint": "ListGlobalAddressList",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 28.53
+  },
+  {
+    "Endpoint": "ListGroups",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.0
+  },
+  {
+    "Endpoint": "ListInactiveAccounts",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.99
+  },
+  {
+    "Endpoint": "ListIntunePolicy",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 5.41
+  },
+  {
+    "Endpoint": "ListIntuneReusableSettings",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.83
+  },
+  {
+    "Endpoint": "ListIntuneScript",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 3.69
+  },
+  {
+    "Endpoint": "ListJITAdmin",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.57
+  },
+  {
+    "Endpoint": "ListJITAdminTemplates",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.08
+  },
+  {
+    "Endpoint": "ListLicenses",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 6.17
+  },
+  {
+    "Endpoint": "ListMDEOnboarding",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.45
+  },
+  {
+    "Endpoint": "ListMFAUsers",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 14.73
+  },
+  {
+    "Endpoint": "ListMailQuarantine",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 4.72
+  },
+  {
+    "Endpoint": "ListMailboxCAS",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 7.1
+  },
+  {
+    "Endpoint": "ListMailboxForwarding",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 5.84
+  },
+  {
+    "Endpoint": "ListMailboxRestores",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.62
+  },
+  {
+    "Endpoint": "ListMailboxes",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 8.72
+  },
+  {
+    "Endpoint": "ListMalwareFilters",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.7
+  },
+  {
+    "Endpoint": "ListMessageTrace",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.76
+  },
+  {
+    "Endpoint": "ListNewUserDefaults",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 0.61
+  },
+  {
+    "Endpoint": "ListOAuthApps",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 6.47
+  },
+  {
+    "Endpoint": "ListPerUserMFA",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 11.67
+  },
+  {
+    "Endpoint": "ListQuarantinePolicy",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.78
+  },
+  {
+    "Endpoint": "ListRestrictedUsers",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.58
+  },
+  {
+    "Endpoint": "ListRoomLists",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 1.24
+  },
+  {
+    "Endpoint": "ListRooms",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.57
+  },
+  {
+    "Endpoint": "ListSafeAttachmentsFilters",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.58
+  },
+  {
+    "Endpoint": "ListSafeLinksPolicy",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.06
+  },
+  {
+    "Endpoint": "ListScheduledItems",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 0.95
+  },
+  {
+    "Endpoint": "ListServiceHealth",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.52
+  },
+  {
+    "Endpoint": "ListSharedMailboxAccountEnabled",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 107.21
+  },
+  {
+    "Endpoint": "ListSpamfilter",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.04
+  },
+  {
+    "Endpoint": "ListSharepointAdminUrl",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.68
+  },
+  {
+    "Endpoint": "ListSharepointQuota",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 8.97
+  },
+  {
+    "Endpoint": "ListSignIns",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 6.74
+  },
+  {
+    "Endpoint": "ListSites",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 26.3
+  },
+  {
+    "Endpoint": "ListStandards",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 0.57
+  },
+  {
+    "Endpoint": "ListStandardsCompare",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.72
+  },
+  {
+    "Endpoint": "ListTeams",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.45
+  },
+  {
+    "Endpoint": "ListTeamsActivity",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.33
+  },
+  {
+    "Endpoint": "ListTeamsLisLocation",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 3.82
+  },
+  {
+    "Endpoint": "ListTeamsVoice",
+    "Status": "WARN",
+    "Message": "No Results (allowed empty)",
+    "Duration": 3.85
+  },
+  {
+    "Endpoint": "ListTenantAlignment",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.63
+  },
+  {
+    "Endpoint": "ListTenantDetails",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 2.08
+  },
+  {
+    "Endpoint": "ListTenantDrift",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 7.44
+  },
+  {
+    "Endpoint": "ListTenantGroups",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.82
+  },
+  {
+    "Endpoint": "ListTenants",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 0.64
+  },
+  {
+    "Endpoint": "ListTests",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 12.89
+  },
+  {
+    "Endpoint": "ListTransportRules",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.77
+  },
+  {
+    "Endpoint": "ListUserCounts",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 1.85
+  },
+  {
+    "Endpoint": "ListUsers",
+    "Status": "PASS",
+    "Message": "",
+    "Duration": 40.01
+  },
+  {
+    "Endpoint": "ListmailboxPermissions",
+    "Status": "ERROR",
+    "Message": "Could not connect (HTTP 500)",
+    "Duration": 46.27
+  }
+]

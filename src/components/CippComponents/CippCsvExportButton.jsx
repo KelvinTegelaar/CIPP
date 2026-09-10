@@ -1,5 +1,5 @@
-import { BackupTableTwoTone } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { mkConfig, generateCsv, download } from "export-to-csv";
 
 // Utility to flatten nested objects
@@ -54,7 +54,7 @@ export const CippCsvExportButton = ({ rawData, reportName = "Export", includeFie
     <Tooltip title="Export Raw Data to CSV">
       <span>
         <IconButton disabled={!rawData || rawData.length === 0} onClick={handleExport}>
-          <BackupTableTwoTone />
+          <CippIcons.BackupTableTwoTone />
         </IconButton>
       </span>
     </Tooltip>

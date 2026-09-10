@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Card,
@@ -11,7 +12,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { styled } from "@mui/material/styles";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import {
@@ -25,11 +25,9 @@ import {
 } from "@mui/lab";
 import { ActionList } from "../action-list";
 import { ActionListItem } from "../action-list-item";
-import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
-import CloseIcon from "@mui/icons-material/Close";
 import { useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
-import _ from "lodash";
+import { get } from "lodash";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
@@ -54,7 +52,7 @@ const StyledTimelineDot = (props) => {
         color: complete ? "success.contrastText" : "error.contrastText",
       }}
     >
-      <SvgIcon fontSize="small">{complete ? <CheckIcon /> : <CloseIcon />}</SvgIcon>
+      <SvgIcon fontSize="small">{complete ? <CippIcons.CheckIcon /> : <CippIcons.Close />}</SvgIcon>
     </TimelineDot>
   );
 };
@@ -144,7 +142,7 @@ const CippStandardsSideBar = ({
   };
 
   // Enhanced drift validation using CIPP patterns with group support
-  const validateDrift = async (tenants) => {
+  const validateDrift = async (tenants, excludedTenants) => {
     if (!isDriftMode || !tenants || tenants.length === 0) {
       setDriftError("");
       onDriftConflictChange?.(false);
@@ -170,6 +168,9 @@ const CippStandardsSideBar = ({
       // Expand selected tenants (including group members)
       const selectedTenantList = expandGroupsToTenants(tenants, groups);
 
+      // Expand excluded tenants the same way; a tenant excluded here can never overlap
+      const excludedTenantSet = new Set(expandGroupsToTenants(excludedTenants || [], groups));
+
       // Simple conflict check
       const conflicts = [];
 
@@ -194,17 +195,21 @@ const CippStandardsSideBar = ({
         const template = uniqueTemplates[templateId];
         const templateTenants = template.tenants;
 
-        const hasConflict = selectedTenantList.some((selectedTenant) => {
-          // Check if any template tenant matches the selected tenant
-          const conflict = templateTenants.some((templateTenant) => {
-            if (selectedTenant === "AllTenants" || templateTenant === "AllTenants") {
-              return true;
-            }
-            const match = selectedTenant === templateTenant;
-            return match;
-          });
-          return conflict;
-        });
+        // Template tenants come from ListTenantAlignment rows, which already have that
+        // template's own exclusions applied — only this form's exclusions need subtracting
+        const selectedHasAllTenants = selectedTenantList.includes("AllTenants");
+        const hasConflict = templateTenants.some(
+          (templateTenant) =>
+            !excludedTenantSet.has(templateTenant) &&
+            (selectedHasAllTenants ||
+              templateTenant === "AllTenants" ||
+              selectedTenantList.some(
+                (selectedTenant) =>
+                  selectedTenant !== "AllTenants" &&
+                  !excludedTenantSet.has(selectedTenant) &&
+                  selectedTenant === templateTenant,
+              )),
+        );
 
         if (hasConflict) {
           conflicts.push(template.standardName || "Unknown Template");
@@ -233,22 +238,28 @@ const CippStandardsSideBar = ({
     if (!isDriftMode) return;
 
     const timeoutId = setTimeout(() => {
-      validateDrift(watchForm.tenantFilter);
+      validateDrift(watchForm.tenantFilter, watchForm.excludedTenants);
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [watchForm.tenantFilter, isDriftMode, driftValidationApi.data, tenantGroupsApi.data]);
+  }, [
+    watchForm.tenantFilter,
+    watchForm.excludedTenants,
+    isDriftMode,
+    driftValidationApi.data,
+    tenantGroupsApi.data,
+  ]);
 
   useEffect(() => {
     const stepsStatus = {
-      step1: !!_.get(watchForm, "templateName"),
-      step2: _.get(watchForm, "tenantFilter", []).length > 0,
+      step1: !!get(watchForm, "templateName"),
+      step2: get(watchForm, "tenantFilter", []).length > 0,
       step3: Object.keys(selectedStandards).length > 0,
       step4:
-        _.get(watchForm, "standards") &&
+        get(watchForm, "standards") &&
         Object.keys(selectedStandards).length > 0 &&
         Object.keys(selectedStandards).every((standardName) => {
-          const standardValues = _.get(watchForm, `${standardName}`, {});
+          const standardValues = get(watchForm, `${standardName}`, {});
           const standard = selectedStandards[standardName];
           // Check if this standard requires an action
           const hasRequiredComponents =
@@ -258,7 +269,7 @@ const CippStandardsSideBar = ({
             );
           const actionRequired = standard?.disabledFeatures !== undefined || hasRequiredComponents;
           // Always require an action value which should be an array with at least one element
-          const actionValue = _.get(standardValues, "action");
+          const actionValue = get(standardValues, "action");
           return actionValue && (!Array.isArray(actionValue) || actionValue.length > 0);
         }),
     };
@@ -269,17 +280,17 @@ const CippStandardsSideBar = ({
 
   // Create a local reference to the stepsStatus from the latest effect run
   const stepsStatus = {
-    step1: !!_.get(watchForm, "templateName"),
-    step2: _.get(watchForm, "tenantFilter", []).length > 0,
+    step1: !!get(watchForm, "templateName"),
+    step2: get(watchForm, "tenantFilter", []).length > 0,
     step3: Object.keys(selectedStandards).length > 0,
     step4:
-      _.get(watchForm, "standards") &&
+      get(watchForm, "standards") &&
       Object.keys(selectedStandards).length > 0 &&
       Object.keys(selectedStandards).every((standardName) => {
-        const standardValues = _.get(watchForm, `${standardName}`, {});
+        const standardValues = get(watchForm, `${standardName}`, {});
         const standard = selectedStandards[standardName];
         // Always require an action for all standards (must be an array with at least one element)
-        const actionValue = _.get(standardValues, "action");
+        const actionValue = get(standardValues, "action");
         return actionValue && (!Array.isArray(actionValue) || actionValue.length > 0);
       }),
   };
@@ -295,24 +306,40 @@ const CippStandardsSideBar = ({
         <Box sx={{ p: 2 }}>
           {isDriftMode ? (
             <Stack spacing={2}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Drift templates provide continuous monitoring of tenant configurations to detect
                 unauthorized changes. Each tenant can only have one drift template applied at a
                 time.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Remediation Options:</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  ml: 2
+                }}>
                 • <strong>Automatic Remediation:</strong> Immediately reverts unauthorized changes
                 back to the template configuration
                 <br />• <strong>Manual Remediation:</strong> Sends email notifications for review,
                 allowing you to accept or deny detected changes
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Key Features:</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  ml: 2
+                }}>
                 • Monitors all security standards, Conditional Access policies, and Intune policies
                 <br />
                 • Detects changes made outside of CIPP
@@ -323,28 +350,46 @@ const CippStandardsSideBar = ({
             </Stack>
           ) : (
             <Stack spacing={2}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Standard templates can be applied to multiple tenants and allow overlapping
                 configurations with intelligent merging based on specificity and timing.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Merge Priority (Specificity):</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  ml: 2
+                }}>
                 1. <strong>Individual Tenant</strong> - Highest priority, overrides all others
                 <br />
                 2. <strong>Tenant Group</strong> - Overrides "All Tenants" settings
                 <br />
                 3. <strong>All Tenants</strong> - Lowest priority, default baseline
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Conflict Resolution:</strong>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  ml: 2
+                }}>
                 When multiple standards target the same scope (e.g., two tenant-specific templates),
                 the most recently created template takes precedence.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 <strong>Example:</strong> An "All Tenants" template enables audit log retention for
                 90 days, but you need 365 days for one specific tenant. Create a tenant-specific
                 template with 365-day retention - it will override the global setting for that
@@ -363,7 +408,7 @@ const CippStandardsSideBar = ({
               arrow
             >
               <IconButton onClick={() => setAboutOpen(true)} color="primary">
-                <InfoOutlinedIcon />
+                <CippIcons.InfoOutlined />
               </IconButton>
             </Tooltip>
           }
@@ -506,10 +551,13 @@ const CippStandardsSideBar = ({
             <CardContent>
               <Timeline
                 sx={{
-                  [`& .${timelineItemClasses.root}:before`]: {
-                    flex: 0,
-                    p: 0,
-                  },
+                  // lab 9's `:not(:has(.opposite-content))::before` spacer outranks a bare
+                  // `.root:before` override; match its specificity via the missing-opposite class
+                  [`& .${timelineItemClasses.root}.${timelineItemClasses.missingOppositeContent}:before`]:
+                    {
+                      flex: 0,
+                      p: 0,
+                    },
                 }}
               >
                 {steps.map((step, index) => (

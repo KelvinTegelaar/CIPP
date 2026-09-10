@@ -1,0 +1,24 @@
+{
+  "_metadata": {
+    "endpoint": "ListTenantGroups",
+    "generatedAt": "2026-04-03T23:47:38.4908740+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "Description": "string",
+    "DynamicRules": "null",
+    "GroupType": "string",
+    "Id": "string",
+    "Members": {
+      "_type": "array",
+      "_element": {
+        "customerId": "truncated",
+        "defaultDomainName": "truncated",
+        "displayName": "truncated"
+      }
+    },
+    "Name": "string",
+    "RuleLogic": "string"
+  }
+}

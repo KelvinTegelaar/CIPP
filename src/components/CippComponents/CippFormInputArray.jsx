@@ -1,6 +1,6 @@
 import { TextField, IconButton, Typography, Box } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { Controller, useFieldArray } from "react-hook-form";
-import { Add, Remove } from "@mui/icons-material";
 
 // Helper function to convert bracket notation to dot notation
 const convertBracketsToDots = (name) => {
@@ -55,7 +55,7 @@ export const CippFormInputArray = ({
         )}
       />
       <IconButton onClick={() => remove(index)} aria-label="remove item" size="small">
-        <Remove />
+        <CippIcons.Remove />
       </IconButton>
     </Box>
   );
@@ -94,7 +94,7 @@ export const CippFormInputArray = ({
         )}
       />
       <IconButton onClick={() => remove(index)} aria-label="remove item" size="small">
-        <Remove />
+        <CippIcons.Remove />
       </IconButton>
     </Box>
   );
@@ -104,7 +104,7 @@ export const CippFormInputArray = ({
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
         {label && <Typography variant="body2">{label}</Typography>}
         <IconButton onClick={() => append(getInitialValue())} variant="outlined" size="small">
-          <Add />
+          <CippIcons.Add />
         </IconButton>
       </Box>
 

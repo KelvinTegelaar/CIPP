@@ -1,0 +1,114 @@
+import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
+import CippTablePage from "../../../../components/CippComponents/CippTablePage";
+import { Button } from "@mui/material";
+import Link from "next/link";
+import { useSettings } from "../../../../hooks/use-settings.js";
+import ScheduledTaskDetails from "../../../../components/CippComponents/ScheduledTaskDetails";
+
+const Page = () => {
+  const initialState = useSettings();
+  const currentTenant = initialState.currentTenant;
+
+  const actions = [
+    {
+      label: "View Task Details",
+      link: "/cipp/scheduler/task?id=[RowKey]",
+      pinned: true,
+      icon: <CippIcons.EyeIcon />,
+    },
+    {
+      label: "Cancel Vacation Mode",
+      type: "POST",
+      url: "/api/RemoveScheduledItem",
+      data: { ID: "RowKey" },
+      confirmText:
+        "Are you sure you want to cancel this vacation mode entry? This might mean the user will remain in vacation mode permanently.",
+      icon: <CippIcons.Delete />,
+      multiPost: false,
+    },
+  ];
+
+  const filterList = [
+    {
+      filterName: "Running",
+      value: [{ id: "TaskState", value: "Running" }],
+      type: "column",
+    },
+    {
+      filterName: "Planned",
+      value: [{ id: "TaskState", value: "Planned" }],
+      type: "column",
+    },
+    {
+      filterName: "Failed",
+      value: [{ id: "TaskState", value: "Failed" }],
+      type: "column",
+    },
+    {
+      filterName: "Completed",
+      value: [{ id: "TaskState", value: "Completed" }],
+      type: "column",
+    },
+    {
+      filterName: "CA Exclusion",
+      value: [{ id: "Name", value: "CA Exclusion" }],
+      type: "column",
+    },
+    {
+      filterName: "Location Alerts",
+      value: [{ id: "Name", value: "Location Alert Exclusion" }],
+      type: "column",
+    },
+    {
+      filterName: "Mailbox Permissions",
+      value: [{ id: "Name", value: "Mailbox Vacation" }],
+      type: "column",
+    },
+    {
+      filterName: "Mail Forwarding",
+      value: [{ id: "Name", value: "Forwarding Vacation" }],
+      type: "column",
+    },
+    {
+      filterName: "Out of Office",
+      value: [{ id: "Name", value: "OOO Vacation" }],
+      type: "column",
+    },
+  ];
+
+  return (
+    <CippTablePage
+      cardButton={
+        <Button
+          component={Link}
+          href="/identity/administration/vacation-mode/add"
+          startIcon={<CippIcons.EventAvailable />}
+        >
+          Add Vacation Schedule
+        </Button>
+      }
+      title="Vacation Mode"
+      apiUrl="/api/ListScheduledItems?SearchTitle=*Vacation*"
+      queryKey={`VacationMode-${currentTenant}`}
+      actions={actions}
+      simpleColumns={["Tenant", "Name", "Reference", "TaskState", "ScheduledTime", "ExecutedTime"]}
+      filters={filterList}
+      offCanvas={{
+        children: (extendedData) => (
+          <ScheduledTaskDetails data={extendedData} showActions={true} showTitle={false} />
+        ),
+        size: "xl",
+        actions: actions,
+      }}
+      rowOpen={{
+        link: '/cipp/scheduler/task?id=[RowKey]',
+        condition: (row) => Boolean(row?.RowKey),
+      }}
+    />
+  );
+};
+
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default Page;

@@ -1,0 +1,48 @@
+{
+  "_metadata": {
+    "endpoint": "ListLicenses",
+    "generatedAt": "2026-04-03T23:43:21.5557070+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AssignedGroups": "null",
+    "AssignedUsers": {
+      "_type": "array",
+      "_element": {
+        "displayName": "truncated",
+        "id": "truncated",
+        "userPrincipalName": "truncated"
+      }
+    },
+    "availableUnits": "number",
+    "CountAvailable": "number",
+    "CountUsed": "string",
+    "License": "string",
+    "ServicePlans": {
+      "_type": "array",
+      "_element": {
+        "appliesTo": "truncated",
+        "provisioningStatus": "truncated",
+        "servicePlanId": "truncated",
+        "servicePlanName": "truncated",
+        "servicePlanType": "truncated"
+      }
+    },
+    "skuId": "string",
+    "skuPartNumber": "string",
+    "Tenant": "string",
+    "TermInfo": {
+      "CSPSubscriptionId": "string",
+      "DaysUntilRenew": "number",
+      "IsTrial": "bool",
+      "NextLifecycle": "datetime",
+      "OCPSubscriptionId": "string",
+      "Status": "string",
+      "SubscriptionId": "string",
+      "Term": "string",
+      "TotalLicenses": "number"
+    },
+    "TotalLicenses": "string"
+  }
+}

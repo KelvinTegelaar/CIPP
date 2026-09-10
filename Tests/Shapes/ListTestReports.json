@@ -1,0 +1,16 @@
+{
+  "_metadata": {
+    "endpoint": "ListTestReports",
+    "generatedAt": "2026-04-03T23:40:36.0072185+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "description": "string",
+    "id": "string",
+    "name": "string",
+    "source": "string",
+    "type": "string",
+    "version": "string"
+  }
+}

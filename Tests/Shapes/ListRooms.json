@@ -1,0 +1,36 @@
+{
+  "_metadata": {
+    "endpoint": "ListRooms",
+    "generatedAt": "2026-04-03T23:44:36.4582941+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "accountDisabled": "bool",
+    "audioDeviceName": "null",
+    "bookingType": "null",
+    "building": "null",
+    "capacity": "number",
+    "city": "null",
+    "countryOrRegion": "null",
+    "displayDeviceName": "null",
+    "displayName": "string",
+    "floor": "null",
+    "floorLabel": "null",
+    "hiddenFromAddressListsEnabled": "bool",
+    "id": "string",
+    "isDirSynced": "null",
+    "isWheelChairAccessible": "null",
+    "mail": "string",
+    "mailNickname": "string",
+    "mtrEnabled": "null",
+    "phone": "null",
+    "postalCode": "null",
+    "resourceDelegates": "null",
+    "spaceType": "null",
+    "state": "null",
+    "street": "null",
+    "tags": "null",
+    "videoDeviceName": "null"
+  }
+}

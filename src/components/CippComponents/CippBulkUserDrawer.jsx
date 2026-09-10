@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Button, Link, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
-import { GroupAdd, Delete } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormLicenseSelector } from "./CippFormLicenseSelector";
@@ -94,7 +94,9 @@ export const CippBulkUserDrawer = ({
   const handleRemoveItem = (row) => {
     if (row === undefined) return false;
     const currentData = formControl.getValues("bulkUser") || [];
-    const index = currentData.findIndex((item) => item === row);
+    const rowKey = JSON.stringify(row);
+    const index = currentData.findIndex((item) => JSON.stringify(item) === rowKey);
+    if (index === -1) return false;
     const newData = [...currentData];
     newData.splice(index, 1);
     formControl.setValue("bulkUser", newData, { shouldValidate: true });
@@ -134,7 +136,7 @@ export const CippBulkUserDrawer = ({
 
   const actions = [
     {
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       label: "Delete Row",
       confirmText: "Are you sure you want to delete this row?",
       customFunction: handleRemoveItem,
@@ -145,9 +147,9 @@ export const CippBulkUserDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<GroupAdd />}
+        startIcon={<CippIcons.GroupAdd />}
       >
         {buttonText}
       </PermissionButton>

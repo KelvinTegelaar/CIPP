@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { CippIcons } from "../../../../../utils/icon-registry"
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
 import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
-import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
+import { CippUserSwitcher } from "../../../../../components/CippComponents/CippUserSwitcher";
 import ReactTimeAgo from "react-time-ago";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack, Typography, Button } from "@mui/material";
@@ -38,15 +38,15 @@ const Page = () => {
   const subtitle = userRequest.isSuccess
     ? [
         {
-          icon: <Mail />,
+          icon: <CippIcons.Mail />,
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
         },
         {
-          icon: <Fingerprint />,
+          icon: <CippIcons.Fingerprint />,
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
         },
         {
-          icon: <CalendarIcon />,
+          icon: <CippIcons.CalendarIcon />,
           text: (
             <>
               Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
@@ -54,7 +54,7 @@ const Page = () => {
           ),
         },
         {
-          icon: <Launch style={{ color: "#667085" }} />,
+          icon: <CippIcons.Launch />,
           text: (
             <Button
               color="muted"
@@ -95,6 +95,13 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
+      titleControl={
+        <CippUserSwitcher
+          title={title}
+          currentUserId={userId}
+          tenantFilter={userSettingsDefaults.currentTenant}
+        />
+      }
       subtitle={subtitle}
       isFetching={userRequest.isLoading}
     >
@@ -167,7 +174,7 @@ const Page = () => {
                         { value: "Windows", label: "Windows" },
                         { value: "iOS", label: "iOS" },
                         { value: "Android", label: "Android" },
-                        { value: "MacOS", label: "MacOS" },
+                        { value: "MacOS", label: "macOS" },
                         { value: "Linux", label: "Linux" },
                       ]}
                       formControl={formControl}

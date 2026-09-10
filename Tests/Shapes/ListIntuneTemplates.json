@@ -1,0 +1,15 @@
+{
+  "_metadata": {
+    "endpoint": "ListIntuneTemplates",
+    "generatedAt": "2026-04-03T23:40:20.0464133+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "Description": "string",
+    "Displayname": "string",
+    "GUID": "string",
+    "RAWJson": "string",
+    "Type": "string"
+  }
+}

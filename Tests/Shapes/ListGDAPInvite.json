@@ -1,0 +1,25 @@
+{
+  "_metadata": {
+    "endpoint": "ListGDAPInvite",
+    "generatedAt": "2026-04-03T23:40:15.2734230+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "ETag": "string",
+    "InviteUrl": "string",
+    "OnboardingUrl": "string",
+    "PartitionKey": "string",
+    "RoleMappings": {
+      "_type": "array",
+      "_element": {
+        "GroupId": "truncated",
+        "GroupName": "truncated",
+        "roleDefinitionId": "truncated",
+        "RoleName": "truncated"
+      }
+    },
+    "RowKey": "string",
+    "Timestamp": "datetime"
+  }
+}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Button,
@@ -12,14 +13,13 @@ import {
   CircularProgress,
   IconButton,
 } from "@mui/material";
-import { Check, Error, Sync } from "@mui/icons-material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useWatch } from "react-hook-form";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import CippForwardingSection from "../CippComponents/CippForwardingSection";
 
 const CippExchangeSettingsForm = (props) => {
@@ -81,6 +81,11 @@ const CippExchangeSettingsForm = (props) => {
           "ExternalMessage",
           "StartTime",
           "EndTime",
+          "CreateOOFEvent",
+          "OOFEventSubject",
+          "AutoDeclineFutureRequestsWhenOOF",
+          "DeclineEventsForScheduledOOF",
+          "DeclineMeetingMessage",
         ];
 
         // Reset the form
@@ -118,6 +123,15 @@ const CippExchangeSettingsForm = (props) => {
       ...values[type],
     };
 
+    // Include browser timezone for OOO so the API can display local times in the response
+    if (type === "ooo") {
+      try {
+        data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      } catch {
+        // Fallback: leave timezone unset; API will display UTC
+      }
+    }
+
     // Format data for recipient limits
     if (type === "recipientLimits") {
       data.Identity = currentSettings.Mailbox[0].Identity;
@@ -152,9 +166,9 @@ const CippExchangeSettingsForm = (props) => {
         cardLabelBoxHeader: isFetching ? (
           <CircularProgress size="25px" color="inherit" />
         ) : currentSettings?.ForwardingAddress ? (
-          <Check />
+          <CippIcons.Check />
         ) : (
-          <Error />
+          <CippIcons.Error />
         ),
       },
       text: "Mailbox Forwarding",
@@ -206,7 +220,7 @@ const CippExchangeSettingsForm = (props) => {
                 ]}
               />
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Tooltip
                 title={
                   areDateFieldsDisabled
@@ -226,7 +240,7 @@ const CippExchangeSettingsForm = (props) => {
                 </Box>
               </Tooltip>
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Tooltip
                 title={
                   areDateFieldsDisabled
@@ -266,6 +280,72 @@ const CippExchangeSettingsForm = (props) => {
                 rows={4}
               />
             </Grid>
+            {!areDateFieldsDisabled && (
+              <>
+                <Grid size={12}>
+                  <Divider sx={{ my: 1 }} />
+                  <Typography variant="subtitle2" sx={{ mt: 1 }}>
+                    Calendar Options
+                  </Typography>
+                </Grid>
+                <Grid size={12}>
+                  <CippFormComponent
+                    type="switch"
+                    name="ooo.CreateOOFEvent"
+                    label="Block my calendar for this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="ooo.CreateOOFEvent"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <Grid size={12}>
+                    <CippFormComponent
+                      type="textField"
+                      name="ooo.OOFEventSubject"
+                      label="Calendar Event Subject"
+                      formControl={formControl}
+                    />
+                  </Grid>
+                </CippFormCondition>
+                <Grid size={12}>
+                  <CippFormComponent
+                    type="switch"
+                    name="ooo.AutoDeclineFutureRequestsWhenOOF"
+                    label="Automatically decline new invitations during this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <Grid size={12}>
+                  <CippFormComponent
+                    type="switch"
+                    name="ooo.DeclineEventsForScheduledOOF"
+                    label="Decline and cancel my meetings during this period"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="ooo.DeclineEventsForScheduledOOF"
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <Grid size={12}>
+                    <CippFormComponent
+                      type="richText"
+                      name="ooo.DeclineMeetingMessage"
+                      label="Decline Message"
+                      formControl={formControl}
+                      multiline
+                      rows={3}
+                    />
+                  </Grid>
+                </CippFormCondition>
+              </>
+            )}
             <Grid size={12}>
               <CippApiResults apiObject={postRequest} />
             </Grid>
@@ -346,7 +426,9 @@ const CippExchangeSettingsForm = (props) => {
               onClick={() => handleExpand(section.id)}
             >
               {/* Left Side: cardLabelBox, text, subtext */}
-              <Stack direction="row" spacing={2} alignItems="center">
+              <Stack direction="row" spacing={2} sx={{
+                alignItems: "center"
+              }}>
                 {/* cardLabelBox */}
                 <Box
                   sx={{
@@ -373,7 +455,9 @@ const CippExchangeSettingsForm = (props) => {
                 </Box>
               </Stack>
 
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+              }}>
                 {section.action && (
                   <Tooltip title={section.action.tooltip} placement="left">
                     <span>
@@ -400,7 +484,7 @@ const CippExchangeSettingsForm = (props) => {
                             },
                           }}
                         >
-                          <Sync />
+                          <CippIcons.Sync />
                         </SvgIcon>
                       </IconButton>
                     </span>
@@ -413,7 +497,7 @@ const CippExchangeSettingsForm = (props) => {
                     transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
                   }}
                 >
-                  <ChevronDownIcon />
+                  <CippIcons.ChevronDownIcon />
                 </SvgIcon>
               </Stack>
             </Box>

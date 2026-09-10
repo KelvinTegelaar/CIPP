@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Tenant Mode",
+    "path": "/cipp/advanced/super-admin/tenant-mode",
+    "icon": "Domain"
+  },
+  {
+    "label": "Function Offloading",
+    "path": "/cipp/advanced/super-admin/function-offloading",
+    "icon": "Cloud"
+  },
+  {
+    "label": "Time Settings",
+    "path": "/cipp/advanced/super-admin/time-settings",
+    "icon": "AccessTime"
+  }
+]

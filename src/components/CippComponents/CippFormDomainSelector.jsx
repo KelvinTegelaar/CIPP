@@ -1,54 +1,56 @@
-import { CippFormComponent } from "./CippFormComponent";
-import { useWatch } from "react-hook-form";
-import { useSettings } from "../../hooks/use-settings";
-import { useMemo } from "react";
+import { CippFormComponent } from './CippFormComponent'
+import { useWatch } from 'react-hook-form'
+import { useSettings } from '../../hooks/use-settings'
+import { useMemo } from 'react'
 
 export const CippFormDomainSelector = ({
   formControl,
   name,
   label,
   allTenants = false,
-  type = "multiple",
+  type = 'multiple',
   multiple = false,
   preselectDefaultDomain = true,
+  showRefresh = false,
   ...other
 }) => {
-  const currentTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
-  const selectedTenant = useSettings().currentTenant;
+  const currentTenant = useWatch({ control: formControl.control, name: 'tenantFilter' })
+  const selectedTenant = useSettings().currentTenant
 
   const apiConfig = useMemo(
     () => ({
       autoSelectFirstItem: preselectDefaultDomain && !multiple,
       tenantFilter: currentTenant ? currentTenant.value : selectedTenant,
       queryKey: `listDomains-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
-      url: "/api/ListGraphRequest",
-      dataKey: "Results",
+      url: '/api/ListGraphRequest',
+      dataKey: 'Results',
       labelField: (option) => `${option.id}`,
-      valueField: "id",
+      valueField: 'id',
       addedField: {
-        isDefault: "isDefault",
-        isInitial: "isInitial",
-        isVerified: "isVerified",
+        isDefault: 'isDefault',
+        isInitial: 'isInitial',
+        isVerified: 'isVerified',
       },
       data: {
-        Endpoint: "domains",
+        Endpoint: 'domains',
         manualPagination: true,
         $count: true,
         $top: 99,
       },
+      showRefresh,
       dataFilter: (domains) => {
         // Always sort domains so that the default domain appears first
         return domains
           .filter((domain) => domain?.addedFields?.isVerified === true)
           .sort((a, b) => {
-            if (a.addedFields?.isDefault === true) return -1;
-            if (b.addedFields?.isDefault === true) return 1;
-            return 0;
-          });
+            if (a.addedFields?.isDefault === true) return -1
+            if (b.addedFields?.isDefault === true) return 1
+            return 0
+          })
       },
     }),
     [currentTenant, selectedTenant, preselectDefaultDomain, multiple]
-  );
+  )
 
   return (
     <CippFormComponent
@@ -60,5 +62,5 @@ export const CippFormDomainSelector = ({
       api={apiConfig}
       {...other}
     />
-  );
-};
+  )
+}

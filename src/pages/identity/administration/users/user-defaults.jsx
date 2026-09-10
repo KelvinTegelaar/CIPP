@@ -1,0 +1,391 @@
+import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import { CippIcons } from '../../../../utils/icon-registry'
+import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import { CippHead } from '../../../../components/CippComponents/CippHead'
+import { Box, Button } from '@mui/material'
+import { useDialog } from '../../../../hooks/use-dialog'
+import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
+import countryList from '../../../../data/countryList.json'
+import tabOptions from './tabOptions.json'
+import { useSettings } from '../../../../hooks/use-settings'
+
+const Page = () => {
+  const pageTitle = 'User Templates'
+  const createDialog = useDialog()
+  const userSettings = useSettings()
+
+  const templateFields = [
+    {
+      label: 'Template Name',
+      name: 'templateName',
+      type: 'textField',
+      required: true,
+    },
+    {
+      label: 'Default for Tenant',
+      name: 'defaultForTenant',
+      type: 'switch',
+    },
+    {
+      label: "Display Name Suffix (e.g., ' - Contractor' or ' (External)')",
+      name: 'displayName',
+      type: 'textField',
+    },
+    {
+      label: 'Username Format',
+      name: 'usernameFormat',
+      type: 'autoComplete',
+      options: [
+        { label: '%FirstName%.%LastName% (john.doe)', value: '%FirstName%.%LastName%' },
+        { label: '%FirstName%%LastName% (johndoe)', value: '%FirstName%%LastName%' },
+        { label: '%LastName%.%FirstName% (doe.john)', value: '%LastName%.%FirstName%' },
+        { label: '%LastName%%FirstName% (doejohn)', value: '%LastName%%FirstName%' },
+        { label: '%FirstName%_%LastName% (john_doe)', value: '%FirstName%_%LastName%' },
+        { label: '%LastName%_%FirstName% (doe_john)', value: '%LastName%_%FirstName%' },
+        { label: '%FirstName%-%LastName% (john-doe)', value: '%FirstName%-%LastName%' },
+        { label: '%LastName%-%FirstName% (doe-john)', value: '%LastName%-%FirstName%' },
+        { label: '%FirstName[1]%%LastName% (jdoe)', value: '%FirstName[1]%%LastName%' },
+        { label: '%FirstName[2]%%LastName% (jodoe)', value: '%FirstName[2]%%LastName%' },
+        { label: '%FirstName[3]%%LastName% (johdoe)', value: '%FirstName[3]%%LastName%' },
+        { label: '%FirstName%.%LastName[1]% (john.d)', value: '%FirstName%.%LastName[1]%' },
+        { label: '%FirstName%%LastName[1]% (johnd)', value: '%FirstName%%LastName[1]%' },
+        { label: '%FirstName[1]%.%LastName% (j.doe)', value: '%FirstName[1]%.%LastName%' },
+        { label: '%LastName% (doe)', value: '%LastName%' },
+        { label: '%FirstName% (john)', value: '%FirstName%' },
+      ],
+      multiple: false,
+      creatable: true,
+    },
+    {
+      label: 'Username Space Handling',
+      name: 'usernameSpaceHandling',
+      type: 'autoComplete',
+      options: [
+        { label: 'Keep spaces', value: 'keep' },
+        { label: 'Remove spaces', value: 'remove' },
+        { label: 'Replace spaces', value: 'replace' },
+      ],
+      helperText: 'How spaces in the generated username should be handled.',
+      multiple: false,
+      creatable: false,
+    },
+    {
+      label: 'Username Space Replacement',
+      name: 'usernameSpaceReplacement',
+      type: 'textField',
+      helperText: 'Used when space handling is set to Replace spaces (example: _ or .).',
+    },
+    {
+      label: 'Primary Domain',
+      name: 'primDomain',
+      type: 'autoComplete',
+      api: {
+        url: '/api/ListGraphRequest',
+        dataKey: 'Results',
+        data: {
+          Endpoint: 'domains',
+        },
+        addedField: {
+          isVerified: 'isVerified',
+        },
+        labelField: 'id',
+        valueField: 'id',
+        queryKey: `ListGraphRequest-domains-${userSettings.currentTenant}`,
+        dataFilter: (options) =>
+          options.filter((option) => option?.addedFields?.isVerified === true),
+      },
+      multiple: false,
+      creatable: false,
+    },
+    {
+      label: 'Add Aliases',
+      name: 'addedAliases',
+      type: 'textField',
+      multiline: true,
+      rows: 4,
+    },
+    {
+      label: 'Usage Location',
+      name: 'usageLocation',
+      type: 'autoComplete',
+      options: countryList.map(({ Code, Name }) => ({
+        label: Name,
+        value: Code,
+      })),
+      multiple: false,
+      creatable: false,
+    },
+    {
+      label: 'Licenses',
+      name: 'licenses',
+      type: 'autoComplete',
+      api: {
+        url: '/api/ListLicenses',
+        labelField: (option) =>
+          `${option.License || option.skuPartNumber} (${option.availableUnits || 0} available)`,
+        valueField: 'skuId',
+        data: { IncludeExcluded: true },
+        queryKey: `ListLicenses-${userSettings.currentTenant}`,
+      },
+      multiple: true,
+      creatable: false,
+    },
+    {
+      label: 'Add to Groups',
+      name: 'groupMemberships',
+      type: 'autoComplete',
+      api: {
+        url: '/api/ListGroups',
+        labelField: (option) =>
+          option?.mail ? `${option.displayName} - ${option.mail}` : option.displayName,
+        valueField: 'id',
+        queryKey: `ListGroups-${userSettings.currentTenant}`,
+        addedField: {
+          groupType: 'calculatedGroupType',
+        },
+      },
+      multiple: true,
+      creatable: false,
+    },
+    {
+      label: 'Shared Mailboxes',
+      name: 'sharedMailboxes',
+      type: 'autoComplete',
+      api: {
+        url: '/api/ListMailboxes',
+        data: { RecipientTypeDetails: 'SharedMailbox', Minimal: true },
+        labelField: (option) => `${option.displayName} (${option.UPN})`,
+        valueField: 'UPN',
+        queryKey: `SharedMailboxes-${userSettings.currentTenant}`,
+      },
+      helperText:
+        'New users are granted access to these mailboxes 15 minutes after creation. With Full Access, Outlook adds them automatically.',
+      multiple: true,
+      creatable: false,
+    },
+    {
+      label: 'Shared Mailbox Permissions',
+      name: 'sharedMailboxPermission',
+      type: 'autoComplete',
+      options: [
+        { label: 'Full Access', value: 'FullAccess' },
+        { label: 'Full Access (no Automapping)', value: 'FullAccessNoAutoMap' },
+        { label: 'Send As', value: 'SendAs' },
+        { label: 'Send on Behalf', value: 'SendOnBehalf' },
+      ],
+      helperText: 'Defaults to Full Access. Select several to grant them together.',
+      multiple: true,
+      creatable: false,
+    },
+    {
+      label: 'Shared Calendars',
+      name: 'sharedCalendars',
+      type: 'autoComplete',
+      api: {
+        url: '/api/ListMailboxes',
+        data: { RecipientTypeDetails: 'SharedMailbox', Minimal: true },
+        labelField: (option) => `${option.displayName} (${option.UPN})`,
+        valueField: 'UPN',
+        queryKey: `SharedMailboxes-${userSettings.currentTenant}`,
+      },
+      helperText:
+        'New users are sent a sharing invitation for these calendars 15 minutes after creation.',
+      multiple: true,
+      creatable: false,
+    },
+    {
+      label: 'Shared Calendar Permission',
+      name: 'sharedCalendarPermission',
+      type: 'autoComplete',
+      options: [
+        { label: 'Editor', value: 'Editor' },
+        { label: 'Reviewer', value: 'Reviewer' },
+        { label: 'Limited Details', value: 'LimitedDetails' },
+        { label: 'Availability Only', value: 'AvailabilityOnly' },
+      ],
+      helperText: 'Defaults to Editor.',
+      multiple: false,
+      creatable: false,
+    },
+    {
+      label: 'Job Title',
+      name: 'jobTitle',
+      type: 'textField',
+    },
+    {
+      label: 'Street',
+      name: 'streetAddress',
+      type: 'textField',
+    },
+    {
+      label: 'City',
+      name: 'city',
+      type: 'textField',
+    },
+    {
+      label: 'State/Province',
+      name: 'state',
+      type: 'textField',
+    },
+    {
+      label: 'Postal Code',
+      name: 'postalCode',
+      type: 'textField',
+    },
+    {
+      label: 'Country',
+      name: 'country',
+      type: 'textField',
+    },
+    {
+      label: 'Company Name',
+      name: 'companyName',
+      type: 'textField',
+    },
+    {
+      label: 'Department',
+      name: 'department',
+      type: 'textField',
+    },
+    {
+      label: 'Enforce Per-User MFA',
+      name: 'perUserMfa',
+      type: 'switch',
+    },
+    {
+      label: 'Mobile #',
+      name: 'mobilePhone',
+      type: 'textField',
+    },
+    {
+      label: 'Business #',
+      name: 'businessPhones[0]',
+      type: 'textField',
+    },
+    ...(userSettings?.userAttributes
+      ?.filter((attribute) => attribute.value !== 'sponsor')
+      .map((attribute) => ({
+        label: attribute.label,
+        name: `defaultAttributes.${attribute.label}.Value`,
+        type: 'textField',
+      })) || []),
+  ]
+
+  const actions = [
+    {
+      label: 'Edit Template',
+      type: 'POST',
+      url: '/api/AddUserDefaults',
+      icon: <CippIcons.Edit />,
+      setDefaultValues: true,
+      data: { GUID: 'GUID', tenantFilter: 'tenantFilter' },
+      confirmText: 'Edit the template and click Confirm to save.',
+      relatedQueryKeys: [`ListNewUserDefaults-${userSettings.currentTenant}`],
+      fields: templateFields,
+    },
+    {
+      label: 'Delete Template',
+      type: 'POST',
+      url: '/api/RemoveUserDefaultTemplate',
+      icon: <CippIcons.Delete />,
+      data: { ID: 'GUID' },
+      confirmText: 'Do you want to delete this User Template?',
+      multiPost: false,
+    },
+  ]
+
+  const offCanvas = {
+    extendedInfoFields: [
+      'templateName',
+      'defaultForTenant',
+      'displayName',
+      'usernameFormat',
+      'usernameSpaceHandling',
+      'usernameSpaceReplacement',
+      'primDomain',
+      'usageLocation',
+      'licenses',
+      'groupMemberships',
+      'sharedMailboxes',
+      'sharedMailboxPermission',
+      'sharedCalendars',
+      'sharedCalendarPermission',
+      'jobTitle',
+      'streetAddress',
+      'city',
+      'state',
+      'postalCode',
+      'country',
+      'companyName',
+      'department',
+      'perUserMfa',
+      'mobilePhone',
+      'businessPhones',
+      ...(userSettings?.userAttributes
+        ?.filter((attribute) => attribute.value !== 'sponsor')
+        .map((attribute) => `defaultAttributes.${attribute.label}.Value`) || []),
+    ],
+    actions: actions,
+  }
+
+  const createTemplateAction = {
+    label: 'Create User Template',
+    type: 'POST',
+    url: '/api/AddUserDefaults',
+
+    relatedQueryKeys: [`ListNewUserDefaults-${userSettings.currentTenant}`],
+  }
+
+  return (
+    <>
+      <CippHead title={pageTitle} />
+      <Box sx={{ py: 2 }}>
+        <CippDataTable
+          title="User Templates"
+          api={{ url: '/api/ListNewUserDefaults?includeAllTenants=false' }}
+          queryKey={`ListNewUserDefaults-${userSettings.currentTenant}`}
+          actions={actions}
+          offCanvas={offCanvas}
+          mobileCard={{ primary: 'templateName' }}
+          simpleColumns={[
+            'templateName',
+            'defaultForTenant',
+            'displayName',
+            'usernameFormat',
+            'usernameSpaceHandling',
+            'usageLocation',
+            'department',
+          ]}
+          cardButton={
+            <Button startIcon={<CippIcons.Add />} onClick={createDialog.handleOpen} sx={{ mr: 1 }}>
+              Add Template
+            </Button>
+          }
+        />
+      </Box>
+
+      <CippApiDialog
+        createDialog={createDialog}
+        title="Create User Template"
+        api={createTemplateAction}
+        defaultvalues={{ tenantFilter: userSettings.currentTenant }}
+        fields={[
+          {
+            name: 'tenantFilter',
+            type: 'hidden',
+          },
+          ...templateFields,
+        ]}
+      />
+    </>
+  )
+}
+
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+)
+
+export default Page

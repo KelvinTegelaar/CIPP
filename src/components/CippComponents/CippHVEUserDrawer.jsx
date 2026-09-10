@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Button, Alert, Box } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { PersonAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
@@ -60,9 +60,9 @@ export const CippHVEUserDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<PersonAdd />}
+        startIcon={<CippIcons.PersonAdd />}
       >
         {buttonText}
       </PermissionButton>
@@ -98,7 +98,8 @@ export const CippHVEUserDrawer = ({
                 <strong>HVE SMTP Configuration Settings:</strong>
                 <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2 }}>
                   <li>
-                    <strong>Server:</strong> smtp-hve.office365.com
+                    <strong>Server:</strong> smtp.hve.mx.microsoft (recommended) or
+                    smtp-hve.office365.com (deprecated)
                   </li>
                   <li>
                     <strong>Port:</strong> 587
@@ -109,9 +110,12 @@ export const CippHVEUserDrawer = ({
                   <li>
                     <strong>TLS Support:</strong> TLS 1.2 and TLS 1.3
                   </li>
+                  <li>
+                    <strong>Authentication:</strong> HVE account credentials or OAuth token
+                  </li>
                 </Box>
                 <Box sx={{ mt: 1, fontSize: "0.875rem", fontStyle: "italic" }}>
-                  Use these settings to configure your email client for HVE access.
+                  Use these settings to configure your application or device for HVE access.
                 </Box>
               </Box>
             </Alert>

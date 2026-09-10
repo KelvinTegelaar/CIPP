@@ -1,7 +1,10 @@
 import React from "react";
-import { Box, Button, SvgIcon } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
+import { Alert, Box, Button, Chip, SvgIcon, Typography } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { PencilIcon, TrashIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
+import { usePermissions } from "../../hooks/use-permissions";
+import { enterImpersonation } from "../../utils/impersonation";
 import NextLink from "next/link";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
@@ -10,21 +13,63 @@ import { Stack } from "@mui/system";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 
 const CippRoles = () => {
+  const queryClient = useQueryClient();
+  const { userRoles } = usePermissions();
+  // While impersonating, /me reports the impersonated roles, so this action disappears
+  // automatically — no nested impersonation; the only way back is the banner's Exit.
+  const isSuperAdmin = userRoles?.includes("superadmin");
+
   const actions = [
+    ...(isSuperAdmin
+      ? [
+          {
+            label: "Impersonate Role",
+            icon: (
+              <SvgIcon>
+                <CippIcons.EyeIcon />
+              </SvgIcon>
+            ),
+            confirmText: (
+              <Stack spacing={2}>
+                <Typography variant="body2">
+                  Impersonate this role? CIPP will reload and behave as if you only hold this
+                  role — including its tenant restrictions — until you click Exit in the banner
+                  at the top of the page. IP restrictions are not simulated.
+                </Typography>
+                <Alert severity="warning">
+                  This tests a <strong>single role in isolation</strong>, not role combinations.
+                  For users holding several roles, custom roles are <strong>restrictive, not
+                  additive</strong>: combined with a base role like editor or readonly they can
+                  only narrow access, so a real user's effective permissions may differ from
+                  what you see here.
+                </Alert>
+              </Stack>
+            ),
+            // Row-menu passes (row, action, formData); the offcanvas property card passes
+            // (item, data, {}) — resolve the row defensively.
+            customFunction: (a, b) => {
+              const row = a?.RoleName ? a : b;
+              if (row?.RoleName) enterImpersonation(row.RoleName, queryClient);
+            },
+            condition: (row) => row?.RoleName?.toLowerCase() !== "superadmin",
+          },
+        ]
+      : []),
     {
       label: "Edit",
+      pinned: true,
       icon: (
         <SvgIcon>
-          <PencilIcon />
+          <CippIcons.PencilIcon />
         </SvgIcon>
       ),
-      link: "/cipp/super-admin/cipp-roles/edit?role=[RoleName]",
+      link: "/cipp/advanced/authentication/cipp-roles/edit?role=[RoleName]",
     },
     {
       label: "Clone",
       icon: (
         <SvgIcon>
-          <DocumentDuplicateIcon />
+          <CippIcons.DocumentDuplicateIcon />
         </SvgIcon>
       ),
       type: "POST",
@@ -52,7 +97,7 @@ const CippRoles = () => {
       label: "Delete",
       icon: (
         <SvgIcon>
-          <TrashIcon />
+          <CippIcons.TrashIcon />
         </SvgIcon>
       ),
       confirmText: "Are you sure you want to delete this custom role?",
@@ -81,9 +126,29 @@ const CippRoles = () => {
         }
       });
 
+      const rules = data["PermissionRules"];
+      const hasRules = Array.isArray(rules?.Include) && rules.Include.length > 0;
+      if (hasRules) {
+        properties.push({
+          label: "Permission Rules",
+          value: (
+            <Stack direction="row" spacing={0.5} useFlexGap sx={{
+              flexWrap: "wrap"
+            }}>
+              {rules.Include.map((pattern, idx) => (
+                <Chip key={`inc-${idx}`} size="small" color="success" label={pattern} />
+              ))}
+              {(rules.Exclude || []).map((pattern, idx) => (
+                <Chip key={`exc-${idx}`} size="small" color="error" label={pattern} />
+              ))}
+            </Stack>
+          ),
+        });
+      }
+
       if (data["Permissions"] && Object.keys(data["Permissions"]).length > 0) {
         properties.push({
-          label: "Permissions",
+          label: hasRules ? "Effective Permissions (at last save)" : "Permissions",
           value: (
             <Stack spacing={0.5}>
               {Object.keys(data["Permissions"])
@@ -120,11 +185,11 @@ const CippRoles = () => {
             size="small"
             startIcon={
               <SvgIcon>
-                <PencilIcon />
+                <CippIcons.PencilIcon />
               </SvgIcon>
             }
             component={NextLink}
-            href="/cipp/super-admin/cipp-roles/add"
+            href="/cipp/advanced/authentication/cipp-roles/add"
           >
             Add Role
           </Button>

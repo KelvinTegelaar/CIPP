@@ -1,65 +1,46 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiGetCall, ApiPostCall } from "../api/ApiCall";
 
-const SETTINGS_STORAGE_KEY = "app.settings";
+export const MAX_BOOKMARKS = 50;
+
+const sanitizeBookmark = (bookmark) => {
+  if (!bookmark || typeof bookmark !== "object") {
+    return null;
+  }
+
+  if (typeof bookmark.path !== "string") {
+    return null;
+  }
+
+  const path = bookmark.path.trim();
+  if (!path) {
+    return null;
+  }
+
+  const label =
+    typeof bookmark.label === "string" && bookmark.label.trim()
+      ? bookmark.label.trim()
+      : path;
+
+  return {
+    ...bookmark,
+    path,
+    label,
+  };
+};
 
 const normalizeBookmarks = (value) => {
   if (Array.isArray(value)) {
-    return value;
+    return value.map(sanitizeBookmark).filter(Boolean);
   }
 
-  if (
-    value &&
-    typeof value === "object" &&
-    typeof value.path === "string" &&
-    typeof value.label === "string"
-  ) {
-    return [value];
+  const singleBookmark = sanitizeBookmark(value);
+  if (singleBookmark) {
+    return [singleBookmark];
   }
 
   return [];
-};
-
-const getLocalStoredBookmarks = () => {
-  if (typeof window === "undefined") {
-    return [];
-  }
-
-  try {
-    const restored = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (!restored) {
-      return [];
-    }
-
-    const parsed = JSON.parse(restored);
-    return normalizeBookmarks(parsed?.bookmarks);
-  } catch {
-    return [];
-  }
-};
-
-const clearLocalStoredBookmarks = () => {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    const restored = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (!restored) {
-      return;
-    }
-
-    const parsed = JSON.parse(restored);
-    if (!parsed || typeof parsed !== "object" || !Object.prototype.hasOwnProperty.call(parsed, "bookmarks")) {
-      return;
-    }
-
-    delete parsed.bookmarks;
-    window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(parsed));
-  } catch {
-    return;
-  }
 };
 
 const getBookmarksFromSettings = (settingsData) => {
@@ -80,8 +61,6 @@ const getBookmarksFromSettings = (settingsData) => {
 
 export const useUserBookmarks = () => {
   const queryClient = useQueryClient();
-  const localMigrationComplete = useRef(false);
-  const localMigrationInFlight = useRef(false);
 
   const userSettings = ApiGetCall({
     url: "/api/ListUserSettings",
@@ -103,7 +82,7 @@ export const useUserBookmarks = () => {
 
   const persistBookmarks = useCallback(
     (nextBookmarks, callbacks = {}) => {
-      const safeBookmarks = Array.isArray(nextBookmarks) ? nextBookmarks : [];
+      const safeBookmarks = normalizeBookmarks(nextBookmarks);
 
       queryClient.setQueryData(["userSettings"], (previous) => ({
         ...(previous || {}),
@@ -141,46 +120,39 @@ export const useUserBookmarks = () => {
     [persistBookmarks]
   );
 
-  useEffect(() => {
-    if (localMigrationComplete.current || localMigrationInFlight.current) {
-      return;
-    }
+  const isBookmarked = useCallback(
+    (path) => bookmarks.some((bookmark) => bookmark.path === path),
+    [bookmarks]
+  );
 
-    if (!auth.data?.clientPrincipal?.userDetails) {
-      return;
-    }
+  // Bookmarks are keyed on path alone, so adding and removing are the same gesture. Returns the
+  // action taken so callers can react to hitting the cap instead of silently doing nothing.
+  const toggleBookmark = useCallback(
+    (bookmark) => {
+      if (!bookmark?.path) {
+        return "invalid";
+      }
 
-    if (bookmarks.length > 0) {
-      localMigrationComplete.current = true;
-      return;
-    }
+      if (bookmarks.some((existing) => existing.path === bookmark.path)) {
+        setBookmarks(bookmarks.filter((existing) => existing.path !== bookmark.path));
+        return "removed";
+      }
 
-    const localBookmarks = getLocalStoredBookmarks();
-    if (localBookmarks.length === 0) {
-      localMigrationComplete.current = true;
-      return;
-    }
+      if (bookmarks.length >= MAX_BOOKMARKS) {
+        return "limit";
+      }
 
-    localMigrationInFlight.current = true;
-    const didPost = persistBookmarks(localBookmarks, {
-      onSuccess: () => {
-        clearLocalStoredBookmarks();
-        localMigrationInFlight.current = false;
-        localMigrationComplete.current = true;
-      },
-      onError: () => {
-        localMigrationInFlight.current = false;
-      },
-    });
-
-    if (!didPost) {
-      localMigrationInFlight.current = false;
-    }
-  }, [auth.data?.clientPrincipal?.userDetails, bookmarks.length, persistBookmarks]);
+      setBookmarks([...bookmarks, bookmark]);
+      return "added";
+    },
+    [bookmarks, setBookmarks]
+  );
 
   return {
     bookmarks,
     setBookmarks,
+    isBookmarked,
+    toggleBookmark,
     isLoading: userSettings.isLoading,
     isSaving: saveBookmarksPost.isPending,
   };

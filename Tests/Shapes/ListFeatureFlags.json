@@ -1,0 +1,24 @@
+{
+  "_metadata": {
+    "endpoint": "ListFeatureFlags",
+    "generatedAt": "2026-04-03T23:40:14.4966100+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "AllowUserToggle": "bool",
+    "Description": "string",
+    "Enabled": "bool",
+    "Endpoints": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "Id": "string",
+    "Name": "string",
+    "Pages": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "Timers": "string"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "_metadata": {
+    "endpoint": "ListMailboxForwarding",
+    "generatedAt": "2026-04-03T23:44:00.4117728+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "DeliverToMailboxAndForward": "bool",
+    "DisplayName": "string",
+    "ForwardingSmtpAddress": "string",
+    "ForwardingType": "string",
+    "ForwardTo": "string",
+    "InternalForwardingAddress": "string",
+    "PrimarySmtpAddress": "string",
+    "RecipientTypeDetails": "string",
+    "UPN": "string"
+  }
+}

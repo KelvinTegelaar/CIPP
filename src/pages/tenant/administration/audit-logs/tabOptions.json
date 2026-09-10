@@ -1,14 +1,28 @@
 [
   {
     "label": "Saved Logs",
-    "path": "/tenant/administration/audit-logs"
+    "path": "/tenant/administration/audit-logs",
+    "icon": "Storage"
   },
   {
     "label": "Log Searches",
-    "path": "/tenant/administration/audit-logs/searches"
+    "path": "/tenant/administration/audit-logs/searches",
+    "icon": "List"
+  },
+  {
+    "label": "Manual Searches",
+    "path": "/tenant/administration/audit-logs/manual-searches",
+    "icon": "ManageSearch"
+  },
+  {
+    "label": "Search Coverage",
+    "path": "/tenant/administration/audit-logs/coverage",
+    "icon": "Timeline",
+    "advanced": true
   },
   {
     "label": "Directory Audits",
-    "path": "/tenant/administration/audit-logs/directory-audits"
+    "path": "/tenant/administration/audit-logs/directory-audits",
+    "icon": "FactCheck"
   }
 ]

@@ -1,0 +1,117 @@
+---
+name: Validate JSON
+on:
+  # pull_request_target (not pull_request) so the token can comment on fork PRs.
+  # The PR's own code is never executed: it is checked out into ./pr as data only,
+  # and parsed by the validator script from the trusted base checkout.
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - dev
+    paths:
+      - "public/**/*.json"
+      - "src/data/**/*.json"
+      - ".github/workflows/Validate_JSON.yml"
+      - ".github/scripts/validate-json.mjs"
+  push:
+    branches:
+      - dev
+    paths:
+      - "public/**/*.json"
+      - "src/data/**/*.json"
+      - ".github/workflows/Validate_JSON.yml"
+      - ".github/scripts/validate-json.mjs"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  validate:
+    name: Parse JSON in public and src/data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base (trusted validator script)
+        uses: actions/checkout@v6
+
+      - name: Checkout PR head (untrusted, data only)
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          persist-credentials: false
+
+      - name: Validate JSON files
+        id: validate
+        continue-on-error: true
+        env:
+          ROOT: ${{ github.event_name == 'pull_request_target' && 'pr/' || '' }}
+        run: node .github/scripts/validate-json.mjs --strip "$ROOT" "${ROOT}public" "${ROOT}src/data"
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request_target'
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- validate-json -->';
+            const resultsFile = 'json-validation-results.json';
+            if (!fs.existsSync(resultsFile)) {
+              // The validator crashed before reporting; let its own error stand.
+              core.warning('No validation results found — skipping PR comment.');
+              return;
+            }
+            const failures = JSON.parse(fs.readFileSync(resultsFile, 'utf8'));
+
+            // Find a previous comment from this workflow so we update instead of piling up.
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const existing = comments.find(
+              (c) => c.user.type === 'Bot' && c.body.includes(marker)
+            );
+
+            let body;
+            if (failures.length > 0) {
+              const list = failures
+                .map(({ file, message }) => `- \`${file}\`\n  > ${message}`)
+                .join('\n');
+              body =
+                `${marker}\n### ⚠️ Invalid JSON detected\n\n` +
+                `${failures.length} JSON file(s) in this PR could not be parsed. ` +
+                `These files are loaded directly by CIPP, so a syntax error here breaks the app at runtime.\n\n` +
+                `${list}\n\n` +
+                `Please fix the syntax and push again — this comment will update automatically.`;
+            } else if (existing) {
+              body = `${marker}\n### ✅ JSON is valid\n\nAll JSON files in \`public\` and \`src/data\` parse correctly. Thanks for fixing it!`;
+            } else {
+              // Nothing was ever broken — stay quiet.
+              return;
+            }
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                ...context.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Fail if any JSON is invalid
+        if: steps.validate.outputs.invalid_count != '0'
+        run: |
+          echo "::error::${{ steps.validate.outputs.invalid_count }} invalid JSON file(s). See annotations above."
+          exit 1

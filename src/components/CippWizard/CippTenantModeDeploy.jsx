@@ -1,5 +1,7 @@
 import { useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
+  Alert,
   Stack,
   Box,
   Typography,
@@ -10,7 +12,6 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { Person, Apartment, Sync } from "@mui/icons-material";
 import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
@@ -35,6 +36,33 @@ export const CippTenantModeDeploy = (props) => {
     waiting: true,
   });
 
+  // The application step mints a client secret and this step uses it moments later, but Entra
+  // can take minutes to activate a new secret. Poll until it is usable so the wait happens
+  // here, rather than the sign-in appearing to work and then failing on the token exchange
+  // with an "invalid client secret" that looks like the app was created wrong.
+  const samSecret = ApiGetCall({
+    url: `/api/ExecSamSecretStatus`,
+    queryKey: "samSecretStatus",
+    waiting: true,
+    staleTime: 0,
+  });
+  const samSecretReady = samSecret.data?.ready === true;
+  const samSecretPropagating = samSecret.data?.reason === "propagating";
+  const {
+    isSuccess: samSecretLoaded,
+    dataUpdatedAt: samSecretUpdatedAt,
+    refetch: refetchSamSecret,
+  } = samSecret;
+
+  // Re-check on a timer rather than a fixed refetchInterval so polling stops once the secret
+  // is usable - there is nothing left to wait for at that point.
+  useEffect(() => {
+    if (samSecretLoaded && !samSecretReady) {
+      const timer = setTimeout(() => refetchSamSecret(), 15000);
+      return () => clearTimeout(timer);
+    }
+  }, [samSecretLoaded, samSecretUpdatedAt, samSecretReady, refetchSamSecret]);
+
   useEffect(() => {
     if (updateRefreshToken.isSuccess) {
       formControl.setValue("GDAPAuth", true);
@@ -47,22 +75,36 @@ export const CippTenantModeDeploy = (props) => {
     }
   }, [updateRefreshToken.isSuccess, formControl, addTenant.isSuccess]);
 
+  useEffect(() => {
+    if (partnerTenantInfo?.data?.authenticatedUserPrincipalName) {
+      formControl.setValue("GDAPAuth", true);
+      formControl.trigger("GDAPAuth");
+    }
+  }, [partnerTenantInfo?.data?.authenticatedUserPrincipalName, formControl]);
+
   return (
     <Stack spacing={2}>
       {/* Partner Tenant (GDAP) */}
       <Box>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction="row"
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
           <Typography variant="h6" gutterBottom>
             Partner Tenant
           </Typography>
           <Tooltip title="Refresh partner tenant information">
-            <IconButton
-              size="small"
-              onClick={() => partnerTenantInfo.refetch()}
-              disabled={partnerTenantInfo.isLoading}
-            >
-              <Sync fontSize="small" />
-            </IconButton>
+            <span>
+              <IconButton
+                size="small"
+                onClick={() => partnerTenantInfo.refetch()}
+                disabled={partnerTenantInfo.isLoading}
+              >
+                <CippIcons.Sync fontSize="small" />
+              </IconButton>
+            </span>
           </Tooltip>
         </Stack>
         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
@@ -97,7 +139,13 @@ export const CippTenantModeDeploy = (props) => {
                 borderColor: "divider",
               }}
             >
-              <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between"
+                }}>
                 <Stack direction="column" spacing={1} sx={{ flex: 1 }}>
                   <Skeleton variant="text" width="60%" height={24} />
                   <Skeleton variant="text" width="80%" height={20} />
@@ -124,36 +172,51 @@ export const CippTenantModeDeploy = (props) => {
                 <Stack
                   direction="row"
                   spacing={2}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}>
                   <Stack direction="column" spacing={0.5}>
-                    <Stack direction="row" spacing={0.75} alignItems="center">
+                    <Stack direction="row" spacing={0.75} sx={{
+                      alignItems: "center"
+                    }}>
                       <SvgIcon fontSize="small">
-                        <Apartment />
+                        <CippIcons.Apartment />
                       </SvgIcon>
-                      <Typography variant="body2" fontWeight="medium">
+                      <Typography variant="body2" sx={{
+                        fontWeight: "medium"
+                      }}>
                         {partnerTenantInfo.data.orgName}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" sx={{
+                        color: "text.secondary"
+                      }}>
                         {partnerTenantInfo.data.tenantId}
                       </Typography>
                     </Stack>
                     {partnerTenantInfo.data.authenticatedUserDisplayName && (
-                      <Stack direction="row" spacing={0.75} alignItems="center">
+                      <Stack direction="row" spacing={0.75} sx={{
+                        alignItems: "center"
+                      }}>
                         <SvgIcon fontSize="small">
-                          <Person />
+                          <CippIcons.Person />
                         </SvgIcon>
-                        <Typography variant="body2" fontWeight="medium">
+                        <Typography variant="body2" sx={{
+                          fontWeight: "medium"
+                        }}>
                           {partnerTenantInfo.data.authenticatedUserDisplayName}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           {partnerTenantInfo.data.authenticatedUserPrincipalName}
                         </Typography>
                       </Stack>
                     )}
                   </Stack>
-                  <Stack direction="row" spacing={1} alignItems="center">
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     {partnerTenantInfo.data.isPartnerTenant ? (
                       <Chip
                         label={getCippTranslation(partnerTenantInfo.data.partnerTenantType)}
@@ -182,8 +245,12 @@ export const CippTenantModeDeploy = (props) => {
                   borderColor: "warning.main",
                 }}
               >
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Typography variant="body2" color="warning.main">
+                <Stack direction="row" spacing={1} sx={{
+                  alignItems: "center"
+                }}>
+                  <Typography variant="body2" sx={{
+                    color: "warning.main"
+                  }}>
                     No partner tenant connected. Click the button below to authenticate with your
                     partner tenant.
                   </Typography>
@@ -192,8 +259,24 @@ export const CippTenantModeDeploy = (props) => {
             </Box>
           )}
 
+        {samSecretLoaded && !samSecretReady && (
+          <Alert severity={samSecretPropagating ? "info" : "warning"} sx={{ mb: 2 }}>
+            {samSecretPropagating ? (
+              <>
+                Waiting for Microsoft to activate the application secret created in the previous
+                step. Signing in before it is active fails with an invalid client secret error, so
+                this step unlocks on its own once it is ready - usually within a few minutes.
+                Nothing needs to be recreated.
+              </>
+            ) : (
+              samSecret.data?.message
+            )}
+          </Alert>
+        )}
+
         <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>
           <CIPPM365OAuthButton
+            disabled={samSecretLoaded && !samSecretReady}
             onAuthSuccess={(tokenData) => {
               const updatedTokenData = {
                 ...tokenData,
@@ -239,14 +322,18 @@ export const CippTenantModeDeploy = (props) => {
 
         {!partnerTenantInfo?.data?.orgName && (
           <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" color="warning.main">
+            <Typography variant="body2" sx={{
+              color: "warning.main"
+            }}>
               Please connect to your partner tenant first before adding separate tenants.
             </Typography>
           </Box>
         )}
 
         <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{
+            alignItems: "center"
+          }}>
             <Box sx={{ position: "relative" }}>
               {!partnerTenantInfo?.data?.orgName && (
                 <Box

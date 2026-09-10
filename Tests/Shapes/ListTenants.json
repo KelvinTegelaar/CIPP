@@ -1,0 +1,32 @@
+{
+  "_metadata": {
+    "endpoint": "ListTenants",
+    "generatedAt": "2026-04-03T23:47:39.2555145+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "ComplianceUrl": "string",
+    "customerId": "string",
+    "defaultDomainName": "string",
+    "delegatedPrivilegeStatus": "string",
+    "displayName": "string",
+    "domains": "string",
+    "ETag": "string",
+    "Excluded": "bool",
+    "ExcludeDate": "string",
+    "ExcludeUser": "string",
+    "GraphErrorCount": "number",
+    "hasAutoExtend": "bool",
+    "initialDomainName": "string",
+    "LastGraphError": "string",
+    "LastRefresh": "datetime",
+    "PartitionKey": "string",
+    "relationshipCount": "number",
+    "relationshipEnd": "datetime",
+    "RequiresRefresh": "bool",
+    "RowKey": "string",
+    "SharepointAdminUrl": "string",
+    "Timestamp": "datetime"
+  }
+}

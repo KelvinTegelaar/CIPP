@@ -1,0 +1,1307 @@
+import { SvgIcon } from '@mui/material'
+import { CippIcons } from '../utils/icon-registry'
+
+export const nativeMenuItems = [
+  {
+    title: 'Dashboard',
+    path: '/',
+    icon: (
+      <SvgIcon>
+        <CippIcons.HomeIcon />
+      </SvgIcon>
+    ),
+    permissions: ['CIPP.Core.*'],
+  },
+  {
+    title: 'Identity Management',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.UsersIcon />
+      </SvgIcon>
+    ),
+    permissions: ['Identity.*'],
+    items: [
+      {
+        title: 'Administration',
+        permissions: ['Identity.User.*'],
+        items: [
+          {
+            title: 'Users',
+            path: '/identity/administration/users',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Guest Users',
+            path: '/identity/administration/guest-users',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Risky Users',
+            path: '/identity/administration/risky-users',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Groups',
+            path: '/identity/administration/groups',
+            permissions: ['Identity.Group.*'],
+          },
+          {
+            title: 'Group Templates',
+            path: '/identity/administration/group-templates',
+            permissions: ['Identity.Group.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Devices',
+            path: '/identity/administration/devices',
+            permissions: ['Identity.Device.*'],
+          },
+          {
+            title: 'Deleted Items',
+            path: '/identity/administration/deleted-items',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Roles & PIM',
+            path: '/identity/administration/roles',
+            permissions: ['Identity.Role.*'],
+          },
+          {
+            title: 'JIT Admin',
+            path: '/identity/administration/jit-admin',
+            permissions: ['Identity.Role.*'],
+          },
+          {
+            title: 'JIT Admin Templates',
+            path: '/identity/administration/jit-admin-templates',
+            permissions: ['Identity.Role.*'],
+            scope: 'global',
+          },
+          {
+            title: 'JIT Role Templates',
+            path: '/identity/administration/jit-role-templates',
+            permissions: ['Identity.Role.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Vacation Mode',
+            path: '/identity/administration/vacation-mode',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Offboarding Wizard',
+            path: '/identity/administration/offboarding-wizard',
+            permissions: ['Identity.User.*'],
+          },
+        ],
+      },
+      {
+        title: 'Reports',
+        permissions: [
+          'Identity.User.*',
+          'Identity.Group.*',
+          'Identity.Device.*',
+          'Identity.Role.*',
+          'Identity.AuditLog.*',
+        ],
+        items: [
+          {
+            title: 'MFA Report',
+            path: '/identity/reports/mfa-report',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Inactive Users',
+            path: '/identity/reports/inactive-users-report',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Sign-in Report',
+            path: '/identity/reports/signin-report',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Microsoft Entra Connect Report',
+            path: '/identity/reports/azure-ad-connect-report',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Risk Detections',
+            path: '/identity/reports/risk-detections',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Group Usage Report',
+            path: '/identity/reports/group-usage',
+            permissions: ['Identity.Group.*'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Tenant Administration',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.BuildingOfficeIcon />
+      </SvgIcon>
+    ),
+    permissions: [
+      'Tenant.*',
+      'Identity.AuditLog.*',
+      'CIPP.Backup.*',
+      'Scheduler.Billing.*',
+    ],
+    items: [
+      {
+        title: 'Administration',
+        permissions: ['Tenant.Administration.*'],
+        items: [
+          {
+            title: 'Tenants',
+            path: '/tenant/administration/tenants',
+            permissions: ['Tenant.Administration.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Alert Configuration',
+            path: '/tenant/administration/alert-configuration',
+            permissions: ['Tenant.Alert.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Audit Logs',
+            path: '/tenant/administration/audit-logs',
+            permissions: ['Identity.AuditLog.*'],
+          },
+          {
+            title: 'Applications',
+            path: '/tenant/administration/applications/enterprise-apps',
+            permissions: ['Tenant.Application.*'],
+          },
+          {
+            title: 'Secure Score',
+            path: '/tenant/administration/securescore',
+            permissions: ['Tenant.Administration.*'],
+          },
+          {
+            title: 'App Consent Requests',
+            path: '/tenant/administration/app-consent-requests',
+            permissions: ['Tenant.Application.*'],
+          },
+          {
+            title: 'Authentication Methods',
+            path: '/tenant/administration/authentication-methods',
+            permissions: ['Tenant.Config.*'],
+          },
+          {
+            title: 'Partner Relationships',
+            path: '/tenant/administration/partner-relationships',
+            permissions: ['Tenant.Relationship.*'],
+          },
+          {
+            title: 'Domains',
+            path: '/tenant/administration/domains',
+            permissions: ['Tenant.Administration.*'],
+          },
+        ],
+      },
+      {
+        title: 'GDAP Management',
+        path: '/tenant/gdap-management',
+        permissions: ['Tenant.Relationship.*'],
+        scope: 'global',
+      },
+      // Flag-gated swap: the Baselines feature flag lists this path in its Pages
+      // (hidden while the flag is off) and the classic Standards/Drift paths in
+      // HidesPages (hidden while it is on) - the two never show together.
+      {
+        title: 'Baselines',
+        path: '/tenant/baselines',
+        permissions: ['Tenant.Baselines.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Domains Analyser',
+        path: '/tenant/standards/domains-analyser',
+        permissions: ['Tenant.DomainAnalyser.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Standards & Drift',
+        path: '/tenant/standards/alignment',
+        permissions: ['Tenant.Standards.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Best Practice Analyser',
+        path: '/tenant/standards/bpa-report',
+        permissions: ['Tenant.BestPracticeAnalyser.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Conditional Access',
+        permissions: ['Tenant.ConditionalAccess.*'],
+        items: [
+          {
+            title: 'CA Policies',
+            path: '/tenant/conditional/list-policies',
+            permissions: ['Tenant.ConditionalAccess.*'],
+          },
+          {
+            title: 'CA Templates',
+            path: '/tenant/conditional/list-template',
+            permissions: ['Tenant.ConditionalAccess.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Named Locations',
+            path: '/tenant/conditional/list-named-locations',
+            permissions: ['Tenant.ConditionalAccess.*'],
+          },
+        ],
+      },
+      {
+        title: 'Reports',
+        permissions: [
+          'Tenant.Administration.*',
+          'Scheduler.Billing.*',
+          'Tenant.Application.*',
+        ],
+        items: [
+          {
+            title: 'Licence Report',
+            path: '/tenant/reports/list-licenses',
+            permissions: ['Tenant.Administration.*'],
+          },
+          {
+            title: 'Sherweb Licence Report',
+            path: '/tenant/reports/list-csp-licenses',
+            permissions: ['Tenant.Directory.*'],
+          },
+          {
+            title: 'Consented Applications',
+            path: '/tenant/reports/application-consent',
+            permissions: ['Tenant.Application.*'],
+          },
+          {
+            title: 'Graph / Office Reports',
+            path: '/tenant/reports/graph-office-reports',
+            permissions: ['Tenant.Reports.*'],
+          },
+          {
+            title: 'Custom Test Report',
+            path: '/tenant/reports/custom-test-report',
+            permissions: ['Tenant.Reports.*'],
+          },
+        ],
+      },
+      {
+        title: 'Manage Tenant',
+        path: '/tenant/manage/edit',
+        permissions: ['Tenant.Administration.*'],
+      },
+    ],
+  },
+  {
+    title: 'Security & Compliance',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.ShieldOutlined />
+      </SvgIcon>
+    ),
+    permissions: [
+      'Security.Incident.*',
+      'Security.Alert.*',
+      'Tenant.DeviceCompliance.*',
+      'Security.SafeLinksPolicy.*',
+      'Security.DlpCompliancePolicy.*',
+      'Security.RetentionCompliancePolicy.*',
+      'Security.SensitivityLabel.*',
+      'Security.SensitiveInfoType.*',
+    ],
+    items: [
+      {
+        title: 'Incidents & Alerts',
+        permissions: ['Security.Incident.*'],
+        items: [
+          {
+            title: 'Incidents',
+            path: '/security/incidents/list-incidents',
+            permissions: ['Security.Incident.*'],
+          },
+          {
+            title: 'Alerts',
+            path: '/security/incidents/list-alerts',
+            permissions: ['Security.Alert.*'],
+          },
+          {
+            title: 'Defender Alerts',
+            path: '/security/incidents/list-mdo-alerts',
+            permissions: ['Security.Alert.*'],
+          },
+          {
+            title: 'Check Alerts',
+            path: '/security/incidents/list-check-alerts',
+            permissions: ['Security.Alert.*'],
+          },
+        ],
+      },
+      {
+        title: 'Defender',
+        permissions: ['Security.Alert.*'],
+        items: [
+          {
+            title: 'Defender Status',
+            path: '/security/defender/list-defender',
+            permissions: ['Security.Alert.*'],
+          },
+          {
+            title: 'Defender Deployment',
+            path: '/security/defender/deployment',
+            permissions: ['Security.Alert.*'],
+          },
+          {
+            title: 'Vulnerabilities',
+            path: '/security/defender/list-defender-tvm',
+            permissions: ['Security.Alert.*'],
+          },
+          {
+            title: 'CVE Management',
+            path: '/security/defender/defender-cve-exceptions',
+            permissions: ['Security.Alert.*'],
+          },
+        ],
+      },
+      {
+        title: 'Reports',
+        permissions: ['Tenant.DeviceCompliance.*', 'Security.Defender.*'],
+        items: [
+          {
+            title: 'Device Compliance',
+            path: '/security/reports/list-device-compliance',
+            permissions: ['Tenant.DeviceCompliance.*'],
+          },
+          {
+            title: 'MDE Onboarding',
+            path: '/security/reports/mde-onboarding',
+            permissions: ['Security.Defender.*'],
+          },
+          {
+            title: 'Vulnerability Report',
+            path: '/security/reports/cve-report',
+            permissions: ['Security.Defender.*'],
+          },
+        ],
+      },
+      {
+        title: 'Safe Links',
+        permissions: ['Security.SafeLinksPolicy.*'],
+        items: [
+          {
+            title: 'Safe Links Policies',
+            path: '/security/safelinks/safelinks',
+            permissions: ['Security.SafeLinksPolicy.*'],
+          },
+          {
+            title: 'Safe Links Templates',
+            path: '/security/safelinks/safelinks-template',
+            permissions: ['Security.SafeLinksPolicy.*'],
+            scope: 'global',
+          },
+        ],
+      },
+      {
+        title: 'Purview Compliance',
+        permissions: [
+          'Security.DlpCompliancePolicy.*',
+          'Security.RetentionCompliancePolicy.*',
+          'Security.SensitivityLabel.*',
+          'Security.SensitiveInfoType.*',
+        ],
+        items: [
+          {
+            title: 'DLP Policies',
+            path: '/security/compliance/dlp',
+            permissions: ['Security.DlpCompliancePolicy.*'],
+          },
+          {
+            title: 'DLP Policy Templates',
+            path: '/security/compliance/dlp-templates',
+            permissions: ['Security.DlpCompliancePolicy.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Retention Policies',
+            path: '/security/compliance/retention',
+            permissions: ['Security.RetentionCompliancePolicy.*'],
+          },
+          {
+            title: 'Retention Policy Templates',
+            path: '/security/compliance/retention-templates',
+            permissions: ['Security.RetentionCompliancePolicy.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Sensitivity Labels',
+            path: '/security/compliance/labels',
+            permissions: ['Security.SensitivityLabel.*'],
+          },
+          {
+            title: 'Sensitivity Label Templates',
+            path: '/security/compliance/labels-templates',
+            permissions: ['Security.SensitivityLabel.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Sensitive Information Types',
+            path: '/security/compliance/sit',
+            permissions: ['Security.SensitiveInfoType.*'],
+          },
+          {
+            title: 'Sensitive Info Type Templates',
+            path: '/security/compliance/sit-templates',
+            permissions: ['Security.SensitiveInfoType.*'],
+            scope: 'global',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Copilot & AI',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.SparklesIcon />
+      </SvgIcon>
+    ),
+    permissions: ['Tenant.Standards.*'],
+    items: [
+      {
+        title: 'Shadow AI Discovery',
+        path: '/copilot/shadow-ai',
+        permissions: ['Tenant.Standards.*'],
+      },
+      {
+        title: 'Copilot Settings',
+        path: '/copilot/settings',
+        permissions: ['Tenant.Standards.*'],
+      },
+      {
+        title: 'Agent365',
+        permissions: ['Tenant.Standards.*'],
+        items: [
+          {
+            title: 'Packages',
+            path: '/copilot/agent365/packages',
+            permissions: ['Tenant.Standards.*'],
+          },
+        ],
+      },
+      {
+        title: 'Reports',
+        permissions: ['Tenant.Standards.*'],
+        items: [
+          {
+            title: 'Copilot Adoption',
+            path: '/copilot/reports/copilot-adoption',
+            permissions: ['Tenant.Standards.*'],
+          },
+          {
+            title: 'Copilot Usage Trend',
+            path: '/copilot/reports/copilot-trend',
+            permissions: ['Tenant.Standards.*'],
+          },
+          {
+            title: 'Copilot User Activity',
+            path: '/copilot/reports/copilot-usage',
+            permissions: ['Tenant.Standards.*'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Intune',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.Laptop />
+      </SvgIcon>
+    ),
+    permissions: [
+      'Endpoint.Application.*',
+      'Endpoint.Autopilot.*',
+      'Endpoint.MEM.*',
+      'Endpoint.Device.*',
+      'Endpoint.Device.Read',
+    ],
+    items: [
+      {
+        title: 'Applications',
+        permissions: ['Endpoint.Application.*'],
+        items: [
+          {
+            title: 'Applications',
+            path: '/endpoint/applications/list',
+            permissions: ['Endpoint.Application.*'],
+          },
+          {
+            title: 'Application Queue',
+            path: '/endpoint/applications/queue',
+            permissions: ['Endpoint.Application.*'],
+          },
+          {
+            title: 'Application Templates',
+            path: '/endpoint/applications/templates',
+            docsPath: 'endpoint/applications/application-templates',
+            permissions: ['Endpoint.Application.*'],
+            scope: 'global',
+          },
+        ],
+      },
+      {
+        title: 'Autopilot & Enrollment',
+        permissions: ['Endpoint.Autopilot.*'],
+        items: [
+          {
+            title: 'Autopilot Devices',
+            path: '/endpoint/autopilot/list-devices',
+            permissions: ['Endpoint.Autopilot.*'],
+          },
+          {
+            title: 'Add Autopilot Device',
+            path: '/endpoint/autopilot/add-device',
+            permissions: ['Endpoint.Autopilot.*'],
+          },
+          {
+            title: 'Enrollment Profiles',
+            path: '/endpoint/autopilot/enrollment-profiles',
+            permissions: ['Endpoint.Autopilot.*'],
+          },
+          {
+            title: 'Status Pages',
+            path: '/endpoint/autopilot/list-status-pages',
+            permissions: ['Endpoint.Autopilot.*'],
+          },
+        ],
+      },
+      {
+        title: 'Device Management',
+        permissions: ['Endpoint.MEM.*', 'Endpoint.Device.*'],
+        items: [
+          {
+            title: 'Devices',
+            path: '/endpoint/MEM/devices',
+            docsPath: 'endpoint/mem/devices',
+            permissions: ['Endpoint.Device.*'],
+          },
+          {
+            title: 'BitLocker Key Search',
+            path: '/endpoint/MEM/bitlocker-search',
+            docsPath: 'endpoint/mem/bitlocker-search',
+            permissions: ['Endpoint.Device.*'],
+          },
+          {
+            title: 'Configuration Policies',
+            path: '/endpoint/MEM/list-policies',
+            docsPath: 'endpoint/mem/list-policies',
+            permissions: ['Endpoint.MEM.*'],
+          },
+          {
+            title: 'Compliance Policies',
+            path: '/endpoint/MEM/list-compliance-policies',
+            docsPath: 'endpoint/mem/list-compliance-policies',
+            permissions: ['Endpoint.MEM.*'],
+          },
+          {
+            title: 'App Policies',
+            path: '/endpoint/MEM/list-appprotection-policies',
+            docsPath: 'endpoint/mem/list-appprotection-policies',
+            permissions: ['Endpoint.MEM.*'],
+          },
+          {
+            title: 'Policy Templates',
+            path: '/endpoint/MEM/list-templates',
+            docsPath: 'endpoint/mem/list-templates',
+            permissions: ['Endpoint.MEM.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Reusable Settings',
+            path: '/endpoint/MEM/reusable-settings',
+            docsPath: 'endpoint/mem/reusable-settings',
+            permissions: ['Endpoint.MEM.*'],
+          },
+          {
+            title: 'Reusable Settings Templates',
+            path: '/endpoint/MEM/reusable-settings-templates',
+            docsPath: 'endpoint/mem/reusable-settings-templates',
+            permissions: ['Endpoint.MEM.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Assignment Filters',
+            path: '/endpoint/MEM/assignment-filters',
+            docsPath: 'endpoint/mem/assignment-filters',
+            permissions: ['Endpoint.MEM.*'],
+          },
+          {
+            title: 'Assignment Filter Templates',
+            path: '/endpoint/MEM/assignment-filter-templates',
+            docsPath: 'endpoint/mem/assignment-filter-templates',
+            permissions: ['Endpoint.MEM.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Scripts',
+            path: '/endpoint/MEM/list-scripts',
+            docsPath: 'endpoint/mem/list-scripts',
+            permissions: ['Endpoint.MEM.*'],
+          },
+          {
+            title: 'MAA Requests',
+            path: '/endpoint/MEM/approval-requests',
+            docsPath: 'endpoint/mem/approval-requests',
+            permissions: ['Endpoint.MEM.*'],
+          },
+        ],
+      },
+      {
+        title: 'Reports',
+        permissions: [
+          'Endpoint.Device.*',
+          'Endpoint.Autopilot.*',
+          'Endpoint.MEM.*',
+        ],
+        items: [
+          {
+            title: 'Analytics Device Score',
+            path: '/endpoint/reports/analyticsdevicescore',
+            permissions: ['Endpoint.Device.*'],
+          },
+          {
+            title: 'Work from Anywhere',
+            path: '/endpoint/reports/workfromanywhere',
+            permissions: ['Endpoint.Device.*'],
+          },
+          {
+            title: 'Autopilot Deployments',
+            path: '/endpoint/reports/autopilot-deployment',
+            permissions: ['Endpoint.Autopilot.*'],
+          },
+          {
+            title: 'Discovered Apps',
+            path: '/endpoint/reports/detected-apps',
+            permissions: ['Endpoint.MEM.*'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Teams & SharePoint',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.CloudOutlined />
+      </SvgIcon>
+    ),
+    permissions: [
+      'Sharepoint.Site.*',
+      'Sharepoint.Admin.*',
+      'Teams.Group.*',
+      'Teams.Activity.*',
+      'Teams.Voice.*',
+    ],
+    items: [
+      {
+        title: 'OneDrive',
+        path: '/teams-share/onedrive',
+        permissions: ['Sharepoint.Site.*'],
+      },
+      {
+        title: 'SharePoint',
+        path: '/teams-share/sharepoint',
+        permissions: ['Sharepoint.Admin.*'],
+      },
+      {
+        title: 'SharePoint Templates',
+        path: '/teams-share/sharepoint-templates',
+        permissions: ['Sharepoint.Admin.*'],
+      },
+      {
+        title: 'Deleted Sites',
+        path: '/teams-share/deleted-sites',
+        permissions: ['Sharepoint.Admin.*'],
+      },
+      {
+        title: 'Sharing Report',
+        path: '/teams-share/sharing-report',
+        permissions: ['Sharepoint.Site.*'],
+      },
+      {
+        title: 'Permissions Report',
+        path: '/teams-share/permissions-report',
+        permissions: ['Sharepoint.Site.*'],
+      },
+      {
+        title: 'External Users',
+        path: '/teams-share/external-users',
+        permissions: ['Sharepoint.Site.*'],
+      },
+      {
+        title: 'Teams',
+        permissions: ['Teams.Group.*'],
+        items: [
+          {
+            title: 'Teams',
+            path: '/teams-share/teams/list-team',
+            permissions: ['Teams.Group.*'],
+          },
+          {
+            title: 'Teams Activity',
+            path: '/teams-share/teams/teams-activity',
+            permissions: ['Teams.Activity.*'],
+          },
+          {
+            title: 'Business Voice',
+            path: '/teams-share/teams/business-voice',
+            permissions: ['Teams.Voice.*'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Email & Exchange',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.MailOutlined />
+      </SvgIcon>
+    ),
+    permissions: [
+      'Exchange.Mailbox.*',
+      'Exchange.Contact.*',
+      'Exchange.SpamFilter.*',
+      'Exchange.TransportRule.*',
+      'Exchange.Connector.*',
+      'Exchange.ConnectionFilter.*',
+      'Exchange.Equipment.*',
+      'Exchange.Room.*',
+      'Exchange.SafeLinks.*',
+      'Exchange.Group.*',
+      'Exchange.RetentionPolicies.*',
+    ],
+    items: [
+      {
+        title: 'Administration',
+        permissions: ['Exchange.Mailbox.*'],
+        items: [
+          {
+            title: 'Mailboxes',
+            path: '/email/administration/mailboxes',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'HVE Accounts',
+            path: '/email/administration/hve-accounts',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Deleted Mailboxes',
+            path: '/email/administration/deleted-mailboxes',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Mailbox Rules',
+            path: '/email/administration/mailbox-rules',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Contacts',
+            path: '/email/administration/contacts',
+            permissions: ['Exchange.Contact.*'],
+          },
+          {
+            title: 'Contact Templates',
+            path: '/email/administration/contacts-template',
+            permissions: ['Exchange.Contact.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Quarantine',
+            path: '/email/administration/quarantine',
+            permissions: ['Exchange.SpamFilter.*'],
+          },
+          {
+            title: 'Restricted Users',
+            path: '/email/administration/restricted-users',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Tenant Allow/Block Lists',
+            path: '/email/administration/tenant-allow-block-lists',
+            permissions: ['Exchange.SpamFilter.*'],
+          },
+          {
+            title: 'Allow/Block List Templates',
+            path: '/email/administration/tenant-allow-block-list-templates',
+            permissions: ['Exchange.SpamFilter.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Retention Policies & Tags',
+            path: '/email/administration/exchange-retention/policies',
+            permissions: ['Exchange.RetentionPolicies.*'],
+          },
+        ],
+      },
+      {
+        title: 'Transport',
+        permissions: ['Exchange.TransportRule.*', 'Exchange.Connector.*'],
+        items: [
+          {
+            title: 'Transport Rules',
+            path: '/email/transport/list-rules',
+            permissions: ['Exchange.TransportRule.*'],
+          },
+          {
+            title: 'Transport Templates',
+            path: '/email/transport/list-templates',
+            permissions: ['Exchange.TransportRule.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Connectors',
+            path: '/email/transport/list-connectors',
+            permissions: ['Exchange.Connector.*'],
+          },
+          {
+            title: 'Connector Templates',
+            path: '/email/transport/list-connector-templates',
+            permissions: ['Exchange.Connector.*'],
+            scope: 'global',
+          },
+        ],
+      },
+      {
+        title: 'Spamfilter',
+        permissions: ['Exchange.SpamFilter.*', 'Exchange.ConnectionFilter.*'],
+        items: [
+          {
+            title: 'Spamfilter',
+            path: '/email/spamfilter/list-spamfilter',
+            permissions: ['Exchange.SpamFilter.*'],
+          },
+          {
+            title: 'Spamfilter Templates',
+            path: '/email/spamfilter/list-templates',
+            permissions: ['Exchange.SpamFilter.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Connection Filter',
+            path: '/email/spamfilter/list-connectionfilter',
+            permissions: ['Exchange.ConnectionFilter.*'],
+          },
+          {
+            title: 'Connection Filter Templates',
+            path: '/email/spamfilter/list-connectionfilter-templates',
+            permissions: ['Exchange.ConnectionFilter.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Quarantine Policies',
+            path: '/email/spamfilter/list-quarantine-policies',
+            permissions: ['Exchange.SpamFilter.*'],
+          },
+        ],
+      },
+      {
+        title: 'Resource Management',
+        permissions: ['Exchange.Equipment.*', 'Exchange.Room.*'],
+        items: [
+          {
+            title: 'Equipment',
+            path: '/email/resources/management/equipment',
+            permissions: ['Exchange.Equipment.*'],
+          },
+          {
+            title: 'Rooms',
+            path: '/email/resources/management/list-rooms',
+            permissions: ['Exchange.Room.*'],
+          },
+          {
+            title: 'Room Lists',
+            path: '/email/resources/management/room-lists',
+            permissions: ['Exchange.Room.*'],
+          },
+        ],
+      },
+      {
+        title: 'Reports',
+        permissions: [
+          'Exchange.Mailbox.*',
+          'Exchange.SpamFilter.*',
+          'Exchange.SafeLinks.*',
+          'Exchange.Group.*',
+        ],
+        items: [
+          {
+            title: 'Mail Flow Statistics',
+            path: '/email/reports/mail-flow-statistics',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Mailbox Statistics',
+            path: '/email/reports/mailbox-statistics',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Mailbox Activity',
+            path: '/email/reports/mailbox-activity',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Mailbox Client Access Settings',
+            path: '/email/reports/mailbox-cas-settings',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Mailbox Permissions',
+            path: '/email/reports/mailbox-permissions',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Calendar Permissions',
+            path: '/email/reports/calendar-permissions',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Mailbox Forwarding',
+            path: '/email/reports/mailbox-forwarding',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Anti-Phishing Filters',
+            path: '/email/reports/antiphishing-filters',
+            permissions: ['Exchange.SpamFilter.*'],
+          },
+          {
+            title: 'Malware Filters',
+            path: '/email/reports/malware-filters',
+            permissions: ['Exchange.SpamFilter.*'],
+          },
+          {
+            title: 'Safe Attachments Filters',
+            path: '/email/reports/safeattachments-filters',
+            permissions: ['Exchange.SafeLinks.*'],
+          },
+          {
+            title: 'Shared Mailbox with Enabled Account',
+            path: '/email/reports/SharedMailboxEnabledAccount',
+            docsPath: 'email/reports/sharedmailboxenabledaccount',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'ActiveSync Devices',
+            path: '/email/reports/activesync-devices',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Global Address List',
+            path: '/email/reports/global-address-list',
+            permissions: ['Exchange.Group.*'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Tools',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.HomeRepairService />
+      </SvgIcon>
+    ),
+    permissions: [
+      'CIPP.*',
+      'Tenant.Administration.*',
+      'Tenant.Application.*',
+      'Tenant.DomainAnalyser.*',
+      'Exchange.Mailbox.*',
+      'Endpoint.MEM.*',
+      'CIPP.Scheduler.*',
+    ],
+    items: [
+      {
+        title: 'Tenant Tools',
+        permissions: ['Tenant.Administration.*'],
+        items: [
+          {
+            title: 'Graph Explorer',
+            path: '/tenant/tools/graph-explorer',
+            docsPath: 'tools/tenant-tools/graph-explorer',
+            permissions: ['Tenant.Administration.*'],
+          },
+          {
+            title: 'Tenant Lookup',
+            path: '/tenant/tools/tenantlookup',
+            docsPath: 'tools/tenant-tools/tenantlookup',
+            permissions: ['Tenant.Administration.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Application Approval',
+            path: '/tenant/tools/appapproval',
+            docsPath: 'tools/tenant-tools/appapproval',
+            permissions: ['Tenant.Application.*'],
+          },
+          {
+            title: 'Individual Domain Check',
+            path: '/tenant/tools/individual-domains',
+            docsPath: 'tools/tenant-tools/individual-domains',
+            permissions: ['Tenant.DomainAnalyser.*'],
+            scope: 'global',
+          },
+          {
+            title: 'IP Database',
+            path: '/tenant/tools/geoiplookup',
+            docsPath: 'tools/tenant-tools/geoiplookup',
+            permissions: ['CIPP.Core.*'],
+            scope: 'global',
+          },
+        ],
+      },
+      {
+        title: 'Email Tools',
+        permissions: ['Exchange.Mailbox.*'],
+        items: [
+          {
+            title: 'Message Trace',
+            path: '/email/tools/message-trace',
+            docsPath: 'tools/email-tools/message-trace',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Message Viewer',
+            path: '/email/tools/message-viewer',
+            docsPath: 'tools/email-tools/message-viewer',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Mailbox Restores',
+            path: '/email/tools/mailbox-restores',
+            docsPath: 'tools/email-tools/mailbox-restores',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+          {
+            title: 'Message Encryption',
+            path: '/email/tools/message-encryption',
+            docsPath: 'tools/email-tools/message-encryption',
+            permissions: ['Exchange.Mailbox.*'],
+          },
+        ],
+      },
+      {
+        title: 'Intune Tools',
+        permissions: ['Endpoint.MEM.*'],
+        items: [
+          {
+            title: 'Compare Policies',
+            path: '/endpoint/MEM/compare-policies',
+            docsPath: 'tools/intune-tools/compare-policies',
+            permissions: ['Endpoint.MEM.*'],
+            scope: 'global',
+          },
+        ],
+      },
+      {
+        title: 'Dark Web Tools',
+        permissions: ['CIPP.Core.*'],
+        items: [
+          {
+            title: 'Tenant Breach Lookup',
+            path: '/tools/tenantbreachlookup',
+            docsPath: 'tools/dark-web-tools/tenant-breach-lookup',
+            permissions: ['CIPP.Core.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Breach Lookup',
+            path: '/tools/breachlookup',
+            docsPath: 'tools/dark-web-tools/breach-lookup',
+            permissions: ['CIPP.Core.*'],
+            scope: 'global',
+          },
+        ],
+      },
+      {
+        title: 'Report Builder',
+        path: '/tools/report-builder/generated',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Custom Tests',
+        path: '/tools/custom-tests',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.Tests.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Template Library',
+        path: '/tools/templatelib',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Catalog',
+        path: '/tools/community-repos',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Template Package Manager',
+        path: '/tools/template-packages',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['Tenant.ConditionalAccess.*', 'Endpoint.MEM.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Scheduler',
+        path: '/cipp/scheduler',
+        docsPath: 'tools/scheduler',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Scheduler.*'],
+      },
+    ],
+  },
+  {
+    title: 'CIPP',
+    type: 'header',
+    icon: (
+      <SvgIcon>
+        <CippIcons.WrenchIcon />
+      </SvgIcon>
+    ),
+    permissions: [
+      'CIPP.*', // Pattern matching - matches any CIPP permission
+    ],
+    items: [
+      {
+        title: 'Application Settings',
+        path: '/cipp/settings',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.AppSettings.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Logbook',
+        path: '/cipp/logs',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Setup Wizard',
+        path: '/onboardingv2',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.AppSettings.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Integrations',
+        path: '/cipp/integrations',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.Extension.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Custom Data',
+        path: '/cipp/custom-data/directory-extensions',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.AppSettings.*'],
+        scope: 'global',
+      },
+      {
+        title: 'Advanced',
+        roles: ['superadmin'],
+        permissions: ['CIPP.SuperAdmin.*'],
+        items: [
+          {
+            title: 'Super Admin',
+            path: '/cipp/advanced/super-admin/tenant-mode',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Container Management',
+            path: '/cipp/advanced/container-management/status',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            // Lands on cipp-roles, not cipp-users: cipp-users is gated by the
+            // SuperAdminNG feature flag, and the nav filter drops any item whose
+            // path is in a disabled flag's Pages list — pointing here at cipp-users
+            // would hide the whole Authentication group (including the ungated
+            // SSO and SAM App pages) on non-NG instances.
+            title: 'Authentication',
+            path: '/cipp/advanced/authentication/cipp-roles',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Exchange Cmdlets',
+            path: '/cipp/advanced/exchange-cmdlets',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Timers',
+            path: '/cipp/advanced/timers',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Table Maintenance',
+            path: '/cipp/advanced/table-maintenance',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            title: 'CIPPDB Cache',
+            path: '/cipp/advanced/cippdb-cache',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+          {
+            title: 'Diagnostics',
+            path: '/cipp/advanced/diagnostics',
+            roles: ['superadmin'],
+            permissions: ['CIPP.SuperAdmin.*'],
+            scope: 'global',
+          },
+        ],
+      },
+    ],
+  },
+]

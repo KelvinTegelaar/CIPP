@@ -1,0 +1,36 @@
+{
+  "_metadata": {
+    "endpoint": "ListConnectionFilter",
+    "generatedAt": "2026-04-03T23:42:04.7261137+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AdminDisplayName": "string",
+    "DirectoryBasedEdgeBlockMode": "string",
+    "DistinguishedName": "string",
+    "EnableSafeList": "bool",
+    "ExchangeObjectId": "string",
+    "ExchangeVersion": "string",
+    "Guid": "string",
+    "Id": "string",
+    "Identity": "string",
+    "IPAllowList": "null",
+    "IPBlockList": "null",
+    "IsDefault": "bool",
+    "IsValid": "bool",
+    "Name": "string",
+    "ObjectCategory": "string",
+    "ObjectClass": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "OrganizationalUnitRoot": "string",
+    "OrganizationId": "string",
+    "OriginatingServer": "string",
+    "WhenChanged": "datetime",
+    "WhenChangedUTC": "datetime",
+    "WhenCreated": "datetime",
+    "WhenCreatedUTC": "datetime"
+  }
+}

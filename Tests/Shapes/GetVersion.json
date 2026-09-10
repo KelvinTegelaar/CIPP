@@ -1,0 +1,16 @@
+{
+  "_metadata": {
+    "endpoint": "GetVersion",
+    "generatedAt": "2026-04-03T23:40:01.5268074+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "LocalCIPPAPIVersion": "string",
+    "LocalCIPPVersion": "null",
+    "OutOfDateCIPP": "bool",
+    "OutOfDateCIPPAPI": "bool",
+    "RemoteCIPPAPIVersion": "string",
+    "RemoteCIPPVersion": "string"
+  }
+}

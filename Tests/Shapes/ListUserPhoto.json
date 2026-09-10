@@ -1,0 +1,19 @@
+{
+  "_metadata": {
+    "endpoint": "ListUserPhoto",
+    "generatedAt": "2026-04-03T23:40:39.3475364+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "error": {
+      "code": "string",
+      "innerError": {
+        "client-request-id": "truncated",
+        "date": "truncated",
+        "request-id": "truncated"
+      },
+      "message": "string"
+    }
+  }
+}

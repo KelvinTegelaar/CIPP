@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Button, Box } from "@mui/material";
 import { useForm, useFormState } from "react-hook-form";
-import { GroupAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { CippApiResults } from "./CippApiResults";
 import { ApiPostCall } from "../../api/ApiCall";
@@ -74,9 +74,9 @@ export const CippAddTenantGroupDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<GroupAdd />}
+        startIcon={<CippIcons.GroupAdd />}
       >
         {buttonText}
       </PermissionButton>

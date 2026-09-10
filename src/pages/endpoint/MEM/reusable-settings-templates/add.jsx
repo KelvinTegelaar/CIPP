@@ -14,7 +14,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useMemo } from "react";
 import { useSettings } from "../../../../hooks/use-settings";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 
 const Page = () => {
@@ -305,8 +305,9 @@ const Page = () => {
             <Typography variant="h6" sx={{ mb: 1 }}>
               Group Setting Collection (Policy)
             </Typography>
-            <Table size="small">
-              <TableHead>
+            {/* below sm, rows stack as full-width blocks instead of squeezing three columns */}
+            <Table size="small" sx={{ display: { xs: "block", sm: "table" } }}>
+              <TableHead sx={{ display: { xs: "none", sm: "table-header-group" } }}>
                 <TableRow>
                   <TableCell sx={{ display: "none" }}>ID</TableCell>
                   <TableCell>Autoresolve</TableCell>
@@ -314,7 +315,7 @@ const Page = () => {
                   <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
+              <TableBody sx={{ display: { xs: "block", sm: "table-row-group" } }}>
                 {fields.map((field, index) => {
                   const idPath = `groupSettingCollectionValue.${index}.children.0.simpleSettingValue.value`;
                   const autoresolvePath = `groupSettingCollectionValue.${index}.children.1.choiceSettingValue.value`;
@@ -325,7 +326,18 @@ const Page = () => {
                   const autoresolveFalse = `${autoresolveBase}_false`;
 
                   return (
-                    <TableRow key={field.id || index}>
+                    <TableRow
+                      key={field.id || index}
+                      sx={{
+                        display: { xs: "flex", sm: "table-row" },
+                        flexDirection: { xs: "column", sm: "row" },
+                        gap: { xs: 1, sm: 0 },
+                        pb: { xs: 2, sm: 0 },
+                        mb: { xs: 2, sm: 0 },
+                        borderBottom: { xs: "1px solid", sm: "none" },
+                        borderColor: "divider",
+                      }}
+                    >
                       <TableCell sx={{ display: "none" }}>
                         <CippFormComponent
                           type="textField"
@@ -334,7 +346,13 @@ const Page = () => {
                           formControl={formControl}
                         />
                       </TableCell>
-                      <TableCell sx={{ width: "25%" }}>
+                      <TableCell
+                        sx={{
+                          display: { xs: "block", sm: "table-cell" },
+                          width: { xs: "100%", sm: "25%" },
+                          border: { xs: "none", sm: undefined },
+                        }}
+                      >
                         <CippFormComponent
                           type="autoComplete"
                           name={autoresolvePath}
@@ -348,7 +366,13 @@ const Page = () => {
                           creatable
                         />
                       </TableCell>
-                      <TableCell sx={{ width: "35%" }}>
+                      <TableCell
+                        sx={{
+                          display: { xs: "block", sm: "table-cell" },
+                          width: { xs: "100%", sm: "35%" },
+                          border: { xs: "none", sm: undefined },
+                        }}
+                      >
                         <CippFormComponent
                           type="textField"
                           name={keywordPath}
@@ -357,7 +381,14 @@ const Page = () => {
                           includeSystemVariables
                         />
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell
+                        align="right"
+                        sx={{
+                          display: { xs: "block", sm: "table-cell" },
+                          width: { xs: "100%", sm: "auto" },
+                          border: { xs: "none", sm: undefined },
+                        }}
+                      >
                         <Button size="small" color="error" onClick={() => remove(index)}>
                           Remove
                         </Button>

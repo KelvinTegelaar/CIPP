@@ -1,4 +1,3 @@
-import { ArrowDropDown, Visibility } from "@mui/icons-material";
 import {
   Autocomplete,
   CircularProgress,
@@ -8,54 +7,94 @@ import {
   Tooltip,
   Box,
   Typography,
-} from "@mui/material";
-import Link from "next/link";
-import { useEffect, useState, useMemo, useCallback, useRef, useImperativeHandle } from "react";
-import { useSettings } from "../../hooks/use-settings";
-import { getCippError } from "../../utils/get-cipp-error";
-import { ApiGetCallWithPagination } from "../../api/ApiCall";
-import { Sync } from "@mui/icons-material";
-import { Stack } from "@mui/system";
-import React from "react";
-import { CippOffCanvas } from "./CippOffCanvas";
-import CippJsonView from "../CippFormPages/CippJSONView";
+} from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
+import Link from 'next/link'
+import { useEffect, useState, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
+import { useSettings } from '../../hooks/use-settings'
+import { getCippError } from '../../utils/get-cipp-error'
+import { ApiGetCallWithPagination } from '../../api/ApiCall'
+import { Stack } from '@mui/system'
+import React from 'react'
+import { CippOffCanvas } from './CippOffCanvas'
+import CippJsonView from '../CippFormPages/CippJSONView'
+
+// MUI v9 TextField no longer accepts top-level inputProps/InputProps — they end up on a DOM
+// node and React warns. Flatten any legacy nested keys into the correct slot objects.
+const flattenTextFieldSlot = (slot) => {
+  if (!slot || typeof slot !== 'object') return slot
+  const { inputProps, InputProps, ...rest } = slot
+  return {
+    ...rest,
+    ...(inputProps ?? {}),
+    ...(InputProps ?? {}),
+  }
+}
 
 const MemoTextField = React.memo(function MemoTextField({
   params,
   label,
   placeholder,
-  ...otherProps
+  variant,
+  // Field-level required: asterisk on the label. HTML5 required is separate because
+  // Autocomplete (especially multiple) clears the input after selection — a static
+  // required on the input would falsely block submit even when chips/value exist.
+  required = false,
+  htmlRequired = false,
 }) {
-  const { InputProps, ...otherParams } = params;
+  // Autocomplete hands the input wiring (combobox role, refs, keyboard handlers,
+  // popup/clear adornments) to renderInput via params.slotProps — merge our styling
+  // into those slots instead of replacing them, or the field stops being a combobox.
+  const {
+    slotProps: acSlotProps = {},
+    inputProps: legacyInputProps,
+    InputProps: legacyInputPropsCapital,
+    id,
+    disabled,
+    fullWidth,
+    size,
+  } = params
+
+  const slotProps = {
+    htmlInput: flattenTextFieldSlot({
+      ...acSlotProps.htmlInput,
+      ...legacyInputProps,
+    }),
+    input: flattenTextFieldSlot({
+      ...acSlotProps.input,
+      ...legacyInputPropsCapital,
+      sx: {
+        transition: 'none',
+        ...(variant === 'outlined'
+          ? { '& .MuiOutlinedInput-notchedOutline': { transition: 'none' } }
+          : {}),
+        ...acSlotProps.input?.sx,
+      },
+    }),
+    inputLabel: {
+      ...acSlotProps.inputLabel,
+      shrink: true,
+      sx: { transition: 'none' },
+      required,
+    },
+  }
 
   return (
-    <Tooltip title={label || ""} placement="top" arrow>
+    <Tooltip title={label || ''} placement="top" arrow>
       <TextField
-        {...otherParams}
+        id={id}
+        disabled={disabled}
+        fullWidth={fullWidth}
+        size={size}
         label={label}
         placeholder={placeholder}
-        {...otherProps}
-        slotProps={{
-          inputLabel: {
-            shrink: true,
-            sx: { transition: "none" },
-            required: otherProps.required,
-          },
-          input: {
-            ...InputProps,
-            notched: true,
-            sx: {
-              transition: "none",
-              "& .MuiOutlinedInput-notchedOutline": {
-                transition: "none",
-              },
-            },
-          },
-        }}
+        variant={variant}
+        required={htmlRequired}
+        slotProps={slotProps}
       />
     </Tooltip>
-  );
-});
+  )
+})
 
 export const CippAutoComplete = React.forwardRef((props, ref) => {
   const {
@@ -83,203 +122,271 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     renderGroup,
     customAction,
     handleHomeEndKeys = false,
+    // TextField-bound — Autocomplete forwards unknown props to its root element.
+    variant,
+    inputProps: _legacyInputProps,
+    InputProps: _legacyInputPropsCapital,
     ...other
-  } = props;
+  } = props
 
-  const [usedOptions, setUsedOptions] = useState(options);
-  const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
-  const hasPreselectedRef = useRef(false);
-  const autocompleteRef = useRef(null); // Ref for focusing input after selection
+  const [usedOptions, setUsedOptions] = useState(options)
+  const [getRequestInfo, setGetRequestInfo] = useState({ url: '', waiting: false, queryKey: '' })
+  const hasPreselectedRef = useRef(false)
+  const autocompleteRef = useRef(null) // Ref for focusing input after selection
 
-  useImperativeHandle(ref, () => ({
-    focus() {
-      const input = autocompleteRef.current?.querySelector("input");
-      input?.focus();
-      input?.select();
-    },
-  }), []);
-  const listboxRef = useRef(null); // Ref for the listbox to preserve scroll position
-  const scrollPositionRef = useRef(0); // Store scroll position
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus() {
+        const input = autocompleteRef.current?.querySelector('input')
+        input?.focus()
+        input?.select()
+      },
+    }),
+    []
+  )
+  const listboxRef = useRef(null) // Ref for the listbox to preserve scroll position
+  const scrollPositionRef = useRef(0) // Store scroll position
   const filter = createFilterOptions({
     stringify: (option) => JSON.stringify(option),
-  });
+  })
 
-  const [offCanvasVisible, setOffCanvasVisible] = useState(false);
-  const [fullObject, setFullObject] = useState(null);
-  const [internalValue, setInternalValue] = useState(null); // Track selected value internally
-  const [open, setOpen] = useState(false); // Control popover open state
+  const [offCanvasVisible, setOffCanvasVisible] = useState(false)
+  const [fullObject, setFullObject] = useState(null)
+  const [internalValue, setInternalValue] = useState(null) // Track selected value internally
+  const [open, setOpen] = useState(false) // Control popover open state
+
+  // Opt-in server-side search: instead of fetching every option once and filtering client-side,
+  // the typed text is sent to the API (api.searchParam) so the server returns only matches. Guarded
+  // by api.manualSearch so every existing autocomplete keeps its fetch-all-then-filter behaviour.
+  const manualSearch = !!api?.manualSearch
+  const searchParam = api?.searchParam ?? 'search'
+  const minSearchLength = api?.minSearchLength ?? 2
+  const [searchInput, setSearchInput] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  useEffect(() => {
+    if (!manualSearch) return undefined
+    // Debounce so a fast typist fires one request, not one per keystroke.
+    const handle = setTimeout(() => setSearchTerm(searchInput.trim()), api?.searchDebounce ?? 400)
+    return () => clearTimeout(handle)
+  }, [searchInput, manualSearch, api?.searchDebounce])
 
   // Sync internalValue when external value or defaultValue prop changes (e.g., when editing a form)
   useEffect(() => {
-    const currentValue = value !== undefined && value !== null ? value : defaultValue;
+    const currentValue = value !== undefined && value !== null ? value : defaultValue
     if (currentValue !== undefined && currentValue !== null) {
-      setInternalValue(currentValue);
+      setInternalValue((prev) => {
+        // Compare by value to avoid infinite re-render loops when the parent
+        // passes an object with the same contents but a new reference.
+        if (prev && typeof prev === 'object' && typeof currentValue === 'object') {
+          if (prev.value === currentValue.value && prev.label === currentValue.label) {
+            return prev
+          }
+        }
+        if (prev === currentValue) return prev
+        return currentValue
+      })
     }
-  }, [value, defaultValue]);
+  }, [value, defaultValue])
+
+  // Controlled value wins; otherwise use the onChange-tracked selection (FormComponent
+  // often drives via defaultValue + onChange rather than a controlled value prop).
+  const currentSelection = value !== undefined && value !== null ? value : internalValue
+  const hasSelection = multiple
+    ? Array.isArray(currentSelection) && currentSelection.length > 0
+    : currentSelection != null && currentSelection !== ''
 
   // This is our paginated call
   const actionGetRequest = ApiGetCallWithPagination({
     ...getRequestInfo,
-  });
+  })
 
-  const currentTenant = api?.tenantFilter ? api.tenantFilter : useSettings().currentTenant;
+  const currentTenant = api?.tenantFilter ? api.tenantFilter : useSettings().currentTenant
   useEffect(() => {
     if (actionGetRequest.isSuccess && !actionGetRequest.isFetching) {
-      const lastPage = actionGetRequest.data?.pages[actionGetRequest.data.pages.length - 1];
-      const nextLinkExists = lastPage?.Metadata?.nextLink;
+      // Guard against a non-paginated cache shape (e.g. when a queryKey is accidentally shared
+      // with a useQuery/ApiGetCall consumer that stores a plain array instead of { pages }).
+      const pages = actionGetRequest.data?.pages
+      const lastPage = Array.isArray(pages) ? pages[pages.length - 1] : undefined
+      const nextLinkExists = lastPage?.Metadata?.nextLink
       if (nextLinkExists) {
-        actionGetRequest.fetchNextPage();
+        actionGetRequest.fetchNextPage()
       }
     }
-  }, [actionGetRequest.data?.pages?.length, actionGetRequest.isFetching, api?.queryKey]);
+  }, [actionGetRequest.data?.pages?.length, actionGetRequest.isFetching, api?.queryKey])
 
+  const apiRef = useRef(api)
+  apiRef.current = api
+
+  const apiUrl = api?.url
+  const apiQueryKey = api?.queryKey
   useEffect(() => {
-    if (api) {
+    const currentApi = apiRef.current
+    if (currentApi) {
+      const tenantScoped = !currentApi.excludeTenantFilter
+      const baseQueryKey =
+        tenantScoped && currentApi.queryKey
+          ? `${currentApi.queryKey}-${currentTenant}`
+          : currentApi.queryKey
+      // In manual-search mode, hold the request until enough characters are typed so an empty or
+      // one-letter field never triggers a fetch-all against the API.
+      const enoughChars = !manualSearch || searchTerm.length >= minSearchLength
       setGetRequestInfo({
-        url: api.url,
+        url: currentApi.url,
         data: {
-          ...(!api.excludeTenantFilter ? { tenantFilter: currentTenant } : null),
-          ...api.data,
+          ...(tenantScoped ? { tenantFilter: currentTenant } : null),
+          ...currentApi.data,
+          // api.searchFormatter shapes the typed text into what the endpoint expects (e.g. a Graph
+          // $search clause); the raw term still keys the cache.
+          ...(manualSearch && searchTerm
+            ? {
+                [searchParam]: currentApi.searchFormatter
+                  ? currentApi.searchFormatter(searchTerm)
+                  : searchTerm,
+              }
+            : null),
         },
-        waiting: true,
-        queryKey: api.queryKey,
-      });
+        waiting: manualSearch ? enoughChars : true,
+        queryKey: manualSearch ? `${baseQueryKey}-${searchParam}-${searchTerm}` : baseQueryKey,
+      })
     }
-  }, [api, currentTenant]);
+  }, [apiUrl, apiQueryKey, currentTenant, manualSearch, searchTerm, searchParam, minSearchLength])
 
   // After the data is fetched, combine and map it
   useEffect(() => {
     if (actionGetRequest.isSuccess) {
+      const currentApi = apiRef.current
       // E.g., allPages is an array of pages returned by the pagination
-      const allPages = actionGetRequest.data?.pages || [];
+      const allPages = actionGetRequest.data?.pages || []
 
       // Helper to get nested data if you have something like "response.data.items"
       const getNestedValue = (obj, path) => {
-        if (!path) return obj;
-        const keys = path.split(".");
-        let result = obj;
+        if (!path) return obj
+        const keys = path.split('.')
+        let result = obj
         for (const key of keys) {
-          if (result && typeof result === "object" && key in result) {
-            result = result[key];
+          if (result && typeof result === 'object' && key in result) {
+            result = result[key]
           } else {
-            return undefined;
+            return undefined
           }
         }
-        return result;
-      };
+        return result
+      }
 
-      // Flatten the results from all pages
+      // Flatten the results from all pages. A dataKey can be present but null (e.g. an API
+      // returning {"Accounts":null}), which must read as "no options", not as a null option.
       const combinedResults = allPages.flatMap((page) => {
-        const nestedData = getNestedValue(page, api?.dataKey);
-        return nestedData !== undefined ? nestedData : [];
-      });
+        const nestedData = getNestedValue(page, currentApi?.dataKey)
+        return nestedData ?? []
+      })
 
       if (!Array.isArray(combinedResults)) {
         setUsedOptions([
           {
-            label: "Error: The API returned data we cannot map to this field",
-            value: "Error",
+            label: 'Error: The API returned data we cannot map to this field',
+            value: 'Error',
           },
-        ]);
+        ])
       } else {
-        // Convert each item into your { label, value, addedFields, rawData } shape
-        const convertedOptions = combinedResults.map((option) => {
-          const addedFields = {};
-          if (api?.addedField) {
-            Object.keys(api.addedField).forEach((key) => {
-              addedFields[key] = option[api.addedField[key]];
-            });
+        // Convert each item into your { label, value, addedFields, rawData } shape.
+        // Null items would throw on the label/value field lookups below.
+        const convertedOptions = combinedResults
+          .filter((option) => option !== null && option !== undefined)
+          .map((option) => {
+          const addedFields = {}
+          if (currentApi?.addedField) {
+            Object.keys(currentApi.addedField).forEach((key) => {
+              addedFields[key] = option[currentApi.addedField[key]]
+            })
           }
 
           return {
             label:
-              typeof api?.labelField === "function"
-                ? api.labelField(option)
-                : option[api?.labelField]
-                  ? option[api?.labelField]
-                  : option[api?.altLabelField] ||
-                    option[api?.valueField] ||
-                    "No label found - Are you missing a labelField?",
+              typeof currentApi?.labelField === 'function'
+                ? currentApi.labelField(option)
+                : option[currentApi?.labelField]
+                  ? option[currentApi?.labelField]
+                  : option[currentApi?.altLabelField] ||
+                    option[currentApi?.valueField] ||
+                    'No label found - Are you missing a labelField?',
             value:
-              typeof api?.valueField === "function"
-                ? api.valueField(option)
-                : option[api?.valueField],
+              typeof currentApi?.valueField === 'function'
+                ? currentApi.valueField(option)
+                : option[currentApi?.valueField],
             description:
-              typeof api?.descriptionField === "function"
-                ? api.descriptionField(option)
-                : api?.descriptionField
-                  ? option[api?.descriptionField]
+              typeof currentApi?.descriptionField === 'function'
+                ? currentApi.descriptionField(option)
+                : currentApi?.descriptionField
+                  ? option[currentApi?.descriptionField]
                   : undefined,
             addedFields,
             rawData: option, // Store the full original object
-          };
-        });
+          }
+        })
 
-        if (api?.dataFilter) {
-          setUsedOptions(api.dataFilter(convertedOptions));
+        if (currentApi?.dataFilter) {
+          setUsedOptions(currentApi.dataFilter(convertedOptions))
         } else {
-          setUsedOptions(convertedOptions);
+          setUsedOptions(convertedOptions)
         }
       }
     }
 
     if (actionGetRequest.isError) {
-      setUsedOptions([{ label: getCippError(actionGetRequest.error), value: "error" }]);
+      setUsedOptions([{ label: getCippError(actionGetRequest.error), value: 'error' }])
     }
-  }, [
-    api,
-    actionGetRequest.data,
-    actionGetRequest.isSuccess,
-    actionGetRequest.isError,
-    preselectedValue,
-    defaultValue,
-    value,
-    multiple,
-    onChange,
-  ]);
+  }, [actionGetRequest.data, actionGetRequest.isSuccess, actionGetRequest.isError, actionGetRequest.error, apiRef])
 
+  // api.mergeOptions keeps the static `options` prop alongside the API results, for fixed tokens
+  // (e.g. "All") that a server-side search would never return.
+  const mergeOptions = !!api?.mergeOptions
+  const staticOptionRefs = useMemo(
+    () => new Set(mergeOptions ? options : []),
+    [mergeOptions, options]
+  )
   const memoizedOptions = useMemo(() => {
-    let finalOptions = api ? usedOptions : options;
+    let finalOptions = api ? (mergeOptions ? [...options, ...usedOptions] : usedOptions) : options
     if (removeOptions && removeOptions.length) {
-      finalOptions = finalOptions.filter((o) => !removeOptions.includes(o.value));
+      finalOptions = finalOptions.filter((o) => !removeOptions.includes(o.value))
     }
     if (sortOptions) {
-      finalOptions.sort((a, b) => a.label?.localeCompare(b.label));
+      finalOptions.sort((a, b) => String(a.label ?? "").localeCompare(String(b.label ?? "")))
     }
-    return finalOptions;
-  }, [api, usedOptions, options, removeOptions, sortOptions]);
+    return finalOptions
+  }, [api, usedOptions, options, removeOptions, sortOptions, mergeOptions])
 
   // Dedicated effect for handling preselected value or auto-select first item - only runs once
   useEffect(() => {
     if (memoizedOptions.length > 0 && !hasPreselectedRef.current) {
       // Check if we should skip preselection due to existing defaultValue
       const hasDefaultValue =
-        defaultValue && (Array.isArray(defaultValue) ? defaultValue.length > 0 : true);
+        defaultValue && (Array.isArray(defaultValue) ? defaultValue.length > 0 : true)
 
       if (!hasDefaultValue) {
         // For multiple mode, check if value is empty array or null/undefined
         // For single mode, check if value is null/undefined
         const shouldPreselect = multiple
           ? !value || (Array.isArray(value) && value.length === 0)
-          : !value;
+          : !value
 
         if (shouldPreselect) {
-          let preselectedOption;
+          let preselectedOption
 
           // Handle explicit preselected value
           if (preselectedValue) {
-            preselectedOption = memoizedOptions.find((option) => option.value === preselectedValue);
+            preselectedOption = memoizedOptions.find((option) => option.value === preselectedValue)
           }
           // Handle auto-select first item from API
           else if (api?.autoSelectFirstItem && memoizedOptions.length > 0) {
-            preselectedOption = memoizedOptions[0];
+            preselectedOption = memoizedOptions[0]
           }
 
           if (preselectedOption) {
-            const newValue = multiple ? [preselectedOption] : preselectedOption;
-            hasPreselectedRef.current = true; // Mark that we've preselected
+            const newValue = multiple ? [preselectedOption] : preselectedOption
+            hasPreselectedRef.current = true // Mark that we've preselected
             if (onChange) {
-              onChange(newValue, newValue?.addedFields);
+              onChange(newValue, newValue?.addedFields)
             }
           }
         }
@@ -293,27 +400,97 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
     multiple,
     onChange,
     api?.autoSelectFirstItem,
-  ]);
+  ])
+
+  // single mode: live options win over the form-held copy, a stored label goes stale
+  // when its option refetches under it (e.g. renamed preset), resolve by value id.
+  // Values are not always unique (the alert wizard's property options share a type
+  // string as value), so only let a value-only match win when it's unambiguous —
+  // otherwise require the label to match too, and keep the stored copy if none does.
+  const resolvedDefaultValue = useMemo(() => {
+    if (
+      multiple ||
+      Array.isArray(defaultValue) ||
+      typeof defaultValue !== 'object' ||
+      defaultValue === null
+    ) {
+      return defaultValue
+    }
+    const valueMatches = memoizedOptions.filter((option) => option.value === defaultValue.value)
+    if (valueMatches.length === 1) {
+      return valueMatches[0]
+    }
+    return valueMatches.find((option) => option.label === defaultValue.label) ?? defaultValue
+  }, [defaultValue, multiple, memoizedOptions])
 
   // Create a stable key that only changes when necessary inputs change
   const stableKey = useMemo(() => {
     // Only regenerate the key when these values change
     const keyParts = [
-      JSON.stringify(defaultValue),
+      JSON.stringify(resolvedDefaultValue),
       JSON.stringify(preselectedValue),
       api?.url,
       currentTenant,
-    ];
-    return keyParts.join("-");
-  }, [defaultValue, preselectedValue, api?.url, currentTenant]);
+    ]
+    return keyParts.join('-')
+  }, [resolvedDefaultValue, preselectedValue, api?.url, currentTenant])
+
+  // keyed remount orphans an open single-mode popup (input unfocused, no close path), multiple refocuses in onChange
+  useEffect(() => {
+    if (!multiple) {
+      setOpen(false)
+    }
+  }, [stableKey, multiple])
 
   const lookupOptionByValue = useCallback(
     (value) => {
-      const foundOption = memoizedOptions.find((option) => option.value === value);
-      return foundOption || { label: value, value: value };
+      const foundOption = memoizedOptions.find((option) => option.value === value)
+      return foundOption || { label: value, value: value }
     },
-    [memoizedOptions],
-  );
+    [memoizedOptions]
+  )
+
+  // shape the seed for MUI: option arrays stay arrays, everything else must become an array in
+  // multiple mode (a bare object crashes MUI's selected.some dedup), strings and booleans resolve
+  // to options (booleans arrive from legacy data saved by a former switch field).
+  // An unseeded RHF Controller hands back '' / null - in multiple mode that means "nothing selected".
+  const normalizedDefaultValue = useMemo(() => {
+    const isBareValue = (item) => typeof item === 'string' || typeof item === 'boolean'
+    if (Array.isArray(resolvedDefaultValue)) {
+      return resolvedDefaultValue.map((item) =>
+        isBareValue(item) ? lookupOptionByValue(item) : item
+      )
+    }
+    if (multiple) {
+      if (
+        resolvedDefaultValue === null ||
+        resolvedDefaultValue === undefined ||
+        resolvedDefaultValue === ''
+      ) {
+        return []
+      }
+      return [
+        isBareValue(resolvedDefaultValue)
+          ? lookupOptionByValue(resolvedDefaultValue)
+          : resolvedDefaultValue,
+      ]
+    }
+    if (isBareValue(resolvedDefaultValue)) {
+      return lookupOptionByValue(resolvedDefaultValue)
+    }
+    return resolvedDefaultValue
+  }, [resolvedDefaultValue, multiple, lookupOptionByValue])
+
+  // In manual-search mode, show the spinner for the whole "typing settled -> results back" window,
+  // including the debounce delay before the request fires, so the field never looks idle mid-search.
+  const searchPending =
+    manualSearch &&
+    searchInput.trim().length >= minSearchLength &&
+    searchInput.trim() !== searchTerm
+  const showLoading = actionGetRequest.isFetching || isFetching || searchPending
+  // freeSolo hides the popup icon (and its spinner), so a loading state needs to live in the input's
+  // end adornment instead - the standard MUI loading pattern.
+  const isFreeSolo = !!other?.freeSolo
 
   return (
     <>
@@ -325,63 +502,66 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         onOpen={() => setOpen(true)}
         onClose={(event, reason) => {
           // Keep open if Tab was used in multiple mode
-          if (reason === "selectOption" && multiple && event?.type === "click") {
-            return;
+          if (reason === 'selectOption' && multiple && event?.type === 'click') {
+            return
           }
-          setOpen(false);
+          setOpen(false)
         }}
-        disabled={disabled || actionGetRequest.isFetching || isFetching}
+        disabled={
+          disabled ||
+          (!manualSearch && (actionGetRequest.isFetching || isFetching))
+        }
         popupIcon={
           actionGetRequest.isFetching || isFetching ? (
             <CircularProgress color="inherit" size={20} />
           ) : (
-            <ArrowDropDown />
+            <CippIcons.ArrowDropDown />
           )
         }
         isOptionEqualToValue={(option, val) => option.value === val.value}
-        value={typeof value === "string" ? { label: value, value: value } : value}
+        value={
+          typeof value === 'string' || typeof value === 'boolean'
+            ? lookupOptionByValue(value)
+            : value
+        }
         filterSelectedOptions
         disableClearable={disableClearable}
         multiple={multiple}
         fullWidth
-        placeholder={placeholder}
         filterOptions={(options, params) => {
-          const filtered = filter(options, params);
+          // Server-side search already returned only matches; client-side substring filtering would
+          // wrongly hide ANR results (a display-name match whose address lacks the typed text).
+          // Merged static options never went through the server, so they still get filtered here.
+          const filtered = manualSearch
+            ? options.filter(
+                (option) => !staticOptionRefs.has(option) || filter([option], params).length > 0
+              )
+            : filter(options, params)
           const isExisting =
             options?.length > 0 &&
             options.some(
-              (option) => params.inputValue === option.value || params.inputValue === option.label,
-            );
-          if (params.inputValue !== "" && creatable && !isExisting) {
+              (option) => params.inputValue === option.value || params.inputValue === option.label
+            )
+          if (params.inputValue !== '' && creatable && !isExisting) {
             const newOption = {
               label: `Add option: "${params.inputValue}"`,
               value: params.inputValue,
               manual: true,
-            };
+            }
             if (!filtered.some((option) => option.value === newOption.value)) {
-              filtered.push(newOption);
+              filtered.push(newOption)
             }
           }
 
-          return filtered;
+          return filtered
         }}
         size="small"
-        defaultValue={
-          Array.isArray(defaultValue)
-            ? defaultValue.map((item) =>
-                typeof item === "string" ? lookupOptionByValue(item) : item,
-              )
-            : typeof defaultValue === "object" && multiple
-              ? [defaultValue]
-              : typeof defaultValue === "string"
-                ? lookupOptionByValue(defaultValue)
-                : defaultValue
-        }
+        defaultValue={normalizedDefaultValue}
         name={name}
         onChange={(event, newValue) => {
           // Store scroll position before processing the change
           if (multiple && listboxRef.current) {
-            scrollPositionRef.current = listboxRef.current.scrollTop;
+            scrollPositionRef.current = listboxRef.current.scrollTop
           }
 
           if (Array.isArray(newValue)) {
@@ -391,142 +571,162 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
                 item = {
                   label: item?.label ? item.value : item,
                   value: item?.label ? item.value : item,
-                };
+                }
                 if (onCreateOption) {
-                  item = onCreateOption(item, item?.addedFields);
+                  item = onCreateOption(item, item?.addedFields)
                 }
               }
-              return item;
-            });
+              return item
+            })
             newValue = newValue.filter(
               (item) =>
-                item.value && item.value !== "" && item.value !== "error" && item.value !== -1,
-            );
+                item.value !== null &&
+                item.value !== undefined &&
+                item.value !== '' &&
+                item.value !== 'error' &&
+                item.value !== -1
+            )
           } else {
             if (newValue?.manual || !newValue?.label) {
               newValue = {
                 label: newValue?.label ? newValue.value : newValue,
                 value: newValue?.label ? newValue.value : newValue,
-              };
+              }
               if (onCreateOption) {
-                newValue = onCreateOption(newValue, newValue?.addedFields);
+                newValue = onCreateOption(newValue, newValue?.addedFields)
               }
             }
-            if (!newValue?.value || newValue.value === "error") {
-              newValue = null;
+            if (newValue?.value === null || newValue?.value === undefined || newValue?.value === '' || newValue.value === 'error') {
+              newValue = null
             }
           }
 
           // Track the internal value for the template view
-          setInternalValue(newValue);
+          setInternalValue(newValue)
 
           if (onChange) {
-            onChange(newValue, newValue?.addedFields);
+            onChange(newValue, newValue?.addedFields)
           }
 
           // In multiple mode, refocus the input and restore scroll position
           if (multiple && newValue && autocompleteRef.current) {
             // Use setTimeout to ensure the selection is processed first
             setTimeout(() => {
-              const input = autocompleteRef.current?.querySelector("input");
+              const input = autocompleteRef.current?.querySelector('input')
               if (input) {
-                input.focus();
+                input.focus()
               }
 
               // Restore the scroll position
               if (listboxRef.current && scrollPositionRef.current > 0) {
-                listboxRef.current.scrollTop = scrollPositionRef.current;
+                listboxRef.current.scrollTop = scrollPositionRef.current
               }
-            }, 0);
+            }, 0)
           }
         }}
         options={memoizedOptions}
         getOptionLabel={useCallback(
           (option) => {
-            if (!option) return "";
+            if (!option) return ''
             // For static options (non-API), the option should already have a label
             if (!api && option.label !== undefined) {
-              return option.label === null ? "" : String(option.label);
+              return option.label === null ? '' : String(option.label)
             }
-            // For API options, use the existing logic
+            // For API options, use the existing logic. An empty/valueless option renders
+            // blank; the debug hint only shows when a real value is missing its label.
             if (api) {
-              return option.label === null
-                ? ""
-                : option.label || "Label not found - Are you missing a labelField?";
+              if (option.label === null || option.label === '') return ''
+              if (option.label === undefined && (option.value === undefined || option.value === null || option.value === '')) {
+                return ''
+              }
+              return option.label || 'Label not found - Are you missing a labelField?'
             }
-            // Fallback for any edge cases
-            return option.label || option.value || "";
+            // Fallback for any edge cases (e.g. preset filter objects with filterName)
+            return (
+              option.label ||
+              option.filterName ||
+              (typeof option.value === 'string' ? option.value : '') ||
+              ''
+            )
           },
-          [api],
+          [api]
         )}
         onKeyDown={(event) => {
           // Handle Tab key to select highlighted option
-          if (event.key === "Tab" && !event.shiftKey) {
+          if (event.key === 'Tab' && !event.shiftKey) {
             // Check if there's a highlighted option
-            const listbox = document.querySelector('[role="listbox"]');
-            const highlightedOption = listbox?.querySelector('[data-focus="true"], .Mui-focused');
+            const listbox = document.querySelector('[role="listbox"]')
+            const highlightedOption = listbox?.querySelector('[data-focus="true"], .Mui-focused')
 
-            if (highlightedOption && listbox?.style.display !== "none") {
-              event.preventDefault();
+            if (highlightedOption && listbox?.style.display !== 'none') {
+              event.preventDefault()
               // Trigger a click on the highlighted option
-              highlightedOption.click();
+              highlightedOption.click()
 
               // In multiple mode, keep the popover open and refocus
               if (multiple) {
                 setTimeout(() => {
-                  setOpen(true);
-                  const input = autocompleteRef.current?.querySelector("input");
+                  setOpen(true)
+                  const input = autocompleteRef.current?.querySelector('input')
                   if (input) {
-                    input.focus();
+                    input.focus()
                   }
-                }, 50);
+                }, 50)
               }
             }
           }
         }}
         sx={sx}
         renderInput={(params) => {
-          // Handle custom action button inside the TextField
-          const { InputProps, ...otherParams } = params;
-          const modifiedInputProps =
-            customAction && customAction.position === "inside"
+          // Handle custom action button inside the TextField.
+          // v9 Autocomplete delivers the input slot via params.slotProps.input
+          // (ref, popup/clear end-adornment) instead of params.InputProps.
+          const {
+            slotProps: acSlotProps = {},
+            inputProps: legacyInputProps,
+            InputProps: legacyInputPropsCapital,
+            ...otherParams
+          } = params
+          const InputProps = acSlotProps.input
+          const baseInputProps =
+            customAction && customAction.position === 'inside'
               ? {
                   ...InputProps,
                   endAdornment: (
                     <>
                       {customAction && (
-                        <Tooltip title={customAction.tooltip || ""} placement="bottom" arrow>
+                        <Tooltip title={customAction.tooltip || ''} placement="bottom" arrow>
                           <IconButton
-                            component={customAction.link ? Link : "button"}
+                            component={customAction.link ? Link : 'button'}
                             href={customAction.link || undefined}
                             size="small"
                             onClick={
                               customAction.onClick && !customAction.link
                                 ? (e) => {
-                                    e.stopPropagation();
-                                    customAction.onClick(value || internalValue);
+                                    e.stopPropagation()
+                                    customAction.onClick(value || internalValue)
                                   }
                                 : (e) => e.stopPropagation()
                             }
                             sx={{
                               opacity: 0,
-                              transition: "all 0.2s",
-                              p: "4px",
-                              mr: "-4px",
+                              transition: 'all 0.2s',
+                              p: '4px',
+                              mr: '-4px',
                               mt: -1,
-                              cursor: "pointer",
-                              color: "inherit",
-                              textDecoration: "none",
-                              "&:hover": {
+                              cursor: 'pointer',
+                              color: 'inherit',
+                              textDecoration: 'none',
+                              '&:hover': {
                                 opacity: 1,
-                                backgroundColor: "action.hover",
+                                backgroundColor: 'action.hover',
                               },
-                              ".MuiAutocomplete-root:hover &": {
+                              '.MuiAutocomplete-root:hover &': {
                                 opacity: 0.6,
                               },
-                              ".MuiAutocomplete-root:hover &:hover": {
+                              '.MuiAutocomplete-root:hover &:hover': {
                                 opacity: 1,
-                                backgroundColor: "action.hover",
+                                backgroundColor: 'action.hover',
                               },
                             }}
                           >
@@ -538,112 +738,148 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
                     </>
                   ),
                 }
-              : InputProps;
+              : InputProps
+
+          // In freeSolo mode the popup-icon spinner is not rendered, so surface the loading state as
+          // an end-adornment spinner instead. The inline-flex wrapper vertically centres the small
+          // spinner against the taller clear button beside it.
+          const modifiedInputProps =
+            showLoading && isFreeSolo
+              ? {
+                  ...baseInputProps,
+                  endAdornment: (
+                    <>
+                      <Box
+                        component="span"
+                        sx={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          height: 28,
+                          mr: 0.5,
+                          verticalAlign: 'middle',
+                        }}
+                      >
+                        <CircularProgress color="inherit" size={18} />
+                      </Box>
+                      {baseInputProps?.endAdornment}
+                    </>
+                  ),
+                }
+              : baseInputProps
 
           return (
             <Stack direction="row" spacing={1}>
+              {/* caller props stay on <Autocomplete>, anything spread here reaches the input as a DOM attr */}
               <MemoTextField
-                params={{ ...otherParams, InputProps: modifiedInputProps }}
+                params={{
+                  ...otherParams,
+                  ...(legacyInputProps ? { inputProps: legacyInputProps } : {}),
+                  ...(legacyInputPropsCapital ? { InputProps: legacyInputPropsCapital } : {}),
+                  slotProps: { ...acSlotProps, input: modifiedInputProps },
+                }}
                 label={label}
                 placeholder={placeholder}
+                variant={variant}
                 required={required}
-                {...other}
+                htmlRequired={required && !hasSelection}
               />
               {api?.url && api?.showRefresh && (
                 <Tooltip title="Refresh">
                   <IconButton
                     size="small"
                     onClick={() => {
-                      actionGetRequest.refetch();
+                      actionGetRequest.refetch()
                     }}
                   >
-                    <Sync />
+                    <CippIcons.Sync />
                   </IconButton>
                 </Tooltip>
               )}
               {api?.templateView && (
-                <Tooltip title={`View ${api?.templateView.title}` || "View details"}>
+                <Tooltip title={`View ${api?.templateView.title}` || 'View details'}>
                   <IconButton
                     size="small"
                     onClick={() => {
                       // Use internalValue if value prop is not available
-                      const currentValue = value || internalValue;
+                      const currentValue = value || internalValue
 
                       // Get the full object from the selected value
                       if (multiple) {
                         // For multiple selection, get all full objects
                         const fullObjects = currentValue
                           .map((v) => {
-                            const valueToFind = v?.value || v;
-                            const found = usedOptions.find((opt) => opt.value === valueToFind);
-                            let rawData = found?.rawData;
+                            const valueToFind = v?.value || v
+                            const found = usedOptions.find((opt) => opt.value === valueToFind)
+                            let rawData = found?.rawData
 
                             // If property is specified, extract and parse JSON from that property
                             if (rawData && api?.templateView?.property) {
                               try {
-                                const propertyValue = rawData[api.templateView.property];
-                                if (typeof propertyValue === "string") {
-                                  rawData = JSON.parse(propertyValue);
+                                const propertyValue = rawData[api.templateView.property]
+                                if (typeof propertyValue === 'string') {
+                                  rawData = JSON.parse(propertyValue)
                                 } else {
-                                  rawData = propertyValue;
+                                  rawData = propertyValue
                                 }
                               } catch (e) {
-                                console.error("Failed to parse JSON from property:", e);
+                                console.error('Failed to parse JSON from property:', e)
                                 // Keep original rawData if parsing fails
                               }
                             }
 
-                            return rawData;
+                            return rawData
                           })
-                          .filter(Boolean);
-                        setFullObject(fullObjects);
+                          .filter(Boolean)
+                        setFullObject(fullObjects)
                       } else {
                         // For single selection, get the full object
-                        const valueToFind = currentValue?.value || currentValue;
-                        const selectedOption = usedOptions.find((opt) => opt.value === valueToFind);
-                        let rawData = selectedOption?.rawData || null;
+                        const valueToFind = currentValue?.value || currentValue
+                        const selectedOption = usedOptions.find((opt) => opt.value === valueToFind)
+                        let rawData = selectedOption?.rawData || null
 
                         // If property is specified, extract and parse JSON from that property
                         if (rawData && api?.templateView?.property) {
                           try {
-                            const propertyValue = rawData[api.templateView.property];
-                            if (typeof propertyValue === "string") {
-                              rawData = JSON.parse(propertyValue);
+                            const propertyValue = rawData[api.templateView.property]
+                            if (typeof propertyValue === 'string') {
+                              rawData = JSON.parse(propertyValue)
                             } else {
-                              rawData = propertyValue;
+                              rawData = propertyValue
                             }
                           } catch (e) {
-                            console.error("Failed to parse JSON from property:", e);
+                            console.error('Failed to parse JSON from property:', e)
                             // Keep original rawData if parsing fails
                           }
                         }
 
-                        setFullObject(rawData);
+                        setFullObject(rawData)
                       }
-                      setOffCanvasVisible(true);
+                      setOffCanvasVisible(true)
                     }}
-                    title={api?.templateView.title || "View details"}
+                    title={api?.templateView.title || 'View details'}
                   >
-                    <Visibility />
+                    <CippIcons.Visibility />
                   </IconButton>
                 </Tooltip>
               )}
-              {customAction && customAction.position === "outside" && (
-                <IconButton
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (customAction.onClick) {
-                      customAction.onClick(value || internalValue);
-                    }
-                  }}
-                  title={customAction.tooltip || ""}
-                >
-                  {customAction.icon}
-                </IconButton>
+              {customAction && customAction.position === 'outside' && (
+                <Tooltip title={customAction.tooltip || ''} placement="bottom" arrow>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (customAction.onClick) {
+                        customAction.onClick(value || internalValue)
+                      }
+                    }}
+                    {...customAction.buttonProps}
+                  >
+                    {customAction.icon}
+                  </IconButton>
+                </Tooltip>
               )}
             </Stack>
-          );
+          )
         }}
         groupBy={groupBy}
         renderGroup={renderGroup}
@@ -652,19 +888,24 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
             ref: listboxRef,
             onScroll: (e) => {
               if (listboxRef.current) {
-                scrollPositionRef.current = e.target.scrollTop;
+                scrollPositionRef.current = e.target.scrollTop
               }
             },
           },
         }}
-        renderOption={(props, option) => {
-          const { key, ...optionProps } = props;
+        renderOption={(props, option, { index }) => {
+          const { key, ...optionProps } = props
           return (
-            <Box component="li" key={key} {...optionProps}>
+            <Box component="li" key={`${option.value}-${index}`} {...optionProps}>
               <Box>
                 <Typography variant="body1">{option.label}</Typography>
                 {option.description && (
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "text.secondary",
+                      display: 'block'
+                    }}>
                     {option.description}
                   </Typography>
                 )}
@@ -673,22 +914,41 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
           );
         }}
         {...other}
+        onBlur={(event) => {
+          other.onBlur?.(event)
+          // clearOnBlur discards text left behind without a pick; drop the results that went with
+          // it too, so the field reopens with a clean list instead of the last search.
+          if (manualSearch && other.clearOnBlur) {
+            setSearchInput('')
+            setSearchTerm('')
+            setUsedOptions([])
+          }
+        }}
+        onInputChange={(event, newInputValue, reason) => {
+          other.onInputChange?.(event, newInputValue, reason)
+          if (!manualSearch) return
+          if (reason === 'input') {
+            setSearchInput(newInputValue)
+          } else if (reason === 'clear') {
+            setSearchInput('')
+          }
+        }}
       />
       {api?.templateView && (
         <CippOffCanvas
           visible={offCanvasVisible}
           onClose={() => setOffCanvasVisible(false)}
-          title={api?.templateView?.title || "Details"}
+          title={api?.templateView?.title || 'Details'}
           size="xl"
         >
           <CippJsonView
             object={fullObject}
             defaultOpen={true}
-            type={api?.templateView?.type ?? "default"}
+            type={api?.templateView?.type ?? 'default'}
           />
         </CippOffCanvas>
       )}
     </>
   );
-});
-CippAutoComplete.displayName = "CippAutoComplete";
+})
+CippAutoComplete.displayName = 'CippAutoComplete'

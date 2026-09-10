@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
 import { useState, useCallback } from "react";
 import {
   Box,
@@ -12,7 +13,6 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { CippPropertyListCard } from "./CippPropertyListCard";
 import { CippDataTable } from "../CippTable/CippDataTable";
 
@@ -53,14 +53,25 @@ export const CippBannerListCard = (props) => {
       <Stack spacing={3} {...other}>
         {[...Array(1)].map((_, index) => (
           <Card key={index}>
-            <Stack direction="row" flexWrap="wrap" justifyContent="space-between" sx={{ p: 3 }}>
-              <Stack direction="row" spacing={2} alignItems="center">
+            <Stack
+              useFlexGap
+              direction="row"
+              sx={{
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                p: 3
+              }}>
+              <Stack direction="row" spacing={2} sx={{
+                alignItems: "center"
+              }}>
                 <Box>
                   <Skeleton variant="text" width={80} />
                   <Skeleton variant="text" width={120} />
                 </Box>
               </Stack>
-              <Stack alignItems="center" direction="row" spacing={2}>
+              <Stack direction="row" spacing={2} sx={{
+                alignItems: "center"
+              }}>
                 <Skeleton variant="text" width={60} />
                 <Skeleton variant="circular" width={24} height={24} />
               </Stack>
@@ -94,25 +105,33 @@ export const CippBannerListCard = (props) => {
                 <li key={item.id}>
                   <Stack
                     direction="row"
-                    justifyContent="space-between"
+                    // Status, actions and the expander take their own row below md: sharing
+                    // one line with them squeezed the text column to about 90px, which broke
+                    // the subtext one word per line and ellipsed every title.
+                    useFlexGap
+                    onClick={isCollapsible ? () => handleExpand(item.id) : undefined}
                     sx={{
-                      p: 3,
+                      justifyContent: "space-between",
+                      flexWrap: { xs: "wrap", md: "nowrap" },
+                      rowGap: 1.5,
+                      p: { xs: 2, md: 3 },
+
                       ...(isCollapsible && {
                         cursor: "pointer",
                         "&:hover": {
                           bgcolor: "action.hover",
                         },
-                      }),
-                    }}
-                    onClick={isCollapsible ? () => handleExpand(item.id) : undefined}
-                  >
+                      })
+                    }}>
                     {/* Left Side: cardLabelBox */}
                     <Stack
                       direction="row"
                       spacing={2}
-                      alignItems="center"
-                      sx={{ flex: 1, minWidth: 0 }}
-                    >
+                      sx={{
+                        alignItems: "center",
+                        flex: { xs: "1 1 100%", md: "1 1 auto" },
+                        minWidth: 0
+                      }}>
                       {onSelectionChange && (
                         <Checkbox
                           checked={selectedItems.includes(item.id)}
@@ -133,43 +152,59 @@ export const CippBannerListCard = (props) => {
                       >
                         {typeof item.cardLabelBox === "object" ? (
                           <>
-                            <Typography color="text.secondary" variant="h5">
+                            <Typography variant="h5" sx={{
+                              color: "text.secondary"
+                            }}>
                               {item.cardLabelBox.cardLabelBoxHeader}
                             </Typography>
-                            <Typography color="text.secondary" variant="caption">
+                            <Typography variant="caption" sx={{
+                              color: "text.secondary"
+                            }}>
                               {item.cardLabelBox.cardLabelBoxText}
                             </Typography>
                           </>
                         ) : (
-                          <Typography color="text.secondary" variant="h5">
+                          <Typography variant="h5" sx={{
+                            color: "text.secondary"
+                          }}>
                             {item.cardLabelBox}
                           </Typography>
                         )}
                       </Box>
 
                       {/* Main Text and Subtext */}
-                      <Box sx={{ flex: 1, minWidth: 0, pr: 2 }}>
+                      <Box sx={{ flex: 1, minWidth: 0, pr: { xs: 0, md: 2 } }}>
                         <Typography
-                          color="text.primary"
                           variant="h6"
                           sx={{
+                            color: "text.primary",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
+                            whiteSpace: "nowrap"
+                          }}>
                           {item.text}
                         </Typography>
-                        <Typography color="text.secondary" variant="body2">
+                        <Typography variant="body2" sx={{
+                          color: "text.secondary"
+                        }}>
                           {item.subtext}
                         </Typography>
                       </Box>
                     </Stack>
 
                     {/* Right Side: Status and Expand Icon */}
-                    <Stack alignItems="center" direction="row" spacing={2} sx={{ flexShrink: 0 }}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{
+                        alignItems: "center",
+                        flexShrink: 0,
+                        ml: { xs: "auto", md: 0 }
+                      }}>
                       {item?.statusText && (
-                        <Stack alignItems="center" direction="row" spacing={1}>
+                        <Stack direction="row" spacing={1} sx={{
+                          alignItems: "center"
+                        }}>
                           <Box
                             sx={{
                               backgroundColor: statusColor,
@@ -198,7 +233,7 @@ export const CippBannerListCard = (props) => {
                               transform: isExpanded ? "rotate(180deg)" : "none",
                             }}
                           >
-                            <ChevronDownIcon />
+                            <CippIcons.ChevronDownIcon />
                           </SvgIcon>
                         </IconButton>
                       )}

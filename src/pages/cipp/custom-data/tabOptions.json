@@ -1,14 +1,17 @@
 [
   {
     "label": "Directory Extensions",
-    "path": "/cipp/custom-data/directory-extensions"
+    "path": "/cipp/custom-data/directory-extensions",
+    "icon": "Dns"
   },
   {
     "label": "Schema Extensions",
-    "path": "/cipp/custom-data/schema-extensions"
+    "path": "/cipp/custom-data/schema-extensions",
+    "icon": "Description"
   },
   {
     "label": "Mappings",
-    "path": "/cipp/custom-data/mappings"
+    "path": "/cipp/custom-data/mappings",
+    "icon": "Share"
   }
 ]

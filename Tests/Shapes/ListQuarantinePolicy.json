@@ -1,0 +1,46 @@
+{
+  "_metadata": {
+    "endpoint": "ListQuarantinePolicy",
+    "generatedAt": "2026-04-03T23:44:31.5380357+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AllowSender": "bool",
+    "BlockSender": "bool",
+    "Builtin": "bool",
+    "Delete": "bool",
+    "DistinguishedName": "string",
+    "Download": "bool",
+    "EndUserQuarantinePermissions": "string",
+    "ESNEnabled": "bool",
+    "ExchangeObjectId": "string",
+    "ExchangeVersion": "string",
+    "Guid": "string",
+    "Id": "string",
+    "Identity": "string",
+    "IncludeMessagesFromBlockedSenderAddress": "bool",
+    "IsValid": "bool",
+    "Name": "string",
+    "ObjectCategory": "string",
+    "ObjectClass": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "OrganizationalUnitRoot": "string",
+    "OrganizationId": "string",
+    "OriginatingServer": "string",
+    "Preview": "bool",
+    "QuarantineNotification": "bool",
+    "QuarantinePolicyType": "string",
+    "QuarantineRetentionDays": "number",
+    "Release": "bool",
+    "ReleaseActionPreference": "string",
+    "RequestRelease": "bool",
+    "ViewHeader": "bool",
+    "WhenChanged": "datetime",
+    "WhenChangedUTC": "datetime",
+    "WhenCreated": "datetime",
+    "WhenCreatedUTC": "datetime"
+  }
+}

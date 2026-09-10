@@ -1,0 +1,11 @@
+{
+  "_metadata": {
+    "endpoint": "ListMessageTrace",
+    "generatedAt": "2026-04-03T23:44:13.5102130+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "Status": "string"
+  }
+}

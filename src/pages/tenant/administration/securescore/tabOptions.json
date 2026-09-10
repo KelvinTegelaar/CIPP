@@ -1,10 +1,12 @@
 [
   {
     "label": "Tenant Overview",
-    "path": "/tenant/administration/securescore"
+    "path": "/tenant/administration/securescore",
+    "icon": "Dashboard"
   },
   {
     "label": "Table Overview",
-    "path": "/tenant/administration/securescore/table"
+    "path": "/tenant/administration/securescore/table",
+    "icon": "BarChart"
   }
 ]

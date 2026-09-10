@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Recent Errors (Last 1h)",
+    "id": "cl-preset-errors-1h",
+    "query": "where Level in (\"ERR\", \"CRT\")\n| where Timestamp > ago(1h)\n| take 500\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Warnings & Errors (Last 24h)",
+    "id": "cl-preset-warn-err-24h",
+    "query": "where Level in (\"ERR\", \"CRT\", \"WRN\")\n| where Timestamp > ago(24h)\n| take 1000\n| sort by Timestamp desc"
+  },
+  {
+    "name": "All Logs (Last 15 min)",
+    "id": "cl-preset-all-15m",
+    "query": "where Timestamp > ago(15m)\n| take 500\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Startup Logs",
+    "id": "cl-preset-startup",
+    "query": "where Message contains \"Starting\"\n| where Message !contains \"heartbeat\"\n| take 200\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Graph API Errors",
+    "id": "cl-preset-graph-errors",
+    "query": "where Level in (\"ERR\", \"CRT\")\n| where Message matches regex \"graph|Graph|GRAPH\"\n| where Timestamp > ago(24h)\n| take 500\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Token / Auth Issues",
+    "id": "cl-preset-auth",
+    "query": "where Message matches regex \"token|auth|unauthorized|forbidden|401|403\"\n| where Timestamp > ago(24h)\n| take 500\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Timeout Errors",
+    "id": "cl-preset-timeouts",
+    "query": "where Message matches regex \"timeout|timed out|TaskCanceled\"\n| where Timestamp > ago(24h)\n| take 500\n| sort by Timestamp desc"
+  },
+  {
+    "name": "All Errors (Search All Files)",
+    "id": "cl-preset-all-errors",
+    "query": "search all files\n| where Level in (\"ERR\", \"CRT\")\n| take 1000\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Standards Processing",
+    "id": "cl-preset-standards",
+    "query": "where Message contains \"Standard\"\n| where Timestamp > ago(24h)\n| take 500\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Full Log (Last 1h, no heartbeats)",
+    "id": "cl-preset-full-clean",
+    "query": "where Timestamp > ago(1h)\n| where Message !contains \"heartbeat\"\n| take 1000\n| sort by Timestamp desc"
+  }
+]

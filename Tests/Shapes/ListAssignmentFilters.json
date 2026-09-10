@@ -1,0 +1,20 @@
+{
+  "_metadata": {
+    "endpoint": "ListAssignmentFilters",
+    "generatedAt": "2026-04-03T23:41:08.2148339+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "assignmentFilterManagementType": "string",
+    "createdDateTime": "datetime",
+    "description": "string",
+    "displayName": "string",
+    "id": "string",
+    "lastModifiedDateTime": "datetime",
+    "payloads": "null",
+    "platform": "string",
+    "roleScopeTags": "string",
+    "rule": "string"
+  }
+}

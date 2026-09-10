@@ -1,0 +1,15 @@
+{
+  "_metadata": {
+    "endpoint": "ListTeams",
+    "generatedAt": "2026-04-03T23:47:17.0206982+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "description": "string",
+    "displayName": "string",
+    "id": "string",
+    "mailNickname": "string",
+    "visibility": "string"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "_metadata": {
+    "endpoint": "ListTransportRulesTemplates",
+    "generatedAt": "2026-04-03T23:40:37.1963005+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "ApplyOME": "bool",
+    "AttachmentExtensionMatchesWords": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "AttachmentHasExecutableContent": "bool",
+    "AttachmentIsPasswordProtected": "bool",
+    "AttachmentIsUnsupported": "bool",
+    "AttachmentProcessingLimitExceeded": "bool",
+    "comments": "string",
+    "DeleteMessage": "bool",
+    "ExceptIfAttachmentHasExecutableContent": "bool",
+    "ExceptIfAttachmentIsPasswordProtected": "bool",
+    "ExceptIfAttachmentIsUnsupported": "bool",
+    "ExceptIfAttachmentProcessingLimitExceeded": "bool",
+    "ExceptIfHasNoClassification": "bool",
+    "ExceptIfHasSenderOverride": "bool",
+    "GUID": "string",
+    "HasNoClassification": "bool",
+    "HasSenderOverride": "bool",
+    "Mode": "string",
+    "ModerateMessageByManager": "bool",
+    "name": "string",
+    "Quarantine": "bool",
+    "RecipientAddressType": "string",
+    "RemoveOME": "bool",
+    "RemoveOMEv2": "bool",
+    "RemoveRMSAttachmentEncryption": "bool",
+    "RouteMessageOutboundRequireTls": "bool",
+    "RuleErrorAction": "string",
+    "RuleSubType": "string",
+    "SenderAddressLocation": "string",
+    "SetAuditSeverity": "string",
+    "StopRuleProcessing": "bool",
+    "UseLegacyRegex": "bool"
+  }
+}

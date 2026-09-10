@@ -1,0 +1,12 @@
+[
+  {
+    "label": "View App Registration",
+    "path": "/tenant/administration/applications/app-registration",
+    "icon": "Apps"
+  },
+  {
+    "label": "Permissions",
+    "path": "/tenant/administration/applications/app-registration/permissions",
+    "icon": "Key"
+  }
+]

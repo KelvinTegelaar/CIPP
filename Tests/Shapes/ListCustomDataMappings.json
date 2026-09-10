@@ -1,0 +1,30 @@
+{
+  "_metadata": {
+    "endpoint": "ListCustomDataMappings",
+    "generatedAt": "2026-04-03T23:42:07.5544216+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "customDataAttribute": {
+      "addedFields": {
+        "dataType": "truncated",
+        "isMultiValued": "truncated",
+        "targetObject": "truncated",
+        "type": "truncated"
+      },
+      "label": "string",
+      "value": "string"
+    },
+    "dataset": "string",
+    "directoryObject": "string",
+    "id": "string",
+    "manualEntryFieldLabel": "null",
+    "sourceType": "string",
+    "syncProperty": {
+      "_type": "array",
+      "_element": "string"
+    },
+    "tenant": "string"
+  }
+}

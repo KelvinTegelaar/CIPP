@@ -1,0 +1,29 @@
+{
+  "_metadata": {
+    "endpoint": "ListIntuneReusableSettings",
+    "generatedAt": "2026-04-03T23:43:06.9642517+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "createdDateTime": "datetime",
+    "description": "string",
+    "displayName": "string",
+    "id": "string",
+    "lastModifiedDateTime": "datetime",
+    "RawJSON": "string",
+    "referencingConfigurationPolicyCount": "number",
+    "settingDefinitionId": "string",
+    "settingInstance": {
+      "@odata.type": "string",
+      "auditRuleInformation": "null",
+      "groupSettingCollectionValue": {
+        "children": "truncated",
+        "settingValueTemplateReference": "null"
+      },
+      "settingDefinitionId": "string",
+      "settingInstanceTemplateReference": "null"
+    },
+    "version": "number"
+  }
+}

@@ -1,11 +1,28 @@
-import M365LicensesDefault from "../data/M365Licenses.json";
-import M365LicensesAdditional from "../data/M365Licenses-additional.json";
+import { getM365Licenses } from "./m365-licenses-data";
 import { getCachedLicense } from "./cipp-license-cache";
 import licenseBackfillManager from "./cipp-license-backfill-manager";
 
+// Lazily build a Map for O(1) GUID -> Product_Display_Name lookups once the license data has loaded.
+let _licenseByGuid = null;
+const licenseByGuidMap = () => {
+  if (!_licenseByGuid) {
+    const all = getM365Licenses();
+    if (all.length) {
+      _licenseByGuid = new Map();
+      all.forEach((entry) => {
+        if (entry.GUID) {
+          const key = entry.GUID.toLowerCase();
+          if (!_licenseByGuid.has(key)) {
+            _licenseByGuid.set(key, entry.Product_Display_Name);
+          }
+        }
+      });
+    }
+  }
+  return _licenseByGuid || new Map();
+};
+
 export const getCippLicenseTranslation = (licenseArray) => {
-  //combine M365LicensesDefault and M365LicensesAdditional to one array
-  const M365Licenses = [...M365LicensesDefault, ...M365LicensesAdditional];
   let licenses = [];
   let missingSkuIds = [];
 
@@ -24,17 +41,16 @@ export const getCippLicenseTranslation = (licenseArray) => {
   licenseArray?.forEach((licenseAssignment) => {
     let found = false;
 
-    // First, check static JSON files
-    for (let x = 0; x < M365Licenses.length; x++) {
-      if (licenseAssignment.skuId === M365Licenses[x].GUID) {
-        licenses.push(
-          M365Licenses[x].Product_Display_Name
-            ? M365Licenses[x].Product_Display_Name
-            : licenseAssignment.skuPartNumber,
-        );
-        found = true;
-        break;
-      }
+    // First, check static JSON map (O(1) lookup)
+    const skuLower = licenseAssignment.skuId?.toLowerCase();
+    const displayName = skuLower ? licenseByGuidMap().get(skuLower) : undefined;
+    if (displayName) {
+      licenses.push(displayName);
+      found = true;
+    } else if (skuLower && licenseByGuidMap().has(skuLower)) {
+      // Entry exists but Product_Display_Name is falsy — fall back to skuPartNumber
+      licenses.push(licenseAssignment.skuPartNumber || licenseAssignment.skuId);
+      found = true;
     }
 
     // Second, check dynamic cache

@@ -1,6 +1,7 @@
 [
   {
     "label": "View Device",
-    "path": "/endpoint/MEM/devices/device"
+    "path": "/endpoint/MEM/devices/device",
+    "icon": "Computer"
   }
 ]

@@ -3,22 +3,34 @@ import { Typography, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "./CippFormComponent";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
-import intuneCollection from "../../data/intuneCollection.json";
+import { useIntuneDefinitions } from "../../hooks/use-intune-collection";
+import { collectSettingDefinitionIds } from "../../utils/intune-setting-definition-ids";
+import { matchPattern } from "../../utils/permission-rules";
+
+// One shared reference for the nothing-to-resolve case, so the hook below is not handed a fresh
+// array on every render.
+const EMPTY_IDS = [];
 
 const CippTemplateFieldRenderer = ({
   templateData,
   formControl,
   templateType = "conditionalAccess",
 }) => {
-  const intuneDefinitionMap = useMemo(() => {
-    const map = new Map();
-    (intuneCollection || []).forEach((def) => {
-      if (def?.id) {
-        map.set(def.id, def);
-      }
-    });
-    return map;
-  }, []);
+  // Only the setting definition ids this template references are requested. Keyed on the raw JSON
+  // string so the walk runs once per template rather than once per render.
+  const intuneRawJson = templateType === "intune" ? templateData?.RAWJson : undefined;
+  const intuneDefinitionIds = useMemo(() => {
+    if (!intuneRawJson) return EMPTY_IDS;
+    try {
+      return Array.from(collectSettingDefinitionIds(JSON.parse(intuneRawJson)));
+    } catch {
+      return EMPTY_IDS;
+    }
+  }, [intuneRawJson]);
+
+  const { getDefinition: getIntuneDefinition } = useIntuneDefinitions(intuneDefinitionIds, {
+    enabled: templateType === "intune",
+  });
   // Default blacklisted fields with wildcard support
   const defaultBlacklistedFields = [
     "id",
@@ -174,9 +186,9 @@ const CippTemplateFieldRenderer = ({
           options: [
             { label: "Not Configured", value: "notConfigured" },
             { label: "Disabled", value: "disabled" },
-            { label: "Enabled for Azure AD Joined", value: "enabledForAzureAd" },
+            { label: "Enabled for Microsoft Entra Joined", value: "enabledForAzureAd" },
             {
-              label: "Enabled for Azure AD and Hybrid Joined",
+              label: "Enabled for Microsoft Entra and Hybrid Joined",
               value: "enabledForAzureAdAndHybrid",
             },
           ],
@@ -214,10 +226,8 @@ const CippTemplateFieldRenderer = ({
   const isFieldBlacklisted = (fieldName) => {
     return blacklistedFields.some((pattern) => {
       if (pattern.includes("*")) {
-        // Convert wildcard pattern to regex
-        const regexPattern = pattern.replace(/\*/g, ".*").replace(/\./g, "\\.");
-        const regex = new RegExp(`^${regexPattern}$`, "i");
-        return regex.test(fieldName);
+        // matchPattern escapes every regex metacharacter and treats * as the only wildcard
+        return matchPattern(pattern, fieldName);
       }
       return pattern === fieldName;
     });
@@ -244,11 +254,43 @@ const CippTemplateFieldRenderer = ({
   React.useEffect(() => {
     if (templateData && formControl) {
       const processedData = parseIntuneRawJson(templateData);
-      const formValues = {};
 
+      // Recursively strip null values, empty arrays, empty strings,
+      // and @odata / Graph metadata keys so they don't create blank
+      // form fields or phantom sections in the builder.
+      const stripEmpty = (obj) => {
+        if (obj === null || obj === undefined) return undefined;
+        if (typeof obj === "string" && obj.trim() === "") return undefined;
+        if (Array.isArray(obj)) {
+          const filtered = obj
+            .map(stripEmpty)
+            .filter((v) => v !== undefined && v !== null);
+          return filtered.length > 0 ? filtered : undefined;
+        }
+        if (typeof obj === "object") {
+          const result = {};
+          let hasContent = false;
+          for (const [k, v] of Object.entries(obj)) {
+            // Drop @odata annotations and Graph metadata
+            if (k.includes("@odata") || k.startsWith("#")) continue;
+            const cleaned = stripEmpty(v);
+            if (cleaned !== undefined) {
+              result[k] = cleaned;
+              hasContent = true;
+            }
+          }
+          return hasContent ? result : undefined;
+        }
+        return obj;
+      };
+
+      const formValues = {};
       Object.keys(processedData).forEach((key) => {
         if (!isFieldBlacklisted(key)) {
-          formValues[key] = processedData[key];
+          const cleaned = stripEmpty(processedData[key]);
+          if (cleaned !== undefined) {
+            formValues[key] = cleaned;
+          }
         }
       });
       formControl.reset(formValues);
@@ -257,6 +299,10 @@ const CippTemplateFieldRenderer = ({
 
   const renderFormField = (key, value, path = "") => {
     const fieldPath = path ? `${path}.${key}` : key;
+
+    // Skip null/undefined values and @odata / metadata keys
+    if (value === null || value === undefined) return null;
+    if (key.includes("@odata") || key.startsWith("#")) return null;
 
     if (isFieldBlacklisted(key)) {
       return null;
@@ -283,7 +329,7 @@ const CippTemplateFieldRenderer = ({
                 <Grid container spacing={2}>
                   {(groupEntry?.children || []).map((child, childIndex) => {
                     const childPath = `${fieldPath}.${groupIndex}.children.${childIndex}`;
-                    const intuneDefinition = intuneDefinitionMap.get(child?.settingDefinitionId);
+                    const intuneDefinition = getIntuneDefinition(child?.settingDefinitionId);
                     const childLabel =
                       intuneDefinition?.displayName || child?.settingDefinitionId || `Child ${
                         childIndex + 1
@@ -328,7 +374,12 @@ const CippTemplateFieldRenderer = ({
 
                     return (
                       <Grid size={{ xs: 12, md: 6 }} key={childPath}>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            fontStyle: "italic"
+                          }}>
                           Unsupported group entry type — edit in JSON if needed.
                         </Typography>
                       </Grid>
@@ -388,7 +439,7 @@ const CippTemplateFieldRenderer = ({
                 // Handle different setting types
                 if (settingInstance.choiceSettingValue) {
                   // Find the setting definition in the intune collection
-                  const intuneObj = intuneDefinitionMap.get(settingInstance.settingDefinitionId);
+                  const intuneObj = getIntuneDefinition(settingInstance.settingDefinitionId);
 
                   const label = intuneObj?.displayName || `Setting ${index + 1}`;
                   const options =
@@ -414,7 +465,7 @@ const CippTemplateFieldRenderer = ({
 
                 if (settingInstance.simpleSettingValue) {
                   // Find the setting definition in the intune collection
-                  const intuneObj = intuneDefinitionMap.get(settingInstance.settingDefinitionId);
+                  const intuneObj = getIntuneDefinition(settingInstance.settingDefinitionId);
 
                   const label = intuneObj?.displayName || `Setting ${index + 1}`;
 
@@ -435,9 +486,7 @@ const CippTemplateFieldRenderer = ({
                 // Handle group setting collections
                 if (settingInstance.groupSettingCollectionValue) {
                   // Find the setting definition in the intune collection
-                  const intuneObj = intuneCollection.find(
-                    (item) => item.id === settingInstance.settingDefinitionId
-                  );
+                  const intuneObj = getIntuneDefinition(settingInstance.settingDefinitionId);
 
                   const label = intuneObj?.displayName || `Group Setting Collection ${index + 1}`;
 
@@ -448,17 +497,20 @@ const CippTemplateFieldRenderer = ({
                       </Typography>
                       <Typography
                         variant="caption"
-                        color="text.secondary"
-                        sx={{ display: "block", mb: 1 }}
-                      >
+                        sx={{
+                          color: "text.secondary",
+                          display: "block",
+                          mb: 1
+                        }}>
                         Definition ID: {settingInstance.settingDefinitionId}
                       </Typography>
                       {/* Group collections are complex - show as read-only for now */}
                       <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{ fontStyle: "italic" }}
-                      >
+                        sx={{
+                          color: "text.secondary",
+                          fontStyle: "italic"
+                        }}>
                         Complex group setting collection - view in JSON mode for details
                       </Typography>
                     </Grid>
@@ -539,7 +591,12 @@ const CippTemplateFieldRenderer = ({
             Policy Configuration
           </Typography>
           <Divider sx={{ mb: 2 }} />
-          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              fontStyle: "italic"
+            }}>
             This policy structure is not supported for editing.
           </Typography>
         </Grid>
@@ -606,7 +663,9 @@ const CippTemplateFieldRenderer = ({
                 ))
             ) : (
               <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   No {getCippTranslation(key)} data available
                 </Typography>
               </Grid>
@@ -776,12 +835,16 @@ const CippTemplateFieldRenderer = ({
       {priorityFields.map(
         (fieldName) =>
           processedData[fieldName] !== undefined &&
+          processedData[fieldName] !== null &&
           renderFormField(fieldName, processedData[fieldName])
       )}
 
       {/* Render all other fields except priority fields */}
       {Object.entries(processedData)
-        .filter(([key]) => !priorityFields.includes(key))
+        .filter(
+          ([key, value]) =>
+            !priorityFields.includes(key) && value !== null && value !== undefined
+        )
         .map(([key, value]) => renderFormField(key, value))}
     </Grid>
   );

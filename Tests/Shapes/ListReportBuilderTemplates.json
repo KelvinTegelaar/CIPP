@@ -1,0 +1,29 @@
+{
+  "_metadata": {
+    "endpoint": "ListReportBuilderTemplates",
+    "generatedAt": "2026-04-03T23:40:20.5902281+02:00",
+    "tenantFilter": null,
+    "requiresTenant": false
+  },
+  "shape": {
+    "Blocks": {
+      "content": "null",
+      "dbType": "null",
+      "format": "null",
+      "selectedHeaders": "null",
+      "static": "bool",
+      "status": "string",
+      "testCategory": "string",
+      "testId": "string",
+      "title": "string",
+      "type": "string"
+    },
+    "CreatedAt": "datetime",
+    "CustomCount": "number",
+    "GUID": "string",
+    "Name": "string",
+    "RowKey": "string",
+    "Sections": "number",
+    "TestCount": "number"
+  }
+}

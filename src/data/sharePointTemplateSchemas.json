@@ -1,0 +1,148 @@
+[
+  {
+    "templateEngineVersion": 1,
+    "title": "CIPP SharePoint Provisioning Template",
+    "description": "Schema for CIPP SharePoint provisioning templates stored in the templates table (PartitionKey SharePointTemplate). Add a new array entry for each engine version; do not mutate prior entries in place.",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": ["templateName", "templateEngineVersion", "siteTemplates"],
+    "properties": {
+      "templateEngineVersion": {
+        "type": "integer",
+        "const": 1,
+        "description": "Provisioning engine version that authored or last saved this template."
+      },
+      "templateName": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Display name of the provisioning template."
+      },
+      "siteType": {
+        "type": "string",
+        "enum": ["sharePoint", "teams"],
+        "description": "Template-level site type used when overrideSiteType is true."
+      },
+      "overrideSiteType": {
+        "type": "boolean",
+        "description": "When true, every site card deploys using the template-level siteType."
+      },
+      "createMissingGroups": {
+        "type": "boolean",
+        "description": "When true, deploy creates missing Entra security groups referenced by display name."
+      },
+      "skipIfExists": {
+        "type": "boolean",
+        "description": "When true, skip site/Team creation (and further changes) if a matching container already exists."
+      },
+      "siteTemplates": {
+        "type": "array",
+        "description": "Ordered list of sites or Teams to provision.",
+        "items": { "$ref": "#/$defs/siteTemplate" }
+      },
+      "GUID": {
+        "type": "string",
+        "description": "Template row key; set by the API on save."
+      },
+      "CreatedBy": { "type": "string" },
+      "CreatedOn": { "type": "string", "format": "date-time" },
+      "UpdatedBy": { "type": "string" },
+      "UpdatedOn": { "type": "string", "format": "date-time" }
+    },
+    "$defs": {
+      "siteTemplate": {
+        "type": "object",
+        "required": ["displayName", "permissions"],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Site or Team display name."
+          },
+          "alias": {
+            "type": "string",
+            "description": "Optional alias / URL slug hint."
+          },
+          "description": {
+            "type": "string"
+          },
+          "siteType": {
+            "type": "string",
+            "enum": ["sharePoint", "teams"],
+            "description": "Per-card type unless template overrideSiteType is active."
+          },
+          "language": {
+            "description": "SharePoint site language LCID as string, or 'default' for tenant root language. Select/autocomplete may store {label,value}. Ignored for Teams.",
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "properties": {
+                  "label": { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              }
+            ]
+          },
+          "createAs": {
+            "description": "SharePoint path only: Team site or Communication site. Ignored for Teams. Select may store {label,value}.",
+            "oneOf": [
+              { "type": "string", "enum": ["Team", "Communication"] },
+              {
+                "type": "object",
+                "properties": {
+                  "label": { "type": "string" },
+                  "value": { "type": "string", "enum": ["Team", "Communication"] }
+                }
+              }
+            ]
+          },
+          "permissions": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Root-level permission grants (required).",
+            "items": { "$ref": "#/$defs/permissionGrant" }
+          },
+          "libraries": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/library" }
+          }
+        }
+      },
+      "library": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" },
+          "permissions": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/permissionGrant" }
+          }
+        }
+      },
+      "permissionGrant": {
+        "type": "object",
+        "required": ["principal", "permissionLevel"],
+        "properties": {
+          "principal": {
+            "description": "Group display name, or autocomplete {label,value}.",
+            "oneOf": [
+              { "type": "string", "minLength": 1 },
+              {
+                "type": "object",
+                "properties": {
+                  "label": { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              }
+            ]
+          },
+          "permissionLevel": {
+            "type": "string",
+            "enum": ["read", "contribute", "edit", "design", "fullControl"]
+          }
+        }
+      }
+    }
+  }
+]

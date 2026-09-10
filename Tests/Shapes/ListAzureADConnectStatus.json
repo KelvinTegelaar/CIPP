@@ -1,0 +1,54 @@
+{
+  "_metadata": {
+    "endpoint": "ListAzureADConnectStatus",
+    "generatedAt": "2026-04-03T23:41:32.9840750+02:00",
+    "tenantFilter": "7ngn50.onmicrosoft.com",
+    "requiresTenant": true
+  },
+  "shape": {
+    "AzureADConnectSettings": {
+      "dirSyncEnabled": "bool",
+      "numberOfHoursFromLastSync": "null",
+      "raw": {
+        "assignedPlans": "truncated",
+        "businessPhones": "truncated",
+        "city": "truncated",
+        "country": "null",
+        "countryLetterCode": "truncated",
+        "createdDateTime": "truncated",
+        "defaultUsageLocation": "null",
+        "deletedDateTime": "null",
+        "directorySizeQuota": "truncated",
+        "displayName": "truncated",
+        "id": "truncated",
+        "isMultipleDataLocationsForServicesEnabled": "null",
+        "marketingNotificationEmails": "truncated",
+        "onPremisesLastPasswordSyncDateTime": "null",
+        "onPremisesLastSyncDateTime": "null",
+        "onPremisesSyncEnabled": "null",
+        "onPremisesSyncStatus": "null",
+        "partnerTenantType": "null",
+        "postalCode": "truncated",
+        "preferredLanguage": "truncated",
+        "privacyProfile": "truncated",
+        "provisionedPlans": "truncated",
+        "securityComplianceNotificationMails": "null",
+        "securityComplianceNotificationPhones": "null",
+        "state": "truncated",
+        "street": "truncated",
+        "technicalNotificationMails": "truncated",
+        "tenantType": "truncated",
+        "verifiedDomains": "truncated"
+      }
+    },
+    "ObjectsInError": {
+      "_type": "array",
+      "_element": {
+        "displayName": "truncated",
+        "id": "truncated",
+        "ObjectType": "truncated",
+        "onPremisesProvisioningErrors": "null"
+      }
+    }
+  }
+}
