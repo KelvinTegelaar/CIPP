@@ -245,6 +245,8 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
     if (
       (customRoleListSuccess &&
         tenantsSuccess &&
+        // The grid is built from the permission list; loading before it arrives yields {}.
+        apiPermissionSuccess &&
         selectedRole &&
         selectedRoleState !== selectedRole) ||
       // An empty {} isn't a real change — only a populated baseRolePermissions should retrigger this.
@@ -378,7 +380,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         setGridDiverged(false);
       }
     }
-  }, [customRoleList, customRoleListSuccess, tenantsSuccess, baseRolePermissions]);
+  }, [customRoleList, customRoleListSuccess, tenantsSuccess, apiPermissionSuccess, baseRolePermissions]);
 
   useEffect(() => {
     // Only a real "Set All" selection applies; the watched field is undefined on mount

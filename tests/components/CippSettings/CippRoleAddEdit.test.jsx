@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { act } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { renderWithProviders } from "../../test-utils";
 
@@ -77,5 +78,31 @@ describe("CippRoleAddEdit custom role advanced view", () => {
 
     expect(await findByText("CIPP.Alert.Read")).toBeTruthy();
     expect(queryByText(/\.undefined/)).toBeNull();
+  });
+
+  // Cold cache: the role list resolves before the permission list. Loading the role
+  // then built the grid from zero categories and the summary stayed blank.
+  it("shows the saved permission levels when the permission list arrives last", async () => {
+    pendingPermissions.data = undefined;
+    pendingPermissions.isFetching = true;
+    pendingPermissions.isSuccess = false;
+    idlePagination.data = { pages: [[technicianRole]] };
+    idlePagination.isSuccess = true;
+
+    // Re-render inside the providers once the mocked query flips to success.
+    let bump;
+    const Harness = () => {
+      const [, setTick] = useState(0);
+      bump = () => setTick((n) => n + 1);
+      return <CippRoleAddEdit selectedRole="technician" />;
+    };
+    const { findByText } = renderWithProviders(<Harness />);
+
+    pendingPermissions.data = loadedPermissions;
+    pendingPermissions.isFetching = false;
+    pendingPermissions.isSuccess = true;
+    act(() => bump());
+
+    expect(await findByText("CIPP.Alert.Read")).toBeTruthy();
   });
 });
