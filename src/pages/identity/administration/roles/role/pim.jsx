@@ -40,7 +40,7 @@ import {
   PRIVILEGED_ROLE_TOOLTIP,
   formatPimDuration,
   getRoleRow,
-} from './roleShared'
+} from '../../../../../utils/role-detail-shared'
 
 const ASSIGNMENT_BUCKETS = [
   {

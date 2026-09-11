@@ -12,7 +12,7 @@ import { Alert, Chip, Tooltip } from '@mui/material'
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
 import { CippTablePage } from '../../../../../components/CippComponents/CippTablePage.jsx'
 import CippJsonView from '../../../../../components/CippFormPages/CippJSONView'
-import { PRIVILEGED_ROLE_TOOLTIP, getRoleRow } from './roleShared'
+import { PRIVILEGED_ROLE_TOOLTIP, getRoleRow } from '../../../../../utils/role-detail-shared'
 
 const GUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i

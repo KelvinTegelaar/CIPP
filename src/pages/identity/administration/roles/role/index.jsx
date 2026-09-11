@@ -32,7 +32,7 @@ import {
   POLICY_BELOW_FLOOR_TOOLTIP,
   PRIVILEGED_ROLE_TOOLTIP,
   getRoleRow,
-} from './roleShared'
+} from '../../../../../utils/role-detail-shared'
 
 const Page = () => {
   const userSettingsDefaults = useSettings()

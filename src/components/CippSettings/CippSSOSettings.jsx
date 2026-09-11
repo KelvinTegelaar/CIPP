@@ -30,7 +30,7 @@ import { CippApiResults } from "../CippComponents/CippApiResults";
 
 const SSO_DOCS_URL = "https://docs.cipp.app/user-documentation/cipp/advanced/authentication/sso";
 
-// The three delegated scopes New-CIPPSSOApp requests. Kept here verbatim so an admin can hand
+// The four delegated scopes New-CIPPSSOApp requests. Kept here verbatim so an admin can hand
 // this straight to their own security team without having to ask what the app can reach.
 const ssoAppPermissions = [
   {
@@ -47,6 +47,11 @@ const ssoAppPermissions = [
     reason:
       "Reads the signed-in user's UPN, which CIPP matches against the CIPP Users list to decide their roles.",
   },
+  {
+    name: "offline_access",
+    reason:
+      "Issues a refresh token so a signed-in session can be renewed without the user signing in again. Grants no additional data access.",
+  },
 ];
 
 // Application permissions already consented on CIPP-SAM that the setup runs as. Nothing new is
@@ -59,7 +64,7 @@ const samPermissionsUsed = [
   {
     name: "Directory.ReadWrite.All",
     reason:
-      "Grants tenant-wide consent for the three scopes above so your users are not prompted to consent at sign-in.",
+      "Grants tenant-wide consent for the four scopes above so your users are not prompted to consent at sign-in.",
   },
   {
     name: "Policy.ReadWrite.ApplicationConfiguration",
@@ -359,9 +364,9 @@ export const CippSSOSettings = () => {
                       }}>
                       No application (app-only) permissions are requested, so the app can never act
                       without a signed-in user. None of these scopes grant access to mail, files,
-                      Teams or directory data — they are the standard OpenID Connect sign-in scopes,
-                      classed by Microsoft as low impact. Who can actually reach CIPP is still
-                      controlled by the CIPP Users list.
+                      Teams or directory data — they are the standard OpenID Connect sign-in scopes
+                      plus offline_access to renew the session, all classed by Microsoft as low
+                      impact. Who can actually reach CIPP is still controlled by the CIPP Users list.
                     </Typography>
                   </div>
 
