@@ -488,6 +488,9 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
           pt: 1,
           pb: 0,
           flex: 1,
+          // Flex children default to min-height:auto and refuse to shrink below their
+          // content, so the notes box below could never scroll. This lets it.
+          minHeight: 0,
           display: 'flex',
           // Drop MUI's default side padding; prose padding lives on the scroll box /
           // banners instead. Theme hides the mobile gutter entirely below `lg`.
@@ -526,11 +529,11 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
             <Box
               sx={{
                 flexGrow: 1,
-                // dvh tracks the visible viewport; 100vh over-reports it on mobile browsers
-                // with collapsing chrome, so the notes ran past the bottom of the screen.
-                maxHeight: fullScreen
-                  ? { xs: 'calc(100dvh - 200px)', md: 'calc(100vh - 260px)' }
-                  : 600,
+                minHeight: 0,
+                // Fullscreen: the paper is a fixed-height flex column, so flex sizes this box
+                // to whatever the title and actions leave — a pixel cap left a dead band above
+                // the actions on phones. Centred dialogs have no fixed height, so cap those.
+                maxHeight: fullScreen ? undefined : 600,
                 overflowY: 'auto',
                 // Padding is on the scroll box so the markdown stays clear of any track.
                 px: { xs: 2, md: 3 },

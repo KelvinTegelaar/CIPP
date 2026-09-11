@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CippIcons } from "../../utils/icon-registry"
-import { Button, Link, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Alert, Button, Link, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -21,6 +21,12 @@ export const CippBulkUserDrawer = ({
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [addRowDialogOpen, setAddRowDialogOpen] = useState(false);
   const initialState = useSettings();
+
+  // Bulk user creation targets a single tenant. Under "All Tenants" the tenant does not resolve,
+  // and the Graph write helpers silently no-op while the endpoint still reports success, so guard
+  // the submit rather than letting it appear to succeed while creating nothing.
+  const isAllTenants =
+    !initialState?.currentTenant || initialState.currentTenant === "AllTenants";
 
   const addedFields = initialState?.defaultAttributes
     ? initialState.userAttributes.map((item) => item.label)
@@ -164,7 +170,12 @@ export const CippBulkUserDrawer = ({
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={createBulkUsers.isLoading || !bulkUserData || bulkUserData.length === 0}
+              disabled={
+                isAllTenants ||
+                createBulkUsers.isLoading ||
+                !bulkUserData ||
+                bulkUserData.length === 0
+              }
             >
               {createBulkUsers.isLoading
                 ? "Creating Users..."
@@ -179,6 +190,15 @@ export const CippBulkUserDrawer = ({
         }
       >
         <Grid container spacing={2}>
+          {isAllTenants && (
+            <Grid size={{ xs: 12 }}>
+              <Alert severity="warning">
+                Bulk user creation is single-tenant only. Select a specific tenant using the tenant
+                selector before adding users — with "All Tenants" selected no users will be created.
+              </Alert>
+            </Grid>
+          )}
+
           <Grid size={{ md: 6, xs: 12 }}>
             <CippFormComponent
               type="autoComplete"

@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer";
 import { CippApiLogsDrawer } from "../../../../components/CippComponents/CippApiLogsDrawer";
+import { CippCAPolicyCoverageDrawer } from "../../../../components/CippComponents/CippCAPolicyCoverageDrawer";
 import { PermissionButton } from "../../../../utils/permissions";
 import { useSettings } from "../../../../hooks/use-settings.js";
 
@@ -24,6 +25,25 @@ const Page = () => {
       icon: <CippIcons.Edit />,
       color: "info",
       hideBulk: true,
+    },
+    {
+      label: "View identity coverage",
+      icon: <CippIcons.People />,
+      color: "info",
+      hideBulk: true,
+      multiPost: false,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => {
+        const policy = Array.isArray(row) ? row[0] : row;
+        return (
+          <CippCAPolicyCoverageDrawer
+            policyId={policy?.id}
+            policyName={policy?.displayName}
+            tenantFilter={policy?.Tenant || tenant}
+            visible={!!drawerVisible}
+            onClose={() => setDrawerVisible(false)}
+          />
+        );
+      },
     },
     {
       label: "Create template based on policy",

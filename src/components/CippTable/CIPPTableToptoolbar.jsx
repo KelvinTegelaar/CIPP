@@ -619,7 +619,10 @@ export const CIPPTableToptoolbar = React.memo(
         if (table?.type === 'global' && typeof table.value !== 'string') {
           return { graph: last.graph ?? null, table: null }
         }
-        return { graph: last.graph ?? null, table }
+        // corrupted echo can persist graph.value as a bare guid string instead of an object
+        const graph =
+          last.graph && typeof last.graph.value !== 'object' ? null : last.graph ?? null
+        return { graph, table }
       }
       // legacy single-slot {type, value, name}
       if (last.type === 'graph') {

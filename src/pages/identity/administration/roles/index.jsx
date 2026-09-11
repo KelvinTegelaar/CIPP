@@ -55,8 +55,17 @@ const Page = () => {
   const apiData = {}
   if (roleTemplateId) apiData.roleTemplateId = roleTemplateId
   if (principalId) apiData.principalId = principalId
+  const tenantQuery =
+    currentTenant === 'AllTenants' ? '[Tenant]' : currentTenant
 
   const actions = [
+    {
+      label: 'View Role',
+      link: `/identity/administration/roles/role?roleTemplateId=[RoleDefinitionId]&tenantFilter=${tenantQuery}`,
+      pinned: true,
+      color: 'info',
+      icon: <CippIcons.EyeIcon />,
+    },
     {
       label: 'Create template from role settings',
       type: 'POST',
@@ -169,6 +178,10 @@ const Page = () => {
         'IsPrivilegedRole',
         'PolicySummary',
       ]}
+      rowOpen={{
+        link: `/identity/administration/roles/role?roleTemplateId=[RoleDefinitionId]&tenantFilter=${tenantQuery}`,
+        condition: (row) => Boolean(row?.RoleDefinitionId),
+      }}
     />
   )
 }

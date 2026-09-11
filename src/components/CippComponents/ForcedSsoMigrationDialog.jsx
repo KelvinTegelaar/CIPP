@@ -103,7 +103,7 @@ export const ForcedSsoMigrationDialog = () => {
               <AccordionDetails sx={{ px: 0 }}>
                 <Typography variant="body2" sx={{ mb: 1 }}>
                   An app registration named <strong>CIPP-SSO</strong> in your partner tenant,
-                  requesting three delegated Microsoft Graph permissions and no application
+                  requesting four delegated Microsoft Graph permissions and no application
                   permissions at all:
                 </Typography>
                 <Typography component="ul" variant="body2" sx={{ pl: 3, mb: 1 }}>
@@ -117,6 +117,10 @@ export const ForcedSsoMigrationDialog = () => {
                   <li>
                     <strong>email</strong> — reads the UPN, which CIPP matches against the CIPP Users
                     list to decide their roles.
+                  </li>
+                  <li>
+                    <strong>offline_access</strong> — issues a refresh token so the sign-in session
+                    can be renewed without signing in again. Grants no additional data access.
                   </li>
                 </Typography>
                 <Typography

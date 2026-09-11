@@ -122,6 +122,9 @@ export const CippAuthShell = ({
             color: 'common.white',
             px: { xs: 3, md: 8 },
             py: { xs: 2.5, md: 8 },
+            // The strip is the top of the page: keep the lockup out of the iOS status bar
+            // on a home-screen install (viewport-fit=cover). 0px everywhere else.
+            pt: { xs: 'calc(20px + env(safe-area-inset-top, 0px))', md: 8 },
             '&::before': {
               content: '""',
               position: 'absolute',

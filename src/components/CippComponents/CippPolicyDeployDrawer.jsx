@@ -46,6 +46,10 @@ const reservedReplacementVariables = new Set(
     'cippurl',
     'defaultdomain',
     'organizationid',
+    // Apple enrollment (ADE) token binding. Resolved per tenant from the tenant's ADETokenId custom
+    // variable at deploy time; if it is unset the backend returns a clear error naming the tenant's
+    // real token id, so the token is never prompted for or shown in this drawer.
+    'adetokenid',
   ].map((variable) => variable.toLowerCase()),
 )
 
