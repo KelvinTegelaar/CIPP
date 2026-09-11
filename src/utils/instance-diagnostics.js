@@ -86,6 +86,15 @@ export const buildRequestSeries = (buckets, topN = 4) => {
   return { data, series: topClients.map((c) => ({ AppId: c.AppId, AppName: c.AppName || c.AppId })) };
 };
 
+// Human-readable byte size, one decimal place, B/KB/MB/GB.
+export const formatBytes = (bytes) => {
+  const n = Number(bytes) || 0;
+  if (n >= 1024 ** 3) return `${(n / 1024 ** 3).toFixed(1)} GB`;
+  if (n >= 1024 ** 2) return `${(n / 1024 ** 2).toFixed(1)} MB`;
+  if (n >= 1024) return `${(n / 1024).toFixed(1)} KB`;
+  return `${n.toFixed(1)} B`;
+};
+
 // Deep-link query for the Logs tab, scoped to one API client's calls in the current window.
 export const buildClientLogQuery = (appId, hoursWindow) =>
   `search all files\n| where Message contains "AppId=${appId}"\n| where Timestamp > ago(${hoursWindow}h)\n| take 1000\n| sort by Timestamp desc`;

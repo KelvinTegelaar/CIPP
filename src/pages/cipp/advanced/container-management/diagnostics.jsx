@@ -46,6 +46,7 @@ import {
   buildClientLogQuery,
   buildRequestSeries,
   getCheckLabel,
+  formatBytes,
 } from "../../../../utils/instance-diagnostics";
 
 const WINDOWS = [
@@ -149,8 +150,8 @@ const buildEventRows = (events) =>
       Event: e.Type === "boot" ? "Container restarted" : "Out of memory",
       Outage: e.Type === "boot" && e.GapMinutes != null ? `${e.GapMinutes} min` : "",
       BusiestClient: busiest ? busiest.AppName || busiest.AppId : "—",
-      RequestsPriorHour: busiest?.Count ?? null,
-      BaselinePerHour: busiest?.Baseline ?? null,
+      RequestsPriorHour: busiest?.Count ?? "—",
+      BaselinePerHour: busiest?.Baseline ?? "—",
       Ratio: formatRatio(busiest?.Ratio),
       TopClients: topClients.map((c) => ({
         Client: c.AppName || c.AppId,
@@ -228,12 +229,17 @@ const CLIENT_COLOR_KEYS = ["primary", "info", "success", "secondary"];
 
 // Small bordered sub-chart, stacked full-width under the "Health Timeline" card header so
 // every sub-chart's x-axis lines up (same buckets, same left margin).
-const SubChart = ({ title, height = 220, children }) => (
+const SubChart = ({ title, caption, height = 220, children }) => (
   <Grid size={{ xs: 12 }}>
     <Box sx={{ border: (t) => `1px solid ${t.palette.divider}`, borderRadius: 1, p: 1.5 }}>
-      <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
+      <Typography variant="body2" sx={{ fontWeight: 500, mb: caption ? 0 : 1 }}>
         {title}
       </Typography>
+      {caption && (
+        <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mb: 1 }}>
+          {caption}
+        </Typography>
+      )}
       <Box sx={{ height }}>
         <ResponsiveContainer width="100%" height={height}>
           {children}
@@ -276,6 +282,31 @@ const RequestsChart = ({ data, series, theme: t }) => (
   </SubChart>
 );
 
+const EgressChart = ({ data, todayBytes, capBytes, theme: t }) => {
+  const caption =
+    todayBytes == null
+      ? null
+      : capBytes
+      ? `Today: ${formatBytes(todayBytes)} of ${formatBytes(capBytes)} (${Math.round(
+          (todayBytes / capBytes) * 100
+        )}%)`
+      : `Today: ${formatBytes(todayBytes)}`;
+
+  return (
+    <SubChart title="API Egress / 5 min" caption={caption}>
+      <BarChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
+        <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+        <YAxis tick={{ fontSize: 11 }} tickMargin={4} unit="MB" />
+        <YAxis yAxisId="spacer" orientation="right" width={44} tick={false} axisLine={false} />
+        <RechartsTooltip {...chartTooltipStyle(t)} formatter={(value) => [`${value} MB`, "Egress"]} />
+        <Legend />
+        <Bar dataKey="EgressMb" name="Egress (MB)" fill={t.palette.info.main} />
+      </BarChart>
+    </SubChart>
+  );
+};
+
 const HeapChart = ({ data, heapCapMb, eventMarkers, theme: t }) => {
   const peak = data.reduce((max, d) => (d.Heap != null && d.Heap > max ? d.Heap : max), 0);
   const domainMax = Math.max(heapCapMb || 0, peak) * 1.05;
@@ -312,7 +343,7 @@ const HeapChart = ({ data, heapCapMb, eventMarkers, theme: t }) => {
             x={e.time}
             stroke={e.Type === "boot" ? t.palette.error.main : t.palette.error.dark}
             strokeDasharray="4 2"
-            label={{ value: e.Type === "boot" ? "Restart" : "OOM", fontSize: 10, position: "top" }}
+            label={{ value: e.Type === "boot" ? "Restart" : "OOM", fontSize: 10, position: "insideBottomLeft", angle: -90 }}
           />
         ))}
       </AreaChart>
@@ -365,6 +396,8 @@ const Page = () => {
   const buckets = useMemo(() => timelineQuery.data?.Results?.Buckets ?? [], [timelineQuery.data]);
   const events = useMemo(() => timelineQuery.data?.Results?.Events ?? [], [timelineQuery.data]);
   const heapCapMb = timelineQuery.data?.Results?.HeapCapMb ?? null;
+  const egressAvailable = timelineQuery.data?.Results?.EgressAvailable ?? false;
+  const egressCapBytes = timelineQuery.data?.Results?.EgressCapBytes ?? null;
   const isFetching = checksQuery.isFetching || timelineQuery.isFetching;
 
   const chartData = useMemo(
@@ -382,6 +415,17 @@ const Page = () => {
     () => requestSeries.data.map((row) => ({ ...row, time: formatChartTime(row.Bucket, hours) })),
     [requestSeries, hours]
   );
+
+  const egressChartData = useMemo(
+    () =>
+      buckets.map((b) => ({
+        time: formatChartTime(b.Bucket, hours),
+        EgressMb: b.EgressBytes != null ? Math.round((b.EgressBytes / 1048576) * 10) / 10 : null,
+      })),
+    [buckets, hours]
+  );
+  // Newest bucket that actually carries a reading - later buckets in the window can be empty.
+  const egressToday = [...buckets].reverse().find((b) => b.EgressBytesToday != null)?.EgressBytesToday ?? null;
 
   const showPoolChart = buckets.some(
     (b) => (b.PoolExhaustedCount ?? 0) > 0 || (b.MaxLimiterWaitMs ?? 0) >= 10000
@@ -472,6 +516,14 @@ const Page = () => {
                     ) : (
                       <Grid container spacing={2}>
                         <RequestsChart data={requestChartData} series={requestSeries.series} theme={theme} />
+                        {egressAvailable && (
+                          <EgressChart
+                            data={egressChartData}
+                            todayBytes={egressToday}
+                            capBytes={egressCapBytes}
+                            theme={theme}
+                          />
+                        )}
                         <HeapChart
                           data={chartData}
                           heapCapMb={heapCapMb}
