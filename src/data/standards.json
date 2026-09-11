@@ -1741,7 +1741,7 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS M365 7.0.0 (1.3.4)", "SMB1001 (2.8)"],
     "appliesToTest": ["CIS_1_3_4", "EIDSCAAP05", "SMB1001_2_8"],
-    "helpText": "**Requires 'Billing Administrator' GDAP role.** This standard disables all self service licenses and enables all exclusions",
+    "helpText": "This standard disables all self service licenses and enables all exclusions",
     "executiveText": "Prevents employees from purchasing Microsoft 365 licenses independently, ensuring all software acquisitions go through proper procurement channels. This maintains budget control, prevents unauthorized spending, and ensures compliance with corporate licensing agreements.",
     "addedComponent": [
       {
@@ -1760,7 +1760,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2021-11-16",
-    "powershellEquivalent": "Set-MsolCompanySettings -AllowAdHocSubscriptions $false",
+    "powershellEquivalent": "Update-MSCommerceProductPolicy -PolicyId AllowSelfServicePurchase -Value Disabled",
     "recommendedBy": []
   },
   {
@@ -1768,8 +1768,9 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["SMB1001 (2.8)"],
     "appliesToTest": ["SMB1001_2_8", "ZTNA21858"],
-    "helpText": "Blocks login for guest users whose most recent sign-in attempt, interactive or non-interactive, is older than the number of days. Guests that have never signed in are only included when 'Disable accounts that have not yet signed in' is enabled. Accounts an administrator re-enabled in the last 7 days are left alone.",
-    "executiveText": "Automatically disables external guest accounts that haven't been used for a number of days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
+    "helpText": "Blocks login for guest users whose most recent sign-in attempt, interactive or non-interactive, is older than the number of days. Optionally soft-deletes already-disabled guests after a configurable grace period past that threshold (0 = never delete). Guests that have never signed in are only included when 'Disable accounts that have not yet signed in' is enabled. Accounts an administrator re-enabled in the last 7 days are left alone. Deleted guests remain recoverable from Deleted Items for about 30 days.",
+    "docsDescription": "Blocks login for guest users whose most recent sign-in attempt, interactive or non-interactive, is older than the number of days. Remediation first disables stale enabled guests, and later soft-deletes guests that are already disabled once they have been inactive for the disable threshold plus the configured grace delta (deletion age = days + deleteGraceDays). The disable-before-delete grace is further guaranteed by never deleting a guest in the same pass it was disabled. Guests that have never signed in are only included when 'Disable accounts that have not yet signed in' is enabled. Accounts an administrator re-enabled in the last 7 days are left alone. Graph user DELETE is a soft-delete (recoverable from Deleted Items for about 30 days), which lets a later re-invite create a clean guest object instead of colliding with a disabled account.",
+    "executiveText": "Automatically disables external guest accounts that haven't been used for a number of days, and can optionally remove already-disabled dormant guests after an additional grace period. This reduces security risks from abandoned external access, keeps the directory clean, and avoids errors when previously disabled guests need to be invited back.",
     "addedComponent": [
       {
         "type": "number",
@@ -1779,6 +1780,15 @@
         "label": "Days of inactivity"
       },
       {
+        "type": "number",
+        "name": "standards.DisableGuests.deleteGraceDays",
+        "label": "Grace days after disable before deletion (0 = never delete). Guests are deleted once inactive for the disable threshold plus this many additional days.",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" }
+        }
+      },
+      {
         "type": "switch",
         "name": "standards.DisableGuests.IncludeNeverSignedIn",
         "label": "Disable accounts that have not yet signed in",
@@ -1786,8 +1796,8 @@
       }
     ],
     "label": "Disable Guest accounts that have not logged on for a number of days",
-    "impact": "Medium Impact",
-    "impactColour": "warning",
+    "impact": "High Impact",
+    "impactColour": "danger",
     "addedDate": "2022-10-20",
     "powershellEquivalent": "Graph API",
     "recommendedBy": ["CIS", "CIPP"],

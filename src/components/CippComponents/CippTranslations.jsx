@@ -23,6 +23,7 @@ export const CippTranslations = {
   lastOutcome: 'Last Outcome',
   feedEvent: 'Event',
   detail: 'Detail',
+  Detail: 'Details',
   outcome: 'Outcome',
   runId: 'Run ID',
   mode: 'Mode',
@@ -30,6 +31,8 @@ export const CippTranslations = {
   baselineName: 'Baseline',
   secureScoreImpact: 'Secure Score Impact',
   userPrincipalName: 'User Principal Name',
+  includeReasons: 'Included via',
+  excludeReasons: 'Excluded via',
   aadRegistered: 'Microsoft Entra Registered',
   azureADRegistered: 'Microsoft Entra Registered',
   azureActiveDirectoryDeviceId: 'Microsoft Entra Device ID',
@@ -132,4 +135,9 @@ export const CippTranslations = {
   unknownFutureValue: 'Unknown',
   devicePrepData: 'Corporate Identifiers',
   overwriteExisting: 'Overwrite Existing Identifiers',
+  // Instance Diagnostics
+  BusiestClient: 'Busiest Client Before Event',
+  RequestsPriorHour: 'Requests In Prior Hour',
+  BaselinePerHour: 'Baseline / Hr',
+  SharePct: 'Share %',
 }

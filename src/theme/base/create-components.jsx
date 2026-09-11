@@ -227,10 +227,29 @@ export const createComponents = () => {
             margin: 0,
             width: "100%",
             maxWidth: "100%",
-            maxHeight: "100%",
             borderRadius: 0,
+            // A tall dialog fills the screen and, in a home-screen install, runs under the
+            // iOS status bar. Keep it below the inset; fullscreen dialogs pad themselves.
+            "&:not(.MuiDialog-paperFullScreen)": {
+              marginTop: "env(safe-area-inset-top, 0px)",
+              maxHeight: "calc(100% - env(safe-area-inset-top, 0px))",
+            },
           },
         },
+        // Fullscreen dialogs and edge drawers reach the top of the screen. In a home-screen
+        // (standalone) install with viewport-fit=cover that is under the iOS status bar, so
+        // pad by the safe-area inset the same way the top nav does. 0px everywhere else.
+        paperFullScreen: {
+          paddingTop: "env(safe-area-inset-top, 0px)",
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: ({ ownerState }) =>
+          ownerState.variant === "temporary" && ["left", "right"].includes(ownerState.anchor)
+            ? { paddingTop: "env(safe-area-inset-top, 0px)" }
+            : {},
       },
     },
     MuiDialogActions: {

@@ -21,6 +21,7 @@ import { CippDataTable } from '../../../../../components/CippTable/CippDataTable
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
 import { Button } from '@mui/material'
 import { getCippFormatting } from '../../../../../utils/get-cipp-formatting'
+import { CippDevicePolicySettingStates } from '../../../../../components/CippComponents/CippDevicePolicySettingStates'
 
 const Page = () => {
   const userSettingsDefaults = useSettings()
@@ -140,6 +141,18 @@ const Page = () => {
   const users = usersData?.body?.value || []
   const deviceMemberOf = deviceMemberOfData?.body?.value || []
 
+  // Graph bulk items omit `error.message` on many failures (message is under body.error),
+  // and a missing item makes `status !== 200` true — treat only real HTTP failures as errors.
+  const isBulkRequestFailed = (item) =>
+    item != null && typeof item.status === 'number' && (item.status < 200 || item.status >= 300)
+
+  const getBulkFailureMessage = (item, fallback) =>
+    item?.error?.message ||
+    item?.body?.error?.message ||
+    (typeof item?.body?.error === 'string' ? item.body.error : null) ||
+    (item?.status ? `Unable to load this data (HTTP ${item.status}).` : null) ||
+    fallback
+
   // Helper function to format bytes to GB (matching getCippFormatting pattern)
   const formatBytesToGB = (bytes) => {
     if (!bytes || bytes === 0) return 'N/A'
@@ -202,11 +215,13 @@ const Page = () => {
     return <CippIcons.Computer />
   }
 
+  const tenantFilter = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
+
   // Prepare compliance policy items
   let compliancePolicyItems = []
   if (deviceCompliance.length > 0) {
     compliancePolicyItems = deviceCompliance.map((policy, index) => ({
-      id: index,
+      id: policy.id || `compliance-${index}`,
       cardLabelBox: {
         cardLabelBoxHeader: policy.complianceState === 'compliant' ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
       },
@@ -219,19 +234,26 @@ const Page = () => {
           label: 'Setting Count',
           value: policy.settingCount || 'N/A',
         },
-        {
-          label: 'Setting States',
-          value: policy.settingStates?.length || 0,
-        },
       ],
+      children: policy.id ? (
+        <CippDevicePolicySettingStates
+          deviceId={deviceId}
+          policyStateId={policy.id}
+          tenantFilter={tenantFilter}
+          statesCollection="deviceCompliancePolicyStates"
+        />
+      ) : null,
     }))
-  } else if (deviceComplianceData?.status !== 200) {
+  } else if (isBulkRequestFailed(deviceComplianceData) || deviceBulkRequest.isError) {
     compliancePolicyItems = [
       {
         id: 1,
         cardLabelBox: '!',
         text: 'Error loading compliance policies',
-        subtext: deviceComplianceData?.error?.message || 'Unknown error',
+        subtext: getBulkFailureMessage(
+          deviceComplianceData,
+          'Unable to load compliance policies. Try refreshing the device.'
+        ),
         statusColor: 'error.main',
         statusText: 'Error',
         propertyItems: [],
@@ -255,7 +277,7 @@ const Page = () => {
   let configurationPolicyItems = []
   if (deviceConfiguration.length > 0) {
     configurationPolicyItems = deviceConfiguration.map((policy, index) => ({
-      id: index,
+      id: policy.id || `configuration-${index}`,
       cardLabelBox: {
         cardLabelBoxHeader: policy.state === 'compliant' ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
       },
@@ -268,19 +290,26 @@ const Page = () => {
           label: 'Setting Count',
           value: policy.settingCount || 'N/A',
         },
-        {
-          label: 'Setting States',
-          value: policy.settingStates?.length || 0,
-        },
       ],
+      children: policy.id ? (
+        <CippDevicePolicySettingStates
+          deviceId={deviceId}
+          policyStateId={policy.id}
+          tenantFilter={tenantFilter}
+          statesCollection="deviceConfigurationStates"
+        />
+      ) : null,
     }))
-  } else if (deviceConfigurationData?.status !== 200) {
+  } else if (isBulkRequestFailed(deviceConfigurationData) || deviceBulkRequest.isError) {
     configurationPolicyItems = [
       {
         id: 1,
         cardLabelBox: '!',
         text: 'Error loading configuration policies',
-        subtext: deviceConfigurationData?.error?.message || 'Unknown error',
+        subtext: getBulkFailureMessage(
+          deviceConfigurationData,
+          'Unable to load configuration policies. Try refreshing the device.'
+        ),
         statusColor: 'error.main',
         statusText: 'Error',
         propertyItems: [],
@@ -322,13 +351,16 @@ const Page = () => {
         },
       },
     ]
-  } else if (detectedAppsData?.status !== 200) {
+  } else if (isBulkRequestFailed(detectedAppsData) || deviceBulkRequest.isError) {
     detectedAppsItems = [
       {
         id: 1,
         cardLabelBox: '!',
         text: 'Error loading detected applications',
-        subtext: detectedAppsData?.error?.message || 'Unknown error',
+        subtext: getBulkFailureMessage(
+          detectedAppsData,
+          'Unable to load detected applications. Try refreshing the device.'
+        ),
         statusColor: 'error.main',
         statusText: 'Error',
         propertyItems: [],
@@ -378,13 +410,16 @@ const Page = () => {
         },
       },
     ]
-  } else if (usersData?.status !== 200) {
+  } else if (isBulkRequestFailed(usersData) || deviceBulkRequest.isError) {
     usersItems = [
       {
         id: 1,
         cardLabelBox: '!',
         text: 'Error loading device users',
-        subtext: usersData?.error?.message || 'Unknown error',
+        subtext: getBulkFailureMessage(
+          usersData,
+          'Unable to load associated users. Try refreshing the device.'
+        ),
         statusColor: 'error.main',
         statusText: 'Error',
         propertyItems: [],
@@ -439,13 +474,16 @@ const Page = () => {
             },
           },
         ]
-      : deviceMemberOfData && deviceMemberOfData.status !== 200
+      : isBulkRequestFailed(deviceMemberOfData) || deviceBulkRequest.isError
         ? [
             {
               id: 1,
               cardLabelBox: '!',
               text: 'Error loading device group memberships',
-              subtext: deviceMemberOfData?.error?.message || 'Unknown error',
+              subtext: getBulkFailureMessage(
+                deviceMemberOfData,
+                'Unable to load group memberships. Try refreshing the device.'
+              ),
               statusColor: 'error.main',
               statusText: 'Error',
               propertyItems: [],
@@ -609,6 +647,18 @@ const Page = () => {
                             {getCippFormatting(data?.complianceState, 'complianceState') || 'N/A'}
                           </Typography>
                         </Grid>
+                        {data?.complianceGracePeriodExpirationDateTime && (
+                          <Grid size={{ xs: 12 }}>
+                            <Typography variant="inherit" gutterBottom sx={{
+                              color: "text.primary"
+                            }}>
+                              Grace period expires:
+                            </Typography>
+                            <Typography variant="inherit">
+                              {new Date(data.complianceGracePeriodExpirationDateTime).toLocaleString()}
+                            </Typography>
+                          </Grid>
+                        )}
                         <Grid size={{ xs: 12 }}>
                           <Typography variant="inherit" gutterBottom sx={{
                             color: "text.primary"

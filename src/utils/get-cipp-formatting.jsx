@@ -1,4 +1,4 @@
-import { Chip, Link, SvgIcon, Tooltip } from '@mui/material'
+import { Chip, Link, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { CippIcons } from './icon-registry'
 import NextLink from 'next/link'
 import { alpha } from '@mui/material/styles'
@@ -28,6 +28,10 @@ import { CippTimeAgo } from '../components/CippComponents/CippTimeAgo'
 import { getCippRoleTranslation } from './get-cipp-role-translation'
 import { getCippTranslation } from './get-cipp-translation'
 import DOMPurify from 'dompurify'
+import {
+  formatCaCoverageReason,
+  formatCaCoverageReasons,
+} from './format-ca-coverage-reason'
 import { getSignInErrorCodeTranslation } from './get-cipp-signin-errorcode-translation'
 import { CollapsibleChipList } from '../components/CippComponents/CollapsibleChipList'
 import countryList from '../data/countryList.json'
@@ -186,13 +190,33 @@ export const getCippFormatting = (
   }
 
   if (cellNameLower === 'compliancestate') {
-    if (isText) return data
-    const label = data?.label ?? data
+    const raw = data?.label ?? data
+    const complianceStateLabels = {
+      compliant: 'Compliant',
+      remediated: 'Remediated',
+      noncompliant: 'Non-compliant',
+      error: 'Error',
+      conflict: 'Conflict',
+      notapplicable: 'Not applicable',
+      unknown: 'Unknown',
+      notassigned: 'Not assigned',
+      ingraceperiod: 'In grace period',
+    }
     const complianceStateColor = {
       compliant: 'success',
+      remediated: 'success',
       noncompliant: 'error',
+      error: 'error',
+      conflict: 'warning',
+      ingraceperiod: 'warning',
+      notapplicable: 'default',
+      unknown: 'default',
+      notassigned: 'default',
     }
-    const color = complianceStateColor[String(label).toLowerCase()] ?? 'default'
+    const key = String(raw ?? '').toLowerCase()
+    const label = complianceStateLabels[key] ?? raw
+    if (isText) return label
+    const color = complianceStateColor[key] ?? 'default'
     return <Chip variant="outlined" label={label} size="small" color={color} />
   }
 
@@ -687,10 +711,18 @@ export const getCippFormatting = (
       'denied - delete pending': 'warning',
       'skipped - no license': 'default',
       'no data': 'default',
+      covered: 'success',
+      excluded: 'warning',
     }
     const baselineColor = baselineStatusColors[String(data).toLowerCase()]
     if (baselineColor) {
-      if (isText) return data
+      const displayLabel =
+        String(data).toLowerCase() === 'covered'
+          ? 'Covered'
+          : String(data).toLowerCase() === 'excluded'
+            ? 'Excluded'
+            : data
+      if (isText) return displayLabel
       // Pending states answer the "when does something happen?" question inline.
       const baselineStatusTooltips = {
         'no data': 'Not collected yet - happens automatically on the next run.',
@@ -705,7 +737,7 @@ export const getCippFormatting = (
       const chip = (
         <Chip
           variant="outlined"
-          label={data}
+          label={displayLabel}
           size="small"
           color={baselineColor}
         />
@@ -1500,6 +1532,38 @@ export const getCippFormatting = (
 
   if (cellName === 'AutoMapUrl') {
     return isText ? data : <CippCopyToClipBoard text={data} />
+  }
+
+  // CA policy identity coverage: grid shows a count/top-reason summary; full lists belong in off-canvas.
+  if (cellName === 'includeReasons' || cellName === 'excludeReasons') {
+    const reasons = Array.isArray(data) ? data : []
+    const noun = cellName === 'includeReasons' ? 'include' : 'exclude'
+    const labels = formatCaCoverageReasons(reasons)
+    if (isText) {
+      return labels.length > 0 ? labels.join(' · ') : ''
+    }
+    if (reasons.length === 0) {
+      return (
+        <Typography variant="body2" color="text.secondary">
+          -
+        </Typography>
+      )
+    }
+    if (reasons.length === 1) {
+      return (
+        <Typography variant="body2" noWrap title={labels[0]}>
+          {labels[0]}
+        </Typography>
+      )
+    }
+    const summary = `${reasons.length} ${noun}s`
+    return (
+      <Tooltip title={labels.join(' · ')}>
+        <Typography variant="body2" color="text.secondary">
+          {summary}
+        </Typography>
+      </Tooltip>
+    )
   }
 
   // handle autocomplete labels
