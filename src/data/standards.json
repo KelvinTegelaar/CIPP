@@ -1741,7 +1741,7 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS M365 7.0.0 (1.3.4)", "SMB1001 (2.8)"],
     "appliesToTest": ["CIS_1_3_4", "EIDSCAAP05", "SMB1001_2_8"],
-    "helpText": "**Requires 'Billing Administrator' GDAP role.** This standard disables all self service licenses and enables all exclusions",
+    "helpText": "This standard disables all self service licenses and enables all exclusions",
     "executiveText": "Prevents employees from purchasing Microsoft 365 licenses independently, ensuring all software acquisitions go through proper procurement channels. This maintains budget control, prevents unauthorized spending, and ensures compliance with corporate licensing agreements.",
     "addedComponent": [
       {
@@ -1760,7 +1760,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2021-11-16",
-    "powershellEquivalent": "Set-MsolCompanySettings -AllowAdHocSubscriptions $false",
+    "powershellEquivalent": "Update-MSCommerceProductPolicy -PolicyId AllowSelfServicePurchase -Value Disabled",
     "recommendedBy": []
   },
   {

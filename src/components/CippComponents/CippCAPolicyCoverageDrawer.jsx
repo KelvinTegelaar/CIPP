@@ -117,7 +117,9 @@ const cippEntityHref = (part, tenantFilter) => {
     )}&tenantFilter=${tenant}`
   }
   if (part.type === 'role') {
-    return `/identity/administration/roles?tenantFilter=${tenant}`
+    return `/identity/administration/roles/role?roleTemplateId=${encodeURIComponent(
+      part.id
+    )}&tenantFilter=${tenant}`
   }
   return null
 }
