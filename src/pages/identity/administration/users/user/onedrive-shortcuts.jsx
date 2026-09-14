@@ -147,6 +147,7 @@ const Page = () => {
             destination: { label: 'OneDrive root', value: 'root' },
           }}
           relatedQueryKeys={[shortcutsQueryKey]}
+          allowResubmit
           fields={[
             {
               type: 'autoComplete',
