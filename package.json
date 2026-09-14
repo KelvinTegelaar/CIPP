@@ -134,8 +134,8 @@
     "@testing-library/user-event": "14.6.1",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.5",
-    "@vitest/browser-playwright": "4.1.10",
-    "@vitest/coverage-v8": "4.1.10",
+    "@vitest/browser-playwright": "4.1.11",
+    "@vitest/coverage-v8": "4.1.11",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.3.4",
     "eslint-config-prettier": "^10.1.8",
@@ -147,7 +147,7 @@
     "storybook": "10.5.10",
     "typescript": "5.9.3",
     "vite": "8.2.2",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "msw": {
     "workerDirectory": [
