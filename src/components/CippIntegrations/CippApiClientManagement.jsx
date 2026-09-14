@@ -82,6 +82,35 @@ const CippApiClientManagement = () => {
     queryKey: "CustomRoleList",
   });
 
+  // Authoritative per-client egress (today) from Craft's accounting table. Self-hides (Enabled:false)
+  // when accounting is off / not hosted, in which case the column shows "-".
+  const egressUsage = ApiGetCall({
+    url: "/api/ListApiEgress",
+    queryKey: "ApiEgressUsage",
+  });
+
+  // Merge the client list with egress so the table can show a per-client "Egress (today)" column.
+  // The list is small, so this drives the table from `data` (client-side) rather than the server api.
+  const clientRows = useMemo(() => {
+    const clients = apiClients.data?.pages?.[0]?.Results || [];
+    const usage = egressUsage.data?.Results?.Enabled ? egressUsage.data.Results.Clients || [] : [];
+    const byAppId = new Map(usage.map((c) => [String(c.AppId).toLowerCase(), c]));
+    const fmtBytes = (b) =>
+      b == null
+        ? "-"
+        : b >= 1073741824
+        ? `${(b / 1073741824).toFixed(1)} GB`
+        : b >= 1048576
+        ? `${(b / 1048576).toFixed(1)} MB`
+        : b >= 1024
+        ? `${(b / 1024).toFixed(1)} KB`
+        : `${b} B`;
+    return clients.map((c) => {
+      const e = byAppId.get(String(c.ClientId).toLowerCase());
+      return { ...c, EgressToday: e ? fmtBytes(e.Bytes) : "-", EgressSheddedToday: e ? e.Shed : 0 };
+    });
+  }, [apiClients.data, egressUsage.data]);
+
   // MCP-enabled clients whose role restricts sign-in to specific IPs. Those restrictions apply to
   // MCP traffic (which runs as the signed-in user), so an AI client's cloud egress IPs get blocked.
   const mcpRoleIpWarnings = useMemo(() => {
@@ -462,12 +491,21 @@ const CippApiClientManagement = () => {
         <CippDataTable
           actions={actions}
           title="CIPP-API Clients"
-          api={{
-            url: "/api/ExecApiClient",
-            data: { Action: "List" },
-            dataKey: "Results",
+          data={clientRows}
+          isFetching={apiClients.isFetching || egressUsage.isFetching}
+          refreshFunction={() => {
+            apiClients.refetch?.();
+            egressUsage.refetch?.();
           }}
-          simpleColumns={["Enabled", "MCPAllowed", "AppName", "ClientId", "Role", "IPRange"]}
+          simpleColumns={[
+            "Enabled",
+            "MCPAllowed",
+            "AppName",
+            "ClientId",
+            "Role",
+            "IPRange",
+            "EgressToday",
+          ]}
           queryKey={`ApiClients`}
         />
       </Stack>

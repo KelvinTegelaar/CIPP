@@ -45,6 +45,7 @@ import {
   sortDiagnosticsChecks,
   buildClientLogQuery,
   buildRequestSeries,
+  buildStackedSeries,
   getCheckLabel,
   formatBytes,
 } from "../../../../utils/instance-diagnostics";
@@ -62,9 +63,13 @@ const WINDOWS = [
 // one-off chip renderer for this page.
 const STATUS_LABEL = { FAIL: "Failed", WARN: "Warning", PASS: "Passed", INFO: "Info" };
 
-const formatChartTime = (bucket, hours) => {
-  // Bucket is a naive 'yyyy-MM-ddTHH:mm' UTC string — force UTC parsing.
-  const d = new Date(`${bucket}:00Z`);
+// Health buckets are naive 'yyyy-MM-ddTHH:mm' UTC strings, egress buckets full ISO — both
+// become epoch ms so the 5 and 15 minute strips share one numeric time axis.
+const bucketEpoch = (bucket) =>
+  bucket ? new Date(bucket.endsWith("Z") ? bucket : `${bucket}:00Z`).getTime() : null;
+
+const formatChartTime = (epoch, hours) => {
+  const d = new Date(epoch);
   if (hours <= 24) {
     return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   }
@@ -72,8 +77,8 @@ const formatChartTime = (bucket, hours) => {
 };
 
 // Always the full date + time — a bare clock time is ambiguous on a multi-day window.
-const formatFullDateTime = (bucket) => {
-  const d = new Date(`${bucket}:00Z`);
+const formatFullDateTime = (epoch) => {
+  const d = new Date(epoch);
   return d.toLocaleString("en-US", {
     month: "short",
     day: "numeric",
@@ -146,7 +151,7 @@ const buildEventRows = (events) =>
     const busiest = topClients[0];
     return {
       id: `${e.Bucket}-${i}`,
-      Time: formatFullDateTime(e.Bucket),
+      Time: formatFullDateTime(bucketEpoch(e.Bucket)),
       Event: e.Type === "boot" ? "Container restarted" : "Out of memory",
       Outage: e.Type === "boot" && e.GapMinutes != null ? `${e.GapMinutes} min` : "",
       BusiestClient: busiest ? busiest.AppName || busiest.AppId : "—",
@@ -201,21 +206,42 @@ const EventsCard = ({ events, hours, isFetching, refreshFunction }) => {
   );
 };
 
-const ApiClientsCard = ({ buckets, hours, isFetching, refreshFunction }) => {
-  const rows = useMemo(
-    () =>
-      aggregateDiagnosticsClients(buckets).map((c) => ({
+const ApiClientsCard = ({ buckets, hours, egressClients, isFetching, refreshFunction }) => {
+  // Executed comes from the log (requests that ran PowerShell), Served from Craft's wire
+  // accounting, so a cache-only client shows up with Served but no Executed.
+  const rows = useMemo(() => {
+    const egressById = new Map((egressClients ?? []).map((c) => [c.AppId, c]));
+    const logRows = aggregateDiagnosticsClients(buckets).map((c) => {
+      const egress = egressById.get(c.AppId);
+      egressById.delete(c.AppId);
+      return {
         ...c,
         Client: c.AppName || c.AppId,
-      })),
-    [buckets]
-  );
+        ExecutedRequests: c.Count,
+        ...(egress ? { ServedRequests: egress.Requests, EgressToday: formatBytes(egress.Bytes) } : {}),
+      };
+    });
+    const egressOnly = Array.from(egressById.values()).map((c) => ({
+      AppId: c.AppId,
+      AppName: c.AppName,
+      Client: c.AppName || c.AppId,
+      ExecutedRequests: 0,
+      ServedRequests: c.Requests,
+      EgressToday: formatBytes(c.Bytes),
+      SharePct: 0,
+    }));
+    return logRows.concat(egressOnly);
+  }, [buckets, egressClients]);
+
+  const columns = egressClients
+    ? ["Client", "IP", "ExecutedRequests", "ServedRequests", "EgressToday", "SharePct"]
+    : ["Client", "IP", "ExecutedRequests", "SharePct"];
 
   return (
     <CippDataTable
       title="API Clients"
       data={rows}
-      simpleColumns={["Client", "IP", "Count", "SharePct"]}
+      simpleColumns={columns}
       isFetching={isFetching}
       refreshFunction={refreshFunction}
       offCanvasOnRowClick={true}
@@ -255,13 +281,16 @@ const chartTooltipStyle = (t) => ({
     border: `1px solid ${t.palette.divider}`,
     borderRadius: 4,
   },
+  labelFormatter: (value) => formatFullDateTime(value),
 });
 
-const RequestsChart = ({ data, series, theme: t }) => (
+const clientColor = (t, index) => t.palette[CLIENT_COLOR_KEYS[index % CLIENT_COLOR_KEYS.length]].main;
+
+const RequestsChart = ({ data, series, xAxis, theme: t }) => (
   <SubChart title="API Requests / 5 min">
     <BarChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
       <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
-      <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+      <XAxis {...xAxis} />
       <YAxis tick={{ fontSize: 11 }} tickMargin={4} />
       <YAxis yAxisId="spacer" orientation="right" width={44} tick={false} axisLine={false} />
       <RechartsTooltip {...chartTooltipStyle(t)} />
@@ -272,42 +301,47 @@ const RequestsChart = ({ data, series, theme: t }) => (
           dataKey={s.AppId}
           name={s.AppName}
           stackId="clients"
-          fill={t.palette[CLIENT_COLOR_KEYS[i % CLIENT_COLOR_KEYS.length]].main}
+          barSize={6}
+          fill={clientColor(t, i)}
         />
       ))}
       {data.some((row) => row.Other > 0) && (
-        <Bar dataKey="Other" name="Other" stackId="clients" fill={t.palette.grey[500]} />
+        <Bar dataKey="Other" name="Other" stackId="clients" barSize={6} fill={t.palette.grey[500]} />
       )}
     </BarChart>
   </SubChart>
 );
 
-const EgressChart = ({ data, todayBytes, capBytes, theme: t }) => {
-  const caption =
-    todayBytes == null
-      ? null
-      : capBytes
-      ? `Today: ${formatBytes(todayBytes)} of ${formatBytes(capBytes)} (${Math.round(
-          (todayBytes / capBytes) * 100
-        )}%)`
-      : `Today: ${formatBytes(todayBytes)}`;
+const EgressChart = ({ data, series, caption, colorIndex, xAxis, theme: t }) => (
+  <SubChart title="API Egress / 15 min" caption={caption}>
+    <BarChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
+      <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
+      <XAxis {...xAxis} />
+      <YAxis tick={{ fontSize: 11 }} tickMargin={4} unit="MB" />
+      <YAxis yAxisId="spacer" orientation="right" width={44} tick={false} axisLine={false} />
+      <RechartsTooltip
+        {...chartTooltipStyle(t)}
+        formatter={(value, name) => [`${Number(value).toFixed(1)} MB`, name]}
+      />
+      <Legend />
+      {series.map((s, i) => (
+        <Bar
+          key={s.AppId}
+          dataKey={s.AppId}
+          name={s.AppName}
+          stackId="egress"
+          barSize={14}
+          fill={clientColor(t, colorIndex.get(s.AppId) ?? i)}
+        />
+      ))}
+      {data.some((row) => row.Other > 0) && (
+        <Bar dataKey="Other" name="Other" stackId="egress" barSize={14} fill={t.palette.grey[500]} />
+      )}
+    </BarChart>
+  </SubChart>
+);
 
-  return (
-    <SubChart title="API Egress / 5 min" caption={caption}>
-      <BarChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
-        <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
-        <YAxis tick={{ fontSize: 11 }} tickMargin={4} unit="MB" />
-        <YAxis yAxisId="spacer" orientation="right" width={44} tick={false} axisLine={false} />
-        <RechartsTooltip {...chartTooltipStyle(t)} formatter={(value) => [`${value} MB`, "Egress"]} />
-        <Legend />
-        <Bar dataKey="EgressMb" name="Egress (MB)" fill={t.palette.info.main} />
-      </BarChart>
-    </SubChart>
-  );
-};
-
-const HeapChart = ({ data, heapCapMb, eventMarkers, theme: t }) => {
+const HeapChart = ({ data, heapCapMb, eventMarkers, xAxis, theme: t }) => {
   const peak = data.reduce((max, d) => (d.Heap != null && d.Heap > max ? d.Heap : max), 0);
   const domainMax = Math.max(heapCapMb || 0, peak) * 1.05;
 
@@ -315,7 +349,7 @@ const HeapChart = ({ data, heapCapMb, eventMarkers, theme: t }) => {
     <SubChart title="Heap (MB)">
       <AreaChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
-        <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+        <XAxis {...xAxis} />
         <YAxis domain={[0, domainMax]} tick={{ fontSize: 11 }} tickMargin={4} unit="MB" />
         <YAxis yAxisId="spacer" orientation="right" width={44} tick={false} axisLine={false} />
         <RechartsTooltip {...chartTooltipStyle(t)} />
@@ -340,7 +374,7 @@ const HeapChart = ({ data, heapCapMb, eventMarkers, theme: t }) => {
         {eventMarkers.map((e, i) => (
           <ReferenceLine
             key={`${e.Bucket}-${i}`}
-            x={e.time}
+            x={e.t}
             stroke={e.Type === "boot" ? t.palette.error.main : t.palette.error.dark}
             strokeDasharray="4 2"
             label={{ value: e.Type === "boot" ? "Restart" : "OOM", fontSize: 10, position: "insideBottomLeft", angle: -90 }}
@@ -351,16 +385,16 @@ const HeapChart = ({ data, heapCapMb, eventMarkers, theme: t }) => {
   );
 };
 
-const PoolChart = ({ data, theme: t }) => (
+const PoolChart = ({ data, xAxis, theme: t }) => (
   <SubChart title="Pool Pressure">
     <ComposedChart data={data} margin={{ left: 0, right: 12, top: 10, bottom: 10 }}>
       <CartesianGrid strokeDasharray="3 3" stroke={t.palette.divider} />
-      <XAxis dataKey="time" tick={{ fontSize: 11 }} tickMargin={8} />
+      <XAxis {...xAxis} />
       <YAxis yAxisId="pool" tick={{ fontSize: 11 }} tickMargin={4} />
       <YAxis yAxisId="wait" orientation="right" width={44} tick={{ fontSize: 11 }} tickMargin={4} unit="s" />
       <RechartsTooltip {...chartTooltipStyle(t)} />
       <Legend />
-      <Bar yAxisId="pool" dataKey="PoolExhaustedCount" name="Pool exhausted" fill={t.palette.error.main} />
+      <Bar yAxisId="pool" dataKey="PoolExhaustedCount" name="Pool exhausted" barSize={6} fill={t.palette.error.main} />
       <Line
         yAxisId="wait"
         type="monotone"
@@ -396,36 +430,92 @@ const Page = () => {
   const buckets = useMemo(() => timelineQuery.data?.Results?.Buckets ?? [], [timelineQuery.data]);
   const events = useMemo(() => timelineQuery.data?.Results?.Events ?? [], [timelineQuery.data]);
   const heapCapMb = timelineQuery.data?.Results?.HeapCapMb ?? null;
-  const egressAvailable = timelineQuery.data?.Results?.EgressAvailable ?? false;
-  const egressCapBytes = timelineQuery.data?.Results?.EgressCapBytes ?? null;
+  const egress = timelineQuery.data?.Results?.Egress;
+  const egressAvailable = egress?.Available ?? false;
   const isFetching = checksQuery.isFetching || timelineQuery.isFetching;
 
   const chartData = useMemo(
     () =>
       buckets.map((b) => ({
         ...b,
-        time: formatChartTime(b.Bucket, hours),
+        t: bucketEpoch(b.Bucket),
         Heap: b.HeapMb ?? b.HeapMbLive ?? null,
       })),
-    [buckets, hours]
+    [buckets]
   );
 
   const requestSeries = useMemo(() => buildRequestSeries(buckets), [buckets]);
   const requestChartData = useMemo(
-    () => requestSeries.data.map((row) => ({ ...row, time: formatChartTime(row.Bucket, hours) })),
-    [requestSeries, hours]
+    () => requestSeries.data.map((row) => ({ ...row, t: bucketEpoch(row.Bucket) })),
+    [requestSeries]
+  );
+  // Colour is keyed on the request chart's client order, so a client looks the same in both strips.
+  const clientColorIndex = useMemo(
+    () => new Map(requestSeries.series.map((s, i) => [s.AppId, i])),
+    [requestSeries]
   );
 
+  const egressSeries = useMemo(
+    () =>
+      buildStackedSeries(egress?.Buckets ?? [], {
+        bucketKey: "BucketStart",
+        valueKey: "Bytes",
+        order: requestSeries.series.map((s) => s.AppId),
+      }),
+    [egress, requestSeries]
+  );
   const egressChartData = useMemo(
     () =>
-      buckets.map((b) => ({
-        time: formatChartTime(b.Bucket, hours),
-        EgressMb: b.EgressBytes != null ? Math.round((b.EgressBytes / 1048576) * 10) / 10 : null,
-      })),
-    [buckets, hours]
+      egressSeries.data.map(({ Bucket, ...values }) => {
+        const row = { t: bucketEpoch(Bucket) };
+        for (const [key, value] of Object.entries(values)) {
+          row[key] = Math.round(((Number(value) || 0) / 1048576) * 10) / 10;
+        }
+        return row;
+      }),
+    [egressSeries]
   );
-  // Newest bucket that actually carries a reading - later buckets in the window can be empty.
-  const egressToday = [...buckets].reverse().find((b) => b.EgressBytesToday != null)?.EgressBytesToday ?? null;
+  const egressCaption = egress
+    ? [
+        egress.Enforcing
+          ? `Today: ${formatBytes(egress.TodayBytes)} of ${formatBytes(egress.CapBytes)} (${
+              egress.CapBytes > 0 ? Math.round((egress.TodayBytes / egress.CapBytes) * 100) : 0
+            }%)`
+          : `Today: ${formatBytes(egress.TodayBytes)}`,
+        egress.TodayShed > 0 ? ` \u00b7 ${egress.TodayShed} refused (429)` : "",
+      ].join("")
+    : null;
+
+  // 5 and 15 minute buckets can never share a category axis, so every strip is drawn on one
+  // numeric time axis with the same domain and ticks.
+  const timeDomain = useMemo(() => {
+    const stamps = chartData
+      .map((d) => d.t)
+      .concat(egressChartData.map((d) => d.t))
+      .filter((t) => t != null);
+    if (stamps.length === 0) return null;
+    // Pad by a bucket width either side so the first and last bars are not clipped.
+    return [Math.min(...stamps) - 5 * 60000, Math.max(...stamps) + 15 * 60000];
+  }, [chartData, egressChartData]);
+
+  const timeTicks = useMemo(() => {
+    if (!timeDomain) return [];
+    const [from, to] = timeDomain;
+    const step = (to - from) / 7;
+    return Array.from({ length: 8 }, (_, i) => Math.round(from + i * step));
+  }, [timeDomain]);
+
+  const timeAxis = {
+    type: "number",
+    dataKey: "t",
+    scale: "time",
+    domain: timeDomain ?? ["dataMin", "dataMax"],
+    ticks: timeTicks,
+    allowDataOverflow: true,
+    tickFormatter: (value) => formatChartTime(value, hours),
+    tick: { fontSize: 11 },
+    tickMargin: 8,
+  };
 
   const showPoolChart = buckets.some(
     (b) => (b.PoolExhaustedCount ?? 0) > 0 || (b.MaxLimiterWaitMs ?? 0) >= 10000
@@ -435,14 +525,14 @@ const Page = () => {
     [chartData]
   );
 
-  // Only draw a marker for events whose bucket landed in this window's samples —
-  // an event just outside the sample set has no x-axis category to attach to.
-  const eventMarkers = useMemo(() => {
-    const timeByBucket = new Map(buckets.map((b) => [b.Bucket, formatChartTime(b.Bucket, hours)]));
-    return events
-      .map((e) => ({ ...e, time: timeByBucket.get(e.Bucket) }))
-      .filter((e) => e.time != null);
-  }, [events, buckets, hours]);
+  // Markers outside the drawn window would sit on the axis edge, so drop them.
+  const eventMarkers = useMemo(
+    () =>
+      events
+        .map((e) => ({ ...e, t: bucketEpoch(e.Bucket) }))
+        .filter((e) => e.t != null && timeDomain && e.t >= timeDomain[0] && e.t <= timeDomain[1]),
+    [events, timeDomain]
+  );
 
   const handleRefresh = () => {
     queryClient.invalidateQueries({ queryKey: [`InstanceDiagnosticsChecks-${hours}`] });
@@ -515,12 +605,19 @@ const Page = () => {
                       </Typography>
                     ) : (
                       <Grid container spacing={2}>
-                        <RequestsChart data={requestChartData} series={requestSeries.series} theme={theme} />
+                        <RequestsChart
+                          data={requestChartData}
+                          series={requestSeries.series}
+                          xAxis={timeAxis}
+                          theme={theme}
+                        />
                         {egressAvailable && (
                           <EgressChart
                             data={egressChartData}
-                            todayBytes={egressToday}
-                            capBytes={egressCapBytes}
+                            series={egressSeries.series}
+                            caption={egressCaption}
+                            colorIndex={clientColorIndex}
+                            xAxis={timeAxis}
                             theme={theme}
                           />
                         )}
@@ -528,9 +625,12 @@ const Page = () => {
                           data={chartData}
                           heapCapMb={heapCapMb}
                           eventMarkers={eventMarkers}
+                          xAxis={timeAxis}
                           theme={theme}
                         />
-                        {showPoolChart && <PoolChart data={poolChartData} theme={theme} />}
+                        {showPoolChart && (
+                          <PoolChart data={poolChartData} xAxis={timeAxis} theme={theme} />
+                        )}
                       </Grid>
                     )}
                   </CardContent>
@@ -548,11 +648,13 @@ const Page = () => {
                 <ApiClientsCard
                   buckets={buckets}
                   hours={hours}
+                  egressClients={egressAvailable ? egress.Clients : null}
                   isFetching={timelineQuery.isFetching}
                   refreshFunction={handleRefresh}
                 />
               </>
             )}
+
           </Stack>
         </Container>
       </Box>

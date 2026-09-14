@@ -21,7 +21,6 @@ const config = {
     webpackMemoryOptimizations: true,
     preloadEntriesOnStart: false,
     turbopackFileSystemCacheForDev: false,
-    turbopackMemoryLimit: 4096,
   },
   images: {
     unoptimized: true,

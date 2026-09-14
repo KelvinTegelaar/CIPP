@@ -140,4 +140,7 @@ export const CippTranslations = {
   RequestsPriorHour: 'Requests In Prior Hour',
   BaselinePerHour: 'Baseline / Hr',
   SharePct: 'Share %',
+  ExecutedRequests: 'Executed',
+  ServedRequests: 'Served (incl. cached)',
+  EgressToday: 'Egress Today',
 }

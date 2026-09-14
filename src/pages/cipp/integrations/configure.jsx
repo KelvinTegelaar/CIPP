@@ -27,6 +27,7 @@ import CippIntegrationTenantMapping from "../../../components/CippIntegrations/C
 import CippIntegrationFieldMapping from "../../../components/CippIntegrations/CippIntegrationFieldMapping";
 import { CippCardTabPanel } from "../../../components/CippComponents/CippCardTabPanel";
 import CippApiClientManagement from "../../../components/CippIntegrations/CippApiClientManagement";
+import { CippApiEgressCard } from "../../../components/CippIntegrations/CippApiEgressCard";
 import CippApiDocumentation from "../../../components/CippIntegrations/CippApiDocumentation";
 
 function tabProps(index) {
@@ -304,7 +305,10 @@ const Page = () => {
             </Box>
             <CippCardTabPanel value={value} index={0}>
               {extension?.id === "cippapi" ? (
-                <CippApiClientManagement />
+                <Stack spacing={2}>
+                  <CippApiEgressCard />
+                  <CippApiClientManagement />
+                </Stack>
               ) : (
                 <CippIntegrationSettings />
               )}

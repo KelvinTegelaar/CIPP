@@ -1,6 +1,6 @@
 {
   "name": "cipp",
-  "version": "10.10.2",
+  "version": "10.10.3",
   "author": "CIPP Contributors",
   "homepage": "https://cipp.app/",
   "bugs": {
@@ -8,7 +8,7 @@
   },
   "license": "AGPL-3.0",
   "engines": {
-    "node": "^22.22.2"
+    "node": "^22.22.0"
   },
   "repository": {
     "type": "git",
@@ -134,12 +134,12 @@
     "@testing-library/user-event": "14.6.1",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.5",
-    "@vitest/browser-playwright": "4.1.10",
-    "@vitest/coverage-v8": "4.1.10",
+    "@vitest/browser-playwright": "4.1.11",
+    "@vitest/coverage-v8": "4.1.11",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.3.4",
     "eslint-config-prettier": "^10.1.8",
-    "jsdom": "30.0.1",
+    "jsdom": "29.0.1",
     "msw": "2.15.0",
     "msw-storybook-addon": "3.0.0",
     "playwright": "1.63.0",
@@ -147,7 +147,7 @@
     "storybook": "10.5.10",
     "typescript": "5.9.3",
     "vite": "8.2.2",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "msw": {
     "workerDirectory": [

@@ -901,6 +901,7 @@ export const useCippUserActions = () => {
       ],
       confirmText: 'Select a SharePoint site and where to create the OneDrive shortcut:',
       multiPost: false,
+      allowResubmit: true,
       condition: () => canWriteUser,
     },
     {
