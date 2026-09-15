@@ -844,7 +844,7 @@ export const CippDataTable = (props) => {
   }, [data, api?.url])
 
   useEffect(() => {
-    if (getRequestData.isSuccess && !getRequestData.isFetching) {
+    if (api?.url && getRequestData.isSuccess && !getRequestData.isFetching) {
       const lastPage =
         getRequestData.data?.pages[getRequestData.data.pages.length - 1]
       const nextLinkExists = lastPage?.Metadata?.nextLink
@@ -852,10 +852,10 @@ export const CippDataTable = (props) => {
         getRequestData.fetchNextPage()
       }
     }
-  }, [getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey])
+  }, [api?.url, getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey])
 
   useEffect(() => {
-    if (getRequestData.isSuccess) {
+    if (api?.url && getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages
 
       const combinedResults = allPages.flatMap((page) => {
@@ -876,6 +876,7 @@ export const CippDataTable = (props) => {
       )
     }
   }, [
+    api?.url,
     getRequestData.isSuccess,
     getRequestData.data,
     api.dataKey,
