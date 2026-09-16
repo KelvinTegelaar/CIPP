@@ -20,6 +20,10 @@ const irmConfig = (overrides = {}) => ({
   InternalLicensingEnabled: true,
   ExternalLicensingEnabled: false,
   SimplifiedClientAccessEnabled: false,
+  SimplifiedClientAccessDoNotForwardDisabled: false,
+  SimplifiedClientAccessEncryptOnlyDisabled: false,
+  EnablePdfEncryption: false,
+  DecryptAttachmentForEncryptOnly: false,
   TransportDecryptionSetting: 'Optional',
   JournalReportDecryptionEnabled: true,
   LicensingLocation: [AZURE_RMS],
@@ -128,7 +132,22 @@ describe('Message Encryption page', () => {
     })
   })
 
-  it('posts the Set action with both encryption switches', async () => {
+  // The whole form goes in one Set call: the tenant's loaded values plus whatever was toggled.
+  // TransportDecryptionSetting is a select, so the string has to be unwrapped from the option.
+  const fullSetPayload = (overrides = {}) => ({
+    tenantFilter: 'testdomain.com',
+    Action: 'Set',
+    AzureRMSLicensingEnabled: true,
+    SimplifiedClientAccessEnabled: false,
+    EnablePdfEncryption: false,
+    DecryptAttachmentForEncryptOnly: false,
+    SimplifiedClientAccessDoNotForwardDisabled: false,
+    SimplifiedClientAccessEncryptOnlyDisabled: false,
+    TransportDecryptionSetting: 'Optional',
+    ...overrides,
+  })
+
+  it('posts the Set action with every IRM setting on the form', async () => {
     const user = userEvent.setup()
     // AzureRMS already on, Encrypt button off — the state the standard fix was about
     api.get = getResult({ data: irmConfig() })
@@ -140,12 +159,22 @@ describe('Message Encryption page', () => {
 
     expect(api.post.mutate).toHaveBeenCalledWith({
       url: '/api/ExecIRMConfiguration',
-      data: {
-        tenantFilter: 'testdomain.com',
-        Action: 'Set',
-        AzureRMSLicensingEnabled: true,
-        SimplifiedClientAccessEnabled: true,
-      },
+      data: fullSetPayload({ SimplifiedClientAccessEnabled: true }),
+    })
+  })
+
+  it('posts PDF encryption when that switch is toggled on', async () => {
+    const user = userEvent.setup()
+    api.get = getResult({ data: irmConfig() })
+    renderWithProviders(<Page />)
+
+    await screen.findByText('Current Configuration')
+    await user.click(screen.getByRole('switch', { name: /Encrypt PDF attachments/i }))
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    expect(api.post.mutate).toHaveBeenCalledWith({
+      url: '/api/ExecIRMConfiguration',
+      data: fullSetPayload({ EnablePdfEncryption: true }),
     })
   })
 
