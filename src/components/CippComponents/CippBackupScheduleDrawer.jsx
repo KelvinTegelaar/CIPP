@@ -32,6 +32,7 @@ export const CippBackupScheduleDrawer = ({
       intuneprotection: true,
       antispam: true,
       antiphishing: true,
+      teamsvoice: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
       CippCustomVariables: true,
@@ -57,6 +58,7 @@ export const CippBackupScheduleDrawer = ({
         intuneprotection: true,
         antispam: true,
         antiphishing: true,
+        teamsvoice: true,
         CippWebhookAlerts: true,
         CippScriptedAlerts: true,
         CippCustomVariables: true,
@@ -109,6 +111,7 @@ export const CippBackupScheduleDrawer = ({
       intuneprotection: true,
       antispam: true,
       antiphishing: true,
+      teamsvoice: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
       CippCustomVariables: true,
@@ -250,6 +253,19 @@ export const CippBackupScheduleDrawer = ({
                 formControl={formControl}
               />
             </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="h6">Teams</Typography>
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="switch"
+                label="Teams Phone Number Assignments"
+                name="teamsvoice"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}></Grid>
 
             <Grid size={{ xs: 12 }}>
               <Typography variant="h6">CIPP</Typography>

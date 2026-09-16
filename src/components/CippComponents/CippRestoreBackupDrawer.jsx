@@ -34,6 +34,7 @@ export const CippRestoreBackupDrawer = ({
       intuneprotection: true,
       antispam: true,
       antiphishing: true,
+      teamsvoice: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
       CippCustomVariables: true,
@@ -65,6 +66,7 @@ export const CippRestoreBackupDrawer = ({
         intuneprotection: true,
         antispam: true,
         antiphishing: true,
+        teamsvoice: true,
         CippWebhookAlerts: true,
         CippScriptedAlerts: true,
         CippCustomVariables: true,
@@ -109,6 +111,7 @@ export const CippRestoreBackupDrawer = ({
           intuneprotection: values.intuneprotection,
           antispam: values.antispam,
           antiphishing: values.antiphishing,
+          teamsvoice: values.teamsvoice,
           CippWebhookAlerts: values.CippWebhookAlerts,
           CippScriptedAlerts: values.CippScriptedAlerts,
           CippCustomVariables: values.CippCustomVariables,
@@ -142,6 +145,7 @@ export const CippRestoreBackupDrawer = ({
       intuneprotection: true,
       antispam: true,
       antiphishing: true,
+      teamsvoice: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
       CippCustomVariables: true,
@@ -299,6 +303,17 @@ export const CippRestoreBackupDrawer = ({
                 type="switch"
                 label="Anti-Phishing Policies"
                 name="antiphishing"
+                formControl={formControl}
+              />
+            </Grid>
+
+            {/* Teams */}
+            <Grid size={{ md: 6, xs: 12 }}>
+              <Typography variant="subtitle1">Teams</Typography>
+              <CippFormComponent
+                type="switch"
+                label="Teams Phone Number Assignments"
+                name="teamsvoice"
                 formControl={formControl}
               />
             </Grid>
