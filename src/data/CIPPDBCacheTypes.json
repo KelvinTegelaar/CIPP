@@ -287,6 +287,11 @@
     "description": "SharePoint site usage statistics"
   },
   {
+    "type": "SharePointUsageReport",
+    "friendlyName": "SharePoint Usage Report (Tenant-level)",
+    "description": "Aggregated SharePoint storage usage across all sites in the tenant"
+  },
+  {
     "type": "SPOSites",
     "friendlyName": "SharePoint Site Settings",
     "description": "Per-site SharePoint admin settings (site owner, sharing controls, lifecycle, version policy, People Picker, unmanaged-device access) for every site collection, keyed by site id"
