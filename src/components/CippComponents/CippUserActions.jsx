@@ -166,7 +166,7 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
 
 // Separate component for the Temporary Access Pass form so it can query the tenant's
 // TAP policy to validate the allowed lifetime range and enforce one-time use when forced
-const TemporaryAccessPassForm = ({ formControl, row }) => {
+export const TemporaryAccessPassForm = ({ formControl, row }) => {
   const tenantFilter = useSettings().currentTenant
   const rowData = Array.isArray(row) ? row[0] : row
   const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
@@ -281,6 +281,13 @@ const TemporaryAccessPassForm = ({ formControl, row }) => {
         name="startDateTime"
         label="Start Date/Time (leave blank for immediate)"
         dateTimeType="datetime"
+        formControl={formControl}
+      />
+      <CippFormComponent
+        type="switch"
+        name="generatePwPushLink"
+        label="Generate PwPush link"
+        helperText="Returns a PwPush link instead of the plain TAP so it can be shared securely. Requires the PwPush integration to be enabled; falls back to the plain TAP if the link cannot be created."
         formControl={formControl}
       />
     </>
