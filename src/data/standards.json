@@ -1555,7 +1555,7 @@
         "name": "standards.NudgeMFA.targetedAuthenticationMethod",
         "options": [
           { "label": "Microsoft Authenticator", "value": "microsoftAuthenticator" },
-          { "label": "Passkey (FIDO2)", "value": "fido2" }
+          { "label": "Passkey (FIDO2)", "value": "FIDO2" }
         ],
         "condition": {
           "field": "standards.NudgeMFA.state",
