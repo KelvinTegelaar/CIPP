@@ -249,6 +249,11 @@ const Page = () => {
       type: 'textField',
     },
     {
+      label: 'Require password change at next logon',
+      name: 'MustChangePass',
+      type: 'switch',
+    },
+    {
       label: 'Enforce Per-User MFA',
       name: 'perUserMfa',
       type: 'switch',
@@ -319,6 +324,7 @@ const Page = () => {
       'country',
       'companyName',
       'department',
+      'MustChangePass',
       'perUserMfa',
       'mobilePhone',
       'businessPhones',

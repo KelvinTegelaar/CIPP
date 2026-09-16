@@ -2174,6 +2174,58 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.UsageLocation",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Sets the Entra usage location (the two-letter country code that licensing and security tools such as Huntress ITDR depend on) on every member account. Optionally limit the sweep to members of named groups, skip members of named groups (users legitimately based in another country), or only fill in accounts that have no usage location yet.",
+    "docsDescription": "Sets the usage location on every member account; guest accounts are ignored. Group names are resolved per tenant by display name and expanded to their transitive user members: include groups restrict the sweep to those members, exclude groups remove them from it. A configured group that does not exist in a tenant, or a failed membership lookup, skips the run rather than sweeping the wrong accounts. With 'only set when blank' enabled, accounts that already carry any usage location are left as they are. Directory-synced accounts are included: usage location is cloud-managed and stays writable for them unless a custom sync rule maps it from on-premises.",
+    "executiveText": "Ensures every employee account records the country it is used from, which Microsoft requires before licences can be assigned and which security monitoring uses to recognise sign-ins from unexpected locations. Staff based in other countries are exempted through a group.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": true,
+        "name": "standards.UsageLocation.usageLocation",
+        "label": "Usage location",
+        "api": {
+          "url": "/countryList.json",
+          "labelField": "Name",
+          "valueField": "Code"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.UsageLocation.includeGroups",
+        "label": "Only apply to members of these groups (display names; blank = all member accounts)"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.UsageLocation.excludeGroups",
+        "label": "Skip members of these groups (display names; users legitimately located elsewhere)"
+      },
+      {
+        "type": "switch",
+        "name": "standards.UsageLocation.onlyWhenBlank",
+        "label": "Only set accounts that have no usage location (never overwrite an existing value)",
+        "required": false
+      }
+    ],
+    "label": "Usage location for all users",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-09-16",
+    "powershellEquivalent": "Update-MgUser -UserId user@domain.com -UsageLocation 'US'",
+    "recommendedBy": [],
+    "requiredCapabilities": []
+  },
+  {
     "name": "standards.AppManagementPolicy",
     "cat": "Entra (AAD) Standards",
     "tag": [
