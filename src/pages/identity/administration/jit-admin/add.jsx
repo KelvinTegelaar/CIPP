@@ -11,7 +11,8 @@ import countryList from '../../../../data/countryList.json'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
 import { CippFormGroupSelector } from '../../../../components/CippComponents/CippFormGroupSelector'
-import { ApiGetCall } from '../../../../api/ApiCall'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { useJitAllowedRoles } from '../../../../hooks/use-jit-allowed-roles'
 import { CippJitRoleTemplateApply } from '../../../../components/CippComponents/CippJitRoleTemplateApply'
 import { useEffect, useState } from 'react'
@@ -54,6 +55,16 @@ const Page = () => {
   const tapEnabled = tapPolicy.isSuccess && tapPolicy.data?.Results?.[0]?.state === 'enabled'
   const useRoles = useWatch({ control: formControl.control, name: 'useRoles' })
   const useGroups = useWatch({ control: formControl.control, name: 'useGroups' })
+  const userAction = useWatch({ control: formControl.control, name: 'userAction' })
+  const enableVacationMode = useWatch({ control: formControl.control, name: 'enableVacationMode' })
+  const vacationCAPolicy = useWatch({ control: formControl.control, name: 'vacationCAPolicy' })
+  const vacationExcludeAuditAlerts = useWatch({
+    control: formControl.control,
+    name: 'vacationExcludeAuditAlerts',
+  })
+
+  const caExclusion = ApiPostCall({ relatedQueryKeys: ['JIT Admin Table'] })
+  const auditExclusion = ApiPostCall({ relatedQueryKeys: ['JIT Admin Table'] })
 
   useEffect(() => {
     if (!useTAP || !startDate || !endDate) {
@@ -83,6 +94,21 @@ const Page = () => {
       formControl.setValue('groupMemberships', [])
     }
   }, [useGroups])
+
+  // Vacation mode only applies to an existing user's identity (CA/audit exclusions
+  // act on Graph objects that don't exist yet when creating a new user)
+  useEffect(() => {
+    if (userAction !== 'select') {
+      formControl.setValue('enableVacationMode', false)
+    }
+  }, [userAction])
+
+  useEffect(() => {
+    if (!enableVacationMode) {
+      formControl.setValue('vacationCAPolicy', [])
+      formControl.setValue('vacationExcludeAuditAlerts', false)
+    }
+  }, [enableVacationMode])
 
   // Reset expiration action when switches change
   useEffect(() => {
@@ -210,6 +236,17 @@ const Page = () => {
     })
     formControl.setValue('UseTAP', template.generateTAPByDefault ?? false, { shouldDirty: true })
     formControl.setValue('reason', template.reasonTemplate || '', { shouldDirty: true })
+    formControl.setValue('enableVacationMode', template.defaultVacationMode ?? false, {
+      shouldDirty: true,
+    })
+    formControl.setValue('vacationCAPolicy', template.defaultVacationCAPolicy || [], {
+      shouldDirty: true,
+    })
+    formControl.setValue(
+      'vacationExcludeAuditAlerts',
+      template.defaultVacationExcludeAuditAlerts ?? false,
+      { shouldDirty: true }
+    )
 
     // User action and user details
     if (template.defaultUserAction) {
@@ -266,6 +303,54 @@ const Page = () => {
     }
   }, [watcher.startDate])
 
+  // Fires only after the JIT Admin submission itself succeeds (ApiPostCall's onResult
+  // is never invoked on error), then schedules the vacation-mode exclusions for the
+  // same window: JIT startDate -> JIT endDate + 1 hour buffer.
+  const handleVacationModeSubmit = () => {
+    if (!enableVacationMode) return
+
+    const tenantFilter = selectedTenant?.value
+    const users = [formControl.getValues('existingUser')]
+    const startDate = formControl.getValues('startDate')
+    const endDate = formControl.getValues('endDate')
+    const vacationEndDate = endDate ? endDate + 3600 : endDate
+    const reference = formControl.getValues('reason') || null
+    const postExecution = formControl.getValues('postExecution') || []
+
+    const policies = Array.isArray(vacationCAPolicy)
+      ? vacationCAPolicy
+      : vacationCAPolicy
+      ? [vacationCAPolicy]
+      : []
+    if (policies.length > 0) {
+      const policyData = policies.map((policy) => ({
+        tenantFilter,
+        Users: users,
+        PolicyId: policy?.value ?? policy,
+        StartDate: startDate,
+        EndDate: vacationEndDate,
+        vacation: true,
+        reference,
+        postExecution,
+      }))
+      caExclusion.mutate({ url: '/api/ExecCAExclusion', data: policyData, bulkRequest: true })
+    }
+
+    if (vacationExcludeAuditAlerts) {
+      auditExclusion.mutate({
+        url: '/api/ExecScheduleAuditExclusionVacation',
+        data: {
+          tenantFilter,
+          Users: users,
+          startDate,
+          endDate: vacationEndDate,
+          reference,
+          postExecution,
+        },
+      })
+    }
+  }
+
   return (
     <>
       <CippFormPage
@@ -274,6 +359,7 @@ const Page = () => {
         title="JIT Admin"
         backButtonTitle="JIT Admin"
         postUrl="/api/ExecJitAdmin"
+        onSubmitResult={handleVacationModeSubmit}
       >
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2}>
@@ -598,6 +684,83 @@ const Page = () => {
                 formControl={formControl}
               />
             </Grid>
+            {userAction === 'select' && (
+              <Grid size={{ md: 12, xs: 12 }}>
+                <Divider sx={{ my: 2 }} />
+                <CippFormComponent
+                  type="switch"
+                  label="Enable Vacation Mode"
+                  name="enableVacationMode"
+                  formControl={formControl}
+                />
+                <Box sx={{ color: 'text.secondary', fontSize: '0.875rem', mt: 0.5 }}>
+                  Excludes this user from a Conditional Access policy and/or location-based audit
+                  alerts for the same window as this JIT Admin access, plus a 1 hour buffer.
+                </Box>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="enableVacationMode"
+                  compareType="is"
+                  compareValue={true}
+                  clearOnHide={false}
+                >
+                  <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippFormComponent
+                        type="autoComplete"
+                        label={
+                          selectedTenant
+                            ? `Conditional Access Policies in ${selectedTenant.value}`
+                            : 'Select a tenant first'
+                        }
+                        name="vacationCAPolicy"
+                        api={
+                          selectedTenant
+                            ? {
+                                queryKey: `ListConditionalAccessPolicies-${selectedTenant.value}`,
+                                url: '/api/ListGraphRequest',
+                                data: {
+                                  tenantFilter: selectedTenant.value,
+                                  Endpoint: 'conditionalAccess/policies',
+                                  AsApp: true,
+                                },
+                                dataKey: 'Results',
+                                labelField: (option) => `${option.displayName}`,
+                                valueField: 'id',
+                                showRefresh: true,
+                              }
+                            : null
+                        }
+                        multiple={true}
+                        creatable={false}
+                        formControl={formControl}
+                        disabled={!selectedTenant}
+                      />
+                    </Grid>
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippFormComponent
+                        type="switch"
+                        label="Exclude from location-based audit log alerts"
+                        name="vacationExcludeAuditAlerts"
+                        formControl={formControl}
+                      />
+                    </Grid>
+                    {!vacationCAPolicy?.length && !vacationExcludeAuditAlerts && (
+                      <Grid size={{ md: 12, xs: 12 }}>
+                        <Box sx={{ color: 'error.main', fontSize: '0.875rem' }}>
+                          Select at least one Conditional Access policy or enable audit alert
+                          exclusion.
+                        </Box>
+                      </Grid>
+                    )}
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippApiResults apiObject={caExclusion} />
+                      <CippApiResults apiObject={auditExclusion} />
+                    </Grid>
+                  </Grid>
+                </CippFormCondition>
+              </Grid>
+            )}
           </Grid>
         </Box>
       </CippFormPage>
