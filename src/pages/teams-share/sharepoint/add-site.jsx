@@ -3,6 +3,7 @@ import "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
+import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
 import CippFormPage from "../../../components/CippFormPages/CippFormPage";
 import { useSettings } from "../../../hooks/use-settings";
 
@@ -82,6 +83,7 @@ const AddSiteForm = () => {
             multiple={false}
             options={[
               { label: "Team (No Microsoft365 Group)", value: "team" },
+              { label: "Team (Microsoft 365 Group)", value: "TeamGroup" },
               { label: "Communication", value: "communication" },
             ]}
             validators={{
@@ -94,29 +96,52 @@ const AddSiteForm = () => {
             }}
           />
         </Grid>
-        <Grid size={{ xs: 12 }}>
-          <CippFormComponent
-            name="siteDesign"
-            label="Site Design Template"
-            formControl={formControl}
-            required
-            type="autoComplete"
-            multiple={false}
-            options={[
-              { label: "Blank", value: "blank" },
-              { label: "Showcase", value: "Showcase" },
-              { label: "Topic", value: "Topic" },
-            ]}
-            validators={{
-              validate: (value) => {
-                if (!value) {
-                  return "Required";
-                }
-                return true;
-              },
-            }}
-          />
-        </Grid>
+        <CippFormCondition
+          field="TemplateName"
+          compareType="valueNotEq"
+          compareValue="TeamGroup"
+          formControl={formControl}
+        >
+          <Grid size={{ xs: 12 }}>
+            <CippFormComponent
+              name="siteDesign"
+              label="Site Design Template"
+              formControl={formControl}
+              required
+              type="autoComplete"
+              multiple={false}
+              options={[
+                { label: "Blank", value: "blank" },
+                { label: "Showcase", value: "Showcase" },
+                { label: "Topic", value: "Topic" },
+              ]}
+              validators={{
+                validate: (value) => {
+                  if (!value) {
+                    return "Required";
+                  }
+                  return true;
+                },
+              }}
+            />
+          </Grid>
+        </CippFormCondition>
+        <CippFormCondition
+          field="TemplateName"
+          compareType="valueEq"
+          compareValue="TeamGroup"
+          formControl={formControl}
+        >
+          <Grid size={{ xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              name="isPublic"
+              label="Public group"
+              formControl={formControl}
+              helperText="Anyone in the organisation can join a public group. Leave off for a private group."
+            />
+          </Grid>
+        </CippFormCondition>
       </Grid>
     </CippFormPage>
   );
