@@ -25,6 +25,7 @@ const SNOOZE_OPTIONS = [
   { value: '7', label: 'Snooze for 7 days' },
   { value: '14', label: 'Snooze for 14 days' },
   { value: '30', label: 'Snooze for 30 days' },
+  { value: '90', label: 'Snooze for 90 days' },
 ]
 
 export const CippAlertSnoozeDialog = ({
