@@ -8098,6 +8098,37 @@
     ]
   },
   {
+    "name": "standards.EwsAppIdAllowList",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Keeps Exchange Web Services temporarily enabled only for the specified Entra application IDs during Microsoft's EWS retirement. Enter every application ID that the tenant still requires. This standard replaces the complete allow list and must not be combined with the Disable Exchange Web Services standard.",
+    "docsDescription": "Sets EwsEnabled to true and configures the complete EwsAllowedAppIDs list in Exchange Online. Only the listed Entra applications can use EWS. Use this as a temporary migration control for tenants with verified EWS dependencies, and remove applications as vendors migrate to Microsoft Graph or other supported APIs. The standard validates every value as an application ID, compares lists without regard to order, and refuses an empty list. Do not enable this standard together with Disable Exchange Web Services.",
+    "executiveText": "Restricts temporary Exchange Web Services access to explicitly approved business applications while legacy integrations are migrated before EWS retirement.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": true,
+        "label": "Allowed Entra application IDs",
+        "name": "standards.EwsAppIdAllowList.AllowedAppIds"
+      }
+    ],
+    "label": "Configure EWS application ID allow list",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-09-16",
+    "powershellEquivalent": "Set-OrganizationConfig -EwsEnabled $true -EwsAllowedAppIDs \"<comma-separated application IDs>\"",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
     "name": "standards.DisableEWS",
     "cat": "Exchange Standards",
     "tag": [],
