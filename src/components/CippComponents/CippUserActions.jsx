@@ -868,7 +868,7 @@ export const useCippUserActions = () => {
         userid: 'id',
       },
       defaultvalues: {
-        destination: { label: 'OneDrive root', value: 'root' },
+        destination: { label: 'Shortcuts folder (Microsoft UI)', value: 'shortcuts' },
       },
       fields: [
         {
