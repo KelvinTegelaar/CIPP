@@ -2727,10 +2727,10 @@
     react-dom "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
     ts-dedent "^2.0.0"
 
-"@storybook/addon-themes@10.3.5":
-  version "10.3.5"
-  resolved "https://registry.npmjs.org/@storybook/addon-themes/-/addon-themes-10.3.5.tgz#7cc6323017b8b2550c0c254c22cd1f29f677b70a"
-  integrity sha512-Mv+C7GuZ0MhGRx5C+rv8sCEjgYsDTLBvq68101V0s8Vwh3gKd6W9cbS31HoOeLAiIMiPPZ8C1iWudA3Oumdtlw==
+"@storybook/addon-themes@10.5.10":
+  version "10.5.10"
+  resolved "https://registry.npmjs.org/@storybook/addon-themes/-/addon-themes-10.5.10.tgz#c0fe930fc87ad57a45e7e545c02222d73b4f8745"
+  integrity sha512-XNTjmIBwJ0TUcIV11STGY6hcynCy6imgYCDZeDaDyNEQsCoYAlY25fYvWNfrz5jOu1MGACiaA/E0ypk03whDdQ==
   dependencies:
     ts-dedent "^2.0.0"
 
