@@ -2182,17 +2182,10 @@
     "executiveText": "Ensures every employee account records the country it is used from, which Microsoft requires before licences can be assigned and which security monitoring uses to recognise sign-ins from unexpected locations. Staff based in other countries are exempted through a group.",
     "addedComponent": [
       {
-        "type": "autoComplete",
-        "multiple": false,
-        "creatable": false,
+        "type": "CountryCodeSelect",
         "required": true,
         "name": "standards.UsageLocation.usageLocation",
-        "label": "Usage location",
-        "api": {
-          "url": "/countryList.json",
-          "labelField": "Name",
-          "valueField": "Code"
-        }
+        "label": "Usage location"
       },
       {
         "type": "autoComplete",
