@@ -185,17 +185,26 @@ const CippIntegrationSettings = ({ children }) => {
     });
   };
 
+  const extension = extensions.find((extension) => extension.id === router.query.id);
+
+  // Only these extensions support syncing a single tenant through ExecExtensionSync.
+  const tenantSyncExtensions = ["NinjaOne", "Hudu"];
+
   const actions = [
-    {
-      label: "Sync Now",
-      icon: (
-        <SvgIcon>
-          <CippIcons.Sync />
-        </SvgIcon>
-      ),
-      confirmText: "Queue a NinjaOne sync for [Tenant]?",
-      customFunction: handleSyncTenant,
-    },
+    ...(tenantSyncExtensions.includes(extension?.id)
+      ? [
+          {
+            label: "Sync Now",
+            icon: (
+              <SvgIcon>
+                <CippIcons.Sync />
+              </SvgIcon>
+            ),
+            confirmText: `Queue a ${extension.name} sync for [Tenant]?`,
+            customFunction: handleSyncTenant,
+          },
+        ]
+      : []),
     {
       label: "Delete Mapping",
       icon: <CippIcons.Delete />,
@@ -203,8 +212,6 @@ const CippIntegrationSettings = ({ children }) => {
       customFunction: handleRemoveItem,
     },
   ];
-
-  const extension = extensions.find((extension) => extension.id === router.query.id);
 
   // Memoize the removeOptions array to ensure it updates when tableData changes
   const removedTenantIds = useMemo(() => {
