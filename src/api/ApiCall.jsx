@@ -25,6 +25,11 @@ const getRetryAfterMs = (error) => {
 const retryDelayWithRetryAfter = (failureCount, error) =>
   getRetryAfterMs(error) ?? Math.min(1000 * 2 ** failureCount, 30000);
 
+// A request the user cancelled (navigated away / hit Cancel) aborts the axios signal and surfaces as
+// a CanceledError. That is expected, not a failure: never retry it and never raise an error toast.
+const isCanceledError = (error) =>
+  error?.code === "ERR_CANCELED" || error?.name === "CanceledError";
+
 export function ApiGetCall(props) {
   const {
     url,
@@ -50,6 +55,7 @@ export function ApiGetCall(props) {
   const MAX_RETRIES = retry;
   const HTTP_STATUS_TO_NOT_RETRY = [302, 401, 403, 404, 500];
   const retryFn = (failureCount, error) => {
+    if (isCanceledError(error)) return false;
     let returnRetry = true;
     if (failureCount >= MAX_RETRIES) {
       returnRetry = false;
@@ -278,6 +284,7 @@ export function ApiGetCallWithPagination({
   const HTTP_STATUS_TO_NOT_RETRY = [302, 401, 403, 404, 500];
 
   const retryFn = (failureCount, error) => {
+    if (isCanceledError(error)) return false;
     let returnRetry = true;
     if (failureCount >= MAX_RETRIES) {
       returnRetry = false;
