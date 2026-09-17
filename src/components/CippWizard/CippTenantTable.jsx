@@ -195,6 +195,7 @@ export const CippTenantTable = ({
             type: "GET",
             data: { TriggerRefresh: "!true" },
             replacementBehaviour: "removeNulls",
+            relatedQueryKeys: ["tenants-table", "TenantSelector"],
           }}
         />
       )}
