@@ -743,12 +743,10 @@ export const CippDataTable = (props) => {
   const [columnFilterFns, setColumnFilterFns] = useState({})
   const waitingBool = api?.url ? true : false
 
-  // The cards branch and the renderTopToolbar branch are two alternating CIPPTableToptoolbar
-  // instances (only one is ever mounted), so state that must survive the cards<->table flip
-  // lives here and is passed down as props to both.
   const [activeFilters, setActiveFilters] = useState({ graph: null, table: null })
   const [searchValue, setSearchValue] = useState('')
   const restoredFiltersRef = useRef(new Set())
+  const searchFocusRef = useRef(null)
 
   const settings = useSettings()
   const router = useRouter()
@@ -1794,6 +1792,7 @@ export const CippDataTable = (props) => {
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               restoredFiltersRef={restoredFiltersRef}
+              searchFocusRef={searchFocusRef}
             />
           )}
         </>

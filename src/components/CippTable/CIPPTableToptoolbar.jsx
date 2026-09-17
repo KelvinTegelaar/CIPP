@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from 'react'
 import { CippIcons } from '../../utils/icon-registry'
 import { createPortal } from 'react-dom'
 import {
@@ -97,6 +104,7 @@ export const CIPPTableToptoolbar = React.memo(
     searchValue = '',
     setSearchValue,
     restoredFiltersRef,
+    searchFocusRef,
     persistenceKey,
     parentRow,
   }) => {
@@ -482,6 +490,31 @@ export const CIPPTableToptoolbar = React.memo(
       },
       [table]
     )
+
+ 
+//fixes search popping oiut of focus
+    const searchInputRef = useRef(null)
+    useLayoutEffect(() => {
+      const input = searchInputRef.current
+      const pending = searchFocusRef?.current
+      if (input && pending) {
+        searchFocusRef.current = null
+        input.focus({ preventScroll: true })
+        try {
+          input.setSelectionRange(pending.start, pending.end)
+        } catch {
+          // caret restore is best-effort
+        }
+      }
+      return () => {
+        if (searchFocusRef && input && document.activeElement === input) {
+          searchFocusRef.current = {
+            start: input.selectionStart,
+            end: input.selectionEnd,
+          }
+        }
+      }
+    }, [searchFocusRef])
 
     // Clean up debounce timer on unmount.
     useEffect(() => {
@@ -1133,6 +1166,7 @@ export const CIPPTableToptoolbar = React.memo(
                 placeholder="Search..."
                 value={searchValue}
                 onChange={handleSearchChange}
+                inputRef={searchInputRef}
               />
             </ModernSearchContainer>
 

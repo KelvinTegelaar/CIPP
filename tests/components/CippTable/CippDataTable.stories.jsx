@@ -1,5 +1,5 @@
 import React from 'react'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, delay } from 'msw'
 import { fn, within, expect, userEvent, waitFor } from 'storybook/test'
 import { CippDataTable } from '../../../src/components/CippTable/CippDataTable'
 import { SettingsProvider } from '../../../src/contexts/settings-context'
@@ -476,6 +476,54 @@ export const GraphBackedEditFilters = {
       await waitFor(async () => {
         await expect(body.getByRole('button', { name: 'Apply Filter' })).toBeVisible()
       })
+    })
+  },
+}
+
+// page 2 brings a new column, which re-keys MRT and remounts the toolbar - search must keep focus
+export const SearchKeepsFocusWhileLoading = {
+  beforeEach({ msw }) {
+    msw.use(
+      http.get('/api/TestPagedColumns', async ({ request }) => {
+        if (new URL(request.url).searchParams.get('nextLink')) {
+          await delay(1500)
+          return HttpResponse.json({
+            Results: [{ displayName: 'Bob Johnson', mail: 'bob@contoso.com', department: 'Sales' }],
+            Metadata: {},
+          })
+        }
+        return HttpResponse.json({
+          Results: [{ displayName: 'Alice Smith', mail: 'alice@contoso.com' }],
+          Metadata: { nextLink: 'page2' },
+        })
+      })
+    )
+  },
+  args: {
+    title: 'Paged Columns',
+    api: { url: '/api/TestPagedColumns', dataKey: 'Results' },
+    queryKey: 'storybook-TestPagedColumns',
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    const search = await canvas.findByPlaceholderText('Search...')
+
+    await step('type while page 2 is still loading', async () => {
+      await userEvent.click(search)
+      await userEvent.keyboard('o')
+    })
+
+    await step('search keeps focus and text once the new column arrives', async () => {
+      await waitFor(
+        () => {
+          expect(canvasElement.textContent).toContain('Sales')
+        },
+        { timeout: 5000 }
+      )
+      const current = canvas.getByPlaceholderText('Search...')
+      expect(current).toHaveFocus()
+      await userEvent.keyboard('n')
+      expect(canvas.getByPlaceholderText('Search...')).toHaveValue('on')
     })
   },
 }
