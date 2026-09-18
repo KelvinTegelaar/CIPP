@@ -874,6 +874,10 @@ function CippJsonView({
       if (!Array.isArray(arr) || arr.length === 0) return false
       return arr.every((item) => {
         if (typeof item !== 'object' || item === null || Array.isArray(item)) return false
+        // Only genuine {key, value} pairs flatten. A flat record without them (a phone number
+        // assignment, an Intune template) would otherwise collapse to an empty pane.
+        if (!(item.key || item.name || item.displayName)) return false
+        if (!('value' in item || 'newValue' in item)) return false
         // Check if all values are primitives (not nested objects/arrays)
         return Object.values(item).every((val) => typeof val !== 'object' || val === null)
       })
