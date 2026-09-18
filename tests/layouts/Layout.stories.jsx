@@ -231,3 +231,56 @@ export const MaintenanceMinimal = {
     })
   },
 }
+
+// Shaped exactly as Get-CIPPLegacyInfrastructureNotice emits it for a self-hosted instance that is
+// still on Function Apps. No window, so no countdown line and no Live chip - just a standing
+// warning with the migration guide.
+export const LegacyInfrastructure = {
+  args: { children },
+  parameters: {
+    msw: {
+      handlers: makeHandlers([
+        maintenanceAlert({
+          title: 'Legacy infrastructure',
+          Alert:
+            'This CIPP instance is running on the legacy Function App infrastructure, which will soon stop receiving updates. Migrate to the new infrastructure to keep receiving new features and fixes. The migration keeps your storage account and Key Vault, so your configuration carries across.',
+          link: 'https://docs.cipp.app/setup/maintaining-cipp/migrating-to-the-new-infrastructure',
+          linkText: 'Migration guide',
+          type: 'warning',
+          noticeId: 'legacy-function-app-infrastructure',
+          startTime: null,
+          endTime: null,
+          active: false,
+          dismissible: true,
+        }),
+      ]),
+    },
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    await step('banner warns about the legacy platform and links the migration guide', async () => {
+      const banner = await waitFor(() => canvas.getByLabelText('Maintenance notice'))
+      await expect(within(banner).getByText('Legacy infrastructure')).toBeInTheDocument()
+      const guide = within(banner).getByRole('link', { name: 'Migration guide' })
+      await expect(guide).toHaveAttribute(
+        'href',
+        'https://docs.cipp.app/setup/maintaining-cipp/migrating-to-the-new-infrastructure'
+      )
+      await expect(guide).toHaveAttribute('target', '_blank')
+    })
+
+    await step('no window line or Live chip for a standing warning', async () => {
+      const banner = canvas.getByLabelText('Maintenance notice')
+      await expect(within(banner).queryByText('Live')).toBeNull()
+      await expect(within(banner).queryByText(/starts in|ends /i)).toBeNull()
+    })
+
+    await step('dismiss hides it for the day', async () => {
+      const banner = canvas.getByLabelText('Maintenance notice')
+      within(banner).getByRole('button', { name: /dismiss maintenance notice/i }).click()
+      await waitFor(() => {
+        expect(canvas.queryByLabelText('Maintenance notice')).toBeNull()
+      })
+    })
+  },
+}
