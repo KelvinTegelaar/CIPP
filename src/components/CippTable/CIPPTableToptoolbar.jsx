@@ -553,11 +553,12 @@ export const CIPPTableToptoolbar = React.memo(
     }
 
     const resetToPreferedVisibility = () => {
-      if (
-        settings?.columnDefaults?.[pageName] &&
-        Object.keys(settings?.columnDefaults?.[pageName]).length > 0
-      ) {
-        setColumnVisibility(settings?.columnDefaults?.[pageName])
+      const preferred = settings?.columnDefaults?.[pageName]
+      if (preferred && Object.keys(preferred).length > 0) {
+        // Layer the saved selection over the current map. Replacing it would leave every
+        // field the preference never saw without an entry, and TanStack shows a column
+        // that has no entry, so a tenant with extra fields would suddenly reveal them.
+        setColumnVisibility((previous) => ({ ...previous, ...preferred }))
       } else {
         setColumnVisibility((prevVisibility) => {
           const updatedVisibility = {}
