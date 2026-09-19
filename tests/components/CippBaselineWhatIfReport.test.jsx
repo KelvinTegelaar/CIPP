@@ -203,7 +203,13 @@ const tenant = {
       category: 'Templates',
       stage: 'Default',
       templateId: 'tpl-1',
-      expectedValue: null,
+      // A No Data policy row's expectedValue is the RAW token render: displayName is
+      // still the template file id because the prepare hook never ran. The report must
+      // never show this - the stored template resolves the real name and content.
+      expectedValue: {
+        displayName: 'guid-ca-pend.CATemplate.json',
+        state: 'enabledForReportingButNotEnforced',
+      },
       currentValue: null,
     },
   ],
@@ -228,7 +234,11 @@ const assignedTemplates = [
           {
             standard: 'ConditionalAccessTemplate',
             instance: 'ConditionalAccessTemplate#pend1',
-            variables: { caTemplate: 'guid-ca-pend', state: 'enabled' },
+            // Legacy saves store option objects - unwrapValue must reach the GUID.
+            variables: {
+              caTemplate: { label: 'CA05 - Require MFA for admins', value: 'guid-ca-pend' },
+              state: 'enabled',
+            },
           },
         ],
       },

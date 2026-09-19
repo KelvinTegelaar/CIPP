@@ -218,6 +218,17 @@ const policyDisplayName = (item) => {
   )
 }
 
+// A row's display name: the engine-rendered policy name when it is a real one, never a
+// raw template file id (a No Data row's expectedValue is the unresolved token render).
+const rowPolicyName = (row) => {
+  const rendered = row.expectedValue?.displayName
+  return (
+    (rendered && !/\.json$/i.test(rendered) ? rendered : undefined) ??
+    row.standardLabel ??
+    row.standardName
+  )
+}
+
 const prettifyKey = (key) =>
   `${key}`
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
@@ -515,7 +526,7 @@ export const WhatIfReportDocument = ({
     .map((row) => {
       const presentation = statusPresentation(row.status)
       return {
-        name: row.expectedValue?.displayName ?? row.standardLabel ?? row.standardName,
+        name: rowPolicyName(row),
         description:
           definitionFor(row)?.executiveText ?? definitionFor(row)?.helpText ?? '',
         tone: presentation.tone,
@@ -716,7 +727,7 @@ export const WhatIfReportDocument = ({
               <DataTable
                 columns={caTableColumns}
                 rows={alignedCa.map((row) => ({
-                  policy: row.expectedValue?.displayName ?? row.standardLabel,
+                  policy: rowPolicyName(row),
                   does: caLightDescription(row.expectedValue),
                   includes: summarizeCaUsers(row.expectedValue, 'include'),
                   excludes: summarizeCaUsers(row.expectedValue, 'exclude'),
