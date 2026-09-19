@@ -174,6 +174,7 @@ export const CippGDAPTenantOnboarding = (props) => {
       );
     }
 
+    data.tenantGroups = formControl.getValues("tenantGroups")?.map((group) => group.value) ?? [];
     startOnboarding.mutate({
       url: "/api/ExecOnboardTenant",
       data: data,
@@ -197,6 +198,7 @@ export const CippGDAPTenantOnboarding = (props) => {
       );
     }
 
+    data.tenantGroups = formControl.getValues("tenantGroups")?.map((group) => group.value) ?? [];
     startOnboarding.mutate({
       url: "/api/ExecOnboardTenant",
       data: data,
@@ -282,6 +284,30 @@ export const CippGDAPTenantOnboarding = (props) => {
               label="Exclude onboarded tenant from All Tenant standards"
               type="switch"
               value={false}
+            />
+          </Box>
+
+          <Box>
+            <CippFormComponent
+              formControl={formControl}
+              name="tenantGroups"
+              label="Add onboarded tenant to Tenant Groups"
+              placeholder="Select the static tenant groups this tenant should be added to."
+              type="autoComplete"
+              multiple={true}
+              creatable={false}
+              api={{
+                url: "/api/ListTenantGroups",
+                queryKey: "AllTenantGroups",
+                dataKey: "Results",
+                labelField: "Name",
+                valueField: "Id",
+                addedField: {
+                  GroupType: "GroupType",
+                },
+                dataFilter: (data) =>
+                  data?.filter((group) => group?.addedFields?.GroupType !== "dynamic"),
+              }}
             />
           </Box>
 
