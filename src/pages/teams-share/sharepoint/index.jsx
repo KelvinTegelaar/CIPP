@@ -202,14 +202,14 @@ const Page = () => {
         URL: 'webUrl',
         SharePointType: 'rootWebTemplate',
       },
-      confirmText: 'Select the User to add and the site role to add them to.',
+      confirmText: 'Select the user(s) to add and the site role to add them to.',
       condition: () => canWriteSite,
       fields: [
         {
           type: 'autoComplete',
           name: 'user',
-          label: 'Select User',
-          multiple: false,
+          label: 'Select User(s)',
+          multiple: true,
           creatable: false,
           api: {
             url: '/api/ListGraphRequest',
