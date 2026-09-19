@@ -150,6 +150,16 @@
     "description": "License usage overview"
   },
   {
+    "type": "ActiveUserDetail",
+    "friendlyName": "Active User Detail",
+    "description": "Per-user last-activity dates for Exchange, OneDrive, SharePoint, Teams and Viva Engage over 90 days"
+  },
+  {
+    "type": "M365AppUserDetail",
+    "friendlyName": "Microsoft 365 App Usage Detail",
+    "description": "Per-user Office app usage by platform (Windows, Mac, mobile, web) over 90 days"
+  },
+  {
     "type": "MFAState",
     "friendlyName": "MFA State",
     "description": "Multi-factor authentication state"
