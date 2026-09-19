@@ -998,6 +998,11 @@ export const CippDataTable = (props) => {
         }
       }
     }
+    // Saved preferred columns win over the defaults above
+    const preferred = pageName ? settings?.columnDefaults?.[pageName] : null
+    if (preferred && Object.keys(preferred).length > 0) {
+      Object.assign(newVisibility, preferred)
+    }
     if (defaultSorting?.length > 0) {
       setSorting(defaultSorting)
     }
