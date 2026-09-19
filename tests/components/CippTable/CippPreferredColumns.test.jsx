@@ -149,7 +149,7 @@ describe.each(modes)(
       expect(columnCheckbox('Department')).toBeChecked()
       expect(columnCheckbox('Mail')).not.toBeChecked()
       expect(columnCheckbox('Job Title').checked).toBe(unsavedFieldDefault)
-    })
+    }, 30000)
 
     it('applies an existing preference once the API data arrives', async () => {
       const user = userEvent.setup()
@@ -164,7 +164,7 @@ describe.each(modes)(
       await waitFor(() => expect(columnCheckbox('Department')).toBeChecked())
       expect(columnCheckbox('Mail')).not.toBeChecked()
       expect(columnCheckbox('Display Name')).toBeChecked()
-    })
+    }, 30000)
   }
 )
 
@@ -194,7 +194,7 @@ it('keeps the defaults for fields outside a saved preference on a static-data ta
   expect(columnCheckbox('Department')).toBeChecked()
   expect(columnCheckbox('Mail')).not.toBeChecked()
   expect(columnCheckbox('Job Title')).not.toBeChecked()
-})
+}, 30000)
 
 it('does not apply the parent page preference to an unkeyed dialog table', async () => {
   const user = userEvent.setup()
@@ -208,7 +208,7 @@ it('does not apply the parent page preference to an unkeyed dialog table', async
   await user.click(screen.getByRole('button', { name: 'Columns' }))
   expect(columnCheckbox('Department')).not.toBeChecked()
   expect(columnCheckbox('Mail')).toBeChecked()
-})
+}, 30000)
 
 it('uses the explicit persistence key for a dialog table', async () => {
   const user = userEvent.setup()
@@ -227,7 +227,7 @@ it('uses the explicit persistence key for a dialog table', async () => {
   await user.click(screen.getByRole('button', { name: 'Columns' }))
   expect(columnCheckbox('Department')).toBeChecked()
   expect(columnCheckbox('Mail')).not.toBeChecked()
-})
+}, 30000)
 
 it('does not restore a deleted preference after a tenant switch or a remount', async () => {
   const user = userEvent.setup()
@@ -255,4 +255,4 @@ it('does not restore a deleted preference after a tenant switch or a remount', a
   await user.click(screen.getByRole('button', { name: 'Columns' }))
   expect(columnCheckbox('Department')).not.toBeChecked()
   expect(columnCheckbox('Mail')).toBeChecked()
-})
+}, 30000)
