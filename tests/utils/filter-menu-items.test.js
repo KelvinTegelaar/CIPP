@@ -156,6 +156,47 @@ describe('filterMenuItems', () => {
         'Email & Exchange > Administration > Contacts',
         'Email & Exchange > Administration > Contact Templates',
       ])
+      // The sign-in permission alone opens nothing under Tools or CIPP (issue #652).
+      const otherPages = pagePaths(result).filter(
+        (path) => path.startsWith('Tools') || path.startsWith('CIPP')
+      )
+      expect(otherPages).toEqual([])
     })
+
+    it('shows only the dashboard to a role that can merely sign in', () => {
+      const result = filterMenuItems(nativeMenuItems, {
+        permissions: ['CIPP.Core.Read'],
+      })
+      expect(pagePaths(result)).toEqual(['Dashboard'])
+    })
+
+    it.each([
+      ['Logbook', 'CIPP.Logs.Read', 'CIPP > Logbook'],
+      ['Report Builder', 'CIPP.ReportBuilder.Read', 'Tools > Report Builder'],
+      [
+        'Template Library',
+        'CIPP.TemplateLibrary.Read',
+        'Tools > Template Library',
+      ],
+      ['Catalog', 'CIPP.TemplateLibrary.Read', 'Tools > Catalog'],
+      [
+        'IP Database',
+        'CIPP.IPDatabase.Read',
+        'Tools > Tenant Tools > IP Database',
+      ],
+      [
+        'Breach Lookup',
+        'CIPP.BreachLookup.Read',
+        'Tools > Dark Web Tools > Breach Lookup',
+      ],
+    ])(
+      'opens %s with its own permission on top of sign-in',
+      (_title, permission, path) => {
+        const result = filterMenuItems(nativeMenuItems, {
+          permissions: ['CIPP.Core.Read', permission],
+        })
+        expect(pagePaths(result)).toContain(path)
+      }
+    )
   })
 })

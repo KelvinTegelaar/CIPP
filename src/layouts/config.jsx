@@ -1075,7 +1075,7 @@ export const nativeMenuItems = [
             title: 'IP Database',
             path: '/tenant/tools/geoiplookup',
             docsPath: 'tools/tenant-tools/geoiplookup',
-            permissions: ['CIPP.Core.*'],
+            permissions: ['CIPP.IPDatabase.*'],
             scope: 'global',
           },
         ],
@@ -1125,20 +1125,20 @@ export const nativeMenuItems = [
       },
       {
         title: 'Dark Web Tools',
-        permissions: ['CIPP.Core.*'],
+        permissions: ['CIPP.BreachLookup.*'],
         items: [
           {
             title: 'Tenant Breach Lookup',
             path: '/tools/tenantbreachlookup',
             docsPath: 'tools/dark-web-tools/tenant-breach-lookup',
-            permissions: ['CIPP.Core.*'],
+            permissions: ['CIPP.BreachLookup.*'],
             scope: 'global',
           },
           {
             title: 'Breach Lookup',
             path: '/tools/breachlookup',
             docsPath: 'tools/dark-web-tools/breach-lookup',
-            permissions: ['CIPP.Core.*'],
+            permissions: ['CIPP.BreachLookup.*'],
             scope: 'global',
           },
         ],
@@ -1147,7 +1147,7 @@ export const nativeMenuItems = [
         title: 'Report Builder',
         path: '/tools/report-builder/generated',
         roles: ['admin', 'superadmin'],
-        permissions: ['CIPP.Core.*'],
+        permissions: ['CIPP.ReportBuilder.*'],
         scope: 'global',
       },
       {
@@ -1161,14 +1161,14 @@ export const nativeMenuItems = [
         title: 'Template Library',
         path: '/tools/templatelib',
         roles: ['editor', 'admin', 'superadmin'],
-        permissions: ['CIPP.Core.*'],
+        permissions: ['CIPP.TemplateLibrary.*'],
         scope: 'global',
       },
       {
         title: 'Catalog',
         path: '/tools/community-repos',
         roles: ['editor', 'admin', 'superadmin'],
-        permissions: ['CIPP.Core.*'],
+        permissions: ['CIPP.TemplateLibrary.*'],
         scope: 'global',
       },
       {
@@ -1210,7 +1210,7 @@ export const nativeMenuItems = [
         title: 'Logbook',
         path: '/cipp/logs',
         roles: ['editor', 'admin', 'superadmin'],
-        permissions: ['CIPP.Core.*'],
+        permissions: ['CIPP.Logs.*'],
         scope: 'global',
       },
       {

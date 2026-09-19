@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
+import { usePermissions } from '../../hooks/use-permissions'
 
 // Some CIPP endpoints return a bare array, others wrap in { Results: [...] }. Normalise both.
 export const asArray = (payload) => {
@@ -281,12 +282,17 @@ export const useAllTenantsDashboard = () => {
     waiting: true,
   })
 
+  // ListLogs sits behind CIPP.Logs rather than the sign-in permission; a role without it skips the
+  // call so the dashboard does not surface a 403 for a page the role is allowed to open.
+  const { checkPermissions } = usePermissions()
+  const canReadLogs = checkPermissions(['CIPP.Logs.*'])
+
   // ListLogs defaults to today's partition when no date is supplied, which keeps this cheap.
   const logsApi = ApiGetCall({
     url: '/api/ListLogs',
     data: { Filter: 'True', Severity: 'Error,Critical' },
     queryKey: 'AllTenantsDashboard-Logs',
-    waiting: true,
+    waiting: canReadLogs,
   })
 
   // Score fields only — the endpoint projects away controlScores, which is ~15 KB per cached record.
@@ -535,6 +541,7 @@ export const useAllTenantsDashboard = () => {
   return {
     tenantCount,
     tenants: tenantsApi,
+    canReadLogs,
     alignmentApi,
     failedTestsApi,
     domainsApi,
