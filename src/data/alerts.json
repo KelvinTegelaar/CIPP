@@ -2,7 +2,17 @@
   {
     "name": "MFAAlertUsers",
     "label": "Alert on users without any form of MFA",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Exclude accounts created in the last X days (default: 0, no exclusion)",
+    "inputName": "NewUserGraceDays",
+    "validators": {
+      "min": {
+        "value": 0,
+        "message": "Days cannot be negative"
+      }
+    }
   },
   {
     "name": "MFAAdmins",
