@@ -655,6 +655,7 @@ const Page = () => {
       description: '',
       alertEmails: '',
       alertWebhookUrl: '',
+      disableAlerts: false,
       disableScheduledRuns: false,
     },
   })
@@ -675,6 +676,7 @@ const Page = () => {
       description: template.description,
       alertEmails: template.alertEmails ?? '',
       alertWebhookUrl: template.alertWebhookUrl ?? '',
+      disableAlerts: template.disableAlerts === true,
       disableScheduledRuns: template.disableScheduledRuns === true,
       // The tenant selector's own option objects round-trip verbatim through the API
       // (assignments/exclusions); older saves fall back to name-based options.
@@ -895,6 +897,7 @@ const Page = () => {
         ),
         alertEmails: values.alertEmails,
         alertWebhookUrl: values.alertWebhookUrl,
+        disableAlerts: values.disableAlerts === true,
         disableScheduledRuns: values.disableScheduledRuns === true,
         stages: stages.map(
           (stage, index) =>
@@ -1099,6 +1102,19 @@ const Page = () => {
                     Alerts follow each standard's alert settings. Leave these
                     empty to deliver through the global CIPP notification
                     settings (email, webhook, and PSA).
+                  </Typography>
+                  <CippFormComponent
+                    type="switch"
+                    name="disableAlerts"
+                    label="Disable Alerts for this baseline"
+                    formControl={formControl}
+                  />
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
+                    With alerts disabled, no email, webhook, or PSA
+                    notifications are sent for this baseline - deviations are
+                    still detected and shown on the alignment page.
                   </Typography>
                 </Stack>
               </CippButtonCard>
