@@ -124,7 +124,7 @@ const CippIntegrationFieldMapping = () => {
                         label={field.FieldLabel}
                         options={fieldMapping?.data?.IntegrationFields?.filter(
                           (integrationField) =>
-                            (integrationField?.type === field.Type &&
+                            ([].concat(field.Type).includes(integrationField?.type) &&
                               integrationField?.FieldType === field.FieldType) ||
                             integrationField?.type === "unset"
                         )?.map((integrationField) => {
