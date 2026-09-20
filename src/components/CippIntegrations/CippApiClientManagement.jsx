@@ -1,4 +1,4 @@
-import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert, Tooltip } from "@mui/material";
+import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert } from "@mui/material";
 import { CippIcons } from "../../utils/icon-registry"
 import { useState, useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
@@ -23,27 +23,45 @@ const getRestrictiveRoleRanges = (role) => {
   return ranges.filter((range) => !ALLOW_ALL_IP_TOKENS.has(String(range).trim().toLowerCase()));
 };
 
-// Dialog warning: MCP runs under the signed-in user's role, so an IP-restricted role blocks the
-// AI provider's cloud egress IPs (403).
+// Restrictive entries from a free-form IP-range list (client's own IPRange field or similar).
+const getRestrictiveRanges = (ranges) =>
+  (Array.isArray(ranges) ? ranges : [])
+    .map((r) => String(r?.value ?? r).trim())
+    .filter((r) => r && !ALLOW_ALL_IP_TOKENS.has(r.toLowerCase()));
+
+// Dialog warning (advisory, not enforced): MCP connectors call in from the AI provider's cloud IPs,
+// so an IP restriction on the client itself OR on its role will most likely block them (403).
 const McpRoleIpWarning = ({ formControl }) => {
   const mcpAllowed = useWatch({ control: formControl.control, name: "MCPAllowed" });
   const roleValue = useWatch({ control: formControl.control, name: "Role" });
+  const ipRangeValue = useWatch({ control: formControl.control, name: "IPRange" });
   const customRoles = ApiGetCall({ url: "/api/ListCustomRole", queryKey: "CustomRoleList" });
 
-  const roleName = roleValue?.value ?? roleValue;
-  if (!mcpAllowed || !roleName) return null;
+  if (!mcpAllowed) return null;
 
-  const role = (customRoles.data ?? []).find(
-    (r) => String(r.RoleName).toLowerCase() === String(roleName).toLowerCase()
-  );
-  const restrictive = getRestrictiveRoleRanges(role);
-  if (restrictive.length === 0) return null;
+  const clientRanges = getRestrictiveRanges(ipRangeValue);
+  const roleName = roleValue?.value ?? roleValue;
+  const role = roleName
+    ? (customRoles.data ?? []).find(
+        (r) => String(r.RoleName).toLowerCase() === String(roleName).toLowerCase()
+      )
+    : null;
+  const roleRanges = getRestrictiveRoleRanges(role);
+
+  if (clientRanges.length === 0 && roleRanges.length === 0) return null;
 
   return (
     <Alert severity="warning" sx={{ mt: 1 }}>
-      Role <strong>{roleName}</strong> only allows {restrictive.join(", ")}. MCP runs as the
-      signed-in user, so AI clients connecting from their provider's cloud IPs get blocked (403).
-      Add that range to the role or clear its IP restriction.
+      MCP connectors call in from your AI provider's cloud IPs, so IP restrictions on an MCP client
+      will most likely block it (403).
+      {clientRanges.length > 0 && <> This client's IP range only allows {clientRanges.join(", ")}.</>}
+      {roleRanges.length > 0 && (
+        <>
+          {" "}
+          Role <strong>{roleName}</strong> only allows {roleRanges.join(", ")}.
+        </>
+      )}{" "}
+      Consider setting the IP range to <strong>Any</strong> and using a role with no IP restriction.
     </Alert>
   );
 };
@@ -82,21 +100,53 @@ const CippApiClientManagement = () => {
     queryKey: "CustomRoleList",
   });
 
-  // MCP-enabled clients whose role restricts sign-in to specific IPs. Those restrictions apply to
-  // MCP traffic (which runs as the signed-in user), so an AI client's cloud egress IPs get blocked.
+
+  // Authoritative per-client egress (today) from Craft's accounting table. Self-hides (Enabled:false)
+  // when accounting is off / not hosted, in which case the column shows "-".
+  const egressUsage = ApiGetCall({
+    url: "/api/ListApiEgress",
+    queryKey: "ApiEgressUsage",
+  });
+
+  // Merge the client list with egress so the table can show a per-client "Egress (today)" column.
+  // The list is small, so this drives the table from `data` (client-side) rather than the server api.
+  const clientRows = useMemo(() => {
+    const clients = apiClients.data?.pages?.[0]?.Results || [];
+    const usage = egressUsage.data?.Results?.Enabled ? egressUsage.data.Results.Clients || [] : [];
+    const byAppId = new Map(usage.map((c) => [String(c.AppId).toLowerCase(), c]));
+    const fmtBytes = (b) =>
+      b == null
+        ? "-"
+        : b >= 1073741824
+        ? `${(b / 1073741824).toFixed(1)} GB`
+        : b >= 1048576
+        ? `${(b / 1048576).toFixed(1)} MB`
+        : b >= 1024
+        ? `${(b / 1024).toFixed(1)} KB`
+        : `${b} B`;
+    return clients.map((c) => {
+      const e = byAppId.get(String(c.ClientId).toLowerCase());
+      return { ...c, EgressToday: e ? fmtBytes(e.Bytes) : "-", EgressSheddedToday: e ? e.Shed : 0 };
+    });
+  }, [apiClients.data, egressUsage.data]);
+
+  // MCP-enabled clients with an IP restriction — on the client's own IP range or on its role. MCP
+  // connectors call in from the AI provider's cloud IPs, so either will most likely block them (403).
   const mcpRoleIpWarnings = useMemo(() => {
     if (!apiClients.isSuccess || !customRoles.isSuccess) return [];
     const roles = customRoles.data ?? [];
     const clients = apiClients.data?.pages?.[0]?.Results || [];
     return clients
-      .filter((client) => client.MCPAllowed && client.Role)
+      .filter((client) => client.MCPAllowed)
       .map((client) => {
-        const role = roles.find(
-          (r) => String(r.RoleName).toLowerCase() === String(client.Role).toLowerCase()
-        );
-        const restrictive = getRestrictiveRoleRanges(role);
-        return restrictive.length > 0
-          ? { appName: client.AppName, role: client.Role, ranges: restrictive }
+        const role = client.Role
+          ? roles.find((r) => String(r.RoleName).toLowerCase() === String(client.Role).toLowerCase())
+          : null;
+        const roleRanges = getRestrictiveRoleRanges(role);
+        const clientRanges = getRestrictiveRanges(client.IPRange);
+        const ranges = [...new Set([...clientRanges, ...roleRanges])];
+        return ranges.length > 0
+          ? { appName: client.AppName, role: client.Role, ranges }
           : null;
       })
       .filter(Boolean);
@@ -244,7 +294,7 @@ const CippApiClientManagement = () => {
           name: "mcpAccessWarning",
           severity: "warning",
           label:
-            "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
+            "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. You can enable multiple MCP clients, each with its own role, IP range and Conditional Access. MCP is only supported on CIPP-NG.",
         },
         {
           name: "mcpRoleIpWarning",
@@ -379,22 +429,6 @@ const CippApiClientManagement = () => {
               ),
             },
             {
-              label: "MCP API URL",
-              value: azureConfig.data?.Results?.ApiUrl ? (
-                <>
-                  <CippCopyToClipBoard
-                    type="chip"
-                    text={`${azureConfig.data.Results.ApiUrl.replace(/\/+$/, "")}/api/ExecMcp`}
-                  />
-                  <Tooltip title="Use this full URL when adding CIPP as an MCP connector in an AI client (e.g. Claude custom connectors).">
-                    <CippIcons.InfoOutlined color="action" sx={{ fontSize: 16, verticalAlign: "middle" }} />
-                  </Tooltip>
-                </>
-              ) : (
-                "Not Available"
-              ),
-            },
-            {
               label: "Token URL",
               value: azureConfig.data?.Results?.TenantID ? (
                 <CippCopyToClipBoard
@@ -442,14 +476,14 @@ const CippApiClientManagement = () => {
         {mcpRoleIpWarnings.length > 0 && (
           <Box sx={{ px: 3 }}>
             <Alert severity="warning">
-              These MCP-enabled clients use an IP-restricted role. MCP runs as the signed-in user, so
-              AI clients connecting from their provider's cloud IPs get blocked (403). Add that range
-              to the role or clear its IP restriction:
+              These MCP-enabled clients have an IP restriction (on the client or its role). MCP
+              connectors call in from your AI provider's cloud IPs, so this will most likely block
+              them (403). Consider setting the IP range to Any and using a role with no IP
+              restriction:
               <ul style={{ marginBottom: 0 }}>
                 {mcpRoleIpWarnings.map((warning) => (
                   <li key={warning.appName}>
-                    <strong>{warning.appName}</strong> — {warning.role} allows only{" "}
-                    {warning.ranges.join(", ")}
+                    <strong>{warning.appName}</strong> — allows only {warning.ranges.join(", ")}
                   </li>
                 ))}
               </ul>
@@ -462,13 +496,30 @@ const CippApiClientManagement = () => {
         <CippDataTable
           actions={actions}
           title="CIPP-API Clients"
-          api={{
-            url: "/api/ExecApiClient",
-            data: { Action: "List" },
-            dataKey: "Results",
+          data={clientRows}
+          isFetching={apiClients.isFetching || egressUsage.isFetching}
+          refreshFunction={() => {
+            apiClients.refetch?.();
+            egressUsage.refetch?.();
           }}
-          simpleColumns={["Enabled", "MCPAllowed", "AppName", "ClientId", "Role", "IPRange"]}
-          queryKey={`ApiClients`}
+          simpleColumns={[
+            "Enabled",
+            "MCPAllowed",
+            "AppName",
+            "ClientId",
+            "Role",
+            "IPRange",
+            "EgressToday",
+          ]}
+          // Distinct from the page's "ApiClients" data query. This table is fed the merged
+          // clientRows via the `data` prop, but CippDataTable still spins up an internal
+          // ApiGetCallWithPagination keyed on this queryKey. ApiGetCall(WithPagination) keys
+          // react-query on [queryKey] alone (no url), so reusing "ApiClients" here made the
+          // internal query (url undefined) share the page query's cache entry and, being the
+          // last-rendered observer, hijack its queryFn — on invalidation the list refetched to
+          // empty ("No records") until a manual refresh. A separate key avoids the collision;
+          // the list still refreshes via relatedQueryKeys → the page's apiClients → clientRows.
+          queryKey={`ApiClientsTable`}
         />
       </Stack>
 
@@ -531,7 +582,7 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
+              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. You can enable multiple MCP clients, each with its own role, IP range and Conditional Access. MCP is only supported on CIPP-NG.",
           },
           {
             name: "mcpRoleIpWarning",
@@ -616,7 +667,7 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
+              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. You can enable multiple MCP clients, each with its own role, IP range and Conditional Access. MCP is only supported on CIPP-NG.",
           },
           {
             name: "mcpRoleIpWarning",
