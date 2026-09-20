@@ -611,7 +611,7 @@
     "logoDark": "/assets/integrations/hudu_dark.png",
     "forceSyncButton": true,
     "description": "Enable the Hudu integration to sync documentation",
-    "helpText": "This integration allows you to populate custom asset layouts with Tenant information, monitor device compliance state, document other items and generate relationships inside Hudu.",
+    "helpText": "This integration allows you to populate custom asset layouts with Tenant information, monitor device compliance state, document other items and generate relationships inside Hudu. The Hudu API key must have Password Access enabled to synchronize confidential credential fields.",
     "links": [
       {
         "name": "Hudu Documentation",
@@ -665,6 +665,28 @@
         "type": "switch",
         "name": "Hudu.CreateMissingDevices",
         "label": "Create missing devices in Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.IncludeLAPS",
+        "label": "Sync Windows LAPS passwords to Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.IncludeBitLocker",
+        "label": "Sync BitLocker recovery keys to Hudu",
         "condition": {
           "field": "Hudu.Enabled",
           "compareType": "is",
