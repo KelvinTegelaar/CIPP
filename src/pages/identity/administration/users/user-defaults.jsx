@@ -383,7 +383,7 @@ const Page = () => {
       <Box sx={{ py: 2 }}>
         <CippDataTable
           title="User Templates"
-          api={{ url: '/api/ListNewUserDefaults?includeAllTenants=false' }}
+          api={{ url: `/api/ListNewUserDefaults?includeAllTenants=false&tenantFilter=${userSettings.currentTenant}` }}
           queryKey={`ListNewUserDefaults-${userSettings.currentTenant}`}
           actions={actions}
           offCanvas={offCanvas}
