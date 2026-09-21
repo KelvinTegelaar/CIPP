@@ -22,6 +22,7 @@ import { CippFormTenantSelector } from '../../../../components/CippComponents/Ci
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import alertList from '../../../../data/alerts.json'
 import auditLogTemplates from '../../../../data/AuditLogTemplates'
+import alertActions from '../../../../data/AuditLogTemplates'
 import auditLogSchema from '../../../../data/AuditLogSchema.json'
 import { Layout as DashboardLayout } from '../../../../layouts/index' // Dashboard layout
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
@@ -149,16 +150,6 @@ const AlertWizard = () => {
     { label: 'Email', value: 'Email' },
     { label: 'PSA', value: 'PSA' },
   ]
-  const actionsToTake = [
-    //{ value: 'cippcommand', label: 'Execute a CIPP Command' },
-    { value: 'becremediate', label: 'Execute a BEC Remediate' },
-    { value: 'disableuser', label: 'Disable the user in the log entry' },
-    // { value: 'generatelog', label: 'Generate a log entry' },
-    { value: 'generatemail', label: 'Generate an email' },
-    { value: 'generatePSA', label: 'Generate a PSA ticket' },
-    { value: 'generateWebhook', label: 'Generate a webhook' },
-  ]
-
   const logbookOptions = [
     { value: 'Audit.AzureActiveDirectory', label: 'Azure AD' },
     { value: 'Audit.Exchange', label: 'Exchange' },
@@ -180,6 +171,14 @@ const AlertWizard = () => {
   const commandValue = useWatch({ control: formControl.control, name: 'command' })
   const logbookWatcher = useWatch({ control: formControl.control, name: 'logbook' })
   const propertyWatcher = useWatch({ control: formControl.control, name: 'conditions' })
+
+  useEffect(() => {
+    if (router.query.id || !router.query.preset) return
+    const template = auditLogTemplates.find((entry) => entry.value === router.query.preset)
+    if (!template) return
+    setAlertType('audit')
+    formControl.setValue('preset', { value: template.value, label: template.name })
+  }, [router.query.preset, router.query.id])
 
   // Clear input value only on actual operator transitions, skip while preset loading
   useEffect(() => {
@@ -966,7 +965,7 @@ const AlertWizard = () => {
                                 formControl={formControl}
                                 multiple={true}
                                 creatable={false}
-                                options={actionsToTake}
+                                options={alertActions}
                               />
                             </Grid>
                             {haloEnabled && (

@@ -1,0 +1,7 @@
+[
+  { "value": "becremediate", "label": "Execute a BEC Remediate" },
+  { "value": "disableuser", "label": "Disable the user in the log entry" },
+  { "value": "generatemail", "label": "Generate an email" },
+  { "value": "generatePSA", "label": "Generate a PSA ticket" },
+  { "value": "generateWebhook", "label": "Generate a webhook" }
+]

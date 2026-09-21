@@ -224,6 +224,11 @@ export const nativeMenuItems = [
         scope: 'global',
       },
       {
+        title: 'Security Simulations',
+        path: '/tenant/security-simulator',
+        permissions: ['Tenant.SecuritySimulations.*'],
+      },
+      {
         title: 'Domains Analyser',
         path: '/tenant/standards/domains-analyser',
         permissions: ['Tenant.DomainAnalyser.*'],
@@ -1256,7 +1261,7 @@ export const nativeMenuItems = [
           {
             // Lands on cipp-roles, not cipp-users: cipp-users is gated by the
             // SuperAdminNG feature flag, and the nav filter drops any item whose
-            // path is in a disabled flag's Pages list — pointing here at cipp-users
+            // path is in a disabled flag's Pages list - pointing here at cipp-users
             // would hide the whole Authentication group (including the ungated
             // SSO and SAM App pages) on non-NG instances.
             title: 'Authentication',
