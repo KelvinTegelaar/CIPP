@@ -12,18 +12,78 @@ import CippWizardStepButtons from './CippWizardStepButtons'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import { useWatch } from 'react-hook-form'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Grid } from '@mui/system'
 import { useSettings } from '../../hooks/use-settings'
+import { ApiGetCall } from '../../api/ApiCall'
+
+// Shared mailboxes are capped at 50 GiB without a license; warn at 49 GiB.
+const SHARED_MAILBOX_WARN_BYTES = 49 * 1024 ** 3
 
 export const CippWizardOffboarding = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props
   const currentTenant = formControl.watch('tenantFilter')
   const selectedUsers = useWatch({ control: formControl.control, name: 'user' })
   const [showAlert, setShowAlert] = useState(false)
-  const userSettingsDefaults = useSettings().userSettingsDefaults
+  const settings = useSettings()
+  const userOffboardingDefaults = settings?.offboardingDefaults
   const disableForwarding = useWatch({ control: formControl.control, name: 'disableForwarding' })
   const deleteUser = useWatch({ control: formControl.control, name: 'DeleteUser' })
+  const convertToShared = useWatch({ control: formControl.control, name: 'ConvertToShared' })
+
+  // The HaloPSA ticket box is only meaningful when that integration is configured.
+  const integrationSettings = ApiGetCall({
+    url: '/api/ListExtensionsConfig',
+    queryKey: 'ListExtensionsConfig',
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  })
+
+  // Warn unless "Send to integration" is confirmed on (no answer without AppSettings.Read).
+  const notificationSettings = ApiGetCall({
+    url: '/api/ListNotificationConfig',
+    queryKey: 'ListNotificationConfig',
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  })
+  const psaSelected = useWatch({ control: formControl.control, name: 'postExecution.psa' })
+  const showPsaIntegrationHint =
+    !!psaSelected &&
+    !notificationSettings.isLoading &&
+    notificationSettings.data?.sendtoIntegration !== true
+
+  // Pull cached mailbox sizes (storageUsedInBytes, keyed by UPN) only when relevant
+  const mailboxUsage = ApiGetCall({
+    url: '/api/ListMailboxes',
+    data: { tenantFilter: currentTenant?.value, UseReportDB: true },
+    queryKey: `OffboardingMailboxUsage-${currentTenant?.value}`,
+    waiting: !!convertToShared && !!currentTenant?.value && selectedUsers?.length > 0,
+  })
+
+  // Selected mailboxes whose cached size would exceed the shared-mailbox limit
+  const oversizedMailboxes = useMemo(() => {
+    if (!convertToShared || !mailboxUsage.isSuccess || !Array.isArray(mailboxUsage.data)) {
+      return []
+    }
+    const selectedUpns = (selectedUsers || []).map((u) =>
+      (u?.value ?? u)?.toString().toLowerCase(),
+    )
+    return mailboxUsage.data
+      .filter((mb) => {
+        const upn = mb?.UPN?.toString().toLowerCase()
+        const bytes = Number(mb?.storageUsedInBytes)
+        return (
+          upn &&
+          selectedUpns.includes(upn) &&
+          Number.isFinite(bytes) &&
+          bytes >= SHARED_MAILBOX_WARN_BYTES
+        )
+      })
+      .map((mb) => ({
+        upn: mb.UPN,
+        sizeGB: (Number(mb.storageUsedInBytes) / 1024 ** 3).toFixed(1),
+      }))
+  }, [convertToShared, mailboxUsage.isSuccess, mailboxUsage.data, selectedUsers])
 
   useEffect(() => {
     if (selectedUsers.length >= 3) {
@@ -51,25 +111,24 @@ export const CippWizardOffboarding = (props) => {
       const tenantDefaults = currentTenant?.addedFields?.offboardingDefaults
 
       if (tenantDefaults) {
-        // Apply tenant defaults
+        // Apply tenant defaults; always clear OOO when the blob omits it so user defaults do not leak
         Object.entries(tenantDefaults).forEach(([key, value]) => {
           formControl.setValue(key, value)
         })
-        // Set the source indicator
+        formControl.setValue('OOO', tenantDefaults.OOO ?? '')
         formControl.setValue('HIDDEN_defaultsSource', 'tenant')
-      } else if (userSettingsDefaults?.offboardingDefaults) {
-        // Apply user defaults if no tenant defaults
-        userSettingsDefaults.offboardingDefaults.forEach((setting) => {
-          formControl.setValue(setting.name, setting.value)
+      } else if (userOffboardingDefaults) {
+        Object.entries(userOffboardingDefaults).forEach(([key, value]) => {
+          formControl.setValue(key, value)
         })
-        // Set the source indicator
+        formControl.setValue('OOO', userOffboardingDefaults.OOO ?? '')
         formControl.setValue('HIDDEN_defaultsSource', 'user')
       }
 
       // Mark that we've applied defaults for this tenant
       formControl.setValue('HIDDEN_appliedDefaultsForTenant', currentTenantId)
     }
-  }, [currentTenant?.value, userSettingsDefaults, formControl])
+  }, [currentTenant?.value, userOffboardingDefaults, formControl])
 
   useEffect(() => {
     if (disableForwarding) {
@@ -78,6 +137,37 @@ export const CippWizardOffboarding = (props) => {
     }
   }, [disableForwarding, formControl])
 
+  // Clear every field the UI disables when deleting the user, so submitted values match what is shown
+  useEffect(() => {
+    if (deleteUser) {
+      formControl.setValue('ConvertToShared', false)
+      formControl.setValue('HideFromGAL', false)
+      formControl.setValue('removeCalendarInvites', false)
+      formControl.setValue('removePermissions', false)
+      formControl.setValue('removeCalendarPermissions', false)
+      formControl.setValue('RemoveRules', false)
+      formControl.setValue('WipeMobile', false)
+      formControl.setValue('RemoveMobile', false)
+      formControl.setValue('RemoveGroups', false)
+      formControl.setValue('RemoveLicenses', false)
+      formControl.setValue('RevokeSessions', false)
+      formControl.setValue('DisableSignIn', false)
+      formControl.setValue('ClearImmutableId', false)
+      formControl.setValue('ResetPass', false)
+      formControl.setValue('RemoveMFADevices', false)
+      formControl.setValue('RemoveTeamsPhoneDID', false)
+      formControl.setValue('DisableOneDriveSharing', false)
+      formControl.setValue('disableForwarding', false)
+      formControl.setValue('KeepCopy', false)
+      formControl.setValue('AccessNoAutomap', null)
+      formControl.setValue('AccessAutomap', null)
+      formControl.setValue('AccessSendAs', null)
+      formControl.setValue('AccessSendOnBehalf', null)
+      formControl.setValue('forward', null)
+      formControl.setValue('OOO', '')
+    }
+  }, [deleteUser, formControl])
+
   const getDefaultsSource = () => {
     return formControl.getValues('HIDDEN_defaultsSource') || 'user'
   }
@@ -85,7 +175,7 @@ export const CippWizardOffboarding = (props) => {
   return (
     <Stack spacing={4}>
       <Grid container spacing={4}>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card variant="outlined">
             <CardHeader title="Offboarding Settings" />
             <Divider />
@@ -138,6 +228,13 @@ export const CippWizardOffboarding = (props) => {
               <CippFormComponent
                 name="RemoveRules"
                 label="Remove all Rules"
+                type="switch"
+                formControl={formControl}
+                disabled={!!deleteUser}
+              />
+              <CippFormComponent
+                name="WipeMobile"
+                label="Wipe Mobile Devices (account data only)"
                 type="switch"
                 formControl={formControl}
                 disabled={!!deleteUser}
@@ -228,7 +325,7 @@ export const CippWizardOffboarding = (props) => {
           </Card>
         </Grid>
 
-        <Grid size={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card variant="outlined">
             <CardHeader title="Permissions and forwarding" />
             <Divider />
@@ -288,6 +385,61 @@ export const CippWizardOffboarding = (props) => {
                   },
                 }}
               />
+              <CippFormComponent
+                sx={{ m: 1 }}
+                name="AccessSendAs"
+                label="Grant Send As Access"
+                disabled={!!deleteUser}
+                type="autoComplete"
+                placeholder="Leave blank if not needed"
+                formControl={formControl}
+                multi
+                api={{
+                  labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+                  valueField: 'id',
+                  url: '/api/ListGraphRequest',
+                  dataKey: 'Results',
+                  tenantFilter: currentTenant ? currentTenant.value : undefined,
+                  queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : 'default'}`,
+                  data: {
+                    Endpoint: 'users',
+                    manualPagination: true,
+                    $select: 'id,userPrincipalName,displayName',
+                    $count: true,
+                    $orderby: 'displayName',
+                    $top: 999,
+                  },
+                }}
+              />
+              <CippFormComponent
+                sx={{ m: 1 }}
+                name="AccessSendOnBehalf"
+                label="Grant Send on Behalf Access"
+                disabled={!!deleteUser}
+                type="autoComplete"
+                placeholder="Leave blank if not needed"
+                formControl={formControl}
+                multi
+                api={{
+                  labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+                  valueField: 'id',
+                  url: '/api/ListGraphRequest',
+                  dataKey: 'Results',
+                  tenantFilter: currentTenant ? currentTenant.value : undefined,
+                  queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : 'default'}`,
+                  data: {
+                    Endpoint: 'users',
+                    manualPagination: true,
+                    $select: 'id,userPrincipalName,displayName',
+                    $count: true,
+                    $orderby: 'displayName',
+                    $top: 999,
+                  },
+                }}
+              />
+              <Typography variant="subtitle2" sx={{ mt: 3 }} gutterBottom>
+                OneDrive Access
+              </Typography>
               {deleteUser && (
                 <Alert severity="info" sx={{ mb: 1 }}>
                   When a user is deleted, their OneDrive is retained for 30 days by default unless
@@ -297,7 +449,7 @@ export const CippWizardOffboarding = (props) => {
               <CippFormComponent
                 sx={{ m: 1 }}
                 name="OnedriveAccess"
-                label="Grant Onedrive Full Access"
+                label="Grant OneDrive Full Access"
                 type="autoComplete"
                 placeholder="Leave blank if not needed"
                 formControl={formControl}
@@ -371,6 +523,9 @@ export const CippWizardOffboarding = (props) => {
                   disabled={!!deleteUser}
                 />
               </CippFormCondition>
+              <Typography variant="subtitle2" sx={{ mt: 3 }} gutterBottom>
+                Out of Office
+              </Typography>
               <Box
                 sx={deleteUser ? { pointerEvents: 'none', opacity: 0.5, userSelect: 'none' } : {}}
               >
@@ -382,7 +537,32 @@ export const CippWizardOffboarding = (props) => {
                   fullWidth
                   formControl={formControl}
                 />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                    display: 'block',
+                    mt: 1
+                  }}>
+                  CIPP %variable% tokens (for example %tenantname%) stay literal here and are
+                  resolved when the offboarding job runs. %username% is not the offboarded user.
+                </Typography>
               </Box>
+              {convertToShared && oversizedMailboxes.length > 0 && (
+                <Alert severity="warning" sx={{ mt: 2 }}>
+                  The following mailbox{oversizedMailboxes.length > 1 ? 'es' : ''} exceed or are near
+                  the 50 GB shared mailbox limit. Converting to shared may fail, or the mailbox may
+                  stop receiving mail once unlicensed, unless an Exchange Online Plan 2 license is
+                  retained:
+                  <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2.5 }}>
+                    {oversizedMailboxes.map((mb) => (
+                      <li key={mb.upn}>
+                        {mb.upn} ({mb.sizeGB} GB)
+                      </li>
+                    ))}
+                  </Box>
+                </Alert>
+              )}
             </CardContent>
           </Card>
         </Grid>
@@ -439,6 +619,12 @@ export const CippWizardOffboarding = (props) => {
                 type="switch"
                 formControl={formControl}
               />
+              {showPsaIntegrationHint && (
+                <Alert severity="info" sx={{ mt: 1 }}>
+                  PSA tickets are only sent when 'Send to integration' is enabled under Settings
+                  &gt; Notifications.
+                </Alert>
+              )}
             </Grid>
 
             <Grid size={{ sm: 12, xs: 12 }}>
@@ -451,6 +637,27 @@ export const CippWizardOffboarding = (props) => {
                 formControl={formControl}
               />
             </Grid>
+
+            {integrationSettings?.data?.HaloPSA?.Enabled === true && (
+              <CippFormCondition
+                formControl={formControl}
+                field="postExecution.psa"
+                compareType="is"
+                compareValue={true}
+              >
+                <Grid size={{ sm: 12, xs: 12 }}>
+                  <CippFormComponent
+                    type="number"
+                    fullWidth
+                    label="HaloPSA Ticket"
+                    name="PsaTicketId"
+                    placeholder="Enter the related HaloPSA Ticket ID"
+                    helperText="The results are added to the associated ticket in HaloPSA as a note instead of raising a new ticket."
+                    formControl={formControl}
+                  />
+                </Grid>
+              </CippFormCondition>
+            )}
           </Grid>
         </CardContent>
       </Card>
@@ -464,5 +671,5 @@ export const CippWizardOffboarding = (props) => {
         replacementBehaviour="removeNulls"
       />
     </Stack>
-  )
+  );
 }

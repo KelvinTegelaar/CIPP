@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Box,
   Typography,
@@ -12,17 +13,19 @@ import {
   Tooltip,
   Stack,
   Skeleton,
+  CircularProgress,
 } from "@mui/material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
-import { ExpandMore, Sync, Search, Close } from "@mui/icons-material";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { CippTimeAgo } from "./CippTimeAgo";
 import { ActionsMenu } from "../actions-menu";
 import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
 import { CippApiLogsDrawer } from "./CippApiLogsDrawer";
+import { CippJobProgress, formatJobProgressText, OFFBOARDING_PROGRESS_ACTIONS } from "./CippJobProgress";
+import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 
 const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) => {
   const [taskDetails, setTaskDetails] = useState(null);
@@ -33,13 +36,32 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
     setExpanded(newExpanded ? panel : false);
   };
 
+  // Keep the page live while the task is still in flight (Planned, Running or Processing).
+  const inFlight = ["Planned", "Running", "Processing"].includes(taskDetails?.Task?.TaskState);
   const taskDetailResults = ApiGetCall({
     url: `/api/ListScheduledItemDetails`,
     data: {
       RowKey: data.RowKey,
     },
     queryKey: `ListScheduledItemDetails-${data.RowKey}`,
+    refetchInterval: inFlight ? 5000 : false,
   });
+
+  // Live step progress for jobs that report it (e.g. user offboarding). A wizard run shares one
+  // job across its users, so only this task's user is shown.
+  const deploymentId = taskDetails?.Task?.Parameters?.DeploymentId;
+  const username = taskDetails?.Task?.Parameters?.Username;
+  const progressResults = ApiGetCall({
+    url: "/api/ListAsyncDeployment",
+    data: { DeploymentId: deploymentId },
+    queryKey: `ListAsyncDeployment-${deploymentId}`,
+    waiting: !!deploymentId,
+    refetchInterval: inFlight ? 5000 : false,
+    staleTime: 0,
+  });
+  const progressRows = (Array.isArray(progressResults.data) ? progressResults.data : []).filter(
+    (row) => !username || row.Name === username
+  );
 
   const taskProperties = [
     "TaskState",
@@ -82,12 +104,20 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
   return (
     <>
       <Stack spacing={2}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Typography variant="h5">
+        {/* Title and actions together exceed a phone width, so they stack below sm. */}
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1, sm: 0 }}
+          sx={{
+            justifyContent: "space-between",
+            alignItems: { xs: "stretch", sm: "flex-start" }
+          }}>
+          {/* Task names embed UPNs, which are unbreakable tokens wider than a phone. */}
+          <Typography variant="h5" sx={{ minWidth: 0, overflowWrap: "anywhere" }}>
             {showTitle && (taskDetailResults.isLoading ? <Skeleton width="250px" /> : taskDetails?.Task?.Name)}
           </Typography>
           {showActions && (
-            <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
+            <Box sx={{ display: "flex", gap: 1, flexShrink: 0, flexWrap: "wrap" }}>
               <CippApiLogsDrawer
                 scheduledTaskFilter={data?.RowKey}
                 buttonText="View Logs"
@@ -106,7 +136,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
           actionButton={
             <Tooltip title="Refresh">
               <IconButton size="small" onClick={() => taskDetailResults.refetch()}>
-                <Sync />
+                <CippIcons.Sync />
               </IconButton>
             </Tooltip>
           }
@@ -125,13 +155,60 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
           isFetching={taskDetailResults.isFetching}
         />
 
+        {deploymentId && (inFlight || progressRows.length > 0) && (
+          <Accordion variant="outlined" defaultExpanded>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                <Typography variant="h6">Progress</Typography>
+                {inFlight && <CircularProgress size={16} />}
+                {progressRows.length > 0 && (
+                  <Box onClick={(e) => e.stopPropagation()}>
+                    <CippCopyToClipBoard text={formatJobProgressText(progressRows)} type="button" />
+                  </Box>
+                )}
+              </Stack>
+            </AccordionSummary>
+            <AccordionDetails>
+              {progressRows.length === 0 ? (
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  Waiting for the first status update...
+                </Typography>
+              ) : (
+                <CippJobProgress
+                  rows={progressRows}
+                  onRerun={() => taskDetailResults.refetch()}
+                  actions={
+                    taskDetails?.Task?.Command === "Invoke-CIPPOffboardingJob"
+                      ? OFFBOARDING_PROGRESS_ACTIONS
+                      : undefined
+                  }
+                />
+              )}
+            </AccordionDetails>
+          </Accordion>
+        )}
+
+        {taskDetails?.Task?.PostExecutionResults?.length > 0 && (
+          <CippPropertyListCard
+            layout="dual"
+            title="Post Execution Results"
+            variant="outlined"
+            showDivider={false}
+            propertyItems={taskDetails.Task.PostExecutionResults.map((outcome, index) => ({
+              label: outcome.Channel || `Delivery ${index + 1}`,
+              value: outcome.Result || "No response recorded",
+            }))}
+            isFetching={taskDetailResults.isFetching}
+          />
+        )}
+
         {taskDetails?.Task?.Trigger && (
           <Accordion
             variant="outlined"
             expanded={expanded === "task-trigger"}
             onChange={handleChange("task-trigger")}
           >
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
               <Typography variant="h6">Trigger Configuration</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -150,7 +227,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
           </Accordion>
         )}
 
-        {taskDetailResults.isFetching ? (
+        {taskDetailResults.isLoading ? (
           <Skeleton variant="rectangular" width="100%" height={200} />
         ) : (
           <>
@@ -160,7 +237,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                 expanded={expanded === "task-parameters"}
                 onChange={handleChange("task-parameters")}
               >
-                <AccordionSummary expandIcon={<ExpandMore />}>
+                <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
                   <Typography variant="h6">Task Parameters</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -183,7 +260,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
           </>
         )}
 
-        {taskDetailResults.isFetching ? (
+        {taskDetailResults.isLoading ? (
           <Skeleton variant="rectangular" width="100%" height={400} />
         ) : (
           <>
@@ -191,14 +268,18 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
               <>
                 <Stack
                   direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ mt: 4, mb: 2 }}
-                >
+                  sx={{
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mt: 4,
+                    mb: 2
+                  }}>
                   <Typography variant="h6">
                     Execution Results{" "}
                     {filteredDetails && (
-                      <Typography component="span" variant="body2" color="text.secondary">
+                      <Typography component="span" variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         ({filteredDetails.length} of {taskDetails.Details.length})
                       </Typography>
                     )}
@@ -210,25 +291,27 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                     placeholder="Search results..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search />
-                        </InputAdornment>
-                      ),
-                      endAdornment: searchQuery && (
-                        <InputAdornment position="end">
-                          <Tooltip title="Clear search">
-                            <IconButton
-                              size="small"
-                              onClick={() => setSearchQuery("")}
-                              aria-label="Clear search"
-                            >
-                              <Close />
-                            </IconButton>
-                          </Tooltip>
-                        </InputAdornment>
-                      ),
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <CippIcons.Search />
+                          </InputAdornment>
+                        ),
+                        endAdornment: searchQuery && (
+                          <InputAdornment position="end">
+                            <Tooltip title="Clear search">
+                              <IconButton
+                                size="small"
+                                onClick={() => setSearchQuery("")}
+                                aria-label="Clear search"
+                              >
+                                <CippIcons.Close />
+                              </IconButton>
+                            </Tooltip>
+                          </InputAdornment>
+                        ),
+                      }
                     }}
                   />
                 </Stack>
@@ -243,7 +326,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                         sx={{ mb: 2 }}
                       >
                         <AccordionSummary
-                          expandIcon={<ExpandMore />}
+                          expandIcon={<CippIcons.ExpandMore />}
                           sx={{
                             "& .MuiAccordionSummary-content": {
                               display: "flex",
@@ -266,7 +349,9 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                         </AccordionSummary>
                         <AccordionDetails>
                           {result.Results === "null" || !result.Results ? (
-                            <Typography color="text.secondary">No data available</Typography>
+                            <Typography sx={{
+                              color: "text.secondary"
+                            }}>No data available</Typography>
                           ) : Array.isArray(result.Results) ? (
                             <CippDataTable
                               noCard
@@ -300,7 +385,9 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                         textAlign: "center",
                       }}
                     >
-                      <Typography color="text.secondary">
+                      <Typography sx={{
+                        color: "text.secondary"
+                      }}>
                         No results match your search criteria
                       </Typography>
                     </Box>

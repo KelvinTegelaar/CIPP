@@ -68,6 +68,11 @@
         "inputType": "switch",
         "inputLabel": "Exclude disabled users?",
         "inputName": "ExcludeDisabled"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include users who have never signed in (e.g. sign-in blocked)?",
+        "inputName": "IncludeNeverSignedIn"
       }
     ]
   },
@@ -110,6 +115,44 @@
     ]
   },
   {
+    "name": "InactiveSharePointSites",
+    "label": "Alert on SharePoint sites that have not been active for X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include never-active sites?",
+        "inputName": "IncludeNeverActive"
+      }
+    ]
+  },
+  {
+    "name": "InactiveTeamsSites",
+    "label": "Alert on Teams linked sites that have not been active for X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include never-active TeamsSite sites?",
+        "inputName": "IncludeNeverActive"
+      }
+    ]
+  },
+  {
     "name": "EntraConnectSyncStatus",
     "label": "Alert if Entra Connect sync is enabled and has not run in the last X hours",
     "requiresInput": true,
@@ -133,9 +176,40 @@
         "inputType": "textField",
         "inputLabel": "Excluded mailbox UPNs (comma-separated). Supports custom variables like %excludefrommailboxalert% defined under CIPP > Settings > Custom Variables at tenant or AllTenants scope.",
         "inputName": "QuotaUsedExcludedMailboxes"
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Mailbox types to alert on (default: all)",
+        "inputName": "QuotaUsedMailboxTypes",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "User mailboxes", "value": "User" },
+          { "label": "Shared mailboxes", "value": "Shared" }
+        ]
       }
     ],
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "description": "Alerts when a mailbox exceeds a percentage of its send/receive quota, using the Microsoft mailbox usage report. The report's storage figure already excludes the Recoverable Items dumpster and the archive, so it reflects what actually counts against the quota. Deleted mailboxes are skipped."
+  },
+  {
+    "name": "ArchiveQuota",
+    "label": "Alert on % online archive quota used",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Archive quota percentage threshold (default: 90)",
+        "inputName": "ArchiveQuotaThreshold"
+      },
+      {
+        "inputType": "textField",
+        "inputLabel": "Excluded mailbox UPNs (comma-separated). Supports custom variables like %excludefromarchivealert% defined under CIPP > Settings > Custom Variables at tenant or AllTenants scope.",
+        "inputName": "ArchiveQuotaExcludedMailboxes"
+      }
+    ],
+    "recommendedRunInterval": "7d"
   },
   {
     "name": "SharePointQuota",
@@ -156,6 +230,36 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "OneDriveLongPaths",
+    "label": "Alert on OneDrive accounts with over-long paths",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Minimum paths over inferred 260-character limit (default: 1)",
+    "inputName": "OneDriveLongPaths",
+    "recommendedRunInterval": "7d",
+    "description": "Uses the OneDriveLongPaths Report DB cache (run ExecCIPPDBCache OneDriveLongPaths first). Signals users who may hit OneDrive sync or Office path errors. Alert and cache store owner UPN and counts only — never file or folder names."
+  },
+  {
+    "name": "UnlicensedOneDriveData",
+    "label": "Alert on leftover unlicensed OneDrive data nearing deletion",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days until deletion (default: 30)",
+        "inputName": "UnlicensedOneDriveData"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include shared mailboxes",
+        "inputName": "IncludeSharedMailboxes"
+      }
+    ],
+    "description": "Fires when a still-existing user has an unlicensed OneDrive within the selected days of unpaid deletion (unlicensed start + 365 days). Skips Entra-deleted owners. Shared mailboxes are excluded unless the toggle is on."
+  },
+  {
     "name": "ExpiringLicenses",
     "label": "Alert on licenses expiring in X days",
     "recommendedRunInterval": "7d",
@@ -168,11 +272,17 @@
         "inputName": "ExpiringLicensesDays"
       },
       {
+        "inputType": "number",
+        "inputLabel": "Minimum days until expiration (default: 0)",
+        "inputName": "ExpiringLicensesMinDays"
+      },
+      {
         "inputType": "switch",
         "inputLabel": "Alert only on unassigned licenses",
         "inputName": "ExpiringLicensesUnassignedOnly"
       }
-    ]
+    ],
+    "description": "Alerts on licenses with a renewal date within the selected number of days. Microsoft does not expose the actual commitment term, so monthly auto-renewing subscriptions also match; set the minimum days to 32 or higher to skip anything renewing sooner than that (such as monthly rollovers)."
   },
   {
     "name": "NewAppApproval",
@@ -341,7 +451,8 @@
   {
     "name": "AppSecretExpiry",
     "label": "Alert on expiring application secrets",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "description": "Reports app registration client secrets expiring within the next 30 days, and keeps reporting them for 7 days after they expire. Secrets that expired more than 7 days ago are not reported."
   },
   {
     "name": "AppleTerms",
@@ -366,17 +477,35 @@
   {
     "name": "ApnCertExpiry",
     "label": "Alert on expiring APN certificates",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days until expiry to alert (default: 30)",
+    "inputName": "DaysUntilExpiry"
   },
   {
     "name": "VppTokenExpiry",
     "label": "Alert on expiring VPP tokens",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days until expiry to alert (default: 30)",
+    "inputName": "DaysUntilExpiry"
   },
   {
     "name": "DepTokenExpiry",
     "label": "Alert on expiring DEP tokens",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days until expiry to alert (default: 30)",
+    "inputName": "DaysUntilExpiry"
+  },
+  {
+    "name": "IntuneApprovalRequests",
+    "label": "Alert on Intune changes waiting for multi-admin approval",
+    "recommendedRunInterval": "1d",
+    "description": "Multi-admin approval holds a protected Intune change until a second administrator approves it, and nothing notifies the requestor. This reports requests still sitting in needsApproval."
   },
   {
     "name": "SoftDeletedMailboxes",
@@ -389,9 +518,24 @@
     "recommendedRunInterval": "4h"
   },
   {
+    "name": "DeviceComplianceGracePeriod",
+    "label": "Alert on devices in the compliance grace period",
+    "recommendedRunInterval": "1d",
+    "description": "Devices in the compliance grace period are still trusted, but will be marked noncompliant when the grace period expires. This alerts before that happens so you can fix the device without user impact.",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Only alert when the grace period expires within this many days (default: all devices in grace period)",
+        "inputName": "ExpiresWithinDays"
+      }
+    ]
+  },
+  {
     "name": "IntunePolicyConflicts",
     "label": "Alert on Intune policy or app conflicts/errors",
-    "recommendedRunInterval": "4h",
+    "recommendedRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -441,9 +585,9 @@
   },
   {
     "name": "HuntressRogueApps",
-    "label": "Alert on Huntress Rogue Apps detected",
+    "label": "Alert on Huntress or CIPP Rogue Apps detected",
     "recommendedRunInterval": "4h",
-    "description": "Huntress has provided a repository of known rogue apps that are commonly used in BEC, data exfiltration and other Microsoft 365 attacks. This alert will notify you if any of these apps are detected in the selected tenant(s). For more information, see <a href='https://huntresslabs.github.io/rogueapps/' target='_blank'>https://huntresslabs.github.io/rogueapps/</a>.",
+    "description": "Huntress has provided a repository of known rogue apps that are commonly used in BEC, data exfiltration and other Microsoft 365 attacks. This alert will notify you if any of these apps are detected in the selected tenant(s). For more information, see <a href='https://huntresslabs.github.io/rogueapps/' target='_blank'>https://huntresslabs.github.io/rogueapps/</a>. CIPP also maintains its own curated list of rogue apps, so detections may include applications that are not on the Huntress site. See <a href='https://docs.cipp.app/user-documentation/tenant/administration/alert-configuration/rogue-apps' target='_blank'>the CIPP documentation</a> for the full list.",
     "requiresInput": true,
     "inputType": "switch",
     "inputLabel": "Ignore Disabled Apps?",
@@ -627,5 +771,35 @@
       }
     ],
     "description": "Monitors for emails reported by users through Outlook's built-in Report Phishing feature. Alerts when new user-reported email threat submissions are found in Microsoft Defender. Requires ThreatSubmission.ReadWrite.All permission."
+  },
+  {
+    "name": "NewShadowAITool",
+    "label": "Alert on new Shadow AI tools detected",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "switch",
+    "inputLabel": "Ignore sanctioned tools?",
+    "inputName": "IgnoreSanctionedTools",
+    "description": "Monitors the Shadow AI detection data (Intune detected apps and Entra consented applications) and alerts when an AI tool is seen in the tenant for the first time. The first run establishes a baseline without alerting. Uses the same cached data as the Shadow AI dashboard, so keep the Detected Apps and Service Principals caches syncing. Optionally ignores tools that have been marked as company sanctioned."
+  },
+  {
+    "name": "PermanentActiveAdminAssigned",
+    "label": "Alert on new permanent (no end date) admin role assignments",
+    "recommendedRunInterval": "1h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Approved break-glass accounts: UPN prefixes, UPNs or display names (comma separated)",
+        "inputName": "ApprovedAdmins"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Privileged roles only? (off = every directory role)",
+        "inputName": "PrivilegedRolesOnly"
+      }
+    ],
+    "description": "Alerts when a user, group or service principal gains a permanent active admin role assignment (no end date) that is not in the approved list. On Entra ID P2 tenants time-bound and PIM-activated assignments are ignored; elsewhere every assignment counts as permanent. The first run only records the current state."
   }
 ]

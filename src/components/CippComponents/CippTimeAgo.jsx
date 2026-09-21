@@ -1,11 +1,10 @@
 import { Chip } from "@mui/material";
 import ReactTimeAgo from "react-time-ago";
+import { parseCippDate } from "../../utils/parse-cipp-date";
 
 export const CippTimeAgo = ({ data, type = "text", timeStyle = "round-minute" }) => {
   const isText = type === "text";
-  const numberRegex = /^\d+$/;
-  const date =
-    typeof data === "number" || numberRegex.test(data) ? new Date(data * 1000) : new Date(data);
+  const date = parseCippDate(data);
 
   if (date.getTime() === 0) {
     return "Never";

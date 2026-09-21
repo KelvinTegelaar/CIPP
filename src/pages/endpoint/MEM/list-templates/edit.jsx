@@ -1,11 +1,33 @@
-import { Alert, Box } from "@mui/material";
+import { useEffect, useMemo } from "react";
+import {
+  Alert,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Chip,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 import { ApiGetCall } from "../../../../api/ApiCall";
-import CippTemplateFieldRenderer from "../../../../components/CippComponents/CippTemplateFieldRenderer";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import CippIntuneSettingsEditor, {
+  useIntuneDefinitionResolver,
+} from "../../../../components/CippComponents/CippIntuneSettingsEditor";
+import {
+  applyIntuneSettingEdits,
+  buildIntunePropertyLeaves,
+  buildIntuneSettingLeaves,
+  defaultValueForLeaf,
+} from "../../../../utils/intune-template-leaves";
+import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 
 const EditIntuneTemplate = () => {
   const router = useRouter();
@@ -22,82 +44,70 @@ const EditIntuneTemplate = () => {
     ? templateQuery.data.find((t) => t.id === id || t.GUID === id)
     : templateQuery.data;
 
-  // Custom data formatter to convert autoComplete objects to values
+  // The stored policy, parsed once and never rebuilt. Everything the editor does is expressed as a
+  // patch against this object, so properties no field is bound to survive the round-trip untouched.
+  const originalPolicy = useMemo(() => {
+    if (!templateData?.RAWJson) return null;
+    try {
+      return JSON.parse(templateData.RAWJson);
+    } catch {
+      return null;
+    }
+  }, [templateData?.RAWJson]);
+
+  // A settings catalog policy names its settings by ID; the friendly names and the option lists come
+  // from a catalog that is fetched separately, so the editor waits for it rather than showing raw
+  // IDs that would rename themselves a moment later.
+  const {
+    getDefinition,
+    isLoading: definitionsLoading,
+    isError: definitionsError,
+  } = useIntuneDefinitionResolver(originalPolicy);
+
+  // Administrative templates carry their settings as definition references resolved against a
+  // tenant, which CIPP cannot present as fields. Their name and description stay editable.
+  const isAdminTemplate =
+    Array.isArray(originalPolicy?.added) || Array.isArray(originalPolicy?.definitionValues);
+  const isSettingTree =
+    Array.isArray(originalPolicy?.settings) || Array.isArray(originalPolicy?.omaSettings);
+
+  const leaves = useMemo(() => {
+    if (!originalPolicy || isAdminTemplate || definitionsLoading) return [];
+    return isSettingTree
+      ? buildIntuneSettingLeaves(originalPolicy, getDefinition)
+      : buildIntunePropertyLeaves(originalPolicy, getCippTranslation);
+  }, [originalPolicy, getDefinition, isAdminTemplate, isSettingTree, definitionsLoading]);
+
+  useEffect(() => {
+    // Deferred until the leaves are final. Resetting once the catalog arrives would otherwise
+    // discard anything typed while it was still downloading.
+    if (!templateData || definitionsLoading) return;
+    formControl.reset({
+      displayName: templateData.Displayname ?? templateData.displayName ?? "",
+      description: templateData.Description ?? templateData.description ?? "",
+      settingValues: leaves.map(defaultValueForLeaf),
+    });
+  }, [templateData, leaves, definitionsLoading]);
+
   const customDataFormatter = (values) => {
-    // Recursively extract values from autoComplete objects and fix @odata issues
-    const extractValues = (obj) => {
-      if (!obj) return obj;
-
-      // If this is an autoComplete object with label/value, return just the value
-      if (
-        obj &&
-        typeof obj === "object" &&
-        obj.hasOwnProperty("value") &&
-        obj.hasOwnProperty("label")
-      ) {
-        return obj.value;
-      }
-
-      // If it's an array, process each item
-      if (Array.isArray(obj)) {
-        return obj.map((item) => extractValues(item));
-      }
-
-      // If it's an object, process each property
-      if (typeof obj === "object") {
-        const result = {};
-        Object.keys(obj).forEach((key) => {
-          const value = extractValues(obj[key]);
-
-          // Handle @odata objects created by React Hook Form's dot notation interpretation
-          if (key.endsWith("@odata") && value && typeof value === "object") {
-            // Convert @odata objects back to dot notation properties
-            Object.keys(value).forEach((odataKey) => {
-              // Always try to restore the original @odata property, regardless of form value
-              const baseKey = key.replace("@odata", "");
-              const originalKey = `${baseKey}@odata.${odataKey}`;
-              const originalValue = getOriginalValueByPath(templateData, originalKey);
-              if (originalValue !== undefined) {
-                result[originalKey] = originalValue;
-              }
-            });
-          } else {
-            result[key] = value;
-          }
-        });
-        return result;
-      }
-
-      // For primitive values, return as-is
-      return obj;
-    };
-
-    // Helper function to get original value by dot-notation path
-    const getOriginalValueByPath = (obj, path) => {
-      const keys = path.split(".");
-      let current = obj;
-      for (const key of keys) {
-        if (current && typeof current === "object" && key in current) {
-          current = current[key];
-        } else {
-          return undefined;
-        }
-      }
-      return current;
-    };
-
-    // Extract values from the entire form data and include id
-    const processedValues = extractValues(values);
-
-    return {
+    const payload = {
       id,
-      ...processedValues,
+      displayName: values.displayName,
+      description: values.description,
     };
+
+    // Omitted for policy shapes with no editable fields, which makes the backend keep the stored
+    // RAWJson as-is rather than accept a body this editor cannot faithfully reproduce.
+    if (originalPolicy && leaves.length > 0) {
+      payload.parsedRAWJson = applyIntuneSettingEdits(originalPolicy, leaves, values.settingValues);
+    }
+
+    return payload;
   };
 
   return (
     <CippFormPage
-      title={`${templateData?.displayName || templateData?.name || templateData?.Displayname}`}
+      title={templateData?.Displayname || templateData?.displayName || "Intune Template"}
       formControl={formControl}
       queryKey={[`IntuneTemplate-${id}`, "IntuneTemplates", "Available Endpoint Manager"]}
       backButtonTitle="Intune Templates"
@@ -105,19 +115,95 @@ const EditIntuneTemplate = () => {
       customDataformatter={customDataFormatter}
       formPageType="Edit"
     >
-      <Box sx={{ my: 2 }}>
+      <Stack spacing={3} sx={{ my: 2 }}>
         {templateQuery.isLoading ? (
           <CippFormSkeleton layout={[2, 1, 2, 2]} />
         ) : templateQuery.isError || !templateData ? (
           <Alert severity="error">Error loading template or template not found.</Alert>
         ) : (
-          <CippTemplateFieldRenderer
-            templateData={templateData}
-            formControl={formControl}
-            templateType="intune"
-          />
+          <>
+            <Card variant="outlined">
+              <CardHeader
+                title="Template details"
+                action={templateData.Type ? <Chip label={templateData.Type} size="small" /> : null}
+                slotProps={{
+                  title: { variant: "h6" }
+                }}
+              />
+              <CardContent>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <CippFormComponent
+                      type="textField"
+                      label="Template Name"
+                      name="displayName"
+                      formControl={formControl}
+                      validators={{
+                        required: { value: true, message: "A template name is required" },
+                      }}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <CippFormComponent
+                      type="textField"
+                      label="Description"
+                      name="description"
+                      formControl={formControl}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            <Card variant="outlined">
+              <CardHeader title="Policy settings" slotProps={{
+                title: { variant: "h6" }
+              }} />
+              <CardContent>
+                {!originalPolicy ? (
+                  <Alert severity="error">
+                    The stored policy for this template is not valid JSON and cannot be edited.
+                  </Alert>
+                ) : isAdminTemplate ? (
+                  <Alert severity="info">
+                    Administrative template settings are resolved against a tenant and cannot be
+                    edited here. The name and description above can still be changed.
+                  </Alert>
+                ) : definitionsLoading ? (
+                  <Box>
+                    <Stack direction="row" spacing={1.5} sx={{
+                      alignItems: "center"
+                    }}>
+                      <CircularProgress size={18} />
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
+                        Resolving setting names and available values…
+                      </Typography>
+                    </Stack>
+                    <CippFormSkeleton layout={[2, 2, 2]} />
+                  </Box>
+                ) : (
+                  <>
+                    {definitionsError && (
+                      <Alert severity="warning" sx={{ mb: 2 }}>
+                        The Intune setting catalog could not be loaded, so settings are shown by
+                        their definition ID and choices cannot be picked from a list. Values you
+                        change are still saved correctly.
+                      </Alert>
+                    )}
+                    <CippIntuneSettingsEditor
+                      leaves={leaves}
+                      formControl={formControl}
+                      fieldPrefix="settingValues"
+                    />
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </>
         )}
-      </Box>
+      </Stack>
     </CippFormPage>
   );
 };

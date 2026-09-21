@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Divider, Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
-import { PostAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
@@ -55,9 +55,9 @@ export const CippAutopilotStatusPageDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<PostAdd />}
+        startIcon={<CippIcons.PostAdd />}
       >
         {buttonText}
       </PermissionButton>

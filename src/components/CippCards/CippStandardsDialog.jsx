@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { get } from 'lodash'
 import {
   Dialog,
@@ -20,54 +21,39 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material'
-import {
-  Close as CloseIcon,
-  Info as InfoIcon,
-  Warning as WarningIcon,
-  CheckCircle as CheckCircleIcon,
-  Assignment as AssignmentIcon,
-  Notifications as NotificationsIcon,
-  Construction as ConstructionIcon,
-  Public as PublicIcon,
-  Cloud as CloudIcon,
-  Email as EmailIcon,
-  Security as SecurityIcon,
-  PhoneAndroid as PhoneAndroidIcon,
-  ExpandMore as ExpandMoreIcon,
-} from '@mui/icons-material'
 import { SvgIcon } from '@mui/material'
-import standards from '../../data/standards.json'
+import { getStandards } from '../../utils/standards-data'
 
 const getCategoryIcon = (category) => {
   switch (category) {
     case 'Global Standards':
-      return <PublicIcon fontSize="small" />
+      return <CippIcons.Public fontSize="small" />
     case 'Entra (AAD) Standards':
-      return <CloudIcon fontSize="small" />
+      return <CippIcons.Cloud fontSize="small" />
     case 'Exchange Standards':
-      return <EmailIcon fontSize="small" />
+      return <CippIcons.Email fontSize="small" />
     case 'Defender Standards':
-      return <SecurityIcon fontSize="small" />
+      return <CippIcons.Security fontSize="small" />
     case 'Intune Standards':
-      return <PhoneAndroidIcon fontSize="small" />
+      return <CippIcons.PhoneAndroid fontSize="small" />
     case 'Templates':
-      return <ConstructionIcon fontSize="small" />
+      return <CippIcons.Construction fontSize="small" />
     default:
-      return <PublicIcon fontSize="small" />
+      return <CippIcons.Public fontSize="small" />
   }
 }
 
 const getActionIcon = (action) => {
   switch (action?.toLowerCase()) {
     case 'report':
-      return <AssignmentIcon fontSize="small" />
+      return <CippIcons.Assignment fontSize="small" />
     case 'alert':
     case 'warn':
-      return <NotificationsIcon fontSize="small" />
+      return <CippIcons.Notifications fontSize="small" />
     case 'remediate':
-      return <ConstructionIcon fontSize="small" />
+      return <CippIcons.Construction fontSize="small" />
     default:
-      return <InfoIcon fontSize="small" />
+      return <CippIcons.Info fontSize="small" />
   }
 }
 
@@ -136,7 +122,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
   let totalStandardsCount = 0
 
   Object.entries(combinedStandards).forEach(([standardKey, standardConfig]) => {
-    const standardInfo = standards.find((s) => s.name === `standards.${standardKey}`)
+    const standardInfo = getStandards().find((s) => s.name === `standards.${standardKey}`)
     if (standardInfo) {
       const category = standardInfo.cat
       if (!standardsByCategory[category]) {
@@ -167,10 +153,12 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
       onClose={onClose}
       maxWidth="lg"
       fullWidth
-      PaperProps={{
-        sx: {
-          maxHeight: '90vh',
-        },
+      slotProps={{
+        paper: {
+          sx: {
+            maxHeight: '90vh',
+          },
+        }
       }}
     >
       <DialogTitle
@@ -186,16 +174,20 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon />
+          <CippIcons.Close />
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>
         <Stack spacing={2}>
           <Box>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
+            <Typography variant="body2" gutterBottom sx={{
+              color: "text.secondary"
+            }}>
               Showing standards configuration for tenant: <strong>{currentTenant}</strong>
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{
+              color: "text.secondary"
+            }}>
               Total templates applied: <strong>{applicableTemplates.length}</strong> | Total
               standards: <strong>{totalStandardsCount}</strong>
             </Typography>
@@ -224,7 +216,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+                  expandIcon={<CippIcons.ExpandMore />}
                   aria-controls={`${category}-content`}
                   id={`${category}-header`}
                   sx={{
@@ -232,9 +224,13 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                     '& .MuiAccordionSummary-content': { alignItems: 'center', m: 0 },
                   }}
                 >
-                  <Stack direction="row" alignItems="center" spacing={1}>
+                  <Stack direction="row" spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     <SvgIcon color="primary">{getCategoryIcon(category)}</SvgIcon>
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography variant="subtitle1" sx={{
+                      fontWeight: 600
+                    }}>
                       {category}
                     </Typography>
                     <Chip label={`${categoryCount} standards`} size="small" variant="outlined" />
@@ -246,19 +242,25 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                       // Handle template arrays by rendering each template as a separate card
                       if (Array.isArray(config) && config.length > 0) {
                         return config.map((templateItem, templateIndex) => (
-                          <Grid item xs={12} md={6} key={`${key}-${templateIndex}`}>
+                          <Grid size={{ xs: 12, md: 6 }} key={`${key}-${templateIndex}`}>
                             <Card variant="outlined" sx={{ height: '100%', mb: 1, p: 0 }}>
                               <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                                 <Stack spacing={1}>
                                   <Box>
-                                    <Typography variant="subtitle2" fontWeight="bold">
+                                    <Typography variant="subtitle2" sx={{
+                                      fontWeight: "bold"
+                                    }}>
                                       {info.label} {config.length > 1 && `(${templateIndex + 1})`}
                                     </Typography>
-                                    <Typography variant="caption" color="text.secondary">
+                                    <Typography variant="caption" sx={{
+                                      color: "text.secondary"
+                                    }}>
                                       {info.helpText}
                                     </Typography>
                                   </Box>
-                                  <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                                  <Stack useFlexGap direction="row" spacing={0.5} sx={{
+                                    flexWrap: "wrap"
+                                  }}>
                                     <Chip
                                       label={info.impact}
                                       size="small"
@@ -274,10 +276,14 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                     )}
                                   </Stack>
                                   <Box>
-                                    <Typography variant="caption" fontWeight="bold" gutterBottom>
+                                    <Typography variant="caption" gutterBottom sx={{
+                                      fontWeight: "bold"
+                                    }}>
                                       Actions:
                                     </Typography>
-                                    <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                                    <Stack useFlexGap direction="row" spacing={0.5} sx={{
+                                      flexWrap: "wrap"
+                                    }}>
                                       {templateItem.action && Array.isArray(templateItem.action) ? (
                                         templateItem.action.map((action, actionIndex) => (
                                           <Chip
@@ -297,7 +303,9 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                           />
                                         ))
                                       ) : (
-                                        <Typography variant="caption" color="text.secondary">
+                                        <Typography variant="caption" sx={{
+                                          color: "text.secondary"
+                                        }}>
                                           No actions configured
                                         </Typography>
                                       )}
@@ -306,7 +314,9 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
 
                                   {info.addedComponent && info.addedComponent.length > 0 && (
                                     <Box>
-                                      <Typography variant="caption" fontWeight="bold" gutterBottom>
+                                      <Typography variant="caption" gutterBottom sx={{
+                                        fontWeight: "bold"
+                                      }}>
                                         Fields:
                                       </Typography>
                                       <Stack spacing={0.5}>
@@ -332,7 +342,9 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                                 gap: 0.5,
                                               }}
                                             >
-                                              <Typography variant="caption" color="text.secondary">
+                                              <Typography variant="caption" sx={{
+                                                color: "text.secondary"
+                                              }}>
                                                 {component.label || component.name}:
                                               </Typography>
                                               <Chip
@@ -341,7 +353,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                                 variant="outlined"
                                               />
                                             </Box>
-                                          )
+                                          );
                                         })}
                                       </Stack>
                                     </Box>
@@ -350,24 +362,30 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                               </CardContent>
                             </Card>
                           </Grid>
-                        ))
+                        ));
                       }
 
                       // Handle regular standards (non-template arrays)
                       return (
-                        <Grid item xs={12} md={6} key={key}>
+                        <Grid size={{ xs: 12, md: 6 }} key={key}>
                           <Card variant="outlined" sx={{ height: '100%', mb: 1, p: 0 }}>
                             <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                               <Stack spacing={1}>
                                 <Box>
-                                  <Typography variant="subtitle2" fontWeight="bold">
+                                  <Typography variant="subtitle2" sx={{
+                                    fontWeight: "bold"
+                                  }}>
                                     {info.label}
                                   </Typography>
-                                  <Typography variant="caption" color="text.secondary">
+                                  <Typography variant="caption" sx={{
+                                    color: "text.secondary"
+                                  }}>
                                     {info.helpText}
                                   </Typography>
                                 </Box>
-                                <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                                <Stack useFlexGap direction="row" spacing={0.5} sx={{
+                                  flexWrap: "wrap"
+                                }}>
                                   <Chip
                                     label={info.impact}
                                     size="small"
@@ -383,10 +401,14 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                   )}
                                 </Stack>
                                 <Box>
-                                  <Typography variant="caption" fontWeight="bold" gutterBottom>
+                                  <Typography variant="caption" gutterBottom sx={{
+                                    fontWeight: "bold"
+                                  }}>
                                     Actions:
                                   </Typography>
-                                  <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                                  <Stack useFlexGap direction="row" spacing={0.5} sx={{
+                                    flexWrap: "wrap"
+                                  }}>
                                     {config.action && Array.isArray(config.action) ? (
                                       config.action.map((action, index) => (
                                         <Chip
@@ -406,7 +428,9 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                         />
                                       ))
                                     ) : (
-                                      <Typography variant="caption" color="text.secondary">
+                                      <Typography variant="caption" sx={{
+                                        color: "text.secondary"
+                                      }}>
                                         No actions configured
                                       </Typography>
                                     )}
@@ -415,7 +439,9 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
 
                                 {info.addedComponent && info.addedComponent.length > 0 && (
                                   <Box>
-                                    <Typography variant="caption" fontWeight="bold" gutterBottom>
+                                    <Typography variant="caption" gutterBottom sx={{
+                                      fontWeight: "bold"
+                                    }}>
                                       Fields:
                                     </Typography>
                                     <Stack spacing={0.5}>
@@ -499,7 +525,9 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                               gap: 0.5,
                                             }}
                                           >
-                                            <Typography variant="caption" color="text.secondary">
+                                            <Typography variant="caption" sx={{
+                                              color: "text.secondary"
+                                            }}>
                                               {component.label || component.name}:
                                             </Typography>
                                             <Chip
@@ -508,7 +536,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                               variant="outlined"
                                             />
                                           </Box>
-                                        )
+                                        );
                                       })}
                                     </Stack>
                                   </Box>
@@ -517,20 +545,28 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                             </CardContent>
                           </Card>
                         </Grid>
-                      )
+                      );
                     })}
                   </Grid>
                 </AccordionDetails>
               </Accordion>
-            )
+            );
           })}
 
           {Object.keys(standardsByCategory).length === 0 && (
-            <Box textAlign="center" py={4}>
-              <Typography variant="h6" color="text.secondary">
+            <Box
+              sx={{
+                textAlign: "center",
+                py: 4
+              }}>
+              <Typography variant="h6" sx={{
+                color: "text.secondary"
+              }}>
                 No standards configured for this tenant
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 Standards templates may not be applied to this tenant or no standards are currently
                 active.
               </Typography>
@@ -542,5 +578,5 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }

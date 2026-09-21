@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Avatar,
   Card,
@@ -11,7 +12,6 @@ import {
   Tooltip,
   CircularProgress,
 } from "@mui/material";
-import { AccountCircle, PhotoCamera, Delete } from "@mui/icons-material";
 import { PropertyList } from "../property-list";
 import { PropertyListItem } from "../property-list-item";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
@@ -136,11 +136,19 @@ export const CippUserInfoCard = (props) => {
             isFetching ? (
               <Skeleton variant="text" width={200} />
             ) : (
-              <Grid container spacing={3} alignItems="center">
-                {/* Avatar section */}
-                <Grid size={{ xs: 12, sm: 4, md: 3 }}>
-                  <Stack alignItems="center" spacing={1}>
-                    <Box position="relative">
+              <Grid container spacing={3} sx={{
+                alignItems: "center"
+              }}>
+                {/* Avatar section — "auto" rather than a full row on xs: the picture is a
+                    fixed 64px, so collapsing it to its own line only pushes the identity
+                    fields down without making the picture any bigger. */}
+                <Grid size={{ xs: "auto", sm: 4, md: 3 }}>
+                  <Stack spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
+                    <Box sx={{
+                      position: "relative"
+                    }}>
                       <Avatar
                         sx={{
                           height: 64,
@@ -149,7 +157,7 @@ export const CippUserInfoCard = (props) => {
                         variant="circular"
                         src={imageUrl}
                       >
-                        <AccountCircle sx={{ fontSize: 40 }} />
+                        <CippIcons.AccountCircle sx={{ fontSize: 40 }} />
                       </Avatar>
                       {isLoading && (
                         <CircularProgress
@@ -182,7 +190,7 @@ export const CippUserInfoCard = (props) => {
                             "&:hover": { backgroundColor: "action.selected" },
                           }}
                         >
-                          <PhotoCamera fontSize="small" />
+                          <CippIcons.PhotoCamera fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Remove Photo">
@@ -193,34 +201,43 @@ export const CippUserInfoCard = (props) => {
                           sx={{
                             backgroundColor: "action.hover",
                             "&:hover": {
-                              backgroundColor: "error.light",
+                              backgroundColor: "error.main",
                               color: "error.contrastText",
                             },
                           }}
                         >
-                          <Delete fontSize="small" />
+                          <CippIcons.Delete fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </Stack>
                     {/* Status messages */}
                     {successMessage && (
-                      <Typography variant="caption" color="success.main" textAlign="center">
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "success.main",
+                          textAlign: "center"
+                        }}>
                         {successMessage}
                       </Typography>
                     )}
                     {uploadError && (
-                      <Typography variant="caption" color="error" textAlign="center">
+                      <Typography variant="caption" color="error" sx={{
+                        textAlign: "center"
+                      }}>
                         {uploadError}
                       </Typography>
                     )}
                   </Stack>
                 </Grid>
 
-                {/* Status information section */}
-                <Grid size={{ xs: 12, sm: 8, md: 9 }}>
+                {/* Status information section — grows into whatever the avatar leaves */}
+                <Grid size={{ xs: true, sm: 8, md: 9 }} sx={{ minWidth: 0 }}>
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                      <Typography variant="inherit" gutterBottom sx={{
+                        color: "text.primary"
+                      }}>
                         Account Enabled:
                       </Typography>
                       <Typography variant="inherit">
@@ -229,7 +246,9 @@ export const CippUserInfoCard = (props) => {
                     </Grid>
 
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="inherit" color="text.primary" gutterBottom>
+                      <Typography variant="inherit" gutterBottom sx={{
+                        color: "text.primary"
+                      }}>
                         Synced from AD:
                       </Typography>
                       <Typography variant="inherit">
@@ -252,7 +271,9 @@ export const CippUserInfoCard = (props) => {
             ) : (
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 7.5 }}>
-                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
                     Display Name:
                   </Typography>
                   <Typography variant="inherit">
@@ -260,7 +281,9 @@ export const CippUserInfoCard = (props) => {
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, md: 4 }}>
-                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
                     Email Address:
                   </Typography>
                   <Typography variant="inherit">
@@ -268,7 +291,9 @@ export const CippUserInfoCard = (props) => {
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12 }}>
-                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
                     User Principal Name:
                   </Typography>
                   <Typography variant="inherit">
@@ -306,14 +331,21 @@ export const CippUserInfoCard = (props) => {
             isFetching ? (
               <Skeleton variant="text" width={200} />
             ) : !hasWorkInfo ? (
-              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: "italic" }}>
+              <Typography
+                variant="inherit"
+                sx={{
+                  color: "text.secondary",
+                  fontStyle: "italic"
+                }}>
                 No work information available
               </Typography>
             ) : (
               <Grid container spacing={2}>
                 {user?.jobTitle && (
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Job Title:
                     </Typography>
                     <Typography variant="inherit">{user.jobTitle}</Typography>
@@ -321,7 +353,9 @@ export const CippUserInfoCard = (props) => {
                 )}
                 {user?.companyName && (
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Company Name:
                     </Typography>
                     <Typography variant="inherit">{user.companyName}</Typography>
@@ -329,7 +363,9 @@ export const CippUserInfoCard = (props) => {
                 )}
                 {user?.department && (
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Department:
                     </Typography>
                     <Typography variant="inherit">{user.department}</Typography>
@@ -337,7 +373,9 @@ export const CippUserInfoCard = (props) => {
                 )}
                 {user?.manager?.displayName && (
                   <Grid size={{ xs: 12 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Manager:
                     </Typography>
                     <Typography variant="inherit">{user.manager.displayName}</Typography>
@@ -356,14 +394,21 @@ export const CippUserInfoCard = (props) => {
             isFetching ? (
               <Skeleton variant="text" width={200} />
             ) : !hasContactInfo ? (
-              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: "italic" }}>
+              <Typography
+                variant="inherit"
+                sx={{
+                  color: "text.secondary",
+                  fontStyle: "italic"
+                }}>
                 No contact information available
               </Typography>
             ) : (
               <Grid container spacing={2}>
                 {user?.mobilePhone && (
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Mobile Phone:
                     </Typography>
                     <Typography variant="inherit">{user.mobilePhone}</Typography>
@@ -371,7 +416,9 @@ export const CippUserInfoCard = (props) => {
                 )}
                 {user?.businessPhones && user.businessPhones.length > 0 && (
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Business Phones:
                     </Typography>
                     <Typography variant="inherit">{user.businessPhones.join(", ")}</Typography>
@@ -389,14 +436,21 @@ export const CippUserInfoCard = (props) => {
             isFetching ? (
               <Skeleton variant="text" width={200} />
             ) : !hasAddressInfo ? (
-              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: "italic" }}>
+              <Typography
+                variant="inherit"
+                sx={{
+                  color: "text.secondary",
+                  fontStyle: "italic"
+                }}>
                 No address information available
               </Typography>
             ) : (
               <Grid container spacing={2}>
                 {user?.streetAddress && (
                   <Grid size={{ xs: 12 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Street Address:
                     </Typography>
                     <Typography variant="inherit">{user.streetAddress}</Typography>
@@ -404,7 +458,9 @@ export const CippUserInfoCard = (props) => {
                 )}
                 {user?.city && (
                   <Grid size={{ xs: 12, md: 4 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       City:
                     </Typography>
                     <Typography variant="inherit">{user.city}</Typography>
@@ -412,7 +468,9 @@ export const CippUserInfoCard = (props) => {
                 )}
                 {user?.postalCode && (
                   <Grid size={{ xs: 12, md: 4 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Postal Code:
                     </Typography>
                     <Typography variant="inherit">{user.postalCode}</Typography>
@@ -420,7 +478,9 @@ export const CippUserInfoCard = (props) => {
                 )}
                 {user?.country && (
                   <Grid size={{ xs: 12, md: 4 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Country:
                     </Typography>
                     <Typography variant="inherit">{user.country}</Typography>
@@ -428,7 +488,9 @@ export const CippUserInfoCard = (props) => {
                 )}
                 {user?.officeLocation && (
                   <Grid size={{ xs: 12 }}>
-                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                    <Typography variant="inherit" gutterBottom sx={{
+                      color: "text.primary"
+                    }}>
                       Office Location:
                     </Typography>
                     <Typography variant="inherit">{user.officeLocation}</Typography>

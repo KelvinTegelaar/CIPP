@@ -1,0 +1,263 @@
+# CIPP Component Library
+
+This Storybook documents the shared UI components used across the CIPP frontend. It serves as both visual documentation and a test suite: every story is also a test that runs via vitest.
+
+## Quick Start
+
+```bash
+# Run Storybook dev server
+yarn storybook
+
+# Run all tests (unit + storybook)
+yarn test
+
+# Run only storybook tests
+yarn test:storybook
+
+# Run tests with coverage report
+yarn test:coverage
+```
+
+## Project Structure
+
+```
+tests/
+  components/             # Stories and tests, mirroring src/components/
+  layouts/                # Layout stories and tests
+  pages/                  # Page-level stories and tests
+  utils/                  # Tests for src/utils, plus form-decorator.jsx (react-hook-form decorator)
+  mocks/                  # Next.js module mocks, MSW handlers, shared fixtures
+    api-call.js           # vi.mock factory for src/api/ApiCall
+    fixtures.js           # Producer-contract fixtures shared across test files
+    handlers.js           # MSW request handlers for API mocking
+    next-*.js             # Mocks for next/router, navigation, head, image, link, dynamic
+    users-1k.json         # Large dataset for table stories
+  test-utils.jsx          # Shared render helpers for vitest unit tests
+  Overview.mdx            # This file
+```
+
+## Writing a New Story
+
+Stories use CSF3 format. Each story file should:
+
+1. Live in `tests/components/` matching the component's source directory
+2. Use `tags: ['autodocs']` for automatic documentation
+3. Use `fn()` from `storybook/test` for callback props
+4. Follow the title convention: `Components/CippCards/ComponentName`
+
+```jsx
+// File: tests/components/CippCards/MyComponent.stories.jsx
+import { fn } from 'storybook/test'
+import { MyComponent } from '../../../src/components/CippCards/MyComponent'
+
+export default {
+  title: 'Components/CippCards/MyComponent',
+  component: MyComponent,
+  tags: ['autodocs'],
+}
+
+export const Default = {
+  args: {
+    title: 'Example',
+    onClick: fn(),
+  },
+}
+
+export const Loading = {
+  args: {
+    isFetching: true,
+  },
+}
+```
+
+## Adding Interaction Tests (play functions)
+
+Stories can include `play()` functions to test user interactions. These run automatically
+in the Storybook UI and as vitest tests via `yarn test:storybook`.
+
+```jsx
+import { fn, within, expect, userEvent, waitFor } from 'storybook/test'
+
+export const WithActions = {
+  args: {
+    onClick: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+
+    await expect(canvas.getByText('Click me')).toBeVisible()
+    await userEvent.click(canvas.getByRole('button'))
+    await expect(args.onClick).toHaveBeenCalledTimes(1)
+  },
+}
+```
+
+**Tips:**
+- Use `within(canvasElement)` to scope queries to the story
+- Use `within(document.body)` for portaled content (dialogs, drawers, menus)
+- Use `waitFor()` for content that renders asynchronously
+- Use `args.propName` to access `fn()` spies for assertion
+
+## Mocking API Calls
+
+Stories mock the API with MSW (Mock Service Worker). Handlers are defined in `tests/mocks/handlers.js`.
+
+```js
+import { http, HttpResponse } from 'msw'
+
+export const handlers = [
+  http.get('/api/ListUsers', () => {
+    return HttpResponse.json({
+      Results: [{ displayName: 'Alice', mail: 'alice@contoso.com' }],
+      Metadata: { nextLink: null },
+    })
+  }),
+]
+```
+
+These handlers are loaded globally via `preview.jsx`. For story-specific overrides, use the `msw` parameter:
+
+```jsx
+export const CustomApiResponse = {
+  parameters: {
+    msw: {
+      handlers: [
+        http.get('/api/ListUsers', () => {
+          return HttpResponse.json({ Results: [] })
+        }),
+      ],
+    },
+  },
+}
+```
+
+Unit tests don't go through MSW: they mock `src/api/ApiCall` with the shared factory in
+`tests/mocks/api-call.js`. Usage notes are at the top of that file.
+
+## Components That Need Special Setup
+
+### Components using useSettings()
+Already handled, `preview.jsx` wraps all stories in `SettingsContext.Provider`
+with mock settings (tenant: `testdomain.com`, theme: `light`).
+
+### Components using react-hook-form
+Use the `FormDecorator` from `tests/utils/form-decorator.jsx`:
+
+```jsx
+import { FormDecorator } from '../../utils/form-decorator'
+
+export default {
+  title: 'Components/CippComponents/MyFormComponent',
+  component: MyFormComponent,
+  decorators: [FormDecorator],
+}
+
+export const Default = {
+  args: {
+    name: 'fieldName',
+    label: 'Field Label',
+    type: 'textField',
+    defaultValues: { fieldName: 'initial value' },
+  },
+}
+```
+
+The decorator creates a `useForm()` context and passes `formControl` to your component via args.
+
+### Components using useRouter()
+Already handled, `next/router` is aliased to a mock in `tests/mocks/next-router.js`
+that provides `useRouter()` with stub methods (`push`, `back`, `replace`, etc.).
+
+## When to Use play() Tests vs Unit Tests
+
+**Use play() tests in stories when:**
+- Testing visual interactions (clicking buttons, opening menus, expanding accordions)
+- Testing components that need real browser layout (e.g. MRT's row virtualization)
+- Verifying that rendered output looks correct after user interaction
+- The test naturally belongs with the story that demonstrates the feature
+
+**Use vitest unit tests when:**
+- Testing logic-heavy behavior (conditional rendering, prop combinations, edge cases)
+- Testing many input variations quickly (unit tests in jsdom are faster than browser tests)
+- Testing components that don't need real DOM layout
+- Testing callback arguments, error states, or complex form validation
+
+**Both contribute to coverage.** Play tests run in a real browser (Playwright), unit tests
+run in jsdom. Coverage from both is merged when you run `yarn test:coverage`.
+
+As a rule of thumb: if you're writing a story anyway, add a `play()` function to verify the
+key behavior. Only write a separate unit test if you need to cover edge cases or prop
+combinations that don't warrant their own story.
+
+## Writing Unit Tests (vitest)
+
+Unit tests live alongside stories in `tests/components/` with a `.test.jsx` extension.
+They run in jsdom via `yarn test:unit`.
+
+```jsx
+// File: tests/components/CippCards/MyComponent.test.jsx
+import { screen } from '@testing-library/react'
+import { renderWithTheme, renderWithProviders } from '../../test-utils'
+import { MyComponent } from '../../../src/components/CippCards/MyComponent'
+
+describe('MyComponent', () => {
+  it('renders title', () => {
+    renderWithTheme(<MyComponent title="Hello" />)
+    expect(screen.getByText('Hello')).toBeInTheDocument()
+  })
+})
+```
+
+**When to use which render helper:**
+- `renderWithTheme`: component only needs MUI ThemeProvider
+- `renderWithProviders`: component needs Redux, React Query, SettingsContext, or all of the above
+
+## Architecture Notes
+
+### Why @storybook/react-vite instead of @storybook/nextjs?
+`@storybook/nextjs` uses webpack + babel under the hood. Many dependencies in this project are
+ESM-only (heroicons, MUI v9, tiptap, etc.), and webpack's babel transpilation fails on them
+without explicit per-package config. With `@storybook/react-vite`, Vite handles ESM natively,
+no transpilation config needed. The tradeoff is manually mocking Next.js modules (router,
+navigation, head, image, link) via Vite aliases in `.storybook/main.mjs`.
+
+### Shared execution contexts
+Both projects run without per-file isolation for speed: unit files share worker threads
+(`pool: 'threads'`, `isolate: false` in `vitest.config.mjs`) and story files share one
+chromium page (`browser.isolate: false`). `vitest.setup.js` flushes the module registry,
+`history.state`, storage, and fake timers at every file boundary, so `vi.mock` factories
+and jsdom state stay per-file. What it cannot do for you:
+
+- Stub globals with `Object.defineProperty(target, key, { value, configurable: true })`.
+  Plain assignment throws once another file's `userEvent.setup()` has installed its
+  getter-only `navigator.clipboard`.
+- Remove `window`/`document` listeners a test adds itself; unmount cleanup only covers
+  component listeners.
+- A story that measures layout must claim its viewport (`shrinkToPhoneViewport` /
+  `growToDesktopViewport` from `tests/viewport.js`), the page keeps whatever width the
+  previous story set.
+
+A test that passes alone but fails in the full run is reading a neighbor's leftovers.
+Re-run with `--isolate` to confirm the diagnosis, then fix the leak rather than
+re-isolating the suite.
+
+### How storybook tests contribute to coverage
+The `@storybook/addon-vitest` plugin converts stories into vitest browser tests
+(Playwright/Chromium). Running `yarn test:coverage` includes both unit tests (jsdom) and
+storybook tests (real browser), with coverage merged into a single report.
+
+### Suppressed warnings explained
+- **`MODULE_LEVEL_DIRECTIVE`** in `.storybook/main.mjs`: Libraries like `@mui/material` include
+  `"use client"` directives for React Server Components. These are harmless in Storybook
+  (everything is client-side) but Rollup treats them as warnings during build.
+- **`onUnhandledRequest: 'bypass'`** in `.storybook/preview.jsx`: MSW intercepts all network
+  requests including Vite's internal module imports (`*.json?import`). Without bypass, every
+  JSON data file import logs a noisy warning.
+- **`process.env` / `global` defines** in `.storybook/main.mjs`: Next.js code references
+  `process.env` and `global` which don't exist in a Vite browser context. These are shimmed to
+  empty objects / `window`.
+- **`ResizeObserver` mock** in `vitest.setup.js`: jsdom doesn't implement ResizeObserver. MUI
+  and MRT components use it, so unit tests need a no-op stub.
+- **`getComputedStyle` suppression** in `vitest.setup.js`: jsdom logs "Not implemented" warnings
+  when MUI calls `getComputedStyle()` with pseudo-elements. These are harmless and suppressed to
+  reduce test noise.

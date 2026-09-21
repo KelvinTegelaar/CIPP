@@ -1,12 +1,15 @@
-import { OpenInNew } from "@mui/icons-material";
 import CippButtonCard from "../CippCards/CippButtonCard";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Stack, SvgIcon, Typography } from "@mui/material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useState } from "react";
+import { usePermissions } from "../../hooks/use-permissions";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 
-export const CippBackendCard = ({ backendComponents, item, hosted }) => {
+export const CippBackendCard = ({ backendComponents, item }) => {
   const [open, setOpen] = useState(false);
+  // Hosted instances cannot run the Cloud Shell command reference against their own infrastructure
+  const { isHosted } = usePermissions();
 
   const BackendButton = () => {
     return (
@@ -21,7 +24,7 @@ export const CippBackendCard = ({ backendComponents, item, hosted }) => {
           {...item?.linkProps}
         >
           <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-            <OpenInNew />
+            <CippIcons.OpenInNew />
           </SvgIcon>
           Launch
         </Button>
@@ -30,7 +33,7 @@ export const CippBackendCard = ({ backendComponents, item, hosted }) => {
             variant="contained"
             size="small"
             onClick={() => setOpen(true)}
-            disabled={backendComponents.isFetching || hosted}
+            disabled={backendComponents.isFetching || isHosted}
             startIcon={
               item.offcanvasIcon ? <SvgIcon fontSize="small">{item.offcanvasIcon}</SvgIcon> : ""
             }

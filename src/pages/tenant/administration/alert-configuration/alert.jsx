@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { CippIcons } from '../../../../utils/icon-registry'
 import {
   Box,
   Button,
@@ -22,11 +23,9 @@ import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import alertList from '../../../../data/alerts.json'
 import auditLogTemplates from '../../../../data/AuditLogTemplates'
 import auditLogSchema from '../../../../data/AuditLogSchema.json'
-import { Save, Delete } from '@mui/icons-material'
-import { Layout as DashboardLayout } from '../../../../layouts/index.js' // Dashboard layout
+import { Layout as DashboardLayout } from '../../../../layouts/index' // Dashboard layout
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
-import { PlusIcon } from '@heroicons/react/24/outline'
 import { CippFormCondition } from '../../../../components/CippComponents/CippFormCondition'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -51,6 +50,88 @@ const AlertWizard = () => {
     data: { tenantFilter },
     waiting: !!tenantFilter,
   })
+
+  // Fetch the HaloPSA integration config so the PSA Ticket Strategy dropdown can show which
+  // option is the current integration default.
+  const integrationsConfig = ApiGetCall({
+    url: '/api/ListExtensionsConfig',
+    queryKey: 'Integrations',
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  })
+  const haloDefaultStrategy = integrationsConfig?.data?.HaloPSA?.LinkTicketsToUsers
+    ? 'split'
+    : 'consolidated'
+  const psaStrategyDropdownOptions = [
+    {
+      value: 'split',
+      label:
+        haloDefaultStrategy === 'split'
+          ? 'One ticket per affected user (HaloPSA integration default)'
+          : 'One ticket per affected user',
+    },
+    {
+      value: 'consolidated',
+      label:
+        haloDefaultStrategy === 'consolidated'
+          ? 'One consolidated ticket per tenant (HaloPSA integration default)'
+          : 'One consolidated ticket per tenant',
+    },
+  ]
+
+  // The PSA Ticket Priority dropdown is API-backed, so hide it entirely when HaloPSA is off -
+  // ExecExtensionMapping needs the Extension role that an alert editor may not have, and calling
+  // it with the integration disabled just returns an error row. PsaTicketStrategy above has static
+  // options and degrades harmlessly, which is why it is not gated the same way.
+  const haloEnabled = integrationsConfig?.data?.HaloPSA?.Enabled === true
+  // Priorities are fetched here rather than by the autocomplete itself for two reasons: the field
+  // has to react to what Halo returns (a Ticket Type with no SLA has no priorities to offer, and
+  // the field is shown disabled with the reason instead of an empty dropdown), and loading at page
+  // level means the list is ready before the field is revealed rather than on first render of it.
+  // No TicketType param - Get-HaloPriority falls back to the integration's saved ticket type, which
+  // is the one these tickets will use anyway.
+  // Default refetch-on-mount is kept (unlike the integrations config above): nothing invalidates
+  // this query key when the integration's Ticket Type changes, so remounting the page is the only
+  // moment stale priorities can catch up with the integration settings.
+  const haloPriorityRequest = ApiGetCall({
+    url: '/api/ExecExtensionMapping',
+    data: { List: 'HaloPSAFields' },
+    queryKey: 'HaloPriorities-AlertConfig',
+    waiting: haloEnabled,
+  })
+  // Get-HaloPriority answers with explanatory rows instead of priorities when it has nothing real
+  // to offer - a hint row carries priorityid -1, the error row carries no priorityid at all. Those
+  // are messages, not choices, so they never become options.
+  // Normalise before use: PowerShell unrolls a single-element array, so an endpoint returning one
+  // priority (or one hint row) serialises it as a bare object rather than a list.
+  const haloPriorityRows = [].concat(haloPriorityRequest?.data?.Priorities ?? [])
+  const psaPriorityOptions = haloPriorityRows
+    .filter((priority) => Number(priority?.priorityid) > 0)
+    .map((priority) => ({ value: Number(priority.priorityid), label: priority.name }))
+  // Settled with nothing pickable, whether that is Halo's own explanatory row (which comes back
+  // 200 OK) or the request failing outright. Either way there is no choice to offer, so disable
+  // rather than leave an empty dropdown that looks broken.
+  const psaPriorityUnavailable =
+    (haloPriorityRequest.isSuccess || haloPriorityRequest.isError) &&
+    !haloPriorityRequest.isFetching &&
+    psaPriorityOptions.length === 0
+  // Prefer Halo's own explanation ("no SLA attached", "select a Ticket Type first") over a generic
+  // one - it names the thing an admin has to go and fix, and already states what happens to the
+  // tickets. The generic fallback only shows when the request itself failed and no rows came back.
+  const psaPriorityHelperText = psaPriorityUnavailable
+    ? (haloPriorityRows.find((priority) => priority?.name)?.name ??
+      'Could not load HaloPSA priorities, so none can be chosen here. Tickets from this alert will be created without a per-alert priority.')
+    : "Optional. Overrides the HaloPSA Default Priority for tickets raised by this alert. Restricted to the priorities on the integration Ticket Type's SLA. Leave blank to use the integration default."
+  // Stored as a bare id string on the alert row. Seed the form with {value: <number>} so
+  // CippAutoComplete's resolvedDefaultValue can swap in the real priority name once the options
+  // load - it matches on === against a number, so the string form would never resolve. Non-positive
+  // ids are hint rows saved before they were filtered out; treat them as unset.
+  const toPsaPriorityValue = (stored) => {
+    if (stored === undefined || stored === null || stored === '') return null
+    const numeric = Number(stored)
+    if (!Number.isFinite(numeric) || numeric <= 0) return null
+    return { value: numeric, label: String(stored) }
+  }
   const [recurrenceOptions, setRecurrenceOptions] = useState([
     { value: '30m', label: 'Every 30 minutes' },
     { value: '1h', label: 'Every hour' },
@@ -137,7 +218,11 @@ const AlertWizard = () => {
       if (alert?.LogType === 'Scripted') {
         setAlertType('script')
         const excludedTenantsFormatted = Array.isArray(alert.excludedTenants)
-          ? alert.excludedTenants.map((tenant) => ({ value: tenant, label: tenant }))
+          ? alert.excludedTenants.map((tenant) =>
+              typeof tenant === 'object' && tenant !== null
+                ? tenant
+                : { value: tenant, label: tenant }
+            )
           : []
         const usedCommand = alertList?.find(
           (cmd) => cmd.name === alert.RawAlert.Command.replace('Get-CIPPAlert', '')
@@ -203,6 +288,13 @@ const AlertWizard = () => {
           const desiredStartEpoch = parseInt(alert.RawAlert.DesiredStartTime)
           startDateTimeForForm = desiredStartEpoch
         }
+        // Resolve the stored strategy ('split' / 'consolidated' / '' for legacy/inherit) to the
+        // matching dynamic option. When empty, fall back to the current integration default so
+        // the dropdown always shows a meaningful selection.
+        const storedStrategy = alert.RawAlert.PsaTicketStrategy || haloDefaultStrategy
+        const psaStrategyValue =
+          psaStrategyDropdownOptions.find((opt) => opt.value === storedStrategy) ||
+          psaStrategyDropdownOptions[0]
         const resetObject = {
           tenantFilter: tenantFilterForForm,
           excludedTenants: excludedTenantsFormatted,
@@ -212,6 +304,8 @@ const AlertWizard = () => {
           startDateTime: startDateTimeForForm,
           CustomSubject: alert.RawAlert.CustomSubject || '',
           AlertComment: alert.RawAlert.AlertComment || '',
+          PsaTicketStrategy: psaStrategyValue,
+          PsaTicketPriority: toPsaPriorityValue(alert.RawAlert.PsaTicketPriority),
         }
         if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
           try {
@@ -284,6 +378,7 @@ const AlertWizard = () => {
           logbook: foundLogbook,
           AlertComment: alert.RawAlert.AlertComment || '',
           CustomSubject: alert.RawAlert.CustomSubject || '',
+          PsaTicketPriority: toPsaPriorityValue(alert.RawAlert.PsaTicketPriority),
           conditions: [], // Include empty array to register field structure
         }
         // Reset first without spawning rows to avoid rendering empty operator fields
@@ -519,6 +614,8 @@ const AlertWizard = () => {
       PostExecution: values.postExecution,
       AlertComment: values.AlertComment,
       CustomSubject: values.CustomSubject,
+      PsaTicketStrategy: values.PsaTicketStrategy?.value ?? values.PsaTicketStrategy ?? '',
+      PsaTicketPriority: values.PsaTicketPriority?.value ?? values.PsaTicketPriority ?? '',
     }
     apiRequest.mutate(
       { url: '/api/AddScriptedAlert', data: postObject },
@@ -554,7 +651,13 @@ const AlertWizard = () => {
       <Container maxWidth={'xl'}>
         <Stack spacing={4}>
           {existingAlert.isLoading && <Skeleton />}
-          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="h4">{editAlert ? 'Edit' : 'Add'} Alert</Typography>
           </Stack>
 
@@ -589,12 +692,16 @@ const AlertWizard = () => {
               <Grid
                 container
                 spacing={4}
-                sx={{ mt: 2, width: '100%' }}
-                justifyContent="space-around"
-              >
+                sx={{
+                  justifyContent: "space-around",
+                  mt: 2,
+                  width: '100%'
+                }}>
                 <Grid size={12}>
                   <form id="auditAlertForm" onSubmit={formControl.handleSubmit(handleAuditSubmit)}>
-                    <Grid container spacing={3} justifyContent="space-around">
+                    <Grid container spacing={3} sx={{
+                      justifyContent: "space-around"
+                    }}>
                       <Grid size={12}>
                         <CippButtonCard title="Tenant Selector" sx={{ mb: 3 }}>
                           <Grid container spacing={3}>
@@ -612,23 +719,17 @@ const AlertWizard = () => {
                                 }}
                               />
                             </Grid>
-                            <CippFormCondition
-                              field="tenantFilter"
-                              formControl={formControl}
-                              compareType="valueContains"
-                              compareValue="AllTenants"
-                              clearOnHide={false}
-                            >
-                              <Grid size={12}>
-                                <CippFormTenantSelector
-                                  multiple={true}
-                                  label="Excluded Tenants for alert"
-                                  formControl={formControl}
-                                  allTenants={false}
-                                  name="excludedTenants"
-                                />
-                              </Grid>
-                            </CippFormCondition>
+                            <Grid size={12}>
+                              <CippFormTenantSelector
+                                multiple={true}
+                                label="Excluded Tenants for alert"
+                                formControl={formControl}
+                                allTenants={false}
+                                includeGroups={true}
+                                name="excludedTenants"
+                                helperText="Optional. Tenants selected here are skipped even if they fall within the included tenants or group."
+                              />
+                            </Grid>
                           </Grid>
                         </CippButtonCard>
                       </Grid>
@@ -671,7 +772,7 @@ const AlertWizard = () => {
                               onClick={() => handleAddCondition()}
                               startIcon={
                                 <SvgIcon>
-                                  <PlusIcon />
+                                  <CippIcons.PlusIcon />
                                 </SvgIcon>
                               }
                             >
@@ -682,11 +783,12 @@ const AlertWizard = () => {
                             <Grid
                               container
                               spacing={2}
-                              justifyContent="space-around"
-                              sx={{ mb: 2 }}
                               key={event.id}
-                            >
-                              <Grid size={4}>
+                              sx={{
+                                justifyContent: "space-around",
+                                mb: 2
+                              }}>
+                              <Grid size={{ xs: 12, md: 4 }}>
                                 <CippFormComponent
                                   type="autoComplete"
                                   multiple={false}
@@ -708,7 +810,7 @@ const AlertWizard = () => {
                                   }}
                                 />
                               </Grid>
-                              <Grid size={4}>
+                              <Grid size={{ xs: 12, md: 4 }}>
                                 <CippFormComponent
                                   type="autoComplete"
                                   multiple={false}
@@ -728,7 +830,7 @@ const AlertWizard = () => {
                                   ]}
                                 />
                               </Grid>
-                              <Grid size={3}>
+                              <Grid size={{ xs: 12, md: 3 }}>
                                 {/* Show textField for String properties when NOT using in/notIn operators */}
                                 <CippFormCondition
                                   field={`conditions.${event.id}.Property`}
@@ -823,13 +925,13 @@ const AlertWizard = () => {
                                   </CippFormCondition>
                                 </CippFormCondition>
                               </Grid>
-                              <Grid size={1}>
+                              <Grid size={{ xs: 12, md: 1 }}>
                                 <Tooltip title="Remove condition">
                                   <IconButton
                                     color="error"
                                     onClick={() => handleRemoveCondition(event.id)}
                                   >
-                                    <Delete />
+                                    <CippIcons.Delete />
                                   </IconButton>
                                 </Tooltip>
                               </Grid>
@@ -846,7 +948,7 @@ const AlertWizard = () => {
                             <Button
                               disabled={isValid ? false : true}
                               type="submit"
-                              startIcon={<Save />}
+                              startIcon={<CippIcons.Save />}
                             >
                               Save Alert
                             </Button>
@@ -867,6 +969,29 @@ const AlertWizard = () => {
                                 options={actionsToTake}
                               />
                             </Grid>
+                            {haloEnabled && (
+                              <CippFormCondition
+                                field="Actions"
+                                compareType="valueEq"
+                                compareValue="generatePSA"
+                                formControl={formControl}
+                              >
+                                <Grid size={12}>
+                                  <CippFormComponent
+                                    type="autoComplete"
+                                    name="PsaTicketPriority"
+                                    label="PSA Ticket Priority"
+                                    formControl={formControl}
+                                    multiple={false}
+                                    creatable={false}
+                                    options={psaPriorityOptions}
+                                    disabled={psaPriorityUnavailable}
+                                    isFetching={haloPriorityRequest.isFetching}
+                                    helperText={psaPriorityHelperText}
+                                  />
+                                </Grid>
+                              </CippFormCondition>
+                            )}
                             <Grid size={12}>
                               <CippFormComponent
                                 type="textField"
@@ -928,23 +1053,17 @@ const AlertWizard = () => {
                                 }}
                               />
                             </Grid>
-                            <CippFormCondition
-                              field="tenantFilter"
-                              formControl={formControl}
-                              compareType="valueContains"
-                              compareValue="AllTenants"
-                              clearOnHide={false}
-                            >
-                              <Grid size={12}>
-                                <CippFormTenantSelector
-                                  multiple={true}
-                                  label="Excluded Tenants for alert"
-                                  formControl={formControl}
-                                  allTenants={false}
-                                  name="excludedTenants"
-                                />
-                              </Grid>
-                            </CippFormCondition>
+                            <Grid size={12}>
+                              <CippFormTenantSelector
+                                multiple={true}
+                                label="Excluded Tenants for alert"
+                                formControl={formControl}
+                                allTenants={false}
+                                includeGroups={true}
+                                name="excludedTenants"
+                                helperText="Optional. Tenants selected here are skipped even if they fall within the included tenants or group."
+                              />
+                            </Grid>
                           </Grid>
                         </CippButtonCard>
                       </Grid>
@@ -1074,7 +1193,7 @@ const AlertWizard = () => {
                             <Button
                               disabled={isValid ? false : true}
                               type="submit"
-                              startIcon={<Save />}
+                              startIcon={<CippIcons.Save />}
                             >
                               Save Alert
                             </Button>
@@ -1095,6 +1214,51 @@ const AlertWizard = () => {
                                 options={postExecutionOptions}
                               />
                             </Grid>
+
+                            <CippFormCondition
+                              field="postExecution"
+                              compareType="valueEq"
+                              compareValue="PSA"
+                              formControl={formControl}
+                            >
+                              <Grid size={12}>
+                                <CippFormComponent
+                                  type="autoComplete"
+                                  name="PsaTicketStrategy"
+                                  label="PSA Ticket Strategy"
+                                  formControl={formControl}
+                                  multiple={false}
+                                  creatable={false}
+                                  helperText="Overrides the HaloPSA Link Tickets to affected Users toggle for this alert. Handy for wide alerts (e.g. users without MFA) where you want one ticket per user or one ticket per tenant."
+                                  options={psaStrategyDropdownOptions}
+                                />
+                              </Grid>
+                            </CippFormCondition>
+
+                            {haloEnabled && (
+                              <CippFormCondition
+                                field="postExecution"
+                                compareType="valueEq"
+                                compareValue="PSA"
+                                formControl={formControl}
+                              >
+                                <Grid size={12}>
+                                  <CippFormComponent
+                                    type="autoComplete"
+                                    name="PsaTicketPriority"
+                                    label="PSA Ticket Priority"
+                                    formControl={formControl}
+                                    multiple={false}
+                                    creatable={false}
+                                    options={psaPriorityOptions}
+                                    disabled={psaPriorityUnavailable}
+                                    isFetching={haloPriorityRequest.isFetching}
+                                    helperText={psaPriorityHelperText}
+                                  />
+                                </Grid>
+                              </CippFormCondition>
+                            )}
+
                             <Grid size={12}>
                               <CippFormComponent
                                 type="textField"
@@ -1131,7 +1295,7 @@ const AlertWizard = () => {
         </Stack>
       </Container>
     </Box>
-  )
+  );
 }
 
 AlertWizard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

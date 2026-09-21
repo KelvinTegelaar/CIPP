@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Users",
+    "path": "/identity/administration/users",
+    "icon": "Person"
+  },
+  {
+    "label": "User Templates",
+    "path": "/identity/administration/users/user-defaults",
+    "icon": "ManageAccounts"
+  }
+]

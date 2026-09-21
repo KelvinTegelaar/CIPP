@@ -7,7 +7,7 @@ const CippAddRoomListForm = ({ formControl }) => {
 
   return (
     <Grid container spacing={2}>
-      
+
       <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
@@ -31,9 +31,7 @@ const CippAddRoomListForm = ({ formControl }) => {
               message: "Username can only contain letters, numbers, hyphens, underscores, and periods"
             }
           }}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">@</InputAdornment>,
-          }}
+          slotProps={{ input: { endAdornment: <InputAdornment position="end">@</InputAdornment> } }}
         />
       </Grid>
 
@@ -45,7 +43,6 @@ const CippAddRoomListForm = ({ formControl }) => {
           validators={{ required: "Domain is required" }}
         />
       </Grid>
-
 
     </Grid>
   );

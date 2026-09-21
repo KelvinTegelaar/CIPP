@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
-import { Send } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
@@ -85,9 +85,9 @@ export const CippInviteGuestDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
-        startIcon={<Send />}
+        startIcon={<CippIcons.Send />}
       >
         {buttonText}
       </PermissionButton>

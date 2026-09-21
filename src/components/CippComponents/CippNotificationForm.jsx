@@ -42,7 +42,6 @@ export const CippNotificationForm = ({
     { label: "Adding a group", value: "AddGroup" },
     { label: "Adding a tenant", value: "NewTenant" },
     { label: "Executing the offboard wizard", value: "ExecOffboardUser" },
-    { label: "Custom Test Alerts", value: "CustomTests" },
   ];
 
   const severityTypes = [

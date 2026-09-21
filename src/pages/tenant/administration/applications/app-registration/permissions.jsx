@@ -1,15 +1,15 @@
-import { Layout as DashboardLayout } from '../../../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../../../layouts/index'
+import { CippIcons } from '../../../../../utils/icon-registry'
 import { useSettings } from '../../../../../hooks/use-settings'
 import { useRouter } from 'next/router'
 import { ApiGetCall } from '../../../../../api/ApiCall'
 import CippFormSkeleton from '../../../../../components/CippFormPages/CippFormSkeleton'
-import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
-import { Fingerprint, Launch, Badge } from '@mui/icons-material'
 import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
+import { CippAppRegistrationSwitcher } from '../../../../../components/CippComponents/CippAppRegistrationSwitcher'
 import tabOptions from './tabOptions'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { Box } from '@mui/system'
-import { Typography, Button } from '@mui/material'
+import { Typography, Button, Alert } from '@mui/material'
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
 import { useEffect, useMemo, useState } from 'react'
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
@@ -55,23 +55,27 @@ const Page = () => {
     }
   }
 
-  const title = !appRequest.isSuccess
-    ? 'Loading...'
-    : appData?.displayName || appData?.appId || applicationClientId || 'Application registration'
+  // Without an appId nothing is ever fetched, so falling back to the loading label here
+  // would leave it stuck forever.
+  const title = !applicationClientId
+    ? 'No Application Selected'
+    : !appRequest.isSuccess
+      ? 'Loading...'
+      : appData?.displayName || appData?.appId || applicationClientId || 'Application registration'
 
   const subtitle =
     appRequest.isSuccess && appData
       ? [
           {
-            icon: <Badge />,
+            icon: <CippIcons.Badge />,
             text: <CippCopyToClipBoard type="chip" text={appData?.appId || 'N/A'} />,
           },
           {
-            icon: <Fingerprint />,
+            icon: <CippIcons.Fingerprint />,
             text: <CippCopyToClipBoard type="chip" text={appData?.id || 'N/A'} />,
           },
           {
-            icon: <CalendarIcon />,
+            icon: <CippIcons.CalendarIcon />,
             text: (
               <>
                 Created: <CippTimeAgo data={appData?.createdDateTime} />
@@ -79,7 +83,7 @@ const Page = () => {
             ),
           },
           {
-            icon: <Launch style={{ color: '#667085' }} />,
+            icon: <CippIcons.Launch />,
             text: (
               <Button
                 color="muted"
@@ -113,15 +117,30 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
+      titleControl={
+        <CippAppRegistrationSwitcher
+          title={title}
+          currentAppId={applicationClientId}
+          tenantFilter={router.query.tenantFilter ?? userSettingsDefaults.currentTenant}
+        />
+      }
       subtitle={subtitle}
       actions={appData ? appActions : []}
       actionsData={actionsData}
-      isFetching={appRequest.isLoading}
+      isFetching={!!applicationClientId && appRequest.isLoading}
     >
-      {appRequest.isLoading && <CippFormSkeleton layout={[1, 1, 1]} />}
+      {!applicationClientId && (
+        <Alert severity="info" sx={{ m: 2 }}>
+          No application selected. Open this page from the App Registrations list, or pick one
+          from the switcher above.
+        </Alert>
+      )}
+      {applicationClientId && appRequest.isLoading && <CippFormSkeleton layout={[1, 1, 1]} />}
       {appRequest.isSuccess && !appData && (
         <Box sx={{ flexGrow: 1, py: 4 }}>
-          <Typography color="text.secondary">
+          <Typography sx={{
+            color: "text.secondary"
+          }}>
             No application registration found for this Application (client) ID.
           </Typography>
         </Box>
@@ -133,7 +152,7 @@ const Page = () => {
         </Box>
       )}
     </HeaderedTabbedLayout>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

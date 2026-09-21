@@ -17,6 +17,7 @@ import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippValidator } from '../../utils/get-cipp-validator'
+import countryList from '../../data/countryList.json'
 
 export const CippWizardVacationActions = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep, lastStep } = props
@@ -25,10 +26,15 @@ export const CippWizardVacationActions = (props) => {
   const tenantDomain = currentTenant?.value || currentTenant
 
   const enableCA = useWatch({ control: formControl.control, name: 'enableCAExclusion' })
+  const enableLocationAlertExclusion = useWatch({
+    control: formControl.control,
+    name: 'excludeLocationAuditAlerts',
+  })
   const enableMailbox = useWatch({ control: formControl.control, name: 'enableMailboxPermissions' })
   const enableForwarding = useWatch({ control: formControl.control, name: 'enableForwarding' })
   const enableOOO = useWatch({ control: formControl.control, name: 'enableOOO' })
-  const atLeastOneEnabled = enableCA || enableMailbox || enableForwarding || enableOOO
+  const atLeastOneEnabled =
+    enableCA || enableLocationAlertExclusion || enableMailbox || enableForwarding || enableOOO
 
   const users = useWatch({ control: formControl.control, name: 'Users' })
   const firstUser = Array.isArray(users) && users.length > 0 ? users[0] : null
@@ -146,7 +152,10 @@ export const CippWizardVacationActions = (props) => {
                 <Grid size={{ xs: 12 }}>
                   <Alert severity="info" sx={{ mb: 1 }}>
                     Vacation mode uses group-based exclusions for reliability. The exclusion group
-                    follows the format: &apos;Vacation Exclusion - $Policy.displayName&apos;
+                    follows the format: &apos;Vacation Exclusion - $Policy.displayName&apos;. For
+                    longer policy names the name is shortened and suffixed with the start of the
+                    policy ID, e.g. &apos;Vacation Exclusion - CA005-RegisterSecurityInfo: Require...
+                    [a1b2c3d4]&apos;
                   </Alert>
                 </Grid>
                 <Grid size={{ xs: 12 }}>
@@ -193,12 +202,87 @@ export const CippWizardVacationActions = (props) => {
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
-                    label="Exclude from location-based audit log alerts"
-                    name="excludeLocationAuditAlerts"
+                    label="Create temporary travel policy (only allow sign-ins from the travel destination)"
+                    name="createTravelPolicy"
                     formControl={formControl}
                   />
                 </Grid>
+                <CippFormCondition
+                  formControl={formControl}
+                  field="createTravelPolicy"
+                  compareType="is"
+                  compareValue={true}
+                  clearOnHide={false}
+                >
+                  <Grid size={{ xs: 12 }}>
+                    <Alert severity="info" sx={{ mb: 1 }}>
+                      Excluding a user from a CA policy allows sign-ins from anywhere. This option
+                      closes that gap: at the start date a named location and a conditional access
+                      policy named &apos;Travel Policy &lt;users&gt; - &lt;start date&gt; - &lt;end
+                      date&gt;&apos; are created, blocking sign-ins for the selected users from
+                      every location except the travel destination. At the end date, the policy and
+                      the named location are deleted automatically.
+                    </Alert>
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Travel destination countries"
+                      name="travelCountries"
+                      multiple={true}
+                      creatable={false}
+                      options={countryList.map(({ Code, Name }) => ({
+                        value: Code,
+                        label: Name,
+                      }))}
+                      formControl={formControl}
+                      validators={{
+                        validate: (option) => {
+                          if (!Array.isArray(option) || option.length === 0) {
+                            return 'At least one travel destination country must be selected'
+                          }
+                          return true
+                        },
+                      }}
+                      required={true}
+                    />
+                  </Grid>
+                </CippFormCondition>
               </Grid>
+            </CippFormCondition>
+          </Stack>
+        </CardContent>
+      </Card>
+
+      {/* Location Alert Exclusion Section */}
+      <Card variant="outlined">
+        <CardHeader
+          title="Location-Based Alerts"
+          subheader="Suppress location-based audit log alerts during the vacation"
+        />
+        <Divider />
+        <CardContent>
+          <Stack spacing={2}>
+            <CippFormComponent
+              type="switch"
+              name="excludeLocationAuditAlerts"
+              label="Exclude from location-based audit log alerts"
+              formControl={formControl}
+            />
+
+            <CippFormCondition
+              formControl={formControl}
+              field="excludeLocationAuditAlerts"
+              compareType="is"
+              compareValue={true}
+              clearOnHide={false}
+            >
+              <Alert severity="info">
+                The users are added to the audit log location alert exclusion list at the start
+                date and removed again at the end date, so alerts that fire on sign-ins from an
+                unusual location stay quiet while they travel. This works on its own and does not
+                require a Conditional Access policy.
+              </Alert>
             </CippFormCondition>
           </Stack>
         </CardContent>

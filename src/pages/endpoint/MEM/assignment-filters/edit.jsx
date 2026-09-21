@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
@@ -55,19 +55,29 @@ const EditAssignmentFilter = () => {
     }
   }, [filterInfo.isSuccess, filterInfo.data, tenantFilter]);
 
+  const filterName = filterInfo.data?.[0]?.displayName || filterInfo.data?.displayName;
+
   return (
     <>
       <CippFormPage
         formControl={formControl}
         queryKey={[`ListAssignmentFilters-${filterId}`]}
-        title={`Assignment Filter: ${filterInfo.data?.[0]?.displayName || filterInfo.data?.displayName || ""}`}
+        title={filterName ? `Assignment Filter: ${filterName}` : "Assignment Filter"}
         formPageType="Edit"
         backButtonTitle="Assignment Filters"
         postUrl="/api/EditAssignmentFilter"
+        hideSubmit={!filterId}
       >
-        <Box sx={{ my: 2 }}>
-          <CippAddAssignmentFilterForm formControl={formControl} isEdit={true} />
-        </Box>
+        {!filterId && (
+          <Alert severity="info" sx={{ m: 2 }}>
+            No filter selected. Open this page from the Assignment Filters list to edit a filter.
+          </Alert>
+        )}
+        {filterId && (
+          <Box sx={{ my: 2 }}>
+            <CippAddAssignmentFilterForm formControl={formControl} isEdit={true} />
+          </Box>
+        )}
       </CippFormPage>
     </>
   );

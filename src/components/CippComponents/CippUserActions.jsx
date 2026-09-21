@@ -1,34 +1,14 @@
 import { useEffect } from 'react'
-import { EyeIcon, MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/outline'
-import {
-  Archive,
-  Clear,
-  CloudDone,
-  ContentCopy,
-  Edit,
-  Email,
-  ForwardToInbox,
-  GroupAdd,
-  LockClock,
-  LockPerson,
-  LockReset,
-  MeetingRoom,
-  Password,
-  PersonOff,
-  PhonelinkLock,
-  PhonelinkSetup,
-  Shortcut,
-  EditAttributes,
-  CloudSync,
-  Share,
-} from '@mui/icons-material'
+import { CippIcons } from '../../utils/icon-registry'
 import { getCippLicenseTranslation } from '../../utils/get-cipp-license-translation'
 import { useSettings } from '../../hooks/use-settings.js'
 import { usePermissions } from '../../hooks/use-permissions'
-import { Tooltip, Box, Divider, Typography } from '@mui/material'
+import { Tooltip, Box, Divider, Typography, Alert, Skeleton, Link, IconButton } from '@mui/material'
 import CippFormComponent from './CippFormComponent'
+import { MfaVerifyForm } from './CippMfaVerifyForm'
 import { CippFormCondition } from './CippFormCondition'
 import { useWatch } from 'react-hook-form'
+import { ApiGetCall } from '../../api/ApiCall'
 
 // Separate component for Manage Licenses form to avoid hook issues
 const ManageLicensesForm = ({ formControl, tenant }) => {
@@ -131,7 +111,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             url: '/api/ListLicenses',
             labelField: (option) => option.displayName || option.skuPartNumber,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -149,7 +131,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
             url: '/api/ListLicenses',
             labelField: (option) => option.displayName || option.skuPartNumber,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -170,7 +154,9 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
                 option.availableUnits || 0
               } available)`,
             valueField: 'skuId',
+            data: { IncludeExcluded: true },
             queryKey: `ListLicenses-Available-${tenant}`,
+            showRefresh: true,
           }}
         />
       )}
@@ -178,8 +164,147 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
   )
 }
 
+// Separate component for the Temporary Access Pass form so it can query the tenant's
+// TAP policy to validate the allowed lifetime range and enforce one-time use when forced
+const TemporaryAccessPassForm = ({ formControl, row }) => {
+  const tenantFilter = useSettings().currentTenant
+  const rowData = Array.isArray(row) ? row[0] : row
+  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+
+  const tapPolicy = ApiGetCall({
+    url: '/api/ListGraphRequest',
+    data: {
+      Endpoint:
+        'policies/authenticationMethodsPolicy/authenticationMethodConfigurations/TemporaryAccessPass',
+      tenantFilter: tenant,
+    },
+    queryKey: `TAPPolicy-${tenant}`,
+  })
+
+  const policy = tapPolicy.data?.Results?.[0]
+  const oneTimeUseForced = policy?.isUsableOnce === true
+
+  useEffect(() => {
+    if (!policy) return
+    // Deferred a tick: CippApiDialog resets the form in a mount effect that runs after
+    // this child effect, so an immediate setValue would be wiped when the query is cached
+    const timer = setTimeout(() => {
+      formControl.setValue('isUsableOnce', oneTimeUseForced)
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [tapPolicy.dataUpdatedAt])
+
+  if (tapPolicy.isLoading) {
+    return (
+      <>
+        <Skeleton variant="rounded" height={40} />
+        <Skeleton variant="rounded" height={40} />
+        <Skeleton variant="rounded" height={40} />
+      </>
+    )
+  }
+
+  return (
+    <>
+      {tapPolicy.isSuccess && policy?.state !== 'enabled' && (
+        <Alert
+          severity="error"
+          action={
+            <Tooltip title="Re-check the TAP policy state">
+              <span>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  onClick={() => tapPolicy.refetch()}
+                  disabled={tapPolicy.isFetching}
+                >
+                  <CippIcons.Refresh fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
+          }
+        >
+          Temporary Access Pass is not enabled in this tenant's authentication method policy and
+          creating a TAP will fail. Enable it on the{' '}
+          <Link href="/tenant/administration/authentication-methods" target="_blank">
+            Authentication Methods
+          </Link>{' '}
+          page first, then re-check.
+        </Alert>
+      )}
+      <CippFormComponent
+        type="number"
+        name="lifetimeInMinutes"
+        label="Lifetime (Minutes)"
+        formControl={formControl}
+        placeholder="Leave blank for default"
+        helperText={
+          policy
+            ? `Tenant policy allows ${policy.minimumLifetimeInMinutes ?? 10} to ${
+                policy.maximumLifetimeInMinutes ?? 480
+              } minutes (default ${policy.defaultLifetimeInMinutes ?? 60})`
+            : undefined
+        }
+        validators={
+          policy
+            ? {
+                min: {
+                  value: policy.minimumLifetimeInMinutes ?? 10,
+                  message: `Minimum lifetime is ${policy.minimumLifetimeInMinutes ?? 10} minutes`,
+                },
+                max: {
+                  value: policy.maximumLifetimeInMinutes ?? 480,
+                  message: `Maximum lifetime is ${policy.maximumLifetimeInMinutes ?? 480} minutes`,
+                },
+              }
+            : undefined
+        }
+      />
+      <Tooltip
+        title={oneTimeUseForced ? 'One-time use is enforced by the tenant TAP policy' : ''}
+        placement="bottom"
+      >
+        <Box>
+          <CippFormComponent
+            type="switch"
+            name="isUsableOnce"
+            label={
+              oneTimeUseForced ? 'One-time use only (enforced by policy)' : 'One-time use only'
+            }
+            formControl={formControl}
+            disabled={oneTimeUseForced}
+          />
+        </Box>
+      </Tooltip>
+      <CippFormComponent
+        type="datePicker"
+        name="startDateTime"
+        label="Start Date/Time (leave blank for immediate)"
+        dateTimeType="datetime"
+        formControl={formControl}
+      />
+    </>
+  )
+}
+
 // Separate component for Out of Office form to avoid hook issues
-const OutOfOfficeForm = ({ formControl }) => {
+export const OutOfOfficeForm = ({ formControl, row }) => {
+  const tenantFilter = useSettings().currentTenant
+  const rowData = Array.isArray(row) ? row[0] : row
+  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+  // Only prefill for a single selected user; with multiple users there is no single current value
+  const singleUserUpn =
+    (!Array.isArray(row) || row.length === 1) && rowData?.userPrincipalName
+      ? rowData.userPrincipalName
+      : null
+
+  const currentOoO = ApiGetCall({
+    url: '/api/ListOoO',
+    data: { UserId: singleUserUpn, tenantFilter: tenant },
+    queryKey: `ListOoO-${singleUserUpn}-${tenant}`,
+    waiting: !!singleUserUpn,
+  })
+
   // Send the browser's IANA timezone so the API can display local times in the response
   useEffect(() => {
     try {
@@ -189,6 +314,35 @@ const OutOfOfficeForm = ({ formControl }) => {
     }
   }, [])
 
+  useEffect(() => {
+    const data = currentOoO.data
+    if (!data?.AutoReplyState) return
+    // Deferred a tick: CippApiDialog resets the form in a mount effect that runs after
+    // this child effect, so an immediate setValue would be wiped when the query is cached
+    const timer = setTimeout(() => {
+      formControl.setValue('AutoReplyState', {
+        label: data.AutoReplyState,
+        value: data.AutoReplyState,
+      })
+      formControl.setValue('InternalMessage', data.InternalMessage || '')
+      formControl.setValue('ExternalMessage', data.ExternalMessage || '')
+      formControl.setValue(
+        'StartTime',
+        data.StartTime ? new Date(data.StartTime).getTime() / 1000 : null
+      )
+      formControl.setValue('EndTime', data.EndTime ? new Date(data.EndTime).getTime() / 1000 : null)
+      formControl.setValue('CreateOOFEvent', data.CreateOOFEvent === true)
+      formControl.setValue('OOFEventSubject', data.OOFEventSubject || '')
+      formControl.setValue(
+        'AutoDeclineFutureRequestsWhenOOF',
+        data.AutoDeclineFutureRequestsWhenOOF === true
+      )
+      formControl.setValue('DeclineEventsForScheduledOOF', data.DeclineEventsForScheduledOOF === true)
+      formControl.setValue('DeclineMeetingMessage', data.DeclineMeetingMessage || '')
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [currentOoO.dataUpdatedAt])
+
   // Watch the Auto Reply State value
   const autoReplyState = useWatch({
     control: formControl.control,
@@ -197,6 +351,18 @@ const OutOfOfficeForm = ({ formControl }) => {
 
   // Calculate if date fields should be disabled
   const areDateFieldsDisabled = autoReplyState?.value !== 'Scheduled'
+
+  if (singleUserUpn && currentOoO.isLoading) {
+    return (
+      <>
+        <Skeleton variant="rounded" height={40} />
+        <Skeleton variant="rounded" height={40} />
+        <Skeleton variant="rounded" height={40} />
+        <Skeleton variant="rounded" height={80} />
+        <Skeleton variant="rounded" height={80} />
+      </>
+    )
+  }
 
   return (
     <>
@@ -342,23 +508,35 @@ export const useCippUserActions = () => {
       //tested
       label: 'View User',
       link: '/identity/administration/users/user?userId=[id]',
+      pinned: true,
       multiPost: false,
-      icon: <EyeIcon />,
+      icon: <CippIcons.EyeIcon />,
       color: 'success',
     },
     {
       //tested
       label: 'Edit User',
       link: '/identity/administration/users/user/edit?userId=[id]',
-      icon: <Edit />,
+      pinned: true,
+      icon: <CippIcons.Edit />,
       color: 'success',
       target: '_self',
       condition: () => canWriteUser,
     },
     {
+      label: 'View in Entra',
+      link: 'https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/[id]',
+      pinned: true,
+      icon: <CippIcons.Launch />,
+      color: 'info',
+      target: '_blank',
+      multiPost: false,
+      external: true,
+    },
+    {
       label: 'Create Template from User',
       type: 'POST',
-      icon: <ContentCopy />,
+      icon: <CippIcons.ContentCopy />,
       url: '/api/AddUserDefaults',
       fields: [
         {
@@ -410,7 +588,7 @@ export const useCippUserActions = () => {
       //tested
       label: 'Research Compromised Account',
       type: 'GET',
-      icon: <MagnifyingGlassIcon />,
+      icon: <CippIcons.MagnifyingGlassIcon />,
       link: '/identity/administration/users/user/bec?userId=[id]',
       confirmText:
         'Are you sure you want to research if [userPrincipalName] is a compromised account?',
@@ -420,38 +598,21 @@ export const useCippUserActions = () => {
       //tested
       label: 'Create Temporary Access Pass',
       type: 'POST',
-      icon: <Password />,
+      icon: <CippIcons.Password />,
       url: '/api/ExecCreateTAP',
       data: { ID: 'userPrincipalName' },
-      fields: [
-        {
-          type: 'number',
-          name: 'lifetimeInMinutes',
-          label: 'Lifetime (Minutes)',
-          placeholder: 'Leave blank for default',
-        },
-        {
-          type: 'switch',
-          name: 'isUsableOnce',
-          label: 'One-time use only',
-        },
-        {
-          type: 'datePicker',
-          name: 'startDateTime',
-          label: 'Start Date/Time (leave blank for immediate)',
-          dateTimeType: 'datetime',
-        },
-      ],
+      children: ({ formHook, row }) => <TemporaryAccessPassForm formControl={formHook} row={row} />,
       confirmText:
         'Are you sure you want to create a Temporary Access Pass for [userPrincipalName]?',
       multiPost: false,
+      allowResubmit: true,
       condition: () => canWriteUser,
     },
     {
       //tested
       label: 'Re-require MFA registration',
       type: 'POST',
-      icon: <PhonelinkSetup />,
+      icon: <CippIcons.PhonelinkSetup />,
       url: '/api/ExecResetMFA',
       data: { ID: 'userPrincipalName' },
       confirmText: 'Are you sure you want to reset MFA for [userPrincipalName]?',
@@ -462,17 +623,18 @@ export const useCippUserActions = () => {
       //tested
       label: 'Send MFA Push',
       type: 'POST',
-      icon: <PhonelinkLock />,
+      icon: <CippIcons.PhonelinkLock />,
       url: '/api/ExecSendPush',
       data: { UserEmail: 'userPrincipalName' },
-      confirmText: 'Are you sure you want to send an MFA request to [userPrincipalName]?',
+      children: ({ formHook, row }) => <MfaVerifyForm formControl={formHook} row={row} />,
+      confirmText: 'Send an MFA request to [userPrincipalName]?',
       multiPost: false,
     },
     {
       //tested
       label: 'Set Per-User MFA',
       type: 'POST',
-      icon: <LockPerson />,
+      icon: <CippIcons.LockPerson />,
       url: '/api/ExecPerUserMFA',
       data: { userId: 'id', userPrincipalName: 'userPrincipalName' },
       fields: [
@@ -498,7 +660,7 @@ export const useCippUserActions = () => {
       //tested
       label: 'Convert Mailbox',
       type: 'POST',
-      icon: <Email />,
+      icon: <CippIcons.Email />,
       url: '/api/ExecConvertMailbox',
       data: { ID: 'userPrincipalName' },
       fields: [
@@ -523,7 +685,7 @@ export const useCippUserActions = () => {
       //tested
       label: 'Enable Online Archive',
       type: 'POST',
-      icon: <Archive />,
+      icon: <CippIcons.Archive />,
       url: '/api/ExecEnableArchive',
       data: { ID: 'userPrincipalName' },
       confirmText: 'Are you sure you want to enable the online archive for [userPrincipalName]?',
@@ -534,13 +696,15 @@ export const useCippUserActions = () => {
       //tested
       label: 'Set Out of Office',
       type: 'POST',
-      icon: <MeetingRoom />,
+      icon: <CippIcons.MeetingRoom />,
       url: '/api/ExecSetOoO',
       data: {
         userId: 'userPrincipalName',
         tenantFilter: 'Tenant',
       },
-      children: ({ formHook: formControl }) => <OutOfOfficeForm formControl={formControl} />,
+      children: ({ formHook: formControl, row }) => (
+        <OutOfOfficeForm formControl={formControl} row={row} />
+      ),
       confirmText: 'Are you sure you want to set the out of office?',
       multiPost: false,
       condition: () => canWriteMailbox,
@@ -548,7 +712,7 @@ export const useCippUserActions = () => {
     {
       label: 'Add to Group',
       type: 'POST',
-      icon: <GroupAdd />,
+      icon: <CippIcons.GroupAdd />,
       url: '/api/EditGroup',
       customDataformatter: (row, action, formData) => {
         // Build the member list from selected users
@@ -598,10 +762,14 @@ export const useCippUserActions = () => {
           validators: { required: 'Please select at least one group' },
           api: {
             url: '/api/ListGroups',
-            labelField: (option) =>
-              option?.calculatedGroupType
-                ? `${option.displayName} (${option.calculatedGroupType})`
-                : (option?.displayName ?? ''),
+            labelField: (option) => {
+              const name = option?.mail
+                ? `${option.displayName} - ${option.mail}`
+                : (option?.displayName ?? '')
+              return option?.calculatedGroupType
+                ? `${name} (${option.calculatedGroupType})`
+                : name
+            },
             valueField: 'id',
             addedField: {
               groupType: 'groupType',
@@ -621,7 +789,7 @@ export const useCippUserActions = () => {
       label: 'Manage Licenses',
       type: 'POST',
       url: '/api/ExecBulkLicense',
-      icon: <CloudDone />,
+      icon: <CippIcons.CloudDone />,
       data: { userIds: 'id' },
       multiPost: true,
       allowResubmit: true,
@@ -635,7 +803,7 @@ export const useCippUserActions = () => {
       label: 'Disable Email Forwarding',
       type: 'POST',
       url: '/api/ExecEmailForward',
-      icon: <ForwardToInbox />,
+      icon: <CippIcons.ForwardToInbox />,
       data: {
         username: 'userPrincipalName',
         userid: 'userPrincipalName',
@@ -648,7 +816,7 @@ export const useCippUserActions = () => {
     {
       label: 'Pre-provision OneDrive',
       type: 'POST',
-      icon: <CloudDone />,
+      icon: <CippIcons.CloudDone />,
       url: '/api/ExecOneDriveProvision',
       data: { UserPrincipalName: 'userPrincipalName' },
       confirmText: 'Are you sure you want to pre-provision OneDrive for [userPrincipalName]?',
@@ -658,7 +826,7 @@ export const useCippUserActions = () => {
     {
       label: 'Set OneDrive External Sharing',
       type: 'POST',
-      icon: <Share />,
+      icon: <CippIcons.Share />,
       url: '/api/ExecSetOneDriveSharing',
       data: { UPN: 'userPrincipalName' },
       fields: [
@@ -693,11 +861,14 @@ export const useCippUserActions = () => {
     {
       label: 'Add OneDrive Shortcut',
       type: 'POST',
-      icon: <Shortcut />,
+      icon: <CippIcons.Shortcut />,
       url: '/api/ExecOneDriveShortCut',
       data: {
         username: 'userPrincipalName',
         userid: 'id',
+      },
+      defaultvalues: {
+        destination: { label: 'OneDrive root', value: 'root' },
       },
       fields: [
         {
@@ -715,17 +886,53 @@ export const useCippUserActions = () => {
             queryKey: `sharepointSites-${tenant}`,
           },
         },
+        {
+          type: 'autoComplete',
+          name: 'destination',
+          label: 'Shortcut location',
+          multiple: false,
+          creatable: false,
+          options: [
+            { label: 'OneDrive root', value: 'root' },
+            { label: 'Shortcuts folder (Microsoft UI)', value: 'shortcuts' },
+          ],
+          validators: { required: 'Please select a shortcut location' },
+        },
       ],
-      confirmText: 'Select a SharePoint site to create a shortcut for:',
+      confirmText: 'Select a SharePoint site and where to create the OneDrive shortcut:',
+      multiPost: false,
+      allowResubmit: true,
+      condition: () => canWriteUser,
+    },
+    {
+      label: 'Migrate OneDrive Shortcuts',
+      type: 'POST',
+      icon: <CippIcons.Shortcut />,
+      url: '/api/ExecMigrateOneDriveShortCuts',
+      data: {
+        username: 'userPrincipalName',
+        userid: 'id',
+      },
+      confirmText:
+        'Migrate root OneDrive shortcuts for [userPrincipalName] into the Shortcuts folder?',
       multiPost: false,
       condition: () => canWriteUser,
     },
     {
       label: 'Set Sign In State',
       type: 'POST',
-      icon: <LockPerson />,
+      icon: <CippIcons.LockPerson />,
       url: '/api/ExecDisableUser',
       data: { ID: 'id' },
+      // Pre-select the current sign-in state; leave unselected when the
+      // selected rows have mixed states. String values match what a radio
+      // click produces (e.target.value is always a string).
+      defaultvalues: (row) => {
+        const states = [...new Set((Array.isArray(row) ? row : [row]).map((r) => r?.accountEnabled))]
+        return states.length === 1 && typeof states[0] === 'boolean'
+          ? { Enable: String(states[0]) }
+          : {}
+      },
       fields: [
         {
           type: 'radio',
@@ -735,7 +942,22 @@ export const useCippUserActions = () => {
             { label: 'Enabled', value: true },
             { label: 'Disabled', value: false },
           ],
-          validators: { required: 'Please select a sign-in state' },
+          validators: {
+            required: 'Please select a sign-in state',
+            validate: (value, formValues, row) => {
+              const states = [
+                ...new Set((Array.isArray(row) ? row : [row]).map((r) => r?.accountEnabled)),
+              ]
+              if (
+                states.length === 1 &&
+                typeof states[0] === 'boolean' &&
+                String(value) === String(states[0])
+              ) {
+                return 'Sign-in state is unchanged'
+              }
+              return true
+            },
+          },
         },
       ],
       confirmText: 'Are you sure you want to set the sign-in state for [userPrincipalName]?',
@@ -745,7 +967,7 @@ export const useCippUserActions = () => {
     {
       label: 'Reset Password',
       type: 'POST',
-      icon: <LockReset />,
+      icon: <CippIcons.LockReset />,
       url: '/api/ExecResetPass',
       data: {
         ID: 'userPrincipalName',
@@ -756,6 +978,8 @@ export const useCippUserActions = () => {
           type: 'switch',
           name: 'MustChange',
           label: 'Must Change Password at Next Logon',
+          helperText:
+            'Not supported for directory-synced (on-premises AD) accounts. Those resets go through password writeback, which always requires a change at next logon.',
         },
       ],
       confirmText: 'Are you sure you want to reset the password for [userPrincipalName]?',
@@ -763,9 +987,22 @@ export const useCippUserActions = () => {
       condition: () => canWriteUser,
     },
     {
+      label: 'Require Password Change at Next Logon',
+      type: 'POST',
+      icon: <CippIcons.Password />,
+      url: '/api/ExecRequirePasswordChange',
+      data: {
+        ID: 'id',
+      },
+      confirmText:
+        'Require [userPrincipalName] to change their password at next logon? This does not reset the password. Not supported for directory-synced accounts.',
+      multiPost: false,
+      condition: () => canWriteUser,
+    },
+    {
       label: 'Set Password Expiration',
       type: 'POST',
-      icon: <LockClock />,
+      icon: <CippIcons.LockClock />,
       url: '/api/ExecPasswordNeverExpires',
       data: { userId: 'id', userPrincipalName: 'userPrincipalName' },
       fields: [
@@ -788,7 +1025,7 @@ export const useCippUserActions = () => {
     {
       label: 'Clear Immutable ID',
       type: 'POST',
-      icon: <Clear />,
+      icon: <CippIcons.Clear />,
       url: '/api/ExecClrImmId',
       data: {
         ID: 'id',
@@ -801,11 +1038,22 @@ export const useCippUserActions = () => {
       label: 'Set Source of Authority',
       type: 'POST',
       url: '/api/ExecSetCloudManaged',
-      icon: <CloudSync />,
+      icon: <CippIcons.CloudSync />,
       data: {
         ID: 'id',
         displayName: 'displayName',
         type: '!User',
+      },
+      // Pre-select the current source of authority (onPremisesSyncEnabled: true means
+      // on-premises managed; null/false means cloud managed); leave unselected when
+      // the selected rows have mixed states
+      defaultvalues: (row) => {
+        const states = [
+          ...new Set(
+            (Array.isArray(row) ? row : [row]).map((r) => r?.onPremisesSyncEnabled === true)
+          ),
+        ]
+        return states.length === 1 ? { isCloudManaged: String(!states[0]) } : {}
       },
       fields: [
         {
@@ -816,17 +1064,40 @@ export const useCippUserActions = () => {
             { label: 'Cloud Managed', value: true },
             { label: 'On-Premises Managed', value: false },
           ],
-          validators: { required: 'Please select a source of authority' },
+          validators: {
+            required: 'Please select a source of authority',
+            validate: (value, formValues, row) => {
+              const states = [
+                ...new Set(
+                  (Array.isArray(row) ? row : [row]).map((r) => r?.onPremisesSyncEnabled === true)
+                ),
+              ]
+              if (states.length === 1 && String(value) === String(!states[0])) {
+                return 'Source of authority is unchanged'
+              }
+              return true
+            },
+          },
         },
       ],
       confirmText:
         'Are you sure you want to change the source of authority for [userPrincipalName]? Setting it to On-Premises Managed will take until the next sync cycle to show the change.',
       multiPost: false,
+      // Only meaningful for users that are on-premises managed (convert to cloud) or
+      // were synced at some point (revert to on-premises); hide for cloud-native users
+      condition: (row) =>
+        row?.onPremisesSyncEnabled === true ||
+        !!(
+          row?.onPremisesImmutableId ||
+          row?.OnPremisesImmutableId ||
+          row?.onPremisesLastSyncDateTime ||
+          row?.onPremisesDistinguishedName
+        ),
     },
     {
       label: 'Reprocess License Assignments',
       type: 'POST',
-      icon: <CloudDone />,
+      icon: <CippIcons.CloudDone />,
       url: '/api/ExecReprocessUserLicenses',
       data: { ID: 'id', userPrincipalName: 'userPrincipalName' },
       confirmText:
@@ -837,7 +1108,7 @@ export const useCippUserActions = () => {
     {
       label: 'Revoke all user sessions',
       type: 'POST',
-      icon: <PersonOff />,
+      icon: <CippIcons.PersonOff />,
       url: '/api/ExecRevokeSessions',
       data: { ID: 'id', Username: 'userPrincipalName' },
       confirmText: 'Are you sure you want to revoke all sessions for [userPrincipalName]?',
@@ -847,7 +1118,7 @@ export const useCippUserActions = () => {
     {
       label: 'Delete User',
       type: 'POST',
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       url: '/api/RemoveUser',
       data: { ID: 'id', userPrincipalName: 'userPrincipalName' },
       confirmText: 'Are you sure you want to delete [userPrincipalName]?',
@@ -856,7 +1127,7 @@ export const useCippUserActions = () => {
     },
     {
       label: 'Edit Properties',
-      icon: <EditAttributes />,
+      icon: <CippIcons.EditAttributes />,
       multiPost: true,
       noConfirm: true,
       customFunction: (users, action, formData) => {

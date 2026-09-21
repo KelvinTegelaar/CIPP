@@ -261,6 +261,7 @@
   },
   {
     "type": "OneDriveSiteListing",
+    "collectedBy": "OneDriveUsage",
     "friendlyName": "OneDrive Site Listing",
     "description": "OneDrive personal site listing details used for usage reporting"
   },
@@ -270,7 +271,13 @@
     "description": "OneDrive usage statistics"
   },
   {
+    "type": "OneDriveLongPaths",
+    "friendlyName": "OneDrive Long Paths",
+    "description": "Per-user counts of OneDrive paths that may exceed Windows 260-character sync limits or the cloud 400-character ceiling (no file or folder names stored)"
+  },
+  {
     "type": "SharePointSiteListing",
+    "collectedBy": "SharePointSiteUsage",
     "friendlyName": "SharePoint Site Listing",
     "description": "SharePoint site listing details used for usage reporting"
   },
@@ -278,6 +285,31 @@
     "type": "SharePointSiteUsage",
     "friendlyName": "SharePoint Site Usage",
     "description": "SharePoint site usage statistics"
+  },
+  {
+    "type": "SPOSites",
+    "friendlyName": "SharePoint Site Settings",
+    "description": "Per-site SharePoint admin settings (site owner, sharing controls, lifecycle, version policy, People Picker, unmanaged-device access) for every site collection, keyed by site id"
+  },
+  {
+    "type": "SiteActivity",
+    "friendlyName": "Site Activity",
+    "description": "Per-site activity with siteType classification (SharePoint, SharePointAndTeams, OneDrive) and workload activity columns"
+  },
+  {
+    "type": "SharePointSharingLinks",
+    "friendlyName": "SharePoint & OneDrive Sharing Links",
+    "description": "Sharing links and external grants on SharePoint and OneDrive files and folders"
+  },
+  {
+    "type": "SharePointPermissions",
+    "friendlyName": "SharePoint Permissions",
+    "description": "Site and document library permission assignments, including libraries that no longer inherit and grants to tenant-wide claims such as Everyone except external users"
+  },
+  {
+    "type": "StorageCleanupScan",
+    "friendlyName": "Storage Cleanup Scan",
+    "description": "Per-site library version estimates and recycle totals for the storage report cleanup signals. Report-private; not used by other CIPP features."
   },
   {
     "type": "ConditionalAccessPolicies",
@@ -317,7 +349,7 @@
   {
     "type": "ManagedDeviceEncryptionStates",
     "friendlyName": "Managed Device Encryption States",
-    "description": "BitLocker encryption states for managed devices"
+    "description": "BitLocker encryption states for managed devices; Windows 365 Cloud PCs are marked encryptedByPlatform"
   },
   {
     "type": "IntuneAppProtectionPolicies",
@@ -328,5 +360,20 @@
     "type": "DetectedApps",
     "friendlyName": "Detected Apps",
     "description": "All detected applications with devices where each app is installed"
+  },
+  {
+    "type": "DefenderCVEs",
+    "friendlyName": "Defender CVEs",
+    "description": "All Defender CVEs for Devices"
+  },
+  {
+    "type": "IntuneAppInstallStatus",
+    "friendlyName": "Intune App Install Status",
+    "description": "Per-application install status rollup (failed/installed/pending device counts) from the AppInstallStatusAggregate report"
+  },
+  {
+    "type": "DomainAnalyser",
+    "friendlyName": "Domain Analyser",
+    "description": "Domain Analyser results per domain: SPF, MX, DMARC, DKIM, DNSSEC, enrollment CNAMEs and the domain health score"
   }
 ]

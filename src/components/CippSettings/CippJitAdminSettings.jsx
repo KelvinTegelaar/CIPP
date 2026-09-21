@@ -1,5 +1,5 @@
 import { Button, Typography, Alert, Box } from "@mui/material";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import { CippIcons } from "../../utils/icon-registry";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -55,7 +55,7 @@ const CippJitAdminSettings = () => {
           size="small"
           onClick={handleSave}
           disabled={jitChange.isPending || jitSettings.isLoading || !formControl.formState.isValid}
-          startIcon={<ClockIcon style={{ width: 16, height: 16 }} />}
+          startIcon={<CippIcons.ClockIcon style={{ width: 16, height: 16 }} />}
         >
           Save Settings
         </Button>

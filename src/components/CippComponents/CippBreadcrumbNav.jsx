@@ -1,64 +1,52 @@
 import { useEffect, useState, useRef } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { useRouter } from 'next/router'
-import { Breadcrumbs, Link, Typography, Box, IconButton, Tooltip } from '@mui/material'
-import { History, AccountTree } from '@mui/icons-material'
+import { Breadcrumbs, Divider, Link, Typography, Box, IconButton, Tooltip, useMediaQuery } from '@mui/material'
 import { nativeMenuItems } from '../../layouts/config'
 import { useSettings } from '../../hooks/use-settings'
+import { CippBookmarkStar } from './CippBookmarkStar'
+import { useIsMobileLayout } from '../../hooks/use-breakpoint'
 
 const MAX_HISTORY_STORAGE = 20 // Maximum number of pages to keep in history
 const MAX_BREADCRUMB_DISPLAY = 5 // Maximum number of breadcrumbs to display at once
 
 /**
- * Load all tabOptions.json files dynamically
+ * Load every tabOptions.json under pages/ at build time. Globbed rather than listed so a new
+ * tabbed page picks up correct breadcrumb labels - and therefore a correct bookmark name - without
+ * anyone remembering to register it here.
  */
-async function loadTabOptions() {
-  const tabOptionPaths = [
-    '/email/administration/exchange-retention',
-    '/cipp/custom-data',
-    '/cipp/advanced/super-admin',
-    '/endpoint/MEM/enrollment-profiles',
-    '/tenant/standards',
-    '/tenant/manage',
-    '/tenant/administration/applications',
-    '/tenant/administration/tenants',
-    '/tenant/administration/audit-logs',
-    '/identity/administration/users/user',
-    '/tenant/administration/securescore',
-    '/tenant/gdap-management',
-    '/tenant/gdap-management/relationships/relationship',
-    '/cipp/settings',
-  ]
+const loadTabOptions = () => {
+  const context = require.context('../../pages', true, /tabOptions\.json$/)
 
-  const tabOptions = []
+  return context.keys().flatMap((key) => {
+    const tabModule = context(key)
+    const options = tabModule.default || tabModule
+    if (!Array.isArray(options)) return []
 
-  for (const basePath of tabOptionPaths) {
-    try {
-      const module = await import(`../../pages${basePath}/tabOptions.json`)
-      const options = module.default || module
+    // './tenant/manage/tabOptions.json' -> '/tenant/manage'
+    const basePath = key.replace(/^\./, '').replace(/\/tabOptions\.json$/, '')
 
-      // Add each tab option with metadata
-      options.forEach((option) => {
-        tabOptions.push({
-          title: option.label,
-          path: option.path,
-          type: 'tab',
-          basePath: basePath,
-        })
-      })
-    } catch (error) {
-      // Silently skip if file doesn't exist or can't be loaded
-    }
-  }
-
-  return tabOptions
+    return options
+      .filter((option) => option?.label && option?.path)
+      .map((option) => ({
+        title: option.label,
+        path: option.path,
+        type: 'tab',
+        basePath,
+      }))
+  });
 }
 
-export const CippBreadcrumbNav = () => {
+export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
   const router = useRouter()
   const settings = useSettings()
+  // Phones get one line: leading crumbs collapse behind MUI's ellipsis button instead of
+  // the trail wrapping to two rows of chrome above every table.
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
+  const isMobileLayout = useIsMobileLayout()
   const [history, setHistory] = useState([])
   const [mode, setMode] = useState(settings.breadcrumbMode || 'hierarchical')
-  const [tabOptions, setTabOptions] = useState([])
+  const [tabOptions] = useState(loadTabOptions)
   const lastRouteRef = useRef(null)
   const titleCheckCountRef = useRef(0)
   const titleCheckIntervalRef = useRef(null)
@@ -81,13 +69,8 @@ export const CippBreadcrumbNav = () => {
       .replace(/\s*-\s*AllTenants\s*/, '')
       .replace(/AllTenants\s*-\s*/, '')
       .replace(/AllTenants/, '')
-      .trim()
+      .trim();
   }
-
-  // Load tab options on mount
-  useEffect(() => {
-    loadTabOptions().then(setTabOptions)
-  }, [])
 
   useEffect(() => {
     // Only update when the route actually changes, not on every render
@@ -148,7 +131,7 @@ export const CippBreadcrumbNav = () => {
       // Normalize URL for comparison (remove trailing slashes and query params)
       const normalizeUrl = (url) => {
         // Remove query params and trailing slashes for comparison
-        return url.split('?')[0].replace(/\/$/, '').toLowerCase()
+        return url.split('?')[0].replace(/\/$/, '').toLowerCase();
       }
 
       const currentPage = {
@@ -390,17 +373,24 @@ export const CippBreadcrumbNav = () => {
       })
 
       if (matchingTab) {
-        // Tab matches the current path - use tab's label instead of config's
-        result = result.map((item, idx) => {
-          if (idx === result.length - 1) {
-            return {
-              ...item,
-              title: matchingTab.title,
-              type: 'tab',
-            }
-          }
-          return item
-        })
+        const lastItem = result[result.length - 1]
+        const lastItemPath = lastItem.path?.replace(/\/$/, '')
+
+        if (lastItemPath === normalizedCurrentPath) {
+          // The menu points straight at this page - keep the crumb, prefer the tab's label
+          result[result.length - 1] = { ...lastItem, title: matchingTab.title, type: 'tab' }
+        } else {
+          // The menu only goes as far as the parent (most tabs aren't menu entries), so the tab is
+          // a crumb of its own. Overwriting the parent's title instead would be undone at render:
+          // crumbs are re-resolved by path, so the parent would resolve back to its own name and
+          // the tab would vanish from the trail.
+          result.push({
+            title: matchingTab.title,
+            path: matchingTab.path,
+            type: 'tab',
+            query: getCleanQueryParams(router.query),
+          })
+        }
       }
     }
 
@@ -564,87 +554,149 @@ export const CippBreadcrumbNav = () => {
     })
   }
 
-  // Render based on mode
-  if (mode === 'hierarchical') {
-    let breadcrumbs = buildHierarchicalBreadcrumbs()
+  // The full trail, including the URL-derived fallback. Computed in both modes because the
+  // bookmark button takes its label from it regardless of how breadcrumbs are being displayed.
+  const buildBreadcrumbTrail = () => {
+    const breadcrumbs = buildHierarchicalBreadcrumbs()
+    if (breadcrumbs.length > 0) {
+      return breadcrumbs
+    }
 
     // Fallback: If no breadcrumbs found in navigation config, generate from URL path
-    if (breadcrumbs.length === 0) {
-      const pathSegments = router.pathname.split('/').filter((segment) => segment)
-
-      if (pathSegments.length > 0) {
-        breadcrumbs = pathSegments.map((segment, index) => {
-          // Build the path up to this segment
-          const path = '/' + pathSegments.slice(0, index + 1).join('/')
-
-          // Format segment as title (replace hyphens with spaces, capitalize words)
-          const title = segment
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
-
-          return {
-            title,
-            path,
-            type: 'fallback',
-            query: index === pathSegments.length - 1 ? getCleanQueryParams(router.query) : {},
-          }
-        })
-
-        // If we have a current page title from document.title, use it for the last breadcrumb
-        if (
-          currentPageTitle &&
-          currentPageTitle !== 'CIPP' &&
-          !currentPageTitle.toLowerCase().includes('loading')
-        ) {
-          breadcrumbs[breadcrumbs.length - 1].title = cleanPageTitle(currentPageTitle)
-        }
-      }
+    const pathSegments = router.pathname.split('/').filter((segment) => segment)
+    if (pathSegments.length === 0) {
+      return []
     }
+
+    const fallback = pathSegments.map((segment, index) => {
+      // Build the path up to this segment
+      const path = '/' + pathSegments.slice(0, index + 1).join('/')
+
+      // Format segment as title (replace hyphens with spaces, capitalize words)
+      const title = segment
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+
+      return {
+        title,
+        path,
+        type: 'fallback',
+        query: index === pathSegments.length - 1 ? getCleanQueryParams(router.query) : {},
+      }
+    })
+
+    // If we have a current page title from document.title, use it for the last breadcrumb
+    if (
+      currentPageTitle &&
+      currentPageTitle !== 'CIPP' &&
+      !currentPageTitle.toLowerCase().includes('loading')
+    ) {
+      fallback[fallback.length - 1].title = cleanPageTitle(currentPageTitle)
+    }
+
+    return fallback
+  }
+
+  const trail = buildBreadcrumbTrail()
+
+  // Resolve exactly the way the crumbs below render, so the bookmark is named what the user sees.
+  // A crumb's stored title can be a stale document.title scrape - that polling lags a route change
+  // and leaves the previous page's name behind - whereas nav and tab config are authoritative.
+  const crumbTitle = (crumb) => (crumb ? getPathInfo(crumb.path).title || crumb.title : null)
+
+  const bookmarkLabel = trail.length > 0 ? crumbTitle(trail[trail.length - 1]) : null
+  // The sidebar groups bookmarks by the top-level nav header, so mirror what SideNavItem stores.
+  const bookmarkCategory = trail.length > 1 ? crumbTitle(trail[0]) : ''
+  const bookmarkStar = <CippBookmarkStar label={bookmarkLabel} category={bookmarkCategory} />
+
+  // The layout's rail chrome (gutter box + divider) travels with the nav so that when the
+  // nav renders nothing — error routes, or a single crumb on a phone — no stray hairline is
+  // left where the rail was. The AllTenants interstitial renders the nav bare (no withRail).
+  const rail = (node) =>
+    withRail ? (
+      <>
+        <Box sx={{ mx: { xs: 2, md: 3 }, mt: { xs: 0.75, md: 1.25 } }}>{node}</Box>
+        <Divider sx={{ mb: { xs: 1, md: 1.5 } }} />
+      </>
+    ) : (
+      node
+    )
+
+  // Render based on mode
+  if (mode === 'hierarchical') {
+    const breadcrumbs = trail
 
     // Don't show if still no breadcrumbs found
     if (breadcrumbs.length === 0) {
       return null
     }
 
-    return (
+    // On phones the rail stands down (taking the mode toggle and bookmark star with it) when
+    // it has nothing the page doesn't already say: a single crumb is no hierarchy, and the
+    // dashboard's whole trail ("Overview > Identity") is just its own tab set — the exact
+    // list the view picker beneath it presents. Desktop keeps the rail everywhere.
+    const isHomeSurface = breadcrumbs.every(
+      (crumb) => crumb.path === '/' || crumb.path?.startsWith('/dashboardv2')
+    )
+    if (isMobileLayout && (breadcrumbs.length < 2 || isHomeSurface)) {
+      return null
+    }
+
+    return rail(
       <Box
         data-tutorial="breadcrumb-nav"
         sx={{ mb: 1, width: '100%', display: 'flex', alignItems: 'center', gap: 1 }}
       >
         <Tooltip title="Switch to history mode">
           <IconButton size="small" onClick={toggleMode} sx={{ p: 0.5 }}>
-            <AccountTree fontSize="small" />
+            <CippIcons.AccountTree fontSize="small" />
           </IconButton>
         </Tooltip>
         <Breadcrumbs
           separator=">"
           aria-label="page hierarchy"
+          maxItems={mdDown ? 2 : undefined}
+          itemsBeforeCollapse={mdDown ? 0 : 1}
+          itemsAfterCollapse={mdDown ? 2 : 1}
           sx={{
             fontSize: '0.875rem',
-            flexGrow: 1,
+            // Not flexGrow - the bookmark button sits directly after the last crumb rather than
+            // being pushed out to the right edge of the page.
+            minWidth: 0,
             userSelect: 'text',
             '& .MuiBreadcrumbs-separator': { userSelect: 'text' },
+            ...(mdDown && {
+              '& .MuiBreadcrumbs-ol': { flexWrap: 'nowrap' },
+              '& .MuiBreadcrumbs-li': { minWidth: 0 },
+              '& .MuiBreadcrumbs-li > *': {
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: 'block',
+              },
+            }),
           }}
         >
           {breadcrumbs.map((crumb, index) => {
             const isLast = index === breadcrumbs.length - 1
             const pathInfo = getPathInfo(crumb.path)
-            // Use title from nav/tabs if available, otherwise use the crumb's title
-            const displayTitle = pathInfo.title || crumb.title
+            // Same resolution the bookmark label uses, so the two can't drift apart
+            const displayTitle = crumbTitle(crumb)
 
             // Items without paths (headers/groups) - show as text
             if (!crumb.path) {
               return (
                 <Typography
                   key={index}
-                  color="text.secondary"
                   variant="subtitle2"
-                  sx={{ fontWeight: isLast ? 500 : 400 }}
-                >
+                  sx={{
+                    color: "text.secondary",
+                    fontWeight: isLast ? 500 : 400
+                  }}>
                   {displayTitle}
                 </Typography>
-              )
+              );
             }
 
             // Items with valid paths are clickable
@@ -694,8 +746,11 @@ export const CippBreadcrumbNav = () => {
             }
           })}
         </Breadcrumbs>
+        {/* Mobile: star pinned to the right edge — a stable tap target instead of trailing
+            the crumb text. Desktop keeps it directly after the last crumb. */}
+        <Box sx={{ ml: { xs: "auto", md: 0 }, display: "inline-flex" }}>{bookmarkStar}</Box>
       </Box>
-    )
+    );
   }
 
   // Default mode: history-based breadcrumbs
@@ -707,25 +762,31 @@ export const CippBreadcrumbNav = () => {
   // Show only the last MAX_BREADCRUMB_DISPLAY items
   const visibleHistory = history.slice(-MAX_BREADCRUMB_DISPLAY)
 
-  return (
+  return rail(
     <Box
       data-tutorial="breadcrumb-nav"
       sx={{ mb: 1, width: '100%', display: 'flex', alignItems: 'center', gap: 1 }}
     >
       <Tooltip title="Switch to hierarchy mode">
         <IconButton size="small" onClick={toggleMode} sx={{ p: 0.5 }}>
-          <History fontSize="small" />
+          <CippIcons.History fontSize="small" />
         </IconButton>
       </Tooltip>
       <Breadcrumbs
-        maxItems={MAX_BREADCRUMB_DISPLAY}
+        maxItems={mdDown ? 2 : MAX_BREADCRUMB_DISPLAY}
+        itemsBeforeCollapse={mdDown ? 0 : 1}
+        itemsAfterCollapse={mdDown ? 2 : 1}
         separator=">"
         aria-label="navigation history"
         sx={{
           fontSize: '0.875rem',
-          flexGrow: 1,
+          minWidth: 0,
           userSelect: 'text',
           '& .MuiBreadcrumbs-separator': { userSelect: 'text' },
+          ...(mdDown && {
+            '& .MuiBreadcrumbs-ol': { flexWrap: 'nowrap' },
+            '& .MuiBreadcrumbs-li': { minWidth: 0 },
+          }),
         }}
       >
         {visibleHistory.map((page, index) => {
@@ -737,13 +798,14 @@ export const CippBreadcrumbNav = () => {
             return (
               <Typography
                 key={index}
-                color="text.primary"
                 variant="subtitle2"
-                sx={{ fontWeight: 500 }}
-              >
+                sx={{
+                  color: "text.primary",
+                  fontWeight: 500
+                }}>
                 {page.title}
               </Typography>
-            )
+            );
           }
 
           return (
@@ -776,6 +838,7 @@ export const CippBreadcrumbNav = () => {
           )
         })}
       </Breadcrumbs>
+      <Box sx={{ ml: { xs: "auto", md: 0 }, display: "inline-flex" }}>{bookmarkStar}</Box>
     </Box>
-  )
+  );
 }

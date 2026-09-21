@@ -1,23 +1,26 @@
 import { Box, Divider } from '@mui/material'
 import { Grid } from '@mui/system'
 import CippFormPage from '../../../../components/CippFormPages/CippFormPage'
-import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { CippFormTenantSelector } from '../../../../components/CippComponents/CippFormTenantSelector'
 import { useForm, useWatch } from 'react-hook-form'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
 import { CippFormCondition } from '../../../../components/CippComponents/CippFormCondition'
-import gdaproles from '../../../../data/GDAPRoles.json'
+import jitAdminRoles from '../../../../data/JitAdminRoles.json'
 import countryList from '../../../../data/countryList.json'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
 import { CippFormGroupSelector } from '../../../../components/CippComponents/CippFormGroupSelector'
 import { ApiGetCall } from '../../../../api/ApiCall'
+import { useJitAllowedRoles } from '../../../../hooks/use-jit-allowed-roles'
+import { CippJitRoleTemplateApply } from '../../../../components/CippComponents/CippJitRoleTemplateApply'
 import { useEffect, useState } from 'react'
 
 const Page = () => {
   const formControl = useForm({ mode: 'onChange' })
   const selectedTenant = useWatch({ control: formControl.control, name: 'tenantFilter' })
   const [selectedTemplate, setSelectedTemplate] = useState(null)
+  const { filterRoles } = useJitAllowedRoles()
 
   const jitAdminTemplates = ApiGetCall({
     url: selectedTenant
@@ -464,12 +467,18 @@ const Page = () => {
               compareValue={true}
             >
               <Grid size={{ md: 12, xs: 12 }}>
+                <CippJitRoleTemplateApply formControl={formControl} targetField="adminRoles" />
+              </Grid>
+              <Grid size={{ md: 12, xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   fullWidth
                   label="Roles"
                   name="adminRoles"
-                  options={gdaproles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                  options={filterRoles(jitAdminRoles).map((role) => ({
+                    label: role.Name,
+                    value: role.ObjectId,
+                  }))}
                   formControl={formControl}
                   required={true}
                   validators={{

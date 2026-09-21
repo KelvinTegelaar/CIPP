@@ -1,5 +1,5 @@
-import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Edit, PlayArrow } from "@mui/icons-material";
+
+import { CippIcons } from "../../utils/icon-registry"
 import { usePermissions } from "../../hooks/use-permissions";
 
 export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = [] } = {}) => {
@@ -11,7 +11,8 @@ export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = []
     {
       label: "View Task Details",
       link: "/cipp/scheduler/task?id=[RowKey]",
-      icon: <EyeIcon />,
+      pinned: true,
+      icon: <CippIcons.EyeIcon />,
       condition: () => canReadScheduler,
     },
     {
@@ -19,20 +20,21 @@ export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = []
       type: "POST",
       url: "/api/AddScheduledItem",
       data: { RowKey: "RowKey", RunNow: true },
-      icon: <PlayArrow />,
+      icon: <CippIcons.PlayArrow />,
       confirmText: "Are you sure you want to run [Name]?",
       allowResubmit: true,
       condition: () => canWriteScheduler,
     },
     {
       label: "Edit Job",
+      pinned: true,
       customFunction:
         drawerHandlers.openEditDrawer ||
         ((row) => {
           window.location.href = `/cipp/scheduler/job?id=${row.RowKey}`;
         }),
       multiPost: false,
-      icon: <Edit />,
+      icon: <CippIcons.Edit />,
       color: "success",
       showInActionsMenu: true,
       noConfirm: true,
@@ -46,7 +48,7 @@ export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = []
           window.location.href = `/cipp/scheduler/job?id=${row.RowKey}&Clone=True`;
         }),
       multiPost: false,
-      icon: <CopyAll />,
+      icon: <CippIcons.CopyAll />,
       color: "success",
       showInActionsMenu: true,
       noConfirm: true,
@@ -54,7 +56,7 @@ export const CippScheduledTaskActions = (drawerHandlers = {}, { hideActions = []
     },
     {
       label: "Delete Job",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       type: "POST",
       url: "/api/RemoveScheduledItem",
       data: { id: "RowKey" },

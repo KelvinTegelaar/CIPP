@@ -1,22 +1,25 @@
 import { Box, Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "../../../../components/CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 import { CippFormGroupSelector } from "../../../../components/CippComponents/CippFormGroupSelector";
-import gdaproles from "../../../../data/GDAPRoles.json";
+import jitAdminRoles from "../../../../data/JitAdminRoles.json";
 import countryList from "../../../../data/countryList.json";
 import { useSettings } from "../../../../hooks/use-settings";
+import { useJitAllowedRoles } from "../../../../hooks/use-jit-allowed-roles";
+import { CippJitRoleTemplateApply } from "../../../../components/CippComponents/CippJitRoleTemplateApply";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { useEffect } from "react";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
+  const { filterRoles } = useJitAllowedRoles();
   const router = useRouter();
   const { id } = router.query;
 
@@ -150,13 +153,19 @@ const Page = () => {
               compareValue={true}
             >
               <Grid size={{ xs: 12 }}>
+                <CippJitRoleTemplateApply formControl={formControl} targetField="defaultRoles" />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   fullWidth
                   label="Default Roles"
                   name="defaultRoles"
                   creatable={false}
-                  options={gdaproles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                  options={filterRoles(jitAdminRoles).map((role) => ({
+                    label: role.Name,
+                    value: role.ObjectId,
+                  }))}
                   formControl={formControl}
                   required={true}
                   validators={{
@@ -334,7 +343,13 @@ const Page = () => {
               compareValue="create"
             >
               <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 2,
+                    mb: 1
+                  }}>
                   {isAllTenants
                     ? "Pre-fill user details (optional, for AllTenants templates)"
                     : "Pre-fill user details (optional, only for specific tenant templates)"}
@@ -400,7 +415,13 @@ const Page = () => {
               {!isAllTenants && (
                 <>
                   <Grid size={{ xs: 12 }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        mt: 2,
+                        mb: 1
+                      }}>
                       Select default user (optional, only for specific tenant templates)
                     </Typography>
                   </Grid>

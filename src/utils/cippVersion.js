@@ -26,12 +26,17 @@ export async function getCippVersion() {
   return fetchPromise;
 }
 
+import { getImpersonatedRole } from "./impersonation";
+
 // Build headers including X-CIPP-Version. Accept extra headers to merge.
 export async function buildVersionedHeaders(extra = {}) {
   const version = await getCippVersion();
+  // Backend honors this only for real superadmins; harmless for everyone else.
+  const impersonatedRole = getImpersonatedRole();
   return {
     "Content-Type": "application/json",
     "X-CIPP-Version": version,
+    ...(impersonatedRole ? { "x-cipp-impersonate-role": impersonatedRole } : {}),
     ...extra,
   };
 }

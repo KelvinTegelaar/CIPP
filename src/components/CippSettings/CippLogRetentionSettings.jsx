@@ -73,11 +73,13 @@ const CippLogRetentionSettings = () => {
             value={retentionDays}
             onChange={handleInputChange}
             disabled={retentionChange.isPending || retentionSetting.isLoading}
-            inputProps={{ min: 7, max: 365 }}
             error={!!error}
             helperText={error}
             sx={{ width: "120px" }}
             label="Days"
+            slotProps={{
+              htmlInput: { min: 7, max: 365 }
+            }}
           />
           <Button
             variant="contained"

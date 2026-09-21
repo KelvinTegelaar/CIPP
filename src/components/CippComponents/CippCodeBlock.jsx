@@ -1,10 +1,19 @@
 import { useState } from "react";
-import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import dynamic from "next/dynamic";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import { styled } from "@mui/system"; // Correct import from @mui/system
-import { Editor } from "@monaco-editor/react";
 import { useSettings } from "../../hooks/use-settings";
+
+// Heavy, client-only editors loaded on demand so monaco-editor (~5MB) and react-syntax-highlighter
+// stay out of the common bundle — they only download when a code block actually renders.
+const Editor = dynamic(() => import("@monaco-editor/react").then((m) => m.Editor), {
+  ssr: false,
+  loading: () => null,
+});
+const CippPrismHighlighter = dynamic(() => import("./CippPrismHighlighter"), {
+  ssr: false,
+  loading: () => null,
+});
 
 const CodeContainer = styled("div")`
   position: relative;
@@ -68,16 +77,14 @@ export const CippCodeBlock = (props) => {
         />
       )}
       {type === "syntax" && (
-        <SyntaxHighlighter
+        <CippPrismHighlighter
           lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
           language={language}
-          style={atomDark}
           showLineNumbers={showLineNumbers}
           startingLineNumber={startingLineNumber}
           wrapLongLines={wrapLongLines}
-        >
-          {code}
-        </SyntaxHighlighter>
+          code={code}
+        />
       )}
     </CodeContainer>
   );

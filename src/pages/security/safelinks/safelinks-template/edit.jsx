@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useEffect } from "react";
@@ -28,7 +28,7 @@ const Page = () => {
   const templateData = ApiGetCall({
     url: `/api/ListSafeLinksPolicyTemplateDetails?ID=${ID}`,
     queryKey: `SafeLinksTemplate-${ID}`,
-    enabled: !!ID,
+    waiting: !!ID,
   });
 
   // Populate forms with existing data when available
@@ -47,7 +47,11 @@ const Page = () => {
   return (
     <>
       <CippFormPage
-        title={`Edit Safe Links Template: ${templateData.data?.Results?.name || ID}`}
+        title={
+          templateData.data?.Results?.name || ID
+            ? `Safe Links Template: ${templateData.data?.Results?.name || ID}`
+            : "Safe Links Template"
+        }
         backButtonTitle="Safe Links Templates Overview"
         formPageType="Edit"
         formControl={formControl}
@@ -56,16 +60,25 @@ const Page = () => {
         queryKey={`SafeLinksTemplate-${ID}`}
         isLoading={templateData.isFetching}
         allowResubmit={true}
+        hideSubmit={!ID}
       >
-        <Box sx={{ my: 2 }}>
-          <Box sx={{ mb: 4 }}>
-            <SafeLinksForm
-              formControl={formControl}
-              PolicyName={watchPolicyName}
-              formType="template" 
-            />
+        {!ID && (
+          <Alert severity="info" sx={{ m: 2 }}>
+            No template selected. Open this page from the Safe Links Templates list to edit a
+            template.
+          </Alert>
+        )}
+        {ID && (
+          <Box sx={{ my: 2 }}>
+            <Box sx={{ mb: 4 }}>
+              <SafeLinksForm
+                formControl={formControl}
+                PolicyName={watchPolicyName}
+                formType="template"
+              />
+            </Box>
           </Box>
-        </Box>
+        )}
       </CippFormPage>
     </>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Button, Stack, IconButton } from '@mui/material'
-import { RocketLaunch, Sync } from '@mui/icons-material'
 import { useForm, useWatch, useFormState } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
@@ -16,6 +16,42 @@ const assignmentFilterTypeOptions = [
   { label: 'Include - Apply policy to devices matching filter', value: 'include' },
   { label: 'Exclude - Apply policy to devices NOT matching filter', value: 'exclude' },
 ]
+
+// Reserved replacement variables handled server-side by Get-CIPPTextReplacement.
+// These are populated automatically per tenant, so they must never be prompted for here.
+// Stored without the surrounding %% and lowercased for case-insensitive matching, since
+// templates may reference them in any casing (e.g. %TenantId%, %tenantid%).
+const reservedReplacementVariables = new Set(
+  [
+    'serial',
+    'systemroot',
+    'systemdrive',
+    'system32',
+    'osdrive',
+    'temp',
+    'tenantid',
+    'tenantfilter',
+    'initialdomain',
+    'tenantname',
+    'partnertenantid',
+    'samappid',
+    'userprofile',
+    'username',
+    'userdomain',
+    'windir',
+    'programfiles',
+    'programfiles(x86)',
+    'programdata',
+    'cippuserschema',
+    'cippurl',
+    'defaultdomain',
+    'organizationid',
+    // Apple enrollment (ADE) token binding. Resolved per tenant from the tenant's ADETokenId custom
+    // variable at deploy time; if it is unset the backend returns a clear error naming the tenant's
+    // real token id, so the token is never prompted for or shown in this drawer.
+    'adetokenid',
+  ].map((variable) => variable.toLowerCase()),
+)
 
 export const CippPolicyDeployDrawer = ({
   buttonText = 'Deploy Policy',
@@ -93,9 +129,9 @@ export const CippPolicyDeployDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<RocketLaunch />}
+        startIcon={<CippIcons.RocketLaunch />}
       >
         {buttonText}
       </PermissionButton>
@@ -105,7 +141,9 @@ export const CippPolicyDeployDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <Stack direction="row" justifyContent="flex-start" spacing={2}>
+          <Stack direction="row" spacing={2} sx={{
+            justifyContent: "flex-start"
+          }}>
             <Button
               variant="contained"
               color="primary"
@@ -152,7 +190,7 @@ export const CippPolicyDeployDrawer = ({
             customAction={{
               position: 'outside',
               label: 'Refresh Templates',
-              icon: <Sync />,
+              icon: <CippIcons.Sync />,
               onClick: () => {
                 CATemplates.refetch()
               },
@@ -176,10 +214,10 @@ export const CippPolicyDeployDrawer = ({
               type="radio"
               name="AssignTo"
               options={[
-                { label: 'Do not assign', value: 'On' },
-                { label: 'Assign to all users', value: 'allLicensedUsers' },
-                { label: 'Assign to all devices', value: 'AllDevices' },
-                { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                { label: 'Do Not Assign', value: 'On' },
+                { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                { label: 'Assign to All Devices', value: 'AllDevices' },
+                { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                 { label: 'Assign to Custom Group', value: 'customGroup' },
               ]}
               formControl={formControl}
@@ -259,7 +297,9 @@ export const CippPolicyDeployDrawer = ({
             {(() => {
               const rawJson = jsonWatch ? jsonWatch : ''
               const placeholderMatches = [...rawJson.matchAll(/%(\w+)%/g)].map((m) => m[1])
-              const uniquePlaceholders = Array.from(new Set(placeholderMatches))
+              const uniquePlaceholders = Array.from(new Set(placeholderMatches)).filter(
+                (placeholder) => !reservedReplacementVariables.has(placeholder.toLowerCase()),
+              )
               if (uniquePlaceholders.length === 0 || selectedTenants.length === 0) {
                 return null
               }
@@ -292,5 +332,5 @@ export const CippPolicyDeployDrawer = ({
         </Stack>
       </CippOffCanvas>
     </>
-  )
+  );
 }

@@ -1,5 +1,118 @@
 [
   {
+    "name": "standards.CopilotSettings",
+    "cat": "Copilot (M365) Standards",
+    "tag": [],
+    "helpText": "Configures Microsoft 365 Copilot tenant policy settings: Copilot Chat pinning, blocking Copilot access to open content, Designer image generation, web search, and admin-center Copilot. Each setting can be left unconfigured, enabled, or disabled. These settings are managed through the Copilot policy service (Cloud Policy / Intune) and are applied at the tenant level.",
+    "docsDescription": "Manages Microsoft 365 Copilot admin policy settings via the `/copilot/admin/policySettings` Microsoft Graph API (beta). Each of the five supported settings can be independently set or left unmanaged using the \"Do not configure\" option. NOTE: this API currently requires delegated authentication and supports only tenant-level policies; settings scoped to group-level policies return an error and are skipped. Values are strings whose meaning is per-setting, not uniform: web search is three-state (\"0\" enabled everywhere, \"1\" disabled everywhere, \"2\" disabled in Copilot Work mode only) and Designer image generation is inverted (\"1\" disables it, \"0\" enables it). Graph treats these as opaque strings and validates nothing, so do not assume 1=on/0=off for a setting you have not verified against a Copilot-licensed tenant.",
+    "executiveText": "Provides centralized governance of Microsoft 365 Copilot capabilities across the organization. Administrators can control whether Copilot Chat is pinned for users, whether Copilot can access open files, and whether features such as image generation and web search are available, helping balance employee productivity with data governance and compliance requirements.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Pin Microsoft 365 Copilot Chat",
+        "name": "standards.CopilotSettings.copilotChatPinning",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "1" },
+          { "label": "Disabled", "value": "0" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Copilot Access to Open Content",
+        "name": "standards.CopilotSettings.blockAccessToOpenFiles",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Block open content", "value": "1" },
+          { "label": "Allow open content", "value": "0" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Designer Image Generation",
+        "name": "standards.CopilotSettings.imageGeneration",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Disabled", "value": "1" },
+          { "label": "Enabled", "value": "0" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Web Search in Copilot",
+        "name": "standards.CopilotSettings.allowWebSearch",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Enabled in Microsoft 365 Copilot and Microsoft 365 Copilot Chat", "value": "0" },
+          { "label": "Disabled in Microsoft 365 Copilot and Microsoft 365 Copilot Chat", "value": "1" },
+          {
+            "label": "Disabled in Microsoft 365 Copilot Work mode, Enabled in Microsoft 365 Copilot Chat",
+            "value": "2"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Admin Copilot in Microsoft 365 Admin Center",
+        "name": "standards.CopilotSettings.allowInAdminCenters",
+        "options": [
+          { "label": "Do not configure", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "1" },
+          { "label": "Disabled", "value": "0" }
+        ]
+      }
+    ],
+    "label": "Configure Microsoft 365 Copilot policy settings",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-06-09",
+    "powershellEquivalent": "Graph API: PATCH /beta/copilot/admin/policySettings/{id}",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.CopilotLimitedMode",
+    "cat": "Copilot (M365) Standards",
+    "tag": [],
+    "helpText": "Controls Microsoft 365 Copilot Limited Mode for Teams meetings. When enabled for a group, Copilot in Teams meetings does not respond to sentiment-related prompts (inferring emotions, behavior, or judgments) for members of the selected group. A target group is required when enabling. Managed via the Copilot admin settings Graph API.",
+    "docsDescription": "Configures the `copilotAdminLimitedMode` setting through the `/copilot/admin/settings/limitedMode` Microsoft Graph API (beta). When enabled, `isEnabledForGroup` is set to true and applied to the resolved target group; when disabled, `isEnabledForGroup` is set to false. NOTE: this API currently requires delegated authentication and the acting identity must be Global Administrator to write the setting.",
+    "executiveText": "Limits Microsoft 365 Copilot in Teams meetings so it does not provide opinions on sentiment, emotions, or judgments for a selected group of users. This helps organizations meet workplace policy, privacy, and works-council requirements while still allowing Copilot to summarize and answer factual questions grounded in the meeting.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.CopilotLimitedMode.LimitedModeEnabled",
+        "label": "Enable Copilot Limited Mode for a group (Teams meetings)",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.CopilotLimitedMode.GroupName",
+        "label": "Target Group Name (wildcard match; required when enabled)",
+        "required": false,
+        "condition": {
+          "field": "standards.CopilotLimitedMode.LimitedModeEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      }
+    ],
+    "label": "Configure Microsoft 365 Copilot Limited Mode (Teams meetings)",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-06-09",
+    "powershellEquivalent": "Graph API: PATCH /beta/copilot/admin/settings/limitedMode",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.MailContacts",
     "cat": "Global Standards",
     "tag": [],
@@ -269,8 +382,8 @@
     "cat": "Global Standards",
     "tag": ["CIS M365 7.0.0 (1.3.6)", "CustomerLockBoxEnabled"],
     "appliesToTest": ["CIS_1_3_6"],
-    "helpText": "**Requires Entra ID P2.** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
-    "docsDescription": "**Requires Entra ID P2.** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
+    "helpText": "**Requires CustomerLockbox (E5, E7, A5, Purview Addon for BP, EDU or FL)** Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
+    "docsDescription": "**Requires CustomerLockbox (E5, E7, A5, Purview Addon for BP, EDU or FL)** Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
     "executiveText": "Requires explicit organizational approval before Microsoft support staff can access company data for service operations. This provides an additional layer of data protection and ensures the organization maintains control over who can access sensitive business information, even during technical support scenarios.",
     "addedComponent": [],
     "label": "Enable Customer Lockbox",
@@ -469,15 +582,23 @@
     "name": "standards.AuthenticationMethods",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "helpText": "Configures all authentication methods for the tenant including Microsoft Authenticator, FIDO2, SMS, Voice, Email OTP, Temporary Access Pass, Software OATH, Hardware OATH, Certificate-based, and QR Code Pin. Enable or disable each method and optionally target specific groups.",
-    "docsDescription": "Unified standard to configure all authentication method policies in a single place. Each method can be independently enabled or disabled, targeted to all users or specific groups using group name wildcards, and configured with method-specific settings such as TAP lifetime, QR code pin length, and Authenticator software OTP.",
+    "helpText": "Configures all authentication methods for the tenant including Microsoft Authenticator, FIDO2, SMS, Voice, Email OTP, Temporary Access Pass, Software OATH, Hardware OATH, Certificate-based, and QR Code Pin. Set each method to Enabled, Disabled or Not Configured and optionally target specific groups. Methods set to Not Configured (or left blank) keep the tenant's current setting.",
+    "docsDescription": "Unified standard to configure all authentication method policies in a single place. Each method can be independently set to Enabled, Disabled or Not Configured (leaving the tenant's current configuration untouched), targeted to all users or specific groups using group name wildcards, and configured with method-specific settings such as TAP lifetime, QR code pin length, and Authenticator software OTP.",
     "executiveText": "Provides centralized control over all tenant authentication methods from a single standard. Administrators can enable phishing-resistant methods like FIDO2 and Microsoft Authenticator while disabling less secure options like SMS and Voice. Each method supports group-level targeting using wildcard group names, allowing staged rollouts and granular control.",
     "addedComponent": [
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
         "label": "Microsoft Authenticator",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -486,7 +607,7 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -497,7 +618,7 @@
         "defaultValue": false,
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -514,7 +635,7 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -531,7 +652,7 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -548,7 +669,7 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -565,15 +686,23 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.MicrosoftAuthenticatorEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.FIDO2Enabled",
         "label": "FIDO2 Security Keys",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -582,15 +711,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.FIDO2Enabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.TAPEnabled",
         "label": "Temporary Access Pass",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -599,7 +736,7 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -615,7 +752,7 @@
         ],
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -626,7 +763,7 @@
         "defaultValue": 60,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -637,7 +774,7 @@
         "defaultValue": 60,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -648,7 +785,7 @@
         "defaultValue": 480,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -659,15 +796,23 @@
         "defaultValue": 8,
         "condition": {
           "field": "standards.AuthenticationMethods.TAPEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.SoftwareOathEnabled",
         "label": "Third-Party Software OATH Tokens",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -676,15 +821,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.SoftwareOathEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.HardwareOathEnabled",
         "label": "Hardware OATH Tokens",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -693,15 +846,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.HardwareOathEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.SMSEnabled",
         "label": "SMS",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -710,15 +871,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.SMSEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.VoiceEnabled",
         "label": "Voice Call",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -727,15 +896,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.VoiceEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.EmailEnabled",
         "label": "Email OTP",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -744,15 +921,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.EmailEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.x509CertificateEnabled",
         "label": "Certificate-Based Authentication",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -761,15 +946,23 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.x509CertificateEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
       {
-        "type": "switch",
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
         "name": "standards.AuthenticationMethods.QRCodePinEnabled",
         "label": "QR Code Pin",
-        "defaultValue": false
+        "helperText": "Not Configured or blank leaves the tenant's current setting untouched.",
+        "options": [
+          { "label": "Enabled", "value": true },
+          { "label": "Disabled", "value": false },
+          { "label": "Not Configured", "value": "notConfigured" }
+        ]
       },
       {
         "type": "textField",
@@ -778,7 +971,7 @@
         "required": false,
         "condition": {
           "field": "standards.AuthenticationMethods.QRCodePinEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -789,7 +982,7 @@
         "defaultValue": 365,
         "condition": {
           "field": "standards.AuthenticationMethods.QRCodePinEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       },
@@ -800,7 +993,7 @@
         "defaultValue": 8,
         "condition": {
           "field": "standards.AuthenticationMethods.QRCodePinEnabled",
-          "compareType": "is",
+          "compareType": "valueEq",
           "compareValue": true
         }
       }
@@ -886,7 +1079,8 @@
           "labelField": "TemplateName",
           "valueField": "TemplateId",
           "queryKey": "StdAppApprovalTemplateList",
-          "addedField": { "AppId": "AppId" }
+          "addedField": { "AppId": "AppId" },
+          "templateView": { "title": "App Approval Template" }
         },
         "condition": {
           "field": "standards.AppDeploy.mode",
@@ -1099,15 +1293,55 @@
     "cat": "Entra (AAD) Standards",
     "tag": [],
     "appliesToTest": ["EIDSCAAT01", "EIDSCAAT02", "ZTNA21845", "ZTNA21846"],
-    "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select if a TAP is single use or multi-logon.",
+    "helpText": "Enable TAP with the specified configuration settings.",
     "docsDescription": "Enables Temporary Access Pass generation for the tenant.",
-    "executiveText": "Enables temporary access passes that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passs provide a secure way to restore access without compromising long-term security policies.",
+    "executiveText": "Enables temporary access passes that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passes provide a secure way to restore access without compromising long-term security policies.",
     "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.TAP.MinimumLifetime",
+        "label": "Minimum Lifetime (minutes)",
+        "defaultValue": 60,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.MaximumLifetime",
+        "label": "Maximum Lifetime (minutes)",
+        "defaultValue": 480,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.DefaultLifetime",
+        "label": "Default Lifetime (minutes)",
+        "defaultValue": 60,
+        "validators": {
+          "min": { "value": 10, "message": "Minimum value is 10" },
+          "max": { "value": 43200, "message": "Maximum value is 43200" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.TAP.TAPLength",
+        "label": "Length (characters)",
+        "defaultValue": 8,
+        "validators": {
+          "min": { "value": 8, "message": "Minimum value is 8" },
+          "max": { "value": 48, "message": "Maximum value is 48" }
+        }
+      },
       {
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
-        "label": "Select TAP Lifetime",
+        "label": "Number of Times Usable",
         "name": "standards.TAP.config",
         "options": [
           { "label": "Only Once", "value": "true" },
@@ -1201,6 +1435,32 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.ExternalComplianceTrusted",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Sets the state of the Cross-tenant access setting to trust external compliant devices. This allows guest users to use a compliant device from their home tenant to access your tenant.",
+    "executiveText": "Allows external partners and vendors to use compliant devices from their own organization when accessing company resources, streamlining collaboration while maintaining security standards. This reduces friction for external users while ensuring their devices still meet compliance requirements.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.ExternalComplianceTrusted.state",
+        "options": [
+          { "label": "Enabled", "value": "true" },
+          { "label": "Disabled", "value": "false" }
+        ]
+      }
+    ],
+    "label": "Sets the Cross-tenant access setting to trust external compliant devices",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-25",
+    "powershellEquivalent": "Update-MgBetaPolicyCrossTenantAccessPolicyDefault",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS M365 7.0.0 (5.1.2.3)", "CISA (MS.AAD.6.1v1)", "SMB1001 (2.8)"],
@@ -1240,14 +1500,22 @@
       "ZTNA21809",
       "ZTNA21869"
     ],
-    "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
-    "docsDescription": "Enables the ability for users to request admin consent for applications. Should be used in conjunction with the \"Require admin consent for applications\" standards",
+    "helpText": "Enables App consent admin requests for the tenant via the GA role. Optionally adds specific users (matched by display name) as reviewers. Does not overwrite existing reviewer settings",
+    "docsDescription": "Enables the ability for users to request admin consent for applications. Reviewers can be directory roles and/or specific users matched by display name, e.g. a central MSP support account that exists as a guest in each tenant, so each consent request generates a notification to a monitored mailbox. Should be used in conjunction with the \"Require admin consent for applications\" standards",
     "executiveText": "Establishes a formal approval process where employees can request access to business applications that require administrative review. This balances security with productivity by allowing controlled access to necessary tools while preventing unauthorized application installations.",
     "addedComponent": [
       {
         "type": "AdminRolesMultiSelect",
         "label": "App Consent Reviewer Roles",
         "name": "standards.EnableAppConsentRequests.ReviewerRoles"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "label": "Optional: reviewer users (display names of existing users or guests)",
+        "name": "standards.EnableAppConsentRequests.ReviewerUsers"
       }
     ],
     "label": "Enable App consent admin requests",
@@ -1262,20 +1530,38 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["SMB1001 (2.5)"],
     "appliesToTest": ["SMB1001_2_5", "ZTNA21889"],
-    "helpText": "Sets the state of the registration campaign for the tenant",
-    "docsDescription": "Sets the state of the registration campaign for the tenant. If enabled nudges users to set up the Microsoft Authenticator during sign-in.",
+    "helpText": "Sets the state of the registration campaign for the tenant, including the targeted authentication method, snooze settings and include/exclude groups. Leave include/exclude blank to keep the groups currently configured in the tenant, or use 'AllUsers' to target all users.",
+    "docsDescription": "Sets the state of the registration campaign for the tenant. If enabled nudges users to set up the targeted authentication method (Microsoft Authenticator or a Passkey) during sign-in. Supports limiting the number of snoozes, and including or excluding specific groups (by display name).",
     "executiveText": "Prompts employees to set up multi-factor authentication during login, gradually improving the organization's security posture by encouraging adoption of stronger authentication methods. This helps achieve better security compliance without forcing immediate mandatory changes.",
     "addedComponent": [
       {
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
-        "label": "Select value",
+        "label": "Registration campaign state",
         "name": "standards.NudgeMFA.state",
         "options": [
           { "label": "Enabled", "value": "enabled" },
-          { "label": "Disabled", "value": "disabled" }
+          { "label": "Disabled", "value": "disabled" },
+          { "label": "Microsoft managed", "value": "default" }
         ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "label": "Authentication method to nudge users to register (default is Microsoft Authenticator)",
+        "name": "standards.NudgeMFA.targetedAuthenticationMethod",
+        "options": [
+          { "label": "Microsoft Authenticator", "value": "microsoftAuthenticator" },
+          { "label": "Passkey (FIDO2)", "value": "fido2" }
+        ],
+        "condition": {
+          "field": "standards.NudgeMFA.state",
+          "compareType": "valueEq",
+          "compareValue": "enabled"
+        }
       },
       {
         "type": "number",
@@ -1285,6 +1571,39 @@
         "validators": {
           "min": { "value": 0, "message": "Minimum value is 0" },
           "max": { "value": 14, "message": "Maximum value is 14" }
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.NudgeMFA.enforceRegistrationAfterAllowedSnoozes",
+        "label": "Limited number of snoozes (require registration after 3 snoozes)",
+        "defaultValue": true,
+        "condition": {
+          "field": "standards.NudgeMFA.state",
+          "compareType": "valueEq",
+          "compareValue": "enabled"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "standards.NudgeMFA.includeTargets",
+        "label": "Include groups (comma separated group names, 'AllUsers' for everyone, blank = keep current targets)",
+        "required": false,
+        "condition": {
+          "field": "standards.NudgeMFA.state",
+          "compareType": "valueEq",
+          "compareValue": "enabled"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "standards.NudgeMFA.excludeTargets",
+        "label": "Exclude groups (comma separated group names, blank = keep current exclusions)",
+        "required": false,
+        "condition": {
+          "field": "standards.NudgeMFA.state",
+          "compareType": "valueEq",
+          "compareValue": "enabled"
         }
       }
     ],
@@ -1300,10 +1619,23 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["CISA (MS.AAD.21.1v1)", "SMB1001 (2.8)"],
     "appliesToTest": ["SMB1001_2_8", "ZTNA21868"],
-    "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
-    "docsDescription": "Users by default are allowed to create M365 groups. This restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
-    "executiveText": "Restricts the creation of Microsoft 365 groups, Teams, and SharePoint sites to authorized administrators, preventing uncontrolled proliferation of collaboration spaces. This ensures proper governance, naming conventions, and resource management while maintaining oversight of all collaborative environments.",
-    "addedComponent": [],
+    "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc. Optionally allows members of a specific security group to keep creating groups (GroupCreationAllowedGroupId).",
+    "docsDescription": "Users by default are allowed to create M365 groups. This restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc. Optionally, a security group can be named whose members remain allowed to create groups; the group is resolved by display name in each tenant and can be created automatically when it does not exist. When no group is named, the existing GroupCreationAllowedGroupId value in the tenant is left untouched.",
+    "executiveText": "Restricts the creation of Microsoft 365 groups, Teams, and SharePoint sites to authorized administrators, preventing uncontrolled proliferation of collaboration spaces. This ensures proper governance, naming conventions, and resource management while maintaining oversight of all collaborative environments. An approved group of designated users can optionally retain the ability to create groups.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.DisableM365GroupUsers.AllowedGroupName",
+        "label": "Optional: name of the group whose members may still create M365 groups",
+        "required": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DisableM365GroupUsers.CreateGroup",
+        "label": "Create the allowed group if it does not exist",
+        "required": false
+      }
+    ],
     "label": "Disable M365 Group creation by users",
     "impact": "Low Impact",
     "impactColour": "info",
@@ -1409,7 +1741,7 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS M365 7.0.0 (1.3.4)", "SMB1001 (2.8)"],
     "appliesToTest": ["CIS_1_3_4", "EIDSCAAP05", "SMB1001_2_8"],
-    "helpText": "**Requires 'Billing Administrator' GDAP role.** This standard disables all self service licenses and enables all exclusions",
+    "helpText": "This standard disables all self service licenses and enables all exclusions",
     "executiveText": "Prevents employees from purchasing Microsoft 365 licenses independently, ensuring all software acquisitions go through proper procurement channels. This maintains budget control, prevents unauthorized spending, and ensures compliance with corporate licensing agreements.",
     "addedComponent": [
       {
@@ -1428,7 +1760,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2021-11-16",
-    "powershellEquivalent": "Set-MsolCompanySettings -AllowAdHocSubscriptions $false",
+    "powershellEquivalent": "Update-MSCommerceProductPolicy -PolicyId AllowSelfServicePurchase -Value Disabled",
     "recommendedBy": []
   },
   {
@@ -1436,8 +1768,9 @@
     "cat": "Entra (AAD) Standards",
     "tag": ["SMB1001 (2.8)"],
     "appliesToTest": ["SMB1001_2_8", "ZTNA21858"],
-    "helpText": "Blocks login for guest users that have not logged in for a number of days",
-    "executiveText": "Automatically disables external guest accounts that haven't been used for a number of days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
+    "helpText": "Blocks login for guest users whose most recent sign-in attempt, interactive or non-interactive, is older than the number of days. Optionally soft-deletes already-disabled guests after a configurable grace period past that threshold (0 = never delete). Guests that have never signed in are only included when 'Disable accounts that have not yet signed in' is enabled. Accounts an administrator re-enabled in the last 7 days are left alone. Deleted guests remain recoverable from Deleted Items for about 30 days.",
+    "docsDescription": "Blocks login for guest users whose most recent sign-in attempt, interactive or non-interactive, is older than the number of days. Remediation first disables stale enabled guests, and later soft-deletes guests that are already disabled once they have been inactive for the disable threshold plus the configured grace delta (deletion age = days + deleteGraceDays). The disable-before-delete grace is further guaranteed by never deleting a guest in the same pass it was disabled. Guests that have never signed in are only included when 'Disable accounts that have not yet signed in' is enabled. Accounts an administrator re-enabled in the last 7 days are left alone. Graph user DELETE is a soft-delete (recoverable from Deleted Items for about 30 days), which lets a later re-invite create a clean guest object instead of colliding with a disabled account.",
+    "executiveText": "Automatically disables external guest accounts that haven't been used for a number of days, and can optionally remove already-disabled dormant guests after an additional grace period. This reduces security risks from abandoned external access, keeps the directory clean, and avoids errors when previously disabled guests need to be invited back.",
     "addedComponent": [
       {
         "type": "number",
@@ -1445,14 +1778,56 @@
         "required": true,
         "defaultValue": 90,
         "label": "Days of inactivity"
+      },
+      {
+        "type": "number",
+        "name": "standards.DisableGuests.deleteGraceDays",
+        "label": "Grace days after disable before deletion (0 = never delete). Guests are deleted once inactive for the disable threshold plus this many additional days.",
+        "defaultValue": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" }
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.DisableGuests.IncludeNeverSignedIn",
+        "label": "Disable accounts that have not yet signed in",
+        "defaultValue": false
       }
     ],
     "label": "Disable Guest accounts that have not logged on for a number of days",
-    "impact": "Medium Impact",
-    "impactColour": "warning",
+    "impact": "High Impact",
+    "impactColour": "danger",
     "addedDate": "2022-10-20",
     "powershellEquivalent": "Graph API",
     "recommendedBy": ["CIS", "CIPP"],
+    "requiredCapabilities": ["AAD_PREMIUM", "AAD_PREMIUM_P2"]
+  },
+  {
+    "name": "standards.DisableInactiveUsers",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["CMMC (IA.L2-3.5.6)", "NIST SP 800-171 (3.5.6)"],
+    "helpText": "Blocks login for cloud-only member users that have not signed in for a configurable number of days (minimum 30). Includes accounts that have never signed in when the account is older than the threshold. Hybrid (on-premises synced) users are skipped. Users without sign-in activity data are not disabled.",
+    "docsDescription": "Disables enabled Member user accounts after a defined period of inactivity (minimum 30 days), supporting CMMC IA.L2-3.5.6 / NIST SP 800-171 3.5.6. Inactivity is based on signInActivity.lastSuccessfulSignInDateTime. Accounts that have never signed in (signInActivity present but no successful sign-in) are included when createdDateTime is older than the threshold. Users missing signInActivity entirely are skipped so incomplete Graph data cannot cause accidental disables. Hybrid-synced (onPremisesSyncEnabled) users are skipped because Entra disable often will not stick. Recently re-enabled accounts (last 7 days) are also skipped. Values below 30 days are rejected at runtime.",
+    "executiveText": "Automatically disables unused employee accounts that have not signed in for a configured number of days, reducing risk from dormant accounts and supporting CMMC / NIST inactive-identifier requirements. Hybrid directory-synced accounts are left alone so on-premises identity remains the source of truth for those users.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.DisableInactiveUsers.days",
+        "required": true,
+        "defaultValue": 180,
+        "label": "Days of inactivity (minimum 30)",
+        "validators": {
+          "min": { "value": 30, "message": "Minimum value is 30" }
+        }
+      }
+    ],
+    "label": "Disable Member accounts that have not logged on for a number of days",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-07-22",
+    "powershellEquivalent": "Get-MgUser -Property SignInActivity & Update-MgUser -AccountEnabled $false",
+    "recommendedBy": ["CIPP", "CMMC"],
     "requiredCapabilities": ["AAD_PREMIUM", "AAD_PREMIUM_P2"]
   },
   {
@@ -1478,8 +1853,8 @@
       "ZTNA21807",
       "ZTNA21810"
     ],
-    "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
-    "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
+    "helpText": "Disables users from being able to consent to applications, except for those specified in the field below. This standard conflicts with the \"Allow users to consent to applications with low security risk\" standard; only one of the two should be assigned per tenant.",
+    "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications. This standard conflicts with the \"Allow users to consent to applications with low security risk\" (OauthConsentLowSec) standard. Enabling both on the same tenant causes a remediation conflict, so only assign one.",
     "executiveText": "Requires administrative approval before employees can grant applications access to company data, preventing unauthorized data sharing and potential security breaches. This protects against malicious applications while allowing approved business tools to function normally.",
     "addedComponent": [
       {
@@ -1500,8 +1875,8 @@
     "name": "standards.OauthConsentLowSec",
     "cat": "Entra (AAD) Standards",
     "tag": ["IntegratedApps"],
-    "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
-    "docsDescription": "Allows users to consent to applications with low assigned risk.",
+    "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks. This standard conflicts with the \"Require admin consent for applications\" standard; only one of the two should be assigned per tenant.",
+    "docsDescription": "Allows users to consent to applications with low assigned risk. This standard conflicts with the \"Require admin consent for applications (Prevent OAuth phishing)\" (OauthConsent) standard. Enabling both on the same tenant causes a remediation conflict, so only assign one.",
     "executiveText": "Allows employees to approve low-risk applications without administrative intervention, balancing security with productivity. This provides a middle ground between complete restriction and open access, enabling business agility while maintaining protection against high-risk applications.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
     "impact": "Medium Impact",
@@ -1547,27 +1922,38 @@
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
     "tag": ["Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
-    "helpText": "**Remediate is currently not available**. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
-    "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
+    "helpText": "Cleans up Entra devices that have not connected/signed in for the specified number of days. Remediation first disables stale enabled devices and, on a later run, deletes stale devices that are already disabled. Hybrid-joined, Intune-managed and Autopilot devices are skipped. Deleting a device permanently removes any BitLocker recovery keys stored on it.",
+    "docsDescription": "Cleans up Entra devices that have not connected/signed in for the specified number of days. Remediation first disables stale enabled devices once they pass the disable threshold, and later deletes devices that are already disabled once they have been inactive for the disable threshold plus the configured grace delta (deletion age = disable threshold + grace days). The disable-before-delete grace period is further guaranteed by never deleting a device in the same pass it was disabled. Hybrid-joined (on-premises synced), Intune-managed/compliant, and system-managed Autopilot devices are excluded, in line with the [Microsoft guidance](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices). **Warning:** deleting a device permanently removes any BitLocker recovery keys stored on that device object.",
     "executiveText": "Automatically identifies and removes inactive devices that haven't connected to company systems for a specified period, reducing security risks from abandoned or lost devices. This maintains a clean device inventory and prevents potential unauthorized access through dormant device registrations.",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.StaleEntraDevices.deviceAgeThreshold",
-        "label": "Days before stale(Do not set below 30)",
+        "required": true,
+        "defaultValue": 90,
+        "label": "Days before stale (disables the device after this many days of inactivity, minimum 30)",
         "validators": {
           "min": { "value": 30, "message": "Minimum value is 30" }
         }
+      },
+      {
+        "type": "number",
+        "name": "standards.StaleEntraDevices.deviceDeleteThreshold",
+        "defaultValue": 0,
+        "label": "Grace days after disable before deletion (0 = never delete). Devices are deleted once inactive for the disable threshold plus this many additional days.",
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" }
+        }
       }
     ],
-    "disabledFeatures": { "report": false, "warn": false, "remediate": true },
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
     "label": "Cleanup stale Entra devices",
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2025-01-19",
     "powershellEquivalent": "Remove-MgDevice, Update-MgDevice or Graph API",
     "recommendedBy": [],
-    "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
+    "requiredCapabilities": []
   },
   {
     "name": "standards.UndoOauth",
@@ -1790,8 +2176,21 @@
   {
     "name": "standards.AppManagementPolicy",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 7.0.0 (5.1.5.3)", "CIS M365 7.0.0 (5.1.5.4)", "CIS M365 7.0.0 (5.1.5.5)", "CIS M365 7.0.0 (5.1.5.6)"],
-    "appliesToTest": ["CIS_5_1_5_3", "CIS_5_1_5_4", "CIS_5_1_5_5", "CIS_5_1_5_6", "ZTNA21773", "ZTNA21896", "ZTNA21992"],
+    "tag": [
+      "CIS M365 7.0.0 (5.1.5.3)",
+      "CIS M365 7.0.0 (5.1.5.4)",
+      "CIS M365 7.0.0 (5.1.5.5)",
+      "CIS M365 7.0.0 (5.1.5.6)"
+    ],
+    "appliesToTest": [
+      "CIS_5_1_5_3",
+      "CIS_5_1_5_4",
+      "CIS_5_1_5_5",
+      "CIS_5_1_5_6",
+      "ZTNA21773",
+      "ZTNA21896",
+      "ZTNA21992"
+    ],
     "helpText": "Configures the default app management policy to control application and service principal credential restrictions such as password and key credential lifetimes.",
     "docsDescription": "Configures the default app management policy to control application and service principal credential restrictions. This includes password addition restrictions, custom password addition, symmetric key addition, and credential lifetime limits for both applications and service principals.",
     "executiveText": "Enforces credential restrictions on application registrations and service principals to limit how secrets and certificates are created and how long they remain valid. This reduces the risk of long-lived or unmanaged credentials being used to access your tenant.",
@@ -1852,6 +2251,16 @@
         "type": "textField",
         "name": "standards.OutBoundSpamAlert.OutboundSpamContact",
         "label": "Outbound spam contact"
+      },
+      {
+        "type": "switch",
+        "name": "standards.OutBoundSpamAlert.BccSuspiciousOutboundMail",
+        "label": "BCC suspicious outbound mail to a mailbox"
+      },
+      {
+        "type": "textField",
+        "name": "standards.OutBoundSpamAlert.BccSuspiciousOutboundContact",
+        "label": "BCC recipient for suspicious outbound mail"
       }
     ],
     "label": "Set Outbound Spam Alert e-mail",
@@ -2109,6 +2518,71 @@
     "impactColour": "info",
     "addedDate": "2024-06-25",
     "powershellEquivalent": "Set-Mailbox -LitigationHoldEnabled $true",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
+    "name": "standards.SetDefaultMailboxFont",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets the default compose font name, size and colour for all user and shared mailboxes. Font size is the 1-7 scale Exchange stores, not a point size. Applies to Outlook on the web and new Outlook only - classic Outlook for Windows/Mac uses its own local font settings and is not affected.",
+    "docsDescription": "Loops through all UserMailbox and SharedMailbox recipients and sets the Outlook on the web default compose font using `Set-MailboxMessageConfiguration`. Mailboxes already matching the configured font are skipped, so steady-state runs make no writes. Font size is the integer 1-7 scale Exchange stores rather than a point size: 3 is the Exchange default and corresponds to 12pt. Note that these settings apply to Outlook on the web and the new Outlook client only; classic Outlook for Windows and Mac read their compose font from local client settings. See [Microsoft's documentation.](https://learn.microsoft.com/powershell/module/exchangepowershell/set-mailboxmessageconfiguration)",
+    "executiveText": "Applies a consistent default font, size and colour to outgoing email so that messages from across the organisation look uniform and on-brand. This affects the web and new Outlook clients; users can still change the font on an individual message.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": true,
+        "required": true,
+        "name": "standards.SetDefaultMailboxFont.DefaultFontName",
+        "label": "Default font name",
+        "helperText": "Font applied to new messages. You can type a font that is not in this list.",
+        "options": [
+          { "label": "Aptos", "value": "Aptos" },
+          { "label": "Arial", "value": "Arial" },
+          { "label": "Calibri", "value": "Calibri" },
+          { "label": "Cambria", "value": "Cambria" },
+          { "label": "Georgia", "value": "Georgia" },
+          { "label": "Helvetica", "value": "Helvetica" },
+          { "label": "Segoe UI", "value": "Segoe UI" },
+          { "label": "Tahoma", "value": "Tahoma" },
+          { "label": "Times New Roman", "value": "Times New Roman" },
+          { "label": "Trebuchet MS", "value": "Trebuchet MS" },
+          { "label": "Verdana", "value": "Verdana" }
+        ]
+      },
+      {
+        "type": "number",
+        "required": true,
+        "name": "standards.SetDefaultMailboxFont.DefaultFontSize",
+        "label": "Default font size (1-7)",
+        "defaultValue": 3,
+        "helperText": "Exchange stores a 1-7 size scale, not a point size. 3 is the Exchange default and corresponds to 12pt; lower is smaller, higher is larger.",
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 7, "message": "Maximum value is 7" }
+        }
+      },
+      {
+        "type": "textField",
+        "required": true,
+        "name": "standards.SetDefaultMailboxFont.DefaultFontColor",
+        "label": "Default font colour",
+        "placeholder": "#000000",
+        "helperText": "Six-digit hex colour in the #xxxxxx format, for example #000000. Exchange stores six digits, so shorthand such as #000 is not accepted."
+      }
+    ],
+    "label": "Set default mailbox font, size and colour",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-04",
+    "powershellEquivalent": "Set-MailboxMessageConfiguration -DefaultFontName -DefaultFontSize -DefaultFontColor",
     "recommendedBy": [],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",
@@ -2981,7 +3455,7 @@
     "tag": ["CIS M365 7.0.0 (8.6.1)"],
     "appliesToTest": ["CIS_8_6_1"],
     "helpText": "Set the state of the spam submission button in Outlook",
-    "docsDescription": "Set the state of the built-in Report button in Outlook. This gives the users the ability to report emails as spam or phish.",
+    "docsDescription": "Set the state of the built-in Report button in Outlook. This gives the users the ability to report emails as spam or phish. When a destination email address is set, the 'Send reported items to' setting controls whether reported messages go to Microsoft and the reporting mailbox, or to the reporting mailbox only (for third-party phishing report services).",
     "executiveText": "Enables employees to easily report suspicious emails directly from Outlook, helping improve the organization's spam and phishing detection systems. This crowdsourced approach to security allows users to contribute to threat detection while providing valuable feedback to enhance email security filters.",
     "addedComponent": [
       {
@@ -2999,6 +3473,16 @@
         "name": "standards.UserSubmissions.email",
         "required": false,
         "label": "Destination email address"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "label": "Send reported items to (when a destination email address is set)",
+        "name": "standards.UserSubmissions.reportDestination",
+        "options": [
+          { "label": "Microsoft and my reporting mailbox", "value": "Both" },
+          { "label": "My reporting mailbox only", "value": "Mailbox" }
+        ]
       }
     ],
     "label": "Set the state of the built-in Report button in Outlook",
@@ -3035,6 +3519,21 @@
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.TeamsDisableResourceAccounts",
+    "cat": "Teams Standards",
+    "tag": ["NIST CSF 2.0 (PR.AA-01)"],
+    "helpText": "Blocks sign-in for all Teams resource accounts used by Auto Attendants and Call Queues. Microsoft's guidance is to block sign-in for resource accounts as they do not require an interactive login to function.",
+    "docsDescription": "Teams resource accounts (the accounts backing Auto Attendants and Call Queues) do not require interactive sign-in to function. If sign-in is enabled and the password is reset, the account can be logged into directly, which presents a security risk. Microsoft's guidance is to block sign-in for these accounts. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
+    "executiveText": "Prevents direct login to the service accounts that power phone system features like Auto Attendants and Call Queues. These accounts work without anyone signing into them, so blocking sign-in removes an unnecessary attack surface while keeping the phone system fully functional.",
+    "addedComponent": [],
+    "label": "Block sign-in for Teams resource accounts",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-07-17",
+    "powershellEquivalent": "Get-CsOnlineApplicationInstance & Update-MgUser",
+    "recommendedBy": ["Microsoft", "CIPP"]
   },
   {
     "name": "standards.DisableResourceMailbox",
@@ -3122,21 +3621,38 @@
     "name": "standards.QuarantineRequestAlert",
     "cat": "Defender Standards",
     "tag": [],
-    "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message.",
-    "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released.",
+    "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message. Set the alert state to Removed to delete the alert rule CIPP created from the tenant.",
+    "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released. Setting the alert state to Removed deletes the alert rule CIPP created from the tenant, for when the alert is no longer wanted.",
     "executiveText": "Notifies IT administrators when employees request to release emails that were quarantined for security reasons, enabling oversight of potentially dangerous messages. This helps ensure that legitimate emails are released while maintaining security controls over suspicious content.",
     "addedComponent": [
       {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "label": "Alert state (blank or Enabled creates the alert, Removed deletes it)",
+        "name": "standards.QuarantineRequestAlert.state",
+        "options": [
+          { "label": "Enabled", "value": "enabled" },
+          { "label": "Removed", "value": "removed" }
+        ]
+      },
+      {
         "type": "textField",
         "name": "standards.QuarantineRequestAlert.NotifyUser",
-        "label": "E-mail to receive the alert"
+        "label": "E-mail to receive the alert",
+        "condition": {
+          "field": "standards.QuarantineRequestAlert.state",
+          "compareType": "isNot",
+          "compareValue": { "label": "Removed", "value": "removed" }
+        }
       }
     ],
     "label": "Quarantine Release Request Alert",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-07-15",
-    "powershellEquivalent": "New-ProtectionAlert and Set-ProtectionAlert",
+    "powershellEquivalent": "New-ProtectionAlert, Set-ProtectionAlert and Remove-ProtectionAlert",
     "recommendedBy": [],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",
@@ -3938,6 +4454,18 @@
       },
       {
         "type": "autoComplete",
+        "required": false,
+        "multiple": false,
+        "creatable": false,
+        "label": "Bulk moves enabled (deliver bulk mail below the threshold to the Promotions folder - Preview)",
+        "name": "standards.SpamFilterPolicy.BulkMovesEnabled",
+        "options": [
+          { "label": "On", "value": "On" },
+          { "label": "Off", "value": "Off" }
+        ]
+      },
+      {
+        "type": "autoComplete",
         "required": true,
         "multiple": false,
         "creatable": false,
@@ -4035,12 +4563,10 @@
         "defaultValue": false
       },
       {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
+        "type": "LanguageCodeMultiSelect",
         "required": false,
         "name": "standards.SpamFilterPolicy.LanguageBlockList",
-        "label": "Languages to block (uppercase ISO 639-1 two-letter)",
+        "label": "Languages to block (ISO 639-1 two-letter)",
         "condition": {
           "field": "standards.SpamFilterPolicy.EnableLanguageBlockList",
           "compareType": "is",
@@ -4054,12 +4580,10 @@
         "defaultValue": false
       },
       {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
+        "type": "CountryCodeMultiSelect",
         "required": false,
         "name": "standards.SpamFilterPolicy.RegionBlockList",
-        "label": "Regions to block (uppercase ISO 3166-1 two-letter)",
+        "label": "Regions to block (ISO 3166-1 two-letter)",
         "condition": {
           "field": "standards.SpamFilterPolicy.EnableRegionBlockList",
           "compareType": "is",
@@ -4410,7 +4934,7 @@
     "cat": "Intune Standards",
     "tag": ["CIS M365 7.0.0 (4.2)", "CISA (MS.AAD.19.1v1)"],
     "appliesToTest": ["CIS_4_2"],
-    "helpText": "Sets the default platform restrictions for enrolling devices into Intune. Note: Do not block personally owned if platform is blocked.",
+    "helpText": "Sets the default platform restrictions for enrolling devices into Intune, including optional minimum and maximum OS version limits per platform (Android Enterprise, Android, iOS/iPadOS and Windows). Note: Do not block personally owned if platform is blocked.",
     "executiveText": "Controls which types of devices (iOS, Android, Windows, macOS) and ownership models (corporate vs. personal) can be enrolled in the company's device management system. This helps maintain security standards while supporting necessary business device types and usage scenarios.",
     "addedComponent": [
       {
@@ -4426,6 +4950,20 @@
         "default": false
       },
       {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMinimumVersionAndroidForWork",
+        "label": "Android Enterprise (work profile) minimum OS version",
+        "helperText": "Example: 11.0. Leave blank to not enforce a minimum.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMaximumVersionAndroidForWork",
+        "label": "Android Enterprise (work profile) maximum OS version",
+        "helperText": "Example: 14.0. Leave blank to not enforce a maximum.",
+        "required": false
+      },
+      {
         "type": "switch",
         "name": "standards.DefaultPlatformRestrictions.platformAndroidBlocked",
         "label": "Block platform Android",
@@ -4438,6 +4976,20 @@
         "default": false
       },
       {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMinimumVersionAndroid",
+        "label": "Android minimum OS version",
+        "helperText": "Example: 10.0. Leave blank to not enforce a minimum.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMaximumVersionAndroid",
+        "label": "Android maximum OS version",
+        "helperText": "Example: 13.0. Leave blank to not enforce a maximum.",
+        "required": false
+      },
+      {
         "type": "switch",
         "name": "standards.DefaultPlatformRestrictions.platformiOSBlocked",
         "label": "Block platform iOS",
@@ -4448,6 +5000,20 @@
         "name": "standards.DefaultPlatformRestrictions.personaliOSBlocked",
         "label": "Block personally owned iOS",
         "default": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMinimumVersioniOS",
+        "label": "iOS/iPadOS minimum OS version",
+        "helperText": "Example: 16.1. Leave blank to not enforce a minimum.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMaximumVersioniOS",
+        "label": "iOS/iPadOS maximum OS version",
+        "helperText": "Example: 18.0. Leave blank to not enforce a maximum.",
+        "required": false
       },
       {
         "type": "switch",
@@ -4472,6 +5038,20 @@
         "name": "standards.DefaultPlatformRestrictions.personalWindowsBlocked",
         "label": "Block personally owned Windows",
         "default": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMinimumVersionWindows",
+        "label": "Windows minimum OS version",
+        "helperText": "Example: 10.0.19045.0. Leave blank to not enforce a minimum.",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DefaultPlatformRestrictions.osMaximumVersionWindows",
+        "label": "Windows maximum OS version",
+        "helperText": "Example: 10.0.22631.0. Leave blank to not enforce a maximum.",
+        "required": false
       }
     ],
     "label": "Device enrollment restrictions",
@@ -4805,6 +5385,50 @@
     ]
   },
   {
+    "name": "standards.OneDriveLicensedQuota",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Raises the OneDrive storage quota to 5 TB for users whose license includes that entitlement. Microsoft provisions every OneDrive at 1 TB and does not apply the licensed entitlement automatically. Users already at or above 5 TB, for example raised further by Microsoft support, are left untouched.",
+    "docsDescription": "Microsoft provisions every OneDrive with a 1 TB quota regardless of license. Users holding OneDrive for Business (Plan 2), SharePoint Online (Plan 2), or a bundle that includes one of these (Microsoft 365/Office 365 E3/E5, A3/A5, G3/G5) are entitled to 5 TB, but an admin has to raise the quota manually. This standard finds enabled users with a qualifying service plan whose OneDrive quota is below 5 TB and raises it to 5 TB, with the warning level at 90%. Users whose quota is already at or above 5 TB, for example increased to 25 TB by Microsoft support, are skipped. Microsoft only permits quotas above 1 TB when the subscription has five or more users on a qualifying plan, so tenants below that threshold are reported as compliant and left unchanged.",
+    "executiveText": "Ensures employees receive the full OneDrive storage their licenses already include. Microsoft grants 5 TB of storage with most enterprise licenses but only provisions 1 TB by default, leaving paid-for capacity unused. Automatically correcting the allocation prevents storage shortages and support tickets without any additional licensing cost.",
+    "addedComponent": [],
+    "label": "Raise OneDrive storage quota for entitled users",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-21",
+    "powershellEquivalent": "Set-SPOSite -Identity https://tenant-my.sharepoint.com/personal/user -StorageQuota 5242880",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "SHAREPOINTENTERPRISE",
+      "SHAREPOINTENTERPRISE_EDU",
+      "SHAREPOINTENTERPRISE_GOV",
+      "ONEDRIVEENTERPRISE"
+    ]
+  },
+  {
+    "name": "standards.MigrateOneDriveShortcuts",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Finds SharePoint library shortcuts sitting in each user's OneDrive root and moves them into the Shortcuts folder (PATCH move into special/shortcuts), matching the optional Microsoft UI location.",
+    "docsDescription": "Over time Add shortcut to OneDrive can leave many remote library links in the OneDrive root. Microsoft also supports placing those links in an optional Shortcuts folder. This standard lists each enabled member user's OneDrive root with Prefer Include-Feature=AddToOneDrive, then for any remoteItem shortcuts still outside Shortcuts moves them into special/shortcuts. Users without a provisioned OneDrive are skipped. Failures name the user, shortcut, and site URL when available.",
+    "executiveText": "Keeps employee OneDrive roots tidy by moving SharePoint library shortcuts into the dedicated Shortcuts folder instead of leaving them scattered among personal files.",
+    "addedComponent": [],
+    "label": "Migrate OneDrive root shortcuts to the Shortcuts folder",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-09-08",
+    "powershellEquivalent": "PATCH drive/items/{id} parentReference → special/shortcuts",
+    "recommendedBy": [],
+    "requiredCapabilities": [
+      "SHAREPOINTWAC",
+      "SHAREPOINTSTANDARD",
+      "SHAREPOINTENTERPRISE",
+      "SHAREPOINTENTERPRISE_EDU",
+      "SHAREPOINTENTERPRISE_GOV",
+      "ONEDRIVEENTERPRISE"
+    ]
+  },
+  {
     "name": "standards.SPFileRequests",
     "cat": "SharePoint Standards",
     "tag": [],
@@ -4862,6 +5486,40 @@
     "addedDate": "2024-04-20",
     "powershellEquivalent": "Update-MgBetaAdminSharePointSetting",
     "recommendedBy": [],
+    "requiredCapabilities": [
+      "SHAREPOINTWAC",
+      "SHAREPOINTSTANDARD",
+      "SHAREPOINTENTERPRISE",
+      "SHAREPOINTENTERPRISE_EDU",
+      "ONEDRIVE_BASIC",
+      "ONEDRIVE_ENTERPRISE"
+    ]
+  },
+  {
+    "name": "standards.SPGuestPeoplePicker",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Controls whether guest (external) users already in the tenant appear as suggestions in the SharePoint and OneDrive People Picker. Enforces the wanted state on BOTH the tenant default and every existing site collection - they are set independently, so changing the tenant default does not update existing sites. The per-site picture is read from the SharePoint reporting cache (refreshed daily), so a large tenant is never enumerated live during a run; a 24h rerun guard stops the write sweep from repeating before that cache refreshes and re-evaluates the result.",
+    "executiveText": "Makes existing external collaborators discoverable (or hidden) when sharing SharePoint and OneDrive content, consistently across the tenant default and every existing site. This keeps the sharing experience predictable and prevents individual sites from drifting away from the agreed collaboration posture.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Guest People Picker suggestions",
+        "name": "standards.SPGuestPeoplePicker.state",
+        "options": [
+          { "label": "Show guests in the People Picker", "value": "true" },
+          { "label": "Hide guests in the People Picker", "value": "false" }
+        ]
+      }
+    ],
+    "label": "Show guest users in the SharePoint People Picker",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-09-03",
+    "powershellEquivalent": "Set-SPOTenant / Set-SPOSite -ShowPeoplePickerSuggestionsForGuestUsers $true or $false",
+    "recommendedBy": ["CIPP"],
     "requiredCapabilities": [
       "SHAREPOINTWAC",
       "SHAREPOINTSTANDARD",
@@ -4941,6 +5599,7 @@
   },
   {
     "name": "standards.SPDirectSharing",
+    "deprecated": true,
     "cat": "SharePoint Standards",
     "tag": [],
     "helpText": "This standard has been deprecated in favor of the Default Sharing Link standard. ",
@@ -5410,7 +6069,7 @@
       "CIS_8_5_8",
       "CIS_8_5_9"
     ],
-    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl, AllowParticipantGiveRequestControl",
+    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl, AllowParticipantGiveRequestControl, AllowExternalNonTrustedMeetingChat, AllowCloudRecording",
     "executiveText": "Establishes security-focused default settings for Teams meetings, controlling who can join meetings, present content, and participate in chats. These policies balance collaboration needs with security requirements, ensuring meetings remain productive while protecting against unauthorized access and disruption.",
     "addedComponent": [
       {
@@ -5423,10 +6082,6 @@
         "options": [
           { "label": "Everyone", "value": "EveryoneUserOverride" },
           { "label": "People in my organization", "value": "EveryoneInCompanyUserOverride" },
-          {
-            "label": "People in my organization and trusted organizations",
-            "value": "EveryoneInSameAndFederatedCompanyUserOverride"
-          },
           { "label": "Only organizer", "value": "OrganizerOnlyUserOverride" }
         ]
       },
@@ -5489,13 +6144,39 @@
         "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowExternalParticipantGiveRequestControl",
         "label": "External participants can give or request control"
+      },
+      {
+        "type": "autoComplete",
+        "required": false,
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowExternalNonTrustedMeetingChat",
+        "label": "External meeting chat",
+        "helperText": "CIS 8.5.8 recommends Off. Leave blank to keep the tenant's current value.",
+        "options": [
+          { "label": "Off (CIS recommended)", "value": false },
+          { "label": "On", "value": true }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "required": false,
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowCloudRecording",
+        "label": "Meeting cloud recording",
+        "helperText": "CIS 8.5.9 recommends Off. Leave blank to keep the tenant's current value.",
+        "options": [
+          { "label": "Off (CIS recommended)", "value": false },
+          { "label": "On", "value": true }
+        ]
       }
     ],
     "label": "Define Global Meeting Policy for Teams",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers $AutoAdmittedUsers -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false -AllowParticipantGiveRequestControl $false",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers $AutoAdmittedUsers -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false -AllowParticipantGiveRequestControl $false -AllowExternalNonTrustedMeetingChat $false -AllowCloudRecording $false",
     "recommendedBy": ["CIS"],
     "requiredCapabilities": ["MCOSTANDARD", "MCOEV", "MCOIMP", "TEAMS1", "Teams_Room_Standard"]
   },
@@ -5721,6 +6402,16 @@
         "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
         "label": "Allow communication with unmanaged Teams accounts"
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerInbound",
+        "label": "Allow unmanaged Teams users to initiate contact",
+        "condition": {
+          "field": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "label": "External Access Settings for Microsoft Teams",
@@ -5743,7 +6434,17 @@
       {
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
-        "label": "Allow users to communicate with other organizations"
+        "label": "Allow users to communicate with consumer Teams accounts"
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumerInbound",
+        "label": "Allow unmanaged Teams users to initiate contact",
+        "condition": {
+          "field": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "autoComplete",
@@ -6149,8 +6850,10 @@
         "label": "Policy Assignment",
         "options": [
           { "label": "Do not assign", "value": "none" },
-          { "label": "All devices", "value": "AllDevices" },
-          { "label": "All users and devices", "value": "AllDevicesAndUsers" }
+          {
+            "label": "All users (Device Preparation profiles deploy to the enrolling user, so device targets do not apply)",
+            "value": "AllDevicesAndUsers"
+          }
         ]
       }
     ],
@@ -6158,6 +6861,68 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2026-05-25",
+    "recommendedBy": [],
+    "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
+  },
+  {
+    "name": "standards.AppleEnrollmentTypeProfile",
+    "cat": "Intune Standards",
+    "tag": ["enrollment", "apple", "ios"],
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
+    "helpText": "Creates and manages an Apple user-initiated enrollment type profile (such as iOS/iPadOS web based device enrollment) and keeps it assigned to the configured groups. The tenant needs an Apple MDM push certificate for the enrollment itself to function.",
+    "executiveText": "Ensures every tenant offers the same enrollment experience for Apple devices, such as web based enrollment for personal iPhones and iPads, without engineers configuring each tenant by hand. This keeps device onboarding consistent and makes it possible to report on which tenants are correctly configured.",
+    "docsDescription": "Deploys an Apple user-initiated enrollment type profile through deviceManagement/appleUserInitiatedEnrollmentProfiles. The profile is matched by display name; the enrollment type (web based device enrollment, account driven user enrollment, or device enrollment with Company Portal), description and group assignments are kept in sync, with a wrong assignment repaired in place. Priority is only applied when the profile is first created, because reordering is relative to the other profiles in each tenant.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.AppleEnrollmentTypeProfile.DisplayName",
+        "label": "Profile Display Name",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.AppleEnrollmentTypeProfile.Description",
+        "label": "Profile Description",
+        "required": false
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.AppleEnrollmentTypeProfile.EnrollmentType",
+        "label": "Enrollment Type",
+        "options": [
+          { "label": "Web based device enrollment", "value": "webDeviceEnrollment" },
+          { "label": "Account driven user enrollment", "value": "accountDrivenUserEnrollment" },
+          { "label": "Device enrollment with Company Portal", "value": "device" }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.AppleEnrollmentTypeProfile.Priority",
+        "label": "Priority (applied when the profile is created)",
+        "defaultValue": 1
+      },
+      {
+        "type": "radio",
+        "name": "standards.AppleEnrollmentTypeProfile.AssignTo",
+        "label": "Profile Assignment",
+        "options": [
+          { "label": "Do not assign", "value": "none" },
+          { "label": "Assign to Custom Group", "value": "customGroup" }
+        ]
+      },
+      {
+        "type": "textField",
+        "name": "standards.AppleEnrollmentTypeProfile.customGroup",
+        "label": "Custom group name(s). Comma separated, wildcards allowed.",
+        "required": false
+      }
+    ],
+    "label": "Deploy Apple Enrollment Type Profile",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-08-18",
     "recommendedBy": [],
     "requiredCapabilities": ["INTUNE_A", "MDM_Services", "EMS", "SCCM", "MICROSOFTINTUNEPLAN1"]
   },
@@ -6401,7 +7166,7 @@
     "label": "Conditional Access Template",
     "cat": "Templates",
     "multiple": true,
-    "disabledFeatures": { "report": true, "warn": true, "remediate": false },
+    "disabledFeatures": { "report": false, "warn": false, "remediate": false },
     "impact": "High Impact",
     "addedDate": "2023-12-30",
     "tag": [
@@ -6637,7 +7402,8 @@
         "label": "Select Sensitivity Label Templates",
         "api": {
           "url": "/api/ListSensitivityLabelTemplates",
-          "labelField": "name",
+          "labelField": "DisplayName",
+          "altLabelField": "Name",
           "valueField": "GUID",
           "queryKey": "ListSensitivityLabelTemplates"
         }
@@ -7135,6 +7901,12 @@
       },
       {
         "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.grantMobileThreatDefensePartnerRole",
+        "label": "Grant MTD role to MDE on enrolled Android COBO/COPE devices",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectIos",
         "label": "Connect iOS/iPadOS devices to MDE",
         "defaultValue": false
@@ -7142,13 +7914,19 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectIosCompliance",
-        "label": "Connect iOS 13.0+ (App-based MAM)",
+        "label": "Connect iOS/iPadOS devices for app protection policy evaluation (MAM)",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.appSync",
-        "label": "Enable App Sync for iOS",
+        "label": "Enable App Sync (sending application inventory) for iOS/iPadOS devices",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalApplicationMetadata",
+        "label": "Send full application inventory data on personally-owned iOS/iPadOS devices",
         "defaultValue": false
       },
       {
@@ -7160,13 +7938,13 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosCertificateMetadata",
-        "label": "Collect certificate metadata from iOS",
+        "label": "Enable Certificate Sync for iOS/iPadOS devices",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.allowPartnerToCollectIosPersonalCertificateMetadata",
-        "label": "Collect personal certificate metadata from iOS",
+        "label": "Send full certificate inventory data on personally-owned iOS/iPadOS devices",
         "defaultValue": false
       },
       {
@@ -7285,7 +8063,7 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2026-04-28",
-    "powershellEquivalent": "Set-SPOTenant -CustomScriptsRestrictMode $true",
+    "powershellEquivalent": "Portal only",
     "recommendedBy": ["CIPP"],
     "requiredCapabilities": [
       "SHAREPOINTWAC",
@@ -7333,6 +8111,28 @@
     "addedDate": "2026-04-28",
     "powershellEquivalent": "Set-OrganizationConfig -EwsEnabled $false",
     "recommendedBy": ["CIPP"],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
+    "name": "standards.MessageEncryption",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Enables Microsoft Purview Message Encryption by turning on Azure RMS licensing for Exchange Online, and turns on simplified client access so the Encrypt button appears in Outlook on the web and the new Outlook. Skipped with a warning when the tenant still points at an on-premises AD RMS cluster, because AD RMS has to be migrated to Azure RMS first. This standard only turns the feature on: branding, one-time passcodes, and social ID sign-in for encrypted messages are configured in the [Configure Encrypted Message Branding (OME)](https://standards.cipp.app/standards/omebranding) standard. [Read more](https://learn.microsoft.com/en-us/purview/set-up-new-message-encryption-capabilities)",
+    "docsDescription": "Sets AzureRMSLicensingEnabled to true, the prerequisite for Microsoft Purview Message Encryption, and SimplifiedClientAccessEnabled to true so the Encrypt button appears when composing mail in Outlook on the web and the new Outlook. Reports the IRM licensing state per tenant, including the licensing location, so you can see at a glance which tenants have message encryption available. Remediation is deliberately skipped for tenants with an on-premises AD RMS licensing location, as Purview Message Encryption is not compatible with AD RMS and those tenants need to be migrated to Azure RMS first.",
+    "executiveText": "Turns on the built-in encryption that lets staff send protected email to anyone, including recipients outside the organization. Uses licensing the organization already owns, removing the need for a separate secure-email product.",
+    "addedComponent": [],
+    "label": "Enable Purview Message Encryption",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-08-04",
+    "powershellEquivalent": "Set-IRMConfiguration -AzureRMSLicensingEnabled $true -SimplifiedClientAccessEnabled $true",
+    "recommendedBy": [],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",
       "EXCHANGE_S_ENTERPRISE",
@@ -7586,7 +8386,8 @@
           "url": "/api/ListAppTemplates",
           "labelField": "displayName",
           "valueField": "GUID",
-          "queryKey": "StdIntuneAppTemplateList"
+          "queryKey": "StdIntuneAppTemplateList",
+          "templateView": { "title": "Application Template" }
         }
       }
     ],
@@ -7879,12 +8680,14 @@
         "options": [
           { "label": "Allow listed AAGUIDs only", "value": "allow" },
           { "label": "Block listed AAGUIDs", "value": "block" }
-        ]
+        ],
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.FIDO2PasskeyProfiles.AAGUIDs",
-        "label": "AAGUIDs (comma-separated list of authenticator AAGUIDs)"
+        "label": "AAGUIDs (comma-separated list of authenticator AAGUIDs)",
+        "required": false
       }
     ],
     "label": "Configure FIDO2 Passkey Profile",
@@ -7900,7 +8703,7 @@
     "tag": ["CIS M365 7.0.0 (5.2.3.8)", "CIS M365 7.0.0 (5.2.3.9)"],
     "appliesToTest": ["CIS_5_2_3_8", "CIS_5_2_3_9"],
     "helpText": "**Requires Entra ID P1.** Configures the Entra ID Smart Lockout settings including lockout duration, lockout threshold, and on-premises integration mode.",
-    "docsDescription": "Configures the Entra ID Smart Lockout policy which protects against brute-force password attacks. Smart Lockout locks out bad actors who try to guess user passwords or use brute-force methods. It recognizes sign-ins from valid users and treats them differently from attackers. Settings include lockout duration (seconds), lockout threshold (failed attempts before lockout), and on-premises password protection mode (Audit or Enforced).",
+    "docsDescription": "Configures the Entra ID Smart Lockout policy which protects against brute-force password attacks. Smart Lockout locks out bad actors who try to guess user passwords or use brute-force methods. It recognizes sign-ins from valid users and treats them differently from attackers. Settings include lockout duration (seconds), lockout threshold (failed attempts before lockout), and on-premises password protection mode (Audit or Enforce).",
     "addedComponent": [
       {
         "type": "number",
@@ -7927,7 +8730,7 @@
         "label": "On-Premises Mode",
         "options": [
           { "label": "Audit", "value": "Audit" },
-          { "label": "Enforced", "value": "Enforced" }
+          { "label": "Enforce", "value": "Enforce" }
         ]
       }
     ],
@@ -7961,8 +8764,12 @@
       {
         "type": "number",
         "name": "standards.SPOVersionControl.ExpireVersionsAfterDays",
-        "label": "Expire Versions After Days (0 = never, when auto trim is off)",
-        "default": 0
+        "label": "Expire Versions After Days (0 = never, otherwise 30-36500, when auto trim is off)",
+        "default": 0,
+        "validators": {
+          "min": { "value": 0, "message": "Use 0 for never, or 30 or more days" },
+          "max": { "value": 36500, "message": "Maximum value is 36500" }
+        }
       },
       {
         "type": "switch",
@@ -7981,5 +8788,50 @@
       "warn": false,
       "remediate": false
     }
+  },
+  {
+    "name": "standards.PIMRoleSettings",
+    "label": "PIM Role Settings Template",
+    "cat": "Templates",
+    "multiple": true,
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-08-23",
+    "tag": [],
+    "helpText": "Deploys a Privileged Identity Management role settings template to the tenant: activation limits, MFA or authentication context, justification, approval, eligibility and active-assignment expiry and notification rules for the roles the template covers. Templates cannot weaken settings below CIPP's secure floor.",
+    "docsDescription": "Deploys a Privileged Identity Management role settings template to the tenant. The template defines, for a set of roles, the maximum activation duration, whether activation requires MFA or an authentication context, justification, ticket and approval requirements, the maximum lifetime of eligible and active assignments, and additional notification recipients. Templates are validated against CIPP's secure floor (activation within 24 hours with MFA or an authentication context and a justification; eligible and active assignments must expire within a year; active assignments require a justification) and are refused, not adjusted, when they fall below it. Requires Entra ID P2.",
+    "executiveText": "Enforces consistent Privileged Identity Management settings so that administrator roles can only be used for a limited time, after strong authentication and with a recorded reason. This keeps standing administrative access to a minimum and makes every use of privilege visible and accountable.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "TemplateList",
+        "multiple": false,
+        "required": true,
+        "creatable": false,
+        "label": "Select PIM Role Settings Template",
+        "api": {
+          "url": "/api/ListPIMRoleSettingsTemplates",
+          "labelField": "templateName",
+          "valueField": "GUID",
+          "queryKey": "ListPIMRoleSettingsTemplates",
+          "showRefresh": true,
+          "templateView": {
+            "title": "PIM Role Settings Template"
+          }
+        }
+      }
+    ],
+    "powershellEquivalent": "Update-MgBetaPolicyRoleManagementPolicyRule",
+    "recommendedBy": [
+      "CIPP"
+    ],
+    "requiredCapabilities": [
+      "AAD_PREMIUM_P2"
+    ]
   }
 ]

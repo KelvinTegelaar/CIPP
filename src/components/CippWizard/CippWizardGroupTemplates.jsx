@@ -12,7 +12,6 @@ export const CippWizardGroupTemplates = (props) => {
   const lastAppliedTemplate = useRef(null);
   const groupOptions = [
     { label: "Dynamic Group", value: "dynamic" },
-    { label: "Dynamic Distribution Group", value: "dynamicDistribution" },
     { label: "Security Group", value: "generic" },
     { label: "Distribution Group", value: "distribution" },
     { label: "Azure Role Group", value: "azureRole" },
@@ -42,6 +41,12 @@ export const CippWizardGroupTemplates = (props) => {
           shouldValidate: true,
         });
         formControl.setValue("licenses", watcher.addedFields.licenses || [], {
+          shouldValidate: true,
+        });
+        formControl.setValue("aliases", watcher.addedFields.aliases, {
+          shouldValidate: true,
+        });
+        formControl.setValue('hideFromGAL', watcher.addedFields.hideFromGAL, {
           shouldValidate: true,
         });
 
@@ -75,6 +80,8 @@ export const CippWizardGroupTemplates = (props) => {
                 allowExternal: "allowExternal",
                 membershipRules: "membershipRules",
                 licenses: "licenses",
+                aliases: "aliases",
+                hideFromGAL: "hideFromGAL",
               },
               showRefresh: true,
             }}
@@ -143,6 +150,32 @@ export const CippWizardGroupTemplates = (props) => {
               label="Membership Rules"
               formControl={formControl}
               validators={{ required: "Membership rules are required" }}
+            />
+          </Grid>
+        </CippFormCondition>
+        <CippFormCondition
+          field="groupType"
+          compareType="isOneOf"
+          compareValue={["distribution", "security"]}
+          formControl={formControl}
+        >
+          <Grid size={12}>
+            <CippFormComponent
+              type="textField"
+              name="aliases"
+              label="Email Aliases"
+              placeholder="One alias per line, e.g. postmaster@%tenantfilter%"
+              formControl={formControl}
+              multiline
+              rows={4}
+            />
+          </Grid>
+          <Grid size={12}>
+            <CippFormComponent
+              type="switch"
+              name="hideFromGAL"
+              label="Hide this group from the Global Address List (GAL)"
+              formControl={formControl}
             />
           </Grid>
         </CippFormCondition>

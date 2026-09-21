@@ -54,7 +54,9 @@ export const CippIndirectResellerLink = (props) => {
         <Typography variant="h6" gutterBottom>
           Indirect Reseller Relationship Link
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Generate an invite link to send to a customer so they can authorize you as their indirect
           reseller. This does <strong>not</strong> add the tenant to CIPP — it only provides the
           Microsoft Admin Portal invitation link.
@@ -99,7 +101,9 @@ export const CippIndirectResellerLink = (props) => {
             <Typography variant="body2" sx={{ mb: 1 }}>
               <strong>Invite Link</strong>
             </Typography>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{
+              alignItems: "center"
+            }}>
               <TextField
                 fullWidth
                 value={finalUrl}
@@ -108,7 +112,13 @@ export const CippIndirectResellerLink = (props) => {
               />
               <CippCopyToClipBoard text={finalUrl} />
             </Stack>
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                mt: 0.5,
+                display: 'block'
+              }}>
               Send this link to your customer. When they follow it, they will be linked to your
               reseller account in the Microsoft Admin Portal.
             </Typography>
@@ -129,5 +139,5 @@ export const CippIndirectResellerLink = (props) => {
         noSubmitButton
       />
     </Stack>
-  )
+  );
 }

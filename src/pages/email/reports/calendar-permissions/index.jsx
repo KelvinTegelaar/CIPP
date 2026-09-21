@@ -1,0 +1,84 @@
+import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippIcons } from '../../../../utils/icon-registry'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { useState } from 'react'
+import { Tooltip, Chip } from '@mui/material'
+import { Stack } from '@mui/system'
+import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
+
+const Page = () => {
+  const [byUser, setByUser] = useState(true)
+
+  const reportDB = useCippReportDB({
+    apiUrl: '/api/ListCalendarPermissions',
+    queryKey: 'calendar-permissions',
+    cacheName: 'Mailboxes',
+    syncTitle: 'Sync Calendar Permissions Cache',
+    syncData: { Types: 'CalendarPermissions' },
+    allowToggle: false,
+    defaultCached: true,
+    cacheColumns: ['MailboxCacheTimestamp', 'PermissionCacheTimestamp'],
+  })
+
+  const columns = byUser
+    ? [
+        ...reportDB.cacheColumns.filter((c) => c === 'Tenant'),
+        'User',
+        'UserMailboxType',
+        'Permissions',
+        ...reportDB.cacheColumns.filter((c) => c !== 'Tenant'),
+      ]
+    : [
+        ...reportDB.cacheColumns.filter((c) => c === 'Tenant'),
+        'CalendarUPN',
+        'CalendarDisplayName',
+        'CalendarType',
+        'Permissions',
+        ...reportDB.cacheColumns.filter((c) => c !== 'Tenant'),
+      ]
+
+  const pageActions = (
+    <Stack direction="row" spacing={1} sx={{
+      alignItems: "center"
+    }}>
+      <Tooltip
+        title={
+          byUser
+            ? 'Grouped by user — click to group by calendar'
+            : 'Grouped by calendar — click to group by user'
+        }
+      >
+        <Chip
+          icon={byUser ? <CippIcons.Person /> : <CippIcons.CalendarMonth />}
+          label={byUser ? 'By User' : 'By Calendar'}
+          color="primary"
+          size="small"
+          onClick={() => setByUser((prev) => !prev)}
+          clickable
+          variant="outlined"
+        />
+      </Tooltip>
+    </Stack>
+  )
+
+  return (
+    <>
+      <CippTablePage
+        key={`calendar-permissions-${byUser}`}
+        title="Calendar Permissions Report"
+        apiUrl={reportDB.resolvedApiUrl}
+        queryKey={`${reportDB.resolvedQueryKey}-${byUser}`}
+        apiData={{ ...reportDB.resolvedApiData, ByUser: byUser }}
+        simpleColumns={columns}
+        cardButton={pageActions}
+        dataSourceControls={reportDB.controls}
+        offCanvas={null}
+      />
+      {reportDB.syncDialog}
+    </>
+  )
+}
+
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+
+export default Page

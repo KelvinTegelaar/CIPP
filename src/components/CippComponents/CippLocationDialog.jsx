@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { useState } from "react";
 import dynamic from "next/dynamic"; // Import dynamic from next/dynamic
 import { CippPropertyList } from "./CippPropertyList"; // Import CippPropertyList
-import { LocationOn } from "@mui/icons-material";
 
 const CippMap = dynamic(() => import("./CippMap"), { ssr: false }); // Dynamic import for CippMap
 
@@ -32,7 +32,7 @@ export const CippLocationDialog = ({ location }) => {
 
   return (
     <>
-      <Button size="small" variant="outlined" onClick={handleOpen} startIcon={<LocationOn />}>
+      <Button size="small" variant="outlined" onClick={handleOpen} startIcon={<CippIcons.LocationOn />}>
         {location.city}, {location.state}, {location.countryOrRegion}
       </Button>
       <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={open}>

@@ -446,5 +446,139 @@
         }
       ]
     }
+  },
+  {
+    "value": "Set-MailboxForwardingExternal",
+    "name": "External email forwarding has been configured on a mailbox",
+    "template": {
+      "preset": {
+        "value": "Set-MailboxForwardingExternal",
+        "label": "External email forwarding has been configured on a mailbox"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Set-Mailbox",
+            "label": "mailbox settings were changed"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "ForwardingSmtpAddress" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Add-RoleGroupMember",
+    "name": "A user has been granted Exchange admin privileges",
+    "template": {
+      "preset": {
+        "value": "Add-RoleGroupMember",
+        "label": "A user has been granted Exchange admin privileges"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add-RoleGroupMember",
+            "label": "added a member to an Exchange role group"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "PIMPermanentAssignmentAdded",
+    "name": "A permanent role assignment was added in PIM (no end date)",
+    "template": {
+      "preset": {
+        "value": "PIMPermanentAssignmentAdded",
+        "label": "A permanent role assignment was added in PIM (no end date)"
+      },
+      "logbook": {
+        "value": "Audit.AzureActiveDirectory",
+        "label": "Azure AD"
+      },
+      "conditions": [
+        {
+          "Property": {
+            "value": "String",
+            "label": "Operation"
+          },
+          "Operator": {
+            "value": "like",
+            "label": "Like"
+          },
+          "Input": {
+            "value": "*role in PIM completed (permanent)*"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "PIMRoleActivated",
+    "name": "A PIM role was activated",
+    "template": {
+      "preset": {
+        "value": "PIMRoleActivated",
+        "label": "A PIM role was activated"
+      },
+      "logbook": {
+        "value": "Audit.AzureActiveDirectory",
+        "label": "Azure AD"
+      },
+      "conditions": [
+        {
+          "Property": {
+            "value": "String",
+            "label": "Operation"
+          },
+          "Operator": {
+            "value": "like",
+            "label": "Like"
+          },
+          "Input": {
+            "value": "*Add member to role completed (PIM activation)*"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "PIMRoleSettingChanged",
+    "name": "A PIM role setting was changed",
+    "template": {
+      "preset": {
+        "value": "PIMRoleSettingChanged",
+        "label": "A PIM role setting was changed"
+      },
+      "logbook": {
+        "value": "Audit.AzureActiveDirectory",
+        "label": "Azure AD"
+      },
+      "conditions": [
+        {
+          "Property": {
+            "value": "String",
+            "label": "Operation"
+          },
+          "Operator": {
+            "value": "like",
+            "label": "Like"
+          },
+          "Input": {
+            "value": "*Update role setting in PIM*"
+          }
+        }
+      ]
+    }
   }
 ]

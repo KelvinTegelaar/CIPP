@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Policies",
+    "path": "/tenant/administration/authentication-methods",
+    "icon": "Key"
+  },
+  {
+    "label": "Registration Campaign",
+    "path": "/tenant/administration/authentication-methods/registration-campaign",
+    "icon": "Notifications"
+  }
+]

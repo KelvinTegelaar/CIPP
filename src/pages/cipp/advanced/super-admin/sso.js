@@ -1,26 +1,18 @@
-import { Container } from "@mui/material";
-import { Grid } from "@mui/system";
-import { TabbedLayout } from "../../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import tabOptions from "./tabOptions";
-import { CippSSOSettings } from "../../../../components/CippSettings/CippSSOSettings";
+// Legacy redirect: this page moved to /cipp/advanced/authentication/sso when the
+// Super Admin area was split into Super Admin / Container Management / Authentication.
+// Safe to delete once bookmarks and docs links have aged out.
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Page = () => {
-  return (
-    <Container sx={{ pt: 3 }} maxWidth="xl">
-      <Grid container spacing={2}>
-        <Grid size={{ lg: 6, md: 8, sm: 12, xs: 12 }}>
-          <CippSSOSettings />
-        </Grid>
-      </Grid>
-    </Container>
-  );
-};
+  const router = useRouter();
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
-  </DashboardLayout>
-);
+  useEffect(() => {
+    if (!router.isReady) return;
+    router.replace({ pathname: "/cipp/advanced/authentication/sso", query: router.query });
+  }, [router.isReady]);
+
+  return null;
+};
 
 export default Page;

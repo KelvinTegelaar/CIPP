@@ -4,11 +4,26 @@ import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
 import { getCippError } from "../utils/get-cipp-error";
 import { buildVersionedHeaders } from "../utils/cippVersion";
+import { impersonationCacheParams } from "../utils/impersonation";
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const wildcardToRegExp = (pattern) =>
   new RegExp(`^${pattern.split("*").map(escapeRegExp).join(".*")}$`);
 const matchesWildcardPattern = (queryKey, pattern) => wildcardToRegExp(pattern).test(queryKey);
+
+// The server's Retry-After (seconds) as ms, capped so a large hint can't hang a request indefinitely.
+const getRetryAfterMs = (error) => {
+  if (!isAxiosError(error)) return null;
+  const headers = error.response?.headers;
+  const raw = headers?.get?.("retry-after") ?? headers?.["retry-after"];
+  const seconds = Number(raw);
+  return Number.isFinite(seconds) && seconds > 0 ? Math.min(seconds * 1000, 60000) : null;
+};
+
+// react-query's default exponential backoff, but honouring the server's Retry-After when present so a
+// throttled retry lands after the limit clears instead of hammering inside the window.
+const retryDelayWithRetryAfter = (failureCount, error) =>
+  getRetryAfterMs(error) ?? Math.min(1000 * 2 ** failureCount, 30000);
 
 export function ApiGetCall(props) {
   const {
@@ -71,8 +86,9 @@ export function ApiGetCall(props) {
           const element = data[i];
           const response = await axios.get(url, {
             signal: signal,
-            params: element,
+            params: { ...element, ...impersonationCacheParams() },
             headers: await buildVersionedHeaders(),
+            cippQueryKey: queryKey,
           });
           results.push(response.data);
           if (onResult) {
@@ -109,9 +125,10 @@ export function ApiGetCall(props) {
       } else {
         const response = await axios.get(url, {
           signal: url === "/api/tenantFilter" ? null : signal,
-          params: data,
+          params: { ...data, ...impersonationCacheParams() },
           headers: await buildVersionedHeaders(),
           responseType: responseType,
+          cippQueryKey: queryKey,
         });
 
         let responseData = response.data;
@@ -164,6 +181,7 @@ export function ApiGetCall(props) {
     keepPreviousData: keepPreviousData,
     refetchInterval: refetchInterval,
     retry: retryFn,
+    retryDelay: retryDelayWithRetryAfter,
   });
   return queryInfo;
 }
@@ -292,16 +310,18 @@ export function ApiGetCallWithPagination({
     queryFn: async ({ pageParam = null, signal }) => {
       const response = await axios.get(url, {
         signal: signal,
-        params: { ...data, ...pageParam },
+        params: { ...data, ...pageParam, ...impersonationCacheParams() },
         headers: await buildVersionedHeaders(),
+        cippQueryKey: queryKey,
       });
       return response.data;
     },
     getNextPageParam: (lastPage) => {
+      // AllTenants pages only when the page opted into manualPagination.
       if (
         data?.noPagination ||
         data?.manualPagination === false ||
-        data?.tenantFilter === "AllTenants"
+        (data?.tenantFilter === "AllTenants" && data?.manualPagination !== true)
       ) {
         return undefined;
       }
@@ -310,6 +330,7 @@ export function ApiGetCallWithPagination({
     staleTime: 300000,
     refetchOnWindowFocus: false,
     retry: retryFn,
+    retryDelay: retryDelayWithRetryAfter,
   });
 
   return queryInfo;

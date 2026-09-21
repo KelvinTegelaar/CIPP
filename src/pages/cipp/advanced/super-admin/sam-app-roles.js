@@ -1,99 +1,18 @@
-import { TabbedLayout } from "../../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
-import tabOptions from "./tabOptions";
-import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Alert, CardContent, Stack, Typography } from "@mui/material";
-import { WarningAmberOutlined } from "@mui/icons-material";
-import { useForm } from "react-hook-form";
-import { ApiGetCall, ApiGetCallWithPagination } from "../../../../api/ApiCall";
+// Legacy redirect: this page moved to /cipp/advanced/authentication/sam-app-roles when the
+// Super Admin area was split into Super Admin / Container Management / Authentication.
+// Safe to delete once bookmarks and docs links have aged out.
 import { useEffect } from "react";
-import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
-import GDAPRoles from "../../../../data/GDAPRoles";
-import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
+import { useRouter } from "next/router";
 
 const Page = () => {
-  const pageTitle = "SAM App Roles";
-
-  const formControl = useForm({
-    mode: "onChange",
-  });
-
-  const execSAMRoles = ApiGetCall({
-    url: "/api/ExecSAMRoles",
-    queryKey: "ExecSAMRoles",
-  });
-
-  const { data: tenantsData = { pages: [] }, isSuccess: tenantsSuccess } = ApiGetCallWithPagination({
-    url: "/api/ListTenants?AllTenantSelector=true",
-    queryKey: "ListTenants-AllTenantSelector",
-  });
-  const tenants = tenantsData?.pages?.[0] || [];
+  const router = useRouter();
 
   useEffect(() => {
-    if (execSAMRoles.isSuccess && tenantsSuccess) {
-      var selectedTenants = [];
-      execSAMRoles.data?.Tenants.map((tenant) => {
-        var tenantObj = false;
-        if (tenant?.value) {
-          tenantObj = tenants.find((t) => t?.defaultDomainName === tenant?.value);
-        } else {
-          tenantObj = tenants.find((t) => t?.defaultDomainName === tenant);
-        }
-        if (tenantObj) {
-          selectedTenants.push({
-            value: tenantObj?.defaultDomainName,
-            label: tenantObj?.displayName,
-          });
-        }
-      });
-      formControl.reset({
-        Roles: execSAMRoles.data?.Roles,
-        Tenants: selectedTenants,
-      });
-    }
-  }, [execSAMRoles.isSuccess, tenantsSuccess]);
+    if (!router.isReady) return;
+    router.replace({ pathname: "/cipp/advanced/authentication/sam-app-roles", query: router.query });
+  }, [router.isReady]);
 
-  return (
-    <CippFormPage
-      title={pageTitle}
-      hideBackButton={true}
-      hidePageType={true}
-      formControl={formControl}
-      resetForm={false}
-      postUrl="/api/ExecSAMRoles?Action=Update"
-      queryKey={"execSAMRoles"}
-    >
-      <CardContent>
-        <Stack spacing={2}>
-          <Typography variant="body2">
-            Add your CIPP-SAM application Service Principal directly to Admin Roles in the tenant.
-            This is an advanced use case where you need access to additional Graph endpoints or
-            Exchange Cmdlets otherwise unavailable via Delegated permissions.
-          </Typography>
-          <Alert color="warning" icon={<WarningAmberOutlined />}>
-            This functionality is in beta and should be treated as such. Roles are added during the
-            Update Permissions process or a CPV refresh.
-          </Alert>
-          <CippFormComponent
-            formControl={formControl}
-            type="autoComplete"
-            name="Roles"
-            label="Admin Roles"
-            options={GDAPRoles.map((role) => {
-              return { value: role.ObjectId, label: role.Name };
-            })}
-          />
-          <CippFormTenantSelector formControl={formControl} name="Tenants" allTenants={true} />
-        </Stack>
-      </CardContent>
-    </CippFormPage>
-  );
+  return null;
 };
-
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
-  </DashboardLayout>
-);
 
 export default Page;

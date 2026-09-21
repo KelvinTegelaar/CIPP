@@ -1,0 +1,261 @@
+import { Alert, Button } from '@mui/material'
+import { CippIcons } from '../../../../utils/icon-registry'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { Layout as DashboardLayout } from '../../../../layouts/index' // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
+import { TabbedLayout } from '../../../../layouts/TabbedLayout'
+import Link from 'next/link'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { Grid } from '@mui/system'
+import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
+import tabOptions from '../tabOptions.json'
+import { CippPolicyImportDrawer } from '../../../../components/CippComponents/CippPolicyImportDrawer.jsx'
+import { PermissionButton } from '../../../../utils/permissions'
+import { CippFormTemplateTenantSelector } from '../../../../components/CippComponents/CippFormTemplateTenantSelector.jsx'
+
+const Page = () => {
+  const oldStandards = ApiGetCall({ url: '/api/ListStandards', queryKey: 'ListStandards-legacy' })
+  const integrations = ApiGetCall({
+    url: '/api/ListExtensionsConfig',
+    queryKey: 'Integrations',
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  })
+
+  const pageTitle = 'Templates'
+  const cardButtonPermissions = ['Tenant.Standards.ReadWrite']
+  const actions = [
+    {
+      label: 'View Tenant Report',
+      link: '/tenant/manage/applied-standards/?templateId=[GUID]',
+      pinned: true,
+      icon: <CippIcons.EyeIcon />,
+      color: 'info',
+      target: '_self',
+    },
+    {
+      label: 'Edit Template',
+      //when using a link it must always be the full path /identity/administration/users/[id] for example.
+      link: '/tenant/standards/templates/template?id=[GUID]&type=[type]',
+      pinned: true,
+      icon: <CippIcons.Edit />,
+      color: 'success',
+      target: '_self',
+    },
+    {
+      label: 'Clone & Edit Template',
+      link: '/tenant/standards/templates/template?id=[GUID]&clone=true&type=[type]',
+      icon: <CippIcons.CopyAll />,
+      color: 'success',
+      target: '_self',
+    },
+    {
+      label: 'Create Drift Clone',
+      type: 'POST',
+      url: '/api/ExecDriftClone',
+      icon: <CippIcons.ContentCopy />,
+      color: 'warning',
+      data: {
+        id: 'GUID',
+      },
+      confirmText:
+        'Are you sure you want to create a drift clone of [templateName]? This will create a new drift template based on this template.',
+      multiPost: false,
+    },
+    {
+      label: 'Run Template Now',
+      type: 'GET',
+      url: '/api/ExecStandardsRun',
+      icon: <CippIcons.PlayArrow />,
+      data: {
+        TemplateId: 'GUID',
+      },
+      allowResubmit: true,
+      customDataformatter: (row, action, formData) => ({
+        TemplateId: row.GUID,
+        tenantFilter: formData.tenantFilter?.value ?? formData.tenantFilter,
+      }),
+      children: ({ formHook, row }) => (
+        <CippFormTemplateTenantSelector
+          formControl={formHook}
+          templateTenants={Array.isArray(row?.tenantFilter) ? row.tenantFilter : []}
+          excludedTenants={Array.isArray(row?.excludedTenants) ? row.excludedTenants : []}
+        />
+      ),
+      confirmText: 'Are you sure you want to force a run of this template?',
+      multiPost: false,
+    },
+    {
+      label: 'Set Schedule',
+      title: 'Set Schedule',
+      type: 'POST',
+      url: '/api/ExecStandardTemplateSchedule',
+      icon: <CippIcons.Schedule />,
+      data: {
+        TemplateId: 'GUID',
+      },
+      fields: [
+        {
+          label: 'Schedule',
+          name: 'runManually',
+          type: 'select',
+          multiple: false,
+          creatable: false,
+          options: [
+            { label: 'Disable schedule (run manually only)', value: 'true' },
+            { label: 'Enable schedule', value: 'false' },
+          ],
+          required: true,
+          validators: { required: { value: true, message: 'This field is required' } },
+        },
+      ],
+      confirmText: 'Set the schedule for [templateName]?',
+      condition: (row) => row.type !== 'drift',
+      multiPost: false,
+    },
+    {
+      label: 'Save to GitHub',
+      type: 'POST',
+      url: '/api/ExecCommunityRepo',
+      icon: <CippIcons.GitHub />,
+      data: {
+        Action: 'UploadTemplate',
+        GUID: 'GUID',
+      },
+      fields: [
+        {
+          label: 'Repository',
+          name: 'FullName',
+          type: 'select',
+          api: {
+            url: '/api/ListCommunityRepos',
+            data: {
+              WriteAccess: true,
+            },
+            queryKey: 'CommunityRepos-Write',
+            dataKey: 'Results',
+            valueField: 'FullName',
+            labelField: 'FullName',
+          },
+          multiple: false,
+          creatable: false,
+          required: true,
+          validators: {
+            required: { value: true, message: 'This field is required' },
+          },
+        },
+        {
+          label: 'Commit Message',
+          placeholder: 'Enter a commit message for adding this file to GitHub',
+          name: 'Message',
+          type: 'textField',
+          multiline: true,
+          required: true,
+          rows: 4,
+        },
+      ],
+      confirmText: 'Are you sure you want to save this template to the selected repository?',
+      condition: () => integrations.isSuccess && integrations?.data?.GitHub?.Enabled,
+    },
+    {
+      label: 'Delete Template',
+      type: 'POST',
+      url: '/api/RemoveStandardTemplate',
+      icon: <CippIcons.Delete />,
+      data: {
+        ID: 'GUID',
+      },
+      confirmText: 'Are you sure you want to delete [templateName]?',
+      multiPost: false,
+    },
+  ]
+  const conversionApi = ApiPostCall({ relatedQueryKeys: 'listStandardTemplates' })
+  const handleConversion = () => {
+    conversionApi.mutate({
+      url: '/api/execStandardConvert',
+      data: {},
+    })
+  }
+  const tableFilter = (
+    <div>
+      {oldStandards.isSuccess && oldStandards.data.length !== 0 && (
+        <Grid container spacing={2}>
+          <Grid container spacing={2}>
+            <Alert
+              severity="warning"
+              style={{ display: 'flex', alignItems: 'center', width: '100%' }}
+            >
+              <Grid size={12}>
+                You have legacy standards available. Press the button to convert these standards to
+                the new format. This will create a new template for each standard you had, but will
+                disable the schedule. After conversion, please check the new templates to ensure
+                they are correct and re-enable the schedule.
+              </Grid>
+              <Grid size={{ xs: 12, md: 2 }}>
+                <Button onClick={() => handleConversion()} variant={'contained'}>
+                  Convert Legacy Standards
+                </Button>
+              </Grid>
+            </Alert>
+          </Grid>
+          <Grid size={{ xs: 12, md: 8 }}>
+            <CippApiResults apiObject={conversionApi} />
+          </Grid>
+        </Grid>
+      )}
+    </div>
+  )
+  return (
+    <CippTablePage
+      title={pageTitle}
+      apiUrl="/api/listStandardTemplates"
+      tenantInTitle={false}
+      cardButton={
+        <>
+          <Button
+            component={Link}
+            href="/tenant/standards/templates/template"
+            startIcon={<CippIcons.AddBox />}
+            sx={{ mr: 1 }}
+          >
+            Add Template
+          </Button>
+          <Button
+            component={Link}
+            href="/tenant/standards/templates/template?type=drift"
+            startIcon={<CippIcons.AddBox />}
+            sx={{ mr: 1 }}
+          >
+            Create Drift Template
+          </Button>
+          <CippPolicyImportDrawer
+            buttonText="Browse Catalog"
+            requiredPermissions={cardButtonPermissions}
+            PermissionButton={PermissionButton}
+            mode="Standards"
+          />
+        </>
+      }
+      actions={actions}
+      tableFilter={tableFilter}
+      simpleColumns={[
+        'templateName',
+        'type',
+        'tenantFilter',
+        'excludedTenants',
+        'updatedAt',
+        'updatedBy',
+        'runManually',
+        'standards',
+      ]}
+      queryKey="listStandardTemplates"
+    />
+  )
+}
+
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+)
+
+export default Page

@@ -1,26 +1,38 @@
-import { Box, Stack } from "@mui/material";
-import { useEffect } from "react";
-import CippFormComponent from "./CippFormComponent";
-import { useWatch } from "react-hook-form";
+import { Box, FormControlLabel, Stack, Switch } from '@mui/material'
+import { useEffect } from 'react'
+import CippFormComponent from './CippFormComponent'
+import { useWatch } from 'react-hook-form'
+import { GroupHeader, GroupItems } from './CippAutocompleteGrouping'
 
-const CippMailboxPermissionsDialog = ({ 
-  formHook, 
-  combinedOptions, 
-  isUserGroupLoading, 
-  defaultAutoMap = false 
+const CippMailboxPermissionsDialog = ({
+  formHook,
+  combinedOptions,
+  isUserGroupLoading,
+  includeGroups,
+  onIncludeGroupsChange,
+  defaultAutoMap = false,
 }) => {
   const fullAccess = useWatch({
     control: formHook.control,
-    name: "permissions.AddFullAccess",
-  });
+    name: 'permissions.AddFullAccess',
+  })
 
   // Set the default AutoMap value when component mounts
   useEffect(() => {
-    formHook.setValue("permissions.AutoMap", defaultAutoMap);
-  }, [formHook, defaultAutoMap]);
+    formHook.setValue('permissions.AutoMap', defaultAutoMap)
+  }, [formHook, defaultAutoMap])
 
   return (
     <Stack spacing={2} sx={{ mt: 1 }}>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={includeGroups}
+            onChange={(_, checked) => onIncludeGroupsChange(checked)}
+          />
+        }
+        label="Include mail-enabled security groups"
+      />
       <Box>
         <CippFormComponent
           type="autoComplete"
@@ -30,6 +42,13 @@ const CippMailboxPermissionsDialog = ({
           isFetching={isUserGroupLoading}
           creatable={false}
           options={combinedOptions}
+          groupBy={(option) => option.group}
+          renderGroup={(params) => (
+            <li key={params.key}>
+              <GroupHeader>{params.group}</GroupHeader>
+              <GroupItems>{params.children}</GroupItems>
+            </li>
+          )}
         />
       </Box>
       <Box>
@@ -51,6 +70,13 @@ const CippMailboxPermissionsDialog = ({
           isFetching={isUserGroupLoading}
           creatable={false}
           options={combinedOptions}
+          groupBy={(option) => option.group}
+          renderGroup={(params) => (
+            <li key={params.key}>
+              <GroupHeader>{params.group}</GroupHeader>
+              <GroupItems>{params.children}</GroupItems>
+            </li>
+          )}
         />
       </Box>
       <Box>
@@ -62,10 +88,17 @@ const CippMailboxPermissionsDialog = ({
           isFetching={isUserGroupLoading}
           creatable={false}
           options={combinedOptions}
+          groupBy={(option) => option.group}
+          renderGroup={(params) => (
+            <li key={params.key}>
+              <GroupHeader>{params.group}</GroupHeader>
+              <GroupItems>{params.children}</GroupItems>
+            </li>
+          )}
         />
       </Box>
     </Stack>
-  );
-};
+  )
+}
 
-export default CippMailboxPermissionsDialog;
+export default CippMailboxPermissionsDialog

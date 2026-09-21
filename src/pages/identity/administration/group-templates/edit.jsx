@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../../hooks/use-settings";
 import CippAddGroupTemplateForm from "../../../../components/CippFormPages/CippAddGroupTemplateForm";
@@ -44,6 +44,8 @@ const Page = () => {
           groupType: templateData.groupType,
           membershipRules: templateData.membershipRules,
           allowExternal: templateData.allowExternal,
+          aliases: templateData.aliases,
+          hideFromGAL: templateData.hideFromGAL,
           licenses: templateData.licenses || [],
           tenantFilter: userSettingsDefaults.currentTenant,
         });

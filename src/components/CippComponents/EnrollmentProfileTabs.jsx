@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
   Button,
@@ -10,17 +11,8 @@ import {
   Typography,
 } from '@mui/material'
 import { Box, Container, Stack } from '@mui/system'
-import {
-  AccountTree,
-  Apple,
-  ContentCopy,
-  Delete,
-  EventAvailable,
-  QrCode2,
-  Sync,
-} from '@mui/icons-material'
 import { CippHead } from './CippHead.jsx'
-import { CippDataTable } from '../CippTable/CippDataTable.js'
+import { CippDataTable } from '../CippTable/CippDataTable'
 import { CippInfoBar } from '../CippCards/CippInfoBar.jsx'
 import { CippApiDialog } from './CippApiDialog.jsx'
 import { CippAutopilotProfileDrawer } from './CippAutopilotProfileDrawer.jsx'
@@ -109,11 +101,17 @@ const AndroidQrDialog = ({ row, drawerVisible, setDrawerVisible }) => {
             />
           </Box>
         )}
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+        <Stack
+          direction="row"
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            mb: 1
+          }}>
           <Typography variant="subtitle2">Token value</Typography>
           <Button
             size="small"
-            startIcon={<ContentCopy />}
+            startIcon={<CippIcons.ContentCopy />}
             onClick={handleCopy}
             disabled={!tokenValue}
           >
@@ -139,7 +137,7 @@ const AndroidQrDialog = ({ row, drawerVisible, setDrawerVisible }) => {
         <Button onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
 export const AppleADEEnrollmentProfiles = () => {
@@ -196,7 +194,7 @@ export const AppleADEEnrollmentProfiles = () => {
 
   const infoBarData = [
     {
-      icon: <Apple />,
+      icon: <CippIcons.Apple />,
       name: 'ADE Tokens',
       data: tokens.length,
       offcanvas: {
@@ -222,19 +220,19 @@ export const AppleADEEnrollmentProfiles = () => {
       },
     },
     {
-      icon: <EventAvailable />,
+      icon: <CippIcons.EventAvailable />,
       name: 'Expiring Tokens',
       data: expiringTokens.length,
       color: expiringTokens.length ? 'error' : 'success',
       toolTip: 'Tokens expiring within 30 days',
     },
     {
-      icon: <AccountTree />,
+      icon: <CippIcons.AccountTree />,
       name: 'ADE Profiles',
       data: profiles.length,
     },
     {
-      icon: <Sync />,
+      icon: <CippIcons.Sync />,
       name: 'Last Successful Sync',
       data: lastSuccessfulSync ? new Date(lastSuccessfulSync).toLocaleString() : 'N/A',
       toolTip: `${totalSyncedDevices} synced devices across all tokens`,
@@ -245,7 +243,7 @@ export const AppleADEEnrollmentProfiles = () => {
     {
       label: 'Delete Profile',
       type: 'POST',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       url: '/api/ExecRemoveEnrollmentProfile',
       relatedQueryKeys: [`AppleEnrollmentProfiles*-${currentTenant}`],
       data: {
@@ -261,11 +259,12 @@ export const AppleADEEnrollmentProfiles = () => {
 
   const appleFilters = useMemo(
     () => [
-      { filterName: 'All', value: [] },
-      { filterName: 'macOS', value: [{ id: 'platform', value: 'macOS' }] },
+      { filterName: 'All', value: [], type: 'column' },
+      { filterName: 'macOS', value: [{ id: 'platform', value: 'macOS' }], type: 'column' },
       {
         filterName: 'iOS/iPadOS',
         value: [{ id: 'platform', value: 'iOS/iPadOS' }],
+        type: 'column',
       },
     ],
     []
@@ -329,7 +328,7 @@ export const AppleADEEnrollmentProfiles = () => {
             }}
             cardButton={
               <Stack direction="row" spacing={1}>
-                <Button onClick={depSyncDialog.handleOpen} startIcon={<Sync />}>
+                <Button onClick={depSyncDialog.handleOpen} startIcon={<CippIcons.Sync />}>
                   Sync DEP
                 </Button>
               </Stack>
@@ -356,7 +355,7 @@ export const AndroidEnterpriseEnrollmentProfiles = () => {
   const androidActions = [
     {
       label: 'Show QR',
-      icon: <QrCode2 />,
+      icon: <CippIcons.QrCode2 />,
       hideBulk: true,
       noConfirm: true,
       condition: (row) => Boolean(row?.tokenValue || row?.qrCodeImage?.value || row?.qrCodeContent),
@@ -371,7 +370,7 @@ export const AndroidEnterpriseEnrollmentProfiles = () => {
     {
       label: 'Delete Profile',
       type: 'POST',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       url: '/api/ExecRemoveEnrollmentProfile',
       data: {
         profileId: 'id',
@@ -418,10 +417,143 @@ export const AndroidEnterpriseEnrollmentProfiles = () => {
 
 export const WindowsAutopilotEnrollmentProfiles = () => {
   const currentTenant = useSettings().currentTenant
+
+  const groupsQuery = ApiGetCall({
+    url: '/api/ListGroups',
+    data: { tenantFilter: currentTenant },
+    queryKey: `ListGroups-${currentTenant}`,
+    waiting: Boolean(currentTenant),
+  })
+  const groupMap = useMemo(() => {
+    const map = {}
+    if (groupsQuery.data) {
+      for (const g of groupsQuery.data) {
+        if (g.id) map[g.id] = g.displayName
+      }
+    }
+    return map
+  }, [groupsQuery.data])
+
   const autopilotActions = [
     {
+      label: 'Assign to All Devices',
+      type: 'POST',
+      icon: <CippIcons.LaptopChromebook />,
+      url: '/api/ExecAssignAutopilotProfile',
+      data: {
+        ProfileId: 'id',
+        ProfileName: 'displayName',
+        AssignTo: '!AllDevices',
+      },
+      confirmText:
+        'Are you sure you want to assign "[displayName]" to all devices?',
+      color: 'info',
+      multiPost: false,
+      allowResubmit: true,
+      relatedQueryKeys: [`AutopilotProfiles-${currentTenant}`],
+    },
+    {
+      label: 'Assign to Custom Group(s)',
+      type: 'POST',
+      icon: <CippIcons.UserGroupIcon />,
+      url: '/api/ExecAssignAutopilotProfile',
+      confirmText: 'Select the target groups for "[displayName]".',
+      color: 'info',
+      multiPost: false,
+      allowResubmit: true,
+      relatedQueryKeys: [`AutopilotProfiles-${currentTenant}`],
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'GroupIds',
+          label: 'Group(s)',
+          multiple: true,
+          creatable: false,
+          validators: { required: 'Please select at least one group' },
+          api: {
+            url: '/api/ListGroups',
+            queryKey: `ListGroups-${currentTenant}`,
+            tenantFilter: currentTenant,
+            labelField: (option) =>
+              option?.groupType
+                ? `${option.displayName} (${option.groupType})`
+                : (option?.displayName ?? ''),
+            valueField: 'id',
+            showRefresh: true,
+          },
+        },
+      ],
+      customDataformatter: (row, action, formData) => ({
+        tenantFilter: currentTenant,
+        ProfileId: row.id,
+        ProfileName: row.displayName,
+        AssignTo: 'customGroup',
+        GroupIds: (formData?.GroupIds || []).map((g) => g.value).filter(Boolean),
+      }),
+    },
+    {
+      label: 'Remove Assignment(s)',
+      type: 'POST',
+      icon: <CippIcons.LinkOff />,
+      url: '/api/ExecAssignAutopilotProfile',
+      confirmText: 'Remove assignments from "[displayName]".',
+      color: 'warning',
+      multiPost: false,
+      allowResubmit: true,
+      relatedQueryKeys: [`AutopilotProfiles-${currentTenant}`],
+      fields: [
+        {
+          type: 'switch',
+          name: 'removeAll',
+          label: 'Remove all assignments',
+          defaultValue: true,
+        },
+        {
+          type: 'autoComplete',
+          name: 'GroupIds',
+          label: 'Assignment(s) to remove',
+          multiple: true,
+          creatable: false,
+          validators: {
+            validate: (value, formValues) => {
+              if (formValues?.removeAll) return true
+              return (Array.isArray(value) && value.length > 0) || 'Please select at least one assignment'
+            },
+          },
+          options: (row) =>
+            (row?.assignments || [])
+              .map((a) => {
+                const t = a.target?.['@odata.type'] || ''
+                if (t.endsWith('allDevicesAssignmentTarget')) {
+                  return { label: 'All Devices', value: 'allDevices' }
+                }
+                if (t.endsWith('groupAssignmentTarget') && a.target?.groupId) {
+                  const id = a.target.groupId
+                  const name = groupMap[id]
+                  return {
+                    label: name ? `${name} (${id})` : id,
+                    value: id,
+                  }
+                }
+                return null
+              })
+              .filter(Boolean),
+          condition: { field: 'removeAll', compareType: 'is', compareValue: false },
+        },
+      ],
+      customDataformatter: (row, action, formData) => ({
+        tenantFilter: currentTenant,
+        ProfileId: row.id,
+        ProfileName: row.displayName,
+        AssignTo: formData?.removeAll ? 'RemoveAll' : 'RemoveGroups',
+        GroupIds: formData?.removeAll
+          ? []
+          : (formData?.GroupIds || []).map((g) => g.value).filter(Boolean),
+      }),
+    },
+    {
       label: 'Delete Profile',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       type: 'POST',
       url: '/api/RemoveAutopilotConfig',
       data: { ID: 'id', displayName: 'displayName', assignments: 'assignments' },
@@ -464,3 +596,4 @@ export const WindowsAutopilotEnrollmentProfiles = () => {
     </EnrollmentProfilesPage>
   )
 }
+

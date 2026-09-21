@@ -1,23 +1,52 @@
-import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert } from "@mui/material";
+import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert, Tooltip } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry"
 import { useState, useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import {
-  ChevronDownIcon,
-  ClipboardDocumentIcon,
-  PencilIcon,
-  PlusSmallIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { Create, Key, Save, Sync } from "@mui/icons-material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { Box } from "@mui/system";
+
+// IP entries that impose no real restriction; a role with only these (or none) is unrestricted,
+// matching the backend collapsing an empty list to "Any".
+const ALLOW_ALL_IP_TOKENS = new Set(["", "any", "*", "0.0.0.0", "0.0.0.0/0", "::", "::/0"]);
+
+// Ranges on a role that would actually block traffic. superadmin is IP-exempt at runtime.
+const getRestrictiveRoleRanges = (role) => {
+  if (!role || String(role.RoleName).toLowerCase() === "superadmin") return [];
+  const ranges = Array.isArray(role.IPRange) ? role.IPRange : [];
+  return ranges.filter((range) => !ALLOW_ALL_IP_TOKENS.has(String(range).trim().toLowerCase()));
+};
+
+// Dialog warning: MCP runs under the signed-in user's role, so an IP-restricted role blocks the
+// AI provider's cloud egress IPs (403).
+const McpRoleIpWarning = ({ formControl }) => {
+  const mcpAllowed = useWatch({ control: formControl.control, name: "MCPAllowed" });
+  const roleValue = useWatch({ control: formControl.control, name: "Role" });
+  const customRoles = ApiGetCall({ url: "/api/ListCustomRole", queryKey: "CustomRoleList" });
+
+  const roleName = roleValue?.value ?? roleValue;
+  if (!mcpAllowed || !roleName) return null;
+
+  const role = (customRoles.data ?? []).find(
+    (r) => String(r.RoleName).toLowerCase() === String(roleName).toLowerCase()
+  );
+  const restrictive = getRestrictiveRoleRanges(role);
+  if (restrictive.length === 0) return null;
+
+  return (
+    <Alert severity="warning" sx={{ mt: 1 }}>
+      Role <strong>{roleName}</strong> only allows {restrictive.join(", ")}. MCP runs as the
+      signed-in user, so AI clients connecting from their provider's cloud IPs get blocked (403).
+      Add that range to the role or clear its IP restriction.
+    </Alert>
+  );
+};
 
 const CippApiClientManagement = () => {
   const router = useRouter();
@@ -46,6 +75,61 @@ const CippApiClientManagement = () => {
     data: { Action: "List" },
     queryKey: "ApiClients",
   });
+
+  // Shared with the role autoComplete fields below via the queryKey, so this adds no extra call.
+  const customRoles = ApiGetCall({
+    url: "/api/ListCustomRole",
+    queryKey: "CustomRoleList",
+  });
+
+  // Authoritative per-client egress (today) from Craft's accounting table. Self-hides (Enabled:false)
+  // when accounting is off / not hosted, in which case the column shows "-".
+  const egressUsage = ApiGetCall({
+    url: "/api/ListApiEgress",
+    queryKey: "ApiEgressUsage",
+  });
+
+  // Merge the client list with egress so the table can show a per-client "Egress (today)" column.
+  // The list is small, so this drives the table from `data` (client-side) rather than the server api.
+  const clientRows = useMemo(() => {
+    const clients = apiClients.data?.pages?.[0]?.Results || [];
+    const usage = egressUsage.data?.Results?.Enabled ? egressUsage.data.Results.Clients || [] : [];
+    const byAppId = new Map(usage.map((c) => [String(c.AppId).toLowerCase(), c]));
+    const fmtBytes = (b) =>
+      b == null
+        ? "-"
+        : b >= 1073741824
+        ? `${(b / 1073741824).toFixed(1)} GB`
+        : b >= 1048576
+        ? `${(b / 1048576).toFixed(1)} MB`
+        : b >= 1024
+        ? `${(b / 1024).toFixed(1)} KB`
+        : `${b} B`;
+    return clients.map((c) => {
+      const e = byAppId.get(String(c.ClientId).toLowerCase());
+      return { ...c, EgressToday: e ? fmtBytes(e.Bytes) : "-", EgressSheddedToday: e ? e.Shed : 0 };
+    });
+  }, [apiClients.data, egressUsage.data]);
+
+  // MCP-enabled clients whose role restricts sign-in to specific IPs. Those restrictions apply to
+  // MCP traffic (which runs as the signed-in user), so an AI client's cloud egress IPs get blocked.
+  const mcpRoleIpWarnings = useMemo(() => {
+    if (!apiClients.isSuccess || !customRoles.isSuccess) return [];
+    const roles = customRoles.data ?? [];
+    const clients = apiClients.data?.pages?.[0]?.Results || [];
+    return clients
+      .filter((client) => client.MCPAllowed && client.Role)
+      .map((client) => {
+        const role = roles.find(
+          (r) => String(r.RoleName).toLowerCase() === String(client.Role).toLowerCase()
+        );
+        const restrictive = getRestrictiveRoleRanges(role);
+        return restrictive.length > 0
+          ? { appName: client.AppName, role: client.Role, ranges: restrictive }
+          : null;
+      })
+      .filter(Boolean);
+  }, [apiClients.isSuccess, apiClients.data, customRoles.isSuccess, customRoles.data]);
 
   const hasUnsavedChanges = useMemo(() => {
     if (!azureConfig.isSuccess || !apiClients.isSuccess) return false;
@@ -142,7 +226,7 @@ const CippApiClientManagement = () => {
       label: "Edit",
       icon: (
         <SvgIcon>
-          <PencilIcon />
+          <CippIcons.PencilIcon />
         </SvgIcon>
       ),
       confirmText: "Update the API client settings for [AppName]?",
@@ -189,7 +273,11 @@ const CippApiClientManagement = () => {
           name: "mcpAccessWarning",
           severity: "warning",
           label:
-            "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
+            "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
+        },
+        {
+          name: "mcpRoleIpWarning",
+          component: McpRoleIpWarning,
         },
       ],
       type: "POST",
@@ -202,7 +290,7 @@ const CippApiClientManagement = () => {
     },
     {
       label: "Reset Application Secret",
-      icon: <Key />,
+      icon: <CippIcons.Key />,
       confirmText: "Are you sure you want to reset the application secret for [AppName]?",
       type: "POST",
       url: "/api/ExecApiClient",
@@ -214,7 +302,7 @@ const CippApiClientManagement = () => {
     },
     {
       label: "Copy API Scope",
-      icon: <ClipboardDocumentIcon />,
+      icon: <CippIcons.ClipboardDocumentIcon />,
       noConfirm: true,
       customFunction: (row, action, formData) => {
         var scope = `api://${row.ClientId}/.default`;
@@ -224,7 +312,7 @@ const CippApiClientManagement = () => {
     },
     {
       label: "Delete Client",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       confirmText: "Are you sure you want to delete [AppName]?",
       type: "POST",
       url: "/api/ExecApiClient",
@@ -256,7 +344,7 @@ const CippApiClientManagement = () => {
                 variant="outlined"
                 startIcon={
                   <SvgIcon>
-                    <ChevronDownIcon />
+                    <CippIcons.ChevronDownIcon />
                   </SvgIcon>
                 }
               >
@@ -271,7 +359,7 @@ const CippApiClientManagement = () => {
                   }}
                 >
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                    <Create />
+                    <CippIcons.Create />
                   </SvgIcon>
                   <ListItemText>Create New Client</ListItemText>
                 </MenuItem>
@@ -282,7 +370,7 @@ const CippApiClientManagement = () => {
                   }}
                 >
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                    <PlusSmallIcon />
+                    <CippIcons.PlusSmallIcon />
                   </SvgIcon>
                   <ListItemText>Add Existing Client</ListItemText>
                 </MenuItem>
@@ -293,13 +381,13 @@ const CippApiClientManagement = () => {
                   }}
                 >
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                    <Sync />
+                    <CippIcons.Sync />
                   </SvgIcon>
                   <ListItemText>Refresh Configuration</ListItemText>
                 </MenuItem>
                 <MenuItem onClick={handleSaveToAzure}>
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                    <Save />
+                    <CippIcons.Save />
                   </SvgIcon>
                   <ListItemText>Save to Azure</ListItemText>
                 </MenuItem>
@@ -315,6 +403,22 @@ const CippApiClientManagement = () => {
               label: "API Url",
               value: azureConfig.data?.Results?.ApiUrl ? (
                 <CippCopyToClipBoard type="chip" text={azureConfig.data?.Results?.ApiUrl} />
+              ) : (
+                "Not Available"
+              ),
+            },
+            {
+              label: "MCP API URL",
+              value: azureConfig.data?.Results?.ApiUrl ? (
+                <>
+                  <CippCopyToClipBoard
+                    type="chip"
+                    text={`${azureConfig.data.Results.ApiUrl.replace(/\/+$/, "")}/api/ExecMcp`}
+                  />
+                  <Tooltip title="Use this full URL when adding CIPP as an MCP connector in an AI client (e.g. Claude custom connectors).">
+                    <CippIcons.InfoOutlined color="action" sx={{ fontSize: 16, verticalAlign: "middle" }} />
+                  </Tooltip>
+                </>
               ) : (
                 "Not Available"
               ),
@@ -364,18 +468,44 @@ const CippApiClientManagement = () => {
             </Alert>
           </Box>
         )}
+        {mcpRoleIpWarnings.length > 0 && (
+          <Box sx={{ px: 3 }}>
+            <Alert severity="warning">
+              These MCP-enabled clients use an IP-restricted role. MCP runs as the signed-in user, so
+              AI clients connecting from their provider's cloud IPs get blocked (403). Add that range
+              to the role or clear its IP restriction:
+              <ul style={{ marginBottom: 0 }}>
+                {mcpRoleIpWarnings.map((warning) => (
+                  <li key={warning.appName}>
+                    <strong>{warning.appName}</strong> — {warning.role} allows only{" "}
+                    {warning.ranges.join(", ")}
+                  </li>
+                ))}
+              </ul>
+            </Alert>
+          </Box>
+        )}
         <Box sx={{ px: 3 }}>
           <CippApiResults apiObject={postCall} />
         </Box>
         <CippDataTable
           actions={actions}
           title="CIPP-API Clients"
-          api={{
-            url: "/api/ExecApiClient",
-            data: { Action: "List" },
-            dataKey: "Results",
+          data={clientRows}
+          isFetching={apiClients.isFetching || egressUsage.isFetching}
+          refreshFunction={() => {
+            apiClients.refetch?.();
+            egressUsage.refetch?.();
           }}
-          simpleColumns={["Enabled", "MCPAllowed", "AppName", "ClientId", "Role", "IPRange"]}
+          simpleColumns={[
+            "Enabled",
+            "MCPAllowed",
+            "AppName",
+            "ClientId",
+            "Role",
+            "IPRange",
+            "EgressToday",
+          ]}
           queryKey={`ApiClients`}
         />
       </Stack>
@@ -439,7 +569,11 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
+          },
+          {
+            name: "mcpRoleIpWarning",
+            component: McpRoleIpWarning,
           },
         ]}
         api={{
@@ -520,7 +654,11 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role.",
+              "Enabling MCP Access converts this client into the MCP resource app — it can no longer be used as a normal API client, and only one client per tenant can hold this role. Going forward, MCP is only supported on CIPP-NG.",
+          },
+          {
+            name: "mcpRoleIpWarning",
+            component: McpRoleIpWarning,
           },
         ]}
         api={{

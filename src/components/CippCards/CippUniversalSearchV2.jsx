@@ -1,18 +1,25 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   TextField,
   Box,
   Typography,
   Skeleton,
   MenuItem,
+  MenuList,
   ListItemText,
   Paper,
   CircularProgress,
   InputAdornment,
   Portal,
   Button,
+  Chip,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListSubheader,
+  Stack,
 } from "@mui/material";
-import { Search as SearchIcon } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
 import { BulkActionsMenu } from "../bulk-actions-menu";
@@ -20,6 +27,8 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippBitlockerKeySearch } from "../CippComponents/CippBitlockerKeySearch";
 import { nativeMenuItems } from "../../layouts/config";
 import { usePermissions } from "../../hooks/use-permissions";
+import { useIsMobileLayout } from "../../hooks/use-breakpoint";
+import { useUserBookmarks } from "../../hooks/use-user-bookmarks";
 import { searchLocalLicenseCatalog } from "../../utils/get-cipp-license-catalog";
 
 function getLeafItems(items = []) {
@@ -41,6 +50,8 @@ async function loadTabOptions() {
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
     "/cipp/advanced/super-admin",
+    "/cipp/advanced/container-management",
+    "/cipp/advanced/authentication",
     "/endpoint/MEM/enrollment-profiles",
     "/tenant/standards",
     "/tenant/manage",
@@ -138,6 +149,8 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const dropdownRef = useRef(null);
     const router = useRouter();
     const { userPermissions, userRoles } = usePermissions();
+    const isMobile = useIsMobileLayout();
+    const { bookmarks } = useUserBookmarks();
 
     const universalSearch = ApiGetCall({
       url: `/api/ExecUniversalSearchV2`,
@@ -291,8 +304,12 @@ export const CippUniversalSearchV2 = React.forwardRef(
     };
 
     const updateDropdownPosition = () => {
-      if (textFieldRef.current) {
-        const rect = textFieldRef.current.getBoundingClientRect();
+      // Anchored to the whole joined control, not the field inset within it: results then
+      // span the full search width instead of starting past the scope button, which is
+      // what was clipping every email, UPN and route path.
+      const anchor = containerRef.current ?? textFieldRef.current;
+      if (anchor) {
+        const rect = anchor.getBoundingClientRect();
         const availableHeight = Math.max(220, window.innerHeight - rect.bottom - 16);
         setDropdownPosition({
           top: rect.bottom + window.scrollY + 4,
@@ -465,7 +482,10 @@ export const CippUniversalSearchV2 = React.forwardRef(
         if (
           containerRef.current &&
           !containerRef.current.contains(event.target) &&
-          !event.target.closest("[data-dropdown-portal]")
+          !event.target.closest("[data-dropdown-portal]") &&
+          // the in-flow mobile results are outside the joined control — this ran on
+          // mousedown and unmounted a row before its click could navigate
+          !event.target.closest("[data-search-results]")
         ) {
           setShowDropdown(false);
         }
@@ -492,7 +512,8 @@ export const CippUniversalSearchV2 = React.forwardRef(
           window.removeEventListener("resize", handleResize);
         };
       }
-    }, [showDropdown]);
+      // isMobile changes the search button's width, so the anchor's box changes with it
+    }, [showDropdown, isMobile]);
 
     useEffect(() => {
       setHighlightedIndex(-1);
@@ -568,20 +589,101 @@ export const CippUniversalSearchV2 = React.forwardRef(
       return "Search";
     };
 
+    // One results body, two surfaces: desktop anchors it under the joined control as a
+    // floating panel; the phone dialog IS the surface, so it renders in flow.
+    const resultsBody = (
+      <>
+              {activeSearch?.isFetching ? (
+                <Box sx={{ p: 2 }}>
+                  <Skeleton height={60} sx={{ mb: 1 }} />
+                  <Skeleton height={60} />
+                </Box>
+              ) : hasResults ? (
+                // MenuItem requires a MenuList ancestor in MUI v9 — this list provides the
+                // context on both surfaces (desktop floating panel and phone in-flow dialog).
+                <MenuList disablePadding sx={{ py: 0 }}>
+                  {searchType === "BitLocker" ? (
+                    <BitlockerResults
+                      items={bitlockerResults}
+                      onResultClick={handleBitlockerResultClick}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  ) : searchType === "Pages" ? (
+                    <PageResults
+                      items={pageResults}
+                      searchValue={searchValue}
+                      onResultClick={handleResultClick}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  ) : (
+                    <Results
+                      items={searchType === "Licenses" ? licenseResults : universalResults}
+                      searchValue={searchValue}
+                      onResultClick={handleResultClick}
+                      searchType={searchType}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  )}
+                </MenuList>
+              ) : (
+                <Box sx={{ p: 3, textAlign: "center" }}>
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
+                    No results found.
+                  </Typography>
+                </Box>
+              )}
+      </>
+    );
+
     return (
       <>
-        <Box ref={containerRef} sx={{ width: "100%", display: "flex", gap: 1, alignItems: "flex-start" }}>
-          <BulkActionsMenu
-            buttonName={searchType}
-            actions={typeMenuActions}
-          />
-          {searchType === "BitLocker" && (
+        {/* One joined control: the scope button, the field and the search button share a
+            single bordered row, so they line up by construction and the results panel can
+            anchor to the whole row rather than to the field inset within it. */}
+        <Box
+          ref={containerRef}
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "stretch",
+            "& > *": { flexShrink: 0 },
+            // Collapse the doubled borders where the controls meet
+            "& > * + *": { ml: "-1px" },
+            "& .MuiButton-root": { borderRadius: 0, whiteSpace: "nowrap" },
+            "& > :first-of-type .MuiButton-root, & > :first-of-type": {
+              borderTopLeftRadius: (theme) => theme.shape.borderRadius,
+              borderBottomLeftRadius: (theme) => theme.shape.borderRadius,
+            },
+            "& > :last-child .MuiButton-root, & > :last-child": {
+              borderTopRightRadius: (theme) => theme.shape.borderRadius,
+              borderBottomRightRadius: (theme) => theme.shape.borderRadius,
+            },
+            "& .MuiOutlinedInput-root": { borderRadius: 0, height: "100%" },
+            // The field is the only part that should absorb the leftover width
+            "& > .MuiFormControl-root": { flex: "1 1 auto", minWidth: 0 },
+            // Keep the focused field's outline on top of the adjacent borders
+            "& .MuiOutlinedInput-root.Mui-focused": { zIndex: 1 },
+          }}
+        >
+          {!isMobile && (
+            <BulkActionsMenu buttonName={searchType} actions={typeMenuActions} />
+          )}
+          {!isMobile && searchType === "BitLocker" && (
             <BulkActionsMenu
               buttonName={bitlockerLookupType === "deviceId" ? "Device ID" : "Key ID"}
               actions={bitlockerLookupActions}
             />
           )}
           <TextField
+            // The theme defaults TextField to the filled variant, whose own rounded border
+            // ignores every join rule above (they target .MuiOutlinedInput-root) — which is
+            // why the scope button and the field rendered as two separate boxes.
+            variant="outlined"
             ref={(node) => {
               textFieldRef.current = node;
               if (typeof ref === "function") {
@@ -597,26 +699,28 @@ export const CippUniversalSearchV2 = React.forwardRef(
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             value={searchValue}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment
-                  position="start"
-                  sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
-                >
-                  <SearchIcon color="action" sx={{ fontSize: 20 }} />
-                </InputAdornment>
-              ),
-              endAdornment: activeSearch?.isFetching ? (
-                <InputAdornment position="end">
-                  <CircularProgress size={20} />
-                </InputAdornment>
-              ) : null,
-              sx: {
-                "& .MuiInputAdornment-root": {
-                  marginTop: "0 !important",
-                  alignSelf: "center",
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment
+                    position="start"
+                    sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
+                  >
+                    <CippIcons.Search color="action" sx={{ fontSize: 20 }} />
+                  </InputAdornment>
+                ),
+                endAdornment: activeSearch?.isFetching ? (
+                  <InputAdornment position="end">
+                    <CircularProgress size={20} />
+                  </InputAdornment>
+                ) : null,
+                sx: {
+                  "& .MuiInputAdornment-root": {
+                    marginTop: "0 !important",
+                    alignSelf: "center",
+                  },
                 },
-              },
+              }
             }}
           />
           {searchType !== "Pages" && (
@@ -624,15 +728,116 @@ export const CippUniversalSearchV2 = React.forwardRef(
               variant="contained"
               onClick={handleSearch}
               disabled={searchValue.length === 0 || activeSearch?.isFetching}
-              startIcon={<SearchIcon />}
-              sx={{ flexShrink: 0 }}
+              startIcon={isMobile ? undefined : <CippIcons.Search />}
+              aria-label="Search"
+              // Icon-only on phones: the label costs the field width it needs more
+              sx={{ flexShrink: 0, minWidth: isMobile ? 48 : undefined, px: isMobile ? 0 : undefined }}
             >
-              Search
+              {isMobile ? <CippIcons.Search /> : "Search"}
             </Button>
           )}
         </Box>
 
-        {shouldShowDropdown && (
+        {/* One tap to any scope — the desktop dropdown cost two, and the recorded mobile
+            gap was that entity search had no direct entry point at all. */}
+        {isMobile && (
+          <Stack
+            direction="row"
+            useFlexGap
+            spacing={1}
+            sx={{
+              flexWrap: "wrap",
+              mt: 1.5
+            }}>
+            {typeMenuActions.map((action) => {
+              const active = action.label === searchType;
+              return (
+                <Chip
+                  key={action.label}
+                  label={action.label}
+                  color={active ? "primary" : "default"}
+                  variant={active ? "filled" : "outlined"}
+                  onClick={action.onClick}
+                  sx={{ height: 36, borderRadius: 999 }}
+                />
+              );
+            })}
+          </Stack>
+        )}
+        {isMobile && searchType === "BitLocker" && (
+          <Stack
+            direction="row"
+            useFlexGap
+            spacing={1}
+            sx={{
+              flexWrap: "wrap",
+              mt: 1
+            }}>
+            {bitlockerLookupActions.map((action) => {
+              const active =
+                (action.label === "Device ID") === (bitlockerLookupType === "deviceId");
+              return (
+                <Chip
+                  key={action.label}
+                  label={action.label}
+                  color={active ? "primary" : "default"}
+                  variant={active ? "filled" : "outlined"}
+                  onClick={action.onClick}
+                  sx={{ height: 36, borderRadius: 999 }}
+                />
+              );
+            })}
+          </Stack>
+        )}
+        {/* The phone dialog is the surface: results render in flow, and the dead space
+            before a query becomes the user's bookmarks. */}
+        {isMobile && shouldShowDropdown && (
+          <Box
+            data-search-results
+            sx={{
+              mt: 1.5,
+              overflowX: "hidden",
+              overflowWrap: "anywhere",
+              borderTop: 1,
+              borderColor: "divider",
+            }}
+          >
+            {resultsBody}
+          </Box>
+        )}
+        {isMobile && !shouldShowDropdown && (bookmarks?.length ?? 0) > 0 && (
+          <List
+            sx={{ mt: 1.5, py: 0, borderTop: 1, borderColor: "divider" }}
+            subheader={
+              <ListSubheader disableSticky sx={{ bgcolor: "transparent", px: 0 }}>
+                Bookmarks
+              </ListSubheader>
+            }
+          >
+            {bookmarks.map((bookmark) => (
+              <ListItemButton
+                key={bookmark.path}
+                sx={{ minHeight: 48, px: 0.5 }}
+                onClick={() => {
+                  router.push(bookmark.path);
+                  onConfirm(bookmark);
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <CippIcons.Star fontSize="small" color="primary" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={bookmark.label}
+                  secondary={bookmark.category || undefined}
+                  slotProps={{
+                    primary: { noWrap: true }
+                  }}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        )}
+        {!isMobile && shouldShowDropdown && (
           <Portal>
             <Paper
               data-dropdown-portal
@@ -644,51 +849,19 @@ export const CippUniversalSearchV2 = React.forwardRef(
                 left: `${dropdownPosition.left}px`,
                 width: `${dropdownPosition.width}px`,
                 maxHeight: `${dropdownMaxHeight}px`,
-                overflow: "auto",
+                overflowY: "auto",
+                // Emails, UPNs and route paths are single unbreakable tokens: whiteSpace
+                // normal can't wrap them, so without this they widen the panel and the
+                // result text runs off the right edge.
+                overflowX: "hidden",
+                overflowWrap: "anywhere",
                 zIndex: 9999,
                 boxShadow: 3,
                 border: "1px solid",
                 borderColor: "divider",
               }}
             >
-              {activeSearch?.isFetching ? (
-                <Box sx={{ p: 2 }}>
-                  <Skeleton height={60} sx={{ mb: 1 }} />
-                  <Skeleton height={60} />
-                </Box>
-              ) : hasResults ? (
-                searchType === "BitLocker" ? (
-                  <BitlockerResults
-                    items={bitlockerResults}
-                    onResultClick={handleBitlockerResultClick}
-                    highlightedIndex={highlightedIndex}
-                    setHighlightedIndex={setHighlightedIndex}
-                  />
-                ) : searchType === "Pages" ? (
-                  <PageResults
-                    items={pageResults}
-                    searchValue={searchValue}
-                    onResultClick={handleResultClick}
-                    highlightedIndex={highlightedIndex}
-                    setHighlightedIndex={setHighlightedIndex}
-                  />
-                ) : (
-                  <Results
-                    items={searchType === "Licenses" ? licenseResults : universalResults}
-                    searchValue={searchValue}
-                    onResultClick={handleResultClick}
-                    searchType={searchType}
-                    highlightedIndex={highlightedIndex}
-                    setHighlightedIndex={setHighlightedIndex}
-                  />
-                )
-              ) : (
-                <Box sx={{ p: 3, textAlign: "center" }}>
-                  <Typography variant="body2" color="text.secondary">
-                    No results found.
-                  </Typography>
-                </Box>
-              )}
+              {resultsBody}
             </Paper>
           </Portal>
         )}
@@ -727,7 +900,9 @@ const Results = ({
     const parts = text?.split(new RegExp(`(${escapedSearch})`, "gi"));
     return parts?.map((part, index) =>
       part.toLowerCase() === searchValue.toLowerCase() ? (
-        <Box component="span" fontWeight="bold" key={index}>
+        <Box component="span" key={index} sx={{
+          fontWeight: "bold"
+        }}>
           {part}
         </Box>
       ) : (
@@ -769,7 +944,9 @@ const Results = ({
               <ListItemText
                 primary={
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-                    <Typography variant="body1" fontWeight="medium">
+                    <Typography variant="body1" sx={{
+                      fontWeight: "medium"
+                    }}>
                       {highlightMatch(itemData.displayName || itemData.skuPartNumber || "Unknown SKU")}
                     </Typography>
                     {itemData.skuPartNumber && (
@@ -792,7 +969,13 @@ const Results = ({
                         {highlightMatch(itemData.skuId)}
                       </Typography>
                     )}
-                    <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "text.secondary",
+                        display: "block",
+                        mt: 0.5
+                      }}>
                       {itemData.tenantCount || 0} tenant{itemData.tenantCount === 1 ? "" : "s"}
                       {" · "}
                       {itemData.totalAssigned || 0}/{itemData.totalAvailable || 0} assigned
@@ -801,16 +984,15 @@ const Results = ({
                     {planNames && (
                       <Typography
                         variant="caption"
-                        color="text.secondary"
                         sx={{
+                          color: "text.secondary",
                           display: "-webkit-box",
                           mt: 0.5,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                      >
+                          WebkitBoxOrient: "vertical"
+                        }}>
                         {highlightMatch(planNames)}
                       </Typography>
                     )}
@@ -841,26 +1023,37 @@ const Results = ({
           >
             <ListItemText
               primary={
-                <Typography variant="body1" fontWeight="medium">
+                <Typography variant="body1" sx={{
+                  fontWeight: "medium"
+                }}>
                   {highlightMatch(itemData.displayName || "")}
                 </Typography>
               }
               secondary={
                 <Box>
                   {searchType === "Users" && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       {highlightMatch(itemData.userPrincipalName || "")}
                     </Typography>
                   )}
                   {searchType === "Groups" && (
                     <>
                       {itemData.mail && (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                          color: "text.secondary"
+                        }}>
                           {highlightMatch(itemData.mail || "")}
                         </Typography>
                       )}
                       {itemData.description && (
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            mt: 0.5
+                          }}>
                           {highlightMatch(itemData.description || "")}
                         </Typography>
                       )}
@@ -869,12 +1062,19 @@ const Results = ({
                   {searchType === "Applications" && (
                     <>
                       {itemData.appId && (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                          color: "text.secondary"
+                        }}>
                           {highlightMatch(itemData.appId || "")}
                         </Typography>
                       )}
                       {itemData.publisherName && (
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            mt: 0.5
+                          }}>
                           {highlightMatch(itemData.publisherName || "")}
                         </Typography>
                       )}
@@ -882,9 +1082,11 @@ const Results = ({
                   )}
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    sx={{ display: "block", mt: 0.5 }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      display: "block",
+                      mt: 0.5
+                    }}>
                     Tenant: {tenantDomain}
                   </Typography>
                 </Box>
@@ -910,7 +1112,9 @@ const PageResults = ({
     const parts = text.split(new RegExp(`(${escapedSearch})`, "gi"));
     return parts.map((part, index) =>
       part.toLowerCase() === searchValue.toLowerCase() ? (
-        <Box component="span" fontWeight="bold" key={index}>
+        <Box component="span" key={index} sx={{
+          fontWeight: "bold"
+        }}>
           {part}
         </Box>
       ) : (
@@ -947,13 +1151,19 @@ const PageResults = ({
             <ListItemText
               primary={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-                  <Typography variant="body1" fontWeight="medium">
+                  <Typography variant="body1" sx={{
+                    fontWeight: "medium"
+                  }}>
                     {highlightMatch(item.title || "")}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {itemType}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {isGlobal ? "Global" : "Tenant"}
                   </Typography>
                 </Box>
@@ -961,7 +1171,9 @@ const PageResults = ({
               secondary={
                 <Box>
                   {item.breadcrumbs && item.breadcrumbs.length > 0 && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       {item.breadcrumbs.map((crumb, idx) => (
                         <React.Fragment key={idx}>
                           {highlightMatch(crumb)}
@@ -972,7 +1184,13 @@ const PageResults = ({
                       {highlightMatch(item.title || "")}
                     </Typography>
                   )}
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "text.secondary",
+                      display: "block",
+                      mt: 0.5
+                    }}>
                     Path: {highlightMatch(item.path || "")}
                   </Typography>
                 </Box>
@@ -1013,19 +1231,31 @@ const BitlockerResults = ({
         >
           <ListItemText
             primary={
-              <Typography variant="body1" fontWeight="medium">
+              <Typography variant="body1" sx={{
+                fontWeight: "medium"
+              }}>
                 {result.deviceName || "Unknown Device"}
               </Typography>
             }
             secondary={
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Key ID: {result.keyId || "N/A"}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Device ID: {result.deviceId || "N/A"}
                 </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                    display: "block",
+                    mt: 0.5
+                  }}>
                   Tenant: {result.tenant || "N/A"}
                 </Typography>
               </Box>

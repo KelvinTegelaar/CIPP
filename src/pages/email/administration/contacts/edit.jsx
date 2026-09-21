@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -9,7 +9,7 @@ import { ApiGetCall } from "../../../../api/ApiCall";
 import countryList from "../../../../data/countryList.json";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
-import { Divider } from "@mui/material";
+import { Divider, Alert } from "@mui/material";
 
 const countryLookup = new Map(countryList.map((country) => [country.Name, country.Code]));
 
@@ -57,9 +57,17 @@ const EditContact = () => {
       return null;
     }
 
-    const contact = contactInfo.data;
+    const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
+    if (!contact) {
+      return null;
+    }
     const address = contact.addresses?.[0] || {};
-    const phones = contact.phones || [];
+    // A single phone may be serialized as a bare object rather than an array
+    const phones = Array.isArray(contact.phones)
+      ? contact.phones
+      : contact.phones
+        ? [contact.phones]
+        : [];
 
     // Use Map for O(1) phone lookup
     const phoneMap = new Map(phones.map((p) => [p.type, p.number]));
@@ -114,8 +122,8 @@ const EditContact = () => {
         State: values.state,
         CountryOrRegion: values.country?.value || values.country,
         Company: values.companyName,
-        mobilePhone: values.mobilePhone,
-        phone: values.businessPhone,
+        mobilePhone: values.mobilePhone || null,
+        phone: values.businessPhone || null,
         website: values.website,
         mailTip: values.mailTip,
       };
@@ -129,15 +137,22 @@ const EditContact = () => {
     <CippFormPage
       formControl={formControl}
       queryKey={`ListContacts-${id}`}
-      title={`Contact: ${contact?.displayName || ""}`}
+      title={contact?.displayName ? `Contact: ${contact.displayName}` : "Contact"}
       backButtonTitle="Contacts Overview"
       formPageType="Edit"
       postUrl="/api/EditContact"
       data={contact}
       customDataformatter={customDataFormatter}
+      preserveNullValues
+      hideSubmit={!id}
     >
-      {contactInfo.isLoading && <CippFormSkeleton layout={[2, 2, 1, 2, 1, 2, 2, 2, 4]} />}
-      {!contactInfo.isLoading && (
+      {!id && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          No contact selected. Open this page from the Contacts list to edit a contact.
+        </Alert>
+      )}
+      {id && contactInfo.isLoading && <CippFormSkeleton layout={[2, 2, 1, 2, 1, 2, 2, 2, 4]} />}
+      {id && !contactInfo.isLoading && (
         <Grid container spacing={2}>
           {/* Display Name */}
           <Grid size={{ md: 10, xs: 12 }}>

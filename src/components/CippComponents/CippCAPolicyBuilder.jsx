@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Typography,
   Divider,
@@ -15,12 +16,6 @@ import {
   Box,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import PublicIcon from "@mui/icons-material/Public";
 import { useWatch, useFieldArray } from "react-hook-form";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormCondition } from "./CippFormCondition";
@@ -42,6 +37,9 @@ import countryList from "../../data/countryList.json";
  *   formControl   — react-hook-form's return from useForm()
  *   existingPolicy — optional JSON to pre-populate fields (edit mode)
  *   disabled       — optional boolean to make the form read-only
+ *   directorySearch — optional boolean; back the user and group pickers with a type-ahead search
+ *                    of the selected tenant's directory. For editing a tenant's policy, not a
+ *                    template, which has no tenant to search.
  */
 
 // ---------------------------------------------------------------------------
@@ -83,13 +81,61 @@ function specialValueOptions(schemaProp) {
   return vals.map((v) => ({ label: labels[v] ?? v, value: v }));
 }
 
+/** Label for a directory object: "Name (upn)" for a user, the display name for a group. */
+export function directoryObjectLabel(obj) {
+  if (!obj?.displayName) return obj?.userPrincipalName || obj?.mail || obj?.id || "";
+  return obj.userPrincipalName ? `${obj.displayName} (${obj.userPrincipalName})` : obj.displayName;
+}
+
+/**
+ * Type-ahead search of the selected tenant's directory for the user and group pickers.
+ * Graph's $search tokenises names, so "smi" finds "John Smith", and each keystroke fetches one
+ * bounded page instead of the whole user list. The special tokens stay available as static
+ * options next to the search results.
+ */
+function directorySearchApi(kind) {
+  const isUser = kind === "users";
+  const searchFields = isUser
+    ? ["displayName", "userPrincipalName", "mail"]
+    : ["displayName", "mail"];
+  return {
+    url: "/api/ListGraphRequest",
+    dataKey: "Results",
+    queryKey: `CADirectorySearch-${kind}`,
+    data: {
+      Endpoint: kind,
+      $select: isUser ? "id,displayName,userPrincipalName" : "id,displayName,mail",
+      $top: 25,
+      // One page only; also stops the client from following nextLink.
+      noPagination: true,
+    },
+    labelField: directoryObjectLabel,
+    valueField: "id",
+    descriptionField: isUser ? undefined : "mail",
+    manualSearch: true,
+    searchParam: "$search",
+    // Double quotes delimit each clause, so they cannot appear inside the term.
+    searchFormatter: (term) => {
+      const safeTerm = term.replace(/"/g, "");
+      return searchFields.map((field) => `"${field}:${safeTerm}"`).join(" OR ");
+    },
+    mergeOptions: true,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Sub-section renderers
 // ---------------------------------------------------------------------------
 
 function SectionHeader({ title, description, requiresLicense, icon }) {
   return (
-    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        mb: 1
+      }}>
       {icon}
       <Typography variant="h6">{title}</Typography>
       {requiresLicense && (
@@ -100,7 +146,7 @@ function SectionHeader({ title, description, requiresLicense, icon }) {
       {description && (
         <Tooltip title={description}>
           <IconButton size="small">
-            <InfoOutlinedIcon fontSize="small" />
+            <CippIcons.InfoOutlined fontSize="small" />
           </IconButton>
         </Tooltip>
       )}
@@ -108,10 +154,131 @@ function SectionHeader({ title, description, requiresLicense, icon }) {
   );
 }
 
+/**
+ * The guest / external user block, which Graph models identically on the include and the
+ * exclude side. Rendered twice from UsersSection rather than duplicated.
+ */
+function GuestsOrExternalUsersFields({ formControl, disabled, prefix, direction, typeOptions }) {
+  const base = `${prefix}.${direction}GuestsOrExternalUsers`;
+  const Verb = direction === "include" ? "Include" : "Exclude";
+  const scopeHelp =
+    direction === "include"
+      ? "Choose whether the policy applies to all external tenants or specific ones. Only relevant for external user types (not internal guests)."
+      : "Choose whether the exclusion applies to all external tenants or specific ones. Only relevant for external user types (not internal guests).";
+
+  // Entra rejects an include-guests assignment (error 1119) when Include Users also carries one of
+  // its special values. The exclude side has no such constraint, so only watch on the include side.
+  const includeUsers = useWatch({ control: formControl.control, name: `${prefix}.includeUsers` });
+  const guestTypes = useWatch({ control: formControl.control, name: `${base}.guestOrExternalUserTypes` });
+  const conflictsWithIncludeUsers = useMemo(() => {
+    if (direction !== "include") return false;
+    const hasGuestTypes = Array.isArray(guestTypes) ? guestTypes.length > 0 : Boolean(guestTypes);
+    if (!hasGuestTypes) return false;
+    const users = Array.isArray(includeUsers) ? includeUsers : [includeUsers];
+    return users.some((u) => ["All", "None", "GuestsOrExternalUsers"].includes(u?.value ?? u));
+  }, [direction, guestTypes, includeUsers]);
+
+  return (
+    <>
+      <Grid size={{ xs: 12 }}>
+        <Divider sx={{ my: 1 }}>
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
+            {Verb} Guests or External Users
+          </Typography>
+        </Divider>
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CippFormComponent
+          type="autoComplete"
+          name={`${base}.guestOrExternalUserTypes`}
+          label={`External User Types to ${Verb}`}
+          formControl={formControl}
+          multiple
+          creatable={false}
+          disabled={disabled}
+          options={typeOptions}
+          placeholder="e.g. Service provider, B2B collaboration guest"
+        />
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
+          Select one or more external user types to {direction} {direction === "include" ? "in" : "from"} this
+          policy.
+        </Typography>
+        {conflictsWithIncludeUsers && (
+          <Alert severity="warning" sx={{ mt: 1 }}>
+            Entra ID rejects this combination. Clear &quot;Include Users&quot; — an include-guests
+            assignment cannot be combined with All, None or GuestsOrExternalUsers.
+          </Alert>
+        )}
+      </Grid>
+      <CippFormCondition
+        field={`${base}.guestOrExternalUserTypes`}
+        compareType="hasValue"
+        formControl={formControl}
+      >
+        <Grid size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="autoComplete"
+            name={`${base}.externalTenants._scope`}
+            label="Tenant Scope"
+            formControl={formControl}
+            multiple={false}
+            disabled={disabled}
+            creatable={false}
+            options={[
+              { label: "All external tenants", value: "all" },
+              { label: "Specific tenants", value: "enumerated" },
+            ]}
+            placeholder="Select tenant scope"
+          />
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
+            {scopeHelp}
+          </Typography>
+        </Grid>
+        <CippFormCondition
+          field={`${base}.externalTenants._scope`}
+          compareType="valueEq"
+          compareValue="enumerated"
+          formControl={formControl}
+        >
+          <Grid size={{ xs: 12, md: 6 }}>
+            <CippFormComponent
+              type="autoComplete"
+              name={`${base}.externalTenants.members`}
+              label="External Tenant IDs"
+              formControl={formControl}
+              multiple
+              freeSolo
+              disabled={disabled}
+              placeholder="Enter tenant GUIDs"
+            />
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
+              Enter the tenant IDs to scope this to (e.g. your partner tenant ID for a service
+              provider {direction === "include" ? "inclusion" : "exclusion"}).
+            </Typography>
+          </Grid>
+        </CippFormCondition>
+      </CippFormCondition>
+    </>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Users & Groups section
 // ---------------------------------------------------------------------------
-function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
+function UsersSection({
+  formControl,
+  disabled,
+  prefix = "conditions.users",
+  directorySearch = false,
+}) {
   const schemaDef = resolveRef("#/$defs/conditionalAccessUsers");
   const guestSchema = resolveRef("#/$defs/conditionalAccessGuestsOrExternalUsers");
   const roleOptions = useMemo(
@@ -121,6 +288,14 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
   const specialUserOpts = useMemo(
     () => specialValueOptions(schemaDef?.properties?.includeUsers),
     [schemaDef]
+  );
+  const userSearchApi = useMemo(
+    () => (directorySearch ? directorySearchApi("users") : undefined),
+    [directorySearch]
+  );
+  const groupSearchApi = useMemo(
+    () => (directorySearch ? directorySearchApi("groups") : undefined),
+    [directorySearch]
   );
 
   const guestTypeOpts = useMemo(() => {
@@ -144,8 +319,14 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
           multiple
           freeSolo
           disabled={disabled}
+          clearOnBlur
           options={specialUserOpts}
-          placeholder="All, None, GuestsOrExternalUsers, or user display names/IDs"
+          api={userSearchApi}
+          placeholder={
+            directorySearch
+              ? "All, None, GuestsOrExternalUsers, or search for users"
+              : "All, None, GuestsOrExternalUsers, or user display names/IDs"
+          }
         />
       </Grid>
       {/* Exclude users */}
@@ -158,8 +339,10 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
           multiple
           freeSolo
           disabled={disabled}
+          clearOnBlur
           options={[{ label: "GuestsOrExternalUsers", value: "GuestsOrExternalUsers" }]}
-          placeholder="User display names or IDs"
+          api={userSearchApi}
+          placeholder={directorySearch ? "Search for users" : "User display names or IDs"}
         />
       </Grid>
       {/* Include groups */}
@@ -172,7 +355,9 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
           multiple
           freeSolo
           disabled={disabled}
-          placeholder="Group display names or IDs"
+          clearOnBlur
+          api={groupSearchApi}
+          placeholder={directorySearch ? "Search for groups" : "Group display names or IDs"}
         />
       </Grid>
       {/* Exclude groups */}
@@ -185,7 +370,9 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
           multiple
           freeSolo
           disabled={disabled}
-          placeholder="Group display names or IDs"
+          clearOnBlur
+          api={groupSearchApi}
+          placeholder={directorySearch ? "Search for groups" : "Group display names or IDs"}
         />
       </Grid>
       {/* Include roles */}
@@ -215,79 +402,21 @@ function UsersSection({ formControl, disabled, prefix = "conditions.users" }) {
         />
       </Grid>
 
-      {/* Guest / External User Exclusions */}
-      <Grid size={{ xs: 12 }}>
-        <Divider sx={{ my: 1 }}>
-          <Typography variant="caption" color="text.secondary">
-            Exclude Guests or External Users
-          </Typography>
-        </Divider>
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CippFormComponent
-          type="autoComplete"
-          name={`${prefix}.excludeGuestsOrExternalUsers.guestOrExternalUserTypes`}
-          label="External User Types to Exclude"
-          formControl={formControl}
-          multiple
-          creatable={false}
-          disabled={disabled}
-          options={guestTypeOpts}
-          placeholder="e.g. Service provider, B2B collaboration guest"
-        />
-        <Typography variant="caption" color="text.secondary">
-          Select one or more external user types to exclude from this policy.
-        </Typography>
-      </Grid>
-      <CippFormCondition
-        field={`${prefix}.excludeGuestsOrExternalUsers.guestOrExternalUserTypes`}
-        compareType="hasValue"
+      {/* Guest / External User inclusions and exclusions */}
+      <GuestsOrExternalUsersFields
         formControl={formControl}
-      >
-        <Grid size={{ xs: 12, md: 6 }}>
-          <CippFormComponent
-            type="autoComplete"
-            name={`${prefix}.excludeGuestsOrExternalUsers.externalTenants._scope`}
-            label="Tenant Scope"
-            formControl={formControl}
-            multiple={false}
-            disabled={disabled}
-            creatable={false}
-            options={[
-              { label: "All external tenants", value: "all" },
-              { label: "Specific tenants", value: "enumerated" },
-            ]}
-            placeholder="Select tenant scope"
-          />
-          <Typography variant="caption" color="text.secondary">
-            Choose whether the exclusion applies to all external tenants or specific ones. Only
-            relevant for external user types (not internal guests).
-          </Typography>
-        </Grid>
-        <CippFormCondition
-          field={`${prefix}.excludeGuestsOrExternalUsers.externalTenants._scope`}
-          compareType="valueEq"
-          compareValue="enumerated"
-          formControl={formControl}
-        >
-          <Grid size={{ xs: 12, md: 6 }}>
-            <CippFormComponent
-              type="autoComplete"
-              name={`${prefix}.excludeGuestsOrExternalUsers.externalTenants.members`}
-              label="External Tenant IDs"
-              formControl={formControl}
-              multiple
-              freeSolo
-              disabled={disabled}
-              placeholder="Enter tenant GUIDs"
-            />
-            <Typography variant="caption" color="text.secondary">
-              Enter the tenant IDs to scope this exclusion to (e.g. your partner tenant ID for
-              service provider exclusion).
-            </Typography>
-          </Grid>
-        </CippFormCondition>
-      </CippFormCondition>
+        disabled={disabled}
+        prefix={prefix}
+        direction="include"
+        typeOptions={guestTypeOpts}
+      />
+      <GuestsOrExternalUsersFields
+        formControl={formControl}
+        disabled={disabled}
+        prefix={prefix}
+        direction="exclude"
+        typeOptions={guestTypeOpts}
+      />
     </Grid>
   );
 }
@@ -304,6 +433,11 @@ function ApplicationsSection({ formControl, disabled, prefix = "conditions.appli
   const userActionOpts = useMemo(
     () => enumToOptions(schemaDef?.properties?.includeUserActions),
     [schemaDef]
+  );
+  const filterSchema = resolveRef("#/$defs/conditionalAccessFilter");
+  const filterModeOpts = useMemo(
+    () => enumToOptions(filterSchema?.properties?.mode),
+    [filterSchema]
   );
 
   return (
@@ -342,6 +476,56 @@ function ApplicationsSection({ formControl, disabled, prefix = "conditions.appli
           multiple
           disabled={disabled}
           options={userActionOpts}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CippFormComponent
+          type="autoComplete"
+          name={`${prefix}.includeAuthenticationContextClassReferences`}
+          label="Authentication Context"
+          formControl={formControl}
+          multiple
+          freeSolo
+          disabled={disabled}
+          placeholder="Authentication context IDs (c1-c99) or display names"
+        />
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
+          Used instead of cloud apps. In a template, deployment matches these by display name and
+          creates the authentication context in the tenant if it is missing.
+        </Typography>
+      </Grid>
+
+      {/* Application filter */}
+      <Grid size={{ xs: 12 }}>
+        <Divider sx={{ my: 1 }}>
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
+            Application Filter
+          </Typography>
+        </Divider>
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <CippFormComponent
+          type="autoComplete"
+          name={`${prefix}.applicationFilter.mode`}
+          label="Application Filter Mode"
+          formControl={formControl}
+          multiple={false}
+          disabled={disabled}
+          options={filterModeOpts}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 8 }}>
+        <CippFormComponent
+          type="textField"
+          name={`${prefix}.applicationFilter.rule`}
+          label="Application Filter Rule"
+          formControl={formControl}
+          disabled={disabled}
+          placeholder='e.g. application.customSecurityAttributes.App.Sensitivity -eq "High"'
         />
       </Grid>
     </Grid>
@@ -397,6 +581,17 @@ function ConditionsSection({ formControl, disabled }) {
   const excludeLocOpts = useMemo(
     () => specialValueOptions(locationSchema?.properties?.excludeLocations),
     [locationSchema]
+  );
+
+  const clientAppsSchema = resolveRef("#/$defs/conditionalAccessClientApplications");
+  const includeSpOpts = useMemo(
+    () => specialValueOptions(clientAppsSchema?.properties?.includeServicePrincipals),
+    [clientAppsSchema]
+  );
+  const filterSchema = resolveRef("#/$defs/conditionalAccessFilter");
+  const filterModeOpts = useMemo(
+    () => enumToOptions(filterSchema?.properties?.mode),
+    [filterSchema]
   );
 
   return (
@@ -470,7 +665,9 @@ function ConditionsSection({ formControl, disabled }) {
       {/* Device filter */}
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }}>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{
+            color: "text.secondary"
+          }}>
             Device Filter
           </Typography>
         </Divider>
@@ -503,8 +700,12 @@ function ConditionsSection({ formControl, disabled }) {
       {/* Risk levels */}
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }}>
-          <Stack direction="row" alignItems="center" spacing={0.5}>
-            <Typography variant="caption" color="text.secondary">
+          <Stack direction="row" spacing={0.5} sx={{
+            alignItems: "center"
+          }}>
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               Risk Levels
             </Typography>
             <Chip label="Entra ID P2" size="small" color="warning" variant="outlined" />
@@ -570,6 +771,73 @@ function ConditionsSection({ formControl, disabled }) {
           options={authFlowOpts}
         />
       </Grid>
+
+      {/* Workload identities */}
+      <Grid size={{ xs: 12 }}>
+        <Divider sx={{ my: 1 }}>
+          <Stack direction="row" spacing={0.5} sx={{
+            alignItems: "center"
+          }}>
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
+              Workload Identities
+            </Typography>
+            <Chip label="Workload Identities Premium" size="small" color="warning" variant="outlined" />
+          </Stack>
+        </Divider>
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CippFormComponent
+          type="autoComplete"
+          name="conditions.clientApplications.includeServicePrincipals"
+          label="Include Service Principals"
+          formControl={formControl}
+          multiple
+          freeSolo
+          disabled={disabled}
+          options={includeSpOpts}
+          placeholder="All service principals, or service principal object IDs"
+        />
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
+          Scopes the policy to workload identities instead of users. Leave empty for a user policy.
+        </Typography>
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CippFormComponent
+          type="autoComplete"
+          name="conditions.clientApplications.excludeServicePrincipals"
+          label="Exclude Service Principals"
+          formControl={formControl}
+          multiple
+          freeSolo
+          disabled={disabled}
+          placeholder="Service principal object IDs"
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <CippFormComponent
+          type="autoComplete"
+          name="conditions.clientApplications.servicePrincipalFilter.mode"
+          label="Service Principal Filter Mode"
+          formControl={formControl}
+          multiple={false}
+          disabled={disabled}
+          options={filterModeOpts}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 8 }}>
+        <CippFormComponent
+          type="textField"
+          name="conditions.clientApplications.servicePrincipalFilter.rule"
+          label="Service Principal Filter Rule"
+          formControl={formControl}
+          disabled={disabled}
+          placeholder='e.g. servicePrincipal.customSecurityAttributes.App.Tier -eq "1"'
+        />
+      </Grid>
     </Grid>
   );
 }
@@ -617,7 +885,24 @@ function GrantControlsSection({ formControl, disabled }) {
           disabled={disabled}
           options={operatorOpts}
           multiple={false}
-          validators={{ required: "Grant operator is required when grant controls are set" }}
+          validators={{
+            validate: (value, formValues) => {
+              const gc = formValues?.grantControls || {};
+              const hasControls =
+                (Array.isArray(gc.builtInControls)
+                  ? gc.builtInControls.length
+                  : gc.builtInControls) ||
+                gc.authenticationStrength?.id ||
+                (Array.isArray(gc.termsOfUse) ? gc.termsOfUse.length : gc.termsOfUse) ||
+                (Array.isArray(gc.customAuthenticationFactors)
+                  ? gc.customAuthenticationFactors.length
+                  : gc.customAuthenticationFactors);
+              if (hasControls && !(value?.value ?? value)) {
+                return "Grant operator is required when grant controls are set";
+              }
+              return true;
+            },
+          }}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 8 }}>
@@ -662,6 +947,23 @@ function GrantControlsSection({ formControl, disabled }) {
           placeholder="Terms of use agreement IDs"
         />
       </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CippFormComponent
+          type="autoComplete"
+          name="grantControls.customAuthenticationFactors"
+          label="Custom Controls"
+          formControl={formControl}
+          multiple
+          freeSolo
+          disabled={disabled}
+          placeholder="Custom control IDs"
+        />
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
+          Legacy custom controls from an external identity provider, referenced by ID.
+        </Typography>
+      </Grid>
     </Grid>
   );
 }
@@ -703,7 +1005,9 @@ function SessionControlsSection({ formControl, disabled }) {
         <Typography variant="subtitle2" sx={{ mt: 1 }}>
           Application Enforced Restrictions
         </Typography>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           Only Exchange Online and SharePoint Online support this control.
         </Typography>
       </Grid>
@@ -838,7 +1142,9 @@ function SessionControlsSection({ formControl, disabled }) {
           formControl={formControl}
           disabled={disabled}
         />
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           When enabled, Entra ID will not extend existing sessions during outages.
         </Typography>
       </Grid>
@@ -961,7 +1267,7 @@ function NamedLocationsSection({ formControl, disabled }) {
 
   return (
     <Stack spacing={2}>
-      <Alert severity="info" icon={<PublicIcon fontSize="small" />}>
+      <Alert severity="info" icon={<CippIcons.Public fontSize="small" />}>
         Named locations defined here are stored inside the template and recreated (or matched by
         display name) in the target tenant when the template is deployed. Reference them by name
         in the <strong>Include Locations</strong> / <strong>Exclude Locations</strong> fields
@@ -969,14 +1275,22 @@ function NamedLocationsSection({ formControl, disabled }) {
       </Alert>
 
       {fields.length === 0 && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           No named locations embedded in this template.
         </Typography>
       )}
 
       {fields.map((field, index) => (
         <Paper key={field.id} variant="outlined" sx={{ p: 2 }}>
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              mb: 1
+            }}>
             <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
               Named Location #{index + 1}
             </Typography>
@@ -988,7 +1302,7 @@ function NamedLocationsSection({ formControl, disabled }) {
                   disabled={disabled}
                   aria-label="remove named location"
                 >
-                  <DeleteOutlineIcon fontSize="small" />
+                  <CippIcons.DeleteOutlined fontSize="small" />
                 </IconButton>
               </span>
             </Tooltip>
@@ -1103,7 +1417,7 @@ function NamedLocationsSection({ formControl, disabled }) {
 
       <Box>
         <Button
-          startIcon={<AddIcon />}
+          startIcon={<CippIcons.Add />}
           variant="outlined"
           size="small"
           disabled={disabled}
@@ -1129,6 +1443,7 @@ const CippCAPolicyBuilder = ({
   existingPolicy,
   disabled = false,
   showNamedLocations = false,
+  directorySearch = false,
 }) => {
   const policySchema = caSchema;
 
@@ -1256,20 +1571,28 @@ const CippCAPolicyBuilder = ({
 
       {/* Users & Groups */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Users and Groups
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <UsersSection formControl={formControl} disabled={disabled} />
+          <UsersSection
+            formControl={formControl}
+            disabled={disabled}
+            directorySearch={directorySearch}
+          />
         </AccordionDetails>
       </Accordion>
 
       {/* Cloud Apps or Actions */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Cloud Apps or Actions
           </Typography>
         </AccordionSummary>
@@ -1280,8 +1603,10 @@ const CippCAPolicyBuilder = ({
 
       {/* Conditions */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Conditions
           </Typography>
         </AccordionSummary>
@@ -1292,8 +1617,10 @@ const CippCAPolicyBuilder = ({
 
       {/* Grant Controls */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Grant Controls
           </Typography>
         </AccordionSummary>
@@ -1304,8 +1631,10 @@ const CippCAPolicyBuilder = ({
 
       {/* Session Controls */}
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle1" fontWeight={600}>
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
+          <Typography variant="subtitle1" sx={{
+            fontWeight: 600
+          }}>
             Session Controls
           </Typography>
         </AccordionSummary>
@@ -1317,9 +1646,13 @@ const CippCAPolicyBuilder = ({
       {/* Named Locations (template only) */}
       {showNamedLocations && (
         <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <Typography variant="subtitle1" fontWeight={600}>
+          <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
+            <Stack direction="row" spacing={1} sx={{
+              alignItems: "center"
+            }}>
+              <Typography variant="subtitle1" sx={{
+                fontWeight: 600
+              }}>
                 Named Locations
               </Typography>
               <Chip label="Template" size="small" variant="outlined" />
@@ -1342,6 +1675,9 @@ export default CippCAPolicyBuilder;
  * Call this in your form's submit handler to strip out { label, value }
  * wrapper objects from autoComplete fields, remove empty/null branches,
  * and ensure the JSON is ready to send to AddCAPolicy / AddCATemplate.
+ *
+ * Absent keys are fine: the backend canonicalizer (Format-CIPPCAPolicy) restores every managed
+ * key it needs as its cleared form at deploy/edit time, so this stays a plain payload cleanup.
  */
 export function extractCAPolicyJSON(formValues) {
   const clean = (obj) => {
@@ -1435,7 +1771,8 @@ export function extractCAPolicyJSON(formValues) {
   }
 
   // Post-process: strip session control sub-objects where isEnabled is false.
-  // Graph validates fields like `mode` even when disabled — safest to omit entirely.
+  // Graph validates fields like `mode` even when disabled — safest to omit entirely; the backend
+  // canonicalizer turns the resulting absence into the null that clears it on the policy.
   if (cleaned.sessionControls) {
     const sessionKeys = [
       "applicationEnforcedRestrictions",
@@ -1447,6 +1784,34 @@ export function extractCAPolicyJSON(formValues) {
       if (cleaned.sessionControls[key]?.isEnabled === false) {
         delete cleaned.sessionControls[key];
       }
+    }
+    // signInFrequency.value comes off the "number" form field as a Number (or null when
+    // empty), but Graph types it Int32 — coerce it. When frequencyInterval is everyTime,
+    // Graph requires value/type to be null rather than merely absent; drop them here and
+    // let the backend canonicalizer supply the explicit nulls at deploy.
+    const signInFrequency = cleaned.sessionControls.signInFrequency;
+    if (signInFrequency) {
+      if (
+        signInFrequency.value !== undefined &&
+        signInFrequency.value !== null &&
+        signInFrequency.value !== ""
+      ) {
+        signInFrequency.value = Number(signInFrequency.value);
+      }
+      const frequencyInterval =
+        typeof signInFrequency.frequencyInterval === "object"
+          ? signInFrequency.frequencyInterval?.value
+          : signInFrequency.frequencyInterval;
+      if (frequencyInterval === "everyTime") {
+        delete signInFrequency.value;
+        delete signInFrequency.type;
+      }
+    }
+    // `disableResilienceDefaults` defaults to false from the switch even when
+    // untouched. Left in place it keeps `sessionControls` non-empty, so Graph
+    // never persists it on read
+    if (cleaned.sessionControls.disableResilienceDefaults !== true) {
+      delete cleaned.sessionControls.disableResilienceDefaults;
     }
     // If sessionControls is now empty, remove it too
     if (Object.keys(cleaned.sessionControls).length === 0) {

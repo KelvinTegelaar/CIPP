@@ -1,0 +1,27 @@
+[
+  {
+    "label": "CIPP Roles",
+    "path": "/cipp/advanced/authentication/cipp-roles",
+    "icon": "AdminPanelSettings"
+  },
+  {
+    "label": "CIPP Users",
+    "path": "/cipp/advanced/authentication/cipp-users",
+    "icon": "Group"
+  },
+  {
+    "label": "SSO",
+    "path": "/cipp/advanced/authentication/sso",
+    "icon": "Shield"
+  },
+  {
+    "label": "SAM App Roles",
+    "path": "/cipp/advanced/authentication/sam-app-roles",
+    "icon": "Key"
+  },
+  {
+    "label": "SAM App Permissions",
+    "path": "/cipp/advanced/authentication/sam-app-permissions",
+    "icon": "Lock"
+  }
+]

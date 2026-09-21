@@ -9,7 +9,9 @@ export const createPalette = (config) => {
   return {
     action: {
       active: neutral[400],
-      disabled: alpha(neutral[400], 0.38),
+      // A mid-grey at 0.38 over the disabled background is ~2:1 here, which erases icon-only
+      // disabled controls; white at 0.5 keeps them readable while still reading as disabled.
+      disabled: alpha(common.white, 0.5),
       disabledBackground: alpha(neutral[400], 0.12),
       focus: alpha(neutral[400], 0.16),
       hover: alpha(neutral[400], 0.04),

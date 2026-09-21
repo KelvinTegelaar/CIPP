@@ -1,11 +1,11 @@
 import React from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
 } from "@mui/material";
-import { Close, ReceiptLong } from "@mui/icons-material";
 import { CippPropertyList } from "./CippPropertyList";
 
 const forefrontHeaderMapping = {
@@ -140,7 +140,7 @@ const CippForefrontHeaderDialog = ({ open, onClose, header }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ py: 2 }}>
-        <ReceiptLong /> Anti-Spam Report
+        <CippIcons.ReceiptLong /> Anti-Spam Report
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -151,7 +151,7 @@ const CippForefrontHeaderDialog = ({ open, onClose, header }) => {
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <Close />
+          <CippIcons.Close />
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>

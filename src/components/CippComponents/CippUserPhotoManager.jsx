@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import {
   Box,
   Button,
@@ -12,7 +13,6 @@ import {
   FormControl,
   FormLabel,
 } from "@mui/material";
-import { PhotoCamera, Delete, AccountCircle } from "@mui/icons-material";
 import { ApiPostCall } from "../../api/ApiCall";
 import PropTypes from "prop-types";
 
@@ -182,7 +182,7 @@ export const CippUserPhotoManager = ({
               borderColor: "divider",
             }}
           >
-            <AccountCircle sx={{ fontSize: 40 }} />
+            <CippIcons.AccountCircle sx={{ fontSize: 40 }} />
           </Avatar>
 
           {/* Hidden file input */}
@@ -195,13 +195,15 @@ export const CippUserPhotoManager = ({
           />
 
           {/* Action buttons */}
-          <Stack direction="row" spacing={1} flexGrow={1}>
+          <Stack direction="row" spacing={1} sx={{
+            flexGrow: 1
+          }}>
             {!selectedFile ? (
               <>
                 <Button
                   size="small"
                   variant="outlined"
-                  startIcon={<PhotoCamera />}
+                  startIcon={<CippIcons.PhotoCamera />}
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isLoading}
                 >
@@ -212,7 +214,7 @@ export const CippUserPhotoManager = ({
                     size="small"
                     variant="outlined"
                     color="error"
-                    startIcon={<Delete />}
+                    startIcon={<CippIcons.Delete />}
                     onClick={handleRemovePhoto}
                     disabled={isLoading}
                   >
@@ -245,12 +247,16 @@ export const CippUserPhotoManager = ({
           {/* Status indicator */}
           <Box sx={{ minWidth: 200 }}>
             {setPhotoMutation.isSuccess && (
-              <Typography variant="caption" color="success.main">
+              <Typography variant="caption" sx={{
+                color: "success.main"
+              }}>
                 ✓ Photo updated
               </Typography>
             )}
             {removePhotoMutation.isSuccess && (
-              <Typography variant="caption" color="success.main">
+              <Typography variant="caption" sx={{
+                color: "success.main"
+              }}>
                 ✓ Photo removed
               </Typography>
             )}
@@ -271,7 +277,13 @@ export const CippUserPhotoManager = ({
             )}
           </Box>
         </Box>
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, ml: 1 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            mt: 0.5,
+            ml: 1
+          }}>
           Supported: JPEG, PNG (Max 4MB)
         </Typography>
       </FormControl>
@@ -281,9 +293,13 @@ export const CippUserPhotoManager = ({
   // Full mode - standalone card view
   return (
     <Box>
-      <Stack spacing={2} alignItems="center">
+      <Stack spacing={2} sx={{
+        alignItems: "center"
+      }}>
         {/* Avatar Preview */}
-        <Box position="relative">
+        <Box sx={{
+          position: "relative"
+        }}>
           <Avatar
             src={previewUrl || currentPhotoUrl}
             sx={{
@@ -293,29 +309,31 @@ export const CippUserPhotoManager = ({
               borderColor: "divider",
             }}
           >
-            <AccountCircle sx={{ fontSize: 80 }} />
+            <CippIcons.AccountCircle sx={{ fontSize: 80 }} />
           </Avatar>
 
           {/* Camera overlay button when not in upload mode */}
           {!selectedFile && (
             <Tooltip title="Change Photo">
-              <IconButton
-                sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  backgroundColor: "primary.main",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "primary.dark",
-                  },
-                }}
-                size="small"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isLoading}
-              >
-                <PhotoCamera fontSize="small" />
-              </IconButton>
+              <span>
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    right: 0,
+                    backgroundColor: "primary.main",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "primary.dark",
+                    },
+                  }}
+                  size="small"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isLoading}
+                >
+                  <CippIcons.PhotoCamera fontSize="small" />
+                </IconButton>
+              </span>
             </Tooltip>
           )}
         </Box>
@@ -334,7 +352,7 @@ export const CippUserPhotoManager = ({
           <Stack direction="row" spacing={1}>
             <Button
               variant="outlined"
-              startIcon={<PhotoCamera />}
+              startIcon={<CippIcons.PhotoCamera />}
               onClick={() => fileInputRef.current?.click()}
               disabled={isLoading}
             >
@@ -344,7 +362,7 @@ export const CippUserPhotoManager = ({
               <Button
                 variant="outlined"
                 color="error"
-                startIcon={<Delete />}
+                startIcon={<CippIcons.Delete />}
                 onClick={handleRemovePhoto}
                 disabled={isLoading}
               >
@@ -400,7 +418,12 @@ export const CippUserPhotoManager = ({
         )}
 
         {/* Helper text */}
-        <Typography variant="caption" color="text.secondary" textAlign="center">
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            textAlign: "center"
+          }}>
           Supported formats: JPEG, PNG (Max size: 4MB)
         </Typography>
       </Stack>

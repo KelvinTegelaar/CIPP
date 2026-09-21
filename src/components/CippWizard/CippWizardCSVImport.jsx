@@ -1,10 +1,10 @@
 import { Button, Link, Stack, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry"
 import { Grid } from "@mui/system";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useWatch } from "react-hook-form";
-import { Delete } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 
@@ -55,7 +55,7 @@ export const CippWizardCSVImport = (props) => {
 
   const actions = [
     {
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       label: "Delete Row",
       confirmText: "Are you sure you want to delete this row?",
       customFunction: handleRemoveItem,

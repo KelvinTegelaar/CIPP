@@ -1,8 +1,8 @@
 import React, { useEffect, useCallback, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Divider, Button, Alert, CircularProgress } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch } from 'react-hook-form'
-import { Add } from '@mui/icons-material'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippFormTenantSelector } from './CippFormTenantSelector'
@@ -60,6 +60,7 @@ export const CippApplicationDeployDrawer = ({
     winGetApp: '/api/AddwinGetApp',
     chocolateyApp: '/api/AddChocoApp',
     officeApp: '/api/AddOfficeApp',
+    edgeApp: '/api/AddEdgeApp',
     win32ScriptApp: '/api/AddWin32ScriptApp',
   }
 
@@ -118,9 +119,9 @@ export const CippApplicationDeployDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Add />}
+        startIcon={<CippIcons.Add />}
       >
         {buttonText}
       </PermissionButton>
@@ -161,6 +162,7 @@ export const CippApplicationDeployDrawer = ({
                 // uncomment after release { label: "WinGet App", value: "winGetApp" },
                 { label: 'Chocolatey App', value: 'chocolateyApp' },
                 { label: 'Microsoft Office', value: 'officeApp' },
+                { label: 'Microsoft Edge', value: 'edgeApp' },
                 { label: 'Custom Application', value: 'win32ScriptApp' },
               ]}
               multiple={false}
@@ -376,15 +378,15 @@ export const CippApplicationDeployDrawer = ({
             </CippFormCondition>
 
             {/* Assign To Options */}
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12, md: 5 }}>
               <CippFormComponent
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -397,7 +399,7 @@ export const CippApplicationDeployDrawer = ({
               compareType="is"
               compareValue="customGroup"
             >
-              <Grid size={{ xs: 12 }}>
+              <Grid size={{ xs: 12, md: 5 }}>
                 <CippFormComponent
                   type="textField"
                   label="Custom Group Names separated by comma. Wildcards (*) are allowed"
@@ -439,7 +441,7 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 5 }}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 onClick={() => {
                   searchApp(formControl.getValues('searchQuery'), 'StoreApp')
@@ -500,6 +502,13 @@ export const CippApplicationDeployDrawer = ({
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="switch"
+                label="Install as system"
+                name="InstallAsSystem"
+                formControl={formControl}
+                defaultValue={true}
+              />
+              <CippFormComponent
+                type="switch"
                 label="Mark for Uninstallation"
                 name="InstallationIntent"
                 formControl={formControl}
@@ -512,10 +521,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -570,7 +579,7 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 5 }}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 onClick={() => {
                   searchApp(formControl.getValues('searchQuery'), 'choco')
@@ -673,10 +682,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -851,10 +860,95 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Assign to Custom Group', value: 'customGroup' },
+                ]}
+                formControl={formControl}
+                row
+              />
+            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="is"
+              compareValue="customGroup"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+                  name="customGroup"
+                  formControl={formControl}
+                  validators={{ required: 'Please specify custom group names' }}
+                />
+              </Grid>
+            </CippFormCondition>
+            <CippFormCondition
+              formControl={formControl}
+              field="AssignTo"
+              compareType="isNot"
+              compareValue="On"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                  name="excludeGroup"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+          </CippFormCondition>
+
+          {/* Edge App Section */}
+          <CippFormCondition
+            formControl={formControl}
+            field="appType.value"
+            compareType="is"
+            compareValue="edgeApp"
+          >
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Edge Channel"
+                name="edgeChannel"
+                options={[
+                  { value: 'stable', label: 'Stable' },
+                  { value: 'beta', label: 'Beta' },
+                  { value: 'dev', label: 'Dev' },
+                ]}
+                multiple={false}
+                formControl={formControl}
+                validators={{ required: 'Please select an Edge channel' }}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Display Language (optional)"
+                name="displayLanguageLocale"
+                options={languageList.map(({ language, tag }) => ({
+                  value: tag,
+                  label: `${language} (${tag})`,
+                }))}
+                multiple={false}
+                formControl={formControl}
+              />
+            </Grid>
+
+            {/* Assign To Options */}
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="radio"
+                name="AssignTo"
+                options={[
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -1039,10 +1133,10 @@ export const CippApplicationDeployDrawer = ({
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}

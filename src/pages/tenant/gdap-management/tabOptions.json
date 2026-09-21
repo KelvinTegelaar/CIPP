@@ -10,11 +10,6 @@
     "icon": "Share"
   },
   {
-    "label": "Role Mappings",
-    "path": "/tenant/gdap-management/roles",
-    "icon": "AdminPanelSettings"
-  },
-  {
     "label": "Role Templates",
     "path": "/tenant/gdap-management/role-templates",
     "icon": "Description"

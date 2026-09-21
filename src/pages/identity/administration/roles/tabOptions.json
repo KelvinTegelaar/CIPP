@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Roles & Assignments",
+    "path": "/identity/administration/roles",
+    "icon": "AdminPanelSettings"
+  },
+  {
+    "label": "PIM Templates",
+    "path": "/identity/administration/roles/templates",
+    "icon": "Description"
+  }
+]

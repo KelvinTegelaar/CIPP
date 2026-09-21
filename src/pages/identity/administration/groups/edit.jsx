@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react'
-import { Box, Button, Divider, Typography, Alert } from '@mui/material'
-import { Grid } from '@mui/system'
-import { useForm } from 'react-hook-form'
-import { Layout as DashboardLayout } from '../../../../layouts/index.js'
-import CippFormPage from '../../../../components/CippFormPages/CippFormPage'
-import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
-import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
-import { useRouter } from 'next/router'
-import { ApiGetCall } from '../../../../api/ApiCall'
-import { useSettings } from '../../../../hooks/use-settings'
-import { CippFormContactSelector } from '../../../../components/CippComponents/CippFormContactSelector'
-import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import { useEffect, useState } from "react";
+import { Box, Button, Divider, Typography, Alert } from "@mui/material";
+import { Grid } from "@mui/system";
+import { useForm } from "react-hook-form";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
+import { CippFormUserAndGroupSelector } from "../../../../components/CippComponents/CippFormUserAndGroupSelector";
+import { useRouter } from "next/router";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { useSettings } from "../../../../hooks/use-settings";
+import { CippFormContactSelector } from "../../../../components/CippComponents/CippFormContactSelector";
+import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { CippFormLicenseSelector } from '../../../../components/CippComponents/CippFormLicenseSelector'
 import { getCippLicenseTranslation } from '../../../../utils/get-cipp-license-translation'
 
@@ -46,6 +47,7 @@ const EditGroup = () => {
       RemoveOwner: [],
       AddContact: [],
       RemoveContact: [],
+      AddDevice: [],
       AddLicenses: [],
       RemoveLicenses: [],
       visibility: 'Public',
@@ -112,6 +114,7 @@ const EditGroup = () => {
           RemoveOwner: [],
           AddContact: [],
           RemoveContact: [],
+          AddDevice: [],
           AddLicenses: [],
           RemoveLicenses: [],
         }
@@ -158,8 +161,13 @@ const EditGroup = () => {
       <CippFormPage
         formControl={formControl}
         queryKey={[`ListGroups-${groupId}`, `Licenses-${tenantFilter}`]}
-        title={`Group - ${groupInfo.data?.groupInfo?.displayName || ''}`}
+        title={
+          groupInfo.data?.groupInfo?.displayName
+            ? `Group - ${groupInfo.data.groupInfo.displayName}`
+            : 'Group'
+        }
         formPageType="Edit"
+        hideSubmit={!groupId}
         backButtonTitle="Group Overview"
         postUrl="/api/EditGroup"
         customDataformatter={customDataFormatter}
@@ -176,13 +184,19 @@ const EditGroup = () => {
           </>
         }
       >
+        {!groupId && (
+          <Alert severity="info" sx={{ mb: 1 }}>
+            No group selected. Open this page from the Groups list to edit a group.
+          </Alert>
+        )}
         {groupInfo.isSuccess && groupInfo.data?.groupInfo?.onPremisesSyncEnabled && (
           <Alert severity="error" sx={{ mb: 1 }}>
             This group is synced from on-premises Active Directory. Changes should be made in the
             on-premises environment instead.
           </Alert>
         )}
-        {showMembershipTable ? (
+        {groupId &&
+          (showMembershipTable ? (
           <Box sx={{ my: 2 }}>
             <CippDataTable
               data={combinedData}
@@ -251,10 +265,10 @@ const EditGroup = () => {
               </Grid>
 
               <Grid size={{ xs: 12 }}>
-                <CippFormUserSelector
+                <CippFormUserAndGroupSelector
                   formControl={formControl}
                   name="AddMember"
-                  label="Add Members"
+                  label="Add Members (Users or Groups)"
                   multiple={true}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
@@ -309,6 +323,47 @@ const EditGroup = () => {
                 />
               </Grid>
 
+              {groupType !== 'Distribution List' && groupType !== 'Mail-Enabled Security' && (
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="AddDevice"
+                    label="Add Devices"
+                    formControl={formControl}
+                    multiple={true}
+                    creatable={false}
+                    isFetching={groupInfo.isFetching}
+                    disabled={groupInfo.isFetching}
+                    api={{
+                      url: '/api/ListGraphRequest',
+                      dataKey: 'Results',
+                      data: {
+                        Endpoint: 'devices',
+                        manualPagination: true,
+                        $select: 'id,displayName,operatingSystem',
+                        $count: true,
+                        $orderby: 'displayName',
+                        $top: 999,
+                      },
+                      labelField: (option) =>
+                        option?.operatingSystem
+                          ? `${option.displayName} (${option.operatingSystem})`
+                          : (option?.displayName ?? ''),
+                      valueField: 'id',
+                      addedField: {
+                        displayName: 'displayName',
+                      },
+                      queryKey: `ListDevices-${tenantFilter}`,
+                      dataFilter: (options) =>
+                        options.filter(
+                          (option) => !groupInfo.data?.members?.some((m) => m.id === option.value)
+                        ),
+                      showRefresh: true,
+                    }}
+                  />
+                </Grid>
+              )}
+
               <Grid size={{ xs: 12 }}>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6">Remove Members</Typography>
@@ -318,23 +373,32 @@ const EditGroup = () => {
                 <CippFormComponent
                   type="autoComplete"
                   name="RemoveMember"
-                  label="Remove Members"
+                  label="Remove Members (Users or Groups)"
                   formControl={formControl}
                   multiple={true}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   options={
                     groupInfo.data?.members
-                      ?.filter((m) => m?.['@odata.type'] !== '#microsoft.graph.orgContact')
-                      ?.map((m) => ({
-                        label: `${m.displayName} (${m.userPrincipalName})`,
-                        value: m.id,
-                        addedFields: {
-                          userPrincipalName: m.userPrincipalName,
-                          displayName: m.displayName,
-                          id: m.id,
-                        },
-                      })) || []
+                      ?.filter((m) => m?.["@odata.type"] !== "#microsoft.graph.orgContact")
+                      ?.map((m) => {
+                        const groupType = m.mailEnabled && !m.securityEnabled
+                          ? "Distribution Group"
+                          : m.mailEnabled && m.securityEnabled
+                          ? "Mail-Enabled Security Group"
+                          : "Security Group";
+                        return {
+                          label: m.userPrincipalName
+                            ? `${m.displayName} (${m.userPrincipalName})`
+                            : `${m.displayName} (${groupType})`,
+                          value: m.id,
+                          addedFields: {
+                            userPrincipalName: m.userPrincipalName,
+                            displayName: m.displayName,
+                            id: m.id,
+                          },
+                        };
+                      }) || []
                   }
                   sortOptions={true}
                 />
@@ -463,7 +527,12 @@ const EditGroup = () => {
                 <>
                   <Grid size={{ xs: 12 }}>
                     <Typography variant="h6">Licenses</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        mb: 1
+                      }}>
                       Licenses assigned to this group are automatically applied to all members.
                       Changes can take 2-5 minutes to propagate.
                     </Typography>
@@ -516,10 +585,10 @@ const EditGroup = () => {
               )}
             </Grid>
           </Box>
-        )}
+          ))}
       </CippFormPage>
     </>
-  )
+  );
 }
 
 EditGroup.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

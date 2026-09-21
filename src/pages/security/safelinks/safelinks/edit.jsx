@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useEffect } from "react";
@@ -29,7 +29,7 @@ const Page = () => {
   const policyData = ApiGetCall({
     url: `/api/ListSafeLinksPolicyDetails?PolicyName=${PolicyName}&RuleName=${RuleName}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `SafeLinksPolicy-${PolicyName}`,
-    enabled: !!PolicyName,
+    waiting: !!PolicyName,
   });
 
   // Populate forms with existing data when available
@@ -59,7 +59,7 @@ const Page = () => {
   return (
     <>
       <CippFormPage
-        title={`Edit Safe Links Policy: ${PolicyName}`}
+        title={PolicyName ? `Safe Links Policy: ${PolicyName}` : "Safe Links Policy"}
         backButtonTitle="Safe Links Overview"
         formPageType="Edit"
         formControl={formControl}
@@ -68,21 +68,29 @@ const Page = () => {
         queryKey={`SafeLinks-${userSettingsDefaults.currentTenant}-${PolicyName}`}
         isLoading={policyData.isFetching}
         allowResubmit={true}
+        hideSubmit={!PolicyName}
       >
-        <Box sx={{ my: 2 }}>
-          <Box sx={{ mb: 4 }}>
-            <SafeLinksForm
-              formControl={formControl}
-              PolicyName={watchPolicyName} 
-              formType="edit" 
-            />
+        {!PolicyName && (
+          <Alert severity="info" sx={{ m: 2 }}>
+            No policy selected. Open this page from the Safe Links Overview list to edit a policy.
+          </Alert>
+        )}
+        {PolicyName && (
+          <Box sx={{ my: 2 }}>
+            <Box sx={{ mb: 4 }}>
+              <SafeLinksForm
+                formControl={formControl}
+                PolicyName={watchPolicyName}
+                formType="edit"
+              />
+            </Box>
           </Box>
-        </Box>
+        )}
       </CippFormPage>
     </>
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

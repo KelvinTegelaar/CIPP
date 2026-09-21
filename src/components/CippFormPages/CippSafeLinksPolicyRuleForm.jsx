@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { Typography } from "@mui/material";
@@ -6,7 +7,6 @@ import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
 import { CippFormGroupSelector } from "../CippComponents/CippFormGroupSelector";
 import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
 import { CippInfoCard } from "../CippCards/CippInfoCard";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { getCippValidator } from "../../utils/get-cipp-validator";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
@@ -516,7 +516,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
       <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="autoComplete"
-          createable={true}
+          creatable={true}
           formControl={formControl}
           name="DoNotRewriteUrls"
           label="Do Not Rewrite URLs"
@@ -593,7 +593,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           name="RecipientDomainIs"
           label="Domains"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -602,7 +602,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           name="SentToMemberOf"
           label="Groups"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -612,7 +612,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           label="Recipients"
           valueField="userPrincipalName"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -624,7 +624,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           name="ExceptIfRecipientDomainIs"
           label="Domains"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -633,7 +633,7 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           name="ExceptIfSentToMemberOf"
           label="Groups"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
@@ -643,14 +643,14 @@ export const SafeLinksForm = ({ formControl, formType = "add" }) => {
           label="Recipients"
           valueField="userPrincipalName"
           multiple={true}
-          createable={false}
+          creatable={false}
         />
       </Grid>
 
       {/* Information Cards */}
       <Grid size={{ xs:12 }}>
         <CippInfoCard
-          icon={<InformationCircleIcon />}
+          icon={<CippIcons.InformationCircleIcon />}
           label="Propagation Time"
           value="Changes to Safe Links policies and rules may take up to 6 hours to propagate throughout your organization."
           isFetching={false}

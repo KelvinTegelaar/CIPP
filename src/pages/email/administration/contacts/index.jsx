@@ -1,0 +1,110 @@
+import { useMemo } from "react";
+import { CippIcons } from "../../../../utils/icon-registry"
+import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { CippAddContactDrawer } from "../../../../components/CippComponents/CippAddContactDrawer";
+import { CippDeployContactTemplateDrawer } from "../../../../components/CippComponents/CippDeployContactTemplateDrawer";
+
+const Page = () => {
+  const pageTitle = "Contacts";
+  const cardButtonPermissions = ["Exchange.Contact.ReadWrite"];
+  const actions = useMemo(
+    () => [
+      {
+        label: "Edit Contact",
+        link: "/email/administration/contacts/edit?id=[Guid]",
+        pinned: true,
+        multiPost: false,
+        postEntireRow: true,
+        icon: <CippIcons.Edit />,
+        color: "warning",
+        condition: (row) => !row.IsDirSynced,
+      },
+      {
+        label: "Set Source of Authority",
+        type: "POST",
+        url: "/api/ExecSetCloudManaged",
+        icon: <CippIcons.CloudSync />,
+        data: {
+          ID: "graphId",
+          displayName: "DisplayName",
+          type: "!Contact",
+        },
+        // Pre-select the current source of authority; leave unselected when the
+        // selected rows have mixed states
+        defaultvalues: (row) => {
+          const states = [
+            ...new Set((Array.isArray(row) ? row : [row]).map((r) => r?.IsDirSynced === true)),
+          ];
+          return states.length === 1 ? { isCloudManaged: String(!states[0]) } : {};
+        },
+        fields: [
+          {
+            type: "radio",
+            name: "isCloudManaged",
+            label: "Source of Authority",
+            options: [
+              { label: "Cloud Managed", value: true },
+              { label: "On-Premises Managed", value: false },
+            ],
+            validators: {
+              required: "Please select a source of authority",
+              validate: (value, formValues, row) => {
+                const states = [
+                  ...new Set(
+                    (Array.isArray(row) ? row : [row]).map((r) => r?.IsDirSynced === true)
+                  ),
+                ];
+                if (states.length === 1 && String(value) === String(!states[0])) {
+                  return "Source of authority is unchanged";
+                }
+                return true;
+              },
+            },
+          },
+        ],
+        confirmText:
+          "Are you sure you want to change the source of authority for '[DisplayName]'? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
+        multiPost: false,
+        // The SOA API targets the Graph org contact (graphId), which only exists for
+        // contacts that are or were directory-synced; cloud-native mail contacts have
+        // no Graph counterpart and the request would be meaningless
+        condition: (row) => !!row?.graphId,
+      },
+      {
+        label: "Remove Contact",
+        type: "POST",
+        url: "/api/RemoveContact",
+        data: {
+          GUID: "Guid",
+          mail: "WindowsEmailAddress",
+        },
+        confirmText:
+          "Are you sure you want to delete this contact? Remember this will not work if the contact is AD Synced.",
+        color: "danger",
+        icon: <CippIcons.Delete />,
+        condition: (row) => !row.IsDirSynced,
+      },
+    ],
+    []
+  );
+
+  const simpleColumns = ["DisplayName", "WindowsEmailAddress", "Company", "IsDirSynced"];
+  return (
+    <CippTablePage
+      title={pageTitle}
+      apiUrl="/api/ListContacts"
+      actions={actions}
+      simpleColumns={simpleColumns}
+      cardButton={
+        <>
+          <CippAddContactDrawer requiredPermissions={cardButtonPermissions} />
+          <CippDeployContactTemplateDrawer requiredPermissions={cardButtonPermissions} />
+        </>
+      }
+    />
+  );
+};
+
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
+export default Page;

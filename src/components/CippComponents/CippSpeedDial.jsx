@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   SpeedDial,
   SpeedDialAction,
@@ -11,8 +12,8 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  useMediaQuery,
 } from '@mui/material'
-import { Close as CloseIcon } from '@mui/icons-material'
 import { useForm } from 'react-hook-form'
 import { CippFormComponent } from '../../components/CippComponents/CippFormComponent'
 
@@ -20,7 +21,7 @@ const CippSpeedDial = ({
   actions = [],
   position = { bottom: 16, right: 16 },
   icon,
-  openIcon = <CloseIcon />,
+  openIcon = <CippIcons.Close />,
 }) => {
   const [openDialogs, setOpenDialogs] = useState({})
   const [loading, setLoading] = useState(false)
@@ -28,6 +29,9 @@ const CippSpeedDial = ({
   const [speedDialOpen, setSpeedDialOpen] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
+  // Bottom-right belongs to page actions on mobile; help destinations live in the
+  // account popover there instead (see AccountPopover's mdDown section).
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
 
   const formControls = actions.reduce((acc, action) => {
     if (action.form) {
@@ -109,6 +113,10 @@ const CippSpeedDial = ({
     }
   }, [speedDialOpen])
 
+  if (mdDown) {
+    return null
+  }
+
   return (
     <>
       <SpeedDial
@@ -136,7 +144,7 @@ const CippSpeedDial = ({
           <SpeedDialAction
             key={action.id}
             icon={action.icon}
-            tooltipTitle={action.name}
+            slotProps={{ tooltip: { title: action.name, open: true } }}
             onClick={() => {
               if (action.form) {
                 handleDialogOpen(action.id)
@@ -145,7 +153,6 @@ const CippSpeedDial = ({
               }
               setSpeedDialOpen(false)
             }}
-            tooltipOpen
             sx={{
               '&.MuiSpeedDialAction-fab': {
                 backgroundColor: 'background.paper',

@@ -1,0 +1,187 @@
+import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
+import { useIsMobileLayout } from "../../hooks/use-breakpoint";
+import { CippWizardProgressHeader } from "./CippWizardProgressHeader";
+import {
+  Box,
+  Step,
+  StepConnector,
+  stepConnectorClasses,
+  StepLabel,
+  Stepper,
+  SvgIcon,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { ClearIcon } from "@mui/x-date-pickers";
+
+const WizardStepConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.vertical}`]: {
+    marginLeft: 16,
+  },
+  [`&.${stepConnectorClasses.vertical} > .${stepConnectorClasses.line}`]: {
+    borderColor:
+      theme.palette.mode === "dark" ? theme.palette.neutral[800] : theme.palette.neutral[200],
+    borderLeftWidth: 2,
+  },
+  [`&.${stepConnectorClasses.horizontal} > .${stepConnectorClasses.line}`]: {
+    borderColor:
+      theme.palette.mode === "dark" ? theme.palette.neutral[800] : theme.palette.neutral[200],
+    borderTopWidth: 2,
+  },
+}));
+
+const WizardStepIcon = (props) => {
+  const { active, completed, error, loading } = props;
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          alignItems: "center",
+          borderColor: "primary.main",
+          borderRadius: "50%",
+          borderStyle: "solid",
+          borderWidth: 2,
+          color: "primary.main",
+          display: "flex",
+          height: 36,
+          justifyContent: "center",
+          width: 36,
+        }}
+      >
+        <CircularProgress size={20} />
+      </Box>
+    );
+  }
+  if (error) {
+    return (
+      <Box
+        sx={{
+          alignItems: "center",
+          backgroundColor: "error.main",
+          borderRadius: "50%",
+          color: "primary.contrastText",
+          display: "flex",
+          height: 36,
+          justifyContent: "center",
+          width: 36,
+        }}
+      >
+        <SvgIcon fontSize="small">
+          <ClearIcon />
+        </SvgIcon>
+      </Box>
+    );
+  }
+  if (active) {
+    return (
+      <Box
+        sx={{
+          alignItems: "center",
+          borderColor: "primary.main",
+          borderRadius: "50%",
+          borderStyle: "solid",
+          borderWidth: 2,
+          color: "primary.main",
+          display: "flex",
+          height: 36,
+          justifyContent: "center",
+          width: 36,
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: "primary.main",
+            borderRadius: "50%",
+            height: 12,
+            width: 12,
+          }}
+        />
+      </Box>
+    );
+  }
+  if (completed) {
+    return (
+      <Box
+        sx={{
+          alignItems: "center",
+          backgroundColor: "primary.main",
+          borderRadius: "50%",
+          color: "primary.contrastText",
+          display: "flex",
+          height: 36,
+          justifyContent: "center",
+          width: 36,
+        }}
+      >
+        <SvgIcon fontSize="small">
+          <CippIcons.CheckIcon />
+        </SvgIcon>
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      sx={{
+        borderColor: (theme) => (theme.palette.mode === "dark" ? "neutral.700" : "neutral.300"),
+        borderRadius: "50%",
+        borderStyle: "solid",
+        borderWidth: 2,
+        height: 36,
+        width: 36,
+      }}
+    />
+  );
+};
+
+export const WizardSteps = (props) => {
+  const { activeStep = 1, orientation = "vertical", steps = [] } = props;
+  const isMobile = useIsMobileLayout();
+
+  // Only the horizontal stepper is wizard navigation. The vertical one is a status list —
+  // GDAP onboarding feeds it server-side steps where each step's message and pass/fail
+  // state IS the content, so collapsing it to a progress bar would delete that.
+  if (isMobile && orientation === "horizontal") {
+    return <CippWizardProgressHeader activeStep={activeStep} steps={steps} />;
+  }
+
+  return (
+    <div>
+      <Stepper
+        orientation={orientation}
+        activeStep={activeStep}
+        connector={<WizardStepConnector />}
+      >
+        {/* Onboarding's steps carry only a description, so keying on title alone made
+            every key undefined and reconciliation index-driven by accident. */}
+        {steps.map((step, index) => (
+          <Step key={step.title ?? step.description ?? index}>
+            <StepLabel
+              error={step.error ?? false}
+              slots={{ stepIcon: WizardStepIcon }}
+              slotProps={{ stepIcon: { loading: step.loading ?? false } }}
+            >
+              <Typography variant="subtitle2">
+                {`Step ${steps.indexOf(step) ? steps.indexOf(step) + 1 : 1}`}
+              </Typography>
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
+                {step.description}
+              </Typography>
+            </StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+    </div>
+  );
+};
+
+WizardSteps.propTypes = {
+  activeStep: PropTypes.number,
+  orientation: PropTypes.oneOf(["vertical", "horizontal"]),
+  steps: PropTypes.array,
+};

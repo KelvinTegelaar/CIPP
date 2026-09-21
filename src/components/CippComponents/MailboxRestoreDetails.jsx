@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import { Box, Typography, Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
-import { Close } from "@mui/icons-material";
-import { DocumentTextIcon } from "@heroicons/react/24/outline";
 
 const MailboxRestoreDetails = ({ data }) => {
   const tenantFilter = useSettings().currentTenant;
@@ -83,7 +82,7 @@ const MailboxRestoreDetails = ({ data }) => {
             onClick={() => setDialogOpen(false)}
             sx={{ position: "absolute", right: 8, top: 8 }}
           >
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <DialogContent>
@@ -108,7 +107,7 @@ const MailboxRestoreDetails = ({ data }) => {
               label: "View Report",
               noConfirm: true,
               customFunction: () => setDialogOpen(true),
-              icon: <DocumentTextIcon />,
+              icon: <CippIcons.DocumentTextIcon />,
             },
           ]}
         />
