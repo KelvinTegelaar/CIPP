@@ -45,47 +45,31 @@ function getLeafItems(items = []) {
   return result;
 }
 
-async function loadTabOptions() {
-  const tabOptionPaths = [
-    "/email/administration/exchange-retention",
-    "/cipp/custom-data",
-    "/cipp/advanced/super-admin",
-    "/cipp/advanced/container-management",
-    "/cipp/advanced/authentication",
-    "/endpoint/MEM/enrollment-profiles",
-    "/tenant/standards",
-    "/tenant/manage",
-    "/tenant/administration/applications",
-    "/tenant/administration/tenants",
-    "/tenant/administration/audit-logs",
-    "/identity/administration/users/user",
-    "/tenant/administration/securescore",
-    "/tenant/gdap-management",
-    "/tenant/gdap-management/relationships/relationship",
-    "/cipp/settings",
-  ];
+/**
+ * Load every tabOptions.json under pages/ at build time. Globbed rather than listed so a new
+ * tabbed page is searchable without anyone remembering to register it here. The previous
+ * hardcoded list had drifted to cover only half of the tabbed pages (issue #668).
+ */
+function loadTabOptions() {
+  const context = require.context("../../pages", true, /tabOptions\.json$/);
 
-  const tabOptions = [];
+  return context.keys().flatMap((key) => {
+    const tabModule = context(key);
+    const options = tabModule.default || tabModule;
+    if (!Array.isArray(options)) return [];
 
-  for (const basePath of tabOptionPaths) {
-    try {
-      const module = await import(`../../pages${basePath}/tabOptions.json`);
-      const options = module.default || module;
+    // './tenant/manage/tabOptions.json' -> '/tenant/manage'
+    const basePath = key.replace(/^\./, "").replace(/\/tabOptions\.json$/, "");
 
-      options.forEach((option) => {
-        tabOptions.push({
-          title: option.label,
-          path: option.path,
-          type: "tab",
-          basePath,
-        });
-      });
-    } catch (error) {
-      console.debug(`Could not load tabOptions for ${basePath}:`, error);
-    }
-  }
-
-  return tabOptions;
+    return options
+      .filter((option) => option?.label && option?.path)
+      .map((option) => ({
+        title: option.label,
+        path: option.path,
+        type: "tab",
+        basePath,
+      }));
+  });
 }
 
 function filterItemsByPermissionsAndRoles(items, userPermissions, userRoles) {
@@ -134,7 +118,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const [searchValue, setSearchValue] = useState(value);
     const [searchType, setSearchType] = useState(defaultSearchType);
     const [bitlockerLookupType, setBitlockerLookupType] = useState("keyId");
-    const [tabOptions, setTabOptions] = useState([]);
+    const [tabOptions] = useState(loadTabOptions);
     const [showDropdown, setShowDropdown] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const [bitlockerDrawerVisible, setBitlockerDrawerVisible] = useState(false);
@@ -532,10 +516,6 @@ export const CippUniversalSearchV2 = React.forwardRef(
         activeRow.scrollIntoView({ block: "nearest" });
       }
     }, [highlightedIndex, showDropdown]);
-
-    useEffect(() => {
-      loadTabOptions().then(setTabOptions);
-    }, []);
 
     useEffect(() => {
       setSearchType(defaultSearchType);
