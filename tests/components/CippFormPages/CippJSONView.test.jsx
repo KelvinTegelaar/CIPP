@@ -35,3 +35,45 @@ describe('CippJsonView drilldown', () => {
     expect(screen.queryByRole('button', { name: 'View Details' })).toBeNull()
   })
 })
+
+describe('CippJsonView administrative template settings', () => {
+  it('labels settings and presentations from the identity captured in the template when the tenant cannot resolve the ids', () => {
+    // Imported ADMX definitions are minted with a new id in every tenant, so the definition lookup
+    // for the viewed tenant returns nothing for a template captured elsewhere.
+    const object = {
+      added: [
+        {
+          'definition@odata.bind':
+            "https://graph.microsoft.com/beta/deviceManagement/groupPolicyDefinitions('f65370a6-bc40-40af-b0f3-b6f5481478c0')",
+          enabled: true,
+          definition: {
+            id: 'f65370a6-bc40-40af-b0f3-b6f5481478c0',
+            displayName: 'SPNEGO',
+            categoryPath: '\Mozilla\Firefox\Authentication',
+            classType: 'machine',
+          },
+          presentationValues: [
+            {
+              '@odata.type': '#microsoft.graph.groupPolicyPresentationValueList',
+              'presentation@odata.bind':
+                "https://graph.microsoft.com/beta/deviceManagement/groupPolicyDefinitions('f65370a6-bc40-40af-b0f3-b6f5481478c0')/presentations('a73dada5-9cfc-44e7-b560-ebc1e1a1f1a9')",
+              values: [{ name: 'https://intranet.example' }],
+              presentation: {
+                id: 'a73dada5-9cfc-44e7-b560-ebc1e1a1f1a9',
+                label: 'Servers',
+                '@odata.type': '#microsoft.graph.groupPolicyPresentationListBox',
+                index: 0,
+              },
+            },
+          ],
+        },
+      ],
+    }
+    renderWithProviders(<CippJsonView object={object} defaultOpen type="intune" />)
+
+    expect(screen.getByText('SPNEGO')).toBeInTheDocument()
+    expect(screen.getByText('\Mozilla\Firefox\Authentication')).toBeInTheDocument()
+    expect(screen.getByText('Servers:')).toBeInTheDocument()
+    expect(screen.queryByText(/f65370a6-bc40-40af-b0f3-b6f5481478c0/)).toBeNull()
+  })
+})
