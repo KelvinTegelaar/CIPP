@@ -54,6 +54,7 @@ const Page = () => {
       endDate: null,
       username: '',
       severity: [],
+      api: [],
     },
   })
 
@@ -63,6 +64,7 @@ const Page = () => {
   const [endDate, setEndDate] = useState(null) // State for end date filter
   const [username, setUsername] = useState(null) // State for username filter
   const [severity, setSeverity] = useState(null) // State for severity filter
+  const [api, setApi] = useState(null) // State for API filter
   const settings = useSettings() // Hook to access settings
   const currentTenant = settings?.currentTenant
 
@@ -99,7 +101,8 @@ const Page = () => {
       data.startDate !== null ||
       data.endDate !== null ||
       data.username !== null ||
-      data.severity?.length > 0
+      data.severity?.length > 0 ||
+      data.api?.length > 0
     setFilterEnabled(hasFilter)
 
     // Format start date if available
@@ -126,6 +129,13 @@ const Page = () => {
         : null
     )
 
+    // Set API filter if available (join with | so the backend regex match treats it as an OR)
+    setApi(
+      data.api && data.api.length > 0
+        ? data.api.map((item) => item.value).join('|')
+        : null
+    )
+
     // Close the accordion after applying filters
     setExpanded(false)
   }
@@ -136,12 +146,14 @@ const Page = () => {
       endDate: null,
       username: '',
       severity: [],
+      api: [],
     })
     setFilterEnabled(false)
     setStartDate(null)
     setEndDate(null)
     setUsername(null)
     setSeverity(null)
+    setApi(null)
     setExpanded(false) // Close the accordion when clearing filters
   }
 
@@ -191,7 +203,9 @@ const Page = () => {
                     {username && (startDate || endDate) && ' | '}
                     {username && <>User: {username}</>}
                     {severity && (username || startDate || endDate) && ' | '}
-                    {severity && <>Severity: {severity.replace(/,/g, ', ')}</>})
+                    {severity && <>Severity: {severity.replace(/,/g, ', ')}</>}
+                    {api && (severity || username || startDate || endDate) && ' | '}
+                    {api && <>API: {api.replace(/\|/g, ', ')}</>})
                   </Box>
                 ) : (
                   <Box
@@ -216,7 +230,7 @@ const Page = () => {
                 <Grid size={{ xs: 12, md: 7 }}>
                   <Alert severity="info">
                     Use the filters below to narrow down your logbook results. You can filter by
-                    date range, username, and severity levels. By default, the logbook shows the
+                    date range, username, severity levels, and API. By default, the logbook shows the
                     current day based on UTC time. Your local time is{' '}
                     {new Date().getTimezoneOffset() / -60} hours offset from UTC.
                   </Alert>
@@ -281,24 +295,41 @@ const Page = () => {
                   />
                 </Grid>
 
-                {/* Severity Filter */}
+                {/* Severity + API Filters, side by side (half width each) */}
                 <Grid size={{ xs: 12, md: 7 }}>
-                  <CippFormComponent
-                    type="autoComplete"
-                    name="severity"
-                    label="Filter by Severity"
-                    formControl={formControl}
-                    multiple={true}
-                    options={[
-                      { value: 'Info', label: 'Info' },
-                      { value: 'Warn', label: 'Warning' },
-                      { value: 'Error', label: 'Error' },
-                      { value: 'Critical', label: 'Critical' },
-                      { value: 'Alert', label: 'Alert' },
-                      { value: 'Debug', label: 'Debug' },
-                    ]}
-                    placeholder="Select severity levels"
-                  />
+                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <CippFormComponent
+                        type="autoComplete"
+                        name="severity"
+                        label="Filter by Severity"
+                        formControl={formControl}
+                        multiple={true}
+                        options={[
+                          { value: 'Info', label: 'Info' },
+                          { value: 'Warn', label: 'Warning' },
+                          { value: 'Error', label: 'Error' },
+                          { value: 'Critical', label: 'Critical' },
+                          { value: 'Alert', label: 'Alert' },
+                          { value: 'Debug', label: 'Debug' },
+                        ]}
+                        placeholder="Select severity levels"
+                      />
+                    </Box>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <CippFormComponent
+                        type="autoComplete"
+                        name="api"
+                        label="Filter by API"
+                        formControl={formControl}
+                        multiple={true}
+                        creatable={true}
+                        freeSolo={true}
+                        options={[]}
+                        placeholder="Type API name(s)"
+                      />
+                    </Box>
+                  </Stack>
                 </Grid>
 
                 {/* Action Buttons */}
@@ -341,7 +372,7 @@ const Page = () => {
       apiUrl={apiUrl}
       apiDataKey="Results"
       simpleColumns={simpleColumns}
-      queryKey={`Listlogs-${startDate}-${endDate}-${username}-${severity}-${filterEnabled}-${currentTenant}`}
+      queryKey={`Listlogs-${startDate}-${endDate}-${username}-${severity}-${api}-${filterEnabled}-${currentTenant}`}
       tenantInTitle={false}
       defaultSorting={[{ id: 'DateTime', desc: true }]}
       apiData={{
@@ -349,6 +380,7 @@ const Page = () => {
         EndDate: endDate, // Pass end date filter from state
         User: username, // Pass username filter from state
         Severity: severity, // Pass severity filter from state
+        API: api, // Pass API filter from state (server-side regex match on the API column)
         Filter: filterEnabled, // Pass filter toggle state
         Tenant: currentTenant, // Pass current tenant from settings
         manualPagination: true, // Page through ListLogs via Metadata.nextLink
