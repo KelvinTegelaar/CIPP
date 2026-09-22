@@ -25,7 +25,10 @@ import { ApiGetCall } from '../../../api/ApiCall'
 import { useSettings } from '../../../hooks/use-settings'
 import countryList from '../../../data/countryList.json'
 
-const asArray = (value) => (Array.isArray(value) ? value : value ? [value] : [])
+const asArray = (value) =>
+  (Array.isArray(value) ? value : value ? [value] : []).filter(
+    (entry) => entry !== null && entry !== undefined
+  )
 const optionValue = (option) =>
   option && typeof option === 'object' ? option.value : option
 const countryOptions = countryList.map((country) => ({

@@ -162,13 +162,19 @@ const Page = () => {
                           }}
                         />
                       </Grid>
-                      <Grid size={{ xs: 12 }}>
-                        <Typography variant="body1" gutterBottom>
-                          <Link href={breach.Domain} target="_blank">
-                            {breach.Domain}
-                          </Link>
-                        </Typography>
-                      </Grid>
+                      {breach.Domain && (
+                        <Grid size={{ xs: 12 }}>
+                          <Typography variant="body1" gutterBottom>
+                            <Link
+                              href={`https://${breach.Domain}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {breach.Domain}
+                            </Link>
+                          </Typography>
+                        </Grid>
+                      )}
                       <Grid size={{ xs: 12 }}>
                         <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
                           Leaked Data classes

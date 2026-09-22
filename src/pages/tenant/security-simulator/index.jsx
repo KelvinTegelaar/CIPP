@@ -44,7 +44,10 @@ import { CippIcons } from '../../../utils/icon-registry'
 const REPORT_ID = 'securitysimulations'
 const TEST_PREFIX = 'SecuritySimulation_'
 const NAME_PREFIX = 'Security Simulation - '
-const asArray = (value) => (Array.isArray(value) ? value : value ? [value] : [])
+const asArray = (value) =>
+  (Array.isArray(value) ? value : value ? [value] : []).filter(
+    (entry) => entry !== null && entry !== undefined
+  )
 const testsQueryKey = (tenant) => `${tenant}-ListTests-${REPORT_ID}`
 const parseData = (row) => {
   if (!row?.ResultDataJson) return null
@@ -660,22 +663,52 @@ const ScenarioList = ({
   error,
   onRetry,
   onOpen,
+  refreshList,
 }) => {
-  const [checkedCount, setCheckedCount] = useState(0)
+  const [progress, setProgress] = useState({
+    running: false,
+    done: 0,
+    total: 0,
+    failed: 0,
+  })
   const runAll = ApiPostCall({
     url: '/api/ExecTestRefresh',
     relatedQueryKeys: [testsQueryKey(tenant)],
-    onResult: () => setCheckedCount((count) => count + 1),
   })
-  const startAll = () => {
-    setCheckedCount(0)
-    runAll.mutate({
-      url: '/api/ExecTestRefresh',
-      bulkRequest: true,
-      data: scenarios.map((scenario) => ({
-        tenantFilter: tenant,
-        testName: `${TEST_PREFIX}${scenario.id}`,
-      })),
+  // Refresh the test list first so a scenario removed since the page loaded is not requested,
+  // then run one test at a time; a failure is counted, not fatal.
+  const startAll = async () => {
+    const latest = await refreshList()
+    const fresh = asArray(latest?.data?.IdentityTests)
+      .map((test) => `${test?.id ?? ''}`)
+      .filter((id) => id.startsWith(TEST_PREFIX))
+    const testIds =
+      fresh.length > 0
+        ? fresh
+        : scenarios.map((scenario) => `${TEST_PREFIX}${scenario.id}`)
+    setProgress({ running: true, done: 0, total: testIds.length, failed: 0 })
+    let failed = 0
+    for (const [index, testName] of testIds.entries()) {
+      try {
+        await runAll.mutateAsync({
+          url: '/api/ExecTestRefresh',
+          data: { tenantFilter: tenant, testName },
+        })
+      } catch {
+        failed++
+      }
+      setProgress({
+        running: true,
+        done: index + 1,
+        total: testIds.length,
+        failed,
+      })
+    }
+    setProgress({
+      running: false,
+      done: testIds.length,
+      total: testIds.length,
+      failed,
     })
   }
 
@@ -742,21 +775,24 @@ const ScenarioList = ({
         <Button
           variant="contained"
           size="small"
-          disabled={runAll.isPending || scenarios.length === 0}
+          disabled={progress.running || scenarios.length === 0}
           startIcon={
-            runAll.isPending ? (
+            progress.running ? (
               <CircularProgress size={14} color="inherit" />
             ) : undefined
           }
           onClick={startAll}
         >
-          {runAll.isPending
-            ? `Checking ${Math.min(checkedCount + 1, scenarios.length)} of ${scenarios.length}`
+          {progress.running
+            ? `Checking ${Math.min(progress.done + 1, progress.total)} of ${progress.total}`
             : 'Run all checks'}
         </Button>
       </Box>
-      {runAll.isError && (
-        <Alert severity="error">{getCippError(runAll.error)}</Alert>
+      {!progress.running && progress.failed > 0 && (
+        <Alert severity="warning">
+          {progress.failed} of {progress.total} scenarios could not be checked.
+          {runAll.error ? ` Last error: ${getCippError(runAll.error)}` : ''}
+        </Alert>
       )}
       {loading && scenarios.length === 0 && (
         <CippFormSkeleton layout={[1, 1, 1, 1]} />
@@ -942,6 +978,7 @@ const Page = () => {
                 tests.refetch()
                 available.refetch()
               }}
+              refreshList={() => available.refetch()}
               onOpen={(id) =>
                 router.push(
                   `/tenant/security-simulator?scenario=${encodeURIComponent(id)}`

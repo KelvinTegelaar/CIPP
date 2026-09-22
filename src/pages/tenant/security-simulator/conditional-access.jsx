@@ -1,5 +1,16 @@
 import { useEffect, useRef } from 'react'
-import { Alert, Box, Button, Card, CardContent, CardHeader, Container, Divider, Stack, Typography } from '@mui/material'
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Container,
+  Divider,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { Grid } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { TabbedLayout } from '../../../layouts/TabbedLayout'
@@ -10,7 +21,10 @@ import { CippCAPersonaMatrix } from '../../../components/CippSecuritySimulations
 import { ApiGetCall } from '../../../api/ApiCall'
 import { useSettings } from '../../../hooks/use-settings'
 
-const asArray = (value) => (Array.isArray(value) ? value : value ? [value] : [])
+const asArray = (value) =>
+  (Array.isArray(value) ? value : value ? [value] : []).filter(
+    (entry) => entry !== null && entry !== undefined
+  )
 
 const severityDot = {
   Critical: 'error.main',
@@ -39,14 +53,22 @@ const Page = () => {
 
   const retriedRef = useRef(false)
   useEffect(() => {
-    if (analysis.isFetching || data === undefined || (data && typeof data === 'object')) return
+    if (
+      analysis.isFetching ||
+      data === undefined ||
+      (data && typeof data === 'object')
+    )
+      return
     if (retriedRef.current) return
     retriedRef.current = true
     analysis.refetch()
   }, [data, analysis.isFetching, analysis])
   const findings = asArray(data?.analysis?.findings)
     .slice()
-    .sort((a, b) => (severityRank[a.severity] ?? 9) - (severityRank[b.severity] ?? 9))
+    .sort(
+      (a, b) =>
+        (severityRank[a.severity] ?? 9) - (severityRank[b.severity] ?? 9)
+    )
 
   return (
     <>
@@ -54,23 +76,33 @@ const Page = () => {
       <Container maxWidth={false}>
         <Stack spacing={3}>
           {!tenantSelected && (
-            <Alert severity="info">Select a tenant to analyse its Conditional Access policies.</Alert>
+            <Alert severity="info">
+              Select a tenant to analyse its Conditional Access policies.
+            </Alert>
           )}
           {tenantSelected && data?.licensed === false && (
             <Alert severity="warning">
-              This tenant has no Entra ID P1 or P2 license, so it has no Conditional Access policies
-              to analyse.
+              This tenant has no Entra ID P1 or P2 license, so it has no
+              Conditional Access policies to analyse.
             </Alert>
           )}
           {tenantSelected && data?.analysisError && (
-            <Alert severity="warning">Policy analysis failed: {data.analysisError}</Alert>
+            <Alert severity="warning">
+              Policy analysis failed: {data.analysisError}
+            </Alert>
           )}
-          {tenantSelected && analysis.isFetching && !data && <CippFormSkeleton layout={[4, 1, 1, 1]} />}
+          {tenantSelected && analysis.isFetching && !data && (
+            <CippFormSkeleton layout={[4, 1, 1, 1]} />
+          )}
           {tenantSelected && !analysis.isFetching && analysis.isError && (
             <Alert
               severity="error"
               action={
-                <Button color="inherit" size="small" onClick={() => analysis.refetch()}>
+                <Button
+                  color="inherit"
+                  size="small"
+                  onClick={() => analysis.refetch()}
+                >
                   Retry
                 </Button>
               }
@@ -84,10 +116,21 @@ const Page = () => {
                 <Grid size={{ md: 2, xs: 12 }}>
                   <Card
                     style={{ width: '100%', height: '100%' }}
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
                   >
                     <CardContent sx={{ textAlign: 'center' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 0.75 }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'baseline',
+                          justifyContent: 'center',
+                          gap: 0.75,
+                        }}
+                      >
                         <Typography
                           variant="h2"
                           sx={{
@@ -103,19 +146,37 @@ const Page = () => {
                         >
                           {score?.score ?? '-'}
                         </Typography>
-                        <Typography variant="h6" sx={{ color: 'text.secondary' }}>
+                        <Typography
+                          variant="h6"
+                          sx={{ color: 'text.secondary' }}
+                        >
                           / {score?.scoreMax ?? 10}
                         </Typography>
                       </Box>
                       <Typography
                         variant="caption"
-                        sx={{ color: 'text.secondary', display: 'block', mt: 1, letterSpacing: 0.8, textTransform: 'uppercase', fontWeight: 600 }}
+                        sx={{
+                          color: 'text.secondary',
+                          display: 'block',
+                          mt: 1,
+                          letterSpacing: 0.8,
+                          textTransform: 'uppercase',
+                          fontWeight: 600,
+                        }}
                       >
                         Conditional Access score
                       </Typography>
                       {score && (
-                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
-                          {score.enforcedControls} of {score.applicableControls} controls enforced
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: 'text.secondary',
+                            display: 'block',
+                            mt: 0.5,
+                          }}
+                        >
+                          {score.enforcedControls} of {score.applicableControls}{' '}
+                          controls enforced
                           {score.criticalFindings > 0 || score.highFindings > 0
                             ? ` · ${score.criticalFindings} critical, ${score.highFindings} high findings`
                             : ''}
@@ -133,7 +194,9 @@ const Page = () => {
                     />
                     <Divider />
                     <CardContent>
-                      <CippCAPersonaMatrix matrix={data?.analysis?.personaMatrix} />
+                      <CippCAPersonaMatrix
+                        matrix={data?.analysis?.personaMatrix}
+                      />
                     </CardContent>
                   </Card>
                 </Grid>
@@ -148,8 +211,13 @@ const Page = () => {
                 <Divider />
                 {findings.length === 0 && (
                   <CardContent>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {data?.analysis ? 'No findings.' : 'Policy analysis is not available.'}
+                    <Typography
+                      variant="body2"
+                      sx={{ color: 'text.secondary' }}
+                    >
+                      {data?.analysis
+                        ? 'No findings.'
+                        : 'Policy analysis is not available.'}
                     </Typography>
                   </CardContent>
                 )}
@@ -157,7 +225,13 @@ const Page = () => {
                   {findings.map((finding) => (
                     <Box
                       key={finding.id ?? finding.title}
-                      sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, px: 2.25, py: 1.5 }}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        gap: 1.5,
+                        px: 2.25,
+                        py: 1.5,
+                      }}
                     >
                       <Box
                         sx={{
@@ -167,28 +241,43 @@ const Page = () => {
                           flexShrink: 0,
                           position: 'relative',
                           top: -1,
-                          bgcolor: severityDot[finding.severity] ?? 'text.secondary',
+                          bgcolor:
+                            severityDot[finding.severity] ?? 'text.secondary',
                         }}
                         title={finding.severity}
                       />
                       <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Typography variant="subtitle2">
                           {finding.title}
-                          <Typography component="span" variant="caption" sx={{ color: 'text.secondary', ml: 1 }}>
+                          <Typography
+                            component="span"
+                            variant="caption"
+                            sx={{ color: 'text.secondary', ml: 1 }}
+                          >
                             {finding.severity}
                             {finding.category ? ` · ${finding.category}` : ''}
                           </Typography>
                         </Typography>
-                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: 'text.secondary' }}
+                        >
                           {finding.description}
                         </Typography>
                         {asArray(finding.affectedPolicies).length > 0 && (
-                          <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                            Policies: {asArray(finding.affectedPolicies).join(', ')}
+                          <Typography
+                            variant="caption"
+                            sx={{ color: 'text.secondary', display: 'block' }}
+                          >
+                            Policies:{' '}
+                            {asArray(finding.affectedPolicies).join(', ')}
                           </Typography>
                         )}
                         {finding.remediation && (
-                          <Typography variant="caption" sx={{ display: 'block' }}>
+                          <Typography
+                            variant="caption"
+                            sx={{ display: 'block' }}
+                          >
                             Fix: {finding.remediation}
                           </Typography>
                         )}
