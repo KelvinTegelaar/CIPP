@@ -351,6 +351,11 @@ export const getCippFormatting = (
     'QueuedUtc', // Worker health job queue
     'StartedUtc', // Worker health job queue
     'CompletedUtc', // Worker health job queue
+    'FirstSeen', // Alert lifecycle
+    'LastSeen', // Alert lifecycle
+    'LastChecked', // Alert lifecycle
+    'ResolvedAt', // Alert lifecycle
+    'AcknowledgedAt', // Alert lifecycle
   ]
   if (absoluteDateArray.includes(cellName)) {
     if (data === null || data === undefined || data === '') {

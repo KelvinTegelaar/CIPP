@@ -170,4 +170,18 @@ export const CippTranslations = {
   ExecutedRequests: 'Executed',
   ServedRequests: 'Served (incl. cached)',
   EgressToday: 'Egress Today',
+  // Alert lifecycle
+  CmdletName: 'Alert',
+  ContentPreview: 'Item',
+  FirstSeen: 'First Seen',
+  LastSeen: 'Last Seen',
+  LastChecked: 'Last Checked',
+  ResolvedAt: 'Resolved',
+  ReopenCount: 'Reopened',
+  AcknowledgedBy: 'Acknowledged By',
+  AcknowledgedAt: 'Acknowledged At',
+  AcknowledgeNote: 'Acknowledgement Note',
+  SnoozedBy: 'Snoozed By',
+  SnoozeReason: 'Snooze Reason',
+  RemainingDays: 'Remaining Days',
 }
