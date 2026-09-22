@@ -5,15 +5,11 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -21,15 +17,107 @@ import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { CippFormComponent } from "../CippComponents/CippFormComponent";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 
-// MCP connector management: the shared CIPP-MCP resource app (the token audience CIPP creates and
-// manages) plus the redirect URIs of each MCPAllowed client app. Kept on its own tab so it doesn't
-// clutter API client management. Enabling MCP on a client, and its role/IP, live with the client on
-// the API Clients tab; here you check the connector URLs, the resource app, and add custom callbacks.
-const CippMcpManagement = () => {
-  const [selectedMcpClient, setSelectedMcpClient] = useState(null);
-  const redirectForm = useForm({ mode: "onChange", defaultValues: { RedirectUris: [] } });
-  const mcpAuthPost = ApiPostCall({ relatedQueryKeys: ["McpAuthStatus"] });
+// One self-contained section per MCP-enabled client: its connector (sign-in) URL, its pre-auth
+// status, and its own redirect-URI boxes. Each client has its own form + save so multiple MCP
+// clients never share state or overwrite each other's callbacks.
+const McpClientCard = ({ client, baseMcpUrl }) => {
+  const form = useForm({
+    mode: "onChange",
+    defaultValues: {
+      PublicRedirectUris: client.PublicRedirectUris ?? [],
+      WebRedirectUris: client.WebRedirectUris ?? [],
+    },
+  });
+  const post = ApiPostCall({ relatedQueryKeys: ["McpAuthStatus"] });
 
+  // Re-sync when the server returns updated URIs for this client (e.g. after a save).
+  useEffect(() => {
+    form.reset({
+      PublicRedirectUris: client.PublicRedirectUris ?? [],
+      WebRedirectUris: client.WebRedirectUris ?? [],
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client.PublicRedirectUris, client.WebRedirectUris]);
+
+  return (
+    <Card>
+      <CardHeader
+        title={client.AppName || client.AppId}
+        subheader="This client's sign-in URL pins its role, IP range and Conditional Access. Add callback URLs under the platform each connector uses — PKCE clients (Claude, ChatGPT, CLIs) under mobile & desktop, secret-based clients (Copilot Studio) under web. The managed callbacks are always kept."
+      />
+      <Divider />
+      <CardContent>
+        <Stack spacing={2}>
+          {baseMcpUrl && (
+            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                Connector URL
+              </Typography>
+              <CippCopyToClipBoard type="chip" text={`${baseMcpUrl}?client=${client.AppId}`} />
+            </Stack>
+          )}
+          {client.UserImpersonationPreAuthorized === false && (
+            <Alert severity="warning">
+              This client isn&apos;t pre-authorized on the CIPP-MCP resource scope yet, so users may
+              hit a consent prompt on first connect. Run <strong>Actions &gt; Save to Azure</strong>{" "}
+              on the API Clients tab to apply it (it also self-heals on the next warmup).
+            </Alert>
+          )}
+          <CippFormComponent
+            type="autoComplete"
+            name="PublicRedirectUris"
+            label="Mobile & desktop callbacks (PKCE — Claude, ChatGPT, CLIs)"
+            formControl={form}
+            multiple
+            freeSolo
+            creatable
+            options={[]}
+            placeholder="Paste a provider callback URL and press enter"
+          />
+          <CippFormComponent
+            type="autoComplete"
+            name="WebRedirectUris"
+            label="Web callbacks (confidential / secret — Copilot Studio)"
+            formControl={form}
+            multiple
+            freeSolo
+            creatable
+            options={[]}
+            placeholder="e.g. https://global.consent.azure-apim.net/redirect/…"
+          />
+          <Box>
+            <Button
+              variant="contained"
+              onClick={() =>
+                post.mutate({
+                  url: "/api/ExecApiClient?action=SetMcpRedirectUris",
+                  data: {
+                    ClientId: client.AppId,
+                    PublicRedirectUris: (form.getValues("PublicRedirectUris") || []).map(
+                      (u) => u?.value ?? u
+                    ),
+                    WebRedirectUris: (form.getValues("WebRedirectUris") || []).map(
+                      (u) => u?.value ?? u
+                    ),
+                  },
+                })
+              }
+            >
+              Save Redirect URIs
+            </Button>
+          </Box>
+          <CippApiResults apiObject={post} />
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+};
+
+// MCP connector management: the shared CIPP-MCP resource app (the token audience CIPP creates and
+// manages) plus a section per MCPAllowed client app. Kept on its own tab so it doesn't clutter API
+// client management. Enabling MCP on a client, and its role/IP, live with the client on the API
+// Clients tab; here you check the resource app and each client's connector URL and redirect URIs.
+const CippMcpManagement = () => {
   // Shared query keys with the API Clients tab — react-query dedupes, so no extra network calls.
   const azureConfig = ApiGetCall({
     url: "/api/ExecApiClient",
@@ -47,17 +135,6 @@ const CippMcpManagement = () => {
   const baseMcpUrl = azureConfig.data?.Results?.ApiUrl
     ? `${azureConfig.data.Results.ApiUrl.replace(/\/+$/, "")}/api/ExecMcp`
     : null;
-
-  useEffect(() => {
-    if (mcpClients.length && !selectedMcpClient) {
-      setSelectedMcpClient(mcpClients[0].AppId);
-    }
-  }, [mcpClients, selectedMcpClient]);
-
-  useEffect(() => {
-    const client = mcpClients.find((c) => c.AppId === selectedMcpClient);
-    redirectForm.reset({ RedirectUris: client?.CustomRedirectUris ?? [] });
-  }, [selectedMcpClient, mcpClients, redirectForm]);
 
   const noMcpClients = mcpAuth.isSuccess && mcpClients.length === 0;
 
@@ -132,8 +209,12 @@ const CippMcpManagement = () => {
             ),
           },
           {
-            label: "Managed provider callbacks",
+            label: "Managed callbacks (mobile & desktop)",
             value: (results?.DefaultRedirectUris || []).join(", ") || "None",
+          },
+          {
+            label: "Managed callbacks (web / confidential)",
+            value: (results?.DefaultWebRedirectUris || []).join(", ") || "None",
           },
           {
             label: "Identifier URIs",
@@ -158,96 +239,10 @@ const CippMcpManagement = () => {
         ]}
       />
 
-      {mcpAuth.isSuccess && mcpClients.length > 0 && baseMcpUrl && (
-        <Card>
-          <CardHeader
-            title="Connector URLs"
-            subheader="Give each AI connector the URL for the client app it should sign in as — each URL pins that client's role, IP range and Conditional Access."
-          />
-          <Divider />
-          <CardContent>
-            <Stack spacing={1}>
-              {mcpClients.map((c) => (
-                <Stack
-                  key={c.AppId}
-                  direction="row"
-                  spacing={1}
-                  alignItems="center"
-                  flexWrap="wrap"
-                  useFlexGap
-                >
-                  <Typography variant="body2" sx={{ minWidth: 200, fontWeight: 600 }}>
-                    {c.AppName || c.AppId}
-                  </Typography>
-                  <CippCopyToClipBoard type="chip" text={`${baseMcpUrl}?client=${c.AppId}`} />
-                </Stack>
-              ))}
-            </Stack>
-          </CardContent>
-        </Card>
-      )}
-
-      {mcpAuth.isSuccess && mcpClients.length > 0 && (
-        <Card>
-          <CardHeader
-            title="Custom Redirect URIs"
-            subheader="Add callback URLs for AI providers CIPP doesn't ship a built-in callback for. The managed provider callbacks above are always kept."
-          />
-          <Divider />
-          <CardContent>
-            <Stack spacing={2}>
-              {mcpClients.length > 1 && (
-                <FormControl size="small" sx={{ minWidth: 260 }}>
-                  <InputLabel id="mcp-client-select-label">MCP client app</InputLabel>
-                  <Select
-                    labelId="mcp-client-select-label"
-                    label="MCP client app"
-                    value={selectedMcpClient || ""}
-                    onChange={(e) => setSelectedMcpClient(e.target.value)}
-                  >
-                    {mcpClients.map((c) => (
-                      <MenuItem key={c.AppId} value={c.AppId}>
-                        {c.AppName || c.AppId}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-              <CippFormComponent
-                type="autoComplete"
-                name="RedirectUris"
-                label="Custom redirect URIs for this client"
-                formControl={redirectForm}
-                multiple
-                freeSolo
-                creatable
-                options={[]}
-                placeholder="Paste a provider callback URL and press enter"
-              />
-              <Box>
-                <Button
-                  variant="contained"
-                  disabled={!selectedMcpClient}
-                  onClick={() =>
-                    mcpAuthPost.mutate({
-                      url: "/api/ExecApiClient?action=SetMcpRedirectUris",
-                      data: {
-                        ClientId: selectedMcpClient,
-                        RedirectUris: (redirectForm.getValues("RedirectUris") || []).map(
-                          (u) => u?.value ?? u
-                        ),
-                      },
-                    })
-                  }
-                >
-                  Save Redirect URIs
-                </Button>
-              </Box>
-              <CippApiResults apiObject={mcpAuthPost} />
-            </Stack>
-          </CardContent>
-        </Card>
-      )}
+      {mcpAuth.isSuccess &&
+        mcpClients.map((client) => (
+          <McpClientCard key={client.AppId} client={client} baseMcpUrl={baseMcpUrl} />
+        ))}
     </Stack>
   );
 };
