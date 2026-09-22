@@ -33,6 +33,13 @@ vi.mock('../../../src/api/ApiCall', () => ({
   })),
 }))
 
+// The tiptap editor tree does not load reliably in jsdom (see CippUserActions.ooo.test.jsx): the
+// Out of Office editor intermittently dies in CI with "Adding different instances of a keyed
+// plugin (plugin$)". OOO is asserted through the form API, so stub the field like the other tests do.
+vi.mock('../../../src/components/CippComponents/CippRichTextField', () => ({
+  default: () => null,
+}))
+
 // Not part of this component's own behaviour and heavy to load.
 vi.mock('../../../src/components/CippWizard/CippWizardStepButtons', () => ({
   __esModule: true,
