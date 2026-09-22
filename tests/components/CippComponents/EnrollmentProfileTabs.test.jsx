@@ -2,8 +2,11 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { renderWithProviders } from '../../test-utils'
-import { AppleADEEnrollmentProfiles } from '../../../src/components/CippComponents/EnrollmentProfileTabs.jsx'
+import { renderWithProviders, settingsWith } from '../../test-utils'
+import {
+  AppleADEEnrollmentProfiles,
+  WindowsAutopilotEnrollmentProfiles,
+} from '../../../src/components/CippComponents/EnrollmentProfileTabs.jsx'
 
 // appleFilters presets must carry type: 'column', untyped presets land the
 // [{id, value}] array in the global filter slot ("[object Object]", zero rows)
@@ -99,7 +102,45 @@ const emptyGetResult = getResult({ isSuccess: false })
 
 api.get = (opts) => (opts.url === '/api/ListAppleEnrollmentProfiles' ? appleResult : emptyGetResult)
 api.post = postResult()
-api.paginated = emptyGetResult
+
+// fixture mirrors Invoke-ListAutopilotconfig.ps1 type=ApProfile: graph
+// windowsAutopilotDeploymentProfiles rows (bare array, no Results wrapper) with the
+// CIPP-computed PolicyAssignment string; graph itself only carries target.groupId
+const autopilotResult = getResult({
+  data: {
+    pages: [
+      [
+        {
+          '@odata.type': '#microsoft.graph.azureADWindowsAutopilotDeploymentProfile',
+          id: '6800d733-8bf8-4b51-8251-e2f0385ad307',
+          displayName: 'Windows machines',
+          description: '',
+          language: 'os-default',
+          extractHardwareHash: true,
+          deviceNameTemplate: 'CONTOSO-%SERIAL%',
+          assignments: [
+            {
+              id: '6800d733-8bf8-4b51-8251-e2f0385ad307_a1b2c3d4-0001-0001-0001-000000000001',
+              target: {
+                '@odata.type': '#microsoft.graph.groupAssignmentTarget',
+                groupId: 'a1b2c3d4-0001-0001-0001-000000000001',
+              },
+            },
+          ],
+          PolicyTypeName: 'Autopilot Profile',
+          URLName: 'windowsAutopilotDeploymentProfiles',
+          PolicyAssignment: 'Autopilot Devices',
+          PolicyExclude: '',
+        },
+      ],
+    ],
+  },
+  fetchNextPage: vi.fn(),
+})
+api.paginated = (opts) =>
+  opts.url === '/api/ListAutopilotConfig' && opts.data?.type === 'ApProfile'
+    ? autopilotResult
+    : emptyGetResult
 
 describe('AppleADEEnrollmentProfiles - platform preset filters', () => {
   beforeEach(() => {
@@ -150,5 +191,23 @@ describe('AppleADEEnrollmentProfiles - platform preset filters', () => {
     await waitFor(() => {
       expect(screen.getByText('1-3 of 3')).toBeInTheDocument()
     })
+  })
+})
+
+describe('WindowsAutopilotEnrollmentProfiles - assignment names', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  // card view: MRT's virtualizer renders zero rows in jsdom, cards show the first
+  // three non-status columns as detail rows so the column value is reachable
+  it('shows the resolved group name on the row instead of only the target groupId', async () => {
+    renderWithProviders(<WindowsAutopilotEnrollmentProfiles />, {
+      settings: settingsWith({ tableViewMode: 'cards' }),
+    })
+
+    // falling back to the raw /api/ListGraphRequest passthrough, or dropping the
+    // PolicyAssignment column, leaves the user with a guid in Extended Info and nothing here
+    expect(await screen.findByText('Autopilot Devices')).toBeInTheDocument()
   })
 })

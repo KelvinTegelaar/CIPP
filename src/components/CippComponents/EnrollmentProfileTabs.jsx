@@ -570,18 +570,14 @@ export const WindowsAutopilotEnrollmentProfiles = () => {
           title={`Windows Autopilot Profiles - ${currentTenant}`}
           queryKey={`AutopilotProfiles-${currentTenant}`}
           api={{
-            url: '/api/ListGraphRequest',
-            data: {
-              tenantFilter: currentTenant,
-              Endpoint: 'deviceManagement/windowsAutopilotDeploymentProfiles',
-              $expand: 'assignments',
-            },
-            dataKey: 'Results',
+            url: '/api/ListAutopilotConfig',
+            data: { tenantFilter: currentTenant, type: 'ApProfile' },
           }}
           actions={autopilotActions}
           simpleColumns={[
             'displayName',
             'description',
+            'PolicyAssignment',
             'language',
             'extractHardwareHash',
             'deviceNameTemplate',
