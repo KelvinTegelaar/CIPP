@@ -65,11 +65,11 @@ const item = (overrides) => ({
   LastChecked: minutesAgo(5),
   ResolvedAt: '',
   ReopenCount: 0,
-  AcknowledgedBy: '',
-  AcknowledgedAt: '',
-  AcknowledgeNote: '',
   SnoozeUntil: '',
   SnoozedBy: '',
+  SnoozeReason: '',
+  SnoozeVisible: false,
+  SnoozeUntilResolved: false,
   SnoozePartitionKey: 'Get-CIPPAlertMFAAdmins',
   SnoozeRowKey: `${tenant}-${overrides.ContentHash}`,
   ...overrides,
@@ -97,9 +97,11 @@ const sampleItems = [
       UserPrincipalName: `carol@${tenant}`,
       Message: 'Carol has no MFA',
     },
-    Status: 'Acknowledged',
-    AcknowledgedBy: 'ops@contoso.com',
-    AcknowledgedAt: minutesAgo(30),
+    Status: 'Snoozed',
+    SnoozeUntilResolved: true,
+    SnoozeVisible: true,
+    SnoozedBy: 'ops@contoso.com',
+    SnoozeReason: 'ticket 42',
   }),
   item({
     ContentHash: 'dave',
@@ -108,7 +110,7 @@ const sampleItems = [
       Message: 'Dave has no MFA',
     },
     Status: 'Snoozed',
-    SnoozeUntil: '-1',
+    SnoozeUntil: String(Math.round(Date.now() / 1000) + 7 * 86400),
     SnoozedBy: 'ops@contoso.com',
   }),
   item({
@@ -134,11 +136,9 @@ describe('AlertsOverviewCard', () => {
     renderWithProviders(<AlertsOverviewCard tenantFilter={tenant} />)
 
     expect(screen.getByText('2 Open')).toBeInTheDocument()
-    expect(screen.getByText('1 Acknowledged')).toBeInTheDocument()
-    expect(screen.getByText('1 Snoozed')).toBeInTheDocument()
+    expect(screen.getByText('2 Snoozed')).toBeInTheDocument()
     expect(screen.getByText('1 Resolved (48h)')).toBeInTheDocument()
 
-    expect(screen.getByText('Snoozed')).toBeInTheDocument()
     expect(screen.getByText('Recently resolved')).toBeInTheDocument()
     expect(screen.getByText(`erin@${tenant}`)).toBeInTheDocument()
     expect(
@@ -146,46 +146,62 @@ describe('AlertsOverviewCard', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('shows how long an item has been open and when it was last checked', () => {
+  it('keeps a visible snooze in the main list and hides the others in the snoozed section', () => {
+    renderWithProviders(<AlertsOverviewCard tenantFilter={tenant} />)
+
+    const titles = screen
+      .getAllByTitle(/@contoso\.onmicrosoft\.com$/)
+      .map((el) => el.textContent)
+    // bob (flapping) first, then alice, then carol (visible snooze), then the hidden dave, then erin
+    expect(titles).toEqual([
+      `bob@${tenant}`,
+      `alice@${tenant}`,
+      `carol@${tenant}`,
+      `dave@${tenant}`,
+      `erin@${tenant}`,
+    ])
+    expect(screen.getByText('Until resolved')).toBeInTheDocument()
+    // the section heading for hidden snoozes, distinct from the count chip
+    expect(
+      screen.getByText('Snoozed', { selector: 'span.MuiTypography-overline' })
+    ).toBeInTheDocument()
+  })
+
+  it('shows how long an item has been open, and why a snoozed one is snoozed', () => {
     renderWithProviders(<AlertsOverviewCard tenantFilter={tenant} />)
 
     expect(
       screen.getAllByTitle(/First seen 3d ago · checked 5m ago/)
     ).toHaveLength(2)
     expect(
-      screen.getByTitle(/Acknowledged by ops@contoso.com · 30m ago/)
-    ).toBeInTheDocument()
-    expect(
-      screen.getByTitle(/Snoozed indefinitely · by ops@contoso.com/)
+      screen.getByTitle(
+        /Snoozed until it resolves · by ops@contoso.com · ticket 42 · checked 5m ago/
+      )
     ).toBeInTheDocument()
   })
 
-  it('flags flapping items and lists them first', () => {
+  it('flags flapping items', () => {
     renderWithProviders(<AlertsOverviewCard tenantFilter={tenant} />)
 
     expect(screen.getByText('Flapping')).toBeInTheDocument()
-    const titles = screen
-      .getAllByTitle(/@contoso\.onmicrosoft\.com$/)
-      .map((el) => el.textContent)
-    expect(titles[0]).toBe(`bob@${tenant}`)
   })
 
-  it('offers acknowledge and snooze on open items, and opens the acknowledge dialog', () => {
+  it('offers snooze on open items, remove-snooze on snoozed ones, and opens the snooze dialog', () => {
     renderWithProviders(<AlertsOverviewCard tenantFilter={tenant} />)
 
-    const acknowledgeButtons = screen.getAllByLabelText(
-      'Acknowledge: keep it listed as known'
-    )
-    expect(acknowledgeButtons).toHaveLength(2)
-    expect(
-      screen.getAllByLabelText('Snooze: hide it for a while')
-    ).toHaveLength(3)
-    expect(screen.getByLabelText('Remove acknowledgement')).toBeInTheDocument()
-    expect(screen.getByLabelText('Remove snooze')).toBeInTheDocument()
+    const snoozeButtons = screen.getAllByLabelText('Snooze this alert')
+    expect(snoozeButtons).toHaveLength(2)
+    expect(screen.getAllByLabelText('Remove snooze')).toHaveLength(2)
 
-    fireEvent.click(acknowledgeButtons[0])
-    expect(screen.getByText('Acknowledge alert')).toBeInTheDocument()
-    expect(screen.getByRole('textbox', { name: /Note/ })).toBeInTheDocument()
+    fireEvent.click(snoozeButtons[0])
+    expect(screen.getByText('Snooze Alert')).toBeInTheDocument()
+    expect(
+      screen.getByText('Snooze until it resolves')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(/Keep it visible on the dashboard/)
+    ).toBeInTheDocument()
+    expect(screen.queryByLabelText(/forever/i)).not.toBeInTheDocument()
   })
 
   it('links to the history page', () => {

@@ -355,7 +355,6 @@ export const getCippFormatting = (
     'LastSeen', // Alert lifecycle
     'LastChecked', // Alert lifecycle
     'ResolvedAt', // Alert lifecycle
-    'AcknowledgedAt', // Alert lifecycle
   ]
   if (absoluteDateArray.includes(cellName)) {
     if (data === null || data === undefined || data === '') {

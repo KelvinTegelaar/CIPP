@@ -25,8 +25,8 @@ import {
   humanizeCmdlet,
 } from '../../utils/format-alert-item'
 import {
-  ACTIVE_ALERT_STATUSES,
   describeAlertStatus,
+  isActiveAlert,
   isFlapping,
   sortAlertItems,
   summarizeAlertItems,
@@ -95,13 +95,13 @@ const AlertRow = ({ item, muted, children }) => {
             />
           </Tooltip>
         ) : null}
-        {item.Status === 'Acknowledged' && (
+        {item.Status === 'Snoozed' && (
           <Chip
             size="small"
-            color="info"
+            color="warning"
             variant="outlined"
-            icon={<CippIcons.TaskAlt />}
-            label="Acknowledged"
+            icon={<CippIcons.Snooze />}
+            label={item.SnoozeUntilResolved ? 'Until resolved' : 'Snoozed'}
           />
         )}
         {children}
@@ -113,8 +113,6 @@ const AlertRow = ({ item, muted, children }) => {
 export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
   const [snoozeTarget, setSnoozeTarget] = useState(null)
   const removeSnoozeDialog = useDialog()
-  const acknowledgeDialog = useDialog()
-  const unacknowledgeDialog = useDialog()
 
   const resultsQueryKey = `ListAlertResults-${tenantFilter}`
   const relatedQueryKeys = [
@@ -135,16 +133,28 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
     [resultsApi.data]
   )
   const counts = useMemo(() => summarizeAlertItems(items), [items])
-  const activeItems = items.filter((item) =>
-    ACTIVE_ALERT_STATUSES.includes(item.Status)
+  // Open items plus the snoozes the operator asked to keep in view.
+  const activeItems = items.filter(isActiveAlert)
+  const hiddenSnoozes = items.filter(
+    (item) => item.Status === 'Snoozed' && !isActiveAlert(item)
   )
-  const snoozedItems = items.filter((item) => item.Status === 'Snoozed')
   const resolvedItems = items.filter((item) => item.Status === 'Resolved')
 
   // A disabled query (no tenant yet) reports isLoading=false in react-query v5, so guard
   // on tenantFilter to avoid flashing a false "no alerts" state before the tenant resolves.
   const isLoading = !tenantFilter || resultsApi.isLoading
   const hasError = resultsApi.isError
+
+  const removeSnoozeButton = (item) => (
+    <Tooltip title="Remove snooze">
+      <IconButton
+        size="small"
+        onClick={() => removeSnoozeDialog.handleOpen(item)}
+      >
+        <CippIcons.DeleteOutlined fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  )
 
   const renderBody = () => {
     if (isLoading) {
@@ -186,13 +196,6 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
           />
           <Chip
             size="small"
-            color="info"
-            variant="outlined"
-            icon={<CippIcons.TaskAlt />}
-            label={`${counts.Acknowledged} Acknowledged`}
-          />
-          <Chip
-            size="small"
             color="warning"
             variant="outlined"
             icon={<CippIcons.Snooze />}
@@ -214,34 +217,20 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
                 <AlertRow
                   key={`active-${item.PartitionKey}-${item.RowKey}`}
                   item={item}
+                  muted={item.Status === 'Snoozed'}
                 >
-                  {item.Status === 'Open' ? (
-                    <Tooltip title="Acknowledge: keep it listed as known">
-                      <IconButton
-                        size="small"
-                        onClick={() => acknowledgeDialog.handleOpen(item)}
-                      >
-                        <CippIcons.TaskAlt fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                  {item.Status === 'Snoozed' ? (
+                    removeSnoozeButton(item)
                   ) : (
-                    <Tooltip title="Remove acknowledgement">
+                    <Tooltip title="Snooze this alert">
                       <IconButton
                         size="small"
-                        onClick={() => unacknowledgeDialog.handleOpen(item)}
+                        onClick={() => setSnoozeTarget(item)}
                       >
-                        <CippIcons.Undo fontSize="small" />
+                        <CippIcons.Snooze fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   )}
-                  <Tooltip title="Snooze: hide it for a while">
-                    <IconButton
-                      size="small"
-                      onClick={() => setSnoozeTarget(item)}
-                    >
-                      <CippIcons.Snooze fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
                 </AlertRow>
               ))}
             </Stack>
@@ -254,26 +243,19 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
             </Typography>
           )}
 
-          {snoozedItems.length > 0 && (
+          {hiddenSnoozes.length > 0 && (
             <Box sx={{ mt: 1.5 }}>
               <Typography variant="overline" sx={{ color: 'text.secondary' }}>
                 Snoozed
               </Typography>
               <Stack divider={<Divider flexItem />}>
-                {snoozedItems.map((item) => (
+                {hiddenSnoozes.map((item) => (
                   <AlertRow
                     key={`snoozed-${item.PartitionKey}-${item.RowKey}`}
                     item={item}
                     muted
                   >
-                    <Tooltip title="Remove snooze">
-                      <IconButton
-                        size="small"
-                        onClick={() => removeSnoozeDialog.handleOpen(item)}
-                      >
-                        <CippIcons.DeleteOutlined fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                    {removeSnoozeButton(item)}
                   </AlertRow>
                 ))}
               </Stack>
@@ -344,45 +326,6 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
         cmdletName={snoozeTarget?.CmdletName}
         tenantFilter={tenantFilter}
         relatedQueryKeys={relatedQueryKeys}
-      />
-
-      <CippApiDialog
-        createDialog={acknowledgeDialog}
-        title="Acknowledge alert"
-        fields={[{ type: 'textField', name: 'Note', label: 'Note (optional)' }]}
-        row={acknowledgeDialog.data ?? {}}
-        api={{
-          type: 'POST',
-          url: '/api/ExecAcknowledgeAlert',
-          confirmText:
-            'Mark this alert as acknowledged? It stays listed as known until the alert stops reporting it.',
-          data: {
-            TenantFilter: 'Tenant',
-            RowKey: 'RowKey',
-            Action: '!Acknowledge',
-          },
-          relatedQueryKeys,
-          multiPost: false,
-        }}
-      />
-
-      <CippApiDialog
-        createDialog={unacknowledgeDialog}
-        title="Remove acknowledgement"
-        fields={[]}
-        row={unacknowledgeDialog.data ?? {}}
-        api={{
-          type: 'POST',
-          url: '/api/ExecAcknowledgeAlert',
-          confirmText: 'Return this alert to open?',
-          data: {
-            TenantFilter: 'Tenant',
-            RowKey: 'RowKey',
-            Action: '!Unacknowledge',
-          },
-          relatedQueryKeys,
-          multiPost: false,
-        }}
       />
 
       <CippApiDialog

@@ -11,38 +11,6 @@ const Page = () => {
 
   const actions = [
     {
-      label: 'Acknowledge',
-      type: 'POST',
-      url: '/api/ExecAcknowledgeAlert',
-      data: {
-        TenantFilter: 'Tenant',
-        RowKey: 'RowKey',
-        Action: '!Acknowledge',
-      },
-      fields: [{ type: 'textField', name: 'Note', label: 'Note (optional)' }],
-      icon: <CippIcons.TaskAlt />,
-      relatedQueryKeys,
-      confirmText:
-        'Mark this alert as acknowledged? It stays listed as known until the alert stops reporting it.',
-      condition: (row) => row.Status === 'Open',
-      multiPost: false,
-    },
-    {
-      label: 'Remove Acknowledgement',
-      type: 'POST',
-      url: '/api/ExecAcknowledgeAlert',
-      data: {
-        TenantFilter: 'Tenant',
-        RowKey: 'RowKey',
-        Action: '!Unacknowledge',
-      },
-      icon: <CippIcons.Undo />,
-      relatedQueryKeys,
-      confirmText: 'Return this alert to open?',
-      condition: (row) => row.Status === 'Acknowledged',
-      multiPost: false,
-    },
-    {
       label: 'Remove Snooze',
       type: 'POST',
       url: '/api/ExecRemoveSnooze',
@@ -80,9 +48,10 @@ const Page = () => {
         'LastChecked',
         'ResolvedAt',
         'ReopenCount',
-        'AcknowledgedBy',
-        'AcknowledgeNote',
         'SnoozedBy',
+        'SnoozeReason',
+        'SnoozeUntilResolved',
+        'SnoozeVisible',
       ]}
       queryKey="ListAlertHistory"
     />

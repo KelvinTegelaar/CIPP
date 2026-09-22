@@ -1,14 +1,7 @@
 // Helpers for the tracked alert items ListAlertResults returns: one row per alert item with a
-// Status (Open, Acknowledged, Snoozed, Resolved) and the ISO timestamps the backend keeps.
+// Status (Open, Snoozed, Resolved) and the ISO timestamps the backend keeps.
 
-export const ALERT_STATUS_ORDER = [
-  'Open',
-  'Acknowledged',
-  'Snoozed',
-  'Resolved',
-]
-
-export const ACTIVE_ALERT_STATUSES = ['Open', 'Acknowledged']
+export const ALERT_STATUS_ORDER = ['Open', 'Snoozed', 'Resolved']
 
 export const FLAP_THRESHOLD = 3
 
@@ -38,16 +31,24 @@ export const describeAge = (value, now = new Date()) => {
 export const isFlapping = (item) =>
   Number(item?.ReopenCount ?? 0) >= FLAP_THRESHOLD
 
+// A snoozed item the operator chose to keep on the dashboard's open list.
+export const isVisibleSnooze = (item) =>
+  item?.Status === 'Snoozed' && Boolean(item?.SnoozeVisible)
+
+// Items that belong in the dashboard's main list: open ones plus visible snoozes.
+export const isActiveAlert = (item) =>
+  item?.Status === 'Open' || isVisibleSnooze(item)
+
 export const summarizeAlertItems = (items) => {
-  const counts = { Open: 0, Acknowledged: 0, Snoozed: 0, Resolved: 0 }
+  const counts = { Open: 0, Snoozed: 0, Resolved: 0 }
   for (const item of Array.isArray(items) ? items : []) {
     if (item?.Status in counts) counts[item.Status] += 1
   }
   return counts
 }
 
-// Open first (flapping items at the top), then acknowledged, snoozed and resolved; newest
-// activity first within each group.
+// Open first (flapping items at the top), then snoozed and resolved; newest activity first
+// within each group.
 export const sortAlertItems = (items) => {
   const statusRank = (status) => {
     const index = ALERT_STATUS_ORDER.indexOf(status)
@@ -68,6 +69,28 @@ export const sortAlertItems = (items) => {
   })
 }
 
+// "Snoozed until it resolves" or "Snoozed until 3 Oct 2026", plus who set it.
+export const describeSnooze = (item) => {
+  const parts = []
+  if (item?.SnoozeUntilResolved) {
+    parts.push('Snoozed until it resolves')
+  } else {
+    const until = Number(item?.SnoozeUntil)
+    if (Number.isFinite(until) && until > 0) {
+      const untilDate = new Date(until * 1000).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+      parts.push(`Snoozed until ${untilDate}`)
+    } else {
+      parts.push('Snoozed')
+    }
+  }
+  if (item?.SnoozedBy) parts.push(`by ${item.SnoozedBy}`)
+  return parts.join(' · ')
+}
+
 // One-line status text for a row on the dashboard card.
 export const describeAlertStatus = (item, now = new Date()) => {
   if (!item) return ''
@@ -76,27 +99,9 @@ export const describeAlertStatus = (item, now = new Date()) => {
     case 'Resolved':
       parts.push(`Resolved ${describeAge(item.ResolvedAt, now)}`.trim())
       break
-    case 'Snoozed': {
-      const until = Number(item.SnoozeUntil)
-      if (until === -1) parts.push('Snoozed indefinitely')
-      else if (Number.isFinite(until) && until > 0) {
-        const untilDate = new Date(until * 1000).toLocaleDateString(undefined, {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        })
-        parts.push(`Snoozed until ${untilDate}`)
-      } else parts.push('Snoozed')
-      if (item.SnoozedBy) parts.push(`by ${item.SnoozedBy}`)
-      break
-    }
-    case 'Acknowledged':
-      parts.push(
-        item.AcknowledgedBy
-          ? `Acknowledged by ${item.AcknowledgedBy}`
-          : 'Acknowledged'
-      )
-      if (item.AcknowledgedAt) parts.push(describeAge(item.AcknowledgedAt, now))
+    case 'Snoozed':
+      parts.push(describeSnooze(item))
+      if (item.SnoozeReason) parts.push(item.SnoozeReason)
       break
     default: {
       const firstSeen = describeAge(item.FirstSeen, now)

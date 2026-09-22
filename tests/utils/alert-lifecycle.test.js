@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import {
   describeAge,
   describeAlertStatus,
+  describeSnooze,
+  isActiveAlert,
   isFlapping,
   sortAlertItems,
   summarizeAlertItems,
@@ -28,23 +30,16 @@ describe('summarizeAlertItems', () => {
     const counts = summarizeAlertItems([
       { Status: 'Open' },
       { Status: 'Open' },
-      { Status: 'Acknowledged' },
       { Status: 'Snoozed' },
       { Status: 'Resolved' },
       { Status: 'Bogus' },
     ])
-    expect(counts).toEqual({
-      Open: 2,
-      Acknowledged: 1,
-      Snoozed: 1,
-      Resolved: 1,
-    })
+    expect(counts).toEqual({ Open: 2, Snoozed: 1, Resolved: 1 })
   })
 
   it('copes with a non-array', () => {
     expect(summarizeAlertItems(undefined)).toEqual({
       Open: 0,
-      Acknowledged: 0,
       Snoozed: 0,
       Resolved: 0,
     })
@@ -52,7 +47,7 @@ describe('summarizeAlertItems', () => {
 })
 
 describe('sortAlertItems', () => {
-  it('orders open before acknowledged, snoozed and resolved, with flapping items first', () => {
+  it('orders open before snoozed and resolved, with flapping items first', () => {
     const sorted = sortAlertItems([
       {
         RowKey: 'resolved',
@@ -71,11 +66,6 @@ describe('sortAlertItems', () => {
         ReopenCount: 0,
       },
       {
-        RowKey: 'ack',
-        Status: 'Acknowledged',
-        LastSeen: '2026-09-22T11:00:00Z',
-      },
-      {
         RowKey: 'open-new',
         Status: 'Open',
         LastSeen: '2026-09-22T11:00:00Z',
@@ -92,7 +82,6 @@ describe('sortAlertItems', () => {
       'open-flap',
       'open-new',
       'open-old',
-      'ack',
       'snoozed',
       'resolved',
     ])
@@ -114,6 +103,45 @@ describe('isFlapping', () => {
   })
 })
 
+describe('isActiveAlert', () => {
+  it('keeps open items and visible snoozes in the main list', () => {
+    expect(isActiveAlert({ Status: 'Open' })).toBe(true)
+    expect(isActiveAlert({ Status: 'Snoozed', SnoozeVisible: true })).toBe(true)
+    expect(isActiveAlert({ Status: 'Snoozed', SnoozeVisible: false })).toBe(
+      false
+    )
+    expect(isActiveAlert({ Status: 'Resolved' })).toBe(false)
+  })
+})
+
+describe('describeSnooze', () => {
+  it('describes an until-resolved snooze', () => {
+    expect(
+      describeSnooze({
+        Status: 'Snoozed',
+        SnoozeUntilResolved: true,
+        SnoozedBy: 'ops@example.com',
+      })
+    ).toBe('Snoozed until it resolves · by ops@example.com')
+  })
+
+  it('describes a timed snooze by its end date', () => {
+    const until = Math.round(new Date('2026-10-03T12:00:00Z').getTime() / 1000)
+    const text = describeSnooze({
+      Status: 'Snoozed',
+      SnoozeUntil: String(until),
+    })
+    expect(text).toMatch(/^Snoozed until /)
+    expect(text).toMatch(/2026/)
+  })
+
+  it('falls back to a plain label when the expiry is unusable', () => {
+    expect(describeSnooze({ Status: 'Snoozed', SnoozeUntil: '' })).toBe(
+      'Snoozed'
+    )
+  })
+})
+
 describe('describeAlertStatus', () => {
   it('describes an open item by age and last check', () => {
     expect(
@@ -128,27 +156,21 @@ describe('describeAlertStatus', () => {
     ).toBe('First seen 3d ago · checked 2h ago')
   })
 
-  it('describes an acknowledged item by who acknowledged it', () => {
+  it('describes a snoozed item with its reason and last check', () => {
     expect(
       describeAlertStatus(
         {
-          Status: 'Acknowledged',
-          AcknowledgedBy: 'ops@example.com',
-          AcknowledgedAt: '2026-09-22T11:00:00Z',
+          Status: 'Snoozed',
+          SnoozeUntilResolved: true,
+          SnoozedBy: 'ops@example.com',
+          SnoozeReason: 'ticket 42',
           LastChecked: '2026-09-22T11:30:00Z',
         },
         now
       )
-    ).toBe('Acknowledged by ops@example.com · 1h ago · checked 30m ago')
-  })
-
-  it('describes an indefinite snooze', () => {
-    expect(
-      describeAlertStatus(
-        { Status: 'Snoozed', SnoozeUntil: '-1', SnoozedBy: 'ops@example.com' },
-        now
-      )
-    ).toBe('Snoozed indefinitely · by ops@example.com')
+    ).toBe(
+      'Snoozed until it resolves · by ops@example.com · ticket 42 · checked 30m ago'
+    )
   })
 
   it('describes a resolved item without a last-check age', () => {
