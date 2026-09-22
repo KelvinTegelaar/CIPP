@@ -16,12 +16,16 @@ import { CippApiResults } from '../../../../components/CippComponents/CippApiRes
 import { useJitAllowedRoles } from '../../../../hooks/use-jit-allowed-roles'
 import { CippJitRoleTemplateApply } from '../../../../components/CippComponents/CippJitRoleTemplateApply'
 import { useEffect, useState } from 'react'
+import { resolveJitTemplateVariables } from '../../../../utils/jit-template-variables'
 
 const Page = () => {
   const formControl = useForm({ mode: 'onChange' })
   const selectedTenant = useWatch({ control: formControl.control, name: 'tenantFilter' })
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const { filterRoles } = useJitAllowedRoles()
+  // Already fetched by the layout, so this only reads the cache. Feeds %cipptechnician% below.
+  const me = ApiGetCall({ url: '/api/me', queryKey: 'authmecipp' })
+  const technicianUpn = me.data?.clientPrincipal?.userDetails
 
   const jitAdminTemplates = ApiGetCall({
     url: selectedTenant
@@ -235,7 +239,11 @@ const Page = () => {
       shouldDirty: true,
     })
     formControl.setValue('UseTAP', template.generateTAPByDefault ?? false, { shouldDirty: true })
-    formControl.setValue('reason', template.reasonTemplate || '', { shouldDirty: true })
+    formControl.setValue(
+      'reason',
+      resolveJitTemplateVariables(template.reasonTemplate, technicianUpn) || '',
+      { shouldDirty: true }
+    )
     formControl.setValue('enableVacationMode', template.defaultVacationMode ?? false, {
       shouldDirty: true,
     })
@@ -253,13 +261,25 @@ const Page = () => {
       formControl.setValue('userAction', template.defaultUserAction, { shouldDirty: true })
     }
     if (template.defaultFirstName) {
-      formControl.setValue('firstName', template.defaultFirstName, { shouldDirty: true })
+      formControl.setValue(
+        'firstName',
+        resolveJitTemplateVariables(template.defaultFirstName, technicianUpn),
+        { shouldDirty: true }
+      )
     }
     if (template.defaultLastName) {
-      formControl.setValue('lastName', template.defaultLastName, { shouldDirty: true })
+      formControl.setValue(
+        'lastName',
+        resolveJitTemplateVariables(template.defaultLastName, technicianUpn),
+        { shouldDirty: true }
+      )
     }
     if (template.defaultUserName) {
-      formControl.setValue('userName', template.defaultUserName, { shouldDirty: true })
+      formControl.setValue(
+        'userName',
+        resolveJitTemplateVariables(template.defaultUserName, technicianUpn),
+        { shouldDirty: true }
+      )
     }
     if (template.defaultDomain) {
       formControl.setValue('domain', template.defaultDomain, { shouldDirty: true })
