@@ -141,10 +141,10 @@
     "eslint-config-prettier": "^10.1.8",
     "jsdom": "30.0.1",
     "msw": "2.15.0",
-    "msw-storybook-addon": "3.0.0",
+    "msw-storybook-addon": "3.0.3",
     "playwright": "1.63.0",
     "prettier": "^3.9.6",
-    "storybook": "10.5.10",
+    "storybook": "10.6.0",
     "typescript": "5.9.3",
     "vite": "8.2.2",
     "vitest": "4.1.11"
