@@ -137,7 +137,7 @@
     "@vitest/browser-playwright": "4.1.11",
     "@vitest/coverage-v8": "4.1.11",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.3.4",
+    "eslint-config-next": "^16.3.5",
     "eslint-config-prettier": "^10.1.8",
     "jsdom": "30.0.1",
     "msw": "2.15.0",
