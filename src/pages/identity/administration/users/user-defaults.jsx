@@ -309,6 +309,10 @@ const Page = () => {
       })) || []),
   ]
 
+  // The Add User form caches this list under its own per-tenant key, and AllTenants templates
+  // show up in every tenant's form, so refresh those too or a template saved here stays invisible.
+  const templateQueryKeys = [`ListNewUserDefaults-${userSettings.currentTenant}`, 'UserDefaults-*']
+
   const actions = [
     {
       label: 'Edit Template',
@@ -318,7 +322,7 @@ const Page = () => {
       setDefaultValues: true,
       data: { GUID: 'GUID', tenantFilter: 'tenantFilter' },
       confirmText: 'Edit the template and click Confirm to save.',
-      relatedQueryKeys: [`ListNewUserDefaults-${userSettings.currentTenant}`],
+      relatedQueryKeys: templateQueryKeys,
       fields: templateFields,
     },
     {
@@ -329,6 +333,7 @@ const Page = () => {
       data: { ID: 'GUID' },
       confirmText: 'Do you want to delete this User Template?',
       multiPost: false,
+      relatedQueryKeys: templateQueryKeys,
     },
   ]
 
@@ -374,7 +379,7 @@ const Page = () => {
     type: 'POST',
     url: '/api/AddUserDefaults',
 
-    relatedQueryKeys: [`ListNewUserDefaults-${userSettings.currentTenant}`],
+    relatedQueryKeys: templateQueryKeys,
   }
 
   return (
