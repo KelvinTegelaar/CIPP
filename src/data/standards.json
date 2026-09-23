@@ -6882,8 +6882,8 @@
         "name": "standards.DevicePrepProfile.AccountType",
         "label": "Account Type",
         "options": [
-          { "label": "Standard user", "value": "0" },
-          { "label": "Administrator", "value": "1" }
+          { "label": "Standard user", "value": "1" },
+          { "label": "Administrator", "value": "0" }
         ]
       },
       {
