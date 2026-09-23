@@ -152,8 +152,10 @@ const App = (props) => {
     setDateLocale(resolvedLocale)
   }, [])
 
-  // authmecipp not persisted, stale clientPrincipal:null flashes 401 on post-login reload
-  const excludeQueryKeys = ['authmeswa', 'authmecipp', 'alertsDashboard']
+  // authmecipp not persisted, stale clientPrincipal:null flashes 401 on post-login reload.
+  // Log queries page through tens of thousands of rows; persisting them re-stringifies the
+  // whole cache on every page (far past the localStorage quota) and OOMs the tab.
+  const excludeQueryKeys = ['authmeswa', 'authmecipp', 'alertsDashboard', 'Listlogs', 'APILogs']
 
   // 👇 Persist TanStack Query cache to localStorage
   useEffect(() => {
