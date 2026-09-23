@@ -9,6 +9,7 @@ import {
   Chip,
   Divider,
   IconButton,
+  Link as MuiLink,
   Skeleton,
   Stack,
   Tooltip,
@@ -289,10 +290,16 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
     <Card sx={{ height: '100%', ...sx }}>
       <CardHeader
         title={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <MuiLink
+            component={Link}
+            href="/tenant/administration/alert-configuration"
+            color="inherit"
+            underline="hover"
+            sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}
+          >
             <CippIcons.NotificationsActive sx={{ fontSize: 20 }} />
             <Typography variant="subtitle1">Alerts</Typography>
-          </Box>
+          </MuiLink>
         }
         action={
           <Stack direction="row" spacing={0.5}>
