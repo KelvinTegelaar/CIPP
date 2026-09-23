@@ -629,7 +629,7 @@ export const useCippUserActions = () => {
       label: 'Research Compromised Account',
       type: 'GET',
       icon: <CippIcons.MagnifyingGlassIcon />,
-      link: '/identity/bec/case?userId=[id]',
+      link: '/identity/administration/bec/case?userId=[id]',
       confirmText:
         'Are you sure you want to research if [userPrincipalName] is a compromised account?',
       multiPost: false,

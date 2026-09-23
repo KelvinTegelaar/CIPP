@@ -2,19 +2,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import { Alert, Box, Link, Stack, Typography } from '@mui/material'
-import { CippAutoComplete } from '../../../components/CippComponents/CippAutocomplete'
-import { Layout as DashboardLayout } from '../../../layouts/index'
-import { useSettings } from '../../../hooks/use-settings'
-import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
-import { CippHead } from '../../../components/CippComponents/CippHead'
-import { CippBecRunStatusCard } from '../../../components/CippCards/CippBecRunStatusCard'
-import { CippBecTriageHeader } from '../../../components/CippCards/CippBecTriageHeader'
-import { CippBecObjectiveGroups } from '../../../components/CippComponents/CippBecObjectiveGroups'
-import { CippBecTimelineEvaluator } from '../../../components/CippComponents/CippBecTimelineEvaluator'
-import { CippBecRemediationHistory } from '../../../components/CippComponents/CippBecRemediationHistory'
-import { CippApiResults } from '../../../components/CippComponents/CippApiResults'
-import CippButtonCard from '../../../components/CippCards/CippButtonCard'
-import { becGroupFlagged, BEC_GROUPS } from '../../../utils/bec-objectives'
+import { CippAutoComplete } from '../../../../components/CippComponents/CippAutocomplete'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { useSettings } from '../../../../hooks/use-settings'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { CippHead } from '../../../../components/CippComponents/CippHead'
+import { CippBecRunStatusCard } from '../../../../components/CippCards/CippBecRunStatusCard'
+import { CippBecTriageHeader } from '../../../../components/CippCards/CippBecTriageHeader'
+import { CippBecObjectiveGroups } from '../../../../components/CippComponents/CippBecObjectiveGroups'
+import { CippBecTimelineEvaluator } from '../../../../components/CippComponents/CippBecTimelineEvaluator'
+import { CippBecRemediationHistory } from '../../../../components/CippComponents/CippBecRemediationHistory'
+import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
+import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
+import { becGroupFlagged, BEC_GROUPS } from '../../../../utils/bec-objectives'
 
 // The purpose-built case/remediation workspace. Data contract is unchanged: it polls execBECCheck
 // by GUID, shows the async run progress while it runs, and renders the completed results grouped by
@@ -263,7 +263,7 @@ const Page = () => {
         >
           <Link
             component={NextLink}
-            href="/identity/bec"
+            href="/identity/administration/bec"
             underline="hover"
             variant="body2"
           >

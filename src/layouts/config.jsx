@@ -23,13 +23,6 @@ export const nativeMenuItems = [
     permissions: ['Identity.*'],
     items: [
       {
-        title: 'Business Email Compromise',
-        path: '/identity/bec',
-        // BEC docs still live under the old reports path; the page redirects, the docs did not move.
-        docsPath: 'identity/reports/bec-reports',
-        permissions: ['Identity.User.*'],
-      },
-      {
         title: 'Administration',
         permissions: ['Identity.User.*'],
         items: [
@@ -99,6 +92,11 @@ export const nativeMenuItems = [
           {
             title: 'Offboarding Wizard',
             path: '/identity/administration/offboarding-wizard',
+            permissions: ['Identity.User.*'],
+          },
+          {
+            title: 'Business Email Compromise',
+            path: '/identity/administration/bec',
             permissions: ['Identity.User.*'],
           },
         ],

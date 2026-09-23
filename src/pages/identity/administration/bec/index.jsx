@@ -8,16 +8,16 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material'
-import { Layout as DashboardLayout } from '../../../layouts/index'
-import { CippTablePage } from '../../../components/CippComponents/CippTablePage.jsx'
-import { CippOffCanvas } from '../../../components/CippComponents/CippOffCanvas'
-import { CippDataTable } from '../../../components/CippTable/CippDataTable'
-import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
-import { CippApiResults } from '../../../components/CippComponents/CippApiResults'
-import { useBecEvidenceDownload } from '../../../components/CippComponents/CippBecEvidenceDownload'
-import { CippIcons } from '../../../utils/icon-registry'
-import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
-import { useSettings } from '../../../hooks/use-settings'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanvas'
+import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
+import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
+import { useBecEvidenceDownload } from '../../../../components/CippComponents/CippBecEvidenceDownload'
+import { CippIcons } from '../../../../utils/icon-registry'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { useSettings } from '../../../../hooks/use-settings'
 
 // Columns shown for a single run — used both by the flat "All runs" table and inside a
 // user's run-history drawer, so the two never drift.
@@ -79,7 +79,7 @@ const StartInvestigationDrawer = ({ tenant }) => {
     if (ids.length === 1) {
       setVisible(false)
       router.push(
-        `/identity/bec/case?userId=${encodeURIComponent(ids[0])}&tenantFilter=${encodeURIComponent(
+        `/identity/administration/bec/case?userId=${encodeURIComponent(ids[0])}&tenantFilter=${encodeURIComponent(
           tenant
         )}&start=true`
       )
@@ -219,7 +219,7 @@ const Page = () => {
     {
       label: 'Open case',
       icon: <CippIcons.Visibility />,
-      link: '/identity/bec/case?userId=[UserId]&caseId=[CaseId]&tenantFilter=[Tenant]',
+      link: '/identity/administration/bec/case?userId=[UserId]&caseId=[CaseId]&tenantFilter=[Tenant]',
       multiPost: false,
     },
     {
@@ -271,7 +271,7 @@ const Page = () => {
     {
       label: 'Open latest case',
       icon: <CippIcons.Visibility />,
-      link: '/identity/bec/case?userId=[UserId]&caseId=[CaseId]&tenantFilter=[Tenant]',
+      link: '/identity/administration/bec/case?userId=[UserId]&caseId=[CaseId]&tenantFilter=[Tenant]',
       multiPost: false,
     },
     {

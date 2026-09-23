@@ -34,12 +34,15 @@ export const routeRedirects = {
   // User Templates moved from Manage Tenant tabs to the Users tabbed layout.
   '/tenant/manage/user-defaults':
     '/identity/administration/users/user-defaults',
-  // BEC moved to its own Identity section: a case hub, plus a purpose-built case workspace. The old
-  // per-user Compromise Remediation tab still points at this route; there is no page here any more, so
-  // clicking it 404s and the redirect screen forwards to the case workspace (query - userId, caseId -
-  // carried across). The retired reports page redirects the same way.
-  '/identity/reports/bec-reports': '/identity/bec',
-  '/identity/administration/users/user/bec': '/identity/bec/case',
+  // BEC lives under Identity > Administration: a case hub, plus a purpose-built case workspace. The
+  // retired reports page, the old per-user BEC tab (in alert emails and PSA/documentation links written
+  // before the move) and the earlier top-level /identity/bec location all forward here, query (userId,
+  // caseId, tenantFilter) carried across.
+  '/identity/reports/bec-reports': '/identity/administration/bec',
+  '/identity/administration/users/user/bec':
+    '/identity/administration/bec/case',
+  '/identity/bec': '/identity/administration/bec',
+  '/identity/bec/case': '/identity/administration/bec/case',
 }
 
 export const getRedirectTarget = (pathname) => {
