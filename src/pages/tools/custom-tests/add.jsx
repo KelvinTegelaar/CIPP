@@ -119,6 +119,9 @@ const Page = () => {
   const [testerExpanded, setTesterExpanded] = useState(true)
   const markdownEditorRef = useRef(null)
   const scriptEditorRef = useRef(null)
+  // Holds the latest loaded cache shape so the Monaco completion providers (registered once at
+  // mount) always read current data instead of the empty snapshot captured when the editor mounted.
+  const cacheShapeRef = useRef([])
 
   const toSelectOption = (value, fallback) =>
     value
@@ -216,6 +219,57 @@ const Page = () => {
     queryKey: `CacheExplorer-${cacheExplorerTenant}-${expandedCacheType}`,
     waiting: !!expandedCacheType && !!cacheExplorerTenant,
   })
+
+  // Live per-tenant cache shape: every cached collection with its row count and the fields (and
+  // types) recorded when the cache was written (ListDBCache type=_shape). This drives the type list
+  // and field autocomplete from what the tenant has actually cached, instead of the bundled static
+  // catalog, which drifts out of sync.
+  const cacheShapeApi = ApiGetCall({
+    url: '/api/ListDBCache',
+    data: { tenantFilter: cacheExplorerTenant, type: '_shape' },
+    queryKey: `CacheShape-${cacheExplorerTenant}`,
+    waiting: !!cacheExplorerTenant,
+  })
+
+  // The bundled catalog carries friendly names and descriptions the shape endpoint does not, so it
+  // is kept to enrich the live types (and as a fallback before a tenant is selected, or when the
+  // tenant has nothing cached yet).
+  const descriptionByType = useMemo(() => {
+    const map = new Map()
+    cacheTypes.forEach((entry) => map.set(entry.type, entry))
+    return map
+  }, [])
+
+  const cacheShape = useMemo(() => {
+    const shapes = cacheShapeApi.data?.Results
+    const live = (Array.isArray(shapes) ? shapes : [])
+      .map((shape) => {
+        const meta = descriptionByType.get(shape.Type)
+        return {
+          type: shape.Type,
+          count: shape.Count,
+          fields: Array.isArray(shape.Fields) ? shape.Fields : [],
+          friendlyName: meta?.friendlyName || shape.Type,
+          description: meta?.description || '',
+        }
+      })
+      .sort((a, b) => a.type.localeCompare(b.type))
+    if (live.length > 0) {
+      return live
+    }
+    // Nothing cached live yet — fall back to the bundled catalog so the dialog is never empty.
+    return cacheTypes.map((entry) => ({
+      type: entry.type,
+      count: null,
+      fields: [],
+      friendlyName: entry.friendlyName,
+      description: entry.description,
+    }))
+  }, [cacheShapeApi.data, descriptionByType])
+
+  useEffect(() => {
+    cacheShapeRef.current = cacheShape
+  }, [cacheShape])
 
   const handleExploreCache = (cacheType) => {
     setExpandedCacheType(expandedCacheType === cacheType ? null : cacheType)
@@ -651,6 +705,123 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
       }
     )
 
+    // Cache-aware completions: cache type names after -Type '…', and a referenced collection's
+    // fields after a property access (e.g. $_. inside a Where-Object). The data is read from a ref
+    // so completions reflect the shape loaded for the current tenant, not the mount-time snapshot.
+    const cacheProvider = monaco.languages.registerCompletionItemProvider(
+      'powershell',
+      {
+        triggerCharacters: ["'", '"', '.'],
+        provideCompletionItems: (model, position) => {
+          const shape = cacheShapeRef.current || []
+          if (shape.length === 0) {
+            return { suggestions: [] }
+          }
+
+          const linePrefix = model.getValueInRange({
+            startLineNumber: position.lineNumber,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: position.column,
+          })
+
+          // -Type '<partial>' → offer the cached collection names.
+          const typeMatch = linePrefix.match(/-Type\s*['"]([A-Za-z0-9_]*)$/i)
+          if (typeMatch) {
+            const range = {
+              startLineNumber: position.lineNumber,
+              startColumn: position.column - typeMatch[1].length,
+              endLineNumber: position.lineNumber,
+              endColumn: position.column,
+            }
+            return {
+              suggestions: shape.map((entry) => ({
+                label:
+                  entry.count != null
+                    ? `${entry.type} (${entry.count})`
+                    : entry.type,
+                kind: monaco.languages.CompletionItemKind.EnumMember,
+                insertText: entry.type,
+                detail:
+                  entry.friendlyName && entry.friendlyName !== entry.type
+                    ? entry.friendlyName
+                    : 'Cache type',
+                range,
+              })),
+            }
+          }
+
+          // Property access ($var.a.b) → fields of the collections this script actually reads.
+          const accessMatch = linePrefix.match(
+            /\$[A-Za-z_][A-Za-z0-9_]*((?:\.[A-Za-z0-9_]*)+)$/
+          )
+          if (!accessMatch) {
+            return { suggestions: [] }
+          }
+
+          const referenced = new Set()
+          const typeRegex =
+            /Get-CIPPTestData[^\r\n]*?-Type\s*['"]([A-Za-z0-9_]+)['"]/gi
+          let typeHit
+          while ((typeHit = typeRegex.exec(model.getValue())) !== null) {
+            referenced.add(typeHit[1])
+          }
+          if (referenced.size === 0) {
+            return { suggestions: [] }
+          }
+
+          // The dotted path already typed after the variable; its last segment is the partial word,
+          // the rest is the base path we only offer children of (shape fields are one level deep).
+          const segments = accessMatch[1].replace(/^\./, '').split('.')
+          segments.pop()
+          const basePath = segments.join('.')
+          const prefix = basePath ? `${basePath}.` : ''
+
+          const word = model.getWordUntilPosition(position)
+          const range = {
+            startLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endLineNumber: position.lineNumber,
+            endColumn: word.endColumn,
+          }
+
+          const seen = new Set()
+          const suggestions = []
+          shape
+            .filter((entry) => referenced.has(entry.type))
+            .forEach((entry) => {
+              entry.fields.forEach((field) => {
+                if (
+                  !field?.name ||
+                  !field.name.startsWith(prefix) ||
+                  field.name === basePath
+                ) {
+                  return
+                }
+                const remainder = field.name.slice(prefix.length)
+                if (!remainder || seen.has(remainder)) {
+                  return
+                }
+                seen.add(remainder)
+                suggestions.push({
+                  label: field.type
+                    ? `${remainder} (${field.type})`
+                    : remainder,
+                  kind:
+                    field.type === 'object' || field.type === 'array'
+                      ? monaco.languages.CompletionItemKind.Struct
+                      : monaco.languages.CompletionItemKind.Field,
+                  insertText: remainder,
+                  detail: `${entry.type} field`,
+                  range,
+                })
+              })
+            })
+          return { suggestions }
+        },
+      }
+    )
+
     const contentListener = _editor.onDidChangeModelContent(() => {
       const model = _editor.getModel()
       const position = _editor.getPosition()
@@ -670,6 +841,7 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
 
     _editor.onDidDispose(() => {
       provider.dispose()
+      cacheProvider.dispose()
       contentListener.dispose()
       if (scriptEditorRef.current === _editor) {
         scriptEditorRef.current = null
@@ -1036,7 +1208,7 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                     onClick={() => setCacheTypesDialogOpen(true)}
                     sx={{ mt: 0.5 }}
                   >
-                    View Cached Types ({cacheTypes.length})
+                    View Cached Types ({cacheShape.length})
                   </Button>
                 </Box>
               </Grid>
@@ -1371,11 +1543,24 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
               display: 'block',
             }}
           >
-            Click the eye icon to explore sample data from the currently
-            selected tenant.
+            {!cacheExplorerTenant
+              ? 'Select a tenant to see its cached collections and fields.'
+              : 'Fields are recorded when each collection is cached, so they need no lookup. Click the eye icon to load a live sample record.'}
           </Typography>
-          <Stack spacing={1}>
-            {cacheTypes.map((cacheType) => (
+          {cacheExplorerTenant && cacheShapeApi.isFetching && (
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: 'center', mb: 2 }}
+            >
+              <CircularProgress size={16} />
+              <Typography variant="caption">
+                Loading cached collections...
+              </Typography>
+            </Stack>
+          )}
+          <Stack spacing={1.5}>
+            {cacheShape.map((cacheType) => (
               <Box key={cacheType.type}>
                 <Stack
                   direction="row"
@@ -1385,19 +1570,34 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
                   }}
                 >
                   <Box sx={{ flex: 1 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {cacheType.friendlyName} ({cacheType.type})
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{ alignItems: 'center' }}
                     >
-                      {cacheType.description}
-                    </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {cacheType.friendlyName} ({cacheType.type})
+                      </Typography>
+                      {cacheType.count != null && (
+                        <Chip
+                          label={`${cacheType.count} rows`}
+                          size="small"
+                          variant="outlined"
+                        />
+                      )}
+                    </Stack>
+                    {cacheType.description && (
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: 'text.secondary',
+                        }}
+                      >
+                        {cacheType.description}
+                      </Typography>
+                    )}
                   </Box>
-                  <Tooltip title="Explore data structure">
+                  <Tooltip title="Load a live sample record">
                     <IconButton
                       size="small"
                       onClick={() => handleExploreCache(cacheType.type)}
@@ -1411,6 +1611,29 @@ $md = $summaryTable + "\n\n---\n\n" + $policyTable
                     </IconButton>
                   </Tooltip>
                 </Stack>
+                {cacheType.fields.length > 0 && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 0.5,
+                      mt: 0.5,
+                      maxHeight: 120,
+                      overflow: 'auto',
+                    }}
+                  >
+                    {cacheType.fields.map((field) => (
+                      <Tooltip key={field.name} title={field.type || ''}>
+                        <Chip
+                          label={field.name}
+                          size="small"
+                          variant="outlined"
+                          sx={{ fontFamily: 'monospace', fontSize: '0.7rem' }}
+                        />
+                      </Tooltip>
+                    ))}
+                  </Box>
+                )}
                 <Collapse
                   in={expandedCacheType === cacheType.type}
                   unmountOnExit
