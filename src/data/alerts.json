@@ -659,7 +659,7 @@
     "name": "NewRiskyUsers",
     "label": "Alert on new risky users (P2 License Required)",
     "recommendedRunInterval": "30m",
-    "description": "Monitors for new risky users in the tenant. Risky users are defined as users who have performed actions that are considered risky, such as password resets, MFA failures, or suspicious activity. Optionally runs the default BEC containment (reset password, block sign-in, revoke sessions, remove MFA methods, disable inbox rules, disable OneDrive sharing) automatically for users that newly appear at <b>high</b> risk - this locks the user out without a human in the loop, so enable it only where that is the agreed response.",
+    "description": "Monitors for new risky users in the tenant. Risky users are defined as users who have performed actions that are considered risky, such as password resets, MFA failures, or suspicious activity. Optionally runs the default BEC containment (set under CIPP Settings > BEC Remediation Defaults; out of the box: reset password, block sign-in, revoke sessions, remove MFA methods, disable inbox rules, block legacy mailbox protocols) automatically for users that newly appear at <b>high</b> risk - this locks the user out without a human in the loop, so enable it only where that is the agreed response.",
     "requiresInput": true,
     "inputType": "switch",
     "inputLabel": "Automatically contain users that newly appear at high risk (default BEC containment)",
