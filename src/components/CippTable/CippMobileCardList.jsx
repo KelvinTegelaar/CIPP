@@ -27,6 +27,8 @@ import { isRowTextInteraction } from "./util-row-text-interaction";
 
 // Mobile card pageSize ceiling: a desktop tablePageSize of 250/500 must not become
 // 250 unvirtualized cards. "Load more" grows pageSize from here in steps of LOAD_STEP.
+// A list embedded among many others (an evidence table on a case page) can ask for a
+// smaller first page with mobileCard.pageSize; it then grows in that same step.
 const MOBILE_PAGE_SIZE_CAP = 50;
 const LOAD_STEP = 50;
 
@@ -122,9 +124,11 @@ export const CippMobileCardList = (props) => {
   const hasLayoutFab = Boolean(tabNav?.enabled) && (tabNav?.actions?.length ?? 0) > 0;
 
   // A desktop tablePageSize above the cap would render that many unvirtualized cards.
+  const pageCap = Math.min(MOBILE_PAGE_SIZE_CAP, mobileCard?.pageSize || MOBILE_PAGE_SIZE_CAP);
+  const loadStep = mobileCard?.pageSize || LOAD_STEP;
   useEffect(() => {
-    if (table.getState().pagination.pageSize > MOBILE_PAGE_SIZE_CAP) {
-      table.setPageSize(MOBILE_PAGE_SIZE_CAP);
+    if (table.getState().pagination.pageSize > pageCap) {
+      table.setPageSize(pageCap);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -191,7 +195,7 @@ export const CippMobileCardList = (props) => {
   };
 
   const handleLoadMore = () => {
-    table.setPageSize(table.getState().pagination.pageSize + LOAD_STEP);
+    table.setPageSize(table.getState().pagination.pageSize + loadStep);
   };
 
   const loadedCount = Math.min(rows.length, totalFiltered);
@@ -431,7 +435,7 @@ export const CippMobileCardList = (props) => {
                   onClick={handleLoadMore}
                   sx={{ mt: 1, minHeight: 44 }}
                 >
-                  Load {Math.min(LOAD_STEP, totalFiltered - loadedCount)} more
+                  Load {Math.min(loadStep, totalFiltered - loadedCount)} more
                 </Button>
               )}
             </Box>

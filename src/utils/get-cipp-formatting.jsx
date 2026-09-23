@@ -355,6 +355,8 @@ export const getCippFormatting = (
     'LastSeen', // Alert lifecycle
     'LastChecked', // Alert lifecycle
     'ResolvedAt', // Alert lifecycle
+    'ExtractedAt', // BEC run: when the investigation snapshot was taken
+    'RequestedAt', // BEC run: when the run was requested
   ]
   if (absoluteDateArray.includes(cellName)) {
     if (data === null || data === undefined || data === '') {

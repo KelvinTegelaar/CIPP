@@ -22,7 +22,12 @@ export const SAMPLE_TENANT_NAME = 'Contoso (sample data)'
 
 /** Executive report — user counts, secure score history, licences, devices, CA policies. */
 export const SAMPLE_EXECUTIVE = {
-  userStats: { licensedUsers: 128, unlicensedUsers: 12, guests: 9, globalAdmins: 3 },
+  userStats: {
+    licensedUsers: 128,
+    unlicensedUsers: 12,
+    guests: 9,
+    globalAdmins: 3,
+  },
   secureScoreData: {
     isSuccess: true,
     translatedData: { currentScore: 61, maxScore: 100, percentageCurrent: 61 },
@@ -44,9 +49,24 @@ export const SAMPLE_EXECUTIVE = {
   // (`skuPartNumber`, `consumedUnits`) and every cell fell through to its 'N/A' fallback, so the
   // preview showed an empty-looking table while the real report showed data.
   licensingData: [
-    { License: 'Microsoft 365 E3', CountUsed: 88, CountAvailable: 12, TotalLicenses: 100 },
-    { License: 'Exchange Online (Plan 1)', CountUsed: 27, CountAvailable: 3, TotalLicenses: 30 },
-    { License: 'Microsoft Defender for Office 365', CountUsed: 64, CountAvailable: 36, TotalLicenses: 100 },
+    {
+      License: 'Microsoft 365 E3',
+      CountUsed: 88,
+      CountAvailable: 12,
+      TotalLicenses: 100,
+    },
+    {
+      License: 'Exchange Online (Plan 1)',
+      CountUsed: 27,
+      CountAvailable: 3,
+      TotalLicenses: 30,
+    },
+    {
+      License: 'Microsoft Defender for Office 365',
+      CountUsed: 64,
+      CountAvailable: 36,
+      TotalLicenses: 100,
+    },
   ],
   // A plain array, matching `deviceData?.data?.Results` in the real report — the wrapper the sample
   // used to carry meant `Array.isArray` failed and the whole Device Management section was skipped.
@@ -119,12 +139,27 @@ export const SAMPLE_EXECUTIVE = {
       tenantFilter: 'contoso.com',
       alignedCount: 42,
       currentDeviations: [
-        { standardName: 'standards.AntiPhishPolicy', receivedValue: 'Disabled' },
-        { standardName: 'standards.SafeLinksPolicy', receivedValue: 'Disabled' },
+        {
+          standardName: 'standards.AntiPhishPolicy',
+          receivedValue: 'Disabled',
+        },
+        {
+          standardName: 'standards.SafeLinksPolicy',
+          receivedValue: 'Disabled',
+        },
       ],
-      acceptedDeviations: [{ standardName: 'standards.AuditLog', receivedValue: 'Custom' }],
-      deniedDeviations: [{ standardName: 'standards.DisableBasicAuth', receivedValue: 'Enabled' }],
-      customerSpecificDeviations: [{ standardName: 'standards.Guests', receivedValue: 'Allowed' }],
+      acceptedDeviations: [
+        { standardName: 'standards.AuditLog', receivedValue: 'Custom' },
+      ],
+      deniedDeviations: [
+        {
+          standardName: 'standards.DisableBasicAuth',
+          receivedValue: 'Enabled',
+        },
+      ],
+      customerSpecificDeviations: [
+        { standardName: 'standards.Guests', receivedValue: 'Allowed' },
+      ],
     },
   ],
   // Drives two things: the Security Standards page, and the Applied Standards section of the drift
@@ -139,11 +174,19 @@ export const SAMPLE_EXECUTIVE = {
       tenantFilter: 'contoso.com',
       'standards.AntiPhishPolicy': { Value: true },
       'standards.SafeLinksPolicy': { Value: true },
-      'standards.AuditLog': { CurrentValue: 'Enabled', ExpectedValue: 'Enabled' },
+      'standards.AuditLog': {
+        CurrentValue: 'Enabled',
+        ExpectedValue: 'Enabled',
+      },
       'standards.Guests': { CurrentValue: 'Allowed', ExpectedValue: 'Blocked' },
       'standards.PasswordExpireDisabled': { Value: true },
-      'standards.DisableBasicAuth': { CurrentValue: 'Partial', ExpectedValue: 'Disabled' },
-      'standards.IntuneTemplate.8f2a1c4e-6b3d-4f5a-9e7c-1d2b3a4c5e6f': { Value: true },
+      'standards.DisableBasicAuth': {
+        CurrentValue: 'Partial',
+        ExpectedValue: 'Disabled',
+      },
+      'standards.IntuneTemplate.8f2a1c4e-6b3d-4f5a-9e7c-1d2b3a4c5e6f': {
+        Value: true,
+      },
     },
   ],
   standardTemplatesData: [
@@ -276,7 +319,8 @@ export const SAMPLE_REPORT_BUILDER_BLOCKS = [
     title: 'Raw Response',
     static: true,
     format: 'json',
-    content: '{\n  "tenant": "contoso.com",\n  "policies": 191,\n  "enabled": 5\n}',
+    content:
+      '{\n  "tenant": "contoso.com",\n  "policies": 191,\n  "enabled": 5\n}',
   },
 ]
 
@@ -303,9 +347,27 @@ export const SAMPLE_SHADOW_AI = {
     { risk: 'Informational', tools: 2 },
   ],
   topTools: [
-    { tool: 'Sample AI Assistant', category: 'Chat', status: 'Unsanctioned', devices: 22, users: 18 },
-    { tool: 'Sample Code Helper', category: 'Development', status: 'Unsanctioned', devices: 14, users: 9 },
-    { tool: 'Sample Notetaker', category: 'Meetings', status: 'Sanctioned', devices: 11, users: 24 },
+    {
+      tool: 'Sample AI Assistant',
+      category: 'Chat',
+      status: 'Unsanctioned',
+      devices: 22,
+      users: 18,
+    },
+    {
+      tool: 'Sample Code Helper',
+      category: 'Development',
+      status: 'Unsanctioned',
+      devices: 14,
+      users: 9,
+    },
+    {
+      tool: 'Sample Notetaker',
+      category: 'Meetings',
+      status: 'Sanctioned',
+      devices: 11,
+      users: 24,
+    },
   ],
   detectedApps: [
     {
@@ -365,15 +427,198 @@ export const SAMPLE_SHADOW_AI = {
 /** BEC remediation report. Field shapes mirror the real Push-BECRun payload so the preview
  * renders every report section with plausible values rather than 'Unknown' placeholders. */
 export const SAMPLE_BEC = {
-  userData: { displayName: 'Sample User', userPrincipalName: 'sample.user@example.com' },
+  userData: {
+    displayName: 'Sample User',
+    userPrincipalName: 'sample.user@example.com',
+  },
   becData: {
     ExtractedAt: '2026-08-05T09:00:00Z',
     ExtractResult: 'Successfully extracted logs from auditlog',
     AnalysisWindowDays: 7,
+    CaseId: 'BEC-20260805090000-a1b2c3',
+    ContentPolicy: 'metadata-only',
+    UserPrincipalName: 'sample.user@example.com',
+    IPVerdicts: [
+      {
+        IP: '198.51.100.23',
+        Verdict: 'LikelyAttacker',
+        Score: 9,
+        Source: 'Heuristics',
+        Reasons: [
+          { Code: 'HostingOrProxy', Weight: 3, Text: 'Proxy/VPN network' },
+          { Code: 'Foreign', Weight: 2, Text: 'Outside the usage location' },
+          { Code: 'NewToUser', Weight: 2, Text: 'Never used by the user' },
+        ],
+        Country: 'NG',
+        City: 'Lagos',
+        SuccessfulSignIns: 3,
+        FailedSignIns: 1,
+        Activities: 12,
+      },
+      {
+        IP: '203.0.113.10',
+        Verdict: 'LikelyUser',
+        Score: -5,
+        Source: 'Heuristics',
+        Reasons: [],
+        Country: 'US',
+        City: 'Chicago',
+        SuccessfulSignIns: 40,
+        FailedSignIns: 0,
+        Activities: 3,
+      },
+    ],
+    AttackerMailActivity: [
+      {
+        When: '2026-08-04T02:10:00Z',
+        Operation: 'MailItemsAccessed',
+        AccessType: 'Bind',
+        Folder: 'Inbox',
+        Subject: 'Invoice 4471 - updated bank details',
+        InternetMessageId: '<a1@example.com>',
+        MailboxOwner: 'sample.user@example.com',
+        IP: '198.51.100.23',
+        IPVerdict: 'LikelyAttacker',
+      },
+      {
+        When: '2026-08-04T02:20:00Z',
+        Operation: 'Send',
+        Folder: 'Sent Items',
+        Subject: 'RE: Invoice 4471',
+        InternetMessageId: '<a2@example.com>',
+        MailboxOwner: 'sample.user@example.com',
+        IP: '198.51.100.23',
+        IPVerdict: 'LikelyAttacker',
+      },
+    ],
+    AttackerFileActivity: [
+      {
+        When: '2026-08-04T02:30:00Z',
+        Operation: 'FileDownloaded',
+        File: 'Payroll 2026.xlsx',
+        Url: 'https://example.sharepoint.com/sites/finance/Payroll 2026.xlsx',
+        Site: 'https://example.sharepoint.com/sites/finance',
+        IP: '198.51.100.23',
+        IPVerdict: 'LikelyAttacker',
+      },
+    ],
+    FormsActivity: [
+      {
+        When: '2026-08-04T03:00:00Z',
+        Operation: 'CreateForm',
+        FormName: 'Microsoft 365 account verification',
+        FormId: 'form-1',
+        IP: '198.51.100.23',
+        IPVerdict: 'LikelyAttacker',
+        Flagged: true,
+      },
+    ],
+    FormsSummary: {
+      FlaggedActions: 1,
+      Forms: [
+        {
+          FormId: 'form-1',
+          FormName: 'Microsoft 365 account verification',
+          Responses: 4,
+          AnonymousResponses: 4,
+          Views: 37,
+          PhishingFlagged: false,
+        },
+      ],
+    },
+    DelegatedAccess: [
+      {
+        Mailbox: 'accounts@example.com',
+        AccessRights: 'FullAccess',
+        KnownFrom: 'Permission cache',
+        AttackerOpened: 6,
+        AttackerSynced: 0,
+        AttackerSent: 0,
+        Flagged: true,
+      },
+    ],
+    BlastRadius: [
+      {
+        UserPrincipalName: 'finance.lead@example.com',
+        UserId: '22222222-2222-2222-2222-222222222222',
+        Reached: true,
+        AttackerIPs: '198.51.100.23',
+        SuccessfulSignIns: 1,
+        FailedSignIns: 2,
+        Actions: 4,
+        Operations: 'MailItemsAccessed x4',
+        FirstSeen: '2026-08-04T04:00:00Z',
+        LastSeen: '2026-08-04T04:20:00Z',
+      },
+    ],
+    // Server-side score: the report prefers this over its own calculation when present
+    Score: {
+      Value: 19,
+      Level: 'High',
+      Thresholds: { High: 7, Medium: 4 },
+      Breakdown: [
+        {
+          Signal: 'NewRules',
+          Description: 'Inbox rules exist on the mailbox',
+          Weight: 3,
+          Count: 1,
+          Applied: true,
+        },
+        {
+          Signal: 'InboxRuleChanges',
+          Description:
+            'Inbox rules were created, changed or removed in the window',
+          Weight: 3,
+          Count: 1,
+          Applied: true,
+        },
+        {
+          Signal: 'SuspiciousRules',
+          Description: 'An inbox rule moves mail to a RSS folder',
+          Weight: 5,
+          Count: 1,
+          Applied: true,
+        },
+        {
+          Signal: 'MaliciousApps',
+          Description: 'Applications match the known-malicious catalog',
+          Weight: 5,
+          Count: 1,
+          Applied: true,
+        },
+        {
+          Signal: 'ForeignActivity',
+          Description:
+            'Rule, safelist, sharing or mail activity from outside the usage location',
+          Weight: 3,
+          Count: 2,
+          Applied: true,
+        },
+        {
+          Signal: 'AnonymousLinks',
+          Description: 'Anonymous sharing links were created or changed',
+          Weight: 3,
+          Count: 0,
+          Applied: false,
+        },
+      ],
+      Version: 2,
+    },
+    Completeness: {
+      AuditLog: { Complete: true, Cap: null, Error: null, Count: 2 },
+      SignIns: { Complete: true, Cap: null, Error: null, Count: 3 },
+      SentMessages: {
+        Complete: false,
+        Cap: '5 pages of 5000 rows',
+        Error: null,
+        Count: 25000,
+      },
+    },
     NewRules: [
       {
         Name: 'Sample forwarding rule',
-        Description: 'Move messages from billing@example.com to folder RSS Feeds',
+        Description:
+          'Move messages from billing@example.com to folder RSS Feeds',
         MoveToFolder: 'RSS Feeds',
         RecentlyChanged: true,
       },
@@ -467,7 +712,8 @@ export const SAMPLE_BEC = {
     },
     MFADevices: [
       {
-        '@odata.type': '#microsoft.graph.microsoftAuthenticatorAuthenticationMethod',
+        '@odata.type':
+          '#microsoft.graph.microsoftAuthenticatorAuthenticationMethod',
         displayName: 'Sample phone',
         createdDateTime: '2026-08-03T12:00:00Z',
       },
@@ -501,7 +747,8 @@ export const SAMPLE_BEC = {
         Date: '2026-08-04T10:15:00Z',
         Workload: 'OneDrive',
         FileName: 'Payroll Q3.xlsx',
-        ItemUrl: 'https://example-my.sharepoint.com/personal/sample_user/Documents/Payroll Q3.xlsx',
+        ItemUrl:
+          'https://example-my.sharepoint.com/personal/sample_user/Documents/Payroll Q3.xlsx',
         Target: null,
         TargetType: null,
         ClientIP: '203.0.113.10',
@@ -655,20 +902,132 @@ export const SAMPLE_MAIL_FLOW = {
     IntraOrg: 11879,
   },
   daily: [
-    { date: '2026-08-04', GoodMail: 3410, TransportRules: 96, SpamDetections: 430, EdgeBlockSpam: 281, EmailPhish: 29, EmailMalware: 3 },
-    { date: '2026-08-05', GoodMail: 3688, TransportRules: 104, SpamDetections: 468, EdgeBlockSpam: 302, EmailPhish: 33, EmailMalware: 2 },
-    { date: '2026-08-06', GoodMail: 3572, TransportRules: 88, SpamDetections: 451, EdgeBlockSpam: 295, EmailPhish: 31, EmailMalware: 4 },
-    { date: '2026-08-07', GoodMail: 3740, TransportRules: 112, SpamDetections: 502, EdgeBlockSpam: 318, EmailPhish: 38, EmailMalware: 1 },
-    { date: '2026-08-08', GoodMail: 3495, TransportRules: 97, SpamDetections: 476, EdgeBlockSpam: 304, EmailPhish: 35, EmailMalware: 3 },
-    { date: '2026-08-09', GoodMail: 1180, TransportRules: 21, SpamDetections: 268, EdgeBlockSpam: 174, EmailPhish: 12, EmailMalware: 0 },
-    { date: '2026-08-10', GoodMail: 1042, TransportRules: 18, SpamDetections: 251, EdgeBlockSpam: 166, EmailPhish: 10, EmailMalware: 1 },
-    { date: '2026-08-11', GoodMail: 3820, TransportRules: 118, SpamDetections: 529, EdgeBlockSpam: 341, EmailPhish: 41, EmailMalware: 5 },
-    { date: '2026-08-12', GoodMail: 3903, TransportRules: 121, SpamDetections: 544, EdgeBlockSpam: 352, EmailPhish: 44, EmailMalware: 4 },
-    { date: '2026-08-13', GoodMail: 3766, TransportRules: 109, SpamDetections: 511, EdgeBlockSpam: 329, EmailPhish: 36, EmailMalware: 2 },
-    { date: '2026-08-14', GoodMail: 3841, TransportRules: 114, SpamDetections: 498, EdgeBlockSpam: 321, EmailPhish: 34, EmailMalware: 3 },
-    { date: '2026-08-15', GoodMail: 3612, TransportRules: 102, SpamDetections: 470, EdgeBlockSpam: 303, EmailPhish: 30, EmailMalware: 4 },
-    { date: '2026-08-16', GoodMail: 1214, TransportRules: 22, SpamDetections: 264, EdgeBlockSpam: 172, EmailPhish: 20, EmailMalware: 3 },
-    { date: '2026-08-17', GoodMail: 1127, TransportRules: 18, SpamDetections: 258, EdgeBlockSpam: 322, EmailPhish: 19, EmailMalware: 2 },
+    {
+      date: '2026-08-04',
+      GoodMail: 3410,
+      TransportRules: 96,
+      SpamDetections: 430,
+      EdgeBlockSpam: 281,
+      EmailPhish: 29,
+      EmailMalware: 3,
+    },
+    {
+      date: '2026-08-05',
+      GoodMail: 3688,
+      TransportRules: 104,
+      SpamDetections: 468,
+      EdgeBlockSpam: 302,
+      EmailPhish: 33,
+      EmailMalware: 2,
+    },
+    {
+      date: '2026-08-06',
+      GoodMail: 3572,
+      TransportRules: 88,
+      SpamDetections: 451,
+      EdgeBlockSpam: 295,
+      EmailPhish: 31,
+      EmailMalware: 4,
+    },
+    {
+      date: '2026-08-07',
+      GoodMail: 3740,
+      TransportRules: 112,
+      SpamDetections: 502,
+      EdgeBlockSpam: 318,
+      EmailPhish: 38,
+      EmailMalware: 1,
+    },
+    {
+      date: '2026-08-08',
+      GoodMail: 3495,
+      TransportRules: 97,
+      SpamDetections: 476,
+      EdgeBlockSpam: 304,
+      EmailPhish: 35,
+      EmailMalware: 3,
+    },
+    {
+      date: '2026-08-09',
+      GoodMail: 1180,
+      TransportRules: 21,
+      SpamDetections: 268,
+      EdgeBlockSpam: 174,
+      EmailPhish: 12,
+      EmailMalware: 0,
+    },
+    {
+      date: '2026-08-10',
+      GoodMail: 1042,
+      TransportRules: 18,
+      SpamDetections: 251,
+      EdgeBlockSpam: 166,
+      EmailPhish: 10,
+      EmailMalware: 1,
+    },
+    {
+      date: '2026-08-11',
+      GoodMail: 3820,
+      TransportRules: 118,
+      SpamDetections: 529,
+      EdgeBlockSpam: 341,
+      EmailPhish: 41,
+      EmailMalware: 5,
+    },
+    {
+      date: '2026-08-12',
+      GoodMail: 3903,
+      TransportRules: 121,
+      SpamDetections: 544,
+      EdgeBlockSpam: 352,
+      EmailPhish: 44,
+      EmailMalware: 4,
+    },
+    {
+      date: '2026-08-13',
+      GoodMail: 3766,
+      TransportRules: 109,
+      SpamDetections: 511,
+      EdgeBlockSpam: 329,
+      EmailPhish: 36,
+      EmailMalware: 2,
+    },
+    {
+      date: '2026-08-14',
+      GoodMail: 3841,
+      TransportRules: 114,
+      SpamDetections: 498,
+      EdgeBlockSpam: 321,
+      EmailPhish: 34,
+      EmailMalware: 3,
+    },
+    {
+      date: '2026-08-15',
+      GoodMail: 3612,
+      TransportRules: 102,
+      SpamDetections: 470,
+      EdgeBlockSpam: 303,
+      EmailPhish: 30,
+      EmailMalware: 4,
+    },
+    {
+      date: '2026-08-16',
+      GoodMail: 1214,
+      TransportRules: 22,
+      SpamDetections: 264,
+      EdgeBlockSpam: 172,
+      EmailPhish: 20,
+      EmailMalware: 3,
+    },
+    {
+      date: '2026-08-17',
+      GoodMail: 1127,
+      TransportRules: 18,
+      SpamDetections: 258,
+      EdgeBlockSpam: 322,
+      EmailPhish: 19,
+      EmailMalware: 2,
+    },
   ],
   topSenders: [
     { Name: 'notifications@sample-crm.example.com', Count: 4820 },

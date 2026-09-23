@@ -64,7 +64,7 @@ const Page = () => {
       if (data && data?.Data?.ActionUrl?.includes("identity/administration/ViewBec")) {
         data.Data.ActionUrl = data.Data.ActionUrl.replace(
           "identity/administration/ViewBec",
-          "identity/administration/users/user/bec"
+          "identity/bec/case"
         );
         data.Data.ActionUrl = data.Data.ActionUrl.replace("tenantDomain", "tenantFilter");
       }

@@ -21,7 +21,7 @@
   },
   {
     "label": "Compromise Remediation",
-    "path": "/identity/administration/users/user/bec",
+    "path": "/identity/bec/case",
     "icon": "Shield"
   },
   {

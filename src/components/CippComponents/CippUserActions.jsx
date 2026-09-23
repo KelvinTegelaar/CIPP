@@ -629,10 +629,24 @@ export const useCippUserActions = () => {
       label: 'Research Compromised Account',
       type: 'GET',
       icon: <CippIcons.MagnifyingGlassIcon />,
-      link: '/identity/administration/users/user/bec?userId=[id]',
+      link: '/identity/bec/case?userId=[id]',
       confirmText:
         'Are you sure you want to research if [userPrincipalName] is a compromised account?',
       multiPost: false,
+    },
+    {
+      // Queues one BEC run per selected user (bulk-capable); results land on
+      // the BEC Reports page
+      label: 'Run BEC investigation',
+      type: 'POST',
+      url: '/api/ExecBECBulkCheck',
+      icon: <CippIcons.MagnifyingGlassIcon />,
+      data: { UserIds: 'id' },
+      multiPost: true,
+      bulkFilterEligible: true,
+      confirmText:
+        'Queue a Business Email Compromise investigation for the selected users? Each run is kept; see the Business Email Compromise page under Identity.',
+      condition: (row) => row.userType !== 'Guest',
     },
     {
       //tested

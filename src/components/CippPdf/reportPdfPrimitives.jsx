@@ -1,8 +1,16 @@
 import { Children } from 'react'
 import { Text, View, Image, Page } from '@react-pdf/renderer'
-import { REPORT_COLOURS, applyFooterText, applyWatermarkText } from './reportTheme'
+import {
+  REPORT_COLOURS,
+  applyFooterText,
+  applyWatermarkText,
+} from './reportTheme'
 import { useReport, useReportStyles } from './reportContext'
-import { DEFAULT_PAGE_SETUP, TABLE_ROW_PADDING, contentWidth } from './reportPdfStyles'
+import {
+  DEFAULT_PAGE_SETUP,
+  TABLE_ROW_PADDING,
+  contentWidth,
+} from './reportPdfStyles'
 import { wrapLongTokens } from './measureText'
 
 // Breathing room between one column's text and the next, matching the `paddingRight` tableColumns
@@ -23,7 +31,9 @@ export const PageHeader = ({ title, subtitle, ...props }) => {
         <Text style={styles.pageTitle}>{title}</Text>
         {subtitle ? <Text style={styles.pageSubtitle}>{subtitle}</Text> : null}
       </View>
-      {logo ? <Image style={styles.headerLogo} src={logo} cache={false} /> : null}
+      {logo ? (
+        <Image style={styles.headerLogo} src={logo} cache={false} />
+      ) : null}
     </View>
   )
 }
@@ -38,7 +48,13 @@ export const Section = ({ title, children, ...props }) => {
   const { styles } = useReportStyles(props)
   return (
     <View style={styles.section}>
-      {title ? <Text style={styles.sectionTitle}>{title}</Text> : null}
+      {/* minPresenceAhead pushes the title to the next page when too little room is left below it,
+          so a section heading never strands alone at the foot of a page ahead of its content. */}
+      {title ? (
+        <Text style={styles.sectionTitle} minPresenceAhead={72}>
+          {title}
+        </Text>
+      ) : null}
       {children}
     </View>
   )
@@ -49,7 +65,11 @@ export const Section = ({ title, children, ...props }) => {
 // list, which the BEC report was doing with an inline margin.
 export const Paragraph = ({ indent = false, children, ...props }) => {
   const { styles } = useReportStyles(props)
-  return <Text style={indent ? [styles.bodyText, styles.indented] : styles.bodyText}>{children}</Text>
+  return (
+    <Text style={indent ? [styles.bodyText, styles.indented] : styles.bodyText}>
+      {children}
+    </Text>
+  )
 }
 
 /**
@@ -100,17 +120,32 @@ export const ContentPage = ({ title, subtitle, children, ...props }) => {
   const footerLabel = props.footerLabel ?? report.footerLabel
 
   return (
-    <ReportPage styles={styles} theme={theme} size={size} orientation={orientation}>
+    <ReportPage
+      styles={styles}
+      theme={theme}
+      size={size}
+      orientation={orientation}
+    >
       {/* `fixed` repeats the header on every physical page this one flows onto. Without it, a page
           whose content spills produces an unheaded continuation — which is what the report builder
           had to work around by wrapping its own header. */}
       {title ? (
         <View fixed>
-          <PageHeader styles={styles} logo={logo} title={title} subtitle={subtitle} />
+          <PageHeader
+            styles={styles}
+            logo={logo}
+            title={title}
+            subtitle={subtitle}
+          />
         </View>
       ) : null}
       {children}
-      <PageFooter styles={styles} theme={theme} variables={variables} label={footerLabel} />
+      <PageFooter
+        styles={styles}
+        theme={theme}
+        variables={variables}
+        label={footerLabel}
+      />
     </ReportPage>
   )
 }
@@ -146,7 +181,9 @@ export const PageFooter = ({ styles, label, theme, variables }) => {
            without it the number lays out but is never painted. */
         <Text
           style={styles.pageNumber}
-          render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+          render={({ pageNumber, totalPages }) =>
+            `Page ${pageNumber} of ${totalPages}`
+          }
         />
       ) : null}
     </View>
@@ -183,10 +220,17 @@ export const ReportPage = ({
  * stores a template (e.g. `%tenantname%`), and the report fills it from the surrounding context.
  * The 40-character ceiling is applied to the *resolved* string, after variables expand.
  */
-export const Watermark = ({ styles, theme, text, variables: variablesProp, onDark = false }) => {
+export const Watermark = ({
+  styles,
+  theme,
+  text,
+  variables: variablesProp,
+  onDark = false,
+}) => {
   const report = useReport()
   const variables = variablesProp ?? report.variables
-  const template = text ?? (theme?.watermark?.enabled ? theme.watermark.text : '')
+  const template =
+    text ?? (theme?.watermark?.enabled ? theme.watermark.text : '')
   const value = template ? applyWatermarkText(template, variables) : ''
   if (!value) return null
 
@@ -194,7 +238,9 @@ export const Watermark = ({ styles, theme, text, variables: variablesProp, onDar
     <View style={styles.watermark} fixed>
       {/* A brand-coloured mark at 8% disappears on the dark full-bleed pages, so those get a
           light mark instead. Same text, same placement — only the ink changes. */}
-      <Text style={onDark ? styles.watermarkTextOnDark : styles.watermarkText}>{value}</Text>
+      <Text style={onDark ? styles.watermarkTextOnDark : styles.watermarkText}>
+        {value}
+      </Text>
     </View>
   )
 }
@@ -205,7 +251,10 @@ export const Watermark = ({ styles, theme, text, variables: variablesProp, onDar
  * alone, which loses the contrast the two-tone treatment exists for.
  */
 export const splitAccentTitle = (title) => {
-  const words = String(title ?? '').trim().split(/\s+/).filter(Boolean)
+  const words = String(title ?? '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
   if (words.length <= 1) return { lead: words.join(' '), accent: '' }
   return { lead: words.slice(0, -1).join(' '), accent: words[words.length - 1] }
 }
@@ -240,7 +289,9 @@ export const CoverPage = ({
     size={size}
     orientation={orientation}
   >
-    {coverImage ? <Image style={styles.coverBackground} src={coverImage} /> : null}
+    {coverImage ? (
+      <Image style={styles.coverBackground} src={coverImage} />
+    ) : null}
 
     <View style={styles.coverHeader}>
       <View style={styles.logoSection}>
@@ -251,7 +302,13 @@ export const CoverPage = ({
 
     <View style={styles.coverHero}>
       {label ? <Text style={styles.coverLabel}>{label}</Text> : null}
-      <Text style={titleFontSize ? [styles.mainTitle, { fontSize: titleFontSize }] : styles.mainTitle}>
+      <Text
+        style={
+          titleFontSize
+            ? [styles.mainTitle, { fontSize: titleFontSize }]
+            : styles.mainTitle
+        }
+      >
         {title}
         {accentTitle ? (
           <>
@@ -316,25 +373,33 @@ export const HeroPage = ({
   const orientation = props.orientation ?? report.orientation ?? 'portrait'
 
   return (
-  <ReportPage
-    styles={styles}
-    theme={theme}
-    style={styles.heroPage}
-    size={size}
-    orientation={orientation}
-    watermarkOnDark
-  >
-    {backgroundImage ? <Image style={styles.heroBackground} src={backgroundImage} /> : null}
-    <View style={styles.heroOverlay}>
-      {/* `overtitle` and `headline` bracket the big figure, so a statistic can read as a sentence
+    <ReportPage
+      styles={styles}
+      theme={theme}
+      style={styles.heroPage}
+      size={size}
+      orientation={orientation}
+      watermarkOnDark
+    >
+      {backgroundImage ? (
+        <Image style={styles.heroBackground} src={backgroundImage} />
+      ) : null}
+      <View style={styles.heroOverlay}>
+        {/* `overtitle` and `headline` bracket the big figure, so a statistic can read as a sentence
           — "Every / 39 / seconds" — rather than a number with a caption under it. */}
-      {overtitle ? <Text style={styles.heroHeadline}>{overtitle}</Text> : null}
-      {highlight ? <Text style={styles.heroHighlight}>{highlight}</Text> : null}
-      {headline ? <Text style={styles.heroHeadline}>{headline}</Text> : null}
-      {subText ? <Text style={styles.heroSubText}>{subText}</Text> : null}
-    </View>
-    {footerText ? <Text style={styles.heroFooterText}>{footerText}</Text> : null}
-  </ReportPage>
+        {overtitle ? (
+          <Text style={styles.heroHeadline}>{overtitle}</Text>
+        ) : null}
+        {highlight ? (
+          <Text style={styles.heroHighlight}>{highlight}</Text>
+        ) : null}
+        {headline ? <Text style={styles.heroHeadline}>{headline}</Text> : null}
+        {subText ? <Text style={styles.heroSubText}>{subText}</Text> : null}
+      </View>
+      {footerText ? (
+        <Text style={styles.heroFooterText}>{footerText}</Text>
+      ) : null}
+    </ReportPage>
   )
 }
 
@@ -342,17 +407,24 @@ export const HeroPage = ({
 export const StatRow = ({ stats, ...props }) => {
   const { styles } = useReportStyles(props)
   return (
-  <View style={styles.statsGrid} wrap={false}>
-    {stats.map((stat, index) => (
-      <View key={stat.label ?? index} style={styles.statCard}>
-        <Text style={[styles.statNumber, stat.colour ? { color: stat.colour } : {}]}>
-          {stat.value}
-        </Text>
-        <Text style={styles.statLabel}>{stat.label}</Text>
-        {stat.caption ? <Text style={styles.statCaption}>{stat.caption}</Text> : null}
-      </View>
-    ))}
-  </View>
+    <View style={styles.statsGrid} wrap={false}>
+      {stats.map((stat, index) => (
+        <View key={stat.label ?? index} style={styles.statCard}>
+          <Text
+            style={[
+              styles.statNumber,
+              stat.colour ? { color: stat.colour } : {},
+            ]}
+          >
+            {stat.value}
+          </Text>
+          <Text style={styles.statLabel}>{stat.label}</Text>
+          {stat.caption ? (
+            <Text style={styles.statCaption}>{stat.caption}</Text>
+          ) : null}
+        </View>
+      ))}
+    </View>
   )
 }
 
@@ -364,32 +436,37 @@ export const StatRow = ({ stats, ...props }) => {
 export const ProgressList = ({ items, ...props }) => {
   const { styles, theme } = useReportStyles(props)
   return (
-  <View style={styles.progressList}>
-    {items.map((item, index) => {
-      const max = Number(item.max) > 0 ? Number(item.max) : 100
-      const value = Number(item.value) || 0
-      const percent = Math.max(0, Math.min(100, (value / max) * 100))
-      const colour = item.colour || theme?.series?.[index % (theme?.series?.length || 1)]
+    <View style={styles.progressList}>
+      {items.map((item, index) => {
+        const max = Number(item.max) > 0 ? Number(item.max) : 100
+        const value = Number(item.value) || 0
+        const percent = Math.max(0, Math.min(100, (value / max) * 100))
+        const colour =
+          item.colour || theme?.series?.[index % (theme?.series?.length || 1)]
 
-      return (
-        <View key={item.label ?? index} style={styles.progressItem} wrap={false}>
-          <Text style={styles.progressLabel}>{item.label}</Text>
-          <View style={styles.progressTrack}>
-            <View
-              style={[
-                styles.progressFill,
-                { width: `${percent}%` },
-                colour ? { backgroundColor: colour } : {},
-              ]}
-            />
+        return (
+          <View
+            key={item.label ?? index}
+            style={styles.progressItem}
+            wrap={false}
+          >
+            <Text style={styles.progressLabel}>{item.label}</Text>
+            <View style={styles.progressTrack}>
+              <View
+                style={[
+                  styles.progressFill,
+                  { width: `${percent}%` },
+                  colour ? { backgroundColor: colour } : {},
+                ]}
+              />
+            </View>
+            <Text style={styles.progressValue}>
+              {item.display ?? `${Math.round(percent)}%`}
+            </Text>
           </View>
-          <Text style={styles.progressValue}>
-            {item.display ?? `${Math.round(percent)}%`}
-          </Text>
-        </View>
-      )
-    })}
-  </View>
+        )
+      })}
+    </View>
   )
 }
 
@@ -404,25 +481,44 @@ export const ProgressList = ({ items, ...props }) => {
 export const INFO_TONES = { ok: 'okBox', warn: 'warnBox' }
 const INFO_TONE_TITLES = { ok: 'okTitle', warn: 'warnTitle' }
 
-export const InfoBox = ({ title, colour, tone, tintTitle = false, children, ...props }) => {
+export const InfoBox = ({
+  title,
+  colour,
+  tone,
+  tintTitle = false,
+  children,
+  ...props
+}) => {
   const { styles } = useReportStyles(props)
   const toneStyle = INFO_TONES[tone] ? styles[INFO_TONES[tone]] : null
-  const toneTitle = INFO_TONE_TITLES[tone] ? styles[INFO_TONE_TITLES[tone]] : null
+  const toneTitle = INFO_TONE_TITLES[tone]
+    ? styles[INFO_TONE_TITLES[tone]]
+    : null
   return (
-  <View style={[styles.infoBox, toneStyle ?? {}, colour ? { borderLeftColor: colour } : {}]}>
-    {title ? (
-      <Text
-        style={[
-          styles.infoTitle,
-          toneTitle ?? {},
-          colour && tintTitle ? { color: colour } : {},
-        ]}
-      >
-        {title}
-      </Text>
-    ) : null}
-    <Text style={styles.infoText}>{children}</Text>
-  </View>
+    // wrap={false}: a callout is one card. Splitting it across a page break (title on one page, body on
+    // the next) is the artefact we avoid — react-pdf bumps a non-wrapping block that does not fit to the
+    // next page instead. Callouts are short by design, so they never exceed a page and get clipped.
+    <View
+      style={[
+        styles.infoBox,
+        toneStyle ?? {},
+        colour ? { borderLeftColor: colour } : {},
+      ]}
+      wrap={false}
+    >
+      {title ? (
+        <Text
+          style={[
+            styles.infoTitle,
+            toneTitle ?? {},
+            colour && tintTitle ? { color: colour } : {},
+          ]}
+        >
+          {title}
+        </Text>
+      ) : null}
+      <Text style={styles.infoText}>{children}</Text>
+    </View>
   )
 }
 
@@ -438,10 +534,15 @@ export const Note = ({ children, ...props }) => {
 export const AlertBox = ({ title, colour, children, ...props }) => {
   const { styles } = useReportStyles(props)
   return (
-  <View style={[styles.alertBox, colour ? { borderColor: colour } : {}]}>
-    <Text style={[styles.alertTitle, colour ? { color: colour } : {}]}>{title}</Text>
-    <Text style={styles.alertText}>{children}</Text>
-  </View>
+    <View
+      style={[styles.alertBox, colour ? { borderColor: colour } : {}]}
+      wrap={false}
+    >
+      <Text style={[styles.alertTitle, colour ? { color: colour } : {}]}>
+        {title}
+      </Text>
+      <Text style={styles.alertText}>{children}</Text>
+    </View>
   )
 }
 
@@ -449,10 +550,10 @@ export const AlertBox = ({ title, colour, children, ...props }) => {
 export const ClearBox = ({ title, children, ...props }) => {
   const { styles } = useReportStyles(props)
   return (
-  <View style={[styles.infoBox, styles.okBox]}>
-    <Text style={[styles.infoTitle, styles.okTitle]}>{title}</Text>
-    <Text style={styles.infoText}>{children}</Text>
-  </View>
+    <View style={[styles.infoBox, styles.okBox]} wrap={false}>
+      <Text style={[styles.infoTitle, styles.okTitle]}>{title}</Text>
+      <Text style={styles.infoText}>{children}</Text>
+    </View>
   )
 }
 
@@ -480,15 +581,20 @@ export const Bullet = ({ label, marker = '•', children, ...props }) => {
 export const BulletList = ({ items, children, ...props }) => {
   const { styles } = useReportStyles(props)
   return (
-  <View style={styles.bulletList}>
-    {items
-      ? items.map((item, index) => (
-          <Bullet key={index} marker={item.marker} label={item.label} {...props}>
-            {item.text}
-          </Bullet>
-        ))
-      : children}
-  </View>
+    <View style={styles.bulletList}>
+      {items
+        ? items.map((item, index) => (
+            <Bullet
+              key={index}
+              marker={item.marker}
+              label={item.label}
+              {...props}
+            >
+              {item.text}
+            </Bullet>
+          ))
+        : children}
+    </View>
   )
 }
 
@@ -554,16 +660,26 @@ export const DataTable = ({
   // has to be a real one that we place — see measureText.js.
   const totalWeight = weights.reduce((sum, weight) => sum + weight, 0) || 1
   const tableWidth =
-    contentWidth(report.size ?? DEFAULT_PAGE_SETUP.size, report.orientation) - TABLE_ROW_PADDING * 2
+    contentWidth(report.size ?? DEFAULT_PAGE_SETUP.size, report.orientation) -
+    TABLE_ROW_PADDING * 2
   const columnPoints = (index) =>
     (tableWidth * weights[index]) / totalWeight - CELL_GUTTER
 
   const cellText = (value, index, bold) =>
-    wrapLongTokens(value ?? '', columnPoints(index), styles.tableCell.fontSize, bold)
+    wrapLongTokens(
+      value ?? '',
+      columnPoints(index),
+      styles.tableCell.fontSize,
+      bold
+    )
 
   return (
     <>
-      <View style={hidden > 0 ? [styles.table, styles.tableAboveNote] : styles.table}>
+      <View
+        style={
+          hidden > 0 ? [styles.table, styles.tableAboveNote] : styles.table
+        }
+      >
         {/* `fixed` repeats the header on every page a long table spills onto. */}
         <View style={styles.tableHeader} fixed>
           {columns.map((column, index) => (
@@ -585,12 +701,19 @@ export const DataTable = ({
           shown.map((row, index) => (
             <View
               key={index}
-              style={index % 2 === 0 ? styles.tableRow : [styles.tableRow, styles.tableRowAlt]}
+              style={
+                index % 2 === 0
+                  ? styles.tableRow
+                  : [styles.tableRow, styles.tableRowAlt]
+              }
               wrap={false}
             >
               {columns.map((column, columnIndex) =>
                 column.render ? (
-                  <View key={column.key} style={[styles.tableCellSlot, cellWidth(columnIndex)]}>
+                  <View
+                    key={column.key}
+                    style={[styles.tableCellSlot, cellWidth(columnIndex)]}
+                  >
                     {column.render(row)}
                   </View>
                 ) : (
@@ -600,7 +723,9 @@ export const DataTable = ({
                       column.bold ? styles.tableCellBold : styles.tableCell,
                       cellWidth(columnIndex),
                       column.align ? { textAlign: column.align } : {},
-                      column.colour ? { color: column.colour(row), fontWeight: 'bold' } : {},
+                      column.colour
+                        ? { color: column.colour(row), fontWeight: 'bold' }
+                        : {},
                     ]}
                   >
                     {cellText(row[column.key], columnIndex, column.bold)}
@@ -613,7 +738,8 @@ export const DataTable = ({
       </View>
       {hidden > 0 ? (
         <Text style={styles.truncationNote}>
-          … and {hidden} more. Export the table from the report page for the full list.
+          … and {hidden} more. Export the table from the report page for the
+          full list.
         </Text>
       ) : null}
     </>
@@ -637,7 +763,13 @@ export const STATUS_TONES = {
 export const StatusText = ({ tone, children, ...props }) => {
   const { styles } = useReportStyles(props)
   const toneStyle = STATUS_TONES[tone] ? styles[STATUS_TONES[tone]] : null
-  return <Text style={toneStyle ? [styles.statusText, toneStyle] : styles.statusText}>{children}</Text>
+  return (
+    <Text
+      style={toneStyle ? [styles.statusText, toneStyle] : styles.statusText}
+    >
+      {children}
+    </Text>
+  )
 }
 
 // Shared severity vocabulary so every report grades findings the same way.

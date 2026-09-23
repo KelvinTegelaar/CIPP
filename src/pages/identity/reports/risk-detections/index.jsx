@@ -11,7 +11,7 @@ const Page = () => {
       label: "Research Compromised Account",
       type: "GET",
       icon: <CippIcons.MagnifyingGlassIcon />,
-      link: "/identity/administration/users/user/bec?userId=[userId]",
+      link: "/identity/bec/case?userId=[userId]",
       confirmText: "Are you sure you want to research this compromised account?",
       multiPost: false,
     },

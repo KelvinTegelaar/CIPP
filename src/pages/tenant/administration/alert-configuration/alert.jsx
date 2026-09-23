@@ -60,7 +60,8 @@ const AlertWizard = () => {
     refetchOnMount: false,
     refetchOnReconnect: false,
   })
-  const haloDefaultStrategy = integrationsConfig?.data?.HaloPSA?.LinkTicketsToUsers
+  const haloDefaultStrategy = integrationsConfig?.data?.HaloPSA
+    ?.LinkTicketsToUsers
     ? 'split'
     : 'consolidated'
   const psaStrategyDropdownOptions = [
@@ -105,10 +106,15 @@ const AlertWizard = () => {
   // are messages, not choices, so they never become options.
   // Normalise before use: PowerShell unrolls a single-element array, so an endpoint returning one
   // priority (or one hint row) serialises it as a bare object rather than a list.
-  const haloPriorityRows = [].concat(haloPriorityRequest?.data?.Priorities ?? [])
+  const haloPriorityRows = [].concat(
+    haloPriorityRequest?.data?.Priorities ?? []
+  )
   const psaPriorityOptions = haloPriorityRows
     .filter((priority) => Number(priority?.priorityid) > 0)
-    .map((priority) => ({ value: Number(priority.priorityid), label: priority.name }))
+    .map((priority) => ({
+      value: Number(priority.priorityid),
+      label: priority.name,
+    }))
   // Settled with nothing pickable, whether that is Halo's own explanatory row (which comes back
   // 200 OK) or the request failing outright. Either way there is no choice to offer, so disable
   // rather than leave an empty dropdown that looks broken.
@@ -167,10 +173,22 @@ const AlertWizard = () => {
   const originalMembershipInputsRef = useRef({}) // Preserve original in/notIn arrays for rehydration
 
   const formControl = useForm({ mode: 'onChange' })
-  const selectedPreset = useWatch({ control: formControl.control, name: 'preset' }) // Watch the preset
-  const commandValue = useWatch({ control: formControl.control, name: 'command' })
-  const logbookWatcher = useWatch({ control: formControl.control, name: 'logbook' })
-  const propertyWatcher = useWatch({ control: formControl.control, name: 'conditions' })
+  const selectedPreset = useWatch({
+    control: formControl.control,
+    name: 'preset',
+  }) // Watch the preset
+  const commandValue = useWatch({
+    control: formControl.control,
+    name: 'command',
+  })
+  const logbookWatcher = useWatch({
+    control: formControl.control,
+    name: 'logbook',
+  })
+  const propertyWatcher = useWatch({
+    control: formControl.control,
+    name: 'conditions',
+  })
 
   useEffect(() => {
     if (router.query.id || !router.query.preset) return
@@ -191,7 +209,9 @@ const AlertWizard = () => {
         const isInOrNotIn = currentOp === 'in' || currentOp === 'notin'
         const isStringProperty = condition?.Property?.value === 'String'
         if (isInOrNotIn) {
-          formControl.setValue(`conditions.${index}.Input`, [], { shouldValidate: false })
+          formControl.setValue(`conditions.${index}.Input`, [], {
+            shouldValidate: false,
+          })
         } else {
           if (isStringProperty) {
             formControl.setValue(
@@ -200,7 +220,9 @@ const AlertWizard = () => {
               { shouldValidate: false }
             )
           } else {
-            formControl.setValue(`conditions.${index}.Input`, '', { shouldValidate: false })
+            formControl.setValue(`conditions.${index}.Input`, '', {
+              shouldValidate: false,
+            })
           }
         }
         prevOperatorValuesRef.current[index] = currentOp
@@ -210,7 +232,9 @@ const AlertWizard = () => {
   // Load existing alert (edit mode) with guarded batching similar to preset loading
   useEffect(() => {
     if (existingAlert.isSuccess && editAlert && !hasLoadedExistingAlert) {
-      const alert = existingAlert?.data?.find((a) => a.RowKey === router.query.id)
+      const alert = existingAlert?.data?.find(
+        (a) => a.RowKey === router.query.id
+      )
       if (!alert) return
       setHasLoadedExistingAlert(true) // Mark as loaded to prevent re-execution
       // Scripted alert path (no conditions operator clearing needed)
@@ -224,7 +248,8 @@ const AlertWizard = () => {
             )
           : []
         const usedCommand = alertList?.find(
-          (cmd) => cmd.name === alert.RawAlert.Command.replace('Get-CIPPAlert', '')
+          (cmd) =>
+            cmd.name === alert.RawAlert.Command.replace('Get-CIPPAlert', '')
         )
         const recurrenceOption = recurrenceOptions?.find(
           (opt) => opt.value === alert.RawAlert.Recurrence
@@ -240,7 +265,9 @@ const AlertWizard = () => {
               typeof alert.RawAlert.Tenants === 'string'
                 ? JSON.parse(alert.RawAlert.Tenants)
                 : alert.RawAlert.Tenants
-            tenantFilterForForm = Array.isArray(parsedTenants) ? parsedTenants : [parsedTenants]
+            tenantFilterForForm = Array.isArray(parsedTenants)
+              ? parsedTenants
+              : [parsedTenants]
           } catch (error) {
             console.error('Error parsing Tenants:', error)
             tenantFilterForForm = [
@@ -283,17 +310,22 @@ const AlertWizard = () => {
           ]
         }
         let startDateTimeForForm = null
-        if (alert.RawAlert.DesiredStartTime && alert.RawAlert.DesiredStartTime !== '0') {
+        if (
+          alert.RawAlert.DesiredStartTime &&
+          alert.RawAlert.DesiredStartTime !== '0'
+        ) {
           const desiredStartEpoch = parseInt(alert.RawAlert.DesiredStartTime)
           startDateTimeForForm = desiredStartEpoch
         }
         // Resolve the stored strategy ('split' / 'consolidated' / '' for legacy/inherit) to the
         // matching dynamic option. When empty, fall back to the current integration default so
         // the dropdown always shows a meaningful selection.
-        const storedStrategy = alert.RawAlert.PsaTicketStrategy || haloDefaultStrategy
+        const storedStrategy =
+          alert.RawAlert.PsaTicketStrategy || haloDefaultStrategy
         const psaStrategyValue =
-          psaStrategyDropdownOptions.find((opt) => opt.value === storedStrategy) ||
-          psaStrategyDropdownOptions[0]
+          psaStrategyDropdownOptions.find(
+            (opt) => opt.value === storedStrategy
+          ) || psaStrategyDropdownOptions[0]
         const resetObject = {
           tenantFilter: tenantFilterForForm,
           excludedTenants: excludedTenantsFormatted,
@@ -304,7 +336,9 @@ const AlertWizard = () => {
           CustomSubject: alert.RawAlert.CustomSubject || '',
           AlertComment: alert.RawAlert.AlertComment || '',
           PsaTicketStrategy: psaStrategyValue,
-          PsaTicketPriority: toPsaPriorityValue(alert.RawAlert.PsaTicketPriority),
+          PsaTicketPriority: toPsaPriorityValue(
+            alert.RawAlert.PsaTicketPriority
+          ),
         }
         if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
           try {
@@ -317,7 +351,8 @@ const AlertWizard = () => {
                 // Load multiple input values from InputValue object
                 usedCommand.inputs.forEach((input) => {
                   if (params.InputValue[input.inputName] !== undefined) {
-                    resetObject[input.inputName] = params.InputValue[input.inputName]
+                    resetObject[input.inputName] =
+                      params.InputValue[input.inputName]
                   }
                 })
               } else {
@@ -367,17 +402,29 @@ const AlertWizard = () => {
           } else {
             Input = cond.Input ?? (isList ? [] : '')
           }
-          return { Property: cond.Property, Operator: normalizedOperator, Input }
+          return {
+            Property: cond.Property,
+            Operator: normalizedOperator,
+            Input,
+          }
         })
         const resetData = {
-          RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
+          RowKey: router.query.clone
+            ? undefined
+            : router.query.id
+              ? router.query.id
+              : undefined,
           tenantFilter: alert.RawAlert.Tenants,
-          excludedTenants: alert.excludedTenants?.filter((t) => t !== null) || [],
+          excludedTenants:
+            alert.excludedTenants?.filter((t) => t !== null) || [],
           Actions: alert.RawAlert.Actions,
+          BecActions: alert.RawAlert.BecActions || [],
           logbook: foundLogbook,
           AlertComment: alert.RawAlert.AlertComment || '',
           CustomSubject: alert.RawAlert.CustomSubject || '',
-          PsaTicketPriority: toPsaPriorityValue(alert.RawAlert.PsaTicketPriority),
+          PsaTicketPriority: toPsaPriorityValue(
+            alert.RawAlert.PsaTicketPriority
+          ),
           conditions: [], // Include empty array to register field structure
         }
         // Reset first without spawning rows to avoid rendering empty operator fields
@@ -404,7 +451,9 @@ const AlertWizard = () => {
               // Further ensure label/value presence and rebuild from schema if possible
               const schemaOptions = auditLogSchema[cond.Property?.value] || []
               finalInput = finalInput.map((item) => {
-                const match = schemaOptions.find((opt) => opt.value === item.value)
+                const match = schemaOptions.find(
+                  (opt) => opt.value === item.value
+                )
                 return {
                   value: item.value,
                   label: item.label || match?.label || item.value,
@@ -421,7 +470,10 @@ const AlertWizard = () => {
                 !finalInput.label &&
                 finalInput.value
               ) {
-                finalInput = { label: finalInput.value, value: finalInput.value }
+                finalInput = {
+                  label: finalInput.value,
+                  value: finalInput.value,
+                }
               }
             }
 
@@ -441,7 +493,9 @@ const AlertWizard = () => {
 
           // Try setting individual paths as backup
           processedConditions.forEach((cond, idx) => {
-            formControl.setValue(`conditions.${idx}`, cond, { shouldValidate: false })
+            formControl.setValue(`conditions.${idx}`, cond, {
+              shouldValidate: false,
+            })
           })
 
           // Spawn condition rows only after conditions exist to ensure autocomplete visibility
@@ -458,7 +512,11 @@ const AlertWizard = () => {
                 (cond.Input === null || cond.Input === undefined)
               ) {
                 const original = originalMembershipInputsRef.current[idx]
-                if (original && Array.isArray(original) && original.length > 0) {
+                if (
+                  original &&
+                  Array.isArray(original) &&
+                  original.length > 0
+                ) {
                   formControl.setValue(`conditions.${idx}.Input`, original, {
                     shouldValidate: false,
                   })
@@ -540,11 +598,17 @@ const AlertWizard = () => {
     setTimeout(() => {
       formattedConditions.forEach((cond, idx) => {
         if (cond.Property?.value === 'String') {
-          formControl.setValue(`conditions.${idx}.Input.value`, cond.Input?.value ?? '', {
+          formControl.setValue(
+            `conditions.${idx}.Input.value`,
+            cond.Input?.value ?? '',
+            {
+              shouldValidate: false,
+            }
+          )
+        } else {
+          formControl.setValue(`conditions.${idx}.Input`, cond.Input, {
             shouldValidate: false,
           })
-        } else {
-          formControl.setValue(`conditions.${idx}.Input`, cond.Input, { shouldValidate: false })
         }
       })
       setIsLoadingPreset(false)
@@ -562,7 +626,9 @@ const AlertWizard = () => {
   }
 
   const handleAuditSubmit = (values) => {
-    values.conditions = values.conditions.filter((condition) => condition?.Property)
+    values.conditions = values.conditions.filter(
+      (condition) => condition?.Property
+    )
     apiRequest.mutate(
       { url: '/api/AddAlert', data: values },
       {
@@ -581,7 +647,10 @@ const AlertWizard = () => {
           // Collect all input values into InputValue object
           const inputValue = {}
           values.command.value.inputs.forEach((input) => {
-            if (values[input.inputName] !== undefined && values[input.inputName] !== null) {
+            if (
+              values[input.inputName] !== undefined &&
+              values[input.inputName] !== null
+            ) {
               inputValue[input.inputName] = values[input.inputName]
             }
           })
@@ -595,11 +664,17 @@ const AlertWizard = () => {
       return {}
     }
 
-    const tenants = Array.isArray(values.tenantFilter) ? values.tenantFilter : [values.tenantFilter]
+    const tenants = Array.isArray(values.tenantFilter)
+      ? values.tenantFilter
+      : [values.tenantFilter]
     const tenantLabel = tenants.map((t) => t.label || t.value).join(', ')
 
     const postObject = {
-      RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
+      RowKey: router.query.clone
+        ? undefined
+        : router.query.id
+          ? router.query.id
+          : undefined,
       tenantFilter: values.tenantFilter,
       excludedTenants: values.excludedTenants,
       Name: values.CustomSubject
@@ -608,13 +683,17 @@ const AlertWizard = () => {
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
       Parameters: getInputParams(),
       ScheduledTime: Math.floor(new Date().getTime() / 1000) + 60,
-      DesiredStartTime: values.startDateTime ? values.startDateTime.toString() : null,
+      DesiredStartTime: values.startDateTime
+        ? values.startDateTime.toString()
+        : null,
       Recurrence: values.recurrence,
       PostExecution: values.postExecution,
       AlertComment: values.AlertComment,
       CustomSubject: values.CustomSubject,
-      PsaTicketStrategy: values.PsaTicketStrategy?.value ?? values.PsaTicketStrategy ?? '',
-      PsaTicketPriority: values.PsaTicketPriority?.value ?? values.PsaTicketPriority ?? '',
+      PsaTicketStrategy:
+        values.PsaTicketStrategy?.value ?? values.PsaTicketStrategy ?? '',
+      PsaTicketPriority:
+        values.PsaTicketPriority?.value ?? values.PsaTicketPriority ?? '',
     }
     apiRequest.mutate(
       { url: '/api/AddScriptedAlert', data: postObject },
@@ -631,14 +710,20 @@ const AlertWizard = () => {
     const currentConditions = formControl.getValues('conditions') || []
     // Append a blank condition placeholder so indices align immediately
     currentConditions.push({ Property: null, Operator: null, Input: null })
-    formControl.setValue('conditions', currentConditions, { shouldValidate: false })
+    formControl.setValue('conditions', currentConditions, {
+      shouldValidate: false,
+    })
     setAddedEvent(currentConditions.map((_, idx) => ({ id: idx })))
   }
 
   const handleRemoveCondition = (id) => {
     const currentConditions = formControl.getValues('conditions') || []
-    const updatedConditions = currentConditions.filter((_, index) => index !== id)
-    formControl.setValue('conditions', updatedConditions, { shouldValidate: false })
+    const updatedConditions = currentConditions.filter(
+      (_, index) => index !== id
+    )
+    formControl.setValue('conditions', updatedConditions, {
+      shouldValidate: false,
+    })
     // Rebuild addedEvent to keep ids aligned with new indices
     setAddedEvent(updatedConditions.map((_, idx) => ({ id: idx })))
   }
@@ -654,10 +739,13 @@ const AlertWizard = () => {
             direction="row"
             spacing={2}
             sx={{
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}>
-            <Typography variant="h4">{editAlert ? 'Edit' : 'Add'} Alert</Typography>
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="h4">
+              {editAlert ? 'Edit' : 'Add'} Alert
+            </Typography>
           </Stack>
 
           <Grid container spacing={1}>
@@ -667,7 +755,8 @@ const AlertWizard = () => {
                   <CardContent>
                     <Typography variant="h6">Audit Log Alert</Typography>
                     <Typography variant="body2">
-                      Select this option to create an alert based on a received Microsoft Audit log.
+                      Select this option to create an alert based on a received
+                      Microsoft Audit log.
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -679,7 +768,8 @@ const AlertWizard = () => {
                   <CardContent>
                     <Typography variant="h6">Scripted CIPP Alert</Typography>
                     <Typography variant="body2">
-                      Select this option to set up an alert based on data processed by CIPP.
+                      Select this option to set up an alert based on data
+                      processed by CIPP.
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -692,15 +782,23 @@ const AlertWizard = () => {
                 container
                 spacing={4}
                 sx={{
-                  justifyContent: "space-around",
+                  justifyContent: 'space-around',
                   mt: 2,
-                  width: '100%'
-                }}>
+                  width: '100%',
+                }}
+              >
                 <Grid size={12}>
-                  <form id="auditAlertForm" onSubmit={formControl.handleSubmit(handleAuditSubmit)}>
-                    <Grid container spacing={3} sx={{
-                      justifyContent: "space-around"
-                    }}>
+                  <form
+                    id="auditAlertForm"
+                    onSubmit={formControl.handleSubmit(handleAuditSubmit)}
+                  >
+                    <Grid
+                      container
+                      spacing={3}
+                      sx={{
+                        justifyContent: 'space-around',
+                      }}
+                    >
                       <Grid size={12}>
                         <CippButtonCard title="Tenant Selector" sx={{ mb: 3 }}>
                           <Grid container spacing={3}>
@@ -714,7 +812,8 @@ const AlertWizard = () => {
                                 required={true}
                                 validators={{
                                   validate: (value) =>
-                                    value?.length > 0 || 'At least one tenant must be selected',
+                                    value?.length > 0 ||
+                                    'At least one tenant must be selected',
                                 }}
                               />
                             </Grid>
@@ -758,7 +857,10 @@ const AlertWizard = () => {
                                 creatable={false}
                                 formControl={formControl}
                                 validators={{
-                                  required: { value: true, message: 'This field is required' },
+                                  required: {
+                                    value: true,
+                                    message: 'This field is required',
+                                  },
                                 }}
                                 label="Select the log source"
                                 options={logbookOptions}
@@ -784,9 +886,10 @@ const AlertWizard = () => {
                               spacing={2}
                               key={event.id}
                               sx={{
-                                justifyContent: "space-around",
-                                mb: 2
-                              }}>
+                                justifyContent: 'space-around',
+                                mb: 2,
+                              }}
+                            >
                               <Grid size={{ xs: 12, md: 4 }}>
                                 <CippFormComponent
                                   type="autoComplete"
@@ -794,7 +897,9 @@ const AlertWizard = () => {
                                   name={`conditions.${event.id}.Property`}
                                   formControl={formControl}
                                   label="Select property"
-                                  options={getAuditLogSchema(logbookWatcher?.value)}
+                                  options={getAuditLogSchema(
+                                    logbookWatcher?.value
+                                  )}
                                   creatable={true}
                                   onCreateOption={(option) => {
                                     const propertyName = option.label || option
@@ -821,7 +926,10 @@ const AlertWizard = () => {
                                     { value: 'ne', label: 'Not Equals to' },
                                     { value: 'like', label: 'Like' },
                                     { value: 'notlike', label: 'Not like' },
-                                    { value: 'notmatch', label: 'Does not match' },
+                                    {
+                                      value: 'notmatch',
+                                      label: 'Does not match',
+                                    },
                                     { value: 'gt', label: 'Greater than' },
                                     { value: 'lt', label: 'Less than' },
                                     { value: 'in', label: 'In' },
@@ -875,17 +983,21 @@ const AlertWizard = () => {
                                     label="Input"
                                     creatable={true}
                                     options={
-                                      propertyWatcher?.[event.id]?.Property?.value?.startsWith(
-                                        'List:'
-                                      )
+                                      propertyWatcher?.[
+                                        event.id
+                                      ]?.Property?.value?.startsWith('List:')
                                         ? auditLogSchema[
-                                            propertyWatcher?.[event.id]?.Property?.value
+                                            propertyWatcher?.[event.id]
+                                              ?.Property?.value
                                           ]
                                         : []
                                     }
                                     onCreateOption={(inputValue) => {
                                       if (typeof inputValue === 'string') {
-                                        return { label: inputValue, value: inputValue }
+                                        return {
+                                          label: inputValue,
+                                          value: inputValue,
+                                        }
                                       }
                                       return inputValue
                                     }}
@@ -912,13 +1024,17 @@ const AlertWizard = () => {
                                     <CippFormComponent
                                       type="autoComplete"
                                       multiple={
-                                        propertyWatcher?.[event.id]?.Property?.multi ?? false
+                                        propertyWatcher?.[event.id]?.Property
+                                          ?.multi ?? false
                                       }
                                       name={`conditions.${event.id}.Input`}
                                       formControl={formControl}
                                       label="Input"
                                       options={
-                                        auditLogSchema[propertyWatcher?.[event.id]?.Property?.value]
+                                        auditLogSchema[
+                                          propertyWatcher?.[event.id]?.Property
+                                            ?.value
+                                        ]
                                       }
                                     />
                                   </CippFormCondition>
@@ -928,7 +1044,9 @@ const AlertWizard = () => {
                                 <Tooltip title="Remove condition">
                                   <IconButton
                                     color="error"
-                                    onClick={() => handleRemoveCondition(event.id)}
+                                    onClick={() =>
+                                      handleRemoveCondition(event.id)
+                                    }
                                   >
                                     <CippIcons.Delete />
                                   </IconButton>
@@ -960,7 +1078,10 @@ const AlertWizard = () => {
                                 name="Actions"
                                 label="Actions to take"
                                 validators={{
-                                  required: { value: true, message: 'This field is required' },
+                                  required: {
+                                    value: true,
+                                    message: 'This field is required',
+                                  },
                                 }}
                                 formControl={formControl}
                                 multiple={true}
@@ -991,6 +1112,31 @@ const AlertWizard = () => {
                                 </Grid>
                               </CippFormCondition>
                             )}
+                            <CippFormCondition
+                              formControl={formControl}
+                              field="Actions"
+                              compareType="valueContains"
+                              compareValue="becremediate"
+                            >
+                              <Grid size={12}>
+                                <CippFormComponent
+                                  type="autoComplete"
+                                  name="BecActions"
+                                  label="BEC containment actions to run"
+                                  formControl={formControl}
+                                  multiple={true}
+                                  creatable={false}
+                                  helperText="Leave empty for the default set: reset password, block sign-in, revoke sessions, disable inbox rules (the four this action has always run). Critical actions run without a typed confirmation when triggered by an alert."
+                                  api={{
+                                    url: '/api/ListBECRemediationActions',
+                                    queryKey: 'ListBECRemediationActions',
+                                    labelField: (option) =>
+                                      `${option.Label} (${option.Impact})`,
+                                    valueField: 'Id',
+                                  }}
+                                />
+                              </Grid>
+                            </CippFormCondition>
                             <Grid size={12}>
                               <CippFormComponent
                                 type="textField"
@@ -1079,7 +1225,9 @@ const AlertWizard = () => {
                                 name="command"
                                 formControl={formControl}
                                 label="What alerting script should run"
-                                validation={{ required: 'This field is required' }}
+                                validation={{
+                                  required: 'This field is required',
+                                }}
                                 options={alertList.map((cmd) => ({
                                   value: cmd,
                                   label: cmd.label,
@@ -1093,7 +1241,10 @@ const AlertWizard = () => {
                                 creatable={false}
                                 name="recurrence"
                                 validators={{
-                                  required: { value: true, message: 'This field is required' },
+                                  required: {
+                                    value: true,
+                                    message: 'This field is required',
+                                  },
                                 }}
                                 formControl={formControl}
                                 label="When should the alert run"
@@ -1117,7 +1268,9 @@ const AlertWizard = () => {
                                     name={commandValue.value?.inputName}
                                     formControl={formControl}
                                     label={commandValue.value?.inputLabel}
-                                    required={commandValue.value?.required || false}
+                                    required={
+                                      commandValue.value?.required || false
+                                    }
                                     validators={{
                                       ...(commandValue.value?.validators || {}),
                                       ...(commandValue.value?.required
@@ -1129,56 +1282,74 @@ const AlertWizard = () => {
                                           }
                                         : {}),
                                     }}
-                                    {...(commandValue.value?.inputType === 'autoComplete'
+                                    {...(commandValue.value?.inputType ===
+                                    'autoComplete'
                                       ? {
                                           ...(commandValue.value?.api
                                             ? { api: commandValue.value.api }
-                                            : { options: commandValue.value?.options || [] }),
-                                          creatable: commandValue.value?.creatable ?? true,
-                                          multiple: commandValue.value?.multiple ?? true,
+                                            : {
+                                                options:
+                                                  commandValue.value?.options ||
+                                                  [],
+                                              }),
+                                          creatable:
+                                            commandValue.value?.creatable ??
+                                            true,
+                                          multiple:
+                                            commandValue.value?.multiple ??
+                                            true,
                                         }
                                       : {})}
                                   />
                                 )}
                               {commandValue?.value?.multipleInput &&
-                                commandValue.value?.inputs?.map((input, index) => (
-                                  <Grid
-                                    container
-                                    spacing={2}
-                                    key={index}
-                                    sx={{ mt: index > 0 ? 2 : 0 }}
-                                  >
-                                    <Grid size={12}>
-                                      <CippFormComponent
-                                        type={input.inputType}
-                                        name={input.inputName}
-                                        formControl={formControl}
-                                        label={input.inputLabel}
-                                        required={input.required || false}
-                                        validators={{
-                                          ...(input.validators || {}),
-                                          ...(input.required
+                                commandValue.value?.inputs?.map(
+                                  (input, index) => (
+                                    <Grid
+                                      container
+                                      spacing={2}
+                                      key={index}
+                                      sx={{ mt: index > 0 ? 2 : 0 }}
+                                    >
+                                      <Grid size={12}>
+                                        <CippFormComponent
+                                          type={input.inputType}
+                                          name={input.inputName}
+                                          formControl={formControl}
+                                          label={input.inputLabel}
+                                          required={input.required || false}
+                                          validators={{
+                                            ...(input.validators || {}),
+                                            ...(input.required
+                                              ? {
+                                                  required: {
+                                                    value: true,
+                                                    message:
+                                                      'This field is required',
+                                                  },
+                                                }
+                                              : {}),
+                                          }}
+                                          {...(input.inputType ===
+                                          'autoComplete'
                                             ? {
-                                                required: {
-                                                  value: true,
-                                                  message: 'This field is required',
-                                                },
+                                                ...(input.api
+                                                  ? { api: input.api }
+                                                  : {
+                                                      options:
+                                                        input.options || [],
+                                                    }),
+                                                creatable:
+                                                  input.creatable ?? true,
+                                                multiple:
+                                                  input.multiple ?? true,
                                               }
-                                            : {}),
-                                        }}
-                                        {...(input.inputType === 'autoComplete'
-                                          ? {
-                                              ...(input.api
-                                                ? { api: input.api }
-                                                : { options: input.options || [] }),
-                                              creatable: input.creatable ?? true,
-                                              multiple: input.multiple ?? true,
-                                            }
-                                          : {})}
-                                      />
+                                            : {})}
+                                        />
+                                      </Grid>
                                     </Grid>
-                                  </Grid>
-                                ))}
+                                  )
+                                )}
                             </Grid>
                           </Grid>
                         </CippButtonCard>
@@ -1205,7 +1376,10 @@ const AlertWizard = () => {
                                 name="postExecution"
                                 label="Actions to take"
                                 validators={{
-                                  required: { value: true, message: 'This field is required' },
+                                  required: {
+                                    value: true,
+                                    message: 'This field is required',
+                                  },
                                 }}
                                 formControl={formControl}
                                 multiple={true}
@@ -1294,7 +1468,7 @@ const AlertWizard = () => {
         </Stack>
       </Container>
     </Box>
-  );
+  )
 }
 
 AlertWizard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
