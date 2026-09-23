@@ -29,6 +29,8 @@ export const CippTranslations = {
   mode: 'Mode',
   triggeredBy: 'Triggered By',
   baselineName: 'Baseline',
+  source: 'Synced From',
+  hasLocalChanges: 'Local Changes',
   secureScoreImpact: 'Secure Score Impact',
   // Security Simulations
   title: 'Title',

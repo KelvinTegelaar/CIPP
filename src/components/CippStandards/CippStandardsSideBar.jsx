@@ -35,6 +35,95 @@ import ReactTimeAgo from "react-time-ago";
 import { Alert } from "@mui/material";
 import { ApiGetCall } from "../../api/ApiCall";
 
+// A repo is offered only once the loaded template's source matches one the user can push to.
+export const computeCanSaveToGitHub = (source, writableRepos) =>
+  !!source && (writableRepos ?? []).some((repo) => repo.FullName === source);
+
+// Mirrors the dialog's removeNulls behaviour the previous data mapping relied on.
+const removeNullValues = (obj) =>
+  Object.fromEntries(Object.entries(obj).filter(([, value]) => value !== null && value !== undefined));
+
+// Dialog fields for a repo-synced template: a warning while the push is off (or not
+// possible), plus the Save to GitHub switch and commit message when the repo is writable.
+export const buildSyncedTemplateFields = ({
+  source,
+  canSaveToGitHub,
+  kind = "template",
+  hasLocalChanges = null,
+}) => {
+  if (!source) return undefined;
+  const cloneAction = kind === "baseline" ? "Clone & Edit Baseline" : "Clone & Edit Template";
+  const list = `${kind}s list`;
+  let warning;
+  let severity = "warning";
+  if (!canSaveToGitHub) {
+    warning = `This ${kind} is synchronized from ${source}, which you cannot push to. Saving here keeps your changes in CIPP only, and the next sync will replace them if the repository file changes upstream. To keep a copy that upstream never touches, use ${cloneAction} from the ${list} instead.`;
+  } else if (hasLocalChanges) {
+    warning = `This ${kind} already has changes that are not in ${source}. Turn on Save to GitHub to push them with this save, or they stay in CIPP only.`;
+  } else {
+    warning = `This ${kind} is synchronized from ${source}. Saving here does not push your changes upstream; the repository copy stays out of date until you save it to GitHub.`;
+    severity = hasLocalChanges === false ? "info" : "warning";
+  }
+  const fields = [
+    {
+      type: "alert",
+      severity,
+      label: warning,
+      condition: { field: "saveToGitHub", compareType: "isNot", compareValue: true },
+    },
+  ];
+  if (canSaveToGitHub) {
+    fields.push(
+      { type: "switch", name: "saveToGitHub", label: "Save to GitHub" },
+      {
+        type: "textField",
+        name: "GitHubMessage",
+        label: "Commit Message",
+        multiline: true,
+        rows: 4,
+        condition: { field: "saveToGitHub", compareType: "is", compareValue: true },
+        validators: {
+          validate: (value, formValues) =>
+            !formValues.saveToGitHub || !!value || "Commit message is required",
+        },
+      },
+    );
+  }
+  return fields;
+};
+
+// Builds the AddStandardsTemplate POST body; keeps saveToGitHub/GitHubMessage out of the
+// top-level payload and adds GitHub only when the switch is on.
+export const buildStandardsTemplatePayload = ({
+  row,
+  formData,
+  edit,
+  savedItem,
+  isDriftMode,
+  source,
+}) => removeNullValues({
+  tenantFilter: row.tenantFilter,
+  excludedTenants: row.excludedTenants,
+  description: row.description,
+  templateName: row.templateName,
+  standards: row.standards,
+  ...(edit ? { GUID: row.GUID } : {}),
+  ...(savedItem ? { GUID: savedItem } : {}),
+  runManually: isDriftMode ? false : row.runManually,
+  isDriftTemplate: row.isDriftTemplate,
+  ...(isDriftMode
+    ? {
+        type: "drift",
+        driftAlertWebhook: row.driftAlertWebhook,
+        driftAlertEmail: row.driftAlertEmail,
+        driftAlertDisableEmail: row.driftAlertDisableEmail,
+      }
+    : {}),
+  ...(formData.saveToGitHub && source
+    ? { GitHub: { FullName: source, Message: formData.GitHubMessage } }
+    : {}),
+});
+
 const StyledTimelineDot = (props) => {
   const { complete } = props;
 
@@ -77,6 +166,8 @@ const CippStandardsSideBar = ({
   formControl,
   createDialog,
   edit,
+  source,
+  hasLocalChanges,
   onSaveSuccess,
   onDriftConflictChange,
   isDriftMode = false,
@@ -115,6 +206,15 @@ const CippStandardsSideBar = ({
     url: "/api/ListTenantGroups",
     queryKey: "ListTenantGroups-drift-validation",
   });
+
+  // Repos the user can push to; shares its queryKey with the templates list's own
+  // "Save to GitHub" action so both read the same cached result.
+  const writableReposApi = ApiGetCall({
+    url: "/api/ListCommunityRepos",
+    data: { WriteAccess: true },
+    queryKey: "CommunityRepos-Write",
+  });
+  const canSaveToGitHub = computeCanSaveToGitHub(source, writableReposApi.data?.Results);
 
   // Helper function to expand groups to their member tenants
   const expandGroupsToTenants = (tenants, groups) => {
@@ -602,27 +702,12 @@ const CippStandardsSideBar = ({
                 : "Are you sure you want to apply this standard? This will apply the template and run every 12 hours.",
             url: "/api/AddStandardsTemplate",
             type: "POST",
-            replacementBehaviour: "removeNulls",
-            data: {
-              tenantFilter: "tenantFilter",
-              excludedTenants: "excludedTenants",
-              description: "description",
-              templateName: "templateName",
-              standards: "standards",
-              ...(edit ? { GUID: "GUID" } : {}),
-              ...(savedItem ? { GUID: savedItem } : {}),
-              runManually: isDriftMode ? false : "runManually",
-              isDriftTemplate: "isDriftTemplate",
-              ...(isDriftMode
-                ? {
-                    type: "drift",
-                    driftAlertWebhook: "driftAlertWebhook",
-                    driftAlertEmail: "driftAlertEmail",
-                    driftAlertDisableEmail: "driftAlertDisableEmail",
-                  }
-                : {}),
-            },
+            // customDataformatter takes over the whole payload below so the dialog's own
+            // saveToGitHub/GitHubMessage fields never leak in as top-level properties.
+            customDataformatter: (row, action, formData) =>
+              buildStandardsTemplatePayload({ row, formData, edit, savedItem, isDriftMode, source }),
           }}
+          fields={buildSyncedTemplateFields({ source, canSaveToGitHub, hasLocalChanges })}
           row={formControl.getValues()}
           formControl={formControl}
           relatedQueryKeys={[
@@ -650,6 +735,8 @@ CippStandardsSideBar.propTypes = {
     }),
   ).isRequired,
   updatedAt: PropTypes.string,
+  source: PropTypes.string,
+  hasLocalChanges: PropTypes.bool,
   formControl: PropTypes.object.isRequired,
   onSaveSuccess: PropTypes.func,
   onDriftConflictChange: PropTypes.func,
