@@ -1091,6 +1091,7 @@ const Page = () => {
                     formControl={formControl}
                     name="excludedTenants"
                     label="Excluded Tenants"
+                    includeGroups={true}
                     required={false}
                     disableClearable={false}
                   />
