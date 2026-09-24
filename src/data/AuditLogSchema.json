@@ -70,8 +70,8 @@
     "TargetContextId": "String",
     "ApplicationId": "String",
     "Client": "String",
-    "ErrorCode": "String",
-    "LogonError": "String"
+    "ErrorNumber": "List:AADSTSErrorNumber",
+    "LogonError": "List:AADSTSLogonError"
   },
   "List:Operation": [
     {
@@ -2089,6 +2089,2302 @@
     {
       "value": "ZW",
       "label": "Zimbabwe"
+    }
+  ],
+  "List:AADSTSErrorNumber": [
+    {
+      "value": "16000",
+      "label": "16000 - InteractionRequired"
+    },
+    {
+      "value": "16001",
+      "label": "16001 - UserAccountSelectionInvalid"
+    },
+    {
+      "value": "16002",
+      "label": "16002 - AppSessionSelectionInvalid"
+    },
+    {
+      "value": "16003",
+      "label": "16003 - SsoUserAccountNotFoundInResourceTenant"
+    },
+    {
+      "value": "17003",
+      "label": "17003 - CredentialKeyProvisioningFailed"
+    },
+    {
+      "value": "20001",
+      "label": "20001 - WsFedSignInResponseError"
+    },
+    {
+      "value": "20012",
+      "label": "20012 - WsFedMessageInvalid"
+    },
+    {
+      "value": "20033",
+      "label": "20033 - FedMetadataInvalidTenantName"
+    },
+    {
+      "value": "28002",
+      "label": "28002 - Provided value for the input parameter scope '{scope}' isn't valid when requesting an acce"
+    },
+    {
+      "value": "28003",
+      "label": "28003 - Provided value for the input parameter scope can't be empty when requesting an access toke"
+    },
+    {
+      "value": "40008",
+      "label": "40008 - OAuth2IdPUnretryableServerError"
+    },
+    {
+      "value": "40009",
+      "label": "40009 - OAuth2IdPRefreshTokenRedemptionUserError"
+    },
+    {
+      "value": "40010",
+      "label": "40010 - OAuth2IdPRetryableServerError"
+    },
+    {
+      "value": "40015",
+      "label": "40015 - OAuth2IdPAuthCodeRedemptionUserError"
+    },
+    {
+      "value": "50000",
+      "label": "50000 - TokenIssuanceError"
+    },
+    {
+      "value": "50001",
+      "label": "50001 - InvalidResource"
+    },
+    {
+      "value": "50002",
+      "label": "50002 - NotAllowedTenant"
+    },
+    {
+      "value": "50003",
+      "label": "50003 - MissingSigningKey"
+    },
+    {
+      "value": "50005",
+      "label": "50005 - DevicePolicyError"
+    },
+    {
+      "value": "50006",
+      "label": "50006 - InvalidSignature"
+    },
+    {
+      "value": "50007",
+      "label": "50007 - PartnerEncryptionCertificateMissing"
+    },
+    {
+      "value": "50008",
+      "label": "50008 - InvalidSamlToken"
+    },
+    {
+      "value": "50010",
+      "label": "50010 - AudienceUriValidationFailed"
+    },
+    {
+      "value": "50011",
+      "label": "50011 - InvalidReplyTo"
+    },
+    {
+      "value": "50012",
+      "label": "50012 - AuthenticationFailed"
+    },
+    {
+      "value": "50013",
+      "label": "50013 - InvalidAssertion"
+    },
+    {
+      "value": "50014",
+      "label": "50014 - GuestUserInPendingState"
+    },
+    {
+      "value": "50015",
+      "label": "50015 - ViralUserLegalAgeConsentRequiredState"
+    },
+    {
+      "value": "50017",
+      "label": "50017 - CertificateValidationFailed"
+    },
+    {
+      "value": "50020",
+      "label": "50020 - UserUnauthorized"
+    },
+    {
+      "value": "50027",
+      "label": "50027 - InvalidJwtToken"
+    },
+    {
+      "value": "50029",
+      "label": "50029 - Invalid URI - domain name contains invalid characters"
+    },
+    {
+      "value": "50032",
+      "label": "50032 - WeakRsaKey"
+    },
+    {
+      "value": "50033",
+      "label": "50033 - RetryableError"
+    },
+    {
+      "value": "50034",
+      "label": "50034 - UserAccountNotFound"
+    },
+    {
+      "value": "50042",
+      "label": "50042 - UnableToGeneratePairwiseIdentifierWithMissingSalt"
+    },
+    {
+      "value": "50043",
+      "label": "50043 - UnableToGeneratePairwiseIdentifierWithMultipleSalts"
+    },
+    {
+      "value": "50048",
+      "label": "50048 - SubjectMismatchesIssuer"
+    },
+    {
+      "value": "50049",
+      "label": "50049 - NoSuchInstanceForDiscovery"
+    },
+    {
+      "value": "50050",
+      "label": "50050 - MalformedDiscoveryRequest"
+    },
+    {
+      "value": "50053",
+      "label": "50053 - This error can result from two different reasons: - IdsLocked - The account is locked"
+    },
+    {
+      "value": "50055",
+      "label": "50055 - InvalidPasswordExpiredPassword"
+    },
+    {
+      "value": "50056",
+      "label": "50056 - Invalid or null password: password doesn't exist in the directory for this user"
+    },
+    {
+      "value": "50057",
+      "label": "50057 - UserDisabled"
+    },
+    {
+      "value": "50058",
+      "label": "50058 - UserInformationNotProvided"
+    },
+    {
+      "value": "50059",
+      "label": "50059 - MissingTenantRealmAndNoUserInformationProvided"
+    },
+    {
+      "value": "50061",
+      "label": "50061 - SignoutInvalidRequest"
+    },
+    {
+      "value": "50064",
+      "label": "50064 - CredentialAuthenticationError"
+    },
+    {
+      "value": "50068",
+      "label": "50068 - SignoutInitiatorNotParticipant"
+    },
+    {
+      "value": "50070",
+      "label": "50070 - SignoutUnknownSessionIdentifier"
+    },
+    {
+      "value": "50071",
+      "label": "50071 - SignoutMessageExpired"
+    },
+    {
+      "value": "50072",
+      "label": "50072 - UserStrongAuthEnrollmentRequiredInterrupt"
+    },
+    {
+      "value": "50074",
+      "label": "50074 - UserStrongAuthClientAuthNRequiredInterrupt"
+    },
+    {
+      "value": "50076",
+      "label": "50076 - UserStrongAuthClientAuthNRequired"
+    },
+    {
+      "value": "50078",
+      "label": "50078 - UserStrongAuthExpired"
+    },
+    {
+      "value": "50079",
+      "label": "50079 - UserStrongAuthEnrollmentRequired"
+    },
+    {
+      "value": "50085",
+      "label": "50085 - Refresh token needs social IDP login"
+    },
+    {
+      "value": "50086",
+      "label": "50086 - SasNonRetryableError"
+    },
+    {
+      "value": "50087",
+      "label": "50087 - SasRetryableError"
+    },
+    {
+      "value": "50088",
+      "label": "50088 - Limit on telecom MFA calls reached"
+    },
+    {
+      "value": "50089",
+      "label": "50089 - Authentication failed due to flow token expired"
+    },
+    {
+      "value": "50097",
+      "label": "50097 - DeviceAuthenticationRequired"
+    },
+    {
+      "value": "50098",
+      "label": "50098 - JWT body must contain '{field}'"
+    },
+    {
+      "value": "50099",
+      "label": "50099 - PKeyAuthInvalidJwtUnauthorized"
+    },
+    {
+      "value": "50100",
+      "label": "50100 - There was an error transforming the claims for the token"
+    },
+    {
+      "value": "50101",
+      "label": "50101 - Unknown claims transformer '{name}' was specified for principal '{principalId}'"
+    },
+    {
+      "value": "50102",
+      "label": "50102 - Unable to load CustomClaimsTransformer '{type}' was specified for principal '{principalId}"
+    },
+    {
+      "value": "50103",
+      "label": "50103 - There was an error transforming the claims for the token: {errorMessage}"
+    },
+    {
+      "value": "50105",
+      "label": "50105 - EntitlementGrantsNotFound"
+    },
+    {
+      "value": "50107",
+      "label": "50107 - The requested federation realm object '{name}' doesn't exist"
+    },
+    {
+      "value": "50108",
+      "label": "50108 - Claims transformation configuration could not be retrieved"
+    },
+    {
+      "value": "50109",
+      "label": "50109 - Claim transformation is unknown from configuration"
+    },
+    {
+      "value": "50111",
+      "label": "50111 - Unknown claim transformation was asked to be applied"
+    },
+    {
+      "value": "50117",
+      "label": "50117 - Failed to deserialize policy specified in the request's claim parameter"
+    },
+    {
+      "value": "50120",
+      "label": "50120 - Unknown credential type, issue with the JWT header"
+    },
+    {
+      "value": "50123",
+      "label": "50123 - Unknown claims transformation method '{method}' was specified for principal '{principalId}"
+    },
+    {
+      "value": "50124",
+      "label": "50124 - Invalid regular expression configured for claims transformation for this application"
+    },
+    {
+      "value": "50125",
+      "label": "50125 - PasswordResetRegistrationRequiredInterrupt"
+    },
+    {
+      "value": "50126",
+      "label": "50126 - InvalidUserNameOrPassword"
+    },
+    {
+      "value": "50127",
+      "label": "50127 - BrokerAppNotInstalled"
+    },
+    {
+      "value": "50128",
+      "label": "50128 - Invalid domain name - No tenant-identifying information found in either the request or imp"
+    },
+    {
+      "value": "50129",
+      "label": "50129 - DeviceIsNotWorkplaceJoined"
+    },
+    {
+      "value": "50130",
+      "label": "50130 - The claim value(s) '{value}' cannot be interpreted as known auth method(s)"
+    },
+    {
+      "value": "50131",
+      "label": "50131 - ConditionalAccessFailed"
+    },
+    {
+      "value": "50132",
+      "label": "50132 - SsoArtifactInvalidOrExpired"
+    },
+    {
+      "value": "50133",
+      "label": "50133 - SsoArtifactRevoked"
+    },
+    {
+      "value": "50134",
+      "label": "50134 - DeviceFlowAuthorizeWrongDatacenter"
+    },
+    {
+      "value": "50135",
+      "label": "50135 - PasswordChangeCompromisedPassword"
+    },
+    {
+      "value": "50136",
+      "label": "50136 - RedirectMsaSessionToApp"
+    },
+    {
+      "value": "50137",
+      "label": "50137 - Password needs to be changed due to security policy rule"
+    },
+    {
+      "value": "50138",
+      "label": "50138 - Invalid encryption key environment"
+    },
+    {
+      "value": "50139",
+      "label": "50139 - SessionMissingMsaOAuth2RefreshToken"
+    },
+    {
+      "value": "50140",
+      "label": "50140 - KmsiInterrupt"
+    },
+    {
+      "value": "50141",
+      "label": "50141 - Protected key isn't intended for the authenticated user"
+    },
+    {
+      "value": "50142",
+      "label": "50142 - Password change is required due to a Conditional Access policy"
+    },
+    {
+      "value": "50143",
+      "label": "50143 - Session mismatch - Session is invalid because user tenant doesn't match the domain hint du"
+    },
+    {
+      "value": "50144",
+      "label": "50144 - InvalidPasswordExpiredOnPremPassword"
+    },
+    {
+      "value": "50146",
+      "label": "50146 - MissingCustomSigningKey"
+    },
+    {
+      "value": "50147",
+      "label": "50147 - Invalid size of the code challenge parameter"
+    },
+    {
+      "value": "50148",
+      "label": "50148 - The code\\_verifier doesn't match the code\\_challenge supplied in the authorization request"
+    },
+    {
+      "value": "50149",
+      "label": "50149 - Invalid Code\\_Challenge\\_method parameter"
+    },
+    {
+      "value": "50150",
+      "label": "50150 - The provided credentials does not have a valid user consent approval information"
+    },
+    {
+      "value": "50155",
+      "label": "50155 - DeviceAuthenticationFailed"
+    },
+    {
+      "value": "50156",
+      "label": "50156 - Device tokens are not supported for V2 resource"
+    },
+    {
+      "value": "50157",
+      "label": "50157 - User redirection required for routing"
+    },
+    {
+      "value": "50158",
+      "label": "50158 - External security challenge not satisfied"
+    },
+    {
+      "value": "50159",
+      "label": "50159 - Claims sent by external provider are not enough"
+    },
+    {
+      "value": "50160",
+      "label": "50160 - Different target tenant is preferred"
+    },
+    {
+      "value": "50161",
+      "label": "50161 - Failed to validate authorization url of external claims provider"
+    },
+    {
+      "value": "50162",
+      "label": "50162 - Claims transformation has timed out"
+    },
+    {
+      "value": "50163",
+      "label": "50163 - Regular expression replacement for claims transformation has resulted in a claim which exc"
+    },
+    {
+      "value": "50164",
+      "label": "50164 - The supplied access token was not issued for the purpose for which it is being used"
+    },
+    {
+      "value": "50165",
+      "label": "50165 - The token encrypting algorithm '{algorithm}' requested by the application isn't supported"
+    },
+    {
+      "value": "50166",
+      "label": "50166 - Request to External OIDC endpoint failed"
+    },
+    {
+      "value": "50167",
+      "label": "50167 - Invalid pop\\_jwk key"
+    },
+    {
+      "value": "50168",
+      "label": "50168 - The client is capable of utilizing the Windows 10 Accounts extension to perform SSO but no"
+    },
+    {
+      "value": "50169",
+      "label": "50169 - InvalidRequestBadRealm"
+    },
+    {
+      "value": "50170",
+      "label": "50170 - MissingExternalClaimsProviderMapping"
+    },
+    {
+      "value": "50171",
+      "label": "50171 - The given audience can only be used in Mutual-TLS token calls"
+    },
+    {
+      "value": "50172",
+      "label": "50172 - External claims provider {provider} isn't approved"
+    },
+    {
+      "value": "50173",
+      "label": "50173 - The provided grant has expired due to it being revoked, a fresh auth token is needed"
+    },
+    {
+      "value": "50176",
+      "label": "50176 - Missing definition of external control: {controlId}"
+    },
+    {
+      "value": "50177",
+      "label": "50177 - ExternalChallengeNotSupportedForPassthroughUsers"
+    },
+    {
+      "value": "50178",
+      "label": "50178 - SessionControlNotSupportedForPassthroughUsers"
+    },
+    {
+      "value": "50180",
+      "label": "50180 - WindowsIntegratedAuthMissing"
+    },
+    {
+      "value": "50187",
+      "label": "50187 - DeviceInformationNotProvided"
+    },
+    {
+      "value": "50192",
+      "label": "50192 - Invalid Request - RawCredentialExpectedNotFound - No Credential was included in the sign-i"
+    },
+    {
+      "value": "50194",
+      "label": "50194 - Application '{appId}'({appName}) isn't configured as a multitenant application"
+    },
+    {
+      "value": "50196",
+      "label": "50196 - LoopDetected"
+    },
+    {
+      "value": "50197",
+      "label": "50197 - ConflictingIdentities"
+    },
+    {
+      "value": "50199",
+      "label": "50199 - CmsiInterrupt"
+    },
+    {
+      "value": "51000",
+      "label": "51000 - RequiredFeatureNotEnabled"
+    },
+    {
+      "value": "51001",
+      "label": "51001 - DomainHintMustbePresent"
+    },
+    {
+      "value": "51004",
+      "label": "51004 - UserAccountNotInDirectory"
+    },
+    {
+      "value": "51005",
+      "label": "51005 - TemporaryRedirect"
+    },
+    {
+      "value": "51006",
+      "label": "51006 - ForceReauthDueToInsufficientAuth"
+    },
+    {
+      "value": "52004",
+      "label": "52004 - DelegationDoesNotExistForLinkedIn"
+    },
+    {
+      "value": "53000",
+      "label": "53000 - DeviceNotCompliant"
+    },
+    {
+      "value": "53001",
+      "label": "53001 - DeviceNotDomainJoined"
+    },
+    {
+      "value": "53002",
+      "label": "53002 - ApplicationUsedIsNotAnApprovedApp"
+    },
+    {
+      "value": "53003",
+      "label": "53003 - BlockedByConditionalAccess"
+    },
+    {
+      "value": "53004",
+      "label": "53004 - ProofUpBlockedDueToRisk"
+    },
+    {
+      "value": "53010",
+      "label": "53010 - ProofUpBlockedDueToSecurityInfoAcr"
+    },
+    {
+      "value": "53011",
+      "label": "53011 - User blocked due to risk on home tenant"
+    },
+    {
+      "value": "54000",
+      "label": "54000 - MinorUserBlockedLegalAgeGroupRule"
+    },
+    {
+      "value": "54005",
+      "label": "54005 - OAuth2 Authorization code was already redeemed, please retry with a new valid code or use"
+    },
+    {
+      "value": "65001",
+      "label": "65001 - DelegationDoesNotExist"
+    },
+    {
+      "value": "65002",
+      "label": "65002 - Consent between first party application '{applicationId}' and first party resource '{resou"
+    },
+    {
+      "value": "65004",
+      "label": "65004 - UserDeclinedConsent"
+    },
+    {
+      "value": "65005",
+      "label": "65005 - MisconfiguredApplication"
+    },
+    {
+      "value": "67003",
+      "label": "67003 - ActorNotValidServiceIdentity"
+    },
+    {
+      "value": "70000",
+      "label": "70000 - InvalidGrant"
+    },
+    {
+      "value": "70001",
+      "label": "70001 - UnauthorizedClient"
+    },
+    {
+      "value": "70002",
+      "label": "70002 - InvalidClient"
+    },
+    {
+      "value": "70003",
+      "label": "70003 - UnsupportedGrantType"
+    },
+    {
+      "value": "70004",
+      "label": "70004 - InvalidRedirectUri"
+    },
+    {
+      "value": "70005",
+      "label": "70005 - UnsupportedResponseType"
+    },
+    {
+      "value": "70007",
+      "label": "70007 - UnsupportedResponseMode"
+    },
+    {
+      "value": "70008",
+      "label": "70008 - ExpiredOrRevokedGrant"
+    },
+    {
+      "value": "70011",
+      "label": "70011 - InvalidScope"
+    },
+    {
+      "value": "70012",
+      "label": "70012 - MsaServerError"
+    },
+    {
+      "value": "70016",
+      "label": "70016 - AuthorizationPending"
+    },
+    {
+      "value": "70018",
+      "label": "70018 - BadVerificationCode"
+    },
+    {
+      "value": "70019",
+      "label": "70019 - CodeExpired"
+    },
+    {
+      "value": "70043",
+      "label": "70043 - BadTokenDueToSignInFrequency"
+    },
+    {
+      "value": "75001",
+      "label": "75001 - BindingSerializationError"
+    },
+    {
+      "value": "75003",
+      "label": "75003 - UnsupportedBindingError"
+    },
+    {
+      "value": "75005",
+      "label": "75005 - Saml2MessageInvalid"
+    },
+    {
+      "value": "75008",
+      "label": "75008 - RequestDeniedError"
+    },
+    {
+      "value": "75011",
+      "label": "75011 - NoMatchedAuthnContextInOutputClaims"
+    },
+    {
+      "value": "75016",
+      "label": "75016 - Saml2AuthenticationRequestInvalidNameIDPolicy"
+    },
+    {
+      "value": "76021",
+      "label": "76021 - ApplicationRequiresSignedRequests"
+    },
+    {
+      "value": "76026",
+      "label": "76026 - RequestIssueTimeExpired"
+    },
+    {
+      "value": "80001",
+      "label": "80001 - OnPremiseStoreIsNotAvailable"
+    },
+    {
+      "value": "80002",
+      "label": "80002 - OnPremisePasswordValidatorRequestTimedout"
+    },
+    {
+      "value": "80005",
+      "label": "80005 - OnPremisePasswordValidatorUnpredictableWebException"
+    },
+    {
+      "value": "80007",
+      "label": "80007 - OnPremisePasswordValidatorErrorOccurredOnPrem"
+    },
+    {
+      "value": "80010",
+      "label": "80010 - OnPremisePasswordValidationEncryptionException"
+    },
+    {
+      "value": "80012",
+      "label": "80012 - OnPremisePasswordValidationAccountLogonInvalidHours"
+    },
+    {
+      "value": "80013",
+      "label": "80013 - OnPremisePasswordValidationTimeSkew"
+    },
+    {
+      "value": "80014",
+      "label": "80014 - OnPremisePasswordValidationAuthenticationAgentTimeout"
+    },
+    {
+      "value": "81004",
+      "label": "81004 - DesktopSsoIdentityInTicketIsNotAuthenticated"
+    },
+    {
+      "value": "81005",
+      "label": "81005 - DesktopSsoAuthenticationPackageNotSupported"
+    },
+    {
+      "value": "81006",
+      "label": "81006 - DesktopSsoNoAuthorizationHeader"
+    },
+    {
+      "value": "81007",
+      "label": "81007 - DesktopSsoTenantIsNotOptIn"
+    },
+    {
+      "value": "81009",
+      "label": "81009 - DesktopSsoAuthorizationHeaderValueWithBadFormat"
+    },
+    {
+      "value": "81010",
+      "label": "81010 - DesktopSsoAuthTokenInvalid"
+    },
+    {
+      "value": "81011",
+      "label": "81011 - DesktopSsoLookupUserBySidFailed"
+    },
+    {
+      "value": "81012",
+      "label": "81012 - DesktopSsoMismatchBetweenTokenUpnAndChosenUpn"
+    },
+    {
+      "value": "90002",
+      "label": "90002 - InvalidTenantName"
+    },
+    {
+      "value": "90004",
+      "label": "90004 - InvalidRequestFormat"
+    },
+    {
+      "value": "90005",
+      "label": "90005 - InvalidRequestWithMultipleRequirements"
+    },
+    {
+      "value": "90006",
+      "label": "90006 - ExternalServerRetryableError"
+    },
+    {
+      "value": "90007",
+      "label": "90007 - InvalidSessionId"
+    },
+    {
+      "value": "90008",
+      "label": "90008 - TokenForItselfRequiresGraphPermission"
+    },
+    {
+      "value": "90009",
+      "label": "90009 - TokenForItselfMissingIdenticalAppIdentifier"
+    },
+    {
+      "value": "90010",
+      "label": "90010 - NotSupported"
+    },
+    {
+      "value": "90012",
+      "label": "90012 - RequestTimeout"
+    },
+    {
+      "value": "90013",
+      "label": "90013 - InvalidUserInput"
+    },
+    {
+      "value": "90014",
+      "label": "90014 - MissingRequiredField"
+    },
+    {
+      "value": "90015",
+      "label": "90015 - QueryStringTooLong"
+    },
+    {
+      "value": "90016",
+      "label": "90016 - MissingRequiredClaim"
+    },
+    {
+      "value": "90019",
+      "label": "90019 - MissingTenantRealm"
+    },
+    {
+      "value": "90020",
+      "label": "90020 - The SAML 1.1 Assertion is missing ImmutableID of the user"
+    },
+    {
+      "value": "90022",
+      "label": "90022 - AuthenticatedInvalidPrincipalNameFormat"
+    },
+    {
+      "value": "90023",
+      "label": "90023 - InvalidRequest"
+    },
+    {
+      "value": "90024",
+      "label": "90024 - RequestBudgetExceededError"
+    },
+    {
+      "value": "90027",
+      "label": "90027 - We are unable to issue tokens from this API version on the MSA tenant"
+    },
+    {
+      "value": "90033",
+      "label": "90033 - MsodsServiceUnavailable"
+    },
+    {
+      "value": "90036",
+      "label": "90036 - MsodsServiceUnretryableFailure"
+    },
+    {
+      "value": "90038",
+      "label": "90038 - NationalCloudTenantRedirection"
+    },
+    {
+      "value": "90043",
+      "label": "90043 - NationalCloudAuthCodeRedirection"
+    },
+    {
+      "value": "90051",
+      "label": "90051 - InvalidNationalCloudId"
+    },
+    {
+      "value": "90055",
+      "label": "90055 - TenantThrottlingError"
+    },
+    {
+      "value": "90056",
+      "label": "90056 - BadResourceRequest"
+    },
+    {
+      "value": "90072",
+      "label": "90072 - PassThroughUserMfaError"
+    },
+    {
+      "value": "90081",
+      "label": "90081 - OrgIdWsFederationMessageInvalid"
+    },
+    {
+      "value": "90082",
+      "label": "90082 - OrgIdWsFederationNotSupported"
+    },
+    {
+      "value": "90084",
+      "label": "90084 - OrgIdWsFederationGuestNotAllowed"
+    },
+    {
+      "value": "90085",
+      "label": "90085 - OrgIdWsFederationSltRedemptionFailed"
+    },
+    {
+      "value": "90086",
+      "label": "90086 - OrgIdWsTrustDaTokenExpired"
+    },
+    {
+      "value": "90087",
+      "label": "90087 - OrgIdWsFederationMessageCreationFromUriFailed"
+    },
+    {
+      "value": "90090",
+      "label": "90090 - GraphRetryableError"
+    },
+    {
+      "value": "90091",
+      "label": "90091 - GraphServiceUnreachable"
+    },
+    {
+      "value": "90092",
+      "label": "90092 - GraphNonRetryableError"
+    },
+    {
+      "value": "90093",
+      "label": "90093 - GraphUserUnauthorized"
+    },
+    {
+      "value": "90094",
+      "label": "90094 - AdminConsentRequired"
+    },
+    {
+      "value": "90095",
+      "label": "90095 - AdminConsentRequiredRequestAccess"
+    },
+    {
+      "value": "90099",
+      "label": "90099 - The application '{appId}' ({appName}) has not been authorized in the tenant '{tenant}'"
+    },
+    {
+      "value": "90100",
+      "label": "90100 - InvalidRequestParameter"
+    },
+    {
+      "value": "90101",
+      "label": "90101 - InvalidEmailAddress"
+    },
+    {
+      "value": "90102",
+      "label": "90102 - InvalidUriParameter"
+    },
+    {
+      "value": "90107",
+      "label": "90107 - InvalidXml"
+    },
+    {
+      "value": "90112",
+      "label": "90112 - Application identifier is expected to be a GUID"
+    },
+    {
+      "value": "90114",
+      "label": "90114 - InvalidExpiryDate"
+    },
+    {
+      "value": "90117",
+      "label": "90117 - InvalidRequestInput"
+    },
+    {
+      "value": "90119",
+      "label": "90119 - InvalidUserCode"
+    },
+    {
+      "value": "90120",
+      "label": "90120 - InvalidDeviceFlowRequest"
+    },
+    {
+      "value": "90121",
+      "label": "90121 - InvalidEmptyRequest"
+    },
+    {
+      "value": "90123",
+      "label": "90123 - IdentityProviderAccessDenied"
+    },
+    {
+      "value": "90124",
+      "label": "90124 - V1ResourceV2GlobalEndpointNotSupported"
+    },
+    {
+      "value": "90125",
+      "label": "90125 - DebugModeEnrollTenantNotFound"
+    },
+    {
+      "value": "90126",
+      "label": "90126 - DebugModeEnrollTenantNotInferred"
+    },
+    {
+      "value": "90130",
+      "label": "90130 - NonConvergedAppV2GlobalEndpointNotSupported"
+    },
+    {
+      "value": "100007",
+      "label": "100007 - Microsoft Entra Regional ONLY supports auth either for MSIs OR for requests from MSAL usin"
+    },
+    {
+      "value": "120000",
+      "label": "120000 - PasswordChangeIncorrectCurrentPassword"
+    },
+    {
+      "value": "120002",
+      "label": "120002 - PasswordChangeInvalidNewPasswordWeak"
+    },
+    {
+      "value": "120003",
+      "label": "120003 - PasswordChangeInvalidNewPasswordContainsMemberName"
+    },
+    {
+      "value": "120004",
+      "label": "120004 - PasswordChangeOnPremComplexity"
+    },
+    {
+      "value": "120005",
+      "label": "120005 - PasswordChangeOnPremSuccessCloudFail"
+    },
+    {
+      "value": "120008",
+      "label": "120008 - PasswordChangeAsyncJobStateTerminated"
+    },
+    {
+      "value": "120011",
+      "label": "120011 - PasswordChangeAsyncUpnInferenceFailed"
+    },
+    {
+      "value": "120012",
+      "label": "120012 - PasswordChangeNeedsToHappenOnPrem"
+    },
+    {
+      "value": "120013",
+      "label": "120013 - PasswordChangeOnPremisesConnectivityFailure"
+    },
+    {
+      "value": "120014",
+      "label": "120014 - PasswordChangeOnPremUserAccountLockedOutOrDisabled"
+    },
+    {
+      "value": "120015",
+      "label": "120015 - PasswordChangeADAdminActionRequired"
+    },
+    {
+      "value": "120016",
+      "label": "120016 - PasswordChangeUserNotFoundBySspr"
+    },
+    {
+      "value": "120018",
+      "label": "120018 - PasswordChangePasswordDoesnotComplyFuzzyPolicy"
+    },
+    {
+      "value": "120020",
+      "label": "120020 - PasswordChangeFailure"
+    },
+    {
+      "value": "120021",
+      "label": "120021 - PartnerServiceSsprInternalServiceError"
+    },
+    {
+      "value": "130004",
+      "label": "130004 - NgcKeyNotFound"
+    },
+    {
+      "value": "130005",
+      "label": "130005 - NgcInvalidSignature"
+    },
+    {
+      "value": "130006",
+      "label": "130006 - NgcTransportKeyNotFound"
+    },
+    {
+      "value": "130007",
+      "label": "130007 - NgcDeviceIsDisabled"
+    },
+    {
+      "value": "130008",
+      "label": "130008 - NgcDeviceIsNotFound"
+    },
+    {
+      "value": "135010",
+      "label": "135010 - KeyNotFound"
+    },
+    {
+      "value": "135011",
+      "label": "135011 - Device used during the authentication is disabled"
+    },
+    {
+      "value": "140000",
+      "label": "140000 - InvalidRequestNonce"
+    },
+    {
+      "value": "140001",
+      "label": "140001 - InvalidSessionKey"
+    },
+    {
+      "value": "160021",
+      "label": "160021 - AppSessionSelectionInvalidSessionNotExist"
+    },
+    {
+      "value": "165004",
+      "label": "165004 - Actual message content is runtime specific"
+    },
+    {
+      "value": "165900",
+      "label": "165900 - InvalidApiRequest"
+    },
+    {
+      "value": "220450",
+      "label": "220450 - UnsupportedAndroidWebViewVersion"
+    },
+    {
+      "value": "220501",
+      "label": "220501 - InvalidCrlDownload"
+    },
+    {
+      "value": "221000",
+      "label": "221000 - DeviceOnlyTokensNotSupportedByResource"
+    },
+    {
+      "value": "230109",
+      "label": "230109 - CachedCredentialNonGWAuthNRequestsNotSupported"
+    },
+    {
+      "value": "240001",
+      "label": "240001 - BulkAADJTokenUnauthorized"
+    },
+    {
+      "value": "240002",
+      "label": "240002 - RequiredClaimIsMissing"
+    },
+    {
+      "value": "240003",
+      "label": "240003 - Unexpected result from authorize endpoint call"
+    },
+    {
+      "value": "240004",
+      "label": "240004 - Authorization code not received from authorize endpoint call"
+    },
+    {
+      "value": "399284",
+      "label": "399284 - InboundIdTokenIssuerInvalid"
+    },
+    {
+      "value": "500011",
+      "label": "500011 - InvalidResourceServicePrincipalNotFound"
+    },
+    {
+      "value": "500014",
+      "label": "500014 - InvalidResourceServicePrincipalDisabled"
+    },
+    {
+      "value": "500021",
+      "label": "500021 - Access to '{tenant}' tenant is denied"
+    },
+    {
+      "value": "500022",
+      "label": "500022 - Access to '{tenant}' tenant is denied"
+    },
+    {
+      "value": "500133",
+      "label": "500133 - Assertion isn't within its valid time range"
+    },
+    {
+      "value": "500141",
+      "label": "500141 - The user's redemption is complete but the request was not initiated by the target applicat"
+    },
+    {
+      "value": "500207",
+      "label": "500207 - The account type can't be used for the resource you're trying to access"
+    },
+    {
+      "value": "500208",
+      "label": "500208 - The domain is not a valid login domain for the account type - This situation occurs when t"
+    },
+    {
+      "value": "500212",
+      "label": "500212 - NotAllowedByOutboundPolicyTenant"
+    },
+    {
+      "value": "500213",
+      "label": "500213 - NotAllowedByInboundPolicyTenant"
+    },
+    {
+      "value": "501241",
+      "label": "501241 - Mandatory Input '{paramName}' missing from transformation ID '{transformId}'"
+    },
+    {
+      "value": "501461",
+      "label": "501461 - AcceptMappedClaims is only supported for a token audience matching the application GUID or"
+    },
+    {
+      "value": "501481",
+      "label": "501481 - The Code\\_Verifier doesn't match the code\\_challenge supplied in the authorization request"
+    },
+    {
+      "value": "501491",
+      "label": "501491 - InvalidCodeChallengeMethodInvalidSize"
+    },
+    {
+      "value": "501621",
+      "label": "501621 - ClaimsTransformationTimeoutRegularExpressionTimeout"
+    },
+    {
+      "value": "501631",
+      "label": "501631 - Regular expression replacement for claims transformation results in too many replacements"
+    },
+    {
+      "value": "501632",
+      "label": "501632 - Regular expression replacement for claims transformation has too many substitution paramet"
+    },
+    {
+      "value": "530032",
+      "label": "530032 - BlockedByConditionalAccessOnSecurityPolicy"
+    },
+    {
+      "value": "530034",
+      "label": "530034 - DelegatedAdminBlockedDueToSuspiciousActivity"
+    },
+    {
+      "value": "530035",
+      "label": "530035 - BlockedBySecurityDefaults"
+    },
+    {
+      "value": "650052",
+      "label": "650052 - The app needs access to a service `(\\\"{name}\\\")` that your organization `\\\"{organization}\\"
+    },
+    {
+      "value": "650054",
+      "label": "650054 - The application asked for permissions to access a resource that has been removed or is no"
+    },
+    {
+      "value": "650056",
+      "label": "650056 - Misconfigured application"
+    },
+    {
+      "value": "650057",
+      "label": "650057 - Invalid resource"
+    },
+    {
+      "value": "650059",
+      "label": "650059 - The application is not configured for use in the tenant"
+    },
+    {
+      "value": "700005",
+      "label": "700005 - InvalidGrantRedeemAgainstWrongTenant"
+    },
+    {
+      "value": "700011",
+      "label": "700011 - UnauthorizedClientAppNotFoundInOrgIdTenant"
+    },
+    {
+      "value": "700016",
+      "label": "700016 - UnauthorizedClient\\_DoesNotMatchRequest - The application wasn't found in the directory/te"
+    },
+    {
+      "value": "700020",
+      "label": "700020 - InteractionRequired"
+    },
+    {
+      "value": "700022",
+      "label": "700022 - InvalidMultipleResourcesScope"
+    },
+    {
+      "value": "700023",
+      "label": "700023 - InvalidResourcelessScope"
+    },
+    {
+      "value": "700025",
+      "label": "700025 - InvalidClientPublicClientWithCredential"
+    },
+    {
+      "value": "700027",
+      "label": "700027 - Client assertion failed signature validation"
+    },
+    {
+      "value": "700030",
+      "label": "700030 - Invalid certificate - subject name in certificate isn't authorized"
+    },
+    {
+      "value": "700054",
+      "label": "700054 - Response\\_type 'id\\_token' isn't enabled for the application"
+    },
+    {
+      "value": "700082",
+      "label": "700082 - ExpiredOrRevokedGrantInactiveToken"
+    },
+    {
+      "value": "700084",
+      "label": "700084 - The refresh token was issued to a single page app (SPA), and therefore has a fixed, limite"
+    },
+    {
+      "value": "700229",
+      "label": "700229 - ForbiddenTokenType"
+    },
+    {
+      "value": "750054",
+      "label": "750054 - SAMLRequest or SAMLResponse must be present as query string parameters in HTTP request for"
+    },
+    {
+      "value": "900144",
+      "label": "900144 - The request body must contain the following parameter: '{name}'"
+    },
+    {
+      "value": "900236",
+      "label": "900236 - InvalidRequestSamlPropertyUnsupported"
+    },
+    {
+      "value": "900382",
+      "label": "900382 - Confidential Client isn't supported in Cross Cloud request"
+    },
+    {
+      "value": "900384",
+      "label": "900384 - JWT token failed signature validation"
+    },
+    {
+      "value": "900432",
+      "label": "900432 - Confidential Client isn't supported in Cross Cloud request"
+    },
+    {
+      "value": "900561",
+      "label": "900561 - BadResourceRequestInvalidRequest"
+    },
+    {
+      "value": "900612",
+      "label": "900612 - Failed to parse provider signing keys - When validating signing keys provided by JWKS endp"
+    },
+    {
+      "value": "900971",
+      "label": "900971 - No reply address provided"
+    },
+    {
+      "value": "901002",
+      "label": "901002 - AADSTS901002: The 'resource' request parameter isn't supported"
+    },
+    {
+      "value": "901011",
+      "label": "901011 - NoEmailAddressCollectedFromExternalOidcIDP"
+    },
+    {
+      "value": "901012",
+      "label": "901012 - EmailAddressCollectedFromExternalOidcIDPNotVerified"
+    },
+    {
+      "value": "901014",
+      "label": "901014 - NoExternalIdentifierCollectedFromExternalOidcIDP"
+    },
+    {
+      "value": "1000000",
+      "label": "1000000 - UserNotBoundError"
+    },
+    {
+      "value": "1000002",
+      "label": "1000002 - BindCompleteInterruptError"
+    },
+    {
+      "value": "1000031",
+      "label": "1000031 - Application {appDisplayName} can't be accessed at this time"
+    },
+    {
+      "value": "1000104",
+      "label": "1000104 - XCB2BResourceCloudNotAllowedOnIdentityTenant"
+    },
+    {
+      "value": "5000224",
+      "label": "5000224 - NotAllowedTenantBlockedTenantFraud"
+    },
+    {
+      "value": "5000819",
+      "label": "5000819 - InvalidSamlTokenEmailMissingOrInvalid"
+    },
+    {
+      "value": "5001256",
+      "label": "5001256 - Failed to complete authentication with external provider due to invalid id\\_token"
+    },
+    {
+      "value": "7000112",
+      "label": "7000112 - UnauthorizedClientApplicationDisabled"
+    },
+    {
+      "value": "7000114",
+      "label": "7000114 - Application 'appIdentifier' isn't allowed to make application on-behalf-of calls"
+    },
+    {
+      "value": "7000215",
+      "label": "7000215 - Invalid client secret is provided"
+    },
+    {
+      "value": "7000218",
+      "label": "7000218 - The request body must contain the following parameter: 'client\\_assertion' or 'client\\_sec"
+    },
+    {
+      "value": "7000222",
+      "label": "7000222 - InvalidClientSecretExpiredKeysProvided"
+    },
+    {
+      "value": "7500514",
+      "label": "7500514 - A supported type of SAML response was not found"
+    },
+    {
+      "value": "7500529",
+      "label": "7500529 - The value \u2018SAMLId-Guid\u2019 isn't a valid SAML ID - Microsoft Entra ID uses this attribute to"
+    },
+    {
+      "value": "9001023",
+      "label": "9001023 - The grant type isn't supported over the /common or /consumers endpoints"
+    },
+    {
+      "value": "9002313",
+      "label": "9002313 - InvalidRequest"
+    },
+    {
+      "value": "9002332",
+      "label": "9002332 - Application '{principalId}'({principalName}) is configured for use by Microsoft Entra user"
+    },
+    {
+      "value": "9002341",
+      "label": "9002341 - V2Error: `invalid_grant` - The user is required to permit single sign-On (SSO)"
+    }
+  ],
+  "List:AADSTSLogonError": [
+    {
+      "value": "AdminConsentRequired",
+      "label": "AdminConsentRequired (AADSTS90094)"
+    },
+    {
+      "value": "AdminConsentRequiredRequestAccess",
+      "label": "AdminConsentRequiredRequestAccess (AADSTS90095)"
+    },
+    {
+      "value": "ApplicationRequiresSignedRequests",
+      "label": "ApplicationRequiresSignedRequests (AADSTS76021)"
+    },
+    {
+      "value": "ApplicationUsedIsNotAnApprovedApp",
+      "label": "ApplicationUsedIsNotAnApprovedApp (AADSTS53002)"
+    },
+    {
+      "value": "AppSessionSelectionInvalid",
+      "label": "AppSessionSelectionInvalid (AADSTS16002)"
+    },
+    {
+      "value": "AppSessionSelectionInvalidSessionNotExist",
+      "label": "AppSessionSelectionInvalidSessionNotExist (AADSTS160021)"
+    },
+    {
+      "value": "AudienceUriValidationFailed",
+      "label": "AudienceUriValidationFailed (AADSTS50010)"
+    },
+    {
+      "value": "AuthenticatedInvalidPrincipalNameFormat",
+      "label": "AuthenticatedInvalidPrincipalNameFormat (AADSTS90022)"
+    },
+    {
+      "value": "AuthenticationFailed",
+      "label": "AuthenticationFailed (AADSTS50012)"
+    },
+    {
+      "value": "AuthorizationPending",
+      "label": "AuthorizationPending (AADSTS70016)"
+    },
+    {
+      "value": "BadResourceRequest",
+      "label": "BadResourceRequest (AADSTS90056)"
+    },
+    {
+      "value": "BadResourceRequestInvalidRequest",
+      "label": "BadResourceRequestInvalidRequest (AADSTS900561)"
+    },
+    {
+      "value": "BadTokenDueToSignInFrequency",
+      "label": "BadTokenDueToSignInFrequency (AADSTS70043)"
+    },
+    {
+      "value": "BadVerificationCode",
+      "label": "BadVerificationCode (AADSTS70018)"
+    },
+    {
+      "value": "BindCompleteInterruptError",
+      "label": "BindCompleteInterruptError (AADSTS1000002)"
+    },
+    {
+      "value": "BindingSerializationError",
+      "label": "BindingSerializationError (AADSTS75001)"
+    },
+    {
+      "value": "BlockedByConditionalAccess",
+      "label": "BlockedByConditionalAccess (AADSTS53003)"
+    },
+    {
+      "value": "BlockedByConditionalAccessOnSecurityPolicy",
+      "label": "BlockedByConditionalAccessOnSecurityPolicy (AADSTS530032)"
+    },
+    {
+      "value": "BlockedBySecurityDefaults",
+      "label": "BlockedBySecurityDefaults (AADSTS530035)"
+    },
+    {
+      "value": "BrokerAppNotInstalled",
+      "label": "BrokerAppNotInstalled (AADSTS50127)"
+    },
+    {
+      "value": "BulkAADJTokenUnauthorized",
+      "label": "BulkAADJTokenUnauthorized (AADSTS240001)"
+    },
+    {
+      "value": "CachedCredentialNonGWAuthNRequestsNotSupported",
+      "label": "CachedCredentialNonGWAuthNRequestsNotSupported (AADSTS230109)"
+    },
+    {
+      "value": "CertificateValidationFailed",
+      "label": "CertificateValidationFailed (AADSTS50017)"
+    },
+    {
+      "value": "ClaimsTransformationTimeoutRegularExpressionTimeout",
+      "label": "ClaimsTransformationTimeoutRegularExpressionTimeout (AADSTS501621)"
+    },
+    {
+      "value": "CmsiInterrupt",
+      "label": "CmsiInterrupt (AADSTS50199)"
+    },
+    {
+      "value": "CodeExpired",
+      "label": "CodeExpired (AADSTS70019)"
+    },
+    {
+      "value": "ConditionalAccessFailed",
+      "label": "ConditionalAccessFailed (AADSTS50131)"
+    },
+    {
+      "value": "ConflictingIdentities",
+      "label": "ConflictingIdentities (AADSTS50197)"
+    },
+    {
+      "value": "CredentialAuthenticationError",
+      "label": "CredentialAuthenticationError (AADSTS50064)"
+    },
+    {
+      "value": "CredentialKeyProvisioningFailed",
+      "label": "CredentialKeyProvisioningFailed (AADSTS17003)"
+    },
+    {
+      "value": "DebugModeEnrollTenantNotFound",
+      "label": "DebugModeEnrollTenantNotFound (AADSTS90125)"
+    },
+    {
+      "value": "DebugModeEnrollTenantNotInferred",
+      "label": "DebugModeEnrollTenantNotInferred (AADSTS90126)"
+    },
+    {
+      "value": "DelegatedAdminBlockedDueToSuspiciousActivity",
+      "label": "DelegatedAdminBlockedDueToSuspiciousActivity (AADSTS530034)"
+    },
+    {
+      "value": "DelegationDoesNotExist",
+      "label": "DelegationDoesNotExist (AADSTS65001)"
+    },
+    {
+      "value": "DelegationDoesNotExistForLinkedIn",
+      "label": "DelegationDoesNotExistForLinkedIn (AADSTS52004)"
+    },
+    {
+      "value": "DesktopSsoAuthenticationPackageNotSupported",
+      "label": "DesktopSsoAuthenticationPackageNotSupported (AADSTS81005)"
+    },
+    {
+      "value": "DesktopSsoAuthorizationHeaderValueWithBadFormat",
+      "label": "DesktopSsoAuthorizationHeaderValueWithBadFormat (AADSTS81009)"
+    },
+    {
+      "value": "DesktopSsoAuthTokenInvalid",
+      "label": "DesktopSsoAuthTokenInvalid (AADSTS81010)"
+    },
+    {
+      "value": "DesktopSsoIdentityInTicketIsNotAuthenticated",
+      "label": "DesktopSsoIdentityInTicketIsNotAuthenticated (AADSTS81004)"
+    },
+    {
+      "value": "DesktopSsoLookupUserBySidFailed",
+      "label": "DesktopSsoLookupUserBySidFailed (AADSTS81011)"
+    },
+    {
+      "value": "DesktopSsoMismatchBetweenTokenUpnAndChosenUpn",
+      "label": "DesktopSsoMismatchBetweenTokenUpnAndChosenUpn (AADSTS81012)"
+    },
+    {
+      "value": "DesktopSsoNoAuthorizationHeader",
+      "label": "DesktopSsoNoAuthorizationHeader (AADSTS81006)"
+    },
+    {
+      "value": "DesktopSsoTenantIsNotOptIn",
+      "label": "DesktopSsoTenantIsNotOptIn (AADSTS81007)"
+    },
+    {
+      "value": "DeviceAuthenticationFailed",
+      "label": "DeviceAuthenticationFailed (AADSTS50155)"
+    },
+    {
+      "value": "DeviceAuthenticationRequired",
+      "label": "DeviceAuthenticationRequired (AADSTS50097)"
+    },
+    {
+      "value": "DeviceFlowAuthorizeWrongDatacenter",
+      "label": "DeviceFlowAuthorizeWrongDatacenter (AADSTS50134)"
+    },
+    {
+      "value": "DeviceInformationNotProvided",
+      "label": "DeviceInformationNotProvided (AADSTS50187)"
+    },
+    {
+      "value": "DeviceIsNotWorkplaceJoined",
+      "label": "DeviceIsNotWorkplaceJoined (AADSTS50129)"
+    },
+    {
+      "value": "DeviceNotCompliant",
+      "label": "DeviceNotCompliant (AADSTS53000)"
+    },
+    {
+      "value": "DeviceNotDomainJoined",
+      "label": "DeviceNotDomainJoined (AADSTS53001)"
+    },
+    {
+      "value": "DeviceOnlyTokensNotSupportedByResource",
+      "label": "DeviceOnlyTokensNotSupportedByResource (AADSTS221000)"
+    },
+    {
+      "value": "DevicePolicyError",
+      "label": "DevicePolicyError (AADSTS50005)"
+    },
+    {
+      "value": "DomainHintMustbePresent",
+      "label": "DomainHintMustbePresent (AADSTS51001)"
+    },
+    {
+      "value": "EmailAddressCollectedFromExternalOidcIDPNotVerified",
+      "label": "EmailAddressCollectedFromExternalOidcIDPNotVerified (AADSTS901012)"
+    },
+    {
+      "value": "EntitlementGrantsNotFound",
+      "label": "EntitlementGrantsNotFound (AADSTS50105)"
+    },
+    {
+      "value": "ExpiredOrRevokedGrant",
+      "label": "ExpiredOrRevokedGrant (AADSTS70008)"
+    },
+    {
+      "value": "ExpiredOrRevokedGrantInactiveToken",
+      "label": "ExpiredOrRevokedGrantInactiveToken (AADSTS700082)"
+    },
+    {
+      "value": "ExternalChallengeNotSupportedForPassthroughUsers",
+      "label": "ExternalChallengeNotSupportedForPassthroughUsers (AADSTS50177)"
+    },
+    {
+      "value": "ExternalServerRetryableError",
+      "label": "ExternalServerRetryableError (AADSTS90006)"
+    },
+    {
+      "value": "FedMetadataInvalidTenantName",
+      "label": "FedMetadataInvalidTenantName (AADSTS20033)"
+    },
+    {
+      "value": "ForbiddenTokenType",
+      "label": "ForbiddenTokenType (AADSTS700229)"
+    },
+    {
+      "value": "ForceReauthDueToInsufficientAuth",
+      "label": "ForceReauthDueToInsufficientAuth (AADSTS51006)"
+    },
+    {
+      "value": "GraphRetryableError",
+      "label": "GraphRetryableError (AADSTS90090)"
+    },
+    {
+      "value": "GraphUserUnauthorized",
+      "label": "GraphUserUnauthorized (AADSTS90093)"
+    },
+    {
+      "value": "GuestUserInPendingState",
+      "label": "GuestUserInPendingState (AADSTS50014)"
+    },
+    {
+      "value": "IdentityProviderAccessDenied",
+      "label": "IdentityProviderAccessDenied (AADSTS90123)"
+    },
+    {
+      "value": "InboundIdTokenIssuerInvalid",
+      "label": "InboundIdTokenIssuerInvalid (AADSTS399284)"
+    },
+    {
+      "value": "InteractionRequired",
+      "label": "InteractionRequired (AADSTS16000, AADSTS700020)"
+    },
+    {
+      "value": "InvalidApiRequest",
+      "label": "InvalidApiRequest (AADSTS165900)"
+    },
+    {
+      "value": "InvalidAssertion",
+      "label": "InvalidAssertion (AADSTS50013)"
+    },
+    {
+      "value": "InvalidClient",
+      "label": "InvalidClient (AADSTS70002)"
+    },
+    {
+      "value": "InvalidClientPublicClientWithCredential",
+      "label": "InvalidClientPublicClientWithCredential (AADSTS700025)"
+    },
+    {
+      "value": "InvalidClientSecretExpiredKeysProvided",
+      "label": "InvalidClientSecretExpiredKeysProvided (AADSTS7000222)"
+    },
+    {
+      "value": "InvalidCodeChallengeMethodInvalidSize",
+      "label": "InvalidCodeChallengeMethodInvalidSize (AADSTS501491)"
+    },
+    {
+      "value": "InvalidDeviceFlowRequest",
+      "label": "InvalidDeviceFlowRequest (AADSTS90120)"
+    },
+    {
+      "value": "InvalidEmailAddress",
+      "label": "InvalidEmailAddress (AADSTS90101)"
+    },
+    {
+      "value": "InvalidEmptyRequest",
+      "label": "InvalidEmptyRequest (AADSTS90121)"
+    },
+    {
+      "value": "InvalidExpiryDate",
+      "label": "InvalidExpiryDate (AADSTS90114)"
+    },
+    {
+      "value": "InvalidGrant",
+      "label": "InvalidGrant (AADSTS70000)"
+    },
+    {
+      "value": "InvalidGrantRedeemAgainstWrongTenant",
+      "label": "InvalidGrantRedeemAgainstWrongTenant (AADSTS700005)"
+    },
+    {
+      "value": "InvalidJwtToken",
+      "label": "InvalidJwtToken (AADSTS50027)"
+    },
+    {
+      "value": "InvalidMultipleResourcesScope",
+      "label": "InvalidMultipleResourcesScope (AADSTS700022)"
+    },
+    {
+      "value": "InvalidNationalCloudId",
+      "label": "InvalidNationalCloudId (AADSTS90051)"
+    },
+    {
+      "value": "InvalidPasswordExpiredOnPremPassword",
+      "label": "InvalidPasswordExpiredOnPremPassword (AADSTS50144)"
+    },
+    {
+      "value": "InvalidPasswordExpiredPassword",
+      "label": "InvalidPasswordExpiredPassword (AADSTS50055)"
+    },
+    {
+      "value": "InvalidRedirectUri",
+      "label": "InvalidRedirectUri (AADSTS70004)"
+    },
+    {
+      "value": "InvalidReplyTo",
+      "label": "InvalidReplyTo (AADSTS50011)"
+    },
+    {
+      "value": "InvalidRequest",
+      "label": "InvalidRequest (AADSTS90023, AADSTS9002313)"
+    },
+    {
+      "value": "InvalidRequestBadRealm",
+      "label": "InvalidRequestBadRealm (AADSTS50169)"
+    },
+    {
+      "value": "InvalidRequestFormat",
+      "label": "InvalidRequestFormat (AADSTS90004)"
+    },
+    {
+      "value": "InvalidRequestNonce",
+      "label": "InvalidRequestNonce (AADSTS140000)"
+    },
+    {
+      "value": "InvalidRequestParameter",
+      "label": "InvalidRequestParameter (AADSTS90100)"
+    },
+    {
+      "value": "InvalidRequestSamlPropertyUnsupported",
+      "label": "InvalidRequestSamlPropertyUnsupported (AADSTS900236)"
+    },
+    {
+      "value": "InvalidRequestWithMultipleRequirements",
+      "label": "InvalidRequestWithMultipleRequirements (AADSTS90005)"
+    },
+    {
+      "value": "InvalidResource",
+      "label": "InvalidResource (AADSTS50001)"
+    },
+    {
+      "value": "InvalidResourcelessScope",
+      "label": "InvalidResourcelessScope (AADSTS700023)"
+    },
+    {
+      "value": "InvalidResourceServicePrincipalDisabled",
+      "label": "InvalidResourceServicePrincipalDisabled (AADSTS500014)"
+    },
+    {
+      "value": "InvalidResourceServicePrincipalNotFound",
+      "label": "InvalidResourceServicePrincipalNotFound (AADSTS500011)"
+    },
+    {
+      "value": "InvalidSamlToken",
+      "label": "InvalidSamlToken (AADSTS50008)"
+    },
+    {
+      "value": "InvalidSamlTokenEmailMissingOrInvalid",
+      "label": "InvalidSamlTokenEmailMissingOrInvalid (AADSTS5000819)"
+    },
+    {
+      "value": "InvalidScope",
+      "label": "InvalidScope (AADSTS70011)"
+    },
+    {
+      "value": "InvalidSessionId",
+      "label": "InvalidSessionId (AADSTS90007)"
+    },
+    {
+      "value": "InvalidSessionKey",
+      "label": "InvalidSessionKey (AADSTS140001)"
+    },
+    {
+      "value": "InvalidSignature",
+      "label": "InvalidSignature (AADSTS50006)"
+    },
+    {
+      "value": "InvalidTenantName",
+      "label": "InvalidTenantName (AADSTS90002)"
+    },
+    {
+      "value": "InvalidUriParameter",
+      "label": "InvalidUriParameter (AADSTS90102)"
+    },
+    {
+      "value": "InvalidUserCode",
+      "label": "InvalidUserCode (AADSTS90119)"
+    },
+    {
+      "value": "InvalidUserInput",
+      "label": "InvalidUserInput (AADSTS90013)"
+    },
+    {
+      "value": "InvalidUserNameOrPassword",
+      "label": "InvalidUserNameOrPassword (AADSTS50126)"
+    },
+    {
+      "value": "InvalidXml",
+      "label": "InvalidXml (AADSTS90107)"
+    },
+    {
+      "value": "KmsiInterrupt",
+      "label": "KmsiInterrupt (AADSTS50140)"
+    },
+    {
+      "value": "LoopDetected",
+      "label": "LoopDetected (AADSTS50196)"
+    },
+    {
+      "value": "MalformedDiscoveryRequest",
+      "label": "MalformedDiscoveryRequest (AADSTS50050)"
+    },
+    {
+      "value": "MisconfiguredApplication",
+      "label": "MisconfiguredApplication (AADSTS65005)"
+    },
+    {
+      "value": "MissingCustomSigningKey",
+      "label": "MissingCustomSigningKey (AADSTS50146)"
+    },
+    {
+      "value": "MissingExternalClaimsProviderMapping",
+      "label": "MissingExternalClaimsProviderMapping (AADSTS50170)"
+    },
+    {
+      "value": "MissingRequiredClaim",
+      "label": "MissingRequiredClaim (AADSTS90016)"
+    },
+    {
+      "value": "MissingRequiredField",
+      "label": "MissingRequiredField (AADSTS90014)"
+    },
+    {
+      "value": "MissingSigningKey",
+      "label": "MissingSigningKey (AADSTS50003)"
+    },
+    {
+      "value": "MissingTenantRealm",
+      "label": "MissingTenantRealm (AADSTS90019)"
+    },
+    {
+      "value": "MissingTenantRealmAndNoUserInformationProvided",
+      "label": "MissingTenantRealmAndNoUserInformationProvided (AADSTS50059)"
+    },
+    {
+      "value": "MsaServerError",
+      "label": "MsaServerError (AADSTS70012)"
+    },
+    {
+      "value": "MsodsServiceUnavailable",
+      "label": "MsodsServiceUnavailable (AADSTS90033)"
+    },
+    {
+      "value": "MsodsServiceUnretryableFailure",
+      "label": "MsodsServiceUnretryableFailure (AADSTS90036)"
+    },
+    {
+      "value": "NationalCloudAuthCodeRedirection",
+      "label": "NationalCloudAuthCodeRedirection (AADSTS90043)"
+    },
+    {
+      "value": "NationalCloudTenantRedirection",
+      "label": "NationalCloudTenantRedirection (AADSTS90038)"
+    },
+    {
+      "value": "NgcDeviceIsDisabled",
+      "label": "NgcDeviceIsDisabled (AADSTS130007)"
+    },
+    {
+      "value": "NgcDeviceIsNotFound",
+      "label": "NgcDeviceIsNotFound (AADSTS130008)"
+    },
+    {
+      "value": "NgcInvalidSignature",
+      "label": "NgcInvalidSignature (AADSTS130005)"
+    },
+    {
+      "value": "NgcKeyNotFound",
+      "label": "NgcKeyNotFound (AADSTS130004)"
+    },
+    {
+      "value": "NgcTransportKeyNotFound",
+      "label": "NgcTransportKeyNotFound (AADSTS130006)"
+    },
+    {
+      "value": "NoEmailAddressCollectedFromExternalOidcIDP",
+      "label": "NoEmailAddressCollectedFromExternalOidcIDP (AADSTS901011)"
+    },
+    {
+      "value": "NoExternalIdentifierCollectedFromExternalOidcIDP",
+      "label": "NoExternalIdentifierCollectedFromExternalOidcIDP (AADSTS901014)"
+    },
+    {
+      "value": "NoMatchedAuthnContextInOutputClaims",
+      "label": "NoMatchedAuthnContextInOutputClaims (AADSTS75011)"
+    },
+    {
+      "value": "NonConvergedAppV2GlobalEndpointNotSupported",
+      "label": "NonConvergedAppV2GlobalEndpointNotSupported (AADSTS90130)"
+    },
+    {
+      "value": "NoSuchInstanceForDiscovery",
+      "label": "NoSuchInstanceForDiscovery (AADSTS50049)"
+    },
+    {
+      "value": "NotAllowedByInboundPolicyTenant",
+      "label": "NotAllowedByInboundPolicyTenant (AADSTS500213)"
+    },
+    {
+      "value": "NotAllowedByOutboundPolicyTenant",
+      "label": "NotAllowedByOutboundPolicyTenant (AADSTS500212)"
+    },
+    {
+      "value": "NotAllowedTenant",
+      "label": "NotAllowedTenant (AADSTS50002)"
+    },
+    {
+      "value": "NotAllowedTenantBlockedTenantFraud",
+      "label": "NotAllowedTenantBlockedTenantFraud (AADSTS5000224)"
+    },
+    {
+      "value": "NotSupported",
+      "label": "NotSupported (AADSTS90010)"
+    },
+    {
+      "value": "OAuth2IdPAuthCodeRedemptionUserError",
+      "label": "OAuth2IdPAuthCodeRedemptionUserError (AADSTS40015)"
+    },
+    {
+      "value": "OAuth2IdPRefreshTokenRedemptionUserError",
+      "label": "OAuth2IdPRefreshTokenRedemptionUserError (AADSTS40009)"
+    },
+    {
+      "value": "OAuth2IdPRetryableServerError",
+      "label": "OAuth2IdPRetryableServerError (AADSTS40010)"
+    },
+    {
+      "value": "OAuth2IdPUnretryableServerError",
+      "label": "OAuth2IdPUnretryableServerError (AADSTS40008)"
+    },
+    {
+      "value": "OnPremisePasswordValidationAccountLogonInvalidHours",
+      "label": "OnPremisePasswordValidationAccountLogonInvalidHours (AADSTS80012)"
+    },
+    {
+      "value": "OnPremisePasswordValidationAuthenticationAgentTimeout",
+      "label": "OnPremisePasswordValidationAuthenticationAgentTimeout (AADSTS80014)"
+    },
+    {
+      "value": "OnPremisePasswordValidationEncryptionException",
+      "label": "OnPremisePasswordValidationEncryptionException (AADSTS80010)"
+    },
+    {
+      "value": "OnPremisePasswordValidationTimeSkew",
+      "label": "OnPremisePasswordValidationTimeSkew (AADSTS80013)"
+    },
+    {
+      "value": "OnPremisePasswordValidatorErrorOccurredOnPrem",
+      "label": "OnPremisePasswordValidatorErrorOccurredOnPrem (AADSTS80007)"
+    },
+    {
+      "value": "OnPremisePasswordValidatorRequestTimedout",
+      "label": "OnPremisePasswordValidatorRequestTimedout (AADSTS80002)"
+    },
+    {
+      "value": "OnPremisePasswordValidatorUnpredictableWebException",
+      "label": "OnPremisePasswordValidatorUnpredictableWebException (AADSTS80005)"
+    },
+    {
+      "value": "OnPremiseStoreIsNotAvailable",
+      "label": "OnPremiseStoreIsNotAvailable (AADSTS80001)"
+    },
+    {
+      "value": "OrgIdWsFederationGuestNotAllowed",
+      "label": "OrgIdWsFederationGuestNotAllowed (AADSTS90084)"
+    },
+    {
+      "value": "OrgIdWsFederationMessageCreationFromUriFailed",
+      "label": "OrgIdWsFederationMessageCreationFromUriFailed (AADSTS90087)"
+    },
+    {
+      "value": "OrgIdWsFederationMessageInvalid",
+      "label": "OrgIdWsFederationMessageInvalid (AADSTS90081)"
+    },
+    {
+      "value": "OrgIdWsFederationNotSupported",
+      "label": "OrgIdWsFederationNotSupported (AADSTS90082)"
+    },
+    {
+      "value": "OrgIdWsFederationSltRedemptionFailed",
+      "label": "OrgIdWsFederationSltRedemptionFailed (AADSTS90085)"
+    },
+    {
+      "value": "OrgIdWsTrustDaTokenExpired",
+      "label": "OrgIdWsTrustDaTokenExpired (AADSTS90086)"
+    },
+    {
+      "value": "PartnerEncryptionCertificateMissing",
+      "label": "PartnerEncryptionCertificateMissing (AADSTS50007)"
+    },
+    {
+      "value": "PassThroughUserMfaError",
+      "label": "PassThroughUserMfaError (AADSTS90072)"
+    },
+    {
+      "value": "PasswordChangeAsyncJobStateTerminated",
+      "label": "PasswordChangeAsyncJobStateTerminated (AADSTS120008)"
+    },
+    {
+      "value": "PasswordChangeCompromisedPassword",
+      "label": "PasswordChangeCompromisedPassword (AADSTS50135)"
+    },
+    {
+      "value": "PasswordResetRegistrationRequiredInterrupt",
+      "label": "PasswordResetRegistrationRequiredInterrupt (AADSTS50125)"
+    },
+    {
+      "value": "PKeyAuthInvalidJwtUnauthorized",
+      "label": "PKeyAuthInvalidJwtUnauthorized (AADSTS50099)"
+    },
+    {
+      "value": "ProofUpBlockedDueToRisk",
+      "label": "ProofUpBlockedDueToRisk (AADSTS53004)"
+    },
+    {
+      "value": "ProofUpBlockedDueToSecurityInfoAcr",
+      "label": "ProofUpBlockedDueToSecurityInfoAcr (AADSTS53010)"
+    },
+    {
+      "value": "QueryStringTooLong",
+      "label": "QueryStringTooLong (AADSTS90015)"
+    },
+    {
+      "value": "RedirectMsaSessionToApp",
+      "label": "RedirectMsaSessionToApp (AADSTS50136)"
+    },
+    {
+      "value": "RequestBudgetExceededError",
+      "label": "RequestBudgetExceededError (AADSTS90024)"
+    },
+    {
+      "value": "RequestDeniedError",
+      "label": "RequestDeniedError (AADSTS75008)"
+    },
+    {
+      "value": "RequestIssueTimeExpired",
+      "label": "RequestIssueTimeExpired (AADSTS76026)"
+    },
+    {
+      "value": "RequestTimeout",
+      "label": "RequestTimeout (AADSTS90012)"
+    },
+    {
+      "value": "RequiredClaimIsMissing",
+      "label": "RequiredClaimIsMissing (AADSTS240002)"
+    },
+    {
+      "value": "RequiredFeatureNotEnabled",
+      "label": "RequiredFeatureNotEnabled (AADSTS51000)"
+    },
+    {
+      "value": "RetryableError",
+      "label": "RetryableError (AADSTS50033)"
+    },
+    {
+      "value": "Saml2AuthenticationRequestInvalidNameIDPolicy",
+      "label": "Saml2AuthenticationRequestInvalidNameIDPolicy (AADSTS75016)"
+    },
+    {
+      "value": "Saml2MessageInvalid",
+      "label": "Saml2MessageInvalid (AADSTS75005)"
+    },
+    {
+      "value": "SasRetryableError",
+      "label": "SasRetryableError (AADSTS50087)"
+    },
+    {
+      "value": "SessionControlNotSupportedForPassthroughUsers",
+      "label": "SessionControlNotSupportedForPassthroughUsers (AADSTS50178)"
+    },
+    {
+      "value": "SessionMissingMsaOAuth2RefreshToken",
+      "label": "SessionMissingMsaOAuth2RefreshToken (AADSTS50139)"
+    },
+    {
+      "value": "SignoutInitiatorNotParticipant",
+      "label": "SignoutInitiatorNotParticipant (AADSTS50068)"
+    },
+    {
+      "value": "SignoutInvalidRequest",
+      "label": "SignoutInvalidRequest (AADSTS50061)"
+    },
+    {
+      "value": "SignoutMessageExpired",
+      "label": "SignoutMessageExpired (AADSTS50071)"
+    },
+    {
+      "value": "SignoutUnknownSessionIdentifier",
+      "label": "SignoutUnknownSessionIdentifier (AADSTS50070)"
+    },
+    {
+      "value": "SsoArtifactInvalidOrExpired",
+      "label": "SsoArtifactInvalidOrExpired (AADSTS50132)"
+    },
+    {
+      "value": "SsoArtifactRevoked",
+      "label": "SsoArtifactRevoked (AADSTS50133)"
+    },
+    {
+      "value": "SsoUserAccountNotFoundInResourceTenant",
+      "label": "SsoUserAccountNotFoundInResourceTenant (AADSTS16003)"
+    },
+    {
+      "value": "SubjectMismatchesIssuer",
+      "label": "SubjectMismatchesIssuer (AADSTS50048)"
+    },
+    {
+      "value": "TemporaryRedirect",
+      "label": "TemporaryRedirect (AADSTS51005)"
+    },
+    {
+      "value": "TenantThrottlingError",
+      "label": "TenantThrottlingError (AADSTS90055)"
+    },
+    {
+      "value": "TokenForItselfMissingIdenticalAppIdentifier",
+      "label": "TokenForItselfMissingIdenticalAppIdentifier (AADSTS90009)"
+    },
+    {
+      "value": "TokenForItselfRequiresGraphPermission",
+      "label": "TokenForItselfRequiresGraphPermission (AADSTS90008)"
+    },
+    {
+      "value": "TokenIssuanceError",
+      "label": "TokenIssuanceError (AADSTS50000)"
+    },
+    {
+      "value": "UnableToGeneratePairwiseIdentifierWithMissingSalt",
+      "label": "UnableToGeneratePairwiseIdentifierWithMissingSalt (AADSTS50042)"
+    },
+    {
+      "value": "UnauthorizedClient",
+      "label": "UnauthorizedClient (AADSTS70001)"
+    },
+    {
+      "value": "UnauthorizedClientApplicationDisabled",
+      "label": "UnauthorizedClientApplicationDisabled (AADSTS7000112)"
+    },
+    {
+      "value": "UnauthorizedClientAppNotFoundInOrgIdTenant",
+      "label": "UnauthorizedClientAppNotFoundInOrgIdTenant (AADSTS700011)"
+    },
+    {
+      "value": "UnsupportedAndroidWebViewVersion",
+      "label": "UnsupportedAndroidWebViewVersion (AADSTS220450)"
+    },
+    {
+      "value": "UnsupportedBindingError",
+      "label": "UnsupportedBindingError (AADSTS75003)"
+    },
+    {
+      "value": "UnsupportedGrantType",
+      "label": "UnsupportedGrantType (AADSTS70003)"
+    },
+    {
+      "value": "UnsupportedResponseMode",
+      "label": "UnsupportedResponseMode (AADSTS70007)"
+    },
+    {
+      "value": "UnsupportedResponseType",
+      "label": "UnsupportedResponseType (AADSTS70005)"
+    },
+    {
+      "value": "UserAccountNotFound",
+      "label": "UserAccountNotFound (AADSTS50034)"
+    },
+    {
+      "value": "UserAccountNotInDirectory",
+      "label": "UserAccountNotInDirectory (AADSTS51004)"
+    },
+    {
+      "value": "UserAccountSelectionInvalid",
+      "label": "UserAccountSelectionInvalid (AADSTS16001)"
+    },
+    {
+      "value": "UserDeclinedConsent",
+      "label": "UserDeclinedConsent (AADSTS65004)"
+    },
+    {
+      "value": "UserDisabled",
+      "label": "UserDisabled (AADSTS50057)"
+    },
+    {
+      "value": "UserInformationNotProvided",
+      "label": "UserInformationNotProvided (AADSTS50058)"
+    },
+    {
+      "value": "UserNotBoundError",
+      "label": "UserNotBoundError (AADSTS1000000)"
+    },
+    {
+      "value": "UserStrongAuthClientAuthNRequired",
+      "label": "UserStrongAuthClientAuthNRequired (AADSTS50076)"
+    },
+    {
+      "value": "UserStrongAuthClientAuthNRequiredInterrupt",
+      "label": "UserStrongAuthClientAuthNRequiredInterrupt (AADSTS50074)"
+    },
+    {
+      "value": "UserStrongAuthEnrollmentRequired",
+      "label": "UserStrongAuthEnrollmentRequired (AADSTS50079)"
+    },
+    {
+      "value": "UserStrongAuthEnrollmentRequiredInterrupt",
+      "label": "UserStrongAuthEnrollmentRequiredInterrupt (AADSTS50072)"
+    },
+    {
+      "value": "UserStrongAuthExpired",
+      "label": "UserStrongAuthExpired (AADSTS50078)"
+    },
+    {
+      "value": "UserUnauthorized",
+      "label": "UserUnauthorized (AADSTS50020)"
+    },
+    {
+      "value": "V1ResourceV2GlobalEndpointNotSupported",
+      "label": "V1ResourceV2GlobalEndpointNotSupported (AADSTS90124)"
+    },
+    {
+      "value": "ViralUserLegalAgeConsentRequiredState",
+      "label": "ViralUserLegalAgeConsentRequiredState (AADSTS50015)"
+    },
+    {
+      "value": "WeakRsaKey",
+      "label": "WeakRsaKey (AADSTS50032)"
+    },
+    {
+      "value": "WindowsIntegratedAuthMissing",
+      "label": "WindowsIntegratedAuthMissing (AADSTS50180)"
+    },
+    {
+      "value": "WsFedMessageInvalid",
+      "label": "WsFedMessageInvalid (AADSTS20012)"
+    },
+    {
+      "value": "WsFedSignInResponseError",
+      "label": "WsFedSignInResponseError (AADSTS20001)"
+    },
+    {
+      "value": "XCB2BResourceCloudNotAllowedOnIdentityTenant",
+      "label": "XCB2BResourceCloudNotAllowedOnIdentityTenant (AADSTS1000104)"
     }
   ]
 }
