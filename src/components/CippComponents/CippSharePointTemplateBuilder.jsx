@@ -17,11 +17,14 @@ import {
   MenuItem,
   Skeleton,
   Stack,
+  Tab,
+  Tabs,
   Tooltip,
   Typography,
   Button,
 } from "@mui/material";
 import CippFormComponent from "./CippFormComponent";
+import { CippCardTabPanel } from "./CippCardTabPanel";
 import { CippSharePointPermissionEditor } from "./CippSharePointPermissionEditor";
 import SharePointIcon from "../../icons/iconly/bulk/sharepoint";
 import TeamsIcon from "../../icons/iconly/bulk/teams";
@@ -100,7 +103,10 @@ const siteTypeIcon = (siteType) => (siteType === "teams" ? TeamsIcon : SharePoin
 // Faint grayscale watermark only; header product marks stay in color.
 const watermarkTypeIconSx = { filter: "grayscale(1)" };
 
-const resolveSiteType = (value) => (value === "teams" ? "teams" : "sharePoint");
+const resolveSiteType = (value) => {
+  const raw = value?.value ?? value;
+  return raw === "teams" ? "teams" : "sharePoint";
+};
 
 const resolveSiteLanguage = (value) => {
   const raw = value?.value ?? value;
@@ -127,7 +133,11 @@ const resolveCreateAs = (value) => {
 
 export { resolveCreateAs };
 
+const isReservedGeneralName = (name) => (name || "").trim().toLowerCase() === "general";
+
 const newLibrary = () => ({ name: "", description: "", permissions: [] });
+const newChannel = () => ({ name: "", membershipType: "standard", layoutType: "post" });
+const newFolder = () => ({ name: "" });
 const newSiteTemplate = (siteType = "sharePoint") => ({
   displayName: "",
   alias: "",
@@ -136,13 +146,32 @@ const newSiteTemplate = (siteType = "sharePoint") => ({
   createAs: CREATE_AS_DEFAULT,
   permissions: [],
   libraries: [],
+  channels: [],
+  folders: [],
 });
 
-/** True when a site card has issues that keep Save disabled (name, root perms, library names). */
+/** True when a site card has issues that keep Save disabled (name, root perms, library/channel/folder names). */
 export const siteTemplateBlocksSave = (site) => {
   if (!site?.displayName?.trim()) return true;
   if (!Array.isArray(site?.permissions) || site.permissions.length === 0) return true;
   if ((site?.libraries || []).some((lib) => !lib?.name?.trim())) return true;
+  // Channels/folders only apply to Teams; ignore when this card is SharePoint.
+  if (resolveSiteType(site?.siteType) === "teams") {
+    if (
+      (site?.channels || []).some(
+        (ch) => !ch?.name?.trim() || isReservedGeneralName(ch.name)
+      )
+    ) {
+      return true;
+    }
+    if (
+      (site?.folders || []).some(
+        (folder) => !folder?.name?.trim() || isReservedGeneralName(folder.name)
+      )
+    ) {
+      return true;
+    }
+  }
   return false;
 };
 
@@ -159,6 +188,20 @@ export const getSiteTemplateSaveIssues = (sites = []) => {
     }
     if ((site?.libraries || []).some((lib) => !lib?.name?.trim())) {
       issues.push(`${label}: every library needs a name`);
+    }
+    if (resolveSiteType(site?.siteType) === "teams") {
+      if ((site?.channels || []).some((ch) => !ch?.name?.trim())) {
+        issues.push(`${label}: every channel needs a name`);
+      }
+      if ((site?.channels || []).some((ch) => isReservedGeneralName(ch.name))) {
+        issues.push(`${label}: channel name "General" is reserved`);
+      }
+      if ((site?.folders || []).some((folder) => !folder?.name?.trim())) {
+        issues.push(`${label}: every folder needs a name`);
+      }
+      if ((site?.folders || []).some((folder) => isReservedGeneralName(folder.name))) {
+        issues.push(`${label}: folder name "General" is reserved`);
+      }
     }
   });
   return issues;
@@ -263,6 +306,253 @@ const LibraryRow = ({ formControl, name, onRemove, onConfigurePermissions }) => 
             <CippIcons.Delete fontSize="small" sx={{ color: "error.main" }} />
           </ListItemIcon>
           <ListItemText>Remove Library</ListItemText>
+        </MenuItem>
+      </Menu>
+    </Box>
+  );
+};
+
+// Channel row for Teams cards: name + membership cycle (public/private/shared) + layout toggle (posts/chat).
+const CHANNEL_MEMBERSHIP_CYCLE = ["standard", "private", "shared"];
+const channelMembershipMeta = {
+  standard: {
+    label: "Public channel",
+    nextHint: "click for private",
+    Icon: CippIcons.Public,
+    color: "text.secondary",
+  },
+  private: {
+    label: "Private channel",
+    nextHint: "click for shared",
+    Icon: CippIcons.Lock,
+    color: "warning.main",
+  },
+  shared: {
+    label: "Shared channel",
+    nextHint: "click for public",
+    Icon: CippIcons.Share,
+    color: "info.main",
+  },
+};
+const channelLayoutMeta = {
+  post: {
+    label: "Posts layout",
+    nextHint: "click for chat layout",
+    Icon: CippIcons.ViewList,
+  },
+  chat: {
+    label: "Chat layout",
+    nextHint: "click for posts layout",
+    Icon: CippIcons.ViewAgenda,
+  },
+};
+
+const ChannelRow = ({ formControl, name, onRemove }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const channelName = useWatch({ control: formControl.control, name: `${name}.name` });
+  const membershipType = useWatch({
+    control: formControl.control,
+    name: `${name}.membershipType`,
+  });
+  const layoutType = useWatch({
+    control: formControl.control,
+    name: `${name}.layoutType`,
+  });
+  const openMenu = Boolean(anchorEl);
+  const missingName = !channelName?.trim();
+  const reservedName = isReservedGeneralName(channelName);
+  const membershipKey = CHANNEL_MEMBERSHIP_CYCLE.includes(membershipType)
+    ? membershipType
+    : "standard";
+  const layoutKey = layoutType === "chat" ? "chat" : "post";
+  const membership = channelMembershipMeta[membershipKey];
+  const layout = channelLayoutMeta[layoutKey];
+  const MembershipIcon = membership.Icon;
+  const LayoutIcon = layout.Icon;
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 0.5,
+        px: 1,
+        py: 0.75,
+        borderRadius: 1,
+        "&:hover": { bgcolor: "action.hover" },
+      }}
+    >
+      <Tooltip
+        title={
+          reservedName
+            ? '"General" is reserved'
+            : missingName
+              ? "Channel name required"
+              : "Teams channel"
+        }
+      >
+        <CippIcons.MeetingRoom
+          fontSize="small"
+          sx={{ color: missingName || reservedName ? "error.main" : "text.secondary" }}
+        />
+      </Tooltip>
+      <Controller
+        name={`${name}.name`}
+        control={formControl.control}
+        rules={{
+          required: true,
+          validate: (value) => !isReservedGeneralName(value) || '"General" is reserved',
+        }}
+        render={({ field }) => (
+          <InputBase
+            value={field.value || ""}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            placeholder="Channel name"
+            sx={{ flexGrow: 1, fontSize: 14, minWidth: 0 }}
+          />
+        )}
+      />
+      <Controller
+        name={`${name}.membershipType`}
+        control={formControl.control}
+        defaultValue="standard"
+        render={({ field }) => {
+          const current = CHANNEL_MEMBERSHIP_CYCLE.includes(field.value)
+            ? field.value
+            : "standard";
+          const next =
+            CHANNEL_MEMBERSHIP_CYCLE[
+              (CHANNEL_MEMBERSHIP_CYCLE.indexOf(current) + 1) % CHANNEL_MEMBERSHIP_CYCLE.length
+            ];
+          return (
+            <Tooltip title={`${membership.label} — ${membership.nextHint}`}>
+              <IconButton
+                size="small"
+                aria-label={`${membership.label}. Cycle channel type`}
+                onClick={() => field.onChange(next)}
+              >
+                <MembershipIcon fontSize="small" sx={{ color: membership.color }} />
+              </IconButton>
+            </Tooltip>
+          );
+        }}
+      />
+      <Controller
+        name={`${name}.layoutType`}
+        control={formControl.control}
+        defaultValue="post"
+        render={({ field }) => (
+          <Tooltip title={`${layout.label} — ${layout.nextHint}`}>
+            <IconButton
+              size="small"
+              aria-label={`${layout.label}. Toggle channel layout`}
+              onClick={() => field.onChange(field.value === "chat" ? "post" : "chat")}
+            >
+              <LayoutIcon fontSize="small" sx={{ color: "text.secondary" }} />
+            </IconButton>
+          </Tooltip>
+        )}
+      />
+      <Tooltip title="Channel actions">
+        <IconButton
+          size="small"
+          aria-label="Channel actions"
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+        >
+          <CippIcons.MoreVert fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Menu anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
+        <MenuItem
+          onClick={() => {
+            setAnchorEl(null);
+            onRemove();
+          }}
+          sx={{ color: "error.main" }}
+        >
+          <ListItemIcon>
+            <CippIcons.Delete fontSize="small" sx={{ color: "error.main" }} />
+          </ListItemIcon>
+          <ListItemText>Remove Channel</ListItemText>
+        </MenuItem>
+      </Menu>
+    </Box>
+  );
+};
+
+// Folder row: created at Documents root next to General (Teams Files tab).
+const FolderRow = ({ formControl, name, onRemove }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const folderName = useWatch({ control: formControl.control, name: `${name}.name` });
+  const openMenu = Boolean(anchorEl);
+  const missingName = !folderName?.trim();
+  const reservedName = isReservedGeneralName(folderName);
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        px: 1,
+        py: 0.75,
+        borderRadius: 1,
+        "&:hover": { bgcolor: "action.hover" },
+      }}
+    >
+      <Tooltip
+        title={
+          reservedName
+            ? '"General" is reserved'
+            : missingName
+              ? "Folder name required"
+              : "Folder under Documents (next to General)"
+        }
+      >
+        <CippIcons.FolderOpen
+          fontSize="small"
+          sx={{ color: missingName || reservedName ? "error.main" : "text.secondary" }}
+        />
+      </Tooltip>
+      <Controller
+        name={`${name}.name`}
+        control={formControl.control}
+        rules={{
+          required: true,
+          validate: (value) => !isReservedGeneralName(value) || '"General" is reserved',
+        }}
+        render={({ field }) => (
+          <InputBase
+            value={field.value || ""}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            placeholder="Folder name"
+            sx={{ flexGrow: 1, fontSize: 14 }}
+          />
+        )}
+      />
+      <Tooltip title="Folder actions">
+        <IconButton
+          size="small"
+          aria-label="Folder actions"
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+        >
+          <CippIcons.MoreVert fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Menu anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
+        <MenuItem
+          onClick={() => {
+            setAnchorEl(null);
+            onRemove();
+          }}
+          sx={{ color: "error.main" }}
+        >
+          <ListItemIcon>
+            <CippIcons.Delete fontSize="small" sx={{ color: "error.main" }} />
+          </ListItemIcon>
+          <ListItemText>Remove Folder</ListItemText>
         </MenuItem>
       </Menu>
     </Box>
@@ -394,16 +684,19 @@ const CreateAsDialog = ({ formControl, name, onClose }) => {
   );
 };
 
-// A single site template card: coloured header, libraries, and "..." menu for permissions,
-// site type, and remove. Header icon + watermark reflect the effective site type.
+// A single site template card: coloured header, tabbed body (libraries / channels / folders
+// for Teams; libraries only for SharePoint), and "..." menu for permissions, site type, and remove.
 const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermissions }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [siteTypeOpen, setSiteTypeOpen] = useState(false);
   const [siteLanguageOpen, setSiteLanguageOpen] = useState(false);
   const [createAsOpen, setCreateAsOpen] = useState(false);
+  const [bodyTab, setBodyTab] = useState(0);
   const permissions = useWatch({ control: formControl.control, name: `${name}.permissions` });
   const displayName = useWatch({ control: formControl.control, name: `${name}.displayName` });
   const libraries = useWatch({ control: formControl.control, name: `${name}.libraries` });
+  const channels = useWatch({ control: formControl.control, name: `${name}.channels` });
+  const folders = useWatch({ control: formControl.control, name: `${name}.folders` });
   const cardSiteType = useWatch({ control: formControl.control, name: `${name}.siteType` });
   const createAs = useWatch({ control: formControl.control, name: `${name}.createAs` });
   const overrideSiteType = useWatch({ control: formControl.control, name: "overrideSiteType" });
@@ -412,24 +705,91 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
   const openMenu = Boolean(anchorEl);
   const overrideActive = !!overrideSiteType;
   const effectiveSiteType = resolveSiteType(overrideActive ? templateSiteType : cardSiteType);
+  const isTeams = effectiveSiteType === "teams";
   const TypeIcon = siteTypeIcon(effectiveSiteType);
   const createAsLabel =
-    effectiveSiteType === "teams"
+    isTeams
       ? "Microsoft Team"
       : resolveCreateAs(createAs) === "Communication"
         ? "Communication site"
         : "Team site";
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: libraryFields,
+    append: appendLibrary,
+    remove: removeLibrary,
+  } = useFieldArray({
     control: formControl.control,
     name: `${name}.libraries`,
   });
+  const {
+    fields: channelFields,
+    append: appendChannel,
+    remove: removeChannel,
+  } = useFieldArray({
+    control: formControl.control,
+    name: `${name}.channels`,
+  });
+  const {
+    fields: folderFields,
+    append: appendFolder,
+    remove: removeFolder,
+  } = useFieldArray({
+    control: formControl.control,
+    name: `${name}.folders`,
+  });
+
+  // Keep body tab in range when switching SharePoint <-> Teams.
+  useEffect(() => {
+    if (!isTeams && bodyTab !== 0) setBodyTab(0);
+  }, [isTeams, bodyTab]);
 
   // Flag anything on this card that keeps Save disabled (same rules as form + save checks).
   const missingDisplayName = !displayName?.trim();
   const missingRootPerms = permCount === 0;
   const incompleteLibraries = (libraries || []).some((lib) => !lib?.name?.trim());
-  const cardBlocksSave = missingDisplayName || missingRootPerms || incompleteLibraries;
+  const incompleteChannels =
+    isTeams &&
+    (channels || []).some((ch) => !ch?.name?.trim() || isReservedGeneralName(ch.name));
+  const incompleteFolders =
+    isTeams &&
+    (folders || []).some(
+      (folder) => !folder?.name?.trim() || isReservedGeneralName(folder.name)
+    );
+  const cardBlocksSave =
+    missingDisplayName ||
+    missingRootPerms ||
+    incompleteLibraries ||
+    incompleteChannels ||
+    incompleteFolders;
+
+  const libraryCount = Array.isArray(libraries) ? libraries.length : 0;
+  const channelCount = Array.isArray(channels) ? channels.length : 0;
+  const folderCount = Array.isArray(folders) ? folders.length : 0;
+
+  const tabLabel = (short, count) => (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+      <span>{short}</span>
+      {count > 0 && (
+        <Typography component="span" variant="caption" sx={{ opacity: 0.75 }}>
+          {count}
+        </Typography>
+      )}
+    </Box>
+  );
+
+  const addRowSx = {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+    px: 1,
+    py: 0.75,
+    mt: 0.5,
+    borderRadius: 1,
+    cursor: "pointer",
+    color: "primary.main",
+    "&:hover": { bgcolor: "action.hover" },
+  };
 
   return (
     <Card
@@ -637,16 +997,15 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
         </Menu>
       </Box>
 
-      {/* Body: document libraries + faint type watermark */}
+      {/* Body: tabbed libraries / channels / folders + faint type watermark */}
       <Box
         sx={{
-          p: 1.5,
           flexGrow: 1,
           display: "flex",
           flexDirection: "column",
           position: "relative",
           overflow: "hidden",
-          minHeight: 160,
+          minHeight: 180,
         }}
       >
         <Box
@@ -667,41 +1026,95 @@ const SiteTemplateCard = ({ formControl, name, index, onRemove, onConfigurePermi
         >
           <TypeIcon sx={{ fontSize: 64 }} style={watermarkTypeIconSx} />
         </Box>
-        <Typography variant="subtitle2" sx={{ mb: 0.5, position: "relative", zIndex: 1 }}>
-          Document Libraries
-        </Typography>
-        <Stack spacing={0.25} sx={{ flexGrow: 1, position: "relative", zIndex: 1 }}>
-          {fields.map((field, libIndex) => (
-            <LibraryRow
-              key={field.id}
-              formControl={formControl}
-              name={`${name}.libraries.${libIndex}`}
-              onRemove={() => remove(libIndex)}
-              onConfigurePermissions={() =>
-                onConfigurePermissions(`${name}.libraries.${libIndex}.permissions`, "Library")
-              }
-            />
-          ))}
-          <Box
-            role="button"
-            onClick={() => append(newLibrary())}
+        {isTeams ? (
+          <Tabs
+            value={bodyTab}
+            onChange={(_e, value) => setBodyTab(value)}
+            variant="fullWidth"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              px: 1,
-              py: 0.75,
-              mt: 0.5,
-              borderRadius: 1,
-              cursor: "pointer",
-              color: "primary.main",
-              "&:hover": { bgcolor: "action.hover" },
+              minHeight: 36,
+              borderBottom: 1,
+              borderColor: "divider",
+              position: "relative",
+              zIndex: 1,
+              "& .MuiTab-root": { minHeight: 36, py: 0.5, px: 0.5, fontSize: 12 },
             }}
           >
-            <CippIcons.Add fontSize="small" />
-            <Typography variant="body2">Add Library</Typography>
-          </Box>
-        </Stack>
+            <Tab label={tabLabel("Libs", libraryCount)} aria-label="Document libraries" />
+            <Tab label={tabLabel("Channels", channelCount)} aria-label="Channels" />
+            <Tab label={tabLabel("Folders", folderCount)} aria-label="Folders" />
+          </Tabs>
+        ) : (
+          <Typography
+            variant="subtitle2"
+            sx={{ px: 1.5, pt: 1.5, mb: 0.5, position: "relative", zIndex: 1 }}
+          >
+            Document Libraries
+          </Typography>
+        )}
+        <Box sx={{ p: 1.5, pt: isTeams ? 1 : 0, position: "relative", zIndex: 1, flexGrow: 1 }}>
+          <CippCardTabPanel value={isTeams ? bodyTab : 0} index={0}>
+            <Stack spacing={0.25}>
+              {libraryFields.map((field, libIndex) => (
+                <LibraryRow
+                  key={field.id}
+                  formControl={formControl}
+                  name={`${name}.libraries.${libIndex}`}
+                  onRemove={() => removeLibrary(libIndex)}
+                  onConfigurePermissions={() =>
+                    onConfigurePermissions(`${name}.libraries.${libIndex}.permissions`, "Library")
+                  }
+                />
+              ))}
+              <Box role="button" onClick={() => appendLibrary(newLibrary())} sx={addRowSx}>
+                <CippIcons.Add fontSize="small" />
+                <Typography variant="body2">Add Library</Typography>
+              </Box>
+            </Stack>
+          </CippCardTabPanel>
+          {isTeams && (
+            <>
+              <CippCardTabPanel value={bodyTab} index={1}>
+                <Stack spacing={0.25}>
+                  {channelFields.map((field, chIndex) => (
+                    <ChannelRow
+                      key={field.id}
+                      formControl={formControl}
+                      name={`${name}.channels.${chIndex}`}
+                      onRemove={() => removeChannel(chIndex)}
+                    />
+                  ))}
+                  <Box role="button" onClick={() => appendChannel(newChannel())} sx={addRowSx}>
+                    <CippIcons.Add fontSize="small" />
+                    <Typography variant="body2">Add Channel</Typography>
+                  </Box>
+                </Stack>
+              </CippCardTabPanel>
+              <CippCardTabPanel value={bodyTab} index={2}>
+                <Stack spacing={0.25}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "text.secondary", px: 1, pb: 0.5, display: "block" }}
+                  >
+                    Created next to General under Documents
+                  </Typography>
+                  {folderFields.map((field, folderIndex) => (
+                    <FolderRow
+                      key={field.id}
+                      formControl={formControl}
+                      name={`${name}.folders.${folderIndex}`}
+                      onRemove={() => removeFolder(folderIndex)}
+                    />
+                  ))}
+                  <Box role="button" onClick={() => appendFolder(newFolder())} sx={addRowSx}>
+                    <CippIcons.Add fontSize="small" />
+                    <Typography variant="body2">Add Folder</Typography>
+                  </Box>
+                </Stack>
+              </CippCardTabPanel>
+            </>
+          )}
+        </Box>
       </Box>
 
       <SiteTypeDialog
@@ -809,6 +1222,17 @@ export const CippSharePointTemplateQuickStats = ({ formControl, sx }) => {
     (total, site) => total + (Array.isArray(site?.libraries) ? site.libraries.length : 0),
     0
   );
+  // Channels/folders only deploy for Teams; count using the same effective type as deploy.
+  const channelCount = siteTemplates.reduce((total, site) => {
+    const effective = overrideActive ? templateSiteType : site?.siteType;
+    if (resolveSiteType(effective) !== "teams") return total;
+    return total + (Array.isArray(site?.channels) ? site.channels.length : 0);
+  }, 0);
+  const folderCount = siteTemplates.reduce((total, site) => {
+    const effective = overrideActive ? templateSiteType : site?.siteType;
+    if (resolveSiteType(effective) !== "teams") return total;
+    return total + (Array.isArray(site?.folders) ? site.folders.length : 0);
+  }, 0);
   const permissionCount = siteTemplates.reduce((total, site) => {
     const sitePerms = Array.isArray(site?.permissions) ? site.permissions.length : 0;
     const libPerms = Array.isArray(site?.libraries)
@@ -823,7 +1247,7 @@ export const CippSharePointTemplateQuickStats = ({ formControl, sx }) => {
   // Counts respect the section override so they match what deploy will create.
   const teamsCount = siteTemplates.filter((site) => {
     const effective = overrideActive ? templateSiteType : site?.siteType;
-    return effective === "teams";
+    return resolveSiteType(effective) === "teams";
   }).length;
   const sharePointCount = siteTemplates.length - teamsCount;
 
@@ -837,6 +1261,8 @@ export const CippSharePointTemplateQuickStats = ({ formControl, sx }) => {
       <Stat label="SharePoint Templates" value={sharePointCount} />
       <Stat label="Teams Templates" value={teamsCount} />
       <Stat label="Libraries Defined" value={libraryCount} />
+      <Stat label="Channels Defined" value={channelCount} />
+      <Stat label="Folders Defined" value={folderCount} />
       <Stat label="Permission Grants" value={permissionCount} />
     </Card>
   );
@@ -846,6 +1272,8 @@ export const CippSharePointTemplateQuickStatsSkeleton = () => (
   <Card sx={{ p: 2, width: "100%", height: "100%" }}>
     <Skeleton variant="text" width={100} height={28} />
     <Divider sx={{ my: 1 }} />
+    <Skeleton variant="text" />
+    <Skeleton variant="text" />
     <Skeleton variant="text" />
     <Skeleton variant="text" />
     <Skeleton variant="text" />
@@ -955,8 +1383,8 @@ export const CippSharePointTemplateBuilder = ({ formControl }) => {
           <Typography variant="body2" sx={{
             color: "text.secondary"
           }}>
-            Each site template provisions a SharePoint site or Microsoft Team and its document
-            libraries.
+            Each site template provisions a SharePoint site or Microsoft Team, plus document
+            libraries. Teams cards can also define channels and folders under Documents.
           </Typography>
           {overrideActive && (
             <Typography
