@@ -70,7 +70,7 @@
     "TargetContextId": "String",
     "ApplicationId": "String",
     "Client": "String",
-    "Errorvalue": "String",
+    "ErrorCode": "String",
     "LogonError": "String"
   },
   "List:Operation": [
