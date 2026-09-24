@@ -92,7 +92,7 @@ const Page = () => {
   const settingsKey = Object.values(apiData).join('-')
   const queryKey = `LicenseRecommendations-${tenant}-${settingsKey}`
 
-  // The same report the table reads, for the KPI bar and the client PDF.
+  // The same report the table reads, for the KPI bar and the PDF button's enabled state.
   const reportQuery = ApiGetCall({
     url: '/api/ListLicenseRecommendations',
     data: { tenantFilter: tenant, ...apiData },
@@ -264,6 +264,7 @@ const Page = () => {
         <LicenseReportButton
           report={report}
           tenantName={tenant}
+          settings={apiData}
           disabled={reportQuery.isFetching}
         />
       }
@@ -347,6 +348,7 @@ const Page = () => {
                         multiple={false}
                         creatable={false}
                         options={INACTIVE_OPTIONS}
+                        helperText="Usage evidence comes from Microsoft's last 180 days of reports. This value is the inactivity and unused threshold within that window."
                       />
                       <CippFormComponent
                         type="autoComplete"
