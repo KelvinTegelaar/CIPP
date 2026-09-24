@@ -4,6 +4,7 @@ import { Button, Chip, SvgIcon, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import { CippIcons } from '../../utils/icon-registry'
 import CippButtonCard from './CippButtonCard'
+import { ApiGetCall } from '../../api/ApiCall'
 import { BECRemediationReportButton } from '../BECRemediationReportButton'
 import { CippBecContainmentDrawer } from '../CippComponents/CippBecContainmentDrawer'
 import { CippBecIPReviewDrawer } from '../CippComponents/CippBecIPReviewDrawer'
@@ -39,7 +40,26 @@ export const CippBecTriageHeader = ({
     [score]
   )
 
-  // What the findings justify beyond the six default containment steps — shown so the analyst
+  // The drawer's own catalog (same query key, so one request): its DefaultSelected flags carry the
+  // instance-wide BEC Remediation Defaults, so this line always names what the drawer will pre-select.
+  const catalogCall = ApiGetCall({
+    url: '/api/ListBECRemediationActions',
+    queryKey: 'ListBECRemediationActions',
+  })
+  const defaultActions = useMemo(() => {
+    if (!Array.isArray(catalogCall.data)) return null
+    const labels = catalogCall.data
+      .filter((a) => a.DefaultSelected)
+      .sort((a, b) => (a.Order || 0) - (b.Order || 0))
+      .map((a, i) =>
+        i === 0 ? a.Label : a.Label.charAt(0).toLowerCase() + a.Label.slice(1)
+      )
+    return labels.length
+      ? `${new Intl.ListFormat('en-GB').format(labels)} ${labels.length > 1 ? 'are' : 'is'} pre-selected in the drawer.`
+      : 'No containment actions are pre-selected in the drawer.'
+  }, [catalogCall.data])
+
+  // What the findings justify beyond the default containment steps — shown so the analyst
   // knows the drawer will have targets waiting, not to replace the drawer's own selection.
   const extras = useMemo(() => {
     if (!becData) return []
@@ -263,10 +283,11 @@ export const CippBecTriageHeader = ({
           <Typography variant="caption" color="text.secondary">
             Recommended containment
           </Typography>
-          <Typography variant="body2" sx={{ mt: 0.5 }}>
-            Reset password, revoke sessions, re-require MFA and disable inbox
-            rules are pre-selected in the drawer.
-          </Typography>
+          {defaultActions && (
+            <Typography variant="body2" sx={{ mt: 0.5 }}>
+              {defaultActions}
+            </Typography>
+          )}
           {extras.length > 0 && (
             <Stack spacing={0.25} sx={{ mt: 1 }}>
               {extras.map((x) => (
