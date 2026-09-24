@@ -46,7 +46,6 @@ export const templateTypeLabels = {
   ReportBuilderTemplate: 'Report Builder',
   GroupTemplate: 'Group',
   AppApprovalTemplate: 'App Approval',
-  BPATemplate: 'Best Practices Report',
   TransportTemplate: 'Transport Rule',
   ExConnectorTemplate: 'Exchange Connector',
   AppTemplate: 'Application',

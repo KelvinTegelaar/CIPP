@@ -246,12 +246,6 @@ export const nativeMenuItems = [
         scope: 'global',
       },
       {
-        title: 'Best Practice Analyser',
-        path: '/tenant/standards/bpa-report',
-        permissions: ['Tenant.BestPracticeAnalyser.*'],
-        scope: 'global',
-      },
-      {
         title: 'Conditional Access',
         permissions: ['Tenant.ConditionalAccess.*'],
         items: [
