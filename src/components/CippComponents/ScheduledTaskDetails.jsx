@@ -357,47 +357,47 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                               sx={{ mx: 1 }}
                             />
                           </AccordionSummary>
-                          {/* Keep heavy result tables out of the tree until expanded — AllTenants
-                              tasks otherwise mount one CippDataTable per tenant and lock the browser. */}
+                          {/* unmountOnExit keeps collapsed tenants' tables out of the tree. MUI mounts
+                              Accordion content even when collapsed, so an AllTenants task otherwise
+                              mounts one CippDataTable per tenant and locks the browser. */}
                           <AccordionDetails>
-                            {isExpanded &&
-                              (result.Results === "null" || !result.Results ? (
-                                <Typography sx={{ color: "text.secondary" }}>
-                                  No data available
-                                </Typography>
-                              ) : Array.isArray(result.Results) ? (
-                                <CippDataTable
-                                  noCard
-                                  data={result.Results}
-                                  disablePagination={result.Results.length <= 10}
-                                  refreshFunction={() => taskDetailResults.refetch()}
-                                />
-                              ) : typeof result.Results === "object" ? (
-                                <CippPropertyListCard
-                                  propertyItems={Object.entries(result.Results).map(
-                                    ([key, value]) => ({
-                                      label: key,
-                                      value:
-                                        typeof value === "object"
-                                          ? JSON.stringify(value)
-                                          : value,
-                                    })
-                                  )}
-                                />
-                              ) : (
-                                <Box
-                                  sx={{ p: 2, bgcolor: "background.paper", borderRadius: 1 }}
+                            {result.Results === "null" || !result.Results ? (
+                              <Typography sx={{ color: "text.secondary" }}>
+                                No data available
+                              </Typography>
+                            ) : Array.isArray(result.Results) ? (
+                              <CippDataTable
+                                noCard
+                                data={result.Results}
+                                disablePagination={result.Results.length <= 10}
+                                refreshFunction={() => taskDetailResults.refetch()}
+                              />
+                            ) : typeof result.Results === "object" ? (
+                              <CippPropertyListCard
+                                propertyItems={Object.entries(result.Results).map(
+                                  ([key, value]) => ({
+                                    label: key,
+                                    value:
+                                      typeof value === "object"
+                                        ? JSON.stringify(value)
+                                        : value,
+                                  })
+                                )}
+                              />
+                            ) : (
+                              <Box
+                                sx={{ p: 2, bgcolor: "background.paper", borderRadius: 1 }}
+                              >
+                                <pre
+                                  style={{
+                                    whiteSpace: "pre-wrap",
+                                    wordBreak: "break-word",
+                                  }}
                                 >
-                                  <pre
-                                    style={{
-                                      whiteSpace: "pre-wrap",
-                                      wordBreak: "break-word",
-                                    }}
-                                  >
-                                    {result.Results}
-                                  </pre>
-                                </Box>
-                              ))}
+                                  {result.Results}
+                                </pre>
+                              </Box>
+                            )}
                           </AccordionDetails>
                         </Accordion>
                       );
