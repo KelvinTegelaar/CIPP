@@ -251,7 +251,7 @@ export const LegacyInfrastructure = {
           startTime: null,
           endTime: null,
           active: false,
-          dismissible: true,
+          dismissible: false,
         }),
       ]),
     },
