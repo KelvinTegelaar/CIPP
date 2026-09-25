@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import {
   Button,
   Stack,
@@ -64,6 +64,8 @@ const StartInvestigationDrawer = ({ tenant }) => {
     mode: 'onChange',
     defaultValues: { users: [] },
   })
+  const selectedUsers = useWatch({ control: formControl.control, name: 'users' }) || []
+  const selectedCount = selectedUsers.length
   const queue = ApiPostCall({
     relatedQueryKeys: [
       `ListBECReports-${tenant}`,
@@ -71,13 +73,19 @@ const StartInvestigationDrawer = ({ tenant }) => {
     ],
   })
 
+  const handleClose = () => {
+    setVisible(false)
+    queue.reset()
+    formControl.reset({ users: [] })
+  }
+
   const handleStart = () => {
     const users = formControl.getValues('users') || []
     const ids = users.map((u) => u?.value ?? u).filter(Boolean)
     if (ids.length === 0) return
     // One user: open its case workspace and start the run there, so you watch it run.
     if (ids.length === 1) {
-      setVisible(false)
+      handleClose()
       router.push(
         `/identity/administration/bec/case?userId=${encodeURIComponent(ids[0])}&tenantFilter=${encodeURIComponent(
           tenant
@@ -85,11 +93,15 @@ const StartInvestigationDrawer = ({ tenant }) => {
       )
       return
     }
-    // Several users: queue one run each; they appear in the table as they finish.
-    queue.mutate({
-      url: '/api/ExecBECBulkCheck',
-      data: { tenantFilter: tenant, UserIds: ids },
-    })
+    // Several users: queue one run each, then close — runs are long-lived and show up in
+    // the table via the related-query refresh.
+    queue.mutate(
+      {
+        url: '/api/ExecBECBulkCheck',
+        data: { tenantFilter: tenant, UserIds: ids },
+      },
+      { onSuccess: () => handleClose() }
+    )
   }
 
   return (
@@ -104,18 +116,23 @@ const StartInvestigationDrawer = ({ tenant }) => {
       <CippOffCanvas
         title="Start a BEC investigation"
         visible={visible}
-        onClose={() => setVisible(false)}
+        onClose={handleClose}
         size="md"
         footer={
           <Stack spacing={2}>
             <CippApiResults apiObject={queue} />
             <Stack direction="row" spacing={1} justifyContent="flex-end">
+              <Button variant="outlined" onClick={handleClose}>
+                Close
+              </Button>
               <Button
                 variant="contained"
                 onClick={handleStart}
-                disabled={queue.isPending}
+                disabled={queue.isPending || selectedCount === 0}
               >
-                Start investigation
+                {queue.isPending
+                  ? 'Queuing investigations...'
+                  : 'Start investigation'}
               </Button>
             </Stack>
           </Stack>
@@ -135,6 +152,7 @@ const StartInvestigationDrawer = ({ tenant }) => {
             formControl={formControl}
             multiple
             creatable={false}
+            disabled={queue.isPending}
             api={{
               url: '/api/ListUsers',
               data: { tenantFilter: tenant },
