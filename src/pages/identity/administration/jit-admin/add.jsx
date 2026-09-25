@@ -11,8 +11,7 @@ import countryList from '../../../../data/countryList.json'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
 import { CippFormGroupSelector } from '../../../../components/CippComponents/CippFormGroupSelector'
-import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
-import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
+import { ApiGetCall } from '../../../../api/ApiCall'
 import { useJitAllowedRoles } from '../../../../hooks/use-jit-allowed-roles'
 import { CippJitRoleTemplateApply } from '../../../../components/CippComponents/CippJitRoleTemplateApply'
 import { useEffect, useState } from 'react'
@@ -21,6 +20,7 @@ import { resolveJitTemplateVariables } from '../../../../utils/jit-template-vari
 const Page = () => {
   const formControl = useForm({ mode: 'onChange' })
   const selectedTenant = useWatch({ control: formControl.control, name: 'tenantFilter' })
+  const isSpecificTenant = !!selectedTenant?.value && selectedTenant.value !== 'AllTenants'
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const { filterRoles } = useJitAllowedRoles()
   // Already fetched by the layout, so this only reads the cache. Feeds %cipptechnician% below.
@@ -62,13 +62,6 @@ const Page = () => {
   const userAction = useWatch({ control: formControl.control, name: 'userAction' })
   const enableVacationMode = useWatch({ control: formControl.control, name: 'enableVacationMode' })
   const vacationCAPolicy = useWatch({ control: formControl.control, name: 'vacationCAPolicy' })
-  const vacationExcludeAuditAlerts = useWatch({
-    control: formControl.control,
-    name: 'vacationExcludeAuditAlerts',
-  })
-
-  const caExclusion = ApiPostCall({ relatedQueryKeys: ['JIT Admin Table'] })
-  const auditExclusion = ApiPostCall({ relatedQueryKeys: ['JIT Admin Table'] })
 
   useEffect(() => {
     if (!useTAP || !startDate || !endDate) {
@@ -99,18 +92,29 @@ const Page = () => {
     }
   }, [useGroups])
 
-  // Vacation mode only applies to an existing user's identity (CA/audit exclusions
-  // act on Graph objects that don't exist yet when creating a new user)
+  // The picked user, groups and CA policy ids only exist in the tenant they were picked in, and
+  // "Existing User" needs a specific tenant to pick from.
+  useEffect(() => {
+    formControl.setValue('existingUser', null)
+    formControl.setValue('groupMemberships', [])
+    formControl.setValue('vacationCAPolicy', [])
+    if (!isSpecificTenant && formControl.getValues('userAction') === 'select') {
+      formControl.setValue('userAction', null)
+    }
+  }, [selectedTenant?.value])
+
+  // Vacation mode and the audit alert exclusion only apply to an existing user's identity
+  // (both act on Graph objects that don't exist yet when creating a new user)
   useEffect(() => {
     if (userAction !== 'select') {
       formControl.setValue('enableVacationMode', false)
+      formControl.setValue('vacationExcludeAuditAlerts', false)
     }
   }, [userAction])
 
   useEffect(() => {
     if (!enableVacationMode) {
       formControl.setValue('vacationCAPolicy', [])
-      formControl.setValue('vacationExcludeAuditAlerts', false)
     }
   }, [enableVacationMode])
 
@@ -323,52 +327,55 @@ const Page = () => {
     }
   }, [watcher.startDate])
 
-  // Fires only after the JIT Admin submission itself succeeds (ApiPostCall's onResult
-  // is never invoked on error), then schedules the vacation-mode exclusions for the
-  // same window: JIT startDate -> JIT endDate + 1 hour buffer.
-  const handleVacationModeSubmit = () => {
-    if (!enableVacationMode) return
+  // Sent by CippFormPage only after the JIT Admin submission itself succeeds, in the same
+  // request chain so every result lands in one results section. Schedules the vacation-mode CA
+  // exclusions and/or the audit alert exclusion for the same window: JIT startDate -> JIT
+  // endDate + 1 hour buffer.
+  const buildVacationRequests = (values) => {
+    const tenantFilter = values.tenantFilter?.value
+    const users = [values.existingUser]
+    const startDate = values.startDate
+    const vacationEndDate = values.endDate ? values.endDate + 3600 : values.endDate
+    const reference = values.reason || null
+    const postExecution = values.postExecution || []
 
-    const tenantFilter = selectedTenant?.value
-    const users = [formControl.getValues('existingUser')]
-    const startDate = formControl.getValues('startDate')
-    const endDate = formControl.getValues('endDate')
-    const vacationEndDate = endDate ? endDate + 3600 : endDate
-    const reference = formControl.getValues('reason') || null
-    const postExecution = formControl.getValues('postExecution') || []
-
-    const policies = Array.isArray(vacationCAPolicy)
-      ? vacationCAPolicy
-      : vacationCAPolicy
-      ? [vacationCAPolicy]
+    const policies = !values.enableVacationMode
+      ? []
+      : Array.isArray(values.vacationCAPolicy)
+      ? values.vacationCAPolicy
+      : values.vacationCAPolicy
+      ? [values.vacationCAPolicy]
       : []
-    if (policies.length > 0) {
-      const policyData = policies.map((policy) => ({
-        tenantFilter,
-        Users: users,
-        PolicyId: policy?.value ?? policy,
-        StartDate: startDate,
-        EndDate: vacationEndDate,
-        vacation: true,
-        reference,
-        postExecution,
-      }))
-      caExclusion.mutate({ url: '/api/ExecCAExclusion', data: policyData, bulkRequest: true })
-    }
-
-    if (vacationExcludeAuditAlerts) {
-      auditExclusion.mutate({
-        url: '/api/ExecScheduleAuditExclusionVacation',
+    return [
+      ...policies.map((policy) => ({
+        url: '/api/ExecCAExclusion',
         data: {
           tenantFilter,
           Users: users,
-          startDate,
-          endDate: vacationEndDate,
+          PolicyId: policy?.value ?? policy,
+          StartDate: startDate,
+          EndDate: vacationEndDate,
+          vacation: true,
           reference,
           postExecution,
         },
-      })
-    }
+      })),
+      ...(values.vacationExcludeAuditAlerts
+        ? [
+            {
+              url: '/api/ExecScheduleAuditExclusionVacation',
+              data: {
+                tenantFilter,
+                Users: users,
+                startDate,
+                endDate: vacationEndDate,
+                reference,
+                postExecution,
+              },
+            },
+          ]
+        : []),
+    ]
   }
 
   return (
@@ -379,7 +386,7 @@ const Page = () => {
         title="JIT Admin"
         backButtonTitle="JIT Admin"
         postUrl="/api/ExecJitAdmin"
-        onSubmitResult={handleVacationModeSubmit}
+        followUpRequests={buildVacationRequests}
       >
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2}>
@@ -422,7 +429,7 @@ const Page = () => {
                 formControl={formControl}
                 options={[
                   { label: 'New User', value: 'create' },
-                  { label: 'Existing User', value: 'select' },
+                  { label: 'Existing User', value: 'select', disabled: !isSpecificTenant },
                 ]}
                 required={true}
                 validators={{ required: 'You must select an option' }}
@@ -705,18 +712,20 @@ const Page = () => {
               />
             </Grid>
             {userAction === 'select' && (
-              <Grid size={{ md: 12, xs: 12 }}>
-                <Divider sx={{ my: 2 }} />
-                <CippFormComponent
-                  type="switch"
-                  label="Enable Vacation Mode"
-                  name="enableVacationMode"
-                  formControl={formControl}
-                />
-                <Box sx={{ color: 'text.secondary', fontSize: '0.875rem', mt: 0.5 }}>
-                  Excludes this user from a Conditional Access policy and/or location-based audit
-                  alerts for the same window as this JIT Admin access, plus a 1 hour buffer.
-                </Box>
+              <>
+                <Grid size={{ md: 12, xs: 12 }}>
+                  <Divider sx={{ my: 2 }} />
+                  <CippFormComponent
+                    type="switch"
+                    label="Enable Vacation Mode"
+                    name="enableVacationMode"
+                    formControl={formControl}
+                  />
+                  <Box sx={{ color: 'text.secondary', fontSize: '0.875rem', mt: 0.5 }}>
+                    Excludes this user from the selected Conditional Access policies for the same
+                    window as this JIT Admin access, plus a 1 hour buffer.
+                  </Box>
+                </Grid>
                 <CippFormCondition
                   formControl={formControl}
                   field="enableVacationMode"
@@ -724,62 +733,59 @@ const Page = () => {
                   compareValue={true}
                   clearOnHide={false}
                 >
-                  <Grid container spacing={2} sx={{ mt: 0.5 }}>
-                    <Grid size={{ md: 12, xs: 12 }}>
-                      <CippFormComponent
-                        type="autoComplete"
-                        label={
-                          selectedTenant
-                            ? `Conditional Access Policies in ${selectedTenant.value}`
-                            : 'Select a tenant first'
-                        }
-                        name="vacationCAPolicy"
-                        api={
-                          selectedTenant
-                            ? {
-                                queryKey: `ListConditionalAccessPolicies-${selectedTenant.value}`,
-                                url: '/api/ListGraphRequest',
-                                data: {
-                                  tenantFilter: selectedTenant.value,
-                                  Endpoint: 'conditionalAccess/policies',
-                                  AsApp: true,
-                                },
-                                dataKey: 'Results',
-                                labelField: (option) => `${option.displayName}`,
-                                valueField: 'id',
-                                showRefresh: true,
-                              }
-                            : null
-                        }
-                        multiple={true}
-                        creatable={false}
-                        formControl={formControl}
-                        disabled={!selectedTenant}
-                      />
-                    </Grid>
-                    <Grid size={{ md: 12, xs: 12 }}>
-                      <CippFormComponent
-                        type="switch"
-                        label="Exclude from location-based audit log alerts"
-                        name="vacationExcludeAuditAlerts"
-                        formControl={formControl}
-                      />
-                    </Grid>
-                    {!vacationCAPolicy?.length && !vacationExcludeAuditAlerts && (
-                      <Grid size={{ md: 12, xs: 12 }}>
-                        <Box sx={{ color: 'error.main', fontSize: '0.875rem' }}>
-                          Select at least one Conditional Access policy or enable audit alert
-                          exclusion.
-                        </Box>
-                      </Grid>
-                    )}
-                    <Grid size={{ md: 12, xs: 12 }}>
-                      <CippApiResults apiObject={caExclusion} />
-                      <CippApiResults apiObject={auditExclusion} />
-                    </Grid>
+                  <Grid size={{ md: 12, xs: 12 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      label={
+                        isSpecificTenant
+                          ? `Conditional Access Policies in ${selectedTenant.value}`
+                          : 'Select a specific tenant first'
+                      }
+                      name="vacationCAPolicy"
+                      api={
+                        isSpecificTenant
+                          ? {
+                              queryKey: `ListConditionalAccessPolicies-${selectedTenant.value}`,
+                              url: '/api/ListGraphRequest',
+                              data: {
+                                tenantFilter: selectedTenant.value,
+                                Endpoint: 'conditionalAccess/policies',
+                                AsApp: true,
+                              },
+                              dataKey: 'Results',
+                              labelField: (option) => `${option.displayName}`,
+                              valueField: 'id',
+                              showRefresh: true,
+                            }
+                          : null
+                      }
+                      multiple={true}
+                      creatable={false}
+                      formControl={formControl}
+                      disabled={!isSpecificTenant}
+                    />
                   </Grid>
+                  {!vacationCAPolicy?.length && (
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <Box sx={{ color: 'error.main', fontSize: '0.875rem' }}>
+                        Select at least one Conditional Access policy.
+                      </Box>
+                    </Grid>
+                  )}
                 </CippFormCondition>
-              </Grid>
+                <Grid size={{ md: 12, xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    label="Exclude from location-based audit log alerts"
+                    name="vacationExcludeAuditAlerts"
+                    formControl={formControl}
+                  />
+                  <Box sx={{ color: 'text.secondary', fontSize: '0.875rem', mt: 0.5 }}>
+                    Suppresses location-based audit log alerts for this user for the same window
+                    as this JIT Admin access, plus a 1 hour buffer.
+                  </Box>
+                </Grid>
+              </>
             )}
           </Grid>
         </Box>

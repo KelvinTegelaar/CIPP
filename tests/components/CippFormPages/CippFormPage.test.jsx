@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { screen } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { renderWithProviders } from "../../test-utils";
 
@@ -35,7 +35,7 @@ const idle = vi.hoisted(() => ({
   isError: false,
   isIdle: true,
   data: undefined,
-  mutate: () => {},
+  mutate: vi.fn(),
   reset: () => {},
   refetch: () => {},
 }));
@@ -105,5 +105,24 @@ describe("CippFormPage title vs the mobile tab picker", () => {
     renderWithProviders(<Harness />);
 
     expect(screen.getByRole("heading", { level: 4, name: "SAM App Roles" })).toBeInTheDocument();
+  });
+});
+
+describe("CippFormPage follow-up requests", () => {
+  // the follow-ups must ride the submit mutation, or their results render as separate sections
+  it("hands followUpRequests to the submit mutation built from the form values", async () => {
+    idle.mutate.mockClear();
+    const followUpRequests = vi.fn((values) => [{ url: "/api/y", data: { from: values.name } }]);
+    renderWithProviders(<Harness followUpRequests={followUpRequests} allowResubmit />);
+
+    const submit = screen.getByRole("button", { name: "Submit" });
+    await waitFor(() => expect(submit).toBeEnabled());
+    fireEvent.click(submit);
+
+    await waitFor(() => expect(idle.mutate).toHaveBeenCalledTimes(1));
+    expect(idle.mutate.mock.calls[0][0]).toMatchObject({
+      url: "/api/x",
+      followUps: [{ url: "/api/y" }],
+    });
   });
 });
