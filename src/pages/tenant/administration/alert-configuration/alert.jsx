@@ -22,7 +22,7 @@ import { CippFormTenantSelector } from '../../../../components/CippComponents/Ci
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import alertList from '../../../../data/alerts.json'
 import auditLogTemplates from '../../../../data/AuditLogTemplates'
-import alertActions from '../../../../data/AuditLogTemplates'
+import alertActions from '../../../../data/alertActions.json'
 import auditLogSchema from '../../../../data/AuditLogSchema.json'
 import { Layout as DashboardLayout } from '../../../../layouts/index' // Dashboard layout
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
