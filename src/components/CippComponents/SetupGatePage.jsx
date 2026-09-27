@@ -68,6 +68,7 @@ const SetupGatePage = () => {
             samAppPresent={me.data?.samAppPresent === true}
             completionButton={{
               label: 'Enter CIPP',
+              color: 'success',
               onClick: () => {
                 purgePersistedCache()
                 // Refetching authmecipp makes PrivateRoute re-evaluate the gate; if a

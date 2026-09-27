@@ -1,4 +1,3 @@
-import { StyleSheet } from '@react-pdf/renderer'
 import { asReportTheme, DEFAULT_BRAND_COLOUR, REPORT_COLOURS, withAlpha } from './reportTheme'
 
 // The @react-pdf/renderer style system shared by CIPP's client-facing PDF reports: a cover page,
@@ -28,8 +27,7 @@ export const PAGE_ORIENTATIONS = [
 
 export const DEFAULT_PAGE_SETUP = { size: 'A4', orientation: 'portrait' }
 
-// Paper widths in points, matching the names above. Needed because a table has to know how wide its
-// columns actually are to wrap a long value without a hyphen — see measureText.js.
+// Paper widths in points, matching the names above; the report builder sizes its page setup off these.
 const PAGE_WIDTHS = { A4: 595.28, LETTER: 612, LEGAL: 612, A3: 841.89, A5: 419.53 }
 const PAGE_HEIGHTS = { A4: 841.89, LETTER: 792, LEGAL: 1008, A3: 1190.55, A5: 595.28 }
 
@@ -87,7 +85,7 @@ export const createReportStyles = (themeOrColour = DEFAULT_BRAND_COLOUR) => {
   // header band, which are brand surfaces rather than any one content role.
   const brandColor = theme.primary
 
-  return StyleSheet.create({
+  return ({
     page: {
       flexDirection: 'column',
       backgroundColor: '#FFFFFF',

@@ -40,6 +40,24 @@ const sharedMailboxApi = (tenantDomain) => ({
   valueField: 'UPN',
 })
 
+const sharePointSiteRoleOptions = [
+  { label: 'Members', value: 'Members' },
+  { label: 'Owners', value: 'Owners' },
+  { label: 'Visitors', value: 'Visitors' },
+]
+
+const sharePointSiteApi = (tenantDomain) => ({
+  queryKey: `SharePointSites-${tenantDomain}`,
+  url: '/api/ListSites',
+  data: { type: 'SharePointSiteUsage' },
+  labelField: (option) => `${option.displayName} (${option.webUrl})`,
+  valueField: 'webUrl',
+  addedField: {
+    rootWebTemplate: 'rootWebTemplate',
+    ownerPrincipalName: 'ownerPrincipalName',
+  },
+})
+
 const CippAddEditUser = (props) => {
   const { formControl, userSettingsDefaults, formType = 'add' } = props
   const tenantDomain = useSettings().currentTenant
@@ -56,7 +74,6 @@ const CippAddEditUser = (props) => {
   const userTemplates = ApiGetCall({
     url: `/api/ListNewUserDefaults?TenantFilter=${tenantDomain}`,
     queryKey: `UserDefaults-${tenantDomain}`,
-    refetchOnMount: false,
     refetchOnReconnect: false,
     enabled: formType === 'add',
   })
@@ -473,6 +490,7 @@ const CippAddEditUser = (props) => {
     )
 
     applyField('jobTitle', template.jobTitle)
+    applyField('addedAliases', template.addedAliases)
     applyField('streetAddress', template.streetAddress)
     applyField('city', template.city)
     applyField('state', template.state)
@@ -481,6 +499,7 @@ const CippAddEditUser = (props) => {
     applyField('companyName', template.companyName)
     applyField('department', template.department)
     applyField('mobilePhone', template.mobilePhone)
+    applyField('MustChangePass', template.MustChangePass === true, false)
     applyField('perUserMfa', template.perUserMfa === true, false)
 
     const templateBusinessPhone = Array.isArray(template.businessPhones)
@@ -549,6 +568,12 @@ const CippAddEditUser = (props) => {
         template.sharedCalendarPermission,
         sharedCalendarPermissionOptions
       )[0] ?? null,
+      null
+    )
+    applyField('sharePointSites', toAutoCompleteOptions(template.sharePointSites), [])
+    applyField(
+      'sharePointSiteRole',
+      toAutoCompleteOptions(template.sharePointSiteRole, sharePointSiteRoleOptions)[0] ?? null,
       null
     )
 
@@ -1168,6 +1193,30 @@ const CippAddEditUser = (props) => {
               creatable={false}
               options={sharedCalendarPermissionOptions}
               helperText="Defaults to Editor."
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 8 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="SharePoint Sites"
+              name="sharePointSites"
+              multiple={true}
+              creatable={false}
+              api={sharePointSiteApi(tenantDomain)}
+              helperText="The user is added to these sites 15 minutes after creation, once the account has replicated to SharePoint."
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="SharePoint Site Role"
+              name="sharePointSiteRole"
+              multiple={false}
+              creatable={false}
+              options={sharePointSiteRoleOptions}
+              helperText="Defaults to Members."
               formControl={formControl}
             />
           </Grid>

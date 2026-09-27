@@ -1555,7 +1555,7 @@
         "name": "standards.NudgeMFA.targetedAuthenticationMethod",
         "options": [
           { "label": "Microsoft Authenticator", "value": "microsoftAuthenticator" },
-          { "label": "Passkey (FIDO2)", "value": "fido2" }
+          { "label": "Passkey (FIDO2)", "value": "FIDO2" }
         ],
         "condition": {
           "field": "standards.NudgeMFA.state",
@@ -2172,6 +2172,51 @@
     "addedDate": "2025-02-26",
     "powershellEquivalent": "Update-MgUser -UserId user@domain.com -BodyParameter @{preferredLanguage='en-US'}",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.UsageLocation",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Sets the Entra usage location (the two-letter country code that licensing and security tools such as Huntress ITDR depend on) on every member account. Optionally limit the sweep to members of named groups, skip members of named groups (users legitimately based in another country), or only fill in accounts that have no usage location yet.",
+    "docsDescription": "Sets the usage location on every member account; guest accounts are ignored. Group names are resolved per tenant by display name and expanded to their transitive user members: include groups restrict the sweep to those members, exclude groups remove them from it. A configured group that does not exist in a tenant, or a failed membership lookup, skips the run rather than sweeping the wrong accounts. With 'only set when blank' enabled, accounts that already carry any usage location are left as they are. Directory-synced accounts are included: usage location is cloud-managed and stays writable for them unless a custom sync rule maps it from on-premises.",
+    "executiveText": "Ensures every employee account records the country it is used from, which Microsoft requires before licences can be assigned and which security monitoring uses to recognise sign-ins from unexpected locations. Staff based in other countries are exempted through a group.",
+    "addedComponent": [
+      {
+        "type": "CountryCodeSelect",
+        "required": true,
+        "name": "standards.UsageLocation.usageLocation",
+        "label": "Usage location"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.UsageLocation.includeGroups",
+        "label": "Only apply to members of these groups (display names; blank = all member accounts)"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.UsageLocation.excludeGroups",
+        "label": "Skip members of these groups (display names; users legitimately located elsewhere)"
+      },
+      {
+        "type": "switch",
+        "name": "standards.UsageLocation.onlyWhenBlank",
+        "label": "Only set accounts that have no usage location (never overwrite an existing value)",
+        "required": false
+      }
+    ],
+    "label": "Usage location for all users",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-09-16",
+    "powershellEquivalent": "Update-MgUser -UserId user@domain.com -UsageLocation 'US'",
+    "recommendedBy": [],
+    "requiredCapabilities": []
   },
   {
     "name": "standards.AppManagementPolicy",
@@ -6181,6 +6226,39 @@
     "requiredCapabilities": ["MCOSTANDARD", "MCOEV", "MCOIMP", "TEAMS1", "Teams_Room_Standard"]
   },
   {
+    "name": "standards.PlannerBlockTaskDelete",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Sets the Planner user policy that blocks each in-scope member from deleting Planner tasks they did not create. Applies across all basic Planner plans for that user (not a single board). Only enabled members with an enabled Microsoft Planner (PROJECTWORKMANAGEMENT) service plan are touched. Optionally limit the sweep to members of named groups or skip members of named groups. The remediate wash is limited to once per 24 hours per tenant because there is no list API and every user needs its own write. Alert and report still run every time. May also prevent those users from deleting plans. Requires CIPP-SAM consent for ProjectWorkManagement OrgSettings-Planner permissions.",
+    "docsDescription": "Uses the Planner tenant admin UserPolicy API (tasks.office.com) to set blockDeleteTasksNotCreatedBySelf to true for each in-scope enabled member account that has an enabled PROJECTWORKMANAGEMENT (Microsoft Planner) service plan in the user cache. Guest accounts, disabled accounts, and members without that plan are ignored. Group names are resolved per tenant by display name and expanded to their transitive user members: include groups restrict the sweep to those members, exclude groups remove them from it. A configured group that does not exist in a tenant, or a failed membership lookup, skips the run rather than sweeping the wrong accounts. When no include group is named, every Planner-licensed enabled member account is in scope. Remediate is an idempotent PUT per candidate with no preflight GET; a 24-hour rerun guard (Test-CIPPRerun) skips repeating that write sweep for the same settings, while alert and report still GET live state each run. The policy is per user and applies to all basic plans that user can access; it is not board-scoped. Known side effect: the same policy can also block plan deletion. Requires application permissions OrgSettings-Planner.ReadWrite.All on ProjectWorkManagement (tasks.office.com), consented via CIPP-SAM repair and CPV refresh.",
+    "executiveText": "Stops employees from deleting Planner tasks they did not create, reducing accidental loss on boards used as shared work queues. Can be limited to a department security group so only those staff are locked down.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.PlannerBlockTaskDelete.includeGroups",
+        "label": "Only apply to members of these groups (display names; blank = all Planner-licensed enabled members)"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.PlannerBlockTaskDelete.excludeGroups",
+        "label": "Skip members of these groups (display names)"
+      }
+    ],
+    "label": "Block Planner users from deleting tasks they did not create",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2026-09-16",
+    "powershellEquivalent": "Set-PlannerUserPolicy -UserAadIdOrPrincipalName user@domain.com -BlockDeleteTasksNotCreatedBySelf $true",
+    "recommendedBy": [],
+    "requiredCapabilities": ["PROJECTWORKMANAGEMENT"]
+  },
+  {
     "name": "standards.TeamsChatProtection",
     "cat": "Teams Standards",
     "tag": [],
@@ -6804,8 +6882,8 @@
         "name": "standards.DevicePrepProfile.AccountType",
         "label": "Account Type",
         "options": [
-          { "label": "Standard user", "value": "0" },
-          { "label": "Administrator", "value": "1" }
+          { "label": "Standard user", "value": "1" },
+          { "label": "Administrator", "value": "0" }
         ]
       },
       {
@@ -8123,15 +8201,128 @@
     "name": "standards.MessageEncryption",
     "cat": "Exchange Standards",
     "tag": [],
-    "helpText": "Enables Microsoft Purview Message Encryption by turning on Azure RMS licensing for Exchange Online, and turns on simplified client access so the Encrypt button appears in Outlook on the web and the new Outlook. Skipped with a warning when the tenant still points at an on-premises AD RMS cluster, because AD RMS has to be migrated to Azure RMS first. This standard only turns the feature on: branding, one-time passcodes, and social ID sign-in for encrypted messages are configured in the [Configure Encrypted Message Branding (OME)](https://standards.cipp.app/standards/omebranding) standard. [Read more](https://learn.microsoft.com/en-us/purview/set-up-new-message-encryption-capabilities)",
-    "docsDescription": "Sets AzureRMSLicensingEnabled to true, the prerequisite for Microsoft Purview Message Encryption, and SimplifiedClientAccessEnabled to true so the Encrypt button appears when composing mail in Outlook on the web and the new Outlook. Reports the IRM licensing state per tenant, including the licensing location, so you can see at a glance which tenants have message encryption available. Remediation is deliberately skipped for tenants with an on-premises AD RMS licensing location, as Purview Message Encryption is not compatible with AD RMS and those tenants need to be migrated to Azure RMS first.",
+    "helpText": "Enables Microsoft Purview Message Encryption by turning on Azure RMS licensing for Exchange Online, and turns on simplified client access so the Encrypt button appears in Outlook on the web and the new Outlook. Skipped with a warning when the tenant still points at an on-premises AD RMS cluster, because AD RMS has to be migrated to Azure RMS first. The optional settings below default to \"Do not change\", which leaves the tenant's current value alone and out of the drift check. This standard only turns the feature on: branding, one-time passcodes, and social ID sign-in for encrypted messages are configured in the [Configure Encrypted Message Branding (OME)](https://standards.cipp.app/standards/omebranding) standard. [Read more](https://learn.microsoft.com/en-us/purview/set-up-new-message-encryption-capabilities)",
+    "docsDescription": "Sets AzureRMSLicensingEnabled to true, the prerequisite for Microsoft Purview Message Encryption, and SimplifiedClientAccessEnabled to true so the Encrypt button appears when composing mail in Outlook on the web and the new Outlook. Optionally also enforces EnablePdfEncryption, DecryptAttachmentForEncryptOnly, SimplifiedClientAccessDoNotForwardDisabled, SimplifiedClientAccessEncryptOnlyDisabled and TransportDecryptionSetting; each of these is left untouched unless the template picks a value. Reports the IRM licensing state per tenant, including the licensing location, so you can see at a glance which tenants have message encryption available. Remediation is deliberately skipped for tenants with an on-premises AD RMS licensing location, as Purview Message Encryption is not compatible with AD RMS and those tenants need to be migrated to Azure RMS first.",
     "executiveText": "Turns on the built-in encryption that lets staff send protected email to anyone, including recipients outside the organization. Uses licensing the organization already owns, removing the need for a separate secure-email product.",
-    "addedComponent": [],
+    "addedComponent": [
+      {
+        "type": "radio",
+        "name": "standards.MessageEncryption.EnablePdfEncryption",
+        "label": "Encrypt PDF attachments",
+        "required": false,
+        "defaultValue": "donotchange",
+        "helperText": "Applies Encrypt-only and Do Not Forward protection to PDF attachments as well as the message body.",
+        "options": [
+          {
+            "value": "donotchange",
+            "label": "Do not change"
+          },
+          {
+            "value": "true",
+            "label": "Enable"
+          },
+          {
+            "value": "false",
+            "label": "Disable"
+          }
+        ]
+      },
+      {
+        "type": "radio",
+        "name": "standards.MessageEncryption.DecryptAttachmentForEncryptOnly",
+        "label": "Let recipients save Encrypt-only attachments unprotected",
+        "required": false,
+        "defaultValue": "donotchange",
+        "helperText": "When enabled, attachments on Encrypt-only mail are decrypted when the recipient downloads them.",
+        "options": [
+          {
+            "value": "donotchange",
+            "label": "Do not change"
+          },
+          {
+            "value": "true",
+            "label": "Enable"
+          },
+          {
+            "value": "false",
+            "label": "Disable"
+          }
+        ]
+      },
+      {
+        "type": "radio",
+        "name": "standards.MessageEncryption.SimplifiedClientAccessDoNotForwardDisabled",
+        "label": "Do Not Forward option in the Outlook Encrypt menu",
+        "required": false,
+        "defaultValue": "donotchange",
+        "options": [
+          {
+            "value": "donotchange",
+            "label": "Do not change"
+          },
+          {
+            "value": "true",
+            "label": "Hide"
+          },
+          {
+            "value": "false",
+            "label": "Show"
+          }
+        ]
+      },
+      {
+        "type": "radio",
+        "name": "standards.MessageEncryption.SimplifiedClientAccessEncryptOnlyDisabled",
+        "label": "Encrypt-only option in the Outlook Encrypt menu",
+        "required": false,
+        "defaultValue": "donotchange",
+        "options": [
+          {
+            "value": "donotchange",
+            "label": "Do not change"
+          },
+          {
+            "value": "true",
+            "label": "Hide"
+          },
+          {
+            "value": "false",
+            "label": "Show"
+          }
+        ]
+      },
+      {
+        "type": "radio",
+        "name": "standards.MessageEncryption.TransportDecryptionSetting",
+        "label": "Transport decryption",
+        "required": false,
+        "defaultValue": "donotchange",
+        "helperText": "Disabled leaves protected mail encrypted in transit, Optional decrypts it where possible and delivers either way, Mandatory rejects mail it cannot decrypt.",
+        "options": [
+          {
+            "value": "donotchange",
+            "label": "Do not change"
+          },
+          {
+            "value": "Disabled",
+            "label": "Disabled"
+          },
+          {
+            "value": "Optional",
+            "label": "Optional"
+          },
+          {
+            "value": "Mandatory",
+            "label": "Mandatory"
+          }
+        ]
+      }
+    ],
     "label": "Enable Purview Message Encryption",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2026-08-04",
-    "powershellEquivalent": "Set-IRMConfiguration -AzureRMSLicensingEnabled $true -SimplifiedClientAccessEnabled $true",
+    "powershellEquivalent": "Set-IRMConfiguration -AzureRMSLicensingEnabled $true -SimplifiedClientAccessEnabled $true [-EnablePdfEncryption ...] [-DecryptAttachmentForEncryptOnly ...] [-SimplifiedClientAccessDoNotForwardDisabled ...] [-SimplifiedClientAccessEncryptOnlyDisabled ...] [-TransportDecryptionSetting ...]",
     "recommendedBy": [],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",

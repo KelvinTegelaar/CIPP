@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { CippWizardConfirmation } from '../../../../components/CippWizard/CippWizardConfirmation'
 import CippWizardPage from '../../../../components/CippWizard/CippWizardPage.jsx'
@@ -8,6 +9,7 @@ import { CippWizardAutopilotTypeSelection } from '../../../../components/CippWiz
 import { CippWizardDevicePrepImport } from '../../../../components/CippWizard/CippWizardDevicePrepImport'
 
 const Page = () => {
+  const router = useRouter()
   const steps = [
     {
       title: 'Deployment Type',
@@ -129,6 +131,10 @@ const Page = () => {
         steps={steps}
         postUrl="/api/AddAPDevice"
         wizardTitle="Add Autopilot device wizard"
+        completionButton={{
+          label: 'Go to Autopilot Devices',
+          onClick: () => router.push('/endpoint/autopilot/list-devices'),
+        }}
       />
     </>
   )

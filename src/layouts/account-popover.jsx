@@ -230,8 +230,8 @@ export const AccountPopover = (props) => {
               <ListItemText primary="View release notes" />
             </ListItemButton>
             {/* Mobile home for the help SpeedDial's destinations — its FAB corner belongs
-                to page actions there (the SpeedDial hides itself below md). */}
-            {mdDown && (
+                to page actions there (the SpeedDial hides itself at the same threshold). */}
+            {navCollapsed && (
               <>
                 <Divider sx={{ my: 0.5 }} />
                 {getHelpLinks(pathname ?? "").map((link) => (

@@ -55,7 +55,7 @@ export const CippTenantResults = (props) => {
               label: "Check Tenant",
               type: "POST",
               url: "/api/ExecAccessChecks?Type=Tenants",
-              data: { TenantId: "TenantId" },
+              data: { TenantId: "TenantId", SkipCache: true },
               icon: <CippIcons.Sync />,
               confirmText: "Execute the access check for the selected tenant(s)?",
               relatedQueryKeys: "ExecAccessChecks-Tenants",
