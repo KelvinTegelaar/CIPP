@@ -43,6 +43,9 @@ const CippFormPage = (props) => {
     allowResubmit = false,
     addedButtons,
     onSubmitResult,
+    // (values) => [{ url, data }] posted after postUrl succeeds; their results render in the
+    // same results section as the primary submission
+    followUpRequests,
     ...other
   } = props
   const router = useRouter()
@@ -95,6 +98,8 @@ const CippFormPage = (props) => {
     if (!isValid) {
       return
     }
+    // built before removeEmpty below, which mutates the values it is handed
+    const followUps = followUpRequests?.(formControl.getValues())
     const values = customDataformatter
       ? customDataformatter(formControl.getValues())
       : formControl.getValues()
@@ -125,6 +130,7 @@ const CippFormPage = (props) => {
     postCall.mutate({
       url: postUrl,
       data: values,
+      followUps,
     })
   }
   const formPageActions = {

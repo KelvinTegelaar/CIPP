@@ -358,6 +358,24 @@ const Page = () => {
     },
   }
 
+  const filterList = [
+    {
+      filterName: 'Synced from repository',
+      value: [{ id: 'isSynced', value: 'Yes' }],
+      type: 'column',
+    },
+    {
+      filterName: 'Local changes not pushed',
+      value: [{ id: 'hasLocalChanges', value: 'Yes' }],
+      type: 'column',
+    },
+    {
+      filterName: 'Not synced',
+      value: [{ id: 'isSynced', value: 'No' }],
+      type: 'column',
+    },
+  ]
+
   return (
     <CippTablePage
       title={pageTitle}
@@ -637,6 +655,7 @@ const Page = () => {
       }
       simpleColumns={[
         'baselineName',
+        'source',
         'description',
         'standardsCount',
         'stageNames',
@@ -646,6 +665,7 @@ const Page = () => {
         'updatedBy',
       ]}
       queryKey="ListBaselines-table"
+      filters={filterList}
     />
   );
 }

@@ -651,6 +651,15 @@ export const CippFormComponent = (props) => {
         creatable: false,
       });
 
+    // Single ISO 3166-1 alpha-2 country code (e.g. the UsageLocation standard).
+    case "CountryCodeSelect":
+      return renderAutoCompleteField({
+        ...other,
+        options: countryCodeOptions,
+        multiple: false,
+        creatable: false,
+      });
+
     // ISO 639-1 alpha-2 language code multiselect (e.g. Spam Filter LanguageBlockList).
     case "LanguageCodeMultiSelect":
       return renderAutoCompleteField({

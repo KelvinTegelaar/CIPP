@@ -166,7 +166,7 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
 
 // Separate component for the Temporary Access Pass form so it can query the tenant's
 // TAP policy to validate the allowed lifetime range and enforce one-time use when forced
-const TemporaryAccessPassForm = ({ formControl, row }) => {
+export const TemporaryAccessPassForm = ({ formControl, row }) => {
   const tenantFilter = useSettings().currentTenant
   const rowData = Array.isArray(row) ? row[0] : row
   const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
@@ -281,6 +281,13 @@ const TemporaryAccessPassForm = ({ formControl, row }) => {
         name="startDateTime"
         label="Start Date/Time (leave blank for immediate)"
         dateTimeType="datetime"
+        formControl={formControl}
+      />
+      <CippFormComponent
+        type="switch"
+        name="generatePwPushLink"
+        label="Generate PwPush link"
+        helperText="Returns a PwPush link instead of the plain TAP so it can be shared securely. Requires the PwPush integration to be enabled; falls back to the plain TAP if the link cannot be created."
         formControl={formControl}
       />
     </>
@@ -495,6 +502,39 @@ export const OutOfOfficeForm = ({ formControl, row }) => {
   )
 }
 
+// On-premises attributes Microsoft documents as clearable on cloud-only users once directory sync is gone:
+// https://learn.microsoft.com/entra/identity/hybrid/connect/tshoot-clear-on-premises-attributes
+const onPremAttributeOptions = [
+  {
+    label: 'Immutable ID (onPremisesImmutableId)',
+    value: 'onPremisesImmutableId',
+  },
+  {
+    label: 'Distinguished Name (onPremisesDistinguishedName)',
+    value: 'onPremisesDistinguishedName',
+  },
+  {
+    label: 'Domain Name (onPremisesDomainName)',
+    value: 'onPremisesDomainName',
+  },
+  {
+    label: 'SAM Account Name (onPremisesSamAccountName)',
+    value: 'onPremisesSamAccountName',
+  },
+  {
+    label: 'Security Identifier (onPremisesSecurityIdentifier)',
+    value: 'onPremisesSecurityIdentifier',
+  },
+  {
+    label: 'User Principal Name (onPremisesUserPrincipalName)',
+    value: 'onPremisesUserPrincipalName',
+  },
+  {
+    label: 'Object Identifier (onPremisesObjectIdentifier)',
+    value: 'onPremisesObjectIdentifier',
+  },
+]
+
 export const useCippUserActions = () => {
   const tenant = useSettings().currentTenant
 
@@ -589,10 +629,24 @@ export const useCippUserActions = () => {
       label: 'Research Compromised Account',
       type: 'GET',
       icon: <CippIcons.MagnifyingGlassIcon />,
-      link: '/identity/administration/users/user/bec?userId=[id]',
+      link: '/identity/administration/bec/case?userId=[id]',
       confirmText:
         'Are you sure you want to research if [userPrincipalName] is a compromised account?',
       multiPost: false,
+    },
+    {
+      // Queues one BEC run per selected user (bulk-capable); results land on
+      // the BEC Reports page
+      label: 'Run BEC investigation',
+      type: 'POST',
+      url: '/api/ExecBECBulkCheck',
+      icon: <CippIcons.MagnifyingGlassIcon />,
+      data: { UserIds: 'id' },
+      multiPost: true,
+      bulkFilterEligible: true,
+      confirmText:
+        'Queue a Business Email Compromise investigation for the selected users? Each run is kept; see the Business Email Compromise page under Identity.',
+      condition: (row) => row.userType !== 'Guest',
     },
     {
       //tested
@@ -868,7 +922,7 @@ export const useCippUserActions = () => {
         userid: 'id',
       },
       defaultvalues: {
-        destination: { label: 'OneDrive root', value: 'root' },
+        destination: { label: 'Shortcuts folder (Microsoft UI)', value: 'shortcuts' },
       },
       fields: [
         {
@@ -1023,16 +1077,42 @@ export const useCippUserActions = () => {
       condition: () => canWriteUser,
     },
     {
-      label: 'Clear Immutable ID',
+      label: 'Clear On-Premises Attributes',
       type: 'POST',
       icon: <CippIcons.Clear />,
-      url: '/api/ExecClrImmId',
+      url: '/api/ExecClrOnPremAttributes',
       data: {
         ID: 'id',
       },
-      confirmText: 'Are you sure you want to clear the Immutable ID for [userPrincipalName]?',
+      // Everything pre-selected: after a move to cloud-only the documented advice is to clear the whole set
+      defaultvalues: { Attributes: onPremAttributeOptions },
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'Attributes',
+          label: 'Attributes to clear',
+          multiple: true,
+          creatable: false,
+          options: onPremAttributeOptions,
+          validators: { required: 'Select at least one attribute' },
+        },
+      ],
+      confirmText:
+        'Clear the selected on-premises attributes for [userPrincipalName]? Only cloud-only accounts can be updated. The previous values are written to the log.',
       multiPost: false,
-      condition: (row) => !row?.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
+      // Cloud-only accounts that still carry something left over from directory sync
+      condition: (row) =>
+        !row?.onPremisesSyncEnabled &&
+        !!(
+          row?.onPremisesImmutableId ||
+          row?.OnPremisesImmutableId ||
+          row?.onPremisesDistinguishedName ||
+          row?.onPremisesDomainName ||
+          row?.onPremisesSamAccountName ||
+          row?.onPremisesSecurityIdentifier ||
+          row?.onPremisesUserPrincipalName
+        ) &&
+        canWriteUser,
     },
     {
       label: 'Set Source of Authority',

@@ -346,7 +346,11 @@ const Page = () => {
         <Grid container spacing={2} sx={{ mb: 2 }}>
           {/* Column 1: Tenant Information */}
           <Grid size={{ xs: 12, lg: 4 }} data-tutorial="dashboard-tenant-info">
-            <TenantInfoCard data={organizationRecord} isLoading={organization.isFetching} />
+            <TenantInfoCard
+              data={organizationRecord}
+              isLoading={organization.isFetching}
+              tenantFilter={currentTenant}
+            />
           </Grid>
 
           {/* Column 2: Tenant Metrics - 2x3 Grid */}

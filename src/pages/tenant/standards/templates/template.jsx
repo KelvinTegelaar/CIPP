@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, Typography, SvgIcon, Skeleton } from '@mui/material'
+import { Box, Button, Chip, Container, Stack, Typography, SvgIcon, Skeleton } from '@mui/material'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { Grid } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
@@ -57,6 +57,16 @@ const Page = () => {
     queryKey: `listStandardTemplates-${router.query.id}`,
     waiting: editMode,
   })
+
+  // A clone isn't pushed to the source repo yet, so it drops the synced badge/option.
+  const templateSource =
+    !router.query.clone && existingTemplate.data?.[0]?.source
+      ? existingTemplate.data[0].source
+      : null
+  const templateSourceUrl = !router.query.clone ? existingTemplate.data?.[0]?.sourceUrl : null
+  const templateHasLocalChanges = !router.query.clone
+    ? existingTemplate.data?.[0]?.hasLocalChanges ?? null
+    : null
 
   // Check if the template configuration is valid and update currentStep
   useEffect(() => {
@@ -374,15 +384,15 @@ const Page = () => {
             alignItems: { xs: 'stretch', sm: 'center' },
             mb: 3
           }}>
-          <Typography variant="h4">
-            {editMode
-              ? isDriftMode
-                ? 'Edit Drift Template'
-                : 'Edit Standards Template'
-              : isDriftMode
-                ? 'Add Drift Template'
-                : 'Add Standards Template'}
-          </Typography>
+            <Typography variant="h4">
+              {editMode
+                ? isDriftMode
+                  ? 'Edit Drift Template'
+                  : 'Edit Standards Template'
+                : isDriftMode
+                  ? 'Add Drift Template'
+                  : 'Add Standards Template'}
+            </Typography>
           <Stack
             direction="row"
             spacing={2}
@@ -415,6 +425,30 @@ const Page = () => {
             )}
           </Stack>
         </Stack>
+        {templateSource && (
+          <Box sx={{ mb: 2 }}>
+            <Chip
+              size="small"
+              variant="outlined"
+              icon={CippIcons.GitHub ? <CippIcons.GitHub /> : undefined}
+              color={templateHasLocalChanges ? 'warning' : 'default'}
+              label={
+                templateHasLocalChanges
+                  ? `Modified since last push to ${templateSource}`
+                  : `Synced from ${templateSource}`
+              }
+              {...(templateSourceUrl
+                ? {
+                    component: 'a',
+                    href: templateSourceUrl,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    clickable: true,
+                  }
+                : {})}
+            />
+          </Box>
+        )}
 
         <Box sx={{ flexGrow: 1, height: 'calc(100vh - 240px)', overflow: 'hidden' }}>
           <Grid container spacing={3} sx={{ height: '100%' }}>
@@ -429,6 +463,8 @@ const Page = () => {
                 formControl={formControl}
                 selectedStandards={selectedStandards}
                 edit={editMode}
+                source={templateSource}
+                hasLocalChanges={templateHasLocalChanges}
                 updatedAt={updatedAt}
                 isDriftMode={isDriftMode}
                 onDriftConflictChange={setHasDriftConflict}

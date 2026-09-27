@@ -16,6 +16,10 @@ import { CippJitRoleTemplateApply } from "../../../../components/CippComponents/
 import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { useEffect } from "react";
+import {
+  JIT_TEMPLATE_VARIABLES,
+  JIT_USERNAME_VARIABLES,
+} from "../../../../utils/jit-template-variables";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -32,8 +36,22 @@ const Page = () => {
 
   const watchedTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
   const isAllTenants = watchedTenant?.value === "AllTenants" || watchedTenant === "AllTenants";
+  const tenantDomain = watchedTenant?.value;
   const useRoles = useWatch({ control: formControl.control, name: "defaultUseRoles" });
   const useGroups = useWatch({ control: formControl.control, name: "defaultUseGroups" });
+  const defaultUserAction = useWatch({ control: formControl.control, name: "defaultUserAction" });
+  const defaultVacationMode = useWatch({
+    control: formControl.control,
+    name: "defaultVacationMode",
+  });
+  const defaultVacationCAPolicy = useWatch({
+    control: formControl.control,
+    name: "defaultVacationCAPolicy",
+  });
+  const defaultVacationExcludeAuditAlerts = useWatch({
+    control: formControl.control,
+    name: "defaultVacationExcludeAuditAlerts",
+  });
 
   // Clear fields when switches are toggled off
   useEffect(() => {
@@ -65,6 +83,21 @@ const Page = () => {
       formControl.setValue("defaultExpireAction", null);
     }
   }, [useRoles, useGroups]);
+
+  // Vacation mode defaults only make sense for a specific-tenant template targeting an
+  // existing user (AllTenants templates are forced to "New User" - see the radio options below)
+  useEffect(() => {
+    if (isAllTenants || defaultUserAction !== "select") {
+      formControl.setValue("defaultVacationMode", false);
+    }
+  }, [isAllTenants, defaultUserAction]);
+
+  useEffect(() => {
+    if (!defaultVacationMode) {
+      formControl.setValue("defaultVacationCAPolicy", []);
+      formControl.setValue("defaultVacationExcludeAuditAlerts", false);
+    }
+  }, [defaultVacationMode]);
 
   // Get the template data
   const template = ApiGetCall({
@@ -301,10 +334,12 @@ const Page = () => {
                 type="textField"
                 label="Reason Template"
                 name="reasonTemplate"
+                autocompleteOptions={JIT_TEMPLATE_VARIABLES}
                 placeholder="Enter a default reason template for JIT Admin requests"
                 multiline
                 rows={3}
                 formControl={formControl}
+                helperText="Supports %cipptechnician% and %cipptechnicianupn% for the requesting technician."
               />
             </Grid>
 
@@ -361,6 +396,7 @@ const Page = () => {
                   fullWidth
                   label="Default First Name"
                   name="defaultFirstName"
+                  autocompleteOptions={JIT_TEMPLATE_VARIABLES}
                   formControl={formControl}
                 />
               </Grid>
@@ -370,6 +406,7 @@ const Page = () => {
                   fullWidth
                   label="Default Last Name"
                   name="defaultLastName"
+                  autocompleteOptions={JIT_TEMPLATE_VARIABLES}
                   formControl={formControl}
                 />
               </Grid>
@@ -379,7 +416,9 @@ const Page = () => {
                   fullWidth
                   label="Default Username"
                   name="defaultUserName"
+                  autocompleteOptions={JIT_USERNAME_VARIABLES}
                   formControl={formControl}
+                  helperText="Supports %cipptechnician% (the signed-in technician's account name before the @), resolved when the template is applied."
                 />
               </Grid>
               {!isAllTenants && (
@@ -432,6 +471,78 @@ const Page = () => {
                       name="defaultExistingUser"
                       label="Default User"
                     />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <Divider sx={{ my: 2 }} />
+                    <CippFormComponent
+                      type="switch"
+                      label="Enable Vacation Mode by Default"
+                      name="defaultVacationMode"
+                      formControl={formControl}
+                    />
+                    <Box sx={{ color: "text.secondary", fontSize: "0.875rem", mt: 0.5 }}>
+                      Excludes the user from a Conditional Access policy and/or location-based
+                      audit alerts for the same window as the JIT Admin access, plus a 1 hour
+                      buffer.
+                    </Box>
+                    <CippFormCondition
+                      formControl={formControl}
+                      field="defaultVacationMode"
+                      compareType="is"
+                      compareValue={true}
+                      clearOnHide={false}
+                    >
+                      <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                        <Grid size={{ xs: 12 }}>
+                          <CippFormComponent
+                            type="autoComplete"
+                            label={
+                              tenantDomain
+                                ? `Conditional Access Policies in ${tenantDomain}`
+                                : "Select a tenant first"
+                            }
+                            name="defaultVacationCAPolicy"
+                            api={
+                              tenantDomain
+                                ? {
+                                    queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
+                                    url: "/api/ListGraphRequest",
+                                    data: {
+                                      tenantFilter: tenantDomain,
+                                      Endpoint: "conditionalAccess/policies",
+                                      AsApp: true,
+                                    },
+                                    dataKey: "Results",
+                                    labelField: (option) => `${option.displayName}`,
+                                    valueField: "id",
+                                    showRefresh: true,
+                                  }
+                                : null
+                            }
+                            multiple={true}
+                            creatable={false}
+                            formControl={formControl}
+                            disabled={!tenantDomain}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12 }}>
+                          <CippFormComponent
+                            type="switch"
+                            label="Exclude from location-based audit log alerts"
+                            name="defaultVacationExcludeAuditAlerts"
+                            formControl={formControl}
+                          />
+                        </Grid>
+                        {!defaultVacationCAPolicy?.length && !defaultVacationExcludeAuditAlerts && (
+                          <Grid size={{ xs: 12 }}>
+                            <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>
+                              Select at least one Conditional Access policy or enable audit alert
+                              exclusion.
+                            </Box>
+                          </Grid>
+                        )}
+                      </Grid>
+                    </CippFormCondition>
                   </Grid>
                 </>
               )}
