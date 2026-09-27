@@ -1,26 +1,25 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
 import {
-  Autocomplete,
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
+  IconButton,
+  Paper,
+  Stack,
+  Switch,
   Tooltip,
   Typography,
 } from '@mui/material'
-import {
-  Document,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from '@react-pdf/renderer'
-import { CippPdfPreview } from '../CippPdf/CippPdfPreview'
-import { parseCippDate } from '../../utils/parse-cipp-date'
+import { CippAutoComplete } from '../CippComponents/CippAutocomplete'
+import { CippOffCanvas } from '../CippComponents/CippOffCanvas'
+import { ServerPdfPane, useServerPdf } from '../CippPdf/useServerPdf'
+import { useBrandingSettings } from '../CippPdf/useBrandingSettings'
+import { DEFAULT_BRANDING_OPTION } from '../ReportBuilder/reportSettings'
+import { ApiGetCall } from '../../api/ApiCall'
 
 const operatorLabels = {
   eq: 'equals',
@@ -29,7 +28,8 @@ const operatorLabels = {
   notStartsWith: 'does not start with',
 }
 
-// Human-readable summary of a stage's graduation conditions. Shared with the alignment page.
+// Human-readable summary of a stage's graduation conditions. Used by the alignment and
+// template pages - deliberately NOT by the PDF, which tells the rollout in plain words.
 export const describeStageConditions = (stage) => {
   if (!stage?.conditions?.length) return 'no conditions configured'
   const parts = stage.conditions.map((condition) => {
@@ -38,6 +38,8 @@ export const describeStageConditions = (stage) => {
         return `${condition.days} ${condition.unit ?? 'days'} in the previous stage`
       case 'variable':
         return `${condition.variable} ${operatorLabels[condition.operator] ?? condition.operator} '${condition.value}'`
+      case 'group':
+        return `the tenant is in the '${condition.groupName ?? condition.group}' group`
       case 'success':
         return 'all previous stage items applied successfully'
       case 'manual':
@@ -49,352 +51,201 @@ export const describeStageConditions = (stage) => {
   return parts.join(stage.logic === 'or' ? ' OR ' : ' AND ')
 }
 
-const accent = '#F77F00'
+// Report option toggles shown in the sidebar, in the executive report's card style. The keys
+// are the endpoint's sectionConfig fields.
+const sectionOptions = [
+  {
+    key: 'alreadyAligned',
+    label: 'What Is Already In Place',
+    description: 'Deployed policies and enforced settings, with their values',
+  },
+  {
+    key: 'rolloutStages',
+    label: 'Rollout Stages',
+    description: 'How the remaining waves arrive and when',
+  },
+]
 
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: 'column',
-    backgroundColor: '#FFFFFF',
-    fontFamily: 'Helvetica',
-    fontSize: 10,
-    lineHeight: 1.5,
-    color: '#2D3748',
-    padding: 40,
-  },
-  accentBar: {
-    height: 6,
-    backgroundColor: accent,
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 22,
-    fontFamily: 'Helvetica-Bold',
-    marginBottom: 2,
-  },
-  subtitle: {
-    fontSize: 11,
-    color: '#718096',
-    marginBottom: 18,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontFamily: 'Helvetica-Bold',
-    marginTop: 14,
-    marginBottom: 6,
-    color: '#1A202C',
-  },
-  statRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 4,
-  },
-  statBox: {
-    flex: 1,
-    border: '1 solid #E2E8F0',
-    borderRadius: 6,
-    padding: 8,
-  },
-  statValue: {
-    fontSize: 16,
-    fontFamily: 'Helvetica-Bold',
-    color: accent,
-  },
-  statLabel: {
-    fontSize: 8,
-    color: '#718096',
-    textTransform: 'uppercase',
-  },
-  item: {
-    marginBottom: 6,
-    paddingLeft: 8,
-    borderLeft: `2 solid ${accent}`,
-  },
-  itemTitle: {
-    fontSize: 11,
-    fontFamily: 'Helvetica-Bold',
-  },
-  itemText: {
-    fontSize: 9.5,
-    color: '#4A5568',
-  },
-  meta: {
-    fontSize: 8.5,
-    color: '#718096',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 24,
-    left: 40,
-    right: 40,
-    fontSize: 8,
-    color: '#A0AEC0',
-    textAlign: 'center',
-  },
-})
-
-const WhatIfDocument = ({
-  tenant,
-  stageStates,
-  simulatedTemplate,
-  catalogByName,
-}) => {
-  const generatedAt = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-  const changesNow = tenant.rows.filter((row) =>
-    [
-      'Drift',
-      'Partially Accepted',
-      'Denied - Remediate Pending',
-      'Denied - Delete Pending',
-    ].includes(row.status)
-  )
-  const acceptedRows = tenant.rows.filter((row) => row.status === 'Accepted')
-  const plannedStages = stageStates.filter((state) => state.nextStage)
-
-  return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.accentBar} />
-        <Text style={styles.title}>Baseline What-If Report</Text>
-        <Text style={styles.subtitle}>
-          {tenant.displayName} ({tenant.tenantFilter}) - generated {generatedAt}
-          . No changes have been made; this report previews what applying the
-          configured standards would change.
-        </Text>
-
-        <Text style={styles.sectionTitle}>Where you stand today</Text>
-        <View style={styles.statRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>{tenant.alignedPercentage}%</Text>
-            <Text style={styles.statLabel}>
-              Compliant incl. accepted deviations
-            </Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>{tenant.verifiedPercentage}%</Text>
-            <Text style={styles.statLabel}>Compliant with baseline</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>{changesNow.length}</Text>
-            <Text style={styles.statLabel}>Changes to make</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>{acceptedRows.length}</Text>
-            <Text style={styles.statLabel}>Agreed exceptions</Text>
-          </View>
-        </View>
-
-        <Text style={styles.sectionTitle}>
-          Changes we would make now ({changesNow.length})
-        </Text>
-        {changesNow.length === 0 && (
-          <Text style={styles.itemText}>
-            Nothing to change - every enforced standard is already in its
-            expected state.
-          </Text>
-        )}
-        {changesNow.map((row) => (
-          <View key={row.standardName} style={styles.item} wrap={false}>
-            <Text style={styles.itemTitle}>{row.standardLabel}</Text>
-            <Text style={styles.itemText}>
-              {catalogByName[row.standardName]?.executiveText ??
-                row.standardLabel}
-            </Text>
-            <Text style={styles.meta}>
-              {row.impact}
-              {row.secureScoreImpact > 0
-                ? ` - increases Secure Score by up to ${row.secureScoreImpact} points`
-                : ''}
-              {row.status?.startsWith('Denied')
-                ? ' - deviation denied, fix pending'
-                : ''}
-            </Text>
-          </View>
-        ))}
-
-        <Text style={styles.sectionTitle}>
-          Planned future changes (staged rollout)
-        </Text>
-        {plannedStages.length === 0 && (
-          <Text style={styles.itemText}>
-            This tenant is in the final stage of every assigned baseline - no
-            further staged changes are planned.
-          </Text>
-        )}
-        {plannedStages.map((state) => {
-          const timeCondition = state.nextStage.conditions?.find(
-            (condition) => condition.type === 'time'
-          )
-          const estimatedAt = timeCondition
-            ? new Date(
-                parseCippDate(state.enteredStageAt).getTime() +
-                  timeCondition.days *
-                    (timeCondition.unit === 'weeks' ? 7 : 1) *
-                    24 *
-                    60 *
-                    60 *
-                    1000
-              ).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-            : null
-          return (
-            <View
-              key={state.templateId}
-              style={{ marginBottom: 8 }}
-              wrap={false}
-            >
-              <Text style={styles.itemTitle}>{state.templateName}</Text>
-              <Text style={styles.itemText}>
-                Currently in Stage {state.currentStage} of {state.totalStages} (
-                {state.stageName}). Next: Stage {state.currentStage + 1} (
-                {state.nextStageName}) - advances when{' '}
-                {describeStageConditions(state.nextStage)}
-                {estimatedAt ? `, estimated around ${estimatedAt}` : ''}.
-              </Text>
-              {state.nextStage.standards.map((standardName) => {
-                const standard = catalogByName[standardName]
-                if (!standard) return null
-                return (
-                  <View
-                    key={standardName}
-                    style={[styles.item, { marginTop: 4 }]}
-                    wrap={false}
-                  >
-                    <Text style={styles.itemTitle}>{standard.label}</Text>
-                    <Text style={styles.itemText}>
-                      {standard.executiveText}
-                    </Text>
-                  </View>
-                )
-              })}
-            </View>
-          )
-        })}
-
-        {simulatedTemplate && (
-          <>
-            <Text style={styles.sectionTitle}>
-              What-if: additionally assigning the{' '}
-              {simulatedTemplate.templateName} baseline
-            </Text>
-            <Text style={styles.itemText}>
-              {simulatedTemplate.description}. This baseline is not assigned to
-              the tenant today - below is what assigning it would roll out,
-              stage by stage.
-            </Text>
-            {simulatedTemplate.stages.map((stage, index) => (
-              <View key={stage.name} style={{ marginBottom: 6 }} wrap={false}>
-                <Text style={[styles.itemTitle, { marginTop: 6 }]}>
-                  Stage {index + 1}: {stage.name}
-                  {index === 0
-                    ? ' - applies immediately'
-                    : ` - advances when ${describeStageConditions(stage)}`}
-                </Text>
-                {[
-                  ...new Set(stage.standards.map((key) => key.split('#')[0])),
-                ].map((name) => {
-                  const standard = catalogByName[name]
-                  if (!standard) return null
-                  const currentRow = tenant.rows.find(
-                    (row) => row.standardName === name
-                  )
-                  const alreadyAligned = currentRow?.status === 'Compliant'
-                  return (
-                    <View
-                      key={name}
-                      style={[styles.item, { marginTop: 4 }]}
-                      wrap={false}
-                    >
-                      <Text style={styles.itemTitle}>{standard.label}</Text>
-                      <Text style={styles.itemText}>
-                        {standard.executiveText}
-                      </Text>
-                      <Text style={styles.meta}>
-                        {alreadyAligned
-                          ? `No change - already aligned today (configured by ${currentRow.sourceTemplate})`
-                          : 'Would change this tenant when the stage applies'}
-                      </Text>
-                    </View>
-                  )
-                })}
-              </View>
-            ))}
-          </>
-        )}
-
-        {acceptedRows.length > 0 && (
-          <>
-            <Text style={styles.sectionTitle}>
-              Agreed exceptions we will not change ({acceptedRows.length})
-            </Text>
-            {acceptedRows.map((row) => (
-              <View key={row.standardName} style={styles.item} wrap={false}>
-                <Text style={styles.itemTitle}>{row.standardLabel}</Text>
-                <Text style={styles.itemText}>{row.deviationReason}</Text>
-              </View>
-            ))}
-          </>
-        )}
-
-        <Text style={styles.footer} fixed>
-          Generated by CIPP Baselines - what-if preview, no changes were made.
-        </Text>
-      </Page>
-    </Document>
-  )
-}
-
-// Button + preview dialog in the style of the Executive Report button.
+// Button + preview dialog in the executive report's shape: an options rail on the left
+// (branding, simulated baselines, section toggles) and the PDF preview on the right. The PDF
+// is rendered server-side (ExecGetBaselineWhatIfReportPdf), which reads the same alignment,
+// baselines and stored templates this page shows, and re-renders whenever an option changes.
 export const CippBaselineWhatIfReport = ({
   tenant,
-  stageStates,
+  stageStates = [],
   baselines = [],
-  catalog = [],
 }) => {
   const [open, setOpen] = useState(false)
-  const [simulatedTemplate, setSimulatedTemplate] = useState(null)
+  const [optionsOpen, setOptionsOpen] = useState(false)
+  const [simulatedSelection, setSimulatedSelection] = useState([])
+  const [sectionConfig, setSectionConfig] = useState({
+    alreadyAligned: true,
+    rolloutStages: true,
+  })
+  // Null until the operator picks one, so the branding setting for this report type keeps
+  // applying as it changes. An explicit choice - including "Default" - wins from then on.
+  const [presetOverride, setPresetOverride] = useState(null)
+  const defaultBranding = useBrandingSettings()
+  const brandingPresetId =
+    presetOverride ?? defaultBranding?.reportDefaults?.baseline ?? ''
 
-  const catalogByName = Object.fromEntries(
-    catalog.map((standard) => [standard.name, standard])
+  // Named branding sets a report can be rendered against. Only names/ids are needed now that
+  // the PDF is branded server-side, so this shares the executive report's image-free query.
+  const brandingPresets = ApiGetCall({
+    url: '/api/ListBrandingPresets',
+    data: { includeImages: false },
+    queryKey: 'ListBrandingPresets-list',
+    waiting: open,
+  })
+  const presetOptions = useMemo(
+    () => [
+      DEFAULT_BRANDING_OPTION,
+      ...(Array.isArray(brandingPresets.data) ? brandingPresets.data : []).map(
+        (preset) => ({ label: preset.name, value: preset.id })
+      ),
+    ],
+    [brandingPresets.data]
   )
 
-  // Baselines not currently rolled out to this tenant can be simulated in the report.
+  const tenantLabel = tenant?.displayName ?? tenant?.tenantFilter ?? 'tenant'
+
+  // Baselines not rolled out to this tenant can be simulated in the report.
   const availableTemplates = baselines.filter(
     (template) =>
       !stageStates.some((state) => state.templateId === template.GUID)
   )
 
-  const reportDocument = (
-    <WhatIfDocument
-      tenant={tenant}
-      stageStates={stageStates}
-      simulatedTemplate={simulatedTemplate}
-      catalogByName={catalogByName}
-    />
-  )
+  const pdf = useServerPdf({
+    url: '/api/ExecGetBaselineWhatIfReportPdf',
+    body: {
+      tenantFilter: tenant?.tenantFilter,
+      simulatedTemplateIds: simulatedSelection.map((option) => option.value),
+      sectionConfig,
+      brandingPresetId,
+    },
+    enabled: open,
+  })
 
-  const handleDownload = () => {
-    import('@react-pdf/renderer').then(({ pdf }) => {
-      pdf(reportDocument)
-        .toBlob()
-        .then((blob) => {
-          const url = URL.createObjectURL(blob)
-          const link = document.createElement('a')
-          link.href = url
-          link.download = `WhatIf_Report_${tenant.displayName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-          URL.revokeObjectURL(url)
-        })
-    })
-  }
+  const fileName = `Baseline_Report_${tenantLabel.replace(/[^a-zA-Z0-9]/g, '_')}_${
+    new Date().toISOString().split('T')[0]
+  }.pdf`
+
+  const toggleSection = (key) =>
+    setSectionConfig((prev) => ({ ...prev, [key]: !prev[key] }))
+
+  // One definition, two homes: the desktop rail and the mobile drawer. The drawer's own
+  // header already says "Report Options", so it takes the panel without the heading.
+  const optionsPanel = ({ showHeading = true } = {}) => (
+    <Box sx={{ p: 2 }}>
+      {showHeading && (
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+        >
+          <CippIcons.Settings size={20} />
+          Report Options
+        </Typography>
+      )}
+      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+        Configure what the baseline report includes. Changes are reflected in
+        real-time.
+      </Typography>
+
+      <Box sx={{ mb: 3 }}>
+        <CippAutoComplete
+          size="small"
+          label="Branding"
+          multiple={false}
+          creatable={false}
+          disableClearable={true}
+          isFetching={brandingPresets.isFetching}
+          options={presetOptions}
+          value={
+            presetOptions.find((option) => option.value === brandingPresetId) ??
+            presetOptions[0]
+          }
+          onChange={(option) => setPresetOverride(option?.value ?? '')}
+        />
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          Presets are managed in Settings → Branding
+        </Typography>
+      </Box>
+
+      <Box sx={{ mb: 3 }}>
+        <CippAutoComplete
+          size="small"
+          label="Simulate additional baselines"
+          multiple={true}
+          creatable={false}
+          options={availableTemplates.map((template) => ({
+            label: template.templateName,
+            value: template.GUID,
+          }))}
+          value={simulatedSelection}
+          onChange={(options) => setSimulatedSelection(options ?? [])}
+        />
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          Everything these baselines would add appears in the report as planned
+          changes.
+        </Typography>
+      </Box>
+
+      <Stack spacing={1.5}>
+        {sectionOptions.map((option) => (
+          <Paper
+            key={option.key}
+            onClick={() => toggleSection(option.key)}
+            sx={{
+              p: 1.5,
+              border: '1px solid',
+              borderColor: sectionConfig[option.key]
+                ? 'primary.main'
+                : 'divider',
+              bgcolor: sectionConfig[option.key]
+                ? 'primary.50'
+                : 'background.paper',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease-in-out',
+              display: 'flex',
+              alignItems: 'center',
+              '&:hover': {
+                borderColor: 'primary.main',
+                bgcolor: sectionConfig[option.key]
+                  ? 'primary.100'
+                  : 'primary.25',
+              },
+            }}
+          >
+            <Switch
+              checked={sectionConfig[option.key]}
+              onChange={(event) => {
+                event.stopPropagation()
+                toggleSection(option.key)
+              }}
+              onClick={(event) => event.stopPropagation()}
+              color="primary"
+              size="small"
+            />
+            <Box sx={{ ml: 1, flexGrow: 1, minWidth: 0 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}
+              >
+                {option.label}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', fontSize: '0.75rem' }}
+              >
+                {option.description}
+              </Typography>
+            </Box>
+          </Paper>
+        ))}
+      </Stack>
+    </Box>
+  )
 
   return (
     <>
@@ -412,70 +263,97 @@ export const CippBaselineWhatIfReport = ({
         onClose={() => setOpen(false)}
         maxWidth="xl"
         fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            height: { xs: '100dvh', md: '95vh' },
+            maxHeight: { xs: '100dvh', md: '95vh' },
+          },
+        }}
       >
-        <DialogTitle>What-If Report - {tenant.displayName}</DialogTitle>
-        <DialogContent
+        <DialogTitle
           sx={{
-            p: 0,
-            height: '75vh',
             display: 'flex',
-            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            pb: 1,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
           }}
         >
-          <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
-            <Autocomplete
+          <Typography variant="h6" component="div" noWrap sx={{ minWidth: 0 }}>
+            Baseline Report - {tenantLabel}
+          </Typography>
+          <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
+            {/* The options rail's stand-in below md, in the title bar because the dialog
+                is full-screen there and this is the only chrome that stays put. */}
+            <IconButton
+              onClick={() => setOptionsOpen(true)}
               size="small"
-              options={availableTemplates}
-              getOptionLabel={(option) => option.templateName}
-              value={simulatedTemplate}
-              onChange={(event, value) => setSimulatedTemplate(value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Simulate assigning an additional baseline"
-                />
-              )}
-              sx={{ maxWidth: 460 }}
+              aria-label="Report options"
+              sx={{ display: { xs: 'inline-flex', md: 'none' } }}
+            >
+              <CippIcons.Settings />
+            </IconButton>
+            <IconButton
+              onClick={() => setOpen(false)}
+              size="small"
+              aria-label="Close preview"
+            >
+              <CippIcons.Close />
+            </IconButton>
+          </Stack>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0, height: '100%', display: 'flex' }}>
+          {/* Left Panel - report options. Below md it lives in the drawer instead. */}
+          <Paper
+            sx={{
+              width: 320,
+              flexShrink: 0,
+              borderRadius: 0,
+              borderRight: '1px solid',
+              borderColor: 'divider',
+              height: '100%',
+              overflow: 'auto',
+              display: { xs: 'none', md: 'block' },
+            }}
+          >
+            {optionsPanel()}
+          </Paper>
+
+          {/* Right Panel - PDF preview */}
+          <Box sx={{ flex: 1, height: '100%', minWidth: 0 }}>
+            <ServerPdfPane
+              {...pdf}
+              title={`Baseline Report - ${tenantLabel}`}
+              errorText="The report could not be generated. Run the baseline for this tenant and try again."
             />
           </Box>
-          {open && (
-            <CippPdfPreview
-              // Remount when the simulation changes so react-pdf re-renders cleanly
-              viewerKey={simulatedTemplate?.GUID ?? 'assigned-only'}
-              title="Baseline what-if report"
-              fileName="Baseline_WhatIf_Report.pdf"
-              style={{ width: '100%', height: '100%', border: 'none' }}
-              showToolbar={true}
-            >
-              {reportDocument}
-            </CippPdfPreview>
-          )}
         </DialogContent>
-        <DialogActions
-          sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', gap: 1 }}
-        >
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="caption" sx={{
-              color: "text.secondary"
-            }}>
-              Exec-friendly preview - safe to send to customers. No changes are
-              made.
-            </Typography>
-          </Box>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Close</Button>
           <Button
             variant="contained"
             startIcon={<CippIcons.Download />}
-            onClick={handleDownload}
+            onClick={() => pdf.download(fileName)}
+            disabled={!pdf.pdfUrl}
           >
             Download PDF
           </Button>
-          <Button variant="outlined" onClick={() => setOpen(false)}>
-            Close
-          </Button>
         </DialogActions>
+
+        <CippOffCanvas
+          visible={optionsOpen}
+          onClose={() => setOptionsOpen(false)}
+          title="Report Options"
+          size="sm"
+          contentPadding={0}
+          aboveModal
+        >
+          {optionsPanel({ showHeading: false })}
+        </CippOffCanvas>
       </Dialog>
     </>
-  );
+  )
 }
 
 export default CippBaselineWhatIfReport

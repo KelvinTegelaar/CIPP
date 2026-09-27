@@ -21,12 +21,16 @@ export const DEFAULT_BRANDING = Object.freeze({
   logoUploads: [],
   coverImage: null,
   coverUploads: [],
+  // The gallery covers by id and name, for pickers that offer them (the report builder's Infographic).
+  coverImages: [],
   footerText: '',
   coverFooterText: '',
   showFooter: true,
   showPageNumbers: true,
   watermarkText: '',
   watermarkEnabled: true,
+  // Which of the tenant's names a report prints: 'alias' (the name CIPP shows), 'name' or 'domain'.
+  tenantLabel: 'alias',
   reportDefaults: {},
   roleColours: {},
 })

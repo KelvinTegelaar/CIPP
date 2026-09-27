@@ -187,6 +187,8 @@ export const useCippRoleAssignmentActions = ({
       confirmPhrase: globalAdminPhrase,
       relatedQueryKeys,
       condition: (row) => canWriteRole && row?.PIMCapable && isDirect(row),
+      // Exactly one of the two removal actions is shown per row; condition stays for bulk.
+      hideCondition: (row) => row?.PIMCapable === false,
     },
     {
       // Tenants without Entra ID P2 have no PIM API; removal goes through the directoryRoles
@@ -219,6 +221,7 @@ export const useCippRoleAssignmentActions = ({
       relatedQueryKeys: [...relatedQueryKeys, 'ListRoles*'],
       condition: (row) =>
         canWriteRole && row?.PIMCapable === false && isDirect(row),
+      hideCondition: (row) => row?.PIMCapable !== false,
     },
   ]
 }

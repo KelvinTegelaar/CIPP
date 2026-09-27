@@ -3,8 +3,10 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '../../test-utils'
 import {
+  BLOCK_CATEGORIES,
   STRUCTURED_BLOCK_TYPES,
   StructuredBlockCard,
+  blockTypesFor,
   createStructuredBlock,
   isStructuredBlock,
 } from '../../../src/components/ReportBuilder/ReportBuilderBlocks'
@@ -12,6 +14,34 @@ import {
 // The structured blocks carry data rather than prose, so their editors are small tables of values.
 // What matters is that an edit reaches the parent in the shape the renderer reads, and that the
 // list controls cannot leave a block with no rows at all.
+
+// The Infographic card lists the branding gallery's covers; the hook behind it is replaced so the
+// tests neither fetch nor depend on a tenant's gallery.
+vi.mock('../../../src/components/CippPdf/useBrandingSettings', async (importOriginal) => ({
+  ...(await importOriginal()),
+  useBrandingSettings: () => ({ coverImages: [{ id: 'img-1', name: 'Board room' }, { id: 'img-2', name: '' }] }),
+}))
+
+// A reporting database with one collection, as the builder page hands it to the cards.
+const dataShape = [
+  {
+    type: 'Devices',
+    count: 4,
+    fields: [
+      { name: 'deviceName', type: 'string' },
+      { name: 'operatingSystem', type: 'string' },
+      { name: 'complianceState', type: 'string' },
+    ],
+  },
+  {
+    type: 'SecureScore',
+    count: 14,
+    fields: [
+      { name: 'createdDateTime', type: 'date' },
+      { name: 'currentScore', type: 'number' },
+    ],
+  },
+]
 
 const shell = (overrides = {}) => ({
   index: 0,
@@ -58,19 +88,41 @@ const renderLive = (initial, props = {}) => {
 }
 
 describe('block type registry', () => {
-  it('lists every structured type the builder offers', () => {
+  it('lists every structured type the builder offers, in picker order', () => {
     expect(STRUCTURED_BLOCK_TYPES.map((t) => t.value)).toEqual([
+      'note',
+      'richbullets',
+      'numbered',
+      'paragraphindent',
+      'code',
+      'infobox',
+      'infoboxcolumns',
+      'richtable',
       'chart',
+      'sankey',
       'scorecard',
       'progress',
+      'cover',
+      'page',
       'hero',
+      'hr',
       'pagebreak',
     ])
   })
 
-  it('recognises structured types', () => {
+  it('offers every block type in exactly one category, the text blocks included', () => {
+    const values = BLOCK_CATEGORIES.flatMap((entry) => entry.blocks.map((b) => b.value))
+    expect(new Set(values).size).toBe(values.length)
+    expect(values).toEqual(expect.arrayContaining(['blank', 'test', 'database']))
+    expect(blockTypesFor('layout').map((b) => b.value)).toEqual(['cover', 'page', 'hero', 'hr', 'pagebreak'])
+    expect(blockTypesFor(undefined)).toEqual([])
+  })
+
+  it('recognises structured types, the callout styles included', () => {
     expect(isStructuredBlock('chart')).toBe(true)
     expect(isStructuredBlock('pagebreak')).toBe(true)
+    expect(isStructuredBlock('alertbox')).toBe(true)
+    expect(isStructuredBlock('clearbox')).toBe(true)
   })
 
   it('leaves the text block types to the page that owns their editors', () => {
@@ -110,6 +162,176 @@ describe('createStructuredBlock', () => {
   it('carries the id it was given', () => {
     expect(createStructuredBlock('chart', 'block-123').id).toBe('block-123')
   })
+
+  it('gives a table keyed columns and a row keyed to them', () => {
+    const block = createStructuredBlock('richtable', 'b1')
+    expect(block.columns.map((c) => c.key)).toEqual(['c1', 'c2'])
+    expect(Object.keys(block.rows[0])).toEqual(['c1', 'c2'])
+  })
+
+  it('lays a callout grid out two across with a callout to edit', () => {
+    const block = createStructuredBlock('infoboxcolumns', 'b1')
+    expect(block.columns).toBe(2)
+    expect(block.items.length).toBeGreaterThan(0)
+  })
+})
+
+describe('CoverBlockCard', () => {
+  it('starts blank so the report name stays the title until one is typed', () => {
+    const block = createStructuredBlock('cover', 'b1')
+    expect(block.title).toBe('')
+    expect(block.coverAccent).toBe('')
+  })
+
+  it('edits the title, accent, subtitle and label', async () => {
+    const latest = renderLive(createStructuredBlock('cover', 'b1'))
+
+    await userEvent.type(screen.getByLabelText('Cover title'), 'Quarterly Security')
+    await userEvent.type(screen.getByLabelText('Accent'), 'Review')
+    await userEvent.type(screen.getByLabelText('Subtitle'), 'Where we stand')
+    await userEvent.type(screen.getByLabelText('Label'), 'Security Review')
+
+    expect(latest.current).toMatchObject({
+      title: 'Quarterly Security',
+      coverAccent: 'Review',
+      subtitle: 'Where we stand',
+      coverLabel: 'Security Review',
+    })
+  })
+})
+
+describe('CalloutGridBlockCard', () => {
+  it('lays the callouts out in the grid the page will use', async () => {
+    const latest = renderLive(createStructuredBlock('infoboxcolumns', 'b1'))
+    expect(screen.getByTestId('callout-grid').dataset.columns).toBe('2')
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Layout' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('1 across'))
+
+    expect(latest.current.columns).toBe(1)
+    expect(screen.getByTestId('callout-grid').dataset.columns).toBe('1')
+  })
+
+  it('adds and removes callouts, keeping at least one', async () => {
+    const latest = renderLive(createStructuredBlock('infoboxcolumns', 'b1'))
+
+    await userEvent.click(screen.getByLabelText('Add callout'))
+    expect(latest.current.items).toHaveLength(3)
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'Remove callout' })[0])
+    await userEvent.click(screen.getAllByRole('button', { name: 'Remove callout' })[0])
+    expect(latest.current.items).toHaveLength(1)
+    expect(screen.getByRole('button', { name: 'Remove callout' })).toBeDisabled()
+  })
+
+  it('edits one callout without disturbing the others', async () => {
+    const latest = renderLive(createStructuredBlock('infoboxcolumns', 'b1'))
+
+    await userEvent.type(screen.getAllByLabelText('Title')[1], '!')
+
+    expect(latest.current.items[1].title).toBe('Point two!')
+    expect(latest.current.items[0].title).toBe('Point one')
+  })
+})
+
+describe('PageBlockCard', () => {
+  it('edits the subtitle that goes in the page header', async () => {
+    const latest = renderLive(createStructuredBlock('page', 'b1'))
+
+    await userEvent.type(screen.getByLabelText('Subtitle'), 'Q3')
+
+    expect(latest.current.subtitle).toBe('Q3')
+  })
+})
+
+describe('NoteBlockCard', () => {
+  it('edits the note text', async () => {
+    const latest = renderLive({ ...createStructuredBlock('note', 'b1'), content: '' })
+
+    await userEvent.type(screen.getByLabelText('Note'), 'Figures as of Monday.')
+
+    expect(latest.current.content).toBe('Figures as of Monday.')
+  })
+})
+
+describe('BulletsBlockCard', () => {
+  it('edits a bullet without disturbing its lead', async () => {
+    const latest = renderLive(createStructuredBlock('richbullets', 'b1'))
+
+    await userEvent.type(screen.getByLabelText('Text'), ' Really.')
+
+    expect(latest.current.items[0].text).toBe('What it means for the organisation. Really.')
+    expect(latest.current.items[0].label).toBe('First point.')
+  })
+})
+
+describe('CalloutBlockCard', () => {
+  it('switches the block type with the style, so the renderer draws the right box', async () => {
+    const latest = renderLive(createStructuredBlock('infobox', 'b1'))
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Style' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('Warning'))
+
+    expect(latest.current.type).toBe('alertbox')
+  })
+
+  it('keeps the title and text when the style changes', async () => {
+    const latest = renderLive({ ...createStructuredBlock('clearbox', 'b1'), title: 'All good', content: 'Nothing to do.' })
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Style' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('Info'))
+
+    expect(latest.current).toMatchObject({ type: 'infobox', title: 'All good', content: 'Nothing to do.' })
+  })
+})
+
+describe('TableBlockCard', () => {
+  it('gives a new column the next free key', async () => {
+    const latest = renderLive(createStructuredBlock('richtable', 'b1'))
+
+    await userEvent.click(screen.getByLabelText('Add column'))
+
+    expect(latest.current.columns.map((c) => c.key)).toEqual(['c1', 'c2', 'c3'])
+  })
+
+  it('takes a removed column\'s cells with it', async () => {
+    const latest = renderLive({
+      ...createStructuredBlock('richtable', 'b1'),
+      rows: [{ c1: 'a', c2: 'b' }],
+    })
+
+    // the columns editor renders first, so its remove buttons come first
+    await userEvent.click(screen.getAllByRole('button', { name: 'Remove row' })[0])
+
+    expect(latest.current.columns.map((c) => c.key)).toEqual(['c2'])
+    expect(latest.current.rows).toEqual([{ c2: 'b' }])
+  })
+
+  it('fills the rows from a collection and offers its fields on each column', async () => {
+    const latest = renderLive(createStructuredBlock('richtable', 'b1'), { dataShape })
+    expect(screen.getByLabelText('Add row')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reporting database' }))
+    expect(screen.queryByLabelText('Add row')).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Collection' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('Devices (4)'))
+    expect(latest.current.dataSource).toEqual({ type: 'Devices', field: null, valueField: null, aggregate: null, filter: null })
+
+    const fieldInput = screen.getAllByLabelText('Field')[0]
+    const list = document.getElementById(fieldInput.getAttribute('list'))
+    expect(Array.from(list.options).map((o) => o.value)).toEqual(['deviceName', 'operatingSystem', 'complianceState'])
+
+    await userEvent.type(fieldInput, 'deviceName')
+    expect(latest.current.columns[0]).toMatchObject({ key: 'c1', field: 'deviceName' })
+  })
+
+  it('labels the row fields after the column headers', () => {
+    renderLive(createStructuredBlock('richtable', 'b1'))
+
+    expect(screen.getByLabelText('Item')).toBeInTheDocument()
+    expect(screen.getByLabelText('Value')).toBeInTheDocument()
+  })
 })
 
 describe('ChartBlockCard', () => {
@@ -144,6 +366,74 @@ describe('ChartBlockCard', () => {
 
     expect(screen.queryByLabelText('Centre label')).not.toBeInTheDocument()
     expect(screen.getByLabelText('Axis maximum')).toBeInTheDocument()
+  })
+
+  it('switches to the reporting database, then picks a collection and the field to count by', async () => {
+    const latest = renderLive(createStructuredBlock('chart', 'b1'), { dataShape })
+    expect(screen.getByLabelText('Add data point')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reporting database' }))
+    expect(latest.current.chartSource).toEqual({ type: null, field: null, valueField: null, aggregate: null, filter: null })
+    expect(screen.queryByLabelText('Add data point')).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Collection' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('Devices (4)'))
+    expect(latest.current.chartSource).toEqual({ type: 'Devices', field: null, valueField: null, aggregate: null, filter: null })
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Per' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('operatingSystem (string)'))
+    expect(latest.current.chartSource).toMatchObject({ type: 'Devices', field: 'operatingSystem', valueField: null })
+  })
+
+  it('plots a field\'s value per date field, the way a Secure Score trend is built', async () => {
+    const latest = renderLive(
+      { ...createStructuredBlock('chart', 'b1'), chartKind: 'trend', chartSource: { type: 'SecureScore', field: null, valueField: null, aggregate: null, filter: null } },
+      { dataShape }
+    )
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Show' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('currentScore (number)'))
+    await userEvent.click(screen.getByRole('combobox', { name: 'Per' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('createdDateTime (date)'))
+
+    expect(latest.current.chartSource).toMatchObject({ type: 'SecureScore', field: 'createdDateTime', valueField: 'currentScore', aggregate: null })
+    expect(screen.getByRole('combobox', { name: 'Rows sharing a label' })).toBeInTheDocument()
+  })
+
+  it('shows the picker, not the typed points, while the source is the reporting database', () => {
+    renderLive(
+      { ...createStructuredBlock('chart', 'b1'), chartSource: { type: 'Devices', field: null, valueField: null, aggregate: null, filter: null } },
+      { dataShape }
+    )
+
+    expect(screen.queryByLabelText('Add data point')).not.toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Collection' })).toBeInTheDocument()
+  })
+
+  it('adds a condition the rows must meet', async () => {
+    const latest = renderLive(
+      { ...createStructuredBlock('chart', 'b1'), chartSource: { type: 'Devices', field: 'operatingSystem', valueField: null, aggregate: null, filter: null } },
+      { dataShape }
+    )
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Only rows where' }))
+    await userEvent.click(within(await screen.findByRole('listbox')).getByText('complianceState (string)'))
+    // the chart's own data points have a Value column too; the condition's field renders last
+    await userEvent.type(screen.getAllByLabelText('Value').at(-1), 'compliant')
+
+    expect(latest.current.chartSource.filter).toEqual({ field: 'complianceState', op: '=', value: 'compliant' })
+  })
+
+  it('switching back to Manual drops the source and shows the typed points again', async () => {
+    const latest = renderLive(
+      { ...createStructuredBlock('chart', 'b1'), chartSource: { type: 'Devices', field: 'operatingSystem', valueField: null, aggregate: null, filter: null } },
+      { dataShape }
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Manual' }))
+
+    expect(latest.current.chartSource).toBeNull()
+    expect(screen.getByLabelText('Add data point')).toBeInTheDocument()
   })
 
   it('adds a data point', async () => {
@@ -259,6 +549,17 @@ describe('HeroBlockCard', () => {
     await userEvent.click(within(await screen.findByRole('listbox')).getByText('No cover image'))
 
     expect(latest.current.heroImage).toBe('')
+  })
+
+  it('offers the uploaded covers by the names given in the branding gallery', async () => {
+    const latest = renderLive(createStructuredBlock('hero', 'b1'))
+
+    await userEvent.click(screen.getByRole('combobox', { name: 'Background' }))
+    const listbox = within(await screen.findByRole('listbox'))
+    expect(listbox.getByText('Uploaded: cover 2')).toBeInTheDocument()
+    await userEvent.click(listbox.getByText('Uploaded: Board room'))
+
+    expect(latest.current.heroImage).toBe('gallery:img-1')
   })
 
   it('says the block takes a whole page, which is not obvious from the editor', () => {

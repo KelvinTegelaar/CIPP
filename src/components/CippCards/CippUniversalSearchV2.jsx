@@ -29,7 +29,14 @@ import { nativeMenuItems } from "../../layouts/config";
 import { usePermissions } from "../../hooks/use-permissions";
 import { useIsMobileLayout } from "../../hooks/use-breakpoint";
 import { useUserBookmarks } from "../../hooks/use-user-bookmarks";
+import { useSettings } from "../../hooks/use-settings";
+import { useTenantPreferences } from "../../hooks/use-tenant-preferences";
 import { searchLocalLicenseCatalog } from "../../utils/get-cipp-license-catalog";
+
+// Scopes that match in memory as the user types; the rest hit the API on Enter / Search.
+const LOCAL_SCOPES = ["Pages", "Licenses", "Tenants"];
+// Group-driven tenant searches can match hundreds of tenants — cap what is rendered.
+const MAX_TENANT_RESULTS = 50;
 
 function getLeafItems(items = []) {
   let result = [];
@@ -45,47 +52,31 @@ function getLeafItems(items = []) {
   return result;
 }
 
-async function loadTabOptions() {
-  const tabOptionPaths = [
-    "/email/administration/exchange-retention",
-    "/cipp/custom-data",
-    "/cipp/advanced/super-admin",
-    "/cipp/advanced/container-management",
-    "/cipp/advanced/authentication",
-    "/endpoint/MEM/enrollment-profiles",
-    "/tenant/standards",
-    "/tenant/manage",
-    "/tenant/administration/applications",
-    "/tenant/administration/tenants",
-    "/tenant/administration/audit-logs",
-    "/identity/administration/users/user",
-    "/tenant/administration/securescore",
-    "/tenant/gdap-management",
-    "/tenant/gdap-management/relationships/relationship",
-    "/cipp/settings",
-  ];
+/**
+ * Load every tabOptions.json under pages/ at build time. Globbed rather than listed so a new
+ * tabbed page is searchable without anyone remembering to register it here. The previous
+ * hardcoded list had drifted to cover only half of the tabbed pages (issue #668).
+ */
+function loadTabOptions() {
+  const context = require.context("../../pages", true, /tabOptions\.json$/);
 
-  const tabOptions = [];
+  return context.keys().flatMap((key) => {
+    const tabModule = context(key);
+    const options = tabModule.default || tabModule;
+    if (!Array.isArray(options)) return [];
 
-  for (const basePath of tabOptionPaths) {
-    try {
-      const module = await import(`../../pages${basePath}/tabOptions.json`);
-      const options = module.default || module;
+    // './tenant/manage/tabOptions.json' -> '/tenant/manage'
+    const basePath = key.replace(/^\./, "").replace(/\/tabOptions\.json$/, "");
 
-      options.forEach((option) => {
-        tabOptions.push({
-          title: option.label,
-          path: option.path,
-          type: "tab",
-          basePath,
-        });
-      });
-    } catch (error) {
-      console.debug(`Could not load tabOptions for ${basePath}:`, error);
-    }
-  }
-
-  return tabOptions;
+    return options
+      .filter((option) => option?.label && option?.path)
+      .map((option) => ({
+        title: option.label,
+        path: option.path,
+        type: "tab",
+        basePath,
+      }));
+  });
 }
 
 function filterItemsByPermissionsAndRoles(items, userPermissions, userRoles) {
@@ -134,7 +125,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const [searchValue, setSearchValue] = useState(value);
     const [searchType, setSearchType] = useState(defaultSearchType);
     const [bitlockerLookupType, setBitlockerLookupType] = useState("keyId");
-    const [tabOptions, setTabOptions] = useState([]);
+    const [tabOptions] = useState(loadTabOptions);
     const [showDropdown, setShowDropdown] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const [bitlockerDrawerVisible, setBitlockerDrawerVisible] = useState(false);
@@ -151,6 +142,25 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const { userPermissions, userRoles } = usePermissions();
     const isMobile = useIsMobileLayout();
     const { bookmarks } = useUserBookmarks();
+    const settings = useSettings();
+    const { trackRecent } = useTenantPreferences();
+
+    // Same url/data/queryKey as the top-nav tenant selector and the form group selector, so
+    // both are served from the cache those already filled rather than fetched again.
+    const tenantList = ApiGetCall({
+      url: "/api/listTenants",
+      data: { AllTenantSelector: true },
+      queryKey: "TenantSelector",
+      waiting: searchType === "Tenants",
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    });
+    const tenantGroupList = ApiGetCall({
+      url: "/api/ListTenantGroups",
+      data: { AllTenantSelector: true },
+      queryKey: "TenantGroupSelector",
+      waiting: searchType === "Tenants",
+    });
 
     const universalSearch = ApiGetCall({
       url: `/api/ExecUniversalSearchV2`,
@@ -285,6 +295,74 @@ export const CippUniversalSearchV2 = React.forwardRef(
       return normalizedSearch ? inTitle || inPath || inBreadcrumbs || inScope : false;
     });
 
+    // Tenants match on their own fields or on the name of any group they belong to, so
+    // "All Tenants (Excluding Partner)" lists every member and "cyberdrain04" shows which
+    // groups that one tenant is in. Direct hits sort ahead of group-only hits.
+    const tenantResults = useMemo(() => {
+      if (searchType !== "Tenants" || !normalizedSearch) return [];
+      const tenants = Array.isArray(tenantList.data) ? tenantList.data : [];
+      const groups = Array.isArray(tenantGroupList.data?.Results)
+        ? tenantGroupList.data.Results
+        : [];
+
+      const groupsByCustomerId = new Map();
+      for (const group of groups) {
+        for (const member of group.Members ?? []) {
+          if (!member?.customerId) continue;
+          if (!groupsByCustomerId.has(member.customerId)) {
+            groupsByCustomerId.set(member.customerId, []);
+          }
+          groupsByCustomerId.get(member.customerId).push({
+            Id: group.Id,
+            Name: group.Name,
+            GroupType: group.GroupType,
+          });
+        }
+      }
+
+      const matches = [];
+      for (const tenant of tenants) {
+        const tenantGroups = groupsByCustomerId.get(tenant.customerId) ?? [];
+        const ownFields = [
+          tenant.displayName,
+          tenant.defaultDomainName,
+          tenant.initialDomainName,
+          tenant.customerId,
+        ];
+        const directHit = ownFields.some((field) =>
+          field?.toLowerCase().includes(normalizedSearch),
+        );
+        const matchedGroups = tenantGroups.filter((group) =>
+          group.Name?.toLowerCase().includes(normalizedSearch),
+        );
+        if (!directHit && matchedGroups.length === 0) continue;
+        matches.push({
+          Type: "Tenant",
+          displayName: tenant.displayName,
+          defaultDomainName: tenant.defaultDomainName,
+          initialDomainName: tenant.initialDomainName,
+          customerId: tenant.customerId,
+          groups: tenantGroups,
+          matchedGroupIds: matchedGroups.map((group) => group.Id),
+          directHit,
+        });
+      }
+
+      matches.sort((a, b) => {
+        if (a.directHit !== b.directHit) return a.directHit ? -1 : 1;
+        return (a.displayName ?? "").localeCompare(b.displayName ?? "");
+      });
+      return matches;
+    }, [searchType, normalizedSearch, tenantList.data, tenantGroupList.data]);
+    const tenantResultsTruncated = tenantResults.length > MAX_TENANT_RESULTS;
+    const visibleTenantResults = tenantResultsTruncated
+      ? tenantResults.slice(0, MAX_TENANT_RESULTS)
+      : tenantResults;
+    const tenantsLoading =
+      searchType === "Tenants" &&
+      ((tenantList.isFetching && !tenantList.data) ||
+        (tenantGroupList.isFetching && !tenantGroupList.data));
+
     const handleChange = (event) => {
       const newValue = event.target.value;
       setSearchValue(newValue);
@@ -292,12 +370,9 @@ export const CippUniversalSearchV2 = React.forwardRef(
 
       if (newValue.length === 0) {
         setShowDropdown(false);
-      } else if (searchType === "Pages") {
-        updateDropdownPosition();
-        setShowDropdown(true);
-      } else if (searchType === "Licenses") {
-        // Local catalog is in-memory, so reveal results as the user types.
-        // The API fallback still requires the Search button (handleSearch).
+      } else if (LOCAL_SCOPES.includes(searchType)) {
+        // These scopes match in memory, so reveal results as the user types. The Licenses
+        // API fallback still requires the Search button (handleSearch).
         updateDropdownPosition();
         setShowDropdown(true);
       }
@@ -320,7 +395,29 @@ export const CippUniversalSearchV2 = React.forwardRef(
       }
     };
 
+    // Tab cycles the scope (Users -> Groups -> ... -> Pages) while the field has focus, the
+    // way the omnibox and command palettes do. The typed text is kept so "john" can be
+    // re-scoped from Users to Groups without retyping; Escape still leaves the dialog.
+    const cycleSearchType = (direction) => {
+      const labels = typeMenuActions.map((action) => action.label);
+      const currentIndex = Math.max(0, labels.indexOf(searchType));
+      const nextType = labels[(currentIndex + direction + labels.length) % labels.length];
+      handleTypeChange(nextType);
+      const hasValue = searchValue.trim().length > 0;
+      if (hasValue && LOCAL_SCOPES.includes(nextType)) {
+        // These scopes match locally as you type, so the results can reappear straight away
+        updateDropdownPosition();
+        setShowDropdown(true);
+      }
+    };
+
     const handleKeyDown = (event) => {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        cycleSearchType(event.shiftKey ? -1 : 1);
+        return;
+      }
+
       if (event.key === "Escape" && showDropdown) {
         event.preventDefault();
         setShowDropdown(false);
@@ -341,9 +438,13 @@ export const CippUniversalSearchV2 = React.forwardRef(
         return;
       }
 
-      if (event.key === "Enter" && showDropdown && hasResults && highlightedIndex >= 0) {
+      // Enter opens the highlighted row, or the only row when the search produced exactly one
+      // hit, so a single result never needs an arrow-down before it can be selected.
+      const enterTargetIndex =
+        highlightedIndex >= 0 ? highlightedIndex : activeResults.length === 1 ? 0 : -1;
+      if (event.key === "Enter" && showDropdown && hasResults && enterTargetIndex >= 0) {
         event.preventDefault();
-        const selectedItem = activeResults[highlightedIndex];
+        const selectedItem = activeResults[enterTargetIndex];
         if (!selectedItem) {
           return;
         }
@@ -368,7 +469,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
           if (localLicenseResults.length === 0) {
             activeSearch?.refetch();
           }
-        } else if (searchType !== "Pages") {
+        } else if (!LOCAL_SCOPES.includes(searchType)) {
           activeSearch?.refetch();
         }
         setShowDropdown(true);
@@ -398,6 +499,29 @@ export const CippUniversalSearchV2 = React.forwardRef(
         }
       } else if (searchType === "Pages") {
         router.push(match.path, undefined, { shallow: true });
+      } else if (searchType === "Tenants") {
+        // The URL is the tenant selector's source of truth: its watcher picks the new
+        // tenantFilter up and syncs its own state. Settings are updated here too so the
+        // switch sticks when the selector is not mounted (mobile drawer closed).
+        const domain = match.defaultDomainName;
+        router.replace(
+          { pathname: router.pathname, query: { ...router.query, tenantFilter: domain } },
+          undefined,
+          { shallow: true },
+        );
+        settings?.handleUpdate?.({ currentTenant: domain });
+        if (domain !== "AllTenants") {
+          trackRecent({
+            value: domain,
+            label: `${match.displayName} (${domain})`,
+            addedFields: {
+              defaultDomainName: domain,
+              displayName: match.displayName,
+              customerId: match.customerId,
+              initialDomainName: match.initialDomainName,
+            },
+          });
+        }
       } else if (searchType === "Licenses") {
         if (typeof onLicenseSelect === "function") {
           onLicenseSelect(itemData);
@@ -431,6 +555,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
     };
 
     const typeMenuActions = [
+      {
+        label: "Tenants",
+        icon: "Business",
+        onClick: () => handleTypeChange("Tenants"),
+      },
       {
         label: "Users",
         icon: "Groups",
@@ -534,10 +663,6 @@ export const CippUniversalSearchV2 = React.forwardRef(
     }, [highlightedIndex, showDropdown]);
 
     useEffect(() => {
-      loadTabOptions().then(setTabOptions);
-    }, []);
-
-    useEffect(() => {
       setSearchType(defaultSearchType);
       if (defaultSearchType === "BitLocker") {
         setBitlockerLookupType("keyId");
@@ -559,17 +684,12 @@ export const CippUniversalSearchV2 = React.forwardRef(
         ? bitlockerResults
         : searchType === "Pages"
           ? pageResults
-          : searchType === "Licenses"
-            ? licenseResults
-            : universalResults;
-    const hasResults =
-      searchType === "BitLocker"
-        ? bitlockerResults.length > 0
-        : searchType === "Pages"
-          ? pageResults.length > 0
-          : searchType === "Licenses"
-            ? licenseResults.length > 0
-            : universalResults.length > 0;
+          : searchType === "Tenants"
+            ? visibleTenantResults
+            : searchType === "Licenses"
+              ? licenseResults
+              : universalResults;
+    const hasResults = activeResults.length > 0;
     const shouldShowDropdown = showDropdown && searchValue.length > 0;
 
     const getLabel = () => {
@@ -583,6 +703,8 @@ export const CippUniversalSearchV2 = React.forwardRef(
           : "Search BitLocker by Recovery Key ID";
       } else if (searchType === "Pages") {
         return "Search pages, tabs, paths, or scope";
+      } else if (searchType === "Tenants") {
+        return "Search tenants by name, domain, ID, or tenant group";
       } else if (searchType === "Licenses") {
         return "Search licenses by SKU ID, part number, name, or service plan";
       }
@@ -593,7 +715,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
     // floating panel; the phone dialog IS the surface, so it renders in flow.
     const resultsBody = (
       <>
-              {activeSearch?.isFetching ? (
+              {activeSearch?.isFetching || tenantsLoading ? (
                 <Box sx={{ p: 2 }}>
                   <Skeleton height={60} sx={{ mb: 1 }} />
                   <Skeleton height={60} />
@@ -606,6 +728,16 @@ export const CippUniversalSearchV2 = React.forwardRef(
                     <BitlockerResults
                       items={bitlockerResults}
                       onResultClick={handleBitlockerResultClick}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  ) : searchType === "Tenants" ? (
+                    <TenantResults
+                      items={visibleTenantResults}
+                      totalCount={tenantResults.length}
+                      searchValue={searchValue}
+                      currentTenant={settings?.currentTenant}
+                      onResultClick={handleResultClick}
                       highlightedIndex={highlightedIndex}
                       setHighlightedIndex={setHighlightedIndex}
                     />
@@ -723,7 +855,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
               }
             }}
           />
-          {searchType !== "Pages" && (
+          {searchType !== "Pages" && searchType !== "Tenants" && (
             <Button
               variant="contained"
               onClick={handleSearch}
@@ -1199,6 +1331,116 @@ const PageResults = ({
           </MenuItem>
         );
       })}
+    </>
+  );
+};
+
+const TenantResults = ({
+  items = [],
+  totalCount = 0,
+  searchValue = "",
+  currentTenant,
+  onResultClick,
+  highlightedIndex = -1,
+  setHighlightedIndex = () => {},
+}) => {
+  const highlightMatch = (text) => {
+    if (!searchValue || !text) return text;
+    const escapedSearch = searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const parts = text.split(new RegExp(`(${escapedSearch})`, "gi"));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchValue.toLowerCase() ? (
+        <Box component="span" key={index} sx={{ fontWeight: "bold" }}>
+          {part}
+        </Box>
+      ) : (
+        part
+      ),
+    );
+  };
+
+  return (
+    <>
+      {items.map((tenant, index) => {
+        const isAllTenants = tenant.defaultDomainName === "AllTenants";
+        const isCurrent = tenant.defaultDomainName === currentTenant;
+        return (
+          <MenuItem
+            key={tenant.customerId || tenant.defaultDomainName || index}
+            data-result-index={index}
+            onClick={() => onResultClick(tenant)}
+            onMouseEnter={() => setHighlightedIndex(index)}
+            selected={highlightedIndex === index}
+            sx={{
+              py: 1.5,
+              px: 2,
+              borderBottom: index < items.length - 1 ? "1px solid" : "none",
+              borderColor: "divider",
+              alignItems: "flex-start",
+              whiteSpace: "normal",
+              backgroundColor: highlightedIndex === index ? "action.selected" : "transparent",
+              "&:hover": { backgroundColor: "action.hover" },
+            }}
+          >
+            <ListItemText
+              primary={
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+                  <Typography variant="body1" sx={{ fontWeight: "medium" }}>
+                    {highlightMatch(tenant.displayName || tenant.defaultDomainName || "")}
+                  </Typography>
+                  {!isAllTenants && (
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                      {highlightMatch(tenant.defaultDomainName || "")}
+                    </Typography>
+                  )}
+                  {isCurrent && (
+                    <Chip
+                      label="Current"
+                      size="small"
+                      variant="outlined"
+                      sx={{ height: 20, color: "text.secondary" }}
+                    />
+                  )}
+                </Box>
+              }
+              secondary={
+                tenant.groups?.length > 0 ? (
+                  // The groups this tenant belongs to; the ones the query matched are filled
+                  <Stack
+                    direction="row"
+                    useFlexGap
+                    spacing={0.5}
+                    component="span"
+                    sx={{ flexWrap: "wrap", mt: 0.75 }}
+                  >
+                    {tenant.groups.map((group) => {
+                      const matched = tenant.matchedGroupIds?.includes(group.Id);
+                      return (
+                        <Chip
+                          key={group.Id || group.Name}
+                          label={group.Name}
+                          size="small"
+                          color={matched ? "primary" : "default"}
+                          variant={matched ? "filled" : "outlined"}
+                          sx={{ height: 22 }}
+                        />
+                      );
+                    })}
+                  </Stack>
+                ) : null
+              }
+              slotProps={{ secondary: { component: "div" } }}
+            />
+          </MenuItem>
+        );
+      })}
+      {totalCount > items.length && (
+        <Box sx={{ px: 2, py: 1 }}>
+          <Typography variant="caption" sx={{ color: "text.secondary" }}>
+            Showing {items.length} of {totalCount} tenants. Keep typing to narrow the list.
+          </Typography>
+        </Box>
+      )}
     </>
   );
 };

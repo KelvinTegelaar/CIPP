@@ -19,7 +19,7 @@ import {
 } from '../../layouts/tab-navigation-context'
 
 // The mobile page-actions pattern: one FAB in the bottom-right corner opening a bottom
-// sheet of actions. CippSpeedDial cedes this corner below md, so the FAB is the only
+// sheet of actions. CippSpeedDial cedes this corner below lg, so the FAB is the only
 // fixed control there. With restackButtons (default), children laid out for a desktop
 // CardHeader are restacked vertically at full width; purpose-built sheet content (list
 // rows) should pass restackButtons={false}.

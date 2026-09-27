@@ -254,4 +254,25 @@ describe('serialiseBlock', () => {
     expect(saved.chartData).toBeNull()
     expect(saved.stats).toBeNull()
   })
+
+  it('keeps a table, a page subtitle and a callout grid through a save', () => {
+    const table = serialiseBlock({
+      type: 'richtable',
+      static: true,
+      columns: [{ header: 'Item', key: 'c1' }],
+      rows: [{ c1: 'x' }],
+    })
+    expect(table.columns).toEqual([{ header: 'Item', key: 'c1' }])
+    expect(table.rows).toEqual([{ c1: 'x' }])
+    expect(serialiseBlock({ type: 'page', title: 'Findings', subtitle: 'Detail' }).subtitle).toBe('Detail')
+    expect(serialiseBlock({ type: 'infoboxcolumns', static: true, columns: 3, items: [] }).columns).toBe(3)
+    expect(serialiseBlock({ type: 'infobox', static: true, content: 'Keep me' }).content).toBe('Keep me')
+    const source = { type: 'Devices', field: 'operatingSystem', filter: null }
+    expect(serialiseBlock({ type: 'chart', chartSource: source }).chartSource).toEqual(source)
+    expect(serialiseBlock({ type: 'richtable', dataSource: { type: 'Mailboxes', filter: null } }).dataSource).toEqual({ type: 'Mailboxes', filter: null })
+    expect(serialiseBlock({ type: 'cover', title: 'T', coverAccent: 'A', coverLabel: 'L' })).toMatchObject({
+      coverAccent: 'A',
+      coverLabel: 'L',
+    })
+  })
 })

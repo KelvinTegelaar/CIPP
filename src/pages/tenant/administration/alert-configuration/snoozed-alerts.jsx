@@ -15,9 +15,9 @@ const Page = () => {
         RowKey: 'RowKey',
       },
       icon: <CippIcons.Delete />,
-      relatedQueryKeys: 'ListSnoozedAlerts',
+      relatedQueryKeys: ['ListSnoozedAlerts', 'ListAlertHistory'],
       confirmText:
-        'Are you sure you want to remove this snooze? The alert will fire again on the next run.',
+        'Are you sure you want to remove this snooze? The alert returns to open now and notifies again on its next run.',
       multiPost: false,
     },
   ]
@@ -36,6 +36,8 @@ const Page = () => {
         'SnoozedBy',
         'Status',
         'RemainingDays',
+        'UntilResolved',
+        'KeepVisible',
       ]}
       queryKey="ListSnoozedAlerts"
     />

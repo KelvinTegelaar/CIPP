@@ -90,7 +90,7 @@ export const CippWizardStepButtons = (props) => {
         <Button
           size="large"
           variant="contained"
-          color="success"
+          color={dialogContext.completionButton.color ?? "primary"}
           onClick={dialogContext.completionButton.onClick}
         >
           {dialogContext.completionButton.label}

@@ -17,35 +17,25 @@ vi.mock('../../src/api/ApiCall', () => ({
   ApiGetCallWithPagination: vi.fn(() => ({ data: undefined, isFetching: false })),
 }))
 
-// jsdom can't run the real pdf renderer, passthrough stubs are enough for dialog assertions
-vi.mock('@react-pdf/renderer', () => {
-  const passthrough =
-    (tag) =>
-    ({ children }) =>
-      React.createElement(tag, null, children)
-  return {
-    Document: passthrough('div'),
-    Page: passthrough('div'),
-    View: passthrough('div'),
-    Text: passthrough('span'),
-    Image: () => null,
-    Svg: () => null,
-    Path: () => null,
-    Circle: () => null,
-    Line: () => null,
-    Rect: () => null,
-    PDFViewer: passthrough('div'),
-    PDFDownloadLink: passthrough('div'),
-    StyleSheet: { create: (styles) => styles },
-    // The kit registers its hyphenation and emoji behaviour globally on import, so the stub has to
-    // carry every `Font.register*` it calls or importing a report throws.
-    Font: {
-      register: () => {},
-      registerHyphenationCallback: () => {},
-      registerEmojiSource: () => {},
-    },
-    pdf: () => ({ toBlob: () => Promise.resolve(new Blob()) }),
-  }
+// The report PDF is now rendered server-side: the button POSTs to ExecGetExecutiveReportPdf and
+// shows the returned blob in an iframe. Stub fetch + object URLs so the dialog can open in jsdom.
+beforeEach(() => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        blob: () => Promise.resolve(new Blob(['%PDF-'], { type: 'application/pdf' })),
+      }),
+    ),
+  )
+  URL.createObjectURL = vi.fn(() => 'blob:mock-executive-report')
+  URL.revokeObjectURL = vi.fn()
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+  vi.restoreAllMocks()
 })
 
 describe('ExecutiveReportButton', () => {
@@ -126,7 +116,7 @@ describe('ExecutiveReportButton', () => {
 
       expect(drawer.getByText('Report Sections')).toBeVisible()
       expect(drawer.getByText('Executive Summary')).toBeVisible()
-      expect(drawer.getByText('Shadow AI Report')).toBeVisible()
+      expect(drawer.getByText('Conditional Access')).toBeVisible()
     })
 
     it('toggles a section from inside the drawer', async () => {
@@ -140,7 +130,7 @@ describe('ExecutiveReportButton', () => {
 
       expect(toggle).not.toBeChecked()
       // the footer count is the shared state both panels read
-      expect(screen.getByText(/Sections enabled: 6 of 9/)).toBeInTheDocument()
+      expect(screen.getByText(/Sections enabled: 6 of 7/)).toBeInTheDocument()
     })
 
     it('lifts the drawer above the dialog that opened it', async () => {

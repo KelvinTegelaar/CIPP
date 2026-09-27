@@ -1,62 +1,46 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { CippIcons } from '../../../../utils/icon-registry'
 import {
-  Alert,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Skeleton,
+  Button,
+  Grid,
   Stack,
   SvgIcon,
   Typography,
 } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-import { Container } from '@mui/system'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
-import { CippHead } from '../../../../components/CippComponents/CippHead'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
-import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
-import { Chart } from '../../../../components/chart'
+import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
 import tabOptions from './tabOptions.json'
-import { CippAutoComplete } from '../../../../components/CippComponents/CippAutocomplete'
 import { useSettings } from '../../../../hooks/use-settings'
 import { useLicenseCurrency } from '../../../../hooks/use-license-currency'
+import { useLicenseReportSettings } from '../../../../hooks/use-license-report-settings'
 import { useM365Licenses } from '../../../../utils/m365-licenses-data'
 import { ApiGetCall } from '../../../../api/ApiCall'
+import { LicenseReportButton } from '../../../../components/CippPdf/LicenseReportButton'
 
-const TIER_LABELS = {
-  UnassignedSeats: 'Unassigned seats',
-  Inactive: 'Inactive users',
-  DisabledAccount: 'Disabled accounts',
-  Downgrade: 'Mailbox-only (review)',
-  Overlap: 'Overlapping SKUs',
-}
-const TIER_ORDER = [
-  'UnassignedSeats',
-  'Inactive',
-  'DisabledAccount',
-  'Downgrade',
-  'Overlap',
-]
-
-const simpleColumns = [
-  'License',
-  'Finding',
-  'Seats',
-  'Unit cost',
-  'Monthly saving',
-  'Suggested action',
-]
+const INACTIVE_OPTIONS = [30, 60, 90, 120, 180].map((v) => ({
+  label: `${v} days`,
+  value: v,
+}))
+const TENURE_OPTIONS = [3, 6, 9, 12].map((v) => ({
+  label: `${v} months`,
+  value: v,
+}))
 
 const Page = () => {
-  const theme = useTheme()
+  const pageTitle = 'License Optimization'
   const tenant = useSettings().currentTenant
   const [currency, setCurrency] = useLicenseCurrency()
+  const [settings, setSettings] = useLicenseReportSettings()
+  const [expanded, setExpanded] = useState(false)
 
-  // Currencies present in the price data drive the selector.
   const currenciesQuery = ApiGetCall({
     url: '/api/ListLicensePricing',
     queryKey: 'LicensePricingCurrencies',
@@ -66,25 +50,66 @@ const Page = () => {
     return Array.isArray(list) && list.length ? list : ['USD']
   }, [currenciesQuery.data])
 
-  const query = ApiGetCall({
-    url: '/api/ListLicenseOptimization',
-    data: { tenantFilter: tenant, currency },
-    queryKey: `LicenseOptimization-${tenant}-${currency}`,
-    waiting: !!tenant,
+  const formControl = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      recommendDowngrades: settings.recommendDowngrades,
+      recommendUpgrades: settings.recommendUpgrades,
+      recommendTerms: settings.recommendTerms,
+      protectSecurityFeatures: settings.protectSecurityFeatures,
+      inactiveDays:
+        INACTIVE_OPTIONS.find((o) => o.value === settings.inactiveDays) ??
+        INACTIVE_OPTIONS[2],
+      tenureMonths:
+        TENURE_OPTIONS.find((o) => o.value === settings.tenureMonths) ??
+        TENURE_OPTIONS[1],
+      currency: { label: currency, value: currency },
+    },
   })
 
-  const summary = query.data?.Results?.Summary ?? null
-  const opportunities = useMemo(
-    () => query.data?.Results?.Opportunities ?? [],
-    [query.data]
-  )
+  const onSubmit = (values) => {
+    setSettings({
+      recommendDowngrades: !!values.recommendDowngrades,
+      recommendUpgrades: !!values.recommendUpgrades,
+      recommendTerms: !!values.recommendTerms,
+      protectSecurityFeatures: !!values.protectSecurityFeatures,
+      inactiveDays: values.inactiveDays?.value ?? 90,
+      tenureMonths: values.tenureMonths?.value ?? 6,
+    })
+    if (values.currency?.value) setCurrency(values.currency.value)
+    setExpanded(false)
+  }
 
-  const currencyFmt = useMemo(() => {
-    const currency = summary?.Currency || 'USD'
+  const apiData = {
+    currency,
+    inactiveDays: settings.inactiveDays,
+    tenureMonths: settings.tenureMonths,
+    recommendDowngrades: settings.recommendDowngrades,
+    recommendUpgrades: settings.recommendUpgrades,
+    recommendTerms: settings.recommendTerms,
+    protectSecurityFeatures: settings.protectSecurityFeatures,
+  }
+  const settingsKey = Object.values(apiData).join('-')
+  const queryKey = `LicenseRecommendations-${tenant}-${settingsKey}`
+
+  // The same report the table reads, for the KPI bar and the PDF button's enabled state.
+  const reportQuery = ApiGetCall({
+    url: '/api/ListLicenseRecommendations',
+    data: { tenantFilter: tenant, ...apiData },
+    queryKey: `${queryKey}-report`,
+    waiting: !!tenant,
+  })
+  const report = useMemo(() => {
+    const results = reportQuery.data?.Results
+    return results && typeof results === 'object' ? results : null
+  }, [reportQuery.data])
+  const summary = report?.Summary ?? {}
+
+  const fmt = useMemo(() => {
     try {
       return new Intl.NumberFormat(undefined, {
         style: 'currency',
-        currency,
+        currency: summary.Currency || currency || 'USD',
         maximumFractionDigits: 0,
       })
     } catch {
@@ -94,63 +119,39 @@ const Page = () => {
         maximumFractionDigits: 0,
       })
     }
-  }, [summary?.Currency])
-  const fmt = useCallback(
-    (n) => currencyFmt.format(Number(n) || 0),
-    [currencyFmt]
-  )
-  // Per-seat unit cost is small - show cents, unlike the rounded aggregate savings.
-  const unitFmt = useMemo(() => {
-    const currency = summary?.Currency || 'USD'
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })
-    } catch {
-      return new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })
-    }
-  }, [summary?.Currency])
+  }, [summary.Currency, currency])
 
-  const kpis = useMemo(() => {
-    const s = summary ?? {}
-    const pctOfSpend = s.MonthlySpend
-      ? Math.round(((s.ReclaimableMonthly || 0) / s.MonthlySpend) * 100)
-      : 0
-    const coverage = Math.round((s.PriceCoverage ?? 0) * 100)
-    return [
-      {
-        icon: <CippIcons.BanknotesIcon />,
-        name: 'Monthly spend',
-        data: fmt(s.MonthlySpend),
-        color: 'primary',
-        toolTip: `${s.AssignedSeats ?? 0} assigned seats · ${coverage}% priced`,
-      },
-      {
-        icon: <CippIcons.ArrowTrendingDownIcon />,
-        name: 'Reclaimable / mo',
-        data: fmt(s.ReclaimableMonthly),
-        color: 'success',
-        toolTip: `${pctOfSpend}% of monthly spend`,
-      },
-      {
-        icon: <CippIcons.UsersIcon />,
-        name: 'Reclaimable seats',
-        data: s.ReclaimableSeats ?? 0,
-        color: 'warning',
-        toolTip: 'Unassigned, disabled, and inactive seats',
-      },
-    ]
-  }, [summary, fmt])
+  const kpis = [
+    {
+      icon: <CippIcons.BanknotesIcon />,
+      name: 'Monthly spend',
+      data: fmt.format(summary.MonthlySpend || 0),
+      color: 'primary',
+      toolTip: `${summary.AssignedSeats ?? 0} assigned seats · ${Math.round((summary.PriceCoverage ?? 0) * 100)}% priced`,
+    },
+    {
+      icon: <CippIcons.ArrowTrendingDownIcon />,
+      name: 'Potential saving / month',
+      data: fmt.format(summary.TotalPotentialMonthly || 0),
+      color: 'success',
+      toolTip: `${fmt.format(summary.TotalPotentialAnnual || 0)} per year`,
+    },
+    {
+      icon: <CippIcons.UsersIcon />,
+      name: 'Suggestions',
+      data: summary.SuggestionCount ?? 0,
+      color: 'warning',
+      toolTip: `${summary.ReclaimableSeats ?? 0} seats can be removed outright`,
+    },
+    {
+      icon: <CippIcons.ShieldCheckIcon />,
+      name: 'Protection investment / month',
+      data: fmt.format(summary.ProtectInvestmentMonthly || 0),
+      color: 'info',
+      toolTip: `${summary.ProtectSeats ?? 0} users with no device management, sign-in security or device threat protection`,
+    },
+  ]
 
-  // skuId -> skuPartNumber, so a price set from here records the part number too.
   const licenses = useM365Licenses()
   const partNumberBySku = useMemo(() => {
     const map = {}
@@ -162,8 +163,25 @@ const Page = () => {
     return map
   }, [licenses])
 
-  // Set a price for an in-use SKU that has none in the current currency.
+  const relatedQueryKeys = [`${queryKey}*`, 'LicensePricing*']
+
   const actions = [
+    {
+      label: 'Remove license from user',
+      type: 'POST',
+      url: '/api/ExecBulkLicense',
+      icon: <CippIcons.TrashIcon />,
+      confirmText: 'Remove [License] from [User]?',
+      multiPost: false,
+      condition: (row) => row.Type === 'Remove license' && !!row.UserId,
+      customDataformatter: (row) => ({
+        tenantFilter: tenant,
+        LicenseOperation: 'Remove',
+        Licenses: [{ label: row.License, value: row.skuId }],
+        userIds: [row.UserId],
+      }),
+      relatedQueryKeys,
+    },
     {
       label: 'Set price',
       type: 'POST',
@@ -189,206 +207,194 @@ const Page = () => {
         MonthlyPrice: formData.MonthlyPrice,
         Currency: currency,
       }),
-      confirmText: `Set the ${currency} monthly price for [License]. This is used across the optimization report.`,
-      relatedQueryKeys: [
-        `LicenseOptimization-${tenant}-${currency}`,
-        'LicensePricing*',
-      ],
+      confirmText: `Set the ${currency} monthly price for [License].`,
+      relatedQueryKeys,
     },
   ]
 
-  const chart = useMemo(() => {
-    if (!opportunities.length) return null
-    const byTier = {}
-    opportunities.forEach((o) => {
-      byTier[o.Tier] = (byTier[o.Tier] || 0) + (Number(o.MonthlySaving) || 0)
-    })
-    // Only tiers with an actual reclaimable amount belong on the spend chart; the review tier
-    // (mailbox-only) claims no saving, so it is surfaced in the table rather than as a $0 bar.
-    const tiers = TIER_ORDER.filter((t) => byTier[t] > 0)
-    if (!tiers.length) return null
-    const palette = {
-      UnassignedSeats: theme.palette.error.main,
-      Inactive: theme.palette.warning.main,
-      DisabledAccount: theme.palette.info?.main || theme.palette.primary.main,
-      Downgrade: theme.palette.primary.main,
-      Overlap: theme.palette.secondary.main,
-    }
-    return {
-      series: [
-        {
-          name: 'Monthly saving',
-          data: tiers.map((t) => Math.round(byTier[t] * 100) / 100),
-        },
-      ],
-      options: {
-        chart: {
-          type: 'bar',
-          background: 'transparent',
-          toolbar: { show: false },
-        },
-        theme: { mode: theme.palette.mode },
-        colors: tiers.map((t) => palette[t]),
-        plotOptions: {
-          bar: {
-            distributed: true,
-            horizontal: true,
-            borderRadius: 4,
-            barHeight: '60%',
-          },
-        },
-        dataLabels: { enabled: true, formatter: (v) => currencyFmt.format(v) },
-        xaxis: {
-          categories: tiers.map((t) => TIER_LABELS[t] ?? t),
-          labels: { formatter: (v) => currencyFmt.format(v) },
-        },
-        legend: { show: false },
-        grid: { borderColor: theme.palette.divider },
-        tooltip: {
-          theme: theme.palette.mode,
-          y: { formatter: (v) => currencyFmt.format(v) },
-        },
-      },
-    }
-  }, [opportunities, theme, currencyFmt])
-
-  const tableData = useMemo(
-    () =>
-      opportunities.map((o) => ({
-        License: o.License,
-        Finding: o.FindingLabel,
-        Seats: o.Seats,
-        'Unit cost': o.UnitCost != null ? unitFmt.format(o.UnitCost) : '—',
-        // Review findings (no claimed saving) and unpriced SKUs show a dash, not a misleading $0.
-        'Monthly saving': o.MonthlySaving > 0 ? fmt(o.MonthlySaving) : '—',
-        'Suggested action': o.SuggestedAction,
-        Users: o.Users,
-        Tier: o.Tier,
-        skuId: o.skuId,
-        PriceKnown: o.PriceKnown,
-      })),
-    [opportunities, fmt, unitFmt]
-  )
-
   const offCanvas = {
-    children: (row) => (
-      <Box sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          {row.License} — {row.Finding}
-        </Typography>
-        {Array.isArray(row.Users) && row.Users.length ? (
-          <Stack spacing={0.5}>
-            {row.Users.map((u) => (
-              <Typography key={u} variant="body2">
-                {u}
-              </Typography>
-            ))}
-          </Stack>
-        ) : (
-          <Typography variant="body2" sx={{
-            color: "text.secondary"
-          }}>
-            No specific users — this is a seat-count finding.
-          </Typography>
-        )}
-      </Box>
-    ),
-    size: 'md',
+    extendedInfoFields: [
+      'Type',
+      'User',
+      'DisplayName',
+      'License',
+      'TargetLicense',
+      'Suggestion',
+      'Reason',
+      'Seats',
+      'Monthly saving',
+      'Annual saving',
+      'Evidence',
+      'Loses',
+    ],
+    actions,
   }
 
+  const enabledSummary = [
+    settings.recommendDowngrades && 'downgrades',
+    settings.recommendUpgrades && 'upgrades',
+    settings.recommendTerms && 'yearly/monthly',
+  ]
+    .filter(Boolean)
+    .join(', ')
+
   return (
-    <>
-      <CippHead title="License Optimization" />
-      <Box sx={{ p: 3 }}>
-        <Container maxWidth={false}>
-          <Stack spacing={2}>
-            <Stack
-              direction="row"
-              sx={{
-                justifyContent: "flex-end",
-                alignItems: "center"
-              }}>
-              <CippAutoComplete
-                label="Currency"
-                options={currencies.map((c) => ({ label: c, value: c }))}
-                value={{ label: currency, value: currency }}
-                multiple={false}
-                creatable={false}
-                disableClearable={true}
-                size="small"
-                sx={{ minWidth: 140 }}
-                onChange={(option) => {
-                  if (option?.value) setCurrency(option.value)
-                }}
-              />
-            </Stack>
-            {summary && summary.DataAvailable === false && (
-              <Alert severity="info">
-                No cached license data for this tenant yet. It is collected by
-                the nightly reporting cache; once that runs, this report will
-                populate.
-              </Alert>
-            )}
-            {summary?.AnonymizedReports && (
-              <Alert severity="warning">
-                Microsoft 365 usage reports are anonymized for this tenant, so
-                per-user activity can&apos;t be matched to users — the downgrade
-                and overlapping-SKU findings may be understated. Apply the
-                &ldquo;Disable Anonymous Reports&rdquo; standard to enable the
-                full analysis.
-              </Alert>
-            )}
-
-            <CippInfoBar data={kpis} isFetching={query.isFetching} />
-
-            <Card>
-              <CardHeader
-                title="Where the waste is"
-                subheader="Reclaimable spend by category, per month"
-              />
-              <Divider />
-              <CardContent>
-                {query.isFetching ? (
-                  <Skeleton variant="rounded" sx={{ height: 300 }} />
-                ) : chart ? (
-                  <Chart
-                    options={chart.options}
-                    series={chart.series}
-                    type="bar"
-                    height={300}
-                  />
-                ) : (
-                  <Typography
-                    variant="body2"
+    <CippTablePage
+      title={pageTitle}
+      queryKey={queryKey}
+      apiUrl="/api/ListLicenseRecommendations"
+      apiData={apiData}
+      apiDataKey="Results.Suggestions"
+      dataMap={(row) => ({
+        ...row,
+        'Monthly saving': fmt.format(row.MonthlySaving || 0),
+        'Annual saving': fmt.format(row.AnnualSaving || 0),
+      })}
+      simpleColumns={[
+        'Type',
+        'User',
+        'License',
+        'Suggestion',
+        'Reason',
+        'Monthly saving',
+      ]}
+      actions={actions}
+      offCanvas={offCanvas}
+      cardButton={
+        <LicenseReportButton
+          report={report}
+          tenantName={tenant}
+          settings={apiData}
+          disabled={reportQuery.isFetching}
+        />
+      }
+      tableFilter={
+        <Stack spacing={2}>
+          <CippInfoBar data={kpis} isFetching={reportQuery.isFetching} />
+          <Accordion
+            expanded={expanded}
+            onChange={() => setExpanded(!expanded)}
+          >
+            <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{ alignItems: 'center', minWidth: 0 }}
+              >
+                <SvgIcon>
+                  <CippIcons.Tune />
+                </SvgIcon>
+                <Typography
+                  variant="h6"
+                  sx={{ minWidth: 0, overflowWrap: 'anywhere' }}
+                >
+                  Analysis Settings
+                  <Box
+                    component="span"
                     sx={{
-                      color: "text.secondary",
-                      py: 6,
-                      textAlign: 'center'
-                    }}>
-                    {opportunities.length
-                      ? 'No cost is estimated for these SKUs, so there is nothing to chart. Set a price on the opportunities below to see reclaimable spend.'
-                      : 'No reclaim opportunities found for this tenant.'}
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
-
-            <CippDataTable
-              title={
-                tenant
-                  ? `Reclaim opportunities - ${tenant}`
-                  : 'Reclaim opportunities'
-              }
-              data={tableData}
-              simpleColumns={simpleColumns}
-              actions={actions}
-              offCanvas={offCanvas}
-            />
-          </Stack>
-        </Container>
-      </Box>
-    </>
-  );
+                      fontSize: '0.8em',
+                      fontWeight: 'normal',
+                      display: { xs: 'block', md: 'inline' },
+                      ml: { xs: 0, md: '10px' },
+                    }}
+                  >
+                    ({enabledSummary || 'removals only'} | inactive after{' '}
+                    {settings.inactiveDays} days | yearly after{' '}
+                    {settings.tenureMonths} months | {currency}
+                    {settings.protectSecurityFeatures
+                      ? ' | security features protected'
+                      : ''}
+                    )
+                  </Box>
+                </Typography>
+              </Stack>
+            </AccordionSummary>
+            <AccordionDetails>
+              <form onSubmit={formControl.handleSubmit(onSubmit)}>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <CippFormComponent
+                      type="switch"
+                      name="recommendDowngrades"
+                      label="Recommend downgrades - the cheapest plan that still covers what each user actually used"
+                      formControl={formControl}
+                    />
+                    <CippFormComponent
+                      type="switch"
+                      name="recommendUpgrades"
+                      label="Recommend upgrades - cheaper bundles, and protection for users with none"
+                      formControl={formControl}
+                    />
+                    <CippFormComponent
+                      type="switch"
+                      name="recommendTerms"
+                      label="Recommend yearly/monthly split - commit stable seats to a yearly term"
+                      formControl={formControl}
+                    />
+                    <CippFormComponent
+                      type="switch"
+                      name="protectSecurityFeatures"
+                      label="Protect security features - never suggest a plan that drops Intune, Entra, Defender or Purview"
+                      formControl={formControl}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Stack spacing={2}>
+                      <CippFormComponent
+                        type="autoComplete"
+                        name="inactiveDays"
+                        label="Treat a user as inactive after"
+                        formControl={formControl}
+                        multiple={false}
+                        creatable={false}
+                        options={INACTIVE_OPTIONS}
+                        helperText="Usage evidence comes from Microsoft's last 180 days of reports. This value is the inactivity and unused threshold within that window."
+                      />
+                      <CippFormComponent
+                        type="autoComplete"
+                        name="tenureMonths"
+                        label="Treat a seat as stable (yearly) after"
+                        formControl={formControl}
+                        multiple={false}
+                        creatable={false}
+                        options={TENURE_OPTIONS}
+                      />
+                      <CippFormComponent
+                        type="autoComplete"
+                        name="currency"
+                        label="Currency"
+                        formControl={formControl}
+                        multiple={false}
+                        creatable={false}
+                        options={currencies.map((c) => ({
+                          label: c,
+                          value: c,
+                        }))}
+                      />
+                    </Stack>
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      startIcon={
+                        <SvgIcon>
+                          <CippIcons.FunnelIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      Apply Settings
+                    </Button>
+                  </Grid>
+                </Grid>
+              </form>
+            </AccordionDetails>
+          </Accordion>
+        </Stack>
+      }
+    />
+  )
 }
 
 Page.getLayout = (page) => (

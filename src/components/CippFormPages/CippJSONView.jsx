@@ -602,7 +602,11 @@ function CippJsonView({
         }
       }
 
-      return getPresentationTypeLabel(presentationValue?.['@odata.type'])
+      // The label the template recorded at capture, for a presentation the current tenant cannot resolve.
+      return (
+        presentationValue?.presentation?.label ||
+        getPresentationTypeLabel(presentationValue?.['@odata.type'])
+      )
     }
 
     const resolveLivePresentationLabel = (_definition, presentationValue, presentationIndex) =>
@@ -782,7 +786,10 @@ function CippJsonView({
           addedValue?.['definition@odata.bind'],
           definitionBindPattern
         )
-        const definition = definitionId ? addedDefinitionsMap[definitionId] : null
+        // Templates record each setting's identity next to the bind: imported ADMX definitions carry
+        // a different id in every tenant, so the lookup above only resolves ids of the tenant viewed.
+        const definition =
+          (definitionId ? addedDefinitionsMap[definitionId] : null) || addedValue?.definition || null
         addAdministrativeTemplateValue(addedValue, index, {
           definition,
           definitionId,
@@ -874,6 +881,10 @@ function CippJsonView({
       if (!Array.isArray(arr) || arr.length === 0) return false
       return arr.every((item) => {
         if (typeof item !== 'object' || item === null || Array.isArray(item)) return false
+        // Only genuine {key, value} pairs flatten. A flat record without them (a phone number
+        // assignment, an Intune template) would otherwise collapse to an empty pane.
+        if (!(item.key || item.name || item.displayName)) return false
+        if (!('value' in item || 'newValue' in item)) return false
         // Check if all values are primitives (not nested objects/arrays)
         return Object.values(item).every((val) => typeof val !== 'object' || val === null)
       })
