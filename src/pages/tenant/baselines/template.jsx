@@ -60,6 +60,8 @@ const unitOptions = [
   { label: 'Weeks', value: 'weeks' },
 ]
 
+const MAX_STAGES = 20
+
 const logicOptions = [
   { label: 'All conditions must match (AND)', value: 'and' },
   { label: 'Any condition may match (OR)', value: 'or' },
@@ -766,6 +768,7 @@ const Page = () => {
     )
 
   const handleAddStage = () => {
+    if (stages.length >= MAX_STAGES) return
     mutateStages((prev) => [
       ...prev,
       {
@@ -789,6 +792,7 @@ const Page = () => {
 
   // Duplicate a stage (standards + graduation condition structure) as a new stage at the end.
   const handleCopyStage = (stageIndex) => {
+    if (stages.length >= MAX_STAGES) return
     mutateStages((prev) => {
       const source = prev[stageIndex]
       return [
@@ -970,9 +974,12 @@ const Page = () => {
               color="primary"
               startIcon={<CippIcons.Add />}
               endIcon={<CippIcons.ExpandMore />}
+              disabled={stages.length >= MAX_STAGES}
               onClick={(event) => setAddStageAnchor(event.currentTarget)}
             >
-              Add Stage
+              {stages.length >= MAX_STAGES
+                ? `Maximum of ${MAX_STAGES} stages reached`
+                : 'Add Stage'}
             </Button>
             <Menu
               anchorEl={addStageAnchor}
