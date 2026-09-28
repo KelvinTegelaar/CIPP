@@ -23,6 +23,7 @@ import { Grid } from '@mui/system'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { get } from 'lodash'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { CippHead } from '../../../components/CippComponents/CippHead'
@@ -952,7 +953,20 @@ const Page = () => {
             alignItems: { xs: 'stretch', sm: 'center' },
             mb: 1
           }}>
+          <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
+            {/* A fixed link, not router.back(): the editor is often opened from Alignment,
+                and "back" should land on the Baselines list either way. */}
+            <Button
+              component={Link}
+              href="/tenant/baselines/templates"
+              color="inherit"
+              size="small"
+              startIcon={<CippIcons.ArrowBack fontSize="small" />}
+            >
+              Back to Baselines
+            </Button>
             <Typography variant="h4">{pageTitle}</Typography>
+          </Stack>
           <Stack
             direction="row"
             spacing={2}
