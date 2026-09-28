@@ -5,8 +5,8 @@ import Portals from "../../src/data/portals";
 const names = (portals) => portals.map((p) => p.name);
 
 // Pre-existing mismatch, documented rather than fixed here: portals.json splits Power
-// Platform into _Admin/_Maker entries, while the defaults map (and the preferences toggle,
-// and dashboardv1) still key on the un-suffixed Power_Platform_Portal — so those two are
+// Platform into _Admin/_Maker entries, while the defaults map (and the preferences toggle)
+// still key on the un-suffixed Power_Platform_Portal — so those two are
 // filtered out for everyone and their preference toggle controls nothing.
 const UNREACHABLE_BY_DEFAULT = ["Power_Platform_Portal_Admin", "Power_Platform_Portal_Maker"];
 const defaultVisible = names(Portals).filter((n) => !UNREACHABLE_BY_DEFAULT.includes(n));
