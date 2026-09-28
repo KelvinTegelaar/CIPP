@@ -665,6 +665,7 @@ const Page = () => {
         'updatedBy',
       ]}
       queryKey="ListBaselines-table"
+      defaultSorting={[{ id: 'baselineName', desc: false }]}
       filters={filterList}
     />
   );

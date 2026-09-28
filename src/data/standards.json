@@ -8179,7 +8179,7 @@
     "name": "standards.DisableEWS",
     "cat": "Exchange Standards",
     "tag": [],
-    "helpText": "Disables Exchange Web Services (EWS) organization-wide. This reduces the attack surface by blocking legacy API access to mailbox data. Warning: This may break Office web add-ins on builds older than 16.0.19127.",
+    "helpText": "Disables Exchange Web Services (EWS) organization-wide. This reduces the attack surface by blocking legacy API access to mailbox data. Warning: This may break Office web add-ins on builds older than 16.0.19127. Conflicts with the \"Configure EWS allowed applications\" standard, which sets EwsEnabled to true: do not apply both to a tenant.",
     "docsDescription": "Disables Exchange Web Services (EWS) at the organization level to reduce attack surface. EWS provides cross-platform API access to sensitive Exchange Online data such as emails, meetings, and contacts. If compromised, attackers can access confidential data, send phishing emails, or spoof identities. Disabling EWS also reduces legacy app usage and minimizes exploitable endpoints. Note that this may break first-party features including web add-ins for Word, Excel, PowerPoint, and Outlook on builds older than 16.0.19127.",
     "executiveText": "Disables Exchange Web Services (EWS) across the organization to reduce attack surface and prevent legacy API access to sensitive mailbox data. This aligns with Microsoft's Baseline Security Mode recommendation to minimize exploitable endpoints while requiring updates to applications that depend on EWS.",
     "addedComponent": [],
@@ -8189,6 +8189,72 @@
     "addedDate": "2026-04-28",
     "powershellEquivalent": "Set-OrganizationConfig -EwsEnabled $false",
     "recommendedBy": ["CIPP"],
+    "requiredCapabilities": [
+      "EXCHANGE_S_STANDARD",
+      "EXCHANGE_S_ENTERPRISE",
+      "EXCHANGE_S_STANDARD_GOV",
+      "EXCHANGE_S_ENTERPRISE_GOV",
+      "EXCHANGE_LITE"
+    ]
+  },
+  {
+    "name": "standards.EWSAllowedAppIds",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Adds the selected applications to the Exchange Online EWS app allow list (EwsAllowedAppIDs) and sets EwsEnabled to true. Apps already on the list are kept, and known-malicious apps are never added. Do not use together with the \"Disable Exchange Web Services\" standard on the same tenant: they set EwsEnabled to opposite values. Once CIPP writes the list, Microsoft stops auto-populating it for that tenant, so include every app the tenant needs (check the EWS usage report in the Microsoft 365 admin center). Changes can take up to 24 hours to apply. Keep \"Include the dedicated Exchange hybrid app\" on for hybrid organisations so Free/Busy and MailTips keep working.",
+    "docsDescription": "When EWS is enabled, Exchange Online only allows EWS access from the application IDs on the organization's EwsAllowedAppIDs list, and an empty list blocks all EWS. Microsoft populates that list from recent usage only while the admin has never set it, so the list CIPP writes must be complete. This standard reads the current list and adds the selected presets, the custom application IDs (tenant variables are supported, invalid IDs are skipped with a warning) and, optionally, every app that holds the Exchange Online full_access_as_app application permission or a delegated EWS permission, plus the dedicated Exchange hybrid app (ExchangeServerApp-*) that hybrid Free/Busy, MailTips, profile photos and archive moves depend on. IDs already on the list are never removed; the only exception is known-malicious apps (CIPP's curated list), which are removed only when that option is enabled and are reported as drift otherwise. Known-malicious apps are never added. This conflicts with the \"Disable Exchange Web Services\" standard. Changes can take up to 24 hours to take effect. See Microsoft's guidance on the deprecation of EWS in Exchange Online: https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/deprecation-of-ews-exchange-online",
+    "executiveText": "Keeps the business applications that still rely on Exchange Web Services working as Microsoft retires unrestricted EWS access, by maintaining the approved-application list for each tenant. Existing approvals are preserved and applications known to be used in attacks are never approved.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "required": false,
+        "name": "standards.EWSAllowedAppIds.presets",
+        "label": "Known applications to allow (empty = Microsoft Office, Power Query for Excel, Power BI Data Refresh, Apple Mail/Calendar)",
+        "options": [
+          { "label": "Microsoft Office", "value": "MicrosoftOffice" },
+          { "label": "Microsoft Power Query for Excel", "value": "PowerQuery" },
+          { "label": "Power BI Data Refresh", "value": "PowerBIDataRefresh" },
+          { "label": "Apple Mail/Calendar (macOS)", "value": "AppleMail" },
+          {
+            "label": "AvePoint Cloud Backup / Fly / Cloud Governance (hosted)",
+            "value": "AvePointCloud"
+          },
+          { "label": "AvePoint Fly Server", "value": "AvePointFlyServer" }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.EWSAllowedAppIds.customAppIds",
+        "label": "Additional application (client) IDs, tenant variables such as %veeam_ews_appid% are supported"
+      },
+      {
+        "type": "switch",
+        "name": "standards.EWSAllowedAppIds.includeEwsPermissionApps",
+        "label": "Include apps holding EWS permissions (full_access_as_app, EWS.AccessAsUser.All, full_access_as_user)"
+      },
+      {
+        "type": "switch",
+        "name": "standards.EWSAllowedAppIds.includeHybridApp",
+        "label": "Include the dedicated Exchange hybrid app (ExchangeServerApp-*)",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.EWSAllowedAppIds.removeMaliciousApps",
+        "label": "Remove known-malicious apps from the list"
+      }
+    ],
+    "label": "Configure EWS allowed applications",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "addedDate": "2026-09-28",
+    "powershellEquivalent": "Set-OrganizationConfig -EwsEnabled $true -EwsAllowedAppIDs",
+    "recommendedBy": [],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",
       "EXCHANGE_S_ENTERPRISE",

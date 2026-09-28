@@ -39,6 +39,14 @@ const Page = () => {
           <CippLogRetentionSettings />
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+          <CippLogRetentionSettings
+            title="Report Attachment Retention"
+            endpoint="ExecReportAttachmentRetentionConfig"
+            defaultDays={360}
+            description="Scheduled report attachments too large to email (over 4MB) are uploaded to storage and linked from the email instead. Configure how long those files and their download links are kept."
+          />
+        </Grid>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippJitAdminSettings />
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
