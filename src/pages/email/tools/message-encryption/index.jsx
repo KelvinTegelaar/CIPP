@@ -12,6 +12,16 @@ import { useSettings } from '../../../../hooks/use-settings.js'
 
 const yesNo = (value) => (value ? 'Yes' : 'No')
 
+const transportDecryptionOptions = [
+  { label: 'Disabled', value: 'Disabled' },
+  { label: 'Optional', value: 'Optional' },
+  { label: 'Mandatory', value: 'Mandatory' },
+]
+
+const transportDecryptionOption = (value) =>
+  transportDecryptionOptions.find((option) => option.value === value) ??
+  transportDecryptionOptions[1]
+
 const Page = () => {
   const tenant = useSettings().currentTenant
   const queryKey = `IRMConfiguration-${tenant}`
@@ -35,6 +45,11 @@ const Page = () => {
     formControl.reset({
       AzureRMSLicensingEnabled: false,
       SimplifiedClientAccessEnabled: false,
+      EnablePdfEncryption: false,
+      DecryptAttachmentForEncryptOnly: false,
+      SimplifiedClientAccessDoNotForwardDisabled: false,
+      SimplifiedClientAccessEncryptOnlyDisabled: false,
+      TransportDecryptionSetting: transportDecryptionOption('Optional'),
       Sender: '',
       Recipient: '',
     })
@@ -48,6 +63,11 @@ const Page = () => {
         ...formControl.getValues(),
         AzureRMSLicensingEnabled: !!irm?.AzureRMSLicensingEnabled,
         SimplifiedClientAccessEnabled: !!irm?.SimplifiedClientAccessEnabled,
+        EnablePdfEncryption: !!irm?.EnablePdfEncryption,
+        DecryptAttachmentForEncryptOnly: !!irm?.DecryptAttachmentForEncryptOnly,
+        SimplifiedClientAccessDoNotForwardDisabled: !!irm?.SimplifiedClientAccessDoNotForwardDisabled,
+        SimplifiedClientAccessEncryptOnlyDisabled: !!irm?.SimplifiedClientAccessEncryptOnlyDisabled,
+        TransportDecryptionSetting: transportDecryptionOption(irm?.TransportDecryptionSetting),
       })
     }
   }, [irmRequest.isSuccess, irm])
@@ -84,6 +104,22 @@ const Page = () => {
       value: yesNo(irm?.SimplifiedClientAccessEnabled),
     },
     {
+      label: 'Do Not Forward in Encrypt Menu',
+      value: irm?.SimplifiedClientAccessDoNotForwardDisabled ? 'Hidden' : 'Shown',
+    },
+    {
+      label: 'Encrypt-only in Encrypt Menu',
+      value: irm?.SimplifiedClientAccessEncryptOnlyDisabled ? 'Hidden' : 'Shown',
+    },
+    {
+      label: 'PDF Attachment Encryption',
+      value: yesNo(irm?.EnablePdfEncryption),
+    },
+    {
+      label: 'Decrypt Encrypt-only Attachments',
+      value: yesNo(irm?.DecryptAttachmentForEncryptOnly),
+    },
+    {
       label: 'Transport Decryption',
       value: irm?.TransportDecryptionSetting ?? 'Unknown',
     },
@@ -113,6 +149,14 @@ const Page = () => {
         Action: 'Set',
         AzureRMSLicensingEnabled: !!values?.AzureRMSLicensingEnabled,
         SimplifiedClientAccessEnabled: !!values?.SimplifiedClientAccessEnabled,
+        EnablePdfEncryption: !!values?.EnablePdfEncryption,
+        DecryptAttachmentForEncryptOnly: !!values?.DecryptAttachmentForEncryptOnly,
+        SimplifiedClientAccessDoNotForwardDisabled:
+          !!values?.SimplifiedClientAccessDoNotForwardDisabled,
+        SimplifiedClientAccessEncryptOnlyDisabled:
+          !!values?.SimplifiedClientAccessEncryptOnlyDisabled,
+        TransportDecryptionSetting:
+          values?.TransportDecryptionSetting?.value ?? values?.TransportDecryptionSetting,
       })}
       addedButtons={
         <Button
@@ -184,6 +228,48 @@ const Page = () => {
             name="SimplifiedClientAccessEnabled"
             label="Show the Encrypt button in Outlook (simplified client access)"
             formControl={formControl}
+          />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            name="SimplifiedClientAccessDoNotForwardDisabled"
+            label="Hide the Do Not Forward option in the Outlook Encrypt menu"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            name="SimplifiedClientAccessEncryptOnlyDisabled"
+            label="Hide the Encrypt-only option in the Outlook Encrypt menu"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            name="EnablePdfEncryption"
+            label="Encrypt PDF attachments"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            name="DecryptAttachmentForEncryptOnly"
+            label="Let recipients save Encrypt-only attachments unprotected"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="select"
+            name="TransportDecryptionSetting"
+            label="Transport decryption"
+            formControl={formControl}
+            creatable={false}
+            options={transportDecryptionOptions}
           />
         </Grid>
         <Grid size={{ xs: 12 }}>

@@ -89,6 +89,15 @@ const Page = () => {
         ...site,
         siteType: normalizeSiteType(site.siteType),
         language: getSiteLanguageOption(site.language),
+        libraries: Array.isArray(site.libraries) ? site.libraries : [],
+        channels: (Array.isArray(site.channels) ? site.channels : []).map((channel) => ({
+          ...channel,
+          membershipType: ["standard", "private", "shared"].includes(channel?.membershipType)
+            ? channel.membershipType
+            : "standard",
+          layoutType: channel?.layoutType === "chat" ? "chat" : "post",
+        })),
+        folders: Array.isArray(site.folders) ? site.folders : [],
       })),
     });
     formControl.trigger();
@@ -199,7 +208,7 @@ const Page = () => {
                       label="Skip if exists"
                       name="skipIfExists"
                       formControl={formControl}
-                      helperText="If a site or team with the same name already exists in the tenant, leave it untouched: no libraries or permissions are applied to it."
+                      helperText="If a site or team with the same name already exists in the tenant, leave it untouched: no channels, libraries, folders, or permissions are applied to it."
                     />
                   </Stack>
                 </CippButtonCard>

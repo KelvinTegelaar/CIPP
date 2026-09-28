@@ -548,6 +548,71 @@ const CompactStatsRow = ({ snapshot }) => {
   );
 };
 
+// OS-thread breakdown from the MemoryDetail bridge — a point-in-time read of how many
+// threads the process holds and what they are doing. The PowerShell worker pool
+// (HTTP + BG) dominates the count and stays bounded, so ThreadCount next to TotalWorkers
+// is the direct "nothing is leaking threads" read for operators.
+const ThreadStatsCard = ({ detail }) => {
+  if (!detail) return null;
+
+  const states = detail.ThreadStates || {};
+  const stateEntries = Object.entries(states).sort((a, b) => b[1] - a[1]);
+
+  const poolStats = [
+    { k: "Processors", v: detail.ProcessorCount ?? 0 },
+    { k: "HTTP Workers", v: detail.HttpWorkers ?? 0 },
+    { k: "BG Workers", v: detail.BgWorkers ?? 0 },
+    { k: "Total Workers", v: detail.TotalWorkers ?? 0 },
+  ];
+
+  return (
+    <Card>
+      <CardHeader
+        title="Threads"
+        avatar={<CippIcons.AccountTree color="primary" />}
+        subheader={`${detail.ThreadCount ?? 0} OS threads • ${detail.TotalWorkers ?? 0} pooled workers across ${detail.ProcessorCount ?? 0} processors`}
+        action={<Chip label={`${detail.ThreadCount ?? 0} threads`} color="primary" size="small" />}
+        slotProps={{
+          title: { variant: "h6" },
+          subheader: { variant: "caption" },
+        }}
+      />
+      <CardContent sx={{ pt: 0 }}>
+        <Stack
+          useFlexGap
+          direction="row"
+          sx={{ flexWrap: "wrap", gap: 2, rowGap: 1, mb: stateEntries.length > 0 ? 2 : 0 }}
+        >
+          {poolStats.map((s) => (
+            <StatPair key={s.k} label={s.k} value={s.v} />
+          ))}
+        </Stack>
+        {stateEntries.length > 0 && (
+          <>
+            <Typography
+              variant="caption"
+              sx={{ color: "text.secondary", display: "block", mb: 0.75 }}
+            >
+              Thread states
+            </Typography>
+            <Stack useFlexGap direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>
+              {stateEntries.map(([state, count]) => (
+                <Chip
+                  key={state}
+                  label={`${state}: ${count}`}
+                  size="small"
+                  variant="outlined"
+                  color={state === "Running" ? "success" : "default"}
+                />
+              ))}
+            </Stack>
+          </>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
 // CippInfoBar renders its value slot nowrap + ellipsis; a block child re-enables wrapping
 // so long memory/CPU strings stay whole instead of truncating mid-number.
 const WrappedStat = ({ children }) => (
@@ -641,9 +706,19 @@ const Page = () => {
     refetchInterval: effectivePaused ? false : 30000,
   });
 
+  // MemoryDetail is heavier than the 5s snapshot (it enumerates threads + assemblies), so
+  // poll it on the slower 30s cadence — the thread count it carries is a stable diagnostic.
+  const memoryDetailQuery = ApiGetCall({
+    url: "/api/ListWorkerHealth",
+    data: { Action: "MemoryDetail" },
+    queryKey: "WorkerMemoryDetail",
+    refetchInterval: effectivePaused ? false : 30000,
+  });
+
   // Resolve data: imported overrides live
   const snapshot = isImported ? importedData.snapshot : healthQuery.data?.Results;
   const startupInfo = isImported ? importedData.startup : startupQuery.data?.Results;
+  const memoryDetail = isImported ? importedData.memoryDetail : memoryDetailQuery.data?.Results;
   const importedJobs = useMemo(() => {
     if (!isImported || !importedData.jobs) return null;
     // Handle both array and { Results: [...] } shapes from query cache
@@ -673,6 +748,7 @@ const Page = () => {
       snapshot: healthQuery.data?.Results ?? null,
       startup: startupQuery.data?.Results ?? null,
       history: historyQuery.data?.Results ?? null,
+      memoryDetail: memoryDetailQuery.data?.Results ?? null,
       jobs: null,
     };
     // Grab the job data for the currently selected limit/status only — a prefix match
@@ -697,6 +773,7 @@ const Page = () => {
     healthQuery.data,
     startupQuery.data,
     historyQuery.data,
+    memoryDetailQuery.data,
     historyRange,
     queryClient,
     jobLimit,
@@ -932,6 +1009,9 @@ const Page = () => {
 
             {/* ── Compact pool / jobs / limiter stats ── */}
             <CompactStatsRow snapshot={snapshot} />
+
+            {/* ── OS thread breakdown ── */}
+            <ThreadStatsCard detail={memoryDetail} />
 
             {/* ── Worker tables ── */}
             <WorkerTable workers={snapshot?.HttpPool?.Workers} title="HTTP Workers" />

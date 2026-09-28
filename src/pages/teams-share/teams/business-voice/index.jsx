@@ -18,70 +18,73 @@ const Page = () => {
   const actions = [
     // the modal dropdowns that were added below may not exist yet, and will need to be tested.
     {
-      label: "Assign User",
-      type: "POST",
+      label: 'Assign User',
+      type: 'POST',
       icon: <CippIcons.PersonAdd />,
-      url: "/api/ExecTeamsVoicePhoneNumberAssignment",
+      url: '/api/ExecTeamsVoicePhoneNumberAssignment',
       data: {
-        PhoneNumber: "TelephoneNumber",
-        PhoneNumberType: "NumberType",
+        PhoneNumber: 'TelephoneNumber',
+        PhoneNumberType: 'NumberType',
         locationOnly: false,
       },
       fields: [
         {
-          type: "autoComplete",
-          name: "input",
-          label: "Select User",
+          type: 'autoComplete',
+          name: 'input',
+          label: 'Select User',
           multiple: false,
           creatable: false,
           api: {
-            url: "/api/ListGraphRequest",
-            queryKey: "TeamsVoiceAssignableUsers",
-            dataKey: "Results",
+            url: '/api/ListGraphRequest',
+            queryKey: 'TeamsVoiceAssignableUsers',
+            dataKey: 'Results',
             data: {
-              Endpoint: "users",
+              Endpoint: 'users',
               manualPagination: true,
-              $select: "id,userPrincipalName,displayName",
+              $select: 'id,userPrincipalName,displayName',
               $count: true,
-              $orderby: "displayName",
+              $orderby: 'displayName',
               $top: 999,
             },
-            labelField: (input) => `${input.displayName} (${input.userPrincipalName})`,
-            valueField: "userPrincipalName",
+            labelField: (input) =>
+              `${input.displayName} (${input.userPrincipalName})`,
+            valueField: 'userPrincipalName',
           },
         },
       ],
-      confirmText: "Select the User to assign the phone number to.",
+      confirmText: 'Select the User to assign the phone number to.',
+      multiPost: false,
     },
     {
-      label: "Unassign User",
-      type: "POST",
+      label: 'Unassign User',
+      type: 'POST',
       icon: <CippIcons.PersonRemove />,
-      url: "/api/ExecRemoveTeamsVoicePhoneNumberAssignment",
+      url: '/api/ExecRemoveTeamsVoicePhoneNumberAssignment',
       data: {
-        PhoneNumber: "TelephoneNumber",
-        AssignedTo: "AssignedTo",
-        PhoneNumberType: "NumberType",
+        PhoneNumber: 'TelephoneNumber',
+        AssignedTo: 'AssignedTo',
+        PhoneNumberType: 'NumberType',
       },
-      confirmText: "Are you sure you want to remove the assignment?",
+      confirmText: 'Are you sure you want to remove the assignment?',
+      multiPost: false,
     },
     {
-      label: "Set Emergency Location",
-      type: "POST",
+      label: 'Set Emergency Location',
+      type: 'POST',
       icon: <CippIcons.LocationOn />,
-      url: "/api/ExecTeamsVoicePhoneNumberAssignment",
+      url: '/api/ExecTeamsVoicePhoneNumberAssignment',
       data: {
-        PhoneNumber: "TelephoneNumber",
+        PhoneNumber: 'TelephoneNumber',
         locationOnly: true,
       },
       fields: [
         {
-          type: "autoComplete",
-          name: "input",
-          label: "Emergency Location",
+          type: 'autoComplete',
+          name: 'input',
+          label: 'Emergency Location',
           api: {
-            url: "/api/ListTeamsLisLocation",
-            queryKey: "TeamsLisLocations",
+            url: '/api/ListTeamsLisLocation',
+            queryKey: 'TeamsLisLocations',
             // Description is optional on a location, so fall back to the place name and
             // then the street address rather than rendering "No label found".
             labelField: (location) =>
@@ -89,15 +92,16 @@ const Page = () => {
               location.Location ||
               [location.HouseNumber, location.StreetName, location.City]
                 .filter(Boolean)
-                .join(" ") ||
+                .join(' ') ||
               location.LocationId,
-            valueField: "LocationId",
+            valueField: 'LocationId',
           },
         },
       ],
-      confirmText: "Select the Emergency Location.",
+      confirmText: 'Select the Emergency Location.',
+      multiPost: false,
     },
-  ];
+  ]
 
   const offCanvas = {
     extendedInfoFields: [

@@ -743,17 +743,22 @@ export const CippDataTable = (props) => {
   const [columnFilterFns, setColumnFilterFns] = useState({})
   const waitingBool = api?.url ? true : false
 
-  // The cards branch and the renderTopToolbar branch are two alternating CIPPTableToptoolbar
-  // instances (only one is ever mounted), so state that must survive the cards<->table flip
-  // lives here and is passed down as props to both.
   const [activeFilters, setActiveFilters] = useState({ graph: null, table: null })
   const [searchValue, setSearchValue] = useState('')
   const restoredFiltersRef = useRef(new Set())
+  const searchFocusRef = useRef(null)
 
   const settings = useSettings()
   const router = useRouter()
   const routerPageName = router.pathname.split('/').slice(1).join('/')
   const pageName = persistenceKey ?? (isInDialog ? '' : routerPageName)
+  // The user's saved column selection for this page. Always layered over a full default
+  // map, never used as the whole visibility state: TanStack treats a column with no entry
+  // as visible, so a preference saved on a tenant whose data lacked a field would reveal
+  // that field the moment another tenant's data contains it.
+  const preferredColumnVisibility = pageName
+    ? settings?.columnDefaults?.[pageName]
+    : undefined
 
   // 'cards' below the md breakpoint (or when forced via settings/prop), 'table' otherwise.
   // simple tables always resolve to 'table'.
@@ -844,7 +849,7 @@ export const CippDataTable = (props) => {
   }, [data, api?.url])
 
   useEffect(() => {
-    if (getRequestData.isSuccess && !getRequestData.isFetching) {
+    if (api?.url && getRequestData.isSuccess && !getRequestData.isFetching) {
       const lastPage =
         getRequestData.data?.pages[getRequestData.data.pages.length - 1]
       const nextLinkExists = lastPage?.Metadata?.nextLink
@@ -852,10 +857,10 @@ export const CippDataTable = (props) => {
         getRequestData.fetchNextPage()
       }
     }
-  }, [getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey])
+  }, [api?.url, getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey])
 
   useEffect(() => {
-    if (getRequestData.isSuccess) {
+    if (api?.url && getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages
 
       const combinedResults = allPages.flatMap((page) => {
@@ -876,6 +881,7 @@ export const CippDataTable = (props) => {
       )
     }
   }, [
+    api?.url,
     getRequestData.isSuccess,
     getRequestData.data,
     api.dataKey,
@@ -999,6 +1005,14 @@ export const CippDataTable = (props) => {
         }
       }
     }
+    // Saved preferred columns win over the defaults above. Fields the preference never
+    // saw (a different tenant's schema) keep the default computed for this table.
+    if (
+      preferredColumnVisibility &&
+      Object.keys(preferredColumnVisibility).length > 0
+    ) {
+      Object.assign(newVisibility, preferredColumnVisibility)
+    }
     if (defaultSorting?.length > 0) {
       setSorting(defaultSorting)
     }
@@ -1011,6 +1025,7 @@ export const CippDataTable = (props) => {
     settings?.currentTenant,
     filterTypeMap,
     subTables,
+    preferredColumnVisibility,
   ])
 
   // Previous-value refs for the guards below: CippDataTable is the single owner of this
@@ -1057,20 +1072,23 @@ export const CippDataTable = (props) => {
 
   // apply preferred columns once per page, and again whenever the saved preference's
   // identity changes. Nested dialog tables must not read or write the parent page key.
+  // Layered over the current state rather than replacing it: on a static-data table
+  // this runs in the same commit as the column build above, and replacing would drop
+  // the defaults just computed for every field the preference does not mention.
   useEffect(() => {
     if (!pageName) {
       return
     }
-    const preferred = settings?.columnDefaults?.[pageName]
+    const preferred = preferredColumnVisibility
     if (
       preferred &&
       Object.keys(preferred).length > 0 &&
       appliedColumnDefaultsRef.current[pageName] !== preferred
     ) {
       appliedColumnDefaultsRef.current[pageName] = preferred
-      setColumnVisibility(preferred)
+      setColumnVisibility((previous) => ({ ...previous, ...preferred }))
     }
-  }, [settings?.columnDefaults?.[pageName], pageName])
+  }, [preferredColumnVisibility, pageName])
 
   const createDialog = useDialog()
   const hasActions = !!actions
@@ -1793,6 +1811,7 @@ export const CippDataTable = (props) => {
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               restoredFiltersRef={restoredFiltersRef}
+              searchFocusRef={searchFocusRef}
             />
           )}
         </>

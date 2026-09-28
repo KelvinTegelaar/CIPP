@@ -19,6 +19,11 @@ const Page = () => {
           'microsoft.copilot.allowwebsearch',
           'microsoft.copilot.imagegeneration',
         ].includes(row.settingId),
+      hideCondition: (row) =>
+        [
+          'microsoft.copilot.allowwebsearch',
+          'microsoft.copilot.imagegeneration',
+        ].includes(row.settingId),
       fields: [
         {
           type: 'autoComplete',
@@ -44,6 +49,7 @@ const Page = () => {
       icon: <CippIcons.Cog6ToothIcon />,
       data: { settingId: 'settingId' },
       condition: (row) => row.settingId === 'microsoft.copilot.imagegeneration',
+      hideCondition: (row) => row.settingId !== 'microsoft.copilot.imagegeneration',
       fields: [
         {
           type: 'autoComplete',
@@ -69,6 +75,7 @@ const Page = () => {
       icon: <CippIcons.Cog6ToothIcon />,
       data: { settingId: 'settingId' },
       condition: (row) => row.settingId === 'microsoft.copilot.allowwebsearch',
+      hideCondition: (row) => row.settingId !== 'microsoft.copilot.allowwebsearch',
       fields: [
         {
           type: 'autoComplete',

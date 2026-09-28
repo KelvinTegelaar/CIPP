@@ -44,6 +44,7 @@ const typeOptions = [
   { label: "Baseline", value: "BaselineTemplate" },
   { label: "Report Builder", value: "ReportBuilderTemplate" },
   { label: "Group", value: "GroupTemplate" },
+  { label: "PIM Role Settings", value: "PIMRoleSettingsTemplate" },
   { label: "Custom Test", value: "CustomTest" },
 ];
 
@@ -184,7 +185,7 @@ const Page = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, py: 4 }}>
+    <Box sx={{ flexGrow: 1, pt: 1, pb: 4 }}>
       <CippHead title="Catalog" noTenant={true} />
       <Container maxWidth="xl">
         <Stack spacing={2}>

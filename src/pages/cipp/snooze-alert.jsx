@@ -6,12 +6,9 @@ import { ApiPostCall } from '../../api/ApiCall'
 import { CippApiResults } from '../../components/CippComponents/CippApiResults'
 import CippPageCard from '../../components/CippCards/CippPageCard'
 
-const VALID_DURATIONS = [7, 14, 30, 90, -1]
+const VALID_DURATIONS = [7, 14, 30, 90]
 
-const durationLabel = (d) => {
-  if (d === -1) return 'forever'
-  return `${d} days`
-}
+const durationLabel = (d) => `${d} days`
 
 const Page = () => {
   const router = useRouter()
@@ -34,7 +31,7 @@ const Page = () => {
 
     const durationNum = parseInt(duration, 10)
     if (!VALID_DURATIONS.includes(durationNum)) {
-      setParseError(`Invalid duration: ${duration}. Must be 7, 14, 30, or -1.`)
+      setParseError(`Invalid duration: ${duration}. Must be 7, 14, 30, or 90.`)
       return
     }
 

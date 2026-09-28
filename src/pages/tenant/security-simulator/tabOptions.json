@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Scenarios",
+    "path": "/tenant/security-simulator",
+    "icon": "Security"
+  },
+  {
+    "label": "Sign-in Situations",
+    "path": "/tenant/security-simulator/situations",
+    "icon": "Person"
+  },
+  {
+    "label": "CA Gap Analysis",
+    "path": "/tenant/security-simulator/conditional-access",
+    "icon": "Policy"
+  }
+]

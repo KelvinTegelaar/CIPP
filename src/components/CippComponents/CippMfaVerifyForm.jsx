@@ -20,9 +20,6 @@ const MFA_METHOD_MAP = {
   },
   '#microsoft.graph.phoneAuthenticationMethod': { label: 'Phone (SMS or call)' },
   '#microsoft.graph.fido2AuthenticationMethod': { label: 'FIDO2 security key' },
-  '#microsoft.graph.windowsHelloForBusinessAuthenticationMethod': {
-    label: 'Windows Hello for Business',
-  },
   '#microsoft.graph.emailAuthenticationMethod': { label: 'Email' },
 }
 
@@ -67,7 +64,8 @@ export const MfaVerifyForm = ({ formControl, row }) => {
     queryKey: `MFAPreferred-${tenant}-${upn}`,
   })
 
-  const registered = (methods.data?.Results ?? [])
+  // One chip per method type: a user can register the same type many times (several devices).
+  const registered = [...new Map((methods.data?.Results ?? []).map((m) => [m['@odata.type'], m])).values()]
     .map((m) => ({ type: m['@odata.type'], ...MFA_METHOD_MAP[m['@odata.type']] }))
     .filter((m) => m.label)
   const hasPush = registered.some((m) => m.push)

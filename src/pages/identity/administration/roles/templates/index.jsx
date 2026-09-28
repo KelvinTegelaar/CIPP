@@ -5,10 +5,12 @@ import { ApiGetCall } from '../../../../../api/ApiCall'
 import { useSettings } from '../../../../../hooks/use-settings'
 import { CippTablePage } from '../../../../../components/CippComponents/CippTablePage.jsx'
 import { CippPropertyListCard } from '../../../../../components/CippCards/CippPropertyListCard'
+import { CippPolicyImportDrawer } from '../../../../../components/CippComponents/CippPolicyImportDrawer.jsx'
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
 import { TabbedLayout } from '../../../../../layouts/TabbedLayout'
 import { getCippTranslation } from '../../../../../utils/get-cipp-translation'
 import { getCippFormatting } from '../../../../../utils/get-cipp-formatting'
+import { PermissionButton } from '../../../../../utils/permissions'
 import tabOptions from '../tabOptions.json'
 
 const Page = () => {
@@ -120,13 +122,21 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       cardButton={
-        <Button
-          component={Link}
-          href="/identity/administration/roles/templates/add"
-          startIcon={<CippIcons.AddBox />}
-        >
-          Add PIM Template
-        </Button>
+        <>
+          <Button
+            component={Link}
+            href="/identity/administration/roles/templates/add"
+            startIcon={<CippIcons.AddBox />}
+          >
+            Add PIM Template
+          </Button>
+          <CippPolicyImportDrawer
+            buttonText="Browse Catalog"
+            requiredPermissions={['Identity.Role.ReadWrite']}
+            PermissionButton={PermissionButton}
+            mode="PIMRoleSettings"
+          />
+        </>
       }
       offCanvas={offCanvas}
       simpleColumns={[

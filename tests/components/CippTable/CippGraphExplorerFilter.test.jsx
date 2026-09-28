@@ -197,6 +197,28 @@ describe('CippGraphExplorerFilter', () => {
       })
     })
 
+    it('does not echo the selectedPreset prop back to onPresetSelect (remount-echo regression)', async () => {
+      ApiGetCall.mockImplementation(() => ({
+        isSuccess: false,
+        isFetching: false,
+        data: undefined,
+        refetch: vi.fn(),
+      }))
+      const onPresetSelect = vi.fn()
+      renderWithProviders(
+        <CippGraphExplorerFilter
+          onSubmitFilter={vi.fn()}
+          component="card"
+          selectedPreset={{ id: 'abc', filterName: 'Licensed Users', value: { $filter: 'x' }, type: 'graph' }}
+          onPresetSelect={onPresetSelect}
+        />
+      )
+      await waitFor(() => {
+        expect(screen.getByRole('combobox', { name: 'Select a preset' })).toHaveValue('Licensed Users')
+      })
+      expect(onPresetSelect).not.toHaveBeenCalled()
+    })
+
     it('switching between two option-shape presets applies the second (dep-array regression)', async () => {
       const optionA = { label: BUILTIN.name, value: BUILTIN.id, addedFields: BUILTIN }
       const optionB = { label: 'Saved Object Select', value: 'saved-1', addedFields: savedObjectSelect }

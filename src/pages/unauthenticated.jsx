@@ -107,6 +107,15 @@ const Page = ({ reason = 'session' }) => {
   const hasIdentity = hasAuthIdentity(swaStatus?.data)
   const isSessionEnded = reason === 'session' && !(hasIdentity && orgData?.data?.message)
 
+  // Render the shell as soon as the auth state has settled either way. Gating on
+  // isSuccess alone left this page blank on an expired session under App Service
+  // EasyAuth: both /.auth/me and /api/me 302 to the cross-origin AAD login, the
+  // browser follows the redirect, and axios reports the CORS-blocked result as a
+  // network error — never a success, so neither probe was ever "successful". The
+  // session-ended prompt needs no data, so an errored probe is still enough to show it.
+  const authProbed =
+    orgData.isSuccess || orgData.isError || swaStatus.isSuccess || swaStatus.isError
+
   const sessionProps = {
     title: 'Sign in to CIPP',
     // reading localStorage during render is safe here: the gate below keeps this
@@ -203,7 +212,7 @@ const Page = ({ reason = 'session' }) => {
       {/* If an impersonated role can't load /me, this page is what renders — the exit
           affordance must exist here or the user is stuck until they clear localStorage. */}
       <CippImpersonationBanner />
-      {(orgData.isSuccess || swaStatus.isSuccess) && Array.isArray(userRoles) && (
+      {authProbed && Array.isArray(userRoles) && (
         <CippAuthShell
           version={version?.data?.version}
           {...(isSessionEnded ? sessionProps : permissionProps)}

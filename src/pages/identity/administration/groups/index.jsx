@@ -127,6 +127,52 @@ const Page = () => {
       allowResubmit: true,
     },
     {
+      label: 'Remove Member',
+      type: 'POST',
+      url: '/api/ExecGroupMembers',
+      icon: <CippIcons.PersonRemove />,
+      customDataformatter: (row, action, formData) => ({
+        action: 'removeMember',
+        tenantFilter: getRowTenant(row, currentTenant),
+        groupId: row.id,
+        users: (formData.RemoveMember ?? []).map((member) => member.value),
+      }),
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'RemoveMember',
+          label: 'Select members to remove',
+          multiple: true,
+          creatable: false,
+          api: {
+            url: '/api/ListGroups',
+            // Plain property names here resolve against the clicked row, so the picker
+            // lists the current members of this group rather than every user in the tenant
+            data: { groupID: 'id', members: true, groupType: 'groupType' },
+            processFieldData: true,
+            dataKey: 'members',
+            labelField: (member) =>
+              member.userPrincipalName
+                ? `${member.displayName} (${member.userPrincipalName})`
+                : member.displayName,
+            valueField: 'id',
+            showRefresh: true,
+          },
+          validators: {
+            validate: (value) =>
+              (Array.isArray(value) && value.length > 0) || 'Select at least one member',
+          },
+        },
+      ],
+      confirmText: 'Select the members to remove from [displayName].',
+      // Manual member removals are rejected on dynamic and on-prem synced groups
+      condition: (row) => !row?.membershipRule && row?.onPremisesSyncEnabled !== true,
+      // The member picker is built from a single group's membership, so no bulk variant
+      hideBulk: true,
+      relatedQueryKeys: ['group-members-*'],
+      allowResubmit: true,
+    },
+    {
       label: 'Set Global Address List Visibility',
       type: 'POST',
       url: '/api/ExecGroupsHideFromGAL',

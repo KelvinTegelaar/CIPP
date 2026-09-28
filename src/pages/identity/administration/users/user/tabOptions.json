@@ -15,8 +15,13 @@
     "icon": "Mail"
   },
   {
+    "label": "OneDrive Shortcuts",
+    "path": "/identity/administration/users/user/onedrive-shortcuts",
+    "icon": "Shortcut"
+  },
+  {
     "label": "Compromise Remediation",
-    "path": "/identity/administration/users/user/bec",
+    "path": "/identity/administration/bec/case",
     "icon": "Shield"
   },
   {

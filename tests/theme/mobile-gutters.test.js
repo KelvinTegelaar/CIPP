@@ -45,3 +45,30 @@ describe("horizontal gutters on small screens", () => {
     expect(content[MOBILE]?.paddingBottom).toBeUndefined();
   });
 });
+
+// A home-screen (standalone) install on iPhone draws under the status bar because the viewport
+// is viewport-fit=cover. The top nav pads for that itself; everything else that reaches the top
+// edge — fullscreen dialogs and the left/right drawers — gets the inset from the theme.
+describe("status-bar inset on surfaces that reach the top edge", () => {
+  const theme = createTheme({ colorPreset: "orange", contrast: "high", paletteMode: "light" });
+  const INSET = "env(safe-area-inset-top, 0px)";
+  const drawerPaper = (ownerState) => theme.components.MuiDrawer.styleOverrides.paper({ ownerState });
+
+  it("pads fullscreen dialogs", () => {
+    expect(theme.components.MuiDialog.styleOverrides.paperFullScreen.paddingTop).toBe(INSET);
+  });
+
+  it("keeps a tall non-fullscreen phone dialog below the inset without double-padding fullscreen", () => {
+    const rule = theme.components.MuiDialog.styleOverrides.paper[MOBILE]["&:not(.MuiDialog-paperFullScreen)"];
+    expect(rule.marginTop).toBe(INSET);
+    expect(rule.maxHeight).toBe(`calc(100% - ${INSET})`);
+    expect(theme.components.MuiDialog.styleOverrides.paper[MOBILE].maxHeight).toBeUndefined();
+  });
+
+  it("pads temporary left/right drawers only — the permanent side nav already sits under the top nav", () => {
+    expect(drawerPaper({ variant: "temporary", anchor: "left" }).paddingTop).toBe(INSET);
+    expect(drawerPaper({ variant: "temporary", anchor: "right" }).paddingTop).toBe(INSET);
+    expect(drawerPaper({ variant: "temporary", anchor: "bottom" }).paddingTop).toBeUndefined();
+    expect(drawerPaper({ variant: "permanent", anchor: "left" }).paddingTop).toBeUndefined();
+  });
+});

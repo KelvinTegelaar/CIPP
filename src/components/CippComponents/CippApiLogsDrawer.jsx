@@ -3,6 +3,7 @@ import { CippIcons } from '../../utils/icon-registry'
 import { Button, Box } from '@mui/material'
 import { CippOffCanvas } from './CippOffCanvas'
 import { CippDataTable } from '../CippTable/CippDataTable'
+import { usePermissions } from '../../hooks/use-permissions'
 
 export const CippApiLogsDrawer = ({
   buttonText = 'View API Logs',
@@ -17,6 +18,10 @@ export const CippApiLogsDrawer = ({
   ...props
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const { checkPermissions } = usePermissions()
+  // ListLogs sits behind CIPP.Logs rather than the sign-in permission, so a role without it
+  // gets no button instead of a 403 inside the drawer.
+  const canReadLogs = checkPermissions(['CIPP.Logs.*'])
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false)
@@ -59,6 +64,8 @@ export const CippApiLogsDrawer = ({
       color: 'primary',
     },
   ]
+
+  if (!canReadLogs) return null
 
   return (
     <>

@@ -260,8 +260,8 @@ const CippGraphExplorerFilter = ({
       setLastPresetTitle(selectedPresets.label)
       formControl.reset(params, { keepDefaultValues: true })
 
-      // Notify parent when preset changes in this component
-      if (onPresetSelect) {
+      // Notify parent only on user-driven changes, not the sync effect echoing selectedPreset back
+      if (onPresetSelect && selectedPresets.value !== selectedPreset?.id) {
         onPresetSelect(selectedPresets)
       }
     }

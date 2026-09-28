@@ -77,6 +77,13 @@ const modeConfig = {
     tenantSource: false,
     relatedQueryKeys: ['ListDlpCompliancePolicyTemplates'],
   },
+  PIMRoleSettings: {
+    label: 'PIM Role Settings',
+    types: ['PIMRoleSettingsTemplate'],
+    tenantSource: false,
+    // The list queryKey is tenant-suffixed (ListPIMRoleSettingsTemplates-<tenant>), so match with a wildcard.
+    relatedQueryKeys: ['ListPIMRoleSettingsTemplates*'],
+  },
 }
 
 export const CippPolicyImportDrawer = ({
