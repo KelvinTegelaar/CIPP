@@ -67,6 +67,8 @@ const deviationColors = {
   'Partially Accepted': 'warning',
   Drift: 'error',
   Conflict: 'error',
+  // Set when the remediation write itself failed - not tenant drift, so no diff to show.
+  Error: 'error',
   'Denied - Remediate Pending': 'warning',
   'Denied - Delete Pending': 'warning',
   'Skipped - No License': 'default',
