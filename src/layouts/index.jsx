@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Box, Container, Divider, Stack } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useIsMobileLayout } from '../hooks/use-breakpoint'
@@ -99,6 +99,7 @@ export const Layout = (props) => {
   const [menuItems, setMenuItems] = useState(nativeMenuItems)
   const lastUserSettingsUpdate = useRef(null)
   const currentTenant = settings?.currentTenant
+  const urlTenant = useSearchParams()?.get('tenantFilter')
   const [hideSidebar, setHideSidebar] = useState(false)
 
   const swaStatus = ApiGetCall({
@@ -318,7 +319,9 @@ export const Layout = (props) => {
           />
           <SsoMigrationDialog meData={currentRole.data} />
           <ForcedSsoMigrationDialog />
-          {(currentTenant === 'AllTenants' || !currentTenant) &&
+          {(currentTenant === 'AllTenants' ||
+            urlTenant === 'AllTenants' ||
+            !currentTenant) &&
           !allTenantsSupport ? (
             <Box sx={{ flexGrow: 1, py: 3 }}>
               <Container maxWidth={false}>
