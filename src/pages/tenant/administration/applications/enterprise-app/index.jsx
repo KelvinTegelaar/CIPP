@@ -24,7 +24,7 @@ import { getListGraphBulkRequestRows } from '../../../../../utils/getListGraphBu
 import { CippCredentialExpandList } from '../../../../../components/CippComponents/CippCredentialExpandList.jsx'
 
 const spSelect =
-  'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials'
+  'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials,preferredSingleSignOnMode,preferredTokenSigningKeyThumbprint,loginUrl,logoutUrl,notificationEmailAddresses,samlSingleSignOnSettings,servicePrincipalNames'
 
 const getLatestCredentialExpiry = (credentials = []) => {
   if (!Array.isArray(credentials) || credentials.length === 0) return 'N/A'
@@ -71,6 +71,23 @@ const Page = () => {
       spData = spRequest.data
     }
   }
+
+  const isSaml = spData?.preferredSingleSignOnMode === 'saml'
+  const signingRequest = ApiGetCall({
+    url: '/api/ExecApplication',
+    data: {
+      Id: spObjectId,
+      Type: 'servicePrincipals',
+      Action: 'ListSigningCertificates',
+      tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
+    },
+    queryKey: `EnterpriseApp-signing-${spObjectId}`,
+    waiting: !!spObjectId && isSaml,
+  })
+  const signingCertificates = useMemo(
+    () => (isSaml && signingRequest.isSuccess ? signingRequest.data?.Results ?? [] : []),
+    [isSaml, signingRequest.isSuccess, signingRequest.data]
+  )
 
   const spBulkRequest = ApiPostCall({
     urlFromData: true,
@@ -173,8 +190,8 @@ const Page = () => {
       return undefined
     }
     const tenant = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
-    return { ...spData, Tenant: tenant }
-  }, [spData, router.query.tenantFilter, userSettingsDefaults.currentTenant])
+    return { ...spData, Tenant: tenant, signingCertificates }
+  }, [spData, signingCertificates, router.query.tenantFilter, userSettingsDefaults.currentTenant])
 
   const ownersItems =
     owners.length > 0
@@ -232,7 +249,76 @@ const Page = () => {
 
   const tenantForApi = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
 
+  const preferredSigning = signingCertificates.find((cert) => cert.preferred)
+
+  // Entra's own SAML endpoints derive from the tenant; the app's home tenant id is on the
+  // service principal for a custom app, the tenant domain works for the login URLs either way.
+  const samlTenant = data?.appOwnerOrganizationId ?? tenantForApi
+  const samlEntityIds = (data?.servicePrincipalNames ?? []).filter((n) => n !== data?.appId)
+  const samlItems = isSaml
+    ? [
+        {
+          id: 0,
+          cardLabelBox: { cardLabelBoxHeader: <CippIcons.Key /> },
+          text: 'SAML single sign-on',
+          subtext: samlEntityIds[0] ?? 'No identifier (Entity ID) configured',
+          statusColor: samlEntityIds.length > 0 && data?.replyUrls?.length > 0 ? 'info.main' : 'warning.main',
+          statusText: samlEntityIds.length > 0 && data?.replyUrls?.length > 0 ? 'Configured' : 'Incomplete',
+          propertyItems: [
+            { label: 'Identifier (Entity ID)', value: samlEntityIds.join(', ') || 'None' },
+            { label: 'Reply URL (ACS)', value: data?.replyUrls?.join(', ') || 'None' },
+            { label: 'Sign-on URL', value: data?.loginUrl || 'None' },
+            { label: 'Relay State', value: data?.samlSingleSignOnSettings?.relayState || 'None' },
+            { label: 'Logout URL', value: data?.logoutUrl || 'None' },
+            { label: 'Certificate expiry notifications', value: data?.notificationEmailAddresses?.join(', ') || 'None' },
+            { label: 'Login / Logout URL (Entra)', value: `https://login.microsoftonline.com/${samlTenant}/saml2` },
+            { label: 'Entra identifier', value: `https://sts.windows.net/${samlTenant}/` },
+            {
+              label: 'App federation metadata',
+              value: (
+                <Link
+                  href={`https://login.microsoftonline.com/${samlTenant}/federationmetadata/2007-06/federationmetadata.xml?appid=${data?.appId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  federationmetadata.xml
+                </Link>
+              ),
+            },
+          ],
+        },
+      ]
+    : []
+
   const credentialsItems = [
+    ...(isSaml
+      ? [
+          {
+            id: 0,
+            cardLabelBox: {
+              cardLabelBoxHeader: preferredSigning ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
+            },
+            text: 'Token Signing Certificates',
+            subtext: preferredSigning
+              ? `Signing with ${preferredSigning.displayName || preferredSigning.thumbprint}`
+              : 'No preferred signing certificate set',
+            statusColor: preferredSigning ? 'info.main' : 'warning.main',
+            statusText: `${signingCertificates.length} certificate(s)`,
+            propertyItems: [
+              { label: 'SSO mode', value: data?.preferredSingleSignOnMode || 'N/A' },
+              { label: 'Preferred thumbprint', value: data?.preferredTokenSigningKeyThumbprint || 'None' },
+              { label: 'Next Expiry', value: getLatestCredentialExpiry(signingCertificates) },
+            ],
+            table: {
+              title: 'Token Signing Certificates',
+              hideTitle: true,
+              data: signingCertificates,
+              refreshFunction: () => signingRequest.refetch(),
+              simpleColumns: ['displayName', 'thumbprint', 'preferred', 'startDateTime', 'endDateTime'],
+            },
+          },
+        ]
+      : []),
     {
       id: 1,
       cardLabelBox: {
@@ -433,6 +519,12 @@ const Page = () => {
             </Grid>
             <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
+                {isSaml && (
+                  <>
+                    <Typography variant="h6">Single sign-on</Typography>
+                    <CippBannerListCard isFetching={spRequest.isLoading} items={samlItems} isCollapsible={true} />
+                  </>
+                )}
                 <Typography variant="h6">Credentials</Typography>
                 <CippBannerListCard
                   isFetching={spRequest.isLoading}
