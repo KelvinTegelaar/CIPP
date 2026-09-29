@@ -21,6 +21,7 @@ import { TabNavigationContext, useTabNavigationValue } from "./tab-navigation-co
 import { CippPageActionsFab } from "../components/CippComponents/CippPageActionsFab";
 import { CippTabPicker } from "../components/CippComponents/CippTabPicker";
 import { ApiGetCall } from "../api/ApiCall";
+import { getHiddenPages } from "../utils/filter-menu-items";
 
 export const HeaderedTabbedLayout = (props) => {
   const {
@@ -72,15 +73,7 @@ export const HeaderedTabbedLayout = (props) => {
   });
   const visibleTabs = useMemo(() => {
     if (!featureFlags.isSuccess || !Array.isArray(featureFlags.data)) return tabOptions;
-    const disabledPages = featureFlags.data
-      .filter((flag) => flag.Enabled === false || flag.enabled === false)
-      .flatMap((flag) => flag.Pages || flag.pages || [])
-      .filter((page) => typeof page === "string");
-    const replacedPages = featureFlags.data
-      .filter((flag) => flag.Enabled === true || flag.enabled === true)
-      .flatMap((flag) => flag.HidesPages || flag.hidesPages || [])
-      .filter((page) => typeof page === "string");
-    const hiddenPages = [...disabledPages, ...replacedPages];
+    const hiddenPages = getHiddenPages(featureFlags.data);
     if (hiddenPages.length === 0) return tabOptions;
     return tabOptions.filter((option) => !hiddenPages.includes(option.path));
   }, [tabOptions, featureFlags.isSuccess, featureFlags.data]);

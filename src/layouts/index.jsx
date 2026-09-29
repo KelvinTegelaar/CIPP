@@ -21,7 +21,7 @@ import { SubscriptionEndedDialog } from '../components/CippComponents/Subscripti
 import { FailedPaymentDialog } from '../components/CippComponents/FailedPaymentDialog'
 import { CippMaintenanceBanner } from '../components/CippComponents/CippMaintenanceBanner'
 import { CippImpersonationBanner } from '../components/CippComponents/CippImpersonationBanner'
-import { filterMenuItems } from '../utils/filter-menu-items'
+import { filterMenuItems, getHiddenPages } from '../utils/filter-menu-items'
 
 import {
   CHROME_TOP_OFFSET,
@@ -132,21 +132,7 @@ export const Layout = (props) => {
       }
 
       // Get hidden pages from feature flags - only filter if we have valid data.
-      // A DISABLED flag hides its Pages (features gated behind the flag); an ENABLED
-      // flag hides its HidesPages (features it replaces - e.g. Baselines supersedes
-      // the classic Standards and Drift pages).
-      let hiddenPages = []
-      if (featureFlags.isSuccess && Array.isArray(featureFlags.data)) {
-        const disabledPages = featureFlags.data
-          .filter((flag) => flag.Enabled === false || flag.enabled === false)
-          .flatMap((flag) => flag.Pages || flag.pages || [])
-          .filter((page) => typeof page === 'string')
-        const replacedPages = featureFlags.data
-          .filter((flag) => flag.Enabled === true || flag.enabled === true)
-          .flatMap((flag) => flag.HidesPages || flag.hidesPages || [])
-          .filter((page) => typeof page === 'string')
-        hiddenPages = [...disabledPages, ...replacedPages]
-      }
+      const hiddenPages = featureFlags.isSuccess ? getHiddenPages(featureFlags.data) : []
 
       const filteredMenu = filterMenuItems(nativeMenuItems, {
         permissions: userPermissions,

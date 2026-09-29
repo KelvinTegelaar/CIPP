@@ -1,6 +1,25 @@
 import { matchPattern } from './permission-rules'
 
 /**
+ * Page paths the feature flags hide. A DISABLED flag hides its Pages (features gated behind
+ * the flag); an ENABLED flag hides its HidesPages (features it replaces - e.g. Baselines
+ * supersedes the classic Standards and Drift pages). Returns [] until the flags have loaded.
+ *
+ * @param {Array} featureFlags - ListFeatureFlags response
+ * @returns {Array} Page paths to hide
+ */
+export const getHiddenPages = (featureFlags) => {
+  if (!Array.isArray(featureFlags)) return []
+  const disabledPages = featureFlags
+    .filter((flag) => flag.Enabled === false || flag.enabled === false)
+    .flatMap((flag) => flag.Pages || flag.pages || [])
+  const replacedPages = featureFlags
+    .filter((flag) => flag.Enabled === true || flag.enabled === true)
+    .flatMap((flag) => flag.HidesPages || flag.hidesPages || [])
+  return [...disabledPages, ...replacedPages].filter((page) => typeof page === 'string')
+}
+
+/**
  * Filter menu items by user permissions.
  *
  * Groups (items with a non-empty `items` array) are visible if at least one of their
