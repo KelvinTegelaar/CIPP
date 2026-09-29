@@ -38,7 +38,9 @@ export const BEC_VERDICT_LABEL = {
   Service: 'Service',
 }
 const option = (value) => ({ label: value, value })
-const OVERRIDE_OPTIONS = ['Auto', 'Safe', 'Compromised'].map(option)
+const OVERRIDE_OPTIONS = ['Auto', 'Safe', 'Suspicious', 'Compromised'].map(
+  option
+)
 const valueOf = (field) => field?.value ?? field
 
 // One address: who it is judged to be, and each reason behind the score with its signed weight -
@@ -130,10 +132,10 @@ const VerdictCard = ({ verdict, index, formControl, disabledNote }) => (
 )
 
 /**
- * Review the IP verdicts of a BEC case: override any address as Safe or Compromised and re-run
- * everything that depends on the verdicts in the background (ExecBECIPReview), with live progress
- * like containment. Optionally the choices are also saved to CIPP's IP list for the tenant, so later
- * cases start from them. Rows are form fields keyed by index - an address has dots, which
+ * Review the IP verdicts of a BEC case: override any address as Safe, Suspicious or Compromised and
+ * re-run everything that depends on the verdicts in the background (ExecBECIPReview), with live
+ * progress like containment. Optionally the Safe and Compromised choices are also saved to CIPP's IP
+ * list for the tenant, so later cases start from them. Rows are form fields keyed by index - an address has dots, which
  * react-hook-form would read as nesting.
  */
 export const CippBecIPReviewDrawer = ({
@@ -205,7 +207,7 @@ export const CippBecIPReviewDrawer = ({
     (v, index) => (valueOf(choices[index]?.Verdict) || 'Auto') !== 'Auto'
   )
   const runBlockedReason = !anyDecided
-    ? 'Set at least one address to Safe or Compromised to re-run.'
+    ? 'Set at least one address to Safe, Suspicious or Compromised to re-run.'
     : !changed
       ? 'These verdicts are already applied to this case.'
       : null
@@ -314,10 +316,11 @@ export const CippBecIPReviewDrawer = ({
       >
         <Stack spacing={1.5}>
           <Alert severity="info">
-            Set an address to Safe or Compromised to decide it for this case;
-            Auto keeps the calculated verdict the case already ran with. The
-            re-run replaces the verdicts, the attacker activity, the delegated
-            mailboxes and the score.
+            Set an address to Safe, Suspicious or Compromised to decide it for
+            this case; Suspicious keeps it under review without counting it as
+            the attacker&apos;s. Auto keeps the calculated verdict the case
+            already ran with. The re-run replaces the verdicts, the attacker
+            activity, the delegated mailboxes and the score.
           </Alert>
           {verdicts.length === 0 && (
             <Typography variant="body2" color="text.secondary">
