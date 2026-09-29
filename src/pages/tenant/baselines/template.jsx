@@ -585,6 +585,10 @@ const Page = () => {
   // editor, or a clone before its first save); the save response's id is adopted
   // so saving twice never creates twice.
   const [saveTargetId, setSaveTargetId] = useState(null)
+  // Bumped only when a different template is loaded into the editor. Keying the stage
+  // panels on it (not on the template id) keeps their forms mounted across a save:
+  // per-standard actions live in those forms, so a remount would reset them.
+  const [editorGeneration, setEditorGeneration] = useState(0)
   const [stages, setStages] = useState(() => buildEditorStages(undefined))
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dialogStageIndex, setDialogStageIndex] = useState(0)
@@ -690,6 +694,7 @@ const Page = () => {
   if (template && template.GUID !== loadedTemplateId) {
     setLoadedTemplateId(template.GUID)
     setSaveTargetId(router.query.clone ? null : template.GUID)
+    setEditorGeneration((generation) => generation + 1)
     setStages(buildEditorStages(template))
     setActiveStage(0)
     setHasUnsavedChanges(false)
@@ -1240,7 +1245,7 @@ const Page = () => {
               <CardContent>
                 {stages.map((stage, index) => (
                   <StagePanel
-                    key={`${loadedTemplateId ?? 'new'}-${index}`}
+                    key={`${editorGeneration}-${index}`}
                     stageIndex={index}
                     stage={stage}
                     hidden={activeStage !== index}
