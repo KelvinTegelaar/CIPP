@@ -4129,10 +4129,10 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
-attr-accept@^2.2.5:
-  version "2.2.5"
-  resolved "https://registry.npmjs.org/attr-accept/-/attr-accept-2.2.5.tgz#d7061d958e6d4f97bf8665c68b75851a0713ab5e"
-  integrity sha512-0bDNnY/u6pPwHDMoF0FieU354oBi0a8rD9FcsLwzcGWbc8KS8KPIi7y+s13OlVY+gMWc/9xEMUgNE6Qm8ZllYQ==
+attr-accept@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/attr-accept/-/attr-accept-4.0.0.tgz#e038002c875830b2b98774918abfd4bdeb7d9c97"
+  integrity sha512-hmCnJClmeKNKlsBHgbM8yLZRiQZ4/20UXbLJb6OUT16eWcM5/xNZerr80a/zCYob768KIGq++aLrQNTuwPsIOQ==
 
 available-typed-arrays@^1.0.7:
   version "1.0.7"
@@ -5675,10 +5675,10 @@ file-entry-cache@^8.0.0:
   dependencies:
     flat-cache "^4.0.0"
 
-file-selector@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.npmjs.org/file-selector/-/file-selector-4.1.0.tgz#8759e5b0ef030c5cee36ea6f4b66cd9b23a40d86"
-  integrity sha512-Io1mP8CI3zec5Bxy3P3TxdrKnt35Cm8vNIHnZsvyj43l4YFjD4NRInBp240S5bDJQ0EP1jnh7nCAwXsO818OCg==
+file-selector@^5.0.0:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/file-selector/-/file-selector-5.0.1.tgz#9a8f7a944559efe4115bef40df885ac2092b0651"
+  integrity sha512-v0g/PTeuQgvKCBrVRsfVudvwXlRHSWHEQkVgKawgCGHkEpKA1clp3Om5jvEVhz8G9W/mOYjJH9FhkH4C888PgQ==
 
 fill-range@^7.1.1:
   version "7.1.1"
@@ -8292,13 +8292,13 @@ react-dom@19.3.0, "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0":
   dependencies:
     scheduler "^0.28.0"
 
-react-dropzone@20.0.0:
-  version "20.0.0"
-  resolved "https://registry.npmjs.org/react-dropzone/-/react-dropzone-20.0.0.tgz#75eade48bede945796aac3a25cba5488d5d640a9"
-  integrity sha512-Xw8tvvVPJQzj8ir5wivUMzA+G6R+aGhdU5KQzUMvVBlJNb26AW/0137VoYVmb5UgZcbhM9OCpjE4KOqqSL9QuQ==
+react-dropzone@20.1.2:
+  version "20.1.2"
+  resolved "https://registry.npmjs.org/react-dropzone/-/react-dropzone-20.1.2.tgz#f05d27cb331800c8019f1faf3c2699e21d66806d"
+  integrity sha512-gj2m31ZmYOZjTuW6CDfx38/WW2JlbuQ/X2Il8cOwIWa7Znp7vQSPJFtRfDbAjusBuoXzAYktI+r2R6iKMaRTPw==
   dependencies:
-    attr-accept "^2.2.5"
-    file-selector "^4.1.0"
+    attr-accept "^4.0.0"
+    file-selector "^5.0.0"
 
 react-error-boundary@^6.1.2:
   version "6.1.2"
@@ -9627,9 +9627,9 @@ undici-types@~7.18.0:
   integrity sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==
 
 undici@^8.9.0:
-  version "8.10.0"
-  resolved "https://registry.npmjs.org/undici/-/undici-8.10.0.tgz#67ed7c4087f0f40fba7bef3a46f2be80572f2473"
-  integrity sha512-HvltHd7avK13QIw/oLe4qoOLyoVSoafqJ2jYOrtMRBkbYT31eiBQ8O0ehRKZiEZCMEyLFQNIADpgCWC5fALvYQ==
+  version "8.11.2"
+  resolved "https://registry.npmjs.org/undici/-/undici-8.11.2.tgz#b8f6f6504384ae535c8e46f8403fd8075f011d46"
+  integrity sha512-u4UB2/IrKdU6lFxumHmmo1a3fCQO5tzQllRorfoRS63txhrB7xTpSn1PftwC4qEHkOaqP95fCWW4lJzwErwzhQ==
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.1"
