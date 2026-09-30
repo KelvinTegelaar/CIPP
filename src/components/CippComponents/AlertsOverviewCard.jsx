@@ -9,6 +9,7 @@ import {
   Chip,
   Divider,
   IconButton,
+  Link as MuiLink,
   Skeleton,
   Stack,
   Tooltip,
@@ -20,9 +21,20 @@ import { getCippError } from '../../utils/get-cipp-error'
 import { useDialog } from '../../hooks/use-dialog'
 import { CippAlertSnoozeDialog } from './CippAlertSnoozeDialog'
 import { CippApiDialog } from './CippApiDialog'
-import { describeAlertItem, humanizeCmdlet } from '../../utils/format-alert-item'
+import {
+  describeAlertItem,
+  humanizeCmdlet,
+} from '../../utils/format-alert-item'
+import {
+  describeAlertStatus,
+  isActiveAlert,
+  isFlapping,
+  sortAlertItems,
+  summarizeAlertItems,
+} from '../../utils/alert-lifecycle'
 
-const ACTIVE_SNOOZE_STATUSES = ['Active', 'Forever']
+const RESOLVED_WINDOW_DAYS = 2
+
 const rowSx = {
   display: 'flex',
   alignItems: 'center',
@@ -31,102 +43,119 @@ const rowSx = {
   py: 1,
 }
 
-const describeSnooze = (snooze) => {
-  if (snooze.Status === 'Forever') return 'Snoozed indefinitely'
-  if (snooze.Status === 'Expired') return 'Snooze expired'
-  const until = Number(snooze.SnoozeUntil)
-  const parts = []
-  if (typeof snooze.RemainingDays === 'number') parts.push(`${snooze.RemainingDays}d left`)
-  if (Number.isFinite(until) && until > 0) {
-    const untilDate = new Date(until * 1000).toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-    parts.push(`until ${untilDate}`)
-  }
-  return `Snoozed${parts.length ? ` · ${parts.join(' · ')}` : ''}`
-}
+const AlertRow = ({ item, muted, children }) => {
+  const { title } = describeAlertItem(item.AlertItem, item.ContentPreview)
+  const label = item.AlertComment?.trim() || humanizeCmdlet(item.CmdletName)
+  const status = describeAlertStatus(item)
+  const secondary = status ? `${label} · ${status}` : label
+  const reopenCount = Number(item.ReopenCount ?? 0)
 
-const SnoozeStatusChip = ({ snooze }) => {
-  if (snooze.Status === 'Forever') {
-    return <Chip size="small" variant="outlined" icon={<CippIcons.Snooze />} label="Forever" />
-  }
-  if (snooze.Status === 'Expired') {
-    return <Chip size="small" variant="outlined" label="Expired" />
-  }
   return (
-    <Chip
-      size="small"
-      variant="outlined"
-      icon={<CippIcons.Snooze />}
-      label={`${snooze.RemainingDays}d`}
-    />
+    <Box sx={{ ...rowSx, ...(muted ? { opacity: 0.55 } : {}) }}>
+      {/* flex: 1 + minWidth: 0 lets the ellipsis engage before the row runs under the icons */}
+      <Box sx={{ minWidth: 0, flex: 1 }}>
+        <Typography
+          variant="body2"
+          noWrap
+          title={title}
+          sx={{ fontWeight: muted ? 400 : 500 }}
+        >
+          {title}
+        </Typography>
+        <Typography
+          variant="caption"
+          noWrap
+          title={secondary}
+          sx={{ color: 'text.secondary' }}
+        >
+          {secondary}
+        </Typography>
+      </Box>
+      <Stack
+        direction="row"
+        spacing={0.5}
+        sx={{ alignItems: 'center', flexShrink: 0 }}
+      >
+        {isFlapping(item) ? (
+          <Tooltip title={`Resolved and reopened ${reopenCount} times`}>
+            <Chip
+              size="small"
+              color="warning"
+              variant="outlined"
+              icon={<CippIcons.Replay />}
+              label="Flapping"
+            />
+          </Tooltip>
+        ) : reopenCount > 0 ? (
+          <Tooltip title="Resolved earlier and reopened">
+            <Chip
+              size="small"
+              variant="outlined"
+              icon={<CippIcons.Replay />}
+              label={`×${reopenCount}`}
+            />
+          </Tooltip>
+        ) : null}
+        {item.Status === 'Snoozed' && (
+          <Chip
+            size="small"
+            color="warning"
+            variant="outlined"
+            icon={<CippIcons.Snooze />}
+            label={item.SnoozeUntilResolved ? 'Until resolved' : 'Snoozed'}
+          />
+        )}
+        {children}
+      </Stack>
+    </Box>
   )
 }
 
 export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
   const [snoozeTarget, setSnoozeTarget] = useState(null)
-  const removeDialog = useDialog()
+  const removeSnoozeDialog = useDialog()
 
   const resultsQueryKey = `ListAlertResults-${tenantFilter}`
-  // Dedicated key — must NOT be "ListSnoozedAlerts": that key is owned by the Snoozed
-  // Alerts CippDataTable, which fetches it as an infinite query ({ pages }). A plain
-  // useQuery here under the same key would clobber that cache entry and crash the table.
-  const snoozeQueryKey = 'ListSnoozedAlerts-DashboardCard'
-  const relatedQueryKeys = ['ListSnoozedAlerts', snoozeQueryKey, resultsQueryKey]
+  const relatedQueryKeys = [
+    'ListSnoozedAlerts',
+    'ListAlertHistory',
+    resultsQueryKey,
+  ]
 
   const resultsApi = ApiGetCall({
     url: '/api/ListAlertResults',
     queryKey: resultsQueryKey,
-    data: { tenantFilter },
+    data: { tenantFilter, IncludeResolved: true, Days: RESOLVED_WINDOW_DAYS },
     waiting: !!tenantFilter,
   })
-  const snoozeApi = ApiGetCall({ url: '/api/ListSnoozedAlerts', queryKey: snoozeQueryKey })
 
-  const tenantSnoozes = useMemo(
-    () =>
-      (Array.isArray(snoozeApi.data) ? snoozeApi.data : []).filter(
-        (snooze) => snooze.Tenant === tenantFilter
-      ),
-    [snoozeApi.data, tenantFilter]
+  const items = useMemo(
+    () => sortAlertItems(Array.isArray(resultsApi.data) ? resultsApi.data : []),
+    [resultsApi.data]
   )
-
-  // Content hashes of items that are currently snoozed — used to drop them from the
-  // active list (a just-snoozed item lingers in AlertLastRun until the alert next runs).
-  const activeSnoozeHashes = useMemo(() => {
-    const set = new Set()
-    tenantSnoozes.forEach((snooze) => {
-      if (ACTIVE_SNOOZE_STATUSES.includes(snooze.Status) && snooze.ContentHash) {
-        set.add(snooze.ContentHash)
-      }
-    })
-    return set
-  }, [tenantSnoozes])
-
-  const activeItems = useMemo(() => {
-    const items = Array.isArray(resultsApi.data) ? resultsApi.data : []
-    return items.filter((item) => !activeSnoozeHashes.has(item.ContentHash))
-  }, [resultsApi.data, activeSnoozeHashes])
-
-  const sortedSnoozes = useMemo(
-    () =>
-      [...tenantSnoozes].sort(
-        (a, b) =>
-          (ACTIVE_SNOOZE_STATUSES.includes(a.Status) ? 0 : 1) -
-          (ACTIVE_SNOOZE_STATUSES.includes(b.Status) ? 0 : 1)
-      ),
-    [tenantSnoozes]
+  const counts = useMemo(() => summarizeAlertItems(items), [items])
+  // Open items plus the snoozes the operator asked to keep in view.
+  const activeItems = items.filter(isActiveAlert)
+  const hiddenSnoozes = items.filter(
+    (item) => item.Status === 'Snoozed' && !isActiveAlert(item)
   )
-
-  const activeSnoozeCount = tenantSnoozes.filter((snooze) =>
-    ACTIVE_SNOOZE_STATUSES.includes(snooze.Status)
-  ).length
+  const resolvedItems = items.filter((item) => item.Status === 'Resolved')
 
   // A disabled query (no tenant yet) reports isLoading=false in react-query v5, so guard
   // on tenantFilter to avoid flashing a false "no alerts" state before the tenant resolves.
-  const isLoading = !tenantFilter || resultsApi.isLoading || snoozeApi.isLoading
-  const hasError = resultsApi.isError || snoozeApi.isError
+  const isLoading = !tenantFilter || resultsApi.isLoading
+  const hasError = resultsApi.isError
+
+  const removeSnoozeButton = (item) => (
+    <Tooltip title="Remove snooze">
+      <IconButton
+        size="small"
+        onClick={() => removeSnoozeDialog.handleOpen(item)}
+      >
+        <CippIcons.DeleteOutlined fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  )
 
   const renderBody = () => {
     if (isLoading) {
@@ -142,151 +171,155 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
 
     if (hasError) {
       return (
-        <Typography variant="body2" color="error" sx={{ py: 2, textAlign: 'center' }}>
-          {getCippError(resultsApi.error || snoozeApi.error)}
+        <Typography
+          variant="body2"
+          color="error"
+          sx={{ py: 2, textAlign: 'center' }}
+        >
+          {getCippError(resultsApi.error)}
         </Typography>
       )
     }
 
     return (
       <>
-        <Stack useFlexGap direction="row" sx={{ mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
+        <Stack
+          useFlexGap
+          direction="row"
+          sx={{ mb: 1.5, flexWrap: 'wrap', gap: 1 }}
+        >
           <Chip
             size="small"
-            color={activeItems.length ? 'error' : 'success'}
-            variant={activeItems.length ? 'filled' : 'outlined'}
+            color={counts.Open ? 'error' : 'success'}
+            variant={counts.Open ? 'filled' : 'outlined'}
             icon={<CippIcons.NotificationsActive />}
-            label={`${activeItems.length} Active`}
+            label={`${counts.Open} Open`}
           />
           <Chip
             size="small"
             color="warning"
             variant="outlined"
             icon={<CippIcons.Snooze />}
-            label={`${activeSnoozeCount} Snoozed`}
+            label={`${counts.Snoozed} Snoozed`}
+          />
+          <Chip
+            size="small"
+            color="success"
+            variant="outlined"
+            icon={<CippIcons.CheckCircle />}
+            label={`${counts.Resolved} Resolved (${RESOLVED_WINDOW_DAYS * 24}h)`}
           />
         </Stack>
 
         <Box sx={{ maxHeight: 360, overflowY: 'auto', pr: 0.5 }}>
           {activeItems.length > 0 ? (
             <Stack divider={<Divider flexItem />}>
-              {activeItems.map((item, index) => {
-                const { title, detail } = describeAlertItem(item.AlertItem, item.ContentPreview)
-                const label = item.AlertComment?.trim() || humanizeCmdlet(item.CmdletName)
-                const secondary = detail ? `${label} · ${detail}` : label
-                return (
-                  <Box key={`active-${item.CmdletName}-${item.ContentHash}-${index}`} sx={rowSx}>
-                    {/* flex: 1 + minWidth: 0 lets the ellipsis engage before the row runs under the icon */}
-                    <Box sx={{ minWidth: 0, flex: 1 }}>
-                      <Typography variant="body2" noWrap title={title} sx={{
-                        fontWeight: 500
-                      }}>
-                        {title}
-                      </Typography>
-                      <Typography variant="caption" noWrap title={secondary} sx={{
-                        color: "text.secondary"
-                      }}>
-                        {secondary}
-                      </Typography>
-                    </Box>
+              {activeItems.map((item) => (
+                <AlertRow
+                  key={`active-${item.PartitionKey}-${item.RowKey}`}
+                  item={item}
+                  muted={item.Status === 'Snoozed'}
+                >
+                  {item.Status === 'Snoozed' ? (
+                    removeSnoozeButton(item)
+                  ) : (
                     <Tooltip title="Snooze this alert">
-                      <IconButton size="small" onClick={() => setSnoozeTarget(item)} sx={{ flexShrink: 0 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => setSnoozeTarget(item)}
+                      >
                         <CippIcons.Snooze fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                  </Box>
-                );
-              })}
+                  )}
+                </AlertRow>
+              ))}
             </Stack>
           ) : (
             <Typography
               variant="body2"
-              sx={{
-                color: "text.secondary",
-                py: 2,
-                textAlign: 'center'
-              }}>
-              No active alerts for this tenant.
+              sx={{ color: 'text.secondary', py: 2, textAlign: 'center' }}
+            >
+              No open alerts for this tenant.
             </Typography>
           )}
 
-          {sortedSnoozes.length > 0 && (
+          {hiddenSnoozes.length > 0 && (
             <Box sx={{ mt: 1.5 }}>
-              <Typography variant="overline" sx={{
-                color: "text.secondary"
-              }}>
+              <Typography variant="overline" sx={{ color: 'text.secondary' }}>
                 Snoozed
               </Typography>
               <Stack divider={<Divider flexItem />}>
-                {sortedSnoozes.map((snooze) => {
-                  const { title } = describeAlertItem(null, snooze.ContentPreview)
-                  const status = describeSnooze(snooze)
-                  const by = snooze.SnoozedBy ? ` · by ${snooze.SnoozedBy}` : ''
-                  const secondary = `${humanizeCmdlet(snooze.CmdletName)} · ${status}${by}`
-                  return (
-                    <Box
-                      key={`snoozed-${snooze.PartitionKey}-${snooze.RowKey}`}
-                      sx={{ ...rowSx, opacity: 0.55 }}
-                    >
-                      {/* flex: 1 + minWidth: 0 lets the ellipsis engage before the row runs under the icons */}
-                      <Box sx={{ minWidth: 0, flex: 1 }}>
-                        <Typography variant="body2" noWrap title={title}>
-                          {title}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          noWrap
-                          title={secondary}
-                          sx={{
-                            color: "text.secondary"
-                          }}
-                        >
-                          {secondary}
-                        </Typography>
-                      </Box>
-                      <Stack
-                        direction="row"
-                        spacing={0.5}
-                        sx={{
-                          alignItems: "center",
-                          flexShrink: 0
-                        }}>
-                        <SnoozeStatusChip snooze={snooze} />
-                        <Tooltip title="Remove snooze">
-                          <IconButton size="small" onClick={() => removeDialog.handleOpen(snooze)}>
-                            <CippIcons.DeleteOutlined fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Stack>
-                    </Box>
-                  );
-                })}
+                {hiddenSnoozes.map((item) => (
+                  <AlertRow
+                    key={`snoozed-${item.PartitionKey}-${item.RowKey}`}
+                    item={item}
+                    muted
+                  >
+                    {removeSnoozeButton(item)}
+                  </AlertRow>
+                ))}
+              </Stack>
+            </Box>
+          )}
+
+          {resolvedItems.length > 0 && (
+            <Box sx={{ mt: 1.5 }}>
+              <Typography variant="overline" sx={{ color: 'text.secondary' }}>
+                Recently resolved
+              </Typography>
+              <Stack divider={<Divider flexItem />}>
+                {resolvedItems.map((item) => (
+                  <AlertRow
+                    key={`resolved-${item.PartitionKey}-${item.RowKey}`}
+                    item={item}
+                    muted
+                  >
+                    <CippIcons.CheckCircle fontSize="small" color="success" />
+                  </AlertRow>
+                ))}
               </Stack>
             </Box>
           )}
         </Box>
       </>
-    );
+    )
   }
 
   return (
     <Card sx={{ height: '100%', ...sx }}>
       <CardHeader
         title={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <CippIcons.NotificationsActive sx={{ fontSize: 20 }} />
-            <Typography variant="subtitle1">Alerts</Typography>
-          </Box>
-        }
-        action={
-          <Button
+          <MuiLink
             component={Link}
             href="/tenant/administration/alert-configuration"
-            size="small"
-            startIcon={<CippIcons.Settings />}
+            color="inherit"
+            underline="hover"
+            sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}
           >
-            Manage
-          </Button>
+            <CippIcons.NotificationsActive sx={{ fontSize: 20 }} />
+            <Typography variant="subtitle1">Alerts</Typography>
+          </MuiLink>
+        }
+        action={
+          <Stack direction="row" spacing={0.5}>
+            <Button
+              component={Link}
+              href="/tenant/administration/alert-configuration/history"
+              size="small"
+              startIcon={<CippIcons.History />}
+            >
+              History
+            </Button>
+            <Button
+              component={Link}
+              href="/tenant/administration/alert-configuration"
+              size="small"
+              startIcon={<CippIcons.Settings />}
+            >
+              Manage
+            </Button>
+          </Stack>
         }
         sx={{ pb: 1 }}
       />
@@ -303,16 +336,16 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
       />
 
       <CippApiDialog
-        createDialog={removeDialog}
+        createDialog={removeSnoozeDialog}
         title="Remove snooze"
         fields={[]}
-        row={removeDialog.data ?? {}}
+        row={removeSnoozeDialog.data ?? {}}
         api={{
           type: 'POST',
           url: '/api/ExecRemoveSnooze',
           confirmText:
-            'Are you sure you want to remove this snooze? The alert will fire again on the next run.',
-          data: { PartitionKey: 'PartitionKey', RowKey: 'RowKey' },
+            'Are you sure you want to remove this snooze? The alert returns to open now and notifies again on its next run.',
+          data: { PartitionKey: 'SnoozePartitionKey', RowKey: 'SnoozeRowKey' },
           relatedQueryKeys,
           multiPost: false,
         }}

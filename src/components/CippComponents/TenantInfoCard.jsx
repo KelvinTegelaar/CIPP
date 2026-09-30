@@ -1,16 +1,23 @@
-import { Box, Card, CardHeader, CardContent, Typography, Skeleton } from "@mui/material";
+import { Box, Card, CardHeader, CardContent, Link as MuiLink, Typography, Skeleton } from "@mui/material";
+import Link from "next/link";
 import { CippIcons } from "../../utils/icon-registry";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 
-export const TenantInfoCard = ({ data, isLoading }) => {
+export const TenantInfoCard = ({ data, isLoading, tenantFilter }) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardHeader
         title={
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <MuiLink
+            component={Link}
+            href={`/tenant/manage/edit?tenantFilter=${encodeURIComponent(tenantFilter ?? "")}`}
+            color="inherit"
+            underline="hover"
+            sx={{ display: "inline-flex", alignItems: "center", gap: 1 }}
+          >
             <CippIcons.Business sx={{ fontSize: 20 }} />
             <Typography variant="subtitle1">Tenant</Typography>
-          </Box>
+          </MuiLink>
         }
         sx={{ pb: 1.5 }}
       />

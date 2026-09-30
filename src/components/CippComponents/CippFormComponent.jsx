@@ -28,6 +28,7 @@ import React from "react";
 import { Stack } from "@mui/system";
 import countryList from "../../data/countryList";
 import languageList from "../../data/languageList";
+import GDAPRoles from "../../data/GDAPRoles";
 
 // ISO 3166-1 alpha-2 country/region codes (uppercase), used by the CountryCodeMultiSelect type.
 const countryCodeOptions = countryList
@@ -45,6 +46,13 @@ const languageCodeOptions = Object.values(
     return acc;
   }, {}),
 ).sort((a, b) => a.label.localeCompare(b.label));
+
+// Built-in Entra admin roles keyed by role template id, used by the AdminRolesMultiSelect type.
+// Static so the picker works without a tenant (template/baseline editors) and never hits Graph.
+const adminRoleOptions = GDAPRoles.map((role) => ({
+  label: role.Name,
+  value: role.ObjectId,
+}));
 
 // The tiptap / prosemirror / mui-tiptap editor tree is large and only used by `richText` fields.
 // Load it on demand via next/dynamic so it is code-split into an async chunk instead of being
@@ -647,6 +655,24 @@ export const CippFormComponent = (props) => {
       return renderAutoCompleteField({
         ...other,
         options: countryCodeOptions,
+        multiple: true,
+        creatable: false,
+      });
+
+    // Single ISO 3166-1 alpha-2 country code (e.g. the UsageLocation standard).
+    case "CountryCodeSelect":
+      return renderAutoCompleteField({
+        ...other,
+        options: countryCodeOptions,
+        multiple: false,
+        creatable: false,
+      });
+
+    // Built-in Entra admin roles (e.g. EnableAppConsentRequests reviewer roles).
+    case "AdminRolesMultiSelect":
+      return renderAutoCompleteField({
+        ...other,
+        options: adminRoleOptions,
         multiple: true,
         creatable: false,
       });

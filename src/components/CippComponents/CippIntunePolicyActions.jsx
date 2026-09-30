@@ -15,6 +15,67 @@ const assignmentDirectionOptions = [
   { label: 'Exclude these group(s)', value: 'exclude' },
 ]
 
+// Group picker (by ID) for one tenant. Shared by the assign row actions below and by the
+// policy/app deploy drawers, which pass the drawer's selected tenant so the list is not the
+// page tenant. Same queryKey as the row actions so the two share one cache per tenant.
+export const getGroupPickerField = (tenant, name, label, required) => ({
+  type: 'autoComplete',
+  name,
+  label,
+  multiple: true,
+  creatable: false,
+  allowResubmit: true,
+  ...(required && { validators: { required: 'Please select at least one group' } }),
+  api: {
+    url: '/api/ListGraphRequest',
+    dataKey: 'Results',
+    tenantFilter: tenant,
+    queryKey: `ListPolicyAssignmentGroups-${tenant}`,
+    labelField: (group) => (group.id ? `${group.displayName} (${group.id})` : group.displayName),
+    valueField: 'id',
+    addedField: {
+      description: 'description',
+      displayName: 'displayName',
+    },
+    data: {
+      Endpoint: 'groups',
+      manualPagination: true,
+      $select: 'id,displayName,description',
+      $orderby: 'displayName',
+      $top: 999,
+      $count: true,
+    },
+  },
+})
+
+// The deploy drawers offer the picker only when exactly one tenant is selected; group ids are
+// tenant-scoped, and with several tenants only names can span them.
+export const getSingleDeployTenant = (selectedTenants) =>
+  Array.isArray(selectedTenants) &&
+  selectedTenants.length === 1 &&
+  selectedTenants[0]?.value !== 'AllTenants'
+    ? selectedTenants[0].value
+    : undefined
+
+// Turn picked group options into the deploy payload. The body carries both the ids and the
+// legacy name fields: every backend hop derives AssignTo from customGroup and the resolvers
+// prefer the ids, so names stay for log text and as an exact-name fallback.
+export const applyPickedGroups = (formData) => {
+  const { groupTargets, excludeGroupTargets, ...data } = formData
+  const nameOf = (group) => group?.addedFields?.displayName ?? group?.label
+  const include = Array.isArray(groupTargets) ? groupTargets : []
+  const exclude = Array.isArray(excludeGroupTargets) ? excludeGroupTargets : []
+  if (include.length > 0) {
+    data.customGroup = include.map(nameOf).join(', ')
+    data.GroupIds = include.map((group) => group.value).filter(Boolean)
+  }
+  if (exclude.length > 0) {
+    data.excludeGroup = exclude.map(nameOf).join(', ')
+    data.ExcludeGroupIds = exclude.map((group) => group.value).filter(Boolean)
+  }
+  return data
+}
+
 /**
  * Get assignment actions for Intune policies
  * @param {string} tenant - The tenant filter
@@ -39,35 +100,6 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
     deleteUrlName = policyType,
     templateData = null,
   } = options
-
-  // Group picker (by ID) reused for both include and exclude selection
-  const getGroupPickerField = (name, label, required) => ({
-    type: 'autoComplete',
-    name,
-    label,
-    multiple: true,
-    creatable: false,
-    allowResubmit: true,
-    ...(required && { validators: { required: 'Please select at least one group' } }),
-    api: {
-      url: '/api/ListGraphRequest',
-      dataKey: 'Results',
-      queryKey: `ListPolicyAssignmentGroups-${tenant}`,
-      labelField: (group) => (group.id ? `${group.displayName} (${group.id})` : group.displayName),
-      valueField: 'id',
-      addedField: {
-        description: 'description',
-      },
-      data: {
-        Endpoint: 'groups',
-        manualPagination: true,
-        $select: 'id,displayName,description',
-        $orderby: 'displayName',
-        $top: 999,
-        $count: true,
-      },
-    },
-  })
 
   // Assignment mode + optional device filter, shared by every assign action.
   const getOptionsAndFilterFields = (modeHelperText) => [
@@ -121,7 +153,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       type: 'heading',
       label: 'Exclude groups (optional)',
     },
-    getGroupPickerField('excludeGroupTargets', 'Exclude group(s)', false),
+    getGroupPickerField(tenant, 'excludeGroupTargets', 'Exclude group(s)', false),
     ...getOptionsAndFilterFields(),
   ]
 
@@ -132,7 +164,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
       label: 'Target groups',
     },
     {
-      ...getGroupPickerField('groupTargets', 'Group(s)', false),
+      ...getGroupPickerField(tenant, 'groupTargets', 'Group(s)', false),
       helperText: 'Leave empty with Exclude + Replace to remove all exclusions (keeps includes).',
       validators: {
         // Required, except Exclude + Replace where an empty selection clears all exclusions.

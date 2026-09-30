@@ -716,7 +716,7 @@ export const TopNav = (props) => {
                   <Typography variant="caption" sx={{
                     color: "text.secondary"
                   }}>
-                    Pages: Ctrl/Cmd+K · Users: Ctrl/Cmd+Shift+F · Tenant: Ctrl/Cmd+Alt+K
+                    Pages: Ctrl/Cmd+K · Users: Ctrl/Cmd+Shift+F · Tenant: Ctrl/Cmd+Alt+K · Tab: switch scope
                   </Typography>
                 )}
               </Stack>

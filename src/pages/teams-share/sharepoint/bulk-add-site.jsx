@@ -15,6 +15,7 @@ const BulkAddSiteForm = () => {
     "templateName",
     "siteDesign",
     "sensitivityLabel",
+    "isPublic",
   ];
 
   const steps = [

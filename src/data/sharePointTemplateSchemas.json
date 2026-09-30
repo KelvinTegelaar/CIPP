@@ -105,6 +105,16 @@
           "libraries": {
             "type": "array",
             "items": { "$ref": "#/$defs/library" }
+          },
+          "channels": {
+            "type": "array",
+            "description": "Teams only. Extra channels to create (not General). Ignored for SharePoint.",
+            "items": { "$ref": "#/$defs/channel" }
+          },
+          "folders": {
+            "type": "array",
+            "description": "Teams only. Folders at Documents root next to General. Ignored for SharePoint.",
+            "items": { "$ref": "#/$defs/folder" }
           }
         }
       },
@@ -117,6 +127,38 @@
           "permissions": {
             "type": "array",
             "items": { "$ref": "#/$defs/permissionGrant" }
+          }
+        }
+      },
+      "channel": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Channel display name. Must not be General."
+          },
+          "membershipType": {
+            "type": "string",
+            "enum": ["standard", "private", "shared"],
+            "description": "Public (standard), private, or shared. Private and shared channels get the deploy Site Owner as the only member."
+          },
+          "layoutType": {
+            "type": "string",
+            "enum": ["post", "chat"],
+            "description": "Channel conversation layout. post is traditional posts/replies; chat is a chat-like thread. Defaults to post."
+          }
+        }
+      },
+      "folder": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Folder name at Documents root. Must not be General."
           }
         }
       },

@@ -70,14 +70,28 @@ import {
   InsertRowTop,
 } from 'mui-tiptap/icons'
 import StarterKit from '@tiptap/starter-kit'
-import { Table, TableRow, TableHeader, TableCell } from '@tiptap/extension-table'
+import {
+  Table,
+  TableRow,
+  TableHeader,
+  TableCell,
+} from '@tiptap/extension-table'
 import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
-import { ReportBuilderPDF } from '../../../../components/ReportBuilder/ReportBuilderPDF'
 import {
-  STRUCTURED_BLOCK_TYPES,
+  ServerPdfPane,
+  downloadServerPdf,
+  useServerPdf,
+} from '../../../../components/CippPdf/useServerPdf'
+import {
+  BLOCK_CATEGORIES,
   StructuredBlockCard,
+  TEST_RESULTS_SHAPE,
+  blockTypesFor,
   createStructuredBlock,
+  createPresetBlocks,
+  isPresetTopic,
+  presetVariantsFor,
   isStructuredBlock,
 } from '../../../../components/ReportBuilder/ReportBuilderBlocks'
 import { PAGE_ORIENTATIONS, PAGE_SIZES } from '../../../../components/CippPdf'
@@ -121,7 +135,12 @@ const markdownStyles = {
     borderRadius: 0.5,
     fontSize: '0.8em',
   },
-  '& pre': { backgroundColor: 'action.hover', p: 1.5, borderRadius: 1, overflow: 'auto' },
+  '& pre': {
+    backgroundColor: 'action.hover',
+    p: 1.5,
+    borderRadius: 1,
+    overflow: 'auto',
+  },
 }
 
 /* ── Simple markdown → HTML converter for TipTap editing ── */
@@ -144,7 +163,11 @@ const markdownToHtml = (md) => {
     const line = lines[i]
 
     // Detect GFM table: current line has pipes and next line is separator (|---|---| etc)
-    if (line.includes('|') && i + 1 < lines.length && isTableSeparatorRow(lines[i + 1])) {
+    if (
+      line.includes('|') &&
+      i + 1 < lines.length &&
+      isTableSeparatorRow(lines[i + 1])
+    ) {
       const headerCells = parseTableRow(line)
       const columnCount = Math.max(headerCells.length, 1)
       let tableHtml = '<table><thead><tr>'
@@ -153,7 +176,11 @@ const markdownToHtml = (md) => {
       })
       tableHtml += '</tr></thead><tbody>'
       i += 2 // skip header + separator
-      while (i < lines.length && lines[i].includes('|') && lines[i].trim() !== '') {
+      while (
+        i < lines.length &&
+        lines[i].includes('|') &&
+        lines[i].trim() !== ''
+      ) {
         const cells = normaliseTableRow(parseTableRow(lines[i]), columnCount)
         tableHtml += '<tr>'
         cells.forEach((cell) => {
@@ -191,7 +218,7 @@ const markdownToHtml = (md) => {
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/`(.*?)`/g, '<code>$1</code>')
-    .replace(/\[(.*?)\]\((.*?)\)/g, '$1');
+    .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
 }
 
 /* ── Table row/column controls ─────────────────────────────
@@ -203,8 +230,16 @@ const markdownToHtml = (md) => {
  * and its repeat across page breaks.
  */
 const TABLE_ACTIONS = [
-  { label: 'Insert column before', Icon: InsertColumnLeft, command: 'addColumnBefore' },
-  { label: 'Insert column after', Icon: InsertColumnRight, command: 'addColumnAfter' },
+  {
+    label: 'Insert column before',
+    Icon: InsertColumnLeft,
+    command: 'addColumnBefore',
+  },
+  {
+    label: 'Insert column after',
+    Icon: InsertColumnRight,
+    command: 'addColumnAfter',
+  },
   { label: 'Delete column', Icon: DeleteColumn, command: 'deleteColumn' },
   null,
   { label: 'Insert row above', Icon: InsertRowTop, command: 'addRowBefore' },
@@ -248,10 +283,13 @@ const MarkdownPaste = Extension.create({
             const text = event.clipboardData?.getData('text/plain')
             if (!text) return false
             // Check if the plain text looks like it contains a markdown table
-            const hasMarkdownTable = text.includes('|') && /^\|?[\s-:|]+\|[\s-:|]*\|?$/m.test(text)
+            const hasMarkdownTable =
+              text.includes('|') && /^\|?[\s-:|]+\|[\s-:|]*\|?$/m.test(text)
             // Check for other markdown patterns
             const hasOtherMarkdown =
-              /^#{1,6}\s/m.test(text) || /^[-*+]\s/m.test(text) || /\*\*.+\*\*/.test(text)
+              /^#{1,6}\s/m.test(text) ||
+              /^[-*+]\s/m.test(text) ||
+              /\*\*.+\*\*/.test(text)
             if (!hasMarkdownTable && !hasOtherMarkdown) return false
             event.preventDefault()
             const converted = markdownToHtml(text)
@@ -260,7 +298,7 @@ const MarkdownPaste = Extension.create({
           },
         },
       }),
-    ];
+    ]
   },
 })
 
@@ -288,22 +326,32 @@ const ReportBlock = ({
 
   const handleSaveEdit = () => {
     if (editorRef.current) {
-      onUpdate(index, { ...block, content: editorRef.current.getHTML(), static: true })
+      onUpdate(index, {
+        ...block,
+        content: editorRef.current.getHTML(),
+        static: true,
+      })
     }
     setEditing(false)
   }
 
   const editorContent =
-    editing && isTestBlock && !isStatic ? markdownToHtml(block.content || '') : block.content || ''
+    editing && isTestBlock && !isStatic
+      ? markdownToHtml(block.content || '')
+      : block.content || ''
 
   return (
     <CippButtonCard
       title={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant="subtitle2" sx={{
-            fontWeight: 600
-          }}>
-            {block.title || (block.type === 'blank' ? 'Custom Block' : 'Test Block')}
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+            }}
+          >
+            {block.title ||
+              (block.type === 'blank' ? 'Custom Block' : 'Test Block')}
           </Typography>
           {isTestBlock && block.status && (
             <Chip
@@ -334,11 +382,19 @@ const ReportBlock = ({
         </Box>
       }
       cardActions={
-        <Stack direction="row" spacing={0.5} sx={{
-          alignItems: "center"
-        }}>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           {isTestBlock && !editing && (
-            <Tooltip title={isStatic ? 'Edit static content' : 'Edit (converts to static)'}>
+            <Tooltip
+              title={
+                isStatic ? 'Edit static content' : 'Edit (converts to static)'
+              }
+            >
               <IconButton size="small" onClick={handleStartEdit}>
                 <CippIcons.Edit fontSize="small" />
               </IconButton>
@@ -346,7 +402,11 @@ const ReportBlock = ({
           )}
           {isTestBlock && isStatic && !editing && (
             <Tooltip title="Revert to live data">
-              <IconButton size="small" color="info" onClick={() => onRevert(index)}>
+              <IconButton
+                size="small"
+                color="info"
+                onClick={() => onRevert(index)}
+              >
                 <CippIcons.Refresh fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -356,14 +416,22 @@ const ReportBlock = ({
               <Button size="small" variant="contained" onClick={handleSaveEdit}>
                 Save
               </Button>
-              <Button size="small" variant="outlined" onClick={() => setEditing(false)}>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => setEditing(false)}
+              >
                 Cancel
               </Button>
             </>
           )}
           <Tooltip title="Move up">
             <span>
-              <IconButton size="small" onClick={() => onMoveUp(index)} disabled={index === 0}>
+              <IconButton
+                size="small"
+                onClick={() => onMoveUp(index)}
+                disabled={index === 0}
+              >
                 <CippIcons.ArrowUpward fontSize="small" />
               </IconButton>
             </span>
@@ -380,7 +448,11 @@ const ReportBlock = ({
             </span>
           </Tooltip>
           <Tooltip title="Remove block">
-            <IconButton size="small" color="error" onClick={() => onRemove(index)}>
+            <IconButton
+              size="small"
+              color="error"
+              onClick={() => onRemove(index)}
+            >
               <CippIcons.Delete fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -444,23 +516,46 @@ const ReportBlock = ({
       ) : isLocked ? (
         <Box sx={{ position: 'relative' }}>
           <CippIcons.Lock
-            sx={{ position: 'absolute', top: 0, right: 0, color: 'text.disabled', fontSize: 14 }}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              color: 'text.disabled',
+              fontSize: 14,
+            }}
           />
-          <Box sx={{ ...markdownStyles, opacity: 0.9, pointerEvents: 'none', userSelect: 'none' }}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.content || ''}</ReactMarkdown>
+          <Box
+            sx={{
+              ...markdownStyles,
+              opacity: 0.9,
+              pointerEvents: 'none',
+              userSelect: 'none',
+            }}
+          >
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {block.content || ''}
+            </ReactMarkdown>
           </Box>
         </Box>
       ) : (
         <Box sx={markdownStyles}>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.content || ''}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {block.content || ''}
+          </ReactMarkdown>
         </Box>
       )}
     </CippButtonCard>
-  );
+  )
 }
 
 /* ── Default excluded headers for database blocks ───────── */
-const DB_DEFAULT_EXCLUDED = ['id', 'rowkey', 'partitionkey', 'etag', 'timestamp']
+const DB_DEFAULT_EXCLUDED = [
+  'id',
+  'rowkey',
+  'partitionkey',
+  'etag',
+  'timestamp',
+]
 
 /* ── DatabaseBlock ────────────────────────────────────────── */
 const DatabaseBlock = ({
@@ -508,7 +603,9 @@ const DatabaseBlock = ({
     }
     const headerSet = new Set()
     if (Array.isArray(results)) {
-      results.forEach((row) => Object.keys(row).forEach((k) => headerSet.add(k)))
+      results.forEach((row) =>
+        Object.keys(row).forEach((k) => headerSet.add(k))
+      )
     } else if (results && typeof results === 'object') {
       Object.keys(results).forEach((k) => headerSet.add(k))
     }
@@ -523,7 +620,11 @@ const DatabaseBlock = ({
       data: results,
       allHeaders: headers,
       selectedHeaders,
-      content: formatDatabaseContent(results, selectedHeaders, block.format || 'text'),
+      content: formatDatabaseContent(
+        results,
+        selectedHeaders,
+        block.format || 'text'
+      ),
     })
   }, [dbCacheApi.isSuccess, dbCacheApi.data])
 
@@ -543,13 +644,25 @@ const DatabaseBlock = ({
     const next = current.includes(header)
       ? current.filter((h) => h !== header)
       : [...current, header]
-    const newContent = formatDatabaseContent(block.data || [], next, block.format || 'text')
+    const newContent = formatDatabaseContent(
+      block.data || [],
+      next,
+      block.format || 'text'
+    )
     onUpdate(index, { ...block, selectedHeaders: next, content: newContent })
   }
 
   const handleSelectAll = () => {
-    const newContent = formatDatabaseContent(block.data || [], allHeaders, block.format || 'text')
-    onUpdate(index, { ...block, selectedHeaders: [...allHeaders], content: newContent })
+    const newContent = formatDatabaseContent(
+      block.data || [],
+      allHeaders,
+      block.format || 'text'
+    )
+    onUpdate(index, {
+      ...block,
+      selectedHeaders: [...allHeaders],
+      content: newContent,
+    })
   }
 
   const handleDeselectAll = () => {
@@ -572,12 +685,20 @@ const DatabaseBlock = ({
       title={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <CippIcons.Storage fontSize="small" color="primary" />
-          <Typography variant="subtitle2" sx={{
-            fontWeight: 600
-          }}>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+            }}
+          >
             {block.title || dbTypeLabel}
           </Typography>
-          <Chip label="Database" size="small" color="primary" variant="outlined" />
+          <Chip
+            label="Database"
+            size="small"
+            color="primary"
+            variant="outlined"
+          />
           <Chip
             label={(block.format || 'text').toUpperCase()}
             size="small"
@@ -585,14 +706,22 @@ const DatabaseBlock = ({
             variant="outlined"
           />
           {Array.isArray(block.data) && block.data.length > 0 && (
-            <Chip label={`${block.data.length} rows`} size="small" variant="outlined" />
+            <Chip
+              label={`${block.data.length} rows`}
+              size="small"
+              variant="outlined"
+            />
           )}
         </Box>
       }
       cardActions={
-        <Stack direction="row" spacing={0.5} sx={{
-          alignItems: "center"
-        }}>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           <Tooltip title="Refresh data">
             <span>
               <IconButton
@@ -610,7 +739,11 @@ const DatabaseBlock = ({
           </Tooltip>
           <Tooltip title="Move up">
             <span>
-              <IconButton size="small" onClick={() => onMoveUp(index)} disabled={index === 0}>
+              <IconButton
+                size="small"
+                onClick={() => onMoveUp(index)}
+                disabled={index === 0}
+              >
                 <CippIcons.ArrowUpward fontSize="small" />
               </IconButton>
             </span>
@@ -627,7 +760,11 @@ const DatabaseBlock = ({
             </span>
           </Tooltip>
           <Tooltip title="Remove block">
-            <IconButton size="small" color="error" onClick={() => onRemove(index)}>
+            <IconButton
+              size="small"
+              color="error"
+              onClick={() => onRemove(index)}
+            >
               <CippIcons.Delete fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -640,114 +777,142 @@ const DatabaseBlock = ({
         </Alert>
       )}
       {(dbCacheApi.isFetching ||
-        (!!currentTenant && !!block.dbType && !dbCacheApi.isSuccess && !dbCacheApi.isError)) && (
+        (!!currentTenant &&
+          !!block.dbType &&
+          !dbCacheApi.isSuccess &&
+          !dbCacheApi.isError)) && (
         <Stack spacing={1}>
           <Skeleton variant="text" width="80%" />
           <Skeleton variant="text" width="60%" />
           <Skeleton variant="rounded" height={60} />
         </Stack>
       )}
-      {!dbCacheApi.isFetching && dbCacheApi.isSuccess && block.data && allHeaders.length > 0 && (
-        <Box sx={{ mb: 2 }}>
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{
-              alignItems: "center",
-              mb: 1
-            }}>
-            <Typography variant="caption" sx={{
-              fontWeight: 600
-            }}>
-              Format:
-            </Typography>
-            {['text', 'csv', 'json'].map((fmt) => (
-              <Chip
-                key={fmt}
-                label={fmt.toUpperCase()}
-                size="small"
-                color={block.format === fmt ? 'primary' : 'default'}
-                onClick={() => handleFormatChange(fmt)}
-                variant={block.format === fmt ? 'filled' : 'outlined'}
-                sx={{ cursor: 'pointer' }}
-              />
-            ))}
-          </Stack>
-          <Typography
-            variant="caption"
-            sx={{
-              fontWeight: 600,
-              mb: 0.5,
-              display: 'block'
-            }}>
-            Columns ({(block.selectedHeaders || []).length}/{allHeaders.length}):
-          </Typography>
-          <Stack direction="row" spacing={1} sx={{ mb: 0.5 }}>
-            <Button size="small" variant="text" onClick={handleSelectAll}>
-              Select All
-            </Button>
-            <Button size="small" variant="text" onClick={handleDeselectAll}>
-              Deselect All
-            </Button>
-          </Stack>
-          <FormGroup row sx={{ maxHeight: 120, overflow: 'auto' }}>
-            {allHeaders.map((header) => (
-              <FormControlLabel
-                key={header}
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={(block.selectedHeaders || []).includes(header)}
-                    onChange={() => handleHeaderToggle(header)}
-                  />
-                }
-                label={<Typography variant="caption">{header}</Typography>}
-                sx={{ mr: 2 }}
-              />
-            ))}
-          </FormGroup>
-        </Box>
-      )}
-      {!dbCacheApi.isFetching && dbCacheApi.isSuccess && block.data && block.content && (
-        <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
-          {block.format === 'text' ? (
-            <Box sx={markdownStyles}>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.content}</ReactMarkdown>
-            </Box>
-          ) : (
-            <Box
-              component="pre"
+      {!dbCacheApi.isFetching &&
+        dbCacheApi.isSuccess &&
+        block.data &&
+        allHeaders.length > 0 && (
+          <Box sx={{ mb: 2 }}>
+            <Stack
+              direction="row"
+              spacing={1}
               sx={{
-                fontSize: '0.75rem',
-                backgroundColor: 'action.hover',
-                p: 1.5,
-                borderRadius: 1,
-                overflow: 'auto',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-all',
+                alignItems: 'center',
+                mb: 1,
               }}
             >
-              {block.content}
-            </Box>
-          )}
-        </Box>
-      )}
-      {!dbCacheApi.isFetching && dbCacheApi.isSuccess && block.data && !block.content && (
-        <Typography variant="body2" sx={{
-          color: "text.secondary"
-        }}>
-          No data available for this tenant.
-        </Typography>
-      )}
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
+                Format:
+              </Typography>
+              {['text', 'csv', 'json'].map((fmt) => (
+                <Chip
+                  key={fmt}
+                  label={fmt.toUpperCase()}
+                  size="small"
+                  color={block.format === fmt ? 'primary' : 'default'}
+                  onClick={() => handleFormatChange(fmt)}
+                  variant={block.format === fmt ? 'filled' : 'outlined'}
+                  sx={{ cursor: 'pointer' }}
+                />
+              ))}
+            </Stack>
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: 600,
+                mb: 0.5,
+                display: 'block',
+              }}
+            >
+              Columns ({(block.selectedHeaders || []).length}/
+              {allHeaders.length}):
+            </Typography>
+            <Stack direction="row" spacing={1} sx={{ mb: 0.5 }}>
+              <Button size="small" variant="text" onClick={handleSelectAll}>
+                Select All
+              </Button>
+              <Button size="small" variant="text" onClick={handleDeselectAll}>
+                Deselect All
+              </Button>
+            </Stack>
+            <FormGroup row sx={{ maxHeight: 120, overflow: 'auto' }}>
+              {allHeaders.map((header) => (
+                <FormControlLabel
+                  key={header}
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={(block.selectedHeaders || []).includes(header)}
+                      onChange={() => handleHeaderToggle(header)}
+                    />
+                  }
+                  label={<Typography variant="caption">{header}</Typography>}
+                  sx={{ mr: 2 }}
+                />
+              ))}
+            </FormGroup>
+          </Box>
+        )}
+      {!dbCacheApi.isFetching &&
+        dbCacheApi.isSuccess &&
+        block.data &&
+        block.content && (
+          <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
+            {block.format === 'text' ? (
+              <Box sx={markdownStyles}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {block.content}
+                </ReactMarkdown>
+              </Box>
+            ) : (
+              <Box
+                component="pre"
+                sx={{
+                  fontSize: '0.75rem',
+                  backgroundColor: 'action.hover',
+                  p: 1.5,
+                  borderRadius: 1,
+                  overflow: 'auto',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-all',
+                }}
+              >
+                {block.content}
+              </Box>
+            )}
+          </Box>
+        )}
+      {!dbCacheApi.isFetching &&
+        dbCacheApi.isSuccess &&
+        block.data &&
+        !block.content && (
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
+            No data available for this tenant.
+          </Typography>
+        )}
       {!dbCacheApi.isFetching && !dbCacheApi.isSuccess && !error && (
-        <Typography variant="body2" sx={{
-          color: "text.secondary"
-        }}>
-          {currentTenant ? 'Loading database data...' : 'Select a tenant to load database data.'}
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
+          {currentTenant
+            ? 'Loading database data...'
+            : 'Select a tenant to load database data.'}
         </Typography>
       )}
     </CippButtonCard>
-  );
+  )
 }
 
 /* ── Format database content helper ─────────────────────── */
@@ -756,7 +921,10 @@ const DatabaseBlock = ({
 // names instead. Matches the shape check the backend applies when the report is generated.
 const isLicenseAssignmentValue = (val) => {
   const items = Array.isArray(val) ? val : [val]
-  return items.length > 0 && items.every((v) => v && typeof v === 'object' && 'skuId' in v)
+  return (
+    items.length > 0 &&
+    items.every((v) => v && typeof v === 'object' && 'skuId' in v)
+  )
 }
 
 const formatDatabaseContent = (data, selectedHeaders, format) => {
@@ -775,7 +943,9 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
         // cell rendering the backend applies when the report is generated.
         obj[h] = 'Encrypted (platform-managed)'
       } else {
-        obj[h] = isLicenseAssignmentValue(val) ? getCippLicenseTranslation(val).join(', ') : val
+        obj[h] = isLicenseAssignmentValue(val)
+          ? getCippLicenseTranslation(val).join(', ')
+          : val
       }
     })
     return obj
@@ -787,14 +957,17 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
 
   if (format === 'csv') {
     const escaped = (val) => {
-      const str = typeof val === 'object' ? JSON.stringify(val) : String(val ?? '')
+      const str =
+        typeof val === 'object' ? JSON.stringify(val) : String(val ?? '')
       if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return `"${str.replace(/"/g, '""')}"`;
+        return `"${str.replace(/"/g, '""')}"`
       }
       return str
     }
     const header = selectedHeaders.map(escaped).join(',')
-    const dataRows = filtered.map((row) => selectedHeaders.map((h) => escaped(row[h])).join(','))
+    const dataRows = filtered.map((row) =>
+      selectedHeaders.map((h) => escaped(row[h])).join(',')
+    )
     return [header, ...dataRows].join('\n')
   }
 
@@ -808,7 +981,8 @@ const formatDatabaseContent = (data, selectedHeaders, format) => {
         .map((h) => {
           const val = row[h]
           if (val === null || val === undefined) return ''
-          if (typeof val === 'object') return escapeTableCell(JSON.stringify(val))
+          if (typeof val === 'object')
+            return escapeTableCell(JSON.stringify(val))
           return escapeTableCell(val)
         })
         .join(' | ') +
@@ -847,7 +1021,9 @@ const Page = () => {
   const saveForm = useForm({ defaultValues: { templateName: '' } })
   const addBlockForm = useForm({
     defaultValues: {
+      blockCategory: null,
       blockType: null,
+      presetVariant: null,
       testSuite: null,
       selectedTest: [],
       dbCacheType: null,
@@ -869,12 +1045,39 @@ const Page = () => {
   // schedule was created. Unsaved builders have nothing to reference, so they still snapshot.
   const linkScheduleToTemplate = !!templateGUID && followTemplate !== false
 
-  const watchBlockType = useWatch({ control: addBlockForm.control, name: 'blockType' })
-  const watchTestSuite = useWatch({ control: addBlockForm.control, name: 'testSuite' })
-  const watchSelectedTest = useWatch({ control: addBlockForm.control, name: 'selectedTest' })
-  const watchDbCacheType = useWatch({ control: addBlockForm.control, name: 'dbCacheType' })
-  const watchDbFormat = useWatch({ control: addBlockForm.control, name: 'dbFormat' })
-  const removeRemediation = useWatch({ control: settingsForm.control, name: 'removeRemediation' })
+  const watchBlockCategory = useWatch({
+    control: addBlockForm.control,
+    name: 'blockCategory',
+  })
+  const watchBlockType = useWatch({
+    control: addBlockForm.control,
+    name: 'blockType',
+  })
+  // The pre-built topic's chart-type variants; a third picker step appears when a topic offers more
+  // than one (e.g. Licences: bar, table or flow).
+  const presetVariantOptions = isPresetTopic(watchBlockType?.value)
+    ? presetVariantsFor(watchBlockType.value)
+    : []
+  const watchTestSuite = useWatch({
+    control: addBlockForm.control,
+    name: 'testSuite',
+  })
+  const watchSelectedTest = useWatch({
+    control: addBlockForm.control,
+    name: 'selectedTest',
+  })
+  const watchDbCacheType = useWatch({
+    control: addBlockForm.control,
+    name: 'dbCacheType',
+  })
+  const watchDbFormat = useWatch({
+    control: addBlockForm.control,
+    name: 'dbFormat',
+  })
+  const removeRemediation = useWatch({
+    control: settingsForm.control,
+    name: 'removeRemediation',
+  })
 
   // Fetch available DB cache types dynamically when tenant changes
   const availableCacheTypesApi = ApiGetCall({
@@ -884,23 +1087,83 @@ const Page = () => {
     waiting: !!currentTenant,
   })
 
+  // Every collection's row count and fields, as recorded when the cache was written: what the
+  // chart and table data pickers offer.
+  const dataShapeApi = ApiGetCall({
+    url: '/api/ListDBCache',
+    data: { tenantFilter: currentTenant, type: '_shape' },
+    queryKey: `ListDBCache-shape-${currentTenant}`,
+    waiting: !!currentTenant,
+  })
+  const dataShape = useMemo(() => {
+    const shapes = dataShapeApi.data?.Results
+    const reporting = (Array.isArray(shapes) ? shapes : []).map((shape) => ({
+      type: shape.Type,
+      count: shape.Count,
+      fields: Array.isArray(shape.Fields) ? shape.Fields : [],
+    }))
+    // The in-app compliance test results are offered as a data source alongside the reporting
+    // collections, so charts/tables/flows can be driven by test data too.
+    return [TEST_RESULTS_SHAPE, ...reporting]
+  }, [dataShapeApi.data])
+
   const availableCacheTypes = useMemo(() => {
-    if (!availableCacheTypesApi.isSuccess || !availableCacheTypesApi.data?.Results) return []
+    if (
+      !availableCacheTypesApi.isSuccess ||
+      !availableCacheTypesApi.data?.Results
+    )
+      return []
     const types = availableCacheTypesApi.data.Results
-    return (Array.isArray(types) ? types : []).map((t) => ({ label: t, value: t }))
+    return (Array.isArray(types) ? types : []).map((t) => ({
+      label: t,
+      value: t,
+    }))
   }, [availableCacheTypesApi.isSuccess, availableCacheTypesApi.data])
 
   // When block type changes, reset suite and test selections.
   useEffect(() => {
-    addBlockForm.setValue('testSuite', null, { shouldDirty: false, shouldValidate: false })
-    addBlockForm.setValue('selectedTest', [], { shouldDirty: false, shouldValidate: false })
-    addBlockForm.setValue('dbCacheType', null, { shouldDirty: false, shouldValidate: false })
-    addBlockForm.setValue('dbFormat', null, { shouldDirty: false, shouldValidate: false })
+    addBlockForm.setValue('testSuite', null, {
+      shouldDirty: false,
+      shouldValidate: false,
+    })
+    addBlockForm.setValue('selectedTest', [], {
+      shouldDirty: false,
+      shouldValidate: false,
+    })
+    addBlockForm.setValue('dbCacheType', null, {
+      shouldDirty: false,
+      shouldValidate: false,
+    })
+    addBlockForm.setValue('dbFormat', null, {
+      shouldDirty: false,
+      shouldValidate: false,
+    })
+    addBlockForm.setValue('presetVariant', null, {
+      shouldDirty: false,
+      shouldValidate: false,
+    })
   }, [watchBlockType])
+
+  // A block belongs to one category, so a pick from another category is cleared when it changes.
+  useEffect(() => {
+    const picked = addBlockForm.getValues('blockType')
+    if (
+      picked &&
+      !blockTypesFor(watchBlockCategory?.value).some((option) => option.value === picked.value)
+    ) {
+      addBlockForm.setValue('blockType', null, {
+        shouldDirty: false,
+        shouldValidate: false,
+      })
+    }
+  }, [watchBlockCategory])
 
   // When test suite changes, reset test selection.
   useEffect(() => {
-    addBlockForm.setValue('selectedTest', [], { shouldDirty: false, shouldValidate: false })
+    addBlockForm.setValue('selectedTest', [], {
+      shouldDirty: false,
+      shouldValidate: false,
+    })
   }, [watchTestSuite])
 
   /* ── API hooks ── */
@@ -937,19 +1200,26 @@ const Page = () => {
   })
 
   const brandingPresets = useMemo(
-    () => (Array.isArray(brandingPresetsApi.data) ? brandingPresetsApi.data : []),
+    () =>
+      Array.isArray(brandingPresetsApi.data) ? brandingPresetsApi.data : [],
     [brandingPresetsApi.data]
   )
 
   const presetOptions = useMemo(
     () => [
       DEFAULT_BRANDING_OPTION,
-      ...brandingPresets.map((preset) => ({ label: preset.name, value: preset.id })),
+      ...brandingPresets.map((preset) => ({
+        label: preset.name,
+        value: preset.id,
+      })),
     ],
     [brandingPresets]
   )
 
-  const reportSettings = useMemo(() => toReportSettings(pageSetupValues || {}), [pageSetupValues])
+  const reportSettings = useMemo(
+    () => toReportSettings(pageSetupValues || {}),
+    [pageSetupValues]
+  )
 
   // A template that has not picked a preset falls back to whichever one branding settings names as
   // the default for report-builder reports.
@@ -967,10 +1237,14 @@ const Page = () => {
   const missingPreset =
     !!reportSettings.brandingPresetId &&
     brandingPresetsApi.isSuccess &&
-    !brandingPresets.some((preset) => preset.id === reportSettings.brandingPresetId)
+    !brandingPresets.some(
+      (preset) => preset.id === reportSettings.brandingPresetId
+    )
 
   const tenantDisplayName =
-    organizationApi.data?.Results?.[0]?.displayName || currentTenant || 'Organization'
+    organizationApi.data?.Results?.[0]?.displayName ||
+    currentTenant ||
+    'Organization'
 
   const saveTemplateCall = ApiPostCall({
     urlFromData: true,
@@ -1019,7 +1293,9 @@ const Page = () => {
   ]
 
   const suiteOptions = useMemo(() => {
-    const folders = [...new Set(allTestOptions.map((t) => t.testFolder).filter(Boolean))]
+    const folders = [
+      ...new Set(allTestOptions.map((t) => t.testFolder).filter(Boolean)),
+    ]
     return folders.sort().map((f) => ({ label: f, value: f }))
   }, [allTestOptions])
 
@@ -1028,11 +1304,17 @@ const Page = () => {
     return allTestOptions.filter((t) => t.testFolder === watchTestSuite.value)
   }, [allTestOptions, watchTestSuite])
 
-  const testResults = useMemo(() => testsApi.data?.TestResults || [], [testsApi.data])
+  const testResults = useMemo(
+    () => testsApi.data?.TestResults || [],
+    [testsApi.data]
+  )
 
   const getTestResult = useCallback(
     (testId) => {
-      return testResults.find((t) => t.TestId === testId || t.RowKey === testId) || null
+      return (
+        testResults.find((t) => t.TestId === testId || t.RowKey === testId) ||
+        null
+      )
     },
     [testResults]
   )
@@ -1040,7 +1322,8 @@ const Page = () => {
   const getTestContent = useCallback(
     (testId) => {
       const result = getTestResult(testId)
-      if (!result) return '_No results available for this test. Run an assessment first._'
+      if (!result)
+        return '_No results available for this test. Run an assessment first._'
 
       const parts = []
 
@@ -1049,7 +1332,9 @@ const Page = () => {
         if (!removeRemediation) return text
         // Match all variants: **Remediation action**, **Remediation Action:**, **Remediation Action:**,
         // **Remediation actions**, **Remediation Resources**, with colon inside or outside bold
-        return text.split(/\*\*Remediation\s+(?:action|actions|resources):?\*\*:?/i)[0].trim();
+        return text
+          .split(/\*\*Remediation\s+(?:action|actions|resources):?\*\*:?/i)[0]
+          .trim()
       }
 
       if (result.Description) {
@@ -1079,7 +1364,9 @@ const Page = () => {
         parts.push('## Results\n\n' + resultContent)
       }
 
-      return parts.length > 0 ? parts.join('\n\n') : '_No content available for this test._'
+      return parts.length > 0
+        ? parts.join('\n\n')
+        : '_No content available for this test._'
     },
     [testResults, getTestResult, removeRemediation]
   )
@@ -1096,11 +1383,16 @@ const Page = () => {
   useEffect(() => {
     if (!templateId || !templatesApi.data || templateLoadedRef.current) return
     const list = Array.isArray(templatesApi.data) ? templatesApi.data : []
-    const found = list.find((t) => t.GUID === templateId || t.RowKey === templateId)
+    const found = list.find(
+      (t) => t.GUID === templateId || t.RowKey === templateId
+    )
     if (found) {
       let templateBlocks = []
       try {
-        const rawBlocks = typeof found.Blocks === 'string' ? JSON.parse(found.Blocks) : found.Blocks
+        const rawBlocks =
+          typeof found.Blocks === 'string'
+            ? JSON.parse(found.Blocks)
+            : found.Blocks
         templateBlocks = (rawBlocks || []).map((b, i) => ({
           ...b,
           id: `block-${Date.now()}-${i}`,
@@ -1112,11 +1404,13 @@ const Page = () => {
                 : b.type === 'test' && !b.static
                   ? getTestContent(b.testId)
                   : b.content || '',
-          status: b.type === 'test' ? b.status || getTestStatus(b.testId) : undefined,
+          status:
+            b.type === 'test' ? b.status || getTestStatus(b.testId) : undefined,
           // Preserve database block metadata
           data: b.type === 'database' ? b.data || null : undefined,
           allHeaders: b.type === 'database' ? b.allHeaders || [] : undefined,
-          selectedHeaders: b.type === 'database' ? b.selectedHeaders || [] : undefined,
+          selectedHeaders:
+            b.type === 'database' ? b.selectedHeaders || [] : undefined,
           dbType: b.dbType || undefined,
           format: b.format || undefined,
         }))
@@ -1154,9 +1448,30 @@ const Page = () => {
     const type = addBlockForm.getValues('blockType')
     if (!type) return
 
-    if (isStructuredBlock(type.value)) {
-      setBlocks((prev) => [...prev, createStructuredBlock(type.value, `block-${Date.now()}`)])
+    if (isPresetTopic(type.value)) {
+      // The chosen chart-type variant, or the topic's only one when it has a single visual.
+      const variants = presetVariantsFor(type.value)
+      const chosen = addBlockForm.getValues('presetVariant')
+      const presetKey = chosen?.value || variants[0]?.value
+      if (!presetKey) return
+      const made = createPresetBlocks(`preset:${presetKey}`, `block-${Date.now()}`)
+      if (made.length) setBlocks((prev) => [...prev, ...made])
       addBlockForm.reset({
+        blockCategory: addBlockForm.getValues('blockCategory'),
+        blockType: null,
+        presetVariant: null,
+        testSuite: null,
+        selectedTest: [],
+        dbCacheType: null,
+        dbFormat: null,
+      })
+    } else if (isStructuredBlock(type.value)) {
+      setBlocks((prev) => [
+        ...prev,
+        createStructuredBlock(type.value, `block-${Date.now()}`),
+      ])
+      addBlockForm.reset({
+        blockCategory: addBlockForm.getValues('blockCategory'),
         blockType: null,
         testSuite: null,
         selectedTest: [],
@@ -1175,6 +1490,7 @@ const Page = () => {
         },
       ])
       addBlockForm.reset({
+        blockCategory: addBlockForm.getValues('blockCategory'),
         blockType: null,
         testSuite: null,
         selectedTest: [],
@@ -1199,6 +1515,7 @@ const Page = () => {
         })),
       ])
       addBlockForm.reset({
+        blockCategory: addBlockForm.getValues('blockCategory'),
         blockType: null,
         testSuite: null,
         selectedTest: [],
@@ -1226,6 +1543,7 @@ const Page = () => {
         },
       ])
       addBlockForm.reset({
+        blockCategory: addBlockForm.getValues('blockCategory'),
         blockType: null,
         testSuite: null,
         selectedTest: [],
@@ -1252,6 +1570,7 @@ const Page = () => {
       })),
     ])
     addBlockForm.reset({
+      blockCategory: addBlockForm.getValues('blockCategory'),
       blockType: null,
       testSuite: null,
       selectedTest: [],
@@ -1260,7 +1579,8 @@ const Page = () => {
     })
   }
 
-  const handleRemoveBlock = (index) => setBlocks((prev) => prev.filter((_, i) => i !== index))
+  const handleRemoveBlock = (index) =>
+    setBlocks((prev) => prev.filter((_, i) => i !== index))
 
   const handleMoveBlockUp = (index) => {
     if (index === 0) return
@@ -1346,35 +1666,6 @@ const Page = () => {
     })
   }
 
-  const handleDownload = () => {
-    import('@react-pdf/renderer').then(({ pdf }) => {
-      const {
-        ReportBuilderDocument,
-      } = require('../../../../components/ReportBuilder/ReportBuilderPDF')
-      const doc = (
-        <ReportBuilderDocument
-          blocks={displayBlocks}
-          tenantName={tenantDisplayName}
-          templateName={saveForm.getValues('templateName') || 'Custom Report'}
-          brandingSettings={effectiveBranding}
-          reportSettings={reportSettings}
-        />
-      )
-      pdf(doc)
-        .toBlob()
-        .then((blob) => {
-          const url = URL.createObjectURL(blob)
-          const link = document.createElement('a')
-          link.href = url
-          link.download = `Report_${(currentTenant || 'report').replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-          URL.revokeObjectURL(url)
-        })
-    })
-  }
-
   const handleBackClick = () => {
     router.push('/tools/report-builder/templates')
   }
@@ -1383,8 +1674,10 @@ const Page = () => {
     !watchBlockType ||
     (watchBlockType?.value === 'test' &&
       (!watchSelectedTest ||
-        (Array.isArray(watchSelectedTest) && watchSelectedTest.length === 0))) ||
-    (watchBlockType?.value === 'database' && (!watchDbCacheType?.value || !watchDbFormat?.value))
+        (Array.isArray(watchSelectedTest) &&
+          watchSelectedTest.length === 0))) ||
+    (watchBlockType?.value === 'database' &&
+      (!watchDbCacheType?.value || !watchDbFormat?.value))
 
   /* ── Resolve live test blocks with current data for PDF ── */
   const displayBlocks = blocks.map((block) =>
@@ -1403,6 +1696,28 @@ const Page = () => {
     availableTestsApi.isFetching ||
     (!!currentTenant && testsApi.isFetching)
 
+  // The current (unsaved) builder state rendered on the server; branding resolves there from the
+  // template's preset. Declared after displayBlocks/reportSettings, which it reads.
+  const previewRequest = {
+    url: '/api/ExecPreviewReportBuilderPdf',
+    body: {
+      TenantFilter: currentTenant,
+      TemplateName: saveForm.getValues('templateName') || 'Custom Report',
+      Blocks: displayBlocks,
+      Settings: reportSettings,
+    },
+  }
+  const preview = useServerPdf({ ...previewRequest, enabled: previewOpen })
+  const downloadFileName = `Report_${(currentTenant || 'report').replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
+  // The toolbar download renders on demand without the preview; a failed render opens the preview,
+  // which shows the error.
+  const handleDownload = () =>
+    downloadServerPdf(
+      previewRequest.url,
+      previewRequest.body,
+      downloadFileName
+    ).catch(() => setPreviewOpen(true))
+
   /* ── Gate: loading state with skeletons ── */
   if (isLoading) {
     return (
@@ -1413,12 +1728,17 @@ const Page = () => {
             <Stack
               direction="row"
               sx={{
-                justifyContent: "space-between",
-                alignItems: "center"
-              }}>
-              <Stack direction="row" spacing={1} sx={{
-                alignItems: "center"
-              }}>
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                  alignItems: 'center',
+                }}
+              >
                 <Skeleton variant="circular" width={32} height={32} />
                 <Skeleton variant="text" width={200} height={40} />
               </Stack>
@@ -1434,9 +1754,13 @@ const Page = () => {
             <Card>
               <CardHeader title={<Skeleton variant="text" width={100} />} />
               <CardContent>
-                <Stack direction="row" spacing={2} sx={{
-                  alignItems: "center"
-                }}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    alignItems: 'center',
+                  }}
+                >
                   <Skeleton variant="rounded" width="25%" height={40} />
                   <Skeleton variant="rounded" width={80} height={32} />
                 </Stack>
@@ -1460,7 +1784,7 @@ const Page = () => {
           </Stack>
         </Container>
       </Box>
-    );
+    )
   }
 
   /* ── Builder view ── */
@@ -1471,16 +1795,22 @@ const Page = () => {
           <Stack spacing={2}>
             {/* Title, tenant chip and actions each take their own row on phones. */}
             <Stack
-              direction={{ xs: "column", md: "row" }}
+              direction={{ xs: 'column', md: 'row' }}
               spacing={2}
               sx={{
-                justifyContent: "space-between",
-                alignItems: { xs: "stretch", md: "center" }
-              }}>
-              <Stack direction="row" spacing={1} useFlexGap sx={{
-                alignItems: "center",
-                flexWrap: "wrap"
-              }}>
+                justifyContent: 'space-between',
+                alignItems: { xs: 'stretch', md: 'center' },
+              }}
+            >
+              <Stack
+                direction="row"
+                spacing={1}
+                useFlexGap
+                sx={{
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                }}
+              >
                 <IconButton size="small" onClick={handleBackClick}>
                   <CippIcons.ArrowBack />
                 </IconButton>
@@ -1492,11 +1822,16 @@ const Page = () => {
                     label={currentTenant}
                     size="small"
                     variant="outlined"
-                    sx={{ maxWidth: "100%" }}
+                    sx={{ maxWidth: '100%' }}
                   />
                 )}
               </Stack>
-              <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                useFlexGap
+                sx={{ flexWrap: 'wrap' }}
+              >
                 <Button
                   size="small"
                   variant="outlined"
@@ -1511,8 +1846,12 @@ const Page = () => {
                   variant="outlined"
                   startIcon={<CippIcons.Schedule />}
                   onClick={() => {
-                    const tplName = saveForm.getValues('templateName') || 'Report'
-                    scheduleForm.setValue('scheduleName', `Scheduled ${tplName} - ${currentTenant}`)
+                    const tplName =
+                      saveForm.getValues('templateName') || 'Report'
+                    scheduleForm.setValue(
+                      'scheduleName',
+                      `Scheduled ${tplName} - ${currentTenant}`
+                    )
                     setScheduleOpen(true)
                   }}
                   disabled={blocks.length === 0 || !currentTenant}
@@ -1542,31 +1881,58 @@ const Page = () => {
 
             {!currentTenant && (
               <Alert severity="info">
-                Select a tenant to load live test results. Custom blocks work without a tenant.
+                Select a tenant to load live test results. Custom blocks work
+                without a tenant.
               </Alert>
             )}
 
             {/* Report Settings */}
             <CippButtonCard title="Report Settings">
-              <Grid container spacing={2} sx={{
-                alignItems: "center"
-              }}>
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  alignItems: 'center',
+                }}
+              >
+                {/* Two steps, a category and then a block: the engine draws a dozen kinds of
+                    block, and one list of all of them is more than a dropdown reads well with. */}
+                <Grid size={{ xs: 12, md: 2 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="blockCategory"
+                    label="Category"
+                    formControl={addBlockForm}
+                    multiple={false}
+                    creatable={false}
+                    options={BLOCK_CATEGORIES.map(({ label, value }) => ({ label, value }))}
+                  />
+                </Grid>
                 <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
                     type="autoComplete"
                     name="blockType"
-                    label="Block Type"
+                    label="Block"
                     formControl={addBlockForm}
                     multiple={false}
                     creatable={false}
-                    options={[
-                      { label: 'Custom Block', value: 'blank' },
-                      { label: 'Test Result', value: 'test' },
-                      { label: 'Database Data', value: 'database' },
-                      ...STRUCTURED_BLOCK_TYPES,
-                    ]}
+                    disabled={!watchBlockCategory?.value}
+                    options={blockTypesFor(watchBlockCategory?.value)}
                   />
                 </Grid>
+                {presetVariantOptions.length > 1 ? (
+                  <Grid size={{ xs: 12, md: 3 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      name="presetVariant"
+                      label="Chart type"
+                      formControl={addBlockForm}
+                      multiple={false}
+                      creatable={false}
+                      options={presetVariantOptions}
+                    />
+                  </Grid>
+                ) : null}
                 <CippFormCondition
                   field="blockType"
                   compareType="valueEq"
@@ -1605,7 +1971,10 @@ const Page = () => {
                       size="small"
                       startIcon={<CippIcons.Add />}
                       onClick={handleAddAllSuiteTests}
-                      disabled={!watchTestSuite?.value || filteredTestOptions.length === 0}
+                      disabled={
+                        !watchTestSuite?.value ||
+                        filteredTestOptions.length === 0
+                      }
                     >
                       Add All Tests
                     </Button>
@@ -1727,8 +2096,8 @@ const Page = () => {
                   how a template ends up quietly contradicting the preset it points at. */}
               {missingPreset && (
                 <Alert severity="warning" sx={{ mt: 2 }}>
-                  The branding preset saved with this template no longer exists — the global
-                  branding settings are being used instead.
+                  The branding preset saved with this template no longer exists
+                  — the global branding settings are being used instead.
                 </Alert>
               )}
             </CippButtonCard>
@@ -1736,8 +2105,8 @@ const Page = () => {
             {/* Blocks */}
             {blocks.length === 0 ? (
               <Alert severity="info">
-                No blocks added yet. Use the controls above to add test results or custom content
-                blocks.
+                No blocks added yet. Use the controls above to add test results
+                or custom content blocks.
               </Alert>
             ) : (
               <Stack spacing={2}>
@@ -1757,6 +2126,7 @@ const Page = () => {
                         key={block.id}
                         block={block}
                         index={index}
+                        dataShape={dataShape}
                         totalBlocks={blocks.length}
                         onRemove={handleRemoveBlock}
                         onUpdate={handleUpdateBlock}
@@ -1810,7 +2180,11 @@ const Page = () => {
         sx={{ '& .MuiDialog-paper': { height: '95vh', maxHeight: '95vh' } }}
       >
         <DialogTitle
-          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
         >
           <Typography variant="h6" component="div">
             Report Preview
@@ -1821,20 +2195,20 @@ const Page = () => {
         </DialogTitle>
         <Divider />
         <DialogContent sx={{ p: 0, height: '100%' }}>
-          {previewOpen && (
-            <ReportBuilderPDF
-              blocks={displayBlocks}
-              tenantName={tenantDisplayName}
-              templateName={saveForm.getValues('templateName') || 'Custom Report'}
-              brandingSettings={effectiveBranding}
-              reportSettings={reportSettings}
-              mode="preview"
-            />
-          )}
+          <ServerPdfPane
+            {...preview}
+            title="Report preview"
+            errorText="The report preview could not be rendered."
+          />
         </DialogContent>
         <Divider />
         <DialogActions sx={{ p: 2 }}>
-          <Button variant="contained" startIcon={<CippIcons.Download />} onClick={handleDownload}>
+          <Button
+            variant="contained"
+            startIcon={<CippIcons.Download />}
+            onClick={() => preview.download(downloadFileName)}
+            disabled={!preview.pdfUrl}
+          >
             Download PDF
           </Button>
           <Button onClick={() => setPreviewOpen(false)} variant="outlined">
@@ -1844,7 +2218,12 @@ const Page = () => {
       </Dialog>
 
       {/* ── Save Template Dialog ── */}
-      <Dialog open={saveOpen} onClose={() => setSaveOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={saveOpen}
+        onClose={() => setSaveOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Save Report Template</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
@@ -1855,7 +2234,10 @@ const Page = () => {
               formControl={saveForm}
               validators={{
                 required: 'Template name is required',
-                maxLength: { value: 256, message: 'Template name must be 256 characters or fewer' },
+                maxLength: {
+                  value: 256,
+                  message: 'Template name must be 256 characters or fewer',
+                },
               }}
             />
             <CippApiResults apiObject={saveTemplateCall} />
@@ -1874,7 +2256,12 @@ const Page = () => {
       </Dialog>
 
       {/* ── Schedule Dialog ── */}
-      <Dialog open={scheduleOpen} onClose={() => setScheduleOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={scheduleOpen}
+        onClose={() => setScheduleOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Schedule Report Generation</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
@@ -1951,7 +2338,7 @@ const Page = () => {
         </DialogActions>
       </Dialog>
     </>
-  );
+  )
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

@@ -3153,7 +3153,6 @@ const Page = () => {
                   tenant={tenant}
                   stageStates={stageStates}
                   baselines={baselines}
-                  catalog={catalog}
                 />
               </Stack>
             </Stack>

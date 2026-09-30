@@ -74,11 +74,22 @@ const roleColourValues = (source) =>
     ])
   );
 
+// Which of the tenant's names a report prints on its cover, in its prose and as %tenantname%.
+// "alias" is what CIPP shows for the tenant - an alias when one is set - and was the only choice.
+const TENANT_LABEL_OPTIONS = [
+  { label: "Name as shown in CIPP (alias when set)", value: "alias" },
+  { label: "Microsoft 365 organisation name", value: "name" },
+  { label: "Default domain", value: "domain" },
+];
+
+const TENANT_LABEL_TOOLTIP =
+  "How reports refer to the tenant: on the cover, in the text and wherever %tenantname% is used. The name shown in CIPP is the tenant's alias when one is set; the organisation name is what Microsoft 365 holds regardless of any alias.";
+
 const FOOTER_TOOLTIP =
   "Text shown at the bottom of every report page. Type % for CIPP's variables, plus %reportname% and %reportdate% which reports add. Report templates can override this or switch it off individually.";
 
 const WATERMARK_TOOLTIP =
-  "Diagonal text drawn faintly across every page of a report, cover included. Type % for CIPP's variables (e.g. %tenantname%), or a static mark such as DRAFT. Typing text is enough to show it; the toggle only exists to switch it off without losing the wording.";
+  "Diagonal text drawn faintly across every page of a report except the cover. Type % for CIPP's variables (e.g. %tenantname%), or a static mark such as DRAFT. Typing text is enough to show it; the toggle only exists to switch it off without losing the wording.";
 
 const REPORT_DEFAULTS_TOOLTIP =
   "Which preset each report reaches for when nothing else says otherwise. A report template with its own preset still wins over this, and this still wins over the default branding above.";
@@ -91,8 +102,23 @@ const PREVIEW_TOOLTIP =
 // ListBrandingSettings, and base64 adds about a third on top.
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
+// The formats the report engine draws, stored exactly as picked; Add-CIPPImage enforces the same
+// list. TIFF is left out only because browsers cannot show it in the gallery.
+const SUPPORTED_IMAGE_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "image/bmp",
+  "image/webp",
+  "image/svg+xml",
+];
+
 const readImageFile = (file, onSuccess) => {
   if (!file) return;
+  if (!SUPPORTED_IMAGE_TYPES.includes(file.type)) {
+    alert("Unsupported image format. Use PNG, JPEG, GIF, BMP, WebP or SVG.");
+    return;
+  }
   if (file.size > MAX_IMAGE_BYTES) {
     alert("File size must be less than 5MB");
     return;
@@ -238,6 +264,15 @@ const CippBrandingSettings = () => {
   const [coverImageId, setCoverImageId] = useState(branding.coverImageId || null);
   const [coverImageIds, setCoverImageIds] = useState(() => normalizeCoverImageIds(branding));
   const [coverUploads, setCoverUploads] = useState(() => normalizeCoverUploads(branding));
+  // The names given to uploaded covers, by image id. They travel with the gallery so the report
+  // builder can offer a cover as "Board room" rather than "Uploaded 3".
+  const [coverNames, setCoverNames] = useState({});
+  useEffect(() => {
+    const list = brandingQuery.data?.coverImages;
+    if (Array.isArray(list)) {
+      setCoverNames(Object.fromEntries(list.map((image) => [image.id, image.name || ""])));
+    }
+  }, [brandingQuery.data]);
   const [uploadPending, setUploadPending] = useState(false);
   const [coversReady, setCoversReady] = useState(false);
   // Last selection chosen in this UI — prevents stale ListUserSettings from restoring an old pick.
@@ -305,6 +340,7 @@ const CippBrandingSettings = () => {
       showPageNumbers: branding.showPageNumbers !== false,
       watermarkText: branding.watermarkText || "",
       watermarkEnabled: branding.watermarkEnabled !== false,
+      tenantLabel: branding.tenantLabel || "alias",
       ...roleColourValues(branding),
       previewReportType: reportTypeOptions[0],
     },
@@ -321,6 +357,7 @@ const CippBrandingSettings = () => {
     showPageNumbers: source.showPageNumbers !== false,
     watermarkText: source.watermarkText || "",
     watermarkEnabled: source.watermarkEnabled !== false,
+    tenantLabel: source.tenantLabel || "alias",
     // Flat for the preview (createReportTheme accepts either) and nested for saving.
     ...roleColourValues(source),
     roleColours: roleColourValues(source),
@@ -491,12 +528,12 @@ const CippBrandingSettings = () => {
           key: id,
           id,
           src: coverUploads[index],
-          label: `Uploaded ${index + 1}`,
+          label: coverNames[id] || `Uploaded ${index + 1}`,
           type: "upload",
           empty: false,
         }))
         .filter((option) => typeof option.src === "string" && option.src.startsWith("data:image/")),
-    [coverImageIds, coverUploads]
+    [coverImageIds, coverUploads, coverNames]
   );
 
   const stockOptions = useMemo(
@@ -674,6 +711,22 @@ const CippBrandingSettings = () => {
     pinCoverSelection(option.id, coverStock);
   };
 
+  const handleCoverRename = async (id, name) => {
+    const trimmed = (name || "").trim();
+    if ((coverNames[id] || "") === trimmed) return;
+    setCoverNames((prev) => ({ ...prev, [id]: trimmed }));
+    try {
+      await brandingApi.mutateAsync({
+        url: "/api/ExecBrandingSettings",
+        data: { Action: "RenameImage", kind: "cover", id, name: trimmed },
+        queryKey: "BrandingCoverRename",
+      });
+    } catch (error) {
+      console.error("Failed to name cover", error);
+      alert(error?.response?.data?.Results || error.message || "Failed to name cover");
+    }
+  };
+
   const handleCoverDelete = async (id) => {
     if (!id) return;
     setUploadPending(true);
@@ -752,6 +805,7 @@ const CippBrandingSettings = () => {
           showPageNumbers: brandingData.showPageNumbers,
           watermarkText: brandingData.watermarkText,
           watermarkEnabled: brandingData.watermarkEnabled,
+          tenantLabel: brandingData.tenantLabel,
         },
         queryKey: "BrandingPresetSave",
       },
@@ -839,6 +893,7 @@ const CippBrandingSettings = () => {
         showPageNumbers: brandingData.showPageNumbers,
         watermarkText: brandingData.watermarkText,
         watermarkEnabled: brandingData.watermarkEnabled,
+        tenantLabel: brandingData.tenantLabel,
         roleColours: brandingData.roleColours,
         reportDefaults,
       },
@@ -1081,7 +1136,7 @@ const CippBrandingSettings = () => {
                 <CippInfoTooltip title={LOGO_TOOLTIP} />
               </Stack>
               <input
-                accept="image/*"
+                accept={SUPPORTED_IMAGE_TYPES.join(",")}
                 style={{ display: "none" }}
                 id="logo-upload"
                 type="file"
@@ -1188,7 +1243,7 @@ const CippBrandingSettings = () => {
               </Stack>
 
               <input
-                accept="image/*"
+                accept={SUPPORTED_IMAGE_TYPES.join(",")}
                 style={{ display: "none" }}
                 id="cover-upload"
                 type="file"
@@ -1247,7 +1302,7 @@ const CippBrandingSettings = () => {
                             option.type === "upload"
                               ? coverImageId === option.id
                               : !coverImageId && coverStock === option.src;
-                          return (
+                          const tile = (
                             <GalleryTile
                               key={option.key}
                               src={option.src}
@@ -1262,6 +1317,26 @@ const CippBrandingSettings = () => {
                                   : undefined
                               }
                             />
+                          );
+                          if (option.type !== "upload") return tile;
+                          // An uploaded cover can be named, which is how the report builder offers it
+                          // as an Infographic page background.
+                          return (
+                            <Box key={option.key} sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                              {tile}
+                              <TextField
+                                size="small"
+                                variant="standard"
+                                placeholder="Name this cover"
+                                defaultValue={coverNames[option.id] || ""}
+                                disabled={busy}
+                                inputProps={{ "aria-label": `Name for ${option.label}`, maxLength: 64 }}
+                                onBlur={(event) => handleCoverRename(option.id, event.target.value)}
+                                onKeyDown={(event) => {
+                                  if (event.key === "Enter") event.target.blur();
+                                }}
+                              />
+                            </Box>
                           );
                         })}
                   </Box>
@@ -1336,8 +1411,6 @@ const CippBrandingSettings = () => {
                     colour={brandColour}
                     secondaryColour={formControl.watch("secondaryColour")}
                     coverFooterText={formControl.watch("coverFooterText")}
-                    watermarkText={formControl.watch("watermarkText")}
-                    watermarkEnabled={formControl.watch("watermarkEnabled")}
                     logo={logoPreview}
                     coverImage={coverPreview}
                     coverImageId={coverPreview ? coverImageId : null}
@@ -1454,6 +1527,28 @@ const CippBrandingSettings = () => {
                     </Box>
                   ))}
                 </Box>
+              </Box>
+
+              <Box>
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  sx={{
+                    alignItems: "center",
+                    mb: 1
+                  }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                    Tenant Name
+                  </Typography>
+                  <CippInfoTooltip title={TENANT_LABEL_TOOLTIP} />
+                </Stack>
+                <CippFormComponent
+                  type="radio"
+                  name="tenantLabel"
+                  row
+                  options={TENANT_LABEL_OPTIONS}
+                  formControl={formControl}
+                />
               </Box>
 
               <Box>

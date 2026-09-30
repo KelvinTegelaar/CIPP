@@ -43,6 +43,18 @@ const Page = () => {
       pinned: true,
       icon: <CippIcons.Edit />,
       color: "info",
+      condition: (row) => row.isSynced === false,
+    },
+    {
+      label: "Clone Template",
+      type: "POST",
+      url: "/api/ExecCloneTemplate",
+      data: { GUID: "GUID", Type: "!CATemplate" },
+      confirmText:
+        "Are you sure you want to clone [displayName]? Cloned templates are no longer synced with a template library and can be edited.",
+      multiPost: false,
+      icon: <CippIcons.CopyAll />,
+      color: "info",
     },
     {
       label: "Add to package",

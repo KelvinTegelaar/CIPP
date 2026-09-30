@@ -27,6 +27,13 @@ import { PAGE_ORIENTATIONS, PAGE_SIZES } from '../CippPdf'
  */
 export const DEFAULT_BRANDING_OPTION = { label: 'Default', value: '' }
 
+// The chart shapes a chart block can ask for; the server-side renderer draws whichever one is saved.
+export const CHART_KINDS = [
+  { label: 'Donut', value: 'donut' },
+  { label: 'Bar', value: 'bar' },
+  { label: 'Trend line', value: 'trend' },
+]
+
 // The autoComplete field works in {label, value} objects, so the form holds options rather than
 // bare strings and the converters translate at the edges.
 export const optionFor = (options, value, fallbackIndex = 0) =>
@@ -120,10 +127,36 @@ export const serialiseBlock = (b) => ({
   chartCaption: b.chartCaption || null,
   chartCentreLabel: b.chartCentreLabel || null,
   chartMax: b.chartMax || null,
+  // A chart set to 'half' renders at half page width, so two can sit side by side.
+  width: b.width || null,
   stats: b.stats || null,
   items: b.items || null,
   heroHighlight: b.heroHighlight || null,
+  heroOvertitle: b.heroOvertitle || null,
   heroSubText: b.heroSubText || null,
   heroFooterText: b.heroFooterText || null,
   heroImage: b.heroImage || null,
+  // Callout tone/tint and label:value "lines" mode; table row limit.
+  tone: b.tone || null,
+  tintTitle: b.tintTitle || null,
+  lines: b.lines || null,
+  limit: b.limit || null,
+  subtitle: b.subtitle || null,
+  coverAccent: b.coverAccent || null,
+  chartSource: b.chartSource || null,
+  dataSource: b.dataSource || null,
+  // Score-card and progress blocks can also be reporting-database-driven: one card/bar per value of
+  // the chosen field, resolved on the server when the report renders.
+  statsSource: b.statsSource || null,
+  itemsSource: b.itemsSource || null,
+  // Sankey (flow) block: its node/link graph, optional plot height, and a reporting-database source
+  // that builds the graph on the server when set (manual nodes/links otherwise).
+  nodes: b.nodes || null,
+  links: b.links || null,
+  height: b.height || null,
+  sankeySource: b.sankeySource || null,
+  coverLabel: b.coverLabel || null,
+  // A table's column list, or a callout grid's column count; either way the renderer's own field.
+  columns: b.columns ?? null,
+  rows: b.rows || null,
 })
