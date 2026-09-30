@@ -88,6 +88,8 @@ describe('CippBecRunStatusCard', () => {
     expect(
       screen.getByRole('button', { name: /run investigation/i })
     ).toBeDisabled()
+    // containment can run against the case while the investigation does
+    expect(screen.getByRole('button', { name: /contain user/i })).toBeEnabled()
   })
 
   it('shows the running phase and the step list once a worker has the run', () => {

@@ -625,19 +625,9 @@ export const useCippUserActions = () => {
       condition: () => canWriteUser,
     },
     {
-      //tested
-      label: 'Research Compromised Account',
-      type: 'GET',
-      icon: <CippIcons.MagnifyingGlassIcon />,
-      link: '/identity/administration/bec/case?userId=[id]',
-      confirmText:
-        'Are you sure you want to research if [userPrincipalName] is a compromised account?',
-      multiPost: false,
-    },
-    {
       // Queues one BEC run per selected user (bulk-capable); results land on
       // the BEC Reports page
-      label: 'Run BEC investigation',
+      label: 'BEC Remediation',
       type: 'POST',
       url: '/api/ExecBECBulkCheck',
       icon: <CippIcons.MagnifyingGlassIcon />,

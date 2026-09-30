@@ -331,6 +331,11 @@ const Page = () => {
         )}
 
         {becData && <CippBecRemediationHistory becData={becData} />}
+        {runState === 'waiting' && (
+          <CippBecRemediationHistory
+            becData={{ Run: { Containment: poll?.Containment } }}
+          />
+        )}
 
         {becData && (
           <CippButtonCard
