@@ -174,7 +174,12 @@ export const CippOffCanvas = (props) => {
               minHeight: 0,
             }}
           >
-            <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+            <Grid
+              container
+              spacing={1}
+              // stretched rows would split the spare height into a gap under the info card
+              sx={{ flexGrow: 1, alignContent: infoCard && children ? "flex-start" : undefined }}
+            >
               {actionsPosition !== "bottom" && infoCard}
               <Grid
                 size={{ xs: 12 }}

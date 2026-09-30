@@ -45,6 +45,9 @@ const CACHE_TYPE_COLLECTIONS = {
     "SelfServicePurchaseProducts",
     "MoeraDmarc",
     "DomainAnalyser",
+    "ServiceHealthOverviews",
+    "ServiceHealthIssues",
+    "MessageCenterMessages",
   ],
   ExchangeConfig: [
     "ExoAntiPhishPolicies",

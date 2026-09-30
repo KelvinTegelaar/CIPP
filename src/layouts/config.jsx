@@ -211,6 +211,11 @@ export const nativeMenuItems = [
             path: '/tenant/administration/domains',
             permissions: ['Tenant.Administration.*'],
           },
+          {
+            title: "Service Health",
+            path: "/tenant/administration/service-health",
+            permissions: ["Tenant.Administration.*"],
+          },
         ],
       },
       {
