@@ -944,7 +944,9 @@ export const useCippUserActions = () => {
         },
       ],
       confirmText: 'Select a SharePoint site and where to create the OneDrive shortcut:',
-      multiPost: false,
+      // One request for all selected users: the backend attempts every user and reports each
+      // failure in place, so a bulk rollout does not stop at the first user that already has it.
+      multiPost: true,
       allowResubmit: true,
       condition: () => canWriteUser,
     },
