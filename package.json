@@ -71,7 +71,7 @@
     "dompurify": "^3.4.12",
     "driver.js": "^1.8.0",
     "eml-parse-js": "^1.2.0-beta.0",
-    "export-to-csv": "^1.3.0",
+    "export-to-csv": "^1.5.0",
     "formik": "2.4.9",
     "gray-matter": "4.0.3",
     "javascript-time-ago": "^2.6.2",
