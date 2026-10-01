@@ -8028,13 +8028,13 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.ConnectMac",
-        "label": "Connect macOS devices to MDE",
+        "label": "Connect macOS devices to MDE (Note: enabling this forces 'Block macOS if partner data unavailable' to on)",
         "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.macDeviceBlockedOnMissingPartnerData",
-        "label": "Block macOS if partner data unavailable",
+        "label": "Block macOS if partner data unavailable (Note: Microsoft enforces this to on when Connect macOS devices to MDE is on)",
         "defaultValue": false
       },
       {
