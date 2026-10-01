@@ -2734,13 +2734,13 @@
   dependencies:
     ts-dedent "^2.0.0"
 
-"@storybook/addon-vitest@10.3.5":
-  version "10.3.5"
-  resolved "https://registry.npmjs.org/@storybook/addon-vitest/-/addon-vitest-10.3.5.tgz#4743868ce7610e356f2aecb0b06b53fa7687f47e"
-  integrity sha512-PQDeeMwoF55kvzlhFqVKOryBJskkVk71AbDh7F0y8PdRRxlGbTvIUkKXktHZWBdESo0dV6BkeVxGQ4ZpiFxirg==
+"@storybook/addon-vitest@10.6.0":
+  version "10.6.0"
+  resolved "https://registry.npmjs.org/@storybook/addon-vitest/-/addon-vitest-10.6.0.tgz#f7375166d1e7005c06c43946c95d402d04d53536"
+  integrity sha512-GY2SwSXLNgyMqjQ59J7YTkEQTHdEbBMggOvbbuhuPUBhWo97OGSDCmn1UW3nXDZvkoWyWhF9T9628m1uei7FbA==
   dependencies:
     "@storybook/global" "^5.0.0"
-    "@storybook/icons" "^2.0.1"
+    "@storybook/icons" "^2.0.2"
 
 "@storybook/builder-vite@10.3.5":
   version "10.3.5"
@@ -2769,7 +2769,7 @@
   resolved "https://registry.npmjs.org/@storybook/global/-/global-5.0.0.tgz#b793d34b94f572c1d7d9e0f44fac4e0dbc9572ed"
   integrity sha512-FcOqPAXACP0I3oJ/ws6/rrPT9WGhu915Cg8D02a9YxLo0DE9zI+a9A5gRGvmQ09fiWPukqI8ZAEoQEdWUKMQdQ==
 
-"@storybook/icons@^2.0.1", "@storybook/icons@^2.0.2":
+"@storybook/icons@^2.0.2":
   version "2.1.0"
   resolved "https://registry.npmjs.org/@storybook/icons/-/icons-2.1.0.tgz#edfc2450a39c5e780f28c6cbc49acd7bff59b41a"
   integrity sha512-Fxh9vYpX9bQqFeHRiY8h2ApeRGDzRSMLwJwNZ/AIRqnyOKHxRKL+yFe+ctEkVJmuptRE9u1Hrn8ZZNHyfDKKNg==
