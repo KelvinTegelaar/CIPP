@@ -619,6 +619,12 @@ export const CippWizardOffboarding = (props) => {
                 type="switch"
                 formControl={formControl}
               />
+              <CippFormComponent
+                name="postExecution.push"
+                label="Push notification to my devices"
+                type="switch"
+                formControl={formControl}
+              />
               {showPsaIntegrationHint && (
                 <Alert severity="info" sx={{ mt: 1 }}>
                   PSA tickets are only sent when 'Send to integration' is enabled under Settings
