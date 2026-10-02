@@ -67,6 +67,8 @@ const deviationColors = {
   'Partially Accepted': 'warning',
   Drift: 'error',
   Conflict: 'error',
+  // Set when the remediation write itself failed - not tenant drift, so no diff to show.
+  Error: 'error',
   'Denied - Remediate Pending': 'warning',
   'Denied - Delete Pending': 'warning',
   'Skipped - No License': 'default',
@@ -2025,6 +2027,25 @@ const Page = () => {
                         Move to Next Stage
                       </Button>
                     )}
+                    {state.nextStage && !state.manualAdvance && (
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<CippIcons.Refresh />}
+                        onClick={() => {
+                          setAdvanceTarget({
+                            action: 'evaluate',
+                            tenantFilter: state.tenantFilter,
+                            templateId: row.GUID,
+                            templateName: row.templateName,
+                            nextStageName: state.nextStageName,
+                          })
+                          advanceDialog.handleOpen()
+                        }}
+                      >
+                        Re-evaluate Stage
+                      </Button>
+                    )}
                   </Stack>
                 </Stack>
                 {state.nextStage ? (
@@ -2296,6 +2317,33 @@ const Page = () => {
                     </Stack>
                   </>
                 )}
+                {state.nextStage && !state.manualAdvance && (
+                  <>
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Divider sx={{ my: 1 }} />
+                    <Stack direction="row" sx={{
+                      justifyContent: "flex-end"
+                    }}>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<CippIcons.Refresh />}
+                        onClick={() => {
+                          setAdvanceTarget({
+                            action: 'evaluate',
+                            tenantFilter: tenant.tenantId,
+                            templateId: state.templateId,
+                            templateName: state.templateName,
+                            nextStageName: state.nextStageName,
+                          })
+                          advanceDialog.handleOpen()
+                        }}
+                      >
+                        Re-evaluate stage conditions
+                      </Button>
+                    </Stack>
+                  </>
+                )}
               </Box>
             </Grid>
           ))}
@@ -2346,17 +2394,26 @@ const Page = () => {
       {advanceTarget && (
         <CippApiDialog
           createDialog={advanceDialog}
-          title="Move to Next Stage"
+          title={
+            advanceTarget.action === 'evaluate'
+              ? 'Re-evaluate Stage'
+              : 'Move to Next Stage'
+          }
           api={{
             url: '/api/ExecBaselineStage',
             type: 'POST',
             data: {
-              action: '!advanceStage',
+              action:
+                advanceTarget.action === 'evaluate'
+                  ? '!evaluate'
+                  : '!advanceStage',
               tenantFilter: 'tenantFilter',
               templateId: 'templateId',
             },
             confirmText:
-              'Move [tenantFilter] into stage [nextStageName] of [templateName]? The tenant receives all standards from that stage on the next run.',
+              advanceTarget.action === 'evaluate'
+                ? 'Check now whether [tenantFilter] meets the conditions for stage [nextStageName] of [templateName]? If they are met it moves there and receives the standards of that stage on the next run.'
+                : 'Move [tenantFilter] into stage [nextStageName] of [templateName]? The tenant receives all standards from that stage on the next run.',
             relatedQueryKeys,
           }}
           row={advanceTarget}

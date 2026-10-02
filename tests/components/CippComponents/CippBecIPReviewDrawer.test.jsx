@@ -171,13 +171,13 @@ describe('CippBecIPReviewDrawer', () => {
     })
     expect(run).toBeDisabled()
     expect(
-      screen.getByText(/set at least one address to safe or compromised/i)
+      screen.getByText(/set at least one address to safe, suspicious or compromised/i)
     ).toBeInTheDocument()
     await user.click(screen.getAllByRole('combobox', { name: /verdict/i })[1])
     await user.click(await screen.findByRole('option', { name: 'Safe' }))
     await waitFor(() => expect(run).toBeEnabled())
     expect(
-      screen.queryByText(/set at least one address to safe or compromised/i)
+      screen.queryByText(/set at least one address to safe, suspicious or compromised/i)
     ).not.toBeInTheDocument()
   }, 30000)
 

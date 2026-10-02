@@ -172,6 +172,7 @@ export const CippTranslations = {
   ExecutedRequests: 'Executed',
   ServedRequests: 'Served (incl. cached)',
   EgressToday: 'Egress Today',
+  CacheHitPct: 'Cache Hit %',
   // Alert lifecycle
   CmdletName: 'Alert',
   ContentPreview: 'Item',

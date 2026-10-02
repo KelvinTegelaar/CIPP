@@ -152,7 +152,7 @@ export const CippContainerManagement = () => {
   const selectedChannelValue = selectedChannel?.value ?? selectedChannel
   const buildChannelSelected = isBuildChannel(selectedChannelValue)
 
-  // Preferred check time and auto-restart only mean anything while periodic checks are on.
+  // Preferred restart time and auto-restart only mean anything while periodic checks are on.
   const watchedInterval = useWatch({
     control: updateSettingsForm.control,
     name: 'CheckInterval',
@@ -505,7 +505,7 @@ export const CippContainerManagement = () => {
                 <CippFormComponent
                   type="autoComplete"
                   name="CheckTime"
-                  label="Preferred Check Time"
+                  label="Preferred Restart Time"
                   options={hourOptions}
                   formControl={updateSettingsForm}
                   creatable={false}

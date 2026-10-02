@@ -4,6 +4,13 @@ import { CertificateCredentialRemovalForm } from './CertificateCredentialRemoval
 
 const headerLinkProps = { showInActionsMenu: true }
 
+// Signing certs come from ExecApplication Action=ListSigningCertificates (the detail page
+// merges them into the row) because the SHA-1 thumbprint has to be derived from the key bytes.
+export const getSigningCertificates = (row) => row?.signingCertificates ?? []
+
+const isSamlApp = (row) =>
+  row?.preferredSingleSignOnMode === 'saml' || getSigningCertificates(row).length > 0
+
 const viewInEntraAction = {
   icon: <CippIcons.Launch />,
   label: 'View Application',
@@ -187,6 +194,112 @@ export const getEnterpriseAppPostActions = (canWriteApplication) => [
   },
 ]
 
+// SAML signing-certificate actions need preferredSingleSignOnMode and the per-app
+// ListSigningCertificates result, which only the detail page fetches, so they are
+// detail-only: on the list they could never enable.
+export const getEnterpriseAppSigningActions = (canWriteApplication) => [
+  {
+    icon: <CippIcons.Autorenew />,
+    label: 'Add Token Signing Certificate',
+    type: 'POST',
+    color: 'info',
+    multiPost: false,
+    url: '/api/ExecApplication',
+    data: {
+      Id: 'id',
+      Type: 'servicePrincipals',
+      Action: 'AddSigningCertificate',
+    },
+    fields: [
+      {
+        type: 'textField',
+        name: 'DisplayName',
+        label: 'Certificate subject (optional; CN= is added if missing)',
+        placeholder: 'Microsoft Azure Federated SSO Certificate',
+      },
+      {
+        type: 'datePicker',
+        name: 'EndDateTime',
+        label: 'Expiry (optional, up to 3 years; default 3 years)',
+        dateFormat: 'yyyy-MM-dd',
+      },
+    ],
+    confirmText:
+      "Add a new SAML token signing certificate to '[displayName]'? Entra generates the key pair. The current certificate keeps signing until you set the new one as preferred.",
+    condition: (row) => canWriteApplication && isSamlApp(row),
+  },
+  {
+    icon: <CippIcons.ShieldCheckIcon />,
+    label: 'Set Preferred Signing Certificate',
+    type: 'POST',
+    color: 'warning',
+    multiPost: false,
+    url: '/api/ExecApplication',
+    data: {
+      Id: 'id',
+      Type: 'servicePrincipals',
+      Action: 'SetPreferredSigningKey',
+    },
+    children: ({ formHook, row }) => (
+      <CippFormComponent
+        name="Thumbprint"
+        formControl={formHook}
+        type="autoComplete"
+        label="Signing certificate to activate"
+        multiple={false}
+        creatable={false}
+        validators={{ required: 'Select a signing certificate' }}
+        options={getSigningCertificates(row).map((cert) => ({
+          label: `${cert.displayName || 'Unnamed'} ${cert.thumbprint} (expires ${new Date(
+            cert.endDateTime
+          ).toLocaleDateString()})${cert.preferred ? ' - current' : ''}`,
+          value: cert.thumbprint,
+        }))}
+      />
+    ),
+    confirmText:
+      "Switch '[displayName]' to sign tokens with the selected certificate? Relying parties that trust the current certificate will reject sign-ins until they trust the new one.",
+    condition: (row) =>
+      canWriteApplication && getSigningCertificates(row).length > 1,
+  },
+  {
+    icon: <CippIcons.Delete />,
+    label: 'Remove Signing Certificate',
+    type: 'POST',
+    color: 'error',
+    multiPost: false,
+    url: '/api/ExecApplication',
+    data: {
+      Id: 'id',
+      Type: 'servicePrincipals',
+      Action: 'RemoveSigningCertificate',
+    },
+    children: ({ formHook, row }) => (
+      <CippFormComponent
+        name="Thumbprint"
+        formControl={formHook}
+        type="autoComplete"
+        label="Signing certificate to remove (the preferred one cannot be removed)"
+        multiple={false}
+        creatable={false}
+        validators={{ required: 'Select a signing certificate' }}
+        options={getSigningCertificates(row)
+          .filter((cert) => !cert.preferred)
+          .map((cert) => ({
+            label: `${cert.displayName || 'Unnamed'} ${cert.thumbprint} (expires ${new Date(
+              cert.endDateTime
+            ).toLocaleDateString()})`,
+            value: cert.thumbprint,
+          }))}
+      />
+    ),
+    confirmText:
+      "Remove the selected signing certificate from '[displayName]'? Any relying party still trusting it will reject sign-ins.",
+    condition: (row) =>
+      canWriteApplication && getSigningCertificates(row).some((cert) => !cert.preferred),
+  },
+]
+
 export const getEnterpriseAppListActions = (canWriteApplication) => [
   {
     icon: <CippIcons.EyeIcon />,
@@ -204,4 +317,5 @@ export const getEnterpriseAppListActions = (canWriteApplication) => [
 export const getEnterpriseAppDetailHeaderActions = (canWriteApplication) => [
   { ...viewInEntraAction, ...headerLinkProps },
   ...getEnterpriseAppPostActions(canWriteApplication),
+  ...getEnterpriseAppSigningActions(canWriteApplication),
 ]

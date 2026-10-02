@@ -4,6 +4,7 @@ import { Box, Divider, Stack, Tab, Tabs } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
 import { ApiGetCall } from '../api/ApiCall'
 import { getIconByName } from '../utils/icon-registry'
+import { getHiddenPages } from '../utils/filter-menu-items'
 import { useSettings } from '../hooks/use-settings'
 import { useIsMobileLayout } from '../hooks/use-breakpoint'
 import { TabNavigationContext, useTabNavigationValue } from './tab-navigation-context'
@@ -34,15 +35,7 @@ export const TabbedLayout = (props) => {
 
     // A DISABLED flag hides its Pages; an ENABLED flag hides its HidesPages (the
     // pages it replaces - e.g. Baselines supersedes the classic Standards tabs).
-    const disabledPages = featureFlags.data
-      .filter((flag) => flag.Enabled === false || flag.enabled === false)
-      .flatMap((flag) => flag.Pages || flag.pages || [])
-      .filter((page) => typeof page === 'string')
-    const replacedPages = featureFlags.data
-      .filter((flag) => flag.Enabled === true || flag.enabled === true)
-      .flatMap((flag) => flag.HidesPages || flag.hidesPages || [])
-      .filter((page) => typeof page === 'string')
-    const hiddenPages = [...disabledPages, ...replacedPages]
+    const hiddenPages = getHiddenPages(featureFlags.data)
 
     if (hiddenPages.length === 0) return tabs
 

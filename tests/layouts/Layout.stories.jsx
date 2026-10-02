@@ -275,12 +275,11 @@ export const LegacyInfrastructure = {
       await expect(within(banner).queryByText(/starts in|ends /i)).toBeNull()
     })
 
-    await step('dismiss hides it for the day', async () => {
+    await step('a standing warning cannot be dismissed', async () => {
       const banner = canvas.getByLabelText('Maintenance notice')
-      within(banner).getByRole('button', { name: /dismiss maintenance notice/i }).click()
-      await waitFor(() => {
-        expect(canvas.queryByLabelText('Maintenance notice')).toBeNull()
-      })
+      await expect(
+        within(banner).queryByRole('button', { name: /dismiss maintenance notice/i })
+      ).toBeNull()
     })
   },
 }

@@ -625,19 +625,9 @@ export const useCippUserActions = () => {
       condition: () => canWriteUser,
     },
     {
-      //tested
-      label: 'Research Compromised Account',
-      type: 'GET',
-      icon: <CippIcons.MagnifyingGlassIcon />,
-      link: '/identity/administration/bec/case?userId=[id]',
-      confirmText:
-        'Are you sure you want to research if [userPrincipalName] is a compromised account?',
-      multiPost: false,
-    },
-    {
       // Queues one BEC run per selected user (bulk-capable); results land on
       // the BEC Reports page
-      label: 'Run BEC investigation',
+      label: 'BEC Remediation',
       type: 'POST',
       url: '/api/ExecBECBulkCheck',
       icon: <CippIcons.MagnifyingGlassIcon />,
@@ -954,7 +944,9 @@ export const useCippUserActions = () => {
         },
       ],
       confirmText: 'Select a SharePoint site and where to create the OneDrive shortcut:',
-      multiPost: false,
+      // One request for all selected users: the backend attempts every user and reports each
+      // failure in place, so a bulk rollout does not stop at the first user that already has it.
+      multiPost: true,
       allowResubmit: true,
       condition: () => canWriteUser,
     },

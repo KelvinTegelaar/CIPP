@@ -30,6 +30,7 @@ import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
 import { CippFormCondition } from '../../../../components/CippComponents/CippFormCondition'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { useSettings } from '../../../../hooks/use-settings'
+import { pushEnrolmentHint, usePushDevices } from '../../../../hooks/use-push-subscription'
 
 const AlertWizard = () => {
   const apiRequest = ApiPostCall({
@@ -151,10 +152,12 @@ const AlertWizard = () => {
     { value: '365d', label: 'Every 365 days' },
   ])
 
+  const pushDevices = usePushDevices()
   const postExecutionOptions = [
     { label: 'Webhook', value: 'Webhook' },
     { label: 'Email', value: 'Email' },
     { label: 'PSA', value: 'PSA' },
+    ...(pushDevices.devices.length > 0 ? [{ label: 'Push (notify me)', value: 'Push' }] : []),
   ]
   const logbookOptions = [
     { value: 'Audit.AzureActiveDirectory', label: 'Azure AD' },
@@ -1385,6 +1388,7 @@ const AlertWizard = () => {
                                 multiple={true}
                                 creatable={false}
                                 options={postExecutionOptions}
+                                helperText={pushEnrolmentHint(pushDevices)}
                               />
                             </Grid>
 

@@ -389,10 +389,13 @@ export const CippBecContainmentDrawer = ({
       >
         <Stack spacing={2}>
           <Alert severity="info">
-            Pick the actions and their targets, then run. Targets default to the
-            flagged findings of the{' '}
-            {caseId ? `run (case ${caseId})` : 'live tenant'}. Actions marked
-            Critical need the user&apos;s UPN typed below before they run.
+            {caseId && !becData
+              ? `The investigation (case ${caseId}) is still running, so targets come from the live tenant; the result is recorded on the case. `
+              : `Pick the actions and their targets, then run. Targets default to the flagged findings of the ${
+                  caseId ? `run (case ${caseId})` : 'live tenant'
+                }. `}
+            Actions marked Critical need the user&apos;s UPN typed below before
+            they run.
           </Alert>
           {catalogCall.isLoading && (
             <Typography variant="body2">Loading actions...</Typography>

@@ -192,6 +192,8 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => (
+  <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>
+)
 
 export default Page

@@ -2294,6 +2294,7 @@ const Page = () => {
                 { label: 'Email', value: 'Email' },
                 { label: 'Webhook', value: 'Webhook' },
                 { label: 'PSA', value: 'PSA' },
+                { label: 'Push (notify me)', value: 'Push' },
               ]}
               multiple={true}
             />

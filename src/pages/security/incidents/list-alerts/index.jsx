@@ -15,8 +15,6 @@ const Page = () => {
       data: {
         GUID: "Id",
         Status: "!inProgress",
-        Vendor: "RawResult.vendorInformation.vendor",
-        Provider: "RawResult.vendorInformation.provider",
       },
       confirmText: "Are you sure you want to set the status to in progress?",
     },
@@ -28,8 +26,6 @@ const Page = () => {
       data: {
         GUID: "Id",
         Status: "!resolved",
-        Vendor: "RawResult.vendorInformation.vendor",
-        Provider: "RawResult.vendorInformation.provider",
       },
       confirmText: "Are you sure you want to set the status to resolved?",
     },

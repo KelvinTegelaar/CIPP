@@ -1347,6 +1347,12 @@ const CippAddEditUser = (props) => {
                 formControl={formControl}
               />
               <CippFormComponent
+                type="switch"
+                label="Push notification to my devices"
+                name="postExecution.push"
+                formControl={formControl}
+              />
+              <CippFormComponent
                 type="textField"
                 fullWidth
                 label="Reference"

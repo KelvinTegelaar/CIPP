@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { Box } from '@mui/material'
@@ -8,6 +9,7 @@ import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { useCippRoleAssignmentActions } from '../../../../components/CippComponents/CippRoleAssignmentActions'
+import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import tabOptions from './tabOptions.json'
 
 // Drill-in panel: the role's assignments with the secure-direction actions (convert to
@@ -41,8 +43,8 @@ const RoleAssignmentsPanel = ({ row }) => {
  * One row per role, like the classic Roles page, with the PIM breakdown on top: how many
  * principals hold the role permanently, eligibly or time-bound, and the role's PIM policy
  * summary. Clicking a role expands it into its assignments with the secure-direction actions.
- * Single tenant reads live (roles nobody holds included); AllTenants reads the reporting
- * cache, which has no catalogue rows.
+ * Single tenant reads live by default and can switch to the reporting cache (both include roles
+ * nobody holds); AllTenants always reads the cache and lists assigned roles only.
  */
 const Page = () => {
   const pageTitle = 'Roles & Assignments'
@@ -52,9 +54,23 @@ const Page = () => {
   const canWriteRole = checkPermissions(['Identity.Role.ReadWrite'])
   // Deep links (alerts, the user page) narrow the list to one role or principal.
   const { roleTemplateId, principalId } = router.query
-  const apiData = {}
-  if (roleTemplateId) apiData.roleTemplateId = roleTemplateId
-  if (principalId) apiData.principalId = principalId
+  const apiData = useMemo(() => {
+    const data = {}
+    if (roleTemplateId) data.roleTemplateId = roleTemplateId
+    if (principalId) data.principalId = principalId
+    return data
+  }, [roleTemplateId, principalId])
+  const reportDB = useCippReportDB({
+    apiUrl: '/api/ListPIMRoles',
+    queryKey: 'ListPIMRoles',
+    cacheName: 'RolesAndAssignments',
+    syncTitle: 'Sync Roles & Assignments',
+    allowToggle: true,
+    defaultCached: false,
+    allowAllTenantSync: true,
+    cacheColumns: ['CacheTimestamp'],
+    apiData,
+  })
   const tenantQuery =
     currentTenant === 'AllTenants' ? '[Tenant]' : currentTenant
 
@@ -160,29 +176,39 @@ const Page = () => {
   }
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/ListPIMRoles"
-      apiData={apiData}
-      queryKey={`ListPIMRoles-${currentTenant}`}
-      actions={actions}
-      offCanvas={offCanvas}
-      filters={filters}
-      simpleColumns={[
-        'Tenant',
-        'RoleDisplayName',
-        'Members',
-        'PermanentCount',
-        'EligibleCount',
-        'ActiveCount',
-        'IsPrivilegedRole',
-        'PolicySummary',
-      ]}
-      rowOpen={{
-        link: `/identity/administration/roles/role?roleTemplateId=[RoleDefinitionId]&tenantFilter=${tenantQuery}`,
-        condition: (row) => Boolean(row?.RoleDefinitionId),
-      }}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        dataSourceControls={reportDB.controls}
+        apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        queryKey={
+          reportDB.useReportDB
+            ? reportDB.resolvedQueryKey
+            : `ListPIMRoles-${currentTenant}`
+        }
+        actions={actions}
+        offCanvas={offCanvas}
+        filters={filters}
+        simpleColumns={[
+          // Tenant is always listed, so only the cache timestamp is taken from the hook.
+          ...reportDB.cacheColumns.filter((column) => column !== 'Tenant'),
+          'Tenant',
+          'RoleDisplayName',
+          'Members',
+          'PermanentCount',
+          'EligibleCount',
+          'ActiveCount',
+          'IsPrivilegedRole',
+          'PolicySummary',
+        ]}
+        rowOpen={{
+          link: `/identity/administration/roles/role?roleTemplateId=[RoleDefinitionId]&tenantFilter=${tenantQuery}`,
+          condition: (row) => Boolean(row?.RoleDefinitionId),
+        }}
+      />
+      {reportDB.syncDialog}
+    </>
   )
 }
 

@@ -294,6 +294,9 @@ const Page = () => {
             <Box sx={{ borderBottom: 1, borderColor: "divider", px: "24px", m: "auto" }}>
               <Tabs value={value} onChange={handleTabChange} aria-label="Integration settings">
                 <Tab label="Settings" {...tabProps(0)} />
+                {extension?.id === "cippapi" && (
+                  <Tab label="API Usage" value={5} {...tabProps(5)} />
+                )}
                 {extension?.mappingRequired && (
                   <Tab
                     label="Tenant Mapping"
@@ -329,15 +332,17 @@ const Page = () => {
             </Box>
             <CippCardTabPanel value={value} index={0}>
               {extension?.id === "cippapi" ? (
-                <Stack spacing={2}>
-                  <CippApiEgressCard />
-                  <CippApiClientManagement />
-                </Stack>
+                <CippApiClientManagement />
               ) : (
                 <CippIntegrationSettings />
               )}
             </CippCardTabPanel>
 
+            {extension?.id === "cippapi" && (
+              <CippCardTabPanel value={value} index={5}>
+                <CippApiEgressCard />
+              </CippCardTabPanel>
+            )}
             {extension?.mappingRequired && (
               <CippCardTabPanel value={value} index={1}>
                 <CippIntegrationTenantMapping />

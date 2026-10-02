@@ -660,6 +660,8 @@ export const CippDataTable = (props) => {
     simpleColumns = [],
     dataFilter,
     dataMap,
+    // Whole-array transform applied after dataFilter/dataMap (e.g. grouping All Tenants rows).
+    dataTransform,
     actions,
     title = 'Report',
     simple = false,
@@ -874,11 +876,11 @@ export const CippDataTable = (props) => {
       const filtered = dataFilter
         ? combinedResults.filter(dataFilter)
         : combinedResults
-      setUsedData(
+      const mapped =
         typeof dataMap === 'function'
           ? filtered.map((row) => dataMap(row, { parentRow }))
           : filtered
-      )
+      setUsedData(typeof dataTransform === 'function' ? dataTransform(mapped) : mapped)
     }
   }, [
     api?.url,
@@ -889,6 +891,7 @@ export const CippDataTable = (props) => {
     queryKey,
     dataFilter,
     dataMap,
+    dataTransform,
     parentRow,
   ])
 

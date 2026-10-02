@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Alert, Box, Container, Stack } from "@mui/material";
+import { Alert, Box, Button, Container, Stack, Tooltip } from "@mui/material";
 import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "../../layouts/index";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
@@ -12,7 +12,82 @@ import CippDevOptions from "../../components/CippComponents/CippDevOptions";
 import { CippOffboardingDefaultSettings } from "../../components/CippComponents/CippOffboardingDefaultSettings";
 import { ApiGetCall } from "../../api/ApiCall";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { CippApiResults } from "../../components/CippComponents/CippApiResults";
+import { usePushDevices, usePushSubscription } from "../../hooks/use-push-subscription";
+import { CippDataTable } from "../../components/CippTable/CippDataTable";
+import { CippIcons } from "../../utils/icon-registry";
+
+// Web Push devices for the signed-in user. Deliberately outside the settings form: the
+// settings blob is saved wholesale from the sidebar, while devices are a collection with
+// their own endpoints.
+const PushDevicesCard = () => {
+  // Same paginated query the table runs, so the VAPID public key costs no extra request.
+  const push = usePushSubscription({ publicKey: usePushDevices().publicKey });
+  // CippDataTable re-maps its rows whenever dataMap changes identity, so keep it stable or the
+  // table flickers on every render of this card.
+  const currentEndpoint = push.currentEndpoint;
+  const markThisDevice = useCallback(
+    (d) => ({
+      ...d,
+      DeviceName: d.Endpoint === currentEndpoint ? `${d.DeviceName} (this device)` : d.DeviceName,
+    }),
+    [currentEndpoint],
+  );
+
+  const enableButton = (
+    <Button
+      size="small"
+      variant="contained"
+      disabled={!!push.blockedReason || push.register.isPending}
+      onClick={() => push.subscribe().catch(() => {})}
+    >
+      Enable on this device
+    </Button>
+  );
+
+  return (
+    <Stack spacing={1}>
+      <CippDataTable
+        title="Push Notification Devices"
+        queryKey="ListPushSubscriptions"
+        api={{ url: "/api/ListPushSubscriptions", dataKey: "Devices" }}
+        dataMap={markThisDevice}
+        simpleColumns={["DeviceName", "Created"]}
+        exportEnabled={false}
+        showBulkExportAction={false}
+        cardButton={[
+          push.blockedReason ? (
+            <Tooltip key="enable" title={push.blockedReason}>
+              <span>{enableButton}</span>
+            </Tooltip>
+          ) : (
+            enableButton
+          ),
+          {
+            label: "Send test notification",
+            url: "/api/ExecPushSubscription",
+            data: { Action: "Test" },
+            confirmText: "Send a test notification to every device registered to you?",
+          },
+        ]}
+        actions={[
+          {
+            label: "Remove device",
+            icon: <CippIcons.TrashIcon />,
+            color: "danger",
+            url: "/api/ExecPushSubscription",
+            type: "POST",
+            data: { Action: "Unsubscribe", RowKey: "RowKey" },
+            relatedQueryKeys: ["ListPushSubscriptions"],
+            confirmText: "Stop sending push notifications to [DeviceName]?",
+          },
+        ]}
+      />
+      <CippApiResults apiObject={push.register} />
+    </Stack>
+  );
+};
 
 const Page = () => {
   const settings = useSettings();
@@ -409,6 +484,7 @@ const Page = () => {
                       formControl={formcontrol}
                       defaultsSource={cleanedSettings.offboardingDefaultsSource}
                     />
+                    <PushDevicesCard />
                   </Stack>
                 </Grid>
                 <Grid size={{ xs: 12, lg: 4 }}>

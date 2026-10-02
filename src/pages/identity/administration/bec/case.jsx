@@ -40,10 +40,15 @@ const Page = () => {
   }, [caseIdParam])
 
   const userRequest = ApiGetCall({
-    url: '/api/ListUsers',
-    data: { UserId: userId, tenantFilter: tenant },
-    queryKey: `ListUsers-${userId}`,
-    waiting: ready,
+    url: '/api/ListGraphRequest',
+    data: {
+      Endpoint: 'users',
+      $filter: `id eq '${userId}'`,
+      $select: 'id,displayName,userPrincipalName',
+      tenantFilter: tenant,
+    },
+    queryKey: `BECCaseUser-${tenant}-${userId}`,
+    waiting: ready && tenant !== 'AllTenants',
   })
 
   const runsCall = ApiGetCall({
@@ -115,7 +120,7 @@ const Page = () => {
         data: {
           tenantFilter: tenant,
           userid: userId,
-          userName: userRequest.data?.[0]?.userPrincipalName,
+          userName: userRequest.data?.Results?.[0]?.userPrincipalName,
         },
       },
       {
@@ -134,7 +139,7 @@ const Page = () => {
   useEffect(() => {
     if (
       router.query.start === 'true' &&
-      userRequest.data?.[0]?.userPrincipalName &&
+      userRequest.data?.Results?.[0]?.userPrincipalName &&
       !autoStartedRef.current &&
       !startRunCall.isPending
     ) {
@@ -214,7 +219,7 @@ const Page = () => {
     )
   }, [becData])
 
-  const userData = userRequest.data?.[0]
+  const userData = userRequest.data?.Results?.[0]
 
   // The case switcher, shown only when the user has more than one run. Lives in the triage header's
   // title spot; each option carries the date, level and the case id so it is unambiguous.
@@ -326,6 +331,11 @@ const Page = () => {
         )}
 
         {becData && <CippBecRemediationHistory becData={becData} />}
+        {runState === 'waiting' && (
+          <CippBecRemediationHistory
+            becData={{ Run: { Containment: poll?.Containment } }}
+          />
+        )}
 
         {becData && (
           <CippButtonCard

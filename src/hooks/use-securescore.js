@@ -24,6 +24,19 @@ export function useSecureScore({ waiting = true } = {}) {
     waiting: waiting && !isAllTenants,
   })
 
+  // Same key and TTL as the layout's call so react-query serves one shared copy.
+  const featureFlags = ApiGetCall({
+    url: '/api/ListFeatureFlags',
+    queryKey: 'featureFlags',
+    staleTime: 600000,
+  })
+  const baselinesEnabled =
+    Array.isArray(featureFlags.data) &&
+    featureFlags.data.some((flag) => flag.Id === 'Baselines' && flag.Enabled === true)
+  // The Baselines flag hides the classic standards pages, so the in-app remediation link
+  // has to follow it or it lands on a page that no longer exists.
+  const standardsPath = baselinesEnabled ? '/tenant/baselines' : '/tenant/standards/templates'
+
   const secureScore = ApiGetCall({
     url: '/api/ListGraphRequest',
     data: {
@@ -70,8 +83,7 @@ export function useSecureScore({ waiting = true } = {}) {
           threats: translation?.threats,
           complianceInformation: translation?.complianceInformation,
           actionUrl: remediation
-            ? //this needs to be updated to be a direct url to apply this standard.
-              '/tenant/standards'
+            ? `${standardsPath}?standard=${encodeURIComponent(remediation.name)}`
             : translation?.actionUrl,
           remediation: remediation
             ? `1. Enable the CIPP Standard: ${remediation.label}`
@@ -109,6 +121,7 @@ export function useSecureScore({ waiting = true } = {}) {
     controlScore.data,
     secureScore.data,
     isAllTenants,
+    standardsPath,
   ])
 
   return {

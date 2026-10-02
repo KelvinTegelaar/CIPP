@@ -6,6 +6,7 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
@@ -60,6 +61,7 @@ const UserRunsDrawer = ({ row, actions, drawerVisible, setDrawerVisible }) => {
 const StartInvestigationDrawer = ({ tenant }) => {
   const router = useRouter()
   const [visible, setVisible] = useState(false)
+  const isAllTenants = tenant === 'AllTenants'
   const formControl = useForm({
     mode: 'onChange',
     defaultValues: { users: [] },
@@ -106,13 +108,22 @@ const StartInvestigationDrawer = ({ tenant }) => {
 
   return (
     <>
-      <Button
-        variant="contained"
-        startIcon={<CippIcons.TravelExplore />}
-        onClick={() => setVisible(true)}
+      <Tooltip
+        title={
+          isAllTenants ? 'Select a single tenant to start an investigation' : ''
+        }
       >
-        Start investigation
-      </Button>
+        <span>
+          <Button
+            variant="contained"
+            startIcon={<CippIcons.TravelExplore />}
+            onClick={() => setVisible(true)}
+            disabled={isAllTenants}
+          >
+            Start investigation
+          </Button>
+        </span>
+      </Tooltip>
       <CippOffCanvas
         title="Start a BEC investigation"
         visible={visible}
@@ -154,11 +165,17 @@ const StartInvestigationDrawer = ({ tenant }) => {
             creatable={false}
             disabled={queue.isPending}
             api={{
-              url: '/api/ListUsers',
-              data: { tenantFilter: tenant },
+              url: '/api/ListGraphRequest',
+              data: {
+                Endpoint: 'users',
+                $select: 'id,displayName,userPrincipalName',
+                $top: 999,
+                $count: true,
+              },
+              dataKey: 'Results',
               labelField: (u) => `${u.displayName} (${u.userPrincipalName})`,
               valueField: 'id',
-              queryKey: `ListUsers-${tenant}`,
+              queryKey: `BECUserPicker-${tenant}`,
             }}
           />
         </Stack>

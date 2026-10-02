@@ -21,6 +21,7 @@ import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import CippGraphResourceSelector from '../CippComponents/CippGraphResourceSelector'
 import CippGraphAttributeSelector from '../CippComponents/CippGraphAttributeSelector'
 import { getCippValidator } from '../../utils/get-cipp-validator'
+import { pushEnrolmentHint, usePushDevices } from '../../hooks/use-push-subscription'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
@@ -29,6 +30,8 @@ import CippFormInputArray from '../CippComponents/CippFormInputArray'
 import { CippApiResults } from '../CippComponents/CippApiResults'
 
 const CippSchedulerForm = (props) => {
+  const pushDevices = usePushDevices()
+  const pushEnrolled = pushDevices.devices.length > 0
   const {
     formControl,
     fullWidth = false,
@@ -676,7 +679,9 @@ const CippSchedulerForm = (props) => {
               { label: 'Webhook', value: 'Webhook' },
               { label: 'Email', value: 'Email' },
               { label: 'PSA', value: 'PSA' },
+              ...(pushEnrolled ? [{ label: 'Push (notify me)', value: 'Push' }] : []),
             ]}
+            helperText={pushEnrolmentHint(pushDevices)}
           />
         </Grid>
 

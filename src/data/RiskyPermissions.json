@@ -401,6 +401,14 @@
   },
   {
     "api": "Microsoft Graph",
+    "id": "ed4fca05-be46-441f-9803-1873825f8fdb",
+    "name": "SecurityAlert.ReadWrite.All",
+    "type": "Application",
+    "risk": "High",
+    "reason": "Abuse: resolve or reclassify Defender alerts—hide active attacks from the SOC. High: integrity of SecOps triage."
+  },
+  {
+    "api": "Microsoft Graph",
     "id": "656f6061-f9fe-4807-9708-6a2e0934df76",
     "name": "IdentityRiskyUser.ReadWrite.All",
     "type": "Application",

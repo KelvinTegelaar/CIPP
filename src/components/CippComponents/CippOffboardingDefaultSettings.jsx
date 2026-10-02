@@ -280,6 +280,14 @@ export const CippOffboardingDefaultSettings = (props) => {
                   formControl={formControl}
                 />
               </Grid>
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <CippFormComponent
+                  type="switch"
+                  label="Push notification"
+                  name="offboardingDefaults.postExecution.push"
+                  formControl={formControl}
+                />
+              </Grid>
             </Grid>
           </Box>
         }
