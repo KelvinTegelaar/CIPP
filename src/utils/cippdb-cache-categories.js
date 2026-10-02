@@ -20,6 +20,7 @@ const CACHE_TYPE_COLLECTIONS = {
     "DirectoryRecommendations",
     "CrossTenantAccessPolicy",
     "DefaultAppManagementPolicy",
+    "ActivityBasedTimeoutPolicy",
     "Settings",
     "SecureScore",
     "PIMSettings",
@@ -85,7 +86,14 @@ const CACHE_TYPE_COLLECTIONS = {
     "ExoTenantAllowBlockListSpoofItems",
     "ExoPhishSimConfig",
   ],
-  ExchangeData: ["CASMailboxes", "MailboxUsage", "OfficeActivations", "HVEAccounts", "Mailboxes"],
+  ExchangeData: [
+    "CASMailboxes",
+    "ExoCASMailboxSmtpAuth",
+    "MailboxUsage",
+    "OfficeActivations",
+    "HVEAccounts",
+    "Mailboxes",
+  ],
   ConditionalAccess: [
     "ConditionalAccessPolicies",
     "CredentialUserRegistrationDetails",

@@ -90,6 +90,11 @@
     "description": "Default application management policy"
   },
   {
+    "type": "ActivityBasedTimeoutPolicy",
+    "friendlyName": "Activity Based Timeout Policy",
+    "description": "Idle session timeout policies for Microsoft 365 web apps"
+  },
+  {
     "type": "Settings",
     "friendlyName": "Directory Settings",
     "description": "Directory settings configuration"
@@ -278,6 +283,11 @@
     "type": "CASMailboxes",
     "friendlyName": "CAS Mailboxes",
     "description": "Client Access Server mailbox settings"
+  },
+  {
+    "type": "ExoCASMailboxSmtpAuth",
+    "friendlyName": "CAS Mailbox SMTP AUTH Overrides",
+    "description": "Mailboxes with SMTP AUTH explicitly enabled despite the tenant default"
   },
   {
     "type": "MailboxUsage",
