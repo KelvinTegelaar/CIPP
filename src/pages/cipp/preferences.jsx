@@ -10,11 +10,11 @@ import countryList from "../../data/countryList.json";
 import { CippSettingsSideBar } from "../../components/CippComponents/CippSettingsSideBar";
 import CippDevOptions from "../../components/CippComponents/CippDevOptions";
 import { CippOffboardingDefaultSettings } from "../../components/CippComponents/CippOffboardingDefaultSettings";
-import { ApiGetCall, ApiGetCallWithPagination } from "../../api/ApiCall";
+import { ApiGetCall } from "../../api/ApiCall";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CippApiResults } from "../../components/CippComponents/CippApiResults";
-import { usePushSubscription } from "../../hooks/use-push-subscription";
+import { usePushDevices, usePushSubscription } from "../../hooks/use-push-subscription";
 import { CippDataTable } from "../../components/CippTable/CippDataTable";
 import { CippIcons } from "../../utils/icon-registry";
 
@@ -23,8 +23,17 @@ import { CippIcons } from "../../utils/icon-registry";
 // their own endpoints.
 const PushDevicesCard = () => {
   // Same paginated query the table runs, so the VAPID public key costs no extra request.
-  const devices = ApiGetCallWithPagination({ url: "/api/ListPushSubscriptions", queryKey: "ListPushSubscriptions" });
-  const push = usePushSubscription({ publicKey: devices.data?.pages?.[0]?.PublicKey });
+  const push = usePushSubscription({ publicKey: usePushDevices().publicKey });
+  // CippDataTable re-maps its rows whenever dataMap changes identity, so keep it stable or the
+  // table flickers on every render of this card.
+  const currentEndpoint = push.currentEndpoint;
+  const markThisDevice = useCallback(
+    (d) => ({
+      ...d,
+      DeviceName: d.Endpoint === currentEndpoint ? `${d.DeviceName} (this device)` : d.DeviceName,
+    }),
+    [currentEndpoint],
+  );
 
   const enableButton = (
     <Button
@@ -43,11 +52,7 @@ const PushDevicesCard = () => {
         title="Push Notification Devices"
         queryKey="ListPushSubscriptions"
         api={{ url: "/api/ListPushSubscriptions", dataKey: "Devices" }}
-        dataMap={(d) => ({
-          ...d,
-          DeviceName:
-            d.Endpoint === push.currentEndpoint ? `${d.DeviceName} (this device)` : d.DeviceName,
-        })}
+        dataMap={markThisDevice}
         simpleColumns={["DeviceName", "Created"]}
         exportEnabled={false}
         showBulkExportAction={false}

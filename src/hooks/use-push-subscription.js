@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ApiPostCall } from '../api/ApiCall'
+import { ApiGetCallWithPagination, ApiPostCall } from '../api/ApiCall'
 import { getImpersonatedRole } from '../utils/impersonation'
 
 // Base64url -> Uint8Array, the shape PushManager.subscribe wants for applicationServerKey.
@@ -41,6 +41,32 @@ const defaultDeviceName = () => {
           ? 'Safari'
           : 'Browser'
   return `${os} ${browser}${isStandalone() ? ' (app)' : ''}`
+}
+
+/**
+ * The signed-in user's registered push devices plus the instance VAPID public key.
+ * The Preferences table lists the same endpoint under this queryKey with the paginated
+ * hook, so this must read the paginated cache shape too or the two fight over one key.
+ */
+export const usePushDevices = () => {
+  const query = ApiGetCallWithPagination({
+    url: '/api/ListPushSubscriptions',
+    queryKey: 'ListPushSubscriptions',
+  })
+  const pages = query.data?.pages ?? []
+  return {
+    ...query,
+    devices: pages.flatMap((page) => page?.Devices ?? []),
+    publicKey: pages[0]?.PublicKey,
+  }
+}
+
+/** Helper text for a post-execution picker, so forms say where to enrol before Push does anything. */
+export const pushEnrolmentHint = (pushDevices) => {
+  const count = pushDevices?.devices?.length ?? 0
+  return count
+    ? `Push (notify me) sends to the ${count} device${count === 1 ? '' : 's'} you registered under Preferences > Push Notifications.`
+    : 'Push (notify me) needs a registered device. Enable notifications under Preferences > Push Notifications first.'
 }
 
 /**
