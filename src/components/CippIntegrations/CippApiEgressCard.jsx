@@ -3,9 +3,7 @@ import {
   Card,
   CardContent,
   CardHeader,
-  MenuItem,
   Stack,
-  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
@@ -27,11 +25,12 @@ import {
 } from "recharts";
 import { ApiGetCall } from "../../api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
+import { CippAutoComplete } from "../CippComponents/CippAutocomplete";
 
 // Authoritative per-client API egress from Craft's CraftEgressAccounting table (via /api/ListApiEgress):
 // a used-of-cap gauge for the instance total, a stacked-by-client trend over the selected window, and
 // today's top endpoints for all API clients, one client, or signed-in users (tracked, never capped).
-// Self-hides when accounting is off / not hosted. Reused on the Diagnostics and Integrations pages.
+// Shows a notice instead when accounting is off / not hosted.
 
 const RANGE_OPTIONS = [
   { label: "24h", hours: 24 },
@@ -115,25 +114,34 @@ export const CippApiEgressCard = () => {
     ],
     [r]
   );
+  const selectedSource =
+    endpointSources.find((s) => s.value === endpointSource) ?? endpointSources[0];
   const endpointRows = useMemo(
     () =>
-      (endpointSources.find((s) => s.value === endpointSource) ?? endpointSources[0]).endpoints.map(
-        (e) => ({
-          Endpoint: e.Endpoint,
-          Egress: formatBytes(e.Bytes),
-          Requests: e.Requests,
-          AvgSize: formatBytes(e.AvgBytes),
-          MaxSize: formatBytes(e.MaxBytes),
-          CacheHitPct: e.Requests > 0 ? Math.round((e.CacheHits / e.Requests) * 100) : 0,
-          Errors: e.Errors,
-          Shed: e.Shed,
-        })
-      ),
-    [endpointSources, endpointSource]
+      selectedSource.endpoints.map((e) => ({
+        Endpoint: e.Endpoint,
+        Egress: formatBytes(e.Bytes),
+        Requests: e.Requests,
+        AvgSize: formatBytes(e.AvgBytes),
+        MaxSize: formatBytes(e.MaxBytes),
+        CacheHitPct: e.Requests > 0 ? Math.round((e.CacheHits / e.Requests) * 100) : 0,
+        Errors: e.Errors,
+        Shed: e.Shed,
+      })),
+    [selectedSource]
   );
 
-  // Query resolved but accounting is off / no data: render nothing.
-  if (query.isSuccess && !r?.Enabled) return null;
+  if (query.isSuccess && !r?.Enabled) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography variant="body2" color="text.secondary">
+            API egress accounting is not enabled on this instance.
+          </Typography>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const clientIds = r?.ClientIds ?? [];
   const capBytes = r?.CapBytes ?? 0;
@@ -262,20 +270,20 @@ export const CippApiEgressCard = () => {
 
           {/* ── Today's top endpoints ── */}
           <Grid size={{ xs: 12 }}>
-            <TextField
-              select
+            <CippAutoComplete
+              creatable={false}
+              disableClearable
+              multiple={false}
               size="small"
               label="Endpoints for"
-              value={endpointSource}
-              onChange={(e) => setEndpointSource(e.target.value)}
-              sx={{ minWidth: 260 }}
-            >
-              {endpointSources.map((s) => (
-                <MenuItem key={s.value} value={s.value}>
-                  {s.label}
-                </MenuItem>
-              ))}
-            </TextField>
+              options={endpointSources.map(({ value, label }) => ({ value, label }))}
+              value={{ value: selectedSource.value, label: selectedSource.label }}
+              onChange={(v) => {
+                const next = Array.isArray(v) ? v[0] : v;
+                if (next?.value) setEndpointSource(next.value);
+              }}
+              sx={{ minWidth: 260, maxWidth: 400, mb: 1 }}
+            />
             <CippDataTable
               noCard
               title="Top endpoints today"
