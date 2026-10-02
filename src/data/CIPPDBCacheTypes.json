@@ -145,11 +145,6 @@
     "description": "Device registration policy settings"
   },
   {
-    "type": "CredentialUserRegistrationDetails",
-    "friendlyName": "Credential User Registration Details",
-    "description": "User credential registration details"
-  },
-  {
     "type": "UserRegistrationDetails",
     "friendlyName": "User Registration Details",
     "description": "MFA registration details for users"
