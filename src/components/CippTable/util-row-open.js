@@ -1,4 +1,4 @@
-import { resolveRowTemplates, getRowTenant } from '../../utils/resolve-row-templates'
+import { resolveRowTemplates, getRowTenant, withRowTenant } from '../../utils/resolve-row-templates'
 
 const UNRESOLVED = /\[([^\]]+)\]/
 
@@ -54,7 +54,7 @@ export const resolveRowOpenLink = (rowOpen, row, options = {}) => {
   if (UNRESOLVED.test(link)) {
     return null
   }
-  return link
+  return withRowTenant(link, row, options.currentTenant)
 }
 
 export const resolveActionLink = (action, row, options = {}) => {
@@ -66,7 +66,7 @@ export const resolveActionLink = (action, row, options = {}) => {
   if (UNRESOLVED.test(link)) {
     return null
   }
-  return link
+  return withRowTenant(link, row, options.currentTenant)
 }
 
 export const actionMatchesRowOpen = (action, rowOpen, row, options = {}) => {

@@ -74,6 +74,21 @@ export const getRowTenant = (row, currentTenant) => {
   )
 }
 
+/**
+ * Internal links opened from an AllTenants row carry the row's tenant, so the target page
+ * selects that tenant instead of inheriting AllTenants.
+ */
+export const withRowTenant = (link, row, currentTenant) => {
+  if (currentTenant !== 'AllTenants' || !link?.startsWith('/') || /[?&]tenantFilter=/.test(link)) {
+    return link
+  }
+  const tenant = getRowTenant(row, currentTenant)
+  if (!tenant || tenant === 'AllTenants') {
+    return link
+  }
+  return `${link}${link.includes('?') ? '&' : '?'}tenantFilter=${encodeURIComponent(tenant)}`
+}
+
 const replaceTemplatesInString = (value, row) =>
   value.replace(TEMPLATE, (_, key) => {
     const resolved = getNestedValue(row, key)

@@ -19,6 +19,7 @@ import { CippFormCondition } from './CippFormCondition'
 import {
   getNestedValue as getRowPath,
   getRowTenant,
+  withRowTenant,
 } from '../../utils/resolve-row-templates'
 import {
   extractCsvColumnValues,
@@ -324,7 +325,7 @@ export const CippApiDialog = (props) => {
           const value = getRawNestedValue(row, key)
           return hasValue(value) ? encodeURIComponent(String(value)) : `[${key}]`
         })
-        router.push(internalLink, undefined, { shallow: true })
+        router.push(withRowTenant(internalLink, row, tenantFilter), undefined, { shallow: true })
       } else {
         // External links may substitute a whole URL (e.g. [webUrl]) and are left as-is.
         const externalLink = api.link.replace(placeholder, (_, key) => {
