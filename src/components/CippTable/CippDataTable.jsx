@@ -188,7 +188,7 @@ const buildSubTableColumn = (sub) => ({
   ),
 })
 
-const SORTING_FNS = {
+export const SORTING_FNS = {
   dateTimeNullsLast: (a, b, id) => {
     const aRaw = getRowValueByColumnId(a, id)
     const bRaw = getRowValueByColumnId(b, id)
@@ -210,6 +210,15 @@ const SORTING_FNS = {
     const bVal = Number.isNaN(bNum) ? null : bNum
 
     return compareNullable(aVal, bVal)
+  },
+  // Object-array columns render as an "N items" button; sort on the item count instead
+  // of the accessor's text form (a JSON string), which orders them at random.
+  arrayLength: (a, b, id) => {
+    const len = (row) => {
+      const value = getRowValueByColumnId(row, id)
+      return Array.isArray(value) ? value.length : null
+    }
+    return compareNullable(len(a), len(b))
   },
   boolean: (a, b, id) => {
     const aRaw = getRowValueByColumnId(a, id)

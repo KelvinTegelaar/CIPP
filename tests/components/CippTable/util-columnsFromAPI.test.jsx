@@ -29,6 +29,16 @@ describe('utilColumnsFromAPI', () => {
     })
   })
 
+  it('sorts object-array columns by item count but leaves string arrays alone', () => {
+    const data = [
+      { Members: [], proxyAddresses: ['SMTP:a@contoso.com'] },
+      { Members: [{ id: '1', displayName: 'Alice' }], proxyAddresses: ['SMTP:b@contoso.com'] },
+    ]
+    const columns = utilColumnsFromAPI(data)
+    expect(columns.find((c) => c.id === 'Members').sortingFn).toBe('arrayLength')
+    expect(columns.find((c) => c.id === 'proxyAddresses').sortingFn).toBeUndefined()
+  })
+
   it('generates columns for nested object properties', () => {
     const data = [
       { info: { city: 'Seattle', state: 'WA' }, name: 'Test' },

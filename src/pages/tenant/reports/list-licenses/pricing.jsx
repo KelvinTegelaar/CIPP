@@ -173,6 +173,8 @@ const Page = () => {
           type: 'number',
           name: 'MonthlyPrice',
           label: 'Monthly price per seat',
+          // Prices carry cents; without step="any" the browser rejects anything but whole numbers
+          slotProps: { htmlInput: { step: 'any', min: 0 } },
         },
       ],
       // Override is scoped to the currency currently being viewed.
