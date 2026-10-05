@@ -434,6 +434,7 @@ const Page = () => {
           if (!isNaN(storageMax) && storageMax > 0) payload.StorageMaximumLevel = storageMax
           if (!isNaN(storageWarn) && storageWarn > 0) payload.StorageWarningLevel = storageWarn
           if (!isGroupSite && !formData.InheritVersionPolicyFromTenant) {
+            payload.ApplyToNewDocumentLibraries = true
             payload.EnableAutoExpirationVersionTrim = !!formData.EnableAutoExpirationVersionTrim
             if (!formData.EnableAutoExpirationVersionTrim) {
               payload.MajorVersionLimit = parseInt(formData.MajorVersionLimit ?? 0, 10)
