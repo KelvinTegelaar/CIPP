@@ -91,6 +91,12 @@ const Page = () => {
     relatedQueryKeys: [`TenantProperties_${currentTenant}`, 'CustomVariables*'],
   })
 
+  const vacationFormControl = useForm({ mode: 'onChange' })
+  const updateVacationDefaults = ApiPostCall({
+    urlFromData: true,
+    relatedQueryKeys: [`TenantProperties_${currentTenant}`, 'ListTenants-notAllTenants'],
+  })
+
   const { isValid: isFormValid } = useFormState({ control: formControl.control })
   const { isValid: isOffboardingFormValid } = useFormState({
     control: offboardingFormControl.control,
@@ -168,6 +174,22 @@ const Page = () => {
       }
 
       offboardingFormControl.reset(offboardingDefaults)
+
+      let storedVacation = {}
+      try {
+        storedVacation = JSON.parse(tenantDetails.data?.customProperties?.VacationDefaults) || {}
+      } catch {
+        storedVacation = {}
+      }
+      vacationFormControl.reset({
+        vacationDefaults: {
+          PolicyId: [],
+          createTravelPolicy: false,
+          addUsageLocation: false,
+          excludeLocationAuditAlerts: false,
+          ...storedVacation,
+        },
+      })
     }
   }, [tenantDetails.isSuccess, tenantDetails.data, allGroups.data, currentTenant])
 
@@ -419,7 +441,7 @@ const Page = () => {
             </CippButtonCard>
           </Grid>
 
-          {/* Second Row - Offboarding Defaults and Custom Variables */}
+          {/* Second Row - Offboarding Defaults beside Vacation Defaults and Custom Variables */}
           <Grid size={{ md: 6, xs: 12 }}>
             <CippButtonCard
               title="Tenant Offboarding Defaults"
@@ -490,14 +512,96 @@ const Page = () => {
           </Grid>
 
           <Grid size={{ md: 6, xs: 12 }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Custom Variables
-                </Typography>
-              </CardContent>
-              <CippCustomVariables id={currentTenant} />
-            </Card>
+            <Stack spacing={3}>
+              <CippButtonCard
+                title="Tenant Vacation Defaults"
+                CardButton={
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<CippIcons.Save />}
+                    onClick={vacationFormControl.handleSubmit((values) => {
+                      updateVacationDefaults.mutate({
+                        url: '/api/EditTenantVacationDefaults',
+                        data: {
+                          customerId: tenantDetails.data?.id || currentTenant,
+                          defaultDomainName: tenantDetails.data?.defaultDomainName || currentTenant,
+                          vacationDefaults: {
+                          ...values.vacationDefaults,
+                          // Store only what the wizard needs, not the full policy objects
+                          PolicyId: (values.vacationDefaults?.PolicyId || []).map((policy) => ({
+                            value: policy.value,
+                            label: policy.label,
+                          })),
+                        },
+                        },
+                      })
+                    })}
+                    disabled={updateVacationDefaults.isPending || tenantDetails.isFetching}
+                  >
+                    {updateVacationDefaults.isPending ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                }
+                isFetching={tenantDetails.isFetching}
+              >
+                <Stack spacing={2}>
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
+                    Defaults the Vacation Mode wizard pre-fills for this tenant. They can be changed
+                    per vacation.
+                  </Typography>
+                  <CippFormComponent
+                    type="autoComplete"
+                    label="Conditional Access policies to exempt"
+                    name="vacationDefaults.PolicyId"
+                    api={{
+                      queryKey: `ListConditionalAccessPolicies-${currentTenant}`,
+                      url: '/api/ListGraphRequest',
+                      data: {
+                        tenantFilter: currentTenant,
+                        Endpoint: 'conditionalAccess/policies',
+                        AsApp: true,
+                      },
+                      dataKey: 'Results',
+                      labelField: (option) => `${option.displayName}`,
+                      valueField: 'id',
+                      showRefresh: true,
+                    }}
+                    multiple={true}
+                    formControl={vacationFormControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    name="vacationDefaults.createTravelPolicy"
+                    label="Create temporary travel policy by default"
+                    formControl={vacationFormControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    name="vacationDefaults.addUsageLocation"
+                    label="Add users' usage location to the travel destinations"
+                    formControl={vacationFormControl}
+                  />
+                  <CippFormComponent
+                    type="switch"
+                    name="vacationDefaults.excludeLocationAuditAlerts"
+                    label="Exclude users from location-based alerts by default"
+                    formControl={vacationFormControl}
+                  />
+                  <CippApiResults apiObject={updateVacationDefaults} />
+                </Stack>
+              </CippButtonCard>
+
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" sx={{ mb: 2 }}>
+                    Custom Variables
+                  </Typography>
+                </CardContent>
+                <CippCustomVariables id={currentTenant} />
+              </Card>
+            </Stack>
           </Grid>
         </Grid>
       </Box>

@@ -15,6 +15,7 @@ const Page = () => {
       componentProps: {
         allTenants: false,
         type: 'single',
+        includeTenantDefaults: true,
       },
     },
     {
@@ -33,13 +34,14 @@ const Page = () => {
           data: {
             Endpoint: 'users',
             manualPagination: true,
-            $select: 'id,userPrincipalName,displayName',
+            $select: 'id,userPrincipalName,displayName,usageLocation',
             $count: true,
             $orderby: 'displayName',
             $top: 999,
           },
           addedField: {
             userPrincipalName: 'userPrincipalName',
+            usageLocation: 'usageLocation',
           },
           labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
           valueField: 'userPrincipalName',
@@ -70,6 +72,10 @@ const Page = () => {
     PolicyId: [],
     excludeLocationAuditAlerts: false,
     createTravelPolicy: false,
+    addUsageLocation: false,
+    HIDDEN_appliedDefaultsForTenant: null,
+    HIDDEN_defaultsSource: null,
+    HIDDEN_seededUsageLocations: [],
     travelCountries: [],
     enableMailboxPermissions: false,
     delegates: [],
