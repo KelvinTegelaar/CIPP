@@ -97,7 +97,7 @@
     "react-error-boundary": "^6.1.2",
     "react-hook-form": "^7.76.1",
     "react-html-parser": "^2.0.2",
-    "react-is": "19.2.8",
+    "react-is": "19.3.0",
     "react-leaflet": "5.0.0",
     "react-leaflet-markercluster": "^5.0.0-rc.0",
     "react-markdown": "10.1.0",
@@ -123,7 +123,7 @@
   },
   "devDependencies": {
     "@storybook/addon-a11y": "10.6.0",
-    "@storybook/addon-docs": "10.5.10",
+    "@storybook/addon-docs": "10.6.0",
     "@storybook/addon-themes": "10.5.10",
     "@storybook/addon-vitest": "10.6.0",
     "@storybook/react-vite": "10.3.5",
