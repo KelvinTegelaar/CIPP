@@ -3,6 +3,7 @@ import { CippIcons } from '../../utils/icon-registry'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { getCippValidator } from '../../utils/get-cipp-validator'
 import { toAutoCompleteOptions } from '../../utils/to-autocomplete-options'
+import { generateUsername } from '../../utils/generate-username'
 import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import { CippFormDomainSelector } from '../CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
@@ -253,54 +254,6 @@ const CippAddEditUser = (props) => {
     tenantDomain,
     queryClient,
   ])
-
-  // Helper function to generate username from template format
-  const generateUsername = (
-    format,
-    firstName,
-    lastName,
-    spaceHandling = 'keep',
-    spaceReplacement = ''
-  ) => {
-    if (!format || !firstName || !lastName) return ''
-
-    // Ensure format is a string
-    const formatString = typeof format === 'string' ? format : String(format)
-
-    let username = formatString
-
-    // Replace %FirstName[n]% patterns (extract first n characters per word)
-    username = username.replace(/%FirstName\[(\d+)\]%/gi, (match, num) => {
-      const n = parseInt(num)
-      return firstName
-        .split(/\s+/)
-        .map((word) => word.substring(0, n))
-        .join('');
-    })
-
-    // Replace %LastName[n]% patterns (extract first n characters per word)
-    username = username.replace(/%LastName\[(\d+)\]%/gi, (match, num) => {
-      const n = parseInt(num)
-      return lastName
-        .split(/\s+/)
-        .map((word) => word.substring(0, n))
-        .join('');
-    })
-
-    // Replace %FirstName% and %LastName%
-    username = username.replace(/%FirstName%/gi, firstName)
-    username = username.replace(/%LastName%/gi, lastName)
-
-    // Apply optional space handling
-    if (spaceHandling === 'remove') {
-      username = username.replace(/\s+/g, '')
-    } else if (spaceHandling === 'replace') {
-      username = username.replace(/\s+/g, spaceReplacement || '')
-    }
-
-    // Convert to lowercase
-    return username.toLowerCase()
-  }
 
   const validateOtherMails = (value) => {
     if (!value || (Array.isArray(value) && value.length === 0)) {
