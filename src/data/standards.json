@@ -6781,10 +6781,29 @@
         "defaultValue": true
       },
       {
-        "type": "switch",
-        "name": "standards.AutopilotProfile.AssignToAllDevices",
-        "label": "Assign to all devices",
-        "defaultValue": true
+        "type": "radio",
+        "name": "standards.AutopilotProfile.AssignTo",
+        "label": "Assign the profile to",
+        "options": [
+          { "label": "Do not assign", "value": "none" },
+          { "label": "All devices", "value": "allDevices" },
+          { "label": "Custom group(s)", "value": "customGroup" }
+        ],
+        "defaultValue": "allDevices"
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "standards.AutopilotProfile.customGroup",
+        "label": "Group name(s) to assign",
+        "helpText": "Used when 'Custom group(s)' is selected. Wildcards are allowed. Multiple group names are comma-separated."
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "standards.AutopilotProfile.excludeGroup",
+        "label": "Exclude group(s)",
+        "helpText": "Group name(s) to exclude from the assignment. Wildcards are allowed. Multiple group names are comma-separated."
       },
       {
         "type": "switch",
