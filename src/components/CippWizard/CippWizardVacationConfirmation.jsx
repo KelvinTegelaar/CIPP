@@ -27,6 +27,7 @@ export const CippWizardVacationConfirmation = (props) => {
   const mailboxVacation = ApiPostCall({ relatedQueryKeys: ['VacationMode'] })
   const forwardingVacation = ApiPostCall({ relatedQueryKeys: ['VacationMode'] })
   const oooVacation = ApiPostCall({ relatedQueryKeys: ['VacationMode'] })
+  const groupMembershipVacation = ApiPostCall({ relatedQueryKeys: ['VacationMode'] })
 
   const tenantFilter = values.tenantFilter?.value || values.tenantFilter
   const isSubmitting =
@@ -34,13 +35,15 @@ export const CippWizardVacationConfirmation = (props) => {
     auditExclusion.isPending ||
     mailboxVacation.isPending ||
     forwardingVacation.isPending ||
-    oooVacation.isPending
+    oooVacation.isPending ||
+    groupMembershipVacation.isPending
   const hasSubmitted =
     caExclusion.isSuccess ||
     auditExclusion.isSuccess ||
     mailboxVacation.isSuccess ||
     forwardingVacation.isSuccess ||
-    oooVacation.isSuccess
+    oooVacation.isSuccess ||
+    groupMembershipVacation.isSuccess
 
   const handleSubmit = () => {
     if (values.enableCAExclusion) {
@@ -160,6 +163,21 @@ export const CippWizardVacationConfirmation = (props) => {
         data: oooData,
       })
     }
+
+    if (values.enableGroupMembership) {
+      groupMembershipVacation.mutate({
+        url: '/api/ExecScheduleGroupMembershipVacation',
+        data: {
+          tenantFilter,
+          Users: values.Users,
+          Groups: values.vacationGroups,
+          startDate: values.startDate,
+          endDate: values.endDate,
+          reference: values.reference || null,
+          postExecution: values.postExecution || [],
+        },
+      })
+    }
   }
 
   const formatDate = (epoch) => {
@@ -256,6 +274,7 @@ export const CippWizardVacationConfirmation = (props) => {
           values.enableMailboxPermissions,
           values.enableForwarding,
           values.enableOOO,
+          values.enableGroupMembership,
         ].filter(Boolean).length
         const mdSize = enabledCount >= 4 ? 3 : enabledCount === 3 ? 4 : enabledCount === 2 ? 6 : 12
         return (
@@ -493,6 +512,35 @@ export const CippWizardVacationConfirmation = (props) => {
                 </Card>
               </Grid>
             )}
+
+            {values.enableGroupMembership && (
+              <Grid size={{ md: mdSize, xs: 12 }}>
+                <Card variant="outlined" sx={{ height: '100%' }}>
+                  <CardHeader
+                    title="Group Membership"
+                    action={<Chip label="Enabled" color="primary" size="small" />}
+                  />
+                  <Divider />
+                  <CardContent>
+                    <Stack spacing={1}>
+                      <div>
+                        <Typography variant="subtitle2" sx={{
+                          color: "text.secondary"
+                        }}>
+                          Groups
+                        </Typography>
+                        <Typography variant="body2">{formatUsers(values.vacationGroups)}</Typography>
+                      </div>
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
+                        Users who are already members are left untouched
+                      </Typography>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
           </Grid>
         );
       })()}
@@ -503,6 +551,7 @@ export const CippWizardVacationConfirmation = (props) => {
       {values.enableMailboxPermissions && <CippApiResults apiObject={mailboxVacation} />}
       {values.enableForwarding && <CippApiResults apiObject={forwardingVacation} />}
       {values.enableOOO && <CippApiResults apiObject={oooVacation} />}
+      {values.enableGroupMembership && <CippApiResults apiObject={groupMembershipVacation} />}
 
       {/* Navigation + Custom Submit */}
       <CippWizardActionsRow sx={{ mt: 3 }}>

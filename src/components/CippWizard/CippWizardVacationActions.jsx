@@ -15,6 +15,7 @@ import CippWizardStepButtons from './CippWizardStepButtons'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
+import { CippFormGroupSelector } from '../CippComponents/CippFormGroupSelector'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippValidator } from '../../utils/get-cipp-validator'
@@ -37,8 +38,21 @@ export const CippWizardVacationActions = (props) => {
   const enableMailbox = useWatch({ control: formControl.control, name: 'enableMailboxPermissions' })
   const enableForwarding = useWatch({ control: formControl.control, name: 'enableForwarding' })
   const enableOOO = useWatch({ control: formControl.control, name: 'enableOOO' })
+  const enableGroupMembership = useWatch({
+    control: formControl.control,
+    name: 'enableGroupMembership',
+  })
+  const vacationGroups = useWatch({ control: formControl.control, name: 'vacationGroups' })
+  const dynamicGroups = (Array.isArray(vacationGroups) ? vacationGroups : []).filter((group) =>
+    group?.addedFields?.groupTypes?.includes('DynamicMembership')
+  )
   const atLeastOneEnabled =
-    enableCA || enableLocationAlertExclusion || enableMailbox || enableForwarding || enableOOO
+    enableCA ||
+    enableLocationAlertExclusion ||
+    enableMailbox ||
+    enableForwarding ||
+    enableOOO ||
+    enableGroupMembership
 
   const users = useWatch({ control: formControl.control, name: 'Users' })
   const firstUser = Array.isArray(users) && users.length > 0 ? users[0] : null
@@ -395,6 +409,62 @@ export const CippWizardVacationActions = (props) => {
                 unusual location stay quiet while they travel. This works on its own and does not
                 require a Conditional Access policy.
               </Alert>
+            </CippFormCondition>
+          </Stack>
+        </CardContent>
+      </Card>
+
+      {/* Group Membership Section */}
+      <Card variant="outlined">
+        <CardHeader
+          title="Group Membership"
+          subheader="Add the users to groups for the duration of the vacation"
+        />
+        <Divider />
+        <CardContent>
+          <Stack spacing={2}>
+            <CippFormComponent
+              type="switch"
+              name="enableGroupMembership"
+              label="Add users to group(s) for the duration of the vacation"
+              formControl={formControl}
+            />
+
+            <CippFormCondition
+              formControl={formControl}
+              field="enableGroupMembership"
+              compareType="is"
+              compareValue={true}
+              clearOnHide={false}
+            >
+              <Stack spacing={2}>
+                <Alert severity="info">
+                  The users are added to the selected groups at the start date and removed again at
+                  the end date. Users who are already members of a group are left untouched.
+                  Dynamic membership groups cannot take direct members.
+                </Alert>
+                <CippFormGroupSelector
+                  label={tenantDomain ? `Group(s) in ${tenantDomain}` : 'Select a tenant first'}
+                  formControl={formControl}
+                  name="vacationGroups"
+                  multiple={true}
+                  select="id,displayName,groupTypes,mailEnabled,securityEnabled"
+                  addedField={{
+                    groupTypes: 'groupTypes',
+                    mailEnabled: 'mailEnabled',
+                    securityEnabled: 'securityEnabled',
+                  }}
+                  validators={{ required: 'At least one group is required' }}
+                  required={true}
+                  disabled={!tenantDomain}
+                />
+                {dynamicGroups.length > 0 && (
+                  <Alert severity="warning">
+                    {dynamicGroups.map((group) => group.label).join(', ')} use dynamic membership,
+                    so the users cannot be added to them directly.
+                  </Alert>
+                )}
+              </Stack>
             </CippFormCondition>
           </Stack>
         </CardContent>

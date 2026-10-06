@@ -97,6 +97,8 @@ const Page = () => {
     oooAutoDeclineFutureRequests: false,
     oooDeclineEvents: false,
     oooDeclineMeetingMessage: '',
+    enableGroupMembership: false,
+    vacationGroups: [],
     startDate: null,
     endDate: null,
     postExecution: [],

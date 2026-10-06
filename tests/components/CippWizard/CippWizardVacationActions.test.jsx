@@ -175,6 +175,34 @@ describe('CippWizardVacationActions', () => {
       ).not.toBeInTheDocument()
       expect(formApi.getValues('enableCAExclusion')).toBeFalsy()
     })
+
+    it('reveals the group picker once group membership is enabled', async () => {
+      renderWithProviders(<Harness defaultValues={{ tenantFilter: { value: 'contoso.com' } }} />)
+
+      expect(screen.queryByText(/Group\(s\) in contoso.com/)).not.toBeInTheDocument()
+
+      await setField('enableGroupMembership', true)
+
+      await waitFor(() =>
+        expect(screen.getAllByText(/Group\(s\) in contoso.com/)[0]).toBeInTheDocument()
+      )
+      expect(screen.getByText(/already members of a group are left untouched/i)).toBeInTheDocument()
+    })
+
+    it('warns when a selected group uses dynamic membership', async () => {
+      renderWithProviders(<Harness defaultValues={{ tenantFilter: { value: 'contoso.com' } }} />)
+
+      await setField('enableGroupMembership', true)
+      await setField('vacationGroups', [
+        { label: 'Static', value: 'g1', addedFields: { groupTypes: [] } },
+        { label: 'All Staff', value: 'g2', addedFields: { groupTypes: ['DynamicMembership'] } },
+      ])
+
+      await waitFor(() =>
+        expect(screen.getByText(/All Staff use dynamic membership/)).toBeInTheDocument()
+      )
+      expect(screen.queryByText(/Static.*dynamic membership/)).not.toBeInTheDocument()
+    })
   })
 
   // The out-of-office branch renders a rich-text editor that does not mount under jsdom
