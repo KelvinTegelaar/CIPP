@@ -43,6 +43,10 @@ export const routeRedirects = {
     '/identity/administration/bec/case',
   '/identity/bec': '/identity/administration/bec',
   '/identity/bec/case': '/identity/administration/bec/case',
+  // Teams & SharePoint reports moved into a Reports folder.
+  '/teams-share/sharing-report': '/teams-share/reports/sharing-report',
+  '/teams-share/permissions-report': '/teams-share/reports/permissions-report',
+  '/teams-share/teams/teams-activity': '/teams-share/reports/teams-activity',
 }
 
 export const getRedirectTarget = (pathname) => {
