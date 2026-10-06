@@ -1952,10 +1952,10 @@
   resolved "https://registry.npmjs.org/@next/env/-/env-16.3.8.tgz#747ec41c063edb55248e7d9127f6b8fa47d6bb80"
   integrity sha512-Al9zqHVV7TJv0eFuOU4U7Lvv74PTih4Ch63sk2xCIpSTkE3udFnaOcnzP2lQVymiL7yS9Cj2iClUXlR3EQ5sEw==
 
-"@next/eslint-plugin-next@16.3.6":
-  version "16.3.6"
-  resolved "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-16.3.6.tgz#285f6d86748a6480261a54810da679aeb32531cc"
-  integrity sha512-jowwDX+7DOlDIjJLgTMxudw+k37QnWu1JkZLkSi9MaJBfDYcfhAPMKBhXL0idYzFN/AGg//axnOR4cLkHX/Rng==
+"@next/eslint-plugin-next@16.3.8":
+  version "16.3.8"
+  resolved "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-16.3.8.tgz#9186a0fff633d867215e1ba2eeafa500c85d9f5f"
+  integrity sha512-eCR9RcLTZrVS+K3+VOhi0xMdUUGNuriCHHhU1ZoABC/QQ/Gp0OWbLKQxV2/9DkmihYdYRcQWFmZXW8M1AMUXYw==
   dependencies:
     "@eslint-community/eslint-utils" "4.9.1"
     fast-glob "3.3.1"
@@ -5305,12 +5305,12 @@ escape-string-regexp@^5.0.0:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz#4683126b500b61762f2dbebace1806e8be31b1c8"
   integrity sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==
 
-eslint-config-next@^16.3.6:
-  version "16.3.6"
-  resolved "https://registry.npmjs.org/eslint-config-next/-/eslint-config-next-16.3.6.tgz#46adc0ce206ccb09e8a982875cbc7867f2be1391"
-  integrity sha512-1Upt3U7BDwU+ilpe2byZjAfts9oNq4d4fv/zXEvs8/4yS+cwOQW/WCxUNy8gCDquX67SzeehDvKblVC6ZBMocQ==
+eslint-config-next@^16.3.8:
+  version "16.3.8"
+  resolved "https://registry.npmjs.org/eslint-config-next/-/eslint-config-next-16.3.8.tgz#83f8366dbf97f02b87aecb573372ca643f83250d"
+  integrity sha512-81vovwMe6NGnoFsl0KUJWzlS+y239i3fdsxs49gSEX3pDQW2cuKy+fxUPXNkQqqx6OCPheYPtBlSufc9aZ0k+w==
   dependencies:
-    "@next/eslint-plugin-next" "16.3.6"
+    "@next/eslint-plugin-next" "16.3.8"
     eslint-import-resolver-node "^0.3.6"
     eslint-import-resolver-typescript "^3.5.2"
     eslint-plugin-import "^2.32.0"
@@ -9347,10 +9347,10 @@ svgo@^3.0.2:
     picocolors "^1.0.0"
     sax "^1.5.0"
 
-swagger-ui-dist@5.32.12:
-  version "5.32.12"
-  resolved "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-5.32.12.tgz#2cbef68ab7beb5a7d45ea86204c9dddd4e48fe75"
-  integrity sha512-ceXE+KNc5LXafhh36trB6nxK+U2EIKUWzHT7sBiMosf2eJLAefalYnTwMouQBmSyED6m7Yz+GYZEcL+Glt3sww==
+swagger-ui-dist@5.33.1:
+  version "5.33.1"
+  resolved "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-5.33.1.tgz#f3d15dd89018797c10bf78df9e5d11c0ffe3df3d"
+  integrity sha512-H872wWkA53bFIsGgi7OWgmq+CRWw3nFQGdJWRqOB9wNwTm6e5ol34+qPDkV4AJlK+gglM2EsJiOOzsGsEGbluA==
   dependencies:
     "@scarf/scarf" "=1.4.0"
 

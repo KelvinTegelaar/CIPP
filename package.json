@@ -117,7 +117,7 @@
     "simplebar-react": "3.3.2",
     "stylis": "4.2.0",
     "stylis-plugin-rtl": "2.1.1",
-    "swagger-ui-dist": "5.32.12",
+    "swagger-ui-dist": "5.33.1",
     "unified": "^11.0.5",
     "yup": "1.7.1"
   },
@@ -137,7 +137,7 @@
     "@vitest/browser-playwright": "4.1.11",
     "@vitest/coverage-v8": "4.1.11",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.3.6",
+    "eslint-config-next": "^16.3.8",
     "eslint-config-prettier": "^10.1.8",
     "jsdom": "30.0.1",
     "msw": "2.15.0",
