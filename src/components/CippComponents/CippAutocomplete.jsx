@@ -14,6 +14,7 @@ import { useEffect, useState, useMemo, useCallback, useRef, useImperativeHandle 
 import { useSettings } from '../../hooks/use-settings'
 import { getCippError } from '../../utils/get-cipp-error'
 import { ApiGetCallWithPagination } from '../../api/ApiCall'
+import { useCustomVariableOptions } from '../../hooks/use-custom-variables'
 import { Stack } from '@mui/system'
 import React from 'react'
 import { CippOffCanvas } from './CippOffCanvas'
@@ -147,6 +148,10 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
   )
   const listboxRef = useRef(null) // Ref for the listbox to preserve scroll position
   const scrollPositionRef = useRef(0) // Store scroll position
+  // Variables are only fetched once a creatable field has seen a '%', so ordinary pickers never pay for it.
+  const [variableLookup, setVariableLookup] = useState(false)
+  const { options: variableOptions } = useCustomVariableOptions({ enabled: creatable && variableLookup })
+
   const filter = createFilterOptions({
     stringify: (option) => JSON.stringify(option),
   })
@@ -542,6 +547,22 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
             options.some(
               (option) => params.inputValue === option.value || params.inputValue === option.label
             )
+          // An unterminated %fragment offers the matching variables, completed in place of the fragment.
+          if (creatable && params.inputValue.includes('%') && ((params.inputValue.match(/%/g) || []).length % 2) === 1) {
+            const at = params.inputValue.lastIndexOf('%')
+            const prefix = params.inputValue.slice(0, at)
+            const fragment = params.inputValue.slice(at + 1).toLowerCase()
+            const completions = variableOptions
+              .filter((variable) => variable.label.toLowerCase().startsWith(`%${fragment}`))
+              .map((variable) => ({
+                label: `${prefix}${variable.label}`,
+                value: `${prefix}${variable.label}`,
+                description: variable.description,
+                manual: true,
+              }))
+              .filter((completion) => !filtered.some((option) => option.value === completion.value))
+            filtered.unshift(...completions)
+          }
           if (params.inputValue !== '' && creatable && !isExisting) {
             const newOption = {
               label: `Add option: "${params.inputValue}"`,
@@ -926,6 +947,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
         }}
         onInputChange={(event, newInputValue, reason) => {
           other.onInputChange?.(event, newInputValue, reason)
+          if (creatable && !variableLookup && newInputValue?.includes('%')) setVariableLookup(true)
           if (!manualSearch) return
           if (reason === 'input') {
             setSearchInput(newInputValue)

@@ -3,6 +3,7 @@ import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippAddTransportRuleDrawer } from "../../../../components/CippComponents/CippAddTransportRuleDrawer";
+import { CippTransportRuleDrawer } from "../../../../components/CippComponents/CippTransportRuleDrawer";
 
 const Page = () => {
   const pageTitle = "Transport Rule Templates";
@@ -14,6 +15,21 @@ const Page = () => {
     refetchOnReconnect: false,
   });
   const actions = [
+    {
+      label: "Edit Template",
+      icon: <CippIcons.Edit />,
+      multiPost: false,
+      hideBulk: true,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <CippTransportRuleDrawer
+          rowAction
+          templateMode
+          template={row}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
+    },
     {
       label: "Save to GitHub",
       type: "POST",
@@ -83,7 +99,17 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      cardButton={ <CippAddTransportRuleDrawer requiredPermissions={cardButtonPermissions} />}
+      queryKey="ListTransportRulesTemplates"
+      cardButton={
+        <>
+          <CippAddTransportRuleDrawer requiredPermissions={cardButtonPermissions} />
+          <CippTransportRuleDrawer
+            templateMode
+            buttonText="New Template"
+            requiredPermissions={cardButtonPermissions}
+          />
+        </>
+      }
     />
   );
 };
