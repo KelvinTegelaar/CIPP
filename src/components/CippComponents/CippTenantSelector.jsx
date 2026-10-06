@@ -75,6 +75,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
     const favoriteOptions = favorites
       .map((item) => byValue.get(item.value))
       .filter(Boolean)
+      .sort((a, b) => a.label.localeCompare(b.label))
       .map((option) => ({ ...option, group: "Favorites" }));
 
     const recentOptions = recentValues
