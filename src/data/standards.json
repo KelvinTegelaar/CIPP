@@ -5679,8 +5679,8 @@
         "label": "Days until expiration (Default 60)",
         "defaultValue": 60,
         "validators": {
-          "min": { "value": 1, "message": "Minimum value is 1" },
-          "max": { "value": 730, "message": "Maximum value is 730" }
+          "min": { "value": 30, "message": "SharePoint accepts 30 to 730 days - lower values are silently ignored" },
+          "max": { "value": 730, "message": "SharePoint accepts 30 to 730 days" }
         }
       }
     ],
