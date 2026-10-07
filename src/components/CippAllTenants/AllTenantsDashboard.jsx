@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Button } from '@mui/material'
 import { getCippError } from '../../utils/get-cipp-error'
 import { CippInfoBar } from '../CippCards/CippInfoBar'
+import { ServiceHealthCard } from '../CippComponents/ServiceHealthCard'
 import { useAllTenantsDashboard } from './useAllTenantsDashboard'
 import {
   AllTenantsBandHeading,
@@ -442,6 +443,12 @@ export const AllTenantsDashboard = () => {
           title="Operations & triage"
           description="What is broken, expiring, or stuck right now"
         />
+
+        {/* Outages first: a Microsoft incident explains the errors and failed checks below it.
+            AllTenants reads the nightly cache, each issue once with the tenants it reached. */}
+        <Box sx={{ mb: 2 }}>
+          <ServiceHealthCard tenantFilter="AllTenants" />
+        </Box>
 
         <Grid container spacing={2} sx={{ mb: 2 }}>
           {canReadLogs && (

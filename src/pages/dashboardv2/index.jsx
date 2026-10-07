@@ -36,6 +36,7 @@ import { TenantInfoCard } from '../../components/CippComponents/TenantInfoCard'
 import { TenantMetricsGrid } from '../../components/CippComponents/TenantMetricsGrid'
 import { AssessmentCard } from '../../components/CippComponents/AssessmentCard'
 import { AlertsOverviewCard } from '../../components/CippComponents/AlertsOverviewCard'
+import { ServiceHealthCard } from '../../components/CippComponents/ServiceHealthCard'
 import { CippReportToolbar } from '../../components/CippComponents/CippReportToolbar'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
 import { AllTenantsDashboard } from '../../components/CippAllTenants/AllTenantsDashboard'
@@ -372,10 +373,16 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        {/* Alerts Section - Full Width */}
-        <Box sx={{ mb: 2 }} data-tutorial="dashboard-alerts">
-          <AlertsOverviewCard tenantFilter={currentTenant} />
-        </Box>
+        {/* Alerts + Microsoft service health. Grid items stretch, both cards are height: 100%,
+            so the pair stays level; below lg they stack. */}
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid size={{ xs: 12, lg: 8 }} data-tutorial="dashboard-alerts">
+            <AlertsOverviewCard tenantFilter={currentTenant} />
+          </Grid>
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <ServiceHealthCard tenantFilter={currentTenant} />
+          </Grid>
+        </Grid>
 
         {/* Identity Section - 2 Column Grid */}
         <Box>
