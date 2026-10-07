@@ -70,6 +70,7 @@ export const CippBaselineStandardItem = ({
   expanded,
   onToggle,
   onRemove,
+  onAddInstance,
   instanceId,
   savedConfig,
 }) => {
@@ -250,6 +251,20 @@ export const CippBaselineStandardItem = ({
                   size="small"
                   label={`+${standard.secureScoreImpact} pts`}
                 />
+              </Tooltip>
+            )}
+            {standard.multiple === true && onAddInstance && (
+              <Tooltip title={`Add another ${standard.label} to this stage`}>
+                <IconButton
+                  size="small"
+                  aria-label={`Add another ${standard.label}`}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    onAddInstance(standard.name)
+                  }}
+                >
+                  <CippIcons.Add fontSize="small" />
+                </IconButton>
               </Tooltip>
             )}
             <Tooltip title="Remove from this stage">

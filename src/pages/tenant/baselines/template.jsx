@@ -145,6 +145,7 @@ const StagePanel = ({
   onMoveStage,
   onOpenDialog,
   onRemoveStandard,
+  onAddStandardInstance,
   canRemoveStage,
   canMoveUp,
   canMoveDown,
@@ -187,6 +188,13 @@ const StagePanel = ({
   const handleRemoveStandard = (standardName) => {
     formControl.unregister(standardName)
     onRemoveStandard(stageIndex, standardName)
+  }
+
+  // Quick add for multi-instance standards: the new instance opens immediately so the
+  // operator lands in its settings instead of hunting for it in the list.
+  const handleAddStandardInstance = (standardName) => {
+    const instanceKey = onAddStandardInstance(stageIndex, standardName)
+    if (instanceKey) setExpandedStandard(instanceKey)
   }
 
   // Bulk posture: apply one action setting to every standard in this stage.
@@ -603,6 +611,7 @@ const StagePanel = ({
                 )
               }
               onRemove={handleRemoveStandard}
+              onAddInstance={handleAddStandardInstance}
             />
           ))}
         </Stack>
@@ -878,6 +887,24 @@ const Page = () => {
           : stage
       )
     )
+
+  // Quick add from a staged row: appends one more instance of a multi-instance standard
+  // to the given stage and returns its key so the panel can expand it straight away.
+  const handleAddStandardInstance = (stageIndex, standardName) => {
+    if (catalogByName[standardName]?.multiple !== true) return null
+    const instanceId =
+      globalThis.crypto?.randomUUID?.().slice(0, 8) ??
+      Math.random().toString(36).slice(2, 10)
+    const instanceKey = `${standardName}#${instanceId}`
+    mutateStages((prev) =>
+      prev.map((stage, index) =>
+        index === stageIndex
+          ? { ...stage, standards: [...stage.standards, instanceKey] }
+          : stage
+      )
+    )
+    return instanceKey
+  }
 
   const handleToggleStandard = (standardName) =>
     mutateStages((prev) =>
@@ -1303,6 +1330,7 @@ const Page = () => {
                     onMoveStage={handleMoveStage}
                     onOpenDialog={handleOpenDialog}
                     onRemoveStandard={handleRemoveStandard}
+                    onAddStandardInstance={handleAddStandardInstance}
                     canRemoveStage={index > 0}
                     canMoveUp={index > 1}
                     canMoveDown={index > 0 && index < stages.length - 1}
