@@ -20,7 +20,7 @@ import { useSettings } from '../../hooks/use-settings'
 import { useIsMobileLayout } from '../../hooks/use-breakpoint'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
 import { getFilteredPortals } from '../../utils/get-filtered-portals'
-import { addLoginHint, getLoginHintUpn } from '../../utils/add-login-hint'
+import { useLoginHint } from '../../hooks/use-login-hint'
 import { CippIcons, getIconByName } from '../../utils/icon-registry'
 import { BulkActionsMenu } from '../../components/bulk-actions-menu'
 import { CippPageActionsFab } from '../../components/CippComponents/CippPageActionsFab'
@@ -44,10 +44,7 @@ import { AllTenantsDashboard } from '../../components/CippAllTenants/AllTenantsD
 
 const Page = () => {
   const settings = useSettings()
-  const upn = getLoginHintUpn(
-    settings,
-    ApiGetCall({ url: '/api/me', queryKey: 'authmecipp' }).data?.clientPrincipal?.userDetails
-  )
+  const withLoginHint = useLoginHint()
   const router = useRouter()
   const { currentTenant } = settings
   // The per-tenant cards below are all scoped to a single tenant's Graph data. Under AllTenants —
@@ -165,11 +162,10 @@ const Page = () => {
         target: '_blank',
         // A portal with a `field` has a URL the backend resolved for us (SharePoint's host cannot be
         // derived from the tenant). Use it when it's there, otherwise fall back to the templated URL.
-        link: addLoginHint(
+        link: withLoginHint(
           portal.field && tenantLookup?.[portal.field]
             ? tenantLookup[portal.field]
-            : portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
-          upn
+            : portal.url.replace(portal.variable, tenantLookup?.[portal.variable])
         ),
         icon: portal.icon,
       }))
@@ -180,7 +176,7 @@ const Page = () => {
     currentTenant,
     settings.portalLinks,
     settings.UserSpecificSettings,
-    upn,
+    withLoginHint,
   ])
 
   const formatNumber = (num) => {
