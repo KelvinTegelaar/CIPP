@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   Alert,
   Box,
@@ -217,6 +218,61 @@ const FixAction = ({ fix, onAddStandard, onEnableAlert }) => {
   return null
 }
 
+const QUEUE_DONE = ['Completed', 'Failed', 'Completed (with errors)']
+
+// Tests run as a queued background job: poll the queue, then read ListTests past Craft's response cache.
+const useTestRefresh = (tenant) => {
+  const queryClient = useQueryClient()
+  const [queueId, setQueueId] = useState(null)
+  const queue = ApiPostCall({})
+  const progress = ApiGetCall({
+    url: '/api/ListCippQueue',
+    data: { QueueId: queueId },
+    queryKey: `CippQueue-${queueId}`,
+    waiting: Boolean(queueId),
+    refetchInterval: (query) =>
+      QUEUE_DONE.includes(query?.state?.data?.[0]?.Status) ? false : 10000,
+  })
+  const status = queueId ? progress.data?.[0] : undefined
+  const results = ApiGetCall({
+    url: '/api/ListTests',
+    data: {
+      tenantFilter: tenant,
+      reportId: REPORT_ID,
+      InvalidateCIPPCache: true,
+    },
+    queryKey: `${testsQueryKey(tenant)}-${queueId}`,
+    waiting: QUEUE_DONE.includes(status?.Status),
+  })
+  useEffect(() => {
+    if (results.isSuccess) {
+      queryClient.setQueryData([testsQueryKey(tenant)], results.data)
+    }
+  }, [results.isSuccess, results.data, tenant, queryClient])
+
+  return {
+    start: (testName) =>
+      queue
+        .mutateAsync({
+          url: '/api/ExecTestRefresh',
+          data: { tenantFilter: tenant, testName },
+        })
+        .then((response) =>
+          setQueueId(response?.data?.Metadata?.QueueId ?? null)
+        )
+        .catch(() => {}),
+    reset: () => {
+      setQueueId(null)
+      queue.reset()
+    },
+    running:
+      queue.isPending ||
+      (Boolean(queueId) && !results.isSuccess && !results.isError),
+    status,
+    error: queue.error ?? results.error,
+  }
+}
+
 const ScenarioRun = ({ tenant, scenario, loadingList, onBack }) => {
   const [mode, setMode] = useState('current')
   const [standardToAdd, setStandardToAdd] = useState(null)
@@ -225,20 +281,13 @@ const ScenarioRun = ({ tenant, scenario, loadingList, onBack }) => {
   const alertDialog = useDialog()
   const testId = `${TEST_PREFIX}${scenario.id}`
 
-  const run = ApiPostCall({
-    url: '/api/ExecTestRefresh',
-    relatedQueryKeys: [testsQueryKey(tenant)],
-  })
-  const startRun = () =>
-    run.mutate({
-      url: '/api/ExecTestRefresh',
-      data: { tenantFilter: tenant, testName: testId },
-    })
+  const refresh = useTestRefresh(tenant)
+  const startRun = () => refresh.start(testId)
 
   const autoRanRef = useRef(null)
   useEffect(() => {
     setMode('current')
-    run.reset()
+    refresh.reset()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tenant, scenario.id])
   useEffect(() => {
@@ -248,10 +297,10 @@ const ScenarioRun = ({ tenant, scenario, loadingList, onBack }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingList, scenario.row, testId])
 
-  const freshRow = run.data?.data?.Metadata
-  const row = freshRow?.RowKey === testId ? freshRow : scenario.row
+  const row = scenario.row
   const data = parseData(row)
-  const loading = run.isPending || (loadingList && !row)
+  const loading = refresh.running || (loadingList && !row)
+  const runFailed = !refresh.running && refresh.status?.FailedTasks > 0
   const steps = asArray(data?.steps)
   const summary = data?.summary
   const fixes = asArray(summary?.fixes)
@@ -372,18 +421,30 @@ const ScenarioRun = ({ tenant, scenario, loadingList, onBack }) => {
             variant="outlined"
             disabled={loading}
             startIcon={
-              run.isPending ? (
+              refresh.running ? (
                 <CircularProgress size={14} color="inherit" />
               ) : undefined
             }
             onClick={startRun}
           >
-            {run.isPending ? 'Checking' : 'Run again'}
+            {refresh.running
+              ? refresh.status?.Status === 'Running'
+                ? 'Checking'
+                : 'Queued'
+              : 'Run again'}
           </Button>
         </Stack>
       </Box>
 
-      {run.isError && <Alert severity="error">{getCippError(run.error)}</Alert>}
+      {refresh.error && (
+        <Alert severity="error">{getCippError(refresh.error)}</Alert>
+      )}
+      {runFailed && (
+        <Alert severity="error">
+          The check failed on the background worker. See the logbook for the
+          error.
+        </Alert>
+      )}
       {loading && !data && <CippFormSkeleton layout={[1, 3, 1, 1, 1]} />}
       {row && !data && !loading && (
         <Alert severity="warning">
@@ -665,18 +726,9 @@ const ScenarioList = ({
   onOpen,
   refreshList,
 }) => {
-  const [progress, setProgress] = useState({
-    running: false,
-    done: 0,
-    total: 0,
-    failed: 0,
-  })
-  const runAll = ApiPostCall({
-    url: '/api/ExecTestRefresh',
-    relatedQueryKeys: [testsQueryKey(tenant)],
-  })
-  // Refresh the test list first so a scenario removed since the page loaded is not requested,
-  // then run one test at a time; a failure is counted, not fatal.
+  const [total, setTotal] = useState(0)
+  const refresh = useTestRefresh(tenant)
+  // Refresh the test list first so a scenario removed since the page loaded is not requested.
   const startAll = async () => {
     const latest = await refreshList()
     const fresh = asArray(latest?.data?.IdentityTests)
@@ -686,31 +738,11 @@ const ScenarioList = ({
       fresh.length > 0
         ? fresh
         : scenarios.map((scenario) => `${TEST_PREFIX}${scenario.id}`)
-    setProgress({ running: true, done: 0, total: testIds.length, failed: 0 })
-    let failed = 0
-    for (const [index, testName] of testIds.entries()) {
-      try {
-        await runAll.mutateAsync({
-          url: '/api/ExecTestRefresh',
-          data: { tenantFilter: tenant, testName },
-        })
-      } catch {
-        failed++
-      }
-      setProgress({
-        running: true,
-        done: index + 1,
-        total: testIds.length,
-        failed,
-      })
-    }
-    setProgress({
-      running: false,
-      done: testIds.length,
-      total: testIds.length,
-      failed,
-    })
+    setTotal(testIds.length)
+    refresh.start(testIds)
   }
+  const done = refresh.status?.CompletedTasks ?? 0
+  const failed = refresh.running ? 0 : (refresh.status?.FailedTasks ?? 0)
 
   const categories = [
     ...CATEGORY_ORDER.filter((category) =>
@@ -775,23 +807,26 @@ const ScenarioList = ({
         <Button
           variant="contained"
           size="small"
-          disabled={progress.running || scenarios.length === 0}
+          disabled={refresh.running || scenarios.length === 0}
           startIcon={
-            progress.running ? (
+            refresh.running ? (
               <CircularProgress size={14} color="inherit" />
             ) : undefined
           }
           onClick={startAll}
         >
-          {progress.running
-            ? `Checking ${Math.min(progress.done + 1, progress.total)} of ${progress.total}`
+          {refresh.running
+            ? `Checked ${done} of ${refresh.status?.TotalTasks ?? total}`
             : 'Run all checks'}
         </Button>
       </Box>
-      {!progress.running && progress.failed > 0 && (
+      {refresh.error && (
+        <Alert severity="error">{getCippError(refresh.error)}</Alert>
+      )}
+      {failed > 0 && (
         <Alert severity="warning">
-          {progress.failed} of {progress.total} scenarios could not be checked.
-          {runAll.error ? ` Last error: ${getCippError(runAll.error)}` : ''}
+          {failed} of {refresh.status?.TotalTasks ?? total} scenarios could not
+          be checked. See the logbook for the errors.
         </Alert>
       )}
       {loading && scenarios.length === 0 && (
