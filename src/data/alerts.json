@@ -270,6 +270,26 @@
     "description": "Fires when a still-existing user has an unlicensed OneDrive within the selected days of unpaid deletion (unlicensed start + 365 days). Skips Entra-deleted owners. Shared mailboxes are excluded unless the toggle is on."
   },
   {
+    "name": "DeletedUserOneDriveAccess",
+    "label": "Alert on deleted users' OneDrive access about to end",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days before access ends (default: 14)",
+        "inputName": "DeletedUserOneDriveAccess"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Only alert when someone holds delegated access",
+        "inputName": "RequireDelegate"
+      }
+    ],
+    "description": "Fires for OneDrives of users deleted from Entra ID whose access window ends within the selected days. The window is the tenant's deleted-user OneDrive retention period, capped at 93 days when unlicensed-account billing is off because the site is archived then. Lists who currently holds delegated (site admin) access so they can be warned to copy data out or a licence can be approved."
+  },
+  {
     "name": "ExpiringLicenses",
     "label": "Alert on licenses expiring in X days",
     "recommendedRunInterval": "7d",
