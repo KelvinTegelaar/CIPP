@@ -2,6 +2,9 @@
 import { useSettings } from "../../hooks/use-settings.js";
 import { useMemo } from "react";
 import { MfaVerifyForm } from "./CippMfaVerifyForm";
+import CippMailboxCustomAttributeRows, {
+  canEditMailboxCustomAttributes,
+} from "./CippMailboxCustomAttributeRows";
 
 export const CippExchangeActions = () => {
   const tenant = useSettings().currentTenant;
@@ -356,6 +359,41 @@ export const CippExchangeActions = () => {
           validators: { required: "Please enter a locale" },
         },
       ],
+    },
+    {
+      label: "Set Custom Attributes",
+      type: "POST",
+      url: "/api/ExecSetMailboxCustomAttributes",
+      data: { userid: "UPN", Identity: "Id" },
+      confirmText:
+        "Set the selected custom attributes on [UPN]? Empty values clear that attribute; unlisted attributes are left unchanged.",
+      icon: <CippIcons.Edit />,
+      condition: (row) => canEditMailboxCustomAttributes(row),
+      fields: [
+        {
+          name: "attributeRows",
+          component: CippMailboxCustomAttributeRows,
+        },
+      ],
+      customDataformatter: (rows, action, formData) => {
+        const mailboxArray = (Array.isArray(rows) ? rows : [rows]).filter((mailbox) =>
+          canEditMailboxCustomAttributes(mailbox)
+        );
+        const attrs = {};
+        (formData.attributeRows || []).forEach((row) => {
+          const attrName = row?.attribute?.value ?? row?.attribute;
+          if (attrName) {
+            attrs[attrName] = row?.value ?? "";
+          }
+        });
+
+        return mailboxArray.map((mailbox) => ({
+          tenantFilter: mailbox.Tenant || mailbox.tenantFilter || tenant,
+          userid: mailbox.UPN || mailbox.UserPrincipalName,
+          Identity: mailbox.Id || mailbox.id,
+          ...attrs,
+        }));
+      },
     },
     {
       label: "Set Max Send/Receive Size",
