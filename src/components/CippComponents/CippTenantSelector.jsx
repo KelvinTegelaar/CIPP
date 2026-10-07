@@ -10,6 +10,7 @@ import { useTenantPreferences } from "../../hooks/use-tenant-preferences";
 import { getCippError } from "../../utils/get-cipp-error";
 import { useQueryClient } from "@tanstack/react-query";
 import { CippIcons, getIconByName } from "../../utils/icon-registry"
+import { addLoginHint, getLoginHintUpn } from "../../utils/add-login-hint";
 
 export const CippTenantSelector = React.forwardRef((props, ref) => {
   const { width, allTenants = false, multiple = false, refreshButton, tenantButton } = props;
@@ -115,6 +116,11 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
       trackRecent(newValue);
     },
     [trackRecent]
+  );
+
+  const hintUpn = getLoginHintUpn(
+    settings,
+    ApiGetCall({ url: "/api/me", queryKey: "authmecipp" }).data?.clientPrincipal?.userDetails
   );
 
   // Filter portal actions based on user preferences
@@ -230,8 +236,8 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
       icon: "Business",
     });
 
-    return filteredActions;
-  }, [currentTenant, settings]);
+    return filteredActions.map((action) => ({ ...action, link: addLoginHint(action.link, hintUpn) }));
+  }, [currentTenant, settings, hintUpn]);
 
   // This effect handles updates when the tenant is changed via dropdown selection
   useEffect(() => {
