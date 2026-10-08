@@ -295,7 +295,7 @@ const CippApiClientManagement = () => {
           name: "mcpAccessWarning",
           severity: "warning",
           label:
-            "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on CIPP-NG.",
+            "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on the new CIPP infrastructure.",
         },
         {
           name: "mcpRoleIpWarning",
@@ -584,7 +584,7 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on CIPP-NG.",
+              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on the new CIPP infrastructure.",
           },
           {
             name: "mcpRoleIpWarning",
@@ -669,7 +669,7 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on CIPP-NG.",
+              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on the new CIPP infrastructure.",
           },
           {
             name: "mcpRoleIpWarning",

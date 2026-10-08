@@ -79,6 +79,78 @@ const readablePolicyTypeName = (value) => {
   )
 }
 
+const absoluteDateArray = [
+  'WindowStart',
+  'WindowEnd',
+  'CreatedUtc',
+  'DownloadedUtc',
+  'ProcessedUtc',
+  'NextAttemptUtc',
+  'LastErrorUtc',
+  'LastPolledUtc',
+  'QueuedUtc', // Worker health job queue
+  'StartedUtc', // Worker health job queue
+  'CompletedUtc', // Worker health job queue
+  'FirstSeen', // Alert lifecycle
+  'LastSeen', // Alert lifecycle
+  'LastChecked', // Alert lifecycle
+  'ResolvedAt', // Alert lifecycle
+  'ExtractedAt', // BEC run: when the investigation snapshot was taken
+  'RequestedAt', // BEC run: when the run was requested
+]
+
+const timeAgoArray = [
+  'ExecutedTime',
+  'ScheduledTime',
+  'Timestamp',
+  'timestamp',
+  'DateTime',
+  'LastRun',
+  'lastRun', // Baselines
+  'lastRemediated', // Baselines
+  'deviationAt', // Baselines
+  'deviationExpires', // Baselines
+  'enteredStageAt', // Baselines
+  'LastRefresh',
+  'createdDateTime',
+  'activatedDateTime',
+  'lastModifiedDateTime',
+  'endDateTime',
+  'ReceivedTime',
+  'Expires',
+  'updatedAt',
+  'createdAt',
+  'Received',
+  'Date',
+  'WhenCreated',
+  'WhenChanged',
+  'CreationTime',
+  'renewalDate',
+  'commitmentTerm.renewalConfiguration.renewalDate',
+  'purchaseDate',
+  'NextOccurrence',
+  'LastOccurrence',
+  'NotBefore',
+  'NotAfter',
+  'latestDataCollection',
+  'requestDate', // App Consent Requests
+  'reviewedDate', // App Consent Requests
+  'GeneratedAt', // Report Builder
+  'RecordedAt', // Container update history
+  'directTenantAuthDate', // Direct tenant service account
+  'ServiceAccountLastAuth', // Direct tenant service account
+]
+
+const matchDateTime =
+  /([dD]ate[tT]ime|[Ee]xpiration|[Tt]imestamp|[sS]tart[Dd]ate|[eE]nd[Dd]ate)/
+
+// Columns rendered as dates. The table sizes these columns from this check too, so a date's
+// raw text form never decides the column width.
+export const isCippDateColumn = (cellName) =>
+  absoluteDateArray.includes(cellName) ||
+  timeAgoArray.includes(cellName) ||
+  matchDateTime.test(cellName)
+
 export const getCippFormatting = (
   data,
   cellName,
@@ -339,25 +411,6 @@ export const getCippFormatting = (
   // Audit-log coverage timestamps: render as an ABSOLUTE date in the browser's local timezone
   // (long format) rather than relative "x ago". The UTC ISO values carry a Z so they're
   // unambiguous; parseCippDate also handles epoch. Checked before the relative timeAgoArray below.
-  const absoluteDateArray = [
-    'WindowStart',
-    'WindowEnd',
-    'CreatedUtc',
-    'DownloadedUtc',
-    'ProcessedUtc',
-    'NextAttemptUtc',
-    'LastErrorUtc',
-    'LastPolledUtc',
-    'QueuedUtc', // Worker health job queue
-    'StartedUtc', // Worker health job queue
-    'CompletedUtc', // Worker health job queue
-    'FirstSeen', // Alert lifecycle
-    'LastSeen', // Alert lifecycle
-    'LastChecked', // Alert lifecycle
-    'ResolvedAt', // Alert lifecycle
-    'ExtractedAt', // BEC run: when the investigation snapshot was taken
-    'RequestedAt', // BEC run: when the run was requested
-  ]
   if (absoluteDateArray.includes(cellName)) {
     if (data === null || data === undefined || data === '') {
       return isText ? '' : ''
@@ -376,50 +429,6 @@ export const getCippFormatting = (
     return dt.toLocaleString()
   }
 
-  const timeAgoArray = [
-    'ExecutedTime',
-    'ScheduledTime',
-    'Timestamp',
-    'timestamp',
-    'DateTime',
-    'LastRun',
-    'lastRun', // Baselines
-    'lastRemediated', // Baselines
-    'deviationAt', // Baselines
-    'deviationExpires', // Baselines
-    'enteredStageAt', // Baselines
-    'LastRefresh',
-    'createdDateTime',
-    'activatedDateTime',
-    'lastModifiedDateTime',
-    'endDateTime',
-    'ReceivedTime',
-    'Expires',
-    'updatedAt',
-    'createdAt',
-    'Received',
-    'Date',
-    'WhenCreated',
-    'WhenChanged',
-    'CreationTime',
-    'renewalDate',
-    'commitmentTerm.renewalConfiguration.renewalDate',
-    'purchaseDate',
-    'NextOccurrence',
-    'LastOccurrence',
-    'NotBefore',
-    'NotAfter',
-    'latestDataCollection',
-    'requestDate', // App Consent Requests
-    'reviewedDate', // App Consent Requests
-    'GeneratedAt', // Report Builder
-    'RecordedAt', // Container update history
-    'directTenantAuthDate', // Direct tenant service account
-    'ServiceAccountLastAuth', // Direct tenant service account
-  ]
-
-  const matchDateTime =
-    /([dD]ate[tT]ime|[Ee]xpiration|[Tt]imestamp|[sS]tart[Dd]ate)/
   if (timeAgoArray.includes(cellName) || matchDateTime.test(cellName)) {
     return isText && canReceive === false ? (
       parseCippDate(data).toLocaleString() // This runs if canReceive is false and isText is true

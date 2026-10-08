@@ -4,7 +4,8 @@ import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import CippFormComponent from "../CippComponents/CippFormComponent";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import jitAdminRoles from "../../data/JitAdminRoles.json";
 import { useEffect } from "react";
 
 const CippJitAdminSettings = () => {
@@ -22,13 +23,22 @@ const CippJitAdminSettings = () => {
     mode: "onChange",
     defaultValues: {
       MaxDuration: "",
+      RequireApproval: false,
+      ApprovalTriggerRoles: [],
+      ApproverRoles: [],
+      RequiredApprovals: 1,
     },
   });
+  const requireApproval = useWatch({ control: formControl.control, name: "RequireApproval" });
 
   useEffect(() => {
     if (jitSettings.isSuccess && jitSettings.data) {
       formControl.reset({
         MaxDuration: jitSettings.data?.MaxDuration || "",
+        RequireApproval: jitSettings.data?.RequireApproval ?? false,
+        ApprovalTriggerRoles: jitSettings.data?.ApprovalTriggerRoles ?? [],
+        ApproverRoles: jitSettings.data?.ApproverRoles ?? [],
+        RequiredApprovals: jitSettings.data?.RequiredApprovals ?? 1,
       });
     }
   }, [jitSettings.isSuccess, jitSettings.data]);
@@ -40,6 +50,10 @@ const CippJitAdminSettings = () => {
       data: {
         Action: "Set",
         MaxDuration: formData.MaxDuration || null,
+        RequireApproval: formData.RequireApproval,
+        ApprovalTriggerRoles: formData.ApprovalTriggerRoles,
+        ApproverRoles: formData.ApproverRoles,
+        RequiredApprovals: formData.RequiredApprovals,
       },
       queryKey: "jitAdminSettingsPost",
     });
@@ -117,6 +131,63 @@ const CippJitAdminSettings = () => {
             globally to all tenants.
           </Typography>
         </Alert>
+
+        <Box>
+          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: "bold" }}>
+            Approval
+          </Typography>
+          <CippFormComponent
+            type="switch"
+            name="RequireApproval"
+            label="Require approval for JIT Admin requests"
+            formControl={formControl}
+          />
+          {requireApproval && (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+              <CippFormComponent
+                type="autoComplete"
+                name="ApprovalTriggerRoles"
+                label="Roles that need approval"
+                placeholder="Leave empty to require approval for every request"
+                options={jitAdminRoles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                multiple={true}
+                creatable={false}
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="autoComplete"
+                name="ApproverRoles"
+                label="Approver roles"
+                placeholder="CIPP roles whose users can approve requests"
+                api={{
+                  url: "/api/ListCustomRole",
+                  queryKey: "CustomRoleList",
+                  labelField: "RoleName",
+                  valueField: "RoleName",
+                }}
+                multiple={true}
+                creatable={false}
+                formControl={formControl}
+                validators={{
+                  validate: (value) =>
+                    !requireApproval || value?.length > 0 || "Select at least one approver role",
+                }}
+              />
+              <CippFormComponent
+                type="number"
+                name="RequiredApprovals"
+                label="Approvals required"
+                formControl={formControl}
+                validators={{ min: { value: 1, message: "At least one approval is required" } }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                Approvers are notified through the configured notification methods, and on the new CIPP infrastructure by push if
+                they have it enabled. The requester cannot approve their own request, and any
+                rejection ends the request.
+              </Typography>
+            </Box>
+          )}
+        </Box>
 
         {/* API Results */}
         <CippApiResults apiObject={jitChange} />

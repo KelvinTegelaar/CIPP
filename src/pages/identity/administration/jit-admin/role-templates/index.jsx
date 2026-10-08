@@ -1,11 +1,13 @@
 import { Button } from "@mui/material";
-import { CippIcons } from "../../../../utils/icon-registry"
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
+import tabOptions from "../tabOptions.json";
 import Link from "next/link";
-import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
-import { getCippTranslation } from "../../../../utils/get-cipp-translation";
-import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
+import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
+import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
+import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
 
 const Page = () => {
   const pageTitle = "JIT Role Templates";
@@ -14,7 +16,7 @@ const Page = () => {
     {
       label: "Edit Template",
       icon: <CippIcons.Edit />,
-      link: "/identity/administration/jit-role-templates/edit?id=[GUID]",
+      link: "/identity/administration/jit-admin/role-templates/edit?id=[GUID]",
     },
     {
       label: "Delete Template",
@@ -63,7 +65,7 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       cardButton={
-        <Button component={Link} href="jit-role-templates/add" startIcon={<CippIcons.AddBox />}>
+        <Button component={Link} href="/identity/administration/jit-admin/role-templates/add" startIcon={<CippIcons.AddBox />}>
           Add JIT Role Template
         </Button>
       }
@@ -73,6 +75,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;
