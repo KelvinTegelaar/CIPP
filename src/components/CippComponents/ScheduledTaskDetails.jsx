@@ -26,6 +26,8 @@ import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
 import { CippApiLogsDrawer } from "./CippApiLogsDrawer";
 import { CippJobProgress, formatJobProgressText, OFFBOARDING_PROGRESS_ACTIONS } from "./CippJobProgress";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
+import { mergeRow, useCraftJobEvents } from "../../hooks/use-craft-events";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) => {
   const [taskDetails, setTaskDetails] = useState(null);
@@ -51,12 +53,20 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
   // job across its users, so only this task's user is shown.
   const deploymentId = taskDetails?.Task?.Parameters?.DeploymentId;
   const username = taskDetails?.Task?.Parameters?.Username;
+  const queryClient = useQueryClient();
+  const progressConnected = useCraftJobEvents(inFlight ? deploymentId : null, (frame) => {
+    if (!frame.data) {
+      progressResults.refetch();
+      return;
+    }
+    queryClient.setQueryData([`ListAsyncDeployment-${deploymentId}`], (old) => mergeRow(old, frame.data));
+  });
   const progressResults = ApiGetCall({
     url: "/api/ListAsyncDeployment",
     data: { DeploymentId: deploymentId },
     queryKey: `ListAsyncDeployment-${deploymentId}`,
     waiting: !!deploymentId,
-    refetchInterval: inFlight ? 5000 : false,
+    refetchInterval: inFlight && !progressConnected ? 5000 : false,
     staleTime: 0,
   });
   const progressRows = (Array.isArray(progressResults.data) ? progressResults.data : []).filter(

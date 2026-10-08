@@ -8610,7 +8610,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2026-05-06",
-    "powershellEquivalent": "Set-TeamsProtectionPolicy -Identity 'Teams Protection Policy' -ZapEnabled $true",
+    "powershellEquivalent": "Set-TeamsProtectionPolicy -Identity 'Default Teams Protection Policy' -ZapEnabled $true",
     "recommendedBy": ["CIS"],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",

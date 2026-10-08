@@ -4,6 +4,8 @@ import { IconButton, Tooltip, Badge, Typography, LinearProgress, Box, Stack } fr
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useQueryClient } from "@tanstack/react-query";
+import { useCraftJobEvents } from "../../hooks/use-craft-events";
+import { fromCraftRun } from "../../utils/craft-run";
 
 export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) => {
   const queryClient = useQueryClient();
@@ -28,6 +30,17 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
     persistentQueueData?.Status === "Completed (with errors)";
 
   const effectiveQueueId = queueId || lastProcessedQueueId;
+
+  // Craft pushes the whole queue entry while the stream is up; the endpoint is only polled when it is not.
+  const queueConnected = useCraftJobEvents(effectiveQueueId, (frame) => {
+    if (!frame.data) {
+      queuePolling.refetch();
+      return;
+    }
+    queryClient.setQueryData([`CippQueue-${effectiveQueueId}`], (old) => [
+      { ...(Array.isArray(old) ? old[0] : old), ...fromCraftRun(frame.data) },
+    ]);
+  });
 
   const queuePolling = ApiGetCall({
     url: `/api/ListCippQueue`,
@@ -54,7 +67,7 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
         return false;
       }
 
-      return 3000;
+      return queueConnected ? false : 3000;
     },
     refetchOnMount: true,
     refetchOnWindowFocus: false,

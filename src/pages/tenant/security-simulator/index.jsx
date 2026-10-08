@@ -39,6 +39,8 @@ import { getCippError } from '../../../utils/get-cipp-error'
 import { useSettings } from '../../../hooks/use-settings'
 import { useDialog } from '../../../hooks/use-dialog'
 import { CippIcons } from '../../../utils/icon-registry'
+import { useCraftJobEvents } from '../../../hooks/use-craft-events'
+import { fromCraftRun } from '../../../utils/craft-run'
 
 // Scenarios are tests in the Security Simulations suite. The list comes from ListAvailableTests, the
 // results from ListTests, and a run is the test engine's own per-test refresh.
@@ -225,13 +227,24 @@ const useTestRefresh = (tenant) => {
   const queryClient = useQueryClient()
   const [queueId, setQueueId] = useState(null)
   const queue = ApiPostCall({})
+  const queueConnected = useCraftJobEvents(queueId, (frame) => {
+    if (!frame.data) {
+      progress.refetch()
+      return
+    }
+    queryClient.setQueryData([`CippQueue-${queueId}`], (old) => [
+      { ...(Array.isArray(old) ? old[0] : old), ...fromCraftRun(frame.data) },
+    ])
+  })
   const progress = ApiGetCall({
     url: '/api/ListCippQueue',
     data: { QueueId: queueId },
     queryKey: `CippQueue-${queueId}`,
     waiting: Boolean(queueId),
     refetchInterval: (query) =>
-      QUEUE_DONE.includes(query?.state?.data?.[0]?.Status) ? false : 10000,
+      QUEUE_DONE.includes(query?.state?.data?.[0]?.Status) || queueConnected
+        ? false
+        : 10000,
   })
   const status = queueId ? progress.data?.[0] : undefined
   const results = ApiGetCall({

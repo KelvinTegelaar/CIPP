@@ -6,6 +6,8 @@ import { CippAutoComplete } from '../../../../components/CippComponents/CippAuto
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { useSettings } from '../../../../hooks/use-settings'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { useQueryClient } from '@tanstack/react-query'
+import { useCraftJobEvents } from '../../../../hooks/use-craft-events'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { CippBecRunStatusCard } from '../../../../components/CippCards/CippBecRunStatusCard'
 import { CippBecTriageHeader } from '../../../../components/CippCards/CippBecTriageHeader'
@@ -68,12 +70,30 @@ const Page = () => {
   const activeCaseId =
     selectedCaseId ?? startedCaseId ?? latestRun?.CaseId ?? null
 
+  // While the run works its progress row is pushed as it changes; the results only come from the API, so
+  // the end (or a resync after the stream dropped) is read once.
+  const queryClient = useQueryClient()
+  const caseConnected = useCraftJobEvents(
+    pollActive ? activeCaseId : null,
+    (frame) => {
+      const row = frame.data
+      if (!row || ['succeeded', 'failed'].includes(row.Status)) {
+        becPollingCall.refetch()
+        return
+      }
+      queryClient.setQueryData(
+        [`execBECCheck-polling-${activeCaseId}`],
+        (old) => (old?.Waiting ? { ...old, Progress: row } : old)
+      )
+    }
+  )
   const becPollingCall = ApiGetCall({
     url: `/api/execBECCheck`,
     data: { GUID: activeCaseId, tenantFilter: tenant },
     queryKey: `execBECCheck-polling-${activeCaseId}`,
     waiting: !!activeCaseId,
-    refetchInterval: pollActive ? 5000 : false,
+    // Still read now and then while connected: this read is also what marks an abandoned run failed.
+    refetchInterval: pollActive ? (caseConnected ? 300000 : 5000) : false,
     staleTime: 0,
   })
 
