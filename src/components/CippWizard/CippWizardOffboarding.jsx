@@ -149,6 +149,8 @@ export const CippWizardOffboarding = (props) => {
       formControl.setValue('WipeMobile', false)
       formControl.setValue('RemoveMobile', false)
       formControl.setValue('RemoveGroups', false)
+      formControl.setValue('RemoveGroupOwnership', false)
+      formControl.setValue('NewGroupOwner', null)
       formControl.setValue('RemoveLicenses', false)
       formControl.setValue('RevokeSessions', false)
       formControl.setValue('DisableSignIn', false)
@@ -253,6 +255,58 @@ export const CippWizardOffboarding = (props) => {
                 formControl={formControl}
                 disabled={!!deleteUser}
               />
+              <CippFormComponent
+                name="RemoveGroupOwnership"
+                label="Remove group ownership"
+                type="switch"
+                formControl={formControl}
+                disabled={!!deleteUser}
+              />
+              <CippFormCondition
+                formControl={formControl}
+                field={'RemoveGroupOwnership'}
+                compareType="is"
+                compareValue={true}
+              >
+                <CippFormComponent
+                  sx={{ m: 1 }}
+                  name="NewGroupOwner"
+                  label="New group owner"
+                  type="autoComplete"
+                  placeholder="Set before the user is removed as owner"
+                  formControl={formControl}
+                  multiple={false}
+                  disabled={!!deleteUser}
+                  api={{
+                    tenantFilter: currentTenant ? currentTenant.value : undefined,
+                    labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+                    valueField: 'id',
+                    url: '/api/ListGraphRequest',
+                    dataKey: 'Results',
+                    queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : 'default'}`,
+                    data: {
+                      Endpoint: 'users',
+                      manualPagination: true,
+                      $select: 'id,userPrincipalName,displayName',
+                      $count: true,
+                      $orderby: 'displayName',
+                      $top: 999,
+                    },
+                  }}
+                />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    display: 'block',
+                    mx: 1,
+                    mb: 1,
+                  }}
+                >
+                  Added as owner of every group the user owns before the user is removed. Without
+                  one, groups where the user is the only owner cannot be released.
+                </Typography>
+              </CippFormCondition>
               <CippFormComponent
                 name="RemoveLicenses"
                 label="Remove Licenses"

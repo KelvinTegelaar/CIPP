@@ -138,6 +138,7 @@ const Page = () => {
       const defaultOffboardingValues = {
         ConvertToShared: false,
         RemoveGroups: false,
+        RemoveGroupOwnership: false,
         HideFromGAL: false,
         RemoveLicenses: false,
         removeCalendarInvites: false,
@@ -197,6 +198,7 @@ const Page = () => {
     const defaultOffboardingValues = {
       ConvertToShared: false,
       RemoveGroups: false,
+      RemoveGroupOwnership: false,
       HideFromGAL: false,
       RemoveLicenses: false,
       removeCalendarInvites: false,

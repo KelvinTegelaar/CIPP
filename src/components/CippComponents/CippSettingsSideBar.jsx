@@ -93,6 +93,7 @@ export const CippSettingsSideBar = (props) => {
       offboardingDefaults: {
         ConvertToShared: formValues.offboardingDefaults?.ConvertToShared,
         RemoveGroups: formValues.offboardingDefaults?.RemoveGroups,
+        RemoveGroupOwnership: formValues.offboardingDefaults?.RemoveGroupOwnership,
         HideFromGAL: formValues.offboardingDefaults?.HideFromGAL,
         RemoveLicenses: formValues.offboardingDefaults?.RemoveLicenses,
         removeCalendarInvites: formValues.offboardingDefaults?.removeCalendarInvites,
