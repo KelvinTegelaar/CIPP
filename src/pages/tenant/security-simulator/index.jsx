@@ -71,7 +71,8 @@ const NOT_CHECKED = 'Not checked yet'
 
 const outcomeOf = (row, data) => {
   if (!row) return 'NotRun'
-  if (row.Status === 'Passed') return 'Prevented'
+  if (row.Status === 'Passed')
+    return data?.summary?.detectionOnly ? 'DetectedOnly' : 'Prevented'
   if (row.Status === 'Failed')
     return data?.summary?.detected ? 'Detected' : 'NotPrevented'
   if (row.Status === 'Skipped') return 'Unlicensed'
@@ -80,6 +81,7 @@ const outcomeOf = (row, data) => {
 const outcomeStyle = {
   Prevented: { text: 'Prevented', color: 'success.main' },
   Detected: { text: 'Alerted, not prevented', color: 'warning.main' },
+  DetectedOnly: { text: 'Detected', color: 'success.main' },
   NotPrevented: { text: 'Not prevented', color: 'error.main' },
   Unlicensed: { text: 'Not licensed', color: 'text.disabled' },
   Unknown: { text: 'Could not be evaluated', color: 'warning.main' },
@@ -327,20 +329,24 @@ const ScenarioRun = ({ tenant, scenario, loadingList, onBack }) => {
   const evaluationFailed = steps.some(
     (step) => step.reached && step.whatIf?.error
   )
+  const detectedOnly = summary?.detectionOnly && summary?.detected
   const headline = prevented
     ? `Blocked at "${preventedStep?.title}"`
-    : fixed
-      ? 'No mapped control stops this chain'
-      : evaluationFailed
-        ? 'The sign-in could not be evaluated'
-        : summary?.detected
-          ? 'The attack succeeds, but an alert would fire'
-          : 'The attack succeeds, undetected'
-  const headlineColor = prevented
-    ? 'success.main'
-    : !fixed && evaluationFailed
-      ? 'warning.main'
-      : 'error.main'
+    : !fixed && detectedOnly
+      ? 'Detected: nothing can block this, and an alert fires when it happens'
+      : fixed
+        ? 'No mapped control stops this chain'
+        : evaluationFailed
+          ? 'The sign-in could not be evaluated'
+          : summary?.detected
+            ? 'The attack succeeds, but an alert would fire'
+            : 'The attack succeeds, undetected'
+  const headlineColor =
+    prevented || (!fixed && detectedOnly)
+      ? 'success.main'
+      : !fixed && evaluationFailed
+        ? 'warning.main'
+        : 'error.main'
   const subline = data?.scenario?.outcome
     ? prevented
       ? data.scenario.outcome.prevented
