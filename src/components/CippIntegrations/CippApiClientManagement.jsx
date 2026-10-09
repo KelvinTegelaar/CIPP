@@ -11,6 +11,7 @@ import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { Box } from "@mui/system";
+import { getCippError } from "../../utils/get-cipp-error";
 
 // IP entries that impose no real restriction; a role with only these (or none) is unrestricted,
 // matching the backend collapsing an empty list to "Any".
@@ -465,6 +466,13 @@ const CippApiClientManagement = () => {
               </Box>
             )}
           </>
+        )}
+        {azureConfig.isError && (
+          <Box sx={{ px: 3 }}>
+            <Alert severity="error">
+              Could not get the Azure authentication settings: {getCippError(azureConfig.error)}
+            </Alert>
+          </Box>
         )}
         {azureConfig.isSuccess && azureConfig.data?.Results?.Enabled === false && (
           <Box sx={{ px: 3 }}>

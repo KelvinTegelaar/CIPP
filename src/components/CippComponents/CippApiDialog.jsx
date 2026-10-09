@@ -85,9 +85,9 @@ export const CippApiDialog = (props) => {
     urlFromData: true,
     relatedQueryKeys: relatedQueryKeys ?? api.relatedQueryKeys ?? title,
     bulkRequest: api.multiPost === false,
-    onResult: (result) => {
+    onResult: (result, meta) => {
       setPartialResults((prev) => [...prev, result])
-      api?.onSuccess?.(result)
+      if (!meta?.failed) api?.onSuccess?.(result)
     },
   })
 
@@ -95,9 +95,9 @@ export const CippApiDialog = (props) => {
     ...getRequestInfo,
     relatedQueryKeys: relatedQueryKeys ?? api.relatedQueryKeys ?? title,
     bulkRequest: api.multiPost === false,
-    onResult: (result) => {
+    onResult: (result, meta) => {
       setPartialResults((prev) => [...prev, result])
-      api?.onSuccess?.(result)
+      if (!meta?.failed) api?.onSuccess?.(result)
     },
   })
 

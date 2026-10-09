@@ -25,6 +25,7 @@ import { Grid } from '@mui/system'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { usePermissions } from '../../hooks/use-permissions'
 import { buildVersionedHeaders } from '../../utils/cippVersion'
+import { getCippError } from '../../utils/get-cipp-error'
 import { filterEligibleCopyLibraries } from '../../utils/sharepoint-library-copy-eligible'
 
 const POLL_MS = 20000
@@ -554,7 +555,7 @@ export const CippSharePointLibraryCopyDialog = ({
       setPreflight(result)
       setConfirmOpen(true)
     } catch (e) {
-      setError(e?.message ?? 'Preflight failed.')
+      setError(getCippError(e) ?? 'Preflight failed.')
     }
   }
 
@@ -573,7 +574,7 @@ export const CippSharePointLibraryCopyDialog = ({
       }
       setOperationId(result.OperationId)
     } catch (e) {
-      setError(e?.message ?? 'Failed to start copy.')
+      setError(getCippError(e) ?? 'Failed to start copy.')
     }
   }
 
@@ -620,7 +621,7 @@ export const CippSharePointLibraryCopyDialog = ({
         }
       } catch (e) {
         if (manual || !pollStoppedRef.current) {
-          setError(e?.message ?? 'Status poll failed.')
+          setError(getCippError(e) ?? 'Status poll failed.')
           if (!manual) stopPolling()
         }
       } finally {
