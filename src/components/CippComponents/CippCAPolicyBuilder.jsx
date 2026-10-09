@@ -1768,7 +1768,10 @@ export function extractCAPolicyJSON(formValues) {
 
   const authFlows = cleaned.conditions?.authenticationFlows;
   if (Array.isArray(authFlows?.transferMethods)) {
-    authFlows.transferMethods = authFlows.transferMethods.join(",");
+    // Graph returns flags in enum order; any other order reads as drift on compare
+    authFlows.transferMethods = caSchema.$defs.conditionalAccessAuthenticationFlows.properties.transferMethods.enum
+      .filter((m) => authFlows.transferMethods.includes(m))
+      .join(",");
   }
 
   if (cleaned.conditions?.users?.excludeGuestsOrExternalUsers) {
