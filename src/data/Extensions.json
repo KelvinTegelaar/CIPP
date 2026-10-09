@@ -799,6 +799,7 @@
     ],
     "mappingRequired": true,
     "fieldMapping": true,
+    "autoMapSyncApi": true,
     "showSyncButton": true
   },
   {
