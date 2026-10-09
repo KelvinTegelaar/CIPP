@@ -3,6 +3,7 @@ import { CippTablePage } from '../../../../components/CippComponents/CippTablePa
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
+import { getCippError } from '../../../../utils/get-cipp-error'
 import { Box, Skeleton, Typography } from '@mui/material'
 
 // Drill-in panel: the list omits allowedUsersAndGroups / acquireUsersAndGroups / elementDetails,
@@ -23,6 +24,7 @@ const PackageDetailPanel = ({ row }) => {
       </Typography>
       {detail.isFetching && <Skeleton variant="rounded" height={220} />}
       {detail.isSuccess && <CippJsonView object={detail.data} defaultOpen={true} />}
+      {detail.isError && <Typography color="error">{getCippError(detail.error)}</Typography>}
     </Box>
   )
 }
