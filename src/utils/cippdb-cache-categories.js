@@ -16,7 +16,6 @@ const CACHE_TYPE_COLLECTIONS = {
     "AuthorizationPolicy",
     "AuthenticationMethodsPolicy",
     "SecurityDefaults",
-    "DeviceSettings",
     "DirectoryRecommendations",
     "CrossTenantAccessPolicy",
     "DefaultAppManagementPolicy",
@@ -134,6 +133,7 @@ const CACHE_TYPE_COLLECTIONS = {
     "ComplianceRetentionRules",
     "ExoDlpSensitiveInfoTypes",
     "ExoLabels",
+    "ExoLabelPolicies",
   ],
   CopilotUsage: [
     "CopilotUsageUserDetail",
