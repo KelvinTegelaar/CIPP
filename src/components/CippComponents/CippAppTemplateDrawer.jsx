@@ -411,6 +411,7 @@ export const CippAppTemplateDrawer = ({
                   { value: 'huntress', label: 'Huntress' },
                   { value: 'automate', label: 'CW Automate' },
                   { value: 'cwcommand', label: 'CW Command' },
+                  { value: 'ninja', label: 'NinjaOne' },
                 ]}
                 formControl={formControl}
                 multiple={false}
@@ -546,6 +547,23 @@ export const CippAppTemplateDrawer = ({
                   type="textField"
                   label="Client URL (e.g., %CWCommandClientURL%)"
                   name="params.ClientURL"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+
+            {/* NinjaOne */}
+            <CippFormCondition
+              formControl={formControl}
+              field="rmmname.value"
+              compareType="is"
+              compareValue="ninja"
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textFieldWithVariables"
+                  label="Installer Token (e.g., %NinjaOneToken%)"
+                  name="params.NinjaToken"
                   formControl={formControl}
                 />
               </Grid>

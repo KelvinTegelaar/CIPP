@@ -227,6 +227,7 @@ export const CippApplicationDeployDrawer = ({
                     label: 'CW Command',
                     isSponsor: false,
                   },
+                  { value: 'ninja', label: 'NinjaOne', isSponsor: false },
                 ]}
                 formControl={formControl}
                 multiple={false}
@@ -389,6 +390,26 @@ export const CippApplicationDeployDrawer = ({
                     name={`params.ClientURL.${tenant.addedFields.customerId}`}
                     formControl={formControl}
                     validators={{ required: `Client URL for ${tenant.label} is required` }}
+                  />
+                </Grid>
+              ))}
+            </CippFormCondition>
+
+            {/* For "ninja" */}
+            <CippFormCondition
+              formControl={formControl}
+              field="rmmname.value"
+              compareType="is"
+              compareValue="ninja"
+            >
+              {selectedTenants?.map((tenant, index) => (
+                <Grid size={{ md: 6, xs: 12 }} key={tenant.addedFields.customerId || index}>
+                  <CippFormComponent
+                    type="textFieldWithVariables"
+                    label={`Installer Token for ${tenant.label} (e.g., %NinjaOneToken%)`}
+                    name={`params.NinjaToken.${tenant.addedFields.customerId}`}
+                    formControl={formControl}
+                    validators={{ required: `Installer Token for ${tenant.label} is required` }}
                   />
                 </Grid>
               ))}
