@@ -250,9 +250,16 @@ const CippIntegrationSettings = ({ children }) => {
 
   // isSuccess only goes false -> true once, so depending on it alone meant a refetch never
   // reached the table and server-side automap results stayed hidden until a page reload.
+  // Rows the server doesn't have yet are unsaved local automap matches; keep them.
   useEffect(() => {
     if (mappings.isSuccess) {
-      setTableData(mappings.data.Mappings ?? []);
+      const serverRows = mappings.data.Mappings ?? [];
+      setTableData((prev) => [
+        ...serverRows,
+        ...(Array.isArray(prev) ? prev : []).filter(
+          (row) => !serverRows.some((server) => server.TenantId === row.TenantId)
+        ),
+      ]);
     }
   }, [mappings.isSuccess, mappings.data]);
 
