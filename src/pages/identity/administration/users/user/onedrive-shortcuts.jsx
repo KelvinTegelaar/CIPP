@@ -176,6 +176,22 @@ const Page = () => {
               ],
               validators: { required: 'Please select a shortcut location' },
             },
+              {
+                type: 'textField',
+                name: 'shortcutName',
+                label: 'Shortcut name (optional)',
+                helperText: 'Leave blank to keep the library or site name.',
+                validators: {
+                  validate: (value) => {
+                    if (!value) return true
+                    if (/["*:<>?/\\|]/.test(value)) return 'Cannot contain any of: " * : < > ? / \\ |'
+                    if (value !== value.trim()) return 'Cannot start or end with a space'
+                    if (value.endsWith('.')) return 'Cannot end with a period'
+                    if (value.length > 255) return 'Cannot be longer than 255 characters'
+                    return true
+                  },
+                },
+              },
           ]}
           api={{
             url: '/api/ExecOneDriveShortCut',
