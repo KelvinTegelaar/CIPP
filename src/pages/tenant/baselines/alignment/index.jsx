@@ -1008,9 +1008,35 @@ const Page = () => {
         { label: 'Configured By', value: row.sourceTemplate },
         {
           label: 'Last Run',
-          value: row.lastRun
-            ? parseCippDate(row.lastRun).toLocaleString()
-            : 'N/A',
+          // The newest run's logs are one click away at the top of the drawer; the
+          // per-run buttons further down cover older runs. history is newest-first.
+          value: row.lastRun ? (
+            <Stack
+              component="span"
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: 'center', justifyContent: 'flex-end' }}
+            >
+              <span>{parseCippDate(row.lastRun).toLocaleString()}</span>
+              {row.history?.[0]?.runId && (
+                <CippApiLogsDrawer
+                  baselineRunFilter={row.history[0].runId}
+                  tenantFilter={currentTenant}
+                  buttonText="View Logs"
+                  title={`Run ${String(row.history[0].runId).slice(0, 8)} - Logs`}
+                  size="small"
+                  sx={{
+                    fontSize: '0.75rem',
+                    p: 0,
+                    minWidth: 0,
+                    textTransform: 'none',
+                  }}
+                />
+              )}
+            </Stack>
+          ) : (
+            'N/A'
+          ),
         },
       ]
       if (row.deviationReason) {
@@ -1660,12 +1686,27 @@ const Page = () => {
                   <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                     {parseCippDate(run.timestamp).toLocaleString()}
                   </Typography>
-                  <Chip
-                    variant="outlined"
-                    size="small"
-                    label={outcomeTimeline[run.outcome]?.label ?? run.outcome}
-                    color={outcomeTimeline[run.outcome]?.chipColor ?? 'error'}
-                  />
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                    <CippApiLogsDrawer
+                      baselineRunFilter={run.runId}
+                      tenantFilter={currentTenant}
+                      buttonText="View Logs"
+                      title={`Run ${String(run.runId).slice(0, 8)} - Logs`}
+                      size="small"
+                      sx={{
+                        fontSize: '0.75rem',
+                        p: 0,
+                        minWidth: 0,
+                        textTransform: 'none',
+                      }}
+                    />
+                    <Chip
+                      variant="outlined"
+                      size="small"
+                      label={outcomeTimeline[run.outcome]?.label ?? run.outcome}
+                      color={outcomeTimeline[run.outcome]?.chipColor ?? 'error'}
+                    />
+                  </Stack>
                 </Stack>
                 <Typography
                   variant="caption"
