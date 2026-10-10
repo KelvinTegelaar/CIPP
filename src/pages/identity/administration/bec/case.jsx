@@ -323,7 +323,6 @@ const Page = () => {
             becData={becData}
             onStart={startRun}
             startPending={startRunCall.isPending}
-            windowDays={windowDays}
           />
         )}
         <CippApiResults apiObject={startRunCall} errorsOnly={true} />

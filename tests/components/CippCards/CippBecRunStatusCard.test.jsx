@@ -23,7 +23,6 @@ const base = {
   userPrincipalName: 'victim@contoso.com',
   userId: 'u1',
   tenantFilter: 'contoso.com',
-  windowDays: 7,
 }
 
 describe('CippBecRunStatusCard', () => {
