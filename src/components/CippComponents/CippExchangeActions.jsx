@@ -2,6 +2,7 @@
 import { useSettings } from "../../hooks/use-settings.js";
 import { useMemo } from "react";
 import { MfaVerifyForm } from "./CippMfaVerifyForm";
+import { CippSharedMailboxLicenseAlert } from "./CippSharedMailboxLicenseAlert";
 import CippMailboxCustomAttributeRows, {
   canEditMailboxCustomAttributes,
 } from "./CippMailboxCustomAttributeRows";
@@ -171,6 +172,7 @@ export const CippExchangeActions = () => {
           ],
           validators: { required: "Please select a mailbox type" },
         },
+        { name: "sharedMailboxLicenseWarning", component: CippSharedMailboxLicenseAlert },
       ],
       confirmText:
         "Pick the type of mailbox you want to convert [UPN] of mailbox type [recipientTypeDetails] to:",
