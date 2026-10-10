@@ -19,16 +19,15 @@ import { CippDataTable } from '../CippTable/CippDataTable'
 import { CippApiResults } from './CippApiResults'
 import { CippApiDialog } from './CippApiDialog'
 import { CippOffCanvas } from './CippOffCanvas'
+import CippFormComponent from './CippFormComponent'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 
 // One definition of the type selector, shared by every dialog that edits a variable so the three
 // stay in step.
-const VARIABLE_TYPE_FIELD = {
+export const VARIABLE_TYPE_FIELD = {
   type: 'autoComplete',
   name: 'VariableType',
   label: 'Type',
-  helperText:
-    'Integer, boolean and JSON variables are written into templates as raw JSON values, so a numeric setting receives 300 rather than "300". String is the original behaviour and stays the default.',
   multiple: false,
   creatable: false,
   defaultValue: { label: 'String', value: 'string' },
@@ -37,7 +36,58 @@ const VARIABLE_TYPE_FIELD = {
     { label: 'Integer', value: 'integer' },
     { label: 'Boolean', value: 'boolean' },
     { label: 'JSON', value: 'json' },
+    { label: 'List', value: 'list' },
   ],
+}
+
+const typeValue = (type) => (type && typeof type === 'object' ? type.value : type)
+
+// A list is typed one value per line; every other type keeps the single-line box.
+export const CippVariableValueField = ({ formControl, ...props }) => {
+  // The edit dialog seeds the type before this subscribes, so useWatch alone misses it.
+  const watched = useWatch({ control: formControl.control, name: 'VariableType' })
+  const type = typeValue(watched ?? formControl.getValues('VariableType'))
+  const isList = type === 'list'
+
+  useEffect(() => {
+    if (!isList) return
+    const value = formControl.getValues('Value')
+    // A saved list is stored as a JSON array; edit it as lines.
+    if (typeof value === 'string' && value.trim().startsWith('[')) {
+      try {
+        const items = JSON.parse(value)
+        if (Array.isArray(items) && items.every((item) => typeof item === 'string')) {
+          formControl.setValue('Value', items.join('\n'))
+        }
+      } catch {
+        // Left as typed; the server rejects a list that is not an array.
+      }
+    }
+  }, [isList, formControl])
+
+  return (
+    <CippFormComponent
+      formControl={formControl}
+      {...props}
+      type="textField"
+      name="Value"
+      {...(isList && {
+        multiline: true,
+        minRows: 3,
+        placeholder: '203.0.113.0/24\n198.51.100.10/32\n192.0.2.0/28',
+      })}
+    />
+  )
+}
+
+// type stays 'textField' alongside the component: CippApiDialog only pre-fills edits for that type.
+export const VALUE_FIELD = {
+  type: 'textField',
+  component: CippVariableValueField,
+  name: 'Value',
+  label: 'Value',
+  placeholder: 'Enter the value for the custom variable.',
+  required: true,
 }
 
 // Every place a variable name is defined, so an operator adding it somewhere new can see what the
@@ -294,13 +344,7 @@ const CippCustomVariables = ({ id }) => {
           disableVariables: true,
           validators: { validate: validateVariableName },
         },
-        {
-          type: 'textField',
-          name: 'Value',
-          label: 'Value',
-          placeholder: 'Enter the value for the custom variable.',
-          required: true,
-        },
+        VALUE_FIELD,
         VARIABLE_TYPE_FIELD,
         {
           type: 'textField',
@@ -341,11 +385,9 @@ const CippCustomVariables = ({ id }) => {
           disableVariables: true,
         },
         {
-          type: 'textField',
-          name: 'Value',
+          ...VALUE_FIELD,
           label: 'Value for this tenant',
           placeholder: 'Enter the value that should apply to this tenant.',
-          required: true,
         },
         VARIABLE_TYPE_FIELD,
         {
@@ -514,13 +556,7 @@ const CippCustomVariables = ({ id }) => {
                 },
               ]
             : []),
-          {
-            type: 'textField',
-            name: 'Value',
-            label: 'Value',
-            placeholder: 'Enter the value for the custom variable.',
-            required: true,
-          },
+          VALUE_FIELD,
           VARIABLE_TYPE_FIELD,
           {
             type: 'textField',

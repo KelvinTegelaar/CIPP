@@ -342,7 +342,7 @@ function UsersSection({
           clearOnBlur
           options={[{ label: "GuestsOrExternalUsers", value: "GuestsOrExternalUsers" }]}
           api={userSearchApi}
-          placeholder={directorySearch ? "Search for users" : "User display names or IDs"}
+          placeholder={directorySearch ? "Search for users" : "User display names, IDs or %variables%"}
         />
       </Grid>
       {/* Include groups */}
@@ -357,7 +357,7 @@ function UsersSection({
           disabled={disabled}
           clearOnBlur
           api={groupSearchApi}
-          placeholder={directorySearch ? "Search for groups" : "Group display names or IDs"}
+          placeholder={directorySearch ? "Search for groups" : "Group display names, IDs or %variables%"}
         />
       </Grid>
       {/* Exclude groups */}
@@ -372,7 +372,7 @@ function UsersSection({
           disabled={disabled}
           clearOnBlur
           api={groupSearchApi}
-          placeholder={directorySearch ? "Search for groups" : "Group display names or IDs"}
+          placeholder={directorySearch ? "Search for groups" : "Group display names, IDs or %variables%"}
         />
       </Grid>
       {/* Include roles */}
@@ -648,7 +648,7 @@ function ConditionsSection({ formControl, disabled }) {
           freeSolo
           disabled={disabled}
           options={includeLocOpts}
-          placeholder="All, AllTrusted, or named location names"
+          placeholder="All, AllTrusted, named location names or %variables%"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -661,7 +661,7 @@ function ConditionsSection({ formControl, disabled }) {
           freeSolo
           disabled={disabled}
           options={excludeLocOpts}
-          placeholder="AllTrusted or named location names"
+          placeholder="AllTrusted, named location names or %variables%"
         />
       </Grid>
 
@@ -1190,7 +1190,7 @@ function namedLocationToForm(loc) {
   if (type === "ip") {
     const ipRangesText = Array.isArray(loc.ipRanges)
       ? loc.ipRanges
-          .map((r) => r?.cidrAddress)
+          .map((r) => (typeof r === "string" ? r : r?.cidrAddress))
           .filter((v) => typeof v === "string" && v.trim() !== "")
           .join("\n")
       : "";

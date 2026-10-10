@@ -36,9 +36,48 @@ const Harness = ({ existingPolicy }) => {
     <CippCAPolicyBuilder
       formControl={formControl}
       existingPolicy={existingPolicy}
+      showNamedLocations
     />
   )
 }
+
+// A template IP location whose ranges come from a list variable, written by hand as plain CIDR
+// strings rather than Graph range objects.
+const listRangeTemplate = {
+  displayName: 'CA000-Global-Baseline-Block outside offices',
+  state: 'disabled',
+  conditions: {
+    clientAppTypes: ['all'],
+    applications: { includeApplications: ['All'] },
+    users: { includeUsers: ['All'] },
+    locations: { includeLocations: ['All'], excludeLocations: ['Office IPs'] },
+  },
+  grantControls: { operator: 'OR', builtInControls: ['block'] },
+  LocationInfo: [
+    {
+      '@odata.type': '#microsoft.graph.ipNamedLocation',
+      displayName: 'Office IPs',
+      isTrusted: true,
+      ipRanges: ['%officeips%'],
+    },
+  ],
+}
+
+describe('CippCAPolicyBuilder template named locations', () => {
+  it('keeps an IP range list variable written as a plain string', async () => {
+    renderWithProviders(<Harness existingPolicy={listRangeTemplate} />)
+
+    await waitFor(() => expect(form.getValues('LocationInfo')).toHaveLength(1))
+    expect(
+      extractCAPolicyJSON(form.getValues()).LocationInfo[0].ipRanges
+    ).toEqual([
+      {
+        '@odata.type': '#microsoft.graph.iPv4CidrRange',
+        cidrAddress: '%officeips%',
+      },
+    ])
+  })
+})
 
 describe('CippCAPolicyBuilder authentication flow transfer methods', () => {
   it('loads both methods of a live policy into the multi-select instead of dropping them', async () => {
