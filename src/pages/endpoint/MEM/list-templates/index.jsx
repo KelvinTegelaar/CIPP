@@ -40,6 +40,33 @@ const Page = () => {
       condition: (row) => row.isSynced === false,
     },
     {
+      label: 'Validate Template',
+      type: 'POST',
+      url: '/api/ExecValidateIntuneTemplate',
+      data: { ID: 'GUID' },
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'tenantFilter',
+          label: 'Check against a tenant (optional)',
+          multiple: false,
+          creatable: false,
+          api: {
+            url: '/api/ListTenants?AllTenantSelector=false',
+            labelField: (option) => `${option.displayName} (${option.defaultDomainName})`,
+            valueField: 'defaultDomainName',
+            queryKey: 'ListTenants-ValidateIntuneTemplate',
+            excludeTenantFilter: true,
+          },
+        },
+      ],
+      confirmText:
+        'Check [displayName] for problems that would stop it deploying. Nothing is saved or deployed. Pick a tenant to also check its replacement variables and setting availability.',
+      multiPost: false,
+      icon: <CippIcons.ShieldCheckIcon />,
+      color: 'info',
+    },
+    {
       label: 'Edit Template Name and Description',
       type: 'POST',
       url: '/api/ExecEditTemplate',
@@ -266,12 +293,22 @@ const Page = () => {
         filters={filterList}
         queryKey="ListIntuneTemplates-table"
         cardButton={
-          <CippPolicyImportDrawer
-            buttonText="Browse Catalog"
-            requiredPermissions={cardButtonPermissions}
-            PermissionButton={PermissionButton}
-            mode="Intune"
-          />
+          <Stack direction="row" spacing={2}>
+            <PermissionButton
+              requiredPermissions={cardButtonPermissions}
+              component={NextLink}
+              href="/endpoint/MEM/list-templates/add"
+              startIcon={<CippIcons.Add />}
+            >
+              Create New Template
+            </PermissionButton>
+            <CippPolicyImportDrawer
+              buttonText="Browse Catalog"
+              requiredPermissions={cardButtonPermissions}
+              PermissionButton={PermissionButton}
+              mode="Intune"
+            />
+          </Stack>
         }
       />
     </>

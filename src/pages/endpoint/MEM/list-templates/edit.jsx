@@ -1,7 +1,8 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -16,18 +17,13 @@ import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
-import { ApiGetCall } from "../../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
-import CippIntuneSettingsEditor, {
-  useIntuneDefinitionResolver,
-} from "../../../../components/CippComponents/CippIntuneSettingsEditor";
-import {
-  applyIntuneSettingEdits,
-  buildIntunePropertyLeaves,
-  buildIntuneSettingLeaves,
-  defaultValueForLeaf,
-} from "../../../../utils/intune-template-leaves";
-import { getCippTranslation } from "../../../../utils/get-cipp-translation";
+import CippIntuneSettingsEditor from "../../../../components/CippComponents/CippIntuneSettingsEditor";
+import { CippIntunePolicySettingsCard } from "../../../../components/CippComponents/CippIntunePolicySettingsCard";
+import { defaultValueForLeaf } from "../../../../utils/intune-template-leaves";
+import { useIntunePolicyEditor } from "../../../../hooks/use-intune-policy-editor";
 
 const EditIntuneTemplate = () => {
   const router = useRouter();
@@ -55,39 +51,47 @@ const EditIntuneTemplate = () => {
     }
   }, [templateData?.RAWJson]);
 
-  // A settings catalog policy names its settings by ID; the friendly names and the option lists come
-  // from a catalog that is fetched separately, so the editor waits for it rather than showing raw
-  // IDs that would rename themselves a moment later.
+  // Replaced only by adding or removing settings; scalar edits stay in form state until save.
+  const [workingPolicy, setWorkingPolicy] = useState(null);
+  useEffect(() => {
+    setWorkingPolicy(originalPolicy);
+  }, [originalPolicy]);
+  const policy = workingPolicy ?? originalPolicy;
+
+  const editor = useIntunePolicyEditor({ policy, setPolicy: setWorkingPolicy, formControl });
   const {
-    getDefinition,
-    isLoading: definitionsLoading,
-    isError: definitionsError,
-  } = useIntuneDefinitionResolver(originalPolicy);
+    structureRevision,
+    definitionsLoading,
+    definitionsError,
+    leaves,
+    isAdminTemplate,
+    supportsStructuralEdits,
+    foldValuesIntoPolicy,
+  } = editor;
 
-  // Administrative templates carry their settings as definition references resolved against a
-  // tenant, which CIPP cannot present as fields. Their name and description stay editable.
-  const isAdminTemplate =
-    Array.isArray(originalPolicy?.added) || Array.isArray(originalPolicy?.definitionValues);
-  const isSettingTree =
-    Array.isArray(originalPolicy?.settings) || Array.isArray(originalPolicy?.omaSettings);
-
-  const leaves = useMemo(() => {
-    if (!originalPolicy || isAdminTemplate || definitionsLoading) return [];
-    return isSettingTree
-      ? buildIntuneSettingLeaves(originalPolicy, getDefinition)
-      : buildIntunePropertyLeaves(originalPolicy, getCippTranslation);
-  }, [originalPolicy, getDefinition, isAdminTemplate, isSettingTree, definitionsLoading]);
+  // react-hook-form reports an unpopulated text field as '', so the first pass is tracked explicitly.
+  const populatedFromTemplate = useRef(false);
 
   useEffect(() => {
     // Deferred until the leaves are final. Resetting once the catalog arrives would otherwise
     // discard anything typed while it was still downloading.
     if (!templateData || definitionsLoading) return;
+
+    // Later passes come from adding/removing settings and must keep the name and description typed so far.
+    const current = formControl.getValues();
+    const firstPass = !populatedFromTemplate.current;
+    populatedFromTemplate.current = true;
+
     formControl.reset({
-      displayName: templateData.Displayname ?? templateData.displayName ?? "",
-      description: templateData.Description ?? templateData.description ?? "",
+      displayName: firstPass
+        ? templateData.Displayname ?? templateData.displayName ?? ""
+        : current.displayName,
+      description: firstPass
+        ? templateData.Description ?? templateData.description ?? ""
+        : current.description,
       settingValues: leaves.map(defaultValueForLeaf),
     });
-  }, [templateData, leaves, definitionsLoading]);
+  }, [templateData, leaves, definitionsLoading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const customDataFormatter = (values) => {
     const payload = {
@@ -97,13 +101,26 @@ const EditIntuneTemplate = () => {
     };
 
     // Omitted for policy shapes with no editable fields, which makes the backend keep the stored
-    // RAWJson as-is rather than accept a body this editor cannot faithfully reproduce.
-    if (originalPolicy && leaves.length > 0) {
-      payload.parsedRAWJson = applyIntuneSettingEdits(originalPolicy, leaves, values.settingValues);
+    // RAWJson as-is rather than accept a body this editor cannot faithfully reproduce. Removing the
+    // last setting leaves no fields but is still an edit.
+    if (policy && (leaves.length > 0 || workingPolicy !== originalPolicy)) {
+      payload.parsedRAWJson = foldValuesIntoPolicy();
     }
 
     return payload;
   };
+
+  const validateCall = ApiPostCall({});
+  const handleValidate = () =>
+    validateCall.mutate({
+      url: "/api/ExecValidateIntuneTemplate",
+      data: {
+        ID: id,
+        RAWJson: JSON.stringify(foldValuesIntoPolicy()),
+        TemplateType: templateData?.Type,
+        displayName: formControl.getValues().displayName,
+      },
+    });
 
   return (
     <CippFormPage
@@ -112,6 +129,7 @@ const EditIntuneTemplate = () => {
       queryKey={[`IntuneTemplate-${id}`, "IntuneTemplates", "Available Endpoint Manager"]}
       backButtonTitle="Intune Templates"
       postUrl="/api/ExecEditTemplate?type=IntuneTemplate"
+      allowResubmit={structureRevision > 0}
       customDataformatter={customDataFormatter}
       formPageType="Edit"
     >
@@ -152,8 +170,35 @@ const EditIntuneTemplate = () => {
                     />
                   </Grid>
                 </Grid>
+                <Stack spacing={1.5} sx={{ mt: 2 }}>
+                  <Box>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={handleValidate}
+                      disabled={validateCall.isPending || !originalPolicy}
+                    >
+                      {validateCall.isPending ? "Checking…" : "Validate template"}
+                    </Button>
+                    <Typography variant="caption" sx={{ color: "text.secondary", ml: 2 }}>
+                      Checks these changes for anything that would stop the template deploying.
+                      Nothing is saved.
+                    </Typography>
+                  </Box>
+                  <CippApiResults apiObject={validateCall} />
+                </Stack>
               </CardContent>
             </Card>
+
+            {supportsStructuralEdits && (
+              <CippIntunePolicySettingsCard
+                policy={policy}
+                editor={editor}
+                platform={policy?.platforms}
+                technology={policy?.technologies}
+                emptyText="This policy has no settings. It would deploy as an empty policy."
+              />
+            )}
 
             <Card variant="outlined">
               <CardHeader title="Policy settings" slotProps={{
