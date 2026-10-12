@@ -68,6 +68,15 @@ describe('CippApiDialog', () => {
     ).toBeInTheDocument()
   })
 
+  it('shows row values containing HTML characters verbatim', () => {
+    renderDialog({
+      api: { ...baseApi, confirmText: 'Delete [displayName]?', confirmPhrase: '[displayName]' },
+      row: { displayName: 'Sales & Marketing <EU>' },
+    })
+    expect(screen.getByText('Delete Sales & Marketing <EU>?')).toBeInTheDocument()
+    expect(screen.queryByText(/&amp;|&lt;/)).not.toBeInTheDocument()
+  })
+
   it('summarizes multi-row selections in the confirm text', () => {
     renderDialog({ row: [row, { ...row, id: 'user-2' }] })
 
