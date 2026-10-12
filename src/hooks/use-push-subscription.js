@@ -111,7 +111,10 @@ export const usePushSubscription = ({ publicKey, onSubscribed }) => {
     if (blockedReason) throw new Error(blockedReason)
     const result = await window.Notification.requestPermission()
     setPermission(result)
-    if (result !== 'granted') return
+    if (result !== 'granted')
+      throw new Error(
+        'Notification permission was not granted. Allow notifications for this site in your browser settings and try again.'
+      )
     const reg = await navigator.serviceWorker.ready
     const sub =
       (await reg.pushManager.getSubscription()) ??

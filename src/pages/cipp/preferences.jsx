@@ -34,13 +34,23 @@ const PushDevicesCard = () => {
     }),
     [currentEndpoint],
   );
+  const [enableStatus, setEnableStatus] = useState(null);
 
   const enableButton = (
     <Button
       size="small"
       variant="contained"
       disabled={!!push.blockedReason || push.register.isPending}
-      onClick={() => push.subscribe().catch(() => {})}
+      onClick={() => {
+        setEnableStatus({
+          severity: "info",
+          text: "Waiting for the browser's notification permission. If no prompt appears, check for a bell icon in the address bar.",
+        });
+        push
+          .subscribe()
+          .then(() => setEnableStatus(null))
+          .catch((e) => setEnableStatus({ severity: "error", text: e?.message || String(e) }));
+      }}
     >
       Enable on this device
     </Button>
@@ -84,6 +94,7 @@ const PushDevicesCard = () => {
           },
         ]}
       />
+      {enableStatus && <Alert severity={enableStatus.severity}>{enableStatus.text}</Alert>}
       <CippApiResults apiObject={push.register} />
     </Stack>
   );

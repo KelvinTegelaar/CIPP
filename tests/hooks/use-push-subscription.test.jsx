@@ -86,6 +86,15 @@ describe('usePushSubscription', () => {
     expect(mutate).not.toHaveBeenCalled()
   })
 
+  it('rejects instead of silently returning when permission is not granted', async () => {
+    window.Notification.requestPermission = vi.fn(async () => 'default')
+    const { result } = renderHook(() =>
+      usePushSubscription({ publicKey: 'BKEY' })
+    )
+    await expect(result.current.subscribe()).rejects.toThrow(/not granted/)
+    expect(mutate).not.toHaveBeenCalled()
+  })
+
   it('blocks without an instance public key', () => {
     const { result } = renderHook(() =>
       usePushSubscription({ publicKey: undefined })
