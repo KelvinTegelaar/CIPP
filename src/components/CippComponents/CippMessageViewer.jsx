@@ -32,6 +32,7 @@ import CippPageCard from "../CippCards/CippPageCard";
 import { useSettings } from "../../hooks/use-settings";
 import CippForefrontHeaderDialog from "./CippForefrontHeaderDialog";
 import { CippMessageDeliveryInfo } from "./CippMessageDeliveryInfo";
+import { decodeMimeEncodedWords } from "../../utils/decode-mime-encoded-words";
 
 export const CippMessageViewer = ({ emailSource }) => {
   const [emlContent, setEmlContent] = useState(null);
@@ -114,7 +115,7 @@ export const CippMessageViewer = ({ emailSource }) => {
       );
     }
 
-    var fileName = attachment?.name ?? "attachment";
+    var fileName = decodeMimeEncodedWords(attachment?.name) ?? "attachment";
     const blob = new Blob([fileBytes], { type: contentType ?? "application/octet-stream" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -435,46 +436,62 @@ export const CippMessageViewer = ({ emailSource }) => {
               {emlContent.attachments && emlContent.attachments.length > 0 && (
                 <Grid container spacing={2} sx={{ mb: 2 }}>
                   <Grid size={12}>
-                    <Stack spacing={1} direction="row">
-                      {emlContent?.attachments?.map((attachment, index) => (
-                        <React.Fragment key={index}>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            onClick={(event) =>
-                              setAnchorEl({ ...anchorEl, [index]: event.currentTarget })
-                            }
-                            startIcon={
-                              <SvgIcon fontSize="small">
-                                {getAttachmentIcon(attachment?.contentType ?? "text/plain")}
-                              </SvgIcon>
-                            }
-                          >
-                            {attachment.name ?? "No name"}
-                          </Button>
+                    <Stack spacing={1} direction="row" useFlexGap sx={{ flexWrap: "wrap" }}>
+                      {emlContent?.attachments?.map((attachment, index) => {
+                        const attachmentName =
+                          decodeMimeEncodedWords(attachment.name) ?? "No name";
+                        return (
+                          <React.Fragment key={index}>
+                            <Tooltip title={attachmentName} placement="top">
+                              <Button
+                                variant="contained"
+                                size="small"
+                                onClick={(event) =>
+                                  setAnchorEl({ ...anchorEl, [index]: event.currentTarget })
+                                }
+                                startIcon={
+                                  <SvgIcon fontSize="small">
+                                    {getAttachmentIcon(attachment?.contentType ?? "text/plain")}
+                                  </SvgIcon>
+                                }
+                                sx={{ maxWidth: 280 }}
+                              >
+                                <Box
+                                  component="span"
+                                  sx={{
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                  }}
+                                >
+                                  {attachmentName}
+                                </Box>
+                              </Button>
+                            </Tooltip>
 
-                          <Menu
-                            anchorEl={anchorEl[index]}
-                            open={Boolean(anchorEl[index])}
-                            onClose={() => setAnchorEl({ ...anchorEl, [index]: null })}
-                          >
-                            <MenuItem onClick={() => downloadAttachment(attachment)}>
-                              <CippIcons.Download sx={{ mr: 1 }} />
-                              Download
-                            </MenuItem>
-                            {(attachment?.contentType === undefined ||
-                              attachment?.contentType?.includes("text") ||
-                              attachment?.contentType?.includes("pdf") ||
-                              attachment?.contentType?.includes("image") ||
-                              attachment?.contentType?.includes("rfc822")) && (
-                              <MenuItem onClick={() => downloadAttachment(attachment, true)}>
-                                <CippIcons.Visibility sx={{ mr: 1 }} />
-                                View
+                            <Menu
+                              anchorEl={anchorEl[index]}
+                              open={Boolean(anchorEl[index])}
+                              onClose={() => setAnchorEl({ ...anchorEl, [index]: null })}
+                            >
+                              <MenuItem onClick={() => downloadAttachment(attachment)}>
+                                <CippIcons.Download sx={{ mr: 1 }} />
+                                Download
                               </MenuItem>
-                            )}
-                          </Menu>
-                        </React.Fragment>
-                      ))}
+                              {(attachment?.contentType === undefined ||
+                                attachment?.contentType?.includes("text") ||
+                                attachment?.contentType?.includes("pdf") ||
+                                attachment?.contentType?.includes("image") ||
+                                attachment?.contentType?.includes("rfc822")) && (
+                                <MenuItem onClick={() => downloadAttachment(attachment, true)}>
+                                  <CippIcons.Visibility sx={{ mr: 1 }} />
+                                  View
+                                </MenuItem>
+                              )}
+                            </Menu>
+                          </React.Fragment>
+                        );
+                      })}
                     </Stack>
                   </Grid>
                 </Grid>
