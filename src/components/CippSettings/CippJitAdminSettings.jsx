@@ -4,6 +4,7 @@ import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { useForm, useWatch } from "react-hook-form";
 import jitAdminRoles from "../../data/JitAdminRoles.json";
 import { useEffect } from "react";
@@ -24,6 +25,7 @@ const CippJitAdminSettings = () => {
     defaultValues: {
       MaxDuration: "",
       RequireApproval: false,
+      ApprovalTenants: [],
       ApprovalTriggerRoles: [],
       ApproverRoles: [],
       RequiredApprovals: 1,
@@ -36,6 +38,7 @@ const CippJitAdminSettings = () => {
       formControl.reset({
         MaxDuration: jitSettings.data?.MaxDuration || "",
         RequireApproval: jitSettings.data?.RequireApproval ?? false,
+        ApprovalTenants: jitSettings.data?.ApprovalTenants ?? [],
         ApprovalTriggerRoles: jitSettings.data?.ApprovalTriggerRoles ?? [],
         ApproverRoles: jitSettings.data?.ApproverRoles ?? [],
         RequiredApprovals: jitSettings.data?.RequiredApprovals ?? 1,
@@ -51,6 +54,7 @@ const CippJitAdminSettings = () => {
         Action: "Set",
         MaxDuration: formData.MaxDuration || null,
         RequireApproval: formData.RequireApproval,
+        ApprovalTenants: formData.ApprovalTenants,
         ApprovalTriggerRoles: formData.ApprovalTriggerRoles,
         ApproverRoles: formData.ApproverRoles,
         RequiredApprovals: formData.RequiredApprovals,
@@ -144,6 +148,15 @@ const CippJitAdminSettings = () => {
           />
           {requireApproval && (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+              <CippFormTenantSelector
+                name="ApprovalTenants"
+                label="Tenants that need approval"
+                placeholder="Leave empty to require approval in every tenant"
+                valueField="customerId"
+                includeGroups={true}
+                required={false}
+                formControl={formControl}
+              />
               <CippFormComponent
                 type="autoComplete"
                 name="ApprovalTriggerRoles"
