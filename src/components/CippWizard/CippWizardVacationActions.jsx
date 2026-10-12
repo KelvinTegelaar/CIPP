@@ -373,6 +373,44 @@ export const CippWizardVacationActions = (props) => {
                       required={true}
                     />
                   </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      label={
+                        tenantDomain
+                          ? `Also allow sign-ins from existing named locations in ${tenantDomain} (optional)`
+                          : 'Select a tenant first'
+                      }
+                      name="travelExistingLocations"
+                      multiple={true}
+                      creatable={false}
+                      api={
+                        tenantDomain
+                          ? {
+                              queryKey: `ListNamedLocations-${tenantDomain}`,
+                              url: '/api/ListNamedLocations',
+                              data: { tenantFilter: tenantDomain },
+                              labelField: (option) =>
+                                option.rangeOrLocation
+                                  ? `${option.displayName} (${option.rangeOrLocation})`
+                                  : option.displayName,
+                              valueField: 'id',
+                              showRefresh: true,
+                            }
+                          : null
+                      }
+                      formControl={formControl}
+                      disabled={!tenantDomain}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="switch"
+                      label="Also allow sign-ins from all trusted locations"
+                      name="travelAllowTrusted"
+                      formControl={formControl}
+                    />
+                  </Grid>
                 </CippFormCondition>
               </Grid>
             </CippFormCondition>
