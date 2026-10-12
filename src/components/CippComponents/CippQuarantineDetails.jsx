@@ -156,6 +156,10 @@ export const CippQuarantineDetails = ({ row }) => {
     isEmail && details.isSuccess && !analyzed && !permissionError
   const headerFallback =
     isEmail && details.data?.Metadata?.Source === 'Headers' && !permissionError
+  // On the header fallback the URLs and attachments come from the exported message, not from
+  // Defender, so there is no verdict to show. 'Unknown' read as a verdict, which is wrong.
+  const verdictLabel = (threatType) =>
+    formatEnum(threatType) ?? (headerFallback ? 'Not analysed' : 'Unknown')
 
   const quarantineFields = [
     { label: 'Received', value: row.ReceivedTime, field: 'ReceivedTime' },
@@ -390,7 +394,7 @@ export const CippQuarantineDetails = ({ row }) => {
                         size="small"
                         variant="outlined"
                         color={threatChipColor(urlEntry.threatType)}
-                        label={formatEnum(urlEntry.threatType) ?? 'Unknown'}
+                        label={verdictLabel(urlEntry.threatType)}
                       />
                     </TableCell>
                     <TableCell>{urlEntry.detectionMethod}</TableCell>
@@ -423,7 +427,7 @@ export const CippQuarantineDetails = ({ row }) => {
                         size="small"
                         variant="outlined"
                         color={threatChipColor(attachment.threatType)}
-                        label={formatEnum(attachment.threatType) ?? 'Unknown'}
+                        label={verdictLabel(attachment.threatType)}
                       />
                     </TableCell>
                     <TableCell>{attachment.malwareFamily}</TableCell>
