@@ -5,6 +5,7 @@ import { ApiGetCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
 import { usePermissions } from '../../hooks/use-permissions'
 import { LinearProgressWithLabel } from '../linearProgressWithLabel'
+import { CippDataTable } from '../CippTable/CippDataTable'
 
 // SharePoint reports the tenant quota in MB, and a tenant pool is routinely multiple TB.
 // Roll the unit up so the figures stay readable instead of printing seven-digit megabytes.
@@ -16,6 +17,8 @@ const formatStorage = (sizeInMB) => {
   return `${Math.round(size)} MB`
 }
 
+const toGb = (sizeInMB) => Math.round((Number(sizeInMB) / 1024) * 100) / 100
+
 /**
  * Slim tenant-wide SharePoint storage bar, ported from the "SharePoint Quota" donut on the
  * classic (v1) dashboard. Reads the SPO admin StorageQuotas API, so it is unaffected by the
@@ -25,15 +28,15 @@ const formatStorage = (sizeInMB) => {
  * every geo location against the shared tenant pool. A per-geo chip row is added when there
  * is more than one location, so the aggregate never hides where the storage actually sits.
  *
- * Renders nothing when the data can't apply: AllTenants (the endpoint answers "Not Supported")
- * or a user without the Sharepoint.Admin read permission the endpoint requires.
+ * On AllTenants it renders a per-tenant table from the report cache instead.
+ * Renders nothing for a user without the Sharepoint.Admin read permission the endpoint requires.
  */
 export const CippSharePointQuotaCard = () => {
   const currentTenant = useSettings().currentTenant
   const { checkPermissions } = usePermissions()
   const canReadQuota = checkPermissions(['Sharepoint.Admin.Read', 'Sharepoint.Admin.ReadWrite'])
   const isAllTenants = currentTenant === 'AllTenants'
-  const enabled = !!currentTenant && !isAllTenants && canReadQuota
+  const enabled = !!currentTenant && canReadQuota
 
   const quota = ApiGetCall({
     url: '/api/ListSharepointQuota',
@@ -44,6 +47,38 @@ export const CippSharePointQuotaCard = () => {
   })
 
   if (!enabled) return null
+
+  if (isAllTenants) {
+    const rows = (Array.isArray(quota.data) ? quota.data : []).map((row) => ({
+      Tenant: row.Tenant,
+      percentUsed:
+        Number(row.TenantStorageMB) > 0
+          ? Math.round((Number(row.GeoUsedStorageMB) / Number(row.TenantStorageMB)) * 1000) / 10
+          : null,
+      storageUsedInGigabytes: toGb(row.GeoUsedStorageMB),
+      storageFreeInGigabytes: toGb(row.TenantStorageMB - row.GeoUsedStorageMB),
+      storageAllocatedInGigabytes: toGb(row.TenantStorageMB),
+      geoLocations: (row.GeoLocations ?? []).map((geo) => geo?.GeoLocation).join(', '),
+    }))
+    return (
+      <CippDataTable
+        title="Tenant Storage"
+        queryKey="AllTenants-ListSharepointQuota-table"
+        data={rows}
+        isFetching={quota.isFetching}
+        refreshFunction={quota}
+        defaultSorting={[{ id: 'percentUsed', desc: true }]}
+        simpleColumns={[
+          'Tenant',
+          'percentUsed',
+          'storageUsedInGigabytes',
+          'storageFreeInGigabytes',
+          'storageAllocatedInGigabytes',
+          'geoLocations',
+        ]}
+      />
+    )
+  }
 
   const usedMB = Number(quota.data?.GeoUsedStorageMB)
   const totalMB = Number(quota.data?.TenantStorageMB)
