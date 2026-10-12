@@ -115,6 +115,7 @@ export const CippIntunePolicySettingsCard = ({
                             <Stack
                               direction="row"
                               spacing={1}
+                              useFlexGap
                               component="span"
                               sx={{
                                 alignItems: 'center',
