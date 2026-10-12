@@ -3,6 +3,7 @@ import { CippIcons } from '../../utils/icon-registry'
 import { Stack, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import CippFormComponent from '../CippComponents/CippFormComponent'
+import { CippFormCondition } from '../CippComponents/CippFormCondition'
 
 // Map an effective expected value back onto the standard's variables, so forms can be
 // pre-filled with what is currently applied (e.g. when creating a tenant override).
@@ -37,6 +38,24 @@ export const CippBaselineStandardSettings = ({
     const seed =
       initialValues?.[key] ?? definition.recommended ?? definition.default
     if (seed === undefined) return undefined
+    // List pickers that replaced a comma-separated text field still load the old string.
+    if (
+      definition.type === 'autoComplete' &&
+      definition.multiple === true &&
+      typeof seed === 'string'
+    ) {
+      return seed
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean)
+        .map(
+          (value) =>
+            definition.options?.find((option) => option.value === value) ?? {
+              label: value,
+              value,
+            }
+        )
+    }
     return definition.type === 'autoComplete'
       ? (definition.options?.find((option) => option.value === seed) ?? seed)
       : seed
@@ -116,48 +135,66 @@ export const CippBaselineStandardSettings = ({
 
   return (
     <Grid container spacing={2}>
-      {variableEntries.map(([key, definition]) => (
-        <Grid key={key} size={{ xs: 12, md: 6 }}>
-          <CippFormComponent
-            type={definition.type}
-            name={`${namePrefix}.${key}`}
-            label={definition.label}
-            // Per-field guidance from the definition (e.g. an example version format).
-            // Renders below the field for text/number/select inputs.
-            helperText={definition.helperText}
-            formControl={formControl}
-            // Saved/recommended value rides the Controller's own defaultValue so a
-            // lazily-mounted field initializes correctly regardless of effect order.
-            defaultValue={resolveSeed(key, definition)}
-            options={definition.options}
-            // Definitions may source options from an API instead of a static list
-            // (e.g. the CA template picker) - CippFormComponent handles the fetch.
-            api={definition.api}
-            // Identity pickers are always single-select (the catalog tests enforce it);
-            // list-shaped variables (allowed domains, IP ranges) declare multiple:true.
-            multiple={definition.multiple === true}
-            creatable={definition.creatable === true}
-            disabled={definition.locked === true}
-            // Required-ness plus the definition's declared API constraints. A required
-            // variable has no safe fallback: saving without it leaves the raw %token% in
-            // the baseline, which the engine refuses to compare or apply - and a value
-            // outside the API's real bounds saves fine but fails at remediation time.
-            validators={resolveValidators(definition)}
-          />
-          {definition.locked && (
-            <Stack direction="row" spacing={0.5} sx={{
-              alignItems: "center"
-            }}>
-              <CippIcons.Lock sx={{ fontSize: 14 }} color="disabled" />
-              <Typography variant="caption" sx={{
-                color: "text.secondary"
+      {variableEntries.map(([key, definition]) => {
+        const field = (
+          <Grid key={key} size={{ xs: 12, md: 6 }}>
+            <CippFormComponent
+              type={definition.type}
+              name={`${namePrefix}.${key}`}
+              label={definition.label}
+              // Per-field guidance from the definition (e.g. an example version format).
+              // Renders below the field for text/number/select inputs.
+              helperText={definition.helperText}
+              formControl={formControl}
+              // Saved/recommended value rides the Controller's own defaultValue so a
+              // lazily-mounted field initializes correctly regardless of effect order.
+              defaultValue={resolveSeed(key, definition)}
+              options={definition.options}
+              // Definitions may source options from an API instead of a static list
+              // (e.g. the CA template picker) - CippFormComponent handles the fetch.
+              api={definition.api}
+              // Identity pickers are always single-select (the catalog tests enforce it);
+              // list-shaped variables (allowed domains, IP ranges) declare multiple:true.
+              multiple={definition.multiple === true}
+              creatable={definition.creatable === true}
+              disabled={definition.locked === true}
+              // Required-ness plus the definition's declared API constraints. A required
+              // variable has no safe fallback: saving without it leaves the raw %token% in
+              // the baseline, which the engine refuses to compare or apply - and a value
+              // outside the API's real bounds saves fine but fails at remediation time.
+              validators={resolveValidators(definition)}
+            />
+            {definition.locked && (
+              <Stack direction="row" spacing={0.5} sx={{
+                alignItems: "center"
               }}>
-                Enforced by the standard definition and cannot be changed.
-              </Typography>
-            </Stack>
-          )}
-        </Grid>
-      ))}
+                <CippIcons.Lock sx={{ fontSize: 14 }} color="disabled" />
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
+                  Enforced by the standard definition and cannot be changed.
+                </Typography>
+              </Stack>
+            )}
+          </Grid>
+        )
+        // Hidden values are kept unless the definition opts into clearOnHide: the
+        // baseline logic, not the editor, decides what a dependent value means.
+        return definition.condition ? (
+          <CippFormCondition
+            key={key}
+            {...definition.condition}
+            field={`${namePrefix}.${definition.condition.field}`}
+            formControl={formControl}
+            clearOnHide={definition.clearOnHide === true}
+            clearFields={[`${namePrefix}.${key}`]}
+          >
+            {field}
+          </CippFormCondition>
+        ) : (
+          field
+        )
+      })}
     </Grid>
   );
 }

@@ -771,17 +771,22 @@ const Page = () => {
   const unsavedChanges = hasUnsavedChanges || formControl.formState.isDirty
 
   // Warn before navigating away with unsaved changes (browser close + in-app navigation).
-  const handleRouteChange = useCallback(() => {
-    if (unsavedChanges) {
-      const confirmLeave = window.confirm(
-        'You have unsaved changes. Are you sure you want to leave this page?'
-      )
-      if (!confirmLeave) {
-        router.events.emit('routeChangeError')
-        throw 'Route change was aborted'
+  const handleRouteChange = useCallback(
+    (url, { shallow } = {}) => {
+      // A shallow replace (adopting a saved baseline's id) keeps the page and its state.
+      if (shallow) return
+      if (unsavedChanges) {
+        const confirmLeave = window.confirm(
+          'You have unsaved changes. Are you sure you want to leave this page?'
+        )
+        if (!confirmLeave) {
+          router.events.emit('routeChangeError')
+          throw 'Route change was aborted'
+        }
       }
-    }
-  }, [unsavedChanges, router])
+    },
+    [unsavedChanges, router]
+  )
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
