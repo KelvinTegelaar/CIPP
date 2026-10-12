@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertTitle,
   Box,
   Stack,
   Typography,
@@ -16,9 +17,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { Grid } from '@mui/system'
 import { useSettings } from '../../hooks/use-settings'
 import { ApiGetCall } from '../../api/ApiCall'
-
-// Shared mailboxes are capped at 50 GiB without a license; warn at 49 GiB.
-const SHARED_MAILBOX_WARN_BYTES = 49 * 1024 ** 3
+import {
+  getSharedMailboxLicenseReasons,
+  useSharedMailboxLicenseData,
+} from '../CippComponents/CippSharedMailboxLicenseAlert'
 
 export const CippWizardOffboarding = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props
@@ -52,16 +54,13 @@ export const CippWizardOffboarding = (props) => {
     !notificationSettings.isLoading &&
     notificationSettings.data?.sendtoIntegration !== true
 
-  // Pull cached mailbox sizes (storageUsedInBytes, keyed by UPN) only when relevant
-  const mailboxUsage = ApiGetCall({
-    url: '/api/ListMailboxes',
-    data: { tenantFilter: currentTenant?.value, UseReportDB: true },
-    queryKey: `OffboardingMailboxUsage-${currentTenant?.value}`,
-    waiting: !!convertToShared && !!currentTenant?.value && selectedUsers?.length > 0,
-  })
+  const mailboxUsage = useSharedMailboxLicenseData(
+    currentTenant?.value,
+    !!convertToShared && selectedUsers?.length > 0,
+  )
 
-  // Selected mailboxes whose cached size would exceed the shared-mailbox limit
-  const oversizedMailboxes = useMemo(() => {
+  // Selected mailboxes that still need a license once shared: primary or archive at the 50 GB limit, or litigation hold
+  const mailboxesNeedingLicense = useMemo(() => {
     if (!convertToShared || !mailboxUsage.isSuccess || !Array.isArray(mailboxUsage.data)) {
       return []
     }
@@ -69,20 +68,9 @@ export const CippWizardOffboarding = (props) => {
       (u?.value ?? u)?.toString().toLowerCase(),
     )
     return mailboxUsage.data
-      .filter((mb) => {
-        const upn = mb?.UPN?.toString().toLowerCase()
-        const bytes = Number(mb?.storageUsedInBytes)
-        return (
-          upn &&
-          selectedUpns.includes(upn) &&
-          Number.isFinite(bytes) &&
-          bytes >= SHARED_MAILBOX_WARN_BYTES
-        )
-      })
-      .map((mb) => ({
-        upn: mb.UPN,
-        sizeGB: (Number(mb.storageUsedInBytes) / 1024 ** 3).toFixed(1),
-      }))
+      .filter((mb) => selectedUpns.includes(mb?.UPN?.toString().toLowerCase()))
+      .map((mb) => ({ upn: mb.UPN, reasons: getSharedMailboxLicenseReasons(mb) }))
+      .filter((mb) => mb.reasons.length > 0)
   }, [convertToShared, mailboxUsage.isSuccess, mailboxUsage.data, selectedUsers])
 
   useEffect(() => {
@@ -149,6 +137,8 @@ export const CippWizardOffboarding = (props) => {
       formControl.setValue('WipeMobile', false)
       formControl.setValue('RemoveMobile', false)
       formControl.setValue('RemoveGroups', false)
+      formControl.setValue('RemoveGroupOwnership', false)
+      formControl.setValue('NewGroupOwner', null)
       formControl.setValue('RemoveLicenses', false)
       formControl.setValue('RevokeSessions', false)
       formControl.setValue('DisableSignIn', false)
@@ -197,6 +187,21 @@ export const CippWizardOffboarding = (props) => {
                 formControl={formControl}
                 disabled={!!deleteUser}
               />
+              {convertToShared && mailboxesNeedingLicense.length > 0 && (
+                <Alert severity="warning" sx={{ my: 1 }}>
+                  <AlertTitle>Keep a license on these mailboxes</AlertTitle>
+                  A shared mailbox needs a license if its mailbox or archive is over 50 GB, or it is on
+                  litigation hold. Unless a license is kept, converting may fail or the mailbox may
+                  stop receiving mail:
+                  <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2.5 }}>
+                    {mailboxesNeedingLicense.map((mb) => (
+                      <li key={mb.upn}>
+                        {mb.upn} ({mb.reasons.join('; ')})
+                      </li>
+                    ))}
+                  </Box>
+                </Alert>
+              )}
               <CippFormComponent
                 name="HideFromGAL"
                 label="Hide from Global Address List"
@@ -253,6 +258,58 @@ export const CippWizardOffboarding = (props) => {
                 formControl={formControl}
                 disabled={!!deleteUser}
               />
+              <CippFormComponent
+                name="RemoveGroupOwnership"
+                label="Remove group ownership"
+                type="switch"
+                formControl={formControl}
+                disabled={!!deleteUser}
+              />
+              <CippFormCondition
+                formControl={formControl}
+                field={'RemoveGroupOwnership'}
+                compareType="is"
+                compareValue={true}
+              >
+                <CippFormComponent
+                  sx={{ m: 1 }}
+                  name="NewGroupOwner"
+                  label="New group owner"
+                  type="autoComplete"
+                  placeholder="Set before the user is removed as owner"
+                  formControl={formControl}
+                  multiple={false}
+                  disabled={!!deleteUser}
+                  api={{
+                    tenantFilter: currentTenant ? currentTenant.value : undefined,
+                    labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+                    valueField: 'id',
+                    url: '/api/ListGraphRequest',
+                    dataKey: 'Results',
+                    queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : 'default'}`,
+                    data: {
+                      Endpoint: 'users',
+                      manualPagination: true,
+                      $select: 'id,userPrincipalName,displayName',
+                      $count: true,
+                      $orderby: 'displayName',
+                      $top: 999,
+                    },
+                  }}
+                />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    display: 'block',
+                    mx: 1,
+                    mb: 1,
+                  }}
+                >
+                  Added as owner of every group the user owns before the user is removed. Without
+                  one, groups where the user is the only owner cannot be released.
+                </Typography>
+              </CippFormCondition>
               <CippFormComponent
                 name="RemoveLicenses"
                 label="Remove Licenses"
@@ -548,21 +605,6 @@ export const CippWizardOffboarding = (props) => {
                   resolved when the offboarding job runs. %username% is not the offboarded user.
                 </Typography>
               </Box>
-              {convertToShared && oversizedMailboxes.length > 0 && (
-                <Alert severity="warning" sx={{ mt: 2 }}>
-                  The following mailbox{oversizedMailboxes.length > 1 ? 'es' : ''} exceed or are near
-                  the 50 GB shared mailbox limit. Converting to shared may fail, or the mailbox may
-                  stop receiving mail once unlicensed, unless an Exchange Online Plan 2 license is
-                  retained:
-                  <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2.5 }}>
-                    {oversizedMailboxes.map((mb) => (
-                      <li key={mb.upn}>
-                        {mb.upn} ({mb.sizeGB} GB)
-                      </li>
-                    ))}
-                  </Box>
-                </Alert>
-              )}
             </CardContent>
           </Card>
         </Grid>

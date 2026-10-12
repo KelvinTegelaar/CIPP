@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Alert,
+  Chip,
   Skeleton,
   Stack,
   Typography,
@@ -14,6 +15,7 @@ import CippWizardStepButtons from './CippWizardStepButtons'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { CippFormCondition } from '../CippComponents/CippFormCondition'
 import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
+import { CippFormGroupSelector } from '../CippComponents/CippFormGroupSelector'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippValidator } from '../../utils/get-cipp-validator'
@@ -25,6 +27,9 @@ export const CippWizardVacationActions = (props) => {
   const currentTenant = useWatch({ control: formControl.control, name: 'tenantFilter' })
   const tenantDomain = currentTenant?.value || currentTenant
 
+  const tenantId = currentTenant?.value ?? currentTenant
+  const [droppedPolicies, setDroppedPolicies] = useState([])
+
   const enableCA = useWatch({ control: formControl.control, name: 'enableCAExclusion' })
   const enableLocationAlertExclusion = useWatch({
     control: formControl.control,
@@ -33,13 +38,41 @@ export const CippWizardVacationActions = (props) => {
   const enableMailbox = useWatch({ control: formControl.control, name: 'enableMailboxPermissions' })
   const enableForwarding = useWatch({ control: formControl.control, name: 'enableForwarding' })
   const enableOOO = useWatch({ control: formControl.control, name: 'enableOOO' })
+  const enableGroupMembership = useWatch({
+    control: formControl.control,
+    name: 'enableGroupMembership',
+  })
+  const vacationGroups = useWatch({ control: formControl.control, name: 'vacationGroups' })
+  const dynamicGroups = (Array.isArray(vacationGroups) ? vacationGroups : []).filter((group) =>
+    group?.addedFields?.groupTypes?.includes('DynamicMembership')
+  )
   const atLeastOneEnabled =
-    enableCA || enableLocationAlertExclusion || enableMailbox || enableForwarding || enableOOO
+    enableCA ||
+    enableLocationAlertExclusion ||
+    enableMailbox ||
+    enableForwarding ||
+    enableOOO ||
+    enableGroupMembership
 
   const users = useWatch({ control: formControl.control, name: 'Users' })
   const firstUser = Array.isArray(users) && users.length > 0 ? users[0] : null
   const firstUserUpn = firstUser?.addedFields?.userPrincipalName || firstUser?.value || null
   const forwardOption = useWatch({ control: formControl.control, name: 'forwardOption' })
+  const createTravelPolicy = useWatch({ control: formControl.control, name: 'createTravelPolicy' })
+  const addUsageLocation = useWatch({ control: formControl.control, name: 'addUsageLocation' })
+  const defaultsSource = useWatch({ control: formControl.control, name: 'HIDDEN_defaultsSource' })
+
+  // Same query key as the policy picker, so this shares its cache entry.
+  const caPolicies = ApiGetCall({
+    url: '/api/ListGraphRequest',
+    data: {
+      tenantFilter: tenantDomain,
+      Endpoint: 'conditionalAccess/policies',
+      AsApp: true,
+    },
+    queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
+    waiting: !!tenantDomain,
+  })
 
   const oooData = ApiGetCall({
     url: '/api/ListOoO',
@@ -117,6 +150,75 @@ export const CippWizardVacationActions = (props) => {
     }
   }, [oooData.isSuccess, oooData.data, formControl])
 
+  // Apply tenant defaults once per tenant; later edits by the technician are never overwritten.
+  useEffect(() => {
+    if (!tenantId || formControl.getValues('HIDDEN_appliedDefaultsForTenant') === tenantId) return
+    const defaults = currentTenant?.addedFields?.vacationDefaults
+    setDroppedPolicies([])
+    if (defaults) {
+      const policies = Array.isArray(defaults.PolicyId) ? defaults.PolicyId : []
+      formControl.setValue('enableCAExclusion', policies.length > 0)
+      formControl.setValue('PolicyId', policies)
+      formControl.setValue('createTravelPolicy', !!defaults.createTravelPolicy)
+      formControl.setValue('addUsageLocation', !!defaults.addUsageLocation)
+      formControl.setValue('excludeLocationAuditAlerts', !!defaults.excludeLocationAuditAlerts)
+      formControl.setValue('HIDDEN_defaultsSource', 'tenant')
+    } else {
+      formControl.setValue('HIDDEN_defaultsSource', null)
+    }
+    formControl.setValue('HIDDEN_appliedDefaultsForTenant', tenantId)
+  }, [tenantId, currentTenant, formControl])
+
+  // Drop default policies that no longer exist, but only once the policy list has really loaded.
+  useEffect(() => {
+    const policyList = caPolicies.data?.Results
+    if (
+      !tenantId ||
+      defaultsSource !== 'tenant' ||
+      formControl.getValues('HIDDEN_staleCheckedForTenant') === tenantId ||
+      !caPolicies.isSuccess ||
+      caPolicies.isFetching ||
+      !Array.isArray(policyList) ||
+      policyList.length === 0
+    ) {
+      return
+    }
+    const known = new Set(policyList.map((policy) => policy.id))
+    const selected = formControl.getValues('PolicyId') || []
+    const dropped = selected.filter((policy) => !known.has(policy.value))
+    if (dropped.length > 0) {
+      formControl.setValue(
+        'PolicyId',
+        selected.filter((policy) => known.has(policy.value))
+      )
+      setDroppedPolicies(dropped.map((policy) => policy.label || policy.value))
+    }
+    formControl.setValue('HIDDEN_staleCheckedForTenant', tenantId)
+  }, [tenantId, defaultsSource, caPolicies.isSuccess, caPolicies.isFetching, caPolicies.data, formControl])
+
+  // Seed the users' home countries into the travel destinations, once per code, so a code the
+  // technician removes by hand is not added back.
+  useEffect(() => {
+    if (!createTravelPolicy || !addUsageLocation || !Array.isArray(users)) return
+    const validCodes = new Map(countryList.map(({ Code, Name }) => [Code, Name]))
+    const seeded = formControl.getValues('HIDDEN_seededUsageLocations') || []
+    const fresh = [
+      ...new Set(
+        users
+          .map((user) => user?.addedFields?.usageLocation?.toUpperCase())
+          .filter((code) => validCodes.has(code) && !seeded.includes(code))
+      ),
+    ]
+    if (fresh.length === 0) return
+    const current = formControl.getValues('travelCountries') || []
+    const missing = fresh.filter((code) => !current.some((option) => option.value === code))
+    formControl.setValue('travelCountries', [
+      ...current,
+      ...missing.map((code) => ({ value: code, label: validCodes.get(code) })),
+    ])
+    formControl.setValue('HIDDEN_seededUsageLocations', [...seeded, ...fresh])
+  }, [users, createTravelPolicy, addUsageLocation, formControl])
+
   useEffect(() => {
     if (enableForwarding && !forwardOption) {
       formControl.setValue('forwardOption', 'internalAddress')
@@ -128,7 +230,14 @@ export const CippWizardVacationActions = (props) => {
       {/* CA Policy Exclusion Section */}
       <Card variant="outlined">
         <CardHeader
-          title="Conditional Access Policy Exclusion"
+          title={
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <span>Conditional Access Policy Exclusion</span>
+              {defaultsSource === 'tenant' && (
+                <Chip size="small" variant="outlined" color="primary" label="Using Tenant Defaults" />
+              )}
+            </Stack>
+          }
           subheader="Temporarily exclude users from a CA policy during their vacation"
         />
         <Divider />
@@ -158,6 +267,14 @@ export const CippWizardVacationActions = (props) => {
                     [a1b2c3d4]&apos;
                   </Alert>
                 </Grid>
+                {droppedPolicies.length > 0 && (
+                  <Grid size={{ xs: 12 }}>
+                    <Alert severity="warning">
+                      These default policies no longer exist in this tenant and were removed:{' '}
+                      {droppedPolicies.join(', ')}
+                    </Alert>
+                  </Grid>
+                )}
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="autoComplete"
@@ -221,8 +338,17 @@ export const CippWizardVacationActions = (props) => {
                       policy named &apos;Travel Policy &lt;users&gt; - &lt;start date&gt; - &lt;end
                       date&gt;&apos; are created, blocking sign-ins for the selected users from
                       every location except the travel destination. At the end date, the policy and
-                      the named location are deleted automatically.
+                      the named location are deleted automatically. Adding the users&apos; home country
+                      keeps them signed in from home.
                     </Alert>
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <CippFormComponent
+                      type="switch"
+                      label="Add users' home country (usage location) to the travel destinations"
+                      name="addUsageLocation"
+                      formControl={formControl}
+                    />
                   </Grid>
                   <Grid size={{ xs: 12 }}>
                     <CippFormComponent
@@ -283,6 +409,62 @@ export const CippWizardVacationActions = (props) => {
                 unusual location stay quiet while they travel. This works on its own and does not
                 require a Conditional Access policy.
               </Alert>
+            </CippFormCondition>
+          </Stack>
+        </CardContent>
+      </Card>
+
+      {/* Group Membership Section */}
+      <Card variant="outlined">
+        <CardHeader
+          title="Group Membership"
+          subheader="Add the users to groups for the duration of the vacation"
+        />
+        <Divider />
+        <CardContent>
+          <Stack spacing={2}>
+            <CippFormComponent
+              type="switch"
+              name="enableGroupMembership"
+              label="Add users to group(s) for the duration of the vacation"
+              formControl={formControl}
+            />
+
+            <CippFormCondition
+              formControl={formControl}
+              field="enableGroupMembership"
+              compareType="is"
+              compareValue={true}
+              clearOnHide={false}
+            >
+              <Stack spacing={2}>
+                <Alert severity="info">
+                  The users are added to the selected groups at the start date and removed again at
+                  the end date. Users who are already members of a group are left untouched.
+                  Dynamic membership groups cannot take direct members.
+                </Alert>
+                <CippFormGroupSelector
+                  label={tenantDomain ? `Group(s) in ${tenantDomain}` : 'Select a tenant first'}
+                  formControl={formControl}
+                  name="vacationGroups"
+                  multiple={true}
+                  select="id,displayName,groupTypes,mailEnabled,securityEnabled"
+                  addedField={{
+                    groupTypes: 'groupTypes',
+                    mailEnabled: 'mailEnabled',
+                    securityEnabled: 'securityEnabled',
+                  }}
+                  validators={{ required: 'At least one group is required' }}
+                  required={true}
+                  disabled={!tenantDomain}
+                />
+                {dynamicGroups.length > 0 && (
+                  <Alert severity="warning">
+                    {dynamicGroups.map((group) => group.label).join(', ')} use dynamic membership,
+                    so the users cannot be added to them directly.
+                  </Alert>
+                )}
+              </Stack>
             </CippFormCondition>
           </Stack>
         </CardContent>

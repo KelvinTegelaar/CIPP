@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { act, waitFor } from '@testing-library/react'
+import { act, waitFor, screen } from '@testing-library/react'
 import { useForm } from 'react-hook-form'
 import { renderWithProviders } from '../../test-utils'
 import { CippWizardOffboarding } from '../../../src/components/CippWizard/CippWizardOffboarding'
@@ -172,5 +172,57 @@ describe('CippWizardOffboarding', () => {
     await waitFor(() => expect(formApi.getValues('RemoveLicenses')).toBe(true))
     expect(formApi.getValues('ConvertToShared')).toBe(true)
     expect(formApi.getValues('OOO')).toBe('<p>Out until Monday</p>')
+  })
+
+  describe('shared mailbox license warning', () => {
+    const GB = 1024 ** 3
+    const mailboxes = [
+      { UPN: 'big@contoso.com', storageUsedInBytes: 60 * GB, ArchiveEnabled: false, ArchiveSize: 0 },
+      { UPN: 'archive@contoso.com', storageUsedInBytes: 1 * GB, ArchiveEnabled: true, ArchiveSize: 75 * GB },
+      { UPN: 'hold@contoso.com', storageUsedInBytes: 1 * GB, LitigationHoldEnabled: true },
+      { UPN: 'small@contoso.com', storageUsedInBytes: 1 * GB, ArchiveEnabled: true, ArchiveSize: 2 * GB },
+      { UPN: 'notselected@contoso.com', storageUsedInBytes: 90 * GB },
+    ]
+
+    beforeEach(() => {
+      ApiGetCall.mockImplementation(({ url }) =>
+        url === '/api/ListMailboxes'
+          ? { isSuccess: true, isFetching: false, data: mailboxes, refetch: vi.fn() }
+          : { isSuccess: false, isFetching: false, data: undefined, refetch: vi.fn() },
+      )
+    })
+
+    const render = (users) =>
+      renderWithProviders(
+        <Harness
+          defaultValues={{
+            tenantFilter: { value: 'contoso.com' },
+            user: users.map((u) => ({ value: u })),
+            ConvertToShared: true,
+          }}
+        />,
+      )
+
+    it('flags a selected mailbox or archive at the 50 GB limit, matching UPNs case-insensitively', async () => {
+      render(['big@contoso.com', 'ARCHIVE@contoso.com'])
+
+      await screen.findByText(/big@contoso\.com \(60\.0 GB mailbox\)/)
+      expect(screen.getByText(/archive@contoso\.com \(75\.0 GB archive\)/)).toBeInTheDocument()
+      expect(screen.queryByText(/notselected@contoso\.com/)).not.toBeInTheDocument()
+    })
+
+    it('flags litigation hold but not a small mailbox with a small archive', async () => {
+      render(['hold@contoso.com', 'small@contoso.com'])
+
+      await screen.findByText(/hold@contoso\.com \(litigation hold\)/)
+      expect(screen.queryByText(/small@contoso\.com/)).not.toBeInTheDocument()
+    })
+
+    it('shows no warning when no selected mailbox needs a license', async () => {
+      render(['small@contoso.com'])
+
+      await waitFor(() => expect(formApi).not.toBeNull())
+      expect(screen.queryByText(/needs a license/)).not.toBeInTheDocument()
+    })
   })
 })

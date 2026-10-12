@@ -128,6 +128,13 @@ export const CippBecTriageHeader = ({
                 label={`${score.Level} · ${score.Value}`}
               />
             )}
+            {becData && (
+              <Chip
+                size="small"
+                variant="outlined"
+                label={`Analysis window: ${becData.AnalysisWindowDays || 7} days`}
+              />
+            )}
           </Stack>
         </Stack>
       }

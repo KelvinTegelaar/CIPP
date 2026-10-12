@@ -5679,8 +5679,8 @@
         "label": "Days until expiration (Default 60)",
         "defaultValue": 60,
         "validators": {
-          "min": { "value": 1, "message": "Minimum value is 1" },
-          "max": { "value": 730, "message": "Maximum value is 730" }
+          "min": { "value": 30, "message": "SharePoint accepts 30 to 730 days - lower values are silently ignored" },
+          "max": { "value": 730, "message": "SharePoint accepts 30 to 730 days" }
         }
       }
     ],
@@ -6655,6 +6655,19 @@
         "name": "standards.TeamsMessagingPolicy.AllowCommunicationComplianceEndUserReporting",
         "label": "Allow reporting message as inappropriate content",
         "defaultValue": true
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsMessagingPolicy.AutoShareFilesInExternalChats",
+        "label": "Automatically share files attached in external chats",
+        "options": [
+          { "label": "Don't change", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "Enabled" },
+          { "label": "Disabled", "value": "Disabled" }
+        ],
+        "defaultValue": "donotconfigure"
       }
     ],
     "label": "Global Messaging Policy for Microsoft Teams",
@@ -6663,6 +6676,62 @@
     "addedDate": "2025-01-10",
     "powershellEquivalent": "Set-CsTeamsMessagingPolicy",
     "recommendedBy": [],
+    "requiredCapabilities": ["MCOSTANDARD", "MCOEV", "MCOIMP", "TEAMS1", "Teams_Room_Standard"]
+  },
+  {
+    "name": "standards.TeamsFilesPolicy",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Sets the properties of the Global Teams files policy, including file sharing in external (federated) chats.",
+    "docsDescription": "Sets the properties of the Global Teams files policy. File sharing in external chats controls whether users can attach files in 1:1, group and meeting chats with people from other organizations. Native file entry points controls the OneDrive and SharePoint attach options in chats and channels, and SharePoint channel files tab controls the SharePoint Files tab in channels.",
+    "executiveText": "Controls whether employees can attach files directly in Microsoft Teams chats with people outside the organization. Microsoft is enabling this by default for all tenants, including those that had turned it off, so managing it as a standard keeps the organization's chosen external sharing posture in place.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsFilesPolicy.FileSharingInChatsWithExternalUsers",
+        "label": "File sharing in external chats",
+        "options": [
+          { "label": "Don't change", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "Enabled" },
+          { "label": "Disabled", "value": "Disabled" }
+        ],
+        "defaultValue": "Disabled"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsFilesPolicy.NativeFileEntryPoints",
+        "label": "OneDrive and SharePoint file entry points",
+        "options": [
+          { "label": "Don't change", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "Enabled" },
+          { "label": "Disabled", "value": "Disabled" }
+        ],
+        "defaultValue": "donotconfigure"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsFilesPolicy.SPChannelFilesTab",
+        "label": "SharePoint channel files tab",
+        "options": [
+          { "label": "Don't change", "value": "donotconfigure" },
+          { "label": "Enabled", "value": "Enabled" },
+          { "label": "Disabled", "value": "Disabled" }
+        ],
+        "defaultValue": "donotconfigure"
+      }
+    ],
+    "label": "Global Files Policy for Microsoft Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-09-28",
+    "powershellEquivalent": "Set-CsTeamsFilesPolicy -Identity Global -FileSharingInChatsWithExternalUsers Disabled",
+    "recommendedBy": ["CIPP"],
     "requiredCapabilities": ["MCOSTANDARD", "MCOEV", "MCOIMP", "TEAMS1", "Teams_Room_Standard"]
   },
   {
@@ -6781,10 +6850,29 @@
         "defaultValue": true
       },
       {
-        "type": "switch",
-        "name": "standards.AutopilotProfile.AssignToAllDevices",
-        "label": "Assign to all devices",
-        "defaultValue": true
+        "type": "radio",
+        "name": "standards.AutopilotProfile.AssignTo",
+        "label": "Assign the profile to",
+        "options": [
+          { "label": "Do not assign", "value": "none" },
+          { "label": "All devices", "value": "allDevices" },
+          { "label": "Custom group(s)", "value": "customGroup" }
+        ],
+        "defaultValue": "allDevices"
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "standards.AutopilotProfile.customGroup",
+        "label": "Group name(s) to assign",
+        "helpText": "Used when 'Custom group(s)' is selected. Wildcards are allowed. Multiple group names are comma-separated."
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "standards.AutopilotProfile.excludeGroup",
+        "label": "Exclude group(s)",
+        "helpText": "Group name(s) to exclude from the assignment. Wildcards are allowed. Multiple group names are comma-separated."
       },
       {
         "type": "switch",
@@ -8591,7 +8679,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2026-05-06",
-    "powershellEquivalent": "Set-TeamsProtectionPolicy -Identity 'Teams Protection Policy' -ZapEnabled $true",
+    "powershellEquivalent": "Set-TeamsProtectionPolicy -Identity 'Default Teams Protection Policy' -ZapEnabled $true",
     "recommendedBy": ["CIS"],
     "requiredCapabilities": [
       "EXCHANGE_S_STANDARD",

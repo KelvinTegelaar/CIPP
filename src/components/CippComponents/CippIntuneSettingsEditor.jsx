@@ -463,11 +463,11 @@ const CippIntuneSettingsEditor = ({
   // picker they already had; the selectors list the same variables as options.
   const { options: allVariableOptions } = useCustomVariableOptions()
 
-  // A json variable stands for an object or an array, so it cannot fill any of the scalar settings
+  // A json or list variable stands for an object or an array, so it cannot fill any of the scalar settings
   // these selectors edit. Left out of the lists rather than offered and then flagged as a mismatch;
   // it is still reachable from the text fields through the %-triggered picker.
   const variableOptions = useMemo(
-    () => allVariableOptions.filter((option) => option.variableType !== 'json'),
+    () => allVariableOptions.filter((option) => !['json', 'list'].includes(option.variableType)),
     [allVariableOptions]
   )
 

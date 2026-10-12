@@ -14,6 +14,7 @@ export const CippFormCondition = (props) => {
     formControl,
     disabled = false,
     clearOnHide = true, // New prop to control whether to clear values when hidden
+    clearFields, // Explicit field names to clear; the child-name lookup does not survive minification
   } = props;
 
   if (
@@ -218,7 +219,7 @@ export const CippFormCondition = (props) => {
   // Reset field values when condition is not met and action is "hide"
   useEffect(() => {
     if (action === "hide" && !isConditionMet() && clearOnHide) {
-      const fieldNames = extractFieldNames(children);
+      const fieldNames = clearFields ?? extractFieldNames(children);
 
       // Reset each field
       fieldNames.forEach((fieldName) => {

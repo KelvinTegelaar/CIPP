@@ -99,12 +99,19 @@ const toOptionArray = (value) => {
   return entries.length > 0 ? entries : null
 }
 
+// Stable identity for a stage while it is being edited. Panels (and their forms) are
+// keyed on it rather than on position, so moving a stage up or down carries its
+// configuration along instead of handing it to whichever stage lands in that slot.
+const newStageKey = () =>
+  globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)
+
 const buildEditorStages = (templateDefinition) =>
   (
     templateDefinition?.stages ?? [
       { name: 'Default', standards: [], conditions: [], logic: 'and' },
     ]
   ).map((stage) => ({
+    key: newStageKey(),
     name: stage.name,
     standards: [...stage.standards],
     // Saved per-instance configuration (variables + action posture) keyed by
@@ -135,9 +142,13 @@ const StagePanel = ({
   hidden,
   onStageNameChange,
   onRemoveStage,
+  onMoveStage,
   onOpenDialog,
   onRemoveStandard,
+  onAddStandardInstance,
   canRemoveStage,
+  canMoveUp,
+  canMoveDown,
   tenantsInStage,
   catalogByName,
   registerSerializer,
@@ -177,6 +188,13 @@ const StagePanel = ({
   const handleRemoveStandard = (standardName) => {
     formControl.unregister(standardName)
     onRemoveStandard(stageIndex, standardName)
+  }
+
+  // Quick add for multi-instance standards: the new instance opens immediately so the
+  // operator lands in its settings instead of hunting for it in the list.
+  const handleAddStandardInstance = (standardName) => {
+    const instanceKey = onAddStandardInstance(stageIndex, standardName)
+    if (instanceKey) setExpandedStandard(instanceKey)
   }
 
   // Bulk posture: apply one action setting to every standard in this stage.
@@ -232,7 +250,7 @@ const StagePanel = ({
               : item
           )
         : unwrapValue(value)
-    registerSerializer(stageIndex, () => {
+    registerSerializer(stage.key, () => {
       const values = formControl.getValues()
       return {
         name: stage.name,
@@ -276,7 +294,7 @@ const StagePanel = ({
         }),
       }
     })
-    return () => registerSerializer(stageIndex, null)
+    return () => registerSerializer(stage.key, null)
   })
 
   return (
@@ -311,6 +329,30 @@ const StagePanel = ({
             </Tooltip>
           )}
           <Box sx={{ flexGrow: 1 }} />
+          {stageIndex > 0 && (
+            <>
+              <Tooltip title="Move this stage up">
+                <span>
+                  <IconButton
+                    onClick={() => onMoveStage(stageIndex, -1)}
+                    disabled={!canMoveUp}
+                  >
+                    <CippIcons.ArrowUpward />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title="Move this stage down">
+                <span>
+                  <IconButton
+                    onClick={() => onMoveStage(stageIndex, 1)}
+                    disabled={!canMoveDown}
+                  >
+                    <CippIcons.ArrowDownward />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </>
+          )}
           {canRemoveStage && (
             <Tooltip title="Remove this stage">
               <IconButton
@@ -569,6 +611,7 @@ const StagePanel = ({
                 )
               }
               onRemove={handleRemoveStandard}
+              onAddInstance={handleAddStandardInstance}
             />
           ))}
         </Stack>
@@ -728,17 +771,22 @@ const Page = () => {
   const unsavedChanges = hasUnsavedChanges || formControl.formState.isDirty
 
   // Warn before navigating away with unsaved changes (browser close + in-app navigation).
-  const handleRouteChange = useCallback(() => {
-    if (unsavedChanges) {
-      const confirmLeave = window.confirm(
-        'You have unsaved changes. Are you sure you want to leave this page?'
-      )
-      if (!confirmLeave) {
-        router.events.emit('routeChangeError')
-        throw 'Route change was aborted'
+  const handleRouteChange = useCallback(
+    (url, { shallow } = {}) => {
+      // A shallow replace (adopting a saved baseline's id) keeps the page and its state.
+      if (shallow) return
+      if (unsavedChanges) {
+        const confirmLeave = window.confirm(
+          'You have unsaved changes. Are you sure you want to leave this page?'
+        )
+        if (!confirmLeave) {
+          router.events.emit('routeChangeError')
+          throw 'Route change was aborted'
+        }
       }
-    }
-  }, [unsavedChanges, router])
+    },
+    [unsavedChanges, router]
+  )
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -778,6 +826,7 @@ const Page = () => {
     mutateStages((prev) => [
       ...prev,
       {
+        key: newStageKey(),
         name: `Stage ${prev.length + 1}`,
         standards: [],
         standardConfigs: {},
@@ -796,6 +845,19 @@ const Page = () => {
     setActiveStage((prev) => Math.max(0, prev - 1))
   }
 
+  // Swap a stage with its neighbour. Stage 1 is the default stage and never moves:
+  // nothing moves into its slot and it is never moved out of it.
+  const handleMoveStage = (stageIndex, direction) => {
+    const target = stageIndex + direction
+    if (stageIndex < 1 || target < 1 || target >= stages.length) return
+    mutateStages((prev) => {
+      const next = [...prev]
+      ;[next[stageIndex], next[target]] = [next[target], next[stageIndex]]
+      return next
+    })
+    setActiveStage(target)
+  }
+
   // Duplicate a stage (standards + graduation condition structure) as a new stage at the end.
   const handleCopyStage = (stageIndex) => {
     if (stages.length >= MAX_STAGES) return
@@ -804,6 +866,7 @@ const Page = () => {
       return [
         ...prev,
         {
+          key: newStageKey(),
           name: `${source.name} (Copy)`,
           standards: [...source.standards],
           standardConfigs: { ...source.standardConfigs },
@@ -829,6 +892,24 @@ const Page = () => {
           : stage
       )
     )
+
+  // Quick add from a staged row: appends one more instance of a multi-instance standard
+  // to the given stage and returns its key so the panel can expand it straight away.
+  const handleAddStandardInstance = (stageIndex, standardName) => {
+    if (catalogByName[standardName]?.multiple !== true) return null
+    const instanceId =
+      globalThis.crypto?.randomUUID?.().slice(0, 8) ??
+      Math.random().toString(36).slice(2, 10)
+    const instanceKey = `${standardName}#${instanceId}`
+    mutateStages((prev) =>
+      prev.map((stage, index) =>
+        index === stageIndex
+          ? { ...stage, standards: [...stage.standards, instanceKey] }
+          : stage
+      )
+    )
+    return instanceKey
+  }
 
   const handleToggleStandard = (standardName) =>
     mutateStages((prev) =>
@@ -865,11 +946,11 @@ const Page = () => {
 
   const stageOccupancy = template?.occupancy ?? []
 
-  const registerSerializer = useCallback((index, serialize) => {
+  const registerSerializer = useCallback((stageKey, serialize) => {
     if (serialize) {
-      stageSerializers.current[index] = serialize
+      stageSerializers.current[stageKey] = serialize
     } else {
-      delete stageSerializers.current[index]
+      delete stageSerializers.current[stageKey]
     }
   }, [])
 
@@ -929,8 +1010,8 @@ const Page = () => {
         disableAlerts: values.disableAlerts === true,
         disableScheduledRuns: values.disableScheduledRuns === true,
         stages: stages.map(
-          (stage, index) =>
-            stageSerializers.current[index]?.() ?? {
+          (stage) =>
+            stageSerializers.current[stage.key]?.() ?? {
               name: stage.name,
               logic: 'and',
               conditions: [],
@@ -1235,7 +1316,7 @@ const Page = () => {
               >
                 {stages.map((stage, index) => (
                   <Tab
-                    key={index}
+                    key={stage.key}
                     label={`Stage ${index + 1}: ${stage.name}`}
                     value={index}
                   />
@@ -1245,15 +1326,19 @@ const Page = () => {
               <CardContent>
                 {stages.map((stage, index) => (
                   <StagePanel
-                    key={`${editorGeneration}-${index}`}
+                    key={`${editorGeneration}-${stage.key}`}
                     stageIndex={index}
                     stage={stage}
                     hidden={activeStage !== index}
                     onStageNameChange={handleStageNameChange}
                     onRemoveStage={handleRemoveStage}
+                    onMoveStage={handleMoveStage}
                     onOpenDialog={handleOpenDialog}
                     onRemoveStandard={handleRemoveStandard}
+                    onAddStandardInstance={handleAddStandardInstance}
                     canRemoveStage={index > 0}
+                    canMoveUp={index > 1}
+                    canMoveDown={index > 0 && index < stages.length - 1}
                     tenantsInStage={stageOccupancy[index]?.tenants ?? null}
                     catalogByName={catalogByName}
                     registerSerializer={registerSerializer}

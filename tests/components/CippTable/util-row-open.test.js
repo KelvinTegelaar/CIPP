@@ -89,6 +89,22 @@ describe('resolveRowOpenLink', () => {
       '/identity/administration/users/user?userId=user-123&tenantFilter=contoso.onmicrosoft.com'
     )
   })
+
+  it('scopes an AllTenants row link to the row tenant only when it has no tenantFilter', () => {
+    const row = { id: 'user-123', Tenant: 'contoso.onmicrosoft.com' }
+    const options = { currentTenant: 'AllTenants' }
+    expect(
+      resolveRowOpenLink({ link: '/identity/administration/users/user?userId=[id]' }, row, options)
+    ).toBe(
+      '/identity/administration/users/user?userId=user-123&tenantFilter=contoso.onmicrosoft.com'
+    )
+    expect(
+      resolveRowOpenLink({ link: '/x?tenantFilter=[Tenant]' }, row, options)
+    ).toBe('/x?tenantFilter=contoso.onmicrosoft.com')
+    expect(
+      resolveRowOpenLink({ link: '/x?userId=[id]' }, row, { currentTenant: 'fabrikam.com' })
+    ).toBe('/x?userId=user-123')
+  })
 })
 
 describe('dispatchRowOpen', () => {

@@ -155,4 +155,32 @@ describe('CippTenantSelector', () => {
     expect(screen.getByText('Entra Portal')).toBeInTheDocument()
     expect(screen.queryByText('M365 Admin Portal')).not.toBeInTheDocument()
   })
+
+  it('lists favorites alphabetically while recent keeps recency order', async () => {
+    const user = userEvent.setup()
+    const names = ['Alpha', 'Bravo', 'Charlie', 'Delta']
+    apiState.tenants = result({
+      data: names.map((name, i) => ({
+        displayName: name,
+        defaultDomainName: `${name.toLowerCase()}.com`,
+        customerId: `${i}`,
+        initialDomainName: `${name.toLowerCase()}.onmicrosoft.com`,
+      })),
+    })
+    const pref = (name) => ({ value: `${name.toLowerCase()}.com`, label: `${name} (${name.toLowerCase()}.com)` })
+    localStorage.setItem('cipp:favoriteTenants', JSON.stringify([pref('Delta'), pref('Alpha')]))
+    localStorage.setItem('cipp:recentTenants', JSON.stringify([pref('Charlie'), pref('Bravo')]))
+
+    renderWithProviders(<CippTenantSelector />, { settings: makeSettings() })
+    await user.click(screen.getByRole('combobox'))
+
+    const labels = await screen.findAllByRole('option')
+    expect(labels.slice(0, 4).map((el) => el.textContent)).toEqual([
+      expect.stringContaining('Alpha'),
+      expect.stringContaining('Delta'),
+      expect.stringContaining('Charlie'),
+      expect.stringContaining('Bravo'),
+    ])
+    localStorage.clear()
+  })
 })

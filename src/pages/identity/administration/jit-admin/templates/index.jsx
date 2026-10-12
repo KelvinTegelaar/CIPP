@@ -1,13 +1,15 @@
 import { Button } from "@mui/material";
-import { CippIcons } from "../../../../utils/icon-registry"
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
+import tabOptions from "../tabOptions.json";
 import Link from "next/link";
-import { ApiGetCall } from "../../../../api/ApiCall";
-import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
-import { getCippTranslation } from "../../../../utils/get-cipp-translation";
-import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
-import { useSettings } from "../../../../hooks/use-settings";
+import { ApiGetCall } from "../../../../../api/ApiCall";
+import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
+import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
+import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
+import { useSettings } from "../../../../../hooks/use-settings";
 
 const Page = () => {
   const pageTitle = "JIT Admin Templates";
@@ -23,7 +25,7 @@ const Page = () => {
       label: "Edit Template",
       pinned: true,
       icon: <CippIcons.Edit />,
-      link: "/identity/administration/jit-admin-templates/edit?id=[GUID]",
+      link: "/identity/administration/jit-admin/templates/edit?id=[GUID]",
     },
     {
       label: "Save to GitHub",
@@ -116,7 +118,7 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       cardButton={
-        <Button component={Link} href="jit-admin-templates/add" startIcon={<CippIcons.AddBox />}>
+        <Button component={Link} href="/identity/administration/jit-admin/templates/add" startIcon={<CippIcons.AddBox />}>
           Add JIT Admin Template
         </Button>
       }
@@ -136,6 +138,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;

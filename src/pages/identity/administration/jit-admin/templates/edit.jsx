@@ -1,25 +1,25 @@
 import { Box, Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index";
+import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import { useForm, useWatch } from "react-hook-form";
-import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
-import { CippFormDomainSelector } from "../../../../components/CippComponents/CippFormDomainSelector";
-import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
-import { CippFormGroupSelector } from "../../../../components/CippComponents/CippFormGroupSelector";
-import jitAdminRoles from "../../../../data/JitAdminRoles.json";
-import countryList from "../../../../data/countryList.json";
-import { useSettings } from "../../../../hooks/use-settings";
-import { useJitAllowedRoles } from "../../../../hooks/use-jit-allowed-roles";
-import { CippJitRoleTemplateApply } from "../../../../components/CippComponents/CippJitRoleTemplateApply";
+import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
+import { CippFormCondition } from "../../../../../components/CippComponents/CippFormCondition";
+import { CippFormDomainSelector } from "../../../../../components/CippComponents/CippFormDomainSelector";
+import { CippFormUserSelector } from "../../../../../components/CippComponents/CippFormUserSelector";
+import { CippFormGroupSelector } from "../../../../../components/CippComponents/CippFormGroupSelector";
+import jitAdminRoles from "../../../../../data/JitAdminRoles.json";
+import countryList from "../../../../../data/countryList.json";
+import { useSettings } from "../../../../../hooks/use-settings";
+import { useJitAllowedRoles } from "../../../../../hooks/use-jit-allowed-roles";
+import { CippJitRoleTemplateApply } from "../../../../../components/CippComponents/CippJitRoleTemplateApply";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "../../../../api/ApiCall";
+import { ApiGetCall } from "../../../../../api/ApiCall";
 import { useEffect } from "react";
 import {
   JIT_TEMPLATE_VARIABLES,
   JIT_USERNAME_VARIABLES,
-} from "../../../../utils/jit-template-variables";
+} from "../../../../../utils/jit-template-variables";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();

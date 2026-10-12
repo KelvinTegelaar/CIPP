@@ -43,23 +43,28 @@ const OOO_DATA = {
 // One stable result object per url. react-query hands back the same reference while the data is
 // unchanged; a fresh object per render would re-fire the prefill effect on every render and spin
 // the component forever, which is a property of the mock rather than of the code under test.
-function mockApis({ ooo = OOO_DATA } = {}) {
+function mockApis({ ooo = OOO_DATA, policies = [] } = {}) {
   const cache = new Map()
-  ApiGetCall.mockImplementation(({ url }) => {
-    if (!cache.has(url)) {
+  ApiGetCall.mockImplementation(({ url, queryKey }) => {
+    const key = `${url}|${queryKey}`
+    if (!cache.has(key)) {
       cache.set(
-        url,
+        key,
         url === '/api/ListOoO'
           ? { isSuccess: !!ooo, isFetching: false, data: ooo, refetch: vi.fn() }
           : {
               isSuccess: true,
               isFetching: false,
-              data: { Results: [] },
+              data: {
+                Results: String(queryKey).startsWith('ListConditionalAccessPolicies')
+                  ? policies
+                  : [],
+              },
               refetch: vi.fn(),
             }
       )
     }
-    return cache.get(url)
+    return cache.get(key)
   })
 }
 
@@ -170,6 +175,34 @@ describe('CippWizardVacationActions', () => {
       ).not.toBeInTheDocument()
       expect(formApi.getValues('enableCAExclusion')).toBeFalsy()
     })
+
+    it('reveals the group picker once group membership is enabled', async () => {
+      renderWithProviders(<Harness defaultValues={{ tenantFilter: { value: 'contoso.com' } }} />)
+
+      expect(screen.queryByText(/Group\(s\) in contoso.com/)).not.toBeInTheDocument()
+
+      await setField('enableGroupMembership', true)
+
+      await waitFor(() =>
+        expect(screen.getAllByText(/Group\(s\) in contoso.com/)[0]).toBeInTheDocument()
+      )
+      expect(screen.getByText(/already members of a group are left untouched/i)).toBeInTheDocument()
+    })
+
+    it('warns when a selected group uses dynamic membership', async () => {
+      renderWithProviders(<Harness defaultValues={{ tenantFilter: { value: 'contoso.com' } }} />)
+
+      await setField('enableGroupMembership', true)
+      await setField('vacationGroups', [
+        { label: 'Static', value: 'g1', addedFields: { groupTypes: [] } },
+        { label: 'All Staff', value: 'g2', addedFields: { groupTypes: ['DynamicMembership'] } },
+      ])
+
+      await waitFor(() =>
+        expect(screen.getByText(/All Staff use dynamic membership/)).toBeInTheDocument()
+      )
+      expect(screen.queryByText(/Static.*dynamic membership/)).not.toBeInTheDocument()
+    })
   })
 
   // The out-of-office branch renders a rich-text editor that does not mount under jsdom
@@ -254,6 +287,124 @@ describe('CippWizardVacationActions', () => {
           'Existing internal'
         )
       )
+    })
+  })
+
+  describe('tenant vacation defaults', () => {
+    const tenantWith = (vacationDefaults) => ({
+      value: 'contoso.com',
+      addedFields: { vacationDefaults },
+    })
+    const defaults = {
+      PolicyId: [{ value: 'p1', label: 'CA001' }],
+      createTravelPolicy: true,
+      addUsageLocation: true,
+      excludeLocationAuditAlerts: true,
+    }
+
+    it('pre-fills the form from the tenant defaults and shows the chip', async () => {
+      mockApis({ policies: [{ id: 'p1', displayName: 'CA001' }] })
+      renderWithProviders(<Harness defaultValues={{ tenantFilter: tenantWith(defaults) }} />)
+
+      await waitFor(() => expect(formApi.getValues('enableCAExclusion')).toBe(true))
+      expect(formApi.getValues('PolicyId')).toEqual(defaults.PolicyId)
+      expect(formApi.getValues('createTravelPolicy')).toBe(true)
+      expect(formApi.getValues('addUsageLocation')).toBe(true)
+      expect(formApi.getValues('excludeLocationAuditAlerts')).toBe(true)
+      expect(screen.getByText('Using Tenant Defaults')).toBeInTheDocument()
+    })
+
+    it('leaves the form alone when the tenant has no defaults', async () => {
+      renderWithProviders(
+        <Harness defaultValues={{ tenantFilter: tenantWith(null), PolicyId: [] }} />
+      )
+
+      await waitFor(() =>
+        expect(formApi.getValues('HIDDEN_appliedDefaultsForTenant')).toBe('contoso.com')
+      )
+      expect(formApi.getValues('enableCAExclusion')).toBeFalsy()
+      expect(formApi.getValues('PolicyId')).toEqual([])
+      expect(formApi.getValues('createTravelPolicy')).toBeFalsy()
+      expect(screen.queryByText('Using Tenant Defaults')).not.toBeInTheDocument()
+    })
+
+    it('drops a default policy that is not in the loaded list and warns', async () => {
+      mockApis({ policies: [{ id: 'p1', displayName: 'CA001' }] })
+      renderWithProviders(
+        <Harness
+          defaultValues={{
+            tenantFilter: tenantWith({
+              ...defaults,
+              PolicyId: [
+                { value: 'p1', label: 'CA001' },
+                { value: 'gone', label: 'Deleted policy' },
+              ],
+            }),
+          }}
+        />
+      )
+
+      await waitFor(() =>
+        expect(formApi.getValues('PolicyId')).toEqual([{ value: 'p1', label: 'CA001' }])
+      )
+      expect(await screen.findByText(/Deleted policy/)).toBeInTheDocument()
+    })
+
+    it('keeps default policies while the policy list is empty', async () => {
+      mockApis({ policies: [] })
+      renderWithProviders(<Harness defaultValues={{ tenantFilter: tenantWith(defaults) }} />)
+
+      await waitFor(() => expect(formApi.getValues('enableCAExclusion')).toBe(true))
+      expect(formApi.getValues('PolicyId')).toEqual(defaults.PolicyId)
+    })
+  })
+
+  describe('usage location seeding', () => {
+    const user = (usageLocation) => ({
+      value: `${usageLocation}@contoso.com`,
+      addedFields: { userPrincipalName: `${usageLocation}@contoso.com`, usageLocation },
+    })
+
+    it('adds each valid home country once and does not re-add a removed one', async () => {
+      renderWithProviders(
+        <Harness
+          defaultValues={{
+            tenantFilter: 'contoso.com',
+            Users: [user('us'), user('US'), user('ZZ'), user(null)],
+            travelCountries: [{ value: 'FR', label: 'France' }],
+            createTravelPolicy: true,
+            addUsageLocation: true,
+          }}
+        />
+      )
+
+      await waitFor(() =>
+        expect(formApi.getValues('travelCountries').map((c) => c.value)).toEqual(['FR', 'US'])
+      )
+
+      await setField('travelCountries', [{ value: 'FR', label: 'France' }])
+      await setField('Users', [user('US'), user('DE')])
+
+      await waitFor(() =>
+        expect(formApi.getValues('travelCountries').map((c) => c.value)).toEqual(['FR', 'DE'])
+      )
+    })
+
+    it('does nothing while the switch is off', async () => {
+      renderWithProviders(
+        <Harness
+          defaultValues={{
+            tenantFilter: 'contoso.com',
+            Users: [user('US')],
+            travelCountries: [],
+            createTravelPolicy: true,
+            addUsageLocation: false,
+          }}
+        />
+      )
+
+      await setField('Users', [user('US'), user('DE')])
+      expect(formApi.getValues('travelCountries')).toEqual([])
     })
   })
 })

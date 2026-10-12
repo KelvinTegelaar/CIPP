@@ -53,7 +53,19 @@ const Page = () => {
         { label: '%FirstName[1]%.%LastName% (j.doe)', value: '%FirstName[1]%.%LastName%' },
         { label: '%LastName% (doe)', value: '%LastName%' },
         { label: '%FirstName% (john)', value: '%FirstName%' },
+        {
+          label: '%FirstName[1]%.%LastNamePrefix[1]%%LastNameCore% (j.vdberg)',
+          value: '%FirstName[1]%.%LastNamePrefix[1]%%LastNameCore%',
+        },
+        {
+          label: '%FirstName[1]%%LastNamePrefix[1]%%LastNameCore% (jvdberg)',
+          value: '%FirstName[1]%%LastNamePrefix[1]%%LastNameCore%',
+        },
+        { label: '%FirstName%.%LastNameCore% (jan.berg)', value: '%FirstName%.%LastNameCore%' },
+        { label: '%FirstName[1]%.%LastNameCore% (j.berg)', value: '%FirstName[1]%.%LastNameCore%' },
       ],
+      helperText:
+        "Surname particles such as 'van de' are available separately as %LastNamePrefix% and the remaining name as %LastNameCore%.",
       multiple: false,
       creatable: true,
     },

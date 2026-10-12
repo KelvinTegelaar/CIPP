@@ -103,11 +103,19 @@ describe('CippFormTenantSelector', () => {
     expect(screen.getByText('Contoso (contoso.com)')).toBeInTheDocument()
   })
 
-  it('builds the api url from allTenants and offboarding flags', () => {
+  it('builds the api url from allTenants and tenant defaults flags', () => {
+    renderWithProviders(<Harness allTenants includeTenantDefaults />)
+
+    expect(apiState.urls).toContain(
+      '/api/ListTenants?AllTenantSelector=true&IncludeTenantDefaults=true'
+    )
+  })
+
+  it('still honours the deprecated includeOffboardingDefaults prop', () => {
     renderWithProviders(<Harness allTenants includeOffboardingDefaults />)
 
     expect(apiState.urls).toContain(
-      '/api/ListTenants?AllTenantSelector=true&IncludeOffboardingDefaults=true'
+      '/api/ListTenants?AllTenantSelector=true&IncludeTenantDefaults=true'
     )
   })
 

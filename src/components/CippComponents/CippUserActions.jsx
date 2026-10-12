@@ -6,6 +6,7 @@ import { usePermissions } from '../../hooks/use-permissions'
 import { Tooltip, Box, Divider, Typography, Alert, Skeleton, Link, IconButton } from '@mui/material'
 import CippFormComponent from './CippFormComponent'
 import { MfaVerifyForm } from './CippMfaVerifyForm'
+import { CippSharedMailboxLicenseAlert } from './CippSharedMailboxLicenseAlert'
 import { CippFormCondition } from './CippFormCondition'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
@@ -720,6 +721,7 @@ export const useCippUserActions = () => {
           ],
           validators: { required: 'Please select a mailbox type' },
         },
+        { name: 'sharedMailboxLicenseWarning', component: CippSharedMailboxLicenseAlert },
       ],
       confirmText: 'Pick the type of mailbox you want to convert [userPrincipalName] to:',
       multiPost: false,
@@ -941,6 +943,22 @@ export const useCippUserActions = () => {
             { label: 'Shortcuts folder (Microsoft UI)', value: 'shortcuts' },
           ],
           validators: { required: 'Please select a shortcut location' },
+        },
+        {
+          type: 'textField',
+          name: 'shortcutName',
+          label: 'Shortcut name (optional)',
+          helperText: 'Leave blank to keep the library or site name.',
+          validators: {
+            validate: (value) => {
+              if (!value) return true
+              if (/["*:<>?/\\|]/.test(value)) return 'Cannot contain any of: " * : < > ? / \\ |'
+              if (value !== value.trim()) return 'Cannot start or end with a space'
+              if (value.endsWith('.')) return 'Cannot end with a period'
+              if (value.length > 255) return 'Cannot be longer than 255 characters'
+              return true
+            },
+          },
         },
       ],
       confirmText: 'Select a SharePoint site and where to create the OneDrive shortcut:',

@@ -153,6 +153,29 @@ const MFA_METHOD_TYPES = {
 const getMethodType = (method) =>
   method['@odata.type']?.split('.').pop() || 'N/A'
 
+// Graph only populates isUsable/methodUsabilityReason on Temporary Access Pass
+// methods. The reason is a PascalCase enum; anything unrecognised falls through
+// as-is so a new value still shows rather than hiding behind "Enabled".
+const METHOD_USABILITY_LABELS = {
+  Expired: 'Expired',
+  NotYetValid: 'Not yet valid',
+  OneTimeUsed: 'Already used',
+  DisabledByPolicy: 'Disabled by policy',
+  EnabledByPolicy: 'Enabled by policy',
+}
+
+const isTemporaryAccessPass = (method) =>
+  getMethodType(method) === 'temporaryAccessPassAuthenticationMethod'
+
+// A TAP carries no expiry field, only start + lifetime, so derive it. Returns null
+// when either half is missing so callers can fall back to the generic subtext.
+const getTapExpiry = (method) => {
+  if (!method.startDateTime || !method.lifetimeInMinutes) return null
+  const start = new Date(method.startDateTime)
+  if (Number.isNaN(start.getTime())) return null
+  return new Date(start.getTime() + method.lifetimeInMinutes * 60 * 1000)
+}
+
 // A method type Graph adds later still renders: raw suffix as label, generic icon.
 const getMethodMeta = (method) =>
   MFA_METHOD_TYPES[getMethodType(method)] ?? {
@@ -718,21 +741,46 @@ const Page = () => {
         if (systemPreferredTypes.includes(methodType)) {
           statusLabels.push('System-preferred')
         }
+        // isUsable is only ever false on a TAP that has expired, been used up, not
+        // started yet, or been switched off by policy. Trust Graph's verdict for the
+        // status chip; the derived expiry is just for the human-readable subtext.
+        const isUnusable = device.isUsable === false
+        const unusableLabel =
+          METHOD_USABILITY_LABELS[device.methodUsabilityReason] ??
+          device.methodUsabilityReason ??
+          'Not usable'
+        const isTap = isTemporaryAccessPass(device)
+        const tapExpiry = isTap ? getTapExpiry(device) : null
+        let subtext
+        if (tapExpiry) {
+          subtext = `${tapExpiry.getTime() < Date.now() ? 'Expired' : 'Expires'} ${tapExpiry.toLocaleString()}`
+        } else if (device.lastUsedDateTime) {
+          // lastUsedDateTime is beta-only and optional — Graph nulls it for method
+          // types that don't populate it, so keep a fallback.
+          subtext = `Last used ${new Date(device.lastUsedDateTime).toLocaleDateString()}`
+        } else {
+          subtext = 'Last used unknown'
+        }
+        let statusColor = 'success.main'
+        let statusText = 'Enabled'
+        if (isUnusable) {
+          statusColor = 'error.main'
+          statusText = unusableLabel
+        } else if (statusLabels.length > 0) {
+          statusColor = 'primary.main'
+          statusText = statusLabels.join(' · ')
+        } else if (isTap) {
+          statusText = 'Active'
+        }
         return {
           id: index,
           cardLabelBox: {
             cardLabelBoxHeader: meta.icon,
           },
           text: identifier ? `${meta.label} · ${identifier}` : meta.label,
-          // lastUsedDateTime is beta-only and optional — Graph nulls it for method
-          // types that don't populate it, so keep a fallback.
-          subtext: device.lastUsedDateTime
-            ? `Last used ${new Date(device.lastUsedDateTime).toLocaleDateString()}`
-            : 'Last used unknown',
-          statusColor:
-            statusLabels.length > 0 ? 'primary.main' : 'success.main',
-          statusText:
-            statusLabels.length > 0 ? statusLabels.join(' · ') : 'Enabled',
+          subtext,
+          statusColor,
+          statusText,
           // The card id is the collapse key, so the Graph method id travels via selectedMethod.
           cardLabelBoxActions: canWriteUser ? (
             <IconButton
@@ -765,6 +813,34 @@ const Page = () => {
               label: 'Authentication Method',
               value: methodType,
             },
+            ...(isTap
+              ? [
+                  {
+                    label: 'Status',
+                    value: isUnusable ? unusableLabel : 'Active',
+                  },
+                  {
+                    label: 'Valid From',
+                    value: device.startDateTime
+                      ? new Date(device.startDateTime).toLocaleString()
+                      : 'N/A',
+                  },
+                  {
+                    label: 'Expires',
+                    value: tapExpiry ? tapExpiry.toLocaleString() : 'N/A',
+                  },
+                  {
+                    label: 'Lifetime',
+                    value: device.lifetimeInMinutes
+                      ? `${device.lifetimeInMinutes} minutes`
+                      : 'N/A',
+                  },
+                  {
+                    label: 'One-time Use',
+                    value: device.isUsableOnce ? 'Yes' : 'No',
+                  },
+                ]
+              : []),
           ],
         }
       })

@@ -340,6 +340,7 @@ const CippBrandingSettings = () => {
       showPageNumbers: branding.showPageNumbers !== false,
       watermarkText: branding.watermarkText || "",
       watermarkEnabled: branding.watermarkEnabled !== false,
+      coverFade: branding.coverFade !== false,
       tenantLabel: branding.tenantLabel || "alias",
       ...roleColourValues(branding),
       previewReportType: reportTypeOptions[0],
@@ -357,6 +358,7 @@ const CippBrandingSettings = () => {
     showPageNumbers: source.showPageNumbers !== false,
     watermarkText: source.watermarkText || "",
     watermarkEnabled: source.watermarkEnabled !== false,
+    coverFade: source.coverFade !== false,
     tenantLabel: source.tenantLabel || "alias",
     // Flat for the preview (createReportTheme accepts either) and nested for saving.
     ...roleColourValues(source),
@@ -805,6 +807,7 @@ const CippBrandingSettings = () => {
           showPageNumbers: brandingData.showPageNumbers,
           watermarkText: brandingData.watermarkText,
           watermarkEnabled: brandingData.watermarkEnabled,
+          coverFade: brandingData.coverFade,
           tenantLabel: brandingData.tenantLabel,
         },
         queryKey: "BrandingPresetSave",
@@ -893,6 +896,7 @@ const CippBrandingSettings = () => {
         showPageNumbers: brandingData.showPageNumbers,
         watermarkText: brandingData.watermarkText,
         watermarkEnabled: brandingData.watermarkEnabled,
+        coverFade: brandingData.coverFade,
         tenantLabel: brandingData.tenantLabel,
         roleColours: brandingData.roleColours,
         reportDefaults,
@@ -1342,6 +1346,12 @@ const CippBrandingSettings = () => {
                   </Box>
                 </Box>
               </Box>
+              <CippFormComponent
+                type="switch"
+                name="coverFade"
+                label="Fade cover image"
+                formControl={formControl}
+              />
             </Box>
 
             {/* One results panel for the whole page — settings, presets and images all report
@@ -1415,6 +1425,7 @@ const CippBrandingSettings = () => {
                     coverImage={coverPreview}
                     coverImageId={coverPreview ? coverImageId : null}
                     coverStock={coverStock}
+                    coverFade={formControl.watch("coverFade")}
                     reportType={previewReportType}
                   />
                 )}

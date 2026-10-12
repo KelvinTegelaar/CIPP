@@ -55,11 +55,6 @@
     "description": "Authentication methods policy configuration"
   },
   {
-    "type": "DeviceSettings",
-    "friendlyName": "Device Settings",
-    "description": "Device management settings"
-  },
-  {
     "type": "DirectoryRecommendations",
     "friendlyName": "Directory Recommendations",
     "description": "Azure AD directory recommendations"

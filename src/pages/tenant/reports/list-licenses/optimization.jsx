@@ -196,6 +196,7 @@ const Page = () => {
           type: 'number',
           name: 'MonthlyPrice',
           label: `Monthly price per seat (${currency})`,
+          slotProps: { htmlInput: { step: 'any', min: 0 } },
         },
       ],
       condition: (row) => !row.PriceKnown,

@@ -342,7 +342,7 @@ function UsersSection({
           clearOnBlur
           options={[{ label: "GuestsOrExternalUsers", value: "GuestsOrExternalUsers" }]}
           api={userSearchApi}
-          placeholder={directorySearch ? "Search for users" : "User display names or IDs"}
+          placeholder={directorySearch ? "Search for users" : "User display names, IDs or %variables%"}
         />
       </Grid>
       {/* Include groups */}
@@ -357,7 +357,7 @@ function UsersSection({
           disabled={disabled}
           clearOnBlur
           api={groupSearchApi}
-          placeholder={directorySearch ? "Search for groups" : "Group display names or IDs"}
+          placeholder={directorySearch ? "Search for groups" : "Group display names, IDs or %variables%"}
         />
       </Grid>
       {/* Exclude groups */}
@@ -372,7 +372,7 @@ function UsersSection({
           disabled={disabled}
           clearOnBlur
           api={groupSearchApi}
-          placeholder={directorySearch ? "Search for groups" : "Group display names or IDs"}
+          placeholder={directorySearch ? "Search for groups" : "Group display names, IDs or %variables%"}
         />
       </Grid>
       {/* Include roles */}
@@ -569,7 +569,10 @@ function ConditionsSection({ formControl, disabled }) {
     [condSchema]
   );
   const authFlowOpts = useMemo(
-    () => enumToOptions(authFlowSchema?.properties?.transferMethods),
+    () =>
+      enumToOptions(authFlowSchema?.properties?.transferMethods).filter(
+        (o) => o.value !== "none"
+      ),
     [authFlowSchema]
   );
 
@@ -645,7 +648,7 @@ function ConditionsSection({ formControl, disabled }) {
           freeSolo
           disabled={disabled}
           options={includeLocOpts}
-          placeholder="All, AllTrusted, or named location names"
+          placeholder="All, AllTrusted, named location names or %variables%"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -658,7 +661,7 @@ function ConditionsSection({ formControl, disabled }) {
           freeSolo
           disabled={disabled}
           options={excludeLocOpts}
-          placeholder="AllTrusted or named location names"
+          placeholder="AllTrusted, named location names or %variables%"
         />
       </Grid>
 
@@ -694,6 +697,20 @@ function ConditionsSection({ formControl, disabled }) {
           formControl={formControl}
           disabled={disabled}
           placeholder='e.g. device.extensionAttribute1 -eq "SAW"'
+        />
+      </Grid>
+
+      {/* Auth flows */}
+      <Grid size={{ xs: 12, md: 4 }}>
+        <CippFormComponent
+          type="autoComplete"
+          name="conditions.authenticationFlows.transferMethods"
+          label="Authentication Flow Transfer Methods"
+          formControl={formControl}
+          multiple
+          creatable={false}
+          disabled={disabled}
+          options={authFlowOpts}
         />
       </Grid>
 
@@ -756,19 +773,6 @@ function ConditionsSection({ formControl, disabled }) {
           multiple={false}
           disabled={disabled}
           options={insiderRiskOpts}
-        />
-      </Grid>
-
-      {/* Auth flows */}
-      <Grid size={{ xs: 12, md: 4 }}>
-        <CippFormComponent
-          type="autoComplete"
-          name="conditions.authenticationFlows.transferMethods"
-          label="Authentication Flow Transfer Methods"
-          formControl={formControl}
-          multiple={false}
-          disabled={disabled}
-          options={authFlowOpts}
         />
       </Grid>
 
@@ -1186,7 +1190,7 @@ function namedLocationToForm(loc) {
   if (type === "ip") {
     const ipRangesText = Array.isArray(loc.ipRanges)
       ? loc.ipRanges
-          .map((r) => r?.cidrAddress)
+          .map((r) => (typeof r === "string" ? r : r?.cidrAddress))
           .filter((v) => typeof v === "string" && v.trim() !== "")
           .join("\n")
       : "";
@@ -1500,9 +1504,12 @@ const CippCAPolicyBuilder = ({
             return;
           }
 
-          // Special handling for guestOrExternalUserTypes — Graph stores as comma-separated
-          // string but our form uses a multi-select array
-          if (key === "guestOrExternalUserTypes" && typeof value === "string") {
+          // Special handling for guestOrExternalUserTypes / transferMethods — Graph stores as
+          // comma-separated string but our form uses a multi-select array
+          if (
+            (key === "guestOrExternalUserTypes" || key === "transferMethods") &&
+            typeof value === "string"
+          ) {
             const types = value.split(",").filter((t) => t.trim() !== "" && t !== "none");
             if (types.length > 0) {
               formControl.setValue(path, types);
@@ -1758,6 +1765,14 @@ export function extractCAPolicyJSON(formValues) {
     }
     return guestObj;
   };
+
+  const authFlows = cleaned.conditions?.authenticationFlows;
+  if (Array.isArray(authFlows?.transferMethods)) {
+    // Graph returns flags in enum order; any other order reads as drift on compare
+    authFlows.transferMethods = caSchema.$defs.conditionalAccessAuthenticationFlows.properties.transferMethods.enum
+      .filter((m) => authFlows.transferMethods.includes(m))
+      .join(",");
+  }
 
   if (cleaned.conditions?.users?.excludeGuestsOrExternalUsers) {
     cleaned.conditions.users.excludeGuestsOrExternalUsers = fixGuestExternalUsers(

@@ -34,13 +34,23 @@ const PushDevicesCard = () => {
     }),
     [currentEndpoint],
   );
+  const [enableStatus, setEnableStatus] = useState(null);
 
   const enableButton = (
     <Button
       size="small"
       variant="contained"
       disabled={!!push.blockedReason || push.register.isPending}
-      onClick={() => push.subscribe().catch(() => {})}
+      onClick={() => {
+        setEnableStatus({
+          severity: "info",
+          text: "Waiting for the browser's notification permission. If no prompt appears, check for a bell icon in the address bar.",
+        });
+        push
+          .subscribe()
+          .then(() => setEnableStatus(null))
+          .catch((e) => setEnableStatus({ severity: "error", text: e?.message || String(e) }));
+      }}
     >
       Enable on this device
     </Button>
@@ -84,6 +94,7 @@ const PushDevicesCard = () => {
           },
         ]}
       />
+      {enableStatus && <Alert severity={enableStatus.severity}>{enableStatus.text}</Alert>}
       <CippApiResults apiObject={push.register} />
     </Stack>
   );
@@ -106,6 +117,7 @@ const Page = () => {
     Compliance_Portal: true,
     Power_Platform_Portal: true,
     Power_BI_Portal: true,
+    Login_Hint: false,
   };
 
   const auth = ApiGetCall({
@@ -305,6 +317,10 @@ const Page = () => {
     {
       name: "portalLinks.Power_BI_Portal",
       label: "Power BI",
+    },
+    {
+      name: "portalLinks.Login_Hint",
+      label: "Preselect my account (login_hint)",
     },
   ];
 

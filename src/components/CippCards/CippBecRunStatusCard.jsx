@@ -42,7 +42,6 @@ export const CippBecRunStatusCard = ({
   poll,
   onStart,
   startPending = false,
-  windowDays = 7,
 }) => {
   const progress = poll?.Progress
   const steps = Array.isArray(progress?.Steps) ? progress.Steps : []
@@ -160,9 +159,9 @@ export const CippBecRunStatusCard = ({
             return to, report on and export evidence from.
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            The investigation reads the last {windowDays} days of audit records,
-            sign-ins, permissions, rules, consents, devices and trace headers
-            across 21 checks. It collects metadata only - never message content
+            The investigation reads the last 7 days (30 for tenants with Entra
+            ID P1 or P2) of audit records, sign-ins, permissions, rules,
+            consents, devices and trace headers across 21 checks. It collects metadata only - never message content
             - and usually takes a few minutes.
           </Typography>
         </Stack>

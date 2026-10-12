@@ -60,6 +60,16 @@ export const CippOffboardingDefaultSettings = (props) => {
             ),
           },
           {
+            label: 'Remove group ownership',
+            value: (
+              <CippFormComponent
+                type="switch"
+                name="offboardingDefaults.RemoveGroupOwnership"
+                formControl={formControl}
+              />
+            ),
+          },
+          {
             label: 'Hide from Global Address List',
             value: (
               <CippFormComponent

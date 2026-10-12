@@ -35,7 +35,7 @@ vi.mock('../../src/components/CippComponents/CippJitRoleTemplateApply', () => ({
   CippJitRoleTemplateApply: () => null,
 }))
 
-import TemplatePage from '../../src/pages/identity/administration/jit-admin-templates/add.jsx'
+import TemplatePage from '../../src/pages/identity/administration/jit-admin/templates/add.jsx'
 import JitAdminPage from '../../src/pages/identity/administration/jit-admin/add.jsx'
 
 const emptyGet = getResult()

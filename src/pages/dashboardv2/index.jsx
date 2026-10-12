@@ -20,6 +20,7 @@ import { useSettings } from '../../hooks/use-settings'
 import { useIsMobileLayout } from '../../hooks/use-breakpoint'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
 import { getFilteredPortals } from '../../utils/get-filtered-portals'
+import { useLoginHint } from '../../hooks/use-login-hint'
 import { CippIcons, getIconByName } from '../../utils/icon-registry'
 import { BulkActionsMenu } from '../../components/bulk-actions-menu'
 import { CippPageActionsFab } from '../../components/CippComponents/CippPageActionsFab'
@@ -36,12 +37,14 @@ import { TenantInfoCard } from '../../components/CippComponents/TenantInfoCard'
 import { TenantMetricsGrid } from '../../components/CippComponents/TenantMetricsGrid'
 import { AssessmentCard } from '../../components/CippComponents/AssessmentCard'
 import { AlertsOverviewCard } from '../../components/CippComponents/AlertsOverviewCard'
+import { ServiceHealthCard } from '../../components/CippComponents/ServiceHealthCard'
 import { CippReportToolbar } from '../../components/CippComponents/CippReportToolbar'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
 import { AllTenantsDashboard } from '../../components/CippAllTenants/AllTenantsDashboard'
 
 const Page = () => {
   const settings = useSettings()
+  const withLoginHint = useLoginHint()
   const router = useRouter()
   const { currentTenant } = settings
   // The per-tenant cards below are all scoped to a single tenant's Graph data. Under AllTenants —
@@ -159,10 +162,11 @@ const Page = () => {
         target: '_blank',
         // A portal with a `field` has a URL the backend resolved for us (SharePoint's host cannot be
         // derived from the tenant). Use it when it's there, otherwise fall back to the templated URL.
-        link:
+        link: withLoginHint(
           portal.field && tenantLookup?.[portal.field]
             ? tenantLookup[portal.field]
-            : portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+            : portal.url.replace(portal.variable, tenantLookup?.[portal.variable])
+        ),
         icon: portal.icon,
       }))
       setPortalMenuItems(menuItems)
@@ -172,6 +176,7 @@ const Page = () => {
     currentTenant,
     settings.portalLinks,
     settings.UserSpecificSettings,
+    withLoginHint,
   ])
 
   const formatNumber = (num) => {
@@ -372,10 +377,16 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        {/* Alerts Section - Full Width */}
-        <Box sx={{ mb: 2 }} data-tutorial="dashboard-alerts">
-          <AlertsOverviewCard tenantFilter={currentTenant} />
-        </Box>
+        {/* Alerts + Microsoft service health. Grid items stretch, both cards are height: 100%,
+            so the pair stays level; below lg they stack. */}
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid size={{ xs: 12, lg: 8 }} data-tutorial="dashboard-alerts">
+            <AlertsOverviewCard tenantFilter={currentTenant} />
+          </Grid>
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <ServiceHealthCard tenantFilter={currentTenant} />
+          </Grid>
+        </Grid>
 
         {/* Identity Section - 2 Column Grid */}
         <Box>

@@ -1,5 +1,5 @@
 import { getCippFilterVariant } from '../../utils/get-cipp-filter-variant'
-import { getCippFormatting } from '../../utils/get-cipp-formatting'
+import { getCippFormatting, isCippDateColumn } from '../../utils/get-cipp-formatting'
 import { formatCellText } from './CippCellText'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
 import { getCippColumnSize } from '../../utils/get-cipp-column-size'
@@ -24,25 +24,6 @@ const CHIP_CHROME_PX = 45
 // DateTime columns render as relative time (e.g. "about 2 months ago"). Use a fixed
 // character length instead of measuring the raw ISO date string.
 const RELATIVE_TIME_CHARS = 20
-
-// Known datetime accessor names and pattern — must stay in sync with get-cipp-formatting.js
-const TIME_AGO_NAMES = new Set([
-  'ExecutedTime', 'ScheduledTime', 'Timestamp', 'timestamp', 'DateTime', 'LastRun',
-  'LastRefresh', 'createdDateTime', 'activatedDateTime', 'lastModifiedDateTime',
-  'endDateTime', 'ReceivedTime', 'Expires', 'updatedAt', 'createdAt', 'Received',
-  'Date', 'WhenCreated', 'WhenChanged', 'CreationTime', 'renewalDate',
-  'commitmentTerm.renewalConfiguration.renewalDate', 'purchaseDate', 'NextOccurrence',
-  'LastOccurrence', 'NotBefore', 'NotAfter', 'latestDataCollection',
-  'requestDate', 'reviewedDate', 'GeneratedAt', 'RecordedAt',
-])
-const MATCH_DATE_TIME = /([dD]ate[tT]ime|[Ee]xpiration|[Tt]imestamp|[sS]tart[Dd]ate)/
-const ABSOLUTE_DATE_NAMES = new Set([
-  'WindowStart', 'WindowEnd', 'CreatedUtc', 'DownloadedUtc', 'ProcessedUtc',
-  'NextAttemptUtc', 'LastErrorUtc', 'LastPolledUtc',
-  'QueuedUtc', 'StartedUtc', 'CompletedUtc',
-])
-const isDateTimeColumn = (key) =>
-  TIME_AGO_NAMES.has(key) || ABSOLUTE_DATE_NAMES.has(key) || MATCH_DATE_TIME.test(key)
 
 // Measure the pixel width a column needs based on its header and sampled cell values.
 // rawValues are the original data values (before formatting) — if they contain arrays or
@@ -117,7 +98,7 @@ const measureColumnSize = (header, valuesForColumn, rawValues, accessorKey) => {
   }
 
   // DateTime columns render as relative time — use a fixed width instead of the raw string.
-  if (accessorKey && isDateTimeColumn(accessorKey)) {
+  if (accessorKey && isCippDateColumn(accessorKey)) {
     const dtLen = Math.max(headerLen, RELATIVE_TIME_CHARS)
     const dtPx = Math.round(dtLen * CHAR_WIDTH + CELL_PADDING)
     const size = Math.max(minSize, Math.min(MAX_COL_SIZE, dtPx))

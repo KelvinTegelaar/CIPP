@@ -13,10 +13,50 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { CippOffCanvas } from './CippOffCanvas'
 import { ApiGetCall } from '../../api/ApiCall'
+import { useCraftJobEvents } from '../../hooks/use-craft-events'
+import { fromCraftRun } from '../../utils/craft-run'
 
 // Terminal states, i.e. nothing more will happen to this queue.
 const isFinished = (status) =>
   ['Completed', 'Failed', 'Completed (with errors)', 'Not found'].includes(status)
+
+const sameId = (a, b) => String(a).toLowerCase() === String(b).toLowerCase()
+
+/**
+ * Put one queue's pushed entry in place and re-derive the roll-up as ListCippQueues does: summed task
+ * counts, and the least complete state across the set.
+ */
+export const withQueue = (old, queueId, entry) => {
+  const queues = old.Queues ?? []
+  const known = queues.some((q) => sameId(q.QueueId, queueId))
+  const next = known
+    ? queues.map((q) => (sameId(q.QueueId, queueId) ? { ...q, ...entry } : q))
+    : [...queues, { ...entry, QueueId: queueId }]
+  const sum = (field) => next.reduce((total, q) => total + (Number(q[field]) || 0), 0)
+  const running = next.filter((q) => !isFinished(q.Status)).length
+  const failed = next.filter((q) => ['Failed', 'Completed (with errors)'].includes(q.Status)).length
+  const totalTasks = sum('TotalTasks')
+  const completedTasks = sum('CompletedTasks')
+  return {
+    ...old,
+    Queues: next,
+    MissingQueueIds: (old.MissingQueueIds ?? []).filter((id) => !sameId(id, queueId)),
+    Summary: {
+      ...old.Summary,
+      FoundQueues: next.length,
+      RunningQueues: running,
+      FailedQueues: failed,
+      CompletedQueues: next.length - running - next.filter((q) => q.Status === 'Failed').length,
+      TotalTasks: totalTasks,
+      CompletedTasks: completedTasks,
+      RunningTasks: sum('RunningTasks'),
+      FailedTasks: sum('FailedTasks'),
+      PercentComplete: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 1000) / 10 : 0,
+      IsComplete: running === 0,
+      Status: running ? 'Running' : failed ? 'Completed (with errors)' : 'Completed',
+    },
+  }
+}
 
 const statusColour = (status) => {
   if (status === 'Completed') return 'success.main'
@@ -43,6 +83,15 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
   const ids = Array.isArray(queueIds) ? queueIds.filter(Boolean) : []
   const idKey = ids.join(',')
 
+  const connected = useCraftJobEvents(ids, (frame) => {
+    if (!frame.data) {
+      polling.refetch()
+      return
+    }
+    queryClient.setQueryData([`CippQueues-${idKey || 'none'}`], (old) =>
+      old ? withQueue(old, frame.jobId, fromCraftRun(frame.data)) : old
+    )
+  })
   const polling = ApiGetCall({
     url: '/api/ListCippQueues',
     data: { QueueIds: idKey },
@@ -51,7 +100,8 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
     // TanStack Query v5 hands this callback the Query object, not the data. Reading the data
     // off query.state is what makes the interval actually return false on completion - with
     // the v4 (data) signature the status is never found and the poll runs forever.
-    refetchInterval: (query) => (isFinished(query?.state?.data?.Summary?.Status) ? false : 3000),
+    refetchInterval: (query) =>
+      isFinished(query?.state?.data?.Summary?.Status) || connected ? false : 3000,
     refetchOnWindowFocus: false,
     staleTime: 0,
   })

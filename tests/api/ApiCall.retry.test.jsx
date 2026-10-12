@@ -118,6 +118,33 @@ describe('ApiGetCall retry behaviour on a Craft 503', () => {
     expect(axios.get).toHaveBeenCalledTimes(1)
   }, 15000)
 
+  it('does NOT retry a 400 — a bad request fails the same way every time', async () => {
+    axios.get.mockRejectedValue(axiosError(400))
+
+    const key = uniqueKey()
+    const { result } = renderHook(
+      () => ApiGetCall({ url: '/api/ListThing', queryKey: key }),
+      { wrapper }
+    )
+
+    await waitFor(() => expect(result.current.isError).toBe(true))
+    expect(axios.get).toHaveBeenCalledTimes(1)
+  })
+
+  it('still retries a 429 — throttling clears, unlike the rest of 4xx', async () => {
+    axios.get.mockRejectedValue(axiosError(429))
+
+    const key = uniqueKey()
+    const { result } = renderHook(
+      () => ApiGetCall({ url: '/api/ListThing', queryKey: key }),
+      { wrapper }
+    )
+
+    await waitFor(() => expect(result.current.failureCount).toBe(1))
+    expect(result.current.isError).toBe(false)
+    expect(result.current.fetchStatus).toBe('fetching')
+  })
+
   it('honours Retry-After on a 503 rather than the immediate exponential backoff', async () => {
     const stamps = []
     axios.get.mockImplementation(() => {

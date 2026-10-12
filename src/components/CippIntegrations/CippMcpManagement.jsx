@@ -115,8 +115,8 @@ const McpClientCard = ({ client, baseMcpUrl }) => {
 
 // MCP connector management: the shared CIPP-MCP resource app (the token audience CIPP creates and
 // manages) plus a section per MCPAllowed client app. Kept on its own tab so it doesn't clutter API
-// client management. Enabling MCP on a client, and its role/IP, live with the client on the API
-// Clients tab; here you check the resource app and each client's connector URL and redirect URIs.
+// client management. Enabling MCP on a client lives with the client on the API Clients tab; here
+// you check the resource app and each client's connector URL and redirect URIs.
 const CippMcpManagement = () => {
   // Shared query keys with the API Clients tab — react-query dedupes, so no extra network calls.
   const azureConfig = ApiGetCall({

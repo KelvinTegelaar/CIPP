@@ -211,6 +211,7 @@ const CippBrandingCoverPreview = ({
   coverImage,
   coverImageId,
   coverStock,
+  coverFade = true,
   reportType = "executive",
 }) => {
   const theme = createReportTheme({
@@ -273,7 +274,7 @@ const CippBrandingCoverPreview = ({
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            opacity: 0.5,
+            opacity: coverFade ? 0.5 : 1,
             pointerEvents: "none",
           }}
         />

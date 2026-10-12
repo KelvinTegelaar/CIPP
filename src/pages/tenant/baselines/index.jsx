@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import { CippIcons } from '../../../utils/icon-registry'
 import { Grid } from '@mui/system'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Layout as DashboardLayout } from '../../../layouts/index'
 import { TabbedLayout } from '../../../layouts/TabbedLayout'
@@ -21,6 +22,7 @@ import { CippInfoBar } from '../../../components/CippCards/CippInfoBar'
 import { CippChartCard } from '../../../components/CippCards/CippChartCard'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import { ApiGetCall } from '../../../api/ApiCall'
+import { CippAutoComplete } from '../../../components/CippComponents/CippAutocomplete'
 import { ResourceUnavailable } from '../../../components/resource-unavailable'
 import { useSettings } from '../../../hooks/use-settings'
 
@@ -41,11 +43,19 @@ const Page = () => {
   const pageTitle = 'Fleet Overview'
   const router = useRouter()
   const settings = useSettings()
+  const [baselineId, setBaselineId] = useState(null)
+  const [stage, setStage] = useState(null)
 
+  // Unfiltered keeps the exact request/queryKey the alignment page shares.
+  const filterData = baselineId
+    ? { baselineId, ...(stage ? { stage } : {}) }
+    : {}
   const aggregate = ApiGetCall({
     url: '/api/ListBaselineAlignment',
-    data: { byStandard: true },
-    queryKey: 'ListBaselineAlignment-byStandard',
+    data: { byStandard: true, ...filterData },
+    queryKey: baselineId
+      ? `ListBaselineAlignment-byStandard-${baselineId}${stage ? `-${stage}` : ''}`
+      : 'ListBaselineAlignment-byStandard',
   })
 
   const fleetScore = aggregate.data?.fleet
@@ -54,12 +64,49 @@ const Page = () => {
     url: '/api/ListBaselines',
     queryKey: 'ListBaselines',
   })
-  const baselineCount = asArray(baselinesApi.data).length
+  const baselines = asArray(baselinesApi.data)
+  const baselineCount = baselines.length
+  const baselineOptions = [
+    { label: 'All baselines', value: 'all' },
+    ...baselines.map((baseline) => ({
+      label: baseline.templateName,
+      value: baseline.GUID,
+    })),
+  ]
+  const selectedBaseline = baselines.find(
+    (baseline) => baseline.GUID === baselineId
+  )
+  // Stages are identified by their 1-based position.
+  const stageOptions = [
+    { label: 'All stages', value: 'all' },
+    ...asArray(selectedBaseline?.stages).map((stageDef, index) => ({
+      label: stageDef?.name || `Stage ${index + 1}`,
+      value: index + 1,
+    })),
+  ]
   const isFirstRun =
     !aggregate.isFetching &&
     !baselinesApi.isFetching &&
     baselineCount === 0 &&
     (fleetScore?.total ?? 0) === 0
+  // A filter can match nothing yet (e.g. a stage no tenant has reached); say so instead of 'first run'.
+  const filteredEmpty =
+    !!baselineId && !aggregate.isFetching && (fleetScore?.total ?? 0) === 0
+  const emptyFilterMessage =
+    'No tenant has reached this part of the baseline yet.'
+  // Carry the active filter into the Alignment tab.
+  const filterQuery = baselineId
+    ? `&baselineId=${baselineId}${stage ? `&stage=${stage}` : ''}`
+    : ''
+  // Nothing scorable under the filter (no rows, or every row skipped): a score of 0% would mislead.
+  const noScore =
+    !!baselineId && !aggregate.isFetching && (fleetScore?.applicable ?? 0) === 0
+  const percent = (value, blank = noScore) => (blank ? '—' : `${value ?? 0}%`)
+  // A filtered tile opens the Alignment tab's by-standard view, where the baseline filter applies.
+  const alignmentLink = (status) =>
+    baselineId
+      ? `/tenant/baselines/alignment?view=standard${filterQuery}`
+      : `/tenant/baselines/alignment?status=${status}`
   const trend = asArray(aggregate.data?.trend)
   const tenantsNeedingAttention = asArray(aggregate.data?.tenants)
     .slice()
@@ -122,20 +169,71 @@ const Page = () => {
       <CippHead title={pageTitle} />
       <Container maxWidth={false}>
         <Stack spacing={2}>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <CippAutoComplete
+                fullWidth
+                multiple={false}
+                creatable={false}
+                label="Baseline"
+                options={baselineOptions}
+                value={
+                  baselineOptions.find(
+                    (option) => option.value === baselineId
+                  ) ?? baselineOptions[0]
+                }
+                onChange={(newValue) => {
+                  setBaselineId(
+                    newValue?.value && newValue.value !== 'all'
+                      ? newValue.value
+                      : null
+                  )
+                  setStage(null)
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <CippAutoComplete
+                fullWidth
+                multiple={false}
+                creatable={false}
+                label="Stage"
+                disabled={!baselineId}
+                options={stageOptions}
+                value={
+                  stageOptions.find((option) => option.value === stage) ??
+                  stageOptions[0]
+                }
+                onChange={(newValue) =>
+                  setStage(
+                    newValue?.value && newValue.value !== 'all'
+                      ? newValue.value
+                      : null
+                  )
+                }
+              />
+            </Grid>
+          </Grid>
+          {baselineId && (
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Standards shared with another baseline are scored once per tenant,
+              so they count toward every baseline that includes them.
+            </Typography>
+          )}
           <CippInfoBar
             isFetching={aggregate.isFetching}
             data={[
               {
                 icon: <CippIcons.CheckBadgeIcon />,
                 name: 'Compliant with accepted deviations',
-                data: `${fleetScore?.alignedPercentage ?? 0}%`,
+                data: percent(fleetScore?.alignedPercentage),
                 color: 'success',
                 toolTip: `${fleetScore?.acceptedPercentage ?? 0}% of this score comes from accepted deviations`,
               },
               {
                 icon: <CippIcons.ShieldCheckIcon />,
                 name: 'Compliant with baseline',
-                data: `${fleetScore?.verifiedPercentage ?? 0}%`,
+                data: percent(fleetScore?.verifiedPercentage),
                 toolTip:
                   'Standards currently in their expected state, with accepted deviations NOT counted.',
               },
@@ -146,25 +244,27 @@ const Page = () => {
                 color: 'error',
                 toolTip:
                   'Drift awaiting triage (Accept / Deny / Remediate) - click to review',
-                onClick: () =>
-                  router.push('/tenant/baselines/alignment?status=Drift'),
+                link: alignmentLink('Drift'),
               },
               {
                 icon: <CippIcons.Key />,
                 name: 'License Missing',
-                data: `${licenseMissingPercentage}%`,
+                data: percent(licenseMissingPercentage, filteredEmpty),
                 color: 'warning',
                 toolTip: `${fleetScore?.licenseMissing ?? 0} standard instance${(fleetScore?.licenseMissing ?? 0) === 1 ? '' : 's'} excluded from scoring because the tenant lacks the license - click to review`,
-                onClick: () =>
-                  router.push(
-                    '/tenant/baselines/alignment?status=Skipped - No License'
-                  ),
+                link: alignmentLink('Skipped - No License'),
               },
             ]}
           />
           <Grid container spacing={2}>
             <Grid size={{ md: 8, xs: 12 }}>
-              {!aggregate.isFetching && trend.length === 0 ? (
+              {baselineId ? (
+                // Trend history is stored for the whole fleet only.
+                <EmptyChartCard
+                  title="Fleet Compliance Trend"
+                  message="Trend history covers the whole fleet. Clear the baseline filter to see it."
+                />
+              ) : !aggregate.isFetching && trend.length === 0 ? (
                 <EmptyChartCard
                   title="Fleet Compliance Trend"
                   message="Trend data appears after the first baseline runs."
@@ -201,7 +301,11 @@ const Page = () => {
               {!aggregate.isFetching && (fleetScore?.total ?? 0) === 0 ? (
                 <EmptyChartCard
                   title="Deviation States"
-                  message="Deviation data appears after the first baseline runs."
+                  message={
+                    filteredEmpty
+                      ? emptyFilterMessage
+                      : 'Deviation data appears after the first baseline runs.'
+                  }
                 />
               ) : (
                 <CippChartCard
@@ -229,7 +333,11 @@ const Page = () => {
               {!aggregate.isFetching && tenantsNeedingAttention.length === 0 ? (
                 <EmptyChartCard
                   title="Tenants Needing Attention"
-                  message="Tenant scores appear after the first baseline runs."
+                  message={
+                    filteredEmpty
+                      ? emptyFilterMessage
+                      : 'Tenant scores appear after the first baseline runs.'
+                  }
                 />
               ) : (
                 <Card style={{ width: '100%', height: '100%' }}>

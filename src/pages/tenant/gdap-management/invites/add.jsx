@@ -244,6 +244,7 @@ const Page = () => {
                 </Typography>
               </Alert>
             )}
+            <CippApiResults apiObject={addInvites} errorsOnly={true} />
             {inviteData?.length > 0 && (
               <>
                 <Grid size={12}>

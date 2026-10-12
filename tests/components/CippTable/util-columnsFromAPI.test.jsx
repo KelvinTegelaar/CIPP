@@ -29,6 +29,33 @@ describe('utilColumnsFromAPI', () => {
     })
   })
 
+  it('sorts object-array columns by item count but leaves string arrays alone', () => {
+    const data = [
+      { Members: [], proxyAddresses: ['SMTP:a@contoso.com'] },
+      { Members: [{ id: '1', displayName: 'Alice' }], proxyAddresses: ['SMTP:b@contoso.com'] },
+    ]
+    const columns = utilColumnsFromAPI(data)
+    expect(columns.find((c) => c.id === 'Members').sortingFn).toBe('arrayLength')
+    expect(columns.find((c) => c.id === 'proxyAddresses').sortingFn).toBeUndefined()
+  })
+
+  it('sizes date columns by the rendered date, not the Date text the formatter returns', () => {
+    // ListJITAdminRequests shape: unix-second window plus an ISO request time
+    const data = [
+      {
+        Reason: 'Patching',
+        StartDate: 1791590400,
+        EndDate: 1791676800,
+        RequestedAt: '2026-10-08T01:02:03.0000000Z',
+      },
+    ]
+    const columns = utilColumnsFromAPI(data)
+    const size = (id) => columns.find((column) => column.id === id).size
+
+    expect(size('EndDate')).toBe(size('StartDate'))
+    expect(size('RequestedAt')).toBeLessThan(250)
+  })
+
   it('generates columns for nested object properties', () => {
     const data = [
       { info: { city: 'Seattle', state: 'WA' }, name: 'Test' },

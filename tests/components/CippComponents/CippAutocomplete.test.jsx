@@ -168,6 +168,36 @@ describe('CippAutoComplete', () => {
       expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ label: 'zzz', value: 'zzz' }), undefined)
     })
 
+    it('creatable completes a %variable fragment in place', async () => {
+      const { ApiGetCall } = await import('../../../src/api/ApiCall')
+      ApiGetCall.mockImplementation(({ url } = {}) =>
+        url?.startsWith('/api/ListCustomVariables')
+          ? {
+              isSuccess: true,
+              isFetching: false,
+              isLoading: false,
+              data: {
+                Results: [
+                  { Variable: '%tenantname%', Type: 'reserved', VariableType: 'string', Description: 'Tenant name' },
+                  { Variable: '%defaultdomain%', Type: 'reserved', VariableType: 'string', Description: 'Default domain' },
+                ],
+              },
+              refetch: vi.fn(),
+            }
+          : { isSuccess: false, isFetching: false, data: undefined, refetch: vi.fn() }
+      )
+      const onChange = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<CippAutoComplete multiple={false} options={OPTIONS} onChange={onChange} />)
+      await user.type(screen.getByRole('combobox'), 'staff@%def')
+      await user.click(await screen.findByRole('option', { name: /staff@%defaultdomain%/ }))
+      expect(onChange).toHaveBeenCalledWith(
+        expect.objectContaining({ value: 'staff@%defaultdomain%' }),
+        undefined
+      )
+      expect(screen.queryByRole('option', { name: 'staff@%tenantname%' })).not.toBeInTheDocument()
+    })
+
     it('creatable=false offers no manual option', async () => {
       const user = userEvent.setup()
       renderWithProviders(

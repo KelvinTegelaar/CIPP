@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Divider, Typography, Alert, Chip, Link } from "@mui/material";
 import NextLink from "next/link";
 import { useForm, useWatch } from "react-hook-form";
@@ -10,6 +10,8 @@ import { Grid } from "@mui/system";
 import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
 import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { ApiGetCall } from "../../../api/ApiCall";
+import { CippIcons } from "../../../utils/icon-registry";
+import { usePermissions } from "../../../hooks/use-permissions";
 
 // react-query key for the "configured template libraries" table below. Passed to CippFormPage as a
 // related query key so creating a new library refreshes the table without a manual reload.
@@ -26,6 +28,9 @@ const TemplateLibrary = () => {
     },
   });
 
+  const { checkPermissions } = usePermissions();
+  const canWriteScheduler = checkPermissions(["CIPP.Scheduler.ReadWrite"]);
+
   const tenantFilter = useWatch({ control: formControl.control, name: "tenantFilter" });
   const templateRepo = useWatch({ control: formControl.control, name: "templateRepo" });
 
@@ -38,6 +43,26 @@ const TemplateLibrary = () => {
     queryKey: TEMPLATE_LIBRARY_JOBS_KEY,
   });
   const jobRows = Array.isArray(existingJobs.data) ? existingJobs.data : [];
+
+  // Same RemoveScheduledItem contract as the Scheduler page. Deleting the library job stops
+  // future syncs; templates already imported into CIPP are left alone.
+  const libraryActions = useMemo(
+    () => [
+      {
+        label: "Delete Library",
+        icon: <CippIcons.Delete />,
+        type: "POST",
+        url: "/api/RemoveScheduledItem",
+        data: { id: "RowKey" },
+        confirmText:
+          "Stop syncing [Name]? Already imported templates stay in CIPP and will not be re-imported. Delete those separately from the Conditional Access or Intune template pages if you no longer need them.",
+        multiPost: false,
+        relatedQueryKeys: [TEMPLATE_LIBRARY_JOBS_KEY],
+        condition: () => canWriteScheduler,
+      },
+    ],
+    [canWriteScheduler]
+  );
 
   // A library targets either a tenant or a community repository; the job name and payload are both
   // built from whichever one is chosen.
@@ -292,11 +317,12 @@ const TemplateLibrary = () => {
             Configured Template Libraries
           </Typography>
           <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
-            Template libraries that are already set up and running. Edit or remove them from the{" "}
+            Template libraries that are already set up and running. Use Delete Library to stop
+            syncing, or manage the underlying job on the{" "}
             <Link component={NextLink} href="/cipp/scheduler">
               Scheduled Tasks
             </Link>{" "}
-            page.
+            page (set the tenant filter to All Tenants for community repository libraries).
           </Typography>
           <CippDataTable
             title="Configured Template Libraries"
@@ -304,6 +330,7 @@ const TemplateLibrary = () => {
             data={jobRows}
             isFetching={existingJobs.isFetching}
             refreshFunction={() => existingJobs.refetch()}
+            actions={libraryActions}
             simpleColumns={[
               "Name",
               "Tenant",

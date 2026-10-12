@@ -11,6 +11,7 @@ import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { Box } from "@mui/system";
+import { getCippError } from "../../utils/get-cipp-error";
 
 // IP entries that impose no real restriction; a role with only these (or none) is unrestricted,
 // matching the backend collapsing an empty list to "Any".
@@ -29,8 +30,8 @@ const getRestrictiveRanges = (ranges) =>
     .map((r) => String(r?.value ?? r).trim())
     .filter((r) => r && !ALLOW_ALL_IP_TOKENS.has(r.toLowerCase()));
 
-// Dialog warning (advisory, not enforced): MCP connectors call in from the AI provider's cloud IPs,
-// so an IP restriction on the client itself OR on its role will most likely block them (403).
+// Dialog warning (advisory, not enforced): client-credentials MCP calls come from the AI provider's
+// cloud IPs, so an IP restriction on the client itself OR on its role will most likely block them (403).
 const McpRoleIpWarning = ({ formControl }) => {
   const mcpAllowed = useWatch({ control: formControl.control, name: "MCPAllowed" });
   const roleValue = useWatch({ control: formControl.control, name: "Role" });
@@ -52,8 +53,9 @@ const McpRoleIpWarning = ({ formControl }) => {
 
   return (
     <Alert severity="warning" sx={{ mt: 1 }}>
-      MCP connectors call in from your AI provider's cloud IPs, so IP restrictions on an MCP client
-      will most likely block it (403).
+      Calls made with this client's own secret come from your AI provider's cloud IPs, so IP
+      restrictions on the client or its role will most likely block them (403). Connectors that sign
+      a user in use that user's role instead.
       {clientRanges.length > 0 && <> This client's IP range only allows {clientRanges.join(", ")}.</>}
       {roleRanges.length > 0 && (
         <>
@@ -130,8 +132,8 @@ const CippApiClientManagement = () => {
     });
   }, [apiClients.data, egressUsage.data]);
 
-  // MCP-enabled clients with an IP restriction — on the client's own IP range or on its role. MCP
-  // connectors call in from the AI provider's cloud IPs, so either will most likely block them (403).
+  // MCP-enabled clients with an IP restriction — on the client's own IP range or on its role. These
+  // apply to client-credentials calls, which come from the AI provider's cloud IPs (403).
   const mcpRoleIpWarnings = useMemo(() => {
     if (!apiClients.isSuccess || !customRoles.isSuccess) return [];
     const roles = customRoles.data ?? [];
@@ -294,7 +296,7 @@ const CippApiClientManagement = () => {
           name: "mcpAccessWarning",
           severity: "warning",
           label:
-            "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. You can enable multiple MCP clients, each with its own role, IP range and Conditional Access. MCP is only supported on CIPP-NG.",
+            "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on the new CIPP infrastructure.",
         },
         {
           name: "mcpRoleIpWarning",
@@ -465,6 +467,13 @@ const CippApiClientManagement = () => {
             )}
           </>
         )}
+        {azureConfig.isError && (
+          <Box sx={{ px: 3 }}>
+            <Alert severity="error">
+              Could not get the Azure authentication settings: {getCippError(azureConfig.error)}
+            </Alert>
+          </Box>
+        )}
         {azureConfig.isSuccess && azureConfig.data?.Results?.Enabled === false && (
           <Box sx={{ px: 3 }}>
             <Alert severity="warning">
@@ -476,9 +485,10 @@ const CippApiClientManagement = () => {
         {mcpRoleIpWarnings.length > 0 && (
           <Box sx={{ px: 3 }}>
             <Alert severity="warning">
-              These MCP-enabled clients have an IP restriction (on the client or its role). MCP
-              connectors call in from your AI provider's cloud IPs, so this will most likely block
-              them (403). Consider setting the IP range to Any and using a role with no IP
+              These MCP-enabled clients have an IP restriction (on the client or its role). Calls
+              made with the client's own secret come from your AI provider's cloud IPs, so this will
+              most likely block them (403); connectors that sign a user in use that user's role
+              instead. Consider setting the IP range to Any and using a role with no IP
               restriction:
               <ul style={{ marginBottom: 0 }}>
                 {mcpRoleIpWarnings.map((warning) => (
@@ -582,7 +592,7 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. You can enable multiple MCP clients, each with its own role, IP range and Conditional Access. MCP is only supported on CIPP-NG.",
+              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on the new CIPP infrastructure.",
           },
           {
             name: "mcpRoleIpWarning",
@@ -667,7 +677,7 @@ const CippApiClientManagement = () => {
             name: "mcpAccessWarning",
             severity: "warning",
             label:
-              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. You can enable multiple MCP clients, each with its own role, IP range and Conditional Access. MCP is only supported on CIPP-NG.",
+              "Enabling MCP Access sets this client up as an MCP connector sign-in app — AI clients (Claude, ChatGPT, Copilot Studio, VS Code) sign in as it, and the shared CIPP-MCP resource app is created automatically. Connectors that sign a user in run with that user's own CIPP role; this client's role and IP range only apply to calls made with its own secret and no user. MCP is only supported on the new CIPP infrastructure.",
           },
           {
             name: "mcpRoleIpWarning",

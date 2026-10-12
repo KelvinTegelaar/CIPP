@@ -29,6 +29,7 @@ export const DEFAULT_BRANDING = Object.freeze({
   showPageNumbers: true,
   watermarkText: '',
   watermarkEnabled: true,
+  coverFade: true,
   // Which of the tenant's names a report prints: 'alias' (the name CIPP shows), 'name' or 'domain'.
   tenantLabel: 'alias',
   reportDefaults: {},

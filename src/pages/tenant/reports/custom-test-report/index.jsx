@@ -108,6 +108,7 @@ const Page = () => {
         }
         data={data}
         simpleColumns={['Tenant', 'Name', 'Enabled', 'Risk', 'Status', 'LastRun']}
+        defaultSorting={[{ id: 'Name', desc: false }]}
         isFetching={resultsApi.isFetching}
         offCanvas={offCanvas}
         offCanvasOnRowClick={true}
