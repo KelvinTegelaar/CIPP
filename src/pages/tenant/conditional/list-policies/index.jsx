@@ -6,6 +6,7 @@ import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer";
 import { CippApiLogsDrawer } from "../../../../components/CippComponents/CippApiLogsDrawer";
 import { CippCAPolicyCoverageDrawer } from "../../../../components/CippComponents/CippCAPolicyCoverageDrawer";
+import { CippCAPolicyImpactDrawer } from "../../../../components/CippComponents/CippCAPolicyImpactDrawer";
 import { PermissionButton } from "../../../../utils/permissions";
 import { useSettings } from "../../../../hooks/use-settings.js";
 
@@ -36,6 +37,25 @@ const Page = () => {
         const policy = Array.isArray(row) ? row[0] : row;
         return (
           <CippCAPolicyCoverageDrawer
+            policyId={policy?.id}
+            policyName={policy?.displayName}
+            tenantFilter={policy?.Tenant || tenant}
+            visible={!!drawerVisible}
+            onClose={() => setDrawerVisible(false)}
+          />
+        );
+      },
+    },
+    {
+      label: "See usage report",
+      icon: <CippIcons.BarChart />,
+      color: "info",
+      hideBulk: true,
+      multiPost: false,
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => {
+        const policy = Array.isArray(row) ? row[0] : row;
+        return (
+          <CippCAPolicyImpactDrawer
             policyId={policy?.id}
             policyName={policy?.displayName}
             tenantFilter={policy?.Tenant || tenant}

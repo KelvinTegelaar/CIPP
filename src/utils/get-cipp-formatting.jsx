@@ -32,6 +32,7 @@ import {
   formatCaCoverageReason,
   formatCaCoverageReasons,
 } from './format-ca-coverage-reason'
+import { getImpactResultColor, getImpactResultLabel } from './ca-policy-impact'
 import { getSignInErrorCodeTranslation } from './get-cipp-signin-errorcode-translation'
 import { CollapsibleChipList } from '../components/CippComponents/CollapsibleChipList'
 import countryList from '../data/countryList.json'
@@ -1556,6 +1557,23 @@ export const getCippFormatting = (
 
   if (cellName === 'AutoMapUrl') {
     return isText ? data : <CippCopyToClipBoard text={data} />
+  }
+
+  // CA policy usage report: how the policy itself evaluated for a sampled sign-in.
+  if (cellName === 'policyResult') {
+    const label = getImpactResultLabel(data)
+    if (isText) {
+      return label
+    }
+    const tone = getImpactResultColor(data)
+    return (
+      <Chip
+        variant="outlined"
+        label={label}
+        size="small"
+        color={tone === 'neutral' ? 'default' : tone}
+      />
+    )
   }
 
   // CA policy identity coverage: grid shows a count/top-reason summary; full lists belong in off-canvas.
