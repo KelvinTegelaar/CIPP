@@ -33,6 +33,7 @@ import { useUserBookmarks } from "../../hooks/use-user-bookmarks";
 import { useSettings } from "../../hooks/use-settings";
 import { useTenantPreferences } from "../../hooks/use-tenant-preferences";
 import { searchLocalLicenseCatalog } from "../../utils/get-cipp-license-catalog";
+import extensions from "../../data/Extensions.json";
 
 // Scopes that match in memory as the user types; the rest hit the API on Enter / Search.
 const LOCAL_SCOPES = ["Pages", "Licenses", "Tenants"];
@@ -299,7 +300,25 @@ export const CippUniversalSearchV2 = React.forwardRef(
         })
         .filter(Boolean);
 
-      return [...filteredMainMenu, ...filteredTabOptions];
+      // Each integration is a query-string page under /cipp/integrations, so it has no menu entry.
+      const integrationsPage = filteredMainMenu.find((item) => item.path === "/cipp/integrations");
+      const integrationItems = integrationsPage
+        ? [
+            { title: "Sync Jobs", path: "/cipp/integrations/sync" },
+            ...extensions
+              .filter((extension) => !extension.comingSoon)
+              .map((extension) => ({
+                title: extension.name,
+                path: `/cipp/integrations/configure?id=${extension.id}`,
+              })),
+          ].map((item) => ({
+            ...item,
+            scope: "global",
+            breadcrumbs: [...integrationsPage.breadcrumbs, integrationsPage.title],
+          }))
+        : [];
+
+      return [...filteredMainMenu, ...integrationItems, ...filteredTabOptions];
     }, [userPermissions, userRoles, tabOptions, hiddenPages]);
 
     const normalizedSearch = searchValue.trim().toLowerCase();
