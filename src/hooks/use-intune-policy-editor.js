@@ -1,14 +1,16 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useIntuneDefinitionResolver } from '../components/CippComponents/CippIntuneSettingsEditor'
 import {
   applyIntuneSettingEdits,
   buildIntunePropertyLeaves,
   buildIntuneSettingLeaves,
+  unwrap,
 } from '../utils/intune-template-leaves'
 import { getCippTranslation } from '../utils/get-cipp-translation'
 import {
   fetchIntuneDefinition,
   fetchIntuneDefinitions,
+  fetchIntuneDescendants,
 } from './use-intune-collection'
 import {
   buildSetting,
@@ -17,7 +19,7 @@ import {
   childDefinitionIds,
   clearGroupRowValues,
   isGroupCollectionInstance,
-  policyHasSetting,
+  mergeSettingInstance,
 } from '../utils/intune-setting-builder'
 
 // Shared by the add and edit screens so both produce identical JSON. Values live in form state,
@@ -70,20 +72,96 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
     )
   }, [policy, leaves, formControl])
 
+  // A setting already in the policy is only revisited to reach something beneath it (`wanted`).
   const addSetting = useCallback(
-    (definition, childDefinitionsById = {}) => {
-      const setting = buildSetting(definition, childDefinitionsById)
+    (definition, childDefinitionsById = {}, wanted = new Set()) => {
+      const setting = buildSetting(definition, childDefinitionsById, wanted)
       if (!setting) return false
 
       const folded = foldValuesIntoPolicy()
-      if (policyHasSetting(folded, definition.id)) return false
+      const settings = folded.settings ?? []
+      const index = settings.findIndex(
+        (entry) => entry?.settingInstance?.settingDefinitionId === definition.id
+      )
+      if (index !== -1 && wanted.size === 0) return false
 
-      setPolicy({ ...folded, settings: [...(folded.settings ?? []), setting] })
+      setPolicy({
+        ...folded,
+        settings:
+          index === -1
+            ? [...settings, setting]
+            : settings.map((entry, i) =>
+                i === index
+                  ? {
+                      ...entry,
+                      settingInstance: mergeSettingInstance(
+                        entry.settingInstance,
+                        setting.settingInstance
+                      ),
+                    }
+                  : entry
+              ),
+      })
       noteStructuralChange()
       return true
     },
     [foldValuesIntoPolicy, setPolicy, noteStructuralChange]
   )
+
+  // Intune swaps the settings nested under a choice when its option changes, so this does too.
+  const leavesRef = useRef(leaves)
+  leavesRef.current = leaves
+  useEffect(() => {
+    if (!supportsStructuralEdits) return undefined
+    const subscription = formControl.watch((values, { name }) => {
+      const match = /^settingValues\.(\d+)$/.exec(name ?? '')
+      const leaf = match && leaves[Number(match[1])]
+      if (leaf?.kind !== 'choice') return
+      const optionId = unwrap(values.settingValues?.[leaf.index])
+      const definition = getDefinition(leaf.definitionId)
+      if (
+        optionId === leaf.value ||
+        !definition?.options?.some((option) => option.id === optionId)
+      )
+        return
+
+      const pinned = { ...definition, defaultOptionId: optionId }
+      fetchIntuneDescendants(pinned).then((byId) => {
+        // The policy moved on while the definitions loaded; this leaf's position may no longer be its own.
+        if (leavesRef.current !== leaves) return
+        const built = buildSettingInstance(pinned, byId)
+        if (!built) return
+        const folded = foldValuesIntoPolicy()
+        const path = leaf.path.slice(0, -2)
+        const parent = path
+          .slice(0, -1)
+          .reduce((node, key) => node?.[key], folded)
+        const current = parent?.[path.at(-1)]
+        if (!current?.choiceSettingValue) return
+        parent[path.at(-1)] = mergeSettingInstance(
+          {
+            ...current,
+            choiceSettingValue: {
+              ...current.choiceSettingValue,
+              value: leaf.value,
+            },
+          },
+          built
+        )
+        setPolicy(folded)
+        noteStructuralChange()
+      })
+    })
+    return () => subscription.unsubscribe()
+  }, [
+    supportsStructuralEdits,
+    formControl,
+    leaves,
+    getDefinition,
+    foldValuesIntoPolicy,
+    setPolicy,
+    noteStructuralChange,
+  ])
 
   const removeSetting = useCallback(
     (settingIndex) => {

@@ -159,8 +159,8 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
         path: [...path, 'choiceSettingValue', 'value'],
         options: optionsFromDefinition(definition),
         value: instance.choiceSettingValue.value,
-        // Intune swaps the child settings when the selected option changes. CIPP has no dependency
-        // data to do the same, so the children below stay as they were and the field says so.
+        // use-intune-policy-editor swaps the children when another option is picked. A variable
+        // cannot be resolved to an option there, so the children stay as they were and the field says so.
         hasDependentChildren: children.length > 0,
       })
 

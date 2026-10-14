@@ -172,8 +172,8 @@ export const CippIntunePolicySettingsCard = ({
       <CippIntuneSettingPicker
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
-        onAdd={(definition, children) => {
-          const added = addSetting(definition, children)
+        onAdd={(definition, children, wanted) => {
+          const added = addSetting(definition, children, wanted)
           if (added) setPickerOpen(false)
           return added
         }}

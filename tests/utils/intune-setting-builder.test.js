@@ -8,8 +8,15 @@ import {
   clearGroupRowValues,
   collectionCountBounds,
   definitionInstanceType,
-  policyHasSetting,
+  mergeSettingInstance,
 } from '../../src/utils/intune-setting-builder'
+import {
+  forceListChildren,
+  forceListDefinition,
+  forceListEnabled,
+  forceListIdsDefinition,
+  forceListDisabled,
+} from '../mocks/intune-chrome-forcelist'
 
 // The discriminators are the whole point of this module. Intune rejects a policy whose settings do
 // not declare their type, and a wrong one is worse than a missing one - it is accepted by the schema
@@ -357,18 +364,57 @@ describe('clearGroupRowValues', () => {
   })
 })
 
-describe('policyHasSetting', () => {
-  const policy = { settings: [buildSetting(choiceDefinition)] }
-
-  it('finds a setting the policy already configures', () => {
-    expect(policyHasSetting(policy, 'device_test_choice')).toBe(true)
+describe('building towards a nested setting', () => {
+  it('picks the option a wanted child sits under, and builds that child', () => {
+    const instance = buildSettingInstance(
+      forceListDefinition,
+      forceListChildren,
+      new Set([forceListIdsDefinition.id])
+    )
+    expect(instance.choiceSettingValue.value).toBe(forceListEnabled)
+    expect(instance.choiceSettingValue.children).toEqual([
+      {
+        '@odata.type': `${PREFIX}SimpleSettingCollectionInstance`,
+        settingDefinitionId: forceListIdsDefinition.id,
+        simpleSettingCollectionValue: [
+          { '@odata.type': `${PREFIX}StringSettingValue`, value: '' },
+        ],
+      },
+    ])
   })
 
-  it('does not report one it has not', () => {
-    expect(policyHasSetting(policy, 'device_test_string')).toBe(false)
+  it('still builds the default option when nothing beneath is wanted', () => {
+    const instance = buildSettingInstance(
+      forceListDefinition,
+      forceListChildren
+    )
+    expect(instance.choiceSettingValue).toEqual({
+      value: forceListDisabled,
+      children: [],
+    })
+  })
+})
+
+describe('mergeSettingInstance', () => {
+  const enabled = buildSettingInstance(
+    forceListDefinition,
+    forceListChildren,
+    new Set([forceListIdsDefinition.id])
+  )
+  const disabled = buildSettingInstance(forceListDefinition, forceListChildren)
+
+  it('moves an existing parent onto the option that carries the child', () => {
+    expect(mergeSettingInstance(disabled, enabled)).toEqual(enabled)
   })
 
-  it('copes with a policy that has no settings at all', () => {
-    expect(policyHasSetting({}, 'device_test_choice')).toBe(false)
+  it('keeps values already entered when the option is unchanged', () => {
+    const filled = structuredClone(enabled)
+    filled.choiceSettingValue.children[0].simpleSettingCollectionValue[0].value =
+      'abcdefghijklmnop'
+    expect(mergeSettingInstance(filled, enabled)).toEqual(filled)
+  })
+
+  it('drops the children of an option that is no longer selected', () => {
+    expect(mergeSettingInstance(enabled, disabled)).toEqual(disabled)
   })
 })

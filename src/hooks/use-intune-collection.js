@@ -1,4 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
+import {
+  childDefinitionIds,
+  optionFor,
+  requiredChildIds,
+} from '../utils/intune-setting-builder'
 
 // Intune setting definitions are fetched in bucket bundles from public/intune-definitions, which
 // build/tools/Split-IntuneCollection.ps1 generates from the catalog.
@@ -183,6 +188,32 @@ export const fetchIntuneDefinitions = async (ids) => {
 
 export const fetchIntuneDefinition = async (id) =>
   id ? (await fetchIntuneDefinitions([id]))[0] : null
+
+const MAX_DEPTH = 4
+
+// Every definition buildSettingInstance needs beneath one (group members, and the settings the chosen
+// option requires or `wanted` asks for), keyed by id. Bounded because the catalog links children back to parents.
+export const fetchIntuneDescendants = async (definition, wanted) => {
+  const byId = {}
+  const seen = new Set([definition?.id])
+  const walk = async (current, depth) => {
+    if (!current || depth > MAX_DEPTH) return
+    const option = optionFor(current, wanted)
+    const ids = [
+      ...childDefinitionIds(current),
+      ...(option ? requiredChildIds(current, option.id, wanted) : []),
+    ].filter((id) => id && !seen.has(id))
+    if (ids.length === 0) return
+    ids.forEach((id) => seen.add(id))
+    const resolved = (await fetchIntuneDefinitions(ids)).filter(Boolean)
+    resolved.forEach((child) => {
+      byId[child.id] = child
+    })
+    await Promise.all(resolved.map((child) => walk(child, depth + 1)))
+  }
+  await walk(definition, 0)
+  return byId
+}
 
 // Per-platform search index written by Split-IntuneCollection.ps1. The bundles are hash-addressed
 // and cannot be listed, so picking a new setting needs this. Static, so it is searched in the browser.

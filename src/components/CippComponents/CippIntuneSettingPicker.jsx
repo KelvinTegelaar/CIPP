@@ -17,15 +17,12 @@ import {
 } from '@mui/material'
 import {
   fetchIntuneDefinitions,
+  fetchIntuneDescendants,
   useIntuneSettingIndex,
 } from '../../hooks/use-intune-collection'
-import {
-  childDefinitionIds,
-  requiredChildIds,
-} from '../../utils/intune-setting-builder'
 
 const MAX_RESULTS = 100
-const MAX_DEPTH = 4
+const MAX_DEPTH = 8
 const EMPTY_EXISTING = []
 
 const rankRow = (row, query) => {
@@ -69,32 +66,6 @@ export const searchSettingIndex = (
     )
 }
 
-// Every definition beneath one (group members and the settings its default option requires),
-// keyed by id. Bounded because the catalog links children back to parents.
-const resolveDescendants = async (definition) => {
-  const byId = {}
-  const seen = new Set([definition?.id])
-  const walk = async (current, depth) => {
-    if (!current || depth > MAX_DEPTH) return
-    const options = Array.isArray(current.options) ? current.options : []
-    const option =
-      options.find((o) => o.id === current.defaultOptionId) ?? options[0]
-    const wanted = [
-      ...childDefinitionIds(current),
-      ...(option ? requiredChildIds(current, option.id) : []),
-    ].filter((id) => id && !seen.has(id))
-    if (wanted.length === 0) return
-    wanted.forEach((id) => seen.add(id))
-    const resolved = (await fetchIntuneDefinitions(wanted)).filter(Boolean)
-    resolved.forEach((child) => {
-      byId[child.id] = child
-    })
-    await Promise.all(resolved.map((child) => walk(child, depth + 1)))
-  }
-  await walk(definition, 0)
-  return byId
-}
-
 export const CippIntuneSettingPicker = ({
   open,
   onClose,
@@ -120,22 +91,39 @@ export const CippIntuneSettingPicker = ({
     onClose()
   }
 
+  const { rows, isLoading, isError } = useIntuneSettingIndex(platform, {
+    enabled: open,
+  })
+  const rowsById = useMemo(
+    () => new Map(rows.map((row) => [row.id, row])),
+    [rows]
+  )
+
+  // A setting that only exists beneath another is added through its top-level setting, built with
+  // the options that lead down to it.
   const handleSelect = async (id) => {
     setPendingId(id)
     setFailed(false)
     try {
-      const [definition] = await fetchIntuneDefinitions([id])
+      const wanted = new Set()
+      let rootId = id
+      while (rowsById.get(rootId)?.parentId && wanted.size < MAX_DEPTH) {
+        wanted.add(rootId)
+        rootId = rowsById.get(rootId).parentId
+      }
+      const [definition] = await fetchIntuneDefinitions([rootId])
       const added =
-        definition && onAdd(definition, await resolveDescendants(definition))
+        definition &&
+        onAdd(
+          definition,
+          await fetchIntuneDescendants(definition, wanted),
+          wanted
+        )
       if (added === false || !definition) setFailed(true)
     } finally {
       setPendingId(null)
     }
   }
-
-  const { rows, isLoading, isError } = useIntuneSettingIndex(platform, {
-    enabled: open,
-  })
 
   const matches = useMemo(
     () =>
@@ -230,7 +218,11 @@ export const CippIntuneSettingPicker = ({
                           )}
                         </Stack>
                       }
-                      secondary={row.description || row.id}
+                      secondary={
+                        row.parentId
+                          ? `Under ${rowsById.get(row.parentId)?.displayName ?? row.parentId}. ${row.description ?? ''}`
+                          : row.description || row.id
+                      }
                     />
                   </ListItemButton>
                 ))}
