@@ -29,7 +29,9 @@ import { CippCardTabPanel } from "../../../components/CippComponents/CippCardTab
 import CippApiClientManagement from "../../../components/CippIntegrations/CippApiClientManagement";
 import { CippApiEgressCard } from "../../../components/CippIntegrations/CippApiEgressCard";
 import CippApiDocumentation from "../../../components/CippIntegrations/CippApiDocumentation";
-import CippMcpManagement from "../../../components/CippIntegrations/CippMcpManagement";
+import CippMcpManagement, {
+  McpFeatureDisabledAlert,
+} from "../../../components/CippIntegrations/CippMcpManagement";
 
 function tabProps(index) {
   return {
@@ -278,6 +280,7 @@ const Page = () => {
             <CippApiResults apiObject={actionSyncResults} />
             <CippApiResults apiObject={actionHaloTestTicketResults} />
             <CippApiResults apiObject={clearHIBPKey} />
+            {router.query.id === "cippapi" && <McpFeatureDisabledAlert sx={{ mb: 2 }} />}
             {router.query.id === "cippapi" && mcpAuth.data?.Results?.ResourceConflict && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 <strong>MCP setup needs attention.</strong> The app{" "}

@@ -12,6 +12,7 @@ import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { Box } from "@mui/system";
 import { getCippError } from "../../utils/get-cipp-error";
+import { McpFeatureDisabledAlert } from "./CippMcpManagement";
 
 // IP entries that impose no real restriction; a role with only these (or none) is unrestricted,
 // matching the backend collapsing an empty list to "Any".
@@ -66,6 +67,11 @@ const McpRoleIpWarning = ({ formControl }) => {
       Consider setting the IP range to <strong>Any</strong> and using a role with no IP restriction.
     </Alert>
   );
+};
+
+const McpFeatureFlagWarning = ({ formControl }) => {
+  const mcpAllowed = useWatch({ control: formControl.control, name: "MCPAllowed" });
+  return mcpAllowed ? <McpFeatureDisabledAlert sx={{ mt: 1 }} /> : null;
 };
 
 const CippApiClientManagement = () => {
@@ -301,6 +307,10 @@ const CippApiClientManagement = () => {
         {
           name: "mcpRoleIpWarning",
           component: McpRoleIpWarning,
+        },
+        {
+          name: "mcpFeatureFlagWarning",
+          component: McpFeatureFlagWarning,
         },
       ],
       type: "POST",
@@ -598,6 +608,10 @@ const CippApiClientManagement = () => {
             name: "mcpRoleIpWarning",
             component: McpRoleIpWarning,
           },
+          {
+            name: "mcpFeatureFlagWarning",
+            component: McpFeatureFlagWarning,
+          },
         ]}
         api={{
           type: "POST",
@@ -682,6 +696,10 @@ const CippApiClientManagement = () => {
           {
             name: "mcpRoleIpWarning",
             component: McpRoleIpWarning,
+          },
+          {
+            name: "mcpFeatureFlagWarning",
+            component: McpFeatureFlagWarning,
           },
         ]}
         api={{
