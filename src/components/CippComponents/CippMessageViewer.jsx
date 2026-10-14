@@ -32,9 +32,27 @@ import CippPageCard from "../CippCards/CippPageCard";
 import { useSettings } from "../../hooks/use-settings";
 import CippForefrontHeaderDialog from "./CippForefrontHeaderDialog";
 import { CippMessageDeliveryInfo } from "./CippMessageDeliveryInfo";
+import { CippApiDialog } from "./CippApiDialog";
+import { useDialog } from "../../hooks/use-dialog";
+import { CippTestMessageResults } from "./CippTestMessageResults";
 import { decodeMimeEncodedWords } from "../../utils/decode-mime-encoded-words";
 
+// Base64 of the raw source so the backend can hand Exchange the exact message bytes.
+const toBase64 = (text) => {
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return window.btoa(binary);
+};
+const headerAddress = (headers, name) =>
+  headers?.match(new RegExp(`^${name}:\\s*(.+)$`, "im"))?.[1]?.match(/[\w.+-]+@[\w.-]+/)?.[0] ?? "";
+
 export const CippMessageViewer = ({ emailSource }) => {
+  const tenant = useSettings().currentTenant;
+  const testMessageDialog = useDialog();
+  const [testJobId, setTestJobId] = useState(null);
   const [emlContent, setEmlContent] = useState(null);
   const [emlError, setEmlError] = useState(false);
   const [messageHtml, setMessageHtml] = useState("");
@@ -230,6 +248,18 @@ export const CippMessageViewer = ({ emailSource }) => {
         >
           View Source
         </Button>
+        <Button
+          size="small"
+          variant="contained"
+          onClick={testMessageDialog.handleOpen}
+          startIcon={
+            <SvgIcon fontSize="small">
+              <CippIcons.FactCheck />
+            </SvgIcon>
+          }
+        >
+          Test Mail Flow Rules
+        </Button>
       </Stack>
     );
   };
@@ -289,6 +319,39 @@ export const CippMessageViewer = ({ emailSource }) => {
   return (
     <>
       <CippMessageDeliveryInfo emailSource={emailSource} />
+      <CippApiDialog
+        title="Test Mail Flow Rules"
+        createDialog={testMessageDialog}
+        defaultvalues={(current) => ({
+          Sender: current?.Sender ?? "",
+          Recipients: current?.Recipients ?? "",
+          TransportRules: true,
+          UnifiedDlpRules: false,
+        })}
+        row={{
+          MessageFileBase64: toBase64(emailSource),
+          Sender: headerAddress(emlHeaders, "From"),
+          Recipients: headerAddress(emlHeaders, "To"),
+          TransportRules: true,
+          UnifiedDlpRules: false,
+        }}
+        fields={[
+          { type: "textField", name: "Sender", label: "Sender" },
+          { type: "textField", name: "Recipients", label: "Recipients (comma separated)" },
+          { type: "textField", name: "SendReportTo", label: "Send report to (a mailbox in this tenant)" },
+          { type: "switch", name: "TransportRules", label: "Evaluate mail flow rules" },
+          { type: "switch", name: "UnifiedDlpRules", label: "Evaluate unified DLP rules" },
+        ]}
+        api={{
+          url: "/api/ExecTestMessage",
+          type: "POST",
+          confirmText:
+            "This message is pushed through the tenant's rule pipeline without being delivered, and Exchange emails the report of every rule that matched. Rule actions such as block, moderate or notify can fire for it. Continue?",
+          data: { MessageFileBase64: "MessageFileBase64", tenantFilter: tenant },
+          onSuccess: (result) => setTestJobId(result?.DeploymentId ?? null),
+        }}
+      />
+      <CippTestMessageResults jobId={testJobId} />
 
       {emlError && (
         <Card className="mt-2 mb-4">

@@ -1105,6 +1105,12 @@ export const nativeMenuItems = [
             permissions: ['Exchange.Mailbox.*'],
           },
           {
+            title: 'Test Mail Flow Rules',
+            path: '/email/tools/test-message',
+            docsPath: 'tools/email-tools/test-message',
+            permissions: ['Exchange.TransportRule.*'],
+          },
+          {
             title: 'Mailbox Restores',
             path: '/email/tools/mailbox-restores',
             docsPath: 'tools/email-tools/mailbox-restores',
