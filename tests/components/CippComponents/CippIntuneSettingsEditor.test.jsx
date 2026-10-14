@@ -550,6 +550,29 @@ describe('settings with no value yet', () => {
     ).toBe(false)
   })
 
+  // Captures from before Intune's stricter validation store the empty value as null.
+  it.each([
+    ['string', 'StringSettingValue'],
+    ['secret', 'SecretSettingValue'],
+  ])(
+    'keeps a %s value captured as null as null when the field is not edited',
+    (_, valueType) => {
+      const original = emptyPolicy()
+      original.settings[0].settingInstance.simpleSettingValue = {
+        '@odata.type': `#microsoft.graph.deviceManagementConfiguration${valueType}`,
+        value: null,
+      }
+      const leaves = buildIntuneSettingLeaves(original, getDefinition)
+      const edited = applyIntuneSettingEdits(
+        original,
+        leaves,
+        leaves.map(defaultValueForLeaf)
+      )
+
+      expect(edited).toEqual(original)
+    }
+  )
+
   it('writes a value into the empty field once one is entered', () => {
     const original = emptyPolicy()
     const leaves = buildIntuneSettingLeaves(original, getDefinition)

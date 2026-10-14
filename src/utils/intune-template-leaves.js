@@ -389,8 +389,11 @@ export const defaultValueForLeaf = (leaf) => {
       return undefined
     default:
       // Numbers are handed over as text: the shared text field renders `value || ''`, which would
-      // blank out a legitimate 0. Coercion converts it back on save.
-      return typeof leaf.value === 'number' ? String(leaf.value) : leaf.value
+      // blank out a legitimate 0. Coercion converts it back on save. A null stays out of the form so
+      // an untouched field does not save as "".
+      return typeof leaf.value === 'number'
+        ? String(leaf.value)
+        : (leaf.value ?? undefined)
   }
 }
 
