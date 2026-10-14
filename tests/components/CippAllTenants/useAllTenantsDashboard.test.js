@@ -49,6 +49,20 @@ describe('deriveCacheSummary', () => {
     expect(summary.staleTenants).toEqual([])
   })
 
+  it('ignores collections that are no longer cached', () => {
+    const summary = deriveCacheSummary(
+      [
+        row('a.com', 'Users', 2),
+        row('a.com', 'CredentialUserRegistrationDetails', 24 * 12),
+        row('a.com', 'DeviceSettings', 24 * 5),
+      ],
+      [tenant('a.com', 'Alpha')]
+    )
+
+    expect(summary.freshness).toEqual({ fresh: 1, stale: 0, missing: 0 })
+    expect(summary.staleTenants).toEqual([])
+  })
+
   it('says so when a tenant has only ad-hoc collections rather than none', () => {
     const summary = deriveCacheSummary(
       [row('a.com', 'SharePointSharingLinks', 24 * 90)],

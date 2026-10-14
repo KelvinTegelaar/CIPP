@@ -809,6 +809,7 @@ const CippBrandingSettings = () => {
           watermarkEnabled: brandingData.watermarkEnabled,
           coverFade: brandingData.coverFade,
           tenantLabel: brandingData.tenantLabel,
+          roleColours: brandingData.roleColours,
         },
         queryKey: "BrandingPresetSave",
       },
