@@ -92,7 +92,7 @@ const Page = () => {
     data: { GUID: activeCaseId, tenantFilter: tenant },
     queryKey: `execBECCheck-polling-${activeCaseId}`,
     waiting: !!activeCaseId,
-    // Still read now and then while connected: this read is also what marks an abandoned run failed.
+    // Still read now and then while connected, in case the end frame is missed.
     refetchInterval: pollActive ? (caseConnected ? 300000 : 5000) : false,
     staleTime: 0,
   })
