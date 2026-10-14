@@ -19,6 +19,7 @@ import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDia
 import { ForcedSsoMigrationDialog } from '../components/CippComponents/ForcedSsoMigrationDialog'
 import { SubscriptionEndedDialog } from '../components/CippComponents/SubscriptionEndedDialog'
 import { FailedPaymentDialog } from '../components/CippComponents/FailedPaymentDialog'
+import { LegacyInfrastructureDialog } from '../components/CippComponents/LegacyInfrastructureDialog'
 import { CippMaintenanceBanner } from '../components/CippComponents/CippMaintenanceBanner'
 import { CippImpersonationBanner } from '../components/CippComponents/CippImpersonationBanner'
 import { filterMenuItems, getHiddenPages } from '../utils/filter-menu-items'
@@ -229,6 +230,12 @@ export const Layout = (props) => {
     () => alertsAPI.data?.find((alert) => alert.maintenance === true) ?? null,
     [alertsAPI.data]
   )
+  // Legacy infrastructure warning, flagged "blocking" by the backend so it also raises a dialog
+  // that has to be sat through before the instance can be used.
+  const blockingAlert = useMemo(
+    () => alertsAPI.data?.find((alert) => alert.blocking === true) ?? null,
+    [alertsAPI.data]
+  )
 
   useEffect(() => {
     if (!hideSidebar && version.isFetched && !alertsAPI.isFetched) {
@@ -303,6 +310,7 @@ export const Layout = (props) => {
           <FailedPaymentDialog
             hostedFailedPayments={currentRole.data?.hostedFailedPayments}
           />
+          <LegacyInfrastructureDialog alert={blockingAlert} />
           <SsoMigrationDialog meData={currentRole.data} />
           <ForcedSsoMigrationDialog />
           {(currentTenant === 'AllTenants' ||

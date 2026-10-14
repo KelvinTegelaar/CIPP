@@ -12,6 +12,18 @@ const DISMISS_DURATION_MS = 24 * 60 * 60 * 1000 // 1 day, matching FailedPayment
 
 const SEVERITIES = ['info', 'warning', 'error']
 
+// A notice flagged "prominent" by the backend (the legacy infrastructure warning) renders 40%
+// larger than a routine hosted maintenance notice: paddings, icon, text and actions all scale
+// together so it reads as one bigger banner rather than big text in a small strip.
+const PROMINENT_SCALE = 1.4
+
+// MUI typography sizes are a mix of px numbers and rem strings; scale either without touching
+// the un-scaled banner, which keeps rendering straight off the variant.
+const scaleSize = (size, scale) => {
+  if (scale === 1 || size === undefined) return undefined
+  return typeof size === 'number' ? size * scale : `calc(${size} * ${scale})`
+}
+
 const ICONS = {
   info: CippIcons.InfoOutlined,
   warning: CippIcons.WarningAmber,
@@ -197,6 +209,11 @@ export const CippMaintenanceBanner = ({ alert }) => {
 
   const Icon = ICONS[severity]
   const link = alert.link
+  const scale = alert.prominent === true ? PROMINENT_SCALE : 1
+  const prominent = scale !== 1
+  const titleSize = scaleSize(theme.typography.subtitle2.fontSize ?? '0.875rem', scale)
+  const bodySize = scaleSize(theme.typography.body2.fontSize ?? '0.875rem', scale)
+  const captionSize = scaleSize(theme.typography.caption.fontSize ?? '0.75rem', scale)
   const isExternalLink = typeof link === 'string' && /^https?:\/\//i.test(link)
 
   return (
@@ -220,23 +237,26 @@ export const CippMaintenanceBanner = ({ alert }) => {
           : `linear-gradient(${tint}, ${tint}), ${theme.palette.background.paper}`,
         borderBottom: `1px solid ${solid ? alpha('#000000', 0.18) : alpha(palette.main, 0.42)}`,
         boxShadow: solid ? 'none' : `inset 0 3px 0 0 ${palette.main}`,
-        px: { xs: 2, md: 3 },
+        px: { xs: 2 * scale, md: 3 * scale },
         // Extend into the status-bar region under black-translucent / notched devices;
         // the measured --cipp-banner-h then carries the inset for chrome below.
-        pt: 'calc(10px + env(safe-area-inset-top, 0px))',
-        pb: 1.25,
+        pt: `calc(${10 * scale}px + env(safe-area-inset-top, 0px))`,
+        pb: 1.25 * scale,
       }}
     >
       {/* Top-aligned so the icon and actions sit level with the title when the message wraps. */}
-      <Stack direction="row" spacing={1.5} sx={{
+      <Stack direction="row" spacing={1.5 * scale} sx={{
         alignItems: "flex-start"
       }}>
-        <Icon fontSize="small" sx={{ color: solid ? 'inherit' : palette.main, mt: 0.25 }} />
+        <Icon
+          fontSize={prominent ? 'medium' : 'small'}
+          sx={{ color: solid ? 'inherit' : palette.main, mt: 0.25 * scale }}
+        />
 
         <Stack
           useFlexGap
           direction={{ xs: 'column', md: 'row' }}
-          spacing={{ xs: 0.25, md: 1.5 }}
+          spacing={{ xs: 0.25 * scale, md: 1.5 * scale }}
           sx={{
             alignItems: { xs: 'flex-start', md: 'baseline' },
             flexGrow: 1,
@@ -246,7 +266,7 @@ export const CippMaintenanceBanner = ({ alert }) => {
           <Stack direction="row" spacing={1} sx={{
             alignItems: "center"
           }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: titleSize }}>
               {alert.title}
             </Typography>
             {active && (
@@ -254,8 +274,8 @@ export const CippMaintenanceBanner = ({ alert }) => {
                 size="small"
                 label="Live"
                 sx={{
-                  height: 18,
-                  fontSize: 10,
+                  height: 18 * scale,
+                  fontSize: 10 * scale,
                   fontWeight: 700,
                   letterSpacing: '0.07em',
                   backgroundColor: solid ? alpha('#FFFFFF', 0.24) : palette.main,
@@ -271,6 +291,7 @@ export const CippMaintenanceBanner = ({ alert }) => {
             sx={{
               color: 'text.primary',
               opacity: solid ? 0.9 : 0.86,
+              fontSize: bodySize,
               ...(clampActive && {
                 display: '-webkit-box',
                 WebkitLineClamp: 2,
@@ -287,7 +308,12 @@ export const CippMaintenanceBanner = ({ alert }) => {
               type="button"
               variant="body2"
               onClick={() => setMessageExpanded((prev) => !prev)}
-              sx={{ color: 'inherit', fontWeight: 600, textDecorationColor: 'currentColor' }}
+              sx={{
+                color: 'inherit',
+                fontWeight: 600,
+                textDecorationColor: 'currentColor',
+                fontSize: bodySize,
+              }}
             >
               {messageExpanded ? 'Show less' : 'Read more'}
             </Link>
@@ -299,6 +325,7 @@ export const CippMaintenanceBanner = ({ alert }) => {
               sx={{
                 color: 'text.primary',
                 opacity: solid ? 0.85 : 0.62,
+                fontSize: captionSize,
                 fontVariantNumeric: 'tabular-nums',
                 whiteSpace: { xs: 'normal', md: 'nowrap' },
               }}
@@ -317,7 +344,7 @@ export const CippMaintenanceBanner = ({ alert }) => {
           }}>
           {link && (
             <Button
-              size="small"
+              size={prominent ? 'medium' : 'small'}
               variant={solid ? 'outlined' : 'text'}
               {...(isExternalLink
                 ? { href: link, target: '_blank', rel: 'noopener noreferrer' }
@@ -337,7 +364,7 @@ export const CippMaintenanceBanner = ({ alert }) => {
           )}
           {dismissible && (
             <IconButton
-              size="small"
+              size={prominent ? 'medium' : 'small'}
               onClick={handleDismiss}
               aria-label="Dismiss maintenance notice for 24 hours"
               sx={{

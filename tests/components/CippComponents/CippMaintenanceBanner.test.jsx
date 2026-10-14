@@ -7,7 +7,7 @@ import { CippMaintenanceBanner } from '../../../src/components/CippComponents/Ci
 // (Get-CIPPLegacyInfrastructureNotice), after serialisation by the Functions worker.
 const legacyNotice = {
   Alert:
-    'This CIPP instance is running on the legacy Function App infrastructure, which will soon stop receiving updates. Migrate to the new infrastructure to keep receiving new features and fixes. The migration keeps your storage account and Key Vault, so your configuration carries across.',
+    'This CIPP instance is running on the legacy Function App infrastructure, which no longer receives updates starting December 2026. The new infrastructure is a single container that is faster, more reliable, cheaper to run and keeps itself up to date automatically. Migrate now to keep receiving new features and fixes. The migration keeps your storage account and Key Vault, so your configuration carries across.',
   active: false,
   linkText: 'Migration guide',
   endTime: null,
@@ -16,6 +16,7 @@ const legacyNotice = {
   maintenance: true,
   title: 'Legacy infrastructure',
   dismissible: false,
+  prominent: true,
   type: 'warning',
   link: 'https://docs.cipp.app/setup/maintaining-cipp/migrating-to-the-new-infrastructure',
 }
@@ -27,6 +28,8 @@ describe('CippMaintenanceBanner', () => {
     const banner = screen.getByRole('status', { name: 'Maintenance notice' })
     expect(banner).toHaveTextContent('Legacy infrastructure')
     expect(banner).toHaveTextContent(/legacy Function App infrastructure/)
+    expect(banner).toHaveTextContent(/no longer receives updates starting December 2026/)
+    expect(banner).toHaveTextContent(/faster/)
 
     const guide = screen.getByRole('link', { name: 'Migration guide' })
     expect(guide).toHaveAttribute('href', legacyNotice.link)
@@ -37,6 +40,21 @@ describe('CippMaintenanceBanner', () => {
     ).not.toBeInTheDocument()
     // No start/end time, so no "Live" chip or window text.
     expect(screen.queryByText('Live')).not.toBeInTheDocument()
+  })
+
+  it('renders a prominent notice 40% larger than a routine one', () => {
+    const { unmount } = renderWithProviders(
+      <CippMaintenanceBanner alert={{ ...legacyNotice, prominent: false }} />
+    )
+    const routineTitle = screen.getByText('Legacy infrastructure')
+    const routineSize = parseFloat(window.getComputedStyle(routineTitle).fontSize)
+    unmount()
+
+    renderWithProviders(<CippMaintenanceBanner alert={legacyNotice} />)
+    const prominentTitle = screen.getByText('Legacy infrastructure')
+    const prominentSize = parseFloat(window.getComputedStyle(prominentTitle).fontSize)
+
+    expect(prominentSize).toBeCloseTo(routineSize * 1.4, 1)
   })
 
   it('renders nothing when there is no notice', () => {
