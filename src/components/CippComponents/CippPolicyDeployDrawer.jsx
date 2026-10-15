@@ -102,7 +102,6 @@ export const CippPolicyDeployDrawer = ({
   const deployPolicy = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: [
-      'IntuneTemplates',
       `Configuration Policies - ${tenantFilter}`,
       `Intune Compliance Policies - ${tenantFilter}`,
       `App Protection & Configuration Policies - ${tenantFilter}`,
@@ -126,12 +125,6 @@ export const CippPolicyDeployDrawer = ({
     console.log('Submitting form data:', formData)
     deployPolicy.mutate({
       url: '/api/AddPolicy',
-      relatedQueryKeys: [
-        'IntuneTemplates',
-        'Configuration Policies',
-        'Compliance Policies',
-        'Protection Policies',
-      ],
       data: {
         ...formData,
         AssignmentFilterName: assignmentFilterName,
