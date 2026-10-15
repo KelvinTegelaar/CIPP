@@ -40,6 +40,7 @@ const Page = () => {
       queryKey="ListJITRoleTemplates"
       formControl={formControl}
       title="JIT Role Template"
+      formPageType="Edit"
       backButtonTitle="JIT Role Templates"
       postUrl="/api/EditJITRoleTemplate"
     >

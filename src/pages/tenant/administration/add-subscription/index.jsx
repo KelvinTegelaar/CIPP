@@ -47,7 +47,7 @@ const Page = () => {
       <CippFormPage
         queryKey={"CippFormPage"}
         formControl={formControl}
-        title="Add Subscription"
+        title="Subscription"
         backButtonTitle="CSP Licenses"
         postUrl="/api/ExecCSPLicense"
       >

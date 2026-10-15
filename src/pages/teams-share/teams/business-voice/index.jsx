@@ -136,11 +136,14 @@ const Page = () => {
           "IsOperatorConnect",
           "AcquisitionDate",
         ]}
-        filterlist={[
+        filters={[
           {
             filterName: "Unassigned User Numbers",
-            filter:
-              "Complex: AssignmentStatus eq Unassigned; AcquiredCapabilities like UserAssignment",
+            value: [
+              { id: "AssignmentStatus", value: "Unassigned" },
+              { id: "AcquiredCapabilities", value: "UserAssignment" },
+            ],
+            type: "column",
           },
         ]}
         dataSourceControls={reportDB.controls}

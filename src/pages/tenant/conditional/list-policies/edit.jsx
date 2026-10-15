@@ -119,7 +119,7 @@ const EditCAPolicy = () => {
 
   return (
     <CippFormPage
-      title={`Edit ${policyData?.displayName || "CA Policy"}`}
+      title={policyData?.displayName || "CA Policy"}
       formControl={formControl}
       queryKey={[`CAPolicies-${tenantFilter}`]}
       backButtonTitle="Conditional Access Policies"

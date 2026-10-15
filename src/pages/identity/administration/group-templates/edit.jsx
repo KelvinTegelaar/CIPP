@@ -60,7 +60,8 @@ const Page = () => {
         resetForm={false}
         queryKey={[`ListGroupTemplates`, `GroupTemplate-${id}`]}
         formControl={formControl}
-        title="Edit Group Template"
+        title="Group Template"
+        formPageType="Edit"
         backButtonTitle="Group Overview"
         postUrl="/api/AddGroupTemplate"
         isFetching={isFetching}

@@ -158,7 +158,6 @@ export const CippFormCondition = (props) => {
         if (Array.isArray(watchedValue)) {
           return watchedValue.length > 0;
         }
-        console.log("watched value:", watchedValue);
         // For any other truthy value (objects, numbers, strings), consider it as having a value
         return true;
       case "labelEq":

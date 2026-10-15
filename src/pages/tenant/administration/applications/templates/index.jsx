@@ -219,7 +219,6 @@ const Page = () => {
       queryKey="ListAppApprovalTemplates"
       columns={columns}
       simpleColumns={simpleColumns}
-      tableProps={{ keyField: "TemplateId" }}
       actions={actions}
       offCanvas={offCanvas}
       cardButton={

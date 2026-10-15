@@ -103,7 +103,7 @@ const Page = () => {
         onCancel={() => setResetDialogOpen(false)}
         title="Reset to CIPP Defaults"
         variant="warning"
-        message="This removes all additional permissions you have layered on top of the CIPP-SAM defaults and returns the saved permission set to the built-in CIPP manifest defaults. The default permissions themselves are unaffected. You will need to complete a Permissions repair from the Permissions page, then complete a CPV refresh to finalise the chnages. Continue?"
+        message="This removes all additional permissions you have layered on top of the CIPP-SAM defaults and returns the saved permission set to the built-in CIPP manifest defaults. The default permissions themselves are unaffected. You will need to complete a Permissions repair from the Permissions page, then complete a CPV refresh to finalise the changes. Continue?"
         onConfirm={() => {
           handleResetToCippDefaults();
           setResetDialogOpen(false);

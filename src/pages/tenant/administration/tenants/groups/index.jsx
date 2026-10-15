@@ -93,7 +93,7 @@ const Page = () => {
           confirmText:
             "Are you sure you want to create default tenant groups? This will create a selection of groups we recommend by default to use as templates.",
         }}
-        queryKey="TenantGroupListPage"
+        relatedQueryKeys={["TenantGroupListPage"]}
       />
     </>
   );

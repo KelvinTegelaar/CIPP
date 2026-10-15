@@ -1224,15 +1224,12 @@ const AlertWizard = () => {
                             <Grid size={{ xs: 12, md: 6 }}>
                               <CippFormComponent
                                 type="autoComplete"
-                                validators={{ required: true }}
+                                validators={{ required: 'This field is required' }}
                                 multiple={false}
                                 creatable={false}
                                 name="command"
                                 formControl={formControl}
                                 label="What alerting script should run"
-                                validation={{
-                                  required: 'This field is required',
-                                }}
                                 options={alertList.map((cmd) => ({
                                   value: cmd,
                                   label: cmd.label,

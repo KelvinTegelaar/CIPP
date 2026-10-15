@@ -21,7 +21,7 @@ const DeployNamedLocationForm = () => {
 
   return (
     <CippFormPage
-      title="Add Conditional Access Named Location"
+      title="Conditional Access Named Location"
       formControl={formControl}
       queryKey="AddNamedLocation"
       backButtonTitle="Named Locations"
