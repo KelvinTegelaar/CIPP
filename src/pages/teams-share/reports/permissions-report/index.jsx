@@ -12,6 +12,7 @@ import { PermissionsReportButton } from '../../../../components/CippPdf/Permissi
 import { useDialog } from '../../../../hooks/use-dialog'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
+import { usePermissions } from '../../../../hooks/use-permissions'
 import { Alert, Button, Container, Stack, SvgIcon, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import { CippExpandableAlert } from '../../../../components/CippComponents/CippExpandableAlert'
@@ -25,6 +26,8 @@ const EMPTY_ROWS = []
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
+  const { checkPermissions } = usePermissions()
+  const canSync = checkPermissions(['Sharepoint.Reports.ReadWrite'])
   const syncDialog = useDialog()
   const [syncQueueIds, setSyncQueueIds] = useState([])
   const newSyncRunRef = useRef(false)
@@ -123,6 +126,7 @@ const Page = () => {
                   <Button
                     size="small"
                     variant="outlined"
+                    disabled={!canSync}
                     onClick={() => {
                       newSyncRunRef.current = true
                       syncDialog.handleOpen()
@@ -284,7 +288,7 @@ const Page = () => {
               title="Sync permission data"
               api={{
                 type: 'GET',
-                url: '/api/ExecCIPPDBCache',
+                url: '/api/ExecSharePointPermissionsSync',
                 data: { Name: 'Name' },
                 confirmText:
                   'Queue a refresh of the cached site and document library permissions for this tenant? Progress is shown next to the Sync button and the report refreshes itself once the scan finishes.',

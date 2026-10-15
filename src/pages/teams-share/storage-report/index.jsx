@@ -413,6 +413,7 @@ const Page = () => {
   const [cleanupFocus, setCleanupFocus] = useState(null)
 
   const canWriteSite = checkPermissions(['Sharepoint.Site.ReadWrite'])
+  const canSync = checkPermissions(['Sharepoint.Reports.ReadWrite'])
 
   const cleanupSummary = cleanupScan.data?.summary ?? {}
   const cleanupScans = useMemo(() => {
@@ -751,6 +752,7 @@ const Page = () => {
                         <Button
                           size="small"
                           variant="outlined"
+                          disabled={!canSync}
                           onClick={() => {
                             newSyncRunRef.current = true
                             syncDialog.handleOpen()
@@ -775,7 +777,7 @@ const Page = () => {
                         <Button
                           size="small"
                           variant="outlined"
-                          disabled={spRows.length === 0}
+                          disabled={!canSync || spRows.length === 0}
                           onClick={() => {
                             setInventoryTab(0)
                             newCleanupRunRef.current = true
@@ -1061,7 +1063,7 @@ const Page = () => {
                 title="Sync usage data"
                 api={{
                   type: 'GET',
-                  url: '/api/ExecCIPPDBCache',
+                  url: '/api/ExecSharePointStorageSync',
                   data: { Name: 'Name' },
                   confirmText:
                     'Queue a refresh of SharePoint site usage (including file-level archive metrics) and OneDrive usage for this tenant? This updates charts and tables. Progress shows next to Sync usage.',
@@ -1087,7 +1089,7 @@ const Page = () => {
                 title="Scan cleanup signals"
                 api={{
                   type: 'GET',
-                  url: '/api/ExecCIPPDBCache',
+                  url: '/api/ExecSharePointStorageSync',
                   data: { Name: 'Name' },
                   confirmText:
                     'Queue a cleanup scan for this tenant? This collects library version estimates and recycle-bin totals for reclaim columns only — it does not refresh usage sizes. Progress shows next to Scan cleanup.',

@@ -13,6 +13,7 @@ import { CippApiDialog } from '../../../../components/CippComponents/CippApiDial
 import { useDialog } from '../../../../hooks/use-dialog'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
+import { usePermissions } from '../../../../hooks/use-permissions'
 import {
   Accordion,
   AccordionDetails,
@@ -155,6 +156,8 @@ const EMPTY_ROWS = []
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
+  const { checkPermissions } = usePermissions()
+  const canSync = checkPermissions(['Sharepoint.Reports.ReadWrite'])
   const syncDialog = useDialog()
   // Each sync starts one queue per cache and returns its id in the response metadata, so the
   // ids are collected as the four responses arrive and handed to the tracker.
@@ -422,6 +425,7 @@ const Page = () => {
                   <Button
                     size="small"
                     variant="outlined"
+                    disabled={!canSync}
                     onClick={() => {
                       newSyncRunRef.current = true
                       syncDialog.handleOpen()
@@ -636,7 +640,7 @@ const Page = () => {
               title="Sync sharing data"
               api={{
                 type: 'GET',
-                url: '/api/ExecCIPPDBCache',
+                url: '/api/ExecSharePointSharingSync',
                 data: { Name: 'Name' },
                 confirmText:
                   'Queue a refresh of the cached sharing links and SharePoint/OneDrive usage data for this tenant? Scanning every drive for sharing links can take a while on large tenants. Progress is shown next to the Sync button and the report refreshes itself once the syncs finish.',
