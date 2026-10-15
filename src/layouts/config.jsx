@@ -766,19 +766,16 @@ export const nativeMenuItems = [
           {
             title: 'Sharing Report',
             path: '/teams-share/reports/sharing-report',
-            docsPath: 'teams-share/sharing-report',
             permissions: ['Sharepoint.Site.*'],
           },
           {
             title: 'Permissions Report',
             path: '/teams-share/reports/permissions-report',
-            docsPath: 'teams-share/permissions-report',
             permissions: ['Sharepoint.Site.*'],
           },
           {
             title: 'Teams Activity',
             path: '/teams-share/reports/teams-activity',
-            docsPath: 'teams-share/teams/teams-activity',
             permissions: ['Teams.Activity.*'],
           },
         ],
