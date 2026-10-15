@@ -106,7 +106,7 @@
     "react-redux": "9.3.0",
     "react-syntax-highlighter": "^16.1.0",
     "react-time-ago": "^7.3.3",
-    "react-virtuoso": "^4.18.7",
+    "react-virtuoso": "^4.18.16",
     "recharts": "^3.10.1",
     "redux": "5.0.1",
     "redux-persist": "^6.0.0",

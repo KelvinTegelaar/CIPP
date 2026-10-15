@@ -8445,10 +8445,10 @@ react-virtualized-auto-sizer@^1.0.26:
   resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.26.tgz#e9470ef6a778dc4f1d5fd76305fa2d8b610c357a"
   integrity sha512-CblNyiNVw2o+hsa5/49NH2ogGxZ+t+3aweRvNSq7TVjDIlwk7ir4lencEg5HxHeSzwNarSkNkiu0qJSOXtxm5A==
 
-react-virtuoso@^4.18.7:
-  version "4.18.7"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.18.7.tgz#e5b0497ac76526cd661d71cd11f86c398784b905"
-  integrity sha512-xNF5zDGEEIMB7cKwcen/pLig0YDf6OnfFrVgKFa7sHPf9fRem0CaLshyObbBcP88jzn0enavL39EgplgdyT21g==
+react-virtuoso@^4.18.16:
+  version "4.18.16"
+  resolved "https://registry.npmjs.org/react-virtuoso/-/react-virtuoso-4.18.16.tgz#a8361e572882eeebfebdffec9ba3875d585b173c"
+  integrity sha512-BumVOhd0mNKlBkqeHojlLP8IRlJ2oYU7haU92GvBSlSzcdlWUAxIu1gphKm5gLQm07gMzmoQRXdVQeiG4TKSeQ==
 
 react@19.3.0, "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0":
   version "19.3.0"
